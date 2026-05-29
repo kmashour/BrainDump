@@ -18,25 +18,52 @@ A Kubernetes cluster is a distributed system consisting of two primary roles:
 
 ---
 
-## 2. Control Plane Components (Deep Dive)
+## 2. Control Plane & Core Components (Deep Dive)
 
 ### A. `kube-apiserver` (The Front Gate)
-* Exposes the REST API. Serves as the central point of contact for all components. For a deep dive into API endpoints, OpenAPI schemas, and the event Watch mechanism, see [Module 01: Kubernetes API Mechanics & kubectl CLI](01_kube_api_and_kubectl.md).
+* **Central Management:** Serves as the primary entry point for all control operations. Authenticates requests, validates them against OpenAPI schemas, applies admission plug-ins (e.g. `NodeRestriction`, `ResourceQuota`), and updates state.
+* **Configurations & Flags:**
+  * `--advertise-address`: IP address to advertise to cluster members.
+  * `--etcd-servers`: List of backend `etcd` URLs.
+  * `--authorization-mode`: Decides auth chain order (e.g. `Node,RBAC`).
+  * `--enable-admission-plugins`: Sequence of admission controllers (e.g., `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`).
+* **Verification Paths:**
+  * **kubeadm Clusters:** Configured as a Static Pod. Manifest path: `/etc/kubernetes/manifests/kube-apiserver.yaml`.
+  * **Manual Setup:** Configured as a systemd service. Service file path: `/etc/systemd/system/kube-apiserver.service`.
+  * For runtime process inspection, execute: `ps -aux | grep kube-apiserver`.
 
 ### B. `etcd` (The Source of Truth)
-* **Mechanism:** A highly available, distributed key-value store.
-* **Consensus:** Uses the Raft consensus algorithm.
-* **Storage:** Holds the configuration, state, and secrets of the entire cluster.
-* **Security:** Only the `kube-apiserver` is authorized to talk directly to `etcd`.
-> [!WARNING]
-> **CKA Core Topic:** If `etcd` is lost without a backup, the cluster state is unrecoverable. Backing up and restoring `etcd` is a guaranteed exam topic.
+* **Key-Value Store vs Relational:** Relational databases use rigid rows/columns. `etcd` is a key-value store, organizing configuration data as independent, nested JSON documents, allowing highly flexible schemas.
+* **Consensus & Ports:** Uses the **Raft consensus algorithm** to prevent split-brain. Client communication listens on port **`2379`** (used by API Server), and peer cluster node communication listens on port **`2380`**.
+* **Configurations & Flags:**
+  * `--listen-client-urls` and `--advertise-client-urls`: Handles inbound API requests.
+  * `--initial-cluster`: Lists peers (`controller-0=https://...:2380,controller-1=https://...:2380`) for cluster formation.
+  * `--data-dir`: Node-level directory path where keys are persisted (`/var/lib/etcd`).
+* **API v2 vs v3 (CKA Essential CLI Tricks):**
+  * `etcdctl` defaults to API v2. You must switch it to v3 via `export ETCDCTL_API=3`.
+  * API v2 uses `set`/`get` commands. API v3 uses `put`/`get` commands.
+  * In API v3, `version` is a subcommand (e.g., `etcdctl version` instead of `--version`).
+* **Querying Registry Keys Command:**
+  To list all objects registered by the API Server in etcd, target the static pod using certificate flags (required for TLS client authorization):
+  ```bash
+  kubectl exec -n kube-system etcd-control-plane -- etcdctl \
+    --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+    --cert=/etc/kubernetes/pki/etcd/server.crt \
+    --key=/etc/kubernetes/pki/etcd/server.key \
+    get / --prefix --keys-only
+  ```
 
 ### C. `kube-scheduler` (The Matchmaker)
-* **Role:** Monitors the API server for newly created Pods that have no assigned Node (`spec.nodeName` is empty).
-* **Algorithm:**
-  1. **Filtering (Predicates):** Filters out nodes that do not meet resource requirements, taints, ports, or affinity rules.
-  2. **Scoring (Priorities):** Scores the remaining nodes (e.g., aiming for resource balance or density).
-  3. **Binding:** Writes the chosen node name back to the Pod's `spec.nodeName` field in the API server.
+* **Role:** Watches the API server for unassigned Pods (`spec.nodeName` is blank) and assigns them to nodes.
+* **Scheduling Pipeline Phases:**
+  1. **Filtering (Predicates):** Evaluates nodes and filters out those unable to accommodate the Pod (e.g. checks CPU/Memory requests, node selectors, taints).
+  2. **Ranking (Priorities):** Scores the remaining candidate nodes on a scale of `0` to `10` using priority functions (e.g., resource balance, image locality). The node with the highest score is selected.
+  3. **Binding:** Submits a binding object to the API server, which writes the selected node name to `spec.nodeName`. Kubelet then detects and executes this binding.
+* **Configurations & Customization:** Schedulers are highly customizable. You can configure multiple custom schedulers in the same cluster and reference them via `spec.schedulerName` in your Pod manifests.
+* **Verification Paths:**
+  * **kubeadm:** Manifest at `/etc/kubernetes/manifests/kube-scheduler.yaml`.
+  * **Manual Setup:** Service file at `/etc/systemd/system/kube-scheduler.service`.
+  * Process check: `ps -aux | grep kube-scheduler`.
 
 ### D. `kube-controller-manager` (The Enforcer)
 * **Mechanism:** Runs multiple asynchronous control loops packaged into a single binary.
@@ -45,6 +72,35 @@ A Kubernetes cluster is a distributed system consisting of two primary roles:
   * **Node Controller:** Detects when nodes go offline (see node heartbeat eviction timers in [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api)).
   * **ReplicaSet Controller:** Keeps the correct number of Pod replicas running (see replication control in [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md#1-the-four-pillars-of-self-healing)).
   * **Endpoints Controller:** Links Service objects to the actual Pod IP addresses.
+* **Verification Paths:**
+  * **kubeadm:** Manifest at `/etc/kubernetes/manifests/kube-controller-manager.yaml`.
+  * **Manual Setup:** Service file at `/etc/systemd/system/kube-controller-manager.service`.
+
+### E. `kube-proxy` (The Network Router)
+* **Role:** A network agent running on every node that enables cluster-wide network routing for Services.
+* **Service Virtual Entity:** Services are virtual entities in the cluster's memory—they do not correspond to any container, network card, or physical interface.
+* **Routing Mechanism:** Kube-proxy watches the API Server for new Services and Endpoints. It configures host-level network rules (`iptables` or `IPVS` tables) so that traffic sent to a Service's IP is automatically redirected to the actual IP of an active backend Pod.
+* **Verification & Deployment:**
+  * **kubeadm:** Deployed as a `DaemonSet` in the `kube-system` namespace.
+  * Retrieve DaemonSet configuration: `kubectl get daemonset -n kube-system kube-proxy`.
+  * List instances: `kubectl get pods -n kube-system -l k8s-app=kube-proxy`.
+
+---
+
+## 2.1 Component Configuration Paths Quick Reference
+
+| Component | Installation Mode | Config File / Path | Check Status Command |
+| :--- | :--- | :--- | :--- |
+| **Kube API Server** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-apiserver.yaml` | `kubectl get po -n kube-system -l component=kube-apiserver` |
+| | Manual (systemd) | `/etc/systemd/system/kube-apiserver.service` | `systemctl status kube-apiserver` |
+| **etcd** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/etcd.yaml` | `kubectl get po -n kube-system -l component=etcd` |
+| | Manual (systemd) | `/etc/systemd/system/kube-apiserver.service` | `systemctl status etcd` |
+| **Kube Scheduler** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-scheduler.yaml` | `kubectl get po -n kube-system -l component=kube-scheduler` |
+| | Manual (systemd) | `/etc/systemd/system/kube-scheduler.service` | `systemctl status kube-scheduler` |
+| **Controller Manager** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-controller-manager.yaml` | `kubectl get po -n kube-system -l component=kube-controller-manager` |
+| | Manual (systemd) | `/etc/systemd/system/kube-controller-manager.service` | `systemctl status kube-controller-manager` |
+| **Kube Proxy** | kubeadm (DaemonSet) | `kubectl edit ds/kube-proxy -n kube-system` | `kubectl get ds -n kube-system -l k8s-app=kube-proxy` |
+| | Manual (systemd) | `/etc/systemd/system/kube-proxy.service` | `systemctl status kube-proxy` |
 
 ---
 

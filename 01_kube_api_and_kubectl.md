@@ -6,10 +6,40 @@ This module covers the core communication layer of Kubernetes: the API server, h
 
 ## 1. The Kubernetes API Server (`kube-apiserver`)
 
-The `kube-apiserver` is the front gate to the control plane. For its architectural placement and role in High Availability (HA) topologies, see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-components-deep-dive).
+The `kube-apiserver` is the front gate to the control plane. For its architectural placement and role in High Availability (HA) topologies, see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive).
 * **Central Hub:** Every component (nodes, scheduler, controllers, users) communicates with the API server. No component (except the API server) is permitted to access the backend database (`etcd`) directly.
 * **REST Interface:** The API server exposes an HTTP REST API. Its main job is to receive requests, validate them, authorize them, and manipulate the state of **API Objects** (e.g., Pods, Deployments, Services, ConfigMaps).
 * **Declarative Configuration:** When you submit a YAML file, you declare your "desired state". The API server stores this in `etcd`, and controller loops work to reconcile the "actual state" with this desired state.
+
+### A. API Server Request Lifecycle (Creation Flow)
+When a client (like `kubectl` or a raw `curl` POST request) requests the creation of a Pod:
+
+```
+[ Client / kubectl ] --(1) POST Request --> [ kube-apiserver ]
+                                                  |
+                                            (2) Authenticate & Validate
+                                                  |
+                                            (3) Write to etcd (as Pending)
+                                                  |
+                                            (4) Notify Client (Success)
+                                                  |
+                                            (5) Watches trigger Scheduler
+                                                  |
+                                            (6) Bind Node in etcd
+                                                  |
+                                            (7) Kubelet watches -> Runs container
+                                                  |
+                                            (8) Status Sync -> etcd
+```
+
+1. **Authentication & Authorization:** The API server authenticates the sender (e.g. via TLS certificates or tokens) and validates their RBAC permissions (e.g. NodeRestriction, custom Roles).
+2. **Admission & Schema Validation:** The request passes through admission plugins (e.g., `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`, `ResourceQuota`) and is validated against the OpenAPI schema.
+3. **Initial State Commit (No Node Assignment):** The API server constructs the Pod object definition. At this stage, the Pod's `spec.nodeName` field is empty (unassigned). It commits the state to `etcd` as `Pending`.
+4. **Client Notification:** The API server replies to the client confirming the object was successfully created.
+5. **Scheduler Intervention:** The `kube-scheduler` watches the API server via the HTTP chunked watch mechanism, detecting the new Pod without a node assignment. It runs its Filtering & Ranking algorithms, selects a node, and submits a binding API request back to the API server.
+6. **Node Binding Commit:** The API server writes the selected node name (`spec.nodeName`) to the Pod definition in `etcd`.
+7. **Node Execution (Kubelet):** The `kubelet` running on the selected worker node watches the API server, detects that a Pod has been assigned to it, and instructs the CRI to deploy the container.
+8. **Status Synchronization:** Once the container is running or fails, the `kubelet` reports the container status back to the API server, which updates the record in `etcd`.
 
 ---
 

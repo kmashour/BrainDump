@@ -4,11 +4,70 @@ This module covers node lifecycles, health monitoring, resource allocation math,
 
 ---
 
-## 1. Node Registration
+## 1. Node Registration & Kubelet Mechanics
 
-Nodes in Kubernetes are treated as actual API objects in `etcd`. They register with the control plane in two ways (see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-components-deep-dive) for more details on `etcd` and `kube-apiserver`):
-* **Self-Registration (Default):** The `kubelet` service starts on the machine, contacts the `kube-apiserver`, and registers itself by providing its hardware capacity, IP addresses, and versions.
-* **Manual Administration:** An administrator creates a Node manifest (YAML) and applies it to the cluster manually, disabling self-registration on the `kubelet` configuration.
+The **`kubelet`** is the node-level agent responsible for managing workloads. It acts as the "captain of the ship" on each worker node, registering the host machine, launching containers, monitoring their health, and feeding telemetry back to the control plane.
+
+Unlike other Kubernetes components (API Server, Scheduler, etc.) which can run inside containers, the `kubelet` must run as a native service directly on the host operating system. This is because it requires root privileges to modify host directories, configure network interfaces, and interact with the kernel namespaces/cgroups.
+
+### A. Node Registration Pathways
+Nodes are registered as objects in `etcd` in two ways:
+* **Self-Registration (Default):** The `kubelet` service starts on the node, contacts the `kube-apiserver`, and registers itself by reporting its physical capacity, IP addresses, and versions.
+* **Manual Administration:** An administrator creates a Node manifest (YAML) and applies it to the cluster manually, disabling self-registration in the `kubelet` configuration.
+
+### B. Installing and Configuring Kubelet as a Service
+When bootstrapping a node manually:
+1. **Download the Kubelet Binary:**
+   ```bash
+   wget https://storage.googleapis.com/kubernetes-release/release/v1.28.0/bin/linux/amd64/kubelet
+   chmod +x kubelet
+   mv kubelet /usr/local/bin/
+   ```
+2. **Configure the systemd Service:**
+   Create the systemd unit file at `/etc/systemd/system/kubelet.service`:
+   ```ini
+   [Unit]
+   Description=Kubernetes Kubelet
+   Documentation=https://github.com/kubernetes/kubernetes
+   After=containerd.service
+   Requires=containerd.service
+
+   [Service]
+   ExecStart=/usr/local/bin/kubelet \
+     --config=/var/lib/kubelet/kubelet-config.yaml \
+     --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
+     --kubeconfig=/var/lib/kubelet/kubeconfig \
+     --register-node=true \
+     --v=2
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+   * **Key Parameters Explained:**
+     * `--config`: Path to the YAML file holding node configurations (such as Cgroup driver, eviction thresholds).
+     * `--container-runtime-endpoint`: Path to the CRI UNIX socket (tells Kubelet how to communicate with containerd).
+     * `--kubeconfig`: Path to certificate file authorizing Kubelet to talk to the API Server.
+     * `--register-node`: When set to `true`, Kubelet self-registers the host with the API server.
+
+### C. Verifying Kubelet Health & Status
+When troubleshooting a node that shows `NotReady`, verify the Kubelet process:
+* **Check Service Status:**
+  ```bash
+  systemctl status kubelet
+  ```
+* **Verify running process parameters:**
+  Use `ps` to check which parameters were used at launch:
+  ```bash
+  ps -aux | grep kubelet
+  ```
+  *(Example output showing active cgroup driver and configs)*
+  ```plaintext
+  root  2095  /usr/bin/kubelet --kubeconfig=/etc/kubernetes/kubelet.conf --config=/var/lib/kubelet/config.yaml --cgroup-driver=systemd --container-runtime-endpoint=unix:///run/containerd/containerd.sock
+  ```
+* **Inspect logs for failures:**
+  ```bash
+  journalctl -u kubelet -n 100 --no-pager
+  ```
 
 ---
 
@@ -38,7 +97,7 @@ $$\text{Allocatable} = \text{Capacity} - \text{OS Reserved} - \text{Kubelet Rese
 
 ## 3. Node Heartbeats & The Lease API
 
-To keep the control plane informed of node health without overloading the database, Kubernetes uses the **Lease API** (`coordination.k8s.io`). (For the role of the Node Controller inside the `kube-controller-manager` which monitors these lease objects, see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-components-deep-dive)).
+To keep the control plane informed of node health without overloading the database, Kubernetes uses the **Lease API** (`coordination.k8s.io`). (For the role of the Node Controller inside the `kube-controller-manager` which monitors these lease objects, see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
 
 ### A. Heartbeat Mechanism
 * **Lease Objects:** Every node gets a lightweight `Lease` object in the `kube-node-lease` namespace. The `kubelet` pings (renews) this lease every **10 seconds**.

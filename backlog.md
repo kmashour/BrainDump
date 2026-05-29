@@ -4,6 +4,28 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-05-29] - Ingestion & Integration of Mumshad Course Transcripts
+
+### Integrated
+- **[01_kube_api_and_kubectl.md](01_kube_api_and_kubectl.md):** Integrated Kube API Server request lifecycle details (creation flow, auth, schemas, scheduling binding, Kubelet execution).
+- **[02_cluster_architecture_and_components.md](02_cluster_architecture_and_components.md):** Expanded core control plane components:
+  - **API Server:** Added configuration details, systemd vs. static pod manifest verification, and execution checking.
+  - **ETCD:** Added SQL vs Key-Value context, client/peer communication ports (2379/2380), Raft consensus peer configs, API v2 vs v3 migration commands (`put` vs `set`, versioning), and TLS-authorized registry keys check command.
+  - **Kube Scheduler:** Added Filtering (predicates) and Ranking (priorities) pipeline descriptions, multiple custom schedulers context, and verification paths.
+  - **Kube Proxy:** Added Services as virtual memory routing tables, host-level `iptables`/`IPVS` redirection mechanisms, and DaemonSet deployment verification.
+  - **Reference Table:** Compiled a unified configuration paths guide for all control plane and core components.
+- **[03_node_mechanics_and_resource_limits.md](03_node_mechanics_and_resource_limits.md):** Integrated Kubelet host system agent specifics, manual installation instructions (downloading binary, systemd configurations), and process verification flags.
+- **[05_containers_runtimes_and_lifecycle.md](05_containers_runtimes_and_lifecycle.md):** Consolidated container runtimes evolution:
+  - **Evolution & Decoupling:** Added Docker platform components, Dockershim adapter deprecation history (removed in v1.24), and native CRI/cri-dockerd setups.
+  - **CLI Tools Comparison:** Added comparison table for CTR (debugging containerd), NerdCTL (Docker-compatible containerd shell, eStargz lazy pulls, P2P, signing), and Crictl (CRI troubleshooting debugger, Pod listing, Kubelet GC warnings).
+  - **Endpoints Socket Skew:** Added default socket checklist and session export configurations.
+
+### Changed / Updated
+- **Cross-Module Consistency:** Fixed broken links in Modules 01, 03, and 04 pointing to renamed headings in Module 02. Verified complete linkage vault compliance.
+- **Git Synchronization:** Updated SSH configurations to route github.com over port 443 (via ssh.github.com) to resolve local port 22 blocks, and pushed all updates.
+
+---
+
 ## [2026-05-29] - Ingestion & Consolidation of Container Mechanics
 
 ### Added

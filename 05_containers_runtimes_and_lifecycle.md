@@ -56,9 +56,55 @@ When a Pod is stuck in `ImagePullBackOff` or `ErrImagePull`, follow this CLI tri
 
 ## 2. Container Runtime Interface (CRI) & Namespaces
 
-The `kubelet` does not interact with Docker or run container processes directly. Instead, it delegates all container operations to a runtime using the **Container Runtime Interface (CRI)** over a local gRPC UNIX socket.
+### A. The Evolution of Container Runtimes
+In the early days of Kubernetes, Docker was the only container runtime supported. Because Docker was built as a full developer platform before Kubernetes existed, it contained many tools that Kubernetes did not need (Docker CLI, API endpoints, build tools, volumes, etc.). To support alternative runtimes, the Kubernetes community established the **Container Runtime Interface (CRI)**.
 
-### A. The Dual-Service CRI Architecture
+The CRI standardizes how Kubernetes interacts with runtimes that comply with the **Open Container Initiative (OCI)** standards:
+1. **OCI Image Specification:** Dictates how container image layers are packaged.
+2. **OCI Runtime Specification:** Dictates how containers are run (executing kernel-level namespaces/cgroups).
+
+```
++--------------------------------------------------------------+
+| Decoupling History: Dockershim Removal                       |
+|                                                              |
+| Legacy (v1.23 & older):                                      |
+| [Kubelet] -> [Dockershim (bridge)] -> [Docker Daemon]        |
+|                                                              |
+| Modern (v1.24+):                                             |
+| [Kubelet] --(gRPC/CRI)--> [containerd Socket] -> [runc]      |
+|                                                              |
+| Modern with Docker:                                          |
+| [Kubelet] --(gRPC/CRI)--> [cri-dockerd Socket] -> [Docker]   |
++--------------------------------------------------------------+
+```
+
+* **The Dockershim Bridge:** Since Docker did not natively implement CRI, the Kubernetes control plane maintained an adapter called **Dockershim** to bridge the gap.
+* **Removal in v1.24:** Maintaining Dockershim in core Kubernetes was deprecated and officially removed in v1.24. This decoupled the Kubelet from Docker and shifted operations directly to native CRI runtimes like **containerd** or **CRI-O**.
+* **Legacy Compatibility (cri-dockerd):** If you still need to run Docker containers in Kubernetes v1.24+, you must use `cri-dockerd`, a standalone service that acts as a CRI adapter.
+
+### B. Comparison of Runtime CLI Tools
+For the CKA exam, you must distinguish between the different CLI tools used to interact with container runtimes on a worker node:
+
+| CLI Tool | Community Developer | Purpose | Scope / Features | Typical Commands |
+| :--- | :--- | :--- | :--- | :--- |
+| **`ctr`** | containerd Community | Low-level containerd debugging | Bundled with containerd. Minimal features. Not user friendly. | `ctr images pull docker.io/library/redis:alpine`<br>`ctr run docker.io/library/redis:alpine redis` |
+| **`nerdctl`** | containerd Community | General-purpose ContainerD CLI | Docker-compatible syntax. Adds advanced containerd features (encrypted images, lazy image pulling via eStargz, P2P distribution, image signing). | `nerdctl run --name redis redis:alpine`<br>`nerdctl run --name webserver -p 80:80 -d nginx` |
+| **`crictl`** | Kubernetes Community | CRI troubleshooting and debugging | CRI-compliant, works across runtimes (containerd, CRI-O). Supports listing Pods. **Warning:** Containers created with `crictl` are not registered as Pods in the API server and will be deleted by the Kubelet. | `crictl pull busybox`<br>`crictl images`<br>`crictl ps -a`<br>`crictl pods` |
+
+### C. The Kubelet-CRI Communication Path
+The `kubelet` pings the runtime over a local gRPC UNIX socket. Historically, Kubelet queried sockets in this order:
+`/var/run/dockershim.sock` -> `/run/containerd/containerd.sock` -> `/run/crio/crio.sock` -> `/var/run/cri-dockerd.sock`.
+
+In modern configurations, you must configure the socket path manually in Kubelet's startup flags (`--container-runtime-endpoint`) and set it for the `crictl` utility:
+```bash
+# Set endpoint for crictl
+crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps
+
+# Set endpoint persistently for the session
+export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+```
+
+### D. The Dual-Service CRI Architecture
 The CRI specification exposes two distinct gRPC service endpoints over the same UNIX socket:
 
 ```
@@ -87,12 +133,12 @@ The CRI specification exposes two distinct gRPC service endpoints over the same 
 * **ImageService:** Manages image actions (pulling, querying, cleaning disk space).
 * **RuntimeService:** Manages execution mechanics (sandbox allocation, container lifecycle, network/IPC initialization, direct `exec` commands).
 
-### B. High-Level vs. Low-Level Runtimes
+### E. High-Level vs. Low-Level Runtimes
 Kubernetes splits runtime duties into two layers:
 1. **High-Level Runtime (CRI Daemon - e.g., `containerd`, `CRI-O`):** Runs continuously as a background systemd service. It receives gRPC calls from the `kubelet`, resolves storage layers, interacts with CNI networking, and configures the execution environment.
 2. **Low-Level Runtime (OCI Executor - e.g., `runc`, `crun`):** A transient binary invoked by the high-level runtime. It interfaces directly with the Linux kernel to create namespaces (`namespaces`), resource limits (`cgroups`), mounts the root directory (`pivot_root`), starts the container's PID 1 process, and then immediately exits.
 
-### C. Zero-Downtime Node Upgrades: The `containerd-shim`
+### F. Zero-Downtime Node Upgrades: The `containerd-shim`
 If the low-level `runc` exits immediately after starting the container, how are containers monitored?
 For each container, the high-level runtime spawns a **`containerd-shim`** process:
 
@@ -107,7 +153,7 @@ For each container, the high-level runtime spawns a **`containerd-shim`** proces
 * **Log & I/O Tracking:** It keeps stdout/stderr streams open and reports exit codes back to `containerd`.
 * **Zero-Downtime Daemon Restarts:** Because the shim acts as an intermediary, you can restart or upgrade the main `containerd` daemon on a worker node without disrupting running application containers. The shims keep running, and `containerd` reconnects to them once it comes back online.
 
-### D. The Pod Sandbox & The `pause` Container
+### G. The Pod Sandbox & The `pause` Container
 A Pod represents a collection of processes sharing the same logical host environment. To achieve this, the CRI uses a **Sandbox** backed by the `pause` container:
 1. **Sandbox Allocation:** Before starting your application container, Kubelet instructs the CRI to run `RunPodSandbox`. The runtime pulls a tiny image (typically `registry.k8s.io/pause`) and starts the `pause` process.
 2. **Kernel Namespace Locking:** The `pause` container executes a minimal C program calling the `pause()` system call, which puts it to sleep indefinitely. Its sole purpose is to initialize and hold open:
@@ -117,7 +163,7 @@ A Pod represents a collection of processes sharing the same logical host environ
 3. **Application Container Injection:** When the actual application containers start, the runtime inserts them into the namespaces held open by the `pause` container (using the `setns` system call).
 * **Result:** Application containers share the same network stack and hostnames, allowing them to communicate via `localhost` and share storage volumes.
 
-### E. Low-Level Node Debugging with `crictl`
+### H. Low-Level Node Debugging with `crictl`
 If a node's `kubelet` is failing, or if the API Server is completely unreachable, you must bypass `kubectl` and inspect the node's container runtime directly using `crictl`.
 
 > [!IMPORTANT]
