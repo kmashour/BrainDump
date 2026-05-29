@@ -12,7 +12,9 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ### Changed / Updated
 - **[README.md](README.md):** Updated search indexes and expanded the master Mermaid.js brain map to link CRI services, shims, runc execution paths, namespaces, probes, hooks, native sidecars, and runtime class constraints.
+- **[instructions.md](instructions.md):** Updated to add Step 6 to the Ingestion & Consolidation Workflow, requiring all updates to be committed and pushed to `git@github.com:kmashour/BrainDump.git`.
 - **Cross-Linking:** Added Obsidian graph references between Module 05 and Modules 01, 02, 03, and 04.
+- **Git Synchronization:** Initialized local Git repository, set remote origin to `git@github.com:kmashour/BrainDump.git`, configured `.gitignore`, and force-pushed all current materials.
 
 ## [2026-05-27] - Knowledge Base Restructuring & Obsidian Integration
 

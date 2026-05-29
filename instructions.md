@@ -49,6 +49,16 @@ When a new source file (e.g., a documentation page, Mumshad course transcript, o
 ### Step 5: Update the Backlog
 - Every update, compilation, or structural modification must be documented in `backlog.md` with a date and detailed description of the changes.
 
+### Step 6: Git Synchronization (Push Updates)
+- After compiling changes, verifying links, and updating the backlog, you MUST commit all modified and new files and push the updates to the remote GitHub repository:
+  - Repository: `git@github.com:kmashour/BrainDump.git`
+  - Commands:
+    ```bash
+    git add .
+    git commit -m "feat/chore/docs: <brief description of changes>"
+    git push origin main
+    ```
+
 ---
 
 ## 3. Formatting and Structure Rules for Note Files
