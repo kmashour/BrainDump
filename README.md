@@ -75,29 +75,48 @@ graph TD
 
 ---
 
-## 📚 Study Modules
+## 📂 The Two-Tier Knowledge Vault
 
-Use the links below to navigate to the specific study modules:
+To balance high-verbosity reference materials (detailed configurations, commands, and hands-on PoCs) with clear, atomic conceptual associations, this vault is structured into two main directories:
 
-1. **[01_kube_api_and_kubectl.md](01_kube_api_and_kubectl.md)**
-   * *Topics:* API Server REST endpoints, API Groups, Versioning lifecycles, OpenAPI Schemas, `kubectl explain` navigation, the Watch (`-w`) mechanism, `kubectl` syntax formula, dry-run tricks, and output formatting.
-   * *PoC:* Executing HTTP raw API queries, generating YAML templates, and monitoring live pod lifecycle events.
+### 1. 🧠 [Main Notes](Main%20Notes/) (Atomic Concepts)
+This directory contains direct, focused, and atomic notes on each Kubernetes component and concept. Every concept has a landing note linked to a deeper-dive note:
+* **[kube-apiserver](Main%20Notes/kube-apiserver.md)** (Deeper: **[kube-apiserver-deeper](Main%20Notes/kube-apiserver-deeper.md)**)
+* **[etcd](Main%20Notes/etcd.md)** (Deeper: **[etcd-deeper](Main%20Notes/etcd-deeper.md)**)
+* **[kube-scheduler](Main%20Notes/kube-scheduler.md)** (Deeper: **[kube-scheduler-deeper](Main%20Notes/kube-scheduler-deeper.md)**)
+* **[kube-controller-manager](Main%20Notes/kube-controller-manager.md)** (Deeper: **[kube-controller-manager-deeper](Main%20Notes/kube-controller-manager-deeper.md)**)
+* **[cloud-controller-manager](Main%20Notes/cloud-controller-manager.md)** (Deeper: **[cloud-controller-manager-deeper](Main%20Notes/cloud-controller-manager-deeper.md)**)
+* **[kubelet](Main%20Notes/kubelet.md)** (Deeper: **[kubelet-deeper](Main%20Notes/kubelet-deeper.md)**)
+* **[kube-proxy](Main%20Notes/kube-proxy.md)** (Deeper: **[kube-proxy-deeper](Main%20Notes/kube-proxy-deeper.md)**)
+* **[container-runtime](Main%20Notes/container-runtime.md)** (Deeper: **[container-runtime-deeper](Main%20Notes/container-runtime-deeper.md)**)
+* **[kubectl](Main%20Notes/kubectl.md)** (Deeper: **[kubectl-deeper](Main%20Notes/kubectl-deeper.md)**)
+* **[pod](Main%20Notes/pod.md)** (Deeper: **[pod-deeper](Main%20Notes/pod-deeper.md)**)
+* **[node](Main%20Notes/node.md)** (Deeper: **[node-deeper](Main%20Notes/node-deeper.md)**)
 
-2. **[02_cluster_architecture_and_components.md](02_cluster_architecture_and_components.md)**
-   * *Topics:* Master vs. Worker node division, detailed review of Control Plane processes (`etcd`, `apiserver`, `scheduler`, `controller-manager`), High Availability (HA) split-brain prevention, Leader Election, Cloud Controller Manager (CCM), and Mixed Version Proxy.
-   * *PoC:* Launching a multi-node local cluster, dissecting static pod manifests, and exploring leader election leases.
+---
 
-3. **[03_node_mechanics_and_resource_limits.md](03_node_mechanics_and_resource_limits.md)**
-   * *Topics:* Node registration pathways, Node Conditions (`Ready`, `Pressure` types), heartbeats & Lease objects, QoS Classes (`BestEffort`, `Burstable`, `Guaranteed`), `cgroups` (cgroups v1 vs. v2), and container runtime Cgroup drivers (`systemd` vs. `cgroupfs`).
-   * *PoC:* Inspecting node lease objects, creating and verifying pods for each QoS class, and simulating OOM limits.
+### 📚 [Reference Notes](Reference%20Notes/) (Study Modules & PoCs)
+This directory houses the comprehensive study modules filled with technical depth, command configurations, alerts, and detailed hands-on Proof of Concept (PoC) workflows:
 
-4. **[04_workload_lifecycle_and_healing.md](04_workload_lifecycle_and_healing.md)**
-   * *Topics:* The 4 pillars of self-healing (Restart, Replace, Replicate, Reschedule), Liveness/Readiness/Startup Probes, Garbage Collection (Cascading deletions, owner references, Kubelet container/image cleanups).
-   * *PoC:* Debugging crashing pods with liveness probes, isolating traffic with readiness probes, and running foreground/background/orphan cascading deletions.
+1. **[01_kube_api_and_kubectl.md](Reference%20Notes/01_kube_api_and_kubectl.md)**
+   * *Topics:* REST endpoints, API Groups, Versioning, OpenAPI Schemas, `kubectl explain`, Watch (`-w`), JSONPath/Custom Columns.
+   * *PoC:* Raw HTTP API queries, YAML templates, watch logs.
 
-5. **[05_containers_runtimes_and_lifecycle.md](05_containers_runtimes_and_lifecycle.md)**
-   * *Topics:* OCI image layers and immutability, high-level (CRI) vs. low-level (OCI/`runc`) container runtimes, `containerd-shim` mechanics, Pod sandboxes (`pause` containers), `RuntimeClass` isolation topologies, advanced scheduling and resource overhead, `PostStart`/`PreStop` lifecycle hooks, sequential `initContainers`, native `Sidecar` containers, and `ephemeralContainers` debugging workflows.
-   * *PoC:* Deploying custom container environments with disabled service links, debugging lifecycle hooks via log redirection, validating sequential init and native sidecar boot order, and injecting ephemeral debugging containers via `kubectl debug` process-targeting.
+2. **[02_cluster_architecture_and_components.md](Reference%20Notes/02_cluster_architecture_and_components.md)**
+   * *Topics:* Master vs. Worker split, Control Plane processes, High Availability (HA) split-brain, Leader Election, CCM, Mixed Version Proxy.
+   * *PoC:* Multi-node kind setups, Static Pod manifests, leader lease analysis.
+
+3. **[03_node_mechanics_and_resource_limits.md](Reference%20Notes/03_node_mechanics_and_resource_limits.md)**
+   * *Topics:* Node registration, Lease heartbeats, QoS Classes (`BestEffort`, `Burstable`, `Guaranteed`), Cgroup drivers.
+   * *PoC:* Lease inspections, QoS configuration, OOM limit testing.
+
+4. **[04_workload_lifecycle_and_healing.md](Reference%20Notes/04_workload_lifecycle_and_healing.md)**
+   * *Topics:* Self-healing pillars, Probes (Liveness/Readiness/Startup), Garbage Collection (Cascading deletions, owner references).
+   * *PoC:* Debugging crashing pods, isolating network traffic, testing foreground/background GC.
+
+5. **[05_containers_runtimes_and_lifecycle.md](Reference%20Notes/05_containers_runtimes_and_lifecycle.md)**
+   * *Topics:* OCI layers, containerd-shim, Pause containers, `RuntimeClass` isolation, hooks, init containers, sidecars, ephemeral containers.
+   * *PoC:* Custom lifecycle hook redirection, sidecar boot orders, injecting ephemeral debugging containers.
 
 ---
 
@@ -110,9 +129,10 @@ Use the links below to navigate to the specific study modules:
 
 ## 🛠️ Global Kind Cluster Setup
 
-To test these notes, you will need a multi-node cluster. The configuration file and instructions are detailed at the start of **[02_cluster_architecture_and_components.md](02_cluster_architecture_and_components.md)**.
+To test these notes, you will need a multi-node cluster. The configuration file and instructions are detailed at the start of **[02_cluster_architecture_and_components.md](Reference%20Notes/02_cluster_architecture_and_components.md)**.
 
 ---
 
 ## 📝 Integration Guidelines
 For details on how to append new study topics or course materials to this repository, please review the **[instructions.md](instructions.md)** guide.
+

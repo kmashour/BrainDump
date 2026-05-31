@@ -4,6 +4,29 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-05-31] - Two-Tier Knowledge Vault Reorganization
+
+### Added
+- **Main Notes Directory (`Main Notes/`):** Created 11 atomic landing notes and 11 deeper technical sub-resource notes for core CKA concepts:
+  - `kube-apiserver` (Deeper: request lifecycle, API Groups, OpenAPI schema, watch mechanism, proxy, ephemeral containers).
+  - `etcd` (Deeper: Raft consensus quorum, ports, CLI usage, client certificate TLS args, CKA backup/restore steps).
+  - `kube-scheduler` (Deeper: filtering predicates, ranking priorities, custom schedulers config, manual node binding bypass).
+  - `kube-controller-manager` (Deeper: reconciliation loops, cascading deletions, node eviction parameters, leader election).
+  - `cloud-controller-manager` (Deeper: out-of-tree providers, EXTERNAL cloud flags, route/service controllers).
+  - `kubelet` (Deeper: TLS bootstrapping, node conditions, lease optimization, CRI socket integration, static pods directory).
+  - `kube-proxy` (Deeper: service virtual entity, userspace/iptables/IPVS performance modes, CKA debug commands).
+  - `container-runtime` (Deeper: CRI dual services, high vs low OCI/runc engines, shims, pause container, cgroup systemd driver alignment, ctr/nerdctl/crictl tools).
+  - `kubectl` (Deeper: Kubeconfig components, dry-run template formulas, force deletion flags, custom-columns and JSONPath filtering).
+  - `pod` (Deeper: lifecycle states, QoS memory/CPU eviction classifications, startup/liveness/readiness probes, native sidecars, lifecycle hooks).
+  - `node` (Deeper: manual/dynamic registration, resource capacity vs allocatable calculations, cgroups v1 vs v2).
+
+### Moved / Reorganized
+- **Reference Notes Directory (`Reference Notes/`):** Created directory and moved study modules `01` to `05` containing high-verbosity notes and kind cluster validation PoCs using `git mv`.
+- **README.md:** Updated overview directory map to reflect the new main vs reference division and updated relative paths.
+- **instructions.md:** Redefined the ingestion workflow to match the new two-tier standard, specifying landing and deeper note layouts and Obsidian linking rules.
+
+---
+
 ## [2026-05-29] - Ingestion & Integration of Mumshad Course Transcripts
 
 ### Integrated

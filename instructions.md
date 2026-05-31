@@ -7,93 +7,131 @@ This document defines the rules, formats, and procedures for parsing new Kuberne
 ## 1. Directory Structure & File Organization
 
 The knowledge base is stored in `/home/karim/Desktop/CKA/`.
-- `README.md`: The central index and high-level visual Mermaid.js "Brain Map".
+- `README.md`: The central index and high-level visual Mermaid.js "Brain Map" connecting the main components.
 - `instructions.md`: This file.
 - `backlog.md`: The transaction log containing every update, change, and addition to the knowledge base.
 - `inflow/`: A landing zone for raw lecture transcripts, documentation dumps, and external notes before consolidation.
-  - *Example:* `inflow/Overview-Architecuture-Kubernetes.md`.
-- `01_kube_api_and_kubectl.md`: API server internals, groups, OpenAPI, watch, and kubectl commands.
-- `02_cluster_architecture_and_components.md`: Macro control plane vs. worker node architecture, core processes, HA, CCM, and proxies.
-- `03_node_mechanics_and_resource_limits.md`: Node conditions, leases, heartbeats, evictions, QoS classes, and cgroups.
-- `04_workload_lifecycle_and_healing.md`: Self-healing pillars, probes, and garbage collection.
+- `Reference Notes/`: Detailed, high-verbosity study modules containing:
+  - Extended architectural contexts, terminal commands, configurations, and CKA tips.
+  - Hands-on Proof of Concept (PoC) tutorials utilizing `kind` to test components locally.
+- `Main Notes/`: Atomic, conceptual summaries. Contains:
+  - **Landing Notes:** One note per key concept/component answering a specific template of operational questions.
+  - **Deeper Notes:** A secondary note for each component containing links and brief explanations of deep technical sub-topics.
 
 ---
 
 ## 2. Ingestion & Consolidation Workflow
 
-When a new source file (e.g., a documentation page, Mumshad course transcript, or architectural chat log) is introduced:
+When a new source file is introduced:
 
 ### Step 1: Landing
 1. Place the raw input file directly into the `inflow/` directory.
 
 ### Step 2: Classification & Analysis
 1. Analyze the technical topics covered in the new `inflow/` file.
-2. Determine if these topics fit into one of the existing modules or warrant creating a new module (e.g., `05_kubernetes_networking.md`).
+2. Identify which core component it relates to (e.g. `kube-apiserver`, `etcd`, etc.) or if a new concept needs to be established.
 
-### Step 3: Integration & Compilation
-- **If integrating into an existing file:**
-  - Locate the exact section where the concept should reside.
-  - Compile the raw text into a polished, structured markdown entry.
-  - Integrate the new information smoothly, ensuring all granular details, command syntax, and CKA tips are preserved.
-  - Avoid duplicate definitions; refine and expand existing definitions instead.
-  - Review the existing `kind` PoC for that section and update it to incorporate testing of the new concepts.
-- **If creating a new category:**
-  - Create a new file in sequence (e.g., `05_kubernetes_networking.md`).
-  - Follow the structure rules (Section 3).
-  - Add the new file to the directory listing in `README.md` and update the Mermaid.js brain map to link the new concepts.
+### Step 3: Reference Note Integration (Detailed PoC & Commands)
+1. Find the corresponding Reference Note in `Reference Notes/` (e.g., `01_kube_api_and_kubectl.md`).
+2. Integrate the new details, ensuring explanations remain rich and complete. Update the `kind` PoCs if applicable.
 
-### Step 4: Consistency & Cross-Linking Checks
-- Ensure all relative markdown links between files remain valid and updated.
-- Verify that the Mermaid.js syntax in `README.md` is correct.
+### Step 4: Main Note Creation & Update (Conceptual Atomicity)
+1. If the concept is new, create its **Landing Note** and **Deeper Note** inside `Main Notes/` using the templates in Section 3.
+2. If the concept is already present, review the landing note and update the deeper note to add links/context to the new sub-topics, connecting them back to the newly integrated section in the `Reference Notes/`.
 
 ### Step 5: Update the Backlog
-- Every update, compilation, or structural modification must be documented in `backlog.md` with a date and detailed description of the changes.
+- Document all updates, creations, and restructurings in `backlog.md` with a timestamp and description of changes.
 
 ### Step 6: Git Synchronization (Push Updates)
-- After compiling changes, verifying links, and updating the backlog, you MUST commit all modified and new files and push the updates to the remote GitHub repository:
-  - Repository: `git@github.com:kmashour/BrainDump.git`
-  - Commands:
-    ```bash
-    git add .
-    git commit -m "feat/chore/docs: <brief description of changes>"
-    git push origin main
-    ```
+- After verification of all relative links and file modifications, commit and push changes:
+  ```bash
+  git add .
+  git commit -m "feat/chore/docs: <description>"
+  git push origin main
+  ```
 
 ---
 
-## 3. Formatting and Structure Rules for Note Files
+## 3. Structure Templates for Notes
 
-Every note file must strictly follow these structural guidelines:
+### A. Main Notes: Landing Note Template
+Every landing note inside `Main Notes/` must contain the following frontmatter and sections:
+```markdown
+---
+tags:
+  - concept/<concept-name>
+  - component/<layer>
+related:
+  - [[concept-a]]
+  - [[concept-b]]
+---
 
-### A. Conceptual Explanations (Thoroughness Standards)
-- **No Brief Summaries:** Explanations must be thorough, context-rich, and detailed. Do not use summary bullet points that omit underlying mechanics unless it is for the explicit benefit of structural overview (like a reference table).
-- **In-Depth Context:** Explain the *why* and *how* behind each component, including protocols, ports, database interactions, kernel parameters, and edge cases.
-- **Practical Examples:** Provide complete examples (YAML files, command outputs, configuration snippets) rather than generic placeholders.
-- **CKA Tips:** Highlight specific CKA troubleshooting tips using GitHub-style alerts (e.g., `> [!TIP]`, `> [!WARNING]`, `> [!IMPORTANT]`).
+# <concept-name>
 
-### B. Command Syntax
-- Use the most efficient short names for resources (`po`, `deploy`, `svc`, `ns`, `no`).
-- Document the exact flags needed, especially for high-speed operation (e.g., `--force --grace-period=0` or `-o yaml --dry-run=client`).
+> [!NOTE] Landing Note
+> **Related Concepts:** [[concept-a]], [[concept-b]]
+> **Deeper Dive:** [[<concept-name>-deeper]]
+> **Detailed Reference:** [Reference_File.md](../Reference%20Notes/Reference_File.md#heading)
 
-### C. Practical Proof of Concept (PoC) using `kind`
-Every section must have a dedicated, hands-on verification section with these requirements:
-- **Guided, Step-by-Step CLI Steps:** Provide exact commands to run in the terminal.
-- **Verification Commands:** Show how to inspect the results (`kubectl describe`, `kubectl logs`, etc.).
-- **No Placeholders:** Use real, working docker images (`nginx`, `redis`, `busybox`, `httpd`).
-- **Resource Clean-up:** Provide the commands to clean up the resources to leave the cluster in a pristine state.
+---
+
+## 🎯 Purpose (Why it is used)
+[Explain why this component exists and what role it plays in the cluster.]
+
+## ⚙️ Functionality (What it is doing)
+[List specific tasks, operations, and services this component performs.]
+
+## 🏛️ Architectural Context (How it fits in the architecture)
+[Describe its placement, who it talks to, and who talks to it.]
+
+## 🧩 Problem Solver (What problem it solves)
+[Describe what issues arise if this component is absent vs what it solves.]
+
+## 🟢 Operational Impact (What will happen with it operating)
+[Describe how the cluster behaves normally with this component active.]
+
+## 🔴 Failure Impact (What will happen without it)
+[Detail the exact consequences of this component failing or crashing.]
+```
+
+### B. Main Notes: Deeper Note Template
+Every deeper note inside `Main Notes/` should follow this format:
+```markdown
+---
+tags:
+  - concept/<concept-name>
+  - type/deeper-dive
+related:
+  - [[<concept-name>]]
+---
+
+# <concept-name> deeper
+
+This note covers the deep architectural mechanisms, configurations, and operations specific to the **<concept-name>**.
+
+---
+
+## 📑 1. [Sub-Topic Name]
+[Brief summary of sub-topic.]
+*Read more in [Reference_File.md](../Reference%20Notes/Reference_File.md#heading)*
+```
+
+### C. Reference Notes Template
+Reference notes retain their modular formatting, prioritizing:
+- Extensive architectural breakdowns and configurations.
+- Practical step-by-step CLI validation guides using `kind`.
+- Highlighting CKA exam tips in alert boxes (`> [!TIP]`, etc.).
 
 ---
 
 ## 4. Obsidian-Friendly Linking Guidelines
 
-To build a rich knowledge graph inside Obsidian, follow these linking rules:
+To maintain a healthy knowledge graph:
+- **Relative Paths:** Use relative paths between the folders:
+  - From a Main Note to a Reference Note: `[Link text](../Reference%20Notes/filename.md#heading-slug)`
+  - Between Main Notes: `[[other-concept]]` or `[[other-concept-deeper]]`
+- **Related Block:** Every landing note must have a `related` YAML metadata block AND a matching `Related Concepts` alert block at the top of the body to guarantee both metadata parsing and inline visualization.
 
-- **Relative Markdown Links:** Use standard relative markdown links to connect files: `[Link Text](filename.md)`.
-  - *Example:* Use `[kube-apiserver](01_kube_api_and_kubectl.md)` to reference the API server mechanics.
-- **Anchor Links:** When referencing a specific concept in another file, link directly to the heading anchor: `[Link Text](filename.md#heading-slug)`.
-  - *Example:* `[Node Conditions](03_node_mechanics_and_resource_limits.md#b-conditions)`.
-- **Bidirectional Connections:** When modifying a file to point to another, ensure the target file also links back to the source file where appropriate.
-- **"Related Modules" Section:** Every module note must contain a "Related Modules" section at the very end. This section should list all connected notes to build a clean Obsidian graph visualization.
 
 ---
 
