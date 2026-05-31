@@ -19,6 +19,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
   - `kubectl` (Deeper: Kubeconfig components, dry-run template formulas, force deletion flags, custom-columns and JSONPath filtering).
   - `pod` (Deeper: lifecycle states, QoS memory/CPU eviction classifications, startup/liveness/readiness probes, native sidecars, lifecycle hooks).
   - `node` (Deeper: manual/dynamic registration, resource capacity vs allocatable calculations, cgroups v1 vs v2).
+- **Raw Inflow Sources (`inflow/docs/`):** Uploaded 198 files across 17 folders representing raw Mumshad CKA course transcripts for future module ingestion.
 
 ### Moved / Reorganized
 - **Reference Notes Directory (`Reference Notes/`):** Created directory and moved study modules `01` to `05` containing high-verbosity notes and kind cluster validation PoCs using `git mv`.
