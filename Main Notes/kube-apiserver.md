@@ -8,8 +8,6 @@ related_concepts:
   - "[[kube-scheduler]]"
   - "[[kube-controller-manager]]"
   - "[[kubelet]]"
-deeper_dives:
-  - "[[kube-apiserver-deeper]]"
 reference_guides:
   - "[[Reference Notes/01_kube_api_and_kubectl.md]]"
 tags:
@@ -68,3 +66,15 @@ The `kube-apiserver` sits in the absolute center of the Control Plane:
 * **Control Plane Stagnation:** The `kube-scheduler` and `kube-controller-manager` cannot receive updates, find pending pods, or create replacement pods. Self-healing, scaling, and rolling updates stop entirely.
 * **Frozen Workers:** Worker nodes continue executing existing workloads in their current state. If a container crashes, the container runtime (e.g., `containerd`) may restart it locally if governed by a local policy, but the `kubelet` cannot report status or receive instructions to run new workloads.
 * **Stateless Split Brain Safety:** Since `etcd` cannot be accessed, no state changes occur, preventing accidental replication conflicts or split-brain inconsistencies while the API server is down.
+
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kube-apiserver**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[kube-apiserver]]
+SORT file.name ASC
+```

@@ -65,61 +65,93 @@ When a new source file is introduced:
 Every landing note inside `Main Notes/` must contain the following frontmatter and sections:
 ```markdown
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: <control-plane | worker-node | workload | client-tool>
+related_concepts:
+  - "[[concept-a]]"
+  - "[[concept-b]]"
+reference_guides:
+  - "[[Reference Notes/Reference_File.md]]"
 tags:
-  - concept/<concept-name>
-  - component/<layer>
-related:
-  - [[concept-a]]
-  - [[concept-b]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # <concept-name>
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[concept-a]], [[concept-b]]
-> **Deeper Dive:** [[<concept-name>-deeper]]
-> **Detailed Reference:** [Reference_File.md](../Reference%20Notes/Reference_File.md#heading)
+**Breadcrumbs:** [[Index|🏠 Index]] > <Layer> > **<concept-name>**
 
 ---
 
 ## 🎯 Purpose (Why it is used)
 [Explain why this component exists and what role it plays in the cluster.]
 
+---
+
 ## ⚙️ Functionality (What it is doing)
 [List specific tasks, operations, and services this component performs.]
+
+---
 
 ## 🏛️ Architectural Context (How it fits in the architecture)
 [Describe its placement, who it talks to, and who talks to it.]
 
+---
+
 ## 🧩 Problem Solver (What problem it solves)
 [Describe what issues arise if this component is absent vs what it solves.]
+
+---
 
 ## 🟢 Operational Impact (What will happen with it operating)
 [Describe how the cluster behaves normally with this component active.]
 
+---
+
 ## 🔴 Failure Impact (What will happen without it)
 [Detail the exact consequences of this component failing or crashing.]
+
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **<concept-name>**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[<concept-name>]]
+SORT file.name ASC
+```
 ```
 
 ### B. Main Notes: Deeper Note Template
-Every deeper note inside `Main Notes/` should follow this format:
+Deeper notes are atomic, modular files covering specific use cases, core concepts, or pitfalls. Every deeper note inside `Main Notes/` should follow this format:
 ```markdown
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[<landing-concept-name>]]"
+sub_type: <core-concept | architecture | use-case | pitfall>
+sources:
+  - "Mumshad CKA Course"
+  - "Kubernetes Official Docs"
 tags:
-  - concept/<concept-name>
-  - type/deeper-dive
-related:
-  - [[<concept-name>]]
+  - kubernetes/<landing-concept-name>
+  - kubernetes/deep-dive
 ---
 
-# <concept-name> deeper
+# <landing-concept-name> - <deeper-aspect-name>
 
-This note covers the deep architectural mechanisms, configurations, and operations specific to the **<concept-name>**.
+**Breadcrumbs:** [[Index|🏠 Index]] > [[<landing-concept-name>]] > **<deeper-aspect-name>**
 
 ---
 
-## 📑 1. [Sub-Topic Name]
-[Brief summary of sub-topic.]
+## 📑 [Sub-Topic Name]
+[Detail the technical concepts, code configs, or command logs.]
+
 *Read more in [Reference_File.md](../Reference%20Notes/Reference_File.md#heading)*
 ```
 

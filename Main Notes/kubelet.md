@@ -8,8 +8,6 @@ related_concepts:
   - "[[container-runtime]]"
   - "[[node]]"
   - "[[pod]]"
-deeper_dives:
-  - "[[kubelet-deeper]]"
 reference_guides:
   - "[[Reference Notes/03_node_mechanics_and_resource_limits.md]]"
 tags:
@@ -64,3 +62,14 @@ The `kubelet` sits on the boundary between the Kubernetes cluster control plane 
 * **Pod Eviction & Rescheduling:** After the `pod-eviction-timeout` (default 5 minutes), the Control Plane evicts all pods from the node and schedules replacement replicas on remaining healthy nodes.
 * **Orphaned Local Processes:** Currently running containers on the node will continue executing on the host OS but are orphaned. If a container crashes, it will not be restarted.
 * **Frozen State:** Any updates (such as image changes, scaling requests, or config modifications) cannot be applied to workloads on that node.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kubelet**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[kubelet]]
+SORT file.name ASC
+```

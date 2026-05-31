@@ -5,8 +5,6 @@ tier: main-note
 role: control-plane
 related_concepts:
   - "[[kube-apiserver]]"
-deeper_dives:
-  - "[[etcd-deeper]]"
 reference_guides:
   - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
@@ -59,3 +57,14 @@ tags:
 * **Management Freeze:** No new workloads can be deployed, scaled, deleted, or upgraded. `kubectl` is completely disabled.
 * **Loss of Telemetry:** The cluster cannot detect node crashes, apply self-healing policies, or reschedule pods.
 * **Complete Data Loss Risk:** If all `etcd` instances fail and no backup exists, the cluster's entire state (all resources, configuration, and security settings) is lost, requiring a complete redeployment of the cluster.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **etcd**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[etcd]]
+SORT file.name ASC
+```

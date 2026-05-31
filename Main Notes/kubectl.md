@@ -5,8 +5,6 @@ tier: main-note
 role: client-tool
 related_concepts:
   - "[[kube-apiserver]]"
-deeper_dives:
-  - "[[kubectl-deeper]]"
 reference_guides:
   - "[[Reference Notes/01_kube_api_and_kubectl.md]]"
 tags:
@@ -58,3 +56,14 @@ tags:
 * **Debugging Hurdles:** Operations like checking container logs (`kubectl logs`) or executing shells inside containers (`kubectl exec`) become extremely complex.
 * **Deployment Bottlenecks:** Pipelines and automation relying on the `kubectl` binary fail to apply state changes to the cluster.
 * *Note:* The cluster itself continues running and orchestrating containers normally; only administrative visibility and configuration operations are affected.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kubectl**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[kubectl]]
+SORT file.name ASC
+```

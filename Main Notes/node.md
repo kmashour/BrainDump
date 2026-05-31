@@ -7,8 +7,6 @@ related_concepts:
   - "[[kubelet]]"
   - "[[kube-proxy]]"
   - "[[pod]]"
-deeper_dives:
-  - "[[node-deeper]]"
 reference_guides:
   - "[[Reference Notes/03_node_mechanics_and_resource_limits.md]]"
 tags:
@@ -61,3 +59,14 @@ Nodes form the execution plane (Worker Nodes) of the cluster:
 * **Pending States:** Newly created Pods hang in `Pending` because no worker node is available to accept them.
 * **Eviction Outages:** If a running node crashes, its workloads fail. The Control Plane will attempt to recreate them, but if no other healthy nodes exist, the workloads will remain offline.
 * **Split Brain & Frozen State:** If a node suffers a network partition, the control plane marks it `NotReady` but cannot terminate its processes, potentially leading to volume conflicts if the node is still running workloads locally.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **node**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[node]]
+SORT file.name ASC
+```

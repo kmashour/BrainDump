@@ -7,8 +7,6 @@ related_concepts:
   - "[[kube-apiserver]]"
   - "[[node]]"
   - "[[pod]]"
-deeper_dives:
-  - "[[kube-scheduler-deeper]]"
 reference_guides:
   - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
@@ -61,3 +59,14 @@ The `kube-scheduler` runs as an independent control loop:
 * **Existing Pod Safety:** Currently running Pods are unaffected and continue executing.
 * **Self-Healing Failure:** If a running Pod crashes or its host node dies, the Controller Manager will detect it and create a replacement Pod, but this replacement will stay `Pending` because there is no scheduler to place it.
 * **Manual Bypass:** Administrators can bypass a failed scheduler by manually defining `spec.nodeName: <node-name>` directly inside a Pod's YAML manifest at creation time.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kube-scheduler**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[kube-scheduler]]
+SORT file.name ASC
+```

@@ -6,8 +6,6 @@ role: worker-node
 related_concepts:
   - "[[kubelet]]"
   - "[[pod]]"
-deeper_dives:
-  - "[[container-runtime-deeper]]"
 reference_guides:
   - "[[Reference Notes/05_containers_runtimes_and_lifecycle.md]]"
 tags:
@@ -59,3 +57,14 @@ The `container-runtime` resides on the host OS of every cluster node:
 * **CRI Errors:** The `kubelet` logs connection errors and cannot execute commands. The node may transition to `NotReady` or report runtime status errors.
 * **Orphaned workloads:** Existing containers might continue running on the host OS, but they cannot be deleted, scaled, or upgraded by Kubernetes.
 * **Scheduling Freeze:** Any pods assigned to the node fail to create, hanging in `ContainerCreating` or displaying `CRIInitializationError` status.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **container-runtime**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[container-runtime]]
+SORT file.name ASC
+```

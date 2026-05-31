@@ -6,8 +6,6 @@ role: worker-node
 related_concepts:
   - "[[kube-apiserver]]"
   - "[[pod]]"
-deeper_dives:
-  - "[[kube-proxy-deeper]]"
 reference_guides:
   - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
@@ -59,3 +57,14 @@ tags:
 * **Direct Pod Connectivity Only:** Pods can only communicate using direct Pod-to-Pod IP routing. If a Pod is replaced, other services cannot discover its new IP.
 * **Stale Routing Tables:** Nodes will continue trying to route traffic to deleted pods or fail to recognize new ones.
 * **No Load Balancer/NodePort Traffic:** External traffic coming through NodePorts or LoadBalancers will fail to distribute to backend pods.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kube-proxy**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[kube-proxy]]
+SORT file.name ASC
+```

@@ -7,8 +7,6 @@ related_concepts:
   - "[[node]]"
   - "[[container-runtime]]"
   - "[[kube-scheduler]]"
-deeper_dives:
-  - "[[pod-deeper]]"
 reference_guides:
   - "[[Reference Notes/05_containers_runtimes_and_lifecycle.md]]"
 tags:
@@ -62,3 +60,14 @@ The Pod is the building block of all workloads in the cluster:
 * **Loss of Orchestration:** Containers must be run manually as individual host processes or raw Docker containers, losing all automatic scheduling, scaling, and self-healing benefits.
 * **Resource Leakage:** Without Pod-level cleanups, terminated containers, orphaned volumes, and stale network routes accumulate on the host OS.
 * **Broken Helper Relationships:** Helper containers cannot easily share the same network address space or file systems with primary containers, breaking standard architectural patterns (like sidecar proxies).
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **pod**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[pod]]
+SORT file.name ASC
+```

@@ -7,8 +7,6 @@ related_concepts:
   - "[[kube-apiserver]]"
   - "[[pod]]"
   - "[[node]]"
-deeper_dives:
-  - "[[kube-controller-manager-deeper]]"
 reference_guides:
   - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
@@ -66,3 +64,14 @@ The `kube-controller-manager` is an active administrative agent in the Control P
 * **Terminating Namespaces:** Namespaces will hang in the `Terminating` phase indefinitely because the namespace cleanup controller is inactive.
 * **Resource Leaks:** Stale objects, completed pods, and unused resources are never garbage collected, consuming cluster memory.
 * **No Volume Attachment Control:** Volumes will fail to attach or detach from nodes when pods move, freezing workload migrations.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kube-controller-manager**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[kube-controller-manager]]
+SORT file.name ASC
+```

@@ -7,8 +7,6 @@ related_concepts:
   - "[[kube-apiserver]]"
   - "[[kube-controller-manager]]"
   - "[[node]]"
-deeper_dives:
-  - "[[cloud-controller-manager-deeper]]"
 reference_guides:
   - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
@@ -59,3 +57,14 @@ The `cloud-controller-manager` is an optional, pluggable Control Plane component
 * **Broken Load Balancers:** Creating or updating Services of type `LoadBalancer` will hang indefinitely with `<pending>` external IPs. Stale load balancers will not be deleted, incurring unnecessary cloud costs.
 * **Orphaned Node Records:** If a cloud VM node is deleted, the cluster will permanently show that node as `NotReady` rather than clean it up, preventing scheduled workloads from being rescheduled promptly.
 * **Routing Failures:** If node IP addresses change, the underlying VPC routes will become stale, cutting off Pod-to-Pod communications.
+---
+
+## 🔍 Deeper Dive Notes
+This table automatically displays all deeper notes, use cases, and pitfalls associated with the **cloud-controller-manager**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[cloud-controller-manager]]
+SORT file.name ASC
+```

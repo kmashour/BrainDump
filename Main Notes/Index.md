@@ -9,55 +9,69 @@ tags:
 
 # 🏠 Kubernetes Conceptual Index (Map of Content)
 
-Welcome to the central landing page for the **Main Notes** of your Kubernetes Knowledge Base. This index helps you navigate through all atomic concepts and their deep dives.
+Welcome to the central landing page for the **Main Notes** of your Kubernetes Knowledge Base. This index is dynamically populated using the **Dataview** plugin.
 
 ---
 
 ## 🏛️ Control Plane (The Brains)
 Core components running on the master nodes that manage cluster state, scheduling, and configuration.
 
-* 🌐 **[kube-apiserver](kube-apiserver.md)** 
-  * 🔍 *Deeper Dive:* **[kube-apiserver-deeper](kube-apiserver-deeper.md)**
-* 🗄️ **[etcd](etcd.md)** 
-  * 🔍 *Deeper Dive:* **[etcd-deeper](etcd-deeper.md)**
-* 🎯 **[kube-scheduler](kube-scheduler.md)** 
-  * 🔍 *Deeper Dive:* **[kube-scheduler-deeper](kube-scheduler-deeper.md)**
-* ⚙️ **[kube-controller-manager](kube-controller-manager.md)** 
-  * 🔍 *Deeper Dive:* **[kube-controller-manager-deeper](kube-controller-manager-deeper.md)**
-* ☁️ **[cloud-controller-manager](cloud-controller-manager.md)** 
-  * 🔍 *Deeper Dive:* **[cloud-controller-manager-deeper](cloud-controller-manager-deeper.md)**
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND role = "control-plane"
+SORT file.name ASC
+```
 
 ---
 
 ## 💪 Worker Node Mechanics (The Muscle)
 Daemons and environments running on every node to execute containerized workloads and route network traffic.
 
-* 🛥️ **[kubelet](kubelet.md)** 
-  * 🔍 *Deeper Dive:* **[kubelet-deeper](kubelet-deeper.md)**
-* 🔌 **[kube-proxy](kube-proxy.md)** 
-  * 🔍 *Deeper Dive:* **[kube-proxy-deeper](kube-proxy-deeper.md)**
-* 📦 **[container-runtime](container-runtime.md)** 
-  * 🔍 *Deeper Dive:* **[container-runtime-deeper](container-runtime-deeper.md)**
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND role = "worker-node"
+SORT file.name ASC
+```
 
 ---
 
 ## 🧩 Workloads & Infrastructure
 The foundational building blocks of applications and compute resources in the cluster.
 
-* 🍎 **[pod](pod.md)** 
-  * 🔍 *Deeper Dive:* **[pod-deeper](pod-deeper.md)**
-* 🖥️ **[node](node.md)** 
-  * 🔍 *Deeper Dive:* **[node-deeper](node-deeper.md)**
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND role = "workload"
+SORT file.name ASC
+```
 
 ---
 
 ## 🛠️ Tooling & Interfaces
 Command-line tools and utilities used to inspect and interact with the Kubernetes API.
 
-* 🔧 **[kubectl](kubectl.md)** 
-  * 🔍 *Deeper Dive:* **[kubectl-deeper](kubectl-deeper.md)**
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND role = "client-tool"
+SORT file.name ASC
+```
+
+---
+
+## 🔍 All Deeper Dive Notes
+A consolidated index of all deep architectural, use case, and pitfall notes across the vault.
+
+```dataview
+TABLE parent_concept AS "Component", sub_type AS "Type", tags AS "Tags"
+FROM "Main Notes"
+WHERE class = "deeper-dive"
+SORT parent_concept ASC, file.name ASC
+```
 
 ---
 
 > [!TIP] Obsidian Navigation Tip
-> Open this index file and press `Ctrl+Alt+Left` / `Ctrl+Alt+Right` (or cmd on macOS) to navigate backward and forward between notes. Use the sidebar graph or backlinks panel to explore automatic connections.
+> This MOC updates automatically. When you create a new note, make sure it has the correct frontmatter attributes (`class`, `role`, `parent_concept`, etc.) so it displays in these tables.
