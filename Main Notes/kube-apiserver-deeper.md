@@ -1,25 +1,41 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[kube-apiserver]]"
+sub_concepts:
+  - "[[API Request Lifecycle]]"
+  - "[[API Groups and Versions]]"
+  - "[[OpenAPI and explain]]"
+  - "[[Watch Mechanism]]"
+  - "[[Mixed Version Proxy]]"
+  - "[[Admission Controllers]]"
+use_cases:
+  - "[[Debugging with Ephemeral Containers]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/)"
 tags:
-  - concept/kube-apiserver
-  - type/deeper-dive
-related:
-  - [[kube-apiserver]]
+  - kubernetes/deep-dive
 ---
 
 # kube-apiserver deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-apiserver]] > **deeper dive**
+
+---
 
 This note covers the deep architectural mechanisms, configurations, and subresources specific to the **kube-apiserver**.
 
 ---
 
 ## 🔒 1. API Server Request Lifecycle
-When a request hits the API server, it follows a strict sequence:
-1. **Authentication:** Validates identity (Token, Certificate, OIDC).
-2. **Authorization:** Validates RBAC permissions (`Role`, `ClusterRole`, `NodeRestriction`).
-3. **Mutating Admission Controllers:** Modifies the request if needed (e.g., injecting sidecars or default limits).
-4. **Schema Validation:** Verifies structural compliance against OpenAPI specifications.
-5. **Validating Admission Controllers:** Checks final object rules before persistence (e.g., checking if namespace exists or quota limits are exceeded).
-6. **etcd Storage Commit:** Saves the object definition to the key-value database as a transaction.
+* **Authentication:** Validates identity (Token, Certificate, OIDC).
+* **Authorization:** Validates RBAC permissions (`Role`, `ClusterRole`, `NodeRestriction`).
+* **Mutating Admission Controllers:** Modifies the request if needed (e.g., injecting sidecars or default limits).
+* **Schema Validation:** Verifies structural compliance against OpenAPI specifications.
+* **Validating Admission Controllers:** Checks final object rules before persistence (e.g., checking if namespace exists or quota limits are exceeded).
+* **etcd Storage Commit:** Saves the object definition to the key-value database as a transaction.
 
 *Read more in [01_kube_api_and_kubectl.md](../Reference%20Notes/01_kube_api_and_kubectl.md#a-api-server-request-lifecycle-creation-flow)*.
 

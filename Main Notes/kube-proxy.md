@@ -1,19 +1,23 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: worker-node
+related_concepts:
+  - "[[kube-apiserver]]"
+  - "[[pod]]"
+deeper_dives:
+  - "[[kube-proxy-deeper]]"
+reference_guides:
+  - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
-  - concept/kube-proxy
-  - component/worker-node
-  - component/networking
-related:
-  - [[kube-apiserver]]
-  - [[pod]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # kube-proxy
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kube-apiserver]], [[pod]]
-> **Deeper Dive:** [[kube-proxy-deeper]]
-> **Detailed Reference:** [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#e-kube-proxy-the-network-router)
+**Breadcrumbs:** [[Index|🏠 Index]] > Worker Node Mechanics > **kube-proxy**
 
 ---
 

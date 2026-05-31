@@ -1,12 +1,26 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[kube-proxy]]"
+sub_concepts:
+  - "[[Services as Virtual Entities]]"
+  - "[[iptables Mode Random DNAT]]"
+  - "[[IPVS Mode Hash Tables]]"
+use_cases:
+  - "[[Debugging Services network routing rules]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/)"
 tags:
-  - concept/kube-proxy
-  - type/deeper-dive
-related:
-  - [[kube-proxy]]
+  - kubernetes/deep-dive
 ---
 
 # kube-proxy deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-proxy]] > **deeper dive**
+
+---
 
 This note covers the virtual service concept, proxy modes (iptables vs IPVS), connection tracking, and verification procedures for **kube-proxy**.
 

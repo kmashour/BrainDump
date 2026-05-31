@@ -1,12 +1,27 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[etcd]]"
+sub_concepts:
+  - "[[Raft Consensus]]"
+  - "[[Raft Quorum Rules]]"
+  - "[[etcd network ports]]"
+  - "[[etcd TLS certificate configurations]]"
+use_cases:
+  - "[[etcd Backup and Restore]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[etcd official website](https://etcd.io)"
 tags:
-  - concept/etcd
-  - type/deeper-dive
-related:
-  - [[etcd]]
+  - kubernetes/deep-dive
 ---
 
 # etcd deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[etcd]] > **deeper dive**
+
+---
 
 This note covers the low-level consensus rules, CLI management operations, backup/restore procedures, and configuration settings for the **etcd** database.
 

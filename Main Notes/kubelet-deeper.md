@@ -1,12 +1,28 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[kubelet]]"
+sub_concepts:
+  - "[[Node Bootstrap and TLS Bootstrapping]]"
+  - "[[Node Conditions and Hard Eviction Thresholds]]"
+  - "[[Kubelet Heartbeats & The Lease API]]"
+  - "[[CRI Socket Communication]]"
+  - "[[Static Pods]]"
+use_cases:
+  - "[[Inspecting kubelet systemd service logs]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/)"
 tags:
-  - concept/kubelet
-  - type/deeper-dive
-related:
-  - [[kubelet]]
+  - kubernetes/deep-dive
 ---
 
 # kubelet deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[kubelet]] > **deeper dive**
+
+---
 
 This note covers the detailed bootstrapping pathway, node conditions, lease metrics, CRI socket integration, and static pod mechanics of the **kubelet**.
 

@@ -1,18 +1,23 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: worker-node
+related_concepts:
+  - "[[kubelet]]"
+  - "[[pod]]"
+deeper_dives:
+  - "[[container-runtime-deeper]]"
+reference_guides:
+  - "[[Reference Notes/05_containers_runtimes_and_lifecycle.md]]"
 tags:
-  - concept/container-runtime
-  - component/worker-node
-related:
-  - [[kubelet]]
-  - [[pod]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # container-runtime
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kubelet]], [[pod]]
-> **Deeper Dive:** [[container-runtime-deeper]]
-> **Detailed Reference:** [05_containers_runtimes_and_lifecycle.md](../Reference%20Notes/05_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture)
+**Breadcrumbs:** [[Index|🏠 Index]] > Worker Node Mechanics > **container-runtime**
 
 ---
 

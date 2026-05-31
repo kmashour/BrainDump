@@ -1,19 +1,24 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: control-plane
+related_concepts:
+  - "[[kube-apiserver]]"
+  - "[[pod]]"
+  - "[[node]]"
+deeper_dives:
+  - "[[kube-controller-manager-deeper]]"
+reference_guides:
+  - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
-  - concept/kube-controller-manager
-  - component/control-plane
-related:
-  - [[kube-apiserver]]
-  - [[pod]]
-  - [[node]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # kube-controller-manager
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kube-apiserver]], [[pod]], [[node]]
-> **Deeper Dive:** [[kube-controller-manager-deeper]]
-> **Detailed Reference:** [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#d-kube-controller-manager-the-enforcer)
+**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **kube-controller-manager**
 
 ---
 

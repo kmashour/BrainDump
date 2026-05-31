@@ -1,20 +1,25 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: control-plane
+related_concepts:
+  - "[[etcd]]"
+  - "[[kube-scheduler]]"
+  - "[[kube-controller-manager]]"
+  - "[[kubelet]]"
+deeper_dives:
+  - "[[kube-apiserver-deeper]]"
+reference_guides:
+  - "[[Reference Notes/01_kube_api_and_kubectl.md]]"
 tags:
-  - concept/kube-apiserver
-  - component/control-plane
-related:
-  - [[etcd]]
-  - [[kube-scheduler]]
-  - [[kube-controller-manager]]
-  - [[kubelet]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # kube-apiserver
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[etcd]], [[kube-scheduler]], [[kube-controller-manager]], [[kubelet]]
-> **Deeper Dive:** [[kube-apiserver-deeper]]
-> **Detailed Reference:** [01_kube_api_and_kubectl.md](../Reference%20Notes/01_kube_api_and_kubectl.md#1-the-kubernetes-api-server-kube-apiserver)
+**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **kube-apiserver**
 
 ---
 

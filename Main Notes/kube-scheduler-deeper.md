@@ -1,12 +1,27 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[kube-scheduler]]"
+sub_concepts:
+  - "[[Scheduling Filtering Predicates]]"
+  - "[[Scheduling Scoring Priorities]]"
+  - "[[Multiple Custom Schedulers]]"
+use_cases:
+  - "[[Manual Node Assignment]]"
+  - "[[Static nodeName Scheduling Bypass]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/)"
 tags:
-  - concept/kube-scheduler
-  - type/deeper-dive
-related:
-  - [[kube-scheduler]]
+  - kubernetes/deep-dive
 ---
 
 # kube-scheduler deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-scheduler]] > **deeper dive**
+
+---
 
 This note covers the detailed scheduling pipeline algorithms, configuration of multiple custom schedulers, and bypass mechanisms.
 

@@ -1,20 +1,25 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: worker-node
+related_concepts:
+  - "[[kube-apiserver]]"
+  - "[[container-runtime]]"
+  - "[[node]]"
+  - "[[pod]]"
+deeper_dives:
+  - "[[kubelet-deeper]]"
+reference_guides:
+  - "[[Reference Notes/03_node_mechanics_and_resource_limits.md]]"
 tags:
-  - concept/kubelet
-  - component/worker-node
-related:
-  - [[kube-apiserver]]
-  - [[container-runtime]]
-  - [[node]]
-  - [[pod]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # kubelet
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kube-apiserver]], [[container-runtime]], [[node]], [[pod]]
-> **Deeper Dive:** [[kubelet-deeper]]
-> **Detailed Reference:** [03_node_mechanics_and_resource_limits.md](../Reference%20Notes/03_node_mechanics_and_resource_limits.md#1-the-kubelet-node-captain)
+**Breadcrumbs:** [[Index|🏠 Index]] > Worker Node Mechanics > **kubelet**
 
 ---
 

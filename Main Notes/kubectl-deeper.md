@@ -1,12 +1,27 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[kubectl]]"
+sub_concepts:
+  - "[[Kubeconfig Anatomy]]"
+  - "[[API Discovery and explanation]]"
+use_cases:
+  - "[[kubectl YAML dry-run generation]]"
+  - "[[Force Deletion bypass]]"
+  - "[[JSONPath and custom-columns filters]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)"
 tags:
-  - concept/kubectl
-  - type/deeper-dive
-related:
-  - [[kubectl]]
+  - kubernetes/deep-dive
 ---
 
 # kubectl deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[kubectl]] > **deeper dive**
+
+---
 
 This note covers the structural layout of Kubeconfig files, high-speed CKA syntax tricks, and advanced output parsing techniques for the **kubectl** CLI.
 

@@ -7,7 +7,8 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ## [2026-05-31] - Two-Tier Knowledge Vault Reorganization
 
 ### Added
-- **Main Notes Directory (`Main Notes/`):** Created 11 atomic landing notes and 11 deeper technical sub-resource notes for core CKA concepts:
+- **MOC Index File (`Main Notes/Index.md`):** Created a central Map of Content (MOC) index note for unified conceptual navigation across landing and deeper dive notes.
+- **Main Notes Directory (`Main Notes/`):** Created and refactored 11 atomic landing notes and 11 deeper technical sub-resource notes for core CKA concepts, structured with Obsidian-compliant YAML Properties (role, related_concepts, deeper_dives, sub_concepts, etc.) and breadcrumb links:
   - `kube-apiserver` (Deeper: request lifecycle, API Groups, OpenAPI schema, watch mechanism, proxy, ephemeral containers).
   - `etcd` (Deeper: Raft consensus quorum, ports, CLI usage, client certificate TLS args, CKA backup/restore steps).
   - `kube-scheduler` (Deeper: filtering predicates, ranking priorities, custom schedulers config, manual node binding bypass).

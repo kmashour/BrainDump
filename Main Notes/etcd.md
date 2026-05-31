@@ -1,17 +1,22 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: control-plane
+related_concepts:
+  - "[[kube-apiserver]]"
+deeper_dives:
+  - "[[etcd-deeper]]"
+reference_guides:
+  - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
-  - concept/etcd
-  - component/control-plane
-related:
-  - [[kube-apiserver]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # etcd
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kube-apiserver]]
-> **Deeper Dive:** [[etcd-deeper]]
-> **Detailed Reference:** [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#b-etcd-the-source-of-truth)
+**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **etcd**
 
 ---
 

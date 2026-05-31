@@ -1,19 +1,24 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: workload
+related_concepts:
+  - "[[kubelet]]"
+  - "[[kube-proxy]]"
+  - "[[pod]]"
+deeper_dives:
+  - "[[node-deeper]]"
+reference_guides:
+  - "[[Reference Notes/03_node_mechanics_and_resource_limits.md]]"
 tags:
-  - concept/node
-  - component/infrastructure
-related:
-  - [[kubelet]]
-  - [[kube-proxy]]
-  - [[pod]]
+  - kubernetes/infrastructure
+  - status/completed
 ---
 
 # node
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kubelet]], [[kube-proxy]], [[pod]]
-> **Deeper Dive:** [[node-deeper]]
-> **Detailed Reference:** [03_node_mechanics_and_resource_limits.md](../Reference%20Notes/03_node_mechanics_and_resource_limits.md#1-the-kubelet-node-captain)
+**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **node**
 
 ---
 

@@ -1,12 +1,27 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[kube-controller-manager]]"
+sub_concepts:
+  - "[[Reconciliation Loop Mechanics]]"
+  - "[[Node Eviction Grace Periods]]"
+  - "[[HA Leader Election Leases]]"
+use_cases:
+  - "[[Cascading Deletions]]"
+  - "[[Garbage Collection Owner References]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/architecture/controller/)"
 tags:
-  - concept/kube-controller-manager
-  - type/deeper-dive
-related:
-  - [[kube-controller-manager]]
+  - kubernetes/deep-dive
 ---
 
 # kube-controller-manager deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-controller-manager]] > **deeper dive**
+
+---
 
 This note covers the low-level mechanics of garbage collection, cascading deletions, node eviction parameters, and leader election for the **kube-controller-manager**.
 

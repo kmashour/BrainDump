@@ -1,12 +1,29 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[pod]]"
+sub_concepts:
+  - "[[Pod Phases and Lifecycle States]]"
+  - "[[Quality of Service (QoS) Classes]]"
+  - "[[Health Probes (liveness readiness startup)]]"
+  - "[[Init Containers]]"
+  - "[[Native Sidecars (v1.29+)]]"
+use_cases:
+  - "[[Debugging with Ephemeral Containers]]"
+  - "[[Container Lifecycle Hooks (postStart preStop)]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/workloads/pods/)"
 tags:
-  - concept/pod
-  - type/deeper-dive
-related:
-  - [[pod]]
+  - kubernetes/deep-dive
 ---
 
 # pod deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[pod]] > **deeper dive**
+
+---
 
 This note covers Pod phases, QoS classes, health probing configurations, container initialization styles (including native sidecars), and lifecycle hooks.
 

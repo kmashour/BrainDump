@@ -1,17 +1,22 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: client-tool
+related_concepts:
+  - "[[kube-apiserver]]"
+deeper_dives:
+  - "[[kubectl-deeper]]"
+reference_guides:
+  - "[[Reference Notes/01_kube_api_and_kubectl.md]]"
 tags:
-  - concept/kubectl
-  - component/client-cli
-related:
-  - [[kube-apiserver]]
+  - kubernetes/cli
+  - status/completed
 ---
 
 # kubectl
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kube-apiserver]]
-> **Deeper Dive:** [[kubectl-deeper]]
-> **Detailed Reference:** [01_kube_api_and_kubectl.md](../Reference%20Notes/01_kube_api_and_kubectl.md#5-kubectl-cli-formula--speed-tricks)
+**Breadcrumbs:** [[Index|🏠 Index]] > Tooling & Interfaces > **kubectl**
 
 ---
 

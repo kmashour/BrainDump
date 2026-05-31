@@ -1,12 +1,28 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[cloud-controller-manager]]"
+sub_concepts:
+  - "[[In-tree vs Out-of-tree Migration]]"
+  - "[[Cloud Provider External Flags]]"
+  - "[[Cloud Node Controller]]"
+  - "[[Cloud Service Controller]]"
+  - "[[Cloud Route Controller]]"
+use_cases:
+  - "[[IAM role assignments for CCM]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/architecture/cloud-controller-manager/)"
 tags:
-  - concept/cloud-controller-manager
-  - type/deeper-dive
-related:
-  - [[cloud-controller-manager]]
+  - kubernetes/deep-dive
 ---
 
 # cloud-controller-manager deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[cloud-controller-manager]] > **deeper dive**
+
+---
 
 This note covers the architectural migration from in-tree to out-of-tree cloud providers, configuration flags, and the low-level functions of cloud-controller-manager (CCM) loops.
 

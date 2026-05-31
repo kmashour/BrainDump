@@ -1,12 +1,29 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[container-runtime]]"
+sub_concepts:
+  - "[[CRI Dual Services (gRPC)]]"
+  - "[[runc & OCI Specifications]]"
+  - "[[containerd-shim mechanics]]"
+  - "[[Pause Container Namespace Holder]]"
+  - "[[Cgroup Drivers systemd vs cgroupfs]]"
+use_cases:
+  - "[[Debugging containerd with ctr and nerdctl]]"
+  - "[[CRI troubleshooting with crictl]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/setup/production-environment/container-runtimes/)"
 tags:
-  - concept/container-runtime
-  - type/deeper-dive
-related:
-  - [[container-runtime]]
+  - kubernetes/deep-dive
 ---
 
 # container-runtime deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[container-runtime]] > **deeper dive**
+
+---
 
 This note covers the Container Runtime Interface (CRI) services, OCI specifications, shim mechanics, the pause container, Cgroup drivers, and runtime command-line tools.
 

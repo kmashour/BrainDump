@@ -1,12 +1,28 @@
 ---
+obsidianUIMode: preview
+class: deeper-dive
+tier: main-note
+parent_concept: "[[node]]"
+sub_concepts:
+  - "[[Node Registration Pathway]]"
+  - "[[Node Conditions & Lifecycle]]"
+  - "[[Node Allocatable Math]]"
+  - "[[Node Leases (Heartbeat Mechanism)]]"
+  - "[[cgroups v1 vs v2]]"
+use_cases:
+  - "[[Configuring kube-reserved and system-reserved limits]]"
+external_links:
+  - "[Mumshad CKA Course](https://kodekloud.com)"
+  - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/architecture/nodes/)"
 tags:
-  - concept/node
-  - type/deeper-dive
-related:
-  - [[node]]
+  - kubernetes/deep-dive
 ---
 
 # node deeper
+
+**Breadcrumbs:** [[Index|🏠 Index]] > [[node]] > **deeper dive**
+
+---
 
 This note covers the low-level mechanics of node registration, conditions, resource allocation math, lease configurations, and cgroup drivers.
 

@@ -1,19 +1,24 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: workload
+related_concepts:
+  - "[[node]]"
+  - "[[container-runtime]]"
+  - "[[kube-scheduler]]"
+deeper_dives:
+  - "[[pod-deeper]]"
+reference_guides:
+  - "[[Reference Notes/05_containers_runtimes_and_lifecycle.md]]"
 tags:
-  - concept/pod
-  - component/workload
-related:
-  - [[node]]
-  - [[container-runtime]]
-  - [[kube-scheduler]]
+  - kubernetes/workload
+  - status/completed
 ---
 
 # pod
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[node]], [[container-runtime]], [[kube-scheduler]]
-> **Deeper Dive:** [[pod-deeper]]
-> **Detailed Reference:** [05_containers_runtimes_and_lifecycle.md](../Reference%20Notes/05_containers_runtimes_and_lifecycle.md#5-pod-sandbox-and-the-pause-container)
+**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **pod**
 
 ---
 

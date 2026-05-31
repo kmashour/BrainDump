@@ -1,19 +1,24 @@
 ---
+obsidianUIMode: preview
+class: landing-note
+tier: main-note
+role: control-plane
+related_concepts:
+  - "[[kube-apiserver]]"
+  - "[[node]]"
+  - "[[pod]]"
+deeper_dives:
+  - "[[kube-scheduler-deeper]]"
+reference_guides:
+  - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
 tags:
-  - concept/kube-scheduler
-  - component/control-plane
-related:
-  - [[kube-apiserver]]
-  - [[node]]
-  - [[pod]]
+  - kubernetes/component
+  - status/completed
 ---
 
 # kube-scheduler
 
-> [!NOTE] Landing Note
-> **Related Concepts:** [[kube-apiserver]], [[node]], [[pod]]
-> **Deeper Dive:** [[kube-scheduler-deeper]]
-> **Detailed Reference:** [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#c-kube-scheduler-the-matchmaker)
+**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **kube-scheduler**
 
 ---
 
