@@ -1,6 +1,13 @@
-# Kubernetes Knowledge Base Ingestion & Consolidation Instructions
+# SKILL: Ingest & Restructure Kubernetes Study Vault
 
-This document defines the rules, formats, and procedures for parsing new Kubernetes transcripts/notes, appending them to the consolidated CKA knowledge base, and formatting them for Obsidian.
+## Objective
+This skill provides a systematic protocol for parsing new study transcripts/notes, incorporating them into the consolidated CKA knowledge base, and formatting them for Obsidian graphs without compromising architectural separation.
+
+## Trigger
+Execute this skill when:
+1. New study material, transcripts, or documentation dumps are added to the `inflow/` directory.
+2. Conceptual definitions require updates, link adjustments, or structural changes.
+
 
 ---
 
