@@ -22,8 +22,9 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ### Refactored / Upgraded
 - **Landing Notes Properties:** Refactored properties across all 11 landing notes using Python automation to inject `domains: ["kubernetes"]` and `against: []` (opposing ideas/approaches).
-- **Agent Profile (`Agent.md`):** Updated definition to govern multi-domain Second Brain structures, diverse inflow tracking, and dynamic Dataview query enforcement.
+- **Agent Profile (`Agent.md`):** Updated definition to govern multi-domain Second Brain structures, diverse inflow tracking, dynamic Dataview query enforcement, and the sequential execution pipeline.
 - **Ingestion Skill (`instructions.md`):** Updated templates to incorporate source provenance metadata (`source_type`, `source_url`, `author`, `course_title`), `against` properties, and the new Architectural Pattern note schema.
+- **Ingestion Workflow Chaining:** Documented and configured the default sequential ingestion pipeline (`ResearchAgent` -> `MultiDomainPoCAgent` -> Concepts -> `GardenAgent` -> `CKAExamAgent`) in both `instructions.md` and `Agent.md` to trigger on every new note ingestion by default, ensuring the `CKAExamAgent` executes automatically right after Reference notes, Main/Deeper notes, and Digital Garden entries are set up.
 
 ---
 
