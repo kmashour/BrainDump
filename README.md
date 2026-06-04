@@ -75,23 +75,18 @@ graph TD
 
 ---
 
-## 📂 The Two-Tier Knowledge Vault
+## 📂 The Second Brain Directory Structure
 
-To balance high-verbosity reference materials (detailed configurations, commands, and hands-on PoCs) with clear, atomic conceptual associations, this vault is structured into two main directories:
+This vault is organized into distinct functional spaces to map concepts, reference materials, production patterns, and exam projects:
 
 ### 1. 🧠 [Main Notes](Main%20Notes/) (Atomic Concepts)
-This directory contains direct, focused, and atomic notes on each Kubernetes component and concept. Every concept has a landing note linked to a deeper-dive note:
-* **[kube-apiserver](Main%20Notes/kube-apiserver.md)** (Deeper: **[kube-apiserver-deeper](Main%20Notes/kube-apiserver-deeper.md)**)
-* **[etcd](Main%20Notes/etcd.md)** (Deeper: **[etcd-deeper](Main%20Notes/etcd-deeper.md)**)
-* **[kube-scheduler](Main%20Notes/kube-scheduler.md)** (Deeper: **[kube-scheduler-deeper](Main%20Notes/kube-scheduler-deeper.md)**)
-* **[kube-controller-manager](Main%20Notes/kube-controller-manager.md)** (Deeper: **[kube-controller-manager-deeper](Main%20Notes/kube-controller-manager-deeper.md)**)
-* **[cloud-controller-manager](Main%20Notes/cloud-controller-manager.md)** (Deeper: **[cloud-controller-manager-deeper](Main%20Notes/cloud-controller-manager-deeper.md)**)
-* **[kubelet](Main%20Notes/kubelet.md)** (Deeper: **[kubelet-deeper](Main%20Notes/kubelet-deeper.md)**)
-* **[kube-proxy](Main%20Notes/kube-proxy.md)** (Deeper: **[kube-proxy-deeper](Main%20Notes/kube-proxy-deeper.md)**)
-* **[container-runtime](Main%20Notes/container-runtime.md)** (Deeper: **[container-runtime-deeper](Main%20Notes/container-runtime-deeper.md)**)
-* **[kubectl](Main%20Notes/kubectl.md)** (Deeper: **[kubectl-deeper](Main%20Notes/kubectl-deeper.md)**)
-* **[pod](Main%20Notes/pod.md)** (Deeper: **[pod-deeper](Main%20Notes/pod-deeper.md)**)
-* **[node](Main%20Notes/node.md)** (Deeper: **[node-deeper](Main%20Notes/node-deeper.md)**)
+Contains atomic landing notes (e.g. `kube-apiserver.md`) and sub-concept deeper notes (e.g. `kube-apiserver - Request Lifecycle.md`) linked dynamically via Dataview.
+
+### 2. 🌲 [Digital Garden](Digital%20Garden/) (Architectural Patterns)
+Contains cross-domain architectural pattern notes (`class: pattern-note`) connecting Linux, AWS, Kubernetes, Databases, and Networking.
+
+### 3. 🎓 [Projects](Projects/) (Active Workspaces & Exam Prep)
+Contains workspaces for active projects. The **[CKA Exam Workspace](Projects/CKA/)** focuses strictly on high-speed terminal settings, VIM customizations, and exam-focused checklists.
 
 ---
 

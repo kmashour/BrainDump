@@ -21,6 +21,7 @@ The knowledge base is stored in `/home/karim/Desktop/CKA/`.
 - `Reference Notes/`: Detailed, high-verbosity study modules and hands-on PoCs. Contains `Reference Notes/Index.md` (dynamic index of all modules).
 - `Main Notes/`: Atomic, conceptual summaries (Landing Notes and Deeper Notes). Contains `Main Notes/Index.md` (dynamic index of all landing and deeper notes).
 - `Digital Garden/`: Connective architectural patterns and cross-domain connections. Contains `Digital Garden/Index.md` (dynamic index of patterns).
+- `Projects/`: Workspaces for active projects. Contains `Projects/CKA/` specifically for CKA Exam preparation, speed hacks, and checklists.
 
 ---
 
@@ -30,6 +31,7 @@ To maintain and expand the vault efficiently, the following specialized AI subag
 - **ResearchAgent (`research_refinement`):** Parses raw materials (Gemini logs, transcripts, email newsletters) in `inflow/`, cleans up debugging noise, and compiles structured Reference Notes in `Reference Notes/`.
 - **MultiDomainPoCAgent (`poc_developer`):** Focuses on creating and writing dense, accurate, context-rich validation scripts and PoC setups across all domains (Linux, AWS, Kubernetes, Databases, and Networking).
 - **GardenAgent (`garden_architect`):** Analyzes connections across domains (AWS, Linux, Databases, Networking, Kubernetes) and compiles Architectural Pattern Notes in `Digital Garden/`.
+- **CKAExamAgent (`cka_exam_expert`):** Focuses on optimizing study notes for exam success, compiling time-management strategies, terminal configurations, VIM hacks, and topic-specific exam checklists inside `Projects/CKA/`.
 - **IntegrationAgent (Main Session):** Coordinates all agents and orchestrates vault indexing and final commits.
 
 ---

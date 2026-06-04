@@ -7,11 +7,14 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ## [2026-06-05] - Second Brain & Digital Garden Expansion
 
 ### Added
-- **Specialized Subagent Team:** Defined 3 custom AI subagents under the repository namespace:
+- **Specialized Subagent Team:** Defined 4 custom AI subagents under the repository namespace:
   - `ResearchAgent` (`research_refinement`): Cleans and refines raw Gemini logs and transcripts into Reference Notes.
   - `MultiDomainPoCAgent` (`poc_developer`): Programs high-density, accurate, hands-on Verification PoCs in Reference Notes across all domains (Linux, AWS, Kubernetes, Databases, Networking).
   - `GardenAgent` (`garden_architect`): Cultivates the `Digital Garden/` and connects cross-domain components into patterns.
+  - `CKAExamAgent` (`cka_exam_expert`): Condenses study materials into exam-focused checklists, mock reviews, and VIM setups inside `Projects/CKA/`.
 - **Dedicated Digital Garden (`Digital Garden/`):** Created a root folder specifically for mapping domains and architectural patterns, and moved the `Pattern - Postgres on EKS.md` here.
+- **Projects Directory (`Projects/`):** Created a project folder containing `Projects/CKA/` specifically for CKA Exam preparation.
+- **CKA Exam Workspace Notes:** Created `Projects/CKA/Index.md` (exam MOC) and `Projects/CKA/Vim and Terminal Setup.md` (high-speed commands and configs).
 - **Reference Notes Index (`Reference Notes/Index.md`):** Created a dynamic index MOC to list detailed study modules and PoCs.
 - **Digital Garden Index (`Digital Garden/Index.md`):** Created a dynamic MOC table to list architectural patterns.
 - **Dynamic MOC Indexes:** Updated `Main Notes/Index.md` to point its pattern queries to the new `Digital Garden/` directory.
