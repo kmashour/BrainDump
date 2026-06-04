@@ -53,7 +53,7 @@ When a new source file is introduced:
 
 ### Step 4: Research Auditing & Context Expansion
 1. **Auditing:** Delegate to `AuditAgent` to audit the newly compiled Reference Notes.
-2. **Context Expansion:** Scan for secondary or tangent domain topics (such as Apache reverse proxies, database setup, or specific workflows).
+2. **Context Expansion:** Scan for secondary or tangent domain topics (which vary dynamically, e.g., web server proxies, database configurations, Linux kernel hooks, container runtimes, or system workflows).
 3. **Add Volume:** Expand these topics with clear architectural background, explanations, and configurations to ensure self-contained understanding, serving as detailed bridges until those domains get their own inflow notes.
 
 ### Step 5: Verification PoC Generation
