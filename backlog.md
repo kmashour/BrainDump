@@ -9,7 +9,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ### Added
 - **Specialized Subagent Team:** Defined 3 custom AI subagents under the repository namespace:
   - `ResearchAgent` (`research_refinement`): Cleans and refines raw Gemini logs and transcripts into Reference Notes.
-  - `PoCAgent` (`poc_developer`): Programs high-density, accurate, hands-on Verification PoCs in Reference Notes.
+  - `MultiDomainPoCAgent` (`poc_developer`): Programs high-density, accurate, hands-on Verification PoCs in Reference Notes across all domains (Linux, AWS, Kubernetes, Databases, Networking).
   - `GardenAgent` (`garden_architect`): Cultivates the `Digital Garden/` and connects cross-domain components into patterns.
 - **Dedicated Digital Garden (`Digital Garden/`):** Created a root folder specifically for mapping domains and architectural patterns, and moved the `Pattern - Postgres on EKS.md` here.
 - **Reference Notes Index (`Reference Notes/Index.md`):** Created a dynamic index MOC to list detailed study modules and PoCs.

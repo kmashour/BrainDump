@@ -28,7 +28,7 @@ The knowledge base is stored in `/home/karim/Desktop/CKA/`.
 
 To maintain and expand the vault efficiently, the following specialized AI subagents are available:
 - **ResearchAgent (`research_refinement`):** Parses raw materials (Gemini logs, transcripts, email newsletters) in `inflow/`, cleans up debugging noise, and compiles structured Reference Notes in `Reference Notes/`.
-- **PoCAgent (`poc_developer`):** Focuses on creating and writing dense, accurate, context-rich validation scripts and PoC setups using kind, kubectl, and Docker.
+- **MultiDomainPoCAgent (`poc_developer`):** Focuses on creating and writing dense, accurate, context-rich validation scripts and PoC setups across all domains (Linux, AWS, Kubernetes, Databases, and Networking).
 - **GardenAgent (`garden_architect`):** Analyzes connections across domains (AWS, Linux, Databases, Networking, Kubernetes) and compiles Architectural Pattern Notes in `Digital Garden/`.
 - **IntegrationAgent (Main Session):** Coordinates all agents and orchestrates vault indexing and final commits.
 
