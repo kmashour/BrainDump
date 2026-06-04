@@ -4,6 +4,19 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Second Brain & Digital Garden Expansion
+
+### Added
+- **Architectural Pattern Notes (`Main Notes/`):** Added support for cross-domain pattern notes (`class: pattern-note`) connecting multiple domains. Created an example note: `Pattern - Postgres on EKS.md` linking AWS, Kubernetes, Databases, and Linux.
+- **Dynamic MOC Pattern Index:** Added an "Architectural Patterns" section in `Index.md` using Dataview queries.
+
+### Refactored / Upgraded
+- **Landing Notes Properties:** Refactored properties across all 11 landing notes using Python automation to inject `domains: ["kubernetes"]` and `against: []` (opposing ideas/approaches).
+- **Agent Profile (`Agent.md`):** Updated definition to govern multi-domain Second Brain structures, diverse inflow tracking, and dynamic Dataview query enforcement.
+- **Ingestion Skill (`instructions.md`):** Updated note templates to incorporate source provenance metadata (`source_type`, `source_url`, `author`, `course_title`), `against` properties, and the new Architectural Pattern note schema.
+
+---
+
 ## [2026-05-31] - Two-Tier Knowledge Vault Reorganization
 
 ### Added

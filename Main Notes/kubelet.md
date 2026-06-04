@@ -2,6 +2,8 @@
 obsidianUIMode: preview
 class: landing-note
 tier: main-note
+domains:
+  - "kubernetes"
 role: worker-node
 related_concepts:
   - "[[kube-apiserver]]"
@@ -13,6 +15,7 @@ reference_guides:
 tags:
   - kubernetes/component
   - status/completed
+against: []
 ---
 
 # kubelet

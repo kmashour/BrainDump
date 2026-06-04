@@ -2,6 +2,8 @@
 obsidianUIMode: preview
 class: landing-note
 tier: main-note
+domains:
+  - "kubernetes"
 role: worker-node
 related_concepts:
   - "[[kubelet]]"
@@ -11,6 +13,7 @@ reference_guides:
 tags:
   - kubernetes/component
   - status/completed
+against: []
 ---
 
 # container-runtime

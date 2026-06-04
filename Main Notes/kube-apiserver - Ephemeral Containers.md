@@ -1,5 +1,6 @@
----
-obsidianUIMode: preview
+/a---
+ob
+sidianUIMode: preview
 class: deeper-dive
 tier: main-note
 parent_concept: "[[kube-apiserver]]"

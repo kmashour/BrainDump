@@ -68,10 +68,13 @@ Every landing note inside `Main Notes/` must contain the following frontmatter a
 obsidianUIMode: preview
 class: landing-note
 tier: main-note
-role: <control-plane | worker-node | workload | client-tool>
+role: <control-plane | worker-node | workload | client-tool | infra | network | language>
+domains:
+  - "kubernetes" # e.g. kubernetes, linux, aws, database, networking
 related_concepts:
   - "[[concept-a]]"
-  - "[[concept-b]]"
+against:
+  - "[[opposing-concept]]" # Simple list of links to alternative/opposing approaches
 reference_guides:
   - "[[Reference Notes/Reference_File.md]]"
 tags:
@@ -86,7 +89,7 @@ tags:
 ---
 
 ## 🎯 Purpose (Why it is used)
-[Explain why this component exists and what role it plays in the cluster.]
+[Explain why this component exists and what role it plays in the cluster/system.]
 
 ---
 
@@ -106,7 +109,7 @@ tags:
 ---
 
 ## 🟢 Operational Impact (What will happen with it operating)
-[Describe how the cluster behaves normally with this component active.]
+[Describe how the cluster/system behaves normally with this component active.]
 
 ---
 
@@ -135,9 +138,10 @@ class: deeper-dive
 tier: main-note
 parent_concept: "[[<landing-concept-name>]]"
 sub_type: <core-concept | architecture | use-case | pitfall>
-sources:
-  - "Mumshad CKA Course"
-  - "Kubernetes Official Docs"
+source_type: <gemini-chat | youtube | udemy | newsletter | book | documentation>
+source_url: "https://..."
+author: "<author or instructor name>"
+course_title: "<course or book title>"
 tags:
   - kubernetes/<landing-concept-name>
   - kubernetes/deep-dive
@@ -155,7 +159,48 @@ tags:
 *Read more in [Reference_File.md](../Reference%20Notes/Reference_File.md#heading)*
 ```
 
-### C. Reference Notes Template
+### C. Main Notes: Architectural Pattern Note Template
+Pattern notes document the "connective tissue" of the Second Brain, describing how multiple concepts across different domains combine in production.
+```markdown
+---
+obsidianUIMode: preview
+class: pattern-note
+tier: main-note
+domains:
+  - "aws"
+  - "kubernetes"
+  - "database"
+components:
+  - "[[pod]]"
+  - "[[node]]"
+  - "[[etcd]]"
+sources:
+  - "AWS EKS Whitepaper"
+tags:
+  - architecture/pattern
+---
+
+# Pattern: <pattern-name>
+
+**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **<pattern-name>**
+
+---
+
+## 🏛️ Architectural Context
+[Detail how the components come together, their interaction flows, and network paths.]
+
+---
+
+## ⚖️ Trade-offs & Alternatives
+[Describe the pros and cons of this design compared to alternatives listed in the 'against' properties.]
+
+---
+
+## 🛠️ Verification & Practical Implementation
+[Link to reference notes and list terminal command formulas or configs.]
+```
+
+### D. Reference Notes Template
 Reference notes retain their modular formatting, prioritizing:
 - Extensive architectural breakdowns and configurations.
 - Practical step-by-step CLI validation guides using `kind`.

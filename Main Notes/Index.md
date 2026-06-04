@@ -73,5 +73,17 @@ SORT parent_concept ASC, file.name ASC
 
 ---
 
+## 🏛️ Architectural Patterns
+Connective notes documenting how multiple concepts across domains (e.g. Linux, AWS, Kubernetes) come together in production.
+
+```dataview
+TABLE domains AS "Domains", components AS "Components", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "pattern-note"
+SORT file.name ASC
+```
+
+---
+
 > [!TIP] Obsidian Navigation Tip
 > This MOC updates automatically. When you create a new note, make sure it has the correct frontmatter attributes (`class`, `role`, `parent_concept`, etc.) so it displays in these tables.

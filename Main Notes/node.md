@@ -2,6 +2,8 @@
 obsidianUIMode: preview
 class: landing-note
 tier: main-note
+domains:
+  - "kubernetes"
 role: workload
 related_concepts:
   - "[[kubelet]]"
@@ -12,6 +14,7 @@ reference_guides:
 tags:
   - kubernetes/infrastructure
   - status/completed
+against: []
 ---
 
 # node

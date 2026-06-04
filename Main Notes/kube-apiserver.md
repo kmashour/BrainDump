@@ -2,6 +2,8 @@
 obsidianUIMode: preview
 class: landing-note
 tier: main-note
+domains:
+  - "kubernetes"
 role: control-plane
 related_concepts:
   - "[[etcd]]"
@@ -13,6 +15,7 @@ reference_guides:
 tags:
   - kubernetes/component
   - status/completed
+against: []
 ---
 
 # kube-apiserver

@@ -2,6 +2,8 @@
 obsidianUIMode: preview
 class: landing-note
 tier: main-note
+domains:
+  - "kubernetes"
 role: client-tool
 related_concepts:
   - "[[kube-apiserver]]"
@@ -10,6 +12,7 @@ reference_guides:
 tags:
   - kubernetes/cli
   - status/completed
+against: []
 ---
 
 # kubectl
