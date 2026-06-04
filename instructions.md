@@ -29,6 +29,7 @@ The knowledge base is stored in `/home/karim/Desktop/CKA/`.
 
 To maintain and expand the vault efficiently, the following specialized AI subagents are available:
 - **ResearchAgent (`research_refinement`):** Parses raw materials (Gemini logs, transcripts, email newsletters) in `inflow/`, cleans up debugging noise, and compiles structured Reference Notes in `Reference Notes/`.
+- **AuditAgent (`research_audit`):** Audits Reference Notes to identify tangent or shallow domain concepts (e.g., Apache reverse proxies, workflows, systemd configs) and enriches them with explanatory volume.
 - **MultiDomainPoCAgent (`poc_developer`):** Focuses on creating and writing dense, accurate, context-rich validation scripts and PoC setups across all domains (Linux, AWS, Kubernetes, Databases, and Networking).
 - **GardenAgent (`garden_architect`):** Analyzes connections across domains (AWS, Linux, Databases, Networking, Kubernetes) and compiles Architectural Pattern Notes in `Digital Garden/`.
 - **CKAExamAgent (`cka_exam_expert`):** Focuses on optimizing study notes for exam success, compiling time-management strategies, terminal configurations, VIM hacks, and topic-specific exam checklists inside `Projects/CKA/`.
@@ -47,27 +48,34 @@ When a new source file is introduced:
 1. Analyze the technical topics covered in the new `inflow/` file.
 2. Identify which core component it relates to (e.g. `kube-apiserver`, `etcd`, etc.) or if a new concept needs to be established.
 
-### Step 3: Reference Note & PoC Integration
+### Step 3: Reference Note Integration (Refinement)
 1. **Reference Note Compilation:** Delegate to `ResearchAgent` to parse raw details and write verbose explanations to `Reference Notes/`.
-2. **Verification PoC Generation:** Delegate to `MultiDomainPoCAgent` to write and verify domain-specific verification scripts/commands inside the reference notes.
 
-### Step 4: Main Note Creation & Update (Conceptual Atomicity)
+### Step 4: Research Auditing & Context Expansion
+1. **Auditing:** Delegate to `AuditAgent` to audit the newly compiled Reference Notes.
+2. **Context Expansion:** Scan for secondary or tangent domain topics (such as Apache reverse proxies, database setup, or specific workflows).
+3. **Add Volume:** Expand these topics with clear architectural background, explanations, and configurations to ensure self-contained understanding, serving as detailed bridges until those domains get their own inflow notes.
+
+### Step 5: Verification PoC Generation
+1. **Verification PoC Generation:** Delegate to `MultiDomainPoCAgent` to write and verify domain-specific verification scripts/commands inside the reference notes.
+
+### Step 6: Main Note Creation & Update (Conceptual Atomicity)
 1. If the concept is new, create its **Landing Note** and **Deeper Note** inside `Main Notes/` using the templates in Section 3.
 2. If the concept is already present, update its deeper-dive notes to add links/context to the new sub-topics, connecting them back to the reference modules.
 
-### Step 5: Architectural Pattern Identification (Digital Garden)
+### Step 7: Architectural Pattern Identification (Digital Garden)
 1. Delegate to `GardenAgent` to analyze how the new concepts connect to other domains (AWS, Linux, Databases, Networking).
 2. Create or update Architectural Pattern Notes inside `Digital Garden/` to detail E2E configurations and trade-offs.
 
-### Step 6: CKA Exam Checklist Extraction (Projects/CKA)
-1. **Mandatory Default Execution:** For all new CKA or general Kubernetes material, the `CKAExamAgent` must run by default right after the previous steps (Reference Notes, Main Notes, Deeper Notes, and Digital Garden setup) are completed.
+### Step 8: CKA Exam Checklist Extraction (Projects/CKA)
+1. **Mandatory Default Execution:** For all new CKA or general Kubernetes material, the `CKAExamAgent` must run by default right after the previous steps (Reference Notes, Audits, Main Notes, Deeper Notes, and Digital Garden setup) are completed.
 2. Delegate to `CKAExamAgent` to extract strictly exam-focused checklists, shortcuts, terminal tricks, or VIM setups based on the newly ingested/structured notes.
 3. Create or update notes in `Projects/CKA/` (e.g. `Projects/CKA/Exam Checklist - ...`).
 
-### Step 7: Update the Backlog
+### Step 9: Update the Backlog
 - Document all updates, creations, and restructurings in `backlog.md` with a timestamp and description of changes.
 
-### Step 8: Git Synchronization (Push Updates)
+### Step 10: Git Synchronization (Push Updates)
 - After verification of all relative links and file modifications, commit and push changes:
   ```bash
   git add .

@@ -8,8 +8,9 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ### Added
 - **CKA Exam Core Checklist:** Created `Projects/CKA/Exam Checklist - Core Architecture and API.md` mapping etcd backup/restore, Kubelet static pods pathing, scheduler bypass (spec.nodeName & Binding API), health probes (Startup, Liveness, Readiness via Exec/HTTP/TCP), and local `crictl` & `journalctl` diagnostics.
-- **Specialized Subagent Team:** Defined 4 custom AI subagents under the repository namespace:
+- **Specialized Subagent Team:** Defined 5 custom AI subagents under the repository namespace:
   - `ResearchAgent` (`research_refinement`): Cleans and refines raw Gemini logs and transcripts into Reference Notes.
+  - `AuditAgent` (`research_audit`): Audits reference notes, identifies tangent domains, and appends background/explanations to keep notes self-contained.
   - `MultiDomainPoCAgent` (`poc_developer`): Programs high-density, accurate, hands-on Verification PoCs in Reference Notes across all domains (Linux, AWS, Kubernetes, Databases, Networking).
   - `GardenAgent` (`garden_architect`): Cultivates the `Digital Garden/` and connects cross-domain components into patterns.
   - `CKAExamAgent` (`cka_exam_expert`): Condenses study materials into exam-focused checklists, mock reviews, and VIM setups inside `Projects/CKA/`.
@@ -24,7 +25,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Landing Notes Properties:** Refactored properties across all 11 landing notes using Python automation to inject `domains: ["kubernetes"]` and `against: []` (opposing ideas/approaches).
 - **Agent Profile (`Agent.md`):** Updated definition to govern multi-domain Second Brain structures, diverse inflow tracking, dynamic Dataview query enforcement, and the sequential execution pipeline.
 - **Ingestion Skill (`instructions.md`):** Updated templates to incorporate source provenance metadata (`source_type`, `source_url`, `author`, `course_title`), `against` properties, and the new Architectural Pattern note schema.
-- **Ingestion Workflow Chaining:** Documented and configured the default sequential ingestion pipeline (`ResearchAgent` -> `MultiDomainPoCAgent` -> Concepts -> `GardenAgent` -> `CKAExamAgent`) in both `instructions.md` and `Agent.md` to trigger on every new note ingestion by default, ensuring the `CKAExamAgent` executes automatically right after Reference notes, Main/Deeper notes, and Digital Garden entries are set up.
+- **Ingestion Workflow Chaining:** Documented and configured the default sequential ingestion pipeline (`ResearchAgent` -> `AuditAgent` -> `MultiDomainPoCAgent` -> Concepts -> `GardenAgent` -> `CKAExamAgent`) in both `instructions.md` and `Agent.md` to trigger on every new note ingestion by default, ensuring that after the initial refinement, secondary domains are audited/expanded with volume by `AuditAgent`, before PoC, Main Notes, Digital Garden, and `CKAExamAgent` checklists are created.
 
 ---
 
