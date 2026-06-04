@@ -7,6 +7,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ## [2026-06-05] - Second Brain & Digital Garden Expansion
 
 ### Added
+- **CKA Exam Core Checklist:** Created `Projects/CKA/Exam Checklist - Core Architecture and API.md` mapping etcd backup/restore, Kubelet static pods pathing, scheduler bypass (spec.nodeName & Binding API), health probes (Startup, Liveness, Readiness via Exec/HTTP/TCP), and local `crictl` & `journalctl` diagnostics.
 - **Specialized Subagent Team:** Defined 4 custom AI subagents under the repository namespace:
   - `ResearchAgent` (`research_refinement`): Cleans and refines raw Gemini logs and transcripts into Reference Notes.
   - `MultiDomainPoCAgent` (`poc_developer`): Programs high-density, accurate, hands-on Verification PoCs in Reference Notes across all domains (Linux, AWS, Kubernetes, Databases, Networking).
