@@ -15,15 +15,22 @@ Execute this skill when:
 
 The knowledge base is stored in `/home/karim/Desktop/CKA/`.
 - `README.md`: The central index and high-level visual Mermaid.js "Brain Map" connecting the main components.
-- `instructions.md`: This file.
+- `instructions.md`: This file (the Ingestion Skill).
 - `backlog.md`: The transaction log containing every update, change, and addition to the knowledge base.
 - `inflow/`: A landing zone for raw lecture transcripts, documentation dumps, and external notes before consolidation.
-- `Reference Notes/`: Detailed, high-verbosity study modules containing:
-  - Extended architectural contexts, terminal commands, configurations, and CKA tips.
-  - Hands-on Proof of Concept (PoC) tutorials utilizing `kind` to test components locally.
-- `Main Notes/`: Atomic, conceptual summaries. Contains:
-  - **Landing Notes:** One note per key concept/component answering a specific template of operational questions.
-  - **Deeper Notes:** A secondary note for each component containing links and brief explanations of deep technical sub-topics.
+- `Reference Notes/`: Detailed, high-verbosity study modules and hands-on PoCs. Contains `Reference Notes/Index.md` (dynamic index of all modules).
+- `Main Notes/`: Atomic, conceptual summaries (Landing Notes and Deeper Notes). Contains `Main Notes/Index.md` (dynamic index of all landing and deeper notes).
+- `Digital Garden/`: Connective architectural patterns and cross-domain connections. Contains `Digital Garden/Index.md` (dynamic index of patterns).
+
+---
+
+## 1.1 Team of Specialized Agents
+
+To maintain and expand the vault efficiently, the following specialized AI subagents are available:
+- **ResearchAgent (`research_refinement`):** Parses raw materials (Gemini logs, transcripts, email newsletters) in `inflow/`, cleans up debugging noise, and compiles structured Reference Notes in `Reference Notes/`.
+- **PoCAgent (`poc_developer`):** Focuses on creating and writing dense, accurate, context-rich validation scripts and PoC setups using kind, kubectl, and Docker.
+- **GardenAgent (`garden_architect`):** Analyzes connections across domains (AWS, Linux, Databases, Networking, Kubernetes) and compiles Architectural Pattern Notes in `Digital Garden/`.
+- **IntegrationAgent (Main Session):** Coordinates all agents and orchestrates vault indexing and final commits.
 
 ---
 

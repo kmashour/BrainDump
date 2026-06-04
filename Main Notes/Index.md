@@ -78,7 +78,7 @@ Connective notes documenting how multiple concepts across domains (e.g. Linux, A
 
 ```dataview
 TABLE domains AS "Domains", components AS "Components", sources AS "Sources"
-FROM "Main Notes"
+FROM "Digital Garden"
 WHERE class = "pattern-note"
 SORT file.name ASC
 ```
