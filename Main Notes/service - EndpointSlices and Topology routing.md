@@ -48,4 +48,16 @@ Topology-aware routing optimizes in-cluster traffic to prefer backend endpoints 
 For maximum performance, you can bypass cross-node network hops by restricting traffic to endpoints on the same node using `internalTrafficPolicy`:
 *   `spec.internalTrafficPolicy: Local`: Forces requests to stay on the local node. If no local endpoint exists, traffic is dropped immediately. Highly useful for node-level agents or daemonsets.
 
-*Read more in [10_networking_dns_and_ingress.md](../Reference%20Notes/10_networking_dns_and_ingress.md#72-endpointslices)*
+### 5. DNS Resolution Formats
+Kubernetes automatically registers DNS records under `cluster.local` (or the custom cluster domain):
+*   **Normal Services:** `my-svc.my-namespace.svc.cluster.local` resolves to the virtual ClusterIP.
+*   **Headless Services:** Resolves directly to the set of IPs of the backing pods.
+*   **Pods:** `pod-ip-address.my-namespace.pod.cluster.local` (where the IP address uses dashes, e.g., `10-244-1-5.default.pod.cluster.local`).
+
+### 6. Service ClusterIP Allocation Strategy
+To prevent collisions between automated dynamic IP assignments and user-defined static IPs, Kubernetes v1.26+ splits the Service CIDR into two bands using the following formula:
+$$\text{bandOffset} = \min\left(\max\left(16, \frac{\text{cidrSize}}{16}\right), 256\right)$$
+*   **Lower Band (Static):** The first `bandOffset` addresses are reserved for user-specified static IPs.
+*   **Upper Band (Dynamic):** The rest of the range is preferred for dynamic allocation. Dynamic assignments will only spill over to the lower band if the upper band is completely exhausted.
+
+*Read more in [10_networking_dns_and_ingress.md](../Reference%20Notes/10_networking_dns_and_ingress.md#7-advanced-service-networking--modern-apis)*

@@ -743,11 +743,18 @@ spec:
 *   **`VolumeSnapshot`**: The user's request to capture a snapshot. References a source PVC.
 *   **`VolumeSnapshotContent`**: The actual physical copy on the storage backend. References a `VolumeSnapshot` and is cluster-scoped (similar to a `PersistentVolume`).
 
+#### Default VolumeSnapshotClass Resolution:
+An administrator can configure a default `VolumeSnapshotClass` by adding the annotation `snapshot.storage.kubernetes.io/is-default-class: "true"` to its metadata. 
+*   **Automatic Matching:** When a `VolumeSnapshot` is created without specifying `volumeSnapshotClassName`, the controller automatically resolves the class by finding a default `VolumeSnapshotClass` whose `driver` matches the CSI driver defined in the source PVC's `StorageClass`.
+*   **Coexistence and Constraints:** Multiple default `VolumeSnapshotClass` objects can coexist in a cluster, provided each is assigned to a unique CSI driver. If multiple default classes are defined for the *same* CSI driver, the snapshot creation will fail with a resolution conflict error.
+
 ```yaml
 apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: prod-snapshot-class
+  annotations:
+    snapshot.storage.kubernetes.io/is-default-class: "true"
 driver: hostpath.csi.k8s.io
 deletionPolicy: Delete
 ---

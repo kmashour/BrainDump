@@ -4,19 +4,23 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
-## [2026-06-05] - Ingest Scheduling and Eviction Documentation Pages
-
-### Added
-- **Deeper Note (`Main Notes/kube-scheduler - Priority Preemption and Topology Spread.md`):** Explains Pod Priority & Preemption, Pod Overhead, DRA, Scheduling Framework extension points, and Topology Spread Constraints (`maxSkew`).
-- **Architectural Pattern Note (`Digital Garden/Pattern - Even Workload Distribution in Multi-Zone Clusters.md`):** Outlines how Topology Spread Constraints and pod topology spread spread workloads evenly across failure domains (nodes, zones, regions).
+## [2026-06-05] - Full Ingestion of Scheduling, Services, and Storage Documentation URLs
 
 ### Changed / Updated
-- **Scheduling & Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Added Section 5 covering advanced scheduling gates, framework architecture, priorities/preemption, and kubelet eviction limits (Node-Pressure vs API evictions).
-- **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended Section 11 detailing topology spread configs, scheduling gates validation, priority/preemption definitions, and API eviction testing.
+- **Scheduling & Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Appended technical details on Node-pressure eviction signals (memory, nodefs, imagefs, containerfs, pid), hard/soft eviction thresholds, NodeResourcesFit bin-packing scoring strategies (MostAllocated, RequestedToCapacityRatio, shape curves), PodGroups Gang/Co-scheduling, Topology-Aware Workload Scheduling (TAS) plugins, and Node Declared Features (KEP-5328) version skew validation.
+- **Networking Reference Module (`Reference Notes/10_networking_dns_and_ingress.md`):** Corrected Service ClusterIP allocation band behavior (lower band reserved for static allocation, upper band for dynamic allocation) and documented the allocation offset formula.
+- **Storage Reference Module (`Reference Notes/09_storage_mechanics_and_csi.md`):** Appended default VolumeSnapshotClass configuration using annotations (`snapshot.storage.kubernetes.io/is-default-class: "true"`), driver-matching dynamic resolution, and resolution conflict checks.
+- **Deeper Note (`Main Notes/kube-scheduler - Priority Preemption and Topology Spread.md`):** Documented eviction signals, bin-packing score strategies, PodGroups gang scheduling, TAS plugins, and Node Declared Features.
+- **Deeper Note (`Main Notes/service - EndpointSlices and Topology routing.md`):** Added DNS resolution formats for normal/headless services and Pods, and documented the Service ClusterIP allocation band formula.
+- **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended configurations and debugging steps for NodeResourcesFit bin-packing strategies, PodGroup co-scheduling validation, and Kubelet eviction thresholds.
+- **Audit Script (`Reference Notes/scripts/review_vault.py`):** Updated the coverage decision matrix to ignore the new `Workloads_CKA_Docs.md` URL index.
 
 ### Ingested Inflow Sources
 The following documentation URL index files have been processed and fully integrated:
 - `inflow/Scheduling_CKA_Docs.md`
+- `inflow/Services-LoadBalancers-Networking_CKA_Docs.md`
+- `inflow/Storage_CKA_Docs.md`
+- `inflow/Workloads_CKA_Docs.md`
 
 ---
 

@@ -45,8 +45,22 @@ The `kube-scheduler` divides pod scheduling into two cycles:
 *   **`PriorityClass`:** Defines a cluster-scoped integer priority (higher = more important).
 *   **Preemption:** If a high-priority Pod is blocked due to lack of resources, the scheduler will preempt (evict) lower-priority Pods on a target node to reclaim space and schedule the high-priority workload.
 
-### 5. Node-Pressure vs API Eviction
+### 5. Node-Pressure Eviction Signals & Thresholds
 *   **Node-pressure Eviction:** Proactively triggered by the `kubelet` when node thresholds (OOM, disk full) are reached. Bypasses PDBs and changes the Pod phase to `Failed`.
-*   **API Eviction:** Triggered via the API (e.g., `kubectl drain`). Respects Pod Disruption Budgets (PDBs) and deletes the Pod cleanly.
+*   **Eviction Signals:** Monitors `memory.available`, `nodefs.available`, `nodefs.inodesFree`, `imagefs.available`, `imagefs.inodesFree`, `containerfs.available`, `containerfs.inodesFree`, and `pid.available`.
+*   **Hard vs Soft Eviction:** Hard eviction has a `0s` grace period and immediately terminates pods, ignoring PDBs and container settings. Soft eviction uses grace periods defined by `--eviction-soft-grace-period` and respects `--eviction-max-pod-grace-period`.
+
+### 6. NodeResourcesFit Bin-Packing Strategies
+The `NodeResourcesFit` score plugin supports bin-packing:
+*   **`MostAllocated`:** Packs pods by preferring nodes with higher resource utilization, optimizing node scale-down.
+*   **`RequestedToCapacityRatio`:** Assigns custom scores to nodes based on resource utilization shapes (defined in KubeSchedulerConfiguration).
+
+### 7. PodGroup Co-Scheduling & Topology-Aware Workload Scheduling (TAS)
+*   **PodGroup Co-Scheduling (v1.35+ Alpha):** Atomic scheduling for batch workloads (e.g. ML training). Pods in a PodGroup are scheduled simultaneously. If the minimum required pods cannot fit, no pods are bound (avoiding partial-allocation resource deadlocks).
+*   **Topology-Aware Workload Scheduling (v1.36+ Alpha):** Placements are evaluated collectively to schedule all Pods in a `PodGroup` within the same topology zone using `TopologyPlacement`, `NodeResourcesFit`, and `PodGroupPodsCount` placement plugins.
+
+### 8. Node Declared Features (KEP-5328)
+*   Reports enabled features via `Node.status.declaredFeatures`.
+*   The `NodeDeclaredFeatures` scheduler plugin filters out nodes lacking features required by the Pod, preventing scheduling skew in mixed-version clusters.
 
 *Read more in [14_scheduling_logging_and_lifecycle.md](../Reference%20Notes/14_scheduling_logging_and_lifecycle.md#5-advanced-scheduling--eviction-control)*

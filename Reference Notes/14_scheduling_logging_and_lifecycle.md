@@ -1432,6 +1432,83 @@ Workloads are evicted (terminated prematurely) from nodes under two separate sce
 
 ---
 
+### 5.7 Node-Pressure Eviction Signals & Thresholds
+The kubelet actively monitors node resources and triggers eviction to reclaim space:
+*   **Eviction Signals:**
+    *   `memory.available`: Calculated as `node.status.capacity[memory] - node.stats.memory.workingSet`.
+    *   `nodefs.available` / `nodefs.inodesFree`: Available space and inodes on the node's root filesystem (holding pod logs, local volumes).
+    *   `imagefs.available` / `imagefs.inodesFree`: Available space and inodes on the container runtime's image storage filesystem.
+    *   `containerfs.available` / `containerfs.inodesFree`: Available space and inodes on the container runtime's writeable layers filesystem.
+    *   `pid.available`: Available process IDs on the node (`node.stats.rlimit.maxpid - node.stats.rlimit.curproc`).
+*   **Hard vs Soft Eviction Thresholds:**
+    *   **Hard Eviction (`--eviction-hard`):** Kubelet terminates pods immediately with a `0s` grace period. PDBs and `terminationGracePeriodSeconds` are ignored. Typical defaults: `memory.available < 100Mi`, `nodefs.available < 10%`, `imagefs.available < 15%`.
+    *   **Soft Eviction (`--eviction-soft`):** Evicts pods after the threshold is met for a duration specified by `--eviction-soft-grace-period`. Respects `--eviction-max-pod-grace-period` for container termination.
+*   **Static Pod Eviction:** Kubelet can evict static pods. It will attempt to recreate them, but if node-pressure remains high and the static pod's priority is lower than other pending pods in the API server, it may fail to schedule.
+
+---
+
+### 5.8 Scheduler Performance Tuning & Bin-Packing (MostAllocated vs RequestedToCapacityRatio)
+The `NodeResourcesFit` score plugin supports bin-packing strategies to maximize node resource utilization:
+1.  **`MostAllocated` Strategy:** Favors nodes with higher allocation ratios to pack resources tightly.
+    ```yaml
+    apiVersion: kubescheduler.config.k8s.io/v1
+    kind: KubeSchedulerConfiguration
+    profiles:
+    - pluginConfig:
+      - name: NodeResourcesFit
+        args:
+          scoringStrategy:
+            type: MostAllocated
+            resources:
+            - name: cpu
+              weight: 1
+            - name: memory
+              weight: 1
+            - name: intel.com/foo
+              weight: 3
+    ```
+2.  **`RequestedToCapacityRatio` Strategy:** Scores nodes using a custom request-to-capacity function mapped through a shape curve:
+    ```yaml
+    apiVersion: kubescheduler.config.k8s.io/v1
+    kind: KubeSchedulerConfiguration
+    profiles:
+    - pluginConfig:
+      - name: NodeResourcesFit
+        args:
+          scoringStrategy:
+            type: RequestedToCapacityRatio
+            resources:
+            - name: intel.com/foo
+              weight: 3
+            requestedToCapacityRatio:
+              shape:
+              - utilization: 0
+                score: 0
+              - utilization: 100
+                score: 10
+    ```
+3.  **`percentageOfNodesToScore` Optimization:** Controls the percentage of nodes the scheduler evaluates before picking a candidate (e.g. down to `5%` in 5000+ node clusters) to reduce scheduling latency.
+
+---
+
+### 5.9 PodGroup / Co-scheduling & Topology-Aware Workload Scheduling (TAS)
+1.  **PodGroup Scheduling (v1.35+ Alpha):** Resolves resource deadlocks for batch/ML jobs by evaluating a group of Pods atomically. If all pods in the group cannot be scheduled together (respecting `minCount` gang scheduling limits), none are bound.
+2.  **Topology-Aware Workload Scheduling (TAS) (v1.36+ Alpha):** A placement scheduling algorithm that groups nodes by topology keys (e.g. `topology.kubernetes.io/zone`) to ensure all Pods in a `PodGroup` are colocated in the same zone.
+    *   **`TopologyPlacement` Plugin:** Generates candidate placements grouped by topology keys.
+    *   **`NodeResourcesFit` Plugin:** Scores placements using a `MostAllocated` strategy.
+    *   **`PodGroupPodsCount` Plugin:** Scores placements based on the total schedulable pods within the placement.
+
+---
+
+### 5.10 Node Declared Features (KEP-5328)
+*   **Purpose:** Prevents pods requiring new feature-gated capabilities from being placed on nodes running older kubelet versions that do not support those features (version skew mitigation).
+*   **Mechanism:** At boot, Kubelet reports active features in `Node.status.declaredFeatures`.
+*   **Enforcement:** The `NodeDeclaredFeatures` scheduler plugin filters out nodes lacking matching feature support during the `Filter` stage, and the `NodeDeclaredFeatureValidator` admission controller rejects updates violating this support.
+
+---
+
+---
+
 ## 🔗 Related Modules
 * [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Deep dive into Kube-Scheduler's placement algorithms and static pods config.
 * [Module 07: Kubernetes Workloads & Controllers](07_kubernetes_workloads_and_controllers.md) - Comprehensive specifications of ReplicaSets, Deployments, DaemonSets, and Static Pods.

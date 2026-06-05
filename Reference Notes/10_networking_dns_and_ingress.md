@@ -1035,10 +1035,10 @@ To prevent collisions when assigning virtual IPs (ClusterIPs) to Services, moder
 
 #### 1. Range Reservation Mechanics (v1.26+):
 Before v1.26, manually assigning a static `clusterIP` carried the risk of colliding with an automatically assigned (dynamic) ClusterIP. To prevent this, Kubernetes reserves a segment of the `service-cluster-ip-range`:
-*   The Service CIDR is divided into two bands.
-*   The lower band is reserved for dynamic allocation (automatically chosen IPs).
-*   The upper band is reserved for static allocation (user-specified IPs).
-*   The reservation ratio dynamically assigns the top section (e.g., $1/16$th of the range or up to 256 IPs) for manual entries, preventing collisions.
+*   The Service CIDR is divided into two bands based on the formula: `bandOffset = min(max(16, cidrSize / 16), 256)`.
+*   The **lower band** (from the start of the range up to the `bandOffset` size) is reserved for static allocations (user-specified IPs).
+*   The **upper band** is preferred for dynamic allocations (automatically chosen IPs).
+*   Dynamic allocations will only use the lower band if the upper band is completely exhausted, preventing collisions between automated and manual IP assignments.
 
 #### 2. Dynamic Service CIDR Expansion (v1.29+):
 If a cluster runs out of Service IPs, updating the `--service-cluster-ip-range` on `kube-apiserver` is highly disruptive. v1.29+ introduces stable dynamic expansion via the `ServiceCIDR` API:

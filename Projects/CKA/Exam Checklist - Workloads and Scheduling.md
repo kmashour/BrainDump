@@ -610,4 +610,33 @@ If Pods in a namespace are suddenly terminated with status `Failed` and reason `
       nodefs.available: "10%"
     ```
 
+#### 5. Scheduler Bin-Packing Configuration Cheatsheet
+If asked to configure or debug scheduler bin-packing (`MostAllocated` or `RequestedToCapacityRatio` in the `NodeResourcesFit` score plugin):
+*   Verify the profile settings under `pluginConfig` in the `KubeSchedulerConfiguration` file:
+    ```yaml
+    apiVersion: kubescheduler.config.k8s.io/v1
+    kind: KubeSchedulerConfiguration
+    profiles:
+    - pluginConfig:
+      - name: NodeResourcesFit
+        args:
+          scoringStrategy:
+            type: MostAllocated # or RequestedToCapacityRatio
+            resources:
+            - name: cpu
+              weight: 1
+            - name: memory
+              weight: 1
+    ```
+*   Ensure that weight values are integers.
+
+#### 6. PodGroup & TAS Scheduling Validation
+If batch workloads are stuck pending due to deadlock or zone collocation needs:
+1.  **Check PodGroup Status**:
+    ```bash
+    kubectl get podgroups.scheduling.k8s.io -A
+    ```
+2.  **Verify Feature Gates**:
+    Ensure `--feature-gates=GenericWorkload=true,NodeDeclaredFeatures=true` is enabled on the control plane components if TAS or PodGroups are in use.
+
 ```

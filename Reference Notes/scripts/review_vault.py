@@ -132,7 +132,7 @@ def check_inflow_coverage():
             status = "Ignored/Useless"
             justification = "Empty file (0 bytes)."
             ignored_count += 1
-        elif file_name == "Workloads_CKA.md":
+        elif file_name in ["Workloads_CKA.md", "Workloads_CKA_Docs.md"]:
             status = "Ignored/Useless"
             justification = "URL index links only; redundant."
             ignored_count += 1
