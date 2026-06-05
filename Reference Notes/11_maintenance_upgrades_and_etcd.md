@@ -1,0 +1,637 @@
+# Cluster Maintenance, Upgrades, ETCD Management, HA Design, and Bootstrapping
+
+This module provides an exhaustive, production-grade technical reference for Kubernetes cluster maintenance, version upgrades, ETCD database backups and restores, High-Availability (HA) cluster designs, and bootstrapping clusters via `kubeadm`.
+
+---
+
+## 1. Node Maintenance Mechanics (Drain, Cordon, Uncordon)
+
+Safely taking nodes out of service for OS maintenance (such as kernel updates, RAM/CPU upgrades, or OS patching) is a fundamental administrative task. Kubernetes provides built-in mechanisms to evict workloads gracefully without causing application downtime.
+
+### 1.1 Cordon vs. Drain vs. Pod Deletion
+*   **Cordoning (`kubectl cordon`)**: Marks the node as unschedulable. It adds the `node.kubernetes.io/unschedulable:NoSchedule` taint to the node. Existing pods running on the node remain unaffected.
+*   **Draining (`kubectl drain`)**: First cordons the node to prevent new pods from arriving, then evicts all currently running pods.
+*   **Pod Eviction vs. Pod Deletion**:
+    *   **Eviction (API-initiated)**: Uses the Eviction API to respect **Pod Disruption Budgets (PDBs)**, gracefully terminating container processes with `SIGTERM` followed by `SIGKILL` after the grace period. Recreations are scheduled on other available nodes by controllers.
+    *   **Deletion**: Bypasses PDBs and forcibly kills pods. If a bare pod is deleted, it is gone forever.
+*   **Default Node Eviction Timeout**: If a node becomes unreachable or unhealthy for more than 5 minutes (default `pod-eviction-timeout` in `kube-controller-manager`), the control plane automatically marks its pods as `Terminating` or `Unknown` and schedules replacements elsewhere.
+
+### 1.2 Pod Disruption Budgets (PDBs)
+PDBs limit the number of pods of a replicated application that are down simultaneously from voluntary disruptions (like node draining).
+
+#### PDB YAML Configuration Template
+```yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: frontend-pdb
+  namespace: default
+spec:
+  # Specify either minAvailable or maxUnavailable (do not specify both)
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: web-frontend
+```
+
+### 1.3 Command Syntax and Flags
+```bash
+# Mark a node as unschedulable without evicting pods
+kubectl cordon worker-node-1
+
+# Safely drain a node of all workloads
+kubectl drain worker-node-1 --ignore-daemonsets --force --delete-emptydir-data
+
+# Restore schedulability to the node
+kubectl uncordon worker-node-1
+```
+
+#### Explanation of Critical Drain Flags:
+> [!IMPORTANT]
+> Failure to specify these flags will cause the `kubectl drain` command to fail if any matching pods are detected on the node:
+> *   `--ignore-daemonsets`: DaemonSets run pods on every node (or a subset). Draining cannot reschedule them elsewhere. This flag allows the drain to proceed, simply terminating (or ignoring) DaemonSet pods on the target node.
+> *   `--force`: Forces eviction of "bare pods" (pods not managed by a Deployment, ReplicaSet, DaemonSet, Job, or StatefulSet). **WARNING:** These pods are permanently deleted and will *not* be rescheduled on other nodes.
+> *   `--delete-emptydir-data` (formerly `--delete-local-data`): Overrides safety checks when pods use local `emptyDir` volumes. Draining will delete local volume data, which is lost when the pod is terminated.
+
+### 1.4 Post-Maintenance Scheduling Behavior
+When a node is uncordoned via `kubectl uncordon`, the workloads that were evicted during the drain **do not automatically shift back** to it. The Kubernetes scheduler is reactive: it only schedules new pods or pods that are recreated/scaled. To redistribute workloads, you must perform a rolling restart of your deployments or deploy an agent like the Kubernetes Descheduler.
+
+---
+
+## 2. Kubernetes Software Versioning & Skew Policies
+
+Kubernetes components follow Semantic Versioning (`vMajor.Minor.Patch`). Upgrading a cluster requires strict compliance with version skew policies.
+
+```
+       [ kube-apiserver ] (Version X)
+        /       |       \
+       /        |        \
+  [ -1 Skew ] [ -1 Skew ] [ -2/3 Skew ]
+     /          |           \
+Scheduler  Controller Mgr  kubelet & kube-proxy
+```
+
+### 2.1 Component Skew Rules
+Relative to the version of the `kube-apiserver` (represented as **$X$**):
+
+| Component | Maximum Version Skew Allowed | Example (if API Server is `v1.28`) |
+| :--- | :--- | :--- |
+| **kube-apiserver** | Base Reference ($X$) | `v1.28` |
+| **kube-controller-manager** | Must not be newer than apiserver; up to **1 minor version older** ($X$ to $X-1$) | `v1.28` or `v1.27` |
+| **kube-scheduler** | Must not be newer than apiserver; up to **1 minor version older** ($X$ to $X-1$) | `v1.28` or `v1.27` |
+| **kubelet** | Must not be newer than apiserver; up to **2 minor versions older** ($X$ to $X-2$). <br> *Note:* From `v1.28+`, this was extended to **3 minor versions older** ($X$ to $X-3$). | `v1.28`, `v1.27`, `v1.26` (or `v1.25` on v1.28+) |
+| **kube-proxy** | Must match kubelet version skew rules ($X$ to $X-2$, or $X-3$ in v1.28+). | `v1.28`, `v1.27`, `v1.26` |
+| **kubectl** | Can be **1 minor version newer or older** than the apiserver ($X+1$ to $X-1$). | `v1.29`, `v1.28`, or `v1.27` |
+
+### 2.2 Version Support Policy
+The Kubernetes project officially supports the **latest 3 minor versions**. Security patches and critical bug fixes are backported to these three releases.
+
+### 2.3 Upgrade Order Rules
+> [!WARNING]
+> Skipping minor versions during upgrades is unsupported (e.g., upgrading directly from `v1.26` to `v1.28` is forbidden). You must upgrade sequentially: `v1.26` -> `v1.27` -> `v1.28`.
+
+Always upgrade components in the following chronological order:
+1.  **Primary Control Plane Node**:
+    *   Upgrade `kubeadm` package.
+    *   Apply cluster upgrade plan via `kubeadm upgrade apply`.
+    *   Upgrade `kubelet` and `kubectl` packages on the node.
+2.  **Additional Control Plane Nodes (HA setup)**:
+    *   Upgrade `kubeadm` package.
+    *   Apply local upgrade configuration via `kubeadm upgrade node`.
+    *   Upgrade `kubelet` and `kubectl` packages.
+3.  **Worker Nodes**:
+    *   Drain worker node.
+    *   Upgrade `kubeadm` package.
+    *   Apply upgrade config via `kubeadm upgrade node`.
+    *   Upgrade `kubelet` and `kubectl` packages.
+    *   Uncordon worker node.
+
+---
+
+## 3. Step-by-Step Cluster Upgrade Playbooks (kubeadm)
+
+This playbook demonstrates upgrading a cluster from version **`v1.27.0`** to **`v1.28.2`** on Debian/Ubuntu systems.
+
+### 3.1 Control Plane Node Upgrade
+
+#### Step 1: Upgrade Kubeadm Package
+```bash
+# Unhold kubeadm package
+sudo apt-mark unhold kubeadm
+
+# Update apt repositories and install targeted version
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.28.2-00
+
+# Hold the package back
+sudo apt-mark hold kubeadm
+
+# Verify version
+kubeadm version
+```
+
+#### Step 2: Plan and Apply the Upgrade
+```bash
+# Verify the upgrade path is valid
+sudo kubeadm upgrade plan
+
+# Apply the upgrade (this downloads container images and modifies static pod manifests)
+sudo kubeadm upgrade apply v1.28.2 -y
+```
+
+#### Step 3: Upgrade Kubelet & Kubectl on Control Plane Node
+```bash
+# Drain the control plane node to prepare for kubelet upgrade
+kubectl drain controlplane --ignore-daemonsets
+
+# Unhold packages
+sudo apt-mark unhold kubelet kubectl
+
+# Install targeted version
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.28.2-00 kubectl=1.28.2-00
+
+# Re-hold packages
+sudo apt-mark hold kubelet kubectl
+
+# Restart the systemd services
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+# Uncordon the control plane node
+kubectl uncordon controlplane
+```
+
+---
+
+### 3.2 Worker Node Upgrade
+
+#### Step 1: Drain the Worker Node (Execute from Control Plane Node)
+```bash
+kubectl drain node-1 --ignore-daemonsets --force --delete-emptydir-data
+```
+
+#### Step 2: Upgrade Kubeadm on Worker Node (SSH to node-1)
+```bash
+sudo apt-mark unhold kubeadm
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.28.2-00
+sudo apt-mark hold kubeadm
+```
+
+#### Step 3: Upgrade Worker Configuration
+```bash
+# This localizes the upgrade config from the API server ConfigMap
+sudo kubeadm upgrade node
+```
+
+#### Step 4: Upgrade Kubelet & Kubectl on Worker Node
+```bash
+sudo apt-mark unhold kubelet kubectl
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.28.2-00 kubectl=1.28.2-00
+sudo apt-mark hold kubelet kubectl
+
+# Reload configuration and restart service
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+```
+
+#### Step 5: Uncordon the Node (Execute from Control Plane Node)
+```bash
+kubectl uncordon node-1
+```
+
+---
+
+## 4. ETCD Backup & Restore (Stacked & External Topologies)
+
+ETCD is the distributed key-value datastore containing the state of the entire Kubernetes cluster. Securing backups of this component is critical before making any major configuration or version changes.
+
+### 4.1 Extracting ETCD Details
+On `kubeadm` clusters, ETCD is running as a static pod. You can retrieve endpoint paths and certificate locations by inspecting `/etc/kubernetes/manifests/etcd.yaml` or running:
+```bash
+kubectl describe pod -n kube-system etcd-controlplane
+```
+Look for command arguments like:
+*   `--listen-client-urls` (typically `https://127.0.0.1:2379`)
+*   `--trusted-ca-file` (typically `/etc/kubernetes/pki/etcd/ca.crt`)
+*   `--cert-file` (typically `/etc/kubernetes/pki/etcd/server.crt`)
+*   `--key-file` (typically `/etc/kubernetes/pki/etcd/server.key`)
+
+---
+
+### 4.2 Snapshot Backup Procedure
+To create a backup snapshot, run the `etcdctl snapshot save` command. 
+
+> [!TIP]
+> **CKA Exam Tip:** Always specify the `ETCDCTL_API=3` environment variable. The older v2 API is the default for etcdctl, but Kubernetes uses the v3 API.
+
+```bash
+ETCDCTL_API=3 etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  snapshot save /opt/backup/etcd-snapshot.db
+```
+
+#### Verification of Snapshot File:
+```bash
+ETCDCTL_API=3 etcdctl --write-out=table snapshot status /opt/backup/etcd-snapshot.db
+```
+
+---
+
+### 4.3 Restore Playbook: Stacked ETCD Topology
+In a stacked topology, ETCD runs as a static pod on the control plane node.
+
+#### Step 1: Restore the Database to a New Directory
+```bash
+# Restore to a separate path to prevent data corruption in active directory
+ETCDCTL_API=3 etcdctl snapshot restore /opt/backup/etcd-snapshot.db \
+  --data-dir /var/lib/etcd-from-backup
+```
+
+#### Step 2: Assign Ownership
+```bash
+# Static pods run with root privileges on kubeadm clusters, but ownership should be verified
+sudo chown -R root:root /var/lib/etcd-from-backup
+```
+
+#### Step 3: Modify the Static Pod Manifest
+Edit `/etc/kubernetes/manifests/etcd.yaml`. Modify the volume host path mapping named `etcd-data` to point to the newly restored directory.
+
+```yaml
+# Inside /etc/kubernetes/manifests/etcd.yaml
+spec:
+  volumes:
+  - hostPath:
+      path: /etc/kubernetes/pki/etcd
+      type: DirectoryOrCreate
+    name: etcd-certs
+  - hostPath:
+      path: /var/lib/etcd-from-backup   # <-- Modify this path from /var/lib/etcd
+      type: DirectoryOrCreate
+    name: etcd-data
+```
+
+#### Step 4: Verify Restoration
+The kubelet detects modifications to `/etc/kubernetes/manifests/etcd.yaml` and restarts the ETCD pod. Check control plane health:
+```bash
+kubectl get nodes
+kubectl get pods -n kube-system
+```
+
+---
+
+### 4.4 Restore Playbook: External ETCD Topology
+In an external topology, ETCD is running on dedicated host VMs as a systemd service.
+
+#### Step 1: Transport and Stop Service
+Copy the backup snapshot to the ETCD host, SSH in, and stop the service:
+```bash
+# SSH to external ETCD host
+ssh etcd-server
+
+# Stop ETCD systemd service
+sudo systemctl stop etcd
+```
+
+#### Step 2: Restore Snapshot to New Directory
+```bash
+ETCDCTL_API=3 etcdctl snapshot restore /tmp/etcd-snapshot.db \
+  --data-dir /var/lib/etcd-data-new
+```
+
+#### Step 3: Configure Permissions
+```bash
+# Assign ownership to the etcd system user/group
+sudo chown -R etcd:etcd /var/lib/etcd-data-new
+```
+
+#### Step 4: Modify Systemd Unit File Configuration
+Edit the systemd service file (typically `/etc/systemd/system/etcd.service`):
+```bash
+sudo vi /etc/systemd/system/etcd.service
+```
+Locate the `--data-dir` argument and update it:
+```ini
+ExecStart=/usr/local/bin/etcd \
+  --data-dir=/var/lib/etcd-data-new \
+  ...
+```
+
+#### Step 5: Reload Daemons and Restart Service
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart etcd.service
+sudo systemctl status etcd.service
+```
+
+---
+
+## 5. High-Availability Control Plane & ETCD Cluster Design
+
+To remove single points of failure in production Kubernetes environments, control plane components and the ETCD database must be architected for High-Availability (HA).
+
+```
+   [ kubectl / clients ]
+             │
+      [ Load Balancer ] (Port 6443)
+      ╱      │      ╲
+     ╱       │       ╲
+ [ CP 1 ] [ CP 2 ] [ CP 3 ]  (kube-apiserver: Active-Active)
+     │       │       │
+ [ ETCD1] [ ETCD2] [ ETCD3]  (Stacked Topology: Raft Quorum)
+```
+
+### 5.1 Control Plane Redundancy
+An HA control plane requires at least 3 control plane nodes:
+*   **kube-apiserver (Active-Active)**: Replicas run concurrently. A load balancer (e.g. HAProxy, NGINX, Keepalived, or AWS NLB) is configured in front of them to route traffic to active nodes on port `6443`.
+*   **kube-scheduler & kube-controller-manager (Active-Passive)**: Running multiple instances modifying state simultaneously causes race conditions. They use **leader election** leases. All replicas run, but only one is elected active leader. The remaining standby replicas poll the leader lease and take over immediately if the leader dies.
+
+---
+
+### 5.2 ETCD Topologies: Stacked vs. External
+
+#### Topology A: Stacked ETCD
+Each control plane node runs a local instance of ETCD inside a static pod. The local `kube-apiserver` communicates directly with its local ETCD instance via `127.0.0.1:2379`.
+
+```mermaid
+graph TD
+    subgraph Node1 ["Control Plane Node 1"]
+        API1["kube-apiserver"]
+        ETCD1[("etcd (Member 1)")]
+    end
+    subgraph Node2 ["Control Plane Node 2"]
+        API2["kube-apiserver"]
+        ETCD2[("etcd (Member 2)")]
+    end
+    subgraph Node3 ["Control Plane Node 3"]
+        API3["kube-apiserver"]
+        ETCD3[("etcd (Member 3)")]
+    end
+    LB["Load Balancer"] --> API1
+    LB --> API2
+    LB --> API3
+    API1 <--> ETCD1
+    API2 <--> ETCD2
+    API3 <--> ETCD3
+    ETCD1 <.Raft Consensus.--> ETCD2
+    ETCD2 <.Raft Consensus.--> ETCD3
+    ETCD3 <.Raft Consensus.--> ETCD1
+```
+
+*   **Pros**: Simple to set up using `kubeadm`; requires fewer virtual machines; low administrative overhead.
+*   **Cons**: Resource coupling. If a control plane node runs out of CPU or memory, the database performance degraded. Losing a node reduces both API server capacity and ETCD database quorum simultaneously.
+
+#### Topology B: External ETCD
+ETCD is decoupled from control plane nodes and run on dedicated, isolated servers.
+
+```mermaid
+graph TD
+    subgraph CP ["Control Plane Nodes"]
+        API1["kube-apiserver-1"]
+        API2["kube-apiserver-2"]
+        API3["kube-apiserver-3"]
+    end
+    subgraph ETCD ["External ETCD Cluster"]
+        ETCD1[("etcd-1 (Member 1)")]
+        ETCD2[("etcd-2 (Member 2)")]
+        ETCD3[("etcd-3 (Member 3)")]
+    end
+    LB["Load Balancer"] --> API1
+    LB --> API2
+    LB --> API3
+    API1 --> ETCD1
+    API1 --> ETCD2
+    API1 --> ETCD3
+    API2 --> ETCD1
+    API2 --> ETCD2
+    API2 --> ETCD3
+    API3 --> ETCD1
+    API3 --> ETCD2
+    API3 --> ETCD3
+    ETCD1 <.Raft Consensus.--> ETCD2
+    ETCD2 <.Raft Consensus.--> ETCD3
+    ETCD3 <.Raft Consensus.--> ETCD1
+```
+
+*   **Pros**: Separation of concerns. Control plane nodes can scale up/down or fail without impacting database membership. Reduced risk of resource contention.
+*   **Cons**: Requires double the virtual machines; complex network provisioning and TLS certificate distribution.
+
+---
+
+### 5.3 Raft Consensus and Quorum Math
+ETCD utilizes the Raft consensus protocol to maintain consistency. To commit a transaction, a strict majority (quorum) of ETCD members must agree.
+
+*   **Quorum Formula**: $Q = \lfloor N/2 \rfloor + 1$ (where $N$ is the total number of members in the cluster).
+*   **Fault Tolerance Formula**: $F = N - Q = N - (\lfloor N/2 \rfloor + 1)$.
+
+#### Membership Fault Tolerance Table:
+| Cluster Size ($N$) | Quorum ($Q$) | Max Failures Tolerated ($F$) |
+| :---: | :---: | :---: |
+| 1 | 1 | 0 |
+| 2 | 2 | 0 |
+| 3 | 2 | 1 |
+| 4 | 3 | 1 |
+| 5 | 3 | 2 |
+| 6 | 4 | 2 |
+
+#### Why Odd Member Count is Required:
+Adding an even number of nodes provides no extra fault tolerance. For example, a 3-node cluster and a 4-node cluster can both tolerate only 1 node failure. However, a 4-node cluster has higher network latency (requires one more vote for consensus) and a higher statistical probability of failure.
+
+---
+
+## 6. Bootstrapping a Cluster from Scratch with Kubeadm
+
+This section covers setting up a new multi-node cluster using `kubeadm` with `containerd` container runtime.
+
+### 6.1 Node System Preparation
+Perform these commands on **all nodes** (control plane and workers).
+
+#### 1. Disable Swap
+Kubernetes requires swap to be disabled to guarantee resource isolation and limit memory scheduling errors.
+```bash
+sudo swapoff -a
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+```
+
+#### 2. Load Required Kernel Modules
+```bash
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+```
+
+#### 3. Enable Bridged Traffic Sysctl Settings
+```bash
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sudo sysctl --system
+```
+
+---
+
+### 6.2 Container Runtime (containerd) Installation and Configuration
+Install and configure `containerd` on **all nodes**.
+
+#### 1. Install containerd
+```bash
+sudo apt-get update
+sudo apt-get install -y containerd
+```
+
+#### 2. Configure containerd to use Systemd Cgroup Driver
+Create the default configuration directory and configure cgroup integration.
+```bash
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+
+# Update config.toml to set SystemdCgroup to true
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+
+# Restart the service to apply changes
+sudo systemctl restart containerd
+```
+
+---
+
+### 6.3 Installing Kubernetes Binaries
+Execute on **all nodes** to install Kubeadm, Kubelet, and Kubectl (example version `v1.28.2`).
+
+```bash
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl
+
+# Create directory for apt keyring
+sudo mkdir -p -m 755 /etc/apt/keyrings
+
+# Download Kubernetes apt keyring
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+# Add Kubernetes repository sources list
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# Update package listings and install
+sudo apt-get update
+sudo apt-get install -y kubelet=1.28.2-1.1 kubeadm=1.28.2-1.1 kubectl=1.28.2-1.1
+
+# Lock package versions to prevent unintended upgrades
+sudo apt-mark hold kubelet kubeadm kubectl
+```
+
+---
+
+### 6.4 Kubeadm Init Configuration File Template
+Instead of flags, we can pass a structured configuration file to `kubeadm init`. Here is a production-ready template:
+
+```yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+kubernetesVersion: v1.28.2
+controlPlaneEndpoint: "192.168.56.11:6443"
+networking:
+  serviceSubnet: "10.96.0.0/12"
+  podSubnet: "10.244.0.0/16"
+  dnsDomain: "cluster.local"
+apiServer:
+  extraArgs:
+    authorization-mode: "Node,RBAC"
+  certSANs:
+    - "192.168.56.11"
+    - "kubemaster"
+    - "kubernetes"
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: systemd
+serverTLSBootstrap: true
+```
+
+---
+
+### 6.5 Initializing the Cluster (Control Plane)
+Run this command only on the **primary control plane node**:
+
+```bash
+sudo kubeadm init \
+  --apiserver-advertise-address=192.168.56.11 \
+  --apiserver-cert-extra-sans=controlplane \
+  --pod-network-cidr=10.244.0.0/16
+```
+
+#### Set up Kubectl Access (Kubeconfig):
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+---
+
+### 6.6 Deploying Pod Networking (CNI Plugin)
+Without a CNI plugin, nodes will show `NotReady` and pods cannot route traffic. Apply the Flannel overlay network CNI:
+
+```bash
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
+
+Verify that nodes switch to `Ready` status:
+```bash
+kubectl get nodes -w
+```
+
+---
+
+### 6.7 Joining Worker Nodes
+Generate a fresh bootstrap token and join command from the control plane node:
+```bash
+kubeadm token create --print-join-command
+```
+
+SSH into each **worker node** and run the returned command as root:
+```bash
+sudo kubeadm join 192.168.56.11:6443 --token <token-string> \
+  --discovery-token-ca-cert-hash sha256:<hash-string>
+```
+
+---
+
+## 7. Hands-on Diagnostic Command Cheat Sheet
+
+Use this cheat sheet to quickly troubleshoot maintenance, upgrade, and ETCD issues.
+
+### 7.1 Node Maintenance & Taints
+```bash
+# Check scheduling status and taints of all nodes
+kubectl get nodes -o custom-columns=NAME:.metadata.name,STATUS:.status.conditions[-1].type,SCHEDULABLE:.spec.unschedulable,TAINTS:.spec.taints
+
+# View taints on a specific node
+kubectl describe node controlplane | grep -i taints
+```
+
+### 7.2 Component Upgrade Plan & Local Info
+```bash
+# Show upgrade options and details
+sudo kubeadm upgrade plan
+
+# View local client and api server version skews
+kubectl version --short
+```
+
+### 7.3 ETCD Troubleshooting
+```bash
+# Run client verification within the static pod namespace
+kubectl exec -n kube-system etcd-controlplane -- sh -c \
+  "ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key endpoint health"
+
+# List all keys present inside the ETCD database (Registry paths)
+kubectl exec -n kube-system etcd-controlplane -- sh -c \
+  "ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key get / --prefix --keys-only"
+```

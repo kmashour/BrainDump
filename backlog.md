@@ -4,6 +4,68 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Create CKA Exam Checklists
+
+### Added
+- **CKA Exam Checklist - Cluster Maintenance and Installation (`Projects/CKA/Exam Checklist - Cluster Maintenance and Installation.md`):** Created a targeted CKA study guide covering node maintenance (draining, cordoning), sequential upgrades using kubeadm (for master and worker nodes), and ETCD snapshot backup/restoration playbooks (for stacked and external topologies).
+- **CKA Exam Checklist - Security and Storage (`Projects/CKA/Exam Checklist - Security and Storage.md`):** Created a targeted CKA study guide covering RBAC (Role, RoleBinding, ClusterRole, ClusterRoleBinding, and auth can-i permissions testing), Kubeconfig context configuration, ServiceAccount token automount policies, SecurityContext permissions, NetworkPolicy selector logic (AND/OR), and PV/PVC/StorageClass binding and reclaiming rules.
+- **CKA Exam Checklist - Troubleshooting and Networking (`Projects/CKA/Exam Checklist - Troubleshooting and Networking.md`):** Created a targeted CKA study guide covering Pod troubleshooting workflows (CrashLoopBackOff, ImagePullBackOff, etc.), control plane and static pod failure diagnostics, worker node systemd/Kubelet config fixes, crictl socket auditing, cluster networking, service routing, CoreDNS troubleshooting, and Ingress path-rewriting.
+
+---
+
+## [2026-06-05] - Update and Create Pattern Notes
+
+### Changed / Updated
+- **Digital Garden Pattern Note (`Digital Garden/Pattern - Postgres on EKS.md`):** Updated the Postgres on EKS pattern note to integrate dynamic storage class mechanics (`volumeBindingMode: WaitForFirstConsumer`), pod-level TLS/SSL certificate generation using the Kubernetes Certificates API (`CertificateSigningRequest`), and L7 Ingress path-based routing (Nginx Ingress controller path matching and rewrite-target annotation).
+
+### Added
+- **Digital Garden Pattern Note (`Digital Garden/Pattern - CoreDNS Latency and Search Paths.md`):** Created a new pattern note describing the cross-domain interactions between the Linux resolver (`glibc`/`/etc/resolv.conf`), `ndots:5` search paths, and CoreDNS. Documented the latency amplification problem when querying external hosts, detailed mitigation alternatives (absolute names with trailing dot, Pod `dnsConfig` overrides, and NodeLocal DNSCache), and provided verification guides.
+- **Digital Garden Pattern Note (`Digital Garden/Pattern - Automated ETCD Backups on Control Plane Hosts.md`):** Created a new pattern note outlining how control plane hosts run automated, secure ETCD snapshot backups. Evaluated the circular dependency vulnerability of Kubernetes-native `CronJobs` versus local host-level `systemd` timers and services, and provided a production-ready systemd configuration and backup shell script with retention rotation.
+
+---
+
+## [2026-06-05] - Create Security and Network Policies Reference Module
+
+### Added
+- **Kubernetes Security and Network Policies Reference Module (`Reference Notes/08_security_and_network_policies.md`):** Compiled a highly structured, comprehensive, and exhaustive Reference Module covering Kubernetes Security Primitives and Authentication (human vs. machine accounts, basic/token auth deprecation), TLS Basics & TLS in K8s (manual generation of CA, admin, apiserver, and kubelet certificates using openssl and cfssl, Subject Alternative Names, auditing certificate files), Certificates API (CertificateSigningRequest resources, spec.signerName values for v1, approval workflow, and Kubelet TLS bootstrapping), Kubeconfig (clusters, users, contexts structure, file merging), Authorization modes (Node, ABAC, RBAC, Webhook, AlwaysAllow/AlwaysDeny), RBAC (Role, RoleBinding, ClusterRole, ClusterRoleBinding, namespace scope, and kubectl auth can-i permission testing), ServiceAccounts (projected tokens, TokenRequest API v1.22+, manual secret-based token generation for v1.24+), Image Security (private registry credentials, docker-registry secrets, and ImagePullSecrets), SecurityContexts (Pod-level and Container-level users, groups, and Linux capabilities), and NetworkPolicies (Ingress/Egress, podSelector, namespaceSelector, ipBlock, and AND vs OR rules logic).
+
+---
+
+## [2026-06-05] - Create Storage Mechanics and CSI Reference Module
+
+### Added
+- **Storage Mechanics & CSI Reference Module (`Reference Notes/09_storage_mechanics_and_csi.md`):** Compiled a highly structured, comprehensive, and exhaustive Reference Module covering Container Storage Interface (CSI) architecture (Kubelet coordination, node vs. controller plugins, driver registration, sidecars), volume primitives (`emptyDir` and `hostPath` configurations, security risks, systemd/SELinux permissions, scheduling disconnects), PV and PVC mechanics (binding, access modes, reclaim policies, protection finalizers), Pod volume mounts, and StorageClasses (dynamic provisioning, `WaitForFirstConsumer` topology-aware scheduling, provisioners, online expansion).
+- **Automated Verification Script (`Reference Notes/scripts/verify_storage_poc.sh`):** Created a production-grade bash verification script to test shared `emptyDir` mounts, `WaitForFirstConsumer` pending-to-bound transitions, and PVC deletion protection finalizers.
+
+---
+
+## [2026-06-05] - Create Networking, DNS, and Ingress Reference Module
+
+### Added
+- **Kubernetes Networking Reference Module (`Reference Notes/10_networking_dns_and_ingress.md`):** Created a comprehensive, production-grade study and reference module. Structured to cover Networking Prerequisites (Switching, routing, gateways, network namespaces, veth pairs, Linux bridge, NAT/MASQUERADE, DNAT), CNI specifications and host configurations (kubelet integration, plugins directory), Cluster & Pod networking (IPAM, WeaveNet overlay mechanism), Service networking (ClusterIP, NodePort, LoadBalancer routing, iptables vs IPVS proxy modes), DNS in Kubernetes (CoreDNS architecture, Corefile config, Pod/Service FQDN formats, /etc/resolv.conf search domains), and Ingress (Controllers vs Resources, routing patterns, SSL/TLS termination, rewrite-target annotations, networking.k8s.io/v1 templates).
+
+---
+
+## [2026-06-05] - Create Cluster Maintenance, Upgrades, and ETCD Reference Module
+
+### Added
+- **Reference Module (`Reference Notes/11_maintenance_upgrades_and_etcd.md`):** Compiled raw log transcripts into a highly structured, comprehensive reference module covering Node Maintenance (draining, cordoning), version skew policies, step-by-step kubeadm upgrade playbooks, ETCD snapshot backups and restores (for stacked and external topologies), High-Availability cluster architectures (stacked vs. external ETCD), and cluster bootstrapping using kubeadm with containerd systemd cgroups configurations.
+
+---
+
+## [2026-06-05] - Create Troubleshooting and Diagnostics Reference Note
+
+### Added
+- **Kubernetes Troubleshooting & Diagnostics Reference Note (`Reference Notes/12_troubleshooting_and_diagnostics.md`):** Compiled raw log transcripts into a highly structured, comprehensive Reference Module. The document covers:
+  1. Troubleshooting Application Failures: Pod phases, logs, previous logs, health probes (Startup, Liveness, Readiness), Service Endpoints, and standalone pod re-creation.
+  2. Troubleshooting Control Plane Failures: Static Pod manifest auditing, Systemd service logs, and ETCD endpoint health and membership checks.
+  3. Troubleshooting Worker Node Failures: Node conditions, Kubelet systemd services and configuration fixes, CRI socket auditing, and container runtime investigations using `crictl`.
+  4. Troubleshooting Cluster Networking: CNI configuration/binary checks, Service routing and `kube-proxy` daemonset/iptables auditing, and CoreDNS lookups with dnsutils.
+  5. Advanced Kubectl Usage: JSONPATH syntax and query snippets, Custom Columns formatting, Resource Sorting (`--sort-by`), and Filtering using label and field selectors.
+
+---
+
+
 ## [2026-06-05] - Create Workloads and Scheduling Exam Checklist
 
 ### Added

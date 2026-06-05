@@ -12,6 +12,8 @@ related_concepts:
   - "[[kubelet]]"
 reference_guides:
   - "[[Reference Notes/01_kube_api_and_kubectl.md]]"
+  - "[[Reference Notes/08_security_and_network_policies.md]]"
+  - "[[Reference Notes/12_troubleshooting_and_diagnostics.md]]"
 tags:
   - kubernetes/component
   - status/completed

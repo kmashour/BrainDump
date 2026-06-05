@@ -9,6 +9,7 @@ related_concepts:
   - "[[kube-apiserver]]"
 reference_guides:
   - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
+  - "[[Reference Notes/11_maintenance_upgrades_and_etcd.md]]"
 tags:
   - kubernetes/component
   - status/completed

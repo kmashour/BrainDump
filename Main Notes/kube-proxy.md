@@ -10,6 +10,8 @@ related_concepts:
   - "[[pod]]"
 reference_guides:
   - "[[Reference Notes/02_cluster_architecture_and_components.md]]"
+  - "[[Reference Notes/10_networking_dns_and_ingress.md]]"
+  - "[[Reference Notes/12_troubleshooting_and_diagnostics.md]]"
 tags:
   - kubernetes/component
   - status/completed
