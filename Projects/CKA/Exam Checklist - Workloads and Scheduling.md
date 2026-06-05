@@ -533,4 +533,81 @@ spec:
 ```
 > [!WARNING]
 > **Exam Pitfall:** Mounting using `subPath` (e.g., to mount a single file inside an existing directory) disables Kubelet dynamic updates for that mounted volume.
+
+---
+
+## 11. Advanced Scheduling Constraints & Eviction Checklists
+
+#### 1. Topology Spread Constraints Spec Checklist
+If the exam asks you to spread Pods evenly across Availability Zones or Node Hostnames:
+*   Add `topologySpreadConstraints` under `spec.template.spec`:
+    ```yaml
+    topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule # or ScheduleAnyway
+      labelSelector:
+        matchLabels:
+          app: my-app
+    ```
+*   Verify that `labelSelector.matchLabels` matches the Pod labels in the deployment template.
+*   Verify that `maxSkew` is a positive integer (usually `1` is requested).
+
+#### 2. Pod Priority and Preemption Debugging
+If a high-priority Pod is stuck `Pending` and you need to verify if it will preempt lower-priority Pods:
+1.  **Check the PriorityClass**:
+    ```bash
+    kubectl get priorityclasses
+    ```
+2.  **Define priorityClassName on the Pod**:
+    Ensure the Pod spec contains `priorityClassName: <class-name>`.
+3.  **Inspect Preemption Events**:
+    ```bash
+    kubectl get events -A --sort-by='.metadata.creationTimestamp'
+    ```
+    *Look for*: `Preempting` events showing that Kube-scheduler is terminating lower-priority pods to schedule the high-priority pod.
+
+#### 3. Pod Scheduling Readiness Gates
+If a Pod is created but remains `Pending` without any scheduling attempts (no events from the scheduler):
+1.  **Check for Scheduling Gates**:
+    Inspect the Pod YAML:
+    ```bash
+    kubectl get pod <pod-name> -o yaml
+    ```
+    *Look for*:
+    ```yaml
+    spec:
+      schedulingGates:
+      - name: example.com/external-check
+    ```
+2.  **Release the Gate**:
+    Remove the gate using a patch command:
+    ```bash
+    kubectl patch pod <pod-name> --type='json' -p='[{"op": "remove", "path": "/spec/schedulingGates"}]'
+    ```
+
+#### 4. Kubelet Node-Pressure Eviction Diagnostics
+If Pods in a namespace are suddenly terminated with status `Failed` and reason `Evicted`:
+1.  **Describe the Evicted Pod**:
+    ```bash
+    kubectl describe pod <pod-name>
+    ```
+    *Look for*: `Status: Failed`, `Reason: Evicted`, and message indicating resource pressure (e.g. `The node was low on resource: [DiskPressure]`).
+2.  **Inspect Node Conditions**:
+    ```bash
+    kubectl get nodes
+    ```
+    *Look for*: Node status showing `MemoryPressure`, `DiskPressure`, or `PIDPressure` as `True`.
+3.  **Check Kubelet Logs**:
+    SSH to the node and check Kubelet logs to verify the eviction thresholds configuration:
+    ```bash
+    journalctl -u kubelet -e | grep -i eviction
+    ```
+    *Common threshold configs in `/var/lib/kubelet/config.yaml`:*
+    ```yaml
+    evictionHard:
+      memory.available: "100Mi"
+      nodefs.available: "10%"
+    ```
+
 ```

@@ -1271,8 +1271,170 @@ chmod +x "Reference Notes/scripts/verify_scheduling_lifecycle_poc.sh"
 
 ---
 
+---
+
+## 5. Advanced Scheduling & Eviction Control
+
+As cluster architectures scale, the `kube-scheduler` and node agents require more advanced placement constraints, performance tuning, and eviction triggers.
+
+### 5.1 Topology Spread Constraints
+**Topology Spread Constraints** allow you to distribute Pods across different failure domains (zones, nodes, or regions) to achieve high availability. Unlike node anti-affinity (which is binary: yes or no), spread constraints allow you to define a tolerated imbalance or skew.
+
+*   **`maxSkew`:** The maximum difference in the number of Pods between any two topology domains. It must be a positive integer.
+*   **`topologyKey`:** The node label that identifies the failure domain (e.g. `topology.kubernetes.io/zone`, `kubernetes.io/hostname`).
+*   **`whenUnsatisfiable`:** Dictates what to do if the constraint cannot be met:
+    *   `DoNotSchedule`: (Hard constraint) The Pod remains `Pending` if the skew cannot be satisfied.
+    *   `ScheduleAnyway`: (Soft constraint) The scheduler still schedules the Pod but prioritizes minimizing the skew.
+*   **`labelSelector`:** Identifies which Pods are counted in the spread calculation.
+
+```yaml
+# Example Topology Spread Constraint
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-frontend
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app: web
+```
+
+---
+
+### 5.2 Pod Scheduling Readiness (Scheduling Gates)
+Introduced to prevent the scheduler from wasting processing cycles on Pods that are blocked by external dependencies (e.g., quota checks, security scans, data migrations).
+*   **`spec.schedulingGates`:** An array of gate names. If present, the Pod is marked as "parked" and is not considered for scheduling.
+*   **Removal:** A controller or operator removes the gate by patching the Pod spec to clear the gate name. Once the array is empty, the Pod enters the active scheduling queue.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gated-pod
+spec:
+  schedulingGates:
+  - name: example.com/quota-check
+  containers:
+  - name: app
+    image: nginx
+```
+*To release the gate:*
+```bash
+kubectl patch pod gated-pod --type='json' -p='[{"op": "remove", "path": "/spec/schedulingGates"}]'
+```
+
+---
+
+### 5.3 The Scheduling Framework & Extension Points
+The **Scheduling Framework** is a pluggable architecture within the `kube-scheduler` that permits custom plugins to extend the scheduler's logic without rebuilding the binary.
+
+The scheduling process is split into two distinct cycles:
+1.  **Scheduling Cycle (Synchronous):** Evaluates nodes and selects the best one for the Pod (running sequentially for one Pod at a time).
+2.  **Binding Cycle (Asynchronous):** Applies the binding to the API server (can run concurrently for multiple Pods).
+
+```
+[ Scheduling Queue ]
+       |
+  (QueueSort)
+       |
+[ Scheduling Cycle ] ----> (PreFilter -> Filter -> PostFilter)
+       |                                   |
+  (Reserve)                                v
+       |                       (PreScore -> Score -> NormalizeScore)
+       |
+  (Permit) <--- Holds pod scheduling (Approve / Deny / Wait)
+       |
+[ Binding Cycle ]   ----> (PreBind -> Bind -> PostBind)
+```
+
+#### Key Extension Points & Hooks:
+*   **`QueueSort`:** Sorts Pods in the active scheduling queue.
+*   **`PreFilter` & `Filter`:** Evaluates node constraints (replaces the legacy "Predicates" check).
+*   **`PreScore` & `Score`:** Scores nodes to rank them (replaces the legacy "Priority" functions).
+*   **`Reserve`:** Reserves the node resources on local cache before writing to the API.
+*   **`Permit`:** Can approve, deny, or delay (wait) the scheduling decision (useful for batch/gang scheduling).
+*   **`Bind`:** Invokes the API to write the `Binding` resource.
+
+---
+
+### 5.4 Pod Priority and Preemption
+When resources are scarce, Kubernetes can terminate lower-priority workloads to make room for critical services.
+
+#### 1. Define Priority Classes:
+A `PriorityClass` is a cluster-scoped object that defines a priority value.
+```yaml
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority-db
+value: 1000000
+globalDefault: false
+description: "Used for core database pods."
+```
+
+#### 2. Pod Preemption Flow:
+1.  A high-priority Pod is created but cannot find a node with enough resources.
+2.  The scheduler enters the **Preemption** phase.
+3.  It scans nodes to find a node where evicting lower-priority Pods will free up enough CPU/memory.
+4.  The lower-priority Pods are sent a `SIGTERM` signal and set to `Terminating` status.
+5.  Once the space is cleared, the high-priority Pod is scheduled on the node.
+
+---
+
+### 5.5 Pod Overhead & Dynamic Resource Allocation (DRA)
+
+#### 1. Pod Overhead:
+Account for the resource usage of the container runtime sandbox itself (e.g. Kata containers or gVisor virtual machines).
+*   Configured inside the `RuntimeClass` resource using `spec.overhead`.
+*   The scheduler factors this overhead *in addition* to container requests when placing the Pod.
+```yaml
+apiVersion: node.k8s.io/v1
+kind: RuntimeClass
+metadata:
+  name: kata-vm
+handler: kata-containers
+overhead:
+  podFixed:
+    cpu: "250m"
+    memory: "500Mi"
+```
+
+#### 2. Dynamic Resource Allocation (DRA):
+Designed as the modern, attribute-based successor to Device Plugins (GPUs, FPGAs).
+*   Instead of requesting counts (e.g., `nvidia.com/gpu: 1`), Pods reference a `ResourceClaim`.
+*   The scheduler coordinates with resource drivers via `ResourceSlice` resources to allocate specific devices with complex parameters (e.g. partition sharing, GPU memory limits).
+
+---
+
+### 5.6 Pod Eviction Mechanics (Node-Pressure vs API Eviction)
+Workloads are evicted (terminated prematurely) from nodes under two separate scenarios:
+
+| Feature | Node-Pressure Eviction (Kubelet-driven) | API-initiated Eviction (API-driven) |
+| :--- | :--- | :--- |
+| **Trigger** | Node runs out of memory, disk, or inodes (system threshold reached). | User or controller requests eviction (e.g., `kubectl drain`). |
+| **Enforced By** | Node `kubelet` directly[16]. | API Server coordinating with `kubelet`[14]. |
+| **PDBs** | Bypasses Pod Disruption Budgets (unconditional eviction). | Respects Pod Disruption Budgets (blocks if budget is violated)[17]. |
+| **Object Status** | Pod phase is set to `Failed` (remains in API). | Pod object is cleanly deleted from the cluster[15]. |
+| **Diagnostics** | Check Kubelet journal logs: `journalctl -u kubelet` | Check event logs: `kubectl get events` |
+
+---
+
 ## 🔗 Related Modules
 * [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Deep dive into Kube-Scheduler's placement algorithms and static pods config.
 * [Module 07: Kubernetes Workloads & Controllers](07_kubernetes_workloads_and_controllers.md) - Comprehensive specifications of ReplicaSets, Deployments, DaemonSets, and Static Pods.
 * [Module 08: Security and Network Policies](08_security_and_network_policies.md) - Covers ServiceAccounts, securityContexts, and detailed TLS configurations.
 * [Module 12: Troubleshooting and Diagnostics](12_troubleshooting_and_diagnostics.md) - Operational playbooks for resolving node and control plane failures.
+

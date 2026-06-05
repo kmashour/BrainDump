@@ -4,6 +4,22 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Ingest Scheduling and Eviction Documentation Pages
+
+### Added
+- **Deeper Note (`Main Notes/kube-scheduler - Priority Preemption and Topology Spread.md`):** Explains Pod Priority & Preemption, Pod Overhead, DRA, Scheduling Framework extension points, and Topology Spread Constraints (`maxSkew`).
+- **Architectural Pattern Note (`Digital Garden/Pattern - Even Workload Distribution in Multi-Zone Clusters.md`):** Outlines how Topology Spread Constraints and pod topology spread spread workloads evenly across failure domains (nodes, zones, regions).
+
+### Changed / Updated
+- **Scheduling & Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Added Section 5 covering advanced scheduling gates, framework architecture, priorities/preemption, and kubelet eviction limits (Node-Pressure vs API evictions).
+- **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended Section 11 detailing topology spread configs, scheduling gates validation, priority/preemption definitions, and API eviction testing.
+
+### Ingested Inflow Sources
+The following documentation URL index files have been processed and fully integrated:
+- `inflow/Scheduling_CKA_Docs.md`
+
+---
+
 ## [2026-06-05] - Ingest Services/Networking and Storage Documentation Pages
 
 ### Added

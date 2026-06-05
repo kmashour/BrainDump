@@ -140,7 +140,7 @@ def check_inflow_coverage():
             status = "Ignored/Useless"
             justification = "Shorthand speed tips already in Vim and Terminal Setup."
             ignored_count += 1
-        elif file_name in ["Services-LoadBalancers-Networking_CKA_Docs.md", "Storage_CKA_Docs.md"]:
+        elif file_name in ["Services-LoadBalancers-Networking_CKA_Docs.md", "Storage_CKA_Docs.md", "Scheduling_CKA_Docs.md"]:
             status = "Ignored/Useless"
             justification = "URL index links only; redundant."
             ignored_count += 1
