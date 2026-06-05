@@ -303,3 +303,56 @@ kubectl patch pvc <pvc-name> -p '{"metadata":{"finalizers":null}}'
 # Clear PV Protection finalizer
 kubectl patch pv <pv-name> -p '{"metadata":{"finalizers":null}}'
 ```
+
+---
+
+## 7. Advanced Volume & Ephemeral Storage Checklists
+
+#### 1. Projected Volumes Spec Check
+If you need to project multiple sources into a single directory:
+*   Ensure all sources are read-only (`readOnly: true`).
+*   Verify the projected list structure under `projected.sources`:
+    ```yaml
+    volumes:
+    - name: unified-volume
+      projected:
+        sources:
+        - secret:
+            name: user-pass
+        - configMap:
+            name: db-host
+    ```
+
+#### 2. Ephemeral Storage Limit Eviction Diagnostics
+If a Pod keeps crashing or is terminated with the message `Evicted` and reason `DiskPressure`:
+1.  **Check Pod events**:
+    ```bash
+    kubectl describe pod <pod-name>
+    ```
+    *Look for*: `Evicted: Pod ephemeral local storage usage exceeds the total limit of containers`.
+2.  **Verify local limits**:
+    Check the container `resources.limits` configuration:
+    ```yaml
+    resources:
+      limits:
+        ephemeral-storage: "1Gi"
+    ```
+    If the container writes large temporary files or outputs massive logs, increase the limit or configure a PersistentVolume.
+
+#### 3. Generic Ephemeral Volume Usage
+If you need temporary scratch space that requires dynamic provisioning (e.g. SSD disk speed or dedicated PV limits):
+*   Define the `ephemeral.volumeClaimTemplate` inline inside `spec.volumes`:
+    ```yaml
+    volumes:
+    - name: temp-ssd-volume
+      ephemeral:
+        volumeClaimTemplate:
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            storageClassName: "ssd-storage"
+            resources:
+              requests:
+                storage: 5Gi
+    ```
+    *Note:* The lifecycle of this volume and claim is bound directly to the Pod. When the Pod is deleted, the dynamic claim and volume are unmounted and deleted.
+

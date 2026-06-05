@@ -628,3 +628,211 @@ kubectl delete pvc delayed-pvc
 kubectl delete pv delayed-pv
 kubectl delete -f storageclass.yaml
 ```
+
+---
+
+## 6. Advanced Storage Concepts & Volume Control
+
+Kubernetes modern storage APIs introduce granular controls for ephemeral files, volume backups, dynamic capacity scheduling, and on-the-fly performance tuning.
+
+### 6.1 Projected Volumes
+A **Projected Volume** maps multiple existing volume sources into the same directory within a Pod. 
+
+*   **Supported Sources:**
+    *   `secret`
+    *   `configMap`
+    *   `downwardAPI`
+    *   `serviceAccountToken` (for projecting audience-bound, short-lived OIDC tokens)
+*   **Key Behavior:** All sources are projected as read-only. Symbolic links are used under the hood to ensure files are updated atomically when the source changes in the control plane.
+
+#### Example Projected Volume Manifest:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: projected-volume-pod
+spec:
+  containers:
+  - name: app
+    image: alpine
+    command: ["sleep", "3600"]
+    volumeMounts:
+    - name: unified-config
+      mountPath: /var/run/config
+      readOnly: true
+  volumes:
+  - name: unified-config
+    projected:
+      sources:
+      - secret:
+          name: db-credentials
+          items:
+          - key: username
+            path: db-user
+      - configMap:
+          name: app-settings
+          items:
+          - key: theme
+            path: ui-theme
+      - downwardAPI:
+          items:
+          - path: pod-info.txt
+            fieldRef:
+              fieldPath: metadata.name
+```
+
+---
+
+### 6.2 Ephemeral Volumes (CSI & Generic)
+While persistent volumes persist beyond the lifecycle of a Pod, **Ephemeral Volumes** are temporary directories tied strictly to the lifetime of the Pod. They are created when the Pod is scheduled and deleted when it terminates.
+
+#### 1. CSI Inline Ephemeral Volumes:
+These allow you to define CSI volumes inline inside the Pod specification. They are suitable for simple, local drivers that do not require full PersistentVolume lifecycle management (e.g., injecting secret keys or local certificates).
+```yaml
+spec:
+  containers:
+  - name: web
+    image: nginx
+    volumeMounts:
+    - name: local-certs
+      mountPath: /certs
+  volumes:
+  - name: local-certs
+    csi:
+      driver: inline.certs.csi.k8s.io
+      volumeAttributes:
+        secretName: site-cert
+```
+
+#### 2. Generic Ephemeral Volumes:
+Generic ephemeral volumes allow any storage driver that supports dynamic provisioning to provide ephemeral storage for a Pod. It utilizes the PVC lifecycle internally:
+*   When a Pod is created, the cluster automatically creates a matching PVC on behalf of the Pod.
+*   The volume is dynamically provisioned and mounted.
+*   When the Pod is deleted, the PVC is automatically deleted, triggering the deletion of the underlying PV.
+*   *Advantages:* Supports volume limits, snapshots, and resizing via regular StorageClasses.
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: generic-ephemeral-pod
+spec:
+  containers:
+  - name: cache-server
+    image: redis
+    volumeMounts:
+    - name: scratch-space
+      mountPath: /data
+  volumes:
+  - name: scratch-space
+    ephemeral:
+      volumeClaimTemplate:
+        spec:
+          accessModes: [ "ReadWriteOnce" ]
+          storageClassName: "fast-local"
+          resources:
+            requests:
+              storage: 2Gi
+```
+
+---
+
+### 6.3 Volume Snapshots & VolumeSnapshotClasses
+**Volume Snapshots** capture a point-in-time copy of a PersistentVolume's data. This feature relies on three Custom Resource Definitions (CRDs) managed by the CSI driver.
+
+*   **`VolumeSnapshotClass`**: Defines the driver, the deletion policy (`Delete` vs `Retain`), and specific parameters for the snapshot backend (similar to a `StorageClass`).
+*   **`VolumeSnapshot`**: The user's request to capture a snapshot. References a source PVC.
+*   **`VolumeSnapshotContent`**: The actual physical copy on the storage backend. References a `VolumeSnapshot` and is cluster-scoped (similar to a `PersistentVolume`).
+
+```yaml
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: prod-snapshot-class
+driver: hostpath.csi.k8s.io
+deletionPolicy: Delete
+---
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: db-backup-snapshot
+  namespace: db-ns
+spec:
+  volumeSnapshotClassName: prod-snapshot-class
+  source:
+    persistentVolumeClaimName: postgres-pvc
+```
+*To restore a snapshot:* Create a new PVC and specify the `VolumeSnapshot` as the `dataSource`:
+```yaml
+spec:
+  dataSource:
+    name: db-backup-snapshot
+    kind: VolumeSnapshot
+    apiGroup: snapshot.storage.k8s.io
+  resources:
+    requests:
+      storage: 10Gi # Must be >= size of snapshot
+```
+
+---
+
+### 6.4 Storage Capacity Tracking & Scheduling
+In large clusters, placing a Pod on a node before verifying available storage can result in the Pod being stuck in `ContainerCreating` or `VolumeBinding` states.
+*   **`CSIStorageCapacity` API:** CSI drivers publish remaining capacity information to the API server.
+*   **`kube-scheduler` Integration:** When scheduling a Pod that requests dynamic provisioning, the scheduler checks these capacity reports. It filters out nodes that lack sufficient local/regional storage, preventing volume provisioning bottlenecks.
+
+---
+
+### 6.5 Volume Attributes Classes (v1.34+ GA)
+**Volume Attributes Classes** permit developers to dynamically modify volume configurations (e.g., IOPS, throughput, latency tiers) on the fly without deleting the PVC or causing database downtime.
+*   **Usage:** A cluster-scoped `VolumeAttributesClass` defines storage profiles. A PVC references this class via `spec.volumeAttributesClassName`.
+*   **Dynamic Update:** Modifying the reference in the PVC triggers the CSI driver to resize or alter storage performance parameters online.
+
+```yaml
+apiVersion: storage.k8s.io/v1alpha1
+kind: VolumeAttributesClass
+metadata:
+  name: high-iops-class
+driver: pd.csi.storage.gke.io
+parameters:
+  iops: "10000"
+  throughput: "500"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-pvc
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 100Gi
+  volumeAttributesClassName: high-iops-class
+```
+
+---
+
+### 6.6 Local Ephemeral Storage Limits & Volume Health Monitoring
+
+#### 1. Local Ephemeral Storage resource control:
+Local ephemeral storage (writable container layers, logs, and `emptyDir` volumes) is shared across the node's root filesystem. To prevent a rogue Pod from exhausting node disk space:
+*   **Requests & Limits:** Define `resources.requests.ephemeral-storage` and `resources.limits.ephemeral-storage` in the container spec.
+*   **Eviction:** The Kubelet monitors disk usage. If a Pod's local ephemeral storage usage exceeds its specified limit, the Kubelet evicts the Pod, terminating its processes to protect the node's disk integrity.
+*   **ResourceQuotas:** Namespace-level storage quotas can limit the total ephemeral storage requests or limits allowed across all Pods in the namespace.
+
+```yaml
+spec:
+  containers:
+  - name: app
+    image: busybox
+    resources:
+      requests:
+        ephemeral-storage: "500Mi"
+      limits:
+        ephemeral-storage: "2Gi"
+```
+
+#### 2. Volume Health Monitoring:
+Allows the CSI driver and Kubelet to detect disk health events (e.g., device errors, partition corruption, read-only mounts) from the underlying storage controller.
+*   If a disk fails, the monitor logs an event on the PVC (e.g., `VolumeUnhealthy`) or Pod.
+*   Cluster operators can capture these events to trigger auto-recreation of the Pod on a healthy node.
+

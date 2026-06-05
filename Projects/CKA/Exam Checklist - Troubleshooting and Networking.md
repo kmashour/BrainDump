@@ -272,3 +272,55 @@ spec:
               number: 80
 ```
 *   *Behavior*: Request `http://my-app.local/app/profile` matches the second capture group (`(.*)`) and is forwarded to the backend service as `/profile`.
+
+---
+
+### 4.5 Modern Routing API & Endpoint Troubleshooting
+
+#### 1. Ingress vs Gateway API Debugging
+If a `Gateway` or `HTTPRoute` does not resolve or route traffic:
+1.  **Check CRD Resources**: Gateway API is CRD-based. Verify the resources exist:
+    ```bash
+    kubectl get gatewayclasses,gateways,httproutes -A
+    ```
+2.  **Verify Gateway status**: Check if the listener bound successfully:
+    ```bash
+    kubectl describe gateway <gateway-name> -n <namespace>
+    ```
+    *Look for*: `status.conditions` showing `Accepted: True` and `Programmed: True`.
+3.  **Inspect Route Binding**: Ensure the route successfully bound to the gateway:
+    ```bash
+    kubectl describe httproute <route-name> -n <namespace>
+    ```
+    *Look for*: `status.parents[*].conditions` showing `Accepted: True`.
+
+#### 2. Troubleshooting Service Endpoints via EndpointSlices
+If traffic resolves to a Service ClusterIP but times out or fails:
+1.  **List EndpointSlices**: Get the slice objects associated with the service:
+    ```bash
+    kubectl get endpointslice -l kubernetes.io/service-name=<service-name>
+    ```
+2.  **Verify Pod IPs & Conditions**: Inspect endpoint readiness:
+    ```bash
+    kubectl describe endpointslice <slice-name>
+    ```
+    *Look for*:
+    *   `conditions.ready: true` (healthy pods).
+    *   `conditions.serving: true` (readiness probe passed).
+    *   `conditions.terminating: false` (pods not actively shutting down).
+    If no endpoints show `ready: true`, the service will fail to route traffic.
+
+#### 3. Internal Traffic Policies & Node Local Problems
+If a service works from some pods but fails from others:
+1.  **Check `internalTrafficPolicy`**:
+    ```bash
+    kubectl get svc <service-name> -o yaml | grep internalTrafficPolicy
+    ```
+2.  **Node local diagnostic**:
+    If `internalTrafficPolicy` is set to `Local`, it forces traffic to stay on the local node.
+    *   *Verify*: Check if a backend Pod is running on the *same node* as the client Pod:
+        ```bash
+        kubectl get pods -o wide --selector=<service-selector>
+        ```
+        If no backend Pod matches the node name of the client Pod, traffic will fail immediately. Revert to `Cluster` or reschedule Pods.
+

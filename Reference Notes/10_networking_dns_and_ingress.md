@@ -870,9 +870,196 @@ spec:
 
 ---
 
-## 7. Diagnostics and Verification Cheat Sheet
+## 7. Advanced Service Networking & Modern APIs
 
-Use these command patterns to troubleshoot networking, DNS, and Ingress routing issues in the cluster.
+As Kubernetes has scaled, legacy APIs like `Ingress` and `Endpoints` have shown limitations. Modern Kubernetes networking introduces specialized resources to handle L4/L7 routing, multi-tenancy, and routing efficiency.
+
+### 7.1 The Gateway API
+The **Gateway API** is an official, open-source set of resources that extends service networking in Kubernetes. Designed as the successor to `Ingress`, it offers a role-oriented, expressive, and extensible model.
+
+```
+                  [ GatewayClass ] (Managed by Infra Provider)
+                         |
+                    [ Gateway ]    (Managed by Cluster Operator)
+                   /           \
+           [ HTTPRoute ]   [ GPCRoute ] (Managed by App Developers)
+           /           \         |
+      [ service-a ] [ service-b ] [ service-c ]
+```
+
+#### 1. Role-Oriented Design & Hierarchy:
+*   **`GatewayClass` (Cluster-Scoped):** Defines a template for a gateway implementation (e.g., an Envoy-backed load balancer, an F5 hardware appliance, or an AWS load balancer). Managed by the **Infrastructure Provider**.
+*   **`Gateway` (Namespace-Scoped):** Requests an entry point for traffic. It defines the listeners (port, protocol, TLS config) and references a `GatewayClass`. Managed by the **Cluster Operator**.
+*   **`HTTPRoute` / `GRPCRoute` / `TCPRoute` / `TLSRoute`:** Defines protocol-specific routing rules from a `Gateway` listener to backends. Managed by **Application Developers**.
+
+#### 2. Comparison with Ingress:
+| Feature | Legacy Ingress API | Modern Gateway API |
+| :--- | :--- | :--- |
+| **Configuration Model** | Monolithic (everything in one resource) | Distributed (split across classes, gateways, and routes) |
+| **Multi-tenancy** | Poor (hard to delegate paths to namespaces safely) | Built-in (routes in other namespaces bind to gateways) |
+| **Portability** | Heavy reliance on custom annotations | Native, standardized resource fields |
+| **Protocols Supported** | Primarily HTTP/HTTPS | HTTP, HTTPS, gRPC, TCP, UDP, TLS |
+
+#### Example Gateway API Manifest (Gateway & HTTPRoute):
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: prod-gateway
+  namespace: infra-ns
+spec:
+  gatewayClassName: internal-envoy
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            shared-gateway: "true"
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: app-route
+  namespace: app-ns
+spec:
+  parentRefs:
+  - name: prod-gateway
+    namespace: infra-ns
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /v1
+    backendRefs:
+    - name: web-service
+      port: 8080
+      weight: 90
+    - name: canary-service
+      port: 8080
+      weight: 10
+```
+
+---
+
+### 7.2 EndpointSlices
+**EndpointSlices** provide a highly scalable way to track network endpoints (usually Pod IPs) within a Kubernetes cluster. They replace the monolithic legacy `Endpoints` resources.
+
+#### 1. The Scalability Bottleneck of Legacy Endpoints:
+The original `Endpoints` resource listed *every* Pod IP for a Service in a single object. If a Service had 5,000 pods, this object grew to megabytes. When a single pod crashed or was rescheduled:
+1.  The entire `Endpoints` object had to be updated in the API server.
+2.  The entire object was serialized and transmitted over the network to *every* node running `kube-proxy`.
+3.  This caused high CPU usage on the control plane and node bottlenecks.
+
+#### 2. The EndpointSlice Solution:
+`EndpointSlices` slice the backend endpoints into smaller chunks (default: **100 endpoints per slice**). 
+*   If a Service has 5,000 backend pods, Kubernetes creates 50 `EndpointSlice` objects.
+*   When a pod IP changes, only one small slice is updated and transmitted, reducing network volume by $O(N)$ where $N$ is the number of pods.
+
+#### 3. Endpoint Conditions:
+Every endpoint tracked in an `EndpointSlice` maintains three conditions:
+*   `Ready`: Indicates the Pod is healthy and ready to accept traffic.
+*   `Serving`: Maps to the Pod's readiness probe status. Unlike `Ready`, it remains `true` even during Pod termination to support graceful shutdown drains.
+*   `Terminating`: Indicates the Pod is actively shutting down (`SIGTERM` has been sent) but is still draining. `kube-proxy` can use this to complete current connections while ignoring the Pod for new requests.
+
+```yaml
+# Example EndpointSlice snippet
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: web-service-abcde
+  labels:
+    kubernetes.io/service-name: web-service
+addressType: IPv4
+ports:
+  - name: http
+    port: 80
+    protocol: TCP
+endpoints:
+  - addresses:
+      - "10.244.1.45"
+    conditions:
+      ready: true
+      serving: true
+      terminating: false
+    nodeName: worker-node-1
+    topology:
+      kubernetes.io/zone: us-east-1a
+```
+
+---
+
+### 7.3 Topology Aware Routing & Internal Traffic Policies
+To optimize routing, reduce latency, and avoid cross-availability-zone data transfer costs, Kubernetes offers advanced traffic-routing parameters.
+
+#### 1. Topology Aware Routing (Zone Preference):
+When you enable Topology Aware Routing, the `EndpointSlice` controller appends topology "hints" to endpoints. These hints instruct `kube-proxy` to route traffic to endpoints in the same availability zone.
+*   **Enabling:** Add the following annotation to a Service:
+    ```yaml
+    metadata:
+      annotations:
+        service.kubernetes.io/topology-mode: Auto
+    ```
+*   **Constraints:**
+    *   **Even Spread:** Pods must be spread evenly across zones (e.g., using `topologySpreadConstraints`).
+    *   **Minimum Threshold:** If a zone has too few endpoints relative to its incoming traffic (usually less than 3 endpoints), the controller disables routing hints, falling back to cross-zone traffic to ensure service availability.
+
+#### 2. Internal Traffic Policy (`Cluster` vs `Local`):
+Controls how in-cluster clients (Pods) send traffic to Services:
+*   `spec.internalTrafficPolicy: Cluster` (Default): Traffic is routed to any available endpoint in the cluster.
+*   `spec.internalTrafficPolicy: Local`: Traffic is restricted to endpoints located **only on the same node** as the calling Pod.
+    *   *Benefits:* Zero network latency (node-local routing), avoiding network hops.
+    *   *Risk:* If the local node has no Pod matching the Service selector, traffic is dropped (no fallback to other nodes). Useful for routing ingress controller traffic to node-level local pods.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-local-service
+spec:
+  selector:
+    app: node-agent
+  ports:
+  - port: 80
+    targetPort: 8080
+  internalTrafficPolicy: Local
+```
+
+---
+
+### 7.4 Service ClusterIP Allocation & CIDR Management (v1.26+)
+To prevent collisions when assigning virtual IPs (ClusterIPs) to Services, modern Kubernetes clusters use advanced allocation engines.
+
+#### 1. Range Reservation Mechanics (v1.26+):
+Before v1.26, manually assigning a static `clusterIP` carried the risk of colliding with an automatically assigned (dynamic) ClusterIP. To prevent this, Kubernetes reserves a segment of the `service-cluster-ip-range`:
+*   The Service CIDR is divided into two bands.
+*   The lower band is reserved for dynamic allocation (automatically chosen IPs).
+*   The upper band is reserved for static allocation (user-specified IPs).
+*   The reservation ratio dynamically assigns the top section (e.g., $1/16$th of the range or up to 256 IPs) for manual entries, preventing collisions.
+
+#### 2. Dynamic Service CIDR Expansion (v1.29+):
+If a cluster runs out of Service IPs, updating the `--service-cluster-ip-range` on `kube-apiserver` is highly disruptive. v1.29+ introduces stable dynamic expansion via the `ServiceCIDR` API:
+*   A cluster can have multiple `ServiceCIDR` resources.
+*   The `MultiCIDRServiceAllocator` allocator pools these ranges, dynamically allocating IPs from the newly added blocks without API server restarts.
+
+```yaml
+apiVersion: networking.k8s.io/v1alpha1
+kind: ServiceCIDR
+metadata:
+  name: extra-service-range
+spec:
+  cidrs:
+  - 10.96.128.0/20
+```
+
+---
+
+## 8. Diagnostics and Verification Cheat Sheet
+
+Use these command patterns to troubleshoot networking, DNS, Ingress, and Gateway routing issues in the cluster.
 
 ```bash
 # ==============================================================================
@@ -897,9 +1084,15 @@ cat /etc/cni/net.d/*.conflist
 kubectl exec -n kube-system daemonset/weave-net -c weave -- weave status
 
 # ==============================================================================
-# Service and Routing Debugging
+# Service, EndpointSlice, and Routing Debugging
 # ==============================================================================
-# List iptables NAT chains to identify service endpoints
+# List EndpointSlices for a specific service
+kubectl get endpointslice -l kubernetes.io/service-name=<service-name>
+
+# Inspect EndpointSlice conditions (Ready, Serving, Terminating)
+kubectl get endpointslice <slice-name> -o yaml
+
+# Inspect iptables NAT chains to identify service endpoints
 iptables -t nat -L KUBE-SERVICES -n -v
 
 # Inspect IPVS routing rules if kube-proxy is operating in IPVS mode
@@ -907,6 +1100,9 @@ ipvsadm -ln
 
 # Query the ClusterIP range configured for API Server services
 ps -aux | grep kube-apiserver | grep -oE "\-\-service-cluster-ip-range=[^ ]+"
+
+# Check if ServiceCIDR expansion is active (v1.29+)
+kubectl get servicecidrs
 
 # ==============================================================================
 # DNS Operations and Resolution Checks
@@ -918,11 +1114,17 @@ kubectl run dns-tester --image=busybox:1.28 --restart=Never --rm -it -- nslookup
 kubectl logs -n kube-system -l k8s-app=kube-dns --tail=100
 
 # ==============================================================================
-# Ingress Routing Verification
+# Ingress and Gateway Routing Verification
 # ==============================================================================
 # Check detailed configurations for a deployed Ingress resource
 kubectl describe ingress <ingress-name>
 
 # Check log output from the Nginx Ingress Controller
 kubectl logs -n ingress-nginx deployment/ingress-nginx-controller
+
+# Query Gateway API resources in the cluster
+kubectl get gatewayclasses,gateways,httproutes -A
+
+# Inspect a Gateway's status for bind or listener errors
+kubectl describe gateway <gateway-name> -n <namespace>
 ```

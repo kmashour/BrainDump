@@ -4,6 +4,28 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Ingest Services/Networking and Storage Documentation Pages
+
+### Added
+- **Landing Note (`Main Notes/gateway-api.md`):** Created a landing note for the Gateway API, outlining its role-oriented design (GatewayClass, Gateway, Route), Ingress comparison, and porting capabilities.
+- **Deeper Note (`Main Notes/service - EndpointSlices and Topology routing.md`):** Explains EndpointSlice chunking limits, conditions (`Serving` vs `Ready` vs `Terminating`), and Topology Aware Routing hints.
+- **Deeper Note (`Main Notes/persistentvolumeclaim - Snapshots and Attributes.md`):** Explains VolumeSnapshots, snapshot restores, dynamic tuning via `VolumeAttributesClass`, and health monitoring sidecars.
+- **Deeper Note (`Main Notes/persistentvolume - Ephemeral and Projected.md`):** Explains Projected Volumes, CSI inline ephemeral volumes, Generic Ephemeral Volumes, and local ephemeral storage quotas/eviction.
+- **Architectural Pattern Note (`Digital Garden/Pattern - Multi-Zone Service Routing and Latency Mitigation.md`):** Explains how Gateway API and Topology Aware Routing hints map network connections inside availability zones.
+
+### Changed / Updated
+- **Storage Reference Module (`Reference Notes/09_storage_mechanics_and_csi.md`):** Added Section 6 covering Projected Volumes, CSI/Generic Ephemeral Volumes, VolumeSnapshots, CSIStorageCapacity tracking, VolumeAttributesClass performance scaling, and local storage eviction.
+- **Networking Reference Module (`Reference Notes/10_networking_dns_and_ingress.md`):** Added Section 7 covering Gateway API specifications, EndpointSlices scalability, Topology Aware Routing, internalTrafficPolicy, and v1.26+ static/dynamic ClusterIP allocation.
+- **Exam Checklist (`Projects/CKA/Exam Checklist - Troubleshooting and Networking.md`):** Appended Section 4.5 detailing Gateway API status troubleshooting, EndpointSlice health inspections, and node-local internalTrafficPolicy debug workflows.
+- **Exam Checklist (`Projects/CKA/Exam Checklist - Security and Storage.md`):** Appended Section 7 detailing Projected Volume configs, ephemeral storage limits eviction diagnostics, and Generic Ephemeral Volume templates.
+
+### Ingested Inflow Sources
+The following documentation URL index files have been processed and fully integrated:
+- `inflow/Services-LoadBalancers-Networking_CKA_Docs.md`
+- `inflow/Storage_CKA_Docs.md`
+
+---
+
 ## [2026-06-05] - Re-ingestion and Coverage Audit of Course Transcripts
 
 ### Ingested Inflow Sources
