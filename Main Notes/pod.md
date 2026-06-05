@@ -11,6 +11,7 @@ related_concepts:
   - "[[kube-scheduler]]"
 reference_guides:
   - "[[Reference Notes/05_containers_runtimes_and_lifecycle.md]]"
+  - "[[Reference Notes/07_kubernetes_workloads_and_controllers.md]]"
 tags:
   - kubernetes/workload
   - status/completed

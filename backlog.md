@@ -4,6 +4,46 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Create Workloads and Scheduling Exam Checklist
+
+### Added
+- **CKA Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Created a highly targeted study guide and checklist covering Pod YAML generation/modifications, health probes, deployment rollouts/rollbacks, DaemonSet migration steps, static pods management, jobs/cronjobs config, and StatefulSet database clustering.
+
+---
+
+## [2026-06-05] - Create Stateful Database Clustering Pattern Note
+
+### Added
+- **Digital Garden Pattern Note (`Digital Garden/Pattern - Stateful Database Clustering in Kubernetes.md`):** Created a cross-domain architectural pattern note connecting domains `kubernetes`, `networking`, `database`, and `linux`, and components `[[statefulset]]`, `[[pod]]`, `[[node]]`, and `[[container-runtime]]`. Detailed how StatefulSet ordinals, headless services, CoreDNS records, PVC templates, and local storage (LVM/hostPath) coordinate to host clustered stateful databases. Included a Mermaid sequence diagram for network pathing/DNS replication sync, a comparison of StatefulSets vs. Bare-metal VMs, local vs. remote storage, readiness probe impacts, and manual/automated verification guides.
+
+---
+
+## [2026-06-05] - Create Kubernetes Workloads Verification PoC Script
+
+### Added
+- **Workload & Controller Verification Script (`Reference Notes/scripts/verify_workloads_poc.sh`):** Created a production-grade automated verification script to validate multi-container IPC patterns, localhost network port sharing, native gRPC probes, and StatefulSet headless DNS architectures.
+- **Verification Script Documentation (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Appended Section 13.7 documenting the verification script scope, execution instructions, and clean-up options.
+
+---
+
+## [2026-06-05] - Kubernetes Workloads & Controllers Reference Note Expansion
+
+### Refactored / Upgraded
+- **Context Expansion Audit in Workloads & Controllers Reference Note (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):**
+  - **Linux Namespaces & Cgroups (CRI/OCI Level):** Added detailed architectural explanations for kernel namespaces (`net`, `ipc`, `pid`, `mnt`, `uts`, `user`). Documented the hierarchy and structural differences between cgroups v1 and v2. Explained resource constraints mapping to Completely Fair Scheduler (CFS) bandwidth quotas/periods and OOM killer score adjustment math (`oom_score_adj`) across QoS classes.
+  - **Shared Pod IPC & Unix Sockets:** Documented container-to-container communication mechanics. Included complete, runnable YAML configurations for loopback port sharing and shared Unix domain sockets using `emptyDir` mounts.
+  - **StatefulSet DNS & CoreDNS Resolution:** Documented the CoreDNS mapping mechanisms (A and SRV records) for StatefulSets. Provided a detailed troubleshooting run sheet using network debugging tools (`nslookup`, `dig`, `host`).
+  - **gRPC Health Probe Protocol:** Explained protocol specifications for native gRPC probes, including the `grpc.health.v1.Health` service definition, Kubelet interaction mechanics, and success/failure criteria. Updated the reference YAML config to show gRPC health probes.
+
+---
+
+## [2026-06-05] - Create Kubernetes Workloads & Controllers Reference Module
+
+### Added
+- **Kubernetes Workloads & Controllers Reference Module (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Created a comprehensive, production-grade study and reference module. Structured to cover Pods (Sandbox creation, namespace sharing), Pod Lifecycle (Phases, states, CrashLoopBackOff, conditions, readiness gates, hooks), Init and Native Sidecar containers (Resource calculations, sequencing, teardown), Ephemeral containers (kubectl debug), Health Probes (Liveness, Readiness, Startup, HTTP/TCP/Exec/gRPC handlers), Static Pods (configurations, mirror pods), ReplicaSets, Deployments (RollingUpdate, Recreate strategies, rollbacks), StatefulSets (Headless Services, stable identities, Volume Claim Templates), DaemonSets, and Jobs/CronJobs. Included a complete verification run sheet of kubectl commands.
+
+---
+
 ## [2026-06-05] - Gitea Ingestion Crossover Audit & CKA Checklist Update
 
 ### Added
