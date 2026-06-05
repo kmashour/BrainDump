@@ -8,6 +8,7 @@ Execute this skill when:
 1. New study material, transcripts, or documentation dumps are added to the `inflow/` directory.
 2. Conceptual definitions require updates, link adjustments, or structural changes.
 3. The user requests a review of the vault integrity using the `@review` keyword in their message.
+4. The user requests ingestion of a file or URL index list using the `@ingest` keyword in their message.
 
 
 
@@ -43,8 +44,13 @@ To maintain and expand the vault efficiently, the following specialized AI subag
 
 When a new source file is introduced:
 
-### Step 1: Landing
+### Step 1: Landing & Automated Link Scraping
 1. Place the raw input file directly into the `inflow/` directory.
+2. **Link Identification & Resolution (for `@ingest` requests):**
+   - If the file contains external URLs (e.g., `https://kubernetes.io/docs/`), scan and collect all target URLs.
+   - Fetch and scrape the main technical body of each URL (cleaning HTML tags and stripping wrapper components like navigation headers, footers, scripts, and sidebars).
+   - Merge the scraped pages' content dynamically with any pre-existing text or comments in the raw inflow file.
+   - Treat the consolidated text as the single unified input for the rest of the ingestion pipeline.
 
 ### Step 2: Classification & Analysis
 1. Analyze the technical topics covered in the new `inflow/` file.

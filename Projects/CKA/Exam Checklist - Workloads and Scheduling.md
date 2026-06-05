@@ -639,4 +639,30 @@ If batch workloads are stuck pending due to deadlock or zone collocation needs:
 2.  **Verify Feature Gates**:
     Ensure `--feature-gates=GenericWorkload=true,NodeDeclaredFeatures=true` is enabled on the control plane components if TAS or PodGroups are in use.
 
+#### 7. Workload Autoscaling & User Namespace Troubleshooting
+If asked to deploy or debug HPAs, VPAs, or User Namespaces:
+1.  **HPA Imperative Generation**:
+    ```bash
+    kubectl autoscale deployment web-deploy --cpu-percent=80 --min=2 --max=10
+    ```
+2.  **Verify HPA Metrics**:
+    ```bash
+    kubectl get hpa
+    ```
+    *Look for*: `TARGETS` showing the current usage vs the target usage (e.g. `12%/80%`). If it shows `<unknown>/80%`, the **Metrics Server** is missing, not running, or Pods lack CPU resource requests under `spec.containers[].resources.requests`.
+3.  **User Namespace Activation**:
+    To enable User Namespace isolation:
+    ```yaml
+    spec:
+      hostUsers: false
+      containers:
+      - name: secure-app
+        image: nginx
+    ```
+    *Diagnostic Check*: Verify uid mapping inside the container:
+    ```bash
+    kubectl exec -it <pod-name> -- cat /proc/self/uid_map
+    ```
+    *Look for*: A mapping starting with non-zero IDs on the host side (e.g. `0 100000 65536`).
+
 ```

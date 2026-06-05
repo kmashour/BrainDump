@@ -36,6 +36,7 @@ The `CronJob` controller manages time-based, periodic Jobs. It executes tasks ac
   - `Forbid`: Skips the tick if the previous run is still active.
   - `Replace`: Kills the running job and starts a new one.
 * **History Retention:** Automatically purges old job records to prevent resource exhaustion based on `successfulJobsHistoryLimit` and `failedJobsHistoryLimit`.
+* **DNS Naming Constraint:** A CronJob's name must not exceed **52 characters** because the controller automatically appends an 11-character timestamp suffix to child Job names, which are capped at 63 characters.
 
 ---
 

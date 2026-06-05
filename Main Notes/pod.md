@@ -50,6 +50,7 @@ The Pod is the building block of all workloads in the cluster:
 ## 🧩 Problem Solver (What problem it solves)
 * **Co-Location and Helper Patterns:** Solves the problem of running helper processes (e.g., logging sidecars, proxy agents, database sync adapters) alongside primary applications by ensuring they are scheduled on the exact same host node and can access the same files and network loop.
 * **Dynamic IP Allocation:** Dynamically provisions a unique IP for each Pod in the cluster, removing port-allocation conflicts between containers on the same physical host.
+* **Host User Isolation:** Solves container-escape vulnerabilities by mapping container user IDs to unprivileged host user IDs (using `spec.hostUsers: false`), ensuring that a root user inside the container does not carry root privileges on the host node.
 
 ---
 

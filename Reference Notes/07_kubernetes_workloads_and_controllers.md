@@ -971,6 +971,7 @@ A Job creates one or more Pods and ensures that a specified number of them succe
     *   `parallelism`: The maximum number of Pods that can run concurrently at any given point.
     *   `backoffLimit`: The maximum number of retries before marking the Job as failed (Default is 6).
     *   `activeDeadlineSeconds`: A strict real-time timeout cap for the Job. If exceeded, all active Pods are terminated and the Job is marked failed, regardless of the completion status.
+    *   `ttlSecondsAfterFinished`: Automatically cleans up finished Jobs (Complete or Failed) and their child pods cascadingly after the specified duration (in seconds), avoiding resource garbage accumulation in etcd. Note that this is sensitive to time skew in the cluster.
 
 ### 12.2 CronJobs (`batch/v1`)
 A CronJob runs a Job on a repeating schedule using standard cron format:
@@ -983,6 +984,7 @@ $$\text{Schedule: } \text{Minute } \text{Hour } \text{Day-of-Month } \text{Month
     *   `successfulJobsHistoryLimit`: The number of successful completed jobs to retain in the API server (Default: 3).
     *   `failedJobsHistoryLimit`: The number of failed jobs to retain (Default: 1).
 *   **`startingDeadlineSeconds`:** The deadline (in seconds) for starting the Job if it misses its scheduled run time (e.g., due to cluster resource depletion or API Server downtime).
+*   **DNS & Naming Constraints (52-Character Limit):** CronJob names must not exceed **52 characters**. Because the CronJob controller appends an 11-character timestamp suffix to the Job name, and Job names have a strict maximum limit of **63 characters**, setting a CronJob name longer than 52 characters will violate validation constraints.
 
 ### 12.3 E2E CronJob Specification
 ```yaml
@@ -1019,6 +1021,55 @@ spec:
             persistentVolumeClaim:
               claimName: backup-pvc
 ```
+### 12.4 User Namespaces in Pods (v1.36+ Stable)
+A Linux user namespace isolates the user running inside the container from the one on the host, preventing host-compromise security breaches.
+*   **Opt-In Mechanism:** Set `spec.hostUsers: false` inside the Pod specification.
+*   **Dynamic Mapping:** The kubelet dynamically maps the container's UIDs/GIDs (defaulting to the standard `0-65535` range) to unprivileged, unique UIDs/GIDs on the host, ensuring no two Pods share mapping ranges.
+*   **Volume Compatibility:** The `runAsUser`, `runAsGroup`, and `fsGroup` fields still refer to IDs inside the container. Kubelet utilizes **idmap mounts** on the host filesystem (requires Linux kernel 6.3+ and support on the volume storage backends, e.g., tmpfs, ext4, xfs) to transparently map container UIDs/GIDs to host UIDs/GIDs during reads/writes.
+*   **Requirements:** Runtime support is required at both the OCI level (crun 1.9+, runc 1.2+) and the CRI container runtime level (containerd 2.0+, CRI-O 1.25+).
+
+### 12.5 Workload Autoscaling (HPA & VPA)
+Kubernetes automates workload capacity tuning horizontally (scaling replica counts) or vertically (modifying resource allocations).
+
+#### 1. Horizontal Pod Autoscaler (HPA)
+HPA increases or decreases replica counts of a Deployment or StatefulSet dynamically based on resource utilization or custom metrics:
+*   **Controller Loop:** Runs inside `kube-controller-manager` at intervals controlled by `--horizontal-pod-autoscaler-sync-period` (default: 15s).
+*   **Metrics Source:** Queries the `metrics.k8s.io` API (usually supplied by the **Metrics Server** addon) or custom/external metrics APIs.
+*   **Scaling Formula:**
+    $$\text{desiredReplicas} = \left\lceil \text{currentReplicas} \times \frac{\text{currentMetricValue}}{\text{desiredMetricValue}} \right\rceil$$
+*   **Tolerance:** Scaling actions are ignored if the metric ratio is within a configurable tolerance (default: `0.1`, which translates to ratios between `0.9` and `1.1`).
+*   **YAML Spec:**
+    ```yaml
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: web-hpa
+    spec:
+      scaleTargetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: web-deploy
+      minReplicas: 2
+      maxReplicas: 10
+      metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 80
+    ```
+
+#### 2. Vertical Pod Autoscaler (VPA)
+VPA dynamically adjusts container CPU and memory requests and limits to rightsize resource consumption. It is installed as a Custom Resource Definition (CRD) from the `autoscaling.k8s.io/v1` API group.
+*   **Three Cooperating Components:**
+    1.  **Recommender:** Analyzes historical CPU/memory consumption and OOM events via the Metrics Server and writes recommendations (`Target`, `LowerBound`, `UpperBound`) to the VPA's `.status.recommendation`.
+    2.  **Updater:** Monitors active Pods and evicts them (respecting PDBs) when their resource specs diverge significantly from recommendations.
+    3.  **Admission Webhook:** Intercepts Pod creation requests and automatically injects the `Target` resource recommendation requests before the Pod is scheduled.
+*   **Update Modes (`spec.updatePolicy.updateMode`):**
+    *   `Off`: Only generates recommendations; does not alter Pods.
+    *   `Initial`: Recommends and applies resources only at Pod creation time.
+    *   `Auto` / `Recreate`: Recommends resources and allows the Updater to evict active Pods to apply changes.
 
 ---
 

@@ -35,3 +35,11 @@ When ingesting raw files or executing restructuring requests:
 4. **Automated Indexing:** Rely entirely on Dataview tables in `Index.md` MOCs and landing notes; never hardcode sub-note links.
 5. **Log Transactions & Git Sync:** Log additions in [backlog.md](backlog.md) and run git commands to stage, commit, and push modifications to `git@github.com:kmashour/BrainDump.git` on branch `main`.
 6. **Integrity Review Trigger (`@review`):** Whenever the user includes `@review` in their prompt or requests a verification check, execute the verification script `/home/karim/Desktop/CKA/Reference Notes/scripts/review_vault.py`, present the audit summary, and highlight any gaps, placeholder links, or frontmatter schema warnings.
+7. **Automated Ingestion Trigger (`@ingest`):** Whenever the user includes `@ingest [file_path]` in their prompt:
+   - Identify the target file in the `inflow/` directory.
+   - Scan for any external links/URLs (e.g. Kubernetes docs).
+   - If URLs are present, automatically fetch and scrape the body content of each URL.
+   - Combine the scraped content with the target file's direct notes.
+   - Run the full, sequential multi-agent ingestion pipeline (Phases 1-6) on the consolidated content.
+   - Log the transaction in `backlog.md`, verify with `review_vault.py`, and push to `origin/main`.
+

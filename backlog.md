@@ -4,6 +4,23 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Implement @ingest Command and Process Workloads Documentation Ingestion
+
+### Added
+- **Command Integration (`@ingest`):** Added the `@ingest` command to [Agent.md](Agent.md) and [instructions.md](instructions.md). This command triggers automated URL scanning and scraping of external documentation links within inflow files, consolidating fetched page content with the notes before running the multi-agent ingestion pipeline (Phases 1-6).
+
+### Changed / Updated
+- **Workloads & Controllers Reference Module (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Appended technical details on User Namespaces in Pods (hostUsers configuration, dynamic UID mapping, idmap volume mounts, runtime constraints), Job TTL after completion (`ttlSecondsAfterFinished` cascading cleanup), CronJob 52-character naming limits (Job name length skew), and Autoscaling (HPA controller loop/metric scaling formula, VPA recommender/updater/webhook components, and VPA update policies).
+- **landing Note (`Main Notes/cronjob.md`):** Documented the DNS subdomain 52-character naming limit.
+- **landing Note (`Main Notes/pod.md`):** Added User Namespace host isolation details to the Problem Solver section.
+- **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended CLI troubleshooting and verification playbooks for HPA metric checks, and User Namespace UID mapping lookups.
+
+### Ingested Inflow Sources
+The following files have been processed under the new `@ingest` scraper pipeline:
+- `inflow/Workloads_CKA_Docs.md`
+
+---
+
 ## [2026-06-05] - Full Ingestion of Scheduling, Services, and Storage Documentation URLs
 
 ### Changed / Updated
