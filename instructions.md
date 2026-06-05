@@ -7,6 +7,8 @@ This skill provides a systematic protocol for parsing new study transcripts/note
 Execute this skill when:
 1. New study material, transcripts, or documentation dumps are added to the `inflow/` directory.
 2. Conceptual definitions require updates, link adjustments, or structural changes.
+3. The user requests a review of the vault integrity using the `@review` keyword in their message.
+
 
 
 ---

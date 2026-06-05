@@ -34,3 +34,4 @@ When ingesting raw files or executing restructuring requests:
    - Populate `related_concepts` and `against` lists in the YAML properties.
 4. **Automated Indexing:** Rely entirely on Dataview tables in `Index.md` MOCs and landing notes; never hardcode sub-note links.
 5. **Log Transactions & Git Sync:** Log additions in [backlog.md](backlog.md) and run git commands to stage, commit, and push modifications to `git@github.com:kmashour/BrainDump.git` on branch `main`.
+6. **Integrity Review Trigger (`@review`):** Whenever the user includes `@review` in their prompt or requests a verification check, execute the verification script `/home/karim/Desktop/CKA/Reference Notes/scripts/review_vault.py`, present the audit summary, and highlight any gaps, placeholder links, or frontmatter schema warnings.
