@@ -73,16 +73,18 @@ def parse_frontmatter(file_path):
     return frontmatter, body
 
 def check_inflow_coverage():
-    """Checks and builds a Decision Matrix for files directly in inflow/."""
+    """Checks and builds a Decision Matrix for files in inflow/ recursively."""
     log_info("Auditing inflow files coverage...")
     if not os.path.exists(INFLOW_DIR):
         log_warn("Inflow directory not found.")
         return 0, 0, 0, 0
     
     inflow_files = []
-    for f in os.listdir(INFLOW_DIR):
-        if os.path.isfile(os.path.join(INFLOW_DIR, f)) and f.endswith(".md"):
-            inflow_files.append(f)
+    for root, _, files in os.walk(INFLOW_DIR):
+        for f in files:
+            if f.endswith(".md"):
+                rel_path = os.path.relpath(os.path.join(root, f), INFLOW_DIR)
+                inflow_files.append(rel_path)
             
     if not inflow_files:
         log_ok("No files found in inflow/ directory.")
@@ -115,9 +117,10 @@ def check_inflow_coverage():
     ignored_count = 0
     missing_count = 0
 
-    for file_name in sorted(inflow_files):
-        path = os.path.join(INFLOW_DIR, file_name)
+    for file_path in sorted(inflow_files):
+        path = os.path.join(INFLOW_DIR, file_path)
         size = os.path.getsize(path)
+        file_name = os.path.basename(file_path)
         base_name = file_name.replace(".md", "")
         
         # Determine Status
@@ -137,11 +140,16 @@ def check_inflow_coverage():
             status = "Ignored/Useless"
             justification = "Shorthand speed tips already in Vim and Terminal Setup."
             ignored_count += 1
+        elif file_name in ["Services-LoadBalancers-Networking_CKA_Docs.md", "Storage_CKA_Docs.md"]:
+            status = "Ignored/Useless"
+            justification = "URL index links only; redundant."
+            ignored_count += 1
         # 2. Covered
         elif (base_name in backlog_content or 
               base_name in ref_notes_content or 
               base_name in main_notes_content or 
-              file_name in backlog_content):
+              file_name in backlog_content or
+              file_path in backlog_content):
             status = "Covered"
             justification = "Successfully ingested into Reference/Main Notes."
             covered_count += 1
@@ -151,13 +159,13 @@ def check_inflow_coverage():
             justification = "Active CKA content not yet ingested in Reference/Main Notes."
             missing_count += 1
             
-        matrix.append((file_name, status, justification))
+        matrix.append((file_path, status, justification))
         
     # Print the Markdown Decision Matrix
     print("\n### 📋 INFLOW COVERAGE DECISION MATRIX")
     print("| Inflow File | Status | Notes / Justification |")
     print("| :--- | :--- | :--- |")
-    for file_name, status, justification in matrix:
+    for file_path, status, justification in matrix:
         status_color = status
         if status == "Covered":
             status_color = f"{GREEN}Covered{NC}"
@@ -165,7 +173,7 @@ def check_inflow_coverage():
             status_color = f"{YELLOW}Ignored/Useless{NC}"
         elif status == "Missing":
             status_color = f"{RED}Missing{NC}"
-        print(f"| `{file_name}` | {status_color} | {justification} |")
+        print(f"| `{file_path}` | {status_color} | {justification} |")
     print()
             
     return len(inflow_files), covered_count, ignored_count, missing_count
