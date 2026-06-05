@@ -4,9 +4,49 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Gitea Ingestion Crossover Audit & CKA Checklist Update
+
+### Added
+- **CKA Exam Checklist Expansion (`Projects/CKA/Exam Checklist - Core Architecture and API.md`):**
+  - Appended **Systemd Service & Kubelet Debugging** guidelines (using `systemctl` status/restart, `journalctl -u kubelet -e` to read log ends, systemd daemon-reload commands, and swap/cgroup troubleshooting).
+  - Appended **HostPath Volume & Directory Traversal Troubleshooting** guidelines (explaining how directory execute `x` permissions on the host affect containers, FACL `setfacl` permissions bypass, how symlinks resolve during `hostPath` mounting, and SELinux contexts).
+
+### Audited
+- Audited `Reference Notes/06_gitea_installation_and_workflows.md`, `Main Notes/gitea.md`, and `Digital Garden/Pattern - Air-Gapped Git Architecture on RHEL.md` to extract high-yield crossover topics related to Linux systemd services and directory traversal permissions for Kubernetes cluster administrator tasks.
+
+---
+
+## [2026-06-05] - Create Air-Gapped Git Architecture Pattern Note
+
+### Added
+- **Digital Garden Pattern Note (`Digital Garden/Pattern - Air-Gapped Git Architecture on RHEL.md`):** Created a cross-domain architectural pattern note connecting git, linux, and database domains, and components `[[gitea]]`, `[[mysql]]`, `[[lvm]]`, `[[systemd]]`, and `[[openssh]]`. Detailed the coordination of unprivileged execution, SSH forced-commands, LVM symlink routing, MySQL database tenant isolation, and `act_runner` native host execution. Provided security critique comparison tables and RHEL service unit configuration sheets.
+
+---
+
+## [2026-06-05] - Gitea Installation Security Audit Script
+
+### Added
+- **Gitea Verification Script (`Reference Notes/scripts/verify_gitea_setup.sh`):** Created a robust, production-grade bash verification audit script to inspect a RHEL 8 host and verify Gitea conforms to security and architectural guidelines (User verification, storage/symlink checks, root:git permission flags, FACL traversal permissions, Systemd variables validation, port binding checks, and SELinux contexts).
+- **Audit Documentation Integration:** Appended Section 12 to `Reference Notes/06_gitea_installation_and_workflows.md` outlining the execution command and verification scope of the diagnostics script.
+
+---
+
+## [2026-06-05] - Gitea Reference Note Context Expansion Audit
+
+### Refactored / Upgraded
+- **Context Expansion Audit in Gitea Reference Note (`Reference Notes/06_gitea_installation_and_workflows.md`):**
+  - **Apache Reverse Proxy Snippet:** Added full SSL virtual host configuration block on port `:444` using `ProxyPass`, `ProxyPassReverse`, and `ProxyPreserveHost` directives, with architectural explanations of path preservation (`nocanon`), host header forwarding, and client real IP tracking with Gitea config (`REVERSE_PROXY_LIMIT` and `TRUSTED_PROXIES`).
+  - **LVM & lsblk Concepts:** Expanded physical storage concepts (PV, VG, LV) with a Mermaid diagram, and provided a detailed step-by-step CLI run sheet on RHEL 8 to identify, create, extend (`vgextend` / `lvextend`), and resize filesystems (`xfs_growfs` / `resize2fs`) online for `/app`.
+  - **OpenSSH Daemon (sshd) Configuration:** Documented sshd service configurations (`/etc/ssh/sshd_config`), active parameters required for Gitea's SSH multiplexing (`PubkeyAuthentication` and `AuthorizedKeysFile`), directory/file permissions (`StrictModes`), and RHEL 8 SELinux policy contexts (`restorecon` and `ssh_home_t`).
+  - **Native Host CI/CD Security:** Addressed security trade-offs of the native host executor (`:host`) compared to container environments, detailing potential RCE, privilege escalation, and resource exhaustion vectors alongside mitigation guidelines (running unprivileged, restricting sudoers, and setting Systemd resource limits).
+
+---
+
+
 ## [2026-06-05] - Second Brain & Digital Garden Expansion
 
 ### Added
+- **Gitea Reference Note:** Created `Reference Notes/06_gitea_installation_and_workflows.md` detailing air-gapped installation, SQLite vs MySQL decisions, LVM storage design with symlinks, OpenSSH multiplexing/forced command Git-over-SSH mechanics, act_runner configuration with native host executor, custom pre-receive hooks for branch naming rules, and active-passive disaster recovery rollback playbooks.
 - **CKA Exam Core Checklist:** Created `Projects/CKA/Exam Checklist - Core Architecture and API.md` mapping etcd backup/restore, Kubelet static pods pathing, scheduler bypass (spec.nodeName & Binding API), health probes (Startup, Liveness, Readiness via Exec/HTTP/TCP), and local `crictl` & `journalctl` diagnostics.
 - **Specialized Subagent Team:** Defined 5 custom AI subagents under the repository namespace:
   - `ResearchAgent` (`research_refinement`): Cleans and refines raw Gemini logs and transcripts into Reference Notes.

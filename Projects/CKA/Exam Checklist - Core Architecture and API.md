@@ -276,3 +276,62 @@ Always use the local node runtime tools when debugging `NotReady` nodes:
 
 > [!WARNING]
 > Containers created or managed via `crictl` are local runtime objects and are **not** synchronized with the Kubernetes control plane. Do not use `crictl run` to start application workloads. Use it strictly for read-only inspection and log analysis.
+
+### C. Systemd Service & Kubelet Debugging
+
+When a system-level component like the Kubelet fails to start or goes offline, debug using standard systemd tools:
+
+1.  **Inspect Service Status:**
+    ```bash
+    systemctl status kubelet
+    ```
+    *Look for whether the service is `active (running)`, `inactive (dead)`, or `failed`.*
+
+2.  **Extract Service Logs via Journalctl:**
+    Always use `-e` (jump to end of logs) or `-n` (limit lines) and `--no-pager` to inspect without screen blocking:
+    ```bash
+    # Show the last 100 log lines for kubelet
+    journalctl -u kubelet -n 100 --no-pager
+    
+    # Jump directly to the end of the logs
+    journalctl -u kubelet -e
+    
+    # Follow the logs in real-time
+    journalctl -u kubelet -f
+    ```
+
+3.  **Applying Configuration Updates:**
+    If you edit the Kubelet unit file (typically `/etc/systemd/system/kubelet.service` or `/etc/systemd/system/kubelet.service.d/10-kubeadm.conf`), you **must** reload the systemd configuration manager before restarting:
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl restart kubelet
+    ```
+
+4.  **Common Failures to Check:**
+    *   **Swap Enabled:** By default, Kubelet fails if swap is on. Check using `free -m` or `swapon -s`. Temporarily disable with `sudo swapoff -a`.
+    *   **Cgroup Driver Mismatch:** Ensure the cgroup driver matches between the container runtime (e.g. `systemd` in containerd) and kubelet config (`cgroupDriver: systemd` in `/var/lib/kubelet/config.yaml`).
+
+### D. HostPath Volume & Directory Traversal Troubleshooting
+
+When mounting files or directories from a Kubernetes worker node using `hostPath` volumes, permission and path structure mismatches are common causes of application crashes.
+
+1.  **Directory Traversal (The Execute 'x' Bit):**
+    For a containerized process running under a non-root UID (e.g., `securityContext.runAsUser: 1000`) to access a mounted host path `/data/db`, it must possess traversal rights.
+    *   **The Trap:** If a parent directory on the host (e.g., `/data`) is owned by `root:root` with permissions `700` (`drwx------`), the kernel blocks any user other than root from traversing `/data` to reach `/data/db`, even if `/data/db` itself has `777` permissions.
+    *   **The Solution:** Grant the execute (`x`) permission on *every* parent directory in the path on the host. You can do this by setting permissions (e.g., `chmod +x /data` or `chmod 755 /data`) or applying a File Access Control List (FACL):
+        ```bash
+        # Grant traversal (execute) permission specifically to the container UID
+        sudo setfacl -m u:1000:x /data
+        ```
+
+2.  **Symbolic Links in HostPath Mounts:**
+    If a `hostPath` volume points to a symbolic link on the host (e.g., `/var/lib/gitea` which symlinks to `/app/gitea`):
+    *   **The Trap:** The container engine mounts the path on the host. If `/var/lib/gitea` is mounted, the runtime resolves the symlink and mounts the target `/app/gitea` into the container. However, if the symbolic link is broken, or points outside the host namespace (or container root), the mount will fail or show up as empty.
+    *   **The Solution:** Always mount the **physical target directory** (e.g., `/app/gitea`) instead of the symbolic link in the `hostPath` volume manifest to bypass path resolution overhead and prevent broken-link failures.
+
+3.  **SELinux Contexts:**
+    If the worker nodes run in SELinux enforcing mode, host directories must have the correct container context (`container_file_t`) for the container runtime to mount and write to them:
+    *   To automatically append the correct SELinux volume context flag, use the `:z` (shared write) or `:Z` (private write) volume mount options or set the host path SELinux context:
+        ```bash
+        sudo chcon -Rt container_file_t /app/gitea
+        ```
