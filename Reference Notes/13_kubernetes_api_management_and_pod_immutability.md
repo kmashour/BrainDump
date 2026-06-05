@@ -118,13 +118,27 @@ Imagine a running Deployment that has a label `tier: frontend`. You decide you n
 | Absent | Present (Value: A) | Present (Value: A) | **Delete**: Field is deleted from the live object. |
 | Absent | Absent | Present (Value: A) | **No Action**: Field is ignored (preserves defaults/sidecars). |
 
-### D. The Mixed-Management Warning
-If you create a resource using an imperative command like `kubectl create` and later update it using `kubectl apply`, you will encounter this warning:
+### D. The Mixed-Management Warning & The 2-Way Merge Fallback
+If you create a resource using an imperative command like `kubectl create` (which does not write the `last-applied-configuration` annotation unless run with the `--save-config` flag) and later attempt to update it using `kubectl apply`, you will encounter the following warning:
 ```plaintext
 Warning: resource replicasets/new-replica-set is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
 ```
-* **Why it happens:** `kubectl create` bypasses the creation of the `last-applied-configuration` annotation (unless run with the `--save-config` flag).
-* **Consequence:** The first time you run `apply`, Kubernetes has to construct the annotation from the live state, which may include auto-generated and default values. It will automatically patch the annotation on the fly, but subsequent applies will be clean.
+
+#### The 2-Way Merge Fallback (Blind Spot Mechanics)
+When `kubectl apply` does not find the `last-applied-configuration` annotation, it cannot perform a 3-way merge. Instead, it falls back to a simple **2-Way Merge**, comparing only the **Local Configuration** directly against the **Live Object** currently running in `etcd`. 
+
+This creates a significant operational blind spot:
+* **Additions (Work):** If you add a new port, environment variable, or label in your local file, the 2-way merge will successfully add it to the live object.
+* **Updates (Work):** If you modify an existing field (e.g., updating a container image tag) in your local file, the 2-way merge will successfully update the live object.
+* **Deletions (Fail):** If you delete a label, volume, or environment variable from your local file, the 2-way merge **will not remove it** from the live object. Because there is no historical `last-applied-configuration` annotation to prove that the field was previously managed by you, Kubernetes assumes you simply chose to omit that field from your local file this time (leaving the live value alone, preserving defaults or sidecars) rather than wanting it destroyed.
+
+#### Auto-Recovery & Patching
+When this warning is issued, Kubernetes is saying: *"I am applying your additions and updates using a 2-way merge right now, but to prevent future blind spots, I am automatically generating and injecting the `kubectl.kubernetes.io/last-applied-configuration` annotation into the live object using your current local configuration."*
+
+Consequently:
+1. The changes take effect (with the deletion blind spot active for that run).
+2. The cluster patches the live object with the annotation.
+3. All subsequent `kubectl apply` commands on this resource will successfully execute as **3-Way Merges**, enabling proper deletion tracking.
 
 ### E. Server-Side Apply (SSA)
 

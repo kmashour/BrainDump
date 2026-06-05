@@ -79,8 +79,8 @@ The CRI standardizes how Kubernetes interacts with runtimes that comply with the
 ```
 
 * **The Dockershim Bridge:** Since Docker did not natively implement CRI, the Kubernetes control plane maintained an adapter called **Dockershim** to bridge the gap.
-* **Removal in v1.24:** Maintaining Dockershim in core Kubernetes was deprecated and officially removed in v1.24. This decoupled the Kubelet from Docker and shifted operations directly to native CRI runtimes like **containerd** or **CRI-O**.
-* **Legacy Compatibility (cri-dockerd):** If you still need to run Docker containers in Kubernetes v1.24+, you must use `cri-dockerd`, a standalone service that acts as a CRI adapter.
+* **Removal in v1.24:** Maintaining Dockershim in core Kubernetes was deprecated and officially removed in v1.24. This decoupled the Kubelet from Docker, removing the Dockershim code from core Kubernetes. This shifted operations directly to native CRI-compatible runtimes like **containerd** or **CRI-O**.
+* **Legacy Compatibility (cri-dockerd):** If you still need to run Docker containers in Kubernetes v1.24+, you must use `cri-dockerd`, a standalone service that acts as a CRI adapter. It exposes a CRI-compliant socket (`unix:///var/run/cri-dockerd.sock`) and forwards commands to the Docker Daemon socket (`unix:///var/run/docker.sock`).
 
 ### B. Comparison of Runtime CLI Tools
 For the CKA exam, you must distinguish between the different CLI tools used to interact with container runtimes on a worker node:
@@ -92,17 +92,32 @@ For the CKA exam, you must distinguish between the different CLI tools used to i
 | **`crictl`** | Kubernetes Community | CRI troubleshooting and debugging | CRI-compliant, works across runtimes (containerd, CRI-O). Supports listing Pods. **Warning:** Containers created with `crictl` are not registered as Pods in the API server and will be deleted by the Kubelet. | `crictl pull busybox`<br>`crictl images`<br>`crictl ps -a`<br>`crictl pods` |
 
 ### C. The Kubelet-CRI Communication Path
-The `kubelet` pings the runtime over a local gRPC UNIX socket. Historically, Kubelet queried sockets in this order:
-`/var/run/dockershim.sock` -> `/run/containerd/containerd.sock` -> `/run/crio/crio.sock` -> `/var/run/cri-dockerd.sock`.
+The `kubelet` acts as a cluster agent and does not know how to run containers itself; it communicates over a local UNIX socket using gRPC to the CRI implementation.
 
-In modern configurations, you must configure the socket path manually in Kubelet's startup flags (`--container-runtime-endpoint`) and set it for the `crictl` utility:
-```bash
-# Set endpoint for crictl
-crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps
+#### Historical Socket Polling Order:
+In older versions of Kubernetes, if the runtime socket was not explicitly set, the Kubelet fell back to checking socket paths in the following priority order:
+1. `unix:///var/run/dockershim.sock` (Dockershim)
+2. `unix:///run/containerd/containerd.sock` (containerd)
+3. `unix:///run/crio/crio.sock` (CRI-O)
+4. `unix:///var/run/cri-dockerd.sock` (cri-dockerd)
 
-# Set endpoint persistently for the session
-export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
-```
+#### Modern (v1.24+) Socket Requirements:
+With the removal of Dockershim in v1.24, `dockershim.sock` is no longer supported. Users are required to explicitly configure the socket path in:
+1. **Kubelet startup flags:** Set `--container-runtime=remote` and `--container-runtime-endpoint=unix:///run/containerd/containerd.sock` (or `/run/crio/crio.sock` / `/var/run/cri-dockerd.sock`).
+2. **`crictl` configuration:** Configure `crictl` explicitly using the command line flag or environment variables:
+   ```bash
+   # Set endpoint via flag
+   crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps
+   
+   # Set endpoint persistently for the session
+   export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+   ```
+
+> [!TIP]
+> **Troubleshooting: The Container Runtime Upgrade Trap**
+> If you upgrade containerd on a live node using a package manager (e.g., `apt upgrade containerd` or `yum update containerd`), the underlying gRPC socket might restart or change its connection parameters. In some cases, the Kubelet will fail its internal gRPC re-dial attempts and show connection errors. 
+> To resolve this, perform a hard restart of the Kubelet service after the runtime upgrade:
+> `systemctl restart kubelet`
 
 ### D. The Dual-Service CRI Architecture
 The CRI specification exposes two distinct gRPC service endpoints over the same UNIX socket:

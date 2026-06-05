@@ -89,3 +89,27 @@ crictl logs <container-id>
 ```
 
 *Read more in [05_containers_runtimes_and_lifecycle.md](../Reference%20Notes/05_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture).*
+
+---
+
+## 🚫 7. Dockershim Deprecation & Socket Requirements
+
+Originally, Docker was the sole runtime supported by Kubernetes, bridged via **Dockershim**.
+
+### Key Milestones:
+*   **Removal in v1.24:** Dockershim was deprecated and completely removed from the core Kubernetes codebase. The Kubelet now interacts directly with native CRI runtimes like `containerd` or `CRI-O`.
+*   **Legacy Adapter (`cri-dockerd`):** If you still need to run Docker container engines in v1.24+, you must install `cri-dockerd`. It acts as an adapter, exposing a CRI-compliant socket (`unix:///var/run/cri-dockerd.sock`) and forwarding gRPC calls to the Docker Daemon socket (`unix:///var/run/docker.sock`).
+
+### Modern Socket Requirements:
+Modern clusters require explicit configurations for socket endpoints:
+1.  **Kubelet Startup Flags:** Configure `--container-runtime=remote` and `--container-runtime-endpoint=unix:///run/containerd/containerd.sock` (or appropriate runtime path).
+2.  **`crictl` Configuration:** Explicitly declare the endpoint either in `/etc/crictl.yaml` or as an environment variable:
+    ```bash
+    export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+    ```
+
+> [!TIP]
+> **The Runtime Upgrade Trap:** Upgrading containerd on a live node using package managers can cause socket interruptions. If Kubelet fails its gRPC reconnection attempts, perform a hard service restart:
+> `sudo systemctl restart kubelet`
+
+*Read more in [05_containers_runtimes_and_lifecycle.md](../Reference%20Notes/05_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture)*

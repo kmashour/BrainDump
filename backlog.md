@@ -4,6 +4,24 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Ingest ReplicaSets, API Merging, ETCD Client Management and Container Runtime Socket Updates
+
+### Added
+- **ReplicaSets Concept Deep Dive (`Main Notes/replicaset - MatchExpressions and Thrashing.md`):** Created a new deeper dive note detailing set-based selectors syntax, ownership/adoption mechanics, and troubleshooting scenarios for ReplicaSet thrashing loops (overlapping selectors and mutating webhook issues).
+
+### Changed / Updated
+- **Container Runtimes Reference Module (`Reference Notes/05_containers_runtimes_and_lifecycle.md`):** Ingested raw Mumshad transcripts to document Dockershim removal, the `cri-dockerd` adapter socket mechanics, manual Kubelet configuration, and the "Container Runtime Upgrade Trap" (Kubelet gRPC re-dial errors resolved via service restart).
+- **Workloads & Controllers Reference Module (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Integrated set-based selector operators, `ownerReferences` mechanics (adoption and orphaning), API validation safeguards, and advanced thrashing loop diagnostics.
+- **Cluster Maintenance & ETCD Reference Module (`Reference Notes/11_maintenance_upgrades_and_etcd.md`):** Expanded details on ETCD client API v2 vs v3 management, persistent session configurations, and command-line syntax comparison.
+- **API Management Reference Module (`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`):** Detailed the Mixed-Management Warning and the 2-Way Merge Fallback blind spot (where deletions fail due to missing last-applied-configuration annotations) and auto-recovery annotation patching.
+- **Main Note (`Main Notes/kubectl - Declarative vs Imperative and 3-Way Merge.md`):** Added a dedicated section detailing the Mixed-Management Warning, 2-Way Merge Fallback mechanics, and auto-recovery annotation injection.
+- **Main Note (`Main Notes/etcd-deeper.md`):** Appended section on ETCD client CLI version management (v2 vs v3) and operation commands cheat sheet.
+- **Main Note (`Main Notes/container-runtime-deeper.md`):** Appended section on Dockershim deprecation, `cri-dockerd` adapter socket details, modern socket config requirements, and Kubelet service upgrade traps.
+- **Exam Checklist (`Projects/CKA/Exam Checklist - Core Architecture and API.md`):** Integrated Dockershim removal milestones, `cri-dockerd` socket locations, the Container Runtime Upgrade Kubelet restart trap, and the 2-Way Merge Fallback blind spot / auto-recovery explanation.
+- **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended a new section detailing ReplicaSets matchExpressions, adoption/orphaning, API validation webhook checks, and thrashing loops (overlapping selectors and webhook interference).
+
+---
+
 ## [2026-06-05] - Create Scheduling and Lifecycle Verification PoC
 
 ### Added

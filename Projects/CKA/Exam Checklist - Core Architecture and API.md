@@ -258,7 +258,12 @@ When worker nodes fail, show `NotReady`, or lose api-server connection, you must
 #### Common Runtime Sockets:
 *   **containerd:** `unix:///run/containerd/containerd.sock`
 *   **CRI-O:** `unix:///run/crio/crio.sock`
-*   **Docker (via cri-dockerd):** `unix:///var/run/cri-dockerd.sock`
+*   **Docker (via cri-dockerd):** `unix:///var/run/cri-dockerd.sock` (This adapter exposes a CRI-compliant socket and forwards gRPC calls to the Docker Daemon socket `unix:///var/run/docker.sock`).
+
+> [!IMPORTANT]
+> **Dockershim Removal (v1.24+):**
+> Dockershim was completely removed in v1.24. The legacy `unix:///var/run/dockershim.sock` is no longer supported. The Kubelet and `crictl` must be explicitly configured with modern sockets (e.g., containerd or cri-dockerd).
+
 
 ### B. Core Node-Level Commands
 
@@ -310,6 +315,11 @@ When a system-level component like the Kubelet fails to start or goes offline, d
 4.  **Common Failures to Check:**
     *   **Swap Enabled:** By default, Kubelet fails if swap is on. Check using `free -m` or `swapon -s`. Temporarily disable with `sudo swapoff -a`.
     *   **Cgroup Driver Mismatch:** Ensure the cgroup driver matches between the container runtime (e.g. `systemd` in containerd) and kubelet config (`cgroupDriver: systemd` in `/var/lib/kubelet/config.yaml`).
+    *   **Container Runtime Upgrade Trap:** If a package manager updates the container runtime (e.g. containerd) on a live node, the underlying gRPC socket might restart or change parameters, causing Kubelet gRPC re-dial errors. To resolve this, always perform a hard restart of the Kubelet:
+        ```bash
+        sudo systemctl restart kubelet
+        ```
+
 
 ### D. HostPath Volume & Directory Traversal Troubleshooting
 
@@ -361,7 +371,15 @@ Warning: resource <kind>/<name> is missing the kubectl.kubernetes.io/last-applie
 * **Imperative Commands**: `kubectl create` and `kubectl run` create resources directly in `etcd` without writing the `kubectl.kubernetes.io/last-applied-configuration` annotation.
 * **Declarative Operations**: `kubectl apply` compares your local file against the `last-applied-configuration` annotation to determine updates and deletions. Without this annotation, it cannot compute precise differences.
 
+#### The 2-Way Merge Fallback (Blind Spot Mechanics)
+When `kubectl apply` does not find the annotation, it cannot perform a 3-way merge. Instead, it falls back to a **2-Way Merge**, comparing only the **Local Configuration** directly against the **Live Object** currently in `etcd`.
+This creates a critical operational blind spot:
+*   **Additions & Updates Work:** If you add a new port/env variable/label or modify an existing one, the 2-way merge will successfully update the live object.
+*   **Deletions Fail:** If you delete a label, volume, or env variable from your local YAML file, the 2-way merge **will not remove it** from the live object. Because there is no historical annotation to prove that the field was previously managed by you, Kubernetes assumes you simply omitted the field from your local file (preserving it in the live object) rather than wanting it destroyed.
+*   **Auto-Recovery:** The cluster patches the live object with the `last-applied-configuration` annotation using your current local configuration. All subsequent `kubectl apply` commands on this resource will successfully run as **3-Way Merges**, resolving the deletion blind spot.
+
 #### Exam Action Plan
 1. **Ignore it**: The warning is non-fatal. During the CKA exam, if you run `kubectl apply` on an imperatively created resource and get this warning, the API server will automatically patch the annotation on the fly. You can safely ignore the warning to save time.
 2. **Use Server-Side Apply (SSA)**: Run `kubectl apply -f manifest.yaml --server-side` to use Server-Side Apply. SSA tracks field changes natively in `metadata.managedFields` rather than using the `last-applied-configuration` annotation. This bypasses the strict requirement for the annotation and solves the etcd metadata size constraint (approx. 256KB annotation limit in etcd) for extremely large manifests.
+
 

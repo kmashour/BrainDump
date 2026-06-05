@@ -204,7 +204,35 @@ kubectl uncordon node-1
 
 ETCD is the distributed key-value datastore containing the state of the entire Kubernetes cluster. Securing backups of this component is critical before making any major configuration or version changes.
 
-### 4.1 Extracting ETCD Details
+### 4.1 ETCD API v2 vs. v3 Client Management
+The CLI tool `etcdctl` is used to interact with the database. The environment variable `ETCDCTL_API` determines which version of the API `etcdctl` uses. While older systems or default client installations may use API v2, modern Kubernetes clusters utilize API v3. 
+
+#### Configuring the API Version:
+You can switch the active API version for `etcdctl` using one of two methods:
+1.  **Prepend the Environment Variable:** Specify the variable on a per-command basis:
+    ```bash
+    ETCDCTL_API=3 etcdctl version
+    ```
+2.  **Export for the Shell Session:** Set the variable persistently for your current terminal session:
+    ```bash
+    export ETCDCTL_API=3
+    etcdctl version
+    ```
+
+#### CLI Command Comparison:
+| Operation | API v2 Command (`ETCDCTL_API=2`) | API v3 Command (`ETCDCTL_API=3`) | Notes |
+| :--- | :--- | :--- | :--- |
+| **Check Client Version** | `etcdctl --version` (Option flag) | `etcdctl version` (Subcommand) | v3 prints client and API server versions if connected. |
+| **Write/Store Key** | `etcdctl set key1 value1` | `etcdctl put key1 value1` | v2 uses `set`; v3 uses `put` and returns `OK`. |
+| **Read/Retrieve Key** | `etcdctl get key1` | `etcdctl get key1` | v3 output prints both the key name and the value on separate lines. |
+| **Query Key Prefix** | `etcdctl ls` (Lists directory content) | `etcdctl get / --prefix --keys-only` | v3 lacks directories; it uses a flat key-value namespace with prefixes. |
+| **Delete Key** | `etcdctl rm key1` | `etcdctl del key1` | v2 uses `rm`; v3 uses `del`. |
+| **Create Directory** | `etcdctl mkdir dir1` | *N/A* | Not supported in v3 due to flat keyspace model. |
+| **Watch Key Changes** | `etcdctl watch key1` | `etcdctl watch key1` | In v3, watching keys provides detailed transaction events. |
+
+---
+
+### 4.2 Extracting ETCD Details
 On `kubeadm` clusters, ETCD is running as a static pod. You can retrieve endpoint paths and certificate locations by inspecting `/etc/kubernetes/manifests/etcd.yaml` or running:
 ```bash
 kubectl describe pod -n kube-system etcd-controlplane
@@ -217,7 +245,7 @@ Look for command arguments like:
 
 ---
 
-### 4.2 Snapshot Backup Procedure
+### 4.3 Snapshot Backup Procedure
 To create a backup snapshot, run the `etcdctl snapshot save` command. 
 
 > [!TIP]

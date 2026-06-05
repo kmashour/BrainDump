@@ -6,6 +6,7 @@ topics:
   - "Pod Spec & Shell overrides"
   - "Liveness/Readiness Probes"
   - "Deployment Upgrades/Rollbacks"
+  - "ReplicaSets & Selectors"
   - "DaemonSets"
   - "Static Pods"
   - "Jobs and CronJobs"
@@ -177,6 +178,46 @@ kubectl rollout undo deployment/web-deploy
 # Roll back to a specific revision
 kubectl rollout undo deployment/web-deploy --to-revision=2
 ```
+
+---
+
+## 3.5 ReplicaSets, Selectors & Ownership Mechanics
+
+ReplicaSets ensure that a declared number of Pod replicas run in a namespace. While Deployments manage them, you must understand their low-level mechanics and troubleshooting patterns for the CKA.
+
+### 3.5.1 Set-Based Selectors (`matchExpressions`)
+Unlike legacy replication controllers, ReplicaSets support set-based selectors. Use this format:
+```yaml
+spec:
+  replicas: 3
+  selector:
+    matchExpressions:
+      - {key: app, operator: In, values: [frontend, api]}
+      - {key: env, operator: NotIn, values: [dev, qa]}
+      - {key: tier, operator: Exists}
+      - {key: legacy-app, operator: DoesNotExist}
+```
+*Operators Cheat Sheet:*
+*   `In` / `NotIn`: Checks if the label value matches one in the list.
+*   `Exists` / `DoesNotExist`: Checks if the key exists on the Pod. Do **not** specify a `values` block.
+
+### 3.5.2 Adoption & Orphaning Mechanics
+*   **Adoption:** If a ReplicaSet is created and there are orphaned Pods matching its selector, the controller manager injects `metadata.ownerReferences` into those Pods pointing to the ReplicaSet UID. This adopts them instead of spinning up new Pods.
+*   **Orphaning:** To delete a ReplicaSet but leave its Pods running, run:
+    ```bash
+    kubectl delete replicaset <rs-name> --cascade=orphan
+    ```
+
+### 3.5.3 API Validation Webhook
+The `apps/v1` API Server validates that the selector (`spec.selector.matchLabels` and/or `spec.selector.matchExpressions`) is a **subset** of the template labels (`spec.template.metadata.labels`).
+If they mismatch, the request is rejected with a `Forbidden: selector does not match template labels` error and never persisted in `etcd`.
+
+### 3.5.4 Advanced Troubleshooting: Thrashing Loops
+ Runaway Pod creation/deletion loops (thrashing) are caused by:
+1.  **Overlapping Selectors:** If two ReplicaSets have the same label selector but different template configurations, they will continuously delete and recreate each other's Pods since scale-down does not verify `ownerReferences`.
+    *   *Fix:* Edit both workloads to specify unique, non-overlapping selectors (e.g. adding a `tier` or `env` label).
+2.  **Mutating Webhook Interference:** A mutating admission webhook strips or alters the labels of created Pods. The ReplicaSet never sees its selector satisfied, leading to endless Pod creation requests.
+    *   *Fix:* Check mutating webhook configurations or audit Pod label states.
 
 ---
 
