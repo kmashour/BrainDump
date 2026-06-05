@@ -6,15 +6,19 @@ domains:
   - "git"
   - "linux"
   - "database"
+  - "kubernetes"
 components:
   - "[[gitea]]"
   - "[[mysql]]"
   - "[[lvm]]"
   - "[[systemd]]"
   - "[[openssh]]"
+  - "[[kubectl]]"
+  - "[[pod]]"
 sources:
   - "Gitea Architecture and Workflow Guidelines"
   - "RHEL 8 System Administration Guide"
+  - "[[Reference Notes/13_kubernetes_api_management_and_pod_immutability.md]]"
 against:
   - "[[gitlab]]"
 tags:
@@ -24,6 +28,7 @@ tags:
   - database/mysql
   - storage/lvm
   - security/openssh
+  - kubernetes/gitops
 ---
 
 # Pattern: Air-Gapped Git Architecture on RHEL
@@ -67,6 +72,37 @@ sequenceDiagram
     Gitea->>Runner: Dispatch CI/CD job notification (poll update)
     Runner->>Runner: Execute job steps in native RHEL shell (using host resources)
 ```
+
+---
+
+## 🔄 GitOps Declarative Workflows & API Reconciliation Mechanics
+
+In an air-gapped architecture, the Gitea repository acts as the **GitOps Single Source of Truth**. Any commit pushed to the main branch represents a change to the declared desired state of the cluster. The host-native runner (`act_runner`) executes deployment pipelines that reconcile this declared state with the live cluster using the Kubernetes API:
+
+### 1. Declarative Reconciliation vs. Imperative Actions
+* **The GitOps Rule**: Imperative CLI commands (`kubectl run`, `kubectl create`) are forbidden in production as they bypass version control, leaving no audit trail. Instead, the GitOps pipeline executes declarative commands (`kubectl apply -f manifest.yaml`), allowing the control plane to compute the necessary changes.
+* **Client-Side Pre-flight Validation**: Before the runner submits the manifest, `kubectl` performs local structural validation against cached OpenAPI schemas (located under `~/.kube/cache/schema`). 
+  * *Version Skew Caveat*: In isolated air-gapped environments, client tools may suffer from version skew against the control plane, leading to false validation rejections. Pipelines can bypass this local pre-flight check using the `--validate=false` flag, sending the raw manifest directly to the API server's admission control chain.
+
+### 2. The 3-Way Merge Engine
+When `kubectl apply` is invoked by the runner, the Kubernetes API server does not overwrite the resource. It computes an API patch by comparing three sources:
+1. **The Local File**: The configuration file checked out from the Gitea repository.
+2. **The Live Object**: The active object state stored in `etcd`, which includes default values and mutations from admission controllers.
+3. **The Last-Applied-Configuration**: A JSON serialization of the previously applied manifest stored under the `kubectl.kubernetes.io/last-applied-configuration` annotation inside the live object.
+
+* **Handling Field Deletions**: If a GitOps commit deletes a field (e.g., a label or container port), the 3-Way Merge engine compares the local file (field absent) with the last-applied annotation (field present). Seeing it was previously declared but is now missing, the engine identifies the deletion intent and patches the live object in `etcd` to remove the field. Without this annotation, the engine could not distinguish between an intentional deletion and an ignored default, allowing deleted configuration to drift indefinitely.
+
+### 3. Server-Side Apply (SSA) & Multi-Tenant Integrity
+In modern clusters, the client-side merge is replaced by **Server-Side Apply (SSA)**, shifting reconciliation logic to the `kube-apiserver` (using `kubectl apply --server-side` or direct `PATCH` requests with `application/apply-patch+yaml` content type).
+* **Field Ownership Tracking**: SSA tracks field managers inside `metadata.managedFields`. If Gitea's pipeline applies a manifest, it is recorded as the owner of those fields. If an operator attempts an out-of-band edit on a field owned by Gitea, the API server rejects it with a **Conflict** error, protecting GitOps governance.
+* **Resolving etcd Metadata Size Limits**: Under client-side apply, the full JSON manifest must be stored in the metadata annotations. In complex GitOps architectures managing large Custom Resource Definitions (CRDs) or massive Deployments, these annotations can exceed `etcd` size constraints (typically 256KB for annotations, within the 1.5MB etcd object limit), causing deployment failures. SSA solves this by replacing the redundant JSON annotation string with compressed, indexed path footprints in `managedFields`.
+
+### 4. Pod Spec Immutability and Recovery in GitOps
+* **Immutability Boundary**: Pods are structurally immutable because their container runtime processes are bound directly to Linux kernel cgroups and namespaces. Only `spec.containers[*].image`, `spec.activeDeadlineSeconds`, and additions to `spec.tolerations` are mutable.
+* **Recovery Playbook**: If a GitOps pipeline attempts to update an immutable field (e.g., mounting a new LVM volume or altering container ports), the API server returns a `403 Forbidden` error, stalling the deployment. To recover:
+  1. The runner must capture the rejected configuration (similar to how manual errors are saved to `/tmp/kubectl-edit-xxxx.yaml`).
+  2. The pipeline executes `kubectl replace --force -f manifest.yaml`.
+  * *Signal Escalation*: This force-replace operation instantly deletes the old Pod object from etcd (`grace-period=0`), prompting the container runtime to issue an immediate `SIGKILL` (Signal 9) to PID 1—instantly destroying cgroups and namespaces—and immediately spawns the new Pod from the GitOps source.
 
 ---
 
@@ -181,3 +217,5 @@ Verify the installation using the automated diagnostics script, which validates 
 
 * Reference Guide: [Gitea Installation and Workflows Reference Note](../Reference%20Notes/06_gitea_installation_and_workflows.md#12-automated-system-architecture-and-security-audit)
 * Diagnostics Script: [Gitea Setup Verification Script](../Reference%20Notes/scripts/verify_gitea_setup.sh)
+* API Management & Immutability Reference: [Kubernetes API Management & Pod Immutability Reference Note](../Reference%20Notes/13_kubernetes_api_management_and_pod_immutability.md)
+* API Immutability Verification Script: [API Immutability Verification Script](../Reference%20Notes/scripts/verify_api_immutability.sh)

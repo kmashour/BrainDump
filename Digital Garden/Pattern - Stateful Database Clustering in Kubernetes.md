@@ -14,6 +14,7 @@ components:
   - "[[container-runtime]]"
 sources:
   - "[[Reference Notes/07_kubernetes_workloads_and_controllers.md]]"
+  - "[[Reference Notes/13_kubernetes_api_management_and_pod_immutability.md]]"
   - "[[Main Notes/statefulset.md]]"
 tags:
   - architecture/pattern
@@ -135,6 +136,28 @@ Readiness probes control whether a database Pod is added to the Headless Service
 * **Strict / Sync-Aware Readiness Probes** (e.g., running an `exec` script to verify replication lag or WAL synchronization):
   * *Trade-off*: Prevents stale reads by keeping the replica out of service endpoints until it is 100% synchronized.
   * *The Pitfall*: During a StatefulSet **Rolling Update**, the controller upgrades Pods sequentially (e.g., starting at `db-node-2`, then `db-node-1`, etc.). The controller **blocks** and will not proceed to update `db-node-0` until `db-node-1` passes its readiness probe. If a strict probe blocks a replica for hours due to synchronization time, the entire rollout is halted, potentially keeping the cluster in a partially upgraded state.
+
+---
+
+### 4. Linux Process Signals & cgroup Eviction Mechanics in Databases
+
+Operating clustered databases within container environments introduces direct dependencies on worker node kernel scheduling, control groups (cgroups), and process signal propagation during routine lifecycle changes or node failures:
+
+* **Graceful Shutdown (SIGTERM / Signal 15)**:
+  During a normal deletion flow (e.g., node drain, scaling down ordinals, or rolling updates), the container runtime sends a `SIGTERM` signal to the container's root process (PID 1).
+  * *Mechanism*: The database engine catches the signal, triggers connection draining, completes ongoing write-ahead log (WAL) transactions, flushes dirty pages from shared buffers to persistent storage (PV), and shuts down cleanly.
+  * *Dependency*: This graceful path relies on the `spec.terminationGracePeriodSeconds` window (default: 30 seconds). If the database sync time exceeds this window, the Kubelet escalates to `SIGKILL`.
+* **Immediate Force Deletion (SIGKILL / Signal 9)**:
+  When operators execute a force deletion (`kubectl delete pod --grace-period=0 --force` or during `kubectl replace --force` recovery workflows), the grace period is bypassed. The API server instantly purges the Pod from etcd, and the runtime sends a `SIGKILL` directly to PID 1.
+  * *Data Integrity Risk*: `SIGKILL` cannot be caught or blocked by the database. The process is terminated mid-write, bypassing clean checkpointing. This risks WAL index corruption, transactional inconsistencies, and replication split-brains upon recovery.
+  * *cgroup Cleanup*: The container runtime immediately destroys the cgroups (control groups) allocated to the database container, revoking CPU and memory resources and instantly unmounting the private namespaces (`mnt`, `net`, `pid`).
+* **cgroup Resource Constraints & QoS Alignment**:
+  High-load databases are highly sensitive to cgroup resource configurations. The worker node kernel uses cgroup constraints to restrict CPU usage via Completely Fair Scheduler (CFS) bandwidth quotas and memory allocations.
+  * *OOM Killer Scoring*: When a host node experiences memory pressure, the Linux kernel Out-of-Memory (OOM) killer selects which processes to kill. It bases this choice on the process's OOM score, which is controlled by Kubernetes setting the `/proc/sys/vm/oom_score_adj` dynamically based on the Pod's Quality of Service (QoS) class:
+    * **Guaranteed QoS** (CPU & memory requests equal limits): `oom_score_adj` is set to `0`. These pods are heavily protected and are the last to be targeted by the host OOM killer.
+    * **Burstable QoS** (Requests and limits do not match): `oom_score_adj` ranges from `2` to `999`. They are highly vulnerable to OOM kills if the node runs low on physical memory.
+    * **BestEffort QoS** (No requests or limits): `oom_score_adj` is set to `1000`. They are instantly killed under any memory pressure.
+  * *Best Practice*: Clustered database Pods **must** run with `Guaranteed` QoS class configuration to prevent cgroup-level resource reclamation and unexpected Linux kernel OOM kills.
 
 ---
 

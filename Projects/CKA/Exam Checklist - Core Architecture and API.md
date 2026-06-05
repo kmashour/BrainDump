@@ -335,3 +335,33 @@ When mounting files or directories from a Kubernetes worker node using `hostPath
         ```bash
         sudo chcon -Rt container_file_t /app/gitea
         ```
+
+---
+
+## 6. Kubernetes API Management & Validation
+
+### A. Bypassing Client-Side Validation (`--validate=false`)
+When there is a significant version skew between the local `kubectl` client and the cluster's `kube-apiserver`, or when working with newly created Custom Resource Definitions (CRDs), the local OpenAPI schema cache (stored under `~/.kube/cache/schema/`) might be outdated or out of sync. This can result in:
+* **False Rejections**: `kubectl` blocking a valid manifest locally because it does not recognize a new field.
+* **Validation Hangs / Errors**: Version discrepancies causing local structural checks to fail before the request ever reaches the cluster.
+
+To bypass local pre-flight checks and send the raw manifest directly to the API server:
+```bash
+kubectl apply -f manifest.yaml --validate=false
+```
+* **Under the Hood**: Bypassing client-side validation does *not* bypass security. The `kube-apiserver` still performs full server-side validation and admission control on the resource. It only bypasses the local, cached client-side schema checks.
+
+### B. The 'last-applied-configuration' Warning and Mixed Management
+If you mix imperative commands (like `kubectl create` or `kubectl run` without the `--save-config` flag) and declarative operations (like `kubectl apply`), you will see the following warning:
+```plaintext
+Warning: resource <kind>/<name> is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. The missing annotation will be patched automatically.
+```
+
+#### Why it Occurs
+* **Imperative Commands**: `kubectl create` and `kubectl run` create resources directly in `etcd` without writing the `kubectl.kubernetes.io/last-applied-configuration` annotation.
+* **Declarative Operations**: `kubectl apply` compares your local file against the `last-applied-configuration` annotation to determine updates and deletions. Without this annotation, it cannot compute precise differences.
+
+#### Exam Action Plan
+1. **Ignore it**: The warning is non-fatal. During the CKA exam, if you run `kubectl apply` on an imperatively created resource and get this warning, the API server will automatically patch the annotation on the fly. You can safely ignore the warning to save time.
+2. **Use Server-Side Apply (SSA)**: Run `kubectl apply -f manifest.yaml --server-side` to use Server-Side Apply. SSA tracks field changes natively in `metadata.managedFields` rather than using the `last-applied-configuration` annotation. This bypasses the strict requirement for the annotation and solves the etcd metadata size constraint (approx. 256KB annotation limit in etcd) for extremely large manifests.
+

@@ -9,6 +9,7 @@ related_concepts:
   - "[[kube-apiserver]]"
 reference_guides:
   - "[[Reference Notes/01_kube_api_and_kubectl.md]]"
+  - "[[Reference Notes/13_kubernetes_api_management_and_pod_immutability.md]]"
 tags:
   - kubernetes/cli
   - status/completed

@@ -4,6 +4,50 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - CKA Exam Checklist Updates for API Management & Pod Immutability
+
+### Changed / Updated
+- **Exam Checklist - Core Architecture and API (`Projects/CKA/Exam Checklist - Core Architecture and API.md`):**
+  - Added Section 6 covering **Kubernetes API Management & Validation**.
+  - Documented how to bypass client-side pre-flight schema validations using `--validate=false` to work around version skew or caching issues.
+  - Documented the `last-applied-configuration` mixed-management warning context, why it occurs, and how to ignore/resolve it using Server-Side Apply (`--server-side`).
+- **Exam Checklist - Troubleshooting and Networking (`Projects/CKA/Exam Checklist - Troubleshooting and Networking.md`):**
+  - Updated Section 1.3 to add the **`kubectl edit` & Temp File Recovery Playbook** for Pod spec immutability failures.
+  - Provided the step-by-step workflow using `kubectl replace --force -f /tmp/kubectl-edit-xxxx.yaml`.
+  - Explained the underlying process signal mechanics (`SIGKILL` vs `SIGTERM`) and immediate container namespace/cgroup teardown.
+
+
+## [2026-06-05] - Cross-Domain Pattern Note Integration of API Management & Pod Immutability
+
+### Changed / Updated
+- **Digital Garden Pattern Note (`Digital Garden/Pattern - Stateful Database Clustering in Kubernetes.md`):**
+  - Added section **Linux Process Signals & cgroup Eviction Mechanics in Databases**: Documented the cross-domain interactions between Kubernetes lifecycle events and Linux kernel mechanisms. Detailed graceful shutdown (`SIGTERM`/Signal 15) vs. immediate force deletion (`SIGKILL`/Signal 9) process flows and their impact on database WAL files, transaction logs, and replica coordination. Detailed Completely Fair Scheduler (CFS) bandwidth quotas and the Out-of-Memory (OOM) killer scoring adjustments (`oom_score_adj` mapping from Guaranteed, Burstable, and BestEffort QoS classes) in relation to container cgroups.
+  - Updated frontmatter sources to include `Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`.
+- **Digital Garden Pattern Note (`Digital Garden/Pattern - Air-Gapped Git Architecture on RHEL.md`):**
+  - Added section **GitOps Declarative Workflows & API Reconciliation Mechanics**: Connected the air-gapped version control server (Gitea) and host runner (`act_runner`) to declarative Kubernetes management. Detailed the client-side pre-flight validation cache and version skew issues, the 3-Way Merge Engine mechanics (role of `last-applied-configuration` annotation in tracking and processing field deletions), Server-Side Apply (SSA) (field ownership conflict resolutions under `metadata.managedFields`, and solving etcd metadata size constraints for large CRDs), and Pod spec immutability boundaries requiring the `/tmp/kubectl-edit-xxxx.yaml` recovery playbook using `kubectl replace --force` (triggering immediate cgroup teardown and container namespace unmounting via `SIGKILL`).
+  - Updated frontmatter domains, components, sources, and tags to include `kubernetes`, `kubectl`, `pod`, `Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`, and `kubernetes/gitops`.
+  - Added references to the bottom of the note for `Reference Notes/13_kubernetes_api_management_and_pod_immutability.md` and `Reference Notes/scripts/verify_api_immutability.sh`.
+
+---
+
+## [2026-06-05] - Context Expansion Audit of API Management & Pod Immutability Reference Module
+
+### Changed / Updated
+- **API Management & Pod Immutability Reference Module (`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`):**
+  - Expanded **Client-Side vs. Server-Side Validation**: Documented how `kubectl` validates manifests locally using Cached OpenAPI schemas (under `~/.kube/cache/schema`), how version skew and Custom Resource Definitions (CRDs) affect validation, and how `--validate=false` can bypass local pre-flight checks.
+  - Expanded **Server-Side Apply (SSA)**: Added deep-dive explanations of Server-Side Apply (SSA) introduced as the default mechanism in v1.22+. Detailed field ownership tracking with `metadata.managedFields`, conflict detection, and how it resolves the metadata storage constraints of the `last-applied-configuration` annotation in `etcd`.
+  - Expanded **Linux Process Signal Mechanics during Force Deletion**: Documented process-level behavior difference between graceful termination (SIGTERM, grace period countdown, and escalation to SIGKILL) and forceful deletion (immediate SIGKILL, grace-period=0, immediate cgroup and namespace cleanup).
+
+---
+
+## [2026-06-05] - Create API Management and Pod Immutability Reference Module
+
+### Added
+- **API Management & Pod Immutability Reference Module (`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`):** Compiled raw log transcripts into a highly structured reference module covering Declarative vs. Imperative Object Management (operational tradeoffs, exam vs. production workflows), the 3-Way Merge Engine (merge logic, the role of `last-applied-configuration` annotation in deletions, mixed-management warnings), Pod Immutability rules (reasons for immutability, exact mutable fields), and the `/tmp/kubectl-edit-xxxx.yaml` recovery workflow utilizing `kubectl replace --force`.
+- **Validation Script (`Reference Notes/scripts/verify_api_immutability.sh`):** Created a programmatic verification script that automates the deployment, dry-run annotation check, immutability rejection validation, and the forceful recovery procedure.
+
+---
+
 ## [2026-06-05] - Create CKA Exam Checklists
 
 ### Added
