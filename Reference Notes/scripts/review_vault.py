@@ -73,11 +73,11 @@ def parse_frontmatter(file_path):
     return frontmatter, body
 
 def check_inflow_coverage():
-    """Checks if files in inflow/ are accounted for in backlog.md or reference notes."""
+    """Checks and builds a Decision Matrix for files directly in inflow/."""
     log_info("Auditing inflow files coverage...")
     if not os.path.exists(INFLOW_DIR):
         log_warn("Inflow directory not found.")
-        return 0, 0
+        return 0, 0, 0, 0
     
     inflow_files = []
     for f in os.listdir(INFLOW_DIR):
@@ -86,7 +86,7 @@ def check_inflow_coverage():
             
     if not inflow_files:
         log_ok("No files found in inflow/ directory.")
-        return 0, 0
+        return 0, 0, 0, 0
     
     # Read backlog
     backlog_content = ""
@@ -94,7 +94,7 @@ def check_inflow_coverage():
         with open(BACKLOG_PATH, "r", encoding="utf-8") as b:
             backlog_content = b.read()
             
-    # Read all reference notes contents to search for keywords
+    # Read all reference notes contents
     ref_notes_content = ""
     for root, _, files in os.walk(REF_NOTES_DIR):
         for f in files:
@@ -102,17 +102,74 @@ def check_inflow_coverage():
                 with open(os.path.join(root, f), "r", encoding="utf-8") as rn:
                     ref_notes_content += rn.read() + "\n"
                     
-    uncovered = 0
-    for file_name in inflow_files:
+    # Read all main notes contents
+    main_notes_content = ""
+    for root, _, files in os.walk(MAIN_NOTES_DIR):
+        for f in files:
+            if f.endswith(".md"):
+                with open(os.path.join(root, f), "r", encoding="utf-8") as mn:
+                    main_notes_content += mn.read() + "\n"
+
+    matrix = []
+    covered_count = 0
+    ignored_count = 0
+    missing_count = 0
+
+    for file_name in sorted(inflow_files):
+        path = os.path.join(INFLOW_DIR, file_name)
+        size = os.path.getsize(path)
         base_name = file_name.replace(".md", "")
-        # Check if mentioned in backlog or reference notes
-        if base_name in backlog_content or base_name in ref_notes_content or file_name in backlog_content:
-            log_ok(f"Inflow file '{file_name}' is covered in the vault.")
+        
+        # Determine Status
+        status = ""
+        justification = ""
+        
+        # 1. Ignored / Useless
+        if size == 0:
+            status = "Ignored/Useless"
+            justification = "Empty file (0 bytes)."
+            ignored_count += 1
+        elif file_name == "Workloads_CKA.md":
+            status = "Ignored/Useless"
+            justification = "URL index links only; redundant."
+            ignored_count += 1
+        elif file_name == "CKA_ExamTips_Mumshad.md":
+            status = "Ignored/Useless"
+            justification = "Shorthand speed tips already in Vim and Terminal Setup."
+            ignored_count += 1
+        # 2. Covered
+        elif (base_name in backlog_content or 
+              base_name in ref_notes_content or 
+              base_name in main_notes_content or 
+              file_name in backlog_content):
+            status = "Covered"
+            justification = "Successfully ingested into Reference/Main Notes."
+            covered_count += 1
+        # 3. Missing
         else:
-            log_warn(f"Inflow file '{file_name}' appears to be UN-INGESTED (not mentioned in backlog or reference notes).")
-            uncovered += 1
+            status = "Missing"
+            justification = "Active CKA content not yet ingested in Reference/Main Notes."
+            missing_count += 1
             
-    return len(inflow_files), uncovered
+        matrix.append((file_name, status, justification))
+        
+    # Print the Markdown Decision Matrix
+    print("\n### 📋 INFLOW COVERAGE DECISION MATRIX")
+    print("| Inflow File | Status | Notes / Justification |")
+    print("| :--- | :--- | :--- |")
+    for file_name, status, justification in matrix:
+        status_color = status
+        if status == "Covered":
+            status_color = f"{GREEN}Covered{NC}"
+        elif status == "Ignored/Useless":
+            status_color = f"{YELLOW}Ignored/Useless{NC}"
+        elif status == "Missing":
+            status_color = f"{RED}Missing{NC}"
+        print(f"| `{file_name}` | {status_color} | {justification} |")
+    print()
+            
+    return len(inflow_files), covered_count, ignored_count, missing_count
+
 
 def verify_links():
     """Verifies all internal WikiLinks and relative Markdown links in the vault."""
@@ -245,7 +302,7 @@ def main():
     print("      KUBERNETES SECOND BRAIN VAULT INTEGRITY AUDIT")
     print("=" * 60)
     
-    total_inflow, uncovered_inflow = check_inflow_coverage()
+    total_inflow, covered_inflow, ignored_inflow, missing_inflow = check_inflow_coverage()
     print("-" * 60)
     
     total_links, broken_md_links, placeholder_wikilinks = verify_links()
@@ -257,10 +314,10 @@ def main():
     print("=" * 60)
     
     # Inflow Summary
-    if uncovered_inflow == 0:
-        print(f"Inflow Coverage:   {GREEN}100% OK{NC} ({total_inflow}/{total_inflow} files integrated)")
+    if missing_inflow == 0:
+        print(f"Inflow Coverage:   {GREEN}100% OK{NC} ({covered_inflow} covered, {ignored_inflow} ignored out of {total_inflow} files)")
     else:
-        print(f"Inflow Coverage:   {YELLOW}WARNING{NC} ({uncovered_inflow}/{total_inflow} files un-ingested)")
+        print(f"Inflow Coverage:   {YELLOW}WARNING{NC} ({missing_inflow} missing, {covered_inflow} covered, {ignored_inflow} ignored out of {total_inflow} files)")
         
     # Links Summary
     if broken_md_links == 0:

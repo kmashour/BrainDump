@@ -20,6 +20,20 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Exam Checklist (`Projects/CKA/Exam Checklist - Core Architecture and API.md`):** Integrated Dockershim removal milestones, `cri-dockerd` socket locations, the Container Runtime Upgrade Kubelet restart trap, and the 2-Way Merge Fallback blind spot / auto-recovery explanation.
 - **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended a new section detailing ReplicaSets matchExpressions, adoption/orphaning, API validation webhook checks, and thrashing loops (overlapping selectors and webhook interference).
 
+### Ingested Inflow Sources
+The following raw inflow source files have been fully ingested and integrated:
+- `3wayMergevs2wayMergeKubernetes.md`
+- `DockerVsContainerD_Mumshad.md`
+- `KubernetesPracticalTips.md`
+- `ReplicasetsNotesCKA.md`
+- `dockerdepraction_mumshad.md`
+- `etcd_mumshad.md`
+- `kubeProxy_mumshad.md`
+- `kube_apiserver_mumshad.md`
+- `kubelete_mumshad.md`
+- `scheduler_mumshad.md`
+
+
 ---
 
 ## [2026-06-05] - Create Scheduling and Lifecycle Verification PoC
