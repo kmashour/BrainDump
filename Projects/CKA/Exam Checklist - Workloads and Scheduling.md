@@ -9,6 +9,9 @@ topics:
   - "DaemonSets"
   - "Static Pods"
   - "Jobs and CronJobs"
+  - "Node Selector & Node Affinity"
+  - "Taints & Tolerations"
+  - "ConfigMaps & Secrets Injection"
 status: "Ready for Review"
 ---
 
@@ -348,4 +351,145 @@ dig +short db-node-0.db-service.default.svc.cluster.local
 
 # 3. Query SRV records for port and ordinal member membership discovery
 dig SRV _mysql._tcp.db-service.default.svc.cluster.local
+
+---
+
+## 8. Advanced Node Scheduling (Node Selectors & Node Affinity)
+
+### 8.1 Node Selector (`nodeSelector`)
+`nodeSelector` uses simple equality-based matching:
+```yaml
+spec:
+  nodeSelector:
+    disktype: ssd # Node must have label 'disktype=ssd'
+```
+*   **Label Node:** `kubectl label nodes <node-name> disktype=ssd`
+*   **Remove Label:** `kubectl label nodes <node-name> disktype-`
+
+### 8.2 Node Affinity (`nodeAffinity`)
+Node Affinity uses set-based expression matching:
+*   `requiredDuringSchedulingIgnoredDuringExecution`: Hard constraint. If not met, Pod stays `Pending`.
+*   `preferredDuringSchedulingIgnoredDuringExecution`: Soft constraint. Scheduler assigns weights (1-100) to prioritize nodes.
+
+```yaml
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - us-east-1a
+            - us-east-1b
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 50
+        preference:
+          matchExpressions:
+          - key: disktype
+            operator: In
+            values:
+            - ssd
+```
+
+---
+
+## 9. Node Taints and Pod Tolerations
+
+Taints allow nodes to repel Pods. Tolerations allow Pods to run on tainted nodes.
+
+### 9.1 Applying and Removing Taints
+*   **Taint Node:** `kubectl taint nodes <node-name> dedicated=special-user:NoSchedule`
+*   **Remove Taint:** `kubectl taint nodes <node-name> dedicated=special-user:NoSchedule-`
+*   **Effects:**
+    *   `NoSchedule`: Pod won't be scheduled unless it tolerates the taint.
+    *   `PreferNoSchedule`: Scheduler will avoid placing the Pod on the node.
+    *   `NoExecute`: Pod is evicted if it does not tolerate the taint.
+
+### 9.2 Pod Toleration Syntax
+```yaml
+spec:
+  tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "special-user"
+    effect: "NoSchedule"
+  - key: "infra-only"
+    operator: "Exists"
+    effect: "NoSchedule"
+```
+
+### 9.3 Remove Master/Control-Plane Taints (for single-node testing)
+```bash
+# Allow pods to run on the control-plane/master nodes
+kubectl taint nodes --all node-role.kubernetes.io/control-plane- --ignore-not-found=true
+kubectl taint nodes --all node-role.kubernetes.io/master- --ignore-not-found=true
+```
+
+---
+
+## 10. ConfigMaps & Secrets Injection
+
+### 10.1 Imperative Creation
+```bash
+# Create ConfigMap
+kubectl create configmap app-config --from-literal=db_host=mysql-svc --from-literal=db_port=3306
+
+# Create Secret
+kubectl create secret generic db-secret --from-literal=db_password=supersecret
+```
+
+### 10.2 Bulk Environment Injection (`envFrom`)
+Inject all key-value pairs from ConfigMap/Secret as environment variables:
+```yaml
+spec:
+  containers:
+  - name: app
+    image: nginx:alpine
+    envFrom:
+    - configMapRef:
+        name: app-config
+    - secretRef:
+        name: db-secret
+```
+
+### 10.3 Target Environment Injection (`valueFrom`)
+```yaml
+spec:
+  containers:
+  - name: app
+    image: nginx:alpine
+    env:
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: db-secret
+          key: db_password
+```
+
+### 10.4 Volume Mount Injection
+Mount keys as files inside a directory:
+```yaml
+spec:
+  containers:
+  - name: app
+    image: nginx:alpine
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+    - name: secret-volume
+      mountPath: /etc/secret
+      readOnly: true
+  volumes:
+  - name: config-volume
+    configMap:
+      name: app-config
+  - name: secret-volume
+    secret:
+      secretName: db-secret
+      defaultMode: 0600 # strict permissions for security
+```
+> [!WARNING]
+> **Exam Pitfall:** Mounting using `subPath` (e.g., to mount a single file inside an existing directory) disables Kubelet dynamic updates for that mounted volume.
 ```

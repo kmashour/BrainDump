@@ -4,6 +4,33 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ---
 
+## [2026-06-05] - Create Scheduling and Lifecycle Verification PoC
+
+### Added
+- **Validation Script (`Reference Notes/scripts/verify_scheduling_lifecycle_poc.sh`):** Created a production-grade bash verification script that automates Node Labeling/Selector/Affinity, Taints/Tolerations, ConfigMap/Secret volume mount sync and env injection, and logging/monitoring audits against a local cluster.
+
+### Changed / Updated
+- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Integrated Phase 4 documentation detailing the automated verification script, its functionality, and commands on how to run it.
+
+---
+
+## [2026-06-05] - Context Expansion Audit of Scheduling, Logging, and Lifecycle Reference Module
+
+### Changed / Updated
+- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):**
+  - **ConfigMap Symlink & inotify Sync Mechanics:** Expanded the ConfigMap/Secret volume mounts section. Detailed Kubelet's atomic directory update mechanism (timestamped subdirectories, user-facing symlinks, and the atomic swap of the `..data` symlink). Documented inotify event propagation inside containers (directory-level vs. file-level watches). Explained the `subPath` inode binding gotcha which binds directly to a file inode, preventing the container from receiving updates when the symlink target changes.
+  - **ETCD Encryption Verification & Envelope Encryption:** Detailed the ETCD encryption at rest mechanism. Contrasted static providers (`identity`, `aescbc`, `secretbox`) with external KMS envelope encryption (DEK/KEK generation, remote gRPC plugin calls, local caches). Provided a step-by-step diagnostic run sheet to SSH into the control plane node, query the raw secret directly using `etcdctl` with client certificates, and verify it contains the `k8s:enc:aescbc:v1:` prefix.
+  - **Custom Scheduler Reconciliation Loop & Binding API Walkthrough:** Expanded the multiple custom schedulers section. Provided a detailed step-by-step explanation of the reconciliation loop (Watch/Informer, Queueing, Filtering/Predicates, Scoring/Priorities, Selection, Binding) with a Mermaid flow diagram. Included complete, practical script implementations in Python (using the official `kubernetes` client library) and Bash (using `kubectl` and `curl` against the `/binding` subresource API) demonstrating how to programmatically schedule pending pods.
+
+---
+
+## [2026-06-05] - Create Scheduling, Logging, and Lifecycle Reference Module
+
+### Added
+- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Compiled raw log transcripts into a highly structured, comprehensive reference module covering Advanced Scheduling and Node Placement (Manual scheduling, labels/selectors, taints/tolerations, node affinity, taints vs affinity combinations, and multiple custom schedulers), Logging and Monitoring (Metrics Server architecture, Kubelet Summary API, and application logs queries), and Application Lifecycle (container commands/arguments overriding, environment variables direct config, envFrom, valueFrom, ConfigMaps, Secrets, base64 encoding/decoding, and etcd encryption at rest).
+
+---
+
 ## [2026-06-05] - CKA Exam Checklist Updates for API Management & Pod Immutability
 
 ### Changed / Updated

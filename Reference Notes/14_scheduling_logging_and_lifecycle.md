@@ -1,0 +1,1278 @@
+# Module 14: Scheduling, Logging, and Lifecycle Management
+
+This module covers advanced scheduling and node placement policies, cluster-wide and application-level logging and monitoring mechanics, and the Kubernetes application lifecycle including container command overriding, environment injection, ConfigMaps, and Secrets.
+
+---
+
+## 1. Advanced Scheduling & Node Placement
+
+The default Kubernetes scheduler (`kube-scheduler`) handles automatic pod placement. However, Kubernetes provides multiple mechanisms to bypass, influence, or completely replace the default scheduling logic.
+
+### A. Manual Scheduling (Bypassing the Scheduler)
+When a pod is created without a scheduler running, or when you need to bypass the scheduler entirely (e.g., during troubleshooting or for static administrative placement), you can manually schedule a Pod.
+
+#### Method 1: Direct Node Binding via `spec.nodeName`
+By setting the `spec.nodeName` field in the Pod specification, you bypass the scheduler's filtering and ranking phases. The Pod is directly assigned to the target node.
+* **Mechanism:** The Kubelet on the specified node watches for pods with its node name, pulls the image, and starts the container. If the node is offline or does not exist, the Pod will remain unscheduled or fail.
+* **Properties:**
+  * `nodeName` is typically empty by default.
+  * Setting it overrides any scheduling constraints, taints, or affinities.
+  * It cannot be updated after Pod creation (it is immutable in a running Pod).
+
+**Manifest Example:**
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: manual-nginx
+  labels:
+    app: web
+spec:
+  nodeName: worker-1 # Bypasses the scheduler and binds directly to worker-1
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    ports:
+    - containerPort: 80
+```
+
+#### Method 2: Programmatic Binding via the Binding API Subresource
+If a Pod is already created and stuck in a `Pending` state (e.g., because no scheduler is running), you cannot edit `spec.nodeName` directly. Instead, you must create a `Binding` object and submit it to the Pod's binding subresource via the Kubernetes API.
+* **Endpoint:** `POST /api/v1/namespaces/{namespace}/pods/{pod-name}/binding`
+* **Manifest Example (`binding.yaml`):**
+  ```yaml
+  apiVersion: v1
+  kind: Binding
+  metadata:
+    name: pending-nginx # Must match the name of the pending pod
+  target:
+    apiVersion: v1
+    kind: Node
+    name: worker-1 # Node where the pod should be scheduled
+  ```
+* **Imperative Application (via `kubectl` raw POST):**
+  ```bash
+  kubectl replace -f - <<EOF
+  {
+    "apiVersion": "v1",
+    "kind": "Binding",
+    "metadata": { "name": "pending-nginx" },
+    "target": { "apiVersion": "v1", "kind": "Node", "name": "worker-1" }
+  }
+  EOF
+  ```
+
+---
+
+### B. Labels and Selectors
+Labels and Selectors are the core grouping mechanism in Kubernetes. They are key-value pairs attached to objects (like Pods) and used by controllers and the scheduler to query and filter resources.
+
+#### 1. Labels on Pods vs Nodes
+* **Pod Labels:** Used by Services, Deployments, ReplicaSets, and NetworkPolicies to group pods for traffic routing, scaling, or network rules.
+* **Node Labels:** Attached to worker nodes to define node characteristics (e.g., geography, disk speed, instance type, hardware generation).
+  * *Default labels* are added automatically by Kubelet/cloud-provider (e.g., `kubernetes.io/hostname`, `topology.kubernetes.io/zone`, `kubernetes.io/arch`, `kubernetes.io/os`).
+  * *Custom labels* can be added manually:
+    ```bash
+    kubectl label nodes worker-1 disktype=ssd size=Large
+    ```
+  * To remove a label:
+    ```bash
+    kubectl label nodes worker-1 disktype-
+    ```
+
+#### 2. Selectors Syntax & Matching Logic
+Kubernetes supports two types of selectors:
+1. **Equality-Based Selectors:**
+   * Matches keys and values exactly. Used in services, replication controllers, and `nodeSelector`.
+   * Operators: `=`, `==`, `!=`.
+   * Example: `environment = production, tier != frontend`
+2. **Set-Based Selectors:**
+   * Allows filtering keys according to a set of values. Used in Deployments, ReplicaSets, DaemonSets, and Node/Pod Affinity.
+   * Operators:
+     * `In`: The label's value must match one of the specified values.
+     * `NotIn`: The label's value must not match any of the specified values.
+     * `Exists`: The key must exist on the resource, regardless of its value (the values array must be empty).
+     * `DoesNotExist`: The key must not exist on the resource (the values array must be empty).
+     * `Gt` (Greater than) / `Lt` (Less than): Used for numeric values (parsed as integers).
+
+**Example syntax in a ReplicaSet (`matchExpressions`):**
+```yaml
+selector:
+  matchLabels:
+    app: webapp
+  matchExpressions:
+    - {key: tier, operator: In, values: [frontend, api]}
+    - {key: environment, operator: NotIn, values: [dev]}
+```
+
+---
+
+### C. Taints and Tolerations (Repelling Workloads)
+While node affinity attracts Pods to a set of nodes, **Taints and Tolerations** allow nodes to **repel** a set of Pods. They ensure that unauthorized Pods are not scheduled on dedicated or sensitive nodes (e.g., control plane nodes).
+
+#### 1. Node Taints
+A taint is applied to a node and consists of a `key`, a `value` (optional), and a `taint-effect`.
+* **Command Syntax:**
+  ```bash
+  kubectl taint nodes <node-name> <key>=<value>:<taint-effect>
+  ```
+* **To remove a taint:** Append a hyphen `-` to the end of the effect:
+  ```bash
+  kubectl taint nodes <node-name> <key>=<value>:<taint-effect>-
+  ```
+* **Example:**
+  ```bash
+  kubectl taint nodes worker-1 dedicated=special-user:NoSchedule
+  ```
+
+#### 2. Taint Effects
+There are three taint effects that govern how the scheduler treats Pods that do not tolerate the taint:
+1. **`NoSchedule` (Hard Constraint):**
+   * If a Pod does not have a matching toleration, it **cannot** be scheduled onto the node.
+   * Existing running Pods on the node that lack the toleration are **unaffected**.
+2. **`PreferNoSchedule` (Soft Constraint):**
+   * The scheduler will try to avoid placing the Pod on the tainted node, but if no other resource-rich nodes are available, it will schedule the Pod there as a last resort.
+3. **`NoExecute` (Eviction Trigger):**
+   * If a taint with `NoExecute` is applied to a node, any running Pods on that node that do not tolerate this taint are **immediately evicted**.
+   * If a Pod *does* tolerate the taint, it can remain running. However, if the toleration includes a `tolerationSeconds` parameter, the Pod will remain on the node for that specified time before being evicted:
+     ```yaml
+     tolerations:
+     - key: "node.kubernetes.io/unreachable"
+       operator: "Exists"
+       effect: "NoExecute"
+       tolerationSeconds: 300 # Stays for 5 minutes after node becomes unreachable, then evicts
+     ```
+
+#### 3. Pod Tolerations
+Tolerations are defined in the Pod's `spec.tolerations` field. To allow a Pod to be scheduled on a tainted node, the toleration must match the taint's key, value, and effect.
+* **Operator `Equal`:** Requires both the key and value to match.
+  ```yaml
+  tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "special-user"
+    effect: "NoSchedule"
+  ```
+* **Operator `Exists`:** Matches any value for the key. The `value` field must be omitted.
+  ```yaml
+  tolerations:
+  - key: "dedicated"
+    operator: "Exists"
+    effect: "NoSchedule"
+  ```
+* **Empty Key with `Exists` Operator:** Matches all keys, values, and taints (useful for diagnostic pods).
+  ```yaml
+  tolerations:
+  - operator: "Exists"
+  ```
+
+> [!NOTE]
+> **Taints and Tolerations do not guarantee placement.**
+> They only repel non-tolerating pods. A tolerating pod is *allowed* to run on the tainted node but is not *forced* to do so; it might still be scheduled on any other untainted node.
+
+---
+
+### D. Node Selectors (Simple Node Affinity)
+`nodeSelector` is the simplest form of node selection constraint. It is defined as a map of key-value pairs in the Pod spec.
+* **Mechanism:** The scheduler matches the Pod's `nodeSelector` against the labels of all available nodes. The node must have all specified labels to be a candidate.
+* **Limitations:**
+  * Supports only equality matching (AND logic).
+  * Cannot specify complex logic (e.g., OR conditions, negative matches, key existence, or preference weights).
+
+**Manifest Example:**
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: selector-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+  nodeSelector:
+    disktype: ssd
+    size: Large
+```
+
+---
+
+### E. Node Affinity (Advanced Placement Logic)
+Node Affinity provides a rich set of constraints that extends the capabilities of `nodeSelector` by using set-based matching expressions and soft preferences.
+
+#### 1. Rules: Required vs. Preferred
+Node Affinity has two main types of rules:
+1. **`requiredDuringSchedulingIgnoredDuringExecution` (Hard Affinity):**
+   * The scheduler **must** find a node that matches the affinity rules. If no node matches, the Pod remains `Pending`.
+2. **`preferredDuringSchedulingIgnoredDuringExecution` (Soft Affinity):**
+   * The scheduler tries to find a node that matches the rules. If it cannot, it will schedule the Pod on a non-matching node.
+   * You can assign a `weight` (from 1 to 100) to each preferred rule. The scheduler calculates scores for each node by adding weights of satisfied affinity terms. The node with the highest score is selected.
+
+> [!NOTE]
+> **What does "IgnoredDuringExecution" mean?**
+> If the labels of a node change while a Pod is running, or if the affinity rule changes, the running Pod **will not** be evicted from the node. It will continue to execute undisturbed. Only scheduling decisions are affected.
+
+#### 2. Match Expressions and Operator Logic
+Node affinity uses `nodeSelectorTerms` and `matchExpressions`.
+The operator field supports:
+* `In`: Node label value must match one of the listed values.
+* `NotIn`: Node label value must not match any of the listed values (useful for anti-affinity).
+* `Exists`: A label with the specified key must exist on the node (the `values` array must be empty).
+* `DoesNotExist`: A label with the specified key must not exist on the node (the `values` array must be empty).
+* `Gt` / `Lt`: Node label value must be a number greater/less than the specified value (parsed as an integer).
+
+**E2E Node Affinity Manifest Example:**
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: affinity-pod
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - us-east-1a
+            - us-east-1b
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 80
+        preference:
+          matchExpressions:
+          - key: disktype
+            operator: In
+            values:
+            - ssd
+      - weight: 20
+        preference:
+          matchExpressions:
+          - key: size
+            operator: Exists
+  containers:
+  - name: app
+    image: my-app:v1
+```
+
+---
+
+### F. Taints/Tolerations vs. Node Affinity combination scenarios (repel vs attract)
+A common requirement in production is dedicating a set of nodes to a specific department, customer, or workload type (e.g., GPU-enabled nodes for Machine Learning).
+
+| Mechanism | Behavior | Result on Target Nodes | Result on General Nodes | Exclusivity |
+| :--- | :--- | :--- | :--- | :--- |
+| **Taints & Tolerations Only** | Node repels pods without tolerations | Dedicated nodes only host our target workload pods. | Target workload pods can still run on standard worker nodes. | ❌ Partial (Node is exclusive, Pod is not) |
+| **Node Affinity Only** | Pod is attracted to target nodes | Dedicated nodes can still host other general pods. | Target workload pods are forced onto dedicated nodes. | ❌ Partial (Pod is exclusive, Node is not) |
+| **Combined (Taint + Affinity)** | Node repels general pods; Pod is attracted to target nodes | Dedicated nodes **only** host target workload pods. | Target workload pods are **never** scheduled on general nodes. | 🌟 **100% Exclusive** |
+
+#### Step-by-Step Scenario: Dedicating GPU Nodes to ML Workloads
+1. **Label the GPU Nodes:**
+   ```bash
+   kubectl label nodes node-gpu-1 hardware=gpu
+   ```
+2. **Taint the GPU Nodes (repels all other pods):**
+   ```bash
+   kubectl taint nodes node-gpu-1 hardware=gpu:NoSchedule
+   ```
+3. **Configure the ML Pod (Attract + Tolerate):**
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: ml-training-pod
+   spec:
+     tolerations:
+     - key: "hardware"
+       operator: "Equal"
+       value: "gpu"
+       effect: "NoSchedule"
+     affinity:
+       nodeAffinity:
+         requiredDuringSchedulingIgnoredDuringExecution:
+           nodeSelectorTerms:
+           - matchExpressions:
+             - key: hardware
+               operator: In
+               values:
+               - gpu
+     containers:
+     - name: cuda-container
+       image: nvidia/cuda:11.0-base
+   ```
+
+---
+
+### G. Multiple Custom Schedulers
+Kubernetes allows running multiple custom schedulers simultaneously alongside the default scheduler. You can write your own scheduler or configure another instance of the default `kube-scheduler` with custom parameters.
+
+#### 1. Custom Scheduler Reconciliation Loop
+A custom scheduler runs as a controller that continually reconciles the state of unscheduled pods. The core logic operates as an event-driven loop executing the following steps:
+
+```mermaid
+graph TD
+    A[Watch API Server for Pending Pods] --> B{"Matches schedulerName & empty nodeName?"}
+    B -- No --> A
+    B -- Yes --> C[Add Pod to Scheduling Queue]
+    C --> D[Dequeue Pod]
+    D --> E[Filtering / Predicates]
+    E --> F[Scoring / Priorities]
+    F --> G[Select Best Node]
+    G --> H[Invoke Binding API Subresource]
+    H --> I[Kubelet Spawns Container]
+```
+
+1. **Informer / Watch Phase:** The scheduler subscribes to API server events to watch for Pod additions or updates. It filters for Pods in a `Pending` state where `spec.nodeName` is empty and `spec.schedulerName` matches the custom scheduler's identifier.
+2. **Queueing Phase:** Valid Pods are sorted and pushed into a scheduling queue (e.g. prioritized by scheduling PriorityClass).
+3. **Filtering (Predicates):** The scheduler evaluates all cluster nodes to filter out nodes that cannot run the Pod. It checks resource capacity (CPU/RAM), node port availability, node taints, node selectors, and node affinity rules.
+4. **Scoring (Priorities):** For all nodes that passed the filtering phase, the scheduler runs scoring algorithms to rank them. Scoring can favor nodes that already have required container images (image locality), spread Pods across topologies (anti-affinity), or fit resources optimally.
+5. **Selection:** The node with the highest cumulative score is selected.
+6. **Binding Phase:** The scheduler calls the Pod's `/binding` API subresource. This is an atomic operation that sets the `spec.nodeName` of the Pod, which signals the Kubelet on the target node to start pulling images and executing the container.
+
+#### 2. Custom Scheduler Configuration (`KubeSchedulerConfiguration`)
+Custom schedulers are configured using a configuration file instead of legacy command-line flags.
+* **Example configuration (`my-scheduler-config.yaml`):**
+  ```yaml
+  apiVersion: kubescheduler.config.k8s.io/v1
+  kind: KubeSchedulerConfiguration
+  leaderElection:
+    leaderElect: true
+    resourceName: my-custom-scheduler
+    resourceNamespace: kube-system
+  profiles:
+    - schedulerName: my-custom-scheduler
+  ```
+  > [!IMPORTANT]
+  > When running multiple schedulers in High Availability (HA) mode, **Leader Election** is critical to prevent conflicts. If `leaderElect: true` is used, you must specify a unique lease resource name (`resourceName` / `--leader-elect-resource-name`) so it does not collide with the default scheduler's leader lease.
+
+#### 3. Installation Options
+You can deploy a custom scheduler either as a static Pod (on control plane hosts) or as a Deployment inside the cluster.
+
+##### Option A: Static Pod Manifest
+On control plane nodes, you can place a manifest in `/etc/kubernetes/manifests/my-custom-scheduler.yaml`:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-custom-scheduler
+  namespace: kube-system
+spec:
+  hostNetwork: true
+  containers:
+  - name: scheduler
+    image: registry.k8s.io/kube-scheduler:v1.30.0 # Match cluster version
+    command:
+    - kube-scheduler
+    - --config=/etc/kubernetes/scheduler/my-scheduler-config.yaml
+    - --v=2
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/kubernetes/scheduler
+  volumes:
+  - name: config-volume
+    hostPath:
+      path: /etc/kubernetes/scheduler
+```
+
+##### Option B: Standard Kubernetes Deployment (using ConfigMap for config)
+1. **Create the ConfigMap holding the scheduler configuration:**
+   ```bash
+   kubectl create configmap my-scheduler-config --from-file=my-scheduler-config.yaml -n kube-system
+   ```
+2. **Deploy the Scheduler:**
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: my-custom-scheduler
+     namespace: kube-system
+   spec:
+     replicas: 1
+     selector:
+       matchLabels:
+         app: my-custom-scheduler
+     template:
+       metadata:
+         labels:
+           app: my-custom-scheduler
+       spec:
+         serviceAccountName: my-custom-scheduler-sa # Requires ClusterRole permissions for scheduling
+         containers:
+         - name: scheduler
+           image: registry.k8s.io/kube-scheduler:v1.30.0
+           command:
+           - kube-scheduler
+           - --config=/etc/kubernetes/scheduler/my-scheduler-config.yaml
+           - --v=2
+           volumeMounts:
+           - name: config-volume
+             mountPath: /etc/kubernetes/scheduler
+         volumes:
+         - name: config-volume
+           configMap:
+             name: my-scheduler-config
+   ```
+
+#### 4. Assigning Schedulers to Pods
+To request that a Pod be scheduled by your custom scheduler rather than the default one, define the `spec.schedulerName` field in the Pod manifest:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: custom-nginx
+spec:
+  schedulerName: my-custom-scheduler # Instructs custom-scheduler to handle it
+  containers:
+  - name: nginx
+    image: nginx:alpine
+```
+*Note: If `schedulerName` is omitted, it defaults to `default-scheduler`.*
+
+#### 5. Monitoring and Logs
+* **Events:** You can verify that your custom scheduler placed the pod by checking Events:
+  ```bash
+  kubectl get events -n default --sort-by='.metadata.creationTimestamp'
+  ```
+  Look for:
+  `Successfully assigned default/custom-nginx to worker-1 by my-custom-scheduler`
+* **Logs:** Review the logs of the scheduler pod to debug filtering and ranking logic:
+  ```bash
+  kubectl logs -n kube-system -l app=my-custom-scheduler
+  ```
+
+#### 6. Custom Scheduler Binding API Walkthrough (Python & Bash)
+
+When writing a custom scheduler, instead of patching `spec.nodeName` directly (which is immutable on the Pod resource), you must use the Pod's `/binding` subresource. This subresource is a specialized endpoint that atomically assigns a Pod to a Node.
+
+Below are two implementations demonstrating how to watch the API, select a node, and invoke the `/binding` subresource.
+
+##### Python Implementation
+This implementation uses the official Kubernetes Python Client library. It monitors the cluster for pending pods assigned to `my-custom-scheduler`, performs basic node filtering, and posts the binding object.
+
+```python
+import time
+import random
+from kubernetes import client, config, watch
+
+def run_custom_scheduler():
+    # Load kubeconfig for local testing or incluster config when running inside a Pod
+    try:
+        config.load_incluster_config()
+    except config.ConfigException:
+        config.load_kube_config()
+
+    v1 = client.CoreV1Api()
+    scheduler_name = "my-custom-scheduler"
+    print(f"Starting custom scheduler loop for '{scheduler_name}'...")
+
+    # Watch for Pod events across all namespaces
+    w = watch.Watch()
+    for event in w.stream(v1.list_pod_for_all_namespaces):
+        pod = event['object']
+        
+        # We only care about Pending pods matching our scheduler name that do not have a node assigned
+        if (pod.status.phase == "Pending" and 
+            pod.spec.scheduler_name == scheduler_name and 
+            not pod.spec.node_name):
+            
+            print(f"Detected Pod requiring scheduling: {pod.metadata.namespace}/{pod.metadata.name}")
+            
+            try:
+                # 1. Gather all nodes in the cluster
+                nodes = v1.list_node().items
+                eligible_nodes = []
+                
+                for node in nodes:
+                    # Filter out nodes that are not Ready
+                    is_ready = any(c.type == 'Ready' and c.status == 'True' for c in node.status.conditions)
+                    
+                    # Filter out nodes with incompatible NoSchedule taints
+                    has_unsatisfied_taint = False
+                    if node.spec.taints:
+                        for taint in node.spec.taints:
+                            if taint.effect == 'NoSchedule':
+                                tolerated = False
+                                if pod.spec.tolerations:
+                                    for tol in pod.spec.tolerations:
+                                        if (tol.key == taint.key and 
+                                            (tol.operator == 'Exists' or tol.value == taint.value)):
+                                            tolerated = True
+                                            break
+                                if not tolerated:
+                                    has_unsatisfied_taint = True
+                                    break
+                                    
+                    if is_ready and not has_unsatisfied_taint:
+                        eligible_nodes.append(node.metadata.name)
+                
+                if not eligible_nodes:
+                    print(f"Warning: No eligible nodes available for {pod.metadata.name}")
+                    continue
+                
+                # 2. Select a target node (Random allocation for simplicity)
+                target_node = random.choice(eligible_nodes)
+                print(f"Selected target node '{target_node}' for Pod '{pod.metadata.name}'")
+                
+                # 3. Create the Binding payload
+                binding = client.V1Binding(
+                    api_version="v1",
+                    kind="Binding",
+                    metadata=client.V1ObjectMeta(
+                        name=pod.metadata.name,
+                        namespace=pod.metadata.namespace
+                    ),
+                    target=client.V1ObjectReference(
+                        api_version="v1",
+                        kind="Node",
+                        name=target_node
+                    )
+                )
+                
+                # 4. Invoke the POST binding API endpoint
+                v1.create_namespaced_pod_binding(
+                    name=pod.metadata.name,
+                    namespace=pod.metadata.namespace,
+                    body=binding
+                )
+                print(f"Successfully bound pod {pod.metadata.name} to {target_node}")
+                
+            except client.exceptions.ApiException as e:
+                print(f"API Exception during scheduling: {e}")
+            except Exception as e:
+                print(f"Unexpected error: {e}")
+
+if __name__ == "__main__":
+    run_custom_scheduler()
+```
+
+##### Bash Implementation
+This shell script uses `kubectl` to watch for Pods and executes a raw `curl` POST command against the API server's `/binding` endpoint using the pod's service account credentials.
+
+```bash
+#!/bin/bash
+set -euo pipefail
+
+SCHEDULER_NAME="my-custom-scheduler"
+APISERVER="https://kubernetes.default.svc"
+SERVICEACCOUNT="/var/run/secrets/kubernetes.io/serviceaccount"
+TOKEN=$(cat "${SERVICEACCOUNT}/token")
+CACERT="${SERVICEACCOUNT}/ca.crt"
+
+echo "Monitoring Kubernetes API for Pods with schedulerName=${SCHEDULER_NAME}..."
+
+# Watch loop for pods in all namespaces matching the schedulerName
+kubectl get pods -A -w -o json | jq --unbuffered -c '. | select(.status.phase == "Pending" and .spec.schedulerName == "'"${SCHEDULER_NAME}"'" and .spec.nodeName == null)' | while read -r pod; do
+  NAMESPACE=$(echo "$pod" | jq -r '.metadata.namespace')
+  POD_NAME=$(echo "$pod" | jq -r '.metadata.name')
+  
+  echo "Discovered pending pod: ${NAMESPACE}/${POD_NAME}"
+  
+  # Select a node that is Ready (filtering out untolerated NoSchedule taints is simplified here)
+  TARGET_NODE=$(kubectl get nodes -o json | jq -r '.items[] | select(.status.conditions[] | select(.type=="Ready" and .status=="True")) | .metadata.name' | head -n 1)
+  
+  if [ -z "${TARGET_NODE}" ]; then
+    echo "Error: No Ready nodes found to bind Pod ${POD_NAME}"
+    continue
+  fi
+  
+  echo "Binding Pod ${POD_NAME} to Node ${TARGET_NODE} via API subresource..."
+  
+  # Invoke POST /api/v1/namespaces/{namespace}/pods/{pod-name}/binding
+  STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+    --cacert "${CACERT}" \
+    -H "Authorization: Bearer ${TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{
+      "apiVersion": "v1",
+      "kind": "Binding",
+      "metadata": {
+        "name": "'"${POD_NAME}"'"
+      },
+      "target": {
+        "apiVersion": "v1",
+        "kind": "Node",
+        "name": "'"${TARGET_NODE}"'"
+      }
+    }' \
+    "${APISERVER}/api/v1/namespaces/${NAMESPACE}/pods/${POD_NAME}/binding")
+    
+  if [ "$STATUS_CODE" -eq 201 ]; then
+    echo "Success: Bound ${POD_NAME} to ${TARGET_NODE} (HTTP 201)"
+  else
+    echo "Failed: API Server returned HTTP status ${STATUS_CODE}"
+  fi
+done
+```
+
+---
+
+## 2. Logging & Monitoring
+
+Monitoring and logging are essential for troubleshooting application states, observing cluster performance, and configuring auto-scaling.
+
+### A. Metrics Server
+The Kubernetes Metrics Server is a cluster-wide aggregator of resource usage data. It collects CPU and memory usage from Kubelets and exposes them via the metrics API (`metrics.k8s.io`).
+
+```
+[ kubectl top / HPA ] 
+         |
+         v (metrics.k8s.io API)
+[ Metrics Server ]
+         |
+         v (Kubelet Summary API: /stats/summary)
+[ Kubelet (on Nodes) ]
+         |
+         v
+[ cAdvisor (collects from CRI & cgroups) ]
+```
+
+#### 1. Architecture & Summary API
+* **In-Memory Storage:** The Metrics Server does not write metrics to disk; it stores them in-memory. It is not a replacement for long-term monitoring systems like Prometheus.
+* **Kubelet Summary API:** The Kubelet on each node runs an embedded metrics collector called **cAdvisor** (Container Advisor). cAdvisor reads resource consumption directly from cgroups on the Linux host. The Kubelet exposes this data via `/stats/summary`.
+* The Metrics Server queries this endpoint on each node, aggregates the data, and presents it to the API server.
+
+#### 2. Installation & configuration (Labs / Insecure TLS)
+To install the Metrics Server, download the official components manifest:
+```bash
+wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+In many self-signed or local clusters (like kind or kubeadm), the Metrics Server fails to start because it cannot verify the TLS certificates of the Kubelets.
+* **Fix:** Edit the Metrics Server deployment and append the `--kubelet-insecure-tls` flag to the container arguments:
+```yaml
+spec:
+  template:
+    spec:
+      containers:
+      - name: metrics-server
+        args:
+        - --cert-dir=/tmp
+        - --secure-port=10250
+        - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+        - --kubelet-use-node-status-port
+        - --metric-resolution=15s
+        - --kubelet-insecure-tls # Add this flag to bypass TLS verification
+```
+
+#### 3. Command Usage
+Once the Metrics Server is running, you can inspect resource usage:
+* **Node performance:**
+  ```bash
+  kubectl top node
+  ```
+* **Pod performance:**
+  * Standard namespace: `kubectl top pod`
+  * Specified namespace: `kubectl top pod -n kube-system`
+  * All namespaces: `kubectl top pod -A`
+  * Filtered by label: `kubectl top pod -l app=nginx`
+  * Include container breakdown: `kubectl top pod --containers`
+
+---
+
+### B. Application Logs
+Kubernetes manages logs generated by processes running inside containerized applications.
+
+#### 1. Mechanics
+By default, standard output (stdout) and standard error (stderr) streams inside a container are intercepted by the container runtime (CRI), formatted, and written as JSON/plaintext files under `/var/log/pods/` on the worker node.
+`kubectl logs` reads these files via the Kubelet API.
+
+#### 2. Logs Queries
+* **Single Container Pod:**
+  ```bash
+  kubectl logs <pod-name>
+  ```
+* **Multi-Container Pod:**
+  If you do not specify a container name, the command will error. You must use `-c` or `--container`:
+  ```bash
+  kubectl logs <pod-name> -c <container-name>
+  ```
+* **Stream Logs (Follow):**
+  ```bash
+  kubectl logs -f <pod-name>
+  ```
+* **Query Crash Logs (`--previous`):**
+  If a container has crashed and restarted, `kubectl logs <pod-name>` will only show logs from the *currently running* container instance. To debug why it crashed, retrieve logs from the *terminated* instance using `--previous` (or `-p`):
+  ```bash
+  kubectl logs <pod-name> --previous
+  ```
+* **Time-bound Logs:**
+  * Show logs since last 10 minutes: `kubectl logs <pod-name> --since=10m`
+  * Show logs since a specific RFC3339 timestamp: `kubectl logs <pod-name> --since-time=2026-06-05T12:00:00Z`
+  * Show only the last 50 lines: `kubectl logs <pod-name> --tail=50`
+  * Append timestamps to logs: `kubectl logs <pod-name> --timestamps`
+
+---
+
+## 3. Application Lifecycle Management
+
+Managing the lifecycle of applications involves configuring how they boot, pass configurations, and handle secrets.
+
+### A. Commands and Arguments
+When defining a Pod, you can specify a container command and arguments. This configuration interacts directly with the `ENTRYPOINT` and `CMD` instructions defined in the Dockerfile of the container image.
+
+#### 1. Docker vs. Kubernetes Direct Map
+
+| Dockerfile Instruction | Kubernetes YAML Field | Purpose |
+| :--- | :--- | :--- |
+| **`ENTRYPOINT`** | **`command`** | The main executable process to run when the container starts. |
+| **`CMD`** | **`args`** | Default arguments passed to the executable process. |
+
+#### 2. Overriding Rules
+
+| Manifest Configured | Resulting Behavior |
+| :--- | :--- |
+| **Neither `command` nor `args` defined** | The container runs the `ENTRYPOINT` and `CMD` defined in the Dockerfile. |
+| **Only `command` defined** | The image's `ENTRYPOINT` and `CMD` are **completely overridden**. The container runs the new `command` without arguments (unless defined in the executable path). |
+| **Only `args` defined** | The image's `CMD` is overridden. The new `args` are passed to the image's `ENTRYPOINT`. |
+| **Both `command` and `args` defined** | Both the image's `ENTRYPOINT` and `CMD` are overridden. The container runs the new `command` with the new `args`. |
+
+#### 3. Syntax Formats
+* **Shell Format vs Exec Format in Dockerfile:**
+  * Shell format: `ENTRYPOINT sleep 10` (runs as `/bin/sh -c "sleep 10"`, PID 1 is the shell itself, not the sleep process).
+  * Exec format: `ENTRYPOINT ["sleep", "10"]` (runs directly, sleep is PID 1, allows proper signal propagation like SIGTERM).
+* **Kubernetes Manifest formats:**
+  * Standard YAML list:
+    ```yaml
+    command:
+    - "/bin/sh"
+    - "-c"
+    - "sleep 10"
+    ```
+  * Inline JSON list:
+    ```yaml
+    command: ["/bin/sh", "-c", "sleep 10"]
+    ```
+
+---
+
+### B. Environment Variables
+Kubernetes allows injecting environment variables into containers.
+
+#### 1. Direct Configuration
+Define values inline:
+```yaml
+spec:
+  containers:
+  - name: my-app
+    image: alpine
+    env:
+    - name: DB_PORT
+      value: "3306"
+```
+
+#### 2. Bulk Injection (`envFrom`)
+Inject all key-value pairs from a ConfigMap or Secret in bulk. The keys automatically become the environment variable names.
+```yaml
+envFrom:
+- configMapRef:
+    name: app-config
+- secretRef:
+    name: app-secret
+```
+
+#### 3. Targeted Reference (`valueFrom`)
+Inject specific values from external resources or cluster metadata.
+* **ConfigMap Key Reference:**
+  ```yaml
+  env:
+  - name: APP_COLOR
+    valueFrom:
+      configMapKeyRef:
+        name: app-config
+        key: theme-color
+  ```
+* **Secret Key Reference:**
+  ```yaml
+  env:
+  - name: DB_PASS
+    valueFrom:
+      secretKeyRef:
+        name: db-credentials
+        key: password
+  ```
+* **Downward API Field Reference (Metadata):**
+  Inject Pod names, IPs, namespaces, or node names into the container.
+  ```yaml
+  env:
+  - name: MY_POD_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.name
+  - name: MY_POD_IP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.podIP
+  ```
+* **Container Resource Reference:**
+  Inject resource request/limit constraints.
+  ```yaml
+  env:
+  - name: CPU_LIMIT
+    valueFrom:
+      resourceFieldRef:
+        containerName: app-container
+        resource: limits.cpu
+  ```
+
+---
+
+### C. ConfigMaps
+ConfigMaps store non-confidential configuration data in key-value pairs.
+
+#### 1. Creation Methods
+* **Imperative Creation:**
+  * From Literals:
+    ```bash
+    kubectl create configmap app-config --from-literal=COLOR=blue --from-literal=MODE=prod
+    ```
+  * From a File (the filename becomes the key, the file content becomes the value):
+    ```bash
+    kubectl create configmap app-config --from-file=app.properties
+    ```
+  * From a Directory of Files:
+    ```bash
+    kubectl create configmap app-config --from-file=config-dir/
+    ```
+  * From an Environment File:
+    ```bash
+    kubectl create configmap app-config --from-env-file=.env
+    ```
+* **Declarative Creation:**
+  ```yaml
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: app-config
+  data:
+    COLOR: blue
+    MODE: prod
+  ```
+
+#### 2. Injection: Environment Variables vs. Volume Mounts
+ConfigMaps can be injected into Pods as environment variables (via `envFrom` / `valueFrom`) or mounted as a volume.
+
+##### Mounting ConfigMap as a Volume:
+Every key in the ConfigMap data represents a file name, and the value is the file content.
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-volume-pod
+spec:
+  containers:
+  - name: app
+    image: nginx
+    volumeMounts:
+    - name: config-vol
+      mountPath: /etc/config
+  volumes:
+  - name: config-vol
+    configMap:
+      name: app-config
+```
+Inside the container, `/etc/config/COLOR` contains the text `blue`, and `/etc/config/MODE` contains the text `prod`.
+
+#### 3. Update Behavior and Sync Mechanisms
+What happens when a ConfigMap is modified in the cluster while a Pod is running?
+
+* **Environment Variables Injection:**
+  * Environment variables are **static**.
+  * When the ConfigMap is updated, the environment variables inside the running container **do not change**.
+  * The Pod must be deleted and recreated (e.g. via rolling update of its deployment) to pick up the changes.
+* **ConfigMap Volume Mounts:**
+  * Volume mounts are **dynamic**.
+  * When the ConfigMap is updated, the Kubelet periodically syncs the volume files to reflect the new ConfigMap contents. The sync time depends on the Kubelet sync interval + the cache TTL (defaulting to 1-2 minutes).
+
+##### The Kubelet Atomic Directory Update Mechanism
+To ensure that containerized applications do not read half-written or corrupted configuration files during a sync, Kubelet updates the mounted files **atomically** using a symlink swap mechanism. 
+
+When a ConfigMap is mounted into a Pod, Kubelet organizes the files inside the mount directory (`/etc/config` in our example) using multiple layers of symlinks:
+1. **Timestamped Directories:** Kubelet creates a new subdirectory with a timestamp (e.g., `..2026_06_05_10_00_00_123456789/`) and writes the actual data files there.
+2. **The `..data` Symlink:** Kubelet creates a symlink named `..data` that points to the active timestamped directory.
+3. **User-Facing Symlinks:** Every key file in the mount directory (e.g., `COLOR`, `MODE`) is created as a symlink pointing to the key inside the `..data` symlink (e.g., `COLOR` -> `..data/COLOR`).
+
+###### Directory Tree Layout:
+```
+/etc/config
+├── ..2026_06_05_10_00_00_123456789/   <-- Original data directory
+│   ├── COLOR ("red")
+│   └── MODE ("dev")
+├── ..data -> ..2026_06_05_10_00_00_123456789/   <-- Symlink to current data
+├── COLOR -> ..data/COLOR
+└── MODE -> ..data/MODE
+```
+
+###### The Sync Swap Event:
+When the ConfigMap is updated (e.g., `COLOR` changes to `blue`):
+1. Kubelet creates a new timestamped directory: `..2026_06_05_10_05_00_987654321/` and writes the new file contents there.
+2. Kubelet atomically updates the `..data` symlink to point to the new directory:
+   `..data -> ..2026_06_05_10_05_00_987654321/`
+3. The old timestamped directory `..2026_06_05_10_00_00_123456789/` is garbage collected and deleted.
+4. Because the user-facing files point to `..data/COLOR`, they resolve to the new file instantly and atomically.
+
+##### inotify Sync Mechanics inside Containers
+The Linux kernel's `inotify` subsystem provides APIs for monitoring file system events. 
+* **Watching Individual Files:** If an application sets an `inotify` watch on the mounted key file itself (e.g., `/etc/config/COLOR`), it **will not receive any events** when the ConfigMap is updated. This is because `/etc/config/COLOR` is a static symlink whose inode and content never change; only its target resolves differently once `..data` changes.
+* **Watching the Parent Directory:** To detect ConfigMap changes, application configuration reloaders must watch the **parent directory** (`/etc/config`) or the `..data` symlink itself. When the atomic swap occurs, the directory's directory-entry changes, triggering `IN_MODIFY` or `IN_DELETE`/`IN_CREATE` on `..data`. The reloader catches this directory event and triggers a config refresh.
+
+> [!WARNING]
+> **The `subPath` Inode Binding Gotcha:**
+> If you mount a ConfigMap key using `volumeMounts.subPath` to mount a single file (e.g., mounting `COLOR` to `/app/settings.conf`), **dynamic updates are disabled**.
+> 
+> * **Why this happens:** When container engines (Docker/CRI-O) mount a file via `subPath`, they perform a bind-mount directly targeting the resolved file's inode at container start time (which is the inode of `..2026_06_05_10_00_00_123456789/COLOR`).
+> * **The Result:** When Kubelet updates the ConfigMap, it swaps the `..data` symlink to point to the new directory. However, the container's mount table remains hard-bound to the old inode inside the deleted/old directory. The file inside the container will never receive updates. To pick up the new configuration, the Pod must be restarted.
+
+---
+
+### D. Secrets
+Secrets store sensitive data such as passwords, tokens, or private keys, reducing the risk of exposure.
+
+#### 1. Secret Types
+1. **`Opaque` (Default generic):** Used for arbitrary user-defined key-value sensitive data.
+2. **`kubernetes.io/dockerconfigjson`:** Used to store credentials for private Docker registries.
+   * Creation command:
+     ```bash
+     kubectl create secret docker-registry my-registry-secret \
+       --docker-server=https://index.docker.io/v1/ \
+       --docker-username=user \
+       --docker-password=pass \
+       --docker-email=user@domain.com
+     ```
+   * Usage in Pods: Reference under `spec.imagePullSecrets`.
+3. **`kubernetes.io/tls`:** Used to store TLS private keys and certificates.
+   * Creation command:
+     ```bash
+     kubectl create secret tls my-tls-secret --cert=path/to/tls.crt --key=path/to/tls.key
+     ```
+4. **`kubernetes.io/service-account-token`:** Used by the system to store ServiceAccount tokens.
+
+#### 2. Base64 Encoding and Decoding
+Unlike ConfigMaps, which store plain text, Secret manifests require data in the `data` section to be Base64-encoded.
+* **Encoding Data:**
+  ```bash
+  echo -n "admin123" | base64
+  # Output: YWRtaW4xMjM=
+  ```
+  > [!IMPORTANT]
+  > **Avoid Trailing Newlines:**
+  > Always use `echo -n` or `printf` when base64 encoding strings. Standard `echo` appends a newline character `\n` to the output, causing authentication failures when the application decodes the secret.
+* **Decoding Data:**
+  ```bash
+  echo -n "YWRtaW4xMjM=" | base64 --decode
+  # Output: admin123
+  ```
+* **Declarative YAML Example:**
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: db-credentials
+  type: Opaque
+  data:
+    username: dXNlcg==
+    password: YWRtaW4xMjM=
+  ```
+* **`stringData` Option (Plaintext Input):**
+  If you do not want to base64 encode strings manually during creation, write them in the `stringData` field. The API server will automatically encode the values and store them in the `data` field:
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: db-credentials
+  type: Opaque
+  stringData:
+    username: user
+    password: admin123
+  ```
+
+#### 3. Injection Methods (Env vs. Volume Mounts)
+Secrets can be injected in two ways:
+* **Environment Variables:** Using `envFrom.secretRef` or `valueFrom.secretKeyRef`.
+* **Volume Mounts:**
+  ```yaml
+  volumes:
+  - name: secret-vol
+    secret:
+      secretName: db-credentials
+  ```
+  * Inside the container, each key becomes a file containing the decrypted secret value.
+  * **Memory-backed Storage (`tmpfs`):** The Kubelet mounts the secret volume using `tmpfs` (an in-memory filesystem). The secret data is never written to node disk storage.
+  * When the Pod is deleted, the Kubelet immediately removes the local in-memory files.
+
+#### 4. Security Best Practices
+* **Never Commit Secrets:** Do not commit Secret manifests (especially those containing base64 data) to public or private git repositories.
+* **Node-level Protection:** The API server only sends a Secret to a node if a Pod scheduled on that node explicitly requests it.
+* **RBAC Enforcement:** Restrict get/list/watch operations on Secret resources using RBAC Roles.
+* **Encryption at Rest:** By default, secrets are stored in etcd as unencrypted base64 strings. Any user with root access to the master host or etcd can read them. Enable **etcd Encryption at Rest** to encrypt secret resources.
+
+##### ETCD Encryption at Rest: Providers & Envelope Encryption
+Kubernetes supports several encryption providers to secure secrets in the backing `etcd` store. These are categorized into **Static Providers** and **KMS Envelope Encryption**.
+
+###### 1. Static Providers
+Static providers use keys stored in a configuration file on the control plane node's local disk.
+* **`identity`:** The default provider. No encryption. It writes the secret directly to etcd as a plaintext JSON/Protobuf structure (base64 is a transport encoding, not encryption).
+* **`aescbc`:** Recommended symmetric provider. Uses AES-CBC with PKCS#7 padding and a 32-byte user-provided key. Provides strong, industry-standard cryptographic protection.
+* **`secretbox`:** Uses XSalsa20 and Poly1305 for symmetric encryption. A modern alternative to AES, but less widely adopted in enterprise compliance audits than AES-CBC.
+* **Security Limitation:** Because the raw encryption key is stored on the control plane node in `/etc/kubernetes/encryption/config.yaml`, anyone who gains root access to the control plane can steal the key and decrypt all secrets. Rotating keys requires editing files manually and restarting the API Server.
+
+###### 2. KMS Envelope Encryption (KMS v1 and KMS v2)
+KMS envelope encryption delegates key management to an external Key Management Service (e.g., HashiCorp Vault, AWS KMS, Google Cloud KMS, Azure Key Vault) via a local gRPC plugin.
+* **How it works (Envelope Encryption):**
+  1. The API Server generates a unique, short-lived **Data Encryption Key (DEK)** locally for each Secret write.
+  2. The API Server encrypts the Secret payload using the DEK.
+  3. The API Server sends the DEK to the KMS provider via gRPC over a UNIX domain socket.
+  4. The KMS encrypts the DEK using its master **Key Encryption Key (KEK)** and returns the encrypted DEK.
+  5. The API Server writes the encrypted Secret payload and the encrypted DEK together into `etcd`.
+  6. On read, the API Server extracts the encrypted DEK, asks the KMS to decrypt it, and uses the returned plaintext DEK to decrypt the Secret.
+* **Advantages:** The master KEK never leaves the external KMS HSMs. Access to the key can be audited, revoked instantly, and rotated automatically without restarting Kubernetes components. KMS v2 adds performance optimizations like local DEK caching.
+
+##### Enabling ETCD Encryption at Rest:
+1. **Create an `EncryptionConfiguration` file:**
+   Create this file on the control plane node at `/etc/kubernetes/encryption/config.yaml`:
+   ```yaml
+   apiVersion: apiserver.config.k8s.io/v1
+   kind: EncryptionConfiguration
+   resources:
+     - resources:
+         - secrets
+       providers:
+         - aescbc:
+             keys:
+               - name: key1
+                 secret: <base64 encoded 32-byte key> # Generate using: head -c 32 /dev/urandom | base64
+         - identity: {} # Fallback to read existing unencrypted secrets
+   ```
+   > [!WARNING]
+   > The order of the providers is critical. The API Server encrypts writes using the **first** provider in the list. It decrypts reads using any of the listed providers. Keep `identity: {}` at the end during migrations.
+2. **Configure kube-apiserver Flags:**
+   Pass the config file to the `kube-apiserver` by adding the flag:
+   ```bash
+   --encryption-provider-config=/etc/kubernetes/encryption/config.yaml
+   ```
+3. **Mount Paths into the Control Plane Static Pod:**
+   Ensure the directory `/etc/kubernetes/encryption` is mapped as a hostPath volume inside the API server static pod manifest (`/etc/kubernetes/manifests/kube-apiserver.yaml`).
+4. **Encrypt Existing Secrets:**
+   Enabling encryption only encrypts *new* secrets. Already existing secrets remain plaintext in etcd. Force encryption on all existing secrets by replacing them:
+   ```bash
+   kubectl get secrets -A -o json | kubectl replace -f -
+   ```
+
+##### Diagnostic Run Sheet: Verifying ETCD Encryption
+
+Use this step-by-step diagnostic run sheet to verify that encryption at rest is correctly configured and that secrets are stored in encrypted format inside `etcd`.
+
+###### Step 1: SSH into the Control Plane Node
+Log into the node running the API Server and etcd:
+```bash
+ssh admin@control-plane-node-ip
+```
+
+###### Step 2: Locate etcd Credentials and Endpoints
+On a standard `kubeadm`-provisioned cluster, `etcd` runs as a static Pod. The client certificates, keys, and CA certificates are stored in `/etc/kubernetes/pki/etcd/`. We will configure `etcdctl` environment variables so it can authenticate to `etcd`:
+```bash
+export ETCDCTL_API=3
+export ETCD_CERTS="/etc/kubernetes/pki/etcd"
+```
+
+###### Step 3: Create a Test Secret
+Create a secret to test the write path:
+```bash
+kubectl create secret generic test-encrypt-secret \
+  --from-literal=super-secret-key=super-secret-value \
+  -n default
+```
+
+###### Step 4: Query Raw Secret Content directly from ETCD
+Use `etcdctl` to bypass the API Server and read the raw binary data stored at the key `/registry/secrets/default/test-encrypt-secret`:
+```bash
+sudo etcdctl \
+  --endpoints=https://127.0.0.1:2379 \
+  --cacert=$ETCD_CERTS/ca.crt \
+  --cert=$ETCD_CERTS/server.crt \
+  --key=$ETCD_CERTS/server.key \
+  get /registry/secrets/default/test-encrypt-secret --print-value-only
+```
+*(Note: If you are running `etcd` inside a container or under root, you can prefix the command with `docker exec` or `crictl exec`, or execute it on the host as shown above using the static pod's host-bound certificates).*
+
+###### Step 5: Verify the Encryption Prefix
+* **If Encryption is Successful (`aescbc`):**
+  The output must start with the encryption provider prefix: `k8s:enc:aescbc:v1:key1:`, followed by binary/garbage output (the ciphertext):
+  ```
+  k8s:enc:aescbc:v1:key1:▒▒▒h▒▒1▒...
+  ```
+  The presence of the header `k8s:enc:aescbc:v1:` confirms that the secret is encrypted at rest.
+* **If Encryption is NOT Successful (Plaintext / Identity):**
+  The output will be legible text containing the serialization metadata and cleartext fields:
+  ```
+  k8s.io/api/core/v1.Secret...test-encrypt-secret...super-secret-key...super-secret-value...
+  ```
+
+###### Step 6: Cleanup the Test Secret
+```bash
+kubectl delete secret test-encrypt-secret -n default
+```
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC)
+
+In this PoC, we will create a dedicated scheduling scenario (Taint + Node Affinity), verify Metrics Server operations, and observe the lifecycle difference between ConfigMaps injected as Environment Variables versus Volume Mounts.
+
+### Step-by-Step Guided Steps
+
+#### Phase 1: Exclusively Dedicated Scheduling
+1. **Label and Taint a Node:**
+   Identify a worker node (e.g. `worker-1`) and configure it for exclusive ML workloads:
+   ```bash
+   kubectl label nodes worker-1 department=ml
+   kubectl taint nodes worker-1 department=ml:NoSchedule
+   ```
+2. **Deploy a Standard Pod (Without Tolerations):**
+   ```bash
+   kubectl run test-general-pod --image=nginx --dry-run=client -o yaml | kubectl apply -f -
+   ```
+   *Observation:* Describe the node or check scheduling. The general pod will never land on `worker-1` because it is tainted.
+3. **Deploy the Dedicated Pod (With Affinity and Tolerations):**
+   Create a manifest `ml-app.yaml`:
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: ml-app
+   spec:
+     tolerations:
+     - key: "department"
+       operator: "Equal"
+       value: "ml"
+       effect: "NoSchedule"
+     affinity:
+       nodeAffinity:
+         requiredDuringSchedulingIgnoredDuringExecution:
+           nodeSelectorTerms:
+           - matchExpressions:
+             - key: department
+               operator: In
+               values:
+               - ml
+     containers:
+     - name: application
+       image: alpine
+       command: ["sleep", "3600"]
+   ```
+   Apply it:
+   ```bash
+   kubectl apply -f ml-app.yaml
+   ```
+   Verify it was scheduled on `worker-1`:
+   ```bash
+   kubectl get pod ml-app -o wide
+   ```
+
+#### Phase 2: Metrics Server Auditing
+1. **Confirm Metrics Server is Running:**
+   ```bash
+   kubectl get deploy metrics-server -n kube-system
+   ```
+2. **Audit CPU and Memory Performance:**
+   ```bash
+   kubectl top node
+   kubectl top pod -A
+   ```
+
+#### Phase 3: ConfigMap Update Behavior (Env vs. Volume Mount)
+1. **Create the ConfigMap:**
+   ```bash
+   kubectl create configmap lifecycle-config --from-literal=COLOR=red --from-literal=MODE=dev
+   ```
+2. **Deploy the Test Pod mounting it via environment AND volume:**
+   Create `config-test-pod.yaml`:
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: config-test-pod
+   spec:
+     containers:
+     - name: reader
+       image: alpine
+       command: ["sleep", "3600"]
+       env:
+       - name: ENV_COLOR
+         valueFrom:
+           configMapKeyRef:
+             name: lifecycle-config
+             key: COLOR
+       volumeMounts:
+       - name: config-volume
+         mountPath: /etc/config
+     volumes:
+     - name: config-volume
+       configMap:
+         name: lifecycle-config
+   ```
+   Apply it:
+   ```bash
+   kubectl apply -f config-test-pod.yaml
+   ```
+3. **Inspect Initial Values:**
+   * Check environment variable:
+     ```bash
+     kubectl exec config-test-pod -- env | grep ENV_COLOR
+     # Output: ENV_COLOR=red
+     ```
+   * Check volume file:
+     ```bash
+     kubectl exec config-test-pod -- cat /etc/config/COLOR
+     # Output: red
+     ```
+4. **Update the ConfigMap:**
+   Edit the ConfigMap and change `COLOR` to `blue`:
+   ```bash
+   kubectl patch configmap lifecycle-config -p '{"data":{"COLOR":"blue"}}'
+   ```
+5. **Observe Update Behavior:**
+   * Instantly verify the environment variable:
+     ```bash
+     kubectl exec config-test-pod -- env | grep ENV_COLOR
+     # Output: ENV_COLOR=red (Did NOT update)
+     ```
+   * Wait 1-2 minutes for Kubelet sync, then check the volume:
+     ```bash
+     kubectl exec config-test-pod -- cat /etc/config/COLOR
+     # Output: blue (Successfully updated!)
+     ```
+6. **Clean up Resources:**
+   ```bash
+   kubectl delete pod ml-app test-general-pod config-test-pod
+   kubectl delete configmap lifecycle-config
+   kubectl taint nodes worker-1 department-
+   kubectl label nodes worker-1 department-
+   ```
+
+
+### Phase 4: Automated Scheduling & Lifecycle Verification Script
+For a fully automated validation of Kubernetes scheduling logic (Labels, Selectors, Affinities, Taints, Tolerations) and lifecycle configuration synchronization (ConfigMap/Secret volume mounts and env var injection), use the verification script located at:
+`Reference Notes/scripts/verify_scheduling_lifecycle_poc.sh`
+
+#### Script Functionality Summary:
+1. **Dynamic Node Identification:** Detects a control-plane or worker node to target for label/taint operations, extracting and preserving pre-existing node taints to ensure compatibility.
+2. **Node Labeling & Affinity Validation:** Applies `zone=frontend-secure` to the node, then deploys and verifies Pods targeting that label via `nodeSelector` and `nodeAffinity` respectively.
+3. **Taints & Tolerations Validation:** Taints the node with `tier=backend:NoSchedule`, verifies that a Pod without a toleration remains `Pending`, and confirms that a Pod with a matching toleration schedules successfully.
+4. **ConfigMap & Secret Sync Validation:** Configures a ConfigMap and Secret, mounts both as volumes, and injects keys into environment variables, verifying that all resource references are fully resolved inside the running container.
+5. **Diagnostics & Cleanup:** Automatically collects verification Pod logs, audits `metrics-server` statistics if present, and tears down all created resources (using an EXIT trap to ensure cleanup even on failures).
+
+#### How to Run:
+```bash
+# Make the script executable
+chmod +x "Reference Notes/scripts/verify_scheduling_lifecycle_poc.sh"
+
+# Execute the script (specify namespace option if desired)
+./"Reference Notes/scripts/verify_scheduling_lifecycle_poc.sh" -n default
+```
+
+---
+
+## 🔗 Related Modules
+* [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Deep dive into Kube-Scheduler's placement algorithms and static pods config.
+* [Module 07: Kubernetes Workloads & Controllers](07_kubernetes_workloads_and_controllers.md) - Comprehensive specifications of ReplicaSets, Deployments, DaemonSets, and Static Pods.
+* [Module 08: Security and Network Policies](08_security_and_network_policies.md) - Covers ServiceAccounts, securityContexts, and detailed TLS configurations.
+* [Module 12: Troubleshooting and Diagnostics](12_troubleshooting_and_diagnostics.md) - Operational playbooks for resolving node and control plane failures.

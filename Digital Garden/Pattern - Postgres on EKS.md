@@ -20,6 +20,7 @@ sources:
   - "[[Reference Notes/08_security_and_network_policies.md]]"
   - "[[Reference Notes/09_storage_mechanics_and_csi.md]]"
   - "[[Reference Notes/10_networking_dns_and_ingress.md]]"
+  - "[[Reference Notes/14_scheduling_logging_and_lifecycle.md]]"
 tags:
   - architecture/pattern
   - aws/eks
@@ -50,6 +51,10 @@ Hosting a stateful, production-grade PostgreSQL database inside a Kubernetes clu
    External administrative access (e.g., via pgAdmin) is exposed using the Nginx Ingress Controller. 
    * **SSL Termination**: The Ingress controller terminates external HTTPS traffic using a wildcard or domain TLS certificate stored in a dedicated Kubernetes Secret.
    * **Path-Based Routing & Rewriting**: The controller routes requests based on paths (e.g., `/pgadmin` routes to pgAdmin, while `/api` routes to application services). Because pgAdmin expects request payloads relative to the root (`/`), the Ingress controller uses the `rewrite-target` annotation to strip the prefix before forwarding traffic to the backend service.
+
+4. **AWS KMS Secrets Envelope Encryption**:
+   To secure sensitive database credentials (e.g., `POSTGRES_PASSWORD`), the database password is stored in a Kubernetes `Secret`. Rather than relying on default base64 encoding (which is readable by anyone with access to etcd or backups), the cluster is configured with **AWS KMS Envelope Encryption**.
+   The API server uses a KMS provider key to encrypt the data encryption keys (DEKs) that encrypt the Secret payload in etcd. The secret is dynamically injected as an environment variable into the PostgreSQL container at runtime, never writing plaintext credentials to disk.
 
 ### Interactive Component Map
 ```mermaid
@@ -175,6 +180,13 @@ Generate a private key and CSR for the database server, submit it as a Kubernete
      --namespace=default
    ```
 
+5. **Create Database Credentials Secret**:
+   ```bash
+   kubectl create secret generic postgres-db-secret \
+     --from-literal=password="SuperSecurePassword123" \
+     --namespace=default
+   ```
+
 ### Step 3: Deploy PostgreSQL StatefulSet with SSL Configuration
 Configure the StatefulSet to mount the TLS Secret and configure PostgreSQL for SSL:
 
@@ -200,7 +212,10 @@ spec:
         image: postgres:15-alpine
         env:
         - name: POSTGRES_PASSWORD
-          value: "SuperSecurePassword123"
+          valueFrom:
+            secretKeyRef:
+              name: postgres-db-secret
+              key: password
         # Enable SSL flags in PostgreSQL startup command
         command:
         - "postgres"
