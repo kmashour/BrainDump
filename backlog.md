@@ -3,6 +3,28 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+
+## [2026-06-06] - Ingestion of Cluster Administration and Observability Pipeline
+
+### Added
+- **Reference Note (`Reference Notes/15_cluster_administration_and_observability.md`):** Created a comprehensive study module covering Graceful Node Shutdown, Swap memory management, Node autoscaling, Certificates API, Admission Webhooks, Observability/Logging/Metrics, Flow Control (APF), and Coordinated Leader Election.
+- **Landing Notes in `Main Notes/`:**
+  - `APIPriorityAndFairness.md` (landing)
+  - `Graceful Node Shutdown.md` (landing)
+  - `Swap Management.md` (landing)
+  - `Coordinated Leader Election.md` (landing)
+- **Digital Garden Pattern (`Digital Garden/Pattern - Host-Level OS Integration for Graceful Node Shutdown and Swap.md`):** Documented the interaction between Linux systemd inhibitors, kernel swap parameters, and Kubernetes Kubelet configuration.
+
+### Changed / Updated
+- **`Projects/CKA/Exam Checklist - Cluster Maintenance and Installation.md`:** Added CKA exam checklists and commands for configuring kubelet swap, approving CSRs, verifying graceful shutdown locks, inspecting APF flowschemas, and testing webhooks.
+- **`Main Notes/kubelet.md` & `Main Notes/kube-apiserver.md`:** Updated reference guides to link to the new Module 15 reference note.
+
+### Ingested Inflow Sources
+The following files have been processed under the scraper pipeline:
+- `inflow/ClusterAdministration_CKA_Docs_Scraped.md`
+
+---
+
 ## [2026-06-06] - Update Ingestion Rules for Diagrams and Sub-links
 
 ### Changed / Updated

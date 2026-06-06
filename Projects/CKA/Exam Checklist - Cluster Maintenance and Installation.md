@@ -208,3 +208,124 @@ External ETCD runs on separate dedicated hosts as a systemd service.
     sudo systemctl restart etcd.service
     sudo systemctl status etcd.service
     ```
+
+---
+
+## 4. Certificates API & Manual Certificate Management
+
+On the CKA exam, you may need to generate user credentials manually and authorize them via the Certificates API.
+
+### 4.1 CLI Commands for User Creation & Approval
+1. **Generate a Private Key and CSR:**
+   ```bash
+   openssl genrsa -out developer.key 2048
+   openssl req -new -key developer.key -out developer.csr -subj "/CN=developer/O=devs"
+   ```
+2. **Apply the CertificateSigningRequest (CSR) resource:**
+   ```yaml
+   apiVersion: certificates.k8s.io/v1
+   kind: CertificateSigningRequest
+   metadata:
+     name: developer-csr
+   spec:
+     request: <BASE64_ENCODED_CSR>
+     signerName: kubernetes.io/kube-apiserver-client
+     usages:
+     - client auth
+   ```
+3. **Approve the CSR:**
+   ```bash
+   kubectl certificate approve developer-csr
+   ```
+4. **Extract the Issued Certificate:**
+   ```bash
+   kubectl get csr developer-csr -o jsonpath='{.status.certificate}' | base64 --decode > developer.crt
+   ```
+
+---
+
+## 5. Swap Memory Configuration on Nodes
+
+By default, Kubelet fails if swap is active. Follow these steps to configure swap:
+
+### 5.1 Kubelet Swap Configuration Checklist
+1. **Edit Kubelet Configuration** at `/var/lib/kubelet/config.yaml`:
+   ```yaml
+   failSwapOn: false
+   memorySwap:
+     swapBehavior: LimitedSwap
+   ```
+2. **Restart Kubelet:**
+   ```bash
+   sudo systemctl restart kubelet
+   ```
+3. **Validate Node & Pod Swap Usage:**
+   ```bash
+   kubectl top nodes --show-swap
+   kubectl top pods -n default --show-swap
+   ```
+
+---
+
+## 6. Admission Webhooks and Troubleshooting
+
+You must debug failing API calls caused by webhook timeouts or availability issues.
+
+### 6.1 Diagnostic Workflow
+1. **Identify the Failing Webhook:**
+   Read the API error returned by `kubectl` (e.g. `failed calling webhook "my-webhook.example.com"`).
+2. **Review Webhook Configuration:**
+   Identify the backend service name and namespace:
+   ```bash
+   kubectl get validatingwebhookconfigurations -o yaml
+   # or MutatingWebhookConfigurations
+   ```
+3. **Verify Backend Pods & Endpoints:**
+   Ensure the backing pods are running and endpoints exist:
+   ```bash
+   kubectl get pods -n <webhook-namespace>
+   kubectl get ep <webhook-service-name> -n <webhook-namespace>
+   ```
+4. **Bypass/Temporary Fix (If Allowed/Necessary):**
+   Change `failurePolicy` from `Fail` to `Ignore` in emergency troubleshooting:
+   ```bash
+   kubectl edit validatingwebhookconfiguration <webhook-name>
+   ```
+
+---
+
+## 7. API Priority and Fairness (APF) Diagnostics
+
+APF prevents API server exhaustion by isolating and queueing requests.
+
+### 7.1 APF CLI Diagnostics Checklist
+1. **List Active Configuration Rules:**
+   ```bash
+   kubectl get flowschemas
+   kubectl get prioritylevelconfigurations
+   ```
+2. **Analyze Rejected Requests:**
+   Query the raw metrics from the API server:
+   ```bash
+   kubectl get --raw /metrics | grep apiserver_flowcontrol_rejected_requests_total
+   ```
+
+---
+
+## 8. Graceful Node Shutdown and systemd Locks
+
+Ensure node drains execute correctly during reboots.
+
+### 8.1 Verification and Settings Checklist
+1. **Configure systemd logind delay limit:**
+   Ensure `/etc/systemd/logind.conf` allows enough delay (e.g., `InhibitDelayMaxSec=45`).
+2. **Verify active inhibitor locks on the host:**
+   ```bash
+   systemd-inhibit --list
+   ```
+3. **Handle crashed nodes with persistent volumes:**
+   If a node shuts down non-gracefully, force volume migration using the out-of-service taint:
+   ```bash
+   kubectl taint nodes <failed-node> node.kubernetes.io/out-of-service=nodeshutdown:NoExecute
+   ```
+

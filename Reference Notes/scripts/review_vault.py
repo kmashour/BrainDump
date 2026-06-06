@@ -5,7 +5,7 @@ import sys
 from urllib.parse import unquote
 
 # Define Paths
-BASE_DIR = "/home/karim/Desktop/CKA"
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 INFLOW_DIR = os.path.join(BASE_DIR, "inflow")
 MAIN_NOTES_DIR = os.path.join(BASE_DIR, "Main Notes")
 REF_NOTES_DIR = os.path.join(BASE_DIR, "Reference Notes")
