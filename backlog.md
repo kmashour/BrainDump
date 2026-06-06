@@ -4,6 +4,31 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-07] - Batch Integration of Missing Diagrams and CKA Practice Playbooks
+
+### Added
+- **CKA Practice Playbook (`Projects/CKA/Practice Playbook - Lightning Labs and Mock Exams.md`):** Created a comprehensive, high-fidelity playbook compiling practice questions, scenario requirements, diagnostic steps, CLI solutions, and YAML manifests from all Lightning Labs, Mock Exams 1-3, Ultimate Mocks (Troubleshooting, Storage, Services & Networking, General/Cluster State), and Network Policy Testing tips and tricks. Fully validated all internal links and relative paths.
+
+### Changed / Updated
+- **`Reference Notes/02_cluster_architecture_and_components.md`:** Replaced high-level cluster architecture text references with a detailed Mermaid.js control plane/worker node interaction diagram and corresponding structural description.
+- **`Main Notes/kube-apiserver.md`:** Integrated a Mermaid.js diagram illustrating the central coordination role of `kube-apiserver` in the control plane hierarchy.
+- **`Reference Notes/05_containers_runtimes_and_lifecycle.md`:** Replaced text-based process namespace diagrams with structured Mermaid.js diagrams for Pod Sandbox namespaces (cgroups, net/ipc/uts isolation) and ephemeral container target namespace sharing.
+- **`Main Notes/container-runtime-deeper.md`:** Added a Mermaid.js namespace sandboxing diagram under the Pause Container section, and corrected frontmatter metadata (`sub_type`, `source_type`).
+- **`Reference Notes/14_scheduling_logging_and_lifecycle.md`:** Converted the text-based scheduling framework pipeline layout into a clean, complete Mermaid.js flowchart (synchronous scheduling cycle and asynchronous binding cycle).
+- **`Main Notes/kube-scheduler-deeper.md`:** Integrated the detailed Scheduling Framework Mermaid.js flowchart under the Detailed Scheduling Pipeline section, and corrected frontmatter metadata (`sub_type`, `source_type`).
+- **`Reference Notes/10_networking_dns_and_ingress.md`:** Replaced L7 host/path routing text blocks with a detailed Mermaid.js Ingress traffic routing and logical service connection diagram.
+- **`Main Notes/ingress.md`:** Added the Ingress routing data plane flow diagram under the Architectural Context section.
+
+### Ingested Inflow Sources
+The following files and assets have been processed and integrated:
+- `inflow/docs/14-Lightning-Labs/`
+- `inflow/docs/15-Mock-Exams/`
+- `inflow/docs/16-Ultimate-Mocks/`
+- `inflow/docs/17-tips-and-tricks/`
+- Mapped, analyzed, and translated diagram assets from `inflow/images/` to active Mermaid.js configurations.
+
+---
+
 ## [2026-06-06] - Ingestion of Core Objects, Policies, Services, Security, and Extensibility Scraped Files
 
 ### Added

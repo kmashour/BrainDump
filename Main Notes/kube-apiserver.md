@@ -46,6 +46,31 @@ The `kube-apiserver` acts as the central hub and single entrance gate for the Ku
 
 ## 🏛️ Architectural Context (How it fits in the architecture)
 The `kube-apiserver` sits in the absolute center of the Control Plane:
+
+```mermaid
+graph TD
+    subgraph Control Plane
+        API[kube-apiserver]
+        ETCD[(etcd)]
+        SCHED[kube-scheduler]
+        KCM[kube-controller-manager]
+        
+        API <--> ETCD
+        SCHED <--> API
+        KCM <--> API
+    end
+    
+    subgraph Worker Nodes
+        KLET[kubelet] <--> API
+        KPROX[kube-proxy] <--> API
+    end
+    
+    subgraph Clients
+        KCTL[kubectl CLI] --> API
+        UI[Dashboard / Web UI] --> API
+    end
+```
+
 * **Only client to etcd:** No other component accesses `etcd` directly; they must query or update state through the API server.
 * **Component coordinator:** The `kube-scheduler` and `kube-controller-manager` run loops that watch the API server for changes and write resolved states back to it.
 * **Node controller:** The `kubelet` on worker nodes registers with the API server, checks for pod assignments, and periodically updates its status.

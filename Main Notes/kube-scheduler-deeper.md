@@ -3,6 +3,8 @@ obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
 parent_concept: "[[kube-scheduler]]"
+sub_type: core-concept
+source_type: documentation
 sub_concepts:
   - "[[Scheduling Filtering Predicates]]"
   - "[[Scheduling Scoring Priorities]]"
@@ -28,7 +30,36 @@ This note covers the detailed scheduling pipeline algorithms, configuration of m
 ---
 
 ## ⚙️ 1. Detailed Scheduling Pipeline
-The scheduling queue processes Pods sequentially through two main phases:
+The scheduling queue processes Pods sequentially through two main phases: the **Scheduling Cycle** and the **Binding Cycle**.
+
+```mermaid
+flowchart TD
+    subgraph Queue ["Scheduling Queue"]
+        QS[QueueSort]
+    end
+    
+    subgraph SchedCycle ["Scheduling Cycle (Synchronous - Select Node)"]
+        direction TB
+        PF[PreFilter] --> F[Filter / Predicates]
+        F --> PoF[PostFilter]
+        PoF --> PS[PreScore]
+        PS --> S[Score / Priorities]
+        S --> NS[NormalizeScore]
+        NS --> R[Reserve]
+        R --> P[Permit]
+    end
+
+    subgraph BindCycle ["Binding Cycle (Asynchronous - Bind Node)"]
+        direction TB
+        PB[PreBind] --> B[Bind]
+        B --> PoB[PostBind]
+    end
+
+    QS --> SchedCycle
+    P -->|Approve| BindCycle
+    P -->|Deny / Reject| Reject[Drop / Re-queue]
+    P -->|Wait| Hold[Hold Pod]
+```
 
 ### A. Filtering (Predicates)
 Evaluates nodes against boolean checks. If a node fails any check, it is removed from the candidate list:

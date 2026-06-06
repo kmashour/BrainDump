@@ -3,6 +3,8 @@ obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
 parent_concept: "[[container-runtime]]"
+sub_type: core-concept
+source_type: documentation
 sub_concepts:
   - "[[CRI Dual Services (gRPC)]]"
   - "[[runc & OCI Specifications]]"
@@ -57,6 +59,15 @@ Because the low-level runtime (`runc`) exits after creating the container, somet
 Every Pod in Kubernetes runs a hidden helper container called the **pause container** (or infra container):
 * **Namespace Holder:** It is the first container started in the Pod sandbox. It does not run any application code; it simply runs a sleep loop.
 * **Resource Sharing:** It holds open the Network and IPC namespaces. All other application containers inside the same Pod join these namespaces, allowing them to communicate over `localhost` and share storage volumes.
+
+```mermaid
+graph TD
+    subgraph PodSandbox ["Pod Sandbox (Logical Host)"]
+        Pause[pause container] -->|Holds open| Namespaces["Linux Namespaces (Network, IPC, UTS)"]
+        AppContainer1[App Container 1] -.->|setns joins| Namespaces
+        AppContainer2[App Container 2] -.->|setns joins| Namespaces
+    end
+```
 
 ---
 

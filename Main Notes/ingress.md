@@ -40,6 +40,21 @@ An `Ingress` exposes HTTP and HTTPS routes from outside the cluster to services 
 
 ## 🏛️ Architectural Context (How it fits in the architecture)
 * **Ingress Controller:** Ingress resources are descriptions only. They require an active **Ingress Controller** (e.g., NGINX Ingress, Traefik, HAProxy) running as a workload inside the cluster.
+
+```mermaid
+graph TD
+    Client[External Client] -->|HTTP Request| IC[Ingress Controller Pod]
+    
+    subgraph Control Plane
+        Ingress[Ingress Resource] -->|Configures| IC
+    end
+
+    subgraph Data Plane [Data Plane Routing]
+        IC -->|Path: /wear -> Direct Route| PodWear[wear-pods]
+        IC -->|Path: /watch -> Direct Route| PodWatch[watch-pods]
+    end
+```
+
 * **Data Plane:** The Ingress Controller parses the Ingress manifests, updates its internal config (e.g., `nginx.conf`), and directly routes incoming traffic to backing pod IPs (bypassing ClusterIP NAT routing for better performance).
 
 ---

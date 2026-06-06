@@ -6,14 +6,69 @@ This module covers the macro and micro architecture of a Kubernetes cluster, div
 
 ## 1. Macro View: Control Plane vs. Worker Nodes
 
-A Kubernetes cluster is a distributed system consisting of two primary roles:
+A Kubernetes cluster is a distributed system consisting of two primary roles: the **Control Plane** (the brain) and **Worker Nodes** (the muscle). Below is a structural diagram showing how these components interact:
+
+```mermaid
+graph TD
+    subgraph ControlPlane ["Control Plane (Master Node)"]
+        API[kube-apiserver]
+        ETCD[(etcd cluster)]
+        SCHED[kube-scheduler]
+        KCM[kube-controller-manager]
+        
+        API <--> ETCD
+        SCHED <--> API
+        KCM <--> API
+    end
+
+    subgraph WorkerNode1 ["Worker Node 1"]
+        KLET1[kubelet]
+        KPROX1[kube-proxy]
+        CR1[Container Runtime Engine]
+        
+        subgraph Pods1 ["Pods"]
+            POD1[Pod 1]
+            POD2[Pod 2]
+        end
+        
+        KLET1 <--> API
+        KPROX1 <--> API
+        KLET1 --> CR1
+        CR1 --> POD1
+        CR1 --> POD2
+    end
+
+    subgraph WorkerNode2 ["Worker Node 2"]
+        KLET2[kubelet]
+        KPROX2[kube-proxy]
+        CR2[Container Runtime Engine]
+        
+        subgraph Pods2 ["Pods"]
+            POD3[Pod 3]
+        end
+        
+        KLET2 <--> API
+        KPROX2 <--> API
+        KLET2 --> CR2
+        CR2 --> POD3
+    end
+```
 
 ### A. The Control Plane (The Brains)
 * **Purpose:** Manages the overall cluster state, schedules workloads, makes global decisions (e.g., detecting node failures), and exposes the API.
+* **Core Components:**
+  * **`kube-apiserver`**: The front door of the cluster; validates and configures data for API objects (Pods, Services, etc.).
+  * **`etcd`**: Key-value data store representing the source of truth for all cluster configuration.
+  * **`kube-scheduler`**: Matches unassigned Pods to nodes based on resource capacity, constraints, and affinity rules.
+  * **`kube-controller-manager`**: Evaluates and reconciles the actual state of the cluster with the desired state (e.g., node controller, replicaset controller).
 * **Workload Hosting:** By default, the control plane does not host user applications. In production, control plane nodes are dedicated and isolated.
 
 ### B. Worker Nodes (The Muscle)
 * **Purpose:** Runs your containerized applications (Pods).
+* **Core Components:**
+  * **`kubelet`**: The captain daemon on each worker node; ensures containers are running in a Pod according to the PodSpecs.
+  * **`kube-proxy`**: The network manager; maintains host network routing rules to implement Services.
+  * **`Container Runtime`**: The container execution engine (e.g., containerd) that downloads images and runs containers.
 * **Operation:** Receives instructions from the control plane, pulls images, launches containers, and continuously feeds health telemetry back to the API server. For details on node registration, resources, and leases, see [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md). For Pod lifecycle and probing details, see [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md).
 
 ---

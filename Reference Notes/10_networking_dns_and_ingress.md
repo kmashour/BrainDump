@@ -741,20 +741,25 @@ data:
 
 An Ingress controller is an L7 reverse proxy that routes external HTTP/HTTPS traffic into cluster services. An Ingress resource defines the routing rules that configure the controller.
 
-```
-                  +--------------------------------+
-                  |  Ingress Controller (Proxy)    |
-                  |  e.g., ingress-nginx-controller|
-                  +--------------------------------+
-                             /            \
-              Matches Host:  /              \ Matches Host:
-             wear.store.com /                \ watch.store.com
-                           /                  \
-                          v                    v
-                  +---------------+    +---------------+
-                  |  wear-service |    |  watch-service|
-                  |  (ClusterIP)  |    |  (ClusterIP)  |
-                  +---------------+    +---------------+
+```mermaid
+graph TD
+    Client[External Client] -->|HTTP Request| IC[Ingress Controller Pod]
+    
+    subgraph Control Plane
+        Ingress[Ingress Resource] -->|Configures| IC
+    end
+
+    subgraph Data Plane [Data Plane Routing]
+        IC -->|Path: wear.store.com/wear| PodWear1[wear-pod-1]
+        IC -->|Path: wear.store.com/wear| PodWear2[wear-pod-2]
+        IC -->|Path: watch.store.com/watch| PodWatch1[watch-pod-1]
+    end
+
+    subgraph Logical Services
+        wear-service[wear-service ClusterIP] -.->|Logical Link| PodWear1
+        wear-service -.->|Logical Link| PodWear2
+        watch-service[watch-service ClusterIP] -.->|Logical Link| PodWatch1
+    end
 ```
 
 ### 6.1 Ingress Controller vs Ingress Resource

@@ -170,13 +170,49 @@ For each container, the high-level runtime spawns a **`containerd-shim`** proces
 
 ### G. The Pod Sandbox & The `pause` Container
 A Pod represents a collection of processes sharing the same logical host environment. To achieve this, the CRI uses a **Sandbox** backed by the `pause` container:
+
+```mermaid
+graph TD
+    subgraph PodSandbox ["Pod Sandbox (Logical Host)"]
+        subgraph Namespaces ["Linux Namespaces (Held by Pause Container)"]
+            NET[Network Namespace: Pod IP / localhost]
+            IPC[IPC Namespace: shared memory]
+            UTS[UTS Namespace: hostname]
+        end
+        
+        subgraph AppContainer1 ["App Container 1 (e.g., Nginx)"]
+            direction TB
+            PID1[PID Namespace 1: isolated]
+            MNT1[Mount Namespace: isolated]
+            cgroup1[cgroups: CPU/Mem limits]
+        end
+        
+        subgraph AppContainer2 ["App Container 2 (e.g., Log Forwarder)"]
+            direction TB
+            PID2[PID Namespace 2: isolated]
+            MNT2[Mount Namespace: isolated]
+            cgroup2[cgroups: CPU/Mem limits]
+        end
+        
+        AppContainer1 -.->|setns joins| NET
+        AppContainer1 -.->|setns joins| IPC
+        AppContainer1 -.->|setns joins| UTS
+        
+        AppContainer2 -.->|setns joins| NET
+        AppContainer2 -.->|setns joins| IPC
+        AppContainer2 -.->|setns joins| UTS
+        
+        Pause[pause container] --> Namespaces
+    end
+```
+
 1. **Sandbox Allocation:** Before starting your application container, Kubelet instructs the CRI to run `RunPodSandbox`. The runtime pulls a tiny image (typically `registry.k8s.io/pause`) and starts the `pause` process.
 2. **Kernel Namespace Locking:** The `pause` container executes a minimal C program calling the `pause()` system call, which puts it to sleep indefinitely. Its sole purpose is to initialize and hold open:
    * **Network Namespace (`net`):** Allocates the Pod IP and port space.
    * **IPC Namespace (`ipc`):** Enables System V IPC / POSIX message queues.
    * **UTS Namespace (`uts`):** Sets the Pod hostname.
 3. **Application Container Injection:** When the actual application containers start, the runtime inserts them into the namespaces held open by the `pause` container (using the `setns` system call).
-* **Result:** Application containers share the same network stack and hostnames, allowing them to communicate via `localhost` and share storage volumes.
+* **Result:** Application containers share the same network stack and hostnames, allowing them to communicate via `localhost` and share storage volumes. They remain isolated in their cgroup limits and Mount/PID namespaces (unless PID namespace sharing is explicitly enabled).
 
 ### H. Low-Level Node Debugging with `crictl`
 If a node's `kubelet` is failing, or if the API Server is completely unreachable, you must bypass `kubectl` and inspect the node's container runtime directly using `crictl`.
@@ -538,18 +574,17 @@ By default, containers share the network and IPC namespaces but run in isolated 
 
 To debug application processes, you can configure target container targeting. The ephemeral container joins the target container's PID namespace, allowing you to run diagnostic tools like `strace` or `gdb` directly on the application's memory space:
 
-```
-+-----------------------------------------------------------+
-| Pod Sandbox Namespace Sharing                             |
-|                                                           |
-|  [ pause container ]  --> Holds UTS, IPC, Net namespaces   |
-|         |                                                 |
-|         +--> [ main-app container ]  (PID Namespace 1)    |
-|         |                                                 |
-|         +--> [ ephemeral container ]                      |
-|              Joined to main-app PID namespace (Target)    |
-|              (Can inspect app process memory/filesystems) |
-+-----------------------------------------------------------+
+```mermaid
+graph TD
+    subgraph PodSandbox ["Pod Sandbox Namespace Sharing"]
+        Pause[pause container] -->|Holds UTS, IPC, Net namespaces| Net[Shared UTS/IPC/Net Namespaces]
+        MainApp[main-app container] -->|Joined to| Net
+        MainApp -->|Runs in PID Namespace 1| MainPID[App Processes]
+        
+        Ephemeral[ephemeral container] -->|Joined to| Net
+        Ephemeral -.->|Joined via --target| MainPID
+        style Ephemeral fill:#f9f,stroke:#333,stroke-width:2px
+    end
 ```
 
 ### C. Troubleshooting Workflows

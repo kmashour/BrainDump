@@ -1345,19 +1345,33 @@ The scheduling process is split into two distinct cycles:
 1.  **Scheduling Cycle (Synchronous):** Evaluates nodes and selects the best one for the Pod (running sequentially for one Pod at a time).
 2.  **Binding Cycle (Asynchronous):** Applies the binding to the API server (can run concurrently for multiple Pods).
 
-```
-[ Scheduling Queue ]
-       |
-  (QueueSort)
-       |
-[ Scheduling Cycle ] ----> (PreFilter -> Filter -> PostFilter)
-       |                                   |
-  (Reserve)                                v
-       |                       (PreScore -> Score -> NormalizeScore)
-       |
-  (Permit) <--- Holds pod scheduling (Approve / Deny / Wait)
-       |
-[ Binding Cycle ]   ----> (PreBind -> Bind -> PostBind)
+```mermaid
+flowchart TD
+    subgraph Queue ["Scheduling Queue"]
+        QS[QueueSort]
+    end
+    
+    subgraph SchedCycle ["Scheduling Cycle (Synchronous - Select Node)"]
+        direction TB
+        PF[PreFilter] --> F[Filter / Predicates]
+        F --> PoF[PostFilter]
+        PoF --> PS[PreScore]
+        PS --> S[Score / Priorities]
+        S --> NS[NormalizeScore]
+        NS --> R[Reserve]
+        R --> P[Permit]
+    end
+
+    subgraph BindCycle ["Binding Cycle (Asynchronous - Bind Node)"]
+        direction TB
+        PB[PreBind] --> B[Bind]
+        B --> PoB[PostBind]
+    end
+
+    QS --> SchedCycle
+    P -->|Approve| BindCycle
+    P -->|Deny / Reject| Reject[Drop / Re-queue]
+    P -->|Wait| Hold[Hold Pod]
 ```
 
 #### Key Extension Points & Hooks:
