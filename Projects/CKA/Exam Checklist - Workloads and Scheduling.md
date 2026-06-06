@@ -665,4 +665,48 @@ If asked to deploy or debug HPAs, VPAs, or User Namespaces:
     ```
     *Look for*: A mapping starting with non-zero IDs on the host side (e.g. `0 100000 65536`).
 
+---
+
+## 12. Resource Limits, Quotas, and Node Managers Checklist
+
+### A. ResourceQuotas and LimitRanges Validation
+Ensure policy restrictions are configured and working:
+```bash
+# Query active resource quotas in a namespace
+kubectl get resourcequota -n dev
+
+# Query active limit ranges in a namespace
+kubectl get limitrange -n dev
+
+# Describe quota to check consumed capacity vs hard limit
+kubectl describe resourcequota compute-resources -n dev
+```
+* **Trap:** If a namespace has a ResourceQuota but a deployed Pod does not specify requests/limits, the API server will reject creation with: `forbidden: failed quota: ...: must specify limits`. Ensure LimitRange is configured to provide defaults or define resources in the Pod manifest.
+
+### B. Node Managers (CPU and Topology Managers)
+Verify node-level scheduling optimizations:
+```bash
+# Check CPU Manager policy configured in local kubelet config
+grep -i "cpuManagerPolicy" /var/lib/kubelet/config.yaml
+
+# Check Topology Manager policy configured in local kubelet config
+grep -i "topologyManagerPolicy" /var/lib/kubelet/config.yaml
+
+# Inspect cgroups container placement paths on worker hosts
+ls -la /sys/fs/cgroup/kubepods.slice/
+```
+* **Static CPU Manager Requirement:** To allocate exclusive, isolated CPU cores to a container, ensure:
+  1. Kubelet configuration has `cpuManagerPolicy: static`.
+  2. The Pod has `QoS: Guaranteed` (requests and limits set to matching integer CPU counts and matching memory limits).
+
+### C. Host PID Pressure Checks
+Troubleshoot process exhaustions:
+```bash
+# Check PID limits on host
+cat /proc/sys/kernel/pid_max
+
+# Identify PID Pressure on Nodes
+kubectl describe node <node-name> | grep -i PIDPressure
+```
+
 ```

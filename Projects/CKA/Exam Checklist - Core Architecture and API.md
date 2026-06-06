@@ -383,3 +383,32 @@ This creates a critical operational blind spot:
 2. **Use Server-Side Apply (SSA)**: Run `kubectl apply -f manifest.yaml --server-side` to use Server-Side Apply. SSA tracks field changes natively in `metadata.managedFields` rather than using the `last-applied-configuration` annotation. This bypasses the strict requirement for the annotation and solves the etcd metadata size constraint (approx. 256KB annotation limit in etcd) for extremely large manifests.
 
 
+---
+
+## 7. Custom Resources, API Extensions & Troubleshooting Commands
+
+### A. CRD & Custom Resource Verification
+After deploying a new CustomResourceDefinition (CRD) or custom extension, verify the registration status:
+```bash
+# List all API resources, groups, and namespaces
+kubectl api-resources --api-group=stable.example.com
+
+# Check if a custom resource type exists in the cluster
+kubectl get crd backups.stable.example.com
+```
+
+### B. Troubleshooting Owner References and Namespaces
+* **Rule:** Owner references (`ownerReferences`) are restricted to the same namespace. If a cross-namespace reference is invalid, a warning event is emitted.
+* **Inspect Invalid Owner References:**
+  Query for validation warning events using field selectors:
+  ```bash
+  kubectl get events -A --field-selector=reason=OwnerRefInvalidNamespace
+  ```
+* **Verify System Namespaces:**
+  Check node heartbeat leases in their dedicated system namespace:
+  ```bash
+  kubectl get leases -n kube-node-lease
+  ```
+
+* **Namespace Prefix Check:**
+  Verify that custom namespaces do not conflict with reserved `kube-` prefix names. All namespaces starting with `kube-` are reserved for system operations.

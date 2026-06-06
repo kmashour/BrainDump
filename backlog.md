@@ -4,6 +4,53 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-06] - Ingestion of Core Objects, Policies, Services, Security, and Extensibility Scraped Files
+
+### Added
+- **Reference Note (`Reference Notes/16_kubernetes_api_extension_and_operators.md`):** Created a comprehensive study module covering CustomResourceDefinitions (CRDs), Custom Controllers, Operator Pattern, Device Plugins, and API Aggregation.
+- **Landing Notes in `Main Notes/`:**
+  - `label.md` (landing)
+  - `finalizer.md` (landing)
+  - `limitrange.md` (landing)
+  - `resourcequota.md` (landing)
+  - `pod-security-admission.md` (landing)
+  - `dynamic-resource-allocation.md` (landing)
+  - `customresourcedefinition.md` (landing)
+  - `operator-pattern.md` (landing)
+  - `device-plugin.md` (landing)
+  - `api-aggregation.md` (landing)
+- **Deeper-dive Notes in `Main Notes/`:**
+  - `label - Selectors and Character Syntax.md` (deeper-dive)
+  - `finalizer - Owners and BlockOwnerDeletion.md` (deeper-dive)
+  - `pod-security-admission - Standards and Modes.md` (deeper-dive)
+  - `dynamic-resource-allocation - Security Hardening.md` (deeper-dive)
+  - `customresourcedefinition - Subresources and Schema.md` (deeper-dive)
+  - `operator-pattern - Controllers and Informers.md` (deeper-dive)
+  - `service - Source IP and Pod Termination Lifecycle.md` (deeper-dive)
+- **Digital Garden Pattern (`Digital Garden/Pattern - Securing Hardware Accelerator (GPU) Workloads via DRA.md`):** Documented alignment between Topology Manager, Dynamic Resource Allocation (DRA) status update RBAC checks, and Linux host-level NUMA/cgroup tuning.
+
+### Changed / Updated
+- **`Reference Notes/02_cluster_architecture_and_components.md`:** Integrated Section 6 covering Core Object Model, Names/ID restrictions, Label syntax/selectors, Annotations metadata, namespaces, finalizers, and ownerReferences/garbage collection.
+- **`Reference Notes/03_node_mechanics_and_resource_limits.md`:** Added warning about physical host recreation node object consistency. Added Section 7 covering host mechanics (Linux kernel cgroups v1 vs v2, namespace sharing via pause containers, AppArmor/Seccomp host-level security profiles, and systemd journal Kubelet logs). Added Section 8 covering Resource requests/limits, LimitRanges, and ResourceQuotas. Added Section 9 covering PID limiting and Node Resource Managers (CPU Manager static/none, Memory Manager, Device Manager, and Topology Manager alignment policies).
+- **`Reference Notes/08_security_and_network_policies.md`:** Added Section 11 covering ConfigMap vs Secret properties, tmpfs mounts, Secrets encryption-at-rest in etcd, and environment/volume injection. Added Section 12 covering Pod Security Admission (PSA) and Pod Security Standards (PSS) levels/modes. Added Section 13 covering Dynamic Resource Allocation (DRA) status updates, synthetic subresources (binding/driver), and node-aware verbs. Added Section 14 compiling the Kubernetes Security Checklist.
+- **`Reference Notes/10_networking_dns_and_ingress.md`:** Added Section 4.4 covering client source IP preservation (`externalTrafficPolicy: Local` vs `Cluster`). Added Section 4.5 detailing the Pod and Endpoint termination graceful draining lifecycle flow, warning on API-level race conditions, and preStop hook sleep delay mitigations. Added Section 4.6 on Service selector connectivity routing checks.
+- **`Main Notes/namespace.md`:** Integrated system namespaces (`default`, `kube-system`, `kube-public`, `kube-node-lease`) and custom namespace `kube-` prefix constraints.
+- **`Projects/CKA/Exam Checklist - Core Architecture and API.md`:** Appended Section 7 detailing Custom Resource discovery checks and `OwnerRefInvalidNamespace` event lookup commands.
+- **`Projects/CKA/Exam Checklist - Security and Storage.md`:** Appended Section 8 detailing PSA namespace labeling, Secrets encryption-at-rest etcd check, and namespace metadata label patch access restrictions.
+- **`Projects/CKA/Exam Checklist - Troubleshooting and Networking.md`:** Appended Section 5 covering Kube-Proxy mode log checks, `externalTrafficPolicy` patching, and graceful termination preStop lifecycle configs.
+- **`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`:** Appended Section 12 covering ResourceQuotas/LimitRanges status lookups, CPU Manager static affinity Guaranteed QoS requirements, and host PID pressure diagnostics.
+
+### Ingested Inflow Sources
+The following files have been processed and integrated:
+- `inflow/KubernetesOverviewDocs_Scraped.md`
+- `inflow/Kubernets_Config_CKA_Docs_Scraped.md`
+- `inflow/kubernetes_Policy_CKA_Docs_Scraped.md`
+- `inflow/Service_TaskCKA_DOCS_Scraped.md`
+- `inflow/Kubernetes_Security_CKA_Docs_Scraped.md`
+- `inflow/KubernetesExtending_CKA_DOCS_Scraped.md`
+
+---
+
 ## [2026-06-06] - Ingestion of Cluster Administration and Observability Pipeline
 
 ### Added

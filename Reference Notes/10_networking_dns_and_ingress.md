@@ -529,6 +529,56 @@ ipvsadm -ln
 
 ---
 
+### 4.4 Source IP Preservation (`externalTrafficPolicy`)
+When traffic originates from outside the cluster (e.g. hitting a NodePort or LoadBalancer service), the source IP behavior depends on the configured `externalTrafficPolicy`:
+
+*   **`externalTrafficPolicy: Cluster` (Default):**
+    *   **Traffic Flow:** Inbound traffic hits any cluster node. Kube-proxy routes it to any backend pod across the cluster. If the pod is on a different node, the packet hop requires SNAT (Source Network Address Translation) to rewrite the source IP to the first node's IP.
+    *   **Trade-off:** The backend pod receives the host node's IP as the client source IP, losing visibility of the true client IP. However, load balancing is evenly distributed across all pods in the cluster.
+*   **`externalTrafficPolicy: Local`:**
+    *   **Traffic Flow:** Traffic is only routed to pods on the node that receives the traffic. No SNAT is applied; the client's original source IP is fully preserved.
+    *   **Trade-off:** If a node has no active pods for that service, the packet is dropped. If pods are unevenly distributed across nodes, load balancing will be skewed (nodes with fewer pods receive higher per-pod traffic).
+
+---
+
+### 4.5 Pod & Endpoint Termination Lifecycle Flows
+Ensuring high availability during deployments or scaling down requires connection draining and graceful termination:
+
+1.  **Pod marked Terminating:** The API server updates the Pod status to `Terminating` and sets a `deletionTimestamp`.
+2.  **Endpoint Removal:** The Endpoint / EndpointSlice controllers detect the terminating pod and remove its IP address from all relevant `Endpoints` and `EndpointSlices`.
+3.  **Proxy Update:** Kube-proxy and ingress controllers watch for Endpoint changes and update their local routing rules (e.g., iptables/IPVS) to stop sending new traffic to the terminating pod.
+4.  **SIGTERM sent:** Simultaneously with step 2, the Kubelet sends a `SIGTERM` signal to the container processes inside the terminating pod, signaling them to start shutting down.
+5.  **Graceful shutdown:** The application continues running, finishes processing active/in-flight connections, and refuses new inbound connections.
+6.  **SIGKILL fallback:** Kubelet waits for `terminationGracePeriodSeconds` (default 30s). If the containers are still running after the timer expires, Kubelet sends a `SIGKILL` to force-kill the processes.
+7.  **Purge:** The pod record is completely deleted from `etcd`.
+
+> [!WARNING]
+> **The Race Condition:** Because endpoint removal (step 2) and SIGTERM (step 4) occur asynchronously and in parallel, there is a race condition where container processes start shutting down before Kube-proxy updates the host routing rules. This causes incoming client requests to hit a shutting-down container and fail with connection refused.
+> **Mitigation:** Use a container `preStop` hook to delay the application shutdown (e.g., a simple shell `sleep 5`), giving Kube-proxy enough time to remove the endpoints and drain active connections.
+> ```yaml
+> spec:
+>   containers:
+>   - name: web-app
+>     image: nginx
+>     lifecycle:
+>       preStop:
+>         exec:
+>           command: ["/bin/sh", "-c", "sleep 5 && nginx -s quit"]
+> ```
+
+---
+
+### 4.6 Connecting Applications with Services (Routing PoC)
+Connecting application workloads securely via service selectors is verified using the following steps:
+1.  Verify that pods are properly labeled and matched by the service selector.
+2.  Verify endpoint registration using `kubectl get endpoints <service-name>`.
+3.  Verify routing rules propagation by running curl inside a test container:
+    ```bash
+    kubectl run test-curl --rm -it --image=curlimages/curl -- curl http://<service-name>.<namespace>.svc.cluster.local
+    ```
+
+---
+
 ## 5. DNS in Kubernetes
 
 DNS services in the cluster allow pods to resolve services and other pods using human-readable names.

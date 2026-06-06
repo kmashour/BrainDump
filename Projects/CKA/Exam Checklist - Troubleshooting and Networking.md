@@ -324,3 +324,40 @@ If a service works from some pods but fails from others:
         ```
         If no backend Pod matches the node name of the client Pod, traffic will fail immediately. Revert to `Cluster` or reschedule Pods.
 
+---
+
+## 5. Service Source IP & Graceful Termination Checklist
+
+### A. Checking Kube-Proxy Mode
+Identify the active Kube-Proxy backend:
+```bash
+# Verify proxy mode from logs
+kubectl logs -n kube-system -l k8s-app=kube-proxy | grep -E "Using (iptables|ipvs) Proxier"
+```
+
+### B. Preserving Source IP
+Verify client source IP mapping behavior:
+```bash
+# Verify externalTrafficPolicy configuration in Service Spec
+kubectl get svc <service-name> -o jsonpath='{.spec.externalTrafficPolicy}'
+
+# Apply Local policy to preserve original client source IPs
+kubectl patch svc <service-name> -p '{"spec":{"externalTrafficPolicy":"Local"}}'
+```
+
+### C. Graceful Connection Draining & Race Condition Mitigation
+Verify the pod shutdown sequence during node drain or scale-down:
+1. Ensure the pod has a `preStop` lifecycle hook configured in the container spec to hold container shutdown (e.g. `sleep 5`).
+2. Verify endpoints removal timing:
+   ```bash
+   # Watch endpoints removal live during pod deletion
+   kubectl get endpoints <service-name> -w
+   ```
+3. Use a preStop hook to execute a graceful service stop:
+   ```yaml
+   lifecycle:
+     preStop:
+       exec:
+         command: ["/bin/sh", "-c", "sleep 5 && nginx -s quit"]
+   ```
+

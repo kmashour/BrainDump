@@ -867,4 +867,119 @@ spec:
     ports:
     - protocol: TCP
       port: 443
+
+---
+
+## 11. ConfigMap & Secret Security Management
+
+Managing application configurations and secrets securely is a key operational requirement.
+
+### 11.1 ConfigMaps vs. Secrets
+* **ConfigMaps:** Store non-sensitive configuration data (e.g., environment variables, config files) in plaintext.
+* **Secrets:** Store sensitive data (e.g., passwords, API keys, certificates) encoded in Base64.
+  * **Important:** Base64 is NOT encryption. It is merely encoding. Anyone who can read the Secret object can decode it: `echo "base64-string" | base64 --decode`.
+
+### 11.2 Secret Protection Mechanisms
+* **tmpfs Mounting:** When a Secret is mounted as a volume inside a Pod, the Kubelet writes the secret files into a **`tmpfs`** (RAM-backed) filesystem. The secret data is never written to the physical storage disk of the worker node.
+* **Encryption at Rest:** By default, Secrets are stored in `etcd` in plaintext. To encrypt them, you must configure an `EncryptionConfiguration` object on the `kube-apiserver` using providers like `aescbc` or KMS:
+  ```yaml
+  apiVersion: apiserver.config.k8s.io/v1
+  kind: EncryptionConfiguration
+  resources:
+    - resources:
+        - secrets
+      providers:
+        - aescbc:
+            keys:
+              - name: key1
+                secret: d3JpdGUtby1maWxlLWRpc2stcGF0aC1zZWNyZXQ= # Example 32-byte key
+        - identity: {}
+  ```
+  Enable this by adding the flag `--encryption-provider-config=/etc/kubernetes/enc/enc.yaml` to the api-server.
+
+### 11.3 Injection Methods
+ConfigMaps and Secrets can be injected into containers in two ways:
+1. **Environment Variables:**
+   * Values are loaded when the container starts.
+   * **Pitfall:** If values are updated in the ConfigMap/Secret, env variables are NOT updated inside the running container until it restarts.
+2. **Volume Mounts:**
+   * ConfigMaps and Secrets are mounted as directories, with keys appearing as files.
+   * **Advantage:** Kubelet periodically syncs updates. Modifications to the ConfigMap/Secret will automatically propagate as file updates inside the container within a few minutes (without restarting the container).
+
+---
+
+## 12. Pod Security Admission (PSA) and Standards
+
+Pod Security Admission (PSA) is the built-in admission controller that replaces the deprecated PodSecurityPolicy (PSP) to enforce the **Pod Security Standards (PSS)** at the namespace level.
+
+### 12.1 Pod Security Standards (PSS) Levels
+1. **`privileged`:** Unrestricted policy. Allows container processes to run as root, execute host-level sysctls, map host hostpaths, and bypass isolation boundaries.
+2. **`baseline`:** Default/standard profile. Prevents known privilege escalations. Restricts host network/PID access, block hostpath volume mounts, but permits standard root execution.
+3. **`restricted`:** Hardened profile. Enforces strict hardening guidelines:
+   * Requires `runAsNonRoot: true`.
+   * Requires dropping all capabilities and adding only `NET_BIND_SERVICE` if needed.
+   * Restricts volume types (blocks hostpath, permits configmaps/secrets/projected).
+   * Restricts ports (<1024 blocked without explicit capability).
+
+### 12.2 PSA Modes of Admission Control
+* **`enforce`:** Blocks Pod creation if it violates the target PSS level.
+* **`warn`:** Permits Pod creation but returns a user-facing warning header to the client (e.g., during `kubectl apply`).
+* **`audit`:** Permits Pod creation but records an audit event in the API audit log.
+
+### 12.3 Applying PSA Namespace Labels
+Configure PSA behavior by applying labels to a namespace:
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: secure-namespace
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: v1.30
+    pod-security.kubernetes.io/warn: baseline
+    pod-security.kubernetes.io/warn-version: latest
+```
+
+> [!CAUTION]
+> **Namespace Label Escalation Risk:** Any user with permission to `patch` or `update` Namespace resources (e.g. via a namespaced RoleBinding) can modify these labels. This creates a severe privilege escalation risk, as a user could downgrade a namespace's PSA level from `restricted` to `privileged` to deploy an insecure root Pod. Restrict Namespace label permissions strictly.
+
+---
+
+## 13. Hardening Guide: Dynamic Resource Allocation (DRA) Security
+
+Dynamic Resource Allocation (DRA) (Beta in v1.36) provides advanced scheduling and allocation mechanisms for hardware accelerators (GPUs, ASICs). Because DRA drivers write resource allocation metadata back to the API, secure authorization is required.
+
+### 13.1 Synthetic Subresources
+DRA status updates do not modify the main claim object directly; instead, they target synthetic subresources to enforce least-privilege:
+1. **`resourceclaims/binding`:** Required to modify `status.allocation` and `status.reservedFor`. Usually granted strictly to the `kube-scheduler` and custom allocation controllers.
+2. **`resourceclaims/driver`:** Required to modify `status.devices`. Restricts drivers from tampering with claims managed by other drivers.
+
+### 13.2 Node-Aware Verbs
+When configuring RBAC for DRA drivers, use node-aware verbs:
+* **`associated-node:<verb>`:** Used for node-local drivers (e.g. GPU agent running on a worker node). The API server verifies node association before validating the request.
+* **`arbitrary-node:<verb>`:** Granted only to control-plane or cluster-wide multi-node controllers.
+
+---
+
+## 14. Kubernetes Security Checklist
+
+Ensure a basic security baseline for control planes, hosts, and applications:
+
+### A. Authentication & Authorization
+* [ ] Disable basic auth (`--basic-auth-file`) and static tokens (`--token-auth-file`).
+* [ ] Enforce mTLS for all control plane communication (APIServer, ETCD).
+* [ ] Restrict `system:masters` group assignment (acts as superuser, bypassing RBAC).
+* [ ] Periodically audit cluster-level RoleBindings and ClusterRoleBindings.
+
+### B. Host & Network Security
+* [ ] Apply a default-deny-all Ingress and Egress `NetworkPolicy` to namespaces.
+* [ ] Restrict direct host network access to `kube-apiserver` (port 6443) and `etcd` (ports 2379/2380).
+* [ ] Configure worker hosts to use the `systemd` cgroup driver for resource tracking.
+
+### C. Pod & Container hardening
+* [ ] Apply `readOnlyRootFilesystem: true` to prevent containers from writing to host directories.
+* [ ] Set `runAsNonRoot: true` and define non-root `runAsUser` values.
+* [ ] Drop `ALL` Linux capabilities, explicitly adding only what's required.
+* [ ] Scan container images for vulnerabilities, pin specific image digests, and pull only from verified registries.
+* [ ] Run untrusted workloads inside isolated environments using sandboxed runtimes (e.g. gVisor, Kata Containers) via `RuntimeClass`.
 ```

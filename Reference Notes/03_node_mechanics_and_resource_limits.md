@@ -15,6 +15,9 @@ Nodes are registered as objects in `etcd` in two ways:
 * **Self-Registration (Default):** The `kubelet` service starts on the node, contacts the `kube-apiserver`, and registers itself by reporting its physical capacity, IP addresses, and versions.
 * **Manual Administration:** An administrator creates a Node manifest (YAML) and applies it to the cluster manually, disabling self-registration in the `kubelet` configuration.
 
+> [!WARNING]
+> **Physical Entity Inconsistencies:** Node objects in the API represent physical hosts. If a host is re-created (e.g. re-provisioned or replaced) under the same name without first deleting the old Node object from the API server, Kubernetes will treat the new host as the old one. This can cause severe state inconsistencies, resource allocation skew, and authentication failures.
+
 ### B. Installing and Configuring Kubelet as a Service
 When bootstrapping a node manually:
 1. **Download the Kubelet Binary:**
@@ -278,6 +281,167 @@ We will spin up a local cluster, explore Lease heartbeat objects, deploy 3 Pods 
    rm qos-pods.yaml
    kind delete cluster --name cka-node-poc
    ```
+
+---
+
+## 7. Deep-Dive Audited Context: Linux Kernel & Host Mechanics
+
+To properly troubleshoot worker nodes and secure container workloads, administrators must bridge Kubernetes abstractions with the underlying Linux kernel and systemd mechanics.
+
+### A. Linux Kernel Control Groups (cgroups)
+* **cgroupfs Mount:** The cgroups hierarchy is exposed by the Linux kernel as a virtual filesystem, typically mounted at `/sys/fs/cgroup/`.
+* **cgroups v1 vs v2 structure:**
+  * In **cgroups v1**, controllers (e.g., `memory`, `cpu`, `blkio`, `pids`) run as independent, separate trees. A process could be under a specific cgroup for memory but a completely different one for CPU, leading to high management overhead and sync issues.
+  * In **cgroups v2**, all controllers are organized under a single unified hierarchy tree. Resource tracking (like memory-pressure stall info, PSI) is unified, allowing the container runtime and `kubelet` to more accurately manage allocations and avoid kernel deadlocks.
+* **Inspecting cgroups on host:** To view the cgroup slices managed by systemd for Kubernetes:
+  ```bash
+  ls -la /sys/fs/cgroup/kubepods.slice/
+  ```
+
+### B. Linux Namespace Sharing in Pods
+Containers are isolated using Linux namespaces. A standard Pod consists of multiple containers that share specific namespaces:
+* **Network Namespace:** All containers in a Pod share the same network namespace (`netns`). This is initialized by a special **pause container** (`pause` image) that holds the network namespace open. As a result, containers inside the same Pod can communicate via `localhost` and share the same IP address and port space.
+* **IPC Namespace:** Allows processes inside containers to communicate via standard System V IPC or POSIX message queues.
+* **UTS Namespace:** Shares the same hostname (which is set to the Pod's name).
+* **PID Namespace Sharing (Optional):** By default, containers do not share PID namespaces, meaning a container cannot see processes running in other containers. You can enable sharing by setting `shareProcessNamespace: true` in the Pod's spec:
+  ```yaml
+  spec:
+    shareProcessNamespace: true
+  ```
+  This allows sidecar containers to inspect and troubleshoot primary container processes (e.g., sending signals or reading logs via `/proc/{pid}/`).
+
+### C. Host-Level Security Profiles: AppArmor & Seccomp
+To restrict container capabilities beyond what standard Linux permissions offer, the kernel enforces security profiles:
+* **AppArmor:** A Linux kernel security module that restricts program capabilities using path-based profiles.
+  * Profiles are loaded into the host kernel at `/etc/apparmor.d/`.
+  * In Kubernetes, you can enforce AppArmor profiles in the container's `securityContext`:
+    ```yaml
+    securityContext:
+      apparmorProfile:
+        type: Localhost
+        localhostProfile: k8s-app-profile
+    ```
+* **Seccomp (Secure Computing Mode):** Filters system calls (syscalls) made by containers, blocking dangerous syscalls (like `reboot` or `ptrace`).
+  * Default profiles live in the kubelet directory: `/var/lib/kubelet/seccomp/`.
+  * To enforce seccomp:
+    ```yaml
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    ```
+    This uses the container runtime's default seccomp profile, which blocks around 40+ dangerous syscalls.
+
+### D. Systemd Service Logs for Kubelet Troubleshooting
+When a node transitions to `NotReady`, the primary diagnostic path starts with host systemd logs:
+* **Systemd Unit File:** Located at `/etc/systemd/system/kubelet.service` or `/usr/lib/systemd/system/kubelet.service`.
+* **Journald Query Commands:**
+  ```bash
+  # View recent Kubelet logs
+  journalctl -u kubelet -n 100 --no-pager
+  
+  # Stream live logs
+  journalctl -u kubelet -f
+  
+  # Filter Kubelet logs for errors specifically
+  journalctl -u kubelet -p err --no-pager
+  ```
+
+---
+
+## 8. Resource Management, ResourceQuotas, and LimitRanges
+
+Kubernetes enables cluster resource isolation and partitioning using declarative limits.
+
+### A. Resource Requests & Limits
+Containers in a Pod specify CPU and memory resources using `requests` and `limits`:
+* **Requests:** Used by `kube-scheduler` during scheduling to decide which node has enough unallocated capacity to fit the Pod.
+  * CPU requests map to CPU shares in Linux cgroups.
+  * Memory requests represent the memory that the container is guaranteed.
+* **Limits:** Enforces hard boundaries on resource usage.
+  * CPU limits are enforced using CFS (Completely Fair Scheduler) quotas. If a container exceeds its CPU limit, it is **throttled**, but not terminated.
+  * Memory limits are enforced as hard limits. If a container exceeds its memory limit, the host kernel terminates the process with an Out Of Memory (OOM) error, raising `Exit Code 137` (OOMKilled).
+
+### B. LimitRange (`LimitRange`)
+LimitRanges enforce resource constraints (min, max, and defaults) at the namespace level.
+* **Mechanism:** Validated by the `LimitRanger` admission controller when a Pod is created.
+* **Functionality:**
+  * Defines minimum and maximum CPU and memory requirements per container or Pod.
+  * Sets **default requests** and **default limits** automatically if a user submits a Pod manifest without specifying resources.
+  * Validates that resource requests do not exceed resource limits.
+* **Manifest Example:**
+  ```yaml
+  apiVersion: v1
+  kind: LimitRange
+  metadata:
+    name: cpu-min-max-demo-lr
+    namespace: dev
+  spec:
+    limits:
+    - default: # Default limits
+        cpu: 500m
+        memory: 512Mi
+      defaultRequest: # Default requests
+        cpu: 200m
+        memory: 256Mi
+      max:
+        cpu: "1"
+        memory: 1Gi
+      min:
+        cpu: 100m
+        memory: 128Mi
+      type: Container
+  ```
+
+### C. ResourceQuotas (`ResourceQuota`)
+ResourceQuotas restrict the aggregate resource consumption across all objects in a single namespace.
+* **Mechanism:** Validated by the `ResourceQuota` admission controller. Requests that exceed the remaining namespace quota are rejected.
+* **Functionality:**
+  * Caps total CPU and memory requests/limits across the namespace.
+  * Restricts storage allocation requests (e.g. total volume storage).
+  * Restricts object counts (e.g. maximum of 10 Pods, 5 Services, or 10 ConfigMaps in the namespace).
+* **Manifest Example:**
+  ```yaml
+  apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: compute-resources
+    namespace: dev
+  spec:
+    hard:
+      pods: "10"
+      requests.cpu: "4"
+      requests.memory: 8Gi
+      limits.cpu: "8"
+      limits.memory: 16Gi
+  ```
+
+---
+
+## 9. PID Limiting & Node Resource Managers
+
+Beyond memory and CPU, Kubernetes manages process allocation and alignment constraints on worker hosts.
+
+### A. PID Limiting
+A process that executes a fork bomb can consume all available Process IDs (PIDs) on a Linux host, preventing other system processes (like the Kubelet) from running and causing the node to crash.
+* **Kubelet PID Limits:** Kubelet can restrict the number of PIDs running inside a Pod or node.
+* **Configuration:** Configured in `kubelet-config.yaml` using:
+  * `podPidsLimit`: The maximum number of PIDs a single Pod is allowed to spawn (default is -1, meaning unlimited).
+  * `systemReserved` / `kubeReserved`: Reserves a pool of PIDs for host system services and Kubernetes daemons.
+* **PIDPressure Condition:** If the node's total PID usage exceeds the host capacity, the Kubelet sets the node condition `PIDPressure: True`, and `kube-scheduler` stops routing new Pods to it.
+
+### B. Node Resource Managers
+For latency-sensitive or high-throughput workloads, modern hardware demands optimal CPU and memory mapping.
+* **CPU Manager:** Configures CPU affinity policies.
+  * `none` Policy (Default): Container processes share host CPU cores dynamically using CFS scheduling.
+  * `static` Policy: Grants exclusive, isolated CPU cores to containers belonging to **Guaranteed** Pods that request an integer value of CPUs (e.g., `cpu: "2"` but not `cpu: "2.5"`). Processes are pinned to these cores via `cpuset`.
+* **Memory Manager:** Optimizes NUMA (Non-Uniform Memory Access) affinity. Pins container memory allocations to specific physical NUMA nodes to minimize RAM latency.
+* **Device Manager:** Allocates host hardware accelerators (e.g., GPUs) to container requests.
+* **Topology Manager:** Coordinates decisions between CPU Manager, Memory Manager, and Device Manager to ensure that CPU, memory, and devices are aligned on the **same NUMA node** for maximum performance.
+  * Policies:
+    * `none`: Default. No topology alignment.
+    * `best-effort`: Attempts to align resources, but allows the Pod to start even if alignment is suboptimal.
+    * `restricted`: Aligns resources, failing the Pod if resources cannot be aligned, but allows execution if resource types are mismatched.
+    * `single-numa-node`: Rejects the Pod completely if CPU, memory, and devices cannot be provisioned from a single NUMA node.
 
 ---
 

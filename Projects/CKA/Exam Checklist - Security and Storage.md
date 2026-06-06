@@ -356,3 +356,37 @@ If you need temporary scratch space that requires dynamic provisioning (e.g. SSD
     ```
     *Note:* The lifecycle of this volume and claim is bound directly to the Pod. When the Pod is deleted, the dynamic claim and volume are unmounted and deleted.
 
+---
+
+## 8. Pod Security Admission & Secrets Hardening Checklist
+
+### A. Pod Security Admission Namespace Labeling
+Verify and apply Pod Security Standards (PSS) to namespaces:
+```bash
+# Label namespace to ENFORCE the restricted profile
+kubectl label namespace secure-ns pod-security.kubernetes.io/enforce=restricted
+
+# Label namespace to WARN on baseline violations
+kubectl label namespace secure-ns pod-security.kubernetes.io/warn=baseline
+
+# Audit namespace labeling status
+kubectl get ns secure-ns --show-labels
+```
+
+### B. Secrets Encryption at Rest Verification
+Verify that encryption-at-rest is enabled and functioning:
+```bash
+# Verify api-server process arguments for encryption provider configuration
+ps -aux | grep kube-apiserver | grep encryption-provider-config
+
+# Query etcd registry directly to verify cipher text encryption (returns encrypted format, not plaintext values)
+kubectl exec -n kube-system etcd-control-plane -- etcdctl \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  get /registry/secrets/default/my-secret
+```
+
+### C. Restricting Namespace Metadata Access
+* **Escalation Vector:** Restrict developer RoleBindings from granting `patch` or `update` access on `namespaces`. Since PSA and NetworkPolicies rely on namespace labels, users could downgrade namespace security parameters by altering labels.
+

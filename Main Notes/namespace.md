@@ -34,6 +34,12 @@ A **Namespace** is a logical partition inside a single Kubernetes cluster. It is
 *   **Scope Partitioning:** Defines scope boundaries for resource names (e.g., you can have a Pod named `frontend` in namespace `dev` and another `frontend` in `prod`).
 *   **Access Control Boundary:** Serves as the primary scope for RBAC (Role and RoleBinding) policies.
 *   **Resource Constraints:** Allows administrators to enforce CPU, Memory, and Storage quotas at the namespace level using `ResourceQuotas` and `LimitRanges`.
+*   **System Partitioning (Initial Namespaces):** Out-of-the-box system namespaces:
+    *   `default`: Target for workloads defined without an explicit namespace.
+    *   `kube-system`: Home for components created by the Kubernetes control plane.
+    *   `kube-public`: Auto-created namespace readable by all users (authenticated and unauthenticated), historically used for cluster bootstrap details.
+    *   `kube-node-lease`: Contains `Lease` objects associated with node heartbeats for scalability.
+*   **Prefix Restrictions:** Users should avoid naming custom namespaces with the `kube-` prefix as it is strictly reserved for Kubernetes system components.
 
 ---
 
