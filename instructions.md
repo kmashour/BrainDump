@@ -49,8 +49,11 @@ When a new source file is introduced:
 2. **Link Identification & Resolution (for `@ingest` requests):**
    - If the file contains external URLs (e.g., `https://kubernetes.io/docs/`), scan and collect all target URLs.
    - Fetch and scrape the main technical body of each URL (cleaning HTML tags and stripping wrapper components like navigation headers, footers, scripts, and sidebars).
-   - Merge the scraped pages' content dynamically with any pre-existing text or comments in the raw inflow file.
-   - Treat the consolidated text as the single unified input for the rest of the ingestion pipeline.
+   - **Diagram & Sub-link Handling:**
+     - **Diagrams:** Identify all diagrams and architectural images. Translate them into text-based explanations and visual Mermaid.js diagrams, or reference/download the image URLs to be placed in the appropriate Reference/Main notes.
+     - **Sub-links:** Identify key hyperlinks pointing to other relevant Kubernetes documentation pages (e.g., related concepts or detailed sub-topics). For any sub-links crucial to a complete understanding of the topic, fetch and scrape their contents.
+   - Merge all the scraped page content (including the main URLs, Mermaid translations of diagrams, and key sub-link contents) dynamically with any pre-existing text or comments in the raw inflow file.
+   - Treat the consolidated text as the single unified input for the rest of the ingestion pipeline. Crucial sub-link knowledge does not have to reside in the main reference note; place/distribute it logically across the most suitable existing or new Reference/Main notes in the vault.
 
 ### Step 2: Classification & Analysis
 1. Analyze the technical topics covered in the new `inflow/` file.

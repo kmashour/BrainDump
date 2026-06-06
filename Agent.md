@@ -39,7 +39,8 @@ When ingesting raw files or executing restructuring requests:
    - Identify the target file in the `inflow/` directory.
    - Scan for any external links/URLs (e.g. Kubernetes docs).
    - If URLs are present, automatically fetch and scrape the body content of each URL.
-   - Combine the scraped content with the target file's direct notes.
-   - Run the full, sequential multi-agent ingestion pipeline (Phases 1-6) on the consolidated content.
+   - **Diagram & Sub-link Resolution:** Extract diagrams (translating them into Mermaid diagrams or structured text) and follow key related sub-links crucial to the topic, fetching their content.
+   - Combine the scraped content (main URLs, diagram representations, and key sub-links) with the target file's direct notes.
+   - Run the full, sequential multi-agent ingestion pipeline (Phases 1-6) on the consolidated content, distributing sub-link knowledge into the most suitable notes (Reference Notes or Main Notes) rather than forcing everything into a single note.
    - Log the transaction in `backlog.md`, verify with `review_vault.py`, and push to `origin/main`.
 

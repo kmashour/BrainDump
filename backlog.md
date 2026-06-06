@@ -2,6 +2,13 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+
+## [2026-06-06] - Update Ingestion Rules for Diagrams and Sub-links
+
+### Changed / Updated
+- **Agent Operating Rules ([Agent.md](file:///home/karim/Desktop/BrainDump/Agent.md)):** Configured the `@ingest` trigger rules to automatically translate/handle diagrams and recursively scrape key sub-links in external documentation URLs by default.
+- **Ingestion Workflow Instructions ([instructions.md](file:///home/karim/Desktop/BrainDump/instructions.md)):** Codified Step 1 Link Identification and Resolution protocols to explicitly parse diagrams into Mermaid/image references and scrape relevant sub-links, allowing the scraped knowledge to be dynamically distributed to appropriate note files.
+
 ---
 
 ## [2026-06-05] - Implement @ingest Command and Process Workloads Documentation Ingestion
