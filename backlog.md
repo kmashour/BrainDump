@@ -8,6 +8,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ### Added
 - **CKA Practice Playbook (`Projects/CKA/Practice Playbook - Lightning Labs and Mock Exams.md`):** Created a comprehensive, high-fidelity playbook compiling practice questions, scenario requirements, diagnostic steps, CLI solutions, and YAML manifests from all Lightning Labs, Mock Exams 1-3, Ultimate Mocks (Troubleshooting, Storage, Services & Networking, General/Cluster State), and Network Policy Testing tips and tricks. Fully validated all internal links and relative paths.
+- **CKA Practice Playbook - Topic Labs (`Projects/CKA/Practice Playbook - Topic Labs.md`):** Restructured and audited the draft Topic Labs playbook, deduplicating repetitive questions and injecting comprehensive CKA "Battle-Test Notes" for Troubleshooting, Cluster Architecture/Security, Services/Networking, Workloads/Scheduling, and Storage. Added complete practice scenarios for PersistentVolumes, PersistentVolumeClaims, and manual PVC mount injections.
 
 ### Changed / Updated
 - **`Reference Notes/02_cluster_architecture_and_components.md`:** Replaced high-level cluster architecture text references with a detailed Mermaid.js control plane/worker node interaction diagram and corresponding structural description.
