@@ -178,7 +178,9 @@ selector:
     ```
 * **Q: What is a Set-Based Selector and why use it over Equality-Based?**
   * Equality-based selectors can only match a single exact value. If you want a resource (like a Service or Deployment) to select Pods matching a list of multiple values (e.g., matching env `production` OR `staging`, but not `development`), equality-based selectors cannot do this.
-  * Set-based selectors allow SQL-like `IN` or `NOT IN` queries:
+  * Set-based selectors allow SQL-like `IN` or `NOT IN` queries:    Breaking it down:
+	`key: env`: Targets the specific metadata label key named `env`.
+	`operator: In`: Specifies that the label's value must match any item in the `values` list.    - `values: [production, staging]`: The acceptable values for the key. Resources with labels like `env=production` or `env=staging` will be matched, while `env=dev` would be ignored. 
     ```yaml
     selector:
       matchExpressions:
