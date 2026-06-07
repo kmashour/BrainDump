@@ -4,6 +4,29 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-07] - Ingestion and Knowledge Distribution of CKA Exam Prep Video Course Clipping
+
+### Added
+- **`Reference Notes/07_kubernetes_workloads_and_controllers.md`**: Added Section 14 detailing Helm packaging command runs (`repo add/update`, `install`, `upgrade`, `rollback`, `uninstall`, `list`) and Kustomize overlays (using `resources` instead of deprecated `bases`, and the `kustomize edit fix` command).
+- **`Reference Notes/08_security_and_network_policies.md`**: Added Section 6.6 containing a step-by-step walkthrough of RBAC service account (`dev-user`), role, and rolebinding configuration with `auth can-i` checks. Added Section 10.3 containing a step-by-step walkthrough of default deny-all NetworkPolicy and label-based allow rules.
+- **`Reference Notes/09_storage_mechanics_and_csi.md`**: Added Section 5.3 detailing Rancher local-path provisioner installation and configuration as a hostPath dynamic storage provider.
+
+### Changed / Updated
+- **`Projects/CKA/Vim and Terminal Setup.md`**: Added copy-paste shortcuts (`Ctrl+Shift+C`/`Ctrl+Shift+V`), avoiding `Ctrl + W` terminal close error, SSH node hopping, and privilege elevation with `sudo -i`.
+- **`Reference Notes/02_cluster_architecture_and_components.md`**: Added Section 3D detailing stacked HA control plane configuration with `kubeadm` (`--control-plane-endpoint` and `--upload-certs` flags for `kubeadm init`, and `--control-plane` and `--certificate-key` flags for `kubeadm join`).
+- **`Reference Notes/03_node_mechanics_and_resource_limits.md`**: Added Section 1.1 detailing worker node kernel modules (`overlay`, `br_netfilter`), sysctl network parameters (`net.bridge.bridge-nf-call-iptables`, `net.ipv4.ip_forward`), and `containerd` cgroup configuration (`SystemdCgroup = true` in `config.toml`).
+- **`Reference Notes/04_workload_lifecycle_and_healing.md`**: Expanded Section 2 with detailed HTTP GET and TCP Socket probes, and a line-by-line configuration mechanical breakdown.
+- **`Reference Notes/07_kubernetes_workloads_and_controllers.md`**: Updated rolling update parameters (`maxSurge` / `maxUnavailable` defaults and validations) and history rollback commands (`rollout undo --to-revision`).
+- **`Reference Notes/10_networking_dns_and_ingress.md`**: Updated Section 5.5 to document forwarding private DNS queries for `mycorp.com` to corporate DNS `10.10.0.53` within the CoreDNS ConfigMap Corefile with explanation blocks.
+- **`Reference Notes/11_maintenance_upgrades_and_etcd.md`**: Updated Section 4.3 to document the step-by-step stacked ETCD snapshot restore process (stopping kubelet, restoring to `/var/lib/etcd-restored`, modifying `hostPath` volumes in `/etc/kubernetes/manifests/etcd.yaml`, and restarting kubelet).
+- **`Reference Notes/12_troubleshooting_and_diagnostics.md`**: Refined Section 1A with a detailed ASCII/Mermaid flowchart illustrating Pod Status flow and troubleshooting checklist for ImagePull failures. Refined Section 2A to detail API Server "Connection Refused" diagnostics and host-level static pod manifest debugging (`kubelet` status, `crictl ps -a`, `crictl logs`, etc.).
+
+### Ingested Inflow Sources
+The following files and assets have been processed and integrated:
+- `inflow/Clippings/Kubernetes Course – Certified Kubernetes Administrator Exam Preparation (2026 Update).md`
+
+---
+
 ## [2026-06-07] - Batch Integration of Missing Diagrams and CKA Practice Playbooks
 
 ### Added

@@ -751,10 +751,11 @@ Inside every Pod container, Kubelet configures `/etc/resolv.conf` to direct DNS 
 
 ### 5.5 Custom DNS Configurations
 
-You can modify CoreDNS to resolve custom domains or redirect queries to specific nameservers by updating the Corefile ConfigMap.
+You can modify CoreDNS to resolve custom domains or redirect queries to specific private nameservers (e.g. on corporate networks) by updating the Corefile ConfigMap.
 
-#### Forwarding a Custom Domain to a Specific Nameserver
-Apply this configuration block to forward all queries for `.corp.internal` to DNS server `10.0.0.50`:
+#### Forwarding Private DNS Queries to a Corporate Nameserver
+To route all queries ending in `mycorp.com` to a private enterprise DNS server at `10.10.0.53`, add a new zone block to the Corefile ConfigMap (`coredns` in the `kube-system` namespace):
+
 ```yaml
 apiVersion: v1
 kind: ConfigMap
@@ -776,10 +777,25 @@ data:
         loop
         reload
     }
-    corp.internal:53 {
-        forward . 10.0.0.50
+    mycorp.com:53 {
+        errors
+        cache 30
+        forward . 10.10.0.53
     }
 ```
+
+#### Explanation of the Custom Corefile Block:
+*   **`mycorp.com:53`**: Declares a new DNS zone block targeting any incoming queries ending in `mycorp.com` on port `53`. Because CoreDNS selects the most specific matching zone block, queries for `mycorp.com` will bypass the default cluster block (`.:53`).
+*   **`forward . 10.10.0.53`**: Instructs CoreDNS to forward any queries matching this zone to the designated corporate upstream nameserver at `10.10.0.53`.
+*   **`cache 30`**: Configures a 30-second TTL cache for resolved queries in this zone to reduce query traffic load on the corporate nameserver.
+*   **`errors`**: Enables logging of DNS resolution errors to CoreDNS pod standard output for troubleshooting.
+
+#### Command to Edit Corefile Live:
+To apply this modification to a running cluster, edit the ConfigMap resource:
+```bash
+kubectl edit configmap coredns -n kube-system
+```
+*(Because Corefile uses the `reload` plugin in its default configuration, CoreDNS will automatically detect, reload, and apply the Corefile updates within 30 seconds without requiring a pod restart).*
 
 ---
 

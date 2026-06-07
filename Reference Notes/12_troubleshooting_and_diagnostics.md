@@ -8,7 +8,29 @@ This module covers the core diagnostics and troubleshooting workflows required f
 
 Application failures typically present as pods failing to start, crashlooping, or failing to receive external or service-to-service traffic.
 
-### A. Pod Lifecycle Phases and Common Failures
+### A. Pod Status Flowchart
+Use this diagram to trace the status of a Pod from submission to a healthy state, identifying potential failure points:
+
+```mermaid
+flowchart TD
+    Start["Submit Pod Manifest"] --> Scheduled{"Scheduled to Node?<br>(spec.nodeName is set)"}
+    Scheduled -- No --> Pending["Pending State<br>(Check CPU/Memory requests, node selectors, taints, unbound PVCs)"]
+    Scheduled -- Yes --> Pulling["Pulling Container Image"]
+    Pulling -- Fail --> ImagePullErr["ImagePullBackOff / ErrImagePull<br>(Check image name/tag, private registry credentials, network connectivity)"]
+    Pulling -- Success --> Creating["Creating Container"]
+    Creating -- Fail --> CreateErr["RunContainerError / CreateContainerConfigError<br>(Check missing ConfigMaps, Secrets, or volume mount paths)"]
+    Creating -- Success --> Running["Running State<br>(Container process started)"]
+    Running -- Crash --> CrashLoop["CrashLoopBackOff<br>(Check container logs, exit codes, and env settings)"]
+    Running -- Probes --> Startup{"Startup Probe<br>configured & passes?"}
+    Startup -- No --> Kill["Container terminated & restarted<br>(according to restartPolicy)"]
+    Startup -- Yes --> Liveness{"Liveness Probe<br>configured & passes?"}
+    Liveness -- No --> Kill
+    Liveness -- Yes --> Readiness{"Readiness Probe<br>configured & passes?"}
+    Readiness -- No --> Unready["Running but Unready<br>(Pod IP evicted from matching Service Endpoints)"]
+    Readiness -- Yes --> Ready["Ready State<br>(Pod accepting cluster traffic)"]
+```
+
+### B. Pod Lifecycle Phases and Common Failures
 To inspect the status of workloads, use:
 ```bash
 kubectl get pods -n <namespace> -o wide
@@ -16,7 +38,7 @@ kubectl get pods -n <namespace> -o wide
 
 | Pod Status / Reason | Primary Causes | Diagnostic Actions & Fixes |
 | :--- | :--- | :--- |
-| **`ImagePullBackOff`** / **`ErrImagePull`** | Incorrect image name or tag; Private registry authentication issues. | Check typos in `spec.containers[*].image`. Verify that the correct `imagePullSecrets` are defined in the pod spec. |
+| **`ImagePullBackOff`** / **`ErrImagePull`** | Incorrect image name or tag; Private registry authentication issues; Node DNS/Internet routing block. | Check typos in `spec.containers[*].image`. Verify that the correct `imagePullSecrets` are defined in the pod spec. Verify registry connection from host. |
 | **`CrashLoopBackOff`** | Application configuration typos; Missing required environment variables; Database connection failures; Disk permission issues. | Container starts but repeatedly exits. Check pod logs (especially `--previous`). Verify env variables and startup parameters. |
 | **`RunContainerError`** | Failed to mount ConfigMap, Secret, or PersistentVolumeClaim. | Run `kubectl describe pod`. Verify that all mounted ConfigMaps/Secrets exist in the namespace. Check PVC storage bindings. |
 | **`CreateContainerConfigError`** | Missing ConfigMap/Secret referenced in `envFrom` or `valueFrom`. | Verify that env sources exist and contain the exact keys referenced in the manifest. |
@@ -133,8 +155,10 @@ Unlike Deployments, standalone pods have immutable specs for most fields (e.g. p
 
 The control plane consists of `kube-apiserver`, `kube-controller-manager`, `kube-scheduler`, and `etcd`. These are either deployed as **Static Pods** (using kubeadm) or managed as **Systemd Services**.
 
-### A. Static Pod Manifest Auditing (`/etc/kubernetes/manifests`)
-When the API server is unreachable (e.g., `The connection to the server <IP>:6443 was refused`), SSH into the control plane node to audit static pods. The kubelet watches `/etc/kubernetes/manifests/` and recreates pods when these YAML files change.
+### A. API Server "Connection Refused" & Static Pod Manifest Auditing (`/etc/kubernetes/manifests`)
+When running `kubectl` commands returns a connection refused error:
+`The connection to the server <IP>:6443 was refused - did you specify the right host or port?`
+This indicates that the `kube-apiserver` process is down. Because `kubectl` relies on the API server, you cannot use it to troubleshoot itself. You must SSH into the affected control plane node directly and escalate privileges to `root` (`sudo -i`).
 
 #### Control Plane Manifest File Paths
 * API Server: `/etc/kubernetes/manifests/kube-apiserver.yaml`
@@ -143,24 +167,27 @@ When the API server is unreachable (e.g., `The connection to the server <IP>:644
 * ETCD: `/etc/kubernetes/manifests/etcd.yaml`
 
 #### Diagnostic Checklist when API Server is Down
-1. **Verify Kubelet Service:** If the kubelet is stopped, static pods will not start.
+1. **Verify Kubelet Service:** Static pods are managed locally by the node's Kubelet. If the Kubelet is stopped or crashing, no static pods (including the API server) will run:
    ```bash
-   systemctl status kubelet
-   journalctl -u kubelet -n 100 -f
+   sudo systemctl status kubelet
+   sudo journalctl -u kubelet -n 100 --no-pager
    ```
-2. **Inspect Containers Directly:** Bypass the API server and inspect the container runtime (e.g., containerd) for crashed control plane containers:
+2. **Inspect Containers Directly:** Bypass the API server and inspect the container runtime directly (using the CRI utility `crictl`) to see if control plane containers are stopped or crashlooping:
    ```bash
-   crictl ps -a
+   sudo crictl ps -a
    ```
-3. **Inspect Logs of Crashed Control Plane Container:**
+3. **Inspect Logs of Crashed Control Plane Container:** If `crictl ps -a` shows a exited `kube-apiserver` container, retrieve its logs to identify the crash reason:
    ```bash
-   crictl logs <container-id>
+   sudo crictl logs <container-id>
    ```
 4. **Common Static Pod Manifest Errors:**
-   * **CA/Cert Directory Paths:** Typo in volume mounts (e.g., pointing to `/etc/kubernetes/WRONG-PKI` instead of `/etc/kubernetes/pki`).
-   * **Kubeconfig File Paths:** Typos in configuration parameters (e.g., `--controllers=*,bootstrapsigner` pointing to a missing `controller-manager-XXXX.conf` instead of `controller-manager.conf`).
-   * **Typo in Exec Commands:** Typos in start binaries (e.g., `command: ["kube-schedulerrrr"]`).
-   * **YAML Syntax Errors:** Improper indentation, duplicate keys, or incorrect array formats.
+   * **CA/Cert Directory Paths:** Typo in PKI volume mounts (e.g., mounting `/etc/kubernetes/pki-typo` instead of `/etc/kubernetes/pki`).
+   * **Kubeconfig File Paths:** Typo in configuration files (e.g., pointing to `/etc/kubernetes/controller-manager-typo.conf` instead of `/etc/kubernetes/controller-manager.conf`).
+   * **Exec Command Typo:** Typos in starting binaries (e.g., `command: ["kube-apiserverrrrr"]`).
+   * **YAML Formatting Errors:** Duplicate keys, tabs instead of spaces, or incorrect indentations. Check syntax:
+     ```bash
+     python3 -c 'import yaml, sys; yaml.safe_load(open("/etc/kubernetes/manifests/kube-apiserver.yaml"))'
+     ```
 
 > [!TIP]
 > **Static Pod Reload Trick:**

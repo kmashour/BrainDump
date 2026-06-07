@@ -18,7 +18,58 @@ Nodes are registered as objects in `etcd` in two ways:
 > [!WARNING]
 > **Physical Entity Inconsistencies:** Node objects in the API represent physical hosts. If a host is re-created (e.g. re-provisioned or replaced) under the same name without first deleting the old Node object from the API server, Kubernetes will treat the new host as the old one. This can cause severe state inconsistencies, resource allocation skew, and authentication failures.
 
-### B. Installing and Configuring Kubelet as a Service
+### B. Node Kernel & Container Runtime Prerequisites
+Before bootstrapping a Kubernetes node (control plane or worker), you must configure host networking, load kernel modules, and set up a compatible container runtime (e.g., `containerd` using the `systemd` cgroup driver).
+
+#### 1. Kernel Module Configuration
+Kubernetes networking relies on the kernel's ability to see and route bridged traffic. Add the `overlay` and `br_netfilter` modules to load at boot:
+```bash
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+# Activate modules immediately without reboot
+sudo modprobe overlay
+sudo modprobe br_netfilter
+```
+* **`overlay`**: The storage driver that allows container runtimes to overlay a writable filesystem layer on top of a read-only base layer, ensuring fast container startup and disk efficiency.
+* **`br_netfilter`**: A module that enables the Linux kernel to filter packets traversing network bridges. Without this, the host cannot pass bridge traffic to the iptables chains.
+
+#### 2. Sysctl Network Configuration
+Ensure that IPv4 packet forwarding is enabled and that iptables can inspect bridge traffic (critical for kube-proxy and CNI functionality):
+```bash
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+# Apply sysctl parameters immediately
+sudo sysctl --system
+```
+* **`net.bridge.bridge-nf-call-iptables = 1`**: Forces bridged packets to pass through the host's iptables rules, enabling CNI firewalling and kube-proxy load balancing.
+* **`net.ipv4.ip_forward = 1`**: Enables the kernel to forward packets between interfaces, allowing pods to send outbound internet traffic or talk across hosts.
+
+#### 3. Containerd Configuration & Cgroup Driver Alignment
+After installing `containerd` (e.g., `sudo apt-get install containerd`), you must generate its default configuration and configure the cgroup driver to use systemd:
+```bash
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+```
+Within `/etc/containerd/config.toml`, locate the `containerd.runtimes.runc.options` section and configure it:
+```toml
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+  SystemdCgroup = true
+```
+* **`SystemdCgroup = true`**: Dictates that containerd interfaces directly with systemd's cgroup management API instead of the legacy `cgroupfs` driver. The kubelet and container runtime must align on this driver to prevent node instability and process tracking crashes.
+
+After updating the config, restart containerd:
+```bash
+sudo systemctl restart containerd
+```
+
+### C. Installing and Configuring Kubelet as a Service
 When bootstrapping a node manually:
 1. **Download the Kubelet Binary:**
    ```bash

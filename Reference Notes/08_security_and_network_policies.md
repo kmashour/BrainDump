@@ -591,6 +591,75 @@ kubectl auth can-i get pods --as system:serviceaccount:dev:build-agent-sa --name
 kubectl auth can-i delete pv --as-group system:masters
 ```
 
+### 6.6 Step-by-Step Walkthrough: Restricting ServiceAccount Access
+Following the principle of least privilege, we will create a service account representing an application workspace, grant it read-only access to pods in a specific namespace, and verify the isolation.
+
+#### Step 1: Create an Isolated Namespace
+Create a dedicated namespace for testing:
+```bash
+kubectl create namespace rbac-test
+```
+
+#### Step 2: Create a ServiceAccount (Dev User)
+Create the `dev-user` service account inside the namespace:
+```bash
+kubectl create serviceaccount dev-user --namespace rbac-test
+```
+
+#### Step 3: Define Permissions with a Role
+Create a Role manifest (`role.yaml`) specifying read-only permissions on pods:
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: rbac-test
+rules:
+- apiGroups: [""] # Core API Group
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"] # Read-only, no create/delete/update
+```
+Apply the Role to the cluster:
+```bash
+kubectl apply -f role.yaml
+```
+
+#### Step 4: Connect the ServiceAccount and Role with a RoleBinding
+Create a RoleBinding manifest (`rolebinding.yaml`) to bind the `dev-user` to the `pod-reader` role:
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods-binding
+  namespace: rbac-test
+subjects:
+- kind: ServiceAccount
+  name: dev-user
+  namespace: rbac-test
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+Apply the RoleBinding to the cluster:
+```bash
+kubectl apply -f rolebinding.yaml
+```
+
+#### Step 5: Verify Permissions with `kubectl auth can-i`
+Impersonate the `dev-user` service account using `kubectl auth can-i` to verify that our policy is correctly enforced:
+1. **Verify positive case (can list pods):**
+   ```bash
+   kubectl auth can-i list pods --as system:serviceaccount:rbac-test:dev-user --namespace rbac-test
+   ```
+   *Expected Output:* `yes`
+   
+2. **Verify negative case (cannot delete pods):**
+   ```bash
+   kubectl auth can-i delete pods --as system:serviceaccount:rbac-test:dev-user --namespace rbac-test
+   ```
+   *Expected Output:* `no`
+
 ---
 
 ## 7. ServiceAccounts
@@ -867,6 +936,82 @@ spec:
     ports:
     - protocol: TCP
       port: 443
+
+---
+
+### 10.3 Step-by-Step Walkthrough: Locking Down a Namespace and Allowing Labeled Traffic
+By default, all pods in a cluster can communicate freely. In this walkthrough, we will establish a **Default Deny-All** posture in a test namespace, verify that it blocks untrusted communication, and then explicitly allow traffic from a trusted, labeled client pod.
+
+#### Step 1: Create Namespace and Apply Default Deny-All
+Create a test namespace:
+```bash
+kubectl create namespace netpol-test
+```
+Create and apply a default deny-all policy (`deny-all.yaml`) that targets all pods (`podSelector: {}`) and blocks all incoming (Ingress) traffic:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: netpol-test
+spec:
+  podSelector: {} # Empty selector matches all pods in this namespace
+  policyTypes:
+  - Ingress
+```
+Apply the policy:
+```bash
+kubectl apply -f deny-all.yaml
+```
+
+#### Step 2: Deploy the Target Web Server
+Deploy an Nginx web server and expose it as an internal ClusterIP service:
+```bash
+kubectl run web-server --image=nginx --labels="app=web-server" -n netpol-test
+kubectl expose pod web-server --port=80 --target-port=80 -n netpol-test
+```
+
+#### Step 3: Verify Blocked Traffic (Negative Case)
+Spin up a temporary, untrusted pod to query the web server. This request should fail (timeout) because of our deny-all policy:
+```bash
+kubectl run untrusted-client --image=busybox -n netpol-test --rm -it -- wget -qO- --timeout=2 http://web-server
+```
+*Expected Output:* `wget: download timed out`
+
+#### Step 4: Create a Label-Based Allow Policy
+Create an allow policy (`allow-labeled.yaml`) that permits inbound TCP traffic on port `80` to any pod labeled `app: web-server`, but **only if** the sender pod is labeled `access: "true"`:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-web-access
+  namespace: netpol-test
+spec:
+  podSelector:
+    matchLabels:
+      app: web-server # Target pod to secure
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          access: "true" # Allow traffic only from pods with this label
+    ports:
+    - protocol: TCP
+      port: 80
+```
+Apply the allow policy:
+```bash
+kubectl apply -f allow-labeled.yaml
+```
+
+#### Step 5: Verify Allowed Traffic (Positive Case)
+Launch a client pod that contains the matching `access=true` label, and query the web server:
+```bash
+kubectl run trusted-client --image=busybox --labels="access=true" -n netpol-test --rm -it -- wget -qO- --timeout=2 http://web-server
+```
+*Expected Output:* The standard HTML source code of the Nginx welcome page, proving the label-based policy successfully permitted the connection.
 
 ---
 

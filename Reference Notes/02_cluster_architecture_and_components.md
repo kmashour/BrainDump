@@ -186,6 +186,37 @@ Running a single control plane node creates a Single Point of Failure (SPOF). HA
 * **Stateful Logic:** Running multiple active schedulers/controllers simultaneously would cause conflicts (e.g., scheduling the same pod to different nodes).
 * **HA Mechanism:** Uses **Leader Election** based on `Lease` objects. Only one instance holds the lease and acts as the "Active Leader". The others stand by as "Passive Backups", watching the lease and waiting to take over if the leader fails to renew it.
 
+### D. Stacked HA Control Plane Bootstrapping with kubeadm
+In a **Stacked Control Plane** topology, etcd members are co-located on the control plane nodes (i.e. every control plane node runs a local `etcd` instance and `kube-apiserver` instance). 
+
+#### 1. Pre-requisite: External Load Balancer
+A highly available setup requires a stable endpoint (usually a TCP Load Balancer) in front of all control plane nodes:
+1. Configure the load balancer to forward TCP traffic on port `6443` to the backend control plane nodes' IP addresses on port `6443`.
+2. Configure a TCP health check on port `6443` to route traffic only to healthy `kube-apiserver` instances.
+
+#### 2. Bootstrapping the First Control Plane Node
+Initialize the first control plane node by specifying the load balancer IP and port using the `--control-plane-endpoint` flag, and upload the generated certificates to the cluster using `--upload-certs`:
+```bash
+sudo kubeadm init \
+  --control-plane-endpoint "LOAD_BALANCER_IP:6443" \
+  --upload-certs \
+  --pod-network-cidr=10.244.0.0/16
+```
+* **`--control-plane-endpoint`**: Configures the cluster so that all nodes (including workers and subsequent control plane nodes) point to the load balancer as the API Server endpoint rather than a single master node IP.
+* **`--upload-certs`**: Automatically encrypts and uploads the control plane certificates and keys (e.g. CA, etcd CA, service account keys) to a temporary Secret in the cluster (`kubeadm-certs` in the `kube-system` namespace). This Secret is decrypted by subsequent control plane nodes when they join, allowing them to participate in the HA setup.
+
+#### 3. Joining Additional Control Plane Nodes
+The initialization output will provide a dedicated join command for other control plane nodes containing a certificate key:
+```bash
+sudo kubeadm join LOAD_BALANCER_IP:6443 \
+  --token <token> \
+  --discovery-token-ca-cert-hash sha256:<hash> \
+  --control-plane \
+  --certificate-key <key>
+```
+* **`--control-plane`**: Tells `kubeadm` to join this node as an additional control plane member.
+* **`--certificate-key`**: The decryption key needed to download and local-extract the uploaded certificates.
+
 ---
 
 ## 4. Cloud Controller Manager (CCM)

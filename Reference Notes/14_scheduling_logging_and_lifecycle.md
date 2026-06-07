@@ -411,7 +411,7 @@ kubectl get pod database-pod -o wide
 ```
 
 ##### 🔴 Failure Scenario: Unmatched Selectors
-If you specify a selector that matches no nodes in the cluster (e.g. `storage-type: nvme` when no nodes have this label):
+If you specify a selector that **matches****** no nodes in the cluster (e.g. `storage-type: nvme` when no nodes have this label):
 1. The scheduler filters out all nodes.
 2. The Pod remains in the **`Pending`** state.
 3. Inspecting the events will show a `FailedScheduling` warning:
@@ -419,7 +419,7 @@ If you specify a selector that matches no nodes in the cluster (e.g. `storage-ty
    kubectl describe pod database-pod
    
    # Event Output:
-   # Warning  FailedScheduling  12s  default-scheduler  0/3 nodes are available: 3 node(s) didn't match Pod's node selector.
+   # Warning  FailedScheduling  12s  default-scheduler  0/3 nodes are available: 3      node(s) didn't match Pod's node selector.
    ```
 
 ---

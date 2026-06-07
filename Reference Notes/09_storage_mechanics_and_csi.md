@@ -477,6 +477,49 @@ volumeBindingMode: WaitForFirstConsumer
 
 ---
 
+### D. Rancher Local Path Provisioner Setup (Dynamic hostPath Storage)
+In local lab environments (e.g., bare-metal `kubeadm` setups or virtualized nodes), there is no cloud provider to dynamically supply backing block volumes. We can deploy the **Rancher Local Path Provisioner** to simulate dynamic provisioning on bare-metal by dynamically creating local `hostPath` directories on the node disks.
+
+#### 1. Installation Command
+Apply the Kubernetes manifests from Rancher's official repository:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+```
+
+#### 2. Verification
+Check if the local-path driver controller is running:
+```bash
+kubectl get pods -n local-path-storage
+```
+Check that the `local-path` StorageClass is registered and set up:
+```bash
+kubectl get sc
+```
+*Expected Output:*
+```plaintext
+NAME          PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+local-path    rancher.io/local-path   Delete          WaitForFirstConsumer   false                  1m
+```
+
+#### 3. Complete Dynamic PVC Manifest
+Developers can request storage from this local pool by referencing `local-path` in their `storageClassName`:
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-path-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 1Gi
+```
+*(Because the storage class uses `WaitForFirstConsumer`, the PVC will remain `Pending` until a Pod mounts it, at which point the provisioner creates a directory on the target worker node and binds the PV).*
+
+---
+
 ## 6. CLI Command and Troubleshooting Cheat Sheet
 
 ### A. General Volume Operations

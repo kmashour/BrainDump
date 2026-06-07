@@ -30,32 +30,65 @@ Kubernetes is built to react to failures at different structural levels. Failure
 
 ## 2. Automated Health Checks: Probes
 
-Probes are health checks executed periodically by the local `kubelet` on a container.
+Probes are health checks executed periodically by the local `kubelet` to monitor container health and manage traffic flow.
 
 ```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe-demo-pod
 spec:
   containers:
-  - name: app
-    image: nginx
-    livenessProbe:
+  - name: app-container
+    image: nginx:1.25.0
+    ports:
+    - containerPort: 80
+      name: http-port
+    - containerPort: 3306
+      name: db-port
+    
+    # 1. Readiness Probe (HTTP GET)
+    readinessProbe:
       httpGet:
-        path: /healthz
-        port: 8080
-      initialDelaySeconds: 3
-      periodSeconds: 5
+        path: /
+        port: http-port
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      timeoutSeconds: 2
+      successThreshold: 1
+      failureThreshold: 3
+      
+    # 2. Liveness Probe (TCP Socket)
+    livenessProbe:
+      tcpSocket:
+        port: db-port
+      initialDelaySeconds: 15
+      periodSeconds: 20
+      timeoutSeconds: 5
+      successThreshold: 1
+      failureThreshold: 3
 ```
 
-### A. Liveness Probe
-* **Purpose:** Detects if the application is deadlocked or frozen.
-* **Action on Failure:** The `kubelet` terminates the container and triggers a container restart (according to `restartPolicy`).
+### A. Mechanical Breakdown: Configuration Fields
+* **`readinessProbe`**: Declares a check that determines if a container is ready to receive network traffic from Services.
+* **`livenessProbe`**: Declares a check that determines if a container is alive. If this fails, the kubelet kills the container and triggers its restart sequence.
+* **`httpGet` / `tcpSocket`**: Specifies the mechanism of the probe:
+  * **`httpGet`**: Performs an HTTP GET request on the specified path and port. A status code $\ge 200$ and $< 400$ indicates success.
+  * **`tcpSocket`**: Attempts to establish a TCP handshake on the specified port. Success is achieved if the connection opens.
+* **`path: /`**: The path to fetch for HTTP probes.
+* **`port: http-port`**: The port to probe (can be a port number e.g. `80` or a named port declared in `ports`).
+* **`initialDelaySeconds`**: The number of seconds the kubelet waits after a container has started before running the first probe. Prevents early boot failures.
+* **`periodSeconds`**: How frequently (in seconds) the kubelet performs the check.
+* **`timeoutSeconds`**: The maximum amount of time (in seconds) the probe is allowed to take before being flagged as a timeout failure.
+* **`successThreshold`**: The consecutive number of successful checks required after a failure to transition back to a healthy state. (Must be `1` for liveness probes).
+* **`failureThreshold`**: The consecutive number of failures required to transition the container's status:
+  * For **Readiness**: The container is marked unready and its IP is evicted from Service Endpoint lists.
+  * For **Liveness**: The container is terminated and restarted.
 
-### B. Readiness Probe
-* **Purpose:** Detects if the container is ready to accept network traffic (e.g., has finished loading database schemas).
-* **Action on Failure:** The Pod is kept running, but its IP address is removed from all matching Service Endpoints, isolating the Pod from client traffic until the probe succeeds.
-
-### C. Startup Probe
-* **Purpose:** Protects slow-starting legacy applications.
-* **Action on Failure:** Disables liveness and readiness checks until the startup probe succeeds (up to a configured threshold). If the startup probe fails to succeed within the threshold, the container is killed and restarted.
+### B. Startup Probe
+* **Purpose:** Protects slow-starting, complex, or legacy applications that require long initialization times.
+* **Mechanism:** When a startup probe is configured, all liveness and readiness checks are disabled until the startup probe successfully passes.
+* **Action on Failure:** If the startup probe does not succeed within its configured `failureThreshold` $\times$ `periodSeconds` timeline, the kubelet kills the container and initiates a standard restart sequence.
 
 ---
 

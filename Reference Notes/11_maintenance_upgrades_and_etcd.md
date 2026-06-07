@@ -268,24 +268,29 @@ ETCDCTL_API=3 etcdctl --write-out=table snapshot status /opt/backup/etcd-snapsho
 ---
 
 ### 4.3 Restore Playbook: Stacked ETCD Topology
-In a stacked topology, ETCD runs as a static pod on the control plane node.
+In a stacked topology, ETCD runs as a static pod on the control plane node. The restoration process requires stopping the local agent to prevent database writes and scheduling conflicts during restore.
 
-#### Step 1: Restore the Database to a New Directory
+#### Step 1: Stop the Kubelet Service
+Stop the local kubelet service to halt static pod container lifecycles (this stops the api-server and etcd pods):
 ```bash
-# Restore to a separate path to prevent data corruption in active directory
-ETCDCTL_API=3 etcdctl snapshot restore /opt/backup/etcd-snapshot.db \
-  --data-dir /var/lib/etcd-from-backup
+sudo systemctl stop kubelet
 ```
 
-#### Step 2: Assign Ownership
+#### Step 2: Restore the Database Snapshot to a New Directory
+Restore the backup db to `/var/lib/etcd-restored`. Always restore to a new directory to prevent corrupting any existing active data:
 ```bash
-# Static pods run with root privileges on kubeadm clusters, but ownership should be verified
-sudo chown -R root:root /var/lib/etcd-from-backup
+sudo ETCDCTL_API=3 etcdctl snapshot restore /opt/backup/etcd-snapshot.db \
+  --data-dir=/var/lib/etcd-restored
 ```
 
-#### Step 3: Modify the Static Pod Manifest
-Edit `/etc/kubernetes/manifests/etcd.yaml`. Modify the volume host path mapping named `etcd-data` to point to the newly restored directory.
+#### Step 3: Assign Proper Permissions/Ownership
+Ensure the restored directory has root permissions (the user under which the etcd static pod container processes run):
+```bash
+sudo chown -R root:root /var/lib/etcd-restored
+```
 
+#### Step 4: Modify the Static Pod Manifest Volumes
+Edit the static pod manifest `/etc/kubernetes/manifests/etcd.yaml`. Locate the volume named `etcd-data` and change the `hostPath.path` to target `/var/lib/etcd-restored`:
 ```yaml
 # Inside /etc/kubernetes/manifests/etcd.yaml
 spec:
@@ -295,13 +300,19 @@ spec:
       type: DirectoryOrCreate
     name: etcd-certs
   - hostPath:
-      path: /var/lib/etcd-from-backup   # <-- Modify this path from /var/lib/etcd
+      path: /var/lib/etcd-restored   # <-- Update this from /var/lib/etcd
       type: DirectoryOrCreate
     name: etcd-data
 ```
 
-#### Step 4: Verify Restoration
-The kubelet detects modifications to `/etc/kubernetes/manifests/etcd.yaml` and restarts the ETCD pod. Check control plane health:
+#### Step 5: Restart the Kubelet Service
+Start the kubelet service. The kubelet will reload the updated static pod manifests and start the ETCD and API Server pods utilizing the restored data directory:
+```bash
+sudo systemctl start kubelet
+```
+
+#### Step 6: Verify Control Plane Recovery
+Wait a few moments for the static pods to initialize, then verify cluster status:
 ```bash
 kubectl get nodes
 kubectl get pods -n kube-system

@@ -684,10 +684,11 @@ graph TD
 *   **Downtime:** Causes absolute service downtime during the update window, but prevents running two different versions of the code simultaneously (useful for legacy database schemas).
 
 #### `RollingUpdate` Strategy
-*   **Behavior:** Gradually replaces Pods of the old ReplicaSet with Pods of the new ReplicaSet.
-*   **Parameters:**
-    *   `maxSurge`: The maximum number of Pods that can be created above the desired replica count during the update. Can be expressed as an absolute integer (e.g., `2`) or a percentage (e.g., `25%`).
-    *   `maxUnavailable`: The maximum number of Pods that can be offline during the update. Can be an integer or percentage.
+*   **Behavior:** Gradually replaces Pods of the old ReplicaSet with Pods of the new ReplicaSet. This is the default update strategy.
+*   **Parameters & Defaults:**
+    *   `maxSurge`: The maximum number of Pods that can be created above the desired replica count during the update. Can be expressed as an absolute integer (e.g., `2`) or a percentage (e.g., `25%`). **Default: `25%`**.
+    *   `maxUnavailable`: The maximum number of Pods that can be offline during the update. Can be an integer or percentage. **Default: `25%`**.
+    *   **Validation Rule:** Both `maxSurge` and `maxUnavailable` **cannot be `0` simultaneously**. If both are set to `0`, the Deployment creation will fail because the controller would have no way to progress the rollout.
     *   *Calculation Example:* With 4 desired replicas, `maxSurge: 25%` (1 pod) and `maxUnavailable: 25%` (1 pod):
         *   Max total Pods during rollout: $4 + 1 = 5$
         *   Min active/healthy Pods during rollout: $4 - 1 = 3$
@@ -731,9 +732,26 @@ spec:
 
 ### 9.3 Rollout and Revision History Management
 When a Deployment is updated (e.g., changing the container image), a new ReplicaSet is created.
-*   **Rollout Auditing:** You can track the state of the update using `kubectl rollout status`.
-*   **History Retainment:** The Deployment maintains historical ReplicaSets up to the `revisionHistoryLimit`.
-*   **Rollback Mechanism:** If the rollout fails, you can undo it. The deployment controller downscales the new ReplicaSet and upscales the previous ReplicaSet, restoring the prior state.
+*   **Rollout Auditing:** You can track the state of the update using:
+    ```bash
+    kubectl rollout status deployment/web-app-deployment
+    ```
+*   **History Retainment:** The Deployment maintains historical ReplicaSets up to the `revisionHistoryLimit`. To view the list of revisions:
+    ```bash
+    kubectl rollout history deployment/web-app-deployment
+    ```
+*   **Revision Inspection:** View details of a specific historical version:
+    ```bash
+    kubectl rollout history deployment/web-app-deployment --revision=2
+    ```
+*   **Rollback Mechanism (Undo Rollout):** If the rollout fails or contains a bug, undo it. The deployment controller downscales the new ReplicaSet and upscales the previous ReplicaSet, restoring the prior state:
+    ```bash
+    # Revert to the immediate previous revision
+    kubectl rollout undo deployment/web-app-deployment
+    
+    # Revert to a specific historical revision
+    kubectl rollout undo deployment/web-app-deployment --to-revision=1
+    ```
 
 ---
 
@@ -1208,3 +1226,107 @@ chmod +x "Reference Notes/scripts/verify_workloads_poc.sh"
 # 4. Optional: Keep resources for debugging/inspection
 ./"Reference Notes/scripts/verify_workloads_poc.sh" --namespace default --keep
 ```
+
+---
+
+## 14. Application Packaging & Declarative Customization (Helm & Kustomize)
+
+For complex multi-component applications, managing individual raw Kubernetes manifests is inefficient. Administrators use **Helm** and **Kustomize** to streamline deployment configurations.
+
+### 14.1 Helm: The Kubernetes Package Manager
+Helm packages multiple interdependent resources into a single versioned unit called a **Chart**. It template-interpolates parameters using a `values.yaml` file.
+
+#### Core Helm Commands (CKA Run Sheet):
+*   **Add Repository:** Add charts repositories:
+    ```bash
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+    ```
+*   **Update Repository Indices:** Fetch the latest chart indices:
+    ```bash
+    helm repo update
+    ```
+*   **Search for Charts:** Search the repo for specific applications:
+    ```bash
+    helm search repo nginx
+    ```
+*   **Install a Chart (Release):** Deploy a chart to the cluster with custom overrides:
+    ```bash
+    helm install my-release bitnami/nginx --set service.type=NodePort --namespace web-apps
+    ```
+*   **List Releases:** View all installed helm releases:
+    ```bash
+    helm list --all-namespaces
+    ```
+*   **Upgrade a Release:** Apply config changes or update chart version:
+    ```bash
+    helm upgrade my-release bitnami/nginx --set replicaCount=3
+    ```
+*   **Rollback a Release:** Revert to a previous release revision:
+    ```bash
+    helm rollback my-release 1
+    ```
+*   **Uninstall a Release:** Delete all resource objects managed by the release:
+    ```bash
+    helm uninstall my-release
+    ```
+
+---
+
+### 14.2 Kustomize: Template-Free Customization
+Kustomize is a template-free tool built directly into `kubectl` (via `kubectl apply -k <dir>`). It uses a `kustomization.yaml` file to apply overlays and patches on top of a common set of base manifests (allowing dev/staging/prod variance).
+
+#### Crucial Alignment: Deprecated `bases` vs. `resources`
+*   **Deprecated Syntax:** Historically, Kustomize configurations referenced bases using:
+    ```yaml
+    # DEPRECATED AND CAN CAUSE WARNINGS/FAILURES
+    bases:
+      - ../../base
+    ```
+*   **Recommended Syntax:** Modern versions of Kustomize (and `kubectl` integration) require the `resources` block:
+    ```yaml
+    # MODERN STANDARD
+    resources:
+      - ../../base
+    ```
+
+#### Fixing Deprecated Fields Automatically
+If you encounter legacy manifests using `bases`, you can resolve them automatically by running the `edit fix` command:
+```bash
+# Fix deprecated fields inside kustomization.yaml in the current directory
+kustomize edit fix
+```
+*(If the standalone `kustomize` binary is not installed, manually replace the `bases:` key with `resources:` in `kustomization.yaml` using a text editor like `nano` or `vi`).*
+
+#### Ingress-to-Overlay Application Walkthrough
+1. **Base Configuration (`my-app/base/`)**:
+   Create a standard `kustomization.yaml` referencing the core deployment:
+   ```yaml
+   apiVersion: kustomize.config.k8s.io/v1beta1
+   kind: Kustomization
+   resources:
+     - deployment.yaml
+   ```
+2. **Production Overlay (`my-app/overlays/production/`)**:
+   Create a patch `patch.yaml` to scale replicas to 3:
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: my-app
+   spec:
+     replicas: 3
+   ```
+   Reference the base using the modern `resources` block and apply the patch in the overlay `kustomization.yaml`:
+   ```yaml
+   apiVersion: kustomize.config.k8s.io/v1beta1
+   kind: Kustomization
+   resources:
+     - ../../base
+   patches:
+     - path: patch.yaml
+   ```
+3. **Deployment Command:**
+   Deploy the merged configuration to the API server:
+   ```bash
+   kubectl apply -k my-app/overlays/production/
+   ```
