@@ -151,6 +151,40 @@ selector:
     - {key: environment, operator: NotIn, values: [dev]}
 ```
 
+#### 💡 CKA Battle-Test FAQ: Selector Syntax & Behaviors
+
+* **Q: Do we write = , == ,  or  != in YAML vs CLI?**
+  * **In YAML Manifests:** Usually **no**. You express selectors as key-value pairs (e.g. `app: web`) or structured match expressions, and Kubernetes implicitly handles the equality checks.
+  * **In CLI Commands (kubectl):** **Yes, you do write them.** When using the `-l` or `--selector` flag in kubectl commands, you must use these operators:
+    ```bash
+    # Equal checks
+    kubectl get pods -l env=production
+    # Not-equal checks
+    kubectl get pods -l tier!=frontend
+    ```
+* **Q: What is the difference between = and == ?**
+  * **None.** In Kubernetes CLI commands, both = and  ==  mean exact equality.
+    ```bash
+    kubectl get pods -l env=production
+    # is exactly the same as:
+    kubectl get pods -l env==production
+    ```
+* **Q: Do multiple labels in a selector map act as AND or OR?**
+  * **AND logic.** If you list multiple labels in a selector map (or comma-separated in the CLI), they must **all** match for the Pod to be selected.
+    ```yaml
+    selector:
+      app: web
+      env: prod # Both 'app=web' AND 'env=prod' labels must be present
+    ```
+* **Q: What is a Set-Based Selector and why use it over Equality-Based?**
+  * Equality-based selectors can only match a single exact value. If you want a resource (like a Service or Deployment) to select Pods matching a list of multiple values (e.g., matching env `production` OR `staging`, but not `development`), equality-based selectors cannot do this.
+  * Set-based selectors allow SQL-like `IN` or `NOT IN` queries:
+    ```yaml
+    selector:
+      matchExpressions:
+        - {key: env, operator: In, values: [production, staging]}
+    ```
+
 ---
 
 ### C. Taints and Tolerations (Repelling Workloads)

@@ -119,6 +119,7 @@ This directory houses the comprehensive study modules filled with technical dept
 
 * **Inflow Directory:** Put any raw notes, lecture transcripts, and documentation dumps into the [inflow/](inflow/) folder.
 * **Update Backlog:** Follow all changes and updates in the [backlog.md](backlog.md) file.
+* **AI & RAG Assistant Integration:** This repository functions as an active Retrieval-Augmented Generation (RAG) knowledge base. The coding assistant uses the structured notes, checklists, and configurations directly from this vault to ground its answers, ensuring accurate and hallucination-free Kubernetes guidance matching the exact versions and topologies defined in the vault.
 
 ---
 
