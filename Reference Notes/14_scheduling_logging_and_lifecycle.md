@@ -245,6 +245,9 @@ There are three taint effects that govern how the scheduler treats Pods that do 
        tolerationSeconds: 300 # Stays for 5 minutes after node becomes unreachable, then evicts
      ```
 
+> [!WARNING]
+> **Toleration Seconds Restriction:** The `tolerationSeconds` parameter is **strictly ignored** for `NoSchedule` and `PreferNoSchedule` effects. Because these effects only control scheduling placement and do not trigger evictions, setting a time delay has no functional purpose. The API server will accept the field, but the scheduler will completely ignore it.
+
 #### 3. Pod Tolerations
 Tolerations are defined in the Pod's `spec.tolerations` field. To allow a Pod to be scheduled on a tainted node, the toleration must match the taint's key, value, and effect.
 * **Operator `Equal`:** Requires both the key and value to match.

@@ -63,3 +63,13 @@ To prevent **distributed concurrency conflicts** under Optimistic Concurrency Co
 2. **Additive Evaluation**:
    * If a node is tainted with both `NoSchedule` and `NoExecute`, the Pod must tolerate **both** to be scheduled on it.
    * If the Pod is already running when the node goes offline, the `NoSchedule` taint does not affect it (since `NoSchedule` only blocks new scheduling). The pod only needs to match the `NoExecute` taint to remain running during the `tolerationSeconds` window.
+
+---
+
+## Q5: Does specifying `tolerationSeconds` for a `NoSchedule` taint effect have any effect?
+
+### Answer:
+No. **`tolerationSeconds` has absolutely no effect when used with the `NoSchedule` (or `PreferNoSchedule`) taint effects.**
+
+* **`NoExecute`**: Eviction trigger. It evicts running pods. It requires `tolerationSeconds` to define the countdown timer before eviction occurs.
+* **`NoSchedule`**: Scheduling filter. It only blocks *new* pods from being scheduled on the node. It is a binary evaluation completed by the scheduler during placement and does not affect already running pods. Consequently, a time delay (`tolerationSeconds`) is ignored.
