@@ -67,4 +67,4 @@ GraphQL is an API query language and runtime developed by Facebook, structured a
 | **Caching** | Built-in HTTP level caching | Complex client-side caching (e.g., Apollo Client) |
 | **Payload Size** | Larger (contains unused database fields) | Minimal (contains only requested fields) |
 
-*Read more in [[Reference Notes/17_system_design_fundamentals.md#4. API Design & Communication Protocols]]*
+*Read more in [[Reference Notes/21_api_protocols_and_grpc.md#1-core-api-paradigms]]*

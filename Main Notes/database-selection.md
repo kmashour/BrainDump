@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[flat-files]]"
 reference_guides:
-  - "[[Reference Notes/17_system_design_fundamentals.md]]"
+  - "[[Reference Notes/19_database_architectures_and_sharding.md]]"
 tags:
   - system-design/database
   - status/completed

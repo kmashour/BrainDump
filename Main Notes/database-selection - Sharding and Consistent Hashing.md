@@ -44,4 +44,4 @@ Traditional database routing using modular arithmetic (`hash(key) % N`) breaks d
 3. **Key Assignment:** A key is hashed, placed on the ring, and routed clockwise to the first physical node encountered.
 4. **Virtual Nodes (vnodes):** To prevent uneven key distribution, physical servers are mapped to multiple virtual locations (vnodes) scattered across the ring. This ensures balanced distribution and scales load dynamically according to server capacities.
 
-*Read more in [System Design Fundamentals](../Reference%20Notes/17_system_design_fundamentals.md#e-consistent-hashing-mechanics)*
+*Read more in [Database & Sharding](../Reference%20Notes/19_database_architectures_and_sharding.md#3-consistent-hashing-mechanics)*

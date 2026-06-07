@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[unprotected-api]]"
 reference_guides:
-  - "[[Reference Notes/17_system_design_fundamentals.md]]"
+  - "[[Reference Notes/22_access_control_and_api_security.md]]"
 tags:
   - system-design/security
   - status/completed

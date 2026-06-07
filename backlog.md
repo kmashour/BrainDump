@@ -18,9 +18,17 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ### Refactored / Upgraded
 - **Index Files & MOCs (`0-Index.md`):** Renamed all root directory map index files from `Index.md` to `0-Index.md` (across `Main Notes/`, `Reference Notes/`, `Digital Garden/`, and `Projects/CKA/`) to ensure they sort at the absolute top of their folders. Replaced all breadcrumbs and internal links referencing `[[Index]]` with `[[0-Index]]` across all 100+ files.
 - **Logical Map of Content Structure:** Reorganized the indexes logically by systems domains (e.g. Cluster Administration, Core API Engine, Node & Container Runtimes, Workloads & Placements, Storage & Networking, Distributed System Design, GitOps Automation, and Tooling) instead of listing modules numerically.
-- **Reference Note (`Reference Notes/17_system_design_fundamentals.md`):** Completely decoupled the inline configuration code blocks and commands from Section 6, replacing them with conceptual descriptions and direct wiki-links to the consolidated project note. Furthermore, expanded the conceptual database scaling, consistent hashing, caching topologies (Cache-Aside, Write-Through, Write-Behind), CDN Anycast routing, and gRPC/HTTP/2 multiplexing systems design principles with high-fidelity, standard-compliant Mermaid diagrams.
-- **Conceptual Main Notes (`Main Notes/`):** Restored and validated the landing notes and deeper-dive notes for `load-balancing`, `database-selection`, `api-protocols`, and `api-security`, ensuring complete alignment with the new system templates.
-- **Link Auditing:** Validated the entire vault with `review_vault.py` achieving 100% link integrity across all modules.
+- **Reference Notes Splitting:** Split the consolidated `Reference Notes/17_system_design_fundamentals.md` into six dedicated, topic-specific Reference Notes:
+  - `Reference Notes/17_scaling_and_single_server.md`
+  - `Reference Notes/18_load_balancing_topologies.md`
+  - `Reference Notes/19_database_architectures_and_sharding.md`
+  - `Reference Notes/20_caching_and_content_delivery_networks.md`
+  - `Reference Notes/21_api_protocols_and_grpc.md` (created)
+  - `Reference Notes/22_access_control_and_api_security.md` (created)
+- **Reference File Deletion:** Removed the old consolidated `Reference Notes/17_system_design_fundamentals.md` file.
+- **MOC & Index Update:** Updated `Reference Notes/0-Index - Systems Design.md` to reference the 6 split modules.
+- **Conceptual Main Notes (`Main Notes/`):** Restored, updated, and validated the landing notes and deeper-dive notes for `load-balancing`, `database-selection`, `api-protocols`, and `api-security`, redirecting their YAML frontmatter `reference_guides` and footer wiki-links to the new split files.
+- **Link Auditing:** Validated the entire vault with `review_vault.py` achieving 100% link integrity and 100% inflow coverage across all modules.
 
 ### Ingested Inflow Sources
 The following files and assets have been processed and integrated:

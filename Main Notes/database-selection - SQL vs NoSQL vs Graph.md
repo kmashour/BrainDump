@@ -68,4 +68,4 @@ Understanding database architectures is critical for matching requirements to pe
 | **Columnar** | Denormalized | No support | High Horizontal (Peer-to-peer ring) | Eventual Consistency |
 | **Graph** | Relational / Connective | Dynamic traversal (Index-free adjacency) | Cluster replication | ACID for graph modifications |
 
-*Read more in [[Reference Notes/17_system_design_fundamentals.md#3. Database Architectures & Selection Framework]]*
+*Read more in [[Reference Notes/19_database_architectures_and_sharding.md#1. Database Paradigms]]*

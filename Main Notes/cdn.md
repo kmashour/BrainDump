@@ -11,7 +11,7 @@ related_concepts:
   - "[[load-balancing]]"
 against: []
 reference_guides:
-  - "[[Reference Notes/17_system_design_fundamentals.md]]"
+  - "[[Reference Notes/20_caching_and_content_delivery_networks.md]]"
 tags:
   - system-design/cdn
   - status/completed

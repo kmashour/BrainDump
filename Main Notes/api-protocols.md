@@ -10,7 +10,7 @@ related_concepts:
 against:
   - "[[raw-sockets]]"
 reference_guides:
-  - "[[Reference Notes/17_system_design_fundamentals.md]]"
+  - "[[Reference Notes/21_api_protocols_and_grpc.md]]"
 tags:
   - system-design/api
   - status/completed

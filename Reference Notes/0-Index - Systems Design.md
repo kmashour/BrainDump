@@ -17,14 +17,18 @@ tags:
 
 This index contains our system design study modules focused on high-level architecture scaling, caching, network communication protocols, and security guards.
 
-- 🖥️ **[System Design Fundamentals](17_system_design_fundamentals.md)** (Module 17)
-  *   **Scaling:** Single-server request loops, vertical vs. horizontal scaling, and master-replica consistency models.
-  *   **Load Balancing:** Routing algorithms (Round Robin, Least Connections, IP Hashing), active health pings, and active-standby redundancy pairs.
-  *   **Database Scaling:** Sharding partitioning keys, hot spot risks, and Consistent Hashing rings (including virtual nodes).
-  *   **Caching & CDNs:** Caching write policies (Cache-Aside, Write-Through, Write-Behind), evictions (LRU, LFU, FIFO), failure outages (Cache Avalanche, Cache stampedes, Cache penetration), CDN Pull/Push styles, and Anycast BGP routing.
-  *   **API Protocols:** RESTful CRUD, GraphQL single-endpoint client schemas, gRPC HTTP/2 stream multiplexing, and binary Protobuf serialization.
-  *   **Transport Layers:** Connection-oriented TCP (three-way handshake) vs. connectionless UDP.
-  *   **AAA Security:** Stateful session authentication, stateless JWT access/refresh token validation, RBAC/ABAC models, OAuth 2.0 authorization, OpenID Connect (OIDC) authentication, and edge shields (WAF, CORS, rate limiters, SQL injection parameterization).
+- 🖥️ **[Module 17: Scaling & Single Server Setup](17_scaling_and_single_server.md)**
+  *   Single-server request loops, DNS resolution, and vertical vs. horizontal scaling.
+- 🚦 **[Module 18: Load Balancing Topologies & Algorithms](18_load_balancing_topologies.md)**
+  *   Layer 4 vs. Layer 7 routing, LB algorithms (Round Robin, Least Conn, IP Hash), health checks, and SPOF redundancy.
+- 🗄️ **[Module 19: Database Architectures & Sharding](19_database_architectures_and_sharding.md)**
+  *   SQL vs. NoSQL vs. Graph databases, ACID vs. BASE, replicas, sharding partition keys, and Consistent Hashing rings.
+- 💾 **[Module 20: Caching & Content Delivery Networks (CDNs)](20_caching_and_content_delivery_networks.md)**
+  *   Write policies (Cache-Aside, Write-Through, Write-Behind), eviction algorithms, caching failures, CDNs, and Anycast BGP routing.
+- 🔌 **[Module 21: API Protocols & gRPC](21_api_protocols_and_grpc.md)**
+  *   RESTful HTTP, GraphQL single-endpoint client schemas, transport layer protocols (TCP vs. UDP), and gRPC multiplexing/Protobuf over HTTP/2.
+- 🛡️ **[Module 22: Access Control & API Security](22_access_control_and_api_security.md)**
+  *   AAA foundation, session-based vs. stateless JWT auth, RBAC/ABAC, OAuth 2.0/OIDC, and edge security shields (Rate Limiting, WAF, CORS, SQLi protection).
 
 ---
 

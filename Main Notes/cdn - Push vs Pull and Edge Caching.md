@@ -46,4 +46,4 @@ To ensure requests reach the geographically nearest edge proxy, CDNs utilize **A
 - **Mechanism:** Multiple physical edge servers share the exact same IP address.
 - **Routing:** BGP (Border Gateway Protocol) routing selects the shortest path through the internet infrastructure to direct the client's packet to the closest edge server. This distributes the load naturally across points of presence (PoPs).
 
-*Read more in [System Design Fundamentals](../Reference%20Notes/17_system_design_fundamentals.md#g-content-delivery-networks-cdns)*
+*Read more in [Caching & CDNs](../Reference%20Notes/20_caching_and_content_delivery_networks.md#3-content-delivery-networks-cdns)*
