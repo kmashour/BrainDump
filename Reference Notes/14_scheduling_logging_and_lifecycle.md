@@ -246,6 +246,107 @@ Tolerations are defined in the Pod's `spec.tolerations` field. To allow a Pod to
   - operator: "Exists"
   ```
 
+#### 4. Real-World Implementation Scenarios & Examples
+
+##### Scenario 1: Dedicating GPU Nodes (NoSchedule)
+* **Goal:** Dedicate GPU-enabled nodes exclusively to machine learning workloads, preventing regular workloads from running on expensive GPU resources.
+* **Taint Command:**
+  ```bash
+  kubectl taint nodes worker-gpu hardware=gpu:NoSchedule
+  ```
+* **Regular Pod Manifest (No Toleration - Will fail to schedule on `worker-gpu`):**
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: regular-app
+  spec:
+    containers:
+    - name: nginx
+      image: nginx:alpine
+  ```
+* **ML Workload Manifest (With Toleration - Can run on `worker-gpu`):**
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: ml-app
+  spec:
+    containers:
+    - name: tensor-model
+      image: tensorflow/tensorflow:latest-gpu
+    tolerations:
+    - key: "hardware"
+      operator: "Equal"
+      value: "gpu"
+      effect: "NoSchedule"
+  ```
+
+##### Scenario 2: Evacuating / Draining Nodes for Maintenance (NoExecute with Grace Period)
+* **Goal:** Evacuate a node for emergency maintenance. Any pods running on it that do not have a toleration are immediately terminated and rescheduled. Critical system logging pods should stay for exactly 10 minutes to grab remaining logs before being evicted.
+* **Taint Command:**
+  ```bash
+  kubectl taint nodes worker-1 maintenance=true:NoExecute
+  ```
+* **Critical Logging Pod Manifest (Allows 10-minute grace period):**
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: log-collector
+  spec:
+    containers:
+    - name: fluentd
+      image: fluentd:latest
+    tolerations:
+    - key: "maintenance"
+      operator: "Equal"
+      value: "true"
+      effect: "NoExecute"
+      tolerationSeconds: 600 # Pod remains on the node for 10 minutes before eviction
+  ```
+
+##### Scenario 3: Preferential Co-location (PreferNoSchedule)
+* **Goal:** We have a node that has high resource consumption (overloaded node). We want to discourage the scheduler from placing pods on this node, but we allow it as a fallback if the cluster runs out of capacity.
+* **Taint Command:**
+  ```bash
+  kubectl taint nodes worker-3 resource-state=high-load:PreferNoSchedule
+  ```
+* **Standard Pod:** No toleration is strictly required because it is a `PreferNoSchedule` taint. The scheduler ranks `worker-3` lower than other nodes, but it will place pods there if no other nodes are available.
+* **Critical Pod (Ignores high-load warning to schedule normally on any node, including `worker-3`):**
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: critical-api
+  spec:
+    containers:
+    - name: api-server
+      image: my-api:latest
+    tolerations:
+    - key: "resource-state"
+      operator: "Equal"
+      value: "high-load"
+      effect: "PreferNoSchedule"
+  ```
+
+##### Scenario 4: Diagnostic / Administrative Agent (Wildcard Toleration)
+* **Goal:** Run a diagnostic container (e.g., node exporter, custom monitoring script) on *every* single node in the cluster, including the control plane node and dedicated database/GPU nodes.
+* **Wildcard Toleration Manifest:**
+  ```yaml
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: cluster-diagnostics
+  spec:
+    containers:
+    - name: node-exporter
+      image: prom/node-exporter:latest
+    tolerations:
+    # This wildcard matches any taint key, value, or effect
+    - operator: "Exists"
+  ```
+
 > [!NOTE]
 > **Taints and Tolerations do not guarantee placement.**
 > They only repel non-tolerating pods. A tolerating pod is *allowed* to run on the tainted node but is not *forced* to do so; it might still be scheduled on any other untainted node.
