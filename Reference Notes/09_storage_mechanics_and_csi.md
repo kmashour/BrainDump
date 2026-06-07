@@ -4,6 +4,29 @@ This module covers the core concepts of storage management in Kubernetes. It det
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for Kubernetes storage, think of the topics as progressing from the API interface layer to node-level local storage, decoupled cluster storage, automated provisioning, and workload mounts:
+
+```mermaid
+graph TD
+    A["1. Storage Interface (CSI drivers & sidecar helpers)"] --> B["2. Node-Bound Storage (Local hostPath & emptyDir ephemeral volumes)"]
+    B --> C["3. Persistent Storage Abstractions (Static PVs & PVC request binding)"]
+    C --> D["4. Automated Provisioning (Dynamic volumes via StorageClasses)"]
+    D --> E["5. Workload Mount Bindings (Pod specifications, volumeMounts & subPaths)"]
+```
+
+1. **Step 1: Storage Interface (Section 1):** We start with the infrastructure framework. We analyze in-tree vs. out-of-tree drivers, understand the role of CSI controller/node sidecars, and trace Kubelet-to-CSI gRPC communication.
+2. **Step 2: Node-Bound Storage (Section 2):** We start with basic local storage. We study `emptyDir` (scratch space bound to the pod's life) and `hostPath` (accessing host filesystems) to understand node-bound volume mounts.
+3. **Step 3: Persistent Storage Abstractions (Section 3):** To create cluster-wide, persistent storage independent of node lifecycles, we separate concerns: administrators provision physical PersistentVolumes (PV), and developers claim them via PersistentVolumeClaims (PVC).
+4. **Step 4: Automated Provisioning (Sections 5 & 5.3):** To eliminate manual administration, we automate PV creation. We write `StorageClasses` that listen for PVCs and invoke CSI provisioners (such as Rancher's local-path driver) to construct volumes on the fly.
+5. **Step 5: Workload Mount Bindings (Section 4):** Finally, we attach the storage to container processes. We reference the PVC in the Pod spec, define `volumeMounts` within container definitions, and leverage `subPath` parameters to isolate directories on a shared volume.
+
+By following this flow, you progress from **Storage Architecture (CSI) $\rightarrow$ Host Volumes (emptyDir/hostPath) $\rightarrow$ State Abstraction (PV/PVC) $\rightarrow$ Automatic Scaling (StorageClasses) $\rightarrow$ Application Integration (Pod Mounts)**.
+
+---
+
+
 ## 1. Container Storage Interface (CSI) Architecture
 
 ### A. The Evolution of Kubernetes Storage (In-Tree vs. Out-of-Tree)

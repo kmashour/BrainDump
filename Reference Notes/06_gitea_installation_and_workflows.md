@@ -4,6 +4,29 @@ This reference note provides the system architecture, configuration standards, a
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for this system engineering module, think of the topics as progressing from macro architectural planning to local host configuration, application setup, and operational runbooks:
+
+```mermaid
+graph TD
+    A["1. Topology & Design (System Specs & Architectural Layout)"] --> B["2. Host-Level Foundation (User provisioning, Hardening, LVM Storage)"]
+    B --> C["3. Server Installation & Access (Gitea binary, systemd, Apache Proxy, SSH Multiplexing)"]
+    C --> D["4. Automation & Workflows (CI/CD act_runner, deployment pipelines, Git hooks)"]
+    D --> E["5. Disaster Recovery & Operations (Backup playbooks, restoring system state)"]
+```
+
+1. **Step 1: Topology & Design (Section 1):** We start with the high-level plan. We examine the hardware specifications, network parameters, and Active-Passive HA topology for hosting Gitea in an air-gapped RHEL 8 environment.
+2. **Step 2: Host-Level Foundation (Sections 2 & 3):** We construct the operating system environment. We create the dedicated unprivileged `git` user, harden file permissions, and build logical volume management (LVM) partitions to host repository blocks.
+3. **Step 3: Server Installation & Access (Sections 4 & 5):** We bring the service online. We deploy the Gitea binary, register it as a systemd daemon, route web traffic through an Apache reverse proxy, and implement port-sharing SSH multiplexing.
+4. **Step 4: Automation & Workflows (Sections 6 & 7):** With the platform accessible, we configure development pipelines. We set up native host-level `act_runner` agents, implement air-gapped deployment workflows, and write server-side Git hooks to block invalid commits.
+5. **Step 5: Disaster Recovery & Operations (Section 8):** Finally, we configure backup schedules. We write automated scripts to dump MySQL metadata and Git repositories, and document recovery steps to restore state on a backup VM.
+
+By following this flow, you progress from **Infrastructure Architecture (Topology) $\rightarrow$ OS Prerequisites (Users & LVM) $\rightarrow$ Application Deployment (Gitea/Apache) $\rightarrow$ Development Lifecycle (CI/CD & Hooks) $\rightarrow$ Business Continuity (Backup/Restore)**.
+
+---
+
+
 ## 1. System Architecture Overview
 
 The production environment consists of an Active-Passive High-Availability (HA) cluster and a dedicated Testing environment managed via Apache VirtualHosts on different ports.

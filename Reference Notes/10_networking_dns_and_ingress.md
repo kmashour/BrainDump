@@ -4,6 +4,29 @@ This module provides an exhaustive, production-grade reference for Linux network
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for Kubernetes networking, think of the topics as moving from host-level Linux networking up to cluster-wide software overlays, traffic proxying, name resolution, and external access:
+
+```mermaid
+graph TD
+    A["1. Linux Network Primitives (Namespaces, veth pairs, routing tables & NAT)"] --> B["2. Container Network Interface - CNI (Overlay networks, Flannel vxlan vs. Calico BGP)"]
+    B --> C["3. Internal Cluster Services (Services, iptables vs. IPVS & Kube-Proxy)"]
+    C --> D["4. Name Resolution & Discovery (CoreDNS & cluster-local DNS domains)"]
+    D --> E["5. Ingress & External Traffic Routing (Ingress controllers, paths/hosts & Gateway API)"]
+```
+
+1. **Step 1: Linux Network Primitives (Section 1):** We start at the operating system kernel. We study network namespaces, build virtual ethernet (veth) pairs, link bridge interfaces, write routing tables, and establish NAT rules to connect isolated processes.
+2. **Step 2: Container Network Interface - CNI (Sections 2 & 3):** We extend networking across host nodes. We study the CNI specification, compare overlay encapsulation (Flannel's vxlan) with direct routing (Calico's BGP), and map how pods receive unique IP addresses.
+3. **Step 3: Internal Cluster Services (Section 4):** To handle ephemeral pod IPs, we route traffic through stable abstractions. We configure Kubernetes Services (ClusterIP, NodePort, LoadBalancer), compare `kube-proxy` translation modes (iptables vs. IPVS), and manage the pod termination lifecycle.
+4. **Step 4: Name Resolution & Discovery (Section 5):** Rather than using hardcoded IPs, we discover workloads dynamically by name. We study cluster-local DNS schemas and configure the CoreDNS ConfigMap Corefile to resolve and forward private DNS queries.
+5. **Step 5: Ingress & External Traffic Routing (Section 6):** Finally, we route internet traffic into the cluster. We implement Ingress controllers (host-based vs. path-based routing), manage TLS termination, and leverage the next-generation Gateway API.
+
+By following this flow, you progress from **OS Host Networking (Linux) $\rightarrow$ Cluster Network Fabrics (CNI) $\rightarrow$ East-West Traffic Routing (Services) $\rightarrow$ Workload Discovery (DNS) $\rightarrow$ North-South Traffic Entry (Ingress/Gateway API)**.
+
+---
+
+
 ## 1. Linux Networking Prerequisites (OS & Kernel Level)
 
 Before analyzing Kubernetes-specific network mechanics, the underlying Linux kernel networking subsystem must be understood. Kubernetes constructs its network overlays, routing, and services directly on top of standard Linux kernel tools.

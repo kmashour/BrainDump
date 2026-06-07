@@ -4,6 +4,29 @@ This module covers the core diagnostics and troubleshooting workflows required f
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for Kubernetes troubleshooting, think of the topics as a top-down diagnostic pathway, starting from the application layer and progressing through the host node, the control plane, the network fabric, and advanced data extraction:
+
+```mermaid
+graph TD
+    A["1. Application Diagnostics (Pod lifecycle checks, logs & debug streams)"] --> B["2. Node-Level Troubleshooting (Kubelet daemons, journalctl, crictl & container runtimes)"]
+    B --> C["3. Control Plane Recovery (Static Pods, apiserver Connection Refused & etcd health)"]
+    C --> D["4. Networking Diagnostics (Service routes, CoreDNS configs & kube-proxy)"]
+    D --> E["5. Data Extraction (JSONPath queries, Custom Columns & formatting)"]
+```
+
+1. **Step 1: Application Diagnostics (Section 1):** We start at the user application layer. We trace Pod lifecycles (CrashLoopBackOff, ImagePullBackOff), parse logs, check environments, and inspect API events to fix application containers.
+2. **Step 2: Node-Level Troubleshooting (Section 2):** We drop down to the worker host. When worker nodes show `NotReady`, we check the local Kubelet service (`systemctl`/`journalctl`), query container runtime processes (`crictl`), and check swap or disk settings.
+3. **Step 3: Control Plane Recovery (Section 3):** We debug core cluster engines. We repair Control Plane outages (API Server "Connection Refused"), inspect local static pod manifests, check authentication credentials, and verify `etcd` database health.
+4. **Step 4: Networking Diagnostics (Section 4):** We inspect service-to-service communication. We audit DNS resolution (`CoreDNS` ConfigMaps), trace service routing rules, check `kube-proxy` routing modes, and run networking diagnostic tools.
+5. **Step 5: Data Extraction (Section 5):** Finally, we gather advanced telemetry. We master JSONPath and Custom Columns to extract, filter, and sort cluster data quickly, speeding up our root-cause analysis during production incidents.
+
+By following this flow, you progress from **Application Log Inspections (Software) $\rightarrow$ Node Daemon Debugging (Infrastructure) $\rightarrow$ Control Plane Static Pods (Administration) $\rightarrow$ Service Traffic Audits (Networking) $\rightarrow$ Live Cluster Queries (Data Extraction)**.
+
+---
+
+
 ## 1. Troubleshooting Application Failures
 
 Application failures typically present as pods failing to start, crashlooping, or failing to receive external or service-to-service traffic.

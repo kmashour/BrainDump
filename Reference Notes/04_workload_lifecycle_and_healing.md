@@ -4,6 +4,27 @@ This module covers the core self-healing algorithms in Kubernetes, automated app
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for this module, think of the topics as moving from self-healing concepts, to active configuration (probes), background cleanup (garbage collection), and hands-on validation:
+
+```mermaid
+graph TD
+    A["1. Self-Healing Pillars (From local restarts to node rescheduling)"] --> B["2. Probes & Health Checks (Liveness, Readiness, Startup)"]
+    B --> C["3. Resource Garbage Collection (API cascading deletion vs. Node image GC)"]
+    C --> D["4. Practical Validation (Real-world PoC failure scenarios)"]
+```
+
+1. **Step 1: Self-Healing Pillars (Section 1):** We start by understanding the architecture of recovery. We trace the four levels of self-healing: local container restarts (`kubelet`), pod replacements (controllers), replica scaling (ReplicaSet), and infrastructure rescheduling (scheduler).
+2. **Step 2: Probes & Health Checks (Section 2):** To automate these healing mechanisms, we configure active checks. We specify HTTP/TCP parameters, contrast Readiness (traffic routing) vs. Liveness (restarts), and use Startup probes to protect slow-booting applications.
+3. **Step 3: Resource Garbage Collection (Section 3):** To prevent resource exhaustion, we study cleanup daemons. We explore the Control Plane garbage collector (foreground, background, and orphan cascading deletions) and Kubelet-driven node garbage collection (image and container purging).
+4. **Step 4: Practical Validation (Section 4):** Finally, we verify this behavior in a live sandbox. We deploy pods with failing liveness and readiness probes, trace the restart counts, watch endpoint lists, and verify cascading parent-child deletions.
+
+By following this flow, you progress from **Theoretical Recovery Loops (Self-Healing) $\rightarrow$ Active Monitoring (Probes) $\rightarrow$ Automatic Cleanup (Garbage Collection) $\rightarrow$ Live Verification (PoC Execution)**.
+
+---
+
+
 ## 1. The Four Pillars of Self-Healing
 
 Kubernetes is built to react to failures at different structural levels. Failures are handled through one of four mechanisms:

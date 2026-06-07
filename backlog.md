@@ -4,6 +4,28 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-07] - Cognitive Map Integration Across Reference Notes
+
+### Added
+- **`Reference Notes/01_kube_api_and_kubectl.md`**: Added a Mermaid-based cognitive flow mapping the journey from API Gate & Request Lifecycle to CLI command execution.
+- **`Reference Notes/02_cluster_architecture_and_components.md`**: Added a Mermaid-based cognitive flow detailing macro cluster topologies, micro daemons, HA designs, and the declarative object model.
+- **`Reference Notes/03_node_mechanics_and_resource_limits.md`**: Added a Mermaid-based cognitive flow covering node bootstrapping, telemetry/leases, host sandboxing (cgroups/namespaces), resource scheduling, and hardware managers.
+- **`Reference Notes/04_workload_lifecycle_and_healing.md`**: Added a Mermaid-based cognitive flow mapping the four pillars of self-healing, automated probes, garbage collection, and failure PoC testing.
+- **`Reference Notes/05_containers_runtimes_and_lifecycle.md`**: Added a Mermaid-based cognitive flow detailing OCI blueprints, sandbox namespaces, custom RuntimeClasses, init/sidecar topologies, and ephemeral debugging.
+- **`Reference Notes/06_gitea_installation_and_workflows.md`**: Added a Mermaid-based cognitive flow tracing topology planning, host configuration (LVM), server installation, GitOps runners, and disaster recovery.
+- **`Reference Notes/07_kubernetes_workloads_and_controllers.md`**: Added a Mermaid-based cognitive flow detailing CRI sandboxing, stateless/stateful/daemonset controllers, batch execution, autoscaling, and template packaging.
+- **`Reference Notes/08_security_and_network_policies.md`**: Added a Mermaid-based cognitive flow outlining client authentication, RBAC authorization, container securityContexts, network policies, and cluster governance (PSA/PSS).
+- **`Reference Notes/09_storage_mechanics_and_csi.md`**: Added a Mermaid-based cognitive flow mapping out-of-tree CSI architecture, local volumes, PV/PVC lifecycles, StorageClasses, and workload mounts.
+- **`Reference Notes/10_networking_dns_and_ingress.md`**: Added a Mermaid-based cognitive flow detailing Linux network primitives, CNI overlays, Services (iptables/IPVS), DNS resolution, and Ingress/Gateway API.
+- **`Reference Notes/11_maintenance_upgrades_and_etcd.md`**: Added a Mermaid-based cognitive flow outlining node cordoning/draining, HA cluster bootstrapping, version lifecycle upgrades, and ETCD state restoration.
+- **`Reference Notes/12_troubleshooting_and_diagnostics.md`**: Added a Mermaid-based cognitive flow detailing application debugging, node logging, control-plane recovery, service networking diagnostics, and advanced JSONPath telemetry.
+- **`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`**: Added a Mermaid-based cognitive flow outlining imperative vs. declarative API management, 3-way merge engine internals, Pod spec immutability boundaries, and recovery playbooks.
+- **`Reference Notes/14_scheduling_logging_and_lifecycle.md`**: Added a Mermaid-based cognitive flow mapping advanced scheduling placement, metrics observability, container lifecycle configuration, and graceful eviction/termination.
+- **`Reference Notes/15_cluster_administration_and_observability.md`**: Added a Mermaid-based cognitive flow mapping graceful/non-graceful shutdowns, swap memory cgroups, certificates management, admission webhooks, observability, APF, and coordinated leader elections.
+- **`Reference Notes/16_kubernetes_api_extension_and_operators.md`**: Added a Mermaid-based cognitive flow covering schema registration (CRDs), custom controllers, the operator pattern, device plugins, and API aggregation.
+
+---
+
 ## [2026-06-07] - Ingestion and Knowledge Distribution of CKA Exam Prep Video Course Clipping
 
 ### Added

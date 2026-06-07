@@ -4,6 +4,29 @@ This module covers node lifecycles, health monitoring, resource allocation math,
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for this module, think of the topics as progressing from the physical OS configuration up to logical resource management and hardware-aware tuning:
+
+```mermaid
+graph TD
+    A["1. Node Bootstrapping (OS setup, kernel modules, Container Runtime)"] --> B["2. Node Telemetry & Heartbeats (Status checks, Lease API, Eviction)"]
+    B --> C["3. Host Level Sandboxing (cgroups v1/v2, namespaces, AppArmor)"]
+    C --> D["4. Workload Resource Scheduling (Requests/Limits, LimitRanges, ResourceQuotas)"]
+    D --> E["5. Resource Placement Alignment (CPU, Memory & Device Managers)"]
+```
+
+1. **Step 1: Node Bootstrapping (Section 1):** We start at the host operating system layer. We load kernel modules (`overlay`, `br_netfilter`), set sysctl networking variables, and align the Container Runtime (containerd) with the Kubelet on systemd cgroups.
+2. **Step 2: Node Telemetry & Heartbeats (Sections 2, 3, 4, 5 & 6):** Once the node is registered, we monitor its health. We read Node Conditions (`Ready`, `MemoryPressure`), use the Lease API to send lightweight heartbeats, manage controller eviction thresholds during failures, and sort node performance via `kubectl`.
+3. **Step 3: Host Level Sandboxing (Section 7):** We inspect how the Kubelet isolates workloads on the host, using cgroups v1/v2 for resource throttling, the pause container for shared namespaces, and AppArmor/Seccomp profiles for kernel-level security.
+4. **Step 4: Workload Resource Scheduling (Section 8):** With host-level isolation established, we declare compute constraints for our workloads. We set CPU/Memory requests/limits, enforce constraints via LimitRanges, and cap aggregate resource consumption with ResourceQuotas.
+5. **Step 5: Resource Placement Alignment (Section 9):** Finally, we look at hardware optimizations. We explore CPU, Memory, Device, and Topology managers to guarantee hardware alignment (NUMA nodes, CPU pinning) for high-performance workloads.
+
+By following this flow, you progress from **OS Prerequisites (Bootstrapping) $\rightarrow$ Cluster Telemetry (Heartbeats) $\rightarrow$ Host Security (Sandboxing) $\rightarrow$ Logical Scheduling Limits (Requests/Limits) $\rightarrow$ Advanced Hardware Optimization (Resource Managers)**.
+
+---
+
+
 ## 1. Node Registration & Kubelet Mechanics
 
 The **`kubelet`** is the node-level agent responsible for managing workloads. It acts as the "captain of the ship" on each worker node, registering the host machine, launching containers, monitoring their health, and feeding telemetry back to the control plane.

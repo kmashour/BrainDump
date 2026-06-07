@@ -4,6 +4,29 @@ This reference note compiles core security configurations, certificate managemen
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for Kubernetes security, think of the topics as a series of protective layers, moving from cluster admission to workload access, kernel containment, network filtering, and cluster-wide governance:
+
+```mermaid
+graph TD
+    A["1. Authentication & Certificates (Who are you? Client certs & kubeconfigs)"] --> B["2. Authorization (What can you do? RBAC Roles & ServiceAccounts)"]
+    B --> C["3. Workload Hardening (Container permissions & SecurityContexts)"]
+    C --> D["4. Network Isolation (Traffic segregation via NetworkPolicies)"]
+    D --> E["5. Cluster Governance (PSA/PSS levels & Audit logging)"]
+```
+
+1. **Step 1: Authentication & Certificates (Sections 1 & 2):** We start at the cluster border. We study how users, administrators, and daemons identify themselves using X.509 Client Certificates, the Certificates API, and connection profiles (`kubeconfig` files).
+2. **Step 2: Authorization (Sections 3 & 4):** Once inside the cluster, we restrict API access. We design Role-Based Access Control (RBAC) rules using Roles and ClusterRoles, mapping them to users and automated ServiceAccounts to enforce least-privilege access.
+3. **Step 3: Workload Hardening (Section 5 & 11):** We secure the container process at the kernel level. We apply `securityContexts` inside container specs to drop Linux capabilities, restrict system calls, block root execution, and secure config injection.
+4. **Step 4: Network Isolation (Section 6 & 10):** We limit lateral movement between workloads. We apply NetworkPolicies to implement a default-deny posture and selectively whitelist ingress/egress routes using namespace and pod label selectors.
+5. **Step 5: Cluster Governance (Sections 7, 8, 9, 12, 13 & 14):** Finally, we enforce high-level compliance. We leverage Pod Security Admission (PSA) namespace labels (Privileged, Baseline, Restricted), turn on API Auditing, and verify the cluster configuration against industry-standard security checklists.
+
+By following this flow, you progress from **Cluster Boundary (Authentication) $\rightarrow$ API Access Control (Authorization) $\rightarrow$ Process Sandboxing (Workloads) $\rightarrow$ Traffic Segregation (Networking) $\rightarrow$ Compliance Auditing (Governance)**.
+
+---
+
+
 ## 1. Kubernetes Security Primitives and Authentication
 
 Kubernetes security is structured around the **4Cs of Cloud Native Security**: Cloud, Cluster, Container, and Code. Security controls at each layer guard against specific threat vectors.

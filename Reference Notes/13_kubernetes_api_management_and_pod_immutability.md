@@ -4,6 +4,27 @@ This module covers the core mechanics of Kubernetes resource management and API 
 
 ---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for Kubernetes API management and resource updating, think of the topics as moving from configuration paradigms to deep engine mechanics, resource constraints, and disaster recovery playbooks:
+
+```mermaid
+graph TD
+    A["1. API Paradigms (Imperative actions vs. declarative configurations)"] --> B["2. The 3-Way Merge Engine (Local, Live, and Last-Applied states & annotations)"]
+    B --> C["3. Object Constraints (Pod Spec Immutability: mutable images vs. immutable fields)"]
+    C --> D["4. Edit Recovery Playbooks (Dynamic updates, dry-runs, & force-replacement techniques)"]
+```
+
+1. **Step 1: API Paradigms (Section 1):** We start with how we instruct the cluster: using fast, imperatively executed actions (for rapid prototyping and exams) vs. declarative, state-oriented configurations (for version-controlled GitOps).
+2. **Step 2: The 3-Way Merge Engine (Section 2):** We go under the hood of `kubectl apply`. We study how the engine dynamically updates resources by analyzing the intersection of three states: the new Local file, the Live object in `etcd`, and the `last-applied-configuration` annotation.
+3. **Step 3: Object Constraints (Section 3):** We learn the boundaries of runtime modification. We analyze Pod Spec Immutability, learning the rare exceptions that can be changed in-place (images, activeDeadlineSeconds, and tolerations) vs. fields that require recreation.
+4. **Step 4: Edit Recovery Playbooks (Section 4):** Finally, we practice operational recovery. When the API rejects an edit on an immutable field, we run recovery playbooks (exporting dry-runs, patching parent controllers, or using the `--force` replacement flag) to apply updates safely.
+
+By following this flow, you progress from **Operational Interface (Paradigms) $\rightarrow$ Merge Internals (3-Way Engine) $\rightarrow$ API Constraints (Immutability) $\rightarrow$ Production Recovery (Playbooks)**.
+
+---
+
+
 ## 1. Declarative vs. Imperative Object Management
 
 Kubernetes supports different methods of managing API objects. Choosing the right method is critical for operational efficiency, team collaboration, and success in the CKA exam.
