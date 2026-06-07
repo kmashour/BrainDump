@@ -50,7 +50,9 @@ YAML is highly indentation-sensitive. Configure VIM to use 2-space tab indentati
 
 Create or update your `~/.vimrc` with these lines:
 ```vim
-set tabstop=2 shiftwidth=2 expandtab
+set tabstop=2 
+shiftwidth=2 
+expandtab
 set nu
 set ai
 ```
