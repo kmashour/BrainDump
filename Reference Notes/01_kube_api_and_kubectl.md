@@ -20,7 +20,7 @@ graph TD
 3. **Step 3: API Self-Documentation (Section 3):** To write valid manifests, we query the live API schema directly from the cluster using introspection tools like `kubectl api-resources`, `kubectl api-versions`, and `kubectl explain`.
 4. **Step 4: CLI Command Execution (Sections 4 & 5):** Finally, we interact with the API. We master imperative commands, dry-run manifest generation, and advanced output parsing (JSONPath, Custom Columns) to extract exact state data.
 
-By following this flow, you progress from **Abstract Entry (API Request) $\rightarrow$ Structural Classification (API Groups) $\rightarrow$ Schema Inspection (Exploration) $\rightarrow$ Production Command Execution (kubectl CLI)**.
+By following this flow, you progress from **Abstract Entry (API Request) → Structural Classification (API Groups) → Schema Inspection (Exploration) → Production Command Execution (kubectl CLI)**.
 
 ---
 

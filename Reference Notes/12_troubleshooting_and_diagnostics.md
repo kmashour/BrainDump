@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Networking Diagnostics (Section 4):** We inspect service-to-service communication. We audit DNS resolution (`CoreDNS` ConfigMaps), trace service routing rules, check `kube-proxy` routing modes, and run networking diagnostic tools.
 5. **Step 5: Data Extraction (Section 5):** Finally, we gather advanced telemetry. We master JSONPath and Custom Columns to extract, filter, and sort cluster data quickly, speeding up our root-cause analysis during production incidents.
 
-By following this flow, you progress from **Application Log Inspections (Software) $\rightarrow$ Node Daemon Debugging (Infrastructure) $\rightarrow$ Control Plane Static Pods (Administration) $\rightarrow$ Service Traffic Audits (Networking) $\rightarrow$ Live Cluster Queries (Data Extraction)**.
+By following this flow, you progress from **Application Log Inspections (Software) → Node Daemon Debugging (Infrastructure) → Control Plane Static Pods (Administration) → Service Traffic Audits (Networking) → Live Cluster Queries (Data Extraction)**.
 
 ---
 

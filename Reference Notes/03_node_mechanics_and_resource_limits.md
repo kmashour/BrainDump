@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Workload Resource Scheduling (Section 8):** With host-level isolation established, we declare compute constraints for our workloads. We set CPU/Memory requests/limits, enforce constraints via LimitRanges, and cap aggregate resource consumption with ResourceQuotas.
 5. **Step 5: Resource Placement Alignment (Section 9):** Finally, we look at hardware optimizations. We explore CPU, Memory, Device, and Topology managers to guarantee hardware alignment (NUMA nodes, CPU pinning) for high-performance workloads.
 
-By following this flow, you progress from **OS Prerequisites (Bootstrapping) $\rightarrow$ Cluster Telemetry (Heartbeats) $\rightarrow$ Host Security (Sandboxing) $\rightarrow$ Logical Scheduling Limits (Requests/Limits) $\rightarrow$ Advanced Hardware Optimization (Resource Managers)**.
+By following this flow, you progress from **OS Prerequisites (Bootstrapping) → Cluster Telemetry (Heartbeats) → Host Security (Sandboxing) → Logical Scheduling Limits (Requests/Limits) → Advanced Hardware Optimization (Resource Managers)**.
 
 ---
 

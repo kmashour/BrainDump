@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Hardware Extensions (Section 4):** We extend resource management down to the hardware. We deploy Device Plugins that interface with the Kubelet, allowing container runtimes to allocate physical hardware (like GPUs or NICs) to scheduled workloads.
 5. **Step 5: API Aggregation (Section 5):** Finally, we look at full API Server federation. We compare lightweight CRDs with API Aggregation, configuring an auxiliary API server to handle specialized routing and logic.
 
-By following this flow, you progress from **Custom Data Definition (CRDs) $\rightarrow$ Active State Reconciliation (Controllers) $\rightarrow$ Domain Automation (Operators) $\rightarrow$ Hardware Resource Allocation (Device Plugins) $\rightarrow$ Federated API Extension (Aggregation)**.
+By following this flow, you progress from **Custom Data Definition (CRDs) → Active State Reconciliation (Controllers) → Domain Automation (Operators) → Hardware Resource Allocation (Device Plugins) → Federated API Extension (Aggregation)**.
 
 ---
 

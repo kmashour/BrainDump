@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Network Isolation (Section 6 & 10):** We limit lateral movement between workloads. We apply NetworkPolicies to implement a default-deny posture and selectively whitelist ingress/egress routes using namespace and pod label selectors.
 5. **Step 5: Cluster Governance (Sections 7, 8, 9, 12, 13 & 14):** Finally, we enforce high-level compliance. We leverage Pod Security Admission (PSA) namespace labels (Privileged, Baseline, Restricted), turn on API Auditing, and verify the cluster configuration against industry-standard security checklists.
 
-By following this flow, you progress from **Cluster Boundary (Authentication) $\rightarrow$ API Access Control (Authorization) $\rightarrow$ Process Sandboxing (Workloads) $\rightarrow$ Traffic Segregation (Networking) $\rightarrow$ Compliance Auditing (Governance)**.
+By following this flow, you progress from **Cluster Boundary (Authentication) → API Access Control (Authorization) → Process Sandboxing (Workloads) → Traffic Segregation (Networking) → Compliance Auditing (Governance)**.
 
 ---
 

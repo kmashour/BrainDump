@@ -24,7 +24,7 @@ graph TD
 5. **Step 5: Workload Scaling (Sections 10 & 11):** To optimize compute resources, we configure autoscaling. We apply Horizontal Pod Autoscalers (HPA) to scale replica counts dynamically, and Vertical Pod Autoscalers (VPA) to adjust CPU/Memory boundaries.
 6. **Step 6: GitOps & Packaging (Section 13):** Finally, we template and version applications. We leverage Helm to package manifest configurations, and Kustomize overlays to apply declarative environmental modifications.
 
-By following this flow, you progress from **Pod Foundations (CRI/CLI) $\rightarrow$ Basic Replication (Deployments) $\rightarrow$ Advanced Hosting (Stateful/DaemonSets) $\rightarrow$ Batch Execution (Jobs) $\rightarrow$ Capacity Auto-Tuning (HPA/VPA) $\rightarrow$ Multi-Environment Packaging (Helm/Kustomize)**.
+By following this flow, you progress from **Pod Foundations (CRI/CLI) → Basic Replication (Deployments) → Advanced Hosting (Stateful/DaemonSets) → Batch Execution (Jobs) → Capacity Auto-Tuning (HPA/VPA) → Multi-Environment Packaging (Helm/Kustomize)**.
 
 ---
 

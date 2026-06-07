@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Name Resolution & Discovery (Section 5):** Rather than using hardcoded IPs, we discover workloads dynamically by name. We study cluster-local DNS schemas and configure the CoreDNS ConfigMap Corefile to resolve and forward private DNS queries.
 5. **Step 5: Ingress & External Traffic Routing (Section 6):** Finally, we route internet traffic into the cluster. We implement Ingress controllers (host-based vs. path-based routing), manage TLS termination, and leverage the next-generation Gateway API.
 
-By following this flow, you progress from **OS Host Networking (Linux) $\rightarrow$ Cluster Network Fabrics (CNI) $\rightarrow$ East-West Traffic Routing (Services) $\rightarrow$ Workload Discovery (DNS) $\rightarrow$ North-South Traffic Entry (Ingress/Gateway API)**.
+By following this flow, you progress from **OS Host Networking (Linux) → Cluster Network Fabrics (CNI) → East-West Traffic Routing (Services) → Workload Discovery (DNS) → North-South Traffic Entry (Ingress/Gateway API)**.
 
 ---
 
@@ -985,7 +985,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 ```
-*   *Request:* `http://my-store.com/pay` $\rightarrow$ *Forwarded to service as:* `http://pay-service:80/`
+*   *Request:* `http://my-store.com/pay` → *Forwarded to service as:* `http://pay-service:80/`
 
 #### Dynamic Regex Rewrite
 For complex path schemes, capture groups can be used to dynamically rewrite forwarded paths.
@@ -1006,7 +1006,7 @@ spec:
             port:
               number: 80
 ```
-*   *Request:* `http://store.com/service1/login` $\rightarrow$ *Forwarded to service as:* `http://service1:80/login`
+*   *Request:* `http://store.com/service1/login` → *Forwarded to service as:* `http://service1:80/login`
 
 ---
 

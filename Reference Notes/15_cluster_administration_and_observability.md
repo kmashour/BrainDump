@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: API Flow Control (Section 7):** To protect the `kube-apiserver` from overloading during high-traffic events, we configure API Priority and Fairness (APF) rules, partitioning inbound requests using FlowSchemas and PriorityLevelConfigurations.
 5. **Step 5: High Availability Coordination (Section 8):** Finally, we coordinate control plane consensus. We study how controllers perform leader election using Lease resources, and examine how the LeaseCandidate API minimizes resource conflicts.
 
-By following this flow, you progress from **Host Operations (Shutdown/Swap) $\rightarrow$ API Policy Enforcement (Certs/Webhooks) $\rightarrow$ Cluster Telemetry (Observability) $\rightarrow$ Congestion Management (APF) $\rightarrow$ Distributed Consensus (Lease/Leader Election)**.
+By following this flow, you progress from **Host Operations (Shutdown/Swap) → API Policy Enforcement (Certs/Webhooks) → Cluster Telemetry (Observability) → Congestion Management (APF) → Distributed Consensus (Lease/Leader Election)**.
 
 ---
 

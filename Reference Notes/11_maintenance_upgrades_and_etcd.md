@@ -20,7 +20,7 @@ graph TD
 3. **Step 3: Version Lifecycle Upgrades (Section 4):** We execute lifecycle upgrades. We evaluate component version skew rules, upgrade the `kubeadm` package, apply upgrade plans to the API Server and Controller Manager, and perform node-by-node Kubelet upgrades.
 4. **Step 4: Cluster State Persistence (Section 5):** Finally, we drop down to the database layer. We write `etcdctl` backup commands using client-side certificates and execute host-level restorations (modifying static pod manifests to swap database directories).
 
-By following this flow, you progress from **Local Pod Eviction (Maintenance) $\rightarrow$ Control Plane Topologies (Bootstrapping) $\rightarrow$ Software Rolling Upgrades (Lifecycle) $\rightarrow$ Physical Database Restoration (ETCD Backup/Restore)**.
+By following this flow, you progress from **Local Pod Eviction (Maintenance) → Control Plane Topologies (Bootstrapping) → Software Rolling Upgrades (Lifecycle) → Physical Database Restoration (ETCD Backup/Restore)**.
 
 ---
 

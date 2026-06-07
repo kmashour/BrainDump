@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Automation & Workflows (Sections 6 & 7):** With the platform accessible, we configure development pipelines. We set up native host-level `act_runner` agents, implement air-gapped deployment workflows, and write server-side Git hooks to block invalid commits.
 5. **Step 5: Disaster Recovery & Operations (Section 8):** Finally, we configure backup schedules. We write automated scripts to dump MySQL metadata and Git repositories, and document recovery steps to restore state on a backup VM.
 
-By following this flow, you progress from **Infrastructure Architecture (Topology) $\rightarrow$ OS Prerequisites (Users & LVM) $\rightarrow$ Application Deployment (Gitea/Apache) $\rightarrow$ Development Lifecycle (CI/CD & Hooks) $\rightarrow$ Business Continuity (Backup/Restore)**.
+By following this flow, you progress from **Infrastructure Architecture (Topology) → OS Prerequisites (Users & LVM) → Application Deployment (Gitea/Apache) → Development Lifecycle (CI/CD & Hooks) → Business Continuity (Backup/Restore)**.
 
 ---
 

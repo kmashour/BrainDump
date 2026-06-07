@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Node Integration & Version Skew (Section 4 & 5):** We examine the mechanics of worker registration and the version skew policies, ensuring components of different release versions can safely co-exist.
 5. **Step 5: Declarative Object Model (Section 6):** Finally, we study the metadata and lifecycle rules (Namespaces, Labels, Annotations, OwnerReferences, and Finalizers) that govern how resources are managed and garbage collected inside the cluster.
 
-By following this flow, you progress from **System Topology (Macro) $\rightarrow$ Daemon Mechanics (Micro) $\rightarrow$ High Availability Design (Scaling) $\rightarrow$ API Object Model (Data Schema)**.
+By following this flow, you progress from **System Topology (Macro) → Daemon Mechanics (Micro) → High Availability Design (Scaling) → API Object Model (Data Schema)**.
 
 ---
 

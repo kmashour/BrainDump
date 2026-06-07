@@ -20,7 +20,7 @@ graph LR
 3. **Step 3: Configuration (Section 3):** To fine-tune our running Pod, we inject external configuration (ConfigMaps, Secrets, environment variables, command arguments) and hook into its startup and lifecycle phases.
 4. **Step 4: Eviction & Termination (Section 5):** Finally, we manage the end of the Pod's lifecycle. When a node runs out of resources (using the metrics from Step 2) or during a cluster upgrade, we trigger evictions, respect Pod Disruption Budgets, and execute graceful shutdowns (using lifecycle hooks from Step 3).
 
-By structuring the module this way, you follow the Pod from **Birth (Scheduling) $\rightarrow$ Life (Observability & Configuration) $\rightarrow$ Death (Eviction & Termination)**.
+By structuring the module this way, you follow the Pod from **Birth (Scheduling) → Life (Observability & Configuration) → Death (Eviction & Termination)**.
 
 ---
 

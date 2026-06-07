@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Automated Provisioning (Sections 5 & 5.3):** To eliminate manual administration, we automate PV creation. We write `StorageClasses` that listen for PVCs and invoke CSI provisioners (such as Rancher's local-path driver) to construct volumes on the fly.
 5. **Step 5: Workload Mount Bindings (Section 4):** Finally, we attach the storage to container processes. We reference the PVC in the Pod spec, define `volumeMounts` within container definitions, and leverage `subPath` parameters to isolate directories on a shared volume.
 
-By following this flow, you progress from **Storage Architecture (CSI) $\rightarrow$ Host Volumes (emptyDir/hostPath) $\rightarrow$ State Abstraction (PV/PVC) $\rightarrow$ Automatic Scaling (StorageClasses) $\rightarrow$ Application Integration (Pod Mounts)**.
+By following this flow, you progress from **Storage Architecture (CSI) → Host Volumes (emptyDir/hostPath) → State Abstraction (PV/PVC) → Automatic Scaling (StorageClasses) → Application Integration (Pod Mounts)**.
 
 ---
 

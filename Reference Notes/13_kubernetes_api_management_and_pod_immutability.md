@@ -20,7 +20,7 @@ graph TD
 3. **Step 3: Object Constraints (Section 3):** We learn the boundaries of runtime modification. We analyze Pod Spec Immutability, learning the rare exceptions that can be changed in-place (images, activeDeadlineSeconds, and tolerations) vs. fields that require recreation.
 4. **Step 4: Edit Recovery Playbooks (Section 4):** Finally, we practice operational recovery. When the API rejects an edit on an immutable field, we run recovery playbooks (exporting dry-runs, patching parent controllers, or using the `--force` replacement flag) to apply updates safely.
 
-By following this flow, you progress from **Operational Interface (Paradigms) $\rightarrow$ Merge Internals (3-Way Engine) $\rightarrow$ API Constraints (Immutability) $\rightarrow$ Production Recovery (Playbooks)**.
+By following this flow, you progress from **Operational Interface (Paradigms) → Merge Internals (3-Way Engine) → API Constraints (Immutability) → Production Recovery (Playbooks)**.
 
 ---
 

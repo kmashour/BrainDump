@@ -22,7 +22,7 @@ graph TD
 4. **Step 4: Complex Pod Topologies (Sections 6, 7 & 8):** With the runtime configured, we orchestrate startup and lifecycle behavior. We implement sequential setup via Init Containers, mount background utilities via native Sidecars, and invoke PostStart/PreStop hooks to execute custom setup and teardown logic.
 5. **Step 5: Live Diagnostics (Section 9):** Finally, we plan for failures. When a container runs in a highly secure, shell-less environment, we inject Ephemeral Containers at runtime to inspect memory, execute debug tools, and run commands inside the target sandbox namespaces.
 
-By following this flow, you progress from **Container Definition (OCI/Args) $\rightarrow$ Runtime Execution (CRI/Namespaces) $\rightarrow$ Security Boundaries (RuntimeClass) $\rightarrow$ Pod Orchestration (Init/Sidecar/Hooks) $\rightarrow$ Live Diagnostics (Ephemeral)**.
+By following this flow, you progress from **Container Definition (OCI/Args) → Runtime Execution (CRI/Namespaces) → Security Boundaries (RuntimeClass) → Pod Orchestration (Init/Sidecar/Hooks) → Live Diagnostics (Ephemeral)**.
 
 ---
 

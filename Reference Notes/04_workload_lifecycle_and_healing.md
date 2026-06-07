@@ -20,7 +20,7 @@ graph TD
 3. **Step 3: Resource Garbage Collection (Section 3):** To prevent resource exhaustion, we study cleanup daemons. We explore the Control Plane garbage collector (foreground, background, and orphan cascading deletions) and Kubelet-driven node garbage collection (image and container purging).
 4. **Step 4: Practical Validation (Section 4):** Finally, we verify this behavior in a live sandbox. We deploy pods with failing liveness and readiness probes, trace the restart counts, watch endpoint lists, and verify cascading parent-child deletions.
 
-By following this flow, you progress from **Theoretical Recovery Loops (Self-Healing) $\rightarrow$ Active Monitoring (Probes) $\rightarrow$ Automatic Cleanup (Garbage Collection) $\rightarrow$ Live Verification (PoC Execution)**.
+By following this flow, you progress from **Theoretical Recovery Loops (Self-Healing) → Active Monitoring (Probes) → Automatic Cleanup (Garbage Collection) → Live Verification (PoC Execution)**.
 
 ---
 
