@@ -10,9 +10,9 @@ To build a strong intuition for Kubernetes cluster administration, think of the 
 
 ```mermaid
 graph TD
-    A["1. Node Maintenance (Cordon, Drain, & Pod Disruption Budgets)"] --> B["2. Cluster Bootstrapping & HA (Kubeadm setup & stacked vs. external etcd)"]
-    B --> C["3. Version Lifecycle Upgrades (Upgrading Kubeadm, API Server & Kubelets)"]
-    C --> D["4. Cluster State Persistence (ETCD snapshot backups & host-level recovery)"]
+    A["Node Maintenance"] --> B["Cluster Bootstrapping and HA"]
+    B --> C["Version Lifecycle Upgrades"]
+    C --> D["Cluster State Persistence"]
 ```
 
 1. **Step 1: Node Maintenance (Section 1):** We start with localized operations. We master routing workloads off target hosts using `cordon` (marking unschedulable) and `drain` (evicting pods), while enforcing application availability limits via Pod Disruption Budgets (PDBs).

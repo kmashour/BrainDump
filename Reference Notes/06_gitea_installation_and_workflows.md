@@ -10,10 +10,10 @@ To build a strong intuition for this system engineering module, think of the top
 
 ```mermaid
 graph TD
-    A["1. Topology & Design (System Specs & Architectural Layout)"] --> B["2. Host-Level Foundation (User provisioning, Hardening, LVM Storage)"]
-    B --> C["3. Server Installation & Access (Gitea binary, systemd, Apache Proxy, SSH Multiplexing)"]
-    C --> D["4. Automation & Workflows (CI/CD act_runner, deployment pipelines, Git hooks)"]
-    D --> E["5. Disaster Recovery & Operations (Backup playbooks, restoring system state)"]
+    A["Topology and Design"] --> B["Host-Level Foundation"]
+    B --> C["Server Installation and Access"]
+    C --> D["Automation and Workflows"]
+    D --> E["Disaster Recovery and Operations"]
 ```
 
 1. **Step 1: Topology & Design (Section 1):** We start with the high-level plan. We examine the hardware specifications, network parameters, and Active-Passive HA topology for hosting Gitea in an air-gapped RHEL 8 environment.

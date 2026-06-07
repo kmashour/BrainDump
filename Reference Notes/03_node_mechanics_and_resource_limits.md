@@ -10,10 +10,10 @@ To build a strong intuition for this module, think of the topics as progressing 
 
 ```mermaid
 graph TD
-    A["1. Node Bootstrapping (OS setup, kernel modules, Container Runtime)"] --> B["2. Node Telemetry & Heartbeats (Status checks, Lease API, Eviction)"]
-    B --> C["3. Host Level Sandboxing (cgroups v1/v2, namespaces, AppArmor)"]
-    C --> D["4. Workload Resource Scheduling (Requests/Limits, LimitRanges, ResourceQuotas)"]
-    D --> E["5. Resource Placement Alignment (CPU, Memory & Device Managers)"]
+    A["Node Bootstrapping"] --> B["Node Telemetry and Heartbeats"]
+    B --> C["Host Level Sandboxing"]
+    C --> D["Workload Resource Scheduling"]
+    D --> E["Resource Placement Alignment"]
 ```
 
 1. **Step 1: Node Bootstrapping (Section 1):** We start at the host operating system layer. We load kernel modules (`overlay`, `br_netfilter`), set sysctl networking variables, and align the Container Runtime (containerd) with the Kubelet on systemd cgroups.

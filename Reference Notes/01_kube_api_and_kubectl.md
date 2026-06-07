@@ -10,9 +10,9 @@ To build a strong intuition for this module, think of the topics as a logical pr
 
 ```mermaid
 graph TD
-    A["1. API Gate & Lifecycle (How requests enter)"] --> B["2. API Groups & Versions (How objects are classified)"]
-    B --> C["3. API Self-Documentation (How to inspect schemas)"]
-    C --> D["4. CLI Command Execution (How to manipulate objects with kubectl)"]
+    A["API Gate and Lifecycle"] --> B["API Groups and Versions"]
+    B --> C["API Self-Documentation"]
+    C --> D["CLI Command Execution"]
 ```
 
 1. **Step 1: API Gate & Lifecycle (Section 1):** We start at the front door. The `kube-apiserver` acts as the REST gateway, handling request authentication, authorization, validation, and status updates.

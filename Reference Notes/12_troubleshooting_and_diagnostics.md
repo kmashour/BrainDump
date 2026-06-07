@@ -10,10 +10,10 @@ To build a strong intuition for Kubernetes troubleshooting, think of the topics 
 
 ```mermaid
 graph TD
-    A["1. Application Diagnostics (Pod lifecycle checks, logs & debug streams)"] --> B["2. Node-Level Troubleshooting (Kubelet daemons, journalctl, crictl & container runtimes)"]
-    B --> C["3. Control Plane Recovery (Static Pods, apiserver Connection Refused & etcd health)"]
-    C --> D["4. Networking Diagnostics (Service routes, CoreDNS configs & kube-proxy)"]
-    D --> E["5. Data Extraction (JSONPath queries, Custom Columns & formatting)"]
+    A["Application Diagnostics"] --> B["Node-Level Troubleshooting"]
+    B --> C["Control Plane Recovery"]
+    C --> D["Networking Diagnostics"]
+    D --> E["Data Extraction"]
 ```
 
 1. **Step 1: Application Diagnostics (Section 1):** We start at the user application layer. We trace Pod lifecycles (CrashLoopBackOff, ImagePullBackOff), parse logs, check environments, and inspect API events to fix application containers.

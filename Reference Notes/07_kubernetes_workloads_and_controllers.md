@@ -10,11 +10,11 @@ To build a strong intuition for this extensive workloads module, think of the to
 
 ```mermaid
 graph TD
-    A["1. Core Pod Mechanics (CRI sandboxing & imperative CLI creation)"] --> B["2. Stateless Workloads (Deployments & ReplicaSets with updates/rollbacks)"]
-    B --> C["3. Node & Stateful Workloads (DaemonSets for nodes, StatefulSets for ordinal data)"]
-    C --> D["4. Batch Workloads (Jobs & CronJobs for task completion)"]
-    D --> E["5. Workload Scaling (Dynamic scaling via HPA/VPA)"]
-    E --> F["6. GitOps & Packaging (Helm charts & Kustomize overlays)"]
+    A["Core Pod Mechanics"] --> B["Stateless Workloads"]
+    B --> C["Node and Stateful Workloads"]
+    C --> D["Batch Workloads"]
+    D --> E["Workload Scaling"]
+    E --> F["GitOps and Packaging"]
 ```
 
 1. **Step 1: Core Pod Mechanics (Sections 1 & 2):** We start with the basic unit of execution. We trace how the Kubelet interfaces with the CRI to run container processes inside a shared Pod Sandbox, and master running them imperatively using `kubectl`.
