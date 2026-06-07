@@ -483,6 +483,22 @@ spec:
     image: my-app:v1
 ```
 
+##### How Both Rules are Evaluated Together (Required & Preferred):
+In this E2E example, **both blocks are used simultaneously**, but they are processed during different phases of the scheduling cycle:
+
+1. **Filtering Phase (Predicates - `requiredDuringScheduling...`):**
+   * The scheduler evaluates all nodes in the cluster and filters out any node that does not reside in zone `us-east-1a` or `us-east-1b`.
+   * **Result:** If a node does not have the label `topology.kubernetes.io/zone: us-east-1a` or `topology.kubernetes.io/zone: us-east-1b`, it is **immediately disqualified** and cannot run the Pod, regardless of its disktype or size.
+
+2. **Scoring Phase (Priorities - `preferredDuringScheduling...`):**
+   * For the nodes that passed the filtering phase (i.e., those in the correct zones), the scheduler calculates a score to rank them.
+   * **Result:** The scheduler checks the preferred rules:
+     * If a zone-compliant node has the label `disktype: ssd`, it receives **+80** points.
+     * If it has the label `size` (any value), it receives **+20** points.
+     * The node with the highest cumulative score is selected to run the Pod. (If there is a tie, other scoring criteria like image locality are evaluated).
+
+---
+
 #### 3. Label Subset Match Evaluation (Node with 3 labels vs. Pod Selector)
 
 When a worker node has multiple labels (e.g., 3 labels) and a Pod matches only some of them, the scheduling outcome depends on whether you are using `nodeSelector`, `requiredDuringScheduling...` (Hard Affinity), or `preferredDuringScheduling...` (Soft Affinity).
