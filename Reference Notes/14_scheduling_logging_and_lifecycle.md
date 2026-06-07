@@ -633,11 +633,25 @@ Using the same `worker-1` labels, let's evaluate each set-based operator in `req
 ### F. Taints/Tolerations vs. Node Affinity combination scenarios (repel vs attract)
 A common requirement in production is dedicating a set of nodes to a specific department, customer, or workload type (e.g., GPU-enabled nodes for Machine Learning).
 
-| Mechanism | Behavior | Result on Target Nodes | Result on General Nodes | Exclusivity |
-| :--- | :--- | :--- | :--- | :--- |
-| **Taints & Tolerations Only** | Node repels pods without tolerations | Dedicated nodes only host our target workload pods. | Target workload pods can still run on standard worker nodes. | ❌ Partial (Node is exclusive, Pod is not) |
-| **Node Affinity Only** | Pod is attracted to target nodes | Dedicated nodes can still host other general pods. | Target workload pods are forced onto dedicated nodes. | ❌ Partial (Pod is exclusive, Node is not) |
-| **Combined (Taint + Affinity)** | Node repels general pods; Pod is attracted to target nodes | Dedicated nodes **only** host target workload pods. | Target workload pods are **never** scheduled on general nodes. | 🌟 **100% Exclusive** |
+| Mechanism                       | Behavior                                                   | Result on Target Nodes                              | Result on General Nodes                                        | Exclusivity                               |
+| :------------------------------ | :--------------------------------------------------------- | :-------------------------------------------------- | :------------------------------------------------------------- | :---------------------------------------- |
+| **Taints & Tolerations Only**   | Node repels pods without tolerations                       | Dedicated nodes only host our target workload pods. | Target workload pods can still run on standard worker nodes.   | ❌ Partial (Node is exclusive, Pod is not) |
+| **Node Affinity Only**          | Pod is attracted to target nodes                           | Dedicated nodes can still host other general pods.  | Target workload pods are forced onto dedicated nodes.          | ❌ Partial (Pod is exclusive, Node is not) |
+| **Combined (Taint + Affinity)** | Node repels general pods; Pod is attracted to target nodes | Dedicated nodes **only** host target workload pods. | Target workload pods are **never** scheduled on general nodes. | 🌟 **100% Exclusive**                     |
+
+#### Understanding Exclusivity (Node vs. Pod perspective):
+
+To achieve true isolation in production, we must evaluate exclusivity from both directions:
+
+1. **Node Exclusivity (The Node's perspective):**
+   * **Definition:** Ensuring that standard, non-target workload Pods (e.g., standard nginx, frontend apps) cannot schedule onto our dedicated node and consume resources.
+   * **Enforced by:** **Taints & Tolerations**. The Taint acts as a "No Trespassing" sign that repels any Pod that doesn't have the matching Toleration.
+
+2. **Pod Exclusivity (The Pod's perspective):**
+   * **Definition:** Ensuring that our special target workload Pods (e.g., GPU-dependent ML jobs) are forced to schedule *only* on the dedicated nodes, and are not placed on general worker nodes (where they might crash due to lack of GPU drivers).
+   * **Enforced by:** **Node Affinity**. The affinity acts as a magnet that attracts and locks the Pod to the labeled node.
+
+---
 
 #### Step-by-Step Scenario: Dedicating GPU Nodes to ML Workloads
 1. **Label the GPU Nodes:**
