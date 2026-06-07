@@ -25,6 +25,7 @@ When ingesting raw files or executing restructuring requests:
 2. **Execute Ingestion Pipeline by Default:** Whenever new CKA material is ingested or Kubernetes/system concepts in general are added, the pipeline runs sequentially. The `CKAExamAgent` must work right after the other agents finish setting up the Reference notes, Main notes, Deeper notes, and the Digital Garden:
    - **Phase 1 (Refinement):** Invoke `ResearchAgent` to clean debugging logs and create Reference Notes.
    - **Phase 2 (Auditing & Context Expansion):** Invoke `AuditAgent` to audit the output of Phase 1, dynamically identifying any secondary or tangent domains (e.g., reverse proxies, workflows, systemd configs, database engines, or security protocols—which vary depending on the material) and adding explanatory volume to ensure self-contained understanding where the user has shallow knowledge.
+   - **Phase 2.5 (Diagram Design):** Invoke `DiagramAgent` (`diagram_designer`) to identify complex workflows, state machines, or topologies in the notes and design structured, standard-compliant Mermaid.js diagrams to visually elaborate them.
    - **Phase 3 (PoC):** Invoke `MultiDomainPoCAgent` to write and test validation code.
    - **Phase 4 (Concepts):** Update landing and deeper-dive files inside `Main Notes/`.
    - **Phase 5 (Connections):** Invoke `GardenAgent` to map intersections and update notes inside `Digital Garden/`.

@@ -60,6 +60,11 @@ Welcome to the structured Study Roadmap and Hands-on PoCs Index for CKA preparat
 * 🐙 **[Module 06: Gitea GitOps Workflows on RHEL 8](06_gitea_installation_and_workflows.md)**
   *RHEL 8 hardening, LVM disk zoning, Apache proxy, act_runners CI/CD, and Git hooks.*
 
+### 📐 Track 6: Systems Architecture & Scaling
+*Foundational system design patterns, distributed scaling, and core backend security protection.*
+* 🖥️ **[Module 17: System Design Fundamentals](17_system_design_fundamentals.md)**
+  *Scaling, Load Balancing, SQL vs. NoSQL, API protocols (REST/GraphQL), transport layers (TCP/UDP), authentication/authorization, and security protections.*
+
 ---
 
 ## 🔎 Quick Navigation Matrix
@@ -82,3 +87,4 @@ Welcome to the structured Study Roadmap and Hands-on PoCs Index for CKA preparat
 | **14** | Scheduling | Taints/Tolerations & Custom Scheduler Leases |
 | **15** | Flow Control | API Priority & Fairness queueing configuration |
 | **16** | Extensions | CustomResourceDefinitions & Operator Informers |
+| **17** | System Design | Horizontal/Vertical Scaling, LBs, API Protocols, and Security |

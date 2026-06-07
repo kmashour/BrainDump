@@ -79,6 +79,30 @@ When a node is uncordoned via `kubectl uncordon`, the workloads that were evicte
 
 ### 1.5 Node Heartbeat, Eviction Taints, and Concurrency
 
+```mermaid
+flowchart TD
+    Kubelet["Kubelet on Node"] -->|Every 10s: Node Lease Update| Lease["Node Lease Object"]
+    Lease -->|No update for 40s| NLC["Node Lifecycle Controller"]
+    NLC -->|Marks Node Status| Unknown["Ready: Unknown"]
+    NLC -->|HTTP PATCH| Patch["Add unreachable Taints to spec.taints"]
+    
+    subgraph Taints ["Applied Eviction and Scheduling Taints"]
+        T1["node.kubernetes.io/unreachable:NoSchedule"]
+        T2["node.kubernetes.io/unreachable:NoExecute"]
+    end
+    Patch --> T1
+    Patch --> T2
+    
+    T1 --> NewPods["New Pods Scheduler Check"]
+    NewPods -->|Blocks scheduling immediately| Blocked["No new Pods placed on Node"]
+    
+    T2 --> RunningPods["Running Pods Eviction Timeline"]
+    RunningPods -->|Admission controller injects default tolerations| Delay["tolerationSeconds: 300 (5 minutes)"]
+    Delay --> Decision{"Unreachable for > 300s?"}
+    Decision -->|Yes| Evict["Pods evicted and rescheduled on healthy nodes"]
+    Decision -->|No: Node recovers| Recover["Node returns to Ready state and taints removed"]
+```
+
 When a node experiences hardware failure or loses network connectivity, the control plane automatically taints and manages the node through the Node Lifecycle Controller.
 
 #### A. Heartbeat Loss and Node Lease Expiry

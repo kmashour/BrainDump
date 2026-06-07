@@ -4,6 +4,20 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-07] - Ingest System Design Course Clippings & Diagram Pipeline Integration
+
+### Added
+- **Reference Note (`Reference Notes/17_system_design_fundamentals.md`):** Created a comprehensive study module summarizing the Hayk Simonyan System Design course clippings. Detailed single server topologies, horizontal vs. vertical scaling, SPOF mitigations, load balancer types (L4 vs. L7) and algorithms, health check mechanics, database models (SQL, NoSQL document/key-value/columnar, Graph), caching/CDNs, transport layers (TCP/UDP), API protocols (REST/GraphQL), session-based vs. JWT authentication, authorization models (RBAC, ABAC, ACLs, OAuth 2.0), and 7 core security defense mechanisms.
+- **Landing Notes (`Main Notes/load-balancing.md`, `Main Notes/database-selection.md`, `Main Notes/api-protocols.md`, `Main Notes/api-security.md`):** Created 4 landing notes for the core systems design concepts, structured with frontmatter roles and dataview indexers.
+- **Deeper-dive Notes (`Main Notes/load-balancing - Algorithms and L4-L7 Routing.md`, `Main Notes/database-selection - SQL vs NoSQL vs Graph.md`, `Main Notes/api-protocols - REST vs GraphQL.md`, `Main Notes/api-security - Defenses.md`):** Created 4 atomic deeper-dive notes elaborating sub-topics, trade-offs, and details.
+
+### Refactored / Upgraded
+- **Diagram Designer Pipeline integration (`Agent.md` & `instructions.md`):** Formally integrated `Phase 2.5 (Diagram Design)` and `Step 4.5: Visual Concept Elaborations (Diagramming)` into the ingestion pipeline, defining the `diagram_designer` subagent to generate and insert Mermaid.js diagrams automatically.
+- **Mermaid Diagrams Integration:** Invoked `diagram_designer` to generate and insert 6 high-fidelity, standard-compliant Mermaid diagrams into Module 17 (Cognitive Map, Vertical vs. Horizontal Scaling, Load Balancer Probing/Eviction, SQL vs. NoSQL vs. Graph DB structure, Stateful vs. Stateless JWT Auth flows, and layered API Security Shielding).
+- **MOC Indices (`Reference Notes/Index.md` & `Main Notes/Index.md`):** Updated the indexes: added Track 6 for systems scaling in Reference Index, and added a "Systems Design & Core Infrastructure" Dataview section for `role: infra` notes in Conceptual Index.
+
+---
+
 ## [2026-06-07] - Ingestion of Node Heartbeat and Eviction Q&A
 
 ### Added

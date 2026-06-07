@@ -33,6 +33,7 @@ The knowledge base is stored in `/home/karim/Desktop/CKA/`.
 To maintain and expand the vault efficiently, the following specialized AI subagents are available:
 - **ResearchAgent (`research_refinement`):** Parses raw materials (Gemini logs, transcripts, email newsletters) in `inflow/`, cleans up debugging noise, and compiles structured Reference Notes in `Reference Notes/`.
 - **AuditAgent (`research_audit`):** Audits Reference Notes to identify tangent or shallow domain concepts (e.g., Apache reverse proxies, workflows, systemd configs) and enriches them with explanatory volume.
+- **DiagramAgent (`diagram_designer`):** Identifies complex technical workflows, topologies, or state transitions in the notes and designs structured, standard-compliant Mermaid.js diagrams to visually elaborate these concepts.
 - **MultiDomainPoCAgent (`poc_developer`):** Focuses on creating and writing dense, accurate, context-rich validation scripts and PoC setups across all domains (Linux, AWS, Kubernetes, Databases, and Networking).
 - **GardenAgent (`garden_architect`):** Analyzes connections across domains (AWS, Linux, Databases, Networking, Kubernetes) and compiles Architectural Pattern Notes in `Digital Garden/`.
 - **CKAExamAgent (`cka_exam_expert`):** Focuses on optimizing study notes for exam success, compiling time-management strategies, terminal configurations, VIM hacks, and topic-specific exam checklists inside `Projects/CKA/`.
@@ -66,6 +67,9 @@ When a new source file is introduced:
 1. **Auditing:** Delegate to `AuditAgent` to audit the newly compiled Reference Notes.
 2. **Context Expansion:** Scan for secondary or tangent domain topics (which vary dynamically, e.g., web server proxies, database configurations, Linux kernel hooks, container runtimes, or system workflows).
 3. **Add Volume:** Expand these topics with clear architectural background, explanations, and configurations to ensure self-contained understanding, serving as detailed bridges until those domains get their own inflow notes.
+
+### Step 4.5: Visual Concept Elaborations (Diagramming)
+1. **Visual Diagram Creation:** Invoke `DiagramAgent` (`diagram_designer`) to analyze the compiled/updated notes, identify complex routing paths, lifecycles, or state machines, and design structured, standard-compliant Mermaid.js diagrams to be integrated directly into the modules to visually elaborate these concepts.
 
 ### Step 5: Verification PoC Generation
 1. **Verification PoC Generation:** Delegate to `MultiDomainPoCAgent` to write and verify domain-specific verification scripts/commands inside the reference notes.

@@ -49,6 +49,18 @@ SORT file.name ASC
 
 ---
 
+## 🖥️ Systems Design & Core Infrastructure
+Foundational architecture, database engines, traffic routing, and core security controls.
+
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND role = "infra"
+SORT file.name ASC
+```
+
+---
+
 ## 🛠️ Tooling & Interfaces
 Command-line tools and utilities used to inspect and interact with the Kubernetes API.
 
