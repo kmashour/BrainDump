@@ -1,289 +1,327 @@
+---
+domains:
+  - "networking"
+  - "infra"
+  - "database"
+  - "security"
+---
+
 # Module 17: System Design Fundamentals
 
-This module covers foundational system design concepts, database selection, horizontal and vertical scaling, load balancing, API protocols, transport layers, authentication, authorization, and core API security protection strategies.
+This module covers foundational system design principles, progressing from single server setups to production-ready architectures. It dives deep into database selection (SQL, NoSQL, Key-Value, Graph), horizontal and vertical scaling, load balancing algorithms, health checks, single points of failure (SPOF), API design styles (REST, GraphQL, gRPC), transport layer protocols (TCP/UDP), authentication, authorization, and core security controls.
 
 ---
 
 ## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
 
-To build a strong intuition for high-level system architecture, think of the topics as moving from a single server setup, to scaling architectures, distributing traffic, structuring the data storage, designing communication APIs, and securing the system:
+To build a strong intuition for system design fundamentals, think of the topics as moving from a single server to scaled, resilient, and secure multi-tier architectures:
 
 ```mermaid
-flowchart TD
-    Start["System Design Learning Journey"] --> Step1["Step 1: Single Server and Scaling Foundations<br>(Vertical vs. Horizontal, SPOF Mitigation)"]
-    Step1 --> Step2["Step 2: Traffic Distribution and Health Checking<br>(L4/L7 Load Balancers, Algorithms, Eviction)"]
-    Step2 --> Step3["Step 3: Data Layer Selection and Caching<br>(SQL vs. NoSQL, In-Memory Cache, CDNs)"]
-    Step3 --> Step4["Step 4: Transport and API Protocols<br>(TCP vs. UDP, REST vs. GraphQL)"]
-    Step4 --> Step5["Step 5: Access Control and API Security<br>(Sessions vs. JWTs, RBAC/ABAC, Threat Shielding)"]
+graph TD
+    subgraph learning_path["System Design Learning Path"]
+        A["Step 1: Single Server and Scaling"] --> B["Step 2: Load Balancing and Health Checks"]
+        B --> C["Step 3: Database Selection"]
+        C --> D["Step 4: API Design and TCP/UDP"]
+        D --> E["Step 5: Security, JWT and OAuth2"]
+    end
 ```
 
-1. **Step 1: Single Server & Scaling Foundations (Section 1):** We start with the simplest architecture—a single server running the application, database, and cache. We then scale this setup vertically (upgrading hardware) and horizontally (multiplying servers), identifying bottlenecks and Single Points of Failure (SPOFs).
-2. **Step 2: Traffic Distribution and Health Checking (Section 2):** To handle horizontal scaling, we introduce Load Balancers. We examine L4 vs. L7 routing, load balancing algorithms, and health check mechanics for node eviction and recovery.
-3. **Step 3: Data Layer Selection and Caching (Section 3):** We select the correct database engines (Relational/SQL vs. NoSQL Document, Key-Value, Columnar, or Graph stores) based on ACID guarantees and schema flexibility, and implement Caching/CDNs to reduce database load.
-4. **Step 4: Transport and API Protocols (Section 4):** We design communication contracts. We compare TCP vs. UDP at the transport layer, and REST vs. GraphQL for web APIs, analyzing payload sizes and query structures.
-5. **Step 5: Access Control and API Security (Section 5):** Finally, we secure the entry doors. We implement authentication (Sessions vs. JWTs), authorization models (RBAC, ABAC, ACLs, OAuth 2.0), and defend against common attacks (Rate Limiting, CORS, Injections, WAF, VPNs, CSRF, and XSS).
+1. **Step 1: Foundational Layout & Scaling (Section 1):** Moving from a single-point setup to vertical/horizontal models.
+2. **Step 2: Traffic Distribution (Section 2):** Introducing load balancers and health checks to maintain availability.
+3. **Step 3: Storage Selection (Section 3):** Choosing the right database engine based on ACID requirements and access latency.
+4. **Step 4: API Design & Transport Protocols (Section 4):** Standardizing communication interfaces (REST, GraphQL, gRPC) and protocol bindings (TCP/UDP).
+5. **Step 5: Defense-in-Depth & Identity (Section 5):** Securing endpoints through encryption, AAA (Authentication, Authorization, Accounting), and network safeguards.
 
-By following this flow, you progress from **Foundational Server Scaling → Traffic Orchestration → Storage Selection → API Contract Design → Enterprise Security Hardening**.
+By following this flow, you progress from **Single Node Primitives → Dynamic Routing → Data Architecture → Protocol Selection → Hardened Infrastructure**.
 
 ---
 
-## 1. Single Server Setup and Scaling Foundations
+## 1. Single Server Setup & Scaling Foundations
 
-Every complex architecture begins with a single server setup. Understanding how to transition from a single host to a distributed pool is the core of system scaling.
+### A. The Single Server Paradigm
+In a foundational system setup, all software components run on a single machine. This includes:
+* **Presentation & Web Layer:** Serves static files (HTML, CSS, JS) to browsers.
+* **Application Layer:** Executes the business logic (e.g., Node.js, Python, Java).
+* **Data Layer:** Hosts the database (e.g., PostgreSQL, MySQL) and cache (e.g., Redis).
 
-### A. Single Server Architecture
-In a single server setup, all components run on a single host machine: the web server (e.g., Nginx, Apache), the application runtimes (e.g., Node.js, Python, Go), the database (e.g., PostgreSQL, MongoDB), and the cache (e.g., Redis).
-* **Workflow:** 
-  1. The user requests `app.demo.com`.
-  2. The client browser queries DNS to resolve the domain to the server's public IP address (e.g., `12.34.56.78`).
-  3. The browser sends HTTP requests directly to the server IP.
-  4. The server processes the request, queries the database locally, and returns the response.
-* **Limitations:** A single server suffers from severe resource exhaustion (CPU, memory, disk I/O) and represents a **Single Point of Failure (SPOF)**. If the server crashes, the entire system is offline.
+#### Request Lifecycle on a Single Server:
+1. The user enters a domain name (e.g., `app.demo.com`) in the client application.
+2. The client queries the **Domain Name System (DNS)** to map the domain to the server's public IP address.
+3. The DNS returns the IP address.
+4. The client initiates an HTTP request directly to the server's IP.
+5. The server processes the request, queries the local database, and returns the response (HTML page or JSON payload).
+
+```mermaid
+graph TD
+    subgraph single_server_flow["Single Server Request Flow"]
+        Client["Client (Browser/App)"]
+        DNS["DNS Server"]
+        Server["Single Server (App, Database, Cache)"]
+
+        Client -->|"1. Query domain name IP"| DNS
+        DNS -->|"2. Return IP address"| Client
+        Client -->|"3. Send HTTP Request"| Server
+        Server -->|"4. Return HTTP Response"| Client
+    end
+```
 
 ### B. Vertical vs. Horizontal Scaling
-When traffic increases, the system must scale to handle the load:
-* **Vertical Scaling (Scaling Up):** Adding more power (CPU, RAM, faster NVMe storage) to the existing server.
-  * *Pros:* Simple; requires zero application code or architectural changes. Database relations remain unified.
-  * *Cons:* Hard hardware limit (ceiling of modern server motherboards); no redundancy (SPOF remains); downtime is usually required for upgrades.
-* **Horizontal Scaling (Scaling Out):** Adding more machines to the resource pool.
-  * *Pros:* Theoretically infinite scale; high availability and redundancy; easy incremental upgrades.
-  * *Cons:* Requires a load balancer; introduces networking complexity; application servers must be *stateless*; data consistency across distributed database nodes becomes challenging.
+As traffic grows, a single server struggles under compute (CPU), memory (RAM), disk I/O, or network bandwidth constraints. We scale the system using two primary strategies:
+
+1. **Vertical Scaling (Scale-Up):** Adding more hardware resources (more CPU cores, more RAM, faster SSDs) to the existing server instance.
+   * **Advantages:** Simplicity; no architectural changes; low initial overhead.
+   * **Limitations:** Hardware ceiling (physical resource limits); no redundancy; if the server crashes, the entire application suffers a complete outage (Single Point of Failure).
+
+2. **Horizontal Scaling (Scale-Out):** Adding more server instances to distribute the processing load.
+   * **Advantages:** Virtually limitless scale; high availability and fault tolerance (if one node fails, others handle requests); elastic adjustment to traffic spikes.
+   * **Limitations:** Requires traffic routing mechanisms (Load Balancers); introduces state management challenges (stateless application design is required); increases complexity.
 
 ```mermaid
-flowchart LR
-    subgraph VerticalScaling["Vertical Scaling (Scale Up)"]
+graph LR
+    subgraph vertical_scaling["Vertical Scaling"]
         direction TB
-        V1["Small Server<br>(2 Cores, 8GB RAM)"] --> VArrow["Upgrade Hardware"] --> V2["Giant Server<br>(64 Cores, 256GB RAM)"]
+        V1["Server Node"]
+        V1 -->|"Add Resources"| V2["Server Node (Increased CPU, RAM, Disk)"]
     end
 
-    subgraph HorizontalScaling["Horizontal Scaling (Scale Out)"]
+    subgraph horizontal_scaling["Horizontal Scaling"]
         direction TB
-        H_Client["Client Request"] --> H_LB["Load Balancer"]
-        H_LB --> H_Srv1["App Server 1"]
-        H_LB --> H_Srv2["App Server 2"]
-        H_LB --> H_Srv3["App Server 3"]
+        LB["Load Balancer"]
+        LB --> Node1["Server Node 1"]
+        LB --> Node2["Server Node 2"]
+        LB --> Node3["Server Node 3"]
     end
 ```
-
-### C. Redundancy and SPOF Mitigation
-To eliminate SPOFs, every component must have redundancy:
-* **Application Layer:** Run multiple stateless server instances. If one instance fails, the load balancer reroutes traffic to the surviving instances.
-* **Database Layer:** Deploy a primary-replica (master-slave) setup. Write operations go to the primary node, which replicates data to one or more read-only replicas. If the primary fails, a replica is promoted to primary.
-* **Active-Passive vs. Active-Active:** In active-passive, secondary nodes stand by and only receive traffic upon failover. In active-active, all redundant nodes actively process traffic simultaneously.
 
 ---
 
-## 2. Load Balancing and System Health
+## 2. Load Balancing Topologies & Algorithmic Strategies
 
-As we scale horizontally, we require a mechanism to distribute incoming requests across our pool of application servers. This is the role of the Load Balancer (LB).
-
-### A. Load Balancer Routing (L4 vs. L7)
-Load balancers operate at different layers of the OSI model:
-* **Layer 4 (L4) Load Balancing:** Operates at the transport layer (TCP/UDP). It routes traffic based on the source IP, destination IP, and port number without inspecting the HTTP/HTTPS payload. It is fast and requires low CPU overhead, but cannot make routing decisions based on request paths, headers, or cookies.
-* **Layer 7 (L7) Load Balancing:** Operates at the application layer (HTTP/HTTPS). It inspects HTTP headers, cookies, query parameters, and URL paths. This allows smart routing (e.g., sending `/api` to api-servers and `/static` to storage servers, or sticky sessions based on cookies). L7 requires SSL termination, which consumes more CPU resources.
-
-### B. Load Balancing Algorithms
-To distribute traffic, load balancers use various routing algorithms:
-* **Round Robin:** Routes requests sequentially to each server in the pool. Best when all backend servers have identical hardware.
-* **Weighted Round Robin:** Assigns a weight to each server based on capacity. More powerful servers receive a higher percentage of requests.
-* **Least Connections:** Routes requests to the server with the fewest active TCP connections. Highly effective for long-running requests or databases.
-* **IP Hash:** Hashes the client's IP address to determine which server gets the request. This guarantees that a specific client always hits the same backend server (useful for session caching).
-
-### C. Health Checks and Node Eviction
-To prevent routing traffic to unhealthy servers, load balancers perform active health checks:
-* **Mechanism:** The load balancer sends periodic requests (e.g., HTTP GET to `/health` or TCP pings) to each backend server every $N$ seconds.
-* **Eviction:** If a server fails $K$ consecutive health checks, the load balancer marks it as unhealthy and evicts it from the active routing pool.
-* **Recovery:** The load balancer continues monitoring the evicted server. Once it passes $M$ consecutive health checks, it is reintegrated into the pool.
+### A. Traffic Distribution Mechanics
+To implement horizontal scaling, we insert a **Load Balancer (LB)** between the client and backend application servers. The load balancer acts as a reverse proxy, accepting incoming traffic and distributing it across a pool of backend servers.
 
 ```mermaid
-flowchart TD
-    Client["Client Request"] --> LB["Load Balancer"]
+graph TD
+    Client["Client"] --> LB["Load Balancer (Monitors health via health checks)"]
     
-    subgraph StatusCheck["Continuous Monitoring"]
-        LB -- "Active Probe (GET /health)" --> ServerNodes{"Server Node State"}
-        ServerNodes -- "Passes health checks" --> Active["Active Pool (Healthy Nodes)"]
-        ServerNodes -- "Fails health checks" --> Evicted["Evicted Pool (Unhealthy Nodes)"]
+    subgraph backend_pool["Application Cluster"]
+        LB -->|"Distributes traffic"| API1["API Service 1"]
+        LB -->|"Distributes traffic"| API2["API Service 2"]
     end
-
-    LB --> Active
-    Active --> Srv1["Server 1"]
-    Active --> Srv2["Server 2"]
     
-    LB -. "Traffic Blocked" .-> Evicted
-    Evicted --> Srv3["Server 3"]
+    subgraph database_pool["Database Tier"]
+        API1 --> DB["Database Server"]
+        API2 --> DB
+    end
 ```
 
-### D. Verification and Practical Implementation
-To inspect a hands-on implementation of Nginx load balancing, upstream grouping, and proxy failovers, refer to the project playbook:
-- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-nginx-load-balancer-and-gateway-configuration-nginxconf]]*
+### B. Algorithmic Strategies
+Load balancers use different routing algorithms depending on system needs:
+
+* **Round Robin:** Routes incoming requests sequentially through the list of servers. Best when backend servers are homogeneous (identical capacity) and request processing times are uniform.
+* **Least Connections:** Routes traffic to the server with the fewest active TCP connections. Ideal for long-running sessions or requests of variable duration.
+* **Least Response Time:** Evaluates server latency and routes to the fastest-responding node with the fewest connections. Useful for optimizing user experience across heterogeneous clusters.
+* **IP Hashing:** Hashes the client's IP address to map it to a specific server. Ensures session persistence (sticky sessions) so a client consistently hits the same backend node.
+* **Weighted (Round Robin / Least Connections):** Assigns a capacity weight to each server. A server with 64GB RAM gets a higher weight than one with 16GB RAM, receiving a proportional share of traffic.
+* **Geographical (Latency-Based):** Routes users to the data center geographically closest to them (e.g., US-East, Europe-West) to minimize network latency.
+* **Consistent Hashing:** Maps servers and request keys onto a hash ring. Used in distributed caching to minimize cache invalidation when nodes are added or removed.
+
+### C. Health Monitoring & High Availability
+To ensure traffic only goes to healthy nodes, load balancers perform active **Health Checks**:
+1. The LB periodically sends HTTP requests (e.g., `/healthz`) or TCP pings to each backend server.
+2. If a server responds with `200 OK` within a timeout window, it remains in the active pool.
+3. If it fails or times out, the LB removes it from the routing pool.
+4. Once the server recovers and passes checks again, it is re-integrated.
+
+#### Single Point of Failure (SPOF) Mitigation:
+An individual load balancer is a SPOF. If it fails, the entire cluster becomes unreachable. To prevent this, systems implement **LB Redundancy**:
+* **Active-Passive Pair:** An active LB handles traffic while a passive (standby) LB monitors it. They share a virtual IP (VIP) using protocols like VRRP. If the active LB fails, the standby takes over the IP immediately.
+* **Active-Active Pair:** Both LBs handle traffic concurrently, coordinated by DNS-based routing (e.g., Round Robin DNS).
 
 ---
 
-## 3. Data Layer Design (SQL, NoSQL, and Caching)
+## 3. Database Architectures & Selection Framework
 
-Selecting the right data storage engine is one of the most critical architectural decisions.
+A critical decision in system design is selecting the correct database paradigm based on data relations, scale, and consistency requirements.
 
-### A. Relational (SQL) Databases
-SQL databases (e.g., PostgreSQL, MySQL) store data in structured tables with predefined schemas, utilizing foreign keys to represent relationships.
-* **ACID Transactions:** Guarantee Atomicity, Consistency, Isolation, and Durability.
-* **Joins:** Efficiently join tables to retrieve complex relational data.
-* **Scaling:** Scaled horizontally through master-replica setups (for reads) or sharding (partitioning rows across multiple database servers based on a shard key).
+### A. Relational Databases (SQL / RDBMS)
+* **Examples:** PostgreSQL, MySQL, SQLite, Oracle.
+* **Data Model:** Structured tables with columns, rows, and foreign key relations.
+* **Query Language:** Structured Query Language (SQL).
+* **Key Advantages:**
+  * Support for complex **JOIN operations** across multiple tables.
+  * Strict transaction safety governed by **ACID properties**:
+    * **Atomicity:** All operations in a transaction succeed, or the entire transaction is rolled back (all-or-nothing).
+    * **Consistency:** A transaction shifts the database from one valid state to another, enforcing schemas and constraints.
+    * **Isolation:** Concurrent transactions execute independently without interfering with each other.
+    * **Durability:** Committed transactions survive system crashes.
 
-### B. Non-Relational (NoSQL) Databases
-NoSQL databases sacrifice strict ACID constraints or relationships to achieve high write throughput and horizontal scaling.
-* **Key-Value Stores:** Store data as key-value pairs in RAM (e.g., Redis, Memcached) for extremely fast read/write access. Frequently used for caching and sessions.
-* **Document Databases:** Store data in JSON or BSON documents (e.g., MongoDB). Ideal for unstructured or rapidly changing schemas where data objects are self-contained.
-* **Column-Oriented (Columnar) Databases:** Store data by columns instead of rows (e.g., Cassandra, HBase). Optimized for high-volume analytical queries (OLAP) across billions of rows.
-* **Graph Databases:** Store data as nodes, edges, and properties (e.g., Neo4j). Specifically designed for highly connected data structures like social graphs, recommendation engines, or fraud detection.
+### B. Non-Relational Databases (NoSQL)
+NoSQL databases sacrifice relational completeness (JOINs) and sometimes absolute consistency for massive scale, flexibility, and low-latency performance.
 
-```mermaid
-flowchart LR
-    subgraph SQL["SQL (Relational Table Model)"]
-        direction TB
-        T1["Table: Users<br>| id (PK) | name  |<br>| 1       | Alice |"] 
-        T2["Table: Orders<br>| id (PK) | user_id (FK) | total |<br>| 101     | 1            | $50   |"]
-        T1 -- "One-to-Many Relationship" --> T2
-    end
+1. **Document Stores:**
+   * **Examples:** MongoDB, CouchDB.
+   * **Data Model:** Semi-structured JSON-like documents.
+   * **Best For:** Content management, user profiles, rapidly changing schemas.
 
-    subgraph NoSQL["NoSQL Document Model (JSON)"]
-        direction TB
-        Doc["Document (User Object)<br>{<br>  'id': 1,<br>  'name': 'Alice',<br>  'orders': [<br>    { 'id': 101, 'total': 50 }<br>  ]<br>}"]
-    end
+2. **Key-Value Stores:**
+   * **Examples:** Redis, Memcached.
+   * **Data Model:** Simple dictionary mapping keys to values, optimized for RAM storage.
+   * **Best For:** Session caching, database query caching, real-time message brokering.
 
-    subgraph GraphDB["Graph Database Model"]
-        direction TB
-        UserNode["Node: User<br>(name: 'Alice')"]
-        OrderNode["Node: Order<br>(total: 50)"]
-        UserNode -- "Edge: PLACED" --> OrderNode
-    end
-```
+3. **Wide-Column Stores:**
+   * **Examples:** Cassandra, ScyllaDB, HBase.
+   * **Data Model:** Multi-dimensional tables indexing rows by partition and clustering keys.
+   * **Best For:** Time-series telemetry, write-heavy analytics, multi-region horizontal scaling.
 
-### C. Caching and Content Delivery Networks (CDNs)
-To minimize database reads, systems cache data at multiple layers:
-* **Application Cache:** Using an in-memory key-value store (like Redis) in a *cache-aside* pattern (checking cache first; if miss, query DB and update cache).
-* **Content Delivery Network (CDN):** A geographically distributed network of proxy servers that cache static assets (HTML, CSS, JS, images, videos) close to the user's physical location. This reduces latency and web server bandwidth usage.
+4. **Graph Databases:**
+   * **Examples:** Neo4j, Amazon Neptune.
+   * **Data Model:** Nodes (entities), Edges (relationships), and Properties.
+   * **Best For:** Recommendation engines, social network mapping, fraud detection.
 
-### D. Verification and Practical Implementation
-To verify CDN and cache response headers using CLI tools, refer to the diagnostics playbook:
-- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-verification-of-caching-and-cdn-headers]]*
+### C. Selection Matrix
+* **Choose SQL when:** Your schema is highly structured and stable, relationships between entities are dense, and you require transactional integrity (e.g., financial ledger).
+* **Choose NoSQL when:** You handle unstructured or semi-structured data, need to write massive volumes of write-heavy events, require sub-millisecond read latencies, or must scale horizontally across multiple regions.
 
 ---
 
-## 4. API Design, Protocols, and Networking
+## 4. API Design & Communication Protocols
 
-APIs define the communication contracts between clients and servers.
+### A. Core API Paradigms
+An API defines the communication contract between clients and servers. The three dominant styles are:
 
-### A. Transport Layer: TCP vs. UDP
-API protocols rely on transport layer protocols:
-* **TCP (Transmission Control Protocol):** Connection-oriented. Establishes a connection via a 3-way handshake (SYN -> SYN-ACK -> ACK). Guarantees reliable, ordered packet delivery with error-checking and flow control. Used for HTTP, REST, GraphQL, and database connections.
-* **UDP (User Datagram Protocol):** Connectionless, "fire-and-forget" protocol. Packets are sent without verifying delivery, order, or connection state. It is fast and lightweight. Used for video streaming, online gaming, VoIP, and DNS.
+| Attribute | REST | GraphQL | gRPC |
+| :--- | :--- | :--- | :--- |
+| **Concept** | Resource-oriented (Nouns) | Client-defined query graphs | Remote function invocation |
+| **Protocol** | HTTP (1.1 / 2) | HTTP (1.1 / 2) | HTTP/2 (Strict) |
+| **Serialization** | JSON, XML | JSON | Protocol Buffers (Binary) |
+| **Payload Size** | Larger (Over-fetching risk) | Minimal (Client requests fields) | Smallest (Compressed binary) |
+| **Caching** | HTTP/Gateway level (GET) | Client-side/App level | Custom application logic |
+| **Use Case** | Public web services, CRUD | Complex dashboards, mobile clients | Internal microservices, streaming |
 
-### B. RESTful APIs
-REST (Representational State Transfer) is an architectural style based on HTTP.
-* **Statelessness:** Each request from the client must contain all information needed to process it; the server stores no client session context.
-* **Resources:** Identified by URLs (e.g., `/posts`). Actions are defined by HTTP methods:
-  * `GET`: Retrieve resource (safe and idempotent).
-  * `POST`: Create resource (neither safe nor idempotent).
-  * `PUT`: Replace resource (idempotent).
-  * `PATCH`: Partially update resource (non-idempotent).
-  * `DELETE`: Remove resource (idempotent).
-* **Headers:** Utilizes standard headers:
-  * `Content-Type`: Format of body (e.g., `application/json`).
-  * `Authorization`: Credentials (e.g., `Bearer <token>`).
-  * `Cache-Control`: Instruction on caching.
+```mermaid
+graph TD
+    subgraph rest_architecture["REST Paradigm (Multiple Round-Trips)"]
+        direction TB
+        ClientREST["Client"]
+        
+        ClientREST -->|"GET /users/1"| ServerREST["REST API Server"]
+        ServerREST -->|"Returns User JSON"| ClientREST
+        
+        ClientREST -->|"GET /users/1/posts"| ServerREST
+        ServerREST -->|"Returns Posts JSON"| ClientREST
+        
+        ClientREST -->|"GET /users/1/followers"| ServerREST
+        ServerREST -->|"Returns Followers JSON"| ClientREST
+    end
 
-### C. GraphQL
-GraphQL is a query language for APIs that replaces REST's multi-endpoint architecture with a single endpoint (typically `POST /graphql`).
-* **Schema Definition:** Types, queries, and mutations are defined in a schema.
-* **Preventing Over-Fetching / Under-Fetching:** Clients specify the exact fields they need in the query payload. The server resolves and returns only those fields, saving bandwidth and roundtrips.
-* **Mutations:** Used for write operations (create, update, delete).
+    subgraph graphql_architecture["GraphQL Paradigm (Single Round-Trip)"]
+        direction TB
+        ClientGQL["Client"]
+        
+        ClientGQL -->|"POST /graphql (Query: user, posts, followers)"| ServerGQL["GraphQL Server"]
+        ServerGQL -->|"Returns custom combined JSON"| ClientGQL
+    end
+```
 
-### D. Verification and Practical Implementation
-To inspect RESTful and GraphQL client query recipes using curl, refer to the client request playbook:
-- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2-verify-restful-http-methods]]*
+### B. Transport Layer Protocols: TCP vs. UDP
+At the network layer, APIs run on top of Transport protocols:
+
+1. **TCP (Transmission Control Protocol):**
+   * **Characteristics:** Connection-oriented (established via a **Three-Way Handshake**), guarantees message delivery, packet reordering, flow control, and checksum confirmation.
+   * **Handshake Flow:** `SYN` -> `SYN-ACK` -> `ACK`.
+   * **Trade-off:** High packet overhead and latency due to acknowledgement loops and retransmission.
+   * **Ideal For:** Web APIs (REST/GraphQL), file transfers, databases, payment gateways.
+
+2. **UDP (User Datagram Protocol):**
+   * **Characteristics:** Connectionless, packet-delivery is not guaranteed (fire-and-forget), no packet ordering, minimal overhead.
+   * **Trade-off:** Fast and lightweight, but susceptible to packet loss and out-of-order packets.
+   * **Ideal For:** VoIP, video conferencing, live streaming, online multiplayer games.
 
 ---
 
-## 5. Access Control and API Security Protection
+## 5. Security, Authentication, and Authorization Frameworks
 
-APIs must be strictly protected from attackers to prevent data breaches and denial of service.
+### A. Access Management: AAA Foundation
+* **Authentication (AuthN):** Verifies *who* you are (identifying the requester).
+* **Authorization (AuthR):** Verifies *what* you are allowed to do (permissions checking).
 
-### A. Authentication: Sessions vs. JWTs
-Authentication verifies *who* the client is:
-* **Session-Based Authentication (Stateful):**
-  1. User logs in.
-  2. Server creates a session record in the database or Redis cache.
-  3. Server returns a session ID to the client in a cookie.
-  4. The client's browser automatically sends the session ID cookie with every subsequent request.
-  5. The server queries the database/cache to validate the session.
-* **Token-Based Authentication (Stateless - JWT):**
-  1. User logs in.
-  2. Server creates a JSON Web Token (JWT) containing headers, payload (claims like user ID, roles, expiry), and signs it using a private key.
-  3. Server returns the JWT.
-  4. Client stores the token (localStorage or HttpOnly cookie) and sends it in the `Authorization: Bearer <token>` header.
-  5. The server validates the token's cryptographic signature locally without querying a database.
+#### Authentication Types:
+* **Basic Authentication:** Credentials sent as Base64-encoded strings (`username:password`) in the `Authorization` header. Highly insecure without HTTPS.
+* **Digest Authentication:** Uses challenge-response hashing (MD5) to avoid sending plaintext credentials.
+* **API Keys:** Unique strings issued to consumers. Lightweight but difficult to invalidate selectively without database checks.
+* **Session-Based Authentication:** Stateful. The server verifies credentials, creates a session in store (e.g., Redis), and returns a session ID in a browser cookie. The server must check the session store on every request.
+* **Token-Based Authentication (JWT):** Stateless. The server returns a signed JSON Web Token (JWT). The client includes it in the `Authorization: Bearer <token>` header. The server verifies the token signature cryptographically using a public/private key or shared secret, eliminating database lookups.
+  * **Access vs. Refresh Tokens:** Short-lived access tokens (e.g., 15 mins) reduce leak impact. Long-lived refresh tokens (stored in secure `HttpOnly` cookies) request new access tokens.
 
 ```mermaid
-flowchart TD
-    subgraph StatefulAuth["Session-Based (Stateful) Authentication"]
-        direction TB
-        C1["Client"] -- "Step 1: Send Credentials" --> S1["Server"]
-        S1 -- "Step 2: Create Session and Store" --> DB1[("Session Database")]
-        S1 -- "Step 3: Return Session ID (Cookie)" --> C1
-        C1 -- "Step 4: Request with Cookie (Session ID)" --> S1
-        S1 -- "Step 5: Look up Session ID" --> DB1
-        DB1 -- "Step 6: Session Valid" --> S1
-        S1 -- "Step 7: Return Response" --> C1
+graph TD
+    subgraph client_zone["Client App"]
+        Client["Client App"]
     end
 
-    subgraph StatelessAuth["Token-Based (Stateless JWT) Authentication"]
-        direction TB
-        C2["Client"] -- "Step 1: Send Credentials" --> S2["Server"]
-        S2 -- "Step 2: Generate and Sign JWT<br>(No DB lookup needed)" --> S2
-        S2 -- "Step 3: Return JWT" --> C2
-        C2 -- "Step 4: Store Token (Client-Side)" --> C2
-        C2 -- "Step 5: Request with Authorization: Bearer JWT" --> S2
-        S2 -- "Step 6: Cryptographically Verify Signature" --> S2
-        S2 -- "Step 7: Return Response" --> C2
+    subgraph auth_zone["Identity Provider (Auth Server)"]
+        AuthServer["Auth Server"]
+        DB_Session["Session/Token Store"]
+        AuthServer <-->|"Check/Invalidate Refresh Tokens"| DB_Session
     end
+
+    subgraph resource_zone["Resource Provider (API Server)"]
+        APIServer["API Server"]
+    end
+
+    %% Flow 1: Authentication
+    Client -->|"Step 1: POST /login (Credentials)"| AuthServer
+    AuthServer -->|"Step 2: Returns Access Token (Short-lived, memory) and Refresh Token (Long-lived, HttpOnly Cookie)"| Client
+
+    %% Flow 2: Accessing Resource
+    Client -->|"Step 3: GET /resource with Bearer Access Token"| APIServer
+    APIServer -->|"Step 4: Stateless Validation (Verify signature locally using public key, no DB call)"| APIServer
+    APIServer -->|"Step 5: Returns Resource"| Client
+
+    %% Flow 3: Refreshing Token
+    Client -->|"Step 6: POST /refresh with HttpOnly Refresh Token"| AuthServer
+    AuthServer -->|"Step 7: Stateful Verification (Check token store/database validity)"| AuthServer
+    AuthServer -->|"Step 8: Returns new Access Token"| Client
 ```
 
-### B. Authorization Models
-Authorization verifies *what* authenticated users are allowed to do:
-* **Role-Based Access Control (RBAC):** Assigns permissions to roles (e.g., admin, editor, viewer), and roles to users. Simplest to manage at scale.
-* **Attribute-Based Access Control (ABAC):** Assigns permissions based on user attributes (department, age), resource attributes (confidentiality, owner), and environmental conditions (time of day, network location). Highly flexible but complex.
-* **Access Control Lists (ACLs):** Each resource carries a list of specific user IDs and their allowed actions (e.g., Google Drive sharing).
-* **OAuth 2.0:** A delegation protocol allowing a third-party application (e.g., Vercel) to access a resource server (e.g., GitHub API) on behalf of a user using an access token instead of user credentials.
+#### Authorization Models:
+* **Role-Based Access Control (RBAC):** Assigns permissions to roles (e.g., admin, editor, viewer). Users are assigned to roles. Easy to manage and audit.
+* **Attribute-Based Access Control (ABAC):** Checks attributes (User department, Resource classification, Time of day, IP origin) to determine access. High flexibility but complex logic.
+* **Access Control Lists (ACL):** Associates a permission matrix directly with an individual resource (e.g., Google Doc sharing).
 
-### C. API Security Protection Techniques
-To defend against common vulnerabilities, implement the following safeguards:
-1. **Rate Limiting:** Restricts the number of requests a client can make in a time window to prevent API exhaustion and brute-forcing. Can be applied per-endpoint, per-IP, or globally.
-2. **CORS (Cross-Origin Resource Sharing):** Browser-enforced mechanism that restricts a web page from making requests to a different domain than the one that served it. The server must explicitly allow the requesting origin via headers (e.g., `Access-Control-Allow-Origin`).
-3. **SQL/NoSQL Injection Prevention:** Never concatenate user input directly into queries. Always use parameterized queries (prepared statements) or Object-Relational Mapping (ORM) safeguards.
-4. **Firewalls (WAF):** A Web Application Firewall sits between the internet and the API, filtering out known malicious traffic patterns (suspicious headers, SQL keywords, abnormal methods).
-5. **VPN (Virtual Private Network):** Restricts network access. Internal APIs or admin dashboards should reside inside a private network, accessible only via VPN tunnel.
-6. **CSRF (Cross-Site Request Forgery) Prevention:** Protect session cookie-based systems from malicious sites triggering actions. Enforce CSRF tokens (unique, unpredictable tokens validated on every POST/PUT/DELETE request) and set cookie attributes to `SameSite=Strict`.
-7. **XSS (Cross-Site Scripting) Prevention:** Prevent attackers from injecting executable scripts (JavaScript) into fields (like comment sections) that are rendered to other users. Always sanitize user input and HTML-encode all output.
+#### OAuth 2.0 and OpenID Connect (OIDC):
+* **OAuth 2.0:** A delegated authorization framework. Allows a third-party app to access resource scopes on a user's behalf without sharing passwords (uses authorization codes to trade for access tokens).
+* **OpenID Connect (OIDC):** An identity verification layer built on top of OAuth 2.0. It adds an `id_token` (JWT format containing user profile info) to verify authentication.
 
 ```mermaid
-flowchart TD
-    Client["Client Request"] --> Shield1{"Shield 1: Rate Limiter"}
-    
-    Shield1 -- "Rate Limit Exceeded" --> Block429["Block (429 Too Many Requests)"]
-    Shield1 -- "Within Limit" --> Shield2{"Shield 2: WAF and Firewall"}
-    
-    Shield2 -- "Malicious Pattern Detected" --> Block403["Block (403 Forbidden / Bad Request)"]
-    Shield2 -- "Clean Request" --> Shield3{"Shield 3: CORS Check"}
-    
-    Shield3 -- "Invalid Origin" --> BlockCORS["Block (CORS Origin Error)"]
-    Shield3 -- "Valid Origin" --> VPNGateway["VPN Gateway / Tunnel"]
-    
-    subgraph PrivateNetwork["Private Network (Internal Application)"]
-        VPNGateway --> PrivateAPI["Private API Server"]
-        PrivateAPI --> PrivateDB[("Private Database")]
-    end
+graph TD
+    User["End User"]
+    Client["Client App (Relying Party)"]
+    AuthServer["Identity and Auth Server (OpenID Provider)"]
+
+    %% Flow steps
+    User -->|"1. Initiates login"| Client
+    Client -->|"2. Redirects to Auth Server"| User
+    User -->|"3. Authenticates and grants consent"| AuthServer
+    AuthServer -->|"4. Redirects with Authorization Code"| Client
+    Client -->|"5. Token Exchange: Send Auth Code and Client Secret"| AuthServer
+    AuthServer -->|"6. Returns Access Token and ID Token (JWT)"| Client
 ```
 
-### D. Verification and Practical Implementation
-To inspect concrete configurations for rate limiting, CORS headers injection, and SQL injection prevention code, refer to the security playbook:
-- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2-secure-backend-database-querying-python-implementation]]*
+### B. Common Vulnerabilities & Hardening Techniques
+1. **Rate Limiting:** Protects systems from brute-force and DDoS attacks. Restricts requests per endpoint, client IP, or global threshold.
+2. **CORS (Cross-Origin Resource Sharing):** A browser-enforced security mechanism restricting which external origins can query your API.
+3. **Injection Defenses:** Eliminates SQL/NoSQL Injection by separating database queries from parameter data using Parameterized Queries or ORM mapping.
+4. **Firewalls & WAFs:** Web Application Firewalls inspect HTTP headers, payloads, and cookies to block known attack vectors (e.g., SQLi strings, XSS payloads).
+5. **VPNs & Network Segregation:** Isolates internal admin APIs behind virtual private networks, blocking public-internet routing.
+6. **CSRF (Cross-Site Request Forgery):** Prevents session hijack commands by verifying custom CSRF tokens sent in headers alongside cookies.
+7. **XSS (Cross-Site Scripting):** Sanitizes user-generated inputs to prevent malicious scripts from executing in client browsers, and protects sensitive cookies via `HttpOnly` flags.
+
+---
+
+## 6. Decoupled Hands-on Project Implementation
+
+To verify and inspect the complete, production-grade hands-on configuration files, API code, database migration scripts, and diagnostic command recipes for a secure, load-balanced web API system, refer to:
+- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md|Project - Secure Load-Balanced Web API]]
+

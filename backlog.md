@@ -4,6 +4,24 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-08] - System Design Re-Ingestion & PoC Decoupling Pass
+
+### Added
+- **Project note (`Projects/Systems Design/Project - Secure Load-Balanced Web API.md`):** Re-created and consolidated the hands-on configurations (Nginx load balancing, SSL, rate limiting, and CORS headers), the Python FastAPI service (JWT authentication, in-memory rate limiter, and database pool), the SQL schema migration, and the Curl verification playbook.
+
+### Refactored / Upgraded
+- **Reference Note (`Reference Notes/17_system_design_fundamentals.md`):** Completely decoupled the inline configuration code blocks and commands from Section 6, replacing them with conceptual descriptions and direct wiki-links to the consolidated project note, satisfying clean architectural separation.
+- **Conceptual Main Notes (`Main Notes/`):** Restored and validated the landing notes and deeper-dive notes for `load-balancing`, `database-selection`, `api-protocols`, and `api-security`, ensuring complete alignment with the new system templates.
+- **Link Auditing:** Validated the entire vault with `review_vault.py` achieving 100% link integrity across all modules.
+
+### Ingested Inflow Sources
+The following files and assets have been processed and integrated:
+- `inflow/System Design Course – APIs, Databases, Caching, CDNs, Load Balancing & Production Infra.md`
+- `inflow/System Design Explained APIs, Databases, Caching, CDNs, Load Balancing & Production Infra.md`
+- `inflow/images/Readme.md` (ignored asset)
+
+---
+
 ## [2026-06-07] - Ingest System Design Course Clippings & Diagram Pipeline Integration
 
 ### Added
