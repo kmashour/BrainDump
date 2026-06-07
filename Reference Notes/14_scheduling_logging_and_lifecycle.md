@@ -267,6 +267,18 @@ Tolerations are defined in the Pod's `spec.tolerations` field. To allow a Pod to
   tolerations:
   - operator: "Exists"
   ```
+* **Omitted Effect (Wildcard):** If the `effect` field is omitted from a toleration block, it matches **all effects** (`NoSchedule`, `PreferNoSchedule`, and `NoExecute`) for that key:
+  ```yaml
+  tolerations:
+  - key: "node.kubernetes.io/unreachable"
+    operator: "Exists"
+    tolerationSeconds: 300 # Matches unreachable taints for NoSchedule and NoExecute
+  ```
+* **Multi-Taint Scheduling Evaluation (Additive Rules):**
+  * A single Node can have **multiple taints** concurrently in its `spec.taints` list (for example, both `NoSchedule` and `NoExecute` for the same failure key).
+  * To be scheduled on the Node, a new Pod must tolerate **all taints** on the node. Lacking a toleration for even one taint (such as tolerating only `NoExecute` but not `NoSchedule`) will prevent the scheduler from placing the Pod there.
+  * For already running Pods, a lack of a `NoSchedule` toleration does **not** trigger eviction (since `NoSchedule` only evaluates new placements). The running Pod only needs to tolerate the `NoExecute` taint to remain active on the node.
+
 
 #### 4. Real-World Implementation Scenarios & Examples
 

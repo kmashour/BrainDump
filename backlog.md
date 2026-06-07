@@ -4,6 +4,17 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-07] - Ingestion of Node Heartbeat and Eviction Q&A
+
+### Added
+- **`inflow/node_heartbeat_and_eviction_qa.md`**: Created inflow note consolidating Q&A on Kubelet heartbeats, unreachable/not-ready taints, and API patch concurrency.
+
+### Changed / Updated
+- **`Reference Notes/11_maintenance_upgrades_and_etcd.md`**: Added Section 1.5 detailing Kubelet node leases, unhealthy taints, eviction grace periods (toleration seconds), and why controllers use `PATCH` instead of `PUT` to prevent concurrency conflict errors.
+- **`Reference Notes/14_scheduling_logging_and_lifecycle.md`**: Expanded Pod Tolerations documentation with details on wildcard (omitted) effect matching and multi-taint scheduling additive evaluation logic.
+
+---
+
 ## [2026-06-07] - Cognitive Map Integration Across Reference Notes
 
 ### Added

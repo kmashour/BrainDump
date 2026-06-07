@@ -77,6 +77,49 @@ kubectl uncordon worker-node-1
 ### 1.4 Post-Maintenance Scheduling Behavior
 When a node is uncordoned via `kubectl uncordon`, the workloads that were evicted during the drain **do not automatically shift back** to it. The Kubernetes scheduler is reactive: it only schedules new pods or pods that are recreated/scaled. To redistribute workloads, you must perform a rolling restart of your deployments or deploy an agent like the Kubernetes Descheduler.
 
+### 1.5 Node Heartbeat, Eviction Taints, and Concurrency
+
+When a node experiences hardware failure or loses network connectivity, the control plane automatically taints and manages the node through the Node Lifecycle Controller.
+
+#### A. Heartbeat Loss and Node Lease Expiry
+1. **Heartbeat updates**: The `kubelet` service on each worker node maintains a lightweight `Lease` object in the `kube-node-lease` namespace, updating it every 10 seconds.
+2. **Lease Expiry**: If the Kubelet fails to update its Lease for **40 seconds** (the default `node-lease-duration-seconds` interval), the Node Lifecycle Controller marks the node's condition as `Ready: Unknown`.
+
+#### B. Automatic Eviction Taints
+Upon detecting a heartbeat loss or unhealthy condition, the Node Lifecycle Controller appends both of the following taints to the Node's `spec.taints` array:
+*   `node.kubernetes.io/unreachable:NoSchedule` (or `not-ready:NoSchedule`)
+*   `node.kubernetes.io/unreachable:NoExecute` (or `not-ready:NoExecute`)
+
+**Why are both taints applied?**
+*   **`NoSchedule`** is read by the `kube-scheduler` to immediately prevent any *new* pods from being scheduled on the failing host.
+*   **`NoExecute`** triggers the eviction of *existing running* pods on the node.
+
+#### C. Running Workload Eviction (Default Tolerations)
+Even though the `NoExecute` taint is applied, running pods are not immediately evicted. This is because the API admission control automatically injects default tolerations with a 5-minute delay:
+```yaml
+tolerations:
+- key: "node.kubernetes.io/unreachable"
+  operator: "Exists"
+  effect: "NoExecute"
+  tolerationSeconds: 300
+- key: "node.kubernetes.io/not-ready"
+  operator: "Exists"
+  effect: "NoExecute"
+  tolerationSeconds: 300
+```
+This 5-minute (`300s`) buffer prevents **eviction storms** during temporary network hiccups or brief server reboots.
+
+#### D. Fine-Grained Policies: Unreachable vs. NotReady
+*   **`node.kubernetes.io/not-ready`** is used when the node **is communicating** but reporting unhealthy (e.g. out of PIDs/Disk).
+*   **`node.kubernetes.io/unreachable`** is used when there is **radio silence** (network partition or system crash).
+
+Separating these taints allows administrators to define custom toleration timings. For instance, a stateless pod can be evicted immediately on both (`tolerationSeconds: 10`), while a stateful database pod might wait 30 minutes on `unreachable` to prevent concurrent writes to the same storage (avoiding split-brain data corruption).
+
+#### E. API Concurrency: Why the Controller Uses `PATCH`
+When adding taints to a node, the Node Lifecycle Controller executes an HTTP `PATCH` request rather than a `PUT` request:
+*   **PUT (Overwrite)** requires sending the complete node representation. If the Kubelet updates its resource metrics (like CPU/RAM usage) in the split-second between the controller's read and write, the `PUT` request will fail due to a version conflict (`resourceVersion` mismatch).
+*   **PATCH (Strategic Merge)** modifies only the `spec.taints` field. The API Server applies this update atomically in `etcd`, resolving updates without conflicts even under high concurrency.
+
 ---
 
 ## 2. Kubernetes Software Versioning & Skew Policies
