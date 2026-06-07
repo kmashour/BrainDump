@@ -31,6 +31,7 @@ The knowledge base is stored in `/home/karim/Desktop/BrainDumo/`.
 ## 1.1 Team of Specialized Agents
 
 The specialized subagents and their profiles are defined in the `System/Agents/` directory:
+- **OrchestrationAgent:** [orchestrator.md](System/Agents/orchestrator.md) (Pipeline Manager & Coordinator)
 - **ResearchAgent:** [researcher.md](System/Agents/researcher.md) (Inflow Refinement & Reference Compiler)
 - **AuditAgent:** [auditor.md](System/Agents/auditor.md) (Context Auditor & Tangent Expander)
 - **DiagramAgent:** [diagrammer.md](System/Agents/diagrammer.md) (Mermaid.js Concept Designer)
