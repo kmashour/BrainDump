@@ -31,7 +31,7 @@ flowchart TD
 ### Phase 1: Refinement
 - **Orchestrated Agent:** **ResearchAgent** (`System/Agents/researcher.md`)
 - **Governing Skill:** `System/Skills/ingest_refinement.md`
-- **Output:** Refines raw chat scripts or scraped HTML files in `inflow/` by removing fluff, system errors, and redundancy, and writes a detailed, high-verbosity module inside `Reference Notes/`.
+- **Output:** Refines raw chat scripts or scraped HTML files in `inflow/` by removing fluff, system errors, and redundancy. Writes detailed, high-verbosity modular files inside `Reference Notes/`, splitting them by specific topic/module by default rather than consolidating multiple topics into one file, to prevent domain/subdomain mixing.
 
 ### Phase 2: Context Auditing & Expansion
 - **Orchestrated Agent:** **AuditAgent** (`System/Agents/auditor.md`)

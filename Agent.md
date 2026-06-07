@@ -23,7 +23,7 @@ This workspace is organized as a flat, multi-domain vault with two-tier director
 When ingesting raw files or executing restructuring requests:
 1. **Always read [instructions.md](instructions.md) as a Skill File** (by setting `IsSkillFile: true` on your view file tool).
 2. **Execute Ingestion Pipeline by Default:** Whenever new technical material is ingested or system concepts are added, the pipeline is managed by the **OrchestrationAgent** (`System/Agents/orchestrator.md` using `System/Skills/orchestration.md`) and runs sequentially according to [workflow.md](workflow.md):
-   - **Phase 1 (Refinement):** Refine raw data into detailed notes in `Reference Notes/` using `System/Agents/researcher.md` and `System/Skills/ingest_refinement.md`.
+   - **Phase 1 (Refinement):** Refine raw data into detailed notes in `Reference Notes/` using `System/Agents/researcher.md` and `System/Skills/ingest_refinement.md`. Make it the default behavior to split Reference Notes by topic/module (e.g., creating separate modular files per topic) instead of consolidating them into a single large reference file, to prevent domain/subdomain mixing.
    - **Phase 2 (Auditing & Context Expansion):** Audit and expand tangent domains using `System/Agents/auditor.md` and `System/Skills/context_audit.md`.
    - **Phase 2.5 (Diagram Design):** Insert compliant Mermaid diagrams using `System/Agents/diagrammer.md` and `System/Skills/diagram_generation.md`.
    - **Phase 3 (Project PoC Compilation):** Package configuration playbooks and code verifications as standalone project files under `Projects/` using `System/Agents/poc_developer.md` and `System/Skills/project_poc.md`.

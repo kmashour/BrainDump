@@ -28,6 +28,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Reference File Deletion:** Removed the old consolidated `Reference Notes/17_system_design_fundamentals.md` file.
 - **MOC & Index Update:** Updated `Reference Notes/0-Index - Systems Design.md` to reference the 6 split modules.
 - **Conceptual Main Notes (`Main Notes/`):** Restored, updated, and validated the landing notes and deeper-dive notes for `load-balancing`, `database-selection`, `api-protocols`, and `api-security`, redirecting their YAML frontmatter `reference_guides` and footer wiki-links to the new split files.
+- **Standardized Splitting Behavior:** Updated `Agent.md`, `workflow.md`, `System/Skills/ingest_refinement.md`, and `System/Skills/orchestration.md` to configure topic-based Reference Note splitting as the default behavior across the ingestion pipeline.
 - **Link Auditing:** Validated the entire vault with `review_vault.py` achieving 100% link integrity and 100% inflow coverage across all modules.
 
 ### Ingested Inflow Sources
