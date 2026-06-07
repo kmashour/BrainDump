@@ -492,6 +492,7 @@ When a worker node has multiple labels (e.g., 3 labels) and a Pod matches only s
   * `env: production`
   * `disktype: ssd`
   * `gpu: nvidia`
+  * `cores: "8"`  # Numeric value stored as a string
 
 ---
 
@@ -547,6 +548,69 @@ When a worker node has multiple labels (e.g., 3 labels) and a Pod matches only s
       - {key: disktype, operator: In, values: [nvme]}   # Lacking (+0)
   ```
   * **Result:** **SUCCESS (Schedules).** Soft affinity does not block scheduling. Instead, it scores the node. The node scores `80 + 0 = 80`. If it is the highest-scoring available node, the Pod will run there.
+
+---
+
+##### Case D: Set-Based Operators Evaluation (`NotIn`, `Exists`, `DoesNotExist`, `Gt`, `Lt`)
+
+Using the same `worker-1` labels, let's evaluate each set-based operator in `requiredDuringSchedulingIgnoredDuringExecution`:
+
+###### 1. `NotIn` Operator (Exclusion)
+* **Rule Example:**
+  ```yaml
+  - {key: env, operator: NotIn, values: [staging, development]}
+  ```
+  * **Result:** **SUCCESS (Schedules).**
+  * **Mechanical Breakdown:**
+    * `key: env`: Targets the `env` label key on `worker-1` (value is `production`).
+    * `operator: NotIn`: Evaluates whether the node's value is **not** present in the `values` array.
+    * `values: [staging, development]`: Since `production` is not in this list, the expression evaluates to `true` (success).
+
+###### 2. `Exists` Operator (Presence Check)
+* **Rule Example:**
+  ```yaml
+  - {key: gpu, operator: Exists}
+  ```
+  * **Result:** **SUCCESS (Schedules).**
+  * **Mechanical Breakdown:**
+    * `key: gpu`: Looks for the presence of the key `gpu` on the node.
+    * `operator: Exists`: Verifies if the key exists, regardless of what value it holds. The `values` list must be omitted or left empty.
+    * **Evaluation:** Since `worker-1` has the label `gpu: nvidia`, the check succeeds.
+
+###### 3. `DoesNotExist` Operator (Absence Check)
+* **Rule Example:**
+  ```yaml
+  - {key: local-storage, operator: DoesNotExist}
+  ```
+  * **Result:** **SUCCESS (Schedules).**
+  * **Mechanical Breakdown:**
+    * `key: local-storage`: Searches for the key `local-storage` on the node.
+    * `operator: DoesNotExist`: Verifies that this key is **not** defined.
+    * **Evaluation:** Since `worker-1` does not have a `local-storage` label, the check succeeds. (If the node had `local-storage: none`, this check would fail).
+
+###### 4. `Gt` Operator (Greater Than - Numeric)
+* **Rule Example:**
+  ```yaml
+  - {key: cores, operator: Gt, values: ["4"]}
+  ```
+  * **Result:** **SUCCESS (Schedules).**
+  * **Mechanical Breakdown:**
+    * `key: cores`: Targets the `cores` label on `worker-1` (value is `"8"`).
+    * `operator: Gt`: Parses both the node's label value and the `values` list item as integers, performing a greater-than comparison (`8 > 4`).
+    * `values: ["4"]`: The single threshold value (must be represented as a string list in YAML, but is parsed numerically).
+    * **Evaluation:** Since `8` is greater than `4`, the check succeeds.
+
+###### 5. `Lt` Operator (Less Than - Numeric)
+* **Rule Example:**
+  ```yaml
+  - {key: cores, operator: Lt, values: ["4"]}
+  ```
+  * **Result:** **FAILURE (Pending).**
+  * **Mechanical Breakdown:**
+    * `key: cores`: Targets the `cores` label on `worker-1` (value is `"8"`).
+    * `operator: Lt`: Performs a numeric less-than check (`8 < 4`).
+    * `values: ["4"]`: The threshold value.
+    * **Evaluation:** Since `8` is not less than `4`, the check fails, and the node is disqualified.
 
 ---
 
