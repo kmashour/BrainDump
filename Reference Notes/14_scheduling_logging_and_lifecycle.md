@@ -483,6 +483,71 @@ spec:
     image: my-app:v1
 ```
 
+#### 3. Label Subset Match Evaluation (Node with 3 labels vs. Pod Selector)
+
+When a worker node has multiple labels (e.g., 3 labels) and a Pod matches only some of them, the scheduling outcome depends on whether you are using `nodeSelector`, `requiredDuringScheduling...` (Hard Affinity), or `preferredDuringScheduling...` (Soft Affinity).
+
+##### Scenario Setup:
+* **Target Node (`worker-1`) Labels:**
+  * `env: production`
+  * `disktype: ssd`
+  * `gpu: nvidia`
+
+---
+
+##### Case A: Under `nodeSelector` (Simple Match)
+* **Rule 1:** If the Pod asks for a **single** label:
+  ```yaml
+  nodeSelector:
+    disktype: ssd # Matches Node
+  ```
+  * **Result:** **SUCCESS (Schedules).** The scheduler ignores the node's extra labels (`env` and `gpu`). As long as the requested label matches, it is allowed.
+* **Rule 2:** If the Pod asks for **multiple** labels (Logical AND):
+  ```yaml
+  nodeSelector:
+    disktype: ssd   # Matches Node
+    region: us-east # Lacking on Node
+  ```
+  * **Result:** **FAILURE (Pending).** Multiple key-value pairs are evaluated as a logical `AND`. Since the node lacks `region: us-east`, it is disqualified.
+
+---
+
+##### Case B: Under `requiredDuringSchedulingIgnoredDuringExecution` (Hard Affinity)
+* **Rule 1: Multiple Expressions within a Single Term (Logical AND)**
+  ```yaml
+  nodeSelectorTerms:
+  - matchExpressions:
+    - {key: env, operator: In, values: [production]}  # Matches Node
+    - {key: disktype, operator: In, values: [nvme]}   # Lacking on Node
+  ```
+  * **Result:** **FAILURE (Pending).** All expressions inside a single list item are evaluated as logical `AND`. The node must have both.
+* **Rule 2: Multiple Terms within `nodeSelectorTerms` (Logical OR)**
+  ```yaml
+  nodeSelectorTerms:
+  - matchExpressions:
+    - {key: env, operator: In, values: [production]}  # Term 1 (Matches Node)
+  - matchExpressions:
+    - {key: disktype, operator: In, values: [nvme]}   # Term 2 (Lacking)
+  ```
+  * **Result:** **SUCCESS (Schedules).** Multiple terms are evaluated as logical `OR`. Since Term 1 is fully satisfied by the node, the node is accepted.
+
+---
+
+##### Case C: Under `preferredDuringSchedulingIgnoredDuringExecution` (Soft Affinity)
+* **Evaluation:**
+  ```yaml
+  preferredDuringSchedulingIgnoredDuringExecution:
+  - weight: 80
+    preference:
+      matchExpressions:
+      - {key: env, operator: In, values: [production]}  # Matches Node (+80)
+  - weight: 20
+    preference:
+      matchExpressions:
+      - {key: disktype, operator: In, values: [nvme]}   # Lacking (+0)
+  ```
+  * **Result:** **SUCCESS (Schedules).** Soft affinity does not block scheduling. Instead, it scores the node. The node scores `80 + 0 = 80`. If it is the highest-scoring available node, the Pod will run there.
+
 ---
 
 ### F. Taints/Tolerations vs. Node Affinity combination scenarios (repel vs attract)
