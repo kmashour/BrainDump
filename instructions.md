@@ -16,7 +16,7 @@ Execute this skill when:
 
 ## 1. Directory Structure & File Organization
 
-The knowledge base is stored in `/home/karim/Desktop/CKA/`.
+The knowledge base is stored in `/home/karim/Desktop/BrainDumo/`.
 - `README.md`: The central index and high-level visual Mermaid.js "Brain Map" connecting the main components.
 - `instructions.md`: This file (the Ingestion Skill).
 - `backlog.md`: The transaction log containing every update, change, and addition to the knowledge base.
@@ -30,73 +30,24 @@ The knowledge base is stored in `/home/karim/Desktop/CKA/`.
 
 ## 1.1 Team of Specialized Agents
 
-To maintain and expand the vault efficiently, the following specialized AI subagents are available:
-- **ResearchAgent (`research_refinement`):** Parses raw materials (Gemini logs, transcripts, email newsletters) in `inflow/`, cleans up debugging noise, and compiles structured Reference Notes in `Reference Notes/`.
-- **AuditAgent (`research_audit`):** Audits Reference Notes to identify tangent or shallow domain concepts (e.g., Apache reverse proxies, workflows, systemd configs) and enriches them with explanatory volume.
-- **DiagramAgent (`diagram_designer`):** Identifies complex technical workflows, topologies, or state transitions in the notes and designs structured, standard-compliant Mermaid.js diagrams to visually elaborate these concepts.
-- **MultiDomainPoCAgent (`poc_developer`):** Focuses on creating and writing dense, accurate, context-rich validation scripts and PoC setups across all domains (Linux, AWS, Kubernetes, Databases, and Networking).
-- **GardenAgent (`garden_architect`):** Analyzes connections across domains (AWS, Linux, Databases, Networking, Kubernetes) and compiles Architectural Pattern Notes in `Digital Garden/`.
-- **CKAExamAgent (`cka_exam_expert`):** Focuses on optimizing study notes for exam success, compiling time-management strategies, terminal configurations, VIM hacks, and topic-specific exam checklists inside `Projects/CKA/`.
-- **IntegrationAgent (Main Session):** Coordinates all agents and orchestrates vault indexing and final commits.
+The specialized subagents and their profiles are defined in the `System/Agents/` directory:
+- **ResearchAgent:** [researcher.md](System/Agents/researcher.md) (Inflow Refinement & Reference Compiler)
+- **AuditAgent:** [auditor.md](System/Agents/auditor.md) (Context Auditor & Tangent Expander)
+- **DiagramAgent:** [diagrammer.md](System/Agents/diagrammer.md) (Mermaid.js Concept Designer)
+- **MultiDomainPoCAgent:** [poc_developer.md](System/Agents/poc_developer.md) (Verification & Hands-on Implementation Developer)
+- **GardenAgent:** [garden_architect.md](System/Agents/garden_architect.md) (Cross-Domain Connection & Pattern Architect)
+- **CKAExamAgent:** [exam_expert.md](System/Agents/exam_expert.md) (Exam checklist & speed-optimization expert)
 
 ---
 
 ## 2. Ingestion & Consolidation Workflow
 
-When a new source file is introduced:
+The ingestion pipeline is standardized across all domains and orchestrated sequentially. Refer to the central [workflow.md](workflow.md) file in the root directory for:
+- Phase-by-phase breakdown of the pipeline (Phase 1 to Phase 6).
+- Mapping of agents and skills for each phase.
+- Git synchronization and logging procedures.
 
-### Step 1: Landing & Automated Link Scraping
-1. Place the raw input file directly into the `inflow/` directory.
-2. **Link Identification & Resolution (for `@ingest` requests):**
-   - If the file contains external URLs (e.g., `https://kubernetes.io/docs/`), scan and collect all target URLs.
-   - Fetch and scrape the main technical body of each URL (cleaning HTML tags and stripping wrapper components like navigation headers, footers, scripts, and sidebars).
-   - **Diagram & Sub-link Handling:**
-     - **Diagrams:** Identify all diagrams and architectural images. Translate them into text-based explanations and visual Mermaid.js diagrams, or reference/download the image URLs to be placed in the appropriate Reference/Main notes.
-     - **Sub-links:** Identify key hyperlinks pointing to other relevant Kubernetes documentation pages (e.g., related concepts or detailed sub-topics). For any sub-links crucial to a complete understanding of the topic, fetch and scrape their contents.
-   - Merge all the scraped page content (including the main URLs, Mermaid translations of diagrams, and key sub-link contents) dynamically with any pre-existing text or comments in the raw inflow file.
-   - Treat the consolidated text as the single unified input for the rest of the ingestion pipeline. Crucial sub-link knowledge does not have to reside in the main reference note; place/distribute it logically across the most suitable existing or new Reference/Main notes in the vault.
-
-### Step 2: Classification & Analysis
-1. Analyze the technical topics covered in the new `inflow/` file.
-2. Identify which core component it relates to (e.g. `kube-apiserver`, `etcd`, etc.) or if a new concept needs to be established.
-
-### Step 3: Reference Note Integration (Refinement)
-1. **Reference Note Compilation:** Delegate to `ResearchAgent` to parse raw details and write verbose explanations to `Reference Notes/`.
-
-### Step 4: Research Auditing & Context Expansion
-1. **Auditing:** Delegate to `AuditAgent` to audit the newly compiled Reference Notes.
-2. **Context Expansion:** Scan for secondary or tangent domain topics (which vary dynamically, e.g., web server proxies, database configurations, Linux kernel hooks, container runtimes, or system workflows).
-3. **Add Volume:** Expand these topics with clear architectural background, explanations, and configurations to ensure self-contained understanding, serving as detailed bridges until those domains get their own inflow notes.
-
-### Step 4.5: Visual Concept Elaborations (Diagramming)
-1. **Visual Diagram Creation:** Invoke `DiagramAgent` (`diagram_designer`) to analyze the compiled/updated notes, identify complex routing paths, lifecycles, or state machines, and design structured, standard-compliant Mermaid.js diagrams to be integrated directly into the modules to visually elaborate these concepts.
-
-### Step 5: Verification PoC Generation
-1. **Verification PoC Generation:** Delegate to `MultiDomainPoCAgent` to write and verify domain-specific verification scripts/commands inside the reference notes.
-
-### Step 6: Main Note Creation & Update (Conceptual Atomicity)
-1. If the concept is new, create its **Landing Note** and **Deeper Note** inside `Main Notes/` using the templates in Section 3.
-2. If the concept is already present, update its deeper-dive notes to add links/context to the new sub-topics, connecting them back to the reference modules.
-
-### Step 7: Architectural Pattern Identification (Digital Garden)
-1. Delegate to `GardenAgent` to analyze how the new concepts connect to other domains (AWS, Linux, Databases, Networking).
-2. Create or update Architectural Pattern Notes inside `Digital Garden/` to detail E2E configurations and trade-offs.
-
-### Step 8: CKA Exam Checklist Extraction (Projects/CKA)
-1. **Mandatory Default Execution:** For all new CKA or general Kubernetes material, the `CKAExamAgent` must run by default right after the previous steps (Reference Notes, Audits, Main Notes, Deeper Notes, and Digital Garden setup) are completed.
-2. Delegate to `CKAExamAgent` to extract strictly exam-focused checklists, shortcuts, terminal tricks, or VIM setups based on the newly ingested/structured notes.
-3. Create or update notes in `Projects/CKA/` (e.g. `Projects/CKA/Exam Checklist - ...`).
-
-### Step 9: Update the Backlog
-- Document all updates, creations, and restructurings in `backlog.md` with a timestamp and description of changes.
-
-### Step 10: Git Synchronization (Push Updates)
-- After verification of all relative links and file modifications, commit and push changes:
-  ```bash
-  git add .
-  git commit -m "feat/chore/docs: <description>"
-  git push origin main
-  ```
+All templates used during the ingestion workflow are stored in the `System/Templates/` directory.
 
 ---
 

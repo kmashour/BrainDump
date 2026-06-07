@@ -113,6 +113,10 @@ flowchart TD
     Evicted --> Srv3["Server 3"]
 ```
 
+### D. Verification and Practical Implementation
+To inspect a hands-on implementation of Nginx load balancing, upstream grouping, and proxy failovers, refer to the project playbook:
+- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-nginx-load-balancer-and-gateway-configuration-nginxconf]]*
+
 ---
 
 ## 3. Data Layer Design (SQL, NoSQL, and Caching)
@@ -159,6 +163,10 @@ To minimize database reads, systems cache data at multiple layers:
 * **Application Cache:** Using an in-memory key-value store (like Redis) in a *cache-aside* pattern (checking cache first; if miss, query DB and update cache).
 * **Content Delivery Network (CDN):** A geographically distributed network of proxy servers that cache static assets (HTML, CSS, JS, images, videos) close to the user's physical location. This reduces latency and web server bandwidth usage.
 
+### D. Verification and Practical Implementation
+To verify CDN and cache response headers using CLI tools, refer to the diagnostics playbook:
+- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-verification-of-caching-and-cdn-headers]]*
+
 ---
 
 ## 4. API Design, Protocols, and Networking
@@ -189,6 +197,10 @@ GraphQL is a query language for APIs that replaces REST's multi-endpoint archite
 * **Schema Definition:** Types, queries, and mutations are defined in a schema.
 * **Preventing Over-Fetching / Under-Fetching:** Clients specify the exact fields they need in the query payload. The server resolves and returns only those fields, saving bandwidth and roundtrips.
 * **Mutations:** Used for write operations (create, update, delete).
+
+### D. Verification and Practical Implementation
+To inspect RESTful and GraphQL client query recipes using curl, refer to the client request playbook:
+- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2-verify-restful-http-methods]]*
 
 ---
 
@@ -271,3 +283,7 @@ flowchart TD
         PrivateAPI --> PrivateDB[("Private Database")]
     end
 ```
+
+### D. Verification and Practical Implementation
+To inspect concrete configurations for rate limiting, CORS headers injection, and SQL injection prevention code, refer to the security playbook:
+- *See the complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2-secure-backend-database-querying-python-implementation]]*

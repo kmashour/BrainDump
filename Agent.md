@@ -22,26 +22,26 @@ This workspace is organized as a flat, multi-domain vault with two-tier director
 
 When ingesting raw files or executing restructuring requests:
 1. **Always read [instructions.md](instructions.md) as a Skill File** (by setting `IsSkillFile: true` on your view file tool).
-2. **Execute Ingestion Pipeline by Default:** Whenever new CKA material is ingested or Kubernetes/system concepts in general are added, the pipeline runs sequentially. The `CKAExamAgent` must work right after the other agents finish setting up the Reference notes, Main notes, Deeper notes, and the Digital Garden:
-   - **Phase 1 (Refinement):** Invoke `ResearchAgent` to clean debugging logs and create Reference Notes.
-   - **Phase 2 (Auditing & Context Expansion):** Invoke `AuditAgent` to audit the output of Phase 1, dynamically identifying any secondary or tangent domains (e.g., reverse proxies, workflows, systemd configs, database engines, or security protocols—which vary depending on the material) and adding explanatory volume to ensure self-contained understanding where the user has shallow knowledge.
-   - **Phase 2.5 (Diagram Design):** Invoke `DiagramAgent` (`diagram_designer`) to identify complex workflows, state machines, or topologies in the notes and design structured, standard-compliant Mermaid.js diagrams to visually elaborate them.
-   - **Phase 3 (PoC):** Invoke `MultiDomainPoCAgent` to write and test validation code.
-   - **Phase 4 (Concepts):** Update landing and deeper-dive files inside `Main Notes/`.
-   - **Phase 5 (Connections):** Invoke `GardenAgent` to map intersections and update notes inside `Digital Garden/`.
-   - **Phase 6 (Exam Focus):** For all CKA/Kubernetes material, execute `CKAExamAgent` right after Phases 1-5 finish, ensuring it processes the refined outputs to compile/append exam-focused checklists, shortcuts, and troubleshooting guides inside `Projects/CKA/`.
+2. **Execute Ingestion Pipeline by Default:** Whenever new technical material is ingested or system concepts are added, the pipeline runs sequentially according to [workflow.md](workflow.md).
+   - **Phase 1 (Refinement):** Refine raw data into detailed notes in `Reference Notes/` using `System/Agents/researcher.md` and `System/Skills/ingest_refinement.md`.
+   - **Phase 2 (Auditing & Context Expansion):** Audit and expand tangent domains using `System/Agents/auditor.md` and `System/Skills/context_audit.md`.
+   - **Phase 2.5 (Diagram Design):** Insert compliant Mermaid diagrams using `System/Agents/diagrammer.md` and `System/Skills/diagram_generation.md`.
+   - **Phase 3 (Project PoC Compilation):** Package configuration playbooks and code verifications as standalone project files under `Projects/` using `System/Agents/poc_developer.md` and `System/Skills/project_poc.md`.
+   - **Phase 4 (Concepts):** Create or update atomic landing and deeper-dive notes inside `Main Notes/` using templates in `System/Templates/`.
+   - **Phase 5 (Connections):** Map cross-domain intersections inside `Digital Garden/` using `System/Agents/garden_architect.md` and `System/Skills/garden_linking.md`.
+   - **Phase 6 (Exam Focus):** If relevant to a certification path (e.g. CKA), extract checklists in `Projects/CKA/` using `System/Agents/exam_expert.md` and `System/Skills/exam_checklists.md`.
 3. **Enforce Cross-Domain Linking:**
    - Tag concepts by domains (e.g. `#domain/kubernetes`, `#domain/linux`, `#domain/aws`).
    - Populate `related_concepts` and `against` lists in the YAML properties.
-4. **Automated Indexing:** Rely entirely on Dataview tables in `Index.md` MOCs and landing notes; never hardcode sub-note links.
+4. **Automated Indexing:** Rely entirely on Dataview tables in MOCs and landing notes; never hardcode sub-note links.
 5. **Log Transactions & Git Sync:** Log additions in [backlog.md](backlog.md) and run git commands to stage, commit, and push modifications to `git@github.com:kmashour/BrainDump.git` on branch `main`.
-6. **Integrity Review Trigger (`@review`):** Whenever the user includes `@review` in their prompt or requests a verification check, execute the verification script `/home/karim/Desktop/CKA/Reference Notes/scripts/review_vault.py`, present the audit summary, and highlight any gaps, placeholder links, or frontmatter schema warnings.
+6. **Integrity Review Trigger (`@review`):** Whenever the user includes `@review` in their prompt or requests a verification check, execute the verification script `/home/karim/Desktop/BrainDump/Reference Notes/scripts/review_vault.py`, present the audit summary, and highlight any gaps, placeholder links, or frontmatter schema warnings.
 7. **Automated Ingestion Trigger (`@ingest`):** Whenever the user includes `@ingest [file_path]` in their prompt:
    - Identify the target file in the `inflow/` directory.
    - Scan for any external links/URLs (e.g. Kubernetes docs).
    - If URLs are present, automatically fetch and scrape the body content of each URL.
    - **Diagram & Sub-link Resolution:** Extract diagrams (translating them into Mermaid diagrams or structured text) and follow key related sub-links crucial to the topic, fetching their content.
    - Combine the scraped content (main URLs, diagram representations, and key sub-links) with the target file's direct notes.
-   - Run the full, sequential multi-agent ingestion pipeline (Phases 1-6) on the consolidated content, distributing sub-link knowledge into the most suitable notes (Reference Notes or Main Notes) rather than forcing everything into a single note.
+   - Run the full, sequential multi-agent ingestion pipeline (Phases 1-6) on the consolidated content, distributing sub-link knowledge into the most suitable notes (Reference Notes, Main Notes, or Project Notes) rather than forcing everything into a single note.
    - Log the transaction in `backlog.md`, verify with `review_vault.py`, and push to `origin/main`.
 
