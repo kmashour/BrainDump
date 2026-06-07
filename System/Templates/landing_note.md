@@ -18,7 +18,7 @@ tags:
 
 # Concept Name
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Category > **Concept Name**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Category > **Concept Name**
 
 ---
 

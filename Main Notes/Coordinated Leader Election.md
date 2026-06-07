@@ -18,7 +18,7 @@ against: []
 
 # Coordinated Leader Election
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **Coordinated Leader Election**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Control Plane > **Coordinated Leader Election**
 
 ---
 

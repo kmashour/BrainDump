@@ -183,7 +183,82 @@ NoSQL databases sacrifice relational completeness (JOINs) and sometimes absolute
 * **Choose SQL when:** Your schema is highly structured and stable, relationships between entities are dense, and you require transactional integrity (e.g., financial ledger).
 * **Choose NoSQL when:** You handle unstructured or semi-structured data, need to write massive volumes of write-heavy events, require sub-millisecond read latencies, or must scale horizontally across multiple regions.
 
+### D. Database Scaling, Partitioning, and Sharding
+When a single database node hits capacity, we scale the data layer:
+1. **Read Replicas:** Writes go to a primary database node, which replicates data asynchronously to one or more read-only replicas. This scales read volume but introduces **eventual consistency** delays and does not increase write capacity.
+2. **Sharding (Horizontal Partitioning):** Splits a single table horizontally by storing subsets of rows across independent database servers (shards).
+   - **Sharding Key:** The attribute used to route a row to a specific shard (e.g., `user_id`). Choosing a bad sharding key creates **Hot Spots** where one shard handles a disproportionate share of the load, causing latency spikes.
+   - **Re-sharding Complexity:** If nodes are added or removed, data must be redistributed, which is highly CPU-intensive and can cause service degradation.
+
+### E. Consistent Hashing Mechanics
+Consistent Hashing is an algorithmic routing strategy that resolves the massive data invalidation problem of standard hashing (`hash(key) % N`) when node count `N` changes.
+- **The Hash Ring:** Both the keys and the database/cache nodes are hashed (e.g., using MD5 or SHA-1) and mapped onto a virtual circular hash ring ($0$ to $2^{32}-1$).
+- **Key Assignment:** To map a key to a node, we hash the key and locate its position on the ring. We then traverse the ring clockwise until we encounter the first physical node. That node handles the key.
+- **Node Additions/Evictions:** If a node is added or fails, only a fraction of keys ($\approx 1/N$) need to be moved to adjacent nodes, keeping the rest of the cluster stable.
+- **Virtual Nodes (vnodes):** Physical nodes are mapped to multiple virtual locations across the ring. This ensures an even distribution of keys, prevents imbalances (hot spots), and balances load proportionally to physical server capacities.
+
+```mermaid
+graph TD
+    subgraph hash_ring["Consistent Hashing Hash Ring Topology"]
+        direction TB
+        NodeA["Node A (Hash: 1000)"]
+        NodeB["Node B (Hash: 2000)"]
+        NodeC["Node C (Hash: 3000)"]
+        
+        Key1["Key 1 (Hash: 1200)"]
+        Key2["Key 2 (Hash: 2500)"]
+        Key3["Key 3 (Hash: 3500)"]
+        
+        Key1 -. Clockwise Routing .-> NodeB
+        Key2 -. Clockwise Routing .-> NodeC
+        Key3 -. Clockwise Routing .-> NodeA
+    end
+```
+
+### F. Caching Topologies and Write Strategies
+Caching stores hot, transient data in high-speed memory (RAM) to avoid expensive database read operations and reduce latency.
+1. **Cache-Aside (Lazy Loading):**
+   - **Flow:** The application queries the cache first. On a *Cache Hit*, data is returned immediately. On a *Cache Miss*, the application fetches the data from the database, writes it to the cache, and returns it to the client.
+   - **Trade-off:** Cache only contains requested data, but misses incur a double-hop latency penalty, and data can become stale if updated directly in the DB.
+2. **Write-Through:**
+   - **Flow:** The application writes data to the cache, and the cache immediately writes it synchronously to the database in the same transaction.
+   - **Trade-off:** Data is never stale, but write latency is high due to synchronous double-writing.
+3. **Write-Behind (Write-Back):**
+   - **Flow:** The application writes to the cache, which acknowledges immediately. An asynchronous background process batches and writes updates to the database.
+   - **Trade-off:** Extremely fast write speeds and high write throughput, but data loss is possible if the cache server crashes before database synchronization completes.
+4. **Cache Eviction Policies:** When the cache reaches memory capacity, items are evicted based on policies:
+   - **Least Recently Used (LRU):** Discards items that haven't been accessed for the longest time.
+   - **Least Frequently Used (LFU):** Discards items with the lowest access count.
+   - **First In First Out (FIFO):** Discards items in the order they were inserted.
+5. **Caching Failure Patterns:**
+   - **Cache Avalanche / Stampede:** Occurs when many keys expire at once, or the cache tier crashes, causing a massive surge of concurrent queries to hit the database, leading to outages. *Mitigations:* Add random time variables (Jitter) to TTLs, and use mutex locks so only one request queries the database for a cache miss while others wait.
+   - **Cache Penetration:** Occurs when clients query keys that do not exist in either cache or database (e.g., scanner attacks). *Mitigations:* Cache empty/null results with a short TTL, or intercept queries with a **Bloom Filter** at the gateway level.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    Client->>Application: HTTP GET /resource/1
+    Application->>Cache: Check key: resource_1
+    alt Cache Hit
+        Cache-->>Application: Return Cached Data
+        Application-->>Client: HTTP 200 OK (Cache HIT)
+    else Cache Miss
+        Cache-->>Application: Key Not Found
+        Application->>Database: SELECT * FROM resources WHERE id = 1
+        Database-->>Application: Return DB Record
+        Application->>Cache: SET key: resource_1 with TTL
+        Application-->>Client: HTTP 200 OK (Cache MISS)
+    end
+```
+
+### G. Content Delivery Networks (CDNs)
+A CDN is a distributed network of edge proxy servers that cache and serve static content (images, JS/CSS, HTML) geographically close to users.
+- **Pull CDNs:** The edge server pulls static files from the origin server on the first cache miss, caches it for subsequent users, and returns it.
+- **Push CDNs:** The origin server pushes new assets to the CDN edge nodes manually when files are uploaded or updated.
+- **Anycast Routing:** CDNs share a single IP address across all edge locations. BGP routing automatically forwards client packets to the nearest physical edge server, minimizing network hops.
+
 ---
+
 
 ## 4. API Design & Communication Protocols
 
@@ -237,6 +312,33 @@ At the network layer, APIs run on top of Transport protocols:
    * **Characteristics:** Connectionless, packet-delivery is not guaranteed (fire-and-forget), no packet ordering, minimal overhead.
    * **Trade-off:** Fast and lightweight, but susceptible to packet loss and out-of-order packets.
    * **Ideal For:** VoIP, video conferencing, live streaming, online multiplayer games.
+
+### C. gRPC & Protocol Buffers (HTTP/2 Multiplexing)
+gRPC is a high-performance, open-source Remote Procedure Call (RPC) framework developed by Google.
+- **HTTP/2 Transport Foundation:** gRPC requires **HTTP/2**, which supports:
+  - **Multiplexing:** Allows sending multiple bidirectional streams concurrently over a single TCP connection, eliminating the head-of-line blocking problem of HTTP/1.1.
+  - **Header Compression (HPACK):** Compresses headers to reduce byte overhead.
+  - **Bidirectional Streaming:** Enables client-side, server-side, or fully bidirectional streaming connections.
+- **Protocol Buffers (Protobuf):** gRPC serializes payloads into a compressed binary format (Protobuf) rather than plain-text JSON. It uses tag indexes instead of string keys, dramatically shrinking network packet size.
+- **Code Generation:** Protobuf schemas (.proto files) generate client stubs and server skeletons in multiple languages, enforcing type safety and architectural consistency.
+
+```mermaid
+graph LR
+    subgraph http1["HTTP/1.1 REST (Blocking TCP Connections)"]
+        direction TB
+        C1["Client"] -->|"Request 1 (Headers + Body)"| S1["Server"]
+        S1 -->|"Response 1"| C1
+        C1 -->|"Request 2 (Blocked until Response 1)"| S1
+    end
+
+    subgraph http2["HTTP/2 gRPC (Multiplexed Streams over single TCP)"]
+        direction TB
+        C2["Client"] -- "Stream 1 (Request A)" --> S2["Server"]
+        C2 -- "Stream 2 (Request B)" --> S2
+        S2 -- "Stream 1 (Response A)" --> C2
+        S2 -- "Stream 2 (Response B)" --> C2
+    end
+```
 
 ---
 
@@ -322,6 +424,17 @@ graph TD
 
 ## 6. Decoupled Hands-on Project Implementation
 
-To verify and inspect the complete, production-grade hands-on configuration files, API code, database migration scripts, and diagnostic command recipes for a secure, load-balanced web API system, refer to:
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md|Project - Secure Load-Balanced Web API]]
+The baseline system infrastructure has been decoupled and expanded into a dedicated, production-grade project note.
+
+### A. Load Balancer Configuration (Nginx)
+See complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1. Nginx Load Balancer and Gateway Configuration (`nginx.conf`)]]
+
+### B. Secure API Web Server (Python - FastAPI)
+See complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2. Secure API Web Server (Python - FastAPI)]]
+
+### C. Database Migration Script (SQL)
+See complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#3. Database Migration Script (SQL)]]
+
+### D. Verification & Diagnostics Command Playbook
+See complete implementation in [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1. End-to-End API and Load Balancer Verification]]
 

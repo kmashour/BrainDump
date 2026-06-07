@@ -19,7 +19,7 @@ tags:
 
 # ConfigMap
 
-**Breadcrumbs:** [[Index|🏠 Index]] > workloads > **ConfigMap**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > workloads > **ConfigMap**
 
 ---
 

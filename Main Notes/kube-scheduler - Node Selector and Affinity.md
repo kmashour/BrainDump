@@ -14,7 +14,7 @@ tags:
 
 # kube-scheduler - Node Selector and Affinity
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-scheduler]] > **Node Selector and Affinity**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-scheduler]] > **Node Selector and Affinity**
 
 ---
 

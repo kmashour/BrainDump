@@ -23,7 +23,7 @@ tags:
 
 # container-runtime deeper
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[container-runtime]] > **deeper dive**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[container-runtime]] > **deeper dive**
 
 ---
 

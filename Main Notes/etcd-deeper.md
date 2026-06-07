@@ -19,7 +19,7 @@ tags:
 
 # etcd deeper
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[etcd]] > **deeper dive**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[etcd]] > **deeper dive**
 
 ---
 

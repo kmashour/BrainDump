@@ -15,7 +15,7 @@ tags:
 
 # pod-security-admission - Standards and Modes
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[pod-security-admission]] > **Standards and Modes**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[pod-security-admission]] > **Standards and Modes**
 
 ---
 

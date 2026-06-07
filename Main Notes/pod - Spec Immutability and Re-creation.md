@@ -15,7 +15,7 @@ tags:
 
 # pod - Spec Immutability and Re-creation
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[pod]] > **Spec Immutability and Re-creation**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[pod]] > **Spec Immutability and Re-creation**
 
 ---
 

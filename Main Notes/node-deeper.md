@@ -20,7 +20,7 @@ tags:
 
 # node deeper
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[node]] > **deeper dive**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[node]] > **deeper dive**
 
 ---
 

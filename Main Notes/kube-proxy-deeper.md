@@ -18,7 +18,7 @@ tags:
 
 # kube-proxy deeper
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-proxy]] > **deeper dive**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-proxy]] > **deeper dive**
 
 ---
 

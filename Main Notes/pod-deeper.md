@@ -21,7 +21,7 @@ tags:
 
 # pod deeper
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[pod]] > **deeper dive**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[pod]] > **deeper dive**
 
 ---
 

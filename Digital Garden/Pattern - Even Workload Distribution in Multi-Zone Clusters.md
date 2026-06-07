@@ -19,7 +19,7 @@ tags:
 
 # Pattern: Even Workload Distribution in Multi-Zone Clusters
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **Even Workload Distribution in Multi-Zone Clusters**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Even Workload Distribution in Multi-Zone Clusters**
 
 ---
 

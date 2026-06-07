@@ -14,7 +14,7 @@ tags:
 
 # namespace - Logical Isolation
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[namespace]] > **Logical Isolation**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[namespace]] > **Logical Isolation**
 
 ---
 

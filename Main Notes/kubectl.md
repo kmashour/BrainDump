@@ -18,7 +18,7 @@ against: []
 
 # kubectl
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Tooling & Interfaces > **kubectl**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Tooling & Interfaces > **kubectl**
 
 ---
 

@@ -19,7 +19,7 @@ tags:
 
 # job
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **job**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **job**
 
 ---
 

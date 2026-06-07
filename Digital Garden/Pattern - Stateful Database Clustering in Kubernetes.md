@@ -25,7 +25,7 @@ tags:
 
 # Pattern: Stateful Database Clustering in Kubernetes
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **Stateful Database Clustering in Kubernetes**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Stateful Database Clustering in Kubernetes**
 
 ---
 

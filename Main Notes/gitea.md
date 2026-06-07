@@ -20,7 +20,7 @@ tags:
 
 # gitea
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Infrastructure > **gitea**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **gitea**
 
 ---
 

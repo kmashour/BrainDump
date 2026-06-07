@@ -10,7 +10,7 @@ tags:
 
 # Vim and Terminal Setup
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[Projects/CKA/Index|🎓 CKA Exam MOC]] > **Vim and Terminal Setup**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[Projects/CKA/Index|🎓 CKA Exam MOC]] > **Vim and Terminal Setup**
 
 ---
 

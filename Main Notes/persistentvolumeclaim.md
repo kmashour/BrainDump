@@ -18,7 +18,7 @@ tags:
 
 # persistentvolumeclaim
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **persistentvolumeclaim**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **persistentvolumeclaim**
 
 ---
 

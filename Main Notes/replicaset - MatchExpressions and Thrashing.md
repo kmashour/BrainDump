@@ -16,7 +16,7 @@ tags:
 
 # replicaset - MatchExpressions and Thrashing
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[replicaset]] > **MatchExpressions and Thrashing**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[replicaset]] > **MatchExpressions and Thrashing**
 
 ---
 

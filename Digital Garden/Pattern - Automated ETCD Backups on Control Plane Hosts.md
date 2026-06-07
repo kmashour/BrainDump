@@ -21,7 +21,7 @@ tags:
 
 # Pattern: Automated ETCD Backups on Control Plane Hosts
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **Automated ETCD Backups on Control Plane Hosts**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Automated ETCD Backups on Control Plane Hosts**
 
 ---
 

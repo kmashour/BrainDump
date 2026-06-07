@@ -19,7 +19,7 @@ tags:
 
 # daemonset
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **daemonset**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **daemonset**
 
 ---
 

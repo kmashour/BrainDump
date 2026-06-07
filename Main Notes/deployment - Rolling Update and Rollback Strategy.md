@@ -15,7 +15,7 @@ tags:
 
 # deployment - Rolling Update and Rollback Strategy
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[deployment]] > **Rolling Update and Rollback Strategy**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[deployment]] > **Rolling Update and Rollback Strategy**
 
 ---
 

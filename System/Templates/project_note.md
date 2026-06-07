@@ -13,7 +13,7 @@ status: <in-progress | completed>
 
 # Project: Project Name
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Projects > **Project Name**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Projects > **Project Name**
 
 ---
 

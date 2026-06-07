@@ -19,7 +19,7 @@ against: []
 
 # Swap Management
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Worker Node Mechanics > **Swap Management**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Worker Node Mechanics > **Swap Management**
 
 ---
 

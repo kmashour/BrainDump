@@ -23,7 +23,7 @@ against: []
 
 # kube-apiserver
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **kube-apiserver**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Control Plane > **kube-apiserver**
 
 ---
 

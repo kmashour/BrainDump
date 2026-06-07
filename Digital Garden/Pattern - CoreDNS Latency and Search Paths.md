@@ -21,7 +21,7 @@ tags:
 
 # Pattern: CoreDNS Latency and Search Paths
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **CoreDNS Latency and Search Paths**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **CoreDNS Latency and Search Paths**
 
 ---
 

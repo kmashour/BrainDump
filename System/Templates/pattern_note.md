@@ -16,7 +16,7 @@ tags:
 
 # Pattern: Pattern Name
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **Pattern Name**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Pattern Name**
 
 ---
 

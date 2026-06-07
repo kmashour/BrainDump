@@ -21,7 +21,7 @@ tags:
 
 # kube-scheduler deeper
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-scheduler]] > **deeper dive**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-scheduler]] > **deeper dive**
 
 ---
 

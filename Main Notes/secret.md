@@ -19,7 +19,7 @@ tags:
 
 # Secret
 
-**Breadcrumbs:** [[Index|🏠 Index]] > workloads > **Secret**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > workloads > **Secret**
 
 ---
 

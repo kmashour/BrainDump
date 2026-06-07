@@ -18,7 +18,7 @@ tags:
 
 # storageclass
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **storageclass**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **storageclass**
 
 ---
 

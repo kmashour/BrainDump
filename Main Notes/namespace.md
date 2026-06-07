@@ -20,7 +20,7 @@ tags:
 
 # Namespace
 
-**Breadcrumbs:** [[Index|🏠 Index]] > infra > **Namespace**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **Namespace**
 
 ---
 

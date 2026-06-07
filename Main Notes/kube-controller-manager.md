@@ -19,7 +19,7 @@ against: []
 
 # kube-controller-manager
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **kube-controller-manager**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Control Plane > **kube-controller-manager**
 
 ---
 

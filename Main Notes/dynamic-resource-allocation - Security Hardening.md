@@ -15,7 +15,7 @@ tags:
 
 # dynamic-resource-allocation - Security Hardening
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[dynamic-resource-allocation]] > **Security Hardening**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[dynamic-resource-allocation]] > **Security Hardening**
 
 ---
 

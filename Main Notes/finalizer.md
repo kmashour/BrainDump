@@ -19,7 +19,7 @@ tags:
 
 # Finalizer
 
-**Breadcrumbs:** [[Index|🏠 Index]] > infra > **Finalizer**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **Finalizer**
 
 ---
 

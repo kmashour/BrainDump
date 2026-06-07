@@ -33,7 +33,7 @@ tags:
 
 # Pattern: Air-Gapped Git Architecture on RHEL
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **Air-Gapped Git Architecture on RHEL**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Air-Gapped Git Architecture on RHEL**
 
 ---
 

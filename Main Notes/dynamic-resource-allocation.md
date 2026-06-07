@@ -19,7 +19,7 @@ tags:
 
 # Dynamic Resource Allocation
 
-**Breadcrumbs:** [[Index|🏠 Index]] > infra > **Dynamic Resource Allocation**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **Dynamic Resource Allocation**
 
 ---
 

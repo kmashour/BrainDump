@@ -259,7 +259,7 @@ def verify_frontmatter():
     # 1. Main Notes Directory
     if os.path.exists(MAIN_NOTES_DIR):
         for f in os.listdir(MAIN_NOTES_DIR):
-            if not f.endswith(".md") or f == "Index.md":
+            if not f.endswith(".md") or f == "0-Index.md":
                 continue
             path = os.path.join(MAIN_NOTES_DIR, f)
             fm, _ = parse_frontmatter(path)
@@ -286,7 +286,7 @@ def verify_frontmatter():
     # 2. Digital Garden Directory
     if os.path.exists(GARDEN_DIR):
         for f in os.listdir(GARDEN_DIR):
-            if not f.endswith(".md") or f == "Index.md":
+            if not f.endswith(".md") or f == "0-Index.md":
                 continue
             path = os.path.join(GARDEN_DIR, f)
             fm, _ = parse_frontmatter(path)

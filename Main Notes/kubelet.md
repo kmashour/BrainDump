@@ -23,7 +23,7 @@ against: []
 
 # kubelet
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Worker Node Mechanics > **kubelet**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Worker Node Mechanics > **kubelet**
 
 ---
 

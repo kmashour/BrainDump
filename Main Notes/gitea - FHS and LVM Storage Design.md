@@ -15,7 +15,7 @@ tags:
 
 # gitea - FHS and LVM Storage Design
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[gitea]] > **FHS and LVM Storage Design**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[gitea]] > **FHS and LVM Storage Design**
 
 ---
 

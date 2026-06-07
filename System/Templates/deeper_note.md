@@ -15,7 +15,7 @@ tags:
 
 # landing-concept-name - deeper-aspect-name
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[landing-concept-name]] > **deeper-aspect-name**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[landing-concept-name]] > **deeper-aspect-name**
 
 ---
 

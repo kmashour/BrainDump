@@ -14,7 +14,7 @@ tags:
 
 # kube-apiserver - Mixed Version Proxy
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-apiserver]] > **Mixed Version Proxy**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-apiserver]] > **Mixed Version Proxy**
 
 ---
 

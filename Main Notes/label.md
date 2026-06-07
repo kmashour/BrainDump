@@ -19,7 +19,7 @@ tags:
 
 # Label
 
-**Breadcrumbs:** [[Index|🏠 Index]] > infra > **Label**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **Label**
 
 ---
 

@@ -15,7 +15,7 @@ tags:
 
 # API Protocols - REST vs GraphQL
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[api-protocols]] > **REST vs GraphQL**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[api-protocols]] > **REST vs GraphQL**
 
 ---
 
@@ -67,4 +67,4 @@ GraphQL is an API query language and runtime developed by Facebook, structured a
 | **Caching** | Built-in HTTP level caching | Complex client-side caching (e.g., Apollo Client) |
 | **Payload Size** | Larger (contains unused database fields) | Minimal (contains only requested fields) |
 
-*Read more in [System Design Fundamentals](../Reference%20Notes/17_system_design_fundamentals.md#4-api-design-protocols-and-networking)*
+*Read more in [[Reference Notes/17_system_design_fundamentals.md#4. API Design & Communication Protocols]]*

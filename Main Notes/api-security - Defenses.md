@@ -15,7 +15,7 @@ tags:
 
 # API Security - Defenses
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[api-security]] > **Defenses**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[api-security]] > **Defenses**
 
 ---
 
@@ -52,4 +52,4 @@ To build secure production architectures, requests must pass through several lay
 - **Mechanism:** Sanitizes and HTML-encodes all user-provided strings before saving them to the database or outputting them to a browser.
 - **Protection:** Prevents attackers from injecting JavaScript payloads (e.g., in a comment field) that execute in the browsers of other users who view the content.
 
-*Read more in [System Design Fundamentals](../Reference%20Notes/17_system_design_fundamentals.md#5-access-control-and-api-security-protection)*
+*Read more in [[Reference Notes/17_system_design_fundamentals.md#5. Security, Authentication, and Authorization Frameworks]]*

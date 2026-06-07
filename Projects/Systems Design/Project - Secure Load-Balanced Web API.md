@@ -18,7 +18,7 @@ status: completed
 
 # Project: Secure Load-Balanced Web API
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Projects > Systems Design > **Secure Load-Balanced Web API**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Projects > Systems Design > **Secure Load-Balanced Web API**
 
 ---
 

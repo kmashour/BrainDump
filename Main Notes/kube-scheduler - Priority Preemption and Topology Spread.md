@@ -15,7 +15,7 @@ tags:
 
 # kube-scheduler - Priority Preemption and Topology Spread
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-scheduler]] > **Priority Preemption and Topology Spread**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-scheduler]] > **Priority Preemption and Topology Spread**
 
 ---
 

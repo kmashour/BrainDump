@@ -19,7 +19,7 @@ against: []
 
 # kube-scheduler
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Control Plane > **kube-scheduler**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Control Plane > **kube-scheduler**
 
 ---
 

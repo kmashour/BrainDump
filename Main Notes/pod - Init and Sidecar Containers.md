@@ -15,7 +15,7 @@ tags:
 
 # pod - Init and Sidecar Containers
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[pod]] > **Init and Sidecar Containers**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[pod]] > **Init and Sidecar Containers**
 
 ---
 

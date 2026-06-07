@@ -19,7 +19,7 @@ tags:
 
 # deployment
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **deployment**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **deployment**
 
 ---
 

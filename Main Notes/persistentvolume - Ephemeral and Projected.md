@@ -15,7 +15,7 @@ tags:
 
 # persistentvolume - Ephemeral and Projected
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[persistentvolume]] > **Ephemeral and Projected**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[persistentvolume]] > **Ephemeral and Projected**
 
 ---
 

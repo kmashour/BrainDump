@@ -15,7 +15,7 @@ tags:
 
 # pod - QoS Classes and Eviction
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[pod]] > **QoS Classes and Eviction**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[pod]] > **QoS Classes and Eviction**
 
 ---
 

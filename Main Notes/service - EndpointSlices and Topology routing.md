@@ -15,7 +15,7 @@ tags:
 
 # service - EndpointSlices and Topology routing
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[service]] > **EndpointSlices and Topology routing**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[service]] > **EndpointSlices and Topology routing**
 
 ---
 

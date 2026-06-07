@@ -15,7 +15,7 @@ tags:
 
 # gitea - System User and Process Isolation
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[gitea]] > **System User and Process Isolation**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[gitea]] > **System User and Process Isolation**
 
 ---
 

@@ -15,7 +15,7 @@ tags:
 
 # statefulset - Headless Service and Stable Identity
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[statefulset]] > **Headless Service and Stable Identity**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[statefulset]] > **Headless Service and Stable Identity**
 
 ---
 

@@ -8,9 +8,11 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ### Added
 - **Project note (`Projects/Systems Design/Project - Secure Load-Balanced Web API.md`):** Re-created and consolidated the hands-on configurations (Nginx load balancing, SSL, rate limiting, and CORS headers), the Python FastAPI service (JWT authentication, in-memory rate limiter, and database pool), the SQL schema migration, and the Curl verification playbook.
+- **Conceptual Landing Notes (`Main Notes/`):** Created landing notes for `caching.md` and `cdn.md`.
+- **Deeper-dive Notes (`Main Notes/`):** Created detailed deeper-dive notes for `caching - Strategies and Eviction Policies.md`, `cdn - Push vs Pull and Edge Caching.md`, `api-protocols - gRPC and Protobuf.md`, and `database-selection - Sharding and Consistent Hashing.md`.
 
 ### Refactored / Upgraded
-- **Reference Note (`Reference Notes/17_system_design_fundamentals.md`):** Completely decoupled the inline configuration code blocks and commands from Section 6, replacing them with conceptual descriptions and direct wiki-links to the consolidated project note, satisfying clean architectural separation.
+- **Reference Note (`Reference Notes/17_system_design_fundamentals.md`):** Completely decoupled the inline configuration code blocks and commands from Section 6, replacing them with conceptual descriptions and direct wiki-links to the consolidated project note. Furthermore, expanded the conceptual database scaling, consistent hashing, caching topologies (Cache-Aside, Write-Through, Write-Behind), CDN Anycast routing, and gRPC/HTTP/2 multiplexing systems design principles with high-fidelity, standard-compliant Mermaid diagrams.
 - **Conceptual Main Notes (`Main Notes/`):** Restored and validated the landing notes and deeper-dive notes for `load-balancing`, `database-selection`, `api-protocols`, and `api-security`, ensuring complete alignment with the new system templates.
 - **Link Auditing:** Validated the entire vault with `review_vault.py` achieving 100% link integrity across all modules.
 
@@ -38,7 +40,7 @@ The following files and assets have been processed and integrated:
 ### Refactored / Upgraded
 - **Diagram Designer Pipeline integration (`Agent.md` & `instructions.md`):** Formally integrated `Phase 2.5 (Diagram Design)` and `Step 4.5: Visual Concept Elaborations (Diagramming)` into the ingestion pipeline, defining the `diagram_designer` subagent to generate and insert Mermaid.js diagrams automatically.
 - **Mermaid Diagrams Integration:** Invoked `diagram_designer` to generate and insert 6 high-fidelity, standard-compliant Mermaid diagrams into Module 17 (Cognitive Map, Vertical vs. Horizontal Scaling, Load Balancer Probing/Eviction, SQL vs. NoSQL vs. Graph DB structure, Stateful vs. Stateless JWT Auth flows, and layered API Security Shielding).
-- **MOC Indices (`Reference Notes/Index.md` & `Main Notes/Index.md`):** Updated the indexes: added Track 6 for systems scaling in Reference Index, and added a "Systems Design & Core Infrastructure" Dataview section for `role: infra` notes in Conceptual Index.
+- **MOC Indices (`Reference Notes/0-Index.md` & `Main Notes/0-Index.md`):** Updated the indexes: added Track 6 for systems scaling in Reference Index, and added a "Systems Design & Core Infrastructure" Dataview section for `role: infra` notes in Conceptual Index.
 - **Decoupled PoC Architecture:** Modified the System Design module to strip out Nginx/code configs, redirecting queries to the Project file to keep the core brain conceptual.
 
 ---
@@ -108,7 +110,7 @@ The following files and assets have been processed and integrated:
 
 ### Changed / Updated
 - **`Reference Notes/10_networking_dns_and_ingress.md`:** Replaced L7 host/path routing text blocks with a detailed Mermaid.js Ingress traffic routing and logical service connection diagram. Added a CKA Battle-Test FAQ section comparing `kubectl expose` vs `kubectl create service` for ClusterIP and NodePort, including CLI syntax and a capability matrix.
-- **`Projects/CKA/Index.md`:** Added a CKA Battle-Test FAQ detailing the location and ingestion pipeline of mock exams/lightning labs, and explaining the RAG capabilities of this vault.
+- **`Projects/CKA/0-Index.md`:** Added a CKA Battle-Test FAQ detailing the location and ingestion pipeline of mock exams/lightning labs, and explaining the RAG capabilities of this vault.
 - **`README.md`:** Added details on the active RAG integration for the AI coding assistant.
 - **`Reference Notes/02_cluster_architecture_and_components.md`:** Replaced high-level cluster architecture text references with a detailed Mermaid.js control plane/worker node interaction diagram and corresponding structural description.
 - **`Main Notes/kube-apiserver.md`:** Integrated a Mermaid.js diagram illustrating the central coordination role of `kube-apiserver` in the control plane hierarchy.
@@ -726,10 +728,10 @@ The following raw inflow source files have been fully ingested and integrated:
   - `CKAExamAgent` (`cka_exam_expert`): Condenses study materials into exam-focused checklists, mock reviews, and VIM setups inside `Projects/CKA/`.
 - **Dedicated Digital Garden (`Digital Garden/`):** Created a root folder specifically for mapping domains and architectural patterns, and moved the `Pattern - Postgres on EKS.md` here.
 - **Projects Directory (`Projects/`):** Created a project folder containing `Projects/CKA/` specifically for CKA Exam preparation.
-- **CKA Exam Workspace Notes:** Created `Projects/CKA/Index.md` (exam MOC) and `Projects/CKA/Vim and Terminal Setup.md` (high-speed commands and configs).
-- **Reference Notes Index (`Reference Notes/Index.md`):** Created a dynamic index MOC to list detailed study modules and PoCs.
-- **Digital Garden Index (`Digital Garden/Index.md`):** Created a dynamic MOC table to list architectural patterns.
-- **Dynamic MOC Indexes:** Updated `Main Notes/Index.md` to point its pattern queries to the new `Digital Garden/` directory.
+- **CKA Exam Workspace Notes:** Created `Projects/CKA/0-Index.md` (exam MOC) and `Projects/CKA/Vim and Terminal Setup.md` (high-speed commands and configs).
+- **Reference Notes Index (`Reference Notes/0-Index.md`):** Created a dynamic index MOC to list detailed study modules and PoCs.
+- **Digital Garden Index (`Digital Garden/0-Index.md`):** Created a dynamic MOC table to list architectural patterns.
+- **Dynamic MOC Indexes:** Updated `Main Notes/0-Index.md` to point its pattern queries to the new `Digital Garden/` directory.
 
 ### Refactored / Upgraded
 - **Landing Notes Properties:** Refactored properties across all 11 landing notes using Python automation to inject `domains: ["kubernetes"]` and `against: []` (opposing ideas/approaches).
@@ -742,7 +744,7 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-05-31] - Two-Tier Knowledge Vault Reorganization
 
 ### Added
-- **MOC Index File (`Main Notes/Index.md`):** Created a central Map of Content (MOC) index note for unified conceptual navigation across landing and deeper dive notes.
+- **MOC Index File (`Main Notes/0-Index.md`):** Created a central Map of Content (MOC) index note for unified conceptual navigation across landing and deeper dive notes.
 - **Main Notes Directory (`Main Notes/`):** Created and refactored 11 atomic landing notes and 11 deeper technical sub-resource notes for core CKA concepts, structured with Obsidian-compliant YAML Properties (role, related_concepts, deeper_dives, sub_concepts, etc.) and breadcrumb links:
   - `kube-apiserver` (Deeper: request lifecycle, API Groups, OpenAPI schema, watch mechanism, proxy, ephemeral containers).
   - `etcd` (Deeper: Raft consensus quorum, ports, CLI usage, client certificate TLS args, CKA backup/restore steps).

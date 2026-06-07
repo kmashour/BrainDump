@@ -15,7 +15,7 @@ tags:
 
 # Database Selection - SQL vs NoSQL vs Graph
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[database-selection]] > **SQL vs NoSQL vs Graph**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[database-selection]] > **SQL vs NoSQL vs Graph**
 
 ---
 
@@ -68,4 +68,4 @@ Understanding database architectures is critical for matching requirements to pe
 | **Columnar** | Denormalized | No support | High Horizontal (Peer-to-peer ring) | Eventual Consistency |
 | **Graph** | Relational / Connective | Dynamic traversal (Index-free adjacency) | Cluster replication | ACID for graph modifications |
 
-*Read more in [System Design Fundamentals](../Reference%20Notes/17_system_design_fundamentals.md#3-data-layer-design-sql-nosql-and-caching)*
+*Read more in [[Reference Notes/17_system_design_fundamentals.md#3. Database Architectures & Selection Framework]]*

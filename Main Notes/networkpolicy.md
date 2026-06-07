@@ -21,7 +21,7 @@ tags:
 
 # networkpolicy
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **networkpolicy**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **networkpolicy**
 
 ---
 

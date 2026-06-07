@@ -14,7 +14,7 @@ tags:
 
 # kube-apiserver - Ephemeral Containers
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[kube-apiserver]] > **Ephemeral Containers**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-apiserver]] > **Ephemeral Containers**
 
 ---
 

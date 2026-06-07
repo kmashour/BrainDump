@@ -15,7 +15,7 @@ tags:
 
 # gitea - Branch Governance and Git Hooks
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[gitea]] > **Branch Governance and Git Hooks**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[gitea]] > **Branch Governance and Git Hooks**
 
 ---
 

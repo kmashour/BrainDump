@@ -19,7 +19,7 @@ tags:
 
 # cronjob
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Workloads & Infrastructure > **cronjob**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **cronjob**
 
 ---
 

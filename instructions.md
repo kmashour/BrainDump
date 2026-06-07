@@ -21,9 +21,9 @@ The knowledge base is stored in `/home/karim/Desktop/BrainDumo/`.
 - `instructions.md`: This file (the Ingestion Skill).
 - `backlog.md`: The transaction log containing every update, change, and addition to the knowledge base.
 - `inflow/`: A landing zone for raw lecture transcripts, documentation dumps, and external notes before consolidation.
-- `Reference Notes/`: Detailed, high-verbosity study modules and hands-on PoCs. Contains `Reference Notes/Index.md` (dynamic index of all modules).
-- `Main Notes/`: Atomic, conceptual summaries (Landing Notes and Deeper Notes). Contains `Main Notes/Index.md` (dynamic index of all landing and deeper notes).
-- `Digital Garden/`: Connective architectural patterns and cross-domain connections. Contains `Digital Garden/Index.md` (dynamic index of patterns).
+- `Reference Notes/`: Detailed, high-verbosity study modules and hands-on PoCs. Contains `Reference Notes/0-Index.md` (dynamic index of all modules).
+- `Main Notes/`: Atomic, conceptual summaries (Landing Notes and Deeper Notes). Contains `Main Notes/0-Index.md` (dynamic index of all landing and deeper notes).
+- `Digital Garden/`: Connective architectural patterns and cross-domain connections. Contains `Digital Garden/0-Index.md` (dynamic index of patterns).
 - `Projects/`: Workspaces for active projects. Contains `Projects/CKA/` specifically for CKA Exam preparation, speed hacks, and checklists.
 
 ---
@@ -77,7 +77,7 @@ tags:
 
 # <concept-name>
 
-**Breadcrumbs:** [[Index|🏠 Index]] > <Layer> > **<concept-name>**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > <Layer> > **<concept-name>**
 
 ---
 
@@ -142,7 +142,7 @@ tags:
 
 # <landing-concept-name> - <deeper-aspect-name>
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[<landing-concept-name>]] > **<deeper-aspect-name>**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[<landing-concept-name>]] > **<deeper-aspect-name>**
 
 ---
 
@@ -175,7 +175,7 @@ tags:
 
 # Pattern: <pattern-name>
 
-**Breadcrumbs:** [[Index|🏠 Index]] > Patterns > **<pattern-name>**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **<pattern-name>**
 
 ---
 

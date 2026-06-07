@@ -15,7 +15,7 @@ tags:
 
 # service - Source IP and Pod Termination Lifecycle
 
-**Breadcrumbs:** [[Index|🏠 Index]] > [[service]] > **Source IP and Pod Termination Lifecycle**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[service]] > **Source IP and Pod Termination Lifecycle**
 
 ---
 
