@@ -730,7 +730,40 @@ Custom schedulers are configured using a configuration file instead of legacy co
     - schedulerName: my-custom-scheduler
   ```
   > [!IMPORTANT]
-  > When running multiple schedulers in High Availability (HA) mode, **Leader Election** is critical to prevent conflicts. If `leaderElect: true` is used, you must specify a unique lease resource name (`resourceName` / `--leader-elect-resource-name`) so it does not collide with the default scheduler's leader lease.
+  > **Reconciliation Loop & Leader Election Leases in HA Mode:**
+  >
+  > 1. **Reconciliation Loop:** Both the default `kube-scheduler` and any custom scheduler utilize a **Reconciliation Loop** (control loop) by default. The loop constantly monitors the API server for unscheduled pods and takes actions to bind them to nodes, reconciling the actual state with the desired state.
+  >
+  > 2. **Leader Election & Leases:** When running multiple instances of a scheduler for High Availability (HA) (to avoid a single point of failure), you only want **one** instance actively making scheduling decisions at any given time. If two instances scheduled the same Pod simultaneously, it would cause scheduling conflicts. 
+  >    * Kubernetes uses a **Lease** object (a distributed lock in `kube-system`) to nominate a "Leader" instance. Only the leader schedules pods; the standby instances wait.
+  >    * **The unique lease resource name (`resourceName`):** Each scheduler deployment must acquire its own distinct lock. The default scheduler uses a lease named `kube-scheduler`. If your custom scheduler configuration also uses `kube-scheduler`, they will fight for the same lock, continuously evicting each other.
+  >
+  > **Example of Lock Conflict vs. Correct Separation:**
+  >
+  > * **Incorrect Configuration (Collision):**
+  >   ```yaml
+  >   # My Custom Scheduler Config
+  >   leaderElection:
+  >     leaderElect: true
+  >     resourceName: kube-scheduler # COLLISION! Fights with the default scheduler lock
+  >   ```
+  > * **Correct Configuration (Isolated):**
+  >   ```yaml
+  >   # My Custom Scheduler Config
+  >   leaderElection:
+  >     leaderElect: true
+  >     resourceName: my-custom-scheduler-lease # Isolated lease lock
+  >   ```
+  >   * **How to verify the lease exists in the cluster:**
+  >     ```bash
+  >     # View active leases in the kube-system namespace
+  >     kubectl get leases -n kube-system
+  >     
+  >     # Expected Output:
+  >     # NAME                         HOLDER                                  AGE
+  >     # kube-scheduler               controlplane-1                          10d
+  >     # my-custom-scheduler-lease    custom-scheduler-deployment-abc-123     12h
+  >     ```
 
 #### 3. Installation Options
 You can deploy a custom scheduler either as a static Pod (on control plane hosts) or as a Deployment inside the cluster.
