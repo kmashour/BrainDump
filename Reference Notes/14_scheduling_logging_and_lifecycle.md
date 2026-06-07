@@ -10,9 +10,9 @@ To build a strong intuition for this module, think of the topics as a chronologi
 
 ```mermaid
 graph LR
-    A["1. Placement (Where it runs)"] --> B["2. Observability (How it behaves)"]
-    B --> C["3. Configuration (What it consumes)"]
-    C --> D["4. Eviction and Termination (How it dies)"]
+    A["Placement (Where it runs)"] --> B["Observability (How it behaves)"]
+    B --> C["Configuration (What it consumes)"]
+    C --> D["Eviction and Termination (How it dies)"]
 ```
 
 1. **Step 1: Placement (Section 1):** We start by deciding *where* to place the Pod in the cluster. This is the job of the scheduler, using rules like Node Affinity, Taints, and Tolerations, or custom scheduling loops.

@@ -10,10 +10,10 @@ To build a strong intuition for Kubernetes extensibility, think of the topics as
 
 ```mermaid
 graph TD
-    A["1. Schema Registration (CustomResourceDefinitions and schemas)"] --> B["2. Controller Loop Automation (Informers, WorkQueues and reconciliation)"]
-    B --> C["3. The Operator Pattern (Encapsulating domain operational logic)"]
-    C --> D["4. Hardware Extensions (Device Plugins and GPU/hardware registration)"]
-    D --> E["5. API Aggregation (Extending API Server via APIService federation)"]
+    A["Schema Registration (CustomResourceDefinitions and schemas)"] --> B["Controller Loop Automation (Informers, WorkQueues and reconciliation)"]
+    B --> C["The Operator Pattern (Encapsulating domain operational logic)"]
+    C --> D["Hardware Extensions (Device Plugins and GPU/hardware registration)"]
+    D --> E["API Aggregation (Extending API Server via APIService federation)"]
 ```
 
 1. **Step 1: Schema Registration (Section 1):** We start by registering custom data types. We write CustomResourceDefinitions (CRDs) with OpenAPI v3 validation schemas and subresources (like `/status` and `/scale`) to define new structures within the API database.
