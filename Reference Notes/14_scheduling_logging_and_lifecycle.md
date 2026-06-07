@@ -51,8 +51,9 @@ If a Pod is already created and stuck in a `Pending` state (e.g., because no sch
     name: worker-1 # Node where the pod should be scheduled
   ```
 * **Imperative Application (via `kubectl` raw POST):**
+  Since the standard `kubectl` CLI doesn't have an imperative command like `kubectl bind`, you can submit the binding using `kubectl` via the raw API endpoint:
   ```bash
-  kubectl replace -f - <<EOF
+  kubectl post --raw "/api/v1/namespaces/default/pods/pending-nginx/binding" -f - <<EOF
   {
     "apiVersion": "v1",
     "kind": "Binding",
@@ -61,6 +62,11 @@ If a Pod is already created and stuck in a `Pending` state (e.g., because no sch
   }
   EOF
   ```
+  Alternatively, you can save the manifest to `binding.yaml` and create it using `kubectl create`:
+  ```bash
+  kubectl create -f binding.yaml
+  ```
+  *Note:* You cannot use `kubectl apply` or `kubectl replace` here because a Pod's binding is a one-time, write-once POST operation. Once a Pod is bound to a node, its `spec.nodeName` is permanently set.
 
 ---
 
