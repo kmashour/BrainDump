@@ -10,6 +10,10 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Project note (`Projects/Systems Design/Project - Secure Load-Balanced Web API.md`):** Re-created and consolidated the hands-on configurations (Nginx load balancing, SSL, rate limiting, and CORS headers), the Python FastAPI service (JWT authentication, in-memory rate limiter, and database pool), the SQL schema migration, and the Curl verification playbook.
 - **Conceptual Landing Notes (`Main Notes/`):** Created landing notes for `caching.md` and `cdn.md`.
 - **Deeper-dive Notes (`Main Notes/`):** Created detailed deeper-dive notes for `caching - Strategies and Eviction Policies.md`, `cdn - Push vs Pull and Edge Caching.md`, `api-protocols - gRPC and Protobuf.md`, and `database-selection - Sharding and Consistent Hashing.md`.
+- **Topic-Specific Index MOCs:** Created topic-specific index files to segregate subdomains and prevent mixing of study tracks:
+  - `Reference Notes/0-Index - Kubernetes.md` & `Main Notes/0-Index - Kubernetes.md` (Kubernetes tracks, CKA/CKS/CKAD)
+  - `Reference Notes/0-Index - Systems Design.md` & `Main Notes/0-Index - Systems Design.md` (Distributed systems, sharding, caching, CDNs)
+  - `Reference Notes/0-Index - Local DevOps.md` & `Main Notes/0-Index - Local DevOps.md` (Gitea self-hosted source control, LVM partitions, act_runners CI/CD, troubleshooting)
 
 ### Refactored / Upgraded
 - **Index Files & MOCs (`0-Index.md`):** Renamed all root directory map index files from `Index.md` to `0-Index.md` (across `Main Notes/`, `Reference Notes/`, `Digital Garden/`, and `Projects/CKA/`) to ensure they sort at the absolute top of their folders. Replaced all breadcrumbs and internal links referencing `[[Index]]` with `[[0-Index]]` across all 100+ files.
