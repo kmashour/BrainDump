@@ -10,10 +10,10 @@ To build a strong intuition for this module, think of the topics as moving from 
 
 ```mermaid
 graph TD
-    A["Macro Architecture"] --> B["Micro Components"]
-    B --> C["HA and Scaling Topologies"]
-    C --> D["Node Integration and Version Skew"]
-    D --> E["Declarative Object Model"]
+    A["1. Macro Architecture (Brain vs. Muscle)"] --> B["2. Micro Components (Deep dive of daemons)"]
+    B --> C["3. HA and Scaling Topologies (Stacked vs. External etcd)"]
+    C --> D["4. Node Integration and Version Skew (How components match versions)"]
+    D --> E["5. Declarative Object Model (API Objects, Namespaces, Finalizers)"]
 ```
 
 1. **Step 1: Macro Architecture (Section 1):** We start with the bird's-eye view, dividing the cluster into the Control Plane (state management) and Worker Nodes (workload execution).

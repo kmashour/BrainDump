@@ -10,10 +10,10 @@ To build a strong intuition for Kubernetes storage, think of the topics as progr
 
 ```mermaid
 graph TD
-    A["Storage Interface"] --> B["Node-Bound Storage"]
-    B --> C["Persistent Storage Abstractions"]
-    C --> D["Automated Provisioning"]
-    D --> E["Workload Mount Bindings"]
+    A["1. Storage Interface (CSI drivers and sidecar helpers)"] --> B["2. Node-Bound Storage (Local hostPath and emptyDir ephemeral volumes)"]
+    B --> C["3. Persistent Storage Abstractions (Static PVs and PVC request binding)"]
+    C --> D["4. Automated Provisioning (Dynamic volumes via StorageClasses)"]
+    D --> E["5. Workload Mount Bindings (Pod specifications, volumeMounts and subPaths)"]
 ```
 
 1. **Step 1: Storage Interface (Section 1):** We start with the infrastructure framework. We analyze in-tree vs. out-of-tree drivers, understand the role of CSI controller/node sidecars, and trace Kubelet-to-CSI gRPC communication.

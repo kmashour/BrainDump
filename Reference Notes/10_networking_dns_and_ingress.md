@@ -10,10 +10,10 @@ To build a strong intuition for Kubernetes networking, think of the topics as mo
 
 ```mermaid
 graph TD
-    A["Linux Network Primitives"] --> B["Container Network Interface"]
-    B --> C["Internal Cluster Services"]
-    C --> D["Name Resolution and Discovery"]
-    D --> E["Ingress and External Traffic Routing"]
+    A["1. Linux Network Primitives (Namespaces, veth pairs, routing tables and NAT)"] --> B["2. Container Network Interface - CNI (Overlay networks, Flannel vxlan vs. Calico BGP)"]
+    B --> C["3. Internal Cluster Services (Services, iptables vs. IPVS and Kube-Proxy)"]
+    C --> D["4. Name Resolution and Discovery (CoreDNS and cluster-local DNS domains)"]
+    D --> E["5. Ingress and External Traffic Routing (Ingress controllers, paths/hosts and Gateway API)"]
 ```
 
 1. **Step 1: Linux Network Primitives (Section 1):** We start at the operating system kernel. We study network namespaces, build virtual ethernet (veth) pairs, link bridge interfaces, write routing tables, and establish NAT rules to connect isolated processes.

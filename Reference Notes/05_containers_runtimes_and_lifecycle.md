@@ -10,10 +10,10 @@ To build a strong intuition for this module, think of the topics as a journey fr
 
 ```mermaid
 graph TD
-    A["Packaging and Execution"] --> B["Host Runtime Execution"]
-    B --> C["Alternate Runtimes"]
-    C --> D["Complex Pod Topologies"]
-    D --> E["Live Diagnostics"]
+    A["1. Packaging and Execution (OCI Images, Cmd/Arg Injection)"] --> B["2. Host Runtime Execution (CRI Pipeline and Sandbox Isolation)"]
+    B --> C["3. Alternate Runtimes (RuntimeClass: gVisor, Kata vs. runc)"]
+    C --> D["4. Complex Pod Topologies (InitContainers, Native Sidecars and Lifecycle Hooks)"]
+    D --> E["5. Live Diagnostics (Ephemeral Containers for debugging)"]
 ```
 
 1. **Step 1: Packaging & Execution (Sections 1 & 5):** We start with the container blueprint. We explore OCI image layers, understand image pull policies, and study how to inject configurations, override entrypoint images, and pass arguments to the container processes.

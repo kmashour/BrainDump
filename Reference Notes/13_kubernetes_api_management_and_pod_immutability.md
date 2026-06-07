@@ -10,9 +10,9 @@ To build a strong intuition for Kubernetes API management and resource updating,
 
 ```mermaid
 graph TD
-    A["API Paradigms"] --> B["The 3-Way Merge Engine"]
-    B --> C["Object Constraints"]
-    C --> D["Edit Recovery Playbooks"]
+    A["1. API Paradigms (Imperative actions vs. declarative configurations)"] --> B["2. The 3-Way Merge Engine (Local, Live, and Last-Applied states and annotations)"]
+    B --> C["3. Object Constraints (Pod Spec Immutability: mutable images vs. immutable fields)"]
+    C --> D["4. Edit Recovery Playbooks (Dynamic updates, dry-runs, and force-replacement techniques)"]
 ```
 
 1. **Step 1: API Paradigms (Section 1):** We start with how we instruct the cluster: using fast, imperatively executed actions (for rapid prototyping and exams) vs. declarative, state-oriented configurations (for version-controlled GitOps).

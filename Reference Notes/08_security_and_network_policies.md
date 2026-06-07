@@ -10,10 +10,10 @@ To build a strong intuition for Kubernetes security, think of the topics as a se
 
 ```mermaid
 graph TD
-    A["Authentication and Certificates"] --> B["Authorization"]
-    B --> C["Workload Hardening"]
-    C --> D["Network Isolation"]
-    D --> E["Cluster Governance"]
+    A["1. Authentication and Certificates (Who are you? Client certs and kubeconfigs)"] --> B["2. Authorization (What can you do? RBAC Roles and ServiceAccounts)"]
+    B --> C["3. Workload Hardening (Container permissions and SecurityContexts)"]
+    C --> D["4. Network Isolation (Traffic segregation via NetworkPolicies)"]
+    D --> E["5. Cluster Governance (PSA/PSS levels and Audit logging)"]
 ```
 
 1. **Step 1: Authentication & Certificates (Sections 1 & 2):** We start at the cluster border. We study how users, administrators, and daemons identify themselves using X.509 Client Certificates, the Certificates API, and connection profiles (`kubeconfig` files).

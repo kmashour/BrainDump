@@ -10,10 +10,10 @@ To build a strong intuition for advanced Kubernetes cluster administration, thin
 
 ```mermaid
 graph TD
-    A["Node Administration"] --> B["API Security and Admission"]
-    B --> C["Observability Mechanics"]
-    C --> D["API Flow Control"]
-    D --> E["High Availability Coordination"]
+    A["1. Node Administration (Graceful shutdown, swap and cgroups)"] --> B["2. API Security and Admission (Certificates API and Admission Webhooks)"]
+    B --> C["3. Observability Mechanics (Metrics Server, logs and OpenTelemetry)"]
+    C --> D["4. API Flow Control (APF: FlowSchemas and PriorityLevels)"]
+    D --> E["5. High Availability Coordination (Coordinated Leader Election and Leases)"]
 ```
 
 1. **Step 1: Node Administration (Sections 1, 2 & 3):** We start at the machine layer. We configure systemd inhibitor locks to delay node shutdowns for pod draining, integrate swap memory allocations with cgroup v2, and manage node autoscaling.

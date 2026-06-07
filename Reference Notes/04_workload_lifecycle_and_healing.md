@@ -10,9 +10,9 @@ To build a strong intuition for this module, think of the topics as moving from 
 
 ```mermaid
 graph TD
-    A["Self-Healing Pillars"] --> B["Probes and Health Checks"]
-    B --> C["Resource Garbage Collection"]
-    C --> D["Practical Validation"]
+    A["1. Self-Healing Pillars (From local restarts to node rescheduling)"] --> B["2. Probes and Health Checks (Liveness, Readiness, Startup)"]
+    B --> C["3. Resource Garbage Collection (API cascading deletion vs. Node image GC)"]
+    C --> D["4. Practical Validation (Real-world PoC failure scenarios)"]
 ```
 
 1. **Step 1: Self-Healing Pillars (Section 1):** We start by understanding the architecture of recovery. We trace the four levels of self-healing: local container restarts (`kubelet`), pod replacements (controllers), replica scaling (ReplicaSet), and infrastructure rescheduling (scheduler).
