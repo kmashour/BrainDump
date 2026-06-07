@@ -7,14 +7,14 @@ tags:
   - obsidian/moc
 ---
 
-# 🏠 Kubernetes Conceptual Index (Map of Content)
+# 🏠 Conceptual Map of Content (MOC)
 
-Welcome to the central landing page for the **Main Notes** of your Kubernetes Knowledge Base. This index is dynamically populated using the **Dataview** plugin.
+Welcome to the central landing page for the **Main Notes** of your Second Brain knowledge base. This index groups core landing concepts logically by systems domain using the **Dataview** plugin.
 
 ---
 
-## 🏛️ Control Plane (The Brains)
-Core components running on the master nodes that manage cluster state, scheduling, and configuration.
+## 🏗️ Domain 1: Control Plane & Cluster Core
+*Core orchestrators running on the control plane that manage cluster state, scheduling decisions, extensions, and configuration queueing.*
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
@@ -25,8 +25,8 @@ SORT file.name ASC
 
 ---
 
-## 💪 Worker Node Mechanics (The Muscle)
-Daemons and environments running on every node to execute containerized workloads and route network traffic.
+## 💪 Domain 2: Worker Node Mechanics & Container Runtimes
+*Host-level container runtime sandboxes, cgroup resource limits, node agent daemons, and low-level kernel configurations.*
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
@@ -37,32 +37,68 @@ SORT file.name ASC
 
 ---
 
-## 🧩 Workloads & Infrastructure
-The foundational building blocks of applications and compute resources in the cluster.
+## 🧩 Domain 3: Workloads, Controllers & Configuration
+*Declarative controllers, scaling templates, batch executions, metadata stores, and local environment variables.*
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
 FROM "Main Notes"
-WHERE class = "landing-note" AND role = "workload"
+WHERE class = "landing-note" AND role = "workload" AND !contains(domains, "networking") AND !contains(domains, "storage")
 SORT file.name ASC
 ```
 
 ---
 
-## 🖥️ Systems Design & Core Infrastructure
-Foundational architecture, database engines, traffic routing, and core security controls.
+## 🕸️ Domain 4: Service Routing & Network Segregation
+*Cluster ingress controllers, internal gateway proxy routing, DNS resolvers, and network segregation policies.*
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
 FROM "Main Notes"
-WHERE class = "landing-note" AND role = "infra"
+WHERE class = "landing-note" AND (contains(domains, "networking") OR role = "network") AND role != "control-plane" AND role != "infra"
 SORT file.name ASC
 ```
 
 ---
 
-## 🛠️ Tooling & Interfaces
-Command-line tools and utilities used to inspect and interact with the Kubernetes API.
+## 🔌 Domain 5: Persistent Storage & CSI Architecture
+*Storage classes, persistent disks, and dynamic workspace volume claims.*
+
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND (contains(domains, "storage") OR role = "storage")
+SORT file.name ASC
+```
+
+---
+
+## 🖥️ Domain 6: Systems Design & Distributed Infrastructure
+*Foundational scaling paradigms, database selection, geographically distributed CDNs, caching topologies, and security shields.*
+
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND role = "infra" AND (contains(domains, "database") OR contains(domains, "networking") OR contains(domains, "infra") OR contains(domains, "security"))
+SORT file.name ASC
+```
+
+---
+
+## 🐙 Domain 7: GitOps & Local Infrastructure
+*Self-hosted git servers, automated runner CI/CD environments, and local cluster administration.*
+
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+FROM "Main Notes"
+WHERE class = "landing-note" AND (role = "gitops" OR contains(file.name, "gitea"))
+SORT file.name ASC
+```
+
+---
+
+## 🛠️ Domain 8: Developer Tooling & Introspection
+*Introspection clients, configuration contexts, and system-interaction shell wrappers.*
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
@@ -73,8 +109,8 @@ SORT file.name ASC
 
 ---
 
-## 🔍 All Deeper Dive Notes
-A consolidated index of all deep architectural, use case, and pitfall notes across the vault.
+## 🔍 Deeper-Dive Architectural Focus Notes
+*A consolidated index of all deep architectural dive notes, use cases, and technical pitfalls across the vault.*
 
 ```dataview
 TABLE parent_concept AS "Component", sub_type AS "Type", tags AS "Tags"
@@ -85,8 +121,8 @@ SORT parent_concept ASC, file.name ASC
 
 ---
 
-## 🏛️ Architectural Patterns
-Connective notes documenting how multiple concepts across domains (e.g. Linux, AWS, Kubernetes) come together in production.
+## 🏛️ Architectural Patterns (Digital Garden)
+*Connective pattern notes mapping intersections between multiple domains (e.g. Linux kernel hooks, AWS, Kubernetes namespaces) in production.*
 
 ```dataview
 TABLE domains AS "Domains", components AS "Components", sources AS "Sources"
@@ -94,8 +130,3 @@ FROM "Digital Garden"
 WHERE class = "pattern-note"
 SORT file.name ASC
 ```
-
----
-
-> [!TIP] Obsidian Navigation Tip
-> This MOC updates automatically. When you create a new note, make sure it has the correct frontmatter attributes (`class`, `role`, `parent_concept`, etc.) so it displays in these tables.
