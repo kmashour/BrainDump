@@ -4,17 +4,25 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
-## [2026-06-10] - CKA Kubernetes GOLD Practice Suite & Interactive Engine
+## [2026-06-10] - CKA GOLD Extension & Advanced Playbook Release
 
 ### Added
-- **Kubernetes GOLD Practice Suite:** Developed a full-scale CKA interactive prep suite under `Projects/CKA/kubernetes GOLD/` consisting of:
-  - [primer.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/primer.md): Guide to navigating the 150 curriculum-weighted questions, shell aliases, and Vim configuration.
-  - [gold.py](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/gold.py): Standard library Python CLI with progression tracking, auto-verification checks, and non-destructive resets.
-  - [study_data.py](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/study_data.py): Structured dataset of 60 conceptual CKA Q&As (Mumshad mock exam standard).
-  - [scenarios_data.py](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/scenarios_data.py): Automation scripts for 90 environment-based broken configurations (systemd kubelet, broken static pods, CNI, ingress, services, and storage mounts).
-  - [gold.sh](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/gold.sh): Shell wrapper script.
-  - [kind-3node-config.yaml](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/kind-3node-config.yaml): Cluster configuration for a 3-node KinD topology (1 master, 2 workers) to enable realistic troubleshooting.
-- **MOC Integration:** Integrated the suite directly into [0-Index.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/0-Index.md).
+- **CKA GOLD Practice Suite Expansion:** Expanded the CKA prep suite under `Projects/CKA/kubernetes-Gold/` to exactly **175 tasks** (75 study Q&As + 100 environment-based scenarios), adding:
+  - Pod debugging via ephemeral containers.
+  - Advanced JSONPath data filters.
+  - Multi-file ConfigMap mounts and sidecar log rotation handlers.
+  - [walkthrough.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes-Gold/walkthrough.md): Playbook compiled dynamically for all 175 CKA GOLD tasks.
+- **Advanced Kubernetes Playbook (Out-of-Scope):** Created a dedicated advanced directory under `Projects/kubernetes/` containing **50 advanced tasks** (25 study Q&As + 25 scenarios) covering:
+  - Custom Resource Definitions (CRDs) with status/scale subresources.
+  - Admission Webhooks (Mutating & Validating configurations).
+  - CKS Security (AppArmor, Seccomp, RuntimeClasses, and PSA enforce/restricted modes).
+  - CKAD Developer Tooling (Helm, Kustomize overrides).
+  - Advanced Scheduling (PodTopologySpreadConstraint skew, PriorityClasses).
+  - [walkthrough.md](file:///home/karim/Desktop/BrainDump/Projects/kubernetes/walkthrough.md): Programmatic walkthrough playbook for all 50 advanced tasks.
+  - [primer.md](file:///home/karim/Desktop/BrainDump/Projects/kubernetes/primer.md): Advanced study guide.
+  - CLI runner [gold.py](file:///home/karim/Desktop/BrainDump/Projects/kubernetes/gold.py) / [gold.sh](file:///home/karim/Desktop/BrainDump/Projects/kubernetes/gold.sh) sharing the same underlying 3-node KinD cluster context.
+- **MOC Integration:** Integrated the new playbooks into the main CKA Index MOC ([0-Index.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/0-Index.md)).
+
 
 ## [2026-06-10] - Domain-Based Reference Prefixing & MOC Restructuring
 

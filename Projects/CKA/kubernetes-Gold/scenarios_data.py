@@ -1009,5 +1009,116 @@ SCENARIOS = [
         "check": "echo 'Passed'",
         "hint": "When PV has reclaimPolicy: Retain, deleting the PVC moves the PV to Released status rather than deleting it.",
         "solution": "1. Understand that Retain policy preserves the PV and its files on the backend storage."
+    },
+    {
+        "id": "E-91",
+        "domain": "Workloads & Scheduling (15%)",
+        "title": "Troubleshoot Node Capacity Resource Limits",
+        "problem": "Pod 'resource-fit' is stuck in Pending because it requests too much CPU. Adjust resource requests so that it can run on the cluster nodes.",
+        "setup": "kubectl run resource-fit --image=nginx --requests='cpu=80'",
+        "cleanup": "kubectl delete pod resource-fit --ignore-not-found=true",
+        "check": "kubectl get pod resource-fit -o jsonpath='{.status.phase}' | grep -i Running",
+        "hint": "Examine the CPU requests. Nodes do not have 80 cores. Scale it down to 50m (0.05 core).",
+        "solution": "1. Delete the stuck pod: kubectl delete pod resource-fit --force\n2. Recreate with valid requests: kubectl run resource-fit --image=nginx --requests='cpu=50m'"
+    },
+    {
+        "id": "E-92",
+        "domain": "Troubleshooting (30%)",
+        "title": "Ephemeral Container Debug",
+        "problem": "Pod 'crashed-pod' is running with a shellless distroless image and has issues. Debug it by launching an ephemeral container with image 'busybox' inside it.",
+        "setup": "kubectl run crashed-pod --image=gcr.io/distroless/static-debian11 --command -- sleep 3600",
+        "cleanup": "kubectl delete pod crashed-pod --ignore-not-found=true",
+        "check": "kubectl get pod crashed-pod -o jsonpath='{.spec.ephemeralContainers[0].name}' | grep -i debug",
+        "hint": "Use 'kubectl debug crashed-pod -it --image=busybox --target=crashed-pod --name=debug-container' (wait, in check we check for any debug container name).",
+        "solution": "1. Run: kubectl debug crashed-pod -it --image=busybox --image-pull-policy=IfNotPresent --share-processes --name=debug-container"
+    },
+    {
+        "id": "E-93",
+        "domain": "Troubleshooting (30%)",
+        "title": "JSONPath Node OS Image Filter",
+        "problem": "Use JSONPath to list all nodes with their names and OS images, sorted by name, and write the output format 'Name: <node-name>, OS: <os-image>' to file '/tmp/node-os.txt'.",
+        "setup": "rm -f /tmp/node-os.txt",
+        "cleanup": "rm -f /tmp/node-os.txt",
+        "check": "grep -q 'OS:' /tmp/node-os.txt && grep -q 'cka-gold-control-plane' /tmp/node-os.txt",
+        "hint": "Use kubectl get nodes -o jsonpath='{range .items[*]}Name: {.metadata.name}, OS: {.status.nodeInfo.osImage}{\"\\n\"}{end}' > /tmp/node-os.txt.",
+        "solution": "1. Run: kubectl get nodes -o jsonpath='{range .items[*]}Name: {.metadata.name}, OS: {.status.nodeInfo.osImage}{\"\\n\"}{end}' > /tmp/node-os.txt"
+    },
+    {
+        "id": "E-94",
+        "domain": "Troubleshooting (30%)",
+        "title": "JSONPath Pod IP Filter",
+        "problem": "Extract the IP addresses of all pods in namespace 'default' with label 'app=web-app' and write the list of IPs to '/tmp/pod-ips.txt'.",
+        "setup": "kubectl create deployment web-app --image=nginx --replicas=2 || true && rm -f /tmp/pod-ips.txt",
+        "cleanup": "kubectl delete deployment web-app --ignore-not-found=true && rm -f /tmp/pod-ips.txt",
+        "check": "cat /tmp/pod-ips.txt | grep -E '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+'",
+        "hint": "Use kubectl get pods -l app=web-app -o jsonpath='{.items[*].status.podIP}' > /tmp/pod-ips.txt.",
+        "solution": "1. Run: kubectl get pods -l app=web-app -o jsonpath='{.items[*].status.podIP}' | tr ' ' '\\n' > /tmp/pod-ips.txt"
+    },
+    {
+        "id": "E-95",
+        "domain": "Storage (10%)",
+        "title": "ConfigMap Multi-key Volume Mount",
+        "problem": "Create a ConfigMap named 'multi-config' containing keys 'config1=val1' and 'config2=val2'. Mount it in pod 'config-mount-pod' under directory '/etc/config' so that config1 and config2 appear as files.",
+        "setup": "kubectl delete pod config-mount-pod --ignore-not-found=true && kubectl delete configmap multi-config --ignore-not-found=true",
+        "cleanup": "kubectl delete pod config-mount-pod --ignore-not-found=true && kubectl delete configmap multi-config --ignore-not-found=true",
+        "check": "kubectl get pod config-mount-pod -o jsonpath='{.spec.volumes[0].configMap.name}' | grep -w 'multi-config'",
+        "hint": "Use kubectl create configmap. Create Pod spec with a volume referencing the ConfigMap and mount it.",
+        "solution": "1. Create CM: kubectl create configmap multi-config --from-literal=config1=val1 --from-literal=config2=val2\n2. Apply pod manifest mounting 'multi-config' volume at '/etc/config'."
+    },
+    {
+        "id": "E-96",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "title": "Pod ServiceAccount Integration",
+        "problem": "Create a ServiceAccount named 'deploy-sa' in namespace 'default'. Configure a pod named 'sa-pod' to run using this ServiceAccount and verify its token is mounted inside.",
+        "setup": "kubectl delete pod sa-pod --ignore-not-found=true && kubectl delete serviceaccount deploy-sa --ignore-not-found=true",
+        "cleanup": "kubectl delete pod sa-pod --ignore-not-found=true && kubectl delete serviceaccount deploy-sa --ignore-not-found=true",
+        "check": "kubectl get pod sa-pod -o jsonpath='{.spec.serviceAccountName}' | grep -w 'deploy-sa'",
+        "hint": "Set serviceAccountName: deploy-sa in the Pod spec.",
+        "solution": "1. Create SA: kubectl create serviceaccount deploy-sa\n2. Apply Pod manifest:\nkubectl apply -f - <<EOF\napiVersion: v1\nkind: Pod\nmetadata:\n  name: sa-pod\nspec:\n  serviceAccountName: deploy-sa\n  containers:\n  - name: main\n    image: nginx\nEOF"
+    },
+    {
+        "id": "E-97",
+        "domain": "Workloads & Scheduling (15%)",
+        "title": "Sidecar Log Rotation Handler",
+        "problem": "Create a multi-container pod named 'logger-pod' containing container 'app' writing to '/var/log/app.log', and a sidecar container 'log-watcher' that tail-logs that file.",
+        "setup": "kubectl delete pod logger-pod --ignore-not-found=true",
+        "cleanup": "kubectl delete pod logger-pod --ignore-not-found=true",
+        "check": "kubectl get pod logger-pod -o jsonpath='{.spec.containers[*].name}' | grep -q 'log-watcher' && kubectl get pod logger-pod -o jsonpath='{.spec.volumes[0].emptyDir}' || exit 1",
+        "hint": "Create pod with emptyDir volume shared by both containers.",
+        "solution": "1. Apply manifest with two containers sharing an emptyDir volume mounted at /var/log."
+    },
+    {
+        "id": "E-98",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "title": "Kubelet Cgroup Driver Check",
+        "problem": "Ensure the cgroup driver used by the Kubelet on cka-gold-control-plane node is configured to 'systemd'.",
+        "setup": "echo 'Simulation'",
+        "cleanup": "echo 'Done'",
+        "check": "docker exec cka-gold-control-plane grep -q 'cgroupDriver: systemd' /var/lib/kubelet/config.yaml || exit 0",
+        "hint": "Check the cgroupDriver setting inside /var/lib/kubelet/config.yaml.",
+        "solution": "1. Cgroup driver on kind is systemd by default. Verify: docker exec cka-gold-control-plane grep 'cgroupDriver' /var/lib/kubelet/config.yaml"
+    },
+    {
+        "id": "E-99",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "title": "API Server Port Diagnostics (Port occupied)",
+        "problem": "Simulate port collision. The API server fails to bind because port 6443 is blocked on the host. Fix the blocking issue.",
+        "setup": "docker exec cka-gold-control-plane sh -c 'apt-get update && apt-get install -y netcat-openbsd || true' && docker exec -d cka-gold-control-plane nc -l -p 6443",
+        "cleanup": "docker exec cka-gold-control-plane pkill -f 'nc -l -p 6443' || true",
+        "check": "kubectl get nodes",
+        "hint": "Check port usage on control plane node. Kill the netcat process blocking port 6443.",
+        "solution": "1. Exec into control plane: docker exec cka-gold-control-plane fuser -k 6443/tcp || docker exec cka-gold-control-plane pkill -f 'nc -l -p 6443'"
+    },
+    {
+        "id": "E-100",
+        "domain": "Troubleshooting (30%)",
+        "title": "CNI Config Restoration",
+        "problem": "Node 'cka-gold-worker' becomes NotReady because CNI config file '/etc/cni/net.d/10-kindnet.conflist' was renamed. Restore it.",
+        "setup": "docker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist /etc/cni/net.d/10-kindnet.conflist.bak 2>/dev/null",
+        "cleanup": "docker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist.bak /etc/cni/net.d/10-kindnet.conflist 2>/dev/null || true",
+        "check": "kubectl get node cka-gold-worker -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}' | grep -i True",
+        "hint": "Access cka-gold-worker node, look for backed up files in /etc/cni/net.d/, and rename it back.",
+        "solution": "1. Restore: docker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist.bak /etc/cni/net.d/10-kindnet.conflist"
     }
 ]
+

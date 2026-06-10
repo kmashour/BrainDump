@@ -369,5 +369,96 @@ STUDY_QUESTIONS = [
         "domain": "Troubleshooting (30%)",
         "question": "How do you inspect the current etcd cluster member health and list the etcd cluster members?",
         "answer": "ETCDCTL_API=3 etcdctl \\\n  --endpoints=https://127.0.0.1:2379 \\\n  --cacert=/etc/kubernetes/pki/etcd/ca.crt \\\n  --cert=/etc/kubernetes/pki/etcd/server.crt \\\n  --key=/etc/kubernetes/pki/etcd/server.key \\\n  member list -w table"
+    },
+    {
+        "id": "S-61",
+        "domain": "Services & Networking (20%)",
+        "question": "Explain PodSpec 'dnsPolicy' options and when 'dnsConfig' overrides are needed.",
+        "answer": "1. Default: Pod inherits the name resolution configuration from the node.\n2. ClusterFirst (Default for pods not on hostNetwork): Any DNS query matching the cluster domain suffix is forwarded to CoreDNS.\n3. ClusterFirstWithHostNet: Use this for pods running with hostNetwork: true that still need cluster DNS resolution.\n4. None: Ignores cluster DNS settings. You must manually define custom DNS servers using the dnsConfig field."
+    },
+    {
+        "id": "S-62",
+        "domain": "Troubleshooting (30%)",
+        "question": "What is an Ephemeral Container, and why can it not be added to a running pod via standard 'kubectl edit' or 'kubectl patch'?",
+        "answer": "An Ephemeral Container is a temporary container run inside an existing Pod to debug issues. It lacks resource guarantees and cannot be restarted. You cannot add it via edit/patch because the Pod Spec 'containers' and 'initContainers' lists are immutable after creation. Ephemeral containers are added via the specialized '/ephemeralcontainers' API subresource, which is accessed using the 'kubectl debug' command."
+    },
+    {
+        "id": "S-63",
+        "domain": "Workloads & Scheduling (15%)",
+        "question": "What is the difference between 'kubectl scale' and modifying replicas directly in deployment YAML using 'kubectl apply'?",
+        "answer": "'kubectl scale' is an imperative command that updates the replicas field directly in the live object in the API server. If you subsequently run 'kubectl apply' on a local YAML manifest that still specifies the old replica count, the three-way merge patch will overwrite your imperative scaling back to the local manifest's count. For GitOps, you should always scale by editing the YAML manifest."
+    },
+    {
+        "id": "S-64",
+        "domain": "Workloads & Scheduling (15%)",
+        "question": "Describe how Kubelet enforces CPU limits using CFS (Completely Fair Scheduler) quotas in Linux.",
+        "answer": "Kubelet uses the Linux kernel Completely Fair Scheduler (CFS) bandwidth control to enforce CPU limits. It configures two cgroup parameters under '/sys/fs/cgroup/cpu/':\n1. `cpu.cfs_period_us`: The period length (usually 100,000 microseconds or 100ms).\n2. `cpu.cfs_quota_us`: The total runtime allowed within that period. E.g., a limit of 0.5 CPU equates to a quota of 50,000us. If a container exhausts its quota, the kernel throttles its CPU usage until the next period starts."
+    },
+    {
+        "id": "S-65",
+        "domain": "Workloads & Scheduling (15%)",
+        "question": "Explain how the 'system-node-critical' and 'system-cluster-critical' PriorityClasses protect system pods during resource exhaustion.",
+        "answer": "These are system-defined PriorityClasses with extremely high priority values (2000001000 and 2000000000 respectively). When a node runs out of resources, the scheduler will evict lower-priority user pods first to free up capacity. The Kubelet also respects these priorities during node-level eviction, ensuring critical components (like CoreDNS, kube-proxy, or CNIs) are never terminated to satisfy user workload resource demands."
+    },
+    {
+        "id": "S-66",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "question": "What is the difference between 'kubectl cordon' and 'kubectl drain'?",
+        "answer": "1. `kubectl cordon`: Marks a node as unschedulable (sets 'spec.unschedulable: true'). This blocks any new pods from scheduling on the node. Existing running pods are completely unaffected.\n2. `kubectl drain`: Cordons the node first, then evicts all running workloads (except daemonsets unless ignored, and pods without controller owners unless forced). It safely terminates them to let them reschedule on other nodes."
+    },
+    {
+        "id": "S-67",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "question": "How does the Kubelet communicate with container runtime over CRI? What is the standard Unix Domain Socket path for containerd?",
+        "answer": "The Kubelet acts as a gRPC client communicating with the container runtime (acting as a gRPC server) over local Unix Domain Sockets using the CRI API. The standard socket path for containerd is `unix:///var/run/containerd/containerd.sock`. For CRI-O, it is `unix:///var/run/crio/crio.sock`."
+    },
+    {
+        "id": "S-68",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "question": "What are the prerequisites on a Linux node for installing Kubeadm (swap, iptables, netfilter)?",
+        "answer": "1. Swap must be disabled (unless Kubelet swap features are explicitly enabled).\n2. Enable kernel module loading for overlays and netfilter bridges (`modprobe overlay` and `modprobe br_netfilter`).\n3. Configure sysctl system parameters to forward packets and allow bridge netfilter iptables analysis:\n   - `net.bridge.bridge-nf-call-iptables = 1`\n   - `net.ipv4.ip_forward = 1`"
+    },
+    {
+        "id": "S-69",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "question": "Explain the 'kubectl auth reconcile' command and when it is used.",
+        "answer": "'kubectl auth reconcile' is used to update RBAC Roles and ClusterRoles from a manifest while preserving any custom modifications. It performs a smart reconciliation: it adds missing rules, updates existing ones if permissions changed, and removes obsolete rules. It is commonly used during cluster upgrades to update default API system roles."
+    },
+    {
+        "id": "S-70",
+        "domain": "Services & Networking (20%)",
+        "question": "What is the structure and purpose of the 'kubernetes.default.svc.cluster.local' DNS search path?",
+        "answer": "This is the fully qualified domain name (FQDN) for the cluster-internal API server service. The components represent:\n- `kubernetes`: Service name.\n- `default`: Namespace.\n- `svc`: Resource type (service).\n- `cluster.local`: Cluster DNS domain suffix.\nPods have search paths (defined in /etc/resolv.conf) allowing them to query 'kubernetes' or 'kubernetes.default' and resolve it automatically."
+    },
+    {
+        "id": "S-71",
+        "domain": "Services & Networking (20%)",
+        "question": "Describe the role of EndpointSlices in managing ingress traffic.",
+        "answer": "EndpointSlices track network endpoints (IP, port, readiness status) associated with a Service. Kube-proxy watches EndpointSlices and writes routing rules to direct traffic. Ingress controllers also parse EndpointSlices directly to route HTTP requests straight to the pods' IP interfaces, bypassing service-IP NAT entirely for improved latency."
+    },
+    {
+        "id": "S-72",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "question": "What is the difference between Mutating and Validating Webhooks?",
+        "answer": "1. Mutating Webhooks: Invoked first during the admission phase. They can modify/patch the incoming object (e.g. inject sidecar containers, set defaults).\n2. Validating Webhooks: Invoked second. They perform checks on the object's configuration and return a binary allow/deny response. They cannot modify the object; their role is strictly gatekeeping."
+    },
+    {
+        "id": "S-73",
+        "domain": "Troubleshooting (30%)",
+        "question": "Explain the default tolerations added to all pods automatically for node issues (Ready/Unreachable).",
+        "answer": "Kubernetes automatically appends default tolerations to all pods if not defined:\n- `node.kubernetes.io/not-ready` with tolerationSeconds: 300\n- `node.kubernetes.io/unreachable` with tolerationSeconds: 300\nThis prevents immediate eviction if a node experiences temporary network drops, giving the node 5 minutes to recover before relocating workloads."
+    },
+    {
+        "id": "S-74",
+        "domain": "Cluster Architecture, Installation & Config (25%)",
+        "question": "What is the role of the Leader Election lock in Kube-Scheduler and Kube-Controller-Manager?",
+        "answer": "To run in High Availability (HA) mode, multiple instances of the scheduler or controller-manager run simultaneously. To prevent them from acting in conflict, they use the Leases API (lock objects in kube-system namespace). The active master holds the lease lock. If it dies, backup instances compete to acquire the lease, guaranteeing only one controller acts as leader at a time."
+    },
+    {
+        "id": "S-75",
+        "domain": "Troubleshooting (30%)",
+        "question": "How do you inspect kubelet logs using journalctl for a specific unit, and how do you filter by time?",
+        "answer": "To inspect active logs of kubelet: `journalctl -u kubelet -f`\nTo view only error logs: `journalctl -u kubelet -p err`\nTo filter logs since a specific time: `journalctl -u kubelet --since \"20 min ago\"` or `journalctl -u kubelet --since \"2026-06-10 12:00:00\"`"
     }
 ]
+

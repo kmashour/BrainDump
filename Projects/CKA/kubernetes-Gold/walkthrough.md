@@ -14,7 +14,7 @@ This document contains the complete walkthrough, problems, hints, and step-by-st
 ## Troubleshooting (30%)
 This section covers all tasks representing Troubleshooting (30%) of the CKA curriculum.
 
-### 📝 Conceptual Study Q&As (18 Tasks)
+### 📝 Conceptual Study Q&As (21 Tasks)
 These tasks test your core knowledge of Kubernetes architecture, parameters, commands, and YAML syntax.
 
 #### 🔍 S-43: What are the step-by-step diagnostic actions to perform when a worker node statu...
@@ -212,7 +212,39 @@ ETCDCTL_API=3 etcdctl \
   member list -w table
 ```
 
-### 🔬 Hands-on Environment Scenarios (27 Tasks)
+#### 🔍 S-62: What is an Ephemeral Container, and why can it not be added to a running pod via...
+**Question:**
+What is an Ephemeral Container, and why can it not be added to a running pod via standard 'kubectl edit' or 'kubectl patch'?
+
+**Answer (Mumshad Standard):**
+```
+An Ephemeral Container is a temporary container run inside an existing Pod to debug issues. It lacks resource guarantees and cannot be restarted. You cannot add it via edit/patch because the Pod Spec 'containers' and 'initContainers' lists are immutable after creation. Ephemeral containers are added via the specialized '/ephemeralcontainers' API subresource, which is accessed using the 'kubectl debug' command.
+```
+
+#### 🔍 S-73: Explain the default tolerations added to all pods automatically for node issues ...
+**Question:**
+Explain the default tolerations added to all pods automatically for node issues (Ready/Unreachable).
+
+**Answer (Mumshad Standard):**
+```
+Kubernetes automatically appends default tolerations to all pods if not defined:
+- `node.kubernetes.io/not-ready` with tolerationSeconds: 300
+- `node.kubernetes.io/unreachable` with tolerationSeconds: 300
+This prevents immediate eviction if a node experiences temporary network drops, giving the node 5 minutes to recover before relocating workloads.
+```
+
+#### 🔍 S-75: How do you inspect kubelet logs using journalctl for a specific unit, and how do...
+**Question:**
+How do you inspect kubelet logs using journalctl for a specific unit, and how do you filter by time?
+
+**Answer (Mumshad Standard):**
+```
+To inspect active logs of kubelet: `journalctl -u kubelet -f`
+To view only error logs: `journalctl -u kubelet -p err`
+To filter logs since a specific time: `journalctl -u kubelet --since "20 min ago"` or `journalctl -u kubelet --since "2026-06-10 12:00:00"`
+```
+
+### 🔬 Hands-on Environment Scenarios (31 Tasks)
 These tasks require access to the 3-node CKA GOLD cluster (`./gold.sh`). They inject real-world failures or specific deployment constraints that you must diagnose and resolve.
 
 #### 🛠️ E-01: Kubelet Service Stopped on Worker Node 1
@@ -902,13 +934,89 @@ kubectl get flowschema | grep -q 'block-admin' && exit 1 || exit 0
 1. Run: kubectl delete flowschema block-admin
 
 ---
+#### 🛠️ E-92: Ephemeral Container Debug
+**Problem Statement:**
+Pod 'crashed-pod' is running with a shellless distroless image and has issues. Debug it by launching an ephemeral container with image 'busybox' inside it.
+
+**💡 Hint:**
+> Use 'kubectl debug crashed-pod -it --image=busybox --target=crashed-pod --name=debug-container' (wait, in check we check for any debug container name).
+
+**Setup Injection Command:**
+```bash
+kubectl run crashed-pod --image=gcr.io/distroless/static-debian11 --command -- sleep 3600
+```
+**Verification check script:**
+```bash
+kubectl get pod crashed-pod -o jsonpath='{.spec.ephemeralContainers[0].name}' | grep -i debug
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Run: kubectl debug crashed-pod -it --image=busybox --image-pull-policy=IfNotPresent --share-processes --name=debug-container
+
+---
+#### 🛠️ E-93: JSONPath Node OS Image Filter
+**Problem Statement:**
+Use JSONPath to list all nodes with their names and OS images, sorted by name, and write the output format 'Name: <node-name>, OS: <os-image>' to file '/tmp/node-os.txt'.
+
+**💡 Hint:**
+> Use kubectl get nodes -o jsonpath='{range .items[*]}Name: {.metadata.name}, OS: {.status.nodeInfo.osImage}{"\n"}{end}' > /tmp/node-os.txt.
+
+**Setup Injection Command:**
+```bash
+rm -f /tmp/node-os.txt
+```
+**Verification check script:**
+```bash
+grep -q 'OS:' /tmp/node-os.txt && grep -q 'cka-gold-control-plane' /tmp/node-os.txt
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Run: kubectl get nodes -o jsonpath='{range .items[*]}Name: {.metadata.name}, OS: {.status.nodeInfo.osImage}{"\n"}{end}' > /tmp/node-os.txt
+
+---
+#### 🛠️ E-94: JSONPath Pod IP Filter
+**Problem Statement:**
+Extract the IP addresses of all pods in namespace 'default' with label 'app=web-app' and write the list of IPs to '/tmp/pod-ips.txt'.
+
+**💡 Hint:**
+> Use kubectl get pods -l app=web-app -o jsonpath='{.items[*].status.podIP}' > /tmp/pod-ips.txt.
+
+**Setup Injection Command:**
+```bash
+kubectl create deployment web-app --image=nginx --replicas=2 || true && rm -f /tmp/pod-ips.txt
+```
+**Verification check script:**
+```bash
+cat /tmp/pod-ips.txt | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+'
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Run: kubectl get pods -l app=web-app -o jsonpath='{.items[*].status.podIP}' | tr ' ' '\n' > /tmp/pod-ips.txt
+
+---
+#### 🛠️ E-100: CNI Config Restoration
+**Problem Statement:**
+Node 'cka-gold-worker' becomes NotReady because CNI config file '/etc/cni/net.d/10-kindnet.conflist' was renamed. Restore it.
+
+**💡 Hint:**
+> Access cka-gold-worker node, look for backed up files in /etc/cni/net.d/, and rename it back.
+
+**Setup Injection Command:**
+```bash
+docker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist /etc/cni/net.d/10-kindnet.conflist.bak 2>/dev/null
+```
+**Verification check script:**
+```bash
+kubectl get node cka-gold-worker -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' | grep -i True
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Restore: docker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist.bak /etc/cni/net.d/10-kindnet.conflist
+
+---
 
 ---
 
 ## Cluster Architecture, Installation & Config (25%)
 This section covers all tasks representing Cluster Architecture, Installation & Config (25%) of the CKA curriculum.
 
-### 📝 Conceptual Study Q&As (15 Tasks)
+### 📝 Conceptual Study Q&As (21 Tasks)
 These tasks test your core knowledge of Kubernetes architecture, parameters, commands, and YAML syntax.
 
 #### 🔍 S-01: What is the primary role of the Kubelet on a Kubernetes node, and how does it re...
@@ -1071,7 +1179,67 @@ What is the difference between the Core API Group (/) and Named API Groups, and 
 The Core API Group contains legacy core objects (Pods, Services, Nodes, ConfigMaps, Secrets) and is served at `/api/v1`. Named API Groups contain all other resources (Deployments, StatefulSets, NetworkPolicies) and are organized under `/apis/<group-name>/<version>` (e.g., `/apis/apps/v1` for Deployments). This separation allows distinct versioning lifecycles for newer resources.
 ```
 
-### 🔬 Hands-on Environment Scenarios (23 Tasks)
+#### 🔍 S-66: What is the difference between 'kubectl cordon' and 'kubectl drain'?...
+**Question:**
+What is the difference between 'kubectl cordon' and 'kubectl drain'?
+
+**Answer (Mumshad Standard):**
+```
+1. `kubectl cordon`: Marks a node as unschedulable (sets 'spec.unschedulable: true'). This blocks any new pods from scheduling on the node. Existing running pods are completely unaffected.
+2. `kubectl drain`: Cordons the node first, then evicts all running workloads (except daemonsets unless ignored, and pods without controller owners unless forced). It safely terminates them to let them reschedule on other nodes.
+```
+
+#### 🔍 S-67: How does the Kubelet communicate with container runtime over CRI? What is the st...
+**Question:**
+How does the Kubelet communicate with container runtime over CRI? What is the standard Unix Domain Socket path for containerd?
+
+**Answer (Mumshad Standard):**
+```
+The Kubelet acts as a gRPC client communicating with the container runtime (acting as a gRPC server) over local Unix Domain Sockets using the CRI API. The standard socket path for containerd is `unix:///var/run/containerd/containerd.sock`. For CRI-O, it is `unix:///var/run/crio/crio.sock`.
+```
+
+#### 🔍 S-68: What are the prerequisites on a Linux node for installing Kubeadm (swap, iptable...
+**Question:**
+What are the prerequisites on a Linux node for installing Kubeadm (swap, iptables, netfilter)?
+
+**Answer (Mumshad Standard):**
+```
+1. Swap must be disabled (unless Kubelet swap features are explicitly enabled).
+2. Enable kernel module loading for overlays and netfilter bridges (`modprobe overlay` and `modprobe br_netfilter`).
+3. Configure sysctl system parameters to forward packets and allow bridge netfilter iptables analysis:
+   - `net.bridge.bridge-nf-call-iptables = 1`
+   - `net.ipv4.ip_forward = 1`
+```
+
+#### 🔍 S-69: Explain the 'kubectl auth reconcile' command and when it is used....
+**Question:**
+Explain the 'kubectl auth reconcile' command and when it is used.
+
+**Answer (Mumshad Standard):**
+```
+'kubectl auth reconcile' is used to update RBAC Roles and ClusterRoles from a manifest while preserving any custom modifications. It performs a smart reconciliation: it adds missing rules, updates existing ones if permissions changed, and removes obsolete rules. It is commonly used during cluster upgrades to update default API system roles.
+```
+
+#### 🔍 S-72: What is the difference between Mutating and Validating Webhooks?...
+**Question:**
+What is the difference between Mutating and Validating Webhooks?
+
+**Answer (Mumshad Standard):**
+```
+1. Mutating Webhooks: Invoked first during the admission phase. They can modify/patch the incoming object (e.g. inject sidecar containers, set defaults).
+2. Validating Webhooks: Invoked second. They perform checks on the object's configuration and return a binary allow/deny response. They cannot modify the object; their role is strictly gatekeeping.
+```
+
+#### 🔍 S-74: What is the role of the Leader Election lock in Kube-Scheduler and Kube-Controll...
+**Question:**
+What is the role of the Leader Election lock in Kube-Scheduler and Kube-Controller-Manager?
+
+**Answer (Mumshad Standard):**
+```
+To run in High Availability (HA) mode, multiple instances of the scheduler or controller-manager run simultaneously. To prevent them from acting in conflict, they use the Leases API (lock objects in kube-system namespace). The active master holds the lease lock. If it dies, backup instances compete to acquire the lease, guaranteeing only one controller acts as leader at a time.
+```
+
+### 🔬 Hands-on Environment Scenarios (26 Tasks)
 These tasks require access to the 3-node CKA GOLD cluster (`./gold.sh`). They inject real-world failures or specific deployment constraints that you must diagnose and resolve.
 
 #### 🛠️ E-28: Upgrade Control Plane Node Package Mock
@@ -1528,13 +1696,82 @@ docker exec cka-gold-control-plane grep -q 'shutdownGracePeriod' /var/lib/kubele
 1. Add shutdownGracePeriod to Kubelet configuration file.
 
 ---
+#### 🛠️ E-96: Pod ServiceAccount Integration
+**Problem Statement:**
+Create a ServiceAccount named 'deploy-sa' in namespace 'default'. Configure a pod named 'sa-pod' to run using this ServiceAccount and verify its token is mounted inside.
+
+**💡 Hint:**
+> Set serviceAccountName: deploy-sa in the Pod spec.
+
+**Setup Injection Command:**
+```bash
+kubectl delete pod sa-pod --ignore-not-found=true && kubectl delete serviceaccount deploy-sa --ignore-not-found=true
+```
+**Verification check script:**
+```bash
+kubectl get pod sa-pod -o jsonpath='{.spec.serviceAccountName}' | grep -w 'deploy-sa'
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Create SA: kubectl create serviceaccount deploy-sa
+2. Apply Pod manifest:
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sa-pod
+spec:
+  serviceAccountName: deploy-sa
+  containers:
+  - name: main
+    image: nginx
+EOF
+
+---
+#### 🛠️ E-98: Kubelet Cgroup Driver Check
+**Problem Statement:**
+Ensure the cgroup driver used by the Kubelet on cka-gold-control-plane node is configured to 'systemd'.
+
+**💡 Hint:**
+> Check the cgroupDriver setting inside /var/lib/kubelet/config.yaml.
+
+**Setup Injection Command:**
+```bash
+echo 'Simulation'
+```
+**Verification check script:**
+```bash
+docker exec cka-gold-control-plane grep -q 'cgroupDriver: systemd' /var/lib/kubelet/config.yaml || exit 0
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Cgroup driver on kind is systemd by default. Verify: docker exec cka-gold-control-plane grep 'cgroupDriver' /var/lib/kubelet/config.yaml
+
+---
+#### 🛠️ E-99: API Server Port Diagnostics (Port occupied)
+**Problem Statement:**
+Simulate port collision. The API server fails to bind because port 6443 is blocked on the host. Fix the blocking issue.
+
+**💡 Hint:**
+> Check port usage on control plane node. Kill the netcat process blocking port 6443.
+
+**Setup Injection Command:**
+```bash
+docker exec cka-gold-control-plane sh -c 'apt-get update && apt-get install -y netcat-openbsd || true' && docker exec -d cka-gold-control-plane nc -l -p 6443
+```
+**Verification check script:**
+```bash
+kubectl get nodes
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Exec into control plane: docker exec cka-gold-control-plane fuser -k 6443/tcp || docker exec cka-gold-control-plane pkill -f 'nc -l -p 6443'
+
+---
 
 ---
 
 ## Services & Networking (20%)
 This section covers all tasks representing Services & Networking (20%) of the CKA curriculum.
 
-### 📝 Conceptual Study Q&As (12 Tasks)
+### 📝 Conceptual Study Q&As (15 Tasks)
 These tasks test your core knowledge of Kubernetes architecture, parameters, commands, and YAML syntax.
 
 #### 🔍 S-25: Compare ClusterIP, NodePort, and LoadBalancer service types....
@@ -1676,6 +1913,41 @@ mycorp.local:53 {
 }
 ```
 Apply the change and restart the CoreDNS deployment pods.
+```
+
+#### 🔍 S-61: Explain PodSpec 'dnsPolicy' options and when 'dnsConfig' overrides are needed....
+**Question:**
+Explain PodSpec 'dnsPolicy' options and when 'dnsConfig' overrides are needed.
+
+**Answer (Mumshad Standard):**
+```
+1. Default: Pod inherits the name resolution configuration from the node.
+2. ClusterFirst (Default for pods not on hostNetwork): Any DNS query matching the cluster domain suffix is forwarded to CoreDNS.
+3. ClusterFirstWithHostNet: Use this for pods running with hostNetwork: true that still need cluster DNS resolution.
+4. None: Ignores cluster DNS settings. You must manually define custom DNS servers using the dnsConfig field.
+```
+
+#### 🔍 S-70: What is the structure and purpose of the 'kubernetes.default.svc.cluster.local' ...
+**Question:**
+What is the structure and purpose of the 'kubernetes.default.svc.cluster.local' DNS search path?
+
+**Answer (Mumshad Standard):**
+```
+This is the fully qualified domain name (FQDN) for the cluster-internal API server service. The components represent:
+- `kubernetes`: Service name.
+- `default`: Namespace.
+- `svc`: Resource type (service).
+- `cluster.local`: Cluster DNS domain suffix.
+Pods have search paths (defined in /etc/resolv.conf) allowing them to query 'kubernetes' or 'kubernetes.default' and resolve it automatically.
+```
+
+#### 🔍 S-71: Describe the role of EndpointSlices in managing ingress traffic....
+**Question:**
+Describe the role of EndpointSlices in managing ingress traffic.
+
+**Answer (Mumshad Standard):**
+```
+EndpointSlices track network endpoints (IP, port, readiness status) associated with a Service. Kube-proxy watches EndpointSlices and writes routing rules to direct traffic. Ingress controllers also parse EndpointSlices directly to route HTTP requests straight to the pods' IP interfaces, bypassing service-IP NAT entirely for improved latency.
 ```
 
 ### 🔬 Hands-on Environment Scenarios (18 Tasks)
@@ -2119,7 +2391,7 @@ EOF
 ## Workloads & Scheduling (15%)
 This section covers all tasks representing Workloads & Scheduling (15%) of the CKA curriculum.
 
-### 📝 Conceptual Study Q&As (9 Tasks)
+### 📝 Conceptual Study Q&As (12 Tasks)
 These tasks test your core knowledge of Kubernetes architecture, parameters, commands, and YAML syntax.
 
 #### 🔍 S-16: How does a DaemonSet guarantee that a pod is scheduled on every node, and what t...
@@ -2213,7 +2485,36 @@ Owner References define parent-child links between objects (e.g. Deployment owns
 2. `Foreground`: The parent enters a 'deletion in progress' state, and dependents are deleted first. Once all dependents are deleted, the parent is removed.
 ```
 
-### 🔬 Hands-on Environment Scenarios (13 Tasks)
+#### 🔍 S-63: What is the difference between 'kubectl scale' and modifying replicas directly i...
+**Question:**
+What is the difference between 'kubectl scale' and modifying replicas directly in deployment YAML using 'kubectl apply'?
+
+**Answer (Mumshad Standard):**
+```
+'kubectl scale' is an imperative command that updates the replicas field directly in the live object in the API server. If you subsequently run 'kubectl apply' on a local YAML manifest that still specifies the old replica count, the three-way merge patch will overwrite your imperative scaling back to the local manifest's count. For GitOps, you should always scale by editing the YAML manifest.
+```
+
+#### 🔍 S-64: Describe how Kubelet enforces CPU limits using CFS (Completely Fair Scheduler) q...
+**Question:**
+Describe how Kubelet enforces CPU limits using CFS (Completely Fair Scheduler) quotas in Linux.
+
+**Answer (Mumshad Standard):**
+```
+Kubelet uses the Linux kernel Completely Fair Scheduler (CFS) bandwidth control to enforce CPU limits. It configures two cgroup parameters under '/sys/fs/cgroup/cpu/':
+1. `cpu.cfs_period_us`: The period length (usually 100,000 microseconds or 100ms).
+2. `cpu.cfs_quota_us`: The total runtime allowed within that period. E.g., a limit of 0.5 CPU equates to a quota of 50,000us. If a container exhausts its quota, the kernel throttles its CPU usage until the next period starts.
+```
+
+#### 🔍 S-65: Explain how the 'system-node-critical' and 'system-cluster-critical' PriorityCla...
+**Question:**
+Explain how the 'system-node-critical' and 'system-cluster-critical' PriorityClasses protect system pods during resource exhaustion.
+
+**Answer (Mumshad Standard):**
+```
+These are system-defined PriorityClasses with extremely high priority values (2000001000 and 2000000000 respectively). When a node runs out of resources, the scheduler will evict lower-priority user pods first to free up capacity. The Kubelet also respects these priorities during node-level eviction, ensuring critical components (like CoreDNS, kube-proxy, or CNIs) are never terminated to satisfy user workload resource demands.
+```
+
+### 🔬 Hands-on Environment Scenarios (15 Tasks)
 These tasks require access to the 3-node CKA GOLD cluster (`./gold.sh`). They inject real-world failures or specific deployment constraints that you must diagnose and resolve.
 
 #### 🛠️ E-69: Deployment Rolling Update & Rollback
@@ -2580,6 +2881,45 @@ spec:
 EOF
 
 ---
+#### 🛠️ E-91: Troubleshoot Node Capacity Resource Limits
+**Problem Statement:**
+Pod 'resource-fit' is stuck in Pending because it requests too much CPU. Adjust resource requests so that it can run on the cluster nodes.
+
+**💡 Hint:**
+> Examine the CPU requests. Nodes do not have 80 cores. Scale it down to 50m (0.05 core).
+
+**Setup Injection Command:**
+```bash
+kubectl run resource-fit --image=nginx --requests='cpu=80'
+```
+**Verification check script:**
+```bash
+kubectl get pod resource-fit -o jsonpath='{.status.phase}' | grep -i Running
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Delete the stuck pod: kubectl delete pod resource-fit --force
+2. Recreate with valid requests: kubectl run resource-fit --image=nginx --requests='cpu=50m'
+
+---
+#### 🛠️ E-97: Sidecar Log Rotation Handler
+**Problem Statement:**
+Create a multi-container pod named 'logger-pod' containing container 'app' writing to '/var/log/app.log', and a sidecar container 'log-watcher' that tail-logs that file.
+
+**💡 Hint:**
+> Create pod with emptyDir volume shared by both containers.
+
+**Setup Injection Command:**
+```bash
+kubectl delete pod logger-pod --ignore-not-found=true
+```
+**Verification check script:**
+```bash
+kubectl get pod logger-pod -o jsonpath='{.spec.containers[*].name}' | grep -q 'log-watcher' && kubectl get pod logger-pod -o jsonpath='{.spec.volumes[0].emptyDir}' || exit 1
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Apply manifest with two containers sharing an emptyDir volume mounted at /var/log.
+
+---
 
 ---
 
@@ -2651,7 +2991,7 @@ What is the behavior of ConfigMaps or Secrets mounted as volumes in a Pod when t
 When a ConfigMap or Secret is updated, the mounted files are eventually updated automatically (usually within a few minutes, depending on the kubelet sync period and cache TTL). However, this only applies to volumes mounted directly without subPath; if a subPath is used, the file is not updated automatically and requires a pod restart.
 ```
 
-### 🔬 Hands-on Environment Scenarios (9 Tasks)
+### 🔬 Hands-on Environment Scenarios (10 Tasks)
 These tasks require access to the 3-node CKA GOLD cluster (`./gold.sh`). They inject real-world failures or specific deployment constraints that you must diagnose and resolve.
 
 #### 🛠️ E-82: Create HostPath PersistentVolume
@@ -2929,6 +3269,26 @@ echo 'Passed'
 ```
 **🟢 Step-by-Step Answer / Solution:**
 1. Understand that Retain policy preserves the PV and its files on the backend storage.
+
+---
+#### 🛠️ E-95: ConfigMap Multi-key Volume Mount
+**Problem Statement:**
+Create a ConfigMap named 'multi-config' containing keys 'config1=val1' and 'config2=val2'. Mount it in pod 'config-mount-pod' under directory '/etc/config' so that config1 and config2 appear as files.
+
+**💡 Hint:**
+> Use kubectl create configmap. Create Pod spec with a volume referencing the ConfigMap and mount it.
+
+**Setup Injection Command:**
+```bash
+kubectl delete pod config-mount-pod --ignore-not-found=true && kubectl delete configmap multi-config --ignore-not-found=true
+```
+**Verification check script:**
+```bash
+kubectl get pod config-mount-pod -o jsonpath='{.spec.volumes[0].configMap.name}' | grep -w 'multi-config'
+```
+**🟢 Step-by-Step Answer / Solution:**
+1. Create CM: kubectl create configmap multi-config --from-literal=config1=val1 --from-literal=config2=val2
+2. Apply pod manifest mounting 'multi-config' volume at '/etc/config'.
 
 ---
 

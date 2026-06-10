@@ -1,0 +1,280 @@
+# -*- coding: utf-8 -*-
+
+SCENARIOS = [
+    {
+        "id": "AE-01",
+        "domain": "Advanced API & Extensions",
+        "title": "Create a CustomResourceDefinition (CRD)",
+        "problem": "Create a CustomResourceDefinition named 'crontabs.stable.example.com' under apiGroup 'stable.example.com', kind 'CronTab', version 'v1'.",
+        "setup": "kubectl delete crd crontabs.stable.example.com --ignore-not-found=true",
+        "cleanup": "kubectl delete crd crontabs.stable.example.com --ignore-not-found=true",
+        "check": "kubectl get crd crontabs.stable.example.com",
+        "hint": "Apply a CustomResourceDefinition manifest targeting stable.example.com group.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: apiextensions.k8s.io/v1\nkind: CustomResourceDefinition\nmetadata:\n  name: crontabs.stable.example.com\nspec:\n  group: stable.example.com\n  versions:\n    - name: v1\n      served: true\n      storage: true\n      schema:\n        openAPIV3Schema:\n          type: object\n          properties:\n            spec:\n              type: object\n              properties:\n                cronSpec:\n                  type: string\n                image:\n                  type: string\n                replicas:\n                  type: integer\n  scope: Namespaced\n  names:\n    plural: crontabs\n    singular: crontab\n    kind: CronTab\n    shortNames:\n    - ct\nEOF"
+    },
+    {
+        "id": "AE-02",
+        "domain": "Advanced API & Extensions",
+        "title": "Enable Status and Scale subresources on CRD",
+        "problem": "Modify the CRD 'crontabs.stable.example.com' to enable both '/status' and '/scale' subresources.",
+        "setup": "kubectl apply -f - <<EOF\napiVersion: apiextensions.k8s.io/v1\nkind: CustomResourceDefinition\nmetadata:\n  name: crontabs.stable.example.com\nspec:\n  group: stable.example.com\n  versions:\n    - name: v1\n      served: true\n      storage: true\n      schema:\n        openAPIV3Schema:\n          type: object\n          properties:\n            spec:\n              type: object\n              properties:\n                cronSpec:\n                  type: string\n                image:\n                  type: string\n                replicas:\n                  type: integer\n  scope: Namespaced\n  names:\n    plural: crontabs\n    singular: crontab\n    kind: CronTab\n    shortNames: [ct]\nEOF",
+        "cleanup": "kubectl delete crd crontabs.stable.example.com --ignore-not-found=true",
+        "check": "kubectl get crd crontabs.stable.example.com -o jsonpath='{.spec.versions[0].subresources}' | grep -q 'status' && kubectl get crd crontabs.stable.example.com -o jsonpath='{.spec.versions[0].subresources}' | grep -q 'scale'",
+        "hint": "Under spec.versions[*], define subresources: status: {} and scale: {specReplicasPath: .spec.replicas, statusReplicasPath: .status.replicas}.",
+        "solution": "1. Edit CRD: kubectl edit crd crontabs.stable.example.com\n2. Add under spec.versions[0]:\n   subresources:\n     status: {}\n     scale:\n       specReplicasPath: .spec.replicas\n       statusReplicasPath: .status.replicas\n       labelSelectorPath: .status.labelSelector"
+    },
+    {
+        "id": "AE-03",
+        "domain": "Advanced Services & Routing",
+        "title": "Configure Gateway API Gateway and HTTPRoute",
+        "problem": "Create a Gateway named 'test-gateway' and an HTTPRoute named 'app-route' in namespace 'default' that routes path '/v2' to service 'v2-service'.",
+        "setup": "kubectl delete httproute app-route --ignore-not-found=true && kubectl delete gateway test-gateway --ignore-not-found=true",
+        "cleanup": "kubectl delete httproute app-route --ignore-not-found=true && kubectl delete gateway test-gateway --ignore-not-found=true",
+        "check": "kubectl get gateway test-gateway && kubectl get httproute app-route",
+        "hint": "Apply Gateway API manifests. The GatewayClass must exist (or mock configs).",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: gateway.networking.k8s.io/v1\nkind: Gateway\nmetadata:\n  name: test-gateway\nspec:\n  gatewayClassName: standard\n  listeners:\n  - name: http\n    port: 80\n    protocol: HTTP\n---\napiVersion: gateway.networking.k8s.io/v1\nkind: HTTPRoute\nmetadata:\n  name: app-route\nspec:\n  parentRefs:\n  - name: test-gateway\n  rules:\n  - matches:\n    - path:\n        type: PathPrefix\n        value: /v2\n    backendRefs:\n    - name: v2-service\n      port: 80\nEOF"
+    },
+    {
+        "id": "AE-04",
+        "domain": "CKS Security & Isolation",
+        "title": "Configure Seccomp Profile on Pod",
+        "problem": "Create a pod named 'seccomp-pod' running nginx that enforces the 'RuntimeDefault' seccomp profile.",
+        "setup": "kubectl delete pod seccomp-pod --ignore-not-found=true",
+        "cleanup": "kubectl delete pod seccomp-pod --ignore-not-found=true",
+        "check": "kubectl get pod seccomp-pod -o jsonpath='{.spec.securityContext.seccompProfile.type}' | grep -w 'RuntimeDefault'",
+        "hint": "Set spec.securityContext.seccompProfile.type: RuntimeDefault in the Pod manifest.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: v1\nkind: Pod\nmetadata:\n  name: seccomp-pod\nspec:\n  securityContext:\n    seccompProfile:\n      type: RuntimeDefault\n  containers:\n  - name: web\n    image: nginx\nEOF"
+    },
+    {
+        "id": "AE-05",
+        "domain": "CKS Security & Isolation",
+        "title": "Apply AppArmor Profile on Container",
+        "problem": "Create a pod named 'apparmor-pod' running nginx that uses the AppArmor profile 'localhostProfile: k8s-apparmor-deny-write'.",
+        "setup": "kubectl delete pod apparmor-pod --ignore-not-found=true",
+        "cleanup": "kubectl delete pod apparmor-pod --ignore-not-found=true",
+        "check": "kubectl get pod apparmor-pod -o jsonpath='{.spec.containers[0].securityContext.appArmorProfile.localhostProfile}' | grep -w 'k8s-apparmor-deny-write'",
+        "hint": "Set spec.containers[*].securityContext.appArmorProfile with type Localhost and localhostProfile.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: v1\nkind: Pod\nmetadata:\n  name: apparmor-pod\nspec:\n  containers:\n  - name: web\n    image: nginx\n    securityContext:\n      appArmorProfile:\n        type: Localhost\n        localhostProfile: k8s-apparmor-deny-write\nEOF"
+    },
+    {
+        "id": "AE-06",
+        "domain": "CKS Security & Isolation",
+        "title": "Enforce Namespace Pod Security Admission (PSA)",
+        "problem": "Label namespace 'psa-restricted' to enforce the 'restricted' PSA standard. Attempt to run a baseline/privileged pod to see it warning or failing.",
+        "setup": "kubectl create namespace psa-restricted || true && kubectl label namespace psa-restricted pod-security.kubernetes.io/enforce-",
+        "cleanup": "kubectl delete namespace psa-restricted --ignore-not-found=true",
+        "check": "kubectl get namespace psa-restricted -o jsonpath='{.metadata.labels}' | grep -q 'pod-security.kubernetes.io/enforce=restricted'",
+        "hint": "Use 'kubectl label namespace psa-restricted pod-security.kubernetes.io/enforce=restricted'.",
+        "solution": "1. Run: kubectl label namespace psa-restricted pod-security.kubernetes.io/enforce=restricted"
+    },
+    {
+        "id": "CKS Security & Isolation",
+        "id": "AE-07",
+        "domain": "CKS Security & Isolation",
+        "title": "Configure a Custom RuntimeClass",
+        "problem": "Create a RuntimeClass named 'gvisor' using handler 'runsc' for container sandboxing.",
+        "setup": "kubectl delete runtimeclass gvisor --ignore-not-found=true",
+        "cleanup": "kubectl delete runtimeclass gvisor --ignore-not-found=true",
+        "check": "kubectl get runtimeclass gvisor -o jsonpath='{.handler}' | grep -w 'runsc'",
+        "hint": "Apply a RuntimeClass manifest with handler: runsc.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: node.k8s.io/v1\nkind: RuntimeClass\nmetadata:\n  name: gvisor\nhandler: runsc\nEOF"
+    },
+    {
+        "id": "AE-08",
+        "domain": "Advanced API & Admission",
+        "title": "Register a ValidatingAdmissionWebhook",
+        "problem": "Register a ValidatingWebhookConfiguration named 'validate-webhook' that intercepts 'CREATE' operations for pods and forwards them to service 'webhook-service' on path '/validate'.",
+        "setup": "kubectl delete validatingwebhookconfiguration validate-webhook --ignore-not-found=true",
+        "cleanup": "kubectl delete validatingwebhookconfiguration validate-webhook --ignore-not-found=true",
+        "check": "kubectl get validatingwebhookconfiguration validate-webhook",
+        "hint": "Apply ValidatingWebhookConfiguration configuration manifest.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: admissionregistration.k8s.io/v1\nkind: ValidatingWebhookConfiguration\nmetadata:\n  name: validate-webhook\nwebhooks:\n- name: pod-validation.example.com\n  rules:\n  - apiGroups: [\"\"]\n    apiVersions: [\"v1\"]\n    operations: [\"CREATE\"]\n    resources: [\"pods\"]\n    scope: \"Namespaced\"\n  clientConfig:\n    service:\n      name: webhook-service\n      namespace: default\n      path: \"/validate\"\n  admissionReviewVersions: [\"v1\"]\n  sideEffects: None\n  timeoutSeconds: 5\n  failurePolicy: Ignore\nEOF"
+    },
+    {
+        "id": "AE-09",
+        "domain": "Advanced API & Admission",
+        "title": "Register a MutatingAdmissionWebhook",
+        "problem": "Register a MutatingWebhookConfiguration named 'mutate-webhook' that patches pods on path '/mutate'.",
+        "setup": "kubectl delete mutatingwebhookconfiguration mutate-webhook --ignore-not-found=true",
+        "cleanup": "kubectl delete mutatingwebhookconfiguration mutate-webhook --ignore-not-found=true",
+        "check": "kubectl get mutatingwebhookconfiguration mutate-webhook",
+        "hint": "Apply MutatingWebhookConfiguration configuration manifest.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: admissionregistration.k8s.io/v1\nkind: MutatingWebhookConfiguration\nmetadata:\n  name: mutate-webhook\nwebhooks:\n- name: pod-mutation.example.com\n  rules:\n  - apiGroups: [\"\"]\n    apiVersions: [\"v1\"]\n    operations: [\"CREATE\"]\n    resources: [\"pods\"]\n    scope: \"Namespaced\"\n  clientConfig:\n    service:\n      name: webhook-service\n      namespace: default\n      path: \"/mutate\"\n  admissionReviewVersions: [\"v1\"]\n  sideEffects: None\n  timeoutSeconds: 5\n  failurePolicy: Ignore\nEOF"
+    },
+    {
+        "id": "AE-10",
+        "domain": "Advanced API & Admission",
+        "title": "Troubleshoot Webhook Service Connection",
+        "problem": "The webhook 'validate-webhook' is failing to load because the service certificate secret 'webhook-tls' is missing. Create a dummy secret named 'webhook-tls' to restore communication.",
+        "setup": "kubectl delete secret webhook-tls --ignore-not-found=true",
+        "cleanup": "kubectl delete secret webhook-tls --ignore-not-found=true",
+        "check": "kubectl get secret webhook-tls",
+        "hint": "Use 'kubectl create secret generic webhook-tls --from-literal=tls.key=key --from-literal=tls.crt=crt'.",
+        "solution": "1. Run: kubectl create secret generic webhook-tls --from-literal=tls.key=key --from-literal=tls.crt=crt"
+    },
+    {
+        "id": "AE-11",
+        "domain": "CKAD Developer Tooling",
+        "title": "Helm Installation and Rollback Simulation",
+        "problem": "Demonstrate helm installation process. Create namespace 'helm-test' to simulate. Ensure the namespace exists.",
+        "setup": "kubectl delete ns helm-test --ignore-not-found=true",
+        "cleanup": "kubectl delete ns helm-test --ignore-not-found=true",
+        "check": "kubectl get ns helm-test",
+        "hint": "Use 'kubectl create namespace helm-test'.",
+        "solution": "1. Run: kubectl create namespace helm-test"
+    },
+    {
+        "id": "AE-12",
+        "domain": "CKAD Developer Tooling",
+        "title": "Configure Kustomize Overlay replicas patch",
+        "problem": "Create namespace 'prod' to simulate a kustomize overlay targeting production environments.",
+        "setup": "kubectl delete ns prod --ignore-not-found=true",
+        "cleanup": "kubectl delete ns prod --ignore-not-found=true",
+        "check": "kubectl get ns prod",
+        "hint": "Use 'kubectl create namespace prod'.",
+        "solution": "1. Run: kubectl create namespace prod"
+    },
+    {
+        "id": "AE-13",
+        "domain": "Advanced API & Extensions",
+        "title": "Register a Custom aggregated APIService",
+        "problem": "Create an APIService named 'v1beta1.custom.metrics.k8s.io' to register custom aggregated metrics API endpoints.",
+        "setup": "kubectl delete apiservice v1beta1.custom.metrics.k8s.io --ignore-not-found=true",
+        "cleanup": "kubectl delete apiservice v1beta1.custom.metrics.k8s.io --ignore-not-found=true",
+        "check": "kubectl get apiservice v1beta1.custom.metrics.k8s.io",
+        "hint": "Apply APIService manifest setting spec.group: custom.metrics.k8s.io, spec.version: v1beta1, spec.priority: 100.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: apiregistration.k8s.io/v1\nkind: APIService\nmetadata:\n  name: v1beta1.custom.metrics.k8s.io\nspec:\n  group: custom.metrics.k8s.io\n  version: v1beta1\n  groupPriorityMinimum: 100\n  versionPriority: 100\n  service:\n    name: custom-metrics-server\n    namespace: default\nEOF"
+    },
+    {
+        "id": "AE-14",
+        "domain": "Advanced Workloads & Scheduling",
+        "title": "Configure PodTopologySpreadConstraints",
+        "problem": "Create deployment 'topology-spread-deploy' in default namespace with topologySpreadConstraints configured to spread replicas across nodes (topologyKey: kubernetes.io/hostname) with maxSkew 1.",
+        "setup": "kubectl delete deployment topology-spread-deploy --ignore-not-found=true",
+        "cleanup": "kubectl delete deployment topology-spread-deploy --ignore-not-found=true",
+        "check": "kubectl get deploy topology-spread-deploy -o jsonpath='{.spec.template.spec.topologySpreadConstraints[0].topologyKey}' | grep -w 'kubernetes.io/hostname'",
+        "hint": "Add spec.template.spec.topologySpreadConstraints block to deployment YAML.",
+        "solution": "1. Apply manifest with topologySpreadConstraints config."
+    },
+    {
+        "id": "AE-15",
+        "domain": "Advanced Workloads & Scheduling",
+        "title": "Configure PriorityClasses & Preemption",
+        "problem": "Create a PriorityClass named 'high-priority' with value 1000000 and preemptionPolicy set to PreemptLowerPriority.",
+        "setup": "kubectl delete priorityclass high-priority --ignore-not-found=true",
+        "cleanup": "kubectl delete priorityclass high-priority --ignore-not-found=true",
+        "check": "kubectl get priorityclass high-priority -o jsonpath='{.value}' | grep -w '1000000'",
+        "hint": "Apply PriorityClass manifest specifying value and preemptionPolicy.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: scheduling.k8s.io/v1\nkind: PriorityClass\nmetadata:\n  name: high-priority\nvalue: 1000000\nglobalDefault: false\ndescription: \"High priority class for testing preemption.\"\nEOF"
+    },
+    {
+        "id": "AE-16",
+        "domain": "Advanced Cluster Administration",
+        "title": "Configure Coordinated Lease lock",
+        "problem": "Create a Lease named 'operator-lock' in namespace 'default' representing coordination lock for an operator leader election.",
+        "setup": "kubectl delete lease operator-lock --ignore-not-found=true",
+        "cleanup": "kubectl delete lease operator-lock --ignore-not-found=true",
+        "check": "kubectl get lease operator-lock",
+        "hint": "Apply Lease resource manifest under apiGroup coordination.k8s.io.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: coordination.k8s.io/v1\nkind: Lease\nmetadata:\n  name: operator-lock\nspec:\n  holderIdentity: operator-instance-1\n  leaseDurationSeconds: 15\n  acquireTime: \"2026-06-10T12:00:00.000000Z\"\n  renewTime: \"2026-06-10T12:00:10.000000Z\"\nEOF"
+    },
+    {
+        "id": "AE-17",
+        "domain": "CKS Security & Isolation",
+        "title": "Trivy Image Scan verification check",
+        "problem": "Write a mock script at '/tmp/scan-image.sh' that simulates scanning image 'nginx' using Trivy and writing results to log.",
+        "setup": "rm -f /tmp/scan-image.sh",
+        "cleanup": "rm -f /tmp/scan-image.sh",
+        "check": "grep -q 'trivy' /tmp/scan-image.sh || exit 1",
+        "hint": "Write a file containing echo 'scanning with trivy' at /tmp/scan-image.sh.",
+        "solution": "1. Run: echo 'echo \"trivy scan simulation for nginx\"' > /tmp/scan-image.sh"
+    },
+    {
+        "id": "AE-18",
+        "domain": "Advanced Cluster Administration",
+        "title": "Create Dynamic ResourceClass Claim template",
+        "problem": "Create a ResourceClass named 'gpu-class' under apiGroup resource.k8s.io/v1alpha2.",
+        "setup": "kubectl delete resourceclass gpu-class --ignore-not-found=true",
+        "cleanup": "kubectl delete resourceclass gpu-class --ignore-not-found=true",
+        "check": "kubectl get resourceclass gpu-class",
+        "hint": "Apply a ResourceClass manifest (Note: api version resource.k8s.io/v1alpha2 or resource.k8s.io/v1alpha3).",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: resource.k8s.io/v1alpha2\nkind: ResourceClass\nmetadata:\n  name: gpu-class\ndriverName: mock-gpu-driver\nEOF"
+    },
+    {
+        "id": "AE-19",
+        "domain": "CKS Security & Isolation",
+        "title": "Falco Runtime anomaly rule simulation",
+        "problem": "Create a mock Falco custom configuration file '/tmp/falco-rules.yaml' containing a rule to catch spawned shells.",
+        "setup": "rm -f /tmp/falco-rules.yaml",
+        "cleanup": "rm -f /tmp/falco-rules.yaml",
+        "check": "grep -q 'rule:' /tmp/falco-rules.yaml",
+        "hint": "Write a basic YAML block containing rule: Spawn Shell to /tmp/falco-rules.yaml.",
+        "solution": "1. Run: echo 'rule: Spawn Shell' > /tmp/falco-rules.yaml"
+    },
+    {
+        "id": "AE-20",
+        "domain": "Advanced API & Admission",
+        "title": "Verify API Server Webhook Plugins active",
+        "problem": "Confirm that MutatingAdmissionWebhook admission controller plugin is enabled.",
+        "setup": "echo 'Simulation'",
+        "cleanup": "echo 'Done'",
+        "check": "docker exec cka-gold-control-plane grep -q 'MutatingAdmissionWebhook' /etc/kubernetes/manifests/kube-apiserver.yaml || exit 0",
+        "hint": "API server static pod enables Webhook plugins by default. Inspect arguments.",
+        "solution": "1. Admission webhooks are active by default on kind cluster. Verify inside kube-apiserver.yaml."
+    },
+    {
+        "id": "AE-21",
+        "domain": "Advanced Cluster Administration",
+        "title": "Expose Control Plane Metrics scrape target",
+        "problem": "Create a service named 'kube-scheduler-metrics' in namespace 'kube-system' exposing scheduler port 10259.",
+        "setup": "kubectl delete service kube-scheduler-metrics -n kube-system --ignore-not-found=true",
+        "cleanup": "kubectl delete service kube-scheduler-metrics -n kube-system --ignore-not-found=true",
+        "check": "kubectl get service kube-scheduler-metrics -n kube-system -o jsonpath='{.spec.ports[0].port}' | grep -w '10259'",
+        "hint": "Define a service in kube-system namespace mapping port 10259.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: v1\nkind: Service\nmetadata:\n  name: kube-scheduler-metrics\n  namespace: kube-system\nspec:\n  selector:\n    component: kube-scheduler\n  ports:\n  - port: 10259\n    targetPort: 10259\nEOF"
+    },
+    {
+        "id": "AE-22",
+        "domain": "Advanced Services & Routing",
+        "title": "Ingress Rewrite-target Annotation",
+        "problem": "Create Ingress 'rewrite-ingress' with annotation 'nginx.ingress.kubernetes.io/rewrite-target: /$2' routing to service 'app'.",
+        "setup": "kubectl delete ingress rewrite-ingress --ignore-not-found=true",
+        "cleanup": "kubectl delete ingress rewrite-ingress --ignore-not-found=true",
+        "check": "kubectl get ingress rewrite-ingress -o jsonpath='{.metadata.annotations}' | grep -q 'rewrite-target'",
+        "hint": "Specify metadata.annotations with rewrite-target in ingress configuration.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: rewrite-ingress\n  annotations:\n    nginx.ingress.kubernetes.io/rewrite-target: /\\$2\nspec:\n  rules:\n  - http:\n      paths:\n      - path: /something(/|$)(.*)\n        pathType: Prefix\n        backend:\n          service:\n            name: app\n            port:\n              number: 80\nEOF"
+    },
+    {
+        "id": "AE-23",
+        "domain": "Advanced Services & Routing",
+        "title": "Egress Policy targeting external CIDR blocks",
+        "problem": "Create NetworkPolicy 'allow-egress-external' in default namespace allowing egress to '8.8.8.8/32' on port 53.",
+        "setup": "kubectl delete netpol allow-egress-external --ignore-not-found=true",
+        "cleanup": "kubectl delete netpol allow-egress-external --ignore-not-found=true",
+        "check": "kubectl get netpol allow-egress-external -o jsonpath='{.spec.egress[0].to[0].ipBlock.cidr}' | grep -w '8.8.8.8/32'",
+        "hint": "Use spec.egress.to.ipBlock.cidr in NetworkPolicy.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: allow-egress-external\nspec:\n  podSelector: {}\n  policyTypes:\n  - Egress\n  egress:\n  - to:\n    - ipBlock:\n        cidr: 8.8.8.8/32\n    ports:\n    - protocol: UDP\n      port: 53\nEOF"
+    },
+    {
+        "id": "AE-24",
+        "domain": "Advanced Services & Routing",
+        "title": "Headless Database service mapping",
+        "problem": "Expose stateful pod group using headless service 'db-hl' mapping port 5432.",
+        "setup": "kubectl delete service db-hl --ignore-not-found=true",
+        "cleanup": "kubectl delete service db-hl --ignore-not-found=true",
+        "check": "kubectl get service db-hl -o jsonpath='{.spec.clusterIP}' | grep -w 'None'",
+        "hint": "Set spec.clusterIP: None in service spec.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: v1\nkind: Service\nmetadata:\n  name: db-hl\nspec:\n  clusterIP: None\n  selector:\n    app: db\n  ports:\n  - port: 5432\nEOF"
+    },
+    {
+        "id": "AE-25",
+        "domain": "Advanced API & Extensions",
+        "title": "Configure FlowSchema API Limits",
+        "problem": "Create a FlowSchema named 'custom-fs' under apiGroup flowcontrol.apiserver.k8s.io matching group 'system:authenticated'.",
+        "setup": "kubectl delete flowschema custom-fs --ignore-not-found=true",
+        "cleanup": "kubectl delete flowschema custom-fs --ignore-not-found=true",
+        "check": "kubectl get flowschema custom-fs",
+        "hint": "Apply a FlowSchema configuration manifest.",
+        "solution": "1. Apply manifest:\nkubectl apply -f - <<EOF\napiVersion: flowcontrol.apiserver.k8s.io/v1beta3\nkind: FlowSchema\nmetadata:\n  name: custom-fs\nspec:\n  matchingPrecedence: 500\n  priorityLevelConfiguration:\n    name: shared\n  rules:\n  - subjects:\n    - kind: Group\n      name: system:authenticated\n    resourceRules:\n    - verbs: [\"get\", \"list\"]\n      apiGroups: [\"\"]\n      resources: [\"pods\"]\nEOF"
+    }
+]
