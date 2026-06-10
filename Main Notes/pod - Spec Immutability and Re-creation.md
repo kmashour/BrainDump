@@ -45,8 +45,8 @@ To apply the changes, force a replacement using the temporary file. This deletes
 kubectl replace --force -f /tmp/kubectl-edit-xxxx.yaml
 ```
 
-### Linux Signal Mechanics under the Hood
-* **Normal Deletion:** Kubelet sends a `SIGTERM` (Signal 15) to PID 1, starting a countdown (`terminationGracePeriodSeconds`). If the process doesn't stop, it sends `SIGKILL` (Signal 9).
-* **Force Deletion (`--force --grace-period=0`):** Bypasses the grace period. The API server deletes the etcd record, and the runtime immediately sends a `SIGKILL` to destroy container cgroups and namespaces instantly.
+### 💉 Advanced: Surgical Mutations
+* **Strategic Merge Patch:** Use `kubectl patch` to surgically modify only specific mutable fields (like container image tag strings) without sending the entire resource body.
+* **API Binding Sub-resource:** If `kube-scheduler` is offline and a Pod is `Pending` (empty `spec.nodeName`), you can surgically bind it by POSTing a `Binding` object directly to `/binding` using `kubectl replace --raw /api/v1/namespaces/default/pods/[pod-name]/binding -f binding.json`. This is only allowed once when `nodeName` is empty.
 
-*Read more in [0-12_kubernetes_api_management_and_pod_immutability.md](../Reference%20Notes/0-12_kubernetes_api_management_and_pod_immutability.md#3-pod-spec-immutability-rules)*
+*Read more in [0-12_kubernetes_api_management_and_pod_immutability.md](../Reference%20Notes/0-12_kubernetes_api_management_and_pod_immutability.md#3-pod-immutability-rules)*

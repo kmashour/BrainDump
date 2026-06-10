@@ -18,6 +18,11 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **YAML & Link Update Sweep:** Executed a vault-wide refactoring sweep to update all internal links, breadcrumbs, and frontmatter reference guides to point to the new domain-prefixed filenames, maintaining 100% link integrity.
 - **Agent System Configs:** Updated `Agent.md`, `workflow.md`, `System/Skills/ingest_refinement.md`, and `System/Skills/orchestration.md` to establish the new domain-prefixed naming conventions as standard pipeline behaviors.
 
+### Ingested Inflow Sources
+The following files have been processed and integrated:
+- `inflow/Note -on-Pod-editing_mumshad.md`
+- `inflow/Important_labs_study cases_mumshad_GeminiQA.md`
+
 ---
 
 ## [2026-06-08] - System Design Re-Ingestion & PoC Decoupling Pass

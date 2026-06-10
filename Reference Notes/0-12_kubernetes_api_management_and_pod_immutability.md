@@ -261,6 +261,12 @@ spec:
 > spec: Forbidden: pod updates may not change fields other than `spec.containers[*].image`, `spec.initContainers[*].image`, `spec.activeDeadlineSeconds`, `spec.tolerations` (only additions to existing tolerations), or `spec.terminationGracePeriodSeconds` (only if it is set to 0 or 1)
 > ```
 
+### C. Controller Mutability: Deployments vs. Pods
+
+Unlike bare Pods, higher-level controllers (such as Deployments, StatefulSets, and DaemonSets) are fully mutable because they manage replica rollouts:
+* **The Mechanism:** When you edit a Deployment (e.g., `kubectl edit deployment <name>`), you can modify any field inside the Pod template (`spec.template.spec`), including immutable fields like environment variables, resources, or ports.
+* **Reconciliation:** The Deployment controller detects the modification, updates the live Deployment object in `etcd`, and triggers a rollout. It gracefully deletes the old Pods and spawns new ones with the updated template specification.
+
 ---
 
 ## 4. The `/tmp/kubectl-edit-xxxx.yaml` Recovery Workflow
@@ -340,6 +346,53 @@ When you delete a Pod forcefully (e.g., `kubectl delete pod <name> --grace-perio
 3. **Immediate cgroup Cleanup:**
    * The container runtime immediately destroys the cgroups (control groups) allocated for the containers, cutting off CPU and memory resource allocations.
    * The network namespace is torn down, and local container root filesystems (writeable layers) are unmounted and deleted.
+
+## 4.5. Advanced Surgical Mutations: Kubectl Patch, --raw HTTP, and Pod Binding
+
+While `kubectl replace --force` is a reliable blunt-force method, Kubernetes administrators can use more precise, "surgical" approaches to alter live state or apply specialized operations without deleting and recreating active Pod resources.
+
+### A. Strategic Merge Patch (`kubectl patch`)
+For fields that *are* mutable (such as container images), using `kubectl edit` or `kubectl apply` requires sending the entire resource specification, which risks conflicts with system-injected defaults. 
+`kubectl patch` allows you to alter only specific key-value pairs directly in `etcd` by submitting a partial JSON or YAML snippet:
+```bash
+# Surgically update a container image without touching other fields
+kubectl patch pod nginx -p '{"spec":{"containers":[{"name":"nginx","image":"nginx:1.25.0"}]}}'
+```
+
+### B. Bypassing Validation via Raw API Queries (`--raw`)
+The `kube-apiserver` does not natively parse YAML; it is a REST API that consumes and returns JSON. Normally, the `kubectl` binary translates command parameters into JSON requests and validates them locally against cached OpenAPI schemas.
+By appending the `--raw` flag, you turn `kubectl` into an authenticated wrapper around `curl`:
+* **Bypass Client-Side Checks:** It skips all local syntax and client-side validation checks, sending the payload directly to the API endpoint.
+* **Authentication Wrapper:** It automatically manages Mutual TLS (mTLS) client certificate headers using the credentials configured in `~/.kube/config`, avoiding complex manual curl authentication flags.
+* **Accessing Hidden Endpoints:** It allows you to query endpoints not directly exposed by standard CLI commands (like `/readyz`, metrics paths, or specialized sub-resources).
+
+### C. The Surgical Pod Binding Sub-resource Trick
+When a Pod is created without a `schedulerName` match or while the scheduler is offline, it remains stuck in a `Pending` state with an empty/null `spec.nodeName` field. Because `nodeName` is immutable once set, you cannot change it on a running Pod.
+However, when the field is empty, the API server exposes a specialized `/binding` sub-resource. You can act *as* the scheduler and surgically bind the pending Pod to a node:
+
+1. **Construct the Binding Payload (`binding.json`):**
+   ```json
+   {
+     "apiVersion": "v1",
+     "kind": "Binding",
+     "metadata": {
+       "name": "nginx"
+     },
+     "target": {
+       "apiVersion": "v1",
+       "kind": "Node",
+       "name": "node01"
+     }
+   }
+   ```
+
+2. **POST to the Binding Sub-resource Endpoint:**
+   ```bash
+   kubectl replace --raw /api/v1/namespaces/default/pods/nginx/binding -f binding.json
+   ```
+
+* **Behavior & Constraints:** The API server validates that `spec.nodeName` is currently empty. If it is empty, the Binding request is accepted, the field is populated in `etcd`, and the Kubelet on `node01` immediately detects the change and pulls the image.
+* **Immutability Lock:** Once populated, the field is locked. If you execute this command again on a running Pod to change its node, the API server will reject the request with a validation error, even though you are using a raw HTTP payload.
 
 ---
 

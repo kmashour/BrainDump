@@ -134,10 +134,24 @@ tolerations:
 This 5-minute (`300s`) buffer prevents **eviction storms** during temporary network hiccups or brief server reboots.
 
 #### D. Fine-Grained Policies: Unreachable vs. NotReady
-*   **`node.kubernetes.io/not-ready`** is used when the node **is communicating** but reporting unhealthy (e.g. out of PIDs/Disk).
-*   **`node.kubernetes.io/unreachable`** is used when there is **radio silence** (network partition or system crash).
 
-Separating these taints allows administrators to define custom toleration timings. For instance, a stateless pod can be evicted immediately on both (`tolerationSeconds: 10`), while a stateful database pod might wait 30 minutes on `unreachable` to prevent concurrent writes to the same storage (avoiding split-brain data corruption).
+The control plane distinguishes between these two states to help administrators optimize cluster resilience and failover speeds:
+
+1. **`node.kubernetes.io/not-ready` (The Kubelet is "Sick"):**
+   * **Mechanics:** The `kubelet` daemon is actively communicating with the API server, but explicitly reporting that its host environment is compromised.
+   * **Status Condition:** Node status condition is set to `Ready: False`.
+   * **Root Causes:** The container runtime (e.g., `containerd`) has crashed, the CNI (network plugin) is failing, or the host node has run out of vital resources (e.g., `DiskPressure`, `PIDPressure`).
+   * **Analogy:** A worker calling their manager on the phone to report, *"I am sick and cannot perform work today."*
+
+2. **`node.kubernetes.io/unreachable` (The Kubelet is "Ghosting"):**
+   * **Mechanics:** The `kube-apiserver` receives absolutely no telemetry from the worker node.
+   * **Status Condition:** Node status condition is set to `Ready: Unknown`.
+   * **Root Causes:** Physical host power loss, VM termination, or severe network partitions isolating the node completely from the control plane.
+   * **Analogy:** A worker who stops answering the phone entirely. The manager cannot tell if they are still working blindly, got disconnected, or are permanently offline.
+
+**Customizing Eviction Policies (CKA Exam Strategy):**
+* **Stateless Microservices:** Stateless pods can be scheduled instantly elsewhere. You can override the default `300s` delay by specifying a short toleration (e.g., `tolerationSeconds: 10`) to trigger rapid failover.
+* **Heavy Stateful Databases:** A massive database pod that takes 15 minutes to sync state should not be evicted prematurely. You can configure a long toleration (e.g., `tolerationSeconds: 1800` / 30 minutes) to allow time for host rebooting and prevent data desynchronization (split-brain scenarios).
 
 #### E. API Concurrency: Why the Controller Uses `PATCH`
 When adding taints to a node, the Node Lifecycle Controller executes an HTTP `PATCH` request rather than a `PUT` request:
