@@ -7,11 +7,11 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ## [2026-06-10] - CKA GOLD Extension & Advanced Playbook Release
 
 ### Added
-- **CKA GOLD Practice Suite Expansion:** Expanded the CKA prep suite under `Projects/CKA/kubernetes-Gold/` to exactly **175 tasks** (75 study Q&As + 100 environment-based scenarios), adding:
+- **CKA GOLD Practice Suite Expansion:** Expanded the CKA prep suite under `Projects/CKA/kubernetes-CKA-Gold/` to exactly **175 tasks** (75 study Q&As + 100 environment-based scenarios), adding:
   - Pod debugging via ephemeral containers.
   - Advanced JSONPath data filters.
   - Multi-file ConfigMap mounts and sidecar log rotation handlers.
-  - [walkthrough.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes-Gold/walkthrough.md): Playbook compiled dynamically for all 175 CKA GOLD tasks.
+  - [walkthrough.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes-CKA-Gold/walkthrough.md): Playbook compiled dynamically for all 175 CKA GOLD tasks.
 - **Advanced Kubernetes Playbook (Out-of-Scope):** Created a dedicated advanced directory under `Projects/kubernetes/` containing **50 advanced tasks** (25 study Q&As + 25 scenarios) covering:
   - Custom Resource Definitions (CRDs) with status/scale subresources.
   - Admission Webhooks (Mutating & Validating configurations).
