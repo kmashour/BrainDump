@@ -37,4 +37,4 @@ $$\text{Eviction Order:} \quad \text{BestEffort} \longrightarrow \text{Burstable
 * **Burstable:** Evicted next, ordered by those consuming the most memory above their declared requests.
 * **Guaranteed:** Evicted last, only if system daemons (`kubelet`, `docker`) are at risk of crash.
 
-*Read more in [07_kubernetes_workloads_and_controllers.md](../Reference%20Notes/07_kubernetes_workloads_and_controllers.md#2-resource-specifications-and-qos-classes)*
+*Read more in [0-6_kubernetes_workloads_and_controllers.md](../Reference%20Notes/0-6_kubernetes_workloads_and_controllers.md#2-resource-specifications-and-qos-classes)*

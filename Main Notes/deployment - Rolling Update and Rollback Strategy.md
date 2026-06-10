@@ -45,4 +45,4 @@ kubectl rollout undo deployment/web-deployment
 kubectl rollout undo deployment/web-deployment --to-revision=2
 ```
 
-*Read more in [07_kubernetes_workloads_and_controllers.md](../Reference%20Notes/07_kubernetes_workloads_and_controllers.md#8-deployments)*
+*Read more in [0-6_kubernetes_workloads_and_controllers.md](../Reference%20Notes/0-6_kubernetes_workloads_and_controllers.md#8-deployments)*

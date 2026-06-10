@@ -25,11 +25,10 @@ Select a domain to view its active landing concepts, deeper dive notes, and arch
 *Distributed scaling frameworks, database selector models, caching write topologies, geographical CDN edge nodes, and API communication protocols/security.*
 - **Go to MOC:** [[0-Index - Systems Design|Systems Design MOC]]
 
----
-
-### 🐙 [Local DevOps & GitOps MOC](0-Index%20-%20Local%20DevOps.md)
-*Self-hosted source control setups, automated runner contexts, dev environments, and CLI introspection/diagnostic tools.*
-- **Go to MOC:** [[0-Index - Local DevOps|Local DevOps & GitOps MOC]]
+### 📦 Miscellaneous Projects & Tooling (MISC)
+*Self-hosted version control, automated runner deployment contexts, developer introspection clients, and system command-line utilities.*
+- **Version Control & GitOps:** [[gitea|Gitea Git Server Setup]]
+- **Developer Tooling & Commands:** [[kubectl|Kubectl CLI Utility]]
 
 ---
 

@@ -10,7 +10,7 @@ This skill details how to manage the end-to-end execution of the multi-agent ing
    - Identify the primary domains (e.g. `kubernetes`, `aws`, `networking`, `database`).
    - Identify if it belongs to an active study/exam track (e.g. CKA).
 2. **Execute Phase 1 (Refinement) & Phase 2 (Audit):**
-   - Delegate to ResearchAgent to compile the Reference Notes. Direct the agent to split the incoming material into dedicated, topic-specific Reference Notes instead of grouping them into a single consolidated file.
+   - Delegate to ResearchAgent to compile the Reference Notes. Direct the agent to split the incoming material into dedicated Reference Notes using the domain prefixing convention (`0-X_` for Kubernetes, `1-X_` for Systems Design) and catalog one-off projects without numbering prefixes under the `MISC` category of reference indices.
    - Delegate to AuditAgent to enrich secondary/tangent domains.
 3. **Execute Phase 2.5 (Diagram Design):**
    - Delegate to DiagramAgent to design and insert standard-compliant Mermaid diagrams.

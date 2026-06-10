@@ -111,4 +111,4 @@ You can switch the active API version for `etcdctl` using one of two methods:
 +| **Create Directory** | `etcdctl mkdir dir1` | *N/A* | Not supported in v3 due to flat keyspace model. |
 +| **Watch Key Changes** | `etcdctl watch key1` | `etcdctl watch key1` | In v3, watching keys provides detailed transaction events. |
 
-*Read more in [11_maintenance_upgrades_and_etcd.md](../Reference%20Notes/11_maintenance_upgrades_and_etcd.md#41-etcd-api-v2-vs-v3-client-management)*
+*Read more in [0-10_maintenance_upgrades_and_etcd.md](../Reference%20Notes/0-10_maintenance_upgrades_and_etcd.md#41-etcd-api-v2-vs-v3-client-management)*

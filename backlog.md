@@ -4,6 +4,22 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-10] - Domain-Based Reference Prefixing & MOC Restructuring
+
+### Added
+- **MISC Reference Category:** Created a Miscellaneous Projects section directly under the main indexes (`0-Index.md`), removing the irrelevant Local DevOps index and listing the standalone Gitea GitOps project there.
+
+### Refactored / Upgraded
+- **Reference Naming Scheme:** Restructured all reference notes to enforce domain-prefixed numbering by default:
+  - Kubernetes reference notes are prefixed with `0-X_` (e.g. `0-1_`, `0-2_`, up to `0-15_`).
+  - Systems Design reference notes are prefixed with `1-X_` (e.g. `1-1_` to `1-6_`).
+  - Standalone projects without long-term history (like Gitea) are classified as miscellaneous chapters (without numbers) and grouped under `MISC`.
+- **Troubleshooting Classification:** Moved the Kubernetes Troubleshooting & Diagnostics module (`0-11_troubleshooting_and_diagnostics.md`) to the primary Kubernetes index MOC (`0-Index - Kubernetes.md`).
+- **YAML & Link Update Sweep:** Executed a vault-wide refactoring sweep to update all internal links, breadcrumbs, and frontmatter reference guides to point to the new domain-prefixed filenames, maintaining 100% link integrity.
+- **Agent System Configs:** Updated `Agent.md`, `workflow.md`, `System/Skills/ingest_refinement.md`, and `System/Skills/orchestration.md` to establish the new domain-prefixed naming conventions as standard pipeline behaviors.
+
+---
+
 ## [2026-06-08] - System Design Re-Ingestion & PoC Decoupling Pass
 
 ### Added
@@ -19,12 +35,12 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Index Files & MOCs (`0-Index.md`):** Renamed all root directory map index files from `Index.md` to `0-Index.md` (across `Main Notes/`, `Reference Notes/`, `Digital Garden/`, and `Projects/CKA/`) to ensure they sort at the absolute top of their folders. Replaced all breadcrumbs and internal links referencing `[[Index]]` with `[[0-Index]]` across all 100+ files.
 - **Logical Map of Content Structure:** Reorganized the indexes logically by systems domains (e.g. Cluster Administration, Core API Engine, Node & Container Runtimes, Workloads & Placements, Storage & Networking, Distributed System Design, GitOps Automation, and Tooling) instead of listing modules numerically.
 - **Reference Notes Splitting:** Split the consolidated `Reference Notes/17_system_design_fundamentals.md` into six dedicated, topic-specific Reference Notes:
-  - `Reference Notes/17_scaling_and_single_server.md`
-  - `Reference Notes/18_load_balancing_topologies.md`
-  - `Reference Notes/19_database_architectures_and_sharding.md`
-  - `Reference Notes/20_caching_and_content_delivery_networks.md`
-  - `Reference Notes/21_api_protocols_and_grpc.md` (created)
-  - `Reference Notes/22_access_control_and_api_security.md` (created)
+  - `Reference Notes/1-1_scaling_and_single_server.md`
+  - `Reference Notes/1-2_load_balancing_topologies.md`
+  - `Reference Notes/1-3_database_architectures_and_sharding.md`
+  - `Reference Notes/1-4_caching_and_content_delivery_networks.md`
+  - `Reference Notes/1-5_api_protocols_and_grpc.md` (created)
+  - `Reference Notes/1-6_access_control_and_api_security.md` (created)
 - **Reference File Deletion:** Removed the old consolidated `Reference Notes/17_system_design_fundamentals.md` file.
 - **MOC & Index Update:** Updated `Reference Notes/0-Index - Systems Design.md` to reference the 6 split modules.
 - **Conceptual Main Notes (`Main Notes/`):** Restored, updated, and validated the landing notes and deeper-dive notes for `load-balancing`, `database-selection`, `api-protocols`, and `api-security`, redirecting their YAML frontmatter `reference_guides` and footer wiki-links to the new split files.
@@ -66,50 +82,50 @@ The following files and assets have been processed and integrated:
 - **`inflow/node_heartbeat_and_eviction_qa.md`**: Created inflow note consolidating Q&A on Kubelet heartbeats, unreachable/not-ready taints, and API patch concurrency.
 
 ### Changed / Updated
-- **`Reference Notes/11_maintenance_upgrades_and_etcd.md`**: Added Section 1.5 detailing Kubelet node leases, unhealthy taints, eviction grace periods (toleration seconds), and why controllers use `PATCH` instead of `PUT` to prevent concurrency conflict errors.
-- **`Reference Notes/14_scheduling_logging_and_lifecycle.md`**: Expanded Pod Tolerations documentation with details on wildcard (omitted) effect matching and multi-taint scheduling additive evaluation logic.
+- **`Reference Notes/0-10_maintenance_upgrades_and_etcd.md`**: Added Section 1.5 detailing Kubelet node leases, unhealthy taints, eviction grace periods (toleration seconds), and why controllers use `PATCH` instead of `PUT` to prevent concurrency conflict errors.
+- **`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`**: Expanded Pod Tolerations documentation with details on wildcard (omitted) effect matching and multi-taint scheduling additive evaluation logic.
 
 ---
 
 ## [2026-06-07] - Cognitive Map Integration Across Reference Notes
 
 ### Added
-- **`Reference Notes/01_kube_api_and_kubectl.md`**: Added a Mermaid-based cognitive flow mapping the journey from API Gate & Request Lifecycle to CLI command execution.
-- **`Reference Notes/02_cluster_architecture_and_components.md`**: Added a Mermaid-based cognitive flow detailing macro cluster topologies, micro daemons, HA designs, and the declarative object model.
-- **`Reference Notes/03_node_mechanics_and_resource_limits.md`**: Added a Mermaid-based cognitive flow covering node bootstrapping, telemetry/leases, host sandboxing (cgroups/namespaces), resource scheduling, and hardware managers.
-- **`Reference Notes/04_workload_lifecycle_and_healing.md`**: Added a Mermaid-based cognitive flow mapping the four pillars of self-healing, automated probes, garbage collection, and failure PoC testing.
-- **`Reference Notes/05_containers_runtimes_and_lifecycle.md`**: Added a Mermaid-based cognitive flow detailing OCI blueprints, sandbox namespaces, custom RuntimeClasses, init/sidecar topologies, and ephemeral debugging.
-- **`Reference Notes/06_gitea_installation_and_workflows.md`**: Added a Mermaid-based cognitive flow tracing topology planning, host configuration (LVM), server installation, GitOps runners, and disaster recovery.
-- **`Reference Notes/07_kubernetes_workloads_and_controllers.md`**: Added a Mermaid-based cognitive flow detailing CRI sandboxing, stateless/stateful/daemonset controllers, batch execution, autoscaling, and template packaging.
-- **`Reference Notes/08_security_and_network_policies.md`**: Added a Mermaid-based cognitive flow outlining client authentication, RBAC authorization, container securityContexts, network policies, and cluster governance (PSA/PSS).
-- **`Reference Notes/09_storage_mechanics_and_csi.md`**: Added a Mermaid-based cognitive flow mapping out-of-tree CSI architecture, local volumes, PV/PVC lifecycles, StorageClasses, and workload mounts.
-- **`Reference Notes/10_networking_dns_and_ingress.md`**: Added a Mermaid-based cognitive flow detailing Linux network primitives, CNI overlays, Services (iptables/IPVS), DNS resolution, and Ingress/Gateway API.
-- **`Reference Notes/11_maintenance_upgrades_and_etcd.md`**: Added a Mermaid-based cognitive flow outlining node cordoning/draining, HA cluster bootstrapping, version lifecycle upgrades, and ETCD state restoration.
-- **`Reference Notes/12_troubleshooting_and_diagnostics.md`**: Added a Mermaid-based cognitive flow detailing application debugging, node logging, control-plane recovery, service networking diagnostics, and advanced JSONPath telemetry.
-- **`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`**: Added a Mermaid-based cognitive flow outlining imperative vs. declarative API management, 3-way merge engine internals, Pod spec immutability boundaries, and recovery playbooks.
-- **`Reference Notes/14_scheduling_logging_and_lifecycle.md`**: Added a Mermaid-based cognitive flow mapping advanced scheduling placement, metrics observability, container lifecycle configuration, and graceful eviction/termination.
-- **`Reference Notes/15_cluster_administration_and_observability.md`**: Added a Mermaid-based cognitive flow mapping graceful/non-graceful shutdowns, swap memory cgroups, certificates management, admission webhooks, observability, APF, and coordinated leader elections.
-- **`Reference Notes/16_kubernetes_api_extension_and_operators.md`**: Added a Mermaid-based cognitive flow covering schema registration (CRDs), custom controllers, the operator pattern, device plugins, and API aggregation.
+- **`Reference Notes/0-1_kube_api_and_kubectl.md`**: Added a Mermaid-based cognitive flow mapping the journey from API Gate & Request Lifecycle to CLI command execution.
+- **`Reference Notes/0-2_cluster_architecture_and_components.md`**: Added a Mermaid-based cognitive flow detailing macro cluster topologies, micro daemons, HA designs, and the declarative object model.
+- **`Reference Notes/0-3_node_mechanics_and_resource_limits.md`**: Added a Mermaid-based cognitive flow covering node bootstrapping, telemetry/leases, host sandboxing (cgroups/namespaces), resource scheduling, and hardware managers.
+- **`Reference Notes/0-4_workload_lifecycle_and_healing.md`**: Added a Mermaid-based cognitive flow mapping the four pillars of self-healing, automated probes, garbage collection, and failure PoC testing.
+- **`Reference Notes/0-5_containers_runtimes_and_lifecycle.md`**: Added a Mermaid-based cognitive flow detailing OCI blueprints, sandbox namespaces, custom RuntimeClasses, init/sidecar topologies, and ephemeral debugging.
+- **`Reference Notes/gitea_installation_and_workflows.md`**: Added a Mermaid-based cognitive flow tracing topology planning, host configuration (LVM), server installation, GitOps runners, and disaster recovery.
+- **`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`**: Added a Mermaid-based cognitive flow detailing CRI sandboxing, stateless/stateful/daemonset controllers, batch execution, autoscaling, and template packaging.
+- **`Reference Notes/0-7_security_and_network_policies.md`**: Added a Mermaid-based cognitive flow outlining client authentication, RBAC authorization, container securityContexts, network policies, and cluster governance (PSA/PSS).
+- **`Reference Notes/0-8_storage_mechanics_and_csi.md`**: Added a Mermaid-based cognitive flow mapping out-of-tree CSI architecture, local volumes, PV/PVC lifecycles, StorageClasses, and workload mounts.
+- **`Reference Notes/0-9_networking_dns_and_ingress.md`**: Added a Mermaid-based cognitive flow detailing Linux network primitives, CNI overlays, Services (iptables/IPVS), DNS resolution, and Ingress/Gateway API.
+- **`Reference Notes/0-10_maintenance_upgrades_and_etcd.md`**: Added a Mermaid-based cognitive flow outlining node cordoning/draining, HA cluster bootstrapping, version lifecycle upgrades, and ETCD state restoration.
+- **`Reference Notes/0-11_troubleshooting_and_diagnostics.md`**: Added a Mermaid-based cognitive flow detailing application debugging, node logging, control-plane recovery, service networking diagnostics, and advanced JSONPath telemetry.
+- **`Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md`**: Added a Mermaid-based cognitive flow outlining imperative vs. declarative API management, 3-way merge engine internals, Pod spec immutability boundaries, and recovery playbooks.
+- **`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`**: Added a Mermaid-based cognitive flow mapping advanced scheduling placement, metrics observability, container lifecycle configuration, and graceful eviction/termination.
+- **`Reference Notes/0-14_cluster_administration_and_observability.md`**: Added a Mermaid-based cognitive flow mapping graceful/non-graceful shutdowns, swap memory cgroups, certificates management, admission webhooks, observability, APF, and coordinated leader elections.
+- **`Reference Notes/0-15_kubernetes_api_extension_and_operators.md`**: Added a Mermaid-based cognitive flow covering schema registration (CRDs), custom controllers, the operator pattern, device plugins, and API aggregation.
 
 ---
 
 ## [2026-06-07] - Ingestion and Knowledge Distribution of CKA Exam Prep Video Course Clipping
 
 ### Added
-- **`Reference Notes/07_kubernetes_workloads_and_controllers.md`**: Added Section 14 detailing Helm packaging command runs (`repo add/update`, `install`, `upgrade`, `rollback`, `uninstall`, `list`) and Kustomize overlays (using `resources` instead of deprecated `bases`, and the `kustomize edit fix` command).
-- **`Reference Notes/08_security_and_network_policies.md`**: Added Section 6.6 containing a step-by-step walkthrough of RBAC service account (`dev-user`), role, and rolebinding configuration with `auth can-i` checks. Added Section 10.3 containing a step-by-step walkthrough of default deny-all NetworkPolicy and label-based allow rules.
-- **`Reference Notes/09_storage_mechanics_and_csi.md`**: Added Section 5.3 detailing Rancher local-path provisioner installation and configuration as a hostPath dynamic storage provider.
+- **`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`**: Added Section 14 detailing Helm packaging command runs (`repo add/update`, `install`, `upgrade`, `rollback`, `uninstall`, `list`) and Kustomize overlays (using `resources` instead of deprecated `bases`, and the `kustomize edit fix` command).
+- **`Reference Notes/0-7_security_and_network_policies.md`**: Added Section 6.6 containing a step-by-step walkthrough of RBAC service account (`dev-user`), role, and rolebinding configuration with `auth can-i` checks. Added Section 10.3 containing a step-by-step walkthrough of default deny-all NetworkPolicy and label-based allow rules.
+- **`Reference Notes/0-8_storage_mechanics_and_csi.md`**: Added Section 5.3 detailing Rancher local-path provisioner installation and configuration as a hostPath dynamic storage provider.
 
 ### Changed / Updated
 - **`Projects/CKA/Vim and Terminal Setup.md`**: Added copy-paste shortcuts (`Ctrl+Shift+C`/`Ctrl+Shift+V`), avoiding `Ctrl + W` terminal close error, SSH node hopping, and privilege elevation with `sudo -i`.
-- **`Reference Notes/02_cluster_architecture_and_components.md`**: Added Section 3D detailing stacked HA control plane configuration with `kubeadm` (`--control-plane-endpoint` and `--upload-certs` flags for `kubeadm init`, and `--control-plane` and `--certificate-key` flags for `kubeadm join`).
-- **`Reference Notes/03_node_mechanics_and_resource_limits.md`**: Added Section 1.1 detailing worker node kernel modules (`overlay`, `br_netfilter`), sysctl network parameters (`net.bridge.bridge-nf-call-iptables`, `net.ipv4.ip_forward`), and `containerd` cgroup configuration (`SystemdCgroup = true` in `config.toml`).
-- **`Reference Notes/04_workload_lifecycle_and_healing.md`**: Expanded Section 2 with detailed HTTP GET and TCP Socket probes, and a line-by-line configuration mechanical breakdown.
-- **`Reference Notes/07_kubernetes_workloads_and_controllers.md`**: Updated rolling update parameters (`maxSurge` / `maxUnavailable` defaults and validations) and history rollback commands (`rollout undo --to-revision`).
-- **`Reference Notes/10_networking_dns_and_ingress.md`**: Updated Section 5.5 to document forwarding private DNS queries for `mycorp.com` to corporate DNS `10.10.0.53` within the CoreDNS ConfigMap Corefile with explanation blocks.
-- **`Reference Notes/11_maintenance_upgrades_and_etcd.md`**: Updated Section 4.3 to document the step-by-step stacked ETCD snapshot restore process (stopping kubelet, restoring to `/var/lib/etcd-restored`, modifying `hostPath` volumes in `/etc/kubernetes/manifests/etcd.yaml`, and restarting kubelet).
-- **`Reference Notes/12_troubleshooting_and_diagnostics.md`**: Refined Section 1A with a detailed ASCII/Mermaid flowchart illustrating Pod Status flow and troubleshooting checklist for ImagePull failures. Refined Section 2A to detail API Server "Connection Refused" diagnostics and host-level static pod manifest debugging (`kubelet` status, `crictl ps -a`, `crictl logs`, etc.).
-- **`Reference Notes/14_scheduling_logging_and_lifecycle.md`**: Expanded Section 3 ("Label Subset Match Evaluation") with Case D containing a comprehensive mechanical breakdown of set-based operators (`NotIn`, `Exists`, `DoesNotExist`, `Gt`, `Lt`) using target node resource configurations. Added a detailed explanation breakdown for how required (filtering/predicates) and preferred (scoring/priorities) node affinity rules are evaluated together during the scheduling cycle phases. Documented the definition and enforcement mechanisms of Node Exclusivity (Taints & Tolerations) vs. Pod Exclusivity (Node Affinity) to clarify the combined repel-and-attract isolation paradigm. Documented reconciliation loop defaults and HA leader election lease configuration requirements (including concrete examples of collision vs. isolation, and `kubectl get leases` verification commands).
+- **`Reference Notes/0-2_cluster_architecture_and_components.md`**: Added Section 3D detailing stacked HA control plane configuration with `kubeadm` (`--control-plane-endpoint` and `--upload-certs` flags for `kubeadm init`, and `--control-plane` and `--certificate-key` flags for `kubeadm join`).
+- **`Reference Notes/0-3_node_mechanics_and_resource_limits.md`**: Added Section 1.1 detailing worker node kernel modules (`overlay`, `br_netfilter`), sysctl network parameters (`net.bridge.bridge-nf-call-iptables`, `net.ipv4.ip_forward`), and `containerd` cgroup configuration (`SystemdCgroup = true` in `config.toml`).
+- **`Reference Notes/0-4_workload_lifecycle_and_healing.md`**: Expanded Section 2 with detailed HTTP GET and TCP Socket probes, and a line-by-line configuration mechanical breakdown.
+- **`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`**: Updated rolling update parameters (`maxSurge` / `maxUnavailable` defaults and validations) and history rollback commands (`rollout undo --to-revision`).
+- **`Reference Notes/0-9_networking_dns_and_ingress.md`**: Updated Section 5.5 to document forwarding private DNS queries for `mycorp.com` to corporate DNS `10.10.0.53` within the CoreDNS ConfigMap Corefile with explanation blocks.
+- **`Reference Notes/0-10_maintenance_upgrades_and_etcd.md`**: Updated Section 4.3 to document the step-by-step stacked ETCD snapshot restore process (stopping kubelet, restoring to `/var/lib/etcd-restored`, modifying `hostPath` volumes in `/etc/kubernetes/manifests/etcd.yaml`, and restarting kubelet).
+- **`Reference Notes/0-11_troubleshooting_and_diagnostics.md`**: Refined Section 1A with a detailed ASCII/Mermaid flowchart illustrating Pod Status flow and troubleshooting checklist for ImagePull failures. Refined Section 2A to detail API Server "Connection Refused" diagnostics and host-level static pod manifest debugging (`kubelet` status, `crictl ps -a`, `crictl logs`, etc.).
+- **`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`**: Expanded Section 3 ("Label Subset Match Evaluation") with Case D containing a comprehensive mechanical breakdown of set-based operators (`NotIn`, `Exists`, `DoesNotExist`, `Gt`, `Lt`) using target node resource configurations. Added a detailed explanation breakdown for how required (filtering/predicates) and preferred (scoring/priorities) node affinity rules are evaluated together during the scheduling cycle phases. Documented the definition and enforcement mechanisms of Node Exclusivity (Taints & Tolerations) vs. Pod Exclusivity (Node Affinity) to clarify the combined repel-and-attract isolation paradigm. Documented reconciliation loop defaults and HA leader election lease configuration requirements (including concrete examples of collision vs. isolation, and `kubectl get leases` verification commands).
 
 ### Ingested Inflow Sources
 The following files and assets have been processed and integrated:
@@ -124,14 +140,14 @@ The following files and assets have been processed and integrated:
 - **CKA Practice Playbook - Topic Labs (`Projects/CKA/Practice Playbook - Topic Labs.md`):** Restructured and audited the draft Topic Labs playbook, deduplicating repetitive questions and injecting comprehensive CKA "Battle-Test Notes" for Troubleshooting, Cluster Architecture/Security, Services/Networking, Workloads/Scheduling, and Storage. Added complete practice scenarios for PersistentVolumes, PersistentVolumeClaims, and manual PVC mount injections.
 
 ### Changed / Updated
-- **`Reference Notes/10_networking_dns_and_ingress.md`:** Replaced L7 host/path routing text blocks with a detailed Mermaid.js Ingress traffic routing and logical service connection diagram. Added a CKA Battle-Test FAQ section comparing `kubectl expose` vs `kubectl create service` for ClusterIP and NodePort, including CLI syntax and a capability matrix.
+- **`Reference Notes/0-9_networking_dns_and_ingress.md`:** Replaced L7 host/path routing text blocks with a detailed Mermaid.js Ingress traffic routing and logical service connection diagram. Added a CKA Battle-Test FAQ section comparing `kubectl expose` vs `kubectl create service` for ClusterIP and NodePort, including CLI syntax and a capability matrix.
 - **`Projects/CKA/0-Index.md`:** Added a CKA Battle-Test FAQ detailing the location and ingestion pipeline of mock exams/lightning labs, and explaining the RAG capabilities of this vault.
 - **`README.md`:** Added details on the active RAG integration for the AI coding assistant.
-- **`Reference Notes/02_cluster_architecture_and_components.md`:** Replaced high-level cluster architecture text references with a detailed Mermaid.js control plane/worker node interaction diagram and corresponding structural description.
+- **`Reference Notes/0-2_cluster_architecture_and_components.md`:** Replaced high-level cluster architecture text references with a detailed Mermaid.js control plane/worker node interaction diagram and corresponding structural description.
 - **`Main Notes/kube-apiserver.md`:** Integrated a Mermaid.js diagram illustrating the central coordination role of `kube-apiserver` in the control plane hierarchy.
-- **`Reference Notes/05_containers_runtimes_and_lifecycle.md`:** Replaced text-based process namespace diagrams with structured Mermaid.js diagrams for Pod Sandbox namespaces (cgroups, net/ipc/uts isolation) and ephemeral container target namespace sharing.
+- **`Reference Notes/0-5_containers_runtimes_and_lifecycle.md`:** Replaced text-based process namespace diagrams with structured Mermaid.js diagrams for Pod Sandbox namespaces (cgroups, net/ipc/uts isolation) and ephemeral container target namespace sharing.
 - **`Main Notes/container-runtime-deeper.md`:** Added a Mermaid.js namespace sandboxing diagram under the Pause Container section, and corrected frontmatter metadata (`sub_type`, `source_type`).
-- **`Reference Notes/14_scheduling_logging_and_lifecycle.md`:** Converted the text-based scheduling framework pipeline layout into a clean, complete Mermaid.js flowchart (synchronous scheduling cycle and asynchronous binding cycle). Enhanced the Labels & Selectors and Node Selectors sections with comprehensive context, Services-to-Pods mapping diagrams, and a step-by-step production database SSD node-labeling walkthrough. Corrected manual pod binding instructions to use `kubectl create` / `kubectl post --raw` (replacing the invalid `kubectl replace` endpoint typo). Added CKA Selector Syntax & Behaviors FAQ to document the user's specific learning questions in context. Added multiple real-world implementation scenarios and examples of taints and tolerations (including NoSchedule GPU nodes, NoExecute maintenance draining with grace periods, PreferNoSchedule resource overloading, and wildcard diagnostic daemons). Added a mechanical breakdown scenario for label subset matches under node affinity rules (comparing single/multiple rules under nodeSelector, required nodeSelectorTerms, and preferred affinity scoring).
+- **`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`:** Converted the text-based scheduling framework pipeline layout into a clean, complete Mermaid.js flowchart (synchronous scheduling cycle and asynchronous binding cycle). Enhanced the Labels & Selectors and Node Selectors sections with comprehensive context, Services-to-Pods mapping diagrams, and a step-by-step production database SSD node-labeling walkthrough. Corrected manual pod binding instructions to use `kubectl create` / `kubectl post --raw` (replacing the invalid `kubectl replace` endpoint typo). Added CKA Selector Syntax & Behaviors FAQ to document the user's specific learning questions in context. Added multiple real-world implementation scenarios and examples of taints and tolerations (including NoSchedule GPU nodes, NoExecute maintenance draining with grace periods, PreferNoSchedule resource overloading, and wildcard diagnostic daemons). Added a mechanical breakdown scenario for label subset matches under node affinity rules (comparing single/multiple rules under nodeSelector, required nodeSelectorTerms, and preferred affinity scoring).
 - **`Main Notes/kube-scheduler-deeper.md`:** Integrated the detailed Scheduling Framework Mermaid.js flowchart under the Detailed Scheduling Pipeline section, and corrected frontmatter metadata (`sub_type`, `source_type`).
 - **`Main Notes/ingress.md`:** Added the Ingress routing data plane flow diagram under the Architectural Context section.
 
@@ -148,7 +164,7 @@ The following files and assets have been processed and integrated:
 ## [2026-06-06] - Ingestion of Core Objects, Policies, Services, Security, and Extensibility Scraped Files
 
 ### Added
-- **Reference Note (`Reference Notes/16_kubernetes_api_extension_and_operators.md`):** Created a comprehensive study module covering CustomResourceDefinitions (CRDs), Custom Controllers, Operator Pattern, Device Plugins, and API Aggregation.
+- **Reference Note (`Reference Notes/0-15_kubernetes_api_extension_and_operators.md`):** Created a comprehensive study module covering CustomResourceDefinitions (CRDs), Custom Controllers, Operator Pattern, Device Plugins, and API Aggregation.
 - **Landing Notes in `Main Notes/`:**
   - `label.md` (landing)
   - `finalizer.md` (landing)
@@ -171,10 +187,10 @@ The following files and assets have been processed and integrated:
 - **Digital Garden Pattern (`Digital Garden/Pattern - Securing Hardware Accelerator (GPU) Workloads via DRA.md`):** Documented alignment between Topology Manager, Dynamic Resource Allocation (DRA) status update RBAC checks, and Linux host-level NUMA/cgroup tuning.
 
 ### Changed / Updated
-- **`Reference Notes/02_cluster_architecture_and_components.md`:** Integrated Section 6 covering Core Object Model, Names/ID restrictions, Label syntax/selectors, Annotations metadata, namespaces, finalizers, and ownerReferences/garbage collection.
-- **`Reference Notes/03_node_mechanics_and_resource_limits.md`:** Added warning about physical host recreation node object consistency. Added Section 7 covering host mechanics (Linux kernel cgroups v1 vs v2, namespace sharing via pause containers, AppArmor/Seccomp host-level security profiles, and systemd journal Kubelet logs). Added Section 8 covering Resource requests/limits, LimitRanges, and ResourceQuotas. Added Section 9 covering PID limiting and Node Resource Managers (CPU Manager static/none, Memory Manager, Device Manager, and Topology Manager alignment policies).
-- **`Reference Notes/08_security_and_network_policies.md`:** Added Section 11 covering ConfigMap vs Secret properties, tmpfs mounts, Secrets encryption-at-rest in etcd, and environment/volume injection. Added Section 12 covering Pod Security Admission (PSA) and Pod Security Standards (PSS) levels/modes. Added Section 13 covering Dynamic Resource Allocation (DRA) status updates, synthetic subresources (binding/driver), and node-aware verbs. Added Section 14 compiling the Kubernetes Security Checklist.
-- **`Reference Notes/10_networking_dns_and_ingress.md`:** Added Section 4.4 covering client source IP preservation (`externalTrafficPolicy: Local` vs `Cluster`). Added Section 4.5 detailing the Pod and Endpoint termination graceful draining lifecycle flow, warning on API-level race conditions, and preStop hook sleep delay mitigations. Added Section 4.6 on Service selector connectivity routing checks.
+- **`Reference Notes/0-2_cluster_architecture_and_components.md`:** Integrated Section 6 covering Core Object Model, Names/ID restrictions, Label syntax/selectors, Annotations metadata, namespaces, finalizers, and ownerReferences/garbage collection.
+- **`Reference Notes/0-3_node_mechanics_and_resource_limits.md`:** Added warning about physical host recreation node object consistency. Added Section 7 covering host mechanics (Linux kernel cgroups v1 vs v2, namespace sharing via pause containers, AppArmor/Seccomp host-level security profiles, and systemd journal Kubelet logs). Added Section 8 covering Resource requests/limits, LimitRanges, and ResourceQuotas. Added Section 9 covering PID limiting and Node Resource Managers (CPU Manager static/none, Memory Manager, Device Manager, and Topology Manager alignment policies).
+- **`Reference Notes/0-7_security_and_network_policies.md`:** Added Section 11 covering ConfigMap vs Secret properties, tmpfs mounts, Secrets encryption-at-rest in etcd, and environment/volume injection. Added Section 12 covering Pod Security Admission (PSA) and Pod Security Standards (PSS) levels/modes. Added Section 13 covering Dynamic Resource Allocation (DRA) status updates, synthetic subresources (binding/driver), and node-aware verbs. Added Section 14 compiling the Kubernetes Security Checklist.
+- **`Reference Notes/0-9_networking_dns_and_ingress.md`:** Added Section 4.4 covering client source IP preservation (`externalTrafficPolicy: Local` vs `Cluster`). Added Section 4.5 detailing the Pod and Endpoint termination graceful draining lifecycle flow, warning on API-level race conditions, and preStop hook sleep delay mitigations. Added Section 4.6 on Service selector connectivity routing checks.
 - **`Main Notes/namespace.md`:** Integrated system namespaces (`default`, `kube-system`, `kube-public`, `kube-node-lease`) and custom namespace `kube-` prefix constraints.
 - **`Projects/CKA/Exam Checklist - Core Architecture and API.md`:** Appended Section 7 detailing Custom Resource discovery checks and `OwnerRefInvalidNamespace` event lookup commands.
 - **`Projects/CKA/Exam Checklist - Security and Storage.md`:** Appended Section 8 detailing PSA namespace labeling, Secrets encryption-at-rest etcd check, and namespace metadata label patch access restrictions.
@@ -195,7 +211,7 @@ The following files have been processed and integrated:
 ## [2026-06-06] - Ingestion of Cluster Administration and Observability Pipeline
 
 ### Added
-- **Reference Note (`Reference Notes/15_cluster_administration_and_observability.md`):** Created a comprehensive study module covering Graceful Node Shutdown, Swap memory management, Node autoscaling, Certificates API, Admission Webhooks, Observability/Logging/Metrics, Flow Control (APF), and Coordinated Leader Election.
+- **Reference Note (`Reference Notes/0-14_cluster_administration_and_observability.md`):** Created a comprehensive study module covering Graceful Node Shutdown, Swap memory management, Node autoscaling, Certificates API, Admission Webhooks, Observability/Logging/Metrics, Flow Control (APF), and Coordinated Leader Election.
 - **Landing Notes in `Main Notes/`:**
   - `APIPriorityAndFairness.md` (landing)
   - `Graceful Node Shutdown.md` (landing)
@@ -227,7 +243,7 @@ The following files have been processed under the scraper pipeline:
 - **Command Integration (`@ingest`):** Added the `@ingest` command to [Agent.md](Agent.md) and [instructions.md](instructions.md). This command triggers automated URL scanning and scraping of external documentation links within inflow files, consolidating fetched page content with the notes before running the multi-agent ingestion pipeline (Phases 1-6).
 
 ### Changed / Updated
-- **Workloads & Controllers Reference Module (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Appended technical details on User Namespaces in Pods (hostUsers configuration, dynamic UID mapping, idmap volume mounts, runtime constraints), Job TTL after completion (`ttlSecondsAfterFinished` cascading cleanup), CronJob 52-character naming limits (Job name length skew), and Autoscaling (HPA controller loop/metric scaling formula, VPA recommender/updater/webhook components, and VPA update policies).
+- **Workloads & Controllers Reference Module (`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`):** Appended technical details on User Namespaces in Pods (hostUsers configuration, dynamic UID mapping, idmap volume mounts, runtime constraints), Job TTL after completion (`ttlSecondsAfterFinished` cascading cleanup), CronJob 52-character naming limits (Job name length skew), and Autoscaling (HPA controller loop/metric scaling formula, VPA recommender/updater/webhook components, and VPA update policies).
 - **landing Note (`Main Notes/cronjob.md`):** Documented the DNS subdomain 52-character naming limit.
 - **landing Note (`Main Notes/pod.md`):** Added User Namespace host isolation details to the Problem Solver section.
 - **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended CLI troubleshooting and verification playbooks for HPA metric checks, and User Namespace UID mapping lookups.
@@ -241,9 +257,9 @@ The following files have been processed under the new `@ingest` scraper pipeline
 ## [2026-06-05] - Full Ingestion of Scheduling, Services, and Storage Documentation URLs
 
 ### Changed / Updated
-- **Scheduling & Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Appended technical details on Node-pressure eviction signals (memory, nodefs, imagefs, containerfs, pid), hard/soft eviction thresholds, NodeResourcesFit bin-packing scoring strategies (MostAllocated, RequestedToCapacityRatio, shape curves), PodGroups Gang/Co-scheduling, Topology-Aware Workload Scheduling (TAS) plugins, and Node Declared Features (KEP-5328) version skew validation.
-- **Networking Reference Module (`Reference Notes/10_networking_dns_and_ingress.md`):** Corrected Service ClusterIP allocation band behavior (lower band reserved for static allocation, upper band for dynamic allocation) and documented the allocation offset formula.
-- **Storage Reference Module (`Reference Notes/09_storage_mechanics_and_csi.md`):** Appended default VolumeSnapshotClass configuration using annotations (`snapshot.storage.kubernetes.io/is-default-class: "true"`), driver-matching dynamic resolution, and resolution conflict checks.
+- **Scheduling & Lifecycle Reference Module (`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`):** Appended technical details on Node-pressure eviction signals (memory, nodefs, imagefs, containerfs, pid), hard/soft eviction thresholds, NodeResourcesFit bin-packing scoring strategies (MostAllocated, RequestedToCapacityRatio, shape curves), PodGroups Gang/Co-scheduling, Topology-Aware Workload Scheduling (TAS) plugins, and Node Declared Features (KEP-5328) version skew validation.
+- **Networking Reference Module (`Reference Notes/0-9_networking_dns_and_ingress.md`):** Corrected Service ClusterIP allocation band behavior (lower band reserved for static allocation, upper band for dynamic allocation) and documented the allocation offset formula.
+- **Storage Reference Module (`Reference Notes/0-8_storage_mechanics_and_csi.md`):** Appended default VolumeSnapshotClass configuration using annotations (`snapshot.storage.kubernetes.io/is-default-class: "true"`), driver-matching dynamic resolution, and resolution conflict checks.
 - **Deeper Note (`Main Notes/kube-scheduler - Priority Preemption and Topology Spread.md`):** Documented eviction signals, bin-packing score strategies, PodGroups gang scheduling, TAS plugins, and Node Declared Features.
 - **Deeper Note (`Main Notes/service - EndpointSlices and Topology routing.md`):** Added DNS resolution formats for normal/headless services and Pods, and documented the Service ClusterIP allocation band formula.
 - **Exam Checklist (`Projects/CKA/Exam Checklist - Workloads and Scheduling.md`):** Appended configurations and debugging steps for NodeResourcesFit bin-packing strategies, PodGroup co-scheduling validation, and Kubelet eviction thresholds.
@@ -268,8 +284,8 @@ The following documentation URL index files have been processed and fully integr
 - **Architectural Pattern Note (`Digital Garden/Pattern - Multi-Zone Service Routing and Latency Mitigation.md`):** Explains how Gateway API and Topology Aware Routing hints map network connections inside availability zones.
 
 ### Changed / Updated
-- **Storage Reference Module (`Reference Notes/09_storage_mechanics_and_csi.md`):** Added Section 6 covering Projected Volumes, CSI/Generic Ephemeral Volumes, VolumeSnapshots, CSIStorageCapacity tracking, VolumeAttributesClass performance scaling, and local storage eviction.
-- **Networking Reference Module (`Reference Notes/10_networking_dns_and_ingress.md`):** Added Section 7 covering Gateway API specifications, EndpointSlices scalability, Topology Aware Routing, internalTrafficPolicy, and v1.26+ static/dynamic ClusterIP allocation.
+- **Storage Reference Module (`Reference Notes/0-8_storage_mechanics_and_csi.md`):** Added Section 6 covering Projected Volumes, CSI/Generic Ephemeral Volumes, VolumeSnapshots, CSIStorageCapacity tracking, VolumeAttributesClass performance scaling, and local storage eviction.
+- **Networking Reference Module (`Reference Notes/0-9_networking_dns_and_ingress.md`):** Added Section 7 covering Gateway API specifications, EndpointSlices scalability, Topology Aware Routing, internalTrafficPolicy, and v1.26+ static/dynamic ClusterIP allocation.
 - **Exam Checklist (`Projects/CKA/Exam Checklist - Troubleshooting and Networking.md`):** Appended Section 4.5 detailing Gateway API status troubleshooting, EndpointSlice health inspections, and node-local internalTrafficPolicy debug workflows.
 - **Exam Checklist (`Projects/CKA/Exam Checklist - Security and Storage.md`):** Appended Section 7 detailing Projected Volume configs, ephemeral storage limits eviction diagnostics, and Generic Ephemeral Volume templates.
 
@@ -492,10 +508,10 @@ The following raw inflow source files from `inflow/docs/` and link logs in `infl
 - **ReplicaSets Concept Deep Dive (`Main Notes/replicaset - MatchExpressions and Thrashing.md`):** Created a new deeper dive note detailing set-based selectors syntax, ownership/adoption mechanics, and troubleshooting scenarios for ReplicaSet thrashing loops (overlapping selectors and mutating webhook issues).
 
 ### Changed / Updated
-- **Container Runtimes Reference Module (`Reference Notes/05_containers_runtimes_and_lifecycle.md`):** Ingested raw Mumshad transcripts to document Dockershim removal, the `cri-dockerd` adapter socket mechanics, manual Kubelet configuration, and the "Container Runtime Upgrade Trap" (Kubelet gRPC re-dial errors resolved via service restart).
-- **Workloads & Controllers Reference Module (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Integrated set-based selector operators, `ownerReferences` mechanics (adoption and orphaning), API validation safeguards, and advanced thrashing loop diagnostics.
-- **Cluster Maintenance & ETCD Reference Module (`Reference Notes/11_maintenance_upgrades_and_etcd.md`):** Expanded details on ETCD client API v2 vs v3 management, persistent session configurations, and command-line syntax comparison.
-- **API Management Reference Module (`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`):** Detailed the Mixed-Management Warning and the 2-Way Merge Fallback blind spot (where deletions fail due to missing last-applied-configuration annotations) and auto-recovery annotation patching.
+- **Container Runtimes Reference Module (`Reference Notes/0-5_containers_runtimes_and_lifecycle.md`):** Ingested raw Mumshad transcripts to document Dockershim removal, the `cri-dockerd` adapter socket mechanics, manual Kubelet configuration, and the "Container Runtime Upgrade Trap" (Kubelet gRPC re-dial errors resolved via service restart).
+- **Workloads & Controllers Reference Module (`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`):** Integrated set-based selector operators, `ownerReferences` mechanics (adoption and orphaning), API validation safeguards, and advanced thrashing loop diagnostics.
+- **Cluster Maintenance & ETCD Reference Module (`Reference Notes/0-10_maintenance_upgrades_and_etcd.md`):** Expanded details on ETCD client API v2 vs v3 management, persistent session configurations, and command-line syntax comparison.
+- **API Management Reference Module (`Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md`):** Detailed the Mixed-Management Warning and the 2-Way Merge Fallback blind spot (where deletions fail due to missing last-applied-configuration annotations) and auto-recovery annotation patching.
 - **Main Note (`Main Notes/kubectl - Declarative vs Imperative and 3-Way Merge.md`):** Added a dedicated section detailing the Mixed-Management Warning, 2-Way Merge Fallback mechanics, and auto-recovery annotation injection.
 - **Main Note (`Main Notes/etcd-deeper.md`):** Appended section on ETCD client CLI version management (v2 vs v3) and operation commands cheat sheet.
 - **Main Note (`Main Notes/container-runtime-deeper.md`):** Appended section on Dockershim deprecation, `cri-dockerd` adapter socket details, modern socket config requirements, and Kubelet service upgrade traps.
@@ -524,14 +540,14 @@ The following raw inflow source files have been fully ingested and integrated:
 - **Validation Script (`Reference Notes/scripts/verify_scheduling_lifecycle_poc.sh`):** Created a production-grade bash verification script that automates Node Labeling/Selector/Affinity, Taints/Tolerations, ConfigMap/Secret volume mount sync and env injection, and logging/monitoring audits against a local cluster.
 
 ### Changed / Updated
-- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Integrated Phase 4 documentation detailing the automated verification script, its functionality, and commands on how to run it.
+- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`):** Integrated Phase 4 documentation detailing the automated verification script, its functionality, and commands on how to run it.
 
 ---
 
 ## [2026-06-05] - Context Expansion Audit of Scheduling, Logging, and Lifecycle Reference Module
 
 ### Changed / Updated
-- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):**
+- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`):**
   - **ConfigMap Symlink & inotify Sync Mechanics:** Expanded the ConfigMap/Secret volume mounts section. Detailed Kubelet's atomic directory update mechanism (timestamped subdirectories, user-facing symlinks, and the atomic swap of the `..data` symlink). Documented inotify event propagation inside containers (directory-level vs. file-level watches). Explained the `subPath` inode binding gotcha which binds directly to a file inode, preventing the container from receiving updates when the symlink target changes.
   - **ETCD Encryption Verification & Envelope Encryption:** Detailed the ETCD encryption at rest mechanism. Contrasted static providers (`identity`, `aescbc`, `secretbox`) with external KMS envelope encryption (DEK/KEK generation, remote gRPC plugin calls, local caches). Provided a step-by-step diagnostic run sheet to SSH into the control plane node, query the raw secret directly using `etcdctl` with client certificates, and verify it contains the `k8s:enc:aescbc:v1:` prefix.
   - **Custom Scheduler Reconciliation Loop & Binding API Walkthrough:** Expanded the multiple custom schedulers section. Provided a detailed step-by-step explanation of the reconciliation loop (Watch/Informer, Queueing, Filtering/Predicates, Scoring/Priorities, Selection, Binding) with a Mermaid flow diagram. Included complete, practical script implementations in Python (using the official `kubernetes` client library) and Bash (using `kubectl` and `curl` against the `/binding` subresource API) demonstrating how to programmatically schedule pending pods.
@@ -541,7 +557,7 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-06-05] - Create Scheduling, Logging, and Lifecycle Reference Module
 
 ### Added
-- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/14_scheduling_logging_and_lifecycle.md`):** Compiled raw log transcripts into a highly structured, comprehensive reference module covering Advanced Scheduling and Node Placement (Manual scheduling, labels/selectors, taints/tolerations, node affinity, taints vs affinity combinations, and multiple custom schedulers), Logging and Monitoring (Metrics Server architecture, Kubelet Summary API, and application logs queries), and Application Lifecycle (container commands/arguments overriding, environment variables direct config, envFrom, valueFrom, ConfigMaps, Secrets, base64 encoding/decoding, and etcd encryption at rest).
+- **Scheduling, Logging, and Lifecycle Reference Module (`Reference Notes/0-13_scheduling_logging_and_lifecycle.md`):** Compiled raw log transcripts into a highly structured, comprehensive reference module covering Advanced Scheduling and Node Placement (Manual scheduling, labels/selectors, taints/tolerations, node affinity, taints vs affinity combinations, and multiple custom schedulers), Logging and Monitoring (Metrics Server architecture, Kubelet Summary API, and application logs queries), and Application Lifecycle (container commands/arguments overriding, environment variables direct config, envFrom, valueFrom, ConfigMaps, Secrets, base64 encoding/decoding, and etcd encryption at rest).
 
 ---
 
@@ -563,18 +579,18 @@ The following raw inflow source files have been fully ingested and integrated:
 ### Changed / Updated
 - **Digital Garden Pattern Note (`Digital Garden/Pattern - Stateful Database Clustering in Kubernetes.md`):**
   - Added section **Linux Process Signals & cgroup Eviction Mechanics in Databases**: Documented the cross-domain interactions between Kubernetes lifecycle events and Linux kernel mechanisms. Detailed graceful shutdown (`SIGTERM`/Signal 15) vs. immediate force deletion (`SIGKILL`/Signal 9) process flows and their impact on database WAL files, transaction logs, and replica coordination. Detailed Completely Fair Scheduler (CFS) bandwidth quotas and the Out-of-Memory (OOM) killer scoring adjustments (`oom_score_adj` mapping from Guaranteed, Burstable, and BestEffort QoS classes) in relation to container cgroups.
-  - Updated frontmatter sources to include `Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`.
+  - Updated frontmatter sources to include `Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md`.
 - **Digital Garden Pattern Note (`Digital Garden/Pattern - Air-Gapped Git Architecture on RHEL.md`):**
   - Added section **GitOps Declarative Workflows & API Reconciliation Mechanics**: Connected the air-gapped version control server (Gitea) and host runner (`act_runner`) to declarative Kubernetes management. Detailed the client-side pre-flight validation cache and version skew issues, the 3-Way Merge Engine mechanics (role of `last-applied-configuration` annotation in tracking and processing field deletions), Server-Side Apply (SSA) (field ownership conflict resolutions under `metadata.managedFields`, and solving etcd metadata size constraints for large CRDs), and Pod spec immutability boundaries requiring the `/tmp/kubectl-edit-xxxx.yaml` recovery playbook using `kubectl replace --force` (triggering immediate cgroup teardown and container namespace unmounting via `SIGKILL`).
-  - Updated frontmatter domains, components, sources, and tags to include `kubernetes`, `kubectl`, `pod`, `Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`, and `kubernetes/gitops`.
-  - Added references to the bottom of the note for `Reference Notes/13_kubernetes_api_management_and_pod_immutability.md` and `Reference Notes/scripts/verify_api_immutability.sh`.
+  - Updated frontmatter domains, components, sources, and tags to include `kubernetes`, `kubectl`, `pod`, `Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md`, and `kubernetes/gitops`.
+  - Added references to the bottom of the note for `Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md` and `Reference Notes/scripts/verify_api_immutability.sh`.
 
 ---
 
 ## [2026-06-05] - Context Expansion Audit of API Management & Pod Immutability Reference Module
 
 ### Changed / Updated
-- **API Management & Pod Immutability Reference Module (`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`):**
+- **API Management & Pod Immutability Reference Module (`Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md`):**
   - Expanded **Client-Side vs. Server-Side Validation**: Documented how `kubectl` validates manifests locally using Cached OpenAPI schemas (under `~/.kube/cache/schema`), how version skew and Custom Resource Definitions (CRDs) affect validation, and how `--validate=false` can bypass local pre-flight checks.
   - Expanded **Server-Side Apply (SSA)**: Added deep-dive explanations of Server-Side Apply (SSA) introduced as the default mechanism in v1.22+. Detailed field ownership tracking with `metadata.managedFields`, conflict detection, and how it resolves the metadata storage constraints of the `last-applied-configuration` annotation in `etcd`.
   - Expanded **Linux Process Signal Mechanics during Force Deletion**: Documented process-level behavior difference between graceful termination (SIGTERM, grace period countdown, and escalation to SIGKILL) and forceful deletion (immediate SIGKILL, grace-period=0, immediate cgroup and namespace cleanup).
@@ -584,7 +600,7 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-06-05] - Create API Management and Pod Immutability Reference Module
 
 ### Added
-- **API Management & Pod Immutability Reference Module (`Reference Notes/13_kubernetes_api_management_and_pod_immutability.md`):** Compiled raw log transcripts into a highly structured reference module covering Declarative vs. Imperative Object Management (operational tradeoffs, exam vs. production workflows), the 3-Way Merge Engine (merge logic, the role of `last-applied-configuration` annotation in deletions, mixed-management warnings), Pod Immutability rules (reasons for immutability, exact mutable fields), and the `/tmp/kubectl-edit-xxxx.yaml` recovery workflow utilizing `kubectl replace --force`.
+- **API Management & Pod Immutability Reference Module (`Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md`):** Compiled raw log transcripts into a highly structured reference module covering Declarative vs. Imperative Object Management (operational tradeoffs, exam vs. production workflows), the 3-Way Merge Engine (merge logic, the role of `last-applied-configuration` annotation in deletions, mixed-management warnings), Pod Immutability rules (reasons for immutability, exact mutable fields), and the `/tmp/kubectl-edit-xxxx.yaml` recovery workflow utilizing `kubectl replace --force`.
 - **Validation Script (`Reference Notes/scripts/verify_api_immutability.sh`):** Created a programmatic verification script that automates the deployment, dry-run annotation check, immutability rejection validation, and the forceful recovery procedure.
 
 ---
@@ -612,14 +628,14 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-06-05] - Create Security and Network Policies Reference Module
 
 ### Added
-- **Kubernetes Security and Network Policies Reference Module (`Reference Notes/08_security_and_network_policies.md`):** Compiled a highly structured, comprehensive, and exhaustive Reference Module covering Kubernetes Security Primitives and Authentication (human vs. machine accounts, basic/token auth deprecation), TLS Basics & TLS in K8s (manual generation of CA, admin, apiserver, and kubelet certificates using openssl and cfssl, Subject Alternative Names, auditing certificate files), Certificates API (CertificateSigningRequest resources, spec.signerName values for v1, approval workflow, and Kubelet TLS bootstrapping), Kubeconfig (clusters, users, contexts structure, file merging), Authorization modes (Node, ABAC, RBAC, Webhook, AlwaysAllow/AlwaysDeny), RBAC (Role, RoleBinding, ClusterRole, ClusterRoleBinding, namespace scope, and kubectl auth can-i permission testing), ServiceAccounts (projected tokens, TokenRequest API v1.22+, manual secret-based token generation for v1.24+), Image Security (private registry credentials, docker-registry secrets, and ImagePullSecrets), SecurityContexts (Pod-level and Container-level users, groups, and Linux capabilities), and NetworkPolicies (Ingress/Egress, podSelector, namespaceSelector, ipBlock, and AND vs OR rules logic).
+- **Kubernetes Security and Network Policies Reference Module (`Reference Notes/0-7_security_and_network_policies.md`):** Compiled a highly structured, comprehensive, and exhaustive Reference Module covering Kubernetes Security Primitives and Authentication (human vs. machine accounts, basic/token auth deprecation), TLS Basics & TLS in K8s (manual generation of CA, admin, apiserver, and kubelet certificates using openssl and cfssl, Subject Alternative Names, auditing certificate files), Certificates API (CertificateSigningRequest resources, spec.signerName values for v1, approval workflow, and Kubelet TLS bootstrapping), Kubeconfig (clusters, users, contexts structure, file merging), Authorization modes (Node, ABAC, RBAC, Webhook, AlwaysAllow/AlwaysDeny), RBAC (Role, RoleBinding, ClusterRole, ClusterRoleBinding, namespace scope, and kubectl auth can-i permission testing), ServiceAccounts (projected tokens, TokenRequest API v1.22+, manual secret-based token generation for v1.24+), Image Security (private registry credentials, docker-registry secrets, and ImagePullSecrets), SecurityContexts (Pod-level and Container-level users, groups, and Linux capabilities), and NetworkPolicies (Ingress/Egress, podSelector, namespaceSelector, ipBlock, and AND vs OR rules logic).
 
 ---
 
 ## [2026-06-05] - Create Storage Mechanics and CSI Reference Module
 
 ### Added
-- **Storage Mechanics & CSI Reference Module (`Reference Notes/09_storage_mechanics_and_csi.md`):** Compiled a highly structured, comprehensive, and exhaustive Reference Module covering Container Storage Interface (CSI) architecture (Kubelet coordination, node vs. controller plugins, driver registration, sidecars), volume primitives (`emptyDir` and `hostPath` configurations, security risks, systemd/SELinux permissions, scheduling disconnects), PV and PVC mechanics (binding, access modes, reclaim policies, protection finalizers), Pod volume mounts, and StorageClasses (dynamic provisioning, `WaitForFirstConsumer` topology-aware scheduling, provisioners, online expansion).
+- **Storage Mechanics & CSI Reference Module (`Reference Notes/0-8_storage_mechanics_and_csi.md`):** Compiled a highly structured, comprehensive, and exhaustive Reference Module covering Container Storage Interface (CSI) architecture (Kubelet coordination, node vs. controller plugins, driver registration, sidecars), volume primitives (`emptyDir` and `hostPath` configurations, security risks, systemd/SELinux permissions, scheduling disconnects), PV and PVC mechanics (binding, access modes, reclaim policies, protection finalizers), Pod volume mounts, and StorageClasses (dynamic provisioning, `WaitForFirstConsumer` topology-aware scheduling, provisioners, online expansion).
 - **Automated Verification Script (`Reference Notes/scripts/verify_storage_poc.sh`):** Created a production-grade bash verification script to test shared `emptyDir` mounts, `WaitForFirstConsumer` pending-to-bound transitions, and PVC deletion protection finalizers.
 
 ---
@@ -627,21 +643,21 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-06-05] - Create Networking, DNS, and Ingress Reference Module
 
 ### Added
-- **Kubernetes Networking Reference Module (`Reference Notes/10_networking_dns_and_ingress.md`):** Created a comprehensive, production-grade study and reference module. Structured to cover Networking Prerequisites (Switching, routing, gateways, network namespaces, veth pairs, Linux bridge, NAT/MASQUERADE, DNAT), CNI specifications and host configurations (kubelet integration, plugins directory), Cluster & Pod networking (IPAM, WeaveNet overlay mechanism), Service networking (ClusterIP, NodePort, LoadBalancer routing, iptables vs IPVS proxy modes), DNS in Kubernetes (CoreDNS architecture, Corefile config, Pod/Service FQDN formats, /etc/resolv.conf search domains), and Ingress (Controllers vs Resources, routing patterns, SSL/TLS termination, rewrite-target annotations, networking.k8s.io/v1 templates).
+- **Kubernetes Networking Reference Module (`Reference Notes/0-9_networking_dns_and_ingress.md`):** Created a comprehensive, production-grade study and reference module. Structured to cover Networking Prerequisites (Switching, routing, gateways, network namespaces, veth pairs, Linux bridge, NAT/MASQUERADE, DNAT), CNI specifications and host configurations (kubelet integration, plugins directory), Cluster & Pod networking (IPAM, WeaveNet overlay mechanism), Service networking (ClusterIP, NodePort, LoadBalancer routing, iptables vs IPVS proxy modes), DNS in Kubernetes (CoreDNS architecture, Corefile config, Pod/Service FQDN formats, /etc/resolv.conf search domains), and Ingress (Controllers vs Resources, routing patterns, SSL/TLS termination, rewrite-target annotations, networking.k8s.io/v1 templates).
 
 ---
 
 ## [2026-06-05] - Create Cluster Maintenance, Upgrades, and ETCD Reference Module
 
 ### Added
-- **Reference Module (`Reference Notes/11_maintenance_upgrades_and_etcd.md`):** Compiled raw log transcripts into a highly structured, comprehensive reference module covering Node Maintenance (draining, cordoning), version skew policies, step-by-step kubeadm upgrade playbooks, ETCD snapshot backups and restores (for stacked and external topologies), High-Availability cluster architectures (stacked vs. external ETCD), and cluster bootstrapping using kubeadm with containerd systemd cgroups configurations.
+- **Reference Module (`Reference Notes/0-10_maintenance_upgrades_and_etcd.md`):** Compiled raw log transcripts into a highly structured, comprehensive reference module covering Node Maintenance (draining, cordoning), version skew policies, step-by-step kubeadm upgrade playbooks, ETCD snapshot backups and restores (for stacked and external topologies), High-Availability cluster architectures (stacked vs. external ETCD), and cluster bootstrapping using kubeadm with containerd systemd cgroups configurations.
 
 ---
 
 ## [2026-06-05] - Create Troubleshooting and Diagnostics Reference Note
 
 ### Added
-- **Kubernetes Troubleshooting & Diagnostics Reference Note (`Reference Notes/12_troubleshooting_and_diagnostics.md`):** Compiled raw log transcripts into a highly structured, comprehensive Reference Module. The document covers:
+- **Kubernetes Troubleshooting & Diagnostics Reference Note (`Reference Notes/0-11_troubleshooting_and_diagnostics.md`):** Compiled raw log transcripts into a highly structured, comprehensive Reference Module. The document covers:
   1. Troubleshooting Application Failures: Pod phases, logs, previous logs, health probes (Startup, Liveness, Readiness), Service Endpoints, and standalone pod re-creation.
   2. Troubleshooting Control Plane Failures: Static Pod manifest auditing, Systemd service logs, and ETCD endpoint health and membership checks.
   3. Troubleshooting Worker Node Failures: Node conditions, Kubelet systemd services and configuration fixes, CRI socket auditing, and container runtime investigations using `crictl`.
@@ -669,14 +685,14 @@ The following raw inflow source files have been fully ingested and integrated:
 
 ### Added
 - **Workload & Controller Verification Script (`Reference Notes/scripts/verify_workloads_poc.sh`):** Created a production-grade automated verification script to validate multi-container IPC patterns, localhost network port sharing, native gRPC probes, and StatefulSet headless DNS architectures.
-- **Verification Script Documentation (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Appended Section 13.7 documenting the verification script scope, execution instructions, and clean-up options.
+- **Verification Script Documentation (`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`):** Appended Section 13.7 documenting the verification script scope, execution instructions, and clean-up options.
 
 ---
 
 ## [2026-06-05] - Kubernetes Workloads & Controllers Reference Note Expansion
 
 ### Refactored / Upgraded
-- **Context Expansion Audit in Workloads & Controllers Reference Note (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):**
+- **Context Expansion Audit in Workloads & Controllers Reference Note (`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`):**
   - **Linux Namespaces & Cgroups (CRI/OCI Level):** Added detailed architectural explanations for kernel namespaces (`net`, `ipc`, `pid`, `mnt`, `uts`, `user`). Documented the hierarchy and structural differences between cgroups v1 and v2. Explained resource constraints mapping to Completely Fair Scheduler (CFS) bandwidth quotas/periods and OOM killer score adjustment math (`oom_score_adj`) across QoS classes.
   - **Shared Pod IPC & Unix Sockets:** Documented container-to-container communication mechanics. Included complete, runnable YAML configurations for loopback port sharing and shared Unix domain sockets using `emptyDir` mounts.
   - **StatefulSet DNS & CoreDNS Resolution:** Documented the CoreDNS mapping mechanisms (A and SRV records) for StatefulSets. Provided a detailed troubleshooting run sheet using network debugging tools (`nslookup`, `dig`, `host`).
@@ -687,7 +703,7 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-06-05] - Create Kubernetes Workloads & Controllers Reference Module
 
 ### Added
-- **Kubernetes Workloads & Controllers Reference Module (`Reference Notes/07_kubernetes_workloads_and_controllers.md`):** Created a comprehensive, production-grade study and reference module. Structured to cover Pods (Sandbox creation, namespace sharing), Pod Lifecycle (Phases, states, CrashLoopBackOff, conditions, readiness gates, hooks), Init and Native Sidecar containers (Resource calculations, sequencing, teardown), Ephemeral containers (kubectl debug), Health Probes (Liveness, Readiness, Startup, HTTP/TCP/Exec/gRPC handlers), Static Pods (configurations, mirror pods), ReplicaSets, Deployments (RollingUpdate, Recreate strategies, rollbacks), StatefulSets (Headless Services, stable identities, Volume Claim Templates), DaemonSets, and Jobs/CronJobs. Included a complete verification run sheet of kubectl commands.
+- **Kubernetes Workloads & Controllers Reference Module (`Reference Notes/0-6_kubernetes_workloads_and_controllers.md`):** Created a comprehensive, production-grade study and reference module. Structured to cover Pods (Sandbox creation, namespace sharing), Pod Lifecycle (Phases, states, CrashLoopBackOff, conditions, readiness gates, hooks), Init and Native Sidecar containers (Resource calculations, sequencing, teardown), Ephemeral containers (kubectl debug), Health Probes (Liveness, Readiness, Startup, HTTP/TCP/Exec/gRPC handlers), Static Pods (configurations, mirror pods), ReplicaSets, Deployments (RollingUpdate, Recreate strategies, rollbacks), StatefulSets (Headless Services, stable identities, Volume Claim Templates), DaemonSets, and Jobs/CronJobs. Included a complete verification run sheet of kubectl commands.
 
 ---
 
@@ -699,7 +715,7 @@ The following raw inflow source files have been fully ingested and integrated:
   - Appended **HostPath Volume & Directory Traversal Troubleshooting** guidelines (explaining how directory execute `x` permissions on the host affect containers, FACL `setfacl` permissions bypass, how symlinks resolve during `hostPath` mounting, and SELinux contexts).
 
 ### Audited
-- Audited `Reference Notes/06_gitea_installation_and_workflows.md`, `Main Notes/gitea.md`, and `Digital Garden/Pattern - Air-Gapped Git Architecture on RHEL.md` to extract high-yield crossover topics related to Linux systemd services and directory traversal permissions for Kubernetes cluster administrator tasks.
+- Audited `Reference Notes/gitea_installation_and_workflows.md`, `Main Notes/gitea.md`, and `Digital Garden/Pattern - Air-Gapped Git Architecture on RHEL.md` to extract high-yield crossover topics related to Linux systemd services and directory traversal permissions for Kubernetes cluster administrator tasks.
 
 ---
 
@@ -714,14 +730,14 @@ The following raw inflow source files have been fully ingested and integrated:
 
 ### Added
 - **Gitea Verification Script (`Reference Notes/scripts/verify_gitea_setup.sh`):** Created a robust, production-grade bash verification audit script to inspect a RHEL 8 host and verify Gitea conforms to security and architectural guidelines (User verification, storage/symlink checks, root:git permission flags, FACL traversal permissions, Systemd variables validation, port binding checks, and SELinux contexts).
-- **Audit Documentation Integration:** Appended Section 12 to `Reference Notes/06_gitea_installation_and_workflows.md` outlining the execution command and verification scope of the diagnostics script.
+- **Audit Documentation Integration:** Appended Section 12 to `Reference Notes/gitea_installation_and_workflows.md` outlining the execution command and verification scope of the diagnostics script.
 
 ---
 
 ## [2026-06-05] - Gitea Reference Note Context Expansion Audit
 
 ### Refactored / Upgraded
-- **Context Expansion Audit in Gitea Reference Note (`Reference Notes/06_gitea_installation_and_workflows.md`):**
+- **Context Expansion Audit in Gitea Reference Note (`Reference Notes/gitea_installation_and_workflows.md`):**
   - **Apache Reverse Proxy Snippet:** Added full SSL virtual host configuration block on port `:444` using `ProxyPass`, `ProxyPassReverse`, and `ProxyPreserveHost` directives, with architectural explanations of path preservation (`nocanon`), host header forwarding, and client real IP tracking with Gitea config (`REVERSE_PROXY_LIMIT` and `TRUSTED_PROXIES`).
   - **LVM & lsblk Concepts:** Expanded physical storage concepts (PV, VG, LV) with a Mermaid diagram, and provided a detailed step-by-step CLI run sheet on RHEL 8 to identify, create, extend (`vgextend` / `lvextend`), and resize filesystems (`xfs_growfs` / `resize2fs`) online for `/app`.
   - **OpenSSH Daemon (sshd) Configuration:** Documented sshd service configurations (`/etc/ssh/sshd_config`), active parameters required for Gitea's SSH multiplexing (`PubkeyAuthentication` and `AuthorizedKeysFile`), directory/file permissions (`StrictModes`), and RHEL 8 SELinux policy contexts (`restorecon` and `ssh_home_t`).
@@ -733,7 +749,7 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-06-05] - Second Brain & Digital Garden Expansion
 
 ### Added
-- **Gitea Reference Note:** Created `Reference Notes/06_gitea_installation_and_workflows.md` detailing air-gapped installation, SQLite vs MySQL decisions, LVM storage design with symlinks, OpenSSH multiplexing/forced command Git-over-SSH mechanics, act_runner configuration with native host executor, custom pre-receive hooks for branch naming rules, and active-passive disaster recovery rollback playbooks.
+- **Gitea Reference Note:** Created `Reference Notes/gitea_installation_and_workflows.md` detailing air-gapped installation, SQLite vs MySQL decisions, LVM storage design with symlinks, OpenSSH multiplexing/forced command Git-over-SSH mechanics, act_runner configuration with native host executor, custom pre-receive hooks for branch naming rules, and active-passive disaster recovery rollback playbooks.
 - **CKA Exam Core Checklist:** Created `Projects/CKA/Exam Checklist - Core Architecture and API.md` mapping etcd backup/restore, Kubelet static pods pathing, scheduler bypass (spec.nodeName & Binding API), health probes (Startup, Liveness, Readiness via Exec/HTTP/TCP), and local `crictl` & `journalctl` diagnostics.
 - **Specialized Subagent Team:** Defined 5 custom AI subagents under the repository namespace:
   - `ResearchAgent` (`research_refinement`): Cleans and refines raw Gemini logs and transcripts into Reference Notes.
@@ -784,15 +800,15 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-05-29] - Ingestion & Integration of Mumshad Course Transcripts
 
 ### Integrated
-- **[01_kube_api_and_kubectl.md](01_kube_api_and_kubectl.md):** Integrated Kube API Server request lifecycle details (creation flow, auth, schemas, scheduling binding, Kubelet execution).
-- **[02_cluster_architecture_and_components.md](02_cluster_architecture_and_components.md):** Expanded core control plane components:
+- **[0-1_kube_api_and_kubectl.md](0-1_kube_api_and_kubectl.md):** Integrated Kube API Server request lifecycle details (creation flow, auth, schemas, scheduling binding, Kubelet execution).
+- **[0-2_cluster_architecture_and_components.md](0-2_cluster_architecture_and_components.md):** Expanded core control plane components:
   - **API Server:** Added configuration details, systemd vs. static pod manifest verification, and execution checking.
   - **ETCD:** Added SQL vs Key-Value context, client/peer communication ports (2379/2380), Raft consensus peer configs, API v2 vs v3 migration commands (`put` vs `set`, versioning), and TLS-authorized registry keys check command.
   - **Kube Scheduler:** Added Filtering (predicates) and Ranking (priorities) pipeline descriptions, multiple custom schedulers context, and verification paths.
   - **Kube Proxy:** Added Services as virtual memory routing tables, host-level `iptables`/`IPVS` redirection mechanisms, and DaemonSet deployment verification.
   - **Reference Table:** Compiled a unified configuration paths guide for all control plane and core components.
-- **[03_node_mechanics_and_resource_limits.md](03_node_mechanics_and_resource_limits.md):** Integrated Kubelet host system agent specifics, manual installation instructions (downloading binary, systemd configurations), and process verification flags.
-- **[05_containers_runtimes_and_lifecycle.md](05_containers_runtimes_and_lifecycle.md):** Consolidated container runtimes evolution:
+- **[0-3_node_mechanics_and_resource_limits.md](0-3_node_mechanics_and_resource_limits.md):** Integrated Kubelet host system agent specifics, manual installation instructions (downloading binary, systemd configurations), and process verification flags.
+- **[0-5_containers_runtimes_and_lifecycle.md](0-5_containers_runtimes_and_lifecycle.md):** Consolidated container runtimes evolution:
   - **Evolution & Decoupling:** Added Docker platform components, Dockershim adapter deprecation history (removed in v1.24), and native CRI/cri-dockerd setups.
   - **CLI Tools Comparison:** Added comparison table for CTR (debugging containerd), NerdCTL (Docker-compatible containerd shell, eStargz lazy pulls, P2P, signing), and Crictl (CRI troubleshooting debugger, Pod listing, Kubelet GC warnings).
   - **Endpoints Socket Skew:** Added default socket checklist and session export configurations.
@@ -806,7 +822,7 @@ The following raw inflow source files have been fully ingested and integrated:
 ## [2026-05-29] - Ingestion & Consolidation of Container Mechanics
 
 ### Added
-- **[05_containers_runtimes_and_lifecycle.md](05_containers_runtimes_and_lifecycle.md):** Compiled raw notes from `inflow/Containers.md` into a structured, production-grade guide covering OCI images, Kubelet-CRI architecture, process isolation topology via `RuntimeClass` and micro-virtualization overhead, custom container setup/shutdown hooks, standard and native sidecars, and `ephemeralContainers` process namespace target troubleshooting.
+- **[0-5_containers_runtimes_and_lifecycle.md](0-5_containers_runtimes_and_lifecycle.md):** Compiled raw notes from `inflow/Containers.md` into a structured, production-grade guide covering OCI images, Kubelet-CRI architecture, process isolation topology via `RuntimeClass` and micro-virtualization overhead, custom container setup/shutdown hooks, standard and native sidecars, and `ephemeralContainers` process namespace target troubleshooting.
 - **PoC Suite:** Created a complete hands-on verification pipeline inside Module 05 containing service links tests, log redirection hooks verification, native sidecar/init sequential boot order tests, and `/ephemeralcontainers` PID debugging.
 
 ### Changed / Updated
@@ -830,10 +846,10 @@ The following raw inflow source files have been fully ingested and integrated:
   - Iterative policy to keep updating the repository approach.
 - **Updated** [README.md](file:///home/karim/Desktop/CKA/README.md) to map the new `inflow/` directory structure and integrate modules index links.
 - **Restructured Study Modules** (cross-linked modules `01` through `04` to form a cohesive, bi-directional network for Obsidian):
-  - [01_kube_api_and_kubectl.md](file:///home/karim/Desktop/CKA/01_kube_api_and_kubectl.md) linked to `02_cluster_architecture_and_components.md`.
-  - [02_cluster_architecture_and_components.md](file:///home/karim/Desktop/CKA/02_cluster_architecture_and_components.md) linked to `01_kube_api_and_kubectl.md`, `03_node_mechanics_and_resource_limits.md`, and `04_workload_lifecycle_and_healing.md`.
-  - [03_node_mechanics_and_resource_limits.md](file:///home/karim/Desktop/CKA/03_node_mechanics_and_resource_limits.md) linked to `02_cluster_architecture_and_components.md` and `04_workload_lifecycle_and_healing.md`.
-  - [04_workload_lifecycle_and_healing.md](file:///home/karim/Desktop/CKA/04_workload_lifecycle_and_healing.md) linked to `02_cluster_architecture_and_components.md` and `03_node_mechanics_and_resource_limits.md`.
+  - [0-1_kube_api_and_kubectl.md](file:///home/karim/Desktop/CKA/0-1_kube_api_and_kubectl.md) linked to `0-2_cluster_architecture_and_components.md`.
+  - [0-2_cluster_architecture_and_components.md](file:///home/karim/Desktop/CKA/0-2_cluster_architecture_and_components.md) linked to `0-1_kube_api_and_kubectl.md`, `0-3_node_mechanics_and_resource_limits.md`, and `0-4_workload_lifecycle_and_healing.md`.
+  - [0-3_node_mechanics_and_resource_limits.md](file:///home/karim/Desktop/CKA/0-3_node_mechanics_and_resource_limits.md) linked to `0-2_cluster_architecture_and_components.md` and `0-4_workload_lifecycle_and_healing.md`.
+  - [0-4_workload_lifecycle_and_healing.md](file:///home/karim/Desktop/CKA/0-4_workload_lifecycle_and_healing.md) linked to `0-2_cluster_architecture_and_components.md` and `0-3_node_mechanics_and_resource_limits.md`.
 
 ---
 
@@ -841,10 +857,10 @@ The following raw inflow source files have been fully ingested and integrated:
 
 ### Added
 - **Core Study Modules:**
-  - [01_kube_api_and_kubectl.md](file:///home/karim/Desktop/CKA/01_kube_api_and_kubectl.md) (API server, API Groups, explain, Watch, kubectl syntax, output formats).
-  - [02_cluster_architecture_and_components.md](file:///home/karim/Desktop/CKA/02_cluster_architecture_and_components.md) (Control plane vs worker, etcd/scheduler/controllers, HA design, CCM, version skew proxy).
-  - [03_node_mechanics_and_resource_limits.md](file:///home/karim/Desktop/CKA/03_node_mechanics_and_resource_limits.md) (Node conditions, leases/heartbeats, cgroups, QoS classes, container runtimes).
-  - [04_workload_lifecycle_and_healing.md](file:///home/karim/Desktop/CKA/04_workload_lifecycle_and_healing.md) (Self-healing pillars, probes, garbage collection).
+  - [0-1_kube_api_and_kubectl.md](file:///home/karim/Desktop/CKA/0-1_kube_api_and_kubectl.md) (API server, API Groups, explain, Watch, kubectl syntax, output formats).
+  - [0-2_cluster_architecture_and_components.md](file:///home/karim/Desktop/CKA/0-2_cluster_architecture_and_components.md) (Control plane vs worker, etcd/scheduler/controllers, HA design, CCM, version skew proxy).
+  - [0-3_node_mechanics_and_resource_limits.md](file:///home/karim/Desktop/CKA/0-3_node_mechanics_and_resource_limits.md) (Node conditions, leases/heartbeats, cgroups, QoS classes, container runtimes).
+  - [0-4_workload_lifecycle_and_healing.md](file:///home/karim/Desktop/CKA/0-4_workload_lifecycle_and_healing.md) (Self-healing pillars, probes, garbage collection).
 - **Core Index & Guide:**
   - [README.md](file:///home/karim/Desktop/CKA/README.md) containing the architectural Mermaid.js "Brain Map" and course indexes.
   - [instructions.md](file:///home/karim/Desktop/CKA/instructions.md) outlining standard ingestion and formatting guidelines.

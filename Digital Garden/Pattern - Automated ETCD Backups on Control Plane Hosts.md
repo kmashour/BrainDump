@@ -11,7 +11,7 @@ components:
   - "[[etcd]]"
   - "[[node]]"
 sources:
-  - "[[Reference Notes/11_maintenance_upgrades_and_etcd.md]]"
+  - "[[Reference Notes/0-10_maintenance_upgrades_and_etcd.md]]"
 tags:
   - architecture/pattern
   - kubernetes/etcd

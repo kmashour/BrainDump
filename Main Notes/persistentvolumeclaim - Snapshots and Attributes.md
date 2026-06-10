@@ -52,4 +52,4 @@ CSI drivers monitor physical storage arrays and disks for failure events (e.g., 
 *   If a storage failure occurs, the driver logs a warning event (e.g., `VolumeUnhealthy`) on the PVC.
 *   Cluster operators can capture this event via a controller to automate database replica failover or Pod rescheduling.
 
-*Read more in [09_storage_mechanics_and_csi.md](../Reference%20Notes/09_storage_mechanics_and_csi.md#63-volume-snapshots--volumesnapshotclasses)*
+*Read more in [0-8_storage_mechanics_and_csi.md](../Reference%20Notes/0-8_storage_mechanics_and_csi.md#63-volume-snapshots--volumesnapshotclasses)*

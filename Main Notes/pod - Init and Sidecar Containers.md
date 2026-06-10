@@ -37,4 +37,4 @@ Introduced as a native feature, sidecar containers run alongside main applicatio
   $$\text{Pod Request} = \text{Sum(App Containers)} + \text{Sum(Active Sidecars)}$$
   This sum is compared against the standard sequential init container values to select the absolute maximum.
 
-*Read more in [07_kubernetes_workloads_and_controllers.md](../Reference%20Notes/07_kubernetes_workloads_and_controllers.md#3-init-containers-and-native-sidecars)*
+*Read more in [0-6_kubernetes_workloads_and_controllers.md](../Reference%20Notes/0-6_kubernetes_workloads_and_controllers.md#3-init-containers-and-native-sidecars)*

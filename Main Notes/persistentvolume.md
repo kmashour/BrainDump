@@ -12,7 +12,7 @@ against:
   - "[[hostpath]]"
   - "[[emptydir]]"
 reference_guides:
-  - "[[Reference Notes/09_storage_mechanics_and_csi.md]]"
+  - "[[Reference Notes/0-8_storage_mechanics_and_csi.md]]"
 tags:
   - kubernetes/storage
   - status/completed

@@ -11,10 +11,10 @@ related_concepts:
   - "[[node]]"
   - "[[pod]]"
 reference_guides:
-  - "[[Reference Notes/03_node_mechanics_and_resource_limits.md]]"
-  - "[[Reference Notes/11_maintenance_upgrades_and_etcd.md]]"
-  - "[[Reference Notes/12_troubleshooting_and_diagnostics.md]]"
-  - "[[Reference Notes/15_cluster_administration_and_observability.md]]"
+  - "[[Reference Notes/0-3_node_mechanics_and_resource_limits.md]]"
+  - "[[Reference Notes/0-10_maintenance_upgrades_and_etcd.md]]"
+  - "[[Reference Notes/0-11_troubleshooting_and_diagnostics.md]]"
+  - "[[Reference Notes/0-14_cluster_administration_and_observability.md]]"
 tags:
   - kubernetes/component
   - status/completed

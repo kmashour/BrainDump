@@ -56,4 +56,4 @@ RULE: Your branch must start with one of the following:
   - update/
 ```
 
-*Read more in [06_gitea_installation_and_workflows.md](../Reference%20Notes/06_gitea_installation_and_workflows.md#10-enterprise-branch-governance--git-hooks)*
+*Read more in [gitea_installation_and_workflows.md](../Reference%20Notes/gitea_installation_and_workflows.md#10-enterprise-branch-governance--git-hooks)*

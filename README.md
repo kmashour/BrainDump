@@ -93,23 +93,23 @@ Contains workspaces for active projects. The **[CKA Exam Workspace](Projects/CKA
 ### 📚 [Reference Notes](Reference%20Notes/) (Study Modules & PoCs)
 This directory houses the comprehensive study modules filled with technical depth, command configurations, alerts, and detailed hands-on Proof of Concept (PoC) workflows:
 
-1. **[01_kube_api_and_kubectl.md](Reference%20Notes/01_kube_api_and_kubectl.md)**
+1. **[0-1_kube_api_and_kubectl.md](Reference%20Notes/0-1_kube_api_and_kubectl.md)**
    * *Topics:* REST endpoints, API Groups, Versioning, OpenAPI Schemas, `kubectl explain`, Watch (`-w`), JSONPath/Custom Columns.
    * *PoC:* Raw HTTP API queries, YAML templates, watch logs.
 
-2. **[02_cluster_architecture_and_components.md](Reference%20Notes/02_cluster_architecture_and_components.md)**
+2. **[0-2_cluster_architecture_and_components.md](Reference%20Notes/0-2_cluster_architecture_and_components.md)**
    * *Topics:* Master vs. Worker split, Control Plane processes, High Availability (HA) split-brain, Leader Election, CCM, Mixed Version Proxy.
    * *PoC:* Multi-node kind setups, Static Pod manifests, leader lease analysis.
 
-3. **[03_node_mechanics_and_resource_limits.md](Reference%20Notes/03_node_mechanics_and_resource_limits.md)**
+3. **[0-3_node_mechanics_and_resource_limits.md](Reference%20Notes/0-3_node_mechanics_and_resource_limits.md)**
    * *Topics:* Node registration, Lease heartbeats, QoS Classes (`BestEffort`, `Burstable`, `Guaranteed`), Cgroup drivers.
    * *PoC:* Lease inspections, QoS configuration, OOM limit testing.
 
-4. **[04_workload_lifecycle_and_healing.md](Reference%20Notes/04_workload_lifecycle_and_healing.md)**
+4. **[0-4_workload_lifecycle_and_healing.md](Reference%20Notes/0-4_workload_lifecycle_and_healing.md)**
    * *Topics:* Self-healing pillars, Probes (Liveness/Readiness/Startup), Garbage Collection (Cascading deletions, owner references).
    * *PoC:* Debugging crashing pods, isolating network traffic, testing foreground/background GC.
 
-5. **[05_containers_runtimes_and_lifecycle.md](Reference%20Notes/05_containers_runtimes_and_lifecycle.md)**
+5. **[0-5_containers_runtimes_and_lifecycle.md](Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md)**
    * *Topics:* OCI layers, containerd-shim, Pause containers, `RuntimeClass` isolation, hooks, init containers, sidecars, ephemeral containers.
    * *PoC:* Custom lifecycle hook redirection, sidecar boot orders, injecting ephemeral debugging containers.
 
@@ -125,7 +125,7 @@ This directory houses the comprehensive study modules filled with technical dept
 
 ## 🛠️ Global Kind Cluster Setup
 
-To test these notes, you will need a multi-node cluster. The configuration file and instructions are detailed at the start of **[02_cluster_architecture_and_components.md](Reference%20Notes/02_cluster_architecture_and_components.md)**.
+To test these notes, you will need a multi-node cluster. The configuration file and instructions are detailed at the start of **[0-2_cluster_architecture_and_components.md](Reference%20Notes/0-2_cluster_architecture_and_components.md)**.
 
 ---
 

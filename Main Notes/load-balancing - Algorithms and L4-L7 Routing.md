@@ -50,4 +50,4 @@ Load balancers rely on specific mathematical algorithms to assign clients to bac
 | **Least Connections** | Directs new requests to the server with the lowest count of active TCP connections. | Systems with long-lived client transactions (e.g., SQL sessions, file uploads). | Requires LBs to maintain state of connections; high overhead. |
 | **IP Hash** | Hashes the client's source IP address to compute a static target server. | Applications that require state/session persistence on a specific node. | Uneven traffic distribution if many clients originate from a single NAT proxy. |
 
-*Read more in [[Reference Notes/18_load_balancing_topologies.md#2. Load Balancing Algorithms]]*
+*Read more in [[Reference Notes/1-2_load_balancing_topologies.md#2. Load Balancing Algorithms]]*

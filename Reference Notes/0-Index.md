@@ -25,8 +25,6 @@ Select a domain to view its reference modules, learning tracks, and hands-on ver
 *Distributed systems scaling principles, load balancer topologies, database sharding/partitioning, consistent hashing, caching strategies, CDNs, and gRPC/API protocols.*
 - **Go to MOC:** [[0-Index - Systems Design|Systems Design & Architecture MOC]]
 
----
-
-### 🐙 [Local DevOps & GitOps MOC](0-Index%20-%20Local%20DevOps.md)
-*On-premise infrastructure setups, self-hosted source control (Gitea), LVM file system configuration, act_runners CI/CD, and system diagnostics/troubleshooting.*
-- **Go to MOC:** [[0-Index - Local DevOps|Local DevOps & GitOps MOC]]
+### 📦 Miscellaneous Projects (MISC)
+*Individual projects and chapters that combine multiple administrative domains (e.g. self-hosted git servers, Linux host storage configuration, and custom webserver reverse proxies) but do not belong to a standard study track.*
+- 🐙 **[Gitea GitOps Workflows on RHEL 8](gitea_installation_and_workflows.md)**: RHEL 8 security hardening, LVM logical volume zoning, Apache reverse proxy, and act_runner CI/CD automation.

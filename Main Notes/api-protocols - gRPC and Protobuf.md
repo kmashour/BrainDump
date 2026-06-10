@@ -61,4 +61,4 @@ gRPC uses **Protocol Buffers** as its serialization format instead of JSON:
   ```
 - **Generated Stubs:** Code generators convert the schema directly into client stubs and server boilerplate skeletons, ensuring immediate cross-language compatibility (Go, Java, Python, Node, etc.).
 
-*Read more in [API Protocols & gRPC](../Reference%20Notes/21_api_protocols_and_grpc.md#3-grpc--protocol-buffers-http2-multiplexing)*
+*Read more in [API Protocols & gRPC](../Reference%20Notes/1-5_api_protocols_and_grpc.md#3-grpc--protocol-buffers-http2-multiplexing)*

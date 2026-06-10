@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[abac]]"
 reference_guides:
-  - "[[Reference Notes/08_security_and_network_policies.md]]"
+  - "[[Reference Notes/0-7_security_and_network_policies.md]]"
 tags:
   - kubernetes/security
   - status/completed

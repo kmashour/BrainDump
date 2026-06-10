@@ -1,4 +1,4 @@
-# Module 09: Storage Mechanics and Container Storage Interface (CSI)
+# Module 0-8: Storage Mechanics and Container Storage Interface (CSI)
 
 This module covers the core concepts of storage management in Kubernetes. It details the transition from Docker's storage model to the Container Storage Interface (CSI), examines primitive volume types (`emptyDir` and `hostPath`), explains the Persistent Volume (PV) and Persistent Volume Claim (PVC) lifecycle, outlines Pod mount configurations, and documents dynamic provisioning via StorageClasses.
 

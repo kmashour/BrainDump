@@ -44,4 +44,4 @@ Kubernetes adds the `foregroundDeletion` finalizer to the owner object.
 Kubernetes adds the `orphan` finalizer to the owner object.
 * **Flow:** The owner is deleted immediately, leaving all dependent objects running in the cluster. The garbage collector removes the owner reference from each dependent, rendering them orphans.
 
-*Read more in [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#6-core-kubernetes-object-model-and-metadata)*
+*Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#6-core-kubernetes-object-model-and-metadata)*

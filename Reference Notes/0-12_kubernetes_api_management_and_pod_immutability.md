@@ -1,4 +1,4 @@
-# Module 13: Kubernetes API Management, 3-Way Merge, and Pod Immutability
+# Module 0-12: Kubernetes API Management, 3-Way Merge, and Pod Immutability
 
 This module covers the core mechanics of Kubernetes resource management and API behavior, focusing on declarative vs. imperative object management, the internals of the 3-Way Merge Engine, Pod spec immutability boundaries, and recovery playbooks for handling rejected edits.
 

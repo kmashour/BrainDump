@@ -1,4 +1,4 @@
-# Module 16: Kubernetes API Extension and Operators
+# Module 0-15: Kubernetes API Extension and Operators
 
 This module covers CustomResourceDefinitions (CRDs), Custom Controllers, the Operator Pattern, Device Plugins, and API Aggregation. It details how to extend the Kubernetes API and orchestrate custom resources.
 
@@ -223,4 +223,4 @@ We will create a custom resource definition named `Backup`, deploy a custom inst
 ---
 
 ## 🔗 Related Modules
-- [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Details how the control plane API server routes requests and manages default objects.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Details how the control plane API server routes requests and manages default objects.

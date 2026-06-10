@@ -49,4 +49,4 @@ kubectl replace --force -f /tmp/kubectl-edit-xxxx.yaml
 * **Normal Deletion:** Kubelet sends a `SIGTERM` (Signal 15) to PID 1, starting a countdown (`terminationGracePeriodSeconds`). If the process doesn't stop, it sends `SIGKILL` (Signal 9).
 * **Force Deletion (`--force --grace-period=0`):** Bypasses the grace period. The API server deletes the etcd record, and the runtime immediately sends a `SIGKILL` to destroy container cgroups and namespaces instantly.
 
-*Read more in [13_kubernetes_api_management_and_pod_immutability.md](../Reference%20Notes/13_kubernetes_api_management_and_pod_immutability.md#3-pod-spec-immutability-rules)*
+*Read more in [0-12_kubernetes_api_management_and_pod_immutability.md](../Reference%20Notes/0-12_kubernetes_api_management_and_pod_immutability.md#3-pod-spec-immutability-rules)*

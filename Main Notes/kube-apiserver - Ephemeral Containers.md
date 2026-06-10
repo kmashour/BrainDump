@@ -23,4 +23,4 @@ Pods are immutable by design, meaning you cannot add or remove containers once a
 * The `/ephemeralcontainers` API subresource bypasses container creation validation.
 * Allows `kubectl debug` to inject an administrative helper container directly into a running Pod's namespaces without restarting it.
 
-*Read more in [05_containers_runtimes_and_lifecycle.md](../Reference%20Notes/05_containers_runtimes_and_lifecycle.md#8-ephemeral-containers-for-debugging)*.
+*Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#8-ephemeral-containers-for-debugging)*.

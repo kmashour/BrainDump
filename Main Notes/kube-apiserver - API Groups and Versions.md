@@ -27,4 +27,4 @@ The Kubernetes API is divided into logical groups to partition the workspace and
   - `v1beta1`: Enabled by default, stable but subject to schema migration.
   - `v1`: Production-ready, backward-compatible.
 
-*Read more in [01_kube_api_and_kubectl.md](../Reference%20Notes/01_kube_api_and_kubectl.md#2-api-groups-and-versioning)*.
+*Read more in [0-1_kube_api_and_kubectl.md](../Reference%20Notes/0-1_kube_api_and_kubectl.md#2-api-groups-and-versioning)*.

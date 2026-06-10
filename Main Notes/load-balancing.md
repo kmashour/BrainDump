@@ -12,7 +12,7 @@ related_concepts:
 against:
   - "[[dns-round-robin]]"
 reference_guides:
-  - "[[Reference Notes/18_load_balancing_topologies.md]]"
+  - "[[Reference Notes/1-2_load_balancing_topologies.md]]"
 tags:
   - system-design/load-balancer
   - status/completed

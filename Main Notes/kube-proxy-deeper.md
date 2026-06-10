@@ -70,4 +70,4 @@ Since kube-proxy runs as a DaemonSet, you can inspect it with these commands:
   iptables -t nat -L KUBE-SERVICES -n -v
   ```
 
-*Read more in [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#e-kube-proxy-the-network-router).*
+*Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#e-kube-proxy-the-network-router).*

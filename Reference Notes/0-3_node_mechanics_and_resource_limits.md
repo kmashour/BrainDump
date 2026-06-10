@@ -1,4 +1,4 @@
-# Module 03: Node Mechanics & Resource Limits
+# Module 0-3: Node Mechanics & Resource Limits
 
 This module covers node lifecycles, health monitoring, resource allocation math, Quality of Service (QoS) classes, Linux kernel resource limits (`cgroups`), and node-to-control-plane communication.
 
@@ -174,7 +174,7 @@ $$\text{Allocatable} = \text{Capacity} - \text{OS Reserved} - \text{Kubelet Rese
 
 ## 3. Node Heartbeats & The Lease API
 
-To keep the control plane informed of node health without overloading the database, Kubernetes uses the **Lease API** (`coordination.k8s.io`). (For the role of the Node Controller inside the `kube-controller-manager` which monitors these lease objects, see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
+To keep the control plane informed of node health without overloading the database, Kubernetes uses the **Lease API** (`coordination.k8s.io`). (For the role of the Node Controller inside the `kube-controller-manager` which monitors these lease objects, see [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
 
 ### A. Heartbeat Mechanism
 * **Lease Objects:** Every node gets a lightweight `Lease` object in the `kube-node-lease` namespace. The `kubelet` pings (renews) this lease every **10 seconds**.
@@ -211,7 +211,7 @@ To interface with the kernel's cgroups, the container runtime and `kubelet` must
 
 ## 5. Kubelet Evictions & Quality of Service (QoS)
 
-If a node runs out of physical resources (crossing hard eviction thresholds like memory < 100MiB), the `kubelet` sets `MemoryPressure: True` (stopping new schedules) and starts killing existing Pods to save the operating system from crashing. It prioritizes which Pod to kill based on its **QoS Class**. For how these eviction actions trigger container lifecycle restarts and workload replacement, see [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md).
+If a node runs out of physical resources (crossing hard eviction thresholds like memory < 100MiB), the `kubelet` sets `MemoryPressure: True` (stopping new schedules) and starts killing existing Pods to save the operating system from crashing. It prioritizes which Pod to kill based on its **QoS Class**. For how these eviction actions trigger container lifecycle restarts and workload replacement, see [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md).
 
 ```plaintext
 Eviction Priority:
@@ -518,8 +518,12 @@ For latency-sensitive or high-throughput workloads, modern hardware demands opti
     * `single-numa-node`: Rejects the Pod completely if CPU, memory, and devices cannot be provisioned from a single NUMA node.
 
 ---
+Resources Measurement units in Kubernetes  :
+- **Mebibytes / Megabytes (e.g., `256Mi`, `512M`)**: `********Mi********` stands for mebibyte (1024 × 1024 bytes), while `M` stands for megabyte (1000 × 1000 bytes).
+- **Gibibytes / Gigabytes (e.g., `2Gi`, `4G`)**: `Gi` stands for gibibyte (1024³ bytes), while `G` stands for gigabyte (1000³ bytes).
+---
 
 ## 🔗 Related Modules
-- [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Outlines the role of the control plane (scheduler, controller-manager, API server) in coordinating with Kubelets.
-- [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md) - Details how eviction triggers restarts and replication controller healing.
-- [Module 05: Containers, Runtimes, and Lifecycle Management](05_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Outlines the role of the control plane (scheduler, controller-manager, API server) in coordinating with Kubelets.
+- [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md) - Details how eviction triggers restarts and replication controller healing.
+- [Module 05: Containers, Runtimes, and Lifecycle Management](0-5_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.

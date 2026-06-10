@@ -23,4 +23,4 @@ During cluster upgrades, different API servers inside the Control Plane can run 
 * If a request lands on a server that doesn't support the version of the requested resource, the API server proxies the request to another control plane node that does support it.
 * Ensures zero-downtime upgrades of the Control Plane.
 
-*Read more in [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#3-high-availability-ha-control-plane-mechanics)*.
+*Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#3-high-availability-ha-control-plane-mechanics)*.

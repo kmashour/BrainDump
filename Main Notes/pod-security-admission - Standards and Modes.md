@@ -55,4 +55,4 @@ metadata:
 > [!CAUTION]
 > **Privilege Escalation Vector:** Users with `patch` or `update` access on Namespace resources (e.g. application developers with local namespace Roles) can modify these labels. A malicious actor could patch the namespace labels to downgrade enforcement to `privileged`, allowing them to deploy highly insecure containers to compromise the worker node. Access to Namespace modifications must be strictly audited and protected via RBAC.
 
-*Read more in [08_security_and_network_policies.md](../Reference%20Notes/08_security_and_network_policies.md#12-pod-security-admission-psa-and-standards)*
+*Read more in [0-7_security_and_network_policies.md](../Reference%20Notes/0-7_security_and_network_policies.md#12-pod-security-admission-psa-and-standards)*

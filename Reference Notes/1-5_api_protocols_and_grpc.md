@@ -3,7 +3,7 @@ domains:
   - "networking"
 ---
 
-# Module 21: API Protocols & gRPC
+# Module 1-5: API Protocols & gRPC
 
 This module covers the core API communication paradigms (REST, GraphQL, gRPC), transport layer protocols (TCP vs. UDP), and the performance optimization mechanisms of gRPC over HTTP/2.
 

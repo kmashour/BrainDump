@@ -11,7 +11,7 @@ related_concepts:
   - "[[cdn]]"
 against: []
 reference_guides:
-  - "[[Reference Notes/20_caching_and_content_delivery_networks.md]]"
+  - "[[Reference Notes/1-4_caching_and_content_delivery_networks.md]]"
 tags:
   - system-design/caching
   - status/completed

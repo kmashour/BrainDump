@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[secret]]" # Secrets are used for sensitive configurations, ConfigMaps for non-sensitive ones
 reference_guides:
-  - "[[Reference Notes/14_scheduling_logging_and_lifecycle.md]]"
+  - "[[Reference Notes/0-13_scheduling_logging_and_lifecycle.md]]"
 tags:
   - domain/kubernetes
   - status/completed

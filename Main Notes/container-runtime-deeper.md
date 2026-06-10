@@ -99,7 +99,7 @@ crictl images
 crictl logs <container-id>
 ```
 
-*Read more in [05_containers_runtimes_and_lifecycle.md](../Reference%20Notes/05_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture).*
+*Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture).*
 
 ---
 
@@ -123,4 +123,4 @@ Modern clusters require explicit configurations for socket endpoints:
 > **The Runtime Upgrade Trap:** Upgrading containerd on a live node using package managers can cause socket interruptions. If Kubelet fails its gRPC reconnection attempts, perform a hard service restart:
 > `sudo systemctl restart kubelet`
 
-*Read more in [05_containers_runtimes_and_lifecycle.md](../Reference%20Notes/05_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture)*
+*Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture)*

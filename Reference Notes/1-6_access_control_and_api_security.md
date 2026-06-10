@@ -3,7 +3,7 @@ domains:
   - "security"
 ---
 
-# Module 22: Access Control & API Security
+# Module 1-6: Access Control & API Security
 
 This module covers identity verification and security hardening at the application and network layers, detailing authentication models, authorization frameworks, and common defense-in-depth mitigation strategies.
 

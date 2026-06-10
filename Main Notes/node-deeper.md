@@ -78,4 +78,4 @@ Control Groups (`cgroups`) are the Linux kernel feature used to limit container 
 * **cgroups v2:** Unified resources under a single hierarchical tree, resolving synchronization issues (e.g., page cache writebacks and memory limits).
 * **Driver Alignment:** Always ensure that the Container Runtime and the Kubelet use the same driver (`systemd` is recommended on modern OSs). A mismatch causes duplicate hierarchies and node crashes under load.
 
-*Read more in [03_node_mechanics_and_resource_limits.md](../Reference%20Notes/03_node_mechanics_and_resource_limits.md#2-node-status-and-conditions).*
+*Read more in [0-3_node_mechanics_and_resource_limits.md](../Reference%20Notes/0-3_node_mechanics_and_resource_limits.md#2-node-status-and-conditions).*

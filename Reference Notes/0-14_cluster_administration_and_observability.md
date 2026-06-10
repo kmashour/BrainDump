@@ -1,4 +1,4 @@
-# Module 15: Cluster Administration, Observability, and API Flow Control
+# Module 0-14: Cluster Administration, Observability, and API Flow Control
 
 This module covers advanced cluster administration operations, including graceful and non-graceful node shutdowns, swap memory management with Linux kernel sysctls and cgroup v2 integration, node autoscaling, manual certificates generation with the Certificates API, admission webhooks, observability mechanics (system logging, metrics stability, OpenTelemetry traces), API Priority and Fairness (APF), and Coordinated Leader Election using the LeaseCandidate API.
 

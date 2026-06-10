@@ -46,4 +46,4 @@ command="/usr/local/bin/gitea serv key-1",no-port-forwarding,no-X11-forwarding s
 * **`command="..."`:** Tells the SSH Daemon (`sshd`) to ignore client requests and run Gitea's internal routing agent (`gitea serv`) instead.
 * **`no-port-forwarding` / `no-X11-forwarding`:** Closes TCP tunneling vectors on the server.
 
-*Read more in [06_gitea_installation_and_workflows.md](../Reference%20Notes/06_gitea_installation_and_workflows.md#2-service-identity--process-isolation)*
+*Read more in [gitea_installation_and_workflows.md](../Reference%20Notes/gitea_installation_and_workflows.md#2-service-identity--process-isolation)*

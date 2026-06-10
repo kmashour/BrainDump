@@ -8,7 +8,7 @@ domains:
 related_concepts:
   - "[[kube-apiserver]]"
 reference_guides:
-  - "[[Reference Notes/15_cluster_administration_and_observability.md]]"
+  - "[[Reference Notes/0-14_cluster_administration_and_observability.md]]"
 tags:
   - kubernetes/component
   - status/completed

@@ -45,4 +45,4 @@ Local ephemeral storage (logs, container layers, and local `emptyDir` mounts) is
 *   **Eviction Thresholds:** If a Pod exceeds its specified `resources.limits.ephemeral-storage`, the Kubelet evicts the Pod to prevent node disk exhaustion.
 *   **ResourceQuotas:** Namespace-level storage controls can limit the total ephemeral storage requests/limits.
 
-*Read more in [09_storage_mechanics_and_csi.md](../Reference%20Notes/09_storage_mechanics_and_csi.md#61-projected-volumes)*
+*Read more in [0-8_storage_mechanics_and_csi.md](../Reference%20Notes/0-8_storage_mechanics_and_csi.md#61-projected-volumes)*

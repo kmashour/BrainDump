@@ -68,4 +68,4 @@ This creates a significant operational blind spot:
 ### Auto-Recovery & Patching
 When this warning is issued, Kubernetes applies your additions and updates using a 2-way merge, but to prevent future blind spots, it automatically generates and injects the `kubectl.kubernetes.io/last-applied-configuration` annotation into the live object based on your current local configuration. Subsequent `kubectl apply` commands on this resource will successfully execute as 3-way merges.
 
-*Read more in [13_kubernetes_api_management_and_pod_immutability.md](../Reference%20Notes/13_kubernetes_api_management_and_pod_immutability.md#2-the-3-way-merge-engine)*
+*Read more in [0-12_kubernetes_api_management_and_pod_immutability.md](../Reference%20Notes/0-12_kubernetes_api_management_and_pod_immutability.md#2-the-3-way-merge-engine)*

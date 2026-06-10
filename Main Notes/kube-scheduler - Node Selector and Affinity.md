@@ -99,4 +99,4 @@ spec:
 
 For both Node Selector and Node Affinity, the suffix **`IgnoredDuringExecution`** means that if node labels change while a Pod is already running on that node (such that the affinity rules no longer match), the running Pod **will not be evicted**; it continues to run. Only new scheduling decisions evaluate the rules.
 
-*Read more in [14_scheduling_logging_and_lifecycle.md](../Reference%20Notes/14_scheduling_logging_and_lifecycle.md#d-node-selectors-and-node-affinity-attracting-workloads)*
+*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#d-node-selectors-and-node-affinity-attracting-workloads)*

@@ -24,4 +24,4 @@ Instead of polling the API server periodically (which scales poorly), clients us
 * The API server streams state events (Added, Modified, Deleted) in chunked JSON messages as they occur in `etcd`.
 * Essential for controllers and the scheduler to react instantly to cluster changes.
 
-*Read more in [01_kube_api_and_kubectl.md](../Reference%20Notes/01_kube_api_and_kubectl.md#4-the-watch-mechanism--w)*.
+*Read more in [0-1_kube_api_and_kubectl.md](../Reference%20Notes/0-1_kube_api_and_kubectl.md#4-the-watch-mechanism--w)*.

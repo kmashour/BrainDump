@@ -43,4 +43,4 @@ To prevent a compromised node-level driver from updating claims on other nodes, 
 2.  **`arbitrary-node:<verb>`:**
     *   **Usage:** Reserved for control-plane or cluster-wide multi-node controllers that manage allocations across the entire cluster.
 
-*Read more in [08_security_and_network_policies.md](../Reference%20Notes/08_security_and_network_policies.md#13-hardening-guide-dynamic-resource-allocation-dra-security)*
+*Read more in [0-7_security_and_network_policies.md](../Reference%20Notes/0-7_security_and_network_policies.md#13-hardening-guide-dynamic-resource-allocation-dra-security)*

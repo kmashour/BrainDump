@@ -70,4 +70,4 @@ Because the CCM must create VMs, routes, and load balancers, it runs with high-p
 * **IAM Roles for Service Accounts (IRSA/KMS):** On cloud environments (like AWS EKS or GCP GKE), the CCM is assigned an IAM role that permits it to interact with EC2, VPC, and ELB resources.
 * **Credentials Secret:** On self-hosted cloud installations, cloud credentials (such as an OpenStack clouds.yaml or AWS credentials file) are mounted into the CCM Pod via a Secret.
 
-*Read more in [02_cluster_architecture_and_components.md](../Reference%20Notes/02_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive).*
+*Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive).*

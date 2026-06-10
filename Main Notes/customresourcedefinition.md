@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[configmap]]"
 reference_guides:
-  - "[[Reference Notes/16_kubernetes_api_extension_and_operators.md]]"
+  - "[[Reference Notes/0-15_kubernetes_api_extension_and_operators.md]]"
 tags:
   - kubernetes/extending
   - status/completed

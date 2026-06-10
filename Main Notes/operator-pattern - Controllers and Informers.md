@@ -50,4 +50,4 @@ At the heart of the Operator Pattern is the reconciliation loop, which is built 
 4. **Workqueue:** A thread-safe, rate-limiting queue that distributes tasks to workers.
 5. **Reconciliation Loop (`Reconcile`):** A custom worker thread pops the key from the workqueue, reads the object from the cache, compares the actual state with the spec, and executes mutations (e.g. creating deployments, mounting disks) to align the states.
 
-*Read more in [16_kubernetes_api_extension_and_operators.md](../Reference%20Notes/16_kubernetes_api_extension_and_operators.md#2-custom-controllers)*
+*Read more in [0-15_kubernetes_api_extension_and_operators.md](../Reference%20Notes/0-15_kubernetes_api_extension_and_operators.md#2-custom-controllers)*

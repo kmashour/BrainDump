@@ -5,7 +5,7 @@ domains:
   - "infra"
 ---
 
-# Module 20: Caching & Content Delivery Networks (CDNs)
+# Module 1-4: Caching & Content Delivery Networks (CDNs)
 
 This module covers the core concepts of caching, write patterns (Cache-Aside, Write-Through, Write-Behind), eviction policies, cache stampede mitigations, and Content Delivery Network (CDN) edge routing.
 

@@ -94,4 +94,4 @@ tolerations:
     2.  **Add Affinity to target Pods:** Attracts the target pods to these nodes.
     3.  **Add Toleration to target Pods:** Allows them to run on the tainted node.
 
-*Read more in [14_scheduling_logging_and_lifecycle.md](../Reference%20Notes/14_scheduling_logging_and_lifecycle.md#c-taints-and-tolerations-repelling-workloads)*
+*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#c-taints-and-tolerations-repelling-workloads)*

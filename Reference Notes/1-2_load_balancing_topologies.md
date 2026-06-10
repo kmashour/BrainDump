@@ -4,7 +4,7 @@ domains:
   - "infra"
 ---
 
-# Module 18: Load Balancing Topologies & Algorithms
+# Module 1-2: Load Balancing Topologies & Algorithms
 
 This module covers traffic distribution mechanics using Load Balancers (LBs). It details Layer 4 vs. Layer 7 proxy routing, load balancing algorithms, active health checks, and strategies for achieving high availability (SPOF mitigation).
 

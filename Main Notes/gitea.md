@@ -12,7 +12,7 @@ related_concepts:
 against:
   - "[[gitlab]]"
 reference_guides:
-  - "[[Reference Notes/06_gitea_installation_and_workflows.md]]"
+  - "[[Reference Notes/gitea_installation_and_workflows.md]]"
 tags:
   - git/server
   - status/completed

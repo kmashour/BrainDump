@@ -92,4 +92,4 @@ Query the API schema directly from the CLI:
 * **`kubectl api-versions`:** Lists the enabled API version paths.
 * **`kubectl explain <resource>`:** Renders inline documentation for fields (e.g., `kubectl explain pod.spec.containers.securityContext`).
 
-*Read more in [01_kube_api_and_kubectl.md](../Reference%20Notes/01_kube_api_and_kubectl.md#5-kubectl-cli-formula--speed-tricks).*
+*Read more in [0-1_kube_api_and_kubectl.md](../Reference%20Notes/0-1_kube_api_and_kubectl.md#5-kubectl-cli-formula--speed-tricks).*

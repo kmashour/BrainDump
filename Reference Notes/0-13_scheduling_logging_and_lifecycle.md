@@ -1,4 +1,4 @@
-# Module 14: Scheduling, Logging, and Lifecycle Management
+# Module 0-13: Scheduling, Logging, and Lifecycle Management
 
 This module covers advanced scheduling and node placement policies, cluster-wide and application-level logging and monitoring mechanics, and the Kubernetes application lifecycle including container command overriding, environment injection, ConfigMaps, and Secrets.
 
@@ -1979,8 +1979,8 @@ The `NodeResourcesFit` score plugin supports bin-packing strategies to maximize 
 ---
 
 ## 🔗 Related Modules
-* [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Deep dive into Kube-Scheduler's placement algorithms and static pods config.
-* [Module 07: Kubernetes Workloads & Controllers](07_kubernetes_workloads_and_controllers.md) - Comprehensive specifications of ReplicaSets, Deployments, DaemonSets, and Static Pods.
-* [Module 08: Security and Network Policies](08_security_and_network_policies.md) - Covers ServiceAccounts, securityContexts, and detailed TLS configurations.
-* [Module 12: Troubleshooting and Diagnostics](12_troubleshooting_and_diagnostics.md) - Operational playbooks for resolving node and control plane failures.
+* [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Deep dive into Kube-Scheduler's placement algorithms and static pods config.
+* [Module 07: Kubernetes Workloads & Controllers](0-6_kubernetes_workloads_and_controllers.md) - Comprehensive specifications of ReplicaSets, Deployments, DaemonSets, and Static Pods.
+* [Module 08: Security and Network Policies](0-7_security_and_network_policies.md) - Covers ServiceAccounts, securityContexts, and detailed TLS configurations.
+* [Module 12: Troubleshooting and Diagnostics](0-11_troubleshooting_and_diagnostics.md) - Operational playbooks for resolving node and control plane failures.
 

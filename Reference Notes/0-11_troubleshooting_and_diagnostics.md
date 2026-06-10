@@ -1,4 +1,4 @@
-# Module 12: Cluster Troubleshooting & Diagnostics
+# Module 0-11: Cluster Troubleshooting & Diagnostics
 
 This module covers the core diagnostics and troubleshooting workflows required for resolving failures across Kubernetes applications, the control plane, worker nodes, cluster networking, and advanced data extraction using `kubectl`.
 

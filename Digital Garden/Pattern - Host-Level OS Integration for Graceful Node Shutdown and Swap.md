@@ -9,7 +9,7 @@ components:
   - "[[kubelet]]"
   - "[[node]]"
 sources:
-  - "[[Reference Notes/15_cluster_administration_and_observability.md]]"
+  - "[[Reference Notes/0-14_cluster_administration_and_observability.md]]"
 tags:
   - architecture/pattern
   - kubernetes/kubelet

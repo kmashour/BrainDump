@@ -4,7 +4,7 @@ domains:
   - "infra"
 ---
 
-# Module 19: Database Architectures & Sharding
+# Module 1-3: Database Architectures & Sharding
 
 This module covers the core database paradigms (SQL vs. NoSQL vs. Graph), horizontal data scaling, table sharding key selection, and the mathematical mechanics of Consistent Hashing.
 

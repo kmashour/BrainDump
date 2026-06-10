@@ -42,4 +42,4 @@ CRDs support two optional subresources configured at the version level:
   * `statusReplicasPath`: Maps the observed replicas field (e.g., `.status.replicas`).
   * `labelSelectorPath`: Maps the pod selector label query to associate target pods.
 
-*Read more in [16_kubernetes_api_extension_and_operators.md](../Reference%20Notes/16_kubernetes_api_extension_and_operators.md#1-customresourcedefinitions-crds)*
+*Read more in [0-15_kubernetes_api_extension_and_operators.md](../Reference%20Notes/0-15_kubernetes_api_extension_and_operators.md#1-customresourcedefinitions-crds)*

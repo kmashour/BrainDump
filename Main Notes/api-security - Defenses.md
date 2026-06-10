@@ -52,4 +52,4 @@ To build secure production architectures, requests must pass through several lay
 - **Mechanism:** Sanitizes and HTML-encodes all user-provided strings before saving them to the database or outputting them to a browser.
 - **Protection:** Prevents attackers from injecting JavaScript payloads (e.g., in a comment field) that execute in the browsers of other users who view the content.
 
-*Read more in [[Reference Notes/22_access_control_and_api_security.md#2. Infrastructure & API Hardening]]*
+*Read more in [[Reference Notes/1-6_access_control_and_api_security.md#2. Infrastructure & API Hardening]]*

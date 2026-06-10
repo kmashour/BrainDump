@@ -11,7 +11,7 @@ components:
   - "[[node]]"
 sources:
   - "Kubernetes Scheduling Documentation"
-  - "Reference Notes/14_scheduling_logging_and_lifecycle.md"
+  - "Reference Notes/0-13_scheduling_logging_and_lifecycle.md"
 tags:
   - architecture/pattern
   - kubernetes/scheduling

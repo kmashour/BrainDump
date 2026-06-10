@@ -18,7 +18,7 @@ components:
 sources:
   - "Gitea Architecture and Workflow Guidelines"
   - "RHEL 8 System Administration Guide"
-  - "[[Reference Notes/13_kubernetes_api_management_and_pod_immutability.md]]"
+  - "[[Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md]]"
 against:
   - "[[gitlab]]"
 tags:
@@ -215,7 +215,7 @@ WantedBy=multi-user.target
 ### 5. Automated Verification
 Verify the installation using the automated diagnostics script, which validates user accounts, storage links, permissions, FACL traversal, systemd configuration, network bindings, and SELinux contexts.
 
-* Reference Guide: [Gitea Installation and Workflows Reference Note](../Reference%20Notes/06_gitea_installation_and_workflows.md#12-automated-system-architecture-and-security-audit)
+* Reference Guide: [Gitea Installation and Workflows Reference Note](../Reference%20Notes/gitea_installation_and_workflows.md#12-automated-system-architecture-and-security-audit)
 * Diagnostics Script: [Gitea Setup Verification Script](../Reference%20Notes/scripts/verify_gitea_setup.sh)
-* API Management & Immutability Reference: [Kubernetes API Management & Pod Immutability Reference Note](../Reference%20Notes/13_kubernetes_api_management_and_pod_immutability.md)
+* API Management & Immutability Reference: [Kubernetes API Management & Pod Immutability Reference Note](../Reference%20Notes/0-12_kubernetes_api_management_and_pod_immutability.md)
 * API Immutability Verification Script: [API Immutability Verification Script](../Reference%20Notes/scripts/verify_api_immutability.sh)

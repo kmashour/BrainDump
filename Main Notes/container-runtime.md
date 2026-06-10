@@ -9,7 +9,7 @@ related_concepts:
   - "[[kubelet]]"
   - "[[pod]]"
 reference_guides:
-  - "[[Reference Notes/05_containers_runtimes_and_lifecycle.md]]"
+  - "[[Reference Notes/0-5_containers_runtimes_and_lifecycle.md]]"
 tags:
   - kubernetes/component
   - status/completed

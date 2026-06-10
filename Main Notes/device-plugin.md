@@ -10,7 +10,7 @@ related_concepts:
 against:
   - "[[dynamic-resource-allocation]]"
 reference_guides:
-  - "[[Reference Notes/16_kubernetes_api_extension_and_operators.md]]"
+  - "[[Reference Notes/0-15_kubernetes_api_extension_and_operators.md]]"
 tags:
   - kubernetes/extending
   - status/completed
@@ -65,4 +65,4 @@ WHERE class = "deeper-dive" AND parent_concept = [[device-plugin]]
 SORT file.name ASC
 ```
 ---
-*Read more in [16_kubernetes_api_extension_and_operators.md](../Reference%20Notes/16_kubernetes_api_extension_and_operators.md#4-device-plugins)*
+*Read more in [0-15_kubernetes_api_extension_and_operators.md](../Reference%20Notes/0-15_kubernetes_api_extension_and_operators.md#4-device-plugins)*

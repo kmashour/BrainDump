@@ -80,4 +80,4 @@ If you mount a ConfigMap file using `subPath` to avoid overwriting existing file
 *   **Why:** `subPath` uses a Linux bind-mount that locks the target file's physical **inode** at container startup. When the Kubelet updates the ConfigMap, it swaps the symlink targets, but the bind-mount inside the container remains locked to the old physical inode. The container will never see the updates.
 *   **Mitigation:** Avoid `subPath` for files that require hot-reloading. Instead, mount the volume to a separate folder and use a symbolic link or a sidecar container to copy/update configuration files.
 
-*Read more in [14_scheduling_logging_and_lifecycle.md](../Reference%20Notes/14_scheduling_logging_and_lifecycle.md#c-configmaps-decoupled-configuration)*
+*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#c-configmaps-decoupled-configuration)*

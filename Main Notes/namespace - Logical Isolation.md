@@ -74,4 +74,4 @@ Pods can resolve Services in other namespaces by appending the target namespace 
 *   **Cascading Deletion Danger:**
     Executing `kubectl delete ns dev-ns` triggers a cascading deletion. The API server updates the namespace status to `Terminating`, finalizes nested API components, and permanently purges all Pods, Services, Deployments, and Secrets inside that namespace.
 
-*Read more in [14_scheduling_logging_and_lifecycle.md](../Reference%20Notes/14_scheduling_logging_and_lifecycle.md#1-advanced-scheduling-node-placement)*
+*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#1-advanced-scheduling-node-placement)*

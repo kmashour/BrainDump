@@ -53,4 +53,4 @@ Instead of changing permissions for `/app` or recursively exposing other sub-fol
 sudo setfacl -m u:git:x /app
 ```
 
-*Read more in [06_gitea_installation_and_workflows.md](../Reference%20Notes/06_gitea_installation_and_workflows.md#3-filesystem-hierarchy-standard-fhs-and-storage-design)*
+*Read more in [gitea_installation_and_workflows.md](../Reference%20Notes/gitea_installation_and_workflows.md#3-filesystem-hierarchy-standard-fhs-and-storage-design)*

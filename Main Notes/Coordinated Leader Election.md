@@ -9,7 +9,7 @@ related_concepts:
   - "[[kube-scheduler]]"
   - "[[kube-controller-manager]]"
 reference_guides:
-  - "[[Reference Notes/15_cluster_administration_and_observability.md]]"
+  - "[[Reference Notes/0-14_cluster_administration_and_observability.md]]"
 tags:
   - kubernetes/component
   - status/completed

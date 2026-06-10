@@ -1,4 +1,4 @@
-# Module 05: Containers, Runtimes, and Lifecycle Management
+# Module 0-5: Containers, Runtimes, and Lifecycle Management
 
 This module details how Kubernetes orchestrates, isolates, and manages container workloads. We cover the Open Container Initiative (OCI) image format, the Container Runtime Interface (CRI) execution path, process namespace sharing, advanced isolation via `RuntimeClass`, container hooks, `initContainers`, native `Sidecar` containers, and `ephemeralContainers` for real-time debugging.
 
@@ -73,7 +73,7 @@ When a Pod is stuck in `ImagePullBackOff` or `ErrImagePull`, follow this CLI tri
 2. **Analyze the Error Message:**
    * `ManifestUnknown` / `NotFound`: The image registry was reached, but the tag or digest is incorrect (typo in the manifest).
    * `Unauthorized` / `Forbidden`: The registry requires authentication, and either the `imagePullSecrets` are missing or the credentials inside the Secret are invalid.
-   * `dial tcp: i/o timeout` / `lookup registry.domain.com: no such host`: The worker node has lost outbound network access or cannot resolve external DNS. Verify node DNS setup (see [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md#b-conditions)).
+   * `dial tcp: i/o timeout` / `lookup registry.domain.com: no such host`: The worker node has lost outbound network access or cannot resolve external DNS. Verify node DNS setup (see [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md#b-conditions)).
 
 ---
 
@@ -835,7 +835,7 @@ kind delete cluster --name cka-containers-poc
 ---
 
 ## 🔗 Related Modules
-- [Module 01: Kube API Server & Kubectl Mechanics](01_kube_api_and_kubectl.md) - Focuses on API Versioning schemes and the `/ephemeralcontainers` subresource pathing.
-- [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Explains control plane scheduling and Kubelet loops.
-- [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md) - Covers Linux `cgroups` structures, `cgroupfs`/`systemd` drivers, and node eviction boundaries.
-- [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md) - Detailing `restartPolicy` backoffs and local container self-healing.
+- [Module 01: Kube API Server & Kubectl Mechanics](0-1_kube_api_and_kubectl.md) - Focuses on API Versioning schemes and the `/ephemeralcontainers` subresource pathing.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Explains control plane scheduling and Kubelet loops.
+- [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md) - Covers Linux `cgroups` structures, `cgroupfs`/`systemd` drivers, and node eviction boundaries.
+- [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md) - Detailing `restartPolicy` backoffs and local container self-healing.

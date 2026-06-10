@@ -1,4 +1,4 @@
-# Module 04: Workload Lifecycle & Self-Healing
+# Module 0-4: Workload Lifecycle & Self-Healing
 
 This module covers the core self-healing algorithms in Kubernetes, automated application health checks (Probes), API object relationships, and the garbage collection mechanisms running on both the control plane and individual nodes.
 
@@ -31,12 +31,12 @@ Kubernetes is built to react to failures at different structural levels. Failure
 
 ### A. Restart (Local Container Healing)
 * **Component:** `kubelet`.
-* **Action:** If a container process exits or crashes, the local `kubelet` restarts the container inside the existing Pod. (See [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md#4-resource-enforcement-linux-cgroups-drivers) for how Kubelet manages local container runtimes and cgroups).
+* **Action:** If a container process exits or crashes, the local `kubelet` restarts the container inside the existing Pod. (See [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md#4-resource-enforcement-linux-cgroups-drivers) for how Kubelet manages local container runtimes and cgroups).
 * **Mechanism:** Checks the Pod's `restartPolicy` (`Always`, `OnFailure`, `Never`). Uses an exponential backoff delay (from 10s up to 5 minutes) to avoid thrashing, entering the `CrashLoopBackOff` state.
 * **Result:** Pod name, IP address, and node assignment stay identical. Only the `RESTARTS` count increments.
 
 ### B. Replace (Workload Recovery)
-* **Component:** Controllers (`kube-controller-manager`). (For Control Plane details, see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
+* **Component:** Controllers (`kube-controller-manager`). (For Control Plane details, see [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
 * **Action:** Pods are completely immutable. If a Pod becomes corrupted or fails its startup sequence, the system terminates the bad Pod and builds a clean replacement from the original manifest.
 
 ### C. Replicate (Scale Enforcement)
@@ -44,8 +44,8 @@ Kubernetes is built to react to failures at different structural levels. Failure
 * **Action:** Constantly checks if the number of running Pods matches the desired replica count. If a user deletes a Pod, the controller detects the mismatch and immediately creates a new Pod.
 
 ### D. Reschedule (Infrastructure Failure Recovery)
-* **Component:** `kube-controller-manager` (Node Controller) & `kube-scheduler`. (For scheduler algorithms, see [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
-* **Action:** If a physical server dies, the Node Controller waits out the 5-minute eviction grace period, flags the node as dead, deletes the Pods on it, and the `kube-scheduler` places replacement Pods onto healthy nodes. (For node Lease objects and eviction timers, see [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api)).
+* **Component:** `kube-controller-manager` (Node Controller) & `kube-scheduler`. (For scheduler algorithms, see [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
+* **Action:** If a physical server dies, the Node Controller waits out the 5-minute eviction grace period, flags the node as dead, deletes the Pods on it, and the `kube-scheduler` places replacement Pods onto healthy nodes. (For node Lease objects and eviction timers, see [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api)).
 
 ---
 
@@ -136,7 +136,7 @@ The `kubelet` garbage collector runs locally to keep the worker node's disk from
    * **`HighThresholdPercent` (Default: 85%):** If disk usage hits this mark, image GC starts deleting the oldest, unused container images.
    * **`LowThresholdPercent` (Default: 80%):** Image GC continues deleting until disk usage drops below this mark.
 > [!WARNING]
-> If the disk usage increases faster than image GC can delete, the node condition flips to `DiskPressure: True` (see Node Conditions in [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md#b-conditions)), and scheduling halts.
+> If the disk usage increases faster than image GC can delete, the node condition flips to `DiskPressure: True` (see Node Conditions in [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md#b-conditions)), and scheduling halts.
 
 ---
 
@@ -298,6 +298,6 @@ We will deploy a Pod with a failing livenessProbe to witness local healing, a Po
 ---
 
 ## 🔗 Related Modules
-- [Module 02: Cluster Architecture & Control Plane Components](02_cluster_architecture_and_components.md) - Deep dive into controller reconciliation loops and high availability topologies.
-- [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md) - Describes node conditions (`DiskPressure`, etc.), heartbeats via the Lease API, and Kubelet resource eviction policies.
-- [Module 05: Containers, Runtimes, and Lifecycle Management](05_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Deep dive into controller reconciliation loops and high availability topologies.
+- [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md) - Describes node conditions (`DiskPressure`, etc.), heartbeats via the Lease API, and Kubelet resource eviction policies.
+- [Module 05: Containers, Runtimes, and Lifecycle Management](0-5_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.

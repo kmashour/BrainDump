@@ -1,4 +1,4 @@
-# Module 02: Cluster Architecture & Control Plane Components
+# Module 0-2: Cluster Architecture & Control Plane Components
 
 This module covers the macro and micro architecture of a Kubernetes cluster, diving deep into the roles of control plane and worker components, High Availability (HA) topologies, Cloud integration (CCM), and Version Skew proxying.
 
@@ -92,7 +92,7 @@ graph TD
   * **`kubelet`**: The captain daemon on each worker node; ensures containers are running in a Pod according to the PodSpecs.
   * **`kube-proxy`**: The network manager; maintains host network routing rules to implement Services.
   * **`Container Runtime`**: The container execution engine (e.g., containerd) that downloads images and runs containers.
-* **Operation:** Receives instructions from the control plane, pulls images, launches containers, and continuously feeds health telemetry back to the API server. For details on node registration, resources, and leases, see [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md). For Pod lifecycle and probing details, see [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md).
+* **Operation:** Receives instructions from the control plane, pulls images, launches containers, and continuously feeds health telemetry back to the API server. For details on node registration, resources, and leases, see [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md). For Pod lifecycle and probing details, see [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md).
 
 ---
 
@@ -147,8 +147,8 @@ graph TD
 * **Mechanism:** Runs multiple asynchronous control loops packaged into a single binary.
 * **Reconciliation Loop:** Continually compares the Desired State (from `etcd`) with the Actual State (from the nodes).
 * **Key Controllers:**
-  * **Node Controller:** Detects when nodes go offline (see node heartbeat eviction timers in [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api)).
-  * **ReplicaSet Controller:** Keeps the correct number of Pod replicas running (see replication control in [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md#1-the-four-pillars-of-self-healing)).
+  * **Node Controller:** Detects when nodes go offline (see node heartbeat eviction timers in [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api)).
+  * **ReplicaSet Controller:** Keeps the correct number of Pod replicas running (see replication control in [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md#1-the-four-pillars-of-self-healing)).
   * **Endpoints Controller:** Links Service objects to the actual Pod IP addresses.
 * **Verification Paths:**
   * **kubeadm:** Manifest at `/etc/kubernetes/manifests/kube-controller-manager.yaml`.
@@ -394,7 +394,7 @@ Kubernetes uses owner references to track relationships between parent resources
 ---
 
 ## 🔗 Related Modules
-- [Module 01: Kubernetes API Mechanics & kubectl CLI](01_kube_api_and_kubectl.md) - Explains how clients interact with the `kube-apiserver` fronted by the Control Plane.
-- [Module 03: Node Mechanics & Resource Limits](03_node_mechanics_and_resource_limits.md) - Deep dive into Kubelet registration, heartbeats, and worker node resource boundaries.
-- [Module 04: Workload Lifecycle & Self-Healing](04_workload_lifecycle_and_healing.md) - Explains the reconciliation loops managed by the controllers (e.g. ReplicaSets, Pod self-healing).
-- [Module 05: Containers, Runtimes, and Lifecycle Management](05_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.
+- [Module 01: Kubernetes API Mechanics & kubectl CLI](0-1_kube_api_and_kubectl.md) - Explains how clients interact with the `kube-apiserver` fronted by the Control Plane.
+- [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md) - Deep dive into Kubelet registration, heartbeats, and worker node resource boundaries.
+- [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md) - Explains the reconciliation loops managed by the controllers (e.g. ReplicaSets, Pod self-healing).
+- [Module 05: Containers, Runtimes, and Lifecycle Management](0-5_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.

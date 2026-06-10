@@ -17,10 +17,10 @@ components:
   - "[[storageclass]]"
   - "[[ingress]]"
 sources:
-  - "[[Reference Notes/08_security_and_network_policies.md]]"
-  - "[[Reference Notes/09_storage_mechanics_and_csi.md]]"
-  - "[[Reference Notes/10_networking_dns_and_ingress.md]]"
-  - "[[Reference Notes/14_scheduling_logging_and_lifecycle.md]]"
+  - "[[Reference Notes/0-7_security_and_network_policies.md]]"
+  - "[[Reference Notes/0-8_storage_mechanics_and_csi.md]]"
+  - "[[Reference Notes/0-9_networking_dns_and_ingress.md]]"
+  - "[[Reference Notes/0-13_scheduling_logging_and_lifecycle.md]]"
 tags:
   - architecture/pattern
   - aws/eks

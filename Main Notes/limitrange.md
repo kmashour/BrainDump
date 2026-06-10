@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[resourcequota]]"
 reference_guides:
-  - "[[Reference Notes/03_node_mechanics_and_resource_limits.md]]"
+  - "[[Reference Notes/0-3_node_mechanics_and_resource_limits.md]]"
 tags:
   - kubernetes/policy
   - status/completed

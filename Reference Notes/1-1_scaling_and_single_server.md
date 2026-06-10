@@ -3,7 +3,7 @@ domains:
   - "infra"
 ---
 
-# Module 17: Scaling & Single Server Setup
+# Module 1-1: Scaling & Single Server Setup
 
 This module covers the foundations of systems design, progressing from a single-server paradigm to scaled backend architectures. It details the request lifecycle, DNS resolution, and the core differences, limits, and trade-offs of vertical vs. horizontal scaling.
 

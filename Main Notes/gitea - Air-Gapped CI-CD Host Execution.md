@@ -50,4 +50,4 @@ Running pipelines directly on the host host machine creates significant security
 2. **Sudoers Restriction:** Do not grant the runner user passwordless `sudo` rights on the host VM.
 3. **Systemd Limits:** Configure memory/CPU constraints (`MemoryLimit`, `CPUQuota`) in the Systemd service unit.
 
-*Read more in [06_gitea_installation_and_workflows.md](../Reference%20Notes/06_gitea_installation_and_workflows.md#9-cicd-runner-architecture-host-execution)*
+*Read more in [gitea_installation_and_workflows.md](../Reference%20Notes/gitea_installation_and_workflows.md#9-cicd-runner-architecture-host-execution)*

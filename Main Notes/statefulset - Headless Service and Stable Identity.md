@@ -46,4 +46,4 @@ dig SRV postgres.database.svc.cluster.local
 nslookup db-0.postgres.database.svc.cluster.local
 ```
 
-*Read more in [07_kubernetes_workloads_and_controllers.md](../Reference%20Notes/07_kubernetes_workloads_and_controllers.md#10-statefulsets)*
+*Read more in [0-6_kubernetes_workloads_and_controllers.md](../Reference%20Notes/0-6_kubernetes_workloads_and_controllers.md#10-statefulsets)*

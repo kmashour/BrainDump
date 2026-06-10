@@ -60,4 +60,4 @@ When cache memory fills up, the system evicts keys using specific policies:
 - **Cache Stampede (Thundering Herd):** Multiple application threads concurrently execute database queries on a cache miss for the same key. *Defenses:* Implement Mutex Locking so only the first thread queries the database while others wait for the cache to update.
 - **Cache Penetration:** Requests query keys that do not exist in either cache or database (e.g. scanner exploits). *Defenses:* Cache null results with a short TTL, or use **Bloom Filters** to quickly reject non-existent keys at the gateway.
 
-*Read more in [Caching & CDNs](../Reference%20Notes/20_caching_and_content_delivery_networks.md#1-caching-topologies--write-strategies)*
+*Read more in [Caching & CDNs](../Reference%20Notes/1-4_caching_and_content_delivery_networks.md#1-caching-topologies--write-strategies)*
