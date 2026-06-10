@@ -17,7 +17,7 @@ against: []
 
 # APIPriorityAndFairness
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Control Plane > **APIPriorityAndFairness**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Control Plane > **APIPriorityAndFairness**
 
 ---
 

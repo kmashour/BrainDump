@@ -31,7 +31,7 @@ tags:
 
 # Pattern: Postgres on EKS
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Postgres on EKS**
+**Breadcrumbs:** [[Digital Garden/0-Index|🏠 Index]] > Patterns > **Postgres on EKS**
 
 ---
 

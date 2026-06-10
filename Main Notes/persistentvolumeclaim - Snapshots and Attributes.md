@@ -15,7 +15,7 @@ tags:
 
 # persistentvolumeclaim - Snapshots and Attributes
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[persistentvolumeclaim]] > **Snapshots and Attributes**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[persistentvolumeclaim]] > **Snapshots and Attributes**
 
 ---
 

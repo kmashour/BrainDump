@@ -18,7 +18,7 @@ against: []
 
 # etcd
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Control Plane > **etcd**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Control Plane > **etcd**
 
 ---
 

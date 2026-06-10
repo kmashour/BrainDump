@@ -19,7 +19,7 @@ tags:
 
 # Pod Security Admission
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **Pod Security Admission**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > infra > **Pod Security Admission**
 
 ---
 

@@ -14,7 +14,7 @@ tags:
 
 # kube-apiserver - Request Lifecycle
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-apiserver]] > **Request Lifecycle**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **Request Lifecycle**
 
 ---
 

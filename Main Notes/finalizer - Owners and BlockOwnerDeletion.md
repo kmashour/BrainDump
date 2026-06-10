@@ -15,7 +15,7 @@ tags:
 
 # finalizer - Owners and BlockOwnerDeletion
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[finalizer]] > **Owners and BlockOwnerDeletion**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[finalizer]] > **Owners and BlockOwnerDeletion**
 
 ---
 

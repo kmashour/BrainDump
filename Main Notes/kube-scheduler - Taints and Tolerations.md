@@ -14,7 +14,7 @@ tags:
 
 # kube-scheduler - Taints and Tolerations
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-scheduler]] > **Taints and Tolerations**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Taints and Tolerations**
 
 ---
 

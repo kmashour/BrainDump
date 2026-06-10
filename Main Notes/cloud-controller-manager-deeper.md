@@ -20,7 +20,7 @@ tags:
 
 # cloud-controller-manager deeper
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[cloud-controller-manager]] > **deeper dive**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[cloud-controller-manager]] > **deeper dive**
 
 ---
 

@@ -20,7 +20,7 @@ against: []
 
 # kube-proxy
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Worker Node Mechanics > **kube-proxy**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Worker Node Mechanics > **kube-proxy**
 
 ---
 

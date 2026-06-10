@@ -19,7 +19,7 @@ tags:
 
 # CustomResourceDefinition
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **CustomResourceDefinition**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > infra > **CustomResourceDefinition**
 
 ---
 

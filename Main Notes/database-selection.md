@@ -19,7 +19,7 @@ tags:
 
 # Database Selection
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **Database Selection**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **Database Selection**
 
 ---
 

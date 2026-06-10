@@ -18,7 +18,7 @@ against: []
 
 # container-runtime
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Worker Node Mechanics > **container-runtime**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Worker Node Mechanics > **container-runtime**
 
 ---
 

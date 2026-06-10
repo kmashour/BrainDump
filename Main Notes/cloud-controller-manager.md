@@ -19,7 +19,7 @@ against: []
 
 # cloud-controller-manager
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Control Plane > **cloud-controller-manager**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Control Plane > **cloud-controller-manager**
 
 ---
 

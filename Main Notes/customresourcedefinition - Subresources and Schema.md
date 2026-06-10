@@ -15,7 +15,7 @@ tags:
 
 # customresourcedefinition - Subresources and Schema
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[customresourcedefinition]] > **Subresources and Schema**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[customresourcedefinition]] > **Subresources and Schema**
 
 ---
 

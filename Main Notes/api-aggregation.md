@@ -18,7 +18,7 @@ tags:
 
 # API Aggregation
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **API Aggregation**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > infra > **API Aggregation**
 
 ---
 

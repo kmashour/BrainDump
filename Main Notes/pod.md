@@ -21,7 +21,7 @@ against: []
 
 # pod
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **pod**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **pod**
 
 ---
 

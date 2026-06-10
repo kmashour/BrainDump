@@ -19,7 +19,7 @@ against: []
 
 # Graceful Node Shutdown
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Worker Node Mechanics > **Graceful Node Shutdown**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Worker Node Mechanics > **Graceful Node Shutdown**
 
 ---
 

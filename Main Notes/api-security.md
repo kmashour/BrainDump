@@ -19,7 +19,7 @@ tags:
 
 # API Security
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Security > **API Security**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Security > **API Security**
 
 ---
 

@@ -15,7 +15,7 @@ tags:
 
 # Load Balancing - Algorithms and L4-L7 Routing
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[load-balancing]] > **Algorithms and L4-L7 Routing**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[load-balancing]] > **Algorithms and L4-L7 Routing**
 
 ---
 

@@ -19,7 +19,7 @@ tags:
 
 # Content Delivery Networks (CDNs)
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Networking > **Content Delivery Networks (CDNs)**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Networking > **Content Delivery Networks (CDNs)**
 
 ---
 

@@ -18,7 +18,7 @@ tags:
 
 # Operator Pattern
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **Operator Pattern**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > infra > **Operator Pattern**
 
 ---
 

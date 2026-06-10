@@ -18,7 +18,7 @@ tags:
 
 # serviceaccount
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **serviceaccount**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **serviceaccount**
 
 ---
 

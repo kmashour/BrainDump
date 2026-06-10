@@ -15,7 +15,7 @@ tags:
 
 # Database Selection - SQL vs NoSQL vs Graph
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[database-selection]] > **SQL vs NoSQL vs Graph**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[database-selection]] > **SQL vs NoSQL vs Graph**
 
 ---
 

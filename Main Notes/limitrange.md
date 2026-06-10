@@ -19,7 +19,7 @@ tags:
 
 # LimitRange
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **LimitRange**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > infra > **LimitRange**
 
 ---
 

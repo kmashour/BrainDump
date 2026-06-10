@@ -15,7 +15,7 @@ tags:
 
 # gitea - Air-Gapped CI-CD Host Execution
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[gitea]] > **Air-Gapped CI-CD Host Execution**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[gitea]] > **Air-Gapped CI-CD Host Execution**
 
 ---
 

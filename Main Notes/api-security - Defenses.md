@@ -15,7 +15,7 @@ tags:
 
 # API Security - Defenses
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[api-security]] > **Defenses**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[api-security]] > **Defenses**
 
 ---
 

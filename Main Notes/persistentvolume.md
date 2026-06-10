@@ -20,7 +20,7 @@ tags:
 
 # persistentvolume
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **persistentvolume**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **persistentvolume**
 
 ---
 

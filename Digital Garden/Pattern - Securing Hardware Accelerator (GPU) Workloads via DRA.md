@@ -18,7 +18,7 @@ tags:
 
 # Pattern: Securing Hardware Accelerator (GPU) Workloads via DRA
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Securing Hardware Accelerator (GPU) Workloads via DRA**
+**Breadcrumbs:** [[Digital Garden/0-Index|🏠 Index]] > Patterns > **Securing Hardware Accelerator (GPU) Workloads via DRA**
 
 ---
 

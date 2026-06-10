@@ -4,6 +4,18 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-10] - CKA Kubernetes GOLD Practice Suite & Interactive Engine
+
+### Added
+- **Kubernetes GOLD Practice Suite:** Developed a full-scale CKA interactive prep suite under `Projects/CKA/kubernetes GOLD/` consisting of:
+  - [primer.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/primer.md): Guide to navigating the 150 curriculum-weighted questions, shell aliases, and Vim configuration.
+  - [gold.py](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/gold.py): Standard library Python CLI with progression tracking, auto-verification checks, and non-destructive resets.
+  - [study_data.py](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/study_data.py): Structured dataset of 60 conceptual CKA Q&As (Mumshad mock exam standard).
+  - [scenarios_data.py](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/scenarios_data.py): Automation scripts for 90 environment-based broken configurations (systemd kubelet, broken static pods, CNI, ingress, services, and storage mounts).
+  - [gold.sh](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/gold.sh): Shell wrapper script.
+  - [kind-3node-config.yaml](file:///home/karim/Desktop/BrainDump/Projects/CKA/kubernetes%20GOLD/kind-3node-config.yaml): Cluster configuration for a 3-node KinD topology (1 master, 2 workers) to enable realistic troubleshooting.
+- **MOC Integration:** Integrated the suite directly into [0-Index.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/0-Index.md).
+
 ## [2026-06-10] - Domain-Based Reference Prefixing & MOC Restructuring
 
 ### Added

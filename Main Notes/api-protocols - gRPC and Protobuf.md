@@ -15,7 +15,7 @@ tags:
 
 # API Protocols - gRPC and Protobuf
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[api-protocols]] > **gRPC and Protobuf**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[api-protocols]] > **gRPC and Protobuf**
 
 ---
 

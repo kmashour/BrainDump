@@ -15,7 +15,7 @@ tags:
 
 # kubectl - Declarative vs Imperative and 3-Way Merge
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kubectl]] > **Declarative vs Imperative and 3-Way Merge**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **Declarative vs Imperative and 3-Way Merge**
 
 ---
 

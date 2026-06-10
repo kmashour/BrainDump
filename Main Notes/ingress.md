@@ -20,7 +20,7 @@ tags:
 
 # ingress
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **ingress**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **ingress**
 
 ---
 

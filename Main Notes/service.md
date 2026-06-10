@@ -20,7 +20,7 @@ tags:
 
 # service
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **service**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **service**
 
 ---
 

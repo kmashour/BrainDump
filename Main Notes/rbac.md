@@ -19,7 +19,7 @@ tags:
 
 # rbac
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **rbac**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **rbac**
 
 ---
 

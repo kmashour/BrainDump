@@ -15,7 +15,7 @@ tags:
 
 # label - Selectors and Character Syntax
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[label]] > **Selectors and Character Syntax**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[label]] > **Selectors and Character Syntax**
 
 ---
 

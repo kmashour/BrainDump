@@ -20,7 +20,7 @@ tags:
 
 # Gateway API
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Networking > **Gateway API**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Networking > **Gateway API**
 
 ---
 

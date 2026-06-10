@@ -15,7 +15,7 @@ tags:
 
 # Caching - Strategies and Eviction Policies
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[caching]] > **Strategies and Eviction Policies**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[caching]] > **Strategies and Eviction Policies**
 
 ---
 

@@ -14,7 +14,7 @@ tags:
 
 # secret - Encryption at Rest and Ingestion
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[secret]] > **Encryption at Rest and Ingestion**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[secret]] > **Encryption at Rest and Ingestion**
 
 ---
 

@@ -9,7 +9,7 @@ tags:
 
 # ☸️ Kubernetes Concepts MOC
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > **Kubernetes MOC**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > **Kubernetes MOC**
 
 ---
 

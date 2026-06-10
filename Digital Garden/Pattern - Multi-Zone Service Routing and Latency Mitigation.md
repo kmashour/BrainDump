@@ -19,7 +19,7 @@ tags:
 
 # Pattern: Multi-Zone Service Routing and Latency Mitigation
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Multi-Zone Service Routing and Latency Mitigation**
+**Breadcrumbs:** [[Digital Garden/0-Index|🏠 Index]] > Patterns > **Multi-Zone Service Routing and Latency Mitigation**
 
 ---
 

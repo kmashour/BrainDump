@@ -19,7 +19,7 @@ tags:
 
 # replicaset
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **replicaset**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **replicaset**
 
 ---
 

@@ -19,7 +19,7 @@ against: []
 
 # node
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **node**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **node**
 
 ---
 

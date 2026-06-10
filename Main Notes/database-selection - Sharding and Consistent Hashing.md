@@ -15,7 +15,7 @@ tags:
 
 # Database Selection - Sharding and Consistent Hashing
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[database-selection]] > **Sharding and Consistent Hashing**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[database-selection]] > **Sharding and Consistent Hashing**
 
 ---
 

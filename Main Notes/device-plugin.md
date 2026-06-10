@@ -18,7 +18,7 @@ tags:
 
 # Device Plugin
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **Device Plugin**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > infra > **Device Plugin**
 
 ---
 

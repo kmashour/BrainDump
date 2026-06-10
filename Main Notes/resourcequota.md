@@ -19,7 +19,7 @@ tags:
 
 # ResourceQuota
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > infra > **ResourceQuota**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > infra > **ResourceQuota**
 
 ---
 

@@ -19,7 +19,7 @@ tags:
 
 # kube-controller-manager deeper
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-controller-manager]] > **deeper dive**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-controller-manager]] > **deeper dive**
 
 ---
 

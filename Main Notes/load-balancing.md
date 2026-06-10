@@ -20,7 +20,7 @@ tags:
 
 # Load Balancing
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **Load Balancing**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **Load Balancing**
 
 ---
 

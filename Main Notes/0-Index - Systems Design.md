@@ -9,7 +9,7 @@ tags:
 
 # 📐 Systems Design MOC
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > **Systems Design MOC**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > **Systems Design MOC**
 
 ---
 

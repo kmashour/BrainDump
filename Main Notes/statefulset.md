@@ -19,7 +19,7 @@ tags:
 
 # statefulset
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Workloads & Infrastructure > **statefulset**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Workloads & Infrastructure > **statefulset**
 
 ---
 

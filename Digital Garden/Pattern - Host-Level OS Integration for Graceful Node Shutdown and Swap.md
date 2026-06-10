@@ -19,7 +19,7 @@ tags:
 
 # Pattern: Host-Level OS Integration for Graceful Node Shutdown and Swap
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Host-Level OS Integration for Graceful Node Shutdown and Swap**
+**Breadcrumbs:** [[Digital Garden/0-Index|🏠 Index]] > Patterns > **Host-Level OS Integration for Graceful Node Shutdown and Swap**
 
 ---
 

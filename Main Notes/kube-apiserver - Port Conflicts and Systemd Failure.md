@@ -15,7 +15,7 @@ tags:
 
 # kube-apiserver - Port Conflicts and Systemd Failure
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-apiserver]] > **Port Conflicts and Systemd Failure**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **Port Conflicts and Systemd Failure**
 
 ---
 

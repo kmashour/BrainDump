@@ -14,7 +14,7 @@ tags:
 
 # kube-apiserver - API Groups and Versions
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-apiserver]] > **API Groups and Versions**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **API Groups and Versions**
 
 ---
 

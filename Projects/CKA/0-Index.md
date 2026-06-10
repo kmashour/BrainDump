@@ -16,6 +16,11 @@ This project workspace focuses strictly on passing the CKA (Certified Kubernetes
 
 ## 🛠️ Environment & Speed Setup
 * **[[Vim and Terminal Setup]]** - Autocompletions, aliases, and VIM defaults for high-speed YAML editing.
+---
+
+## 🏆 Kubernetes GOLD Practice Suite
+* **[[kubernetes GOLD/primer|GOLD Playbook Primer]]** - A primer on navigating the 150 curriculum-weighted questions.
+* **Interactive CLI Practice Engine**: Run `kubernetes GOLD/gold.sh` in your terminal to access 60 conceptual Q&As and 90 hands-on broken cluster environment troubleshooting scenarios!
 
 ---
 

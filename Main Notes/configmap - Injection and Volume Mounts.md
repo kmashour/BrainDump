@@ -14,7 +14,7 @@ tags:
 
 # configmap - Injection and Volume Mounts
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[configmap]] > **Injection and Volume Mounts**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[configmap]] > **Injection and Volume Mounts**
 
 ---
 

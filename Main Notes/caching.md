@@ -19,7 +19,7 @@ tags:
 
 # Caching
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **Caching**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **Caching**
 
 ---
 

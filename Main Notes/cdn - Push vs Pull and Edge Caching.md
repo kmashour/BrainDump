@@ -15,7 +15,7 @@ tags:
 
 # CDN - Push vs Pull and Edge Caching
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[cdn]] > **Push vs Pull and Edge Caching**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[cdn]] > **Push vs Pull and Edge Caching**
 
 ---
 

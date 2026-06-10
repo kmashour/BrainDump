@@ -19,7 +19,7 @@ tags:
 
 # kubectl deeper
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kubectl]] > **deeper dive**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **deeper dive**
 
 ---
 

@@ -14,7 +14,7 @@ tags:
 
 # kube-apiserver - Watch Mechanism
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kube-apiserver]] > **Watch Mechanism**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **Watch Mechanism**
 
 ---
 

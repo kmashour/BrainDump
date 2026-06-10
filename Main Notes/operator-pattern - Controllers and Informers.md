@@ -15,7 +15,7 @@ tags:
 
 # operator-pattern - Controllers and Informers
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[operator-pattern]] > **Controllers and Informers**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[operator-pattern]] > **Controllers and Informers**
 
 ---
 

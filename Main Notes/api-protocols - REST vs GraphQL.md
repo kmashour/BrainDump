@@ -15,7 +15,7 @@ tags:
 
 # API Protocols - REST vs GraphQL
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[api-protocols]] > **REST vs GraphQL**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[api-protocols]] > **REST vs GraphQL**
 
 ---
 

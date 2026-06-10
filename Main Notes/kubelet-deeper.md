@@ -20,7 +20,7 @@ tags:
 
 # kubelet deeper
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[kubelet]] > **deeper dive**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **deeper dive**
 
 ---
 
