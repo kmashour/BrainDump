@@ -199,6 +199,14 @@ Reference notes retain their modular formatting, prioritizing:
 - Practical step-by-step CLI validation guides using `kind`.
 - Highlighting CKA exam tips in alert boxes (`> [!TIP]`, etc.).
 
+### E. Deep-Intuition Documentation Style (AARF Extension)
+To give vault knowledge maximum volume and diagnostic depth, the research and audit engines must extend Q&As, scenario solutions, and study files with the AARF framework:
+1. **The Answer (Core Config):** Explicit command lines, dry-run formulas, or YAML manifests.
+2. **The Assumptions (Context):** Prerequisites, cluster version skew constraints, namespace scope, or runtime config dependencies.
+3. **The Rationale (Why):** System-level architecture explanation (why Kubernetes works this way under the hood).
+4. **The Failure Loop (What if not):** The exact error message, kernel log event, pod CrashLoop state, or security warning if omitted/misconfigured.
+5. **Alternative Case (When to use 'if not'):** Real-world production cases when the opposing configuration is the desired design target.
+
 ---
 
 ## 4. Obsidian-Friendly Linking Guidelines

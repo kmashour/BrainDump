@@ -44,4 +44,9 @@ When ingesting raw files or executing restructuring requests:
    - Combine the scraped content (main URLs, diagram representations, and key sub-links) with the target file's direct notes.
    - Run the full, sequential multi-agent ingestion pipeline (Phases 1-6) on the consolidated content, distributing sub-link knowledge into the most suitable notes (Reference Notes, Main Notes, or Project Notes) rather than forcing everything into a single note.
    - Log the transaction in `backlog.md`, verify with `review_vault.py`, and push to `origin/main`.
-
+8. **Deep-Intuition Documentation Style (AARF Extension):** As an extension to standard Q&As and references, when compiling study materials, troubleshooting guides, or playbooks, structure the technical details to expose:
+   - **The Answer:** The direct, precise configuration, command, or manifest.
+   - **The Assumptions:** The cluster state, namespace constraints, version support, or network pre-conditions.
+   - **The Rationale (Why):** The underlying architecture reason for this configuration.
+   - **The Failure Loop (What if not):** The exact warning, pod crash event, CLI error, or security threat that triggers if misconfigured or omitted.
+   - **The Alternative Case (When to use 'if not'):** When the alternative or opposite configuration is actually the desired configuration for production.

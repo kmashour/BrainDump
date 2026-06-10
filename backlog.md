@@ -7,6 +7,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ## [2026-06-10] - CKA GOLD Extension & Advanced Playbook Release
 
 ### Added
+- **Deep-Intuition Documentation Style (AARF):** Integrated the AARF framework (Answers, Assumptions, Rationale, Failures, and Alternatives) as a formal extension to the ingestion pipeline inside [Agent.md](file:///home/karim/Desktop/BrainDump/Agent.md) and [instructions.md](file:///home/karim/Desktop/BrainDump/instructions.md).
 - **CKA GOLD Practice Suite Expansion:** Expanded the CKA prep suite under `Projects/CKA/kubernetes-CKA-Gold/` to exactly **175 tasks** (75 study Q&As + 100 environment-based scenarios), adding:
   - Pod debugging via ephemeral containers.
   - Advanced JSONPath data filters.
