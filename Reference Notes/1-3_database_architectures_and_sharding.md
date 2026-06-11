@@ -71,6 +71,33 @@ NoSQL engines sacrifice complex joins and absolute consistency to achieve horizo
 * **Choose SQL when:** Transactional safety (ACID) is critical, relationships are highly structured, and multi-row consistency is required (e.g., financial ledger).
 * **Choose NoSQL when:** Scale out is the main driver, schema flexibility is required, or access patterns match specialized models (e.g., graph relationships, timeseries logs, similarity vector search).
 
+### D. Consistency Models: ACID vs. BASE
+
+Distributed data architectures must choose between strong transactional safety (ACID) and scale-oriented availability (BASE). This trade-off is governed by the **CAP Theorem** (you cannot achieve Consistency, Availability, and Partition Tolerance simultaneously).
+
+#### 1. ACID (Atomicity, Consistency, Isolation, Durability)
+* **Atomicity:** All operations in a transaction succeed or all fail.
+* **Consistency:** A transaction brings the database from one valid state to another, maintaining invariants.
+* **Isolation:** Concurrent transactions execute without interfering with one another.
+* **Durability:** Committed transactions persist even during power loss or system crashes.
+* **AARF Breakdown:**
+  1. **The Answer (Core Config):** Rely on strict relational SQL engines (e.g. PostgreSQL, MySQL) employing lock-based concurrency control or multi-version concurrency control (MVCC).
+  2. **The Assumptions (Context):** Transactions must be local, schema structures must be stable, and the business dictates zero tolerance for anomalies (e.g. double spending, duplicate billing).
+  3. **The Rationale (Why):** Greatly simplifies application logic by delegating data safety and consistency validation directly to the database engine.
+  4. **The Failure Loop (What if not):** Under high concurrent write volumes, lock contention limits throughput. Across distributed networks, executing multi-node ACID transactions (like 2-Phase Commit) introduces massive network latency hops and can block writes entirely if any node becomes unreachable.
+  5. **Alternative Case (When to use 'if not'):** Adopt a BASE consistency model when high availability, global scale, and millisecond write-ingestion latencies are critical.
+
+#### 2. BASE (Basically Available, Soft State, Eventual Consistency)
+* **Basically Available:** The system prioritizes responding to requests, even if some replicas return stale data.
+* **Soft State:** Data states can change over time without direct user interaction due to replica synchronization lag.
+* **Eventual Consistency:** Replicas will synchronize and converge to the same state if no new updates are made.
+* **AARF Breakdown:**
+  1. **The Answer (Core Config):** Deploy distributed NoSQL engines (e.g. Cassandra, DynamoDB, MongoDB Atlas) using asynchronous replication and quorum write/read parameters.
+  2. **The Assumptions (Context):** The system operates at a global scale with write-heavy workloads, and business requirements permit brief periods of stale reads (e.g. social feeds, search indexes, counter accumulations).
+  3. **The Rationale (Why):** Decouples write operations from network latency, allowing nodes to accept writes locally and sync asynchronously, achieving high throughput and partition resilience.
+  4. **The Failure Loop (What if not):** Developers must implement custom application-level conflict resolution (e.g. Last-Write-Wins, CRDTs) and handle out-of-order execution, leading to significant complexity and potential data drift if logic contains bugs.
+  5. **Alternative Case (When to use 'if not'):** Revert to ACID transactions when operations are legally or financially audited, requiring a single, immediate source of absolute truth.
+
 ---
 
 ## 2. Database Scaling: Partitioning & Sharding

@@ -91,14 +91,37 @@ graph TD
     AuthServer -->|"Step 8: Returns new Access Token"| Client
 ```
 
+#### JWT Authentication AARF Breakdown:
+1. **The Answer (Core Config):** Implement stateless authentication by issuing JSON Web Tokens (JWT) structured as `header.payload.signature` signed with a symmetric secret (HMAC HS256) or asymmetric private key (RSA RS256/ECDSA ES256).
+2. **The Assumptions (Context):** The backend services must have access to the signing keys (or public verification keys), and the client is capable of storing the token securely (e.g. in memory or secure HttpOnly cookies) and transmitting it via the `Authorization: Bearer <token>` header.
+3. **The Rationale (Why):** Eliminates database or session store lookups for every request. Any service can verify the token signature locally, enabling horizontal scaling of APIs with zero coordination overhead.
+4. **The Failure Loop (What if not):** Since JWTs are stateless, they cannot be revoked on-demand if compromised. An attacker who steals a token can impersonate the user until the expiration (`exp`) claim expires. Storing secrets in the payload is a vulnerability because the payload is Base64Url-encoded and fully readable by anyone.
+5. **Alternative Case (When to use 'if not'):** Use traditional stateful session-based cookies when immediate logout/revocation is business-critical, or when payload size constraints prevent sending large token headers with every request.
+
 ### B. Authorization Models
 - **Role-Based Access Control (RBAC):** Permissions are bound to logical roles (e.g. `admin`, `editor`, `reader`), and users are assigned to roles. Highly audit-friendly.
 - **Attribute-Based Access Control (ABAC):** Evaluates attributes of the subject, resource, and context (e.g. "Department = Finance", "Resource = Secret", "Time = Working Hours"). Extremely flexible but complex to implement.
 - **Access Control Lists (ACL):** Associates individual permissions directly with specific resources (e.g. file read/write permissions mapped per user ID).
 
 ### C. OAuth 2.0 & OpenID Connect (OIDC)
-- **OAuth 2.0:** A delegated authorization framework. Allows third-party client applications to access API scopes on a user's behalf without credentials sharing (trades authorization codes for access tokens).
-- **OpenID Connect (OIDC):** An identity verification layer built on top of OAuth 2.0. Adds an `id_token` (JWT format containing user profile info) to verify user authentication.
+- **OAuth 2.0:** A delegated authorization framework that allows third-party client applications to access API scopes on a user's behalf without credentials sharing.
+  - **The 4 Roles:**
+    - *Resource Owner:* The user who owns the data and decides what to share.
+    - *Client:* The application requesting access (e.g., a web app, mobile app, or backend service).
+    - *Authorization Server:* Authenticates the user and issues tokens after obtaining consent.
+    - *Resource Server:* The API that holds the protected data and validates access tokens.
+  - **The 3 Tokens:**
+    - *Access Token:* Short-lived credential sent with every API call. The Resource Server validates it on each request.
+    - *Refresh Token:* Long-lived credential used only at the Token Endpoint to get a new access token without re-authenticating the user. Never send this to the Resource Server.
+    - *ID Token:* A signed JWT carrying *authentication claims* (user identity information) issued by the OpenID Provider.
+- **OpenID Connect (OIDC):** An identity verification layer built on top of OAuth 2.0. Adds the `id_token` to verify user authentication. **An ID token is not an OAuth token.** OAuth is for authorization, OIDC is for authentication.
+
+#### OAuth 2.0 Delegated Authorization AARF Breakdown:
+1. **The Answer (Core Config):** Implement delegated authorization using OAuth 2.0 flows, separating authorization logic (Authorization Server) from data logic (Resource Server), and using short-lived Access Tokens for resource requests.
+2. **The Assumptions (Context):** The system involves third-party client integrations, or you are running single sign-on (SSO) across multiple microservices.
+3. **The Rationale (Why):** Allows external applications to access specific user resources (scopes) securely without ever seeing or storing the user's password.
+4. **The Failure Loop (What if not):** Treating access tokens as proof of identity (login) is a major design flaw; access tokens only grant permission. Bearer access tokens lack cryptographic binding to the client, meaning any packet sniff or log leak results in total credential theft. If redirect URIs are not strictly validated, authorization codes can be hijacked by malicious clients.
+5. **Alternative Case (When to use 'if not'):** Use OpenID Connect (OIDC) when your primary goal is to authenticate the user and retrieve their identity claims, or use simple API keys for service-to-service internal communication where delegated consent is not required.
 
 ```mermaid
 graph TD

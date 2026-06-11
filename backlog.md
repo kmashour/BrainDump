@@ -13,12 +13,19 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ### Refactored / Upgraded
 - **Reference Notes (1-1 to 1-6) Upgrades:** Distributed raw topics (Availability, Latency, Forward/Reverse Proxy, Connection Pooling, SQL/NoSQL Wide-column, Graph, Time-series, Vector databases, Sharding, Partitioning, Encryption, SSO, SAML) across existing modules in Deep-Intuition (AARF) style.
+- **Advanced Clippings Ingestion:** Integrated advanced system design concepts: database consistency models (ACID vs. BASE in Module 1-3), API protocol trade-offs (REST, GraphQL, gRPC in Module 1-5), and security paradigms (OAuth 2.0 4-roles/3-tokens and JWT structure/stateless verification AARF breakdowns in Module 1-6).
 - **Mermaid Visualizations:** Injected sequence and topology diagrams for Load Balancer Health Checking, Connection Pool checkout flows, JWT Token structure, database horizontal sharding vs partitioning, and the 10 architecture patterns.
+- **Sequential Ingestion Protocols:** Updated root `workflow.md` and `Agent.md` to codify the sequential ingestion rule for multi-file batches to avoid write/merge conflicts and preserve link integrity.
 
 ### Ingested Inflow Sources
 The following files have been processed and integrated:
 - `inflow/Architecture_Patterns_Playbook_Raw.md`
 - `inflow/System_Design_Handbook_Raw.md`
+- `inflow/Level-UpCoding-OAuth-ClearlyExplained.md`
+- `inflow/LevelUp-JWT.md`
+- `inflow/LevelUpCoding-ACID-BASE.md`
+- `inflow/LevelUp -codingGPPC.md`
+- `inflow/Clippings/Level-Up-Coding-REST, GraphQL, or gRPC? Choosing the Right Tool for the Job.md`
 
 ---
 

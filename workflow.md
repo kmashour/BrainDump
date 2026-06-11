@@ -2,6 +2,9 @@
 
 This file serves as the central orchestration schema and documentation for the multi-agent ingestion pipeline. When new technical clipping files, transcripts, or URL indexes are introduced to the `inflow/` directory, they are processed sequentially through this pipeline.
 
+### ⚠️ Multi-File Sequential Ingestion Rule
+When multiple inflow files are processed in a single batch (e.g. ingesting multiple raw books or clippings), they MUST be processed **consecutively (sequentially)**, never in parallel. The pipeline for file $N$ must run to completion (modifying reference notes, creating landing notes, updating MOCs, verifying links, and writing backlog entries) before Pipeline $N+1$ begins. This prevents write conflicts (on MOCs, backlog, and common files), avoids race conditions, and enables subsequent pipelines to dynamically discover and establish conceptual cross-links to previously ingested materials.
+
 ---
 
 ## 🏛️ Ingestion Pipeline Orchestration Map
