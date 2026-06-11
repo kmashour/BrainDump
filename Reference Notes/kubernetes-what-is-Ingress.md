@@ -1,35 +1,47 @@
-#kubernetes_follow_up 
+# Module 8-28: What is an Ingress Object
 
-https://kubernetes.io/docs/concepts/services-networking/ingress/
+This module covers Ingress resources, explaining how an Ingress Controller acts as a single gateway to route external HTTP/HTTPS traffic to multiple internal ClusterIP services.
 
+---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
 
-So what is ingress its a single point of connection to all the services 
+To build a strong intuition for this domain, think of the topics as moving from foundational primitives to advanced implementations:
 
-in the previous notes I discussed services and it had a clusterIp type and a nodePort
+```mermaid
+graph TD
+    A["Multiple Services & Port Exposures"] --> B["Cloud Cost & Routing Constraints"]
+    B --> C["Ingress Gateway (Single Entry Point)"]
+    C --> D["Ingress Controller (Reverse Proxy Routing)"]
+```
 
-clusterIp allowed the communication on a cluster level with an exception of port forwarding 
+1. **Step 1: Cost Constraints (Section 1):** Identifying the resource and cost limitations of NodePort and LoadBalancer services.
+2. **Step 2: Ingress Abstraction (Section 2):** Using Ingress to centralize traffic management.
+3. **Step 3: Controllers (Section 3):** Understanding how Ingress Controllers (such as Nginx) process ingress routing rules.
 
-NodePort allowed external communication where the service gave a random port to each node of the cluster as an end point of communication with the external user but it had some downfalls 
+By following this flow, you progress from **Service Exposure Limitations → Centralized Gateways → Reverse Proxy Routing**.
 
-- if a node fails it becomes a hassle for the end user to reach the application..
-- The node end-point is not convenient for end-users 
+---
 
-The last two types of services which was the load balancer and cloud load balancer solved them by grouping all the nodes ip:port into a pool and acted as a single point of access to the cluster the load balancer can route external traffic or internal according to design
+## 1. Limitations of Service Exposure
 
+* In microservice architectures, exposing every service using a NodePort or LoadBalancer is inefficient.
+* **NodePort Drawbacks:** Requires managing custom port numbers (30000-32767) for each service and exposes node IPs directly to users.
+* **LoadBalancer Drawbacks:** Allocating a dedicated LoadBalancer service for each application on cloud platforms is expensive.
 
- 
- In micro-service architecture if I have multiple end points for different micro-applications so i will have a service for each micro application and according to design i will expose the service to the end user through
- - **NodePort where each service resource will have a port on the cluster nodes**.... 
- - I can use load balancer service and through it i will be able to access the application and on cloud i will use 3 load balancer instances for each (application) replication will cost 3x more,To expose every node (whole application) we will use a loadbalancer 
+---
 
+## 2. Ingress as a Unified Gateway
+
+* **Ingress** is an API object that manages external access to services, typically handling HTTP and HTTPS traffic.
+* **Centralized Entry Point:** It consolidates routing rules into a single resource, routing traffic to different internal ClusterIP services based on host headers or URI paths.
+
+---
+
+## 3. Ingress Controller Architecture
+
+* **The Controller:** The Ingress resource is only a metadata definition. To execute routing rules, an **Ingress Controller** must be deployed in the cluster.
+* **Mechanics:** The Ingress Controller runs as a reverse proxy (e.g., Nginx, HAProxy, Envoy). It monitors the API server for Ingress resources, updates its configuration rules dynamically, and routes external traffic to the appropriate internal Pod IPs.
+
+### Ingress Routing Layout
 ![[Screenshot from 2025-04-21 23-50-42.png]]
-
-That's why we use the ingress object its used as load balancer and single point of access to multiple services but kubernetes doesn't have by default a controller for load-balancing so we use external one as nginx ... in the manifest file we declare how we want the load balancer to do as it begins executing according to its design and implementation or just leave for its default behavior 
-
-**bare in mind that the picture assumes all on the same node so clusterIp did the magic**  
-
-Tldr 
-assuming here that I have three nodes each with a replica of the application: 
-
-If i have load balancer service and an ingress the load balancer service will be mostly by a cloud provider an external service it will only act as an end-point for end-user to communicate with the app through provided DNS name and the load balancing will be handled by the ingress object which will act as an end-point for all service and the service type will also be a NodePort as long as our application is replicated over 3 nodes 

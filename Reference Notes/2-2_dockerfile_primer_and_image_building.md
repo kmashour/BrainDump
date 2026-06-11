@@ -6,7 +6,7 @@ domains:
 
 # Module 2-2: Dockerfile Primer & Image Building
 
-This module details how container images are constructed using Dockerfiles. It covers essential Dockerfile instructions, layer caching mechanics, command parameters (`ENTRYPOINT` vs. `CMD`), build arguments, and publishing images to registries.
+This module details how container images are constructed using Dockerfiles. It covers Dockerfile instruction syntax, Union Filesystem (UFS) layering mechanics, Copy-on-Write (CoW) side effects, layer caching optimization, BuildKit architecture, exec vs. shell forms, image tagging, and local commit operations.
 
 ---
 
@@ -14,16 +14,17 @@ This module details how container images are constructed using Dockerfiles. It c
 
 ```mermaid
 graph TD
-    subgraph Layers["Image Read-Only Layers"]
-        Base["Base Layer: FROM node:18-alpine"] --> Copy1["Layer 2: WORKDIR /app"]
-        Copy1 --> Copy2["Layer 3: COPY package.json ."]
-        Copy2 --> Run1["Layer 4: RUN yarn install"]
-        Run1 --> Copy3["Layer 5: COPY . ."]
-        Copy3 --> Entry["Layer 6: ENTRYPOINT [node]"]
+    subgraph Layers["Image Read-Only Layers (Union Filesystem)"]
+        Base["Base Layer: FROM node:18.16.0-alpine"]
+        Base --> Workdir["Layer 2: WORKDIR /app"]
+        Workdir --> CopyDeps["Layer 3: COPY package.json yarn.lock ./"]
+        CopyDeps --> RunInstall["Layer 4: RUN yarn install --production && yarn cache clean"]
+        RunInstall --> CopySrc["Layer 5: COPY . ."]
+        CopySrc --> Entry["Layer 6: ENTRYPOINT ['node', 'src/index.js']"]
     end
     
-    subgraph ContainerRun["Container Runtime Layer"]
-        Entry --> ReadWrite["Read-Write Container Layer (Transient Ephemeral Storage)"]
+    subgraph ContainerRun["Container Runtime (Read-Write Layer)"]
+        Entry --> ReadWrite["Read-Write Container Layer (CoW Shadowing)"]
     end
 ```
 
@@ -31,73 +32,127 @@ graph TD
 
 ## 1. Dockerfile Instruction Reference
 
-A `Dockerfile` is a text document containing instructions to assemble a container image.
+A `Dockerfile` is a text document containing instructions to build a container image.
 
-*   `FROM <image>:<tag>`: Sets the base image (e.g., `node:18-alpine`). Using minimal base images like Alpine reduces image size and vulnerability footprints.
-*   `WORKDIR /path`: Sets the working directory for subsequent instructions. Equivalent to running `mkdir -p` and `cd`.
-*   `COPY <src> <dest>`: Copies files from the host machine to the image.
-*   `ADD <src> <dest>`: Copies files but also supports downloading from remote URLs and automatically extracting tar archives.
-*   `RUN <command>`: Executes commands during the image build phase, creating a new read-only layer (used for installing packages, e.g., `RUN apt-get update && apt-get install -y curl`).
-*   `ENV KEY=VALUE`: Defines persistent environment variables available inside the running container.
-*   `ARG KEY=VALUE`: Defines build-time variables that can be overridden via `docker build --build-arg KEY=new_val`.
-*   `EXPOSE <port>`: Documents the ports the application listens on. It does *not* actually expose the ports to the host; that is done during container runtime.
-*   `USER <user>`: Sets the execution user (or UID) for subsequent commands. Non-root user configurations are critical for container security hardening.
+*   `FROM <image>:<tag>`: Initializes the build stage and sets the base image. Best practice is to use specific, pinned version tags (e.g., `node:18.16.0-alpine`) rather than `latest` or generic version numbers (e.g., `node:18`).
+*   `WORKDIR /path`: Sets the working directory. If it doesn't exist, it is created. Avoids absolute path repetition. Equivalent to running `mkdir -p` and `cd`.
+*   `COPY <src> <dest>`: Copies files/directories from the build context host to the image filesystem. Supports wildcard patterns. Use `.dockerignore` to prevent copying local node_modules, build logs, or git files.
+*   `ADD <src> <dest>`: Similar to `COPY`, but adds support for pulling files from remote URLs and automatically unpacking local `.tar` archives. For standard file transfers, `COPY` is preferred to maintain predictable behavior.
+*   `RUN <command>`: Executes commands in a new layer and commits the results. Used to install packages (e.g., `RUN apt-get update && apt-get install -y curl`).
+*   `ENV KEY=VALUE`: Sets persistent environment variables accessible inside the running container.
+*   `ARG KEY=VALUE`: Sets build-time variables. These do not persist in the final image layers but can be passed during build execution: `docker build --build-arg KEY=new_val .`
+*   `EXPOSE <port>`: Serves as documentation indicating which port the application listens on. It has no network routing effect at runtime.
+*   `USER <user>:<group>`: Sets the non-privileged user or UID/GID to run subsequent instructions, hardening the container against privilege escalation attacks.
+*   `LABEL key=value`: Adds metadata (author, version, description) to the image.
+*   `VOLUME ["/path"]`: Creates a mount point inside the container and marks it as holding externally mounted volumes.
+*   `ONBUILD <instruction>`: Declares trigger instructions that execute when the current image is used as a base for another build stage.
+*   `HEALTHCHECK`: Configures a command to run periodically to test if the container process is operating correctly (e.g., `HEALTHCHECK CMD curl -f http://localhost/ || exit 1`).
+*   `SHELL ["executable", "parameters"]`: Overrides the default shell used for the shell form of commands (default: `/bin/sh -c` on Linux, `cmd /S /C` on Windows).
 
 ---
 
-## 2. Docker Layer Caching & Build Optimization
+## 2. Deep-Intuition (AARF) Breakdowns: Image & Cache Mechanics
 
-Every instruction in a Dockerfile that modifies files (like `RUN`, `COPY`, `ADD`) creates a new read-only **layer** in the container image.
-
+### A. Union Filesystem (UFS) and Copy-on-Write (CoW) Bloat
 #### Deep-Intuition (AARF) Breakdown:
-1. **The Answer (Core Pattern):** Structure the Dockerfile instructions from least frequently changed to most frequently changed. Copy and install dependencies (`package.json` or `requirements.txt`) *before* copying the application source code:
+1. **The Answer (Core Pattern):** Combine package updates, installations, and cleanup steps into a single `RUN` instruction:
     ```dockerfile
-    WORKDIR /app
+    RUN apt-get update && apt-get install -y \
+        curl \
+        git \
+     && apt-get clean \
+     && rm -rf /var/lib/apt/lists/*
+    ```
+2. **The Assumptions (Context):** The filesystem must be a Union Filesystem (e.g., Overlay2). Docker layers are read-only; modifications are captured in stacked differences.
+3. **The Rationale (Why):** UFS overlays folders. If a file is created in Layer A and deleted/modified in Layer B, the change is written to Layer B. If deleted, a "whiteout" metadata file is written to Layer B to shadow (hide) the file from Layer A. However, the file still occupies disk space in Layer A. Separating update, install, and cleanup commands into multiple `RUN` layers preserves the cached packages in the installation layer forever.
+4. **The Failure Loop (What if not):** Running `RUN apt-get update`, followed by `RUN apt-get install`, followed by `RUN rm -rf /var/lib/apt/lists/*` creates three distinct layers. The package lists downloaded in layer 1 and the `.deb` caches created in layer 2 are preserved in the image history. The delete command in layer 3 merely shadows them. This bloats the final image size by hundreds of megabytes.
+5. **Alternative Case (When to use 'if not'):** In development environments, splitting steps into separate layers is sometimes done temporarily to speed up incremental builds when installing large stable packages that rarely change.
+
+### B. Layer Caching & Cache Invalidation (Cache Busting)
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Order Dockerfile instructions from least frequently changed (base layers, dependencies) to most frequently changed (application source code), copying packages and running installs *before* copying source files.
+    ```dockerfile
+    # 1. Install dependencies (Cached unless package files change)
     COPY package.json yarn.lock ./
-    RUN yarn install --production
+    RUN yarn install --production && yarn cache clean
+    
+    # 2. Copy source code (Invalidates cache on every source commit)
     COPY . .
     ```
-2. **The Assumptions (Context):** The builder uses the cache matching the exact string representation of the Dockerfile lines and file hashes for `COPY` commands.
-3. **The Rationale (Why):** If a layer is cached, Docker skips executing it during builds. If any file copied by a `COPY` instruction changes (like source code in `.`), the cache for that layer and all subsequent layers is invalidated, forcing execution.
-4. **The Failure Loop (What if not):** Placing `COPY . .` *before* `RUN yarn install` invalidates the package cache every time a minor source code change is made. The builder is forced to re-download and re-install all dependencies from scratch, increasing build times from seconds to minutes.
-5. **Alternative Case (When to use 'if not'):** If dependencies change frequently or are dynamic (e.g., pulling the latest snapshot during CI/CD runs), cache invalidation is desired, and `--no-cache` can be passed to the build command.
+2. **The Assumptions (Context):** A build cache matches instructions character-for-character. For `COPY` and `ADD` commands, it computes the checksum of files inside the build context.
+3. **The Rationale (Why):** During a build, Docker checks if a layer matches the cache. If a match is found, it skips execution. However, if any instruction changes (e.g., a file checksum in a `COPY` block differs), that layer's cache is invalidated. All subsequent layers are forced to rebuild from scratch (cache busting).
+4. **The Failure Loop (What if not):** Placing `COPY . .` *before* `RUN npm install` invalidates the package installation cache on every single code change (even a minor edit in a comment). The builder is forced to re-run package installation, downloading gigabytes of dependencies from the internet on every commit, slowing build times from seconds to minutes.
+5. **Alternative Case (When to use 'if not'):** If dependencies are dynamic (e.g., pulling a SNAPSHOT or a variable branch version from Git inside the container), pass `--no-cache` to the `docker build` command to force complete execution.
 
----
-
-## 3. ENTRYPOINT vs. CMD
-
-Both instructions define the default executable process for a running container, but they behave differently when arguments are passed.
-
-| Instruction | Behavior | Overriding |
-| :--- | :--- | :--- |
-| `ENTRYPOINT ["exec", "param"]` | Defines the core binary executable. Arguments passed to `docker run` are appended to the entrypoint. | Overridden via `docker run --entrypoint <binary>` |
-| `CMD ["param1", "param2"]` | Provides default arguments for the `ENTRYPOINT`. If no entrypoint is set, runs as the core binary. | Overridden by appending parameters directly to `docker run <image> <new_cmd>` |
-
-### Deep-Intuition (AARF) Breakdown:
-1. **The Answer (Core Pattern):** Combine `ENTRYPOINT` and `CMD` by assigning the binary to the entrypoint and default arguments to the CMD:
+### C. Exec Form vs. Shell Form (ENTRYPOINT/CMD Signal Swallowing)
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Always specify `ENTRYPOINT` and `CMD` commands using the **Exec Form** (JSON array syntax) rather than the **Shell Form**:
     ```dockerfile
-    ENTRYPOINT ["python", "app.py"]
-    CMD ["--port", "8080"]
+    # Exec Form (Correct)
+    ENTRYPOINT ["node", "src/index.js"]
+    
+    # Shell Form (Incorrect)
+    ENTRYPOINT node src/index.js
     ```
-2. **The Assumptions (Context):** Always use the **exec form** (JSON array: `["exec"]`) rather than the **shell form** (`python app.py`) to ensure the process runs as PID 1 and receives OS signals.
-3. **The Rationale (Why):** In exec form, the binary is launched directly without shell wrapper overhead. In shell form, the command runs as a sub-process of `/bin/sh -c`, meaning `SIGTERM` signals sent to the container are captured and swallowed by the shell, preventing graceful shutdown.
-4. **The Failure Loop (What if not):** Using shell form prevents container cleanup. When the orchestrator (like Kubernetes) stops the container, the application process never receives the shutdown signal, runs until the timeout expires (usually 30s), and is forcefully killed (`SIGKILL`), causing database session drops or corrupted files.
-5. **Alternative Case (When to use 'if not'):** If environment variable expansion or shell piping is strictly required in the startup script, the shell form or an entrypoint script (`exec "$@"`) is necessary.
+2. **The Assumptions (Context):** The application process must run as PID 1 to receive OS termination signals (`SIGTERM`, `SIGINT`) sent by the Docker host.
+3. **The Rationale (Why):** The exec form executes the binary directly as PID 1. The shell form wraps the binary, running it as a sub-process of `/bin/sh -c`. Shells (like `sh` or `bash`) do not forward OS signals to their child processes.
+4. **The Failure Loop (What if not):** If the application runs in shell form, it does not receive the `SIGTERM` signal when running `docker stop`. The process continues to run until the default 10-second grace period expires. The Docker daemon is then forced to send a hard `SIGKILL`, terminating the process instantly. This prevents graceful connection close, transactions rollbacks, and file locks cleanup, risking state corruption.
+5. **Alternative Case (When to use 'if not'):** If environment variable expansion (e.g., `ENTRYPOINT echo $MY_VAR`) or shell pipe redirection is strictly required, shell form must be used, or the entrypoint must execute an init wrapper script that calls `exec "$@"`.
 
 ---
 
-## 4. Image Lifecycle: Commit & Push Operations
+## 3. Image Lifecycle: Commit & Push Operations
+
+Docker images are immutable templates. They can be created via declarative builds or by committing container states.
 
 ```mermaid
 graph LR
     Container["Running Container"] -->|docker commit| Image["New Image Local Store"]
     Image -->|docker tag| Tagged["Tagged Image (registry/repo:tag)"]
-    Tagged -->|docker push| Remote["Remote Registry (ECR/Hub)"]
+    Tagged -->|docker push| Remote["Remote Registry (ECR/Hub/GHCR)"]
 ```
 
-*   **Commit:** Takes a container's filesystem changes and writes them as a new local image layer:
-    `docker commit <container_id> my-app:debug`
-*   **Pushing to Registries:**
-    1.  Authenticate: `docker login <registry_url>`
-    2.  Tag the local image: `docker tag my-app:v1 myregistry.com/my-app:v1`
-    3.  Push: `docker push myregistry.com/my-app:v1`
+### A. Image Commits
+`docker commit` captures the container's writable layer changes and packages them into a new image layer.
+*   **Command:** `docker commit -m "added packages" <container_id> username/myapp:v1.0`
+*   **Commit vs. Build:** Committing container states is a "black box" operation. It results in a single, undocumented layer containing all filesystem changes. It does not provide reproducibility or change tracking. It is useful for forensic analysis of crashed environments, but not for software distribution.
+
+### B. Registry Authentication & Image Tagging
+1.  **Image Tag Structure:** `registry.domain.com/namespace/repository:tag`
+    *   If no registry domain is specified, it defaults to Docker Hub (`docker.io/library/`).
+    *   If the tag is omitted, it defaults to `latest`.
+2.  **Tagging and Publishing to Docker Hub:**
+    ```bash
+    # Rename local image
+    docker tag getting-started:v1 username/getting-started:v1.0.0
+    # Push to registry
+    docker push username/getting-started:v1.0.0
+    ```
+3.  **Tagging and Publishing to Custom Registries (e.g., Quay.io, GHCR):**
+    ```bash
+    # Authenticate
+    docker login quay.io
+    # Tag for Quay
+    docker tag getting-started:v1 quay.io/username/getting-started:v1.0.0
+    # Push
+    docker push quay.io/username/getting-started:v1.0.0
+    ```
+
+---
+
+## 4. Deep-Intuition (AARF) Breakdown: Version Pinning & Tag Drift
+
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Tag production images using explicit semantic version tags matching the application build (e.g., `myapp:1.2.3` or `myapp:1.2.3-commitsha`), and avoid relying on the `latest` tag in deployment configurations.
+2. **The Assumptions (Context):** The build system must generate unique identifiers (e.g., Git commit SHA or CI build numbers) for every image release.
+3. **The Rationale (Why):** The `latest` tag is not a dynamic pointer; it is simply a tag applied by default when no tag is specified. If multiple builders push images labeled `latest`, the tag shifts to the newest upload, causing silent configuration changes.
+4. **The Failure Loop (What if not):** Deploying services using `image:latest` introduces tag drift. If a host node restarts and pulls the image, it might pull a newer, untested build containing breaking changes, while another node runs the older build. This results in heterogeneous application environments, untraceable errors, and broken rollbacks.
+5. **Alternative Case (When to use 'if not'):** In local development environments, utilizing `latest` or generic tags simplifies fast building and running cycles without updating configurations.
+
+---
+
+## 5. BuildKit Integration & Static Analysis
+Modern Docker engines utilize **BuildKit** as the backend compiler, offering enhanced performance, concurrent execution, cache mounts, and secret injections.
+
+*   **Enabling BuildKit:** Set the environment variable `DOCKER_BUILDKIT=1` before executing builds.
+*   **Static Code Analysis (Hadolint):** Utilize a Dockerfile linter like `hadolint` in CI pipelines to scan code. It flags insecure patterns (running as root, missing pinned tags, apt cache files not cleaned up) and ensures compliance with image creation best practices.

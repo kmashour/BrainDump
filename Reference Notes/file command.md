@@ -1,2 +1,0 @@
-##### **command : file **
-As we explore the system, it will be useful to know what files contain. To do this, we will use the file command to determine a file’s type. As we discussed earlier, filenames in Linux are not required to reflect a file’s contents.

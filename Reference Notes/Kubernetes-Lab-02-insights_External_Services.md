@@ -1,12 +1,30 @@
-#kubernetes_follow_up 
+# Module 8-27: Lab 02: External Services Insights
 
-![[service+discovery+-+lab02+-+resources 1.html]]
+This module covers the hands-on setup and connection mapping of Kubernetes workloads to external host systems using ExternalName resources.
 
+---
 
-all Iam doing is just creating an external service in this case its an EC2 instance on the cloud and we will connect to that EC2 through external service not from its public ip 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
 
+To build a strong intuition for this lab, analyze the setup steps:
 
-![[Pasted image 20250521123830.png]]
+```mermaid
+graph TD
+    A["External Server (EC2 Host)"] --> B["Kubernetes ExternalName Definition"]
+    B --> C["Workload Connection Mapping"]
+```
 
+1. **Step 1: External Infrastructure (Section 1):** Deploying the target service on an external virtual machine.
+2. **Step 2: Manifest Definition (Section 2):** Configuring the ExternalName service mapping.
 
-![[Screenshot from 2025-05-21 12-37-16.png]]
+---
+
+## 1. External Infrastructure Setup
+
+In this lab, we configure connection mapping to a target application running on an external virtual machine (such as an AWS EC2 instance). Instead of hardcoding the EC2 instance's public IP address in the configuration of internal workloads, we map it to an internal DNS alias.
+
+---
+
+## 2. Interactive Lab Logs
+
+* **Interactive Lab HTML Logs:** [service+discovery+-+lab02+-+resources 1.html](service+discovery+-+lab02+-+resources 1.html) (embed: `![[service+discovery+-+lab02+-+resources 1.html]]`)

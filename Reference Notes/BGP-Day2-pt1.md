@@ -1,9 +1,0 @@
-session4-PeerGroup_NeighborRouteReflector
-![[session4-PeerGroup_NeighborRouteReflector_DynamicNeighbor_Redundancy.png]]
-
-session4-PeerGroup_NeighborRouteReflector_DynamicNeighbor
-![[session4-PeerGroup_NeighborRouteReflector.png]]
-
-session4-PeerGroup_NeighborRouteReflector_DynamicNeighbor_Redundancy
-![[session4-PeerGroup_NeighborRouteReflector_DynamicNeighbor.png]]
-

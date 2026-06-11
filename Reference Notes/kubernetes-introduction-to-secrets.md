@@ -1,91 +1,77 @@
+# Module 8-15: Introduction to Secrets
+
+This module covers the security model of Kubernetes Secrets, detailing the different secret types, base64 encoding mechanics, and namespace access controls.
+
 ---
-tags:
-  - kubernetes
-Type: Reference Note
-source: Elfakharny-Kubernetes-Udemy-Course
-page: "-"
-links: 
-flogetzzel:
+
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for this domain, think of the topics as moving from foundational primitives to advanced implementations:
+
+```mermaid
+graph TD
+    A["Confidential Data"] --> B["Base64 Encoding vs. Encryption"]
+    B --> C["Opaque and TLS Secret Types"]
+    C --> D["dockerconfigjson (Private Registries)"]
+    D --> E["Service Account & Authentication Secrets"]
+```
+
+1. **Step 1: Base64 Encoding (Section 1):** Understanding that Kubernetes Secrets are encoded, not encrypted by default.
+2. **Step 2: Core Secret Types (Section 2):** Implementing Opaque, TLS, and private registry secrets.
+3. **Step 3: Auth Secrets (Section 3):** Explaining Service Accounts, Basic Auth, and SSH Authentication secrets.
+
+By following this flow, you progress from **Data Encoding → Types Configuration → Cluster Access Management**.
+
 ---
-Some data can't be just added to config maps because its confidential it needs to kept secret !! 
 
-Most used :
-opaque
-image registry 
-tls 
+## 1. Security Model of Kubernetes Secrets
 
-The secret is like config map in everything it can even be mounted as a volume as in ssh authentication, think of a secret as config map for credentials 
+* **Base64 Encoding:** By default, Kubernetes Secrets are stored in `etcd` as plain base64-encoded strings. Base64 is not encryption; it is easily decoded.
+* **Access Control (RBAC):** To secure secrets, access must be restricted using namespaces and Role-Based Access Control (RBAC). Only authorized users and service accounts should have permission to read secrets within a namespace.
+* **Decryption at Runtime:** External encryption-at-rest tools (such as HashiCorp Vault or AWS KMS) encrypt secrets before they reach the cluster, but Kubernetes decrypts them at the API layer so container processes can consume them in plain text.
+* **Environment Verification:** Inside a container, environment variables sourced from secrets are exposed in plain text to allow the application process to consume them:
+  ```bash
+  kubectl exec -it <pod-name> -- env
+  ```
 
--------------------
+---
 
- ![[Pasted image 20250426112349.png]]
+## 2. Core Secret Types
 
+### A. Opaque Secrets (`Opaque`)
+The default type for general-purpose configuration secrets (such as databases or API keys).
+* **Usage:** Keys and values are arbitrary strings.
 
+### B. TLS Secrets (`kubernetes.io/tls`)
+Designed specifically for storing TLS certificates and private keys:
+* **Required Keys:** Must contain `tls.crt` and `tls.key`. Applications (such as Ingress Controllers) rely on these exact keys to load certificates.
 
- ![[Pasted image 20250426112223.png]]
+### C. Docker Registry Secrets (`kubernetes.io/dockerconfigjson`)
+Stores credentials for pulling images from private container registries.
+* **Usage:** Configured inside the Pod spec using `imagePullSecrets`.
+* **Imperative Creation Command:**
+  ```bash
+  kubectl create secret docker-registry my-registry-secret \
+    --docker-server=<registry-server> \
+    --docker-username=<username> \
+    --docker-password=<password> \
+    --docker-email=<email>
+  ```
 
- **Kubernetes in Opaque secret leaves the security to the kubernetes admin to add this secret to a namespace with controlled access over it, not anyone can just access that namespace and expose the secrets because in this type its not actually encrypted its just encoded so its very easy to just decode it, so the security here is that the secrets is placed in a namespace that has access bases on roles (RBAC)**
+---
 
- There a 3rd party tools integrated with kubernetes to encrypt the secrets on  cloud or on premise, but either way when the secret is used inside kubernetes it must be in plain text so kubernetes could use it, so when the secret is used inside a kubernetes cluster the tool will decrypt it so kubernetes could use it, **THE TOOLS JUST ENCRYPT THE SECRET MANIFEST UNTIL ITS INSIDE THE CLUSTER**
+## 3. API and Authentication Secrets
 
- **kubectl exec -it POD_NAME -- env ---> the variable will be in plain text for sure in order for the containers to use it** , this command is running inside a container !!!
+### A. Service Account Secrets (`kubernetes.io/service-account-token`)
+Used by Pods to authenticate requests to the Kubernetes API server.
+* **Mechanics:** The API server generates the token secret automatically when a ServiceAccount is created, and mounts it into the Pod at `/var/run/secrets/kubernetes.io/serviceaccount`.
+* *Note:* While authentication is handled automatically, authorization (what the Pod is allowed to do) must be configured using RBAC Roles and RoleBindings.
 
+### B. Basic Authentication Secrets (`kubernetes.io/basic-auth`)
+Designed for basic HTTP authentication, requiring two keys:
+* `username`
+* `password`
 
-------------------
-
- ![[Pasted image 20250426113556.png]]
- The only difference between it and opaque is that the keys are defined tls.crt and tls.key 
- we can't use other keys because the application that uses this type of secrets will be searching for those values 
-
-
-
-------------------------
-
- ![[Pasted image 20250426113913.png]]
-
-  In this type of secrets we define our remote registry credentials to pull images from private registries this type of secretes is used with pods, the manifest of this type of secret is a bit complicated to implement. 
-  **the imperative way of using this type of secret is much more convenient**.. Kubernetes convert the imperative commands and convert into a file and use the base64 encode
- ![[Pasted image 20250426113957.png]]
-   of course if Iam using a parent component 
-   (replica-set , daemoset , deployment , jobs) can implement it in the pod section   
-
----------------------
- service account, This account on any system refers to a service thats not used by humans its used by a pod , Api its just used by anything but a human  
-
- **In some scenarios a pod may need to construct a job so it will need an account on the cluster to perform this action** 
-
- The service account credentials is known to whole the team, and the pod should use it not a human in the same sense we did a service account so the pod wouldn't use a human account credentials 
-
-
- ![[Pasted image 20250426115107.png]]
- through this command a service account secret is created in the background, kubernetes handles it without the need of any intervention from me this credentials can used by API server for authentication but till now its useless because its only authenticated it won't be Authorized to do anything until we configure the RBAC ...
- So till now we only authenticated the service account but its crippled it can't do anything 
- ![[Pasted image 20250426115334.png]]
-
-
--------------------
-
- Basic authentication is one of oldest types of authentications in http servers like nginx and apache. when a user open a certain web page or the website itself it will prompt a username and password 
- 
- ![[Pasted image 20250426115805.png]]
- this secret manifest must have the two keys 
- username: 
- password :
-
- This secret can be used in nginx manifest to implement the basic authentication and of course nginx must be configured for that (look into it just covered as a concept)
-
- ![[Pasted image 20250426115941.png]]
-
---------------
-
- ssh authentication secrets, least used of all secret types...
- we have two ways 
- username - password 
- public-private keys 
-
-  When using the private key authentication we use volume mounting, the mount path is inside the container and automatically is sources from where the secret of type ssh-authentication is kept 
-
-  ![[Pasted image 20250426120759.png]]
-  ![[Pasted image 20250426120843.png]]
-  A good practice when using mount only is to use readOnly so data won't be modified 
-  
+### C. SSH Authentication Secrets (`kubernetes.io/ssh-auth`)
+Used for SSH key credential authentication.
+* **Implementation:** The private key is mounted into the container as a read-only volume to prevent modifications.

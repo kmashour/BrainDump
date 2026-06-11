@@ -1,41 +1,66 @@
-![[configmaps+and+secrets.html]]
+# Module 8-17: ConfigMaps & Secrets Lab
 
+This module covers hands-on workflows for creating ConfigMaps and Secrets imperatively, exporting manifests to YAML, and injecting variables and file mounts.
 
+---
 
-We said over and over is that declarative programming is better and having files with the configurations steps can be helpful 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
 
-but in config maps and secrets are things that imperative way of programming is much more convenient than  the declarative way  
+To build a strong intuition for this domain, think of the topics as moving from foundational primitives to advanced implementations:
 
+```mermaid
+graph TD
+    A["Imperative Object Creation (kubectl create)"] --> B["YAML Manifest Export (Dry-Run & -o yaml)"]
+    B --> C["Environment Variable Mapping (valueFrom)"]
+    C --> D["Volume Mounting & Filesystem Verification"]
 ```
-kubectl get configmap app-config -o yaml
+
+1. **Step 1: Imperative Creation (Section 1):** Creating configurations quickly using CLI commands.
+2. **Step 2: Manifest Exporting (Section 2):** Converting imperative commands into version-controlled YAML files.
+3. **Step 3: Variables & Volume Mounts (Section 3):** Injecting configuration data into containers.
+
+By following this flow, you progress from **CLI Creation → YAML Manifesting → Container Runtime Injection**.
+
+---
+
+## 1. Imperative Configuration Workflows
+
+* **ConfigMaps:** Creating ConfigMaps imperatively is often faster than writing YAML manifests from scratch:
+  ```bash
+  kubectl create configmap app-config --from-literal=LOG_LEVEL="INFO" --from-literal=DATABASE_URL="mysql://db:3306"
+  ```
+* **Secrets:** Imperative commands handle the base64 encoding automatically, saving manual configuration steps:
+  ```bash
+  kubectl create secret generic app-secret --from-literal=DB_PASSWORD="super-secret-password"
+  ```
+
+---
+
+## 2. Exporting to Version Control
+
+To store configurations in version control, export the live cluster settings to a YAML manifest:
+```bash
+kubectl get configmap app-config -o yaml > app-config.yaml
 ```
+This retrieves the resource schema from the API server and saves it locally.
 
-in the end of the day after using imperative we will want to save the configuration in some sort of file to keep track of the changes this command will return the component data to a yml format so i can copy it a file and include it in the version control, its saved by the kubernetes cluster to we just ask the api-server to retrieve that data and save to a file 
+---
 
-in this the imperative approach saved me time and created a manifest for me 
+## 3. Environment and Volume Injection
 
-
-  --from-literal=LOG_LEVEL="INFO"\ --> level of verbosity in the logs 
-
+### A. Environment Variable Mapping
+Map specific ConfigMap keys to container environment variables:
+```yaml
+env:
+  - name: DATABASE_URL
+    valueFrom:
+      configMapKeyRef:
+        name: app-config
+        key: DATABASE_URL
 ```
-name: DATABASE_URL  
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: DATABASE_URL --> 
-```
- name: DATABASE_URL --> the name of the env variable that will be updated inside the app 
- 
- key: DATABASE_URL --> the name of the key inside the config map that we will use its value to assign the env variable name it can be any name but we choose the same name so it is easier debugged   
+* `name`: The environment variable name inside the container.
+* `key`: The source key inside the ConfigMap.
 
-in the example we used two types of of config maps passing the environment variables and volume mounts and its valid no problem 
-
-![[Pasted image 20250426133325.png]]
-
-as we can see the mount path was /etc/config , the volume mount did the following created a file which is the key and inside it is the value 
-
-The better approach is organization dependent, sometimes when injecting such files in a container some organization may use encryption tool within the container as part of the application running and the decryption process will a insider job as part of the running application within the container   
-
-------------------------------
-
-In secrets the imperative way may even save more time because it will do the encoding part, values must be base64 
+### B. Mounting Configuration Volumes
+Mount the ConfigMap to a directory path such as `/etc/config`. The container filesystem will create a file for each key, with the key's value as the file content.
+* **Security & Decryption:** Organizations may mount encrypted files as volumes and rely on decryption tools running inside the container to decrypt the configuration at runtime.

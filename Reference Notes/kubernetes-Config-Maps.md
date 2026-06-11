@@ -1,37 +1,89 @@
+# Module 8-16: ConfigMaps Configurations
+
+This module covers the decoupling of configuration data from container images using Kubernetes ConfigMaps, detailing env-based, arg-based, and volume-based injection.
+
 ---
-tags:
-  - kubernetes
-Type: Reference Note
-source: Elfakharny-Kubernetes-Udemy-Course
-page: "-"
-links: 
-flogetzzel:
+
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for this domain, think of the topics as moving from foundational primitives to advanced implementations:
+
+```mermaid
+graph TD
+    A["Decoupled Configurations (ConfigMaps)"] --> B["Environment Variable Injection"]
+    B --> C["Command Line Arguments Injection"]
+    C --> D["Volume Mounts & subPath Configuration"]
+```
+
+1. **Step 1: Configuration Decoupling (Section 1):** Moving configuration out of the container image into the cluster.
+2. **Step 2: Injection Mechanisms (Section 2):** Injecting values via environment variables and arguments.
+3. **Step 3: Volume Mounting (Section 3):** Mounting configuration files directly using volumes and subPaths.
+
+By following this flow, you progress from **Decoupled Data → Variable Injection → File-System Mounting**.
+
 ---
-if we want to change default configuration of nginx for example we had to change the nginx.conf file to listen on port 8080 for example instead of 80 then we had to build a new image and run it, through config map we completely de-coupled the container configuration and implemented it through kubernetes 
 
-![[Pasted image 20250426102514.png]]
+## 1. Decoupling Configuration
 
+* **ConfigMaps** store non-confidential configuration data as key-value pairs.
+* By storing configuration parameters in ConfigMaps, you can run the same container image across development, testing, and production environments without rebuilding the image.
 
-Config is injected to the application by 3 ways 
-- Config map are passed as environment variables
-- mount config map to container, it becomes part of the application
-- as command line arguments 
-----
+---
 
+## 2. Environment Variables and Arguments Injection
 
-- Config map are passed as environment variables
- ![[Pasted image 20250426104057.png]]
- All the config map is read and the environment data are extracted and used in the container 
+ConfigMaps can be injected into container runtimes in three ways:
 
-- As command line arguments 
- ![[Pasted image 20250426104349.png]]
- unlike the previous way here we need to map exactly the value that will be passed to the args we defined 
+### A. Environment Variables
+Injects keys as environment variables directly available to the application process.
+```yaml
+spec:
+  containers:
+    - name: app
+      image: my-app
+      env:
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: LOG_LEVEL
+```
 
-- mount config map to container, it becomes part of the application (mounting config map as a volume)
+### B. Command-Line Arguments
+Injects ConfigMap values as start arguments for the container entrypoint.
+```yaml
+spec:
+  containers:
+    - name: app
+      image: my-app
+      command: ["/bin/sh", "-c"]
+      args: ["echo $(MY_CONFIG_VAR)"]
+      env:
+        - name: MY_CONFIG_VAR
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: MY_CONFIG_VAR
+```
 
-  ![[Pasted image 20250426104453.png]]
-  data is a whole config file indentation rules should and must be very strict, so in yml to make a multi-line value we start with | and two spaces in the next line 
+---
 
-  ![[Pasted image 20250426104745.png]]
-  mountPath --> we used the whole path till the nginx.conf
-  subPath --> if we didn't use it, nginx.conf will be mounted as a directory not a file 
+## 3. Mounting ConfigMaps as Volumes
+
+You can mount an entire ConfigMap as a volume, exposing keys as configuration files inside the container filesystem:
+* **YAML Syntax:** To declare multi-line files inside a YAML ConfigMap, use the literal block scalar indicator `|`.
+* **subPath Usage:** When mounting a configuration file into an existing directory (such as `/etc/nginx/`), configure `subPath` to prevent the volume mount from overwriting other files in that directory.
+```yaml
+spec:
+  containers:
+    - name: web
+      image: nginx
+      volumeMounts:
+        - name: nginx-config-vol
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+  volumes:
+    - name: nginx-config-vol
+      configMap:
+        name: nginx-config
+```

@@ -1,63 +1,77 @@
+# Module 8-35: RBAC: What is a Role
+
+This module covers Role-Based Access Control (RBAC) in Kubernetes, comparing authentication with authorization, and explaining Role and RoleBinding resources.
+
 ---
-tags:
-  - kubernetes
-Type: Reference Note
-source: Elfakharny-Kubernetes-Udemy-Course
-page: "-"
-links: 
-flogetzzel:
+
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for this domain, think of the topics as moving from foundational primitives to advanced implementations:
+
+```mermaid
+graph TD
+    A["Authentication (Identity Verification)"] --> B["Authorization (RBAC Policy Enforcement)"]
+    B --> C["Role Resource (Resource Rules & Verbs)"]
+    C --> D["RoleBinding (Attaching Roles to Subjects)"]
+```
+
+1. **Step 1: Security Concepts (Section 1):** Distinguishing authentication from authorization.
+2. **Step 2: Role Specifications (Section 2):** Defining access rules, API groups, and allowed verbs.
+3. **Step 3: Role Bindings (Section 3):** Attaching defined permissions to users, groups, or ServiceAccounts.
+
+By following this flow, you progress from **Identity Verification → Permission Rules → Binding Actions**.
+
 ---
-when a cluster is made the first user created is the cluster admin and privilege level to do anything on the cluster he modify any abject or delete any object. The most dangerous account on the cluster 
 
-The normal approach is to create to do my daily tasks on the cluster, because if the cluster credentials got leaked an unknown user will have full access to my cluster, so its by conviction when the cluster is created and running normal the first thing we do is create an account that has privileges just enough to preform the tasks assigned to the individual in my team 
+## 1. Authentication vs. Authorization
 
+* **Authentication (AuthN):** Verifies the identity of the client sending the request (e.g., verifying TLS certificates, tokens, or Single Sign-On credentials).
+* **Authorization (AuthZ):** Determines what actions the authenticated client is permitted to perform.
+* **Default Security Policy:** Kubernetes operates on a zero-trust model. By default, authenticated users have zero authorizations and cannot access any cluster resources until configured.
 
-to understand RBAC in the process
+---
 
-General security concept 
-Authentication --> is to define a user to the system
-SSO -> a single sign on with it a user can access multiple systems in the organization ليك حق الدخول ولا لأ
+## 2. Role Resource Specification
 
-authorization --> the things that Iam allowed to do on the system once Iam authenticated 
+A **Role** defines namespaced permissions:
+* **Scope:** Confined to a single namespace.
+* **API Groups:** Rules specify the API group containing the resource (e.g., `""` for the core group, `"apps"` for deployments).
+* **Verbs:** Explicitly list allowed actions (e.g., `get`, `list`, `watch`, `create`, `update`, `delete`).
 
-in kubernetes its very restricted by default you have zero authorizations 
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+  - apiGroups: [""]  # Core group
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+```
 
- Authorization are assigned is through RBAC so its an authorization system 
+---
 
-RBAC:
+## 3. RoleBindings and Subjects
 
-ROLE ---------------------------------------------------- SUBJECT 
-![[Pasted image 20250427112916.png]]
-
-- The subject can be a user that has Role 
-- The subject can a group of user that all share the same Role 
-- The subject can be a ServiceAccount that is used by an object such like a bot or a pod that perform certain actions on the cluster (refer to the jobs section)
-
-
-![[Pasted image 20250524212213.png]]
-
-
-The role manifest defines the authorization given to a user Group or service account, when we want a resource such as a daemon set or a Job or a normal pod to create another resource on the cluster it must have authentication and authorization to contact the 
-Api-server so we use a service account with the least possible privileges to execute the tasks needed  
-
-role bind is a kubernetes object to attach the Role object to the subject 
-
-![[Pasted image 20250524212851.png]]
-
-apiVersion ---> rbac.authorization.k8s.io this is a kubernetes resource group and we use v1 of that group
-its just a logical organization of resources related to each other 
-remember in Deployment and replica-set the apiVersion was app/v1 
-the logical group was app 
-
-
-
-
-
-![[Pasted image 20250524213500.png]]
-
-Role-bind to attach the role to a subject 
-
-
-
-
-
+A **RoleBinding** associates a Role with one or more subjects:
+* **Subjects:**
+  * **User:** Human accounts.
+  * **Group:** Collections of users.
+  * **ServiceAccount:** Non-human accounts utilized by Pods or internal automation.
+* **YAML Example:**
+  ```yaml
+  apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    name: read-pods
+    namespace: default
+  subjects:
+    - kind: ServiceAccount
+      name: my-service-account
+      namespace: default
+  roleRef:
+    kind: Role
+    name: pod-reader
+    apiGroup: rbac.authorization.k8s.io
+  ```

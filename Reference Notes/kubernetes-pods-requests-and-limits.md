@@ -1,82 +1,61 @@
+# Module 8-9: Pods Requests and Limits Math
+
+This module covers the core mechanics of resource scheduling and isolation in Kubernetes, including CPU and Memory units, scheduling calculations, and resource enforcement.
+
 ---
-tags:
-  - kubernetes
-Type: Reference Note
-source: Elfakharny-Udemy-Course
-page: "-"
-Date: 2025-04-19T12:32:00
-deadline: 
-status:
+
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
+
+To build a strong intuition for this domain, think of the topics as moving from foundational primitives to advanced implementations:
+
+```mermaid
+graph TD
+    A["Resource Units (milli-cores & mebibytes)"] --> B["Scheduling Calculations (Aggregated Pod Requests)"]
+    B --> C["Runtime Resource Allocation (CPU Sharing vs. Memory Envelopes)"]
+    C --> D["Enforcement (Throttling vs. OOM Killing)"]
+```
+
+1. **Step 1: Resource Units (Section 1):** Defining how CPU and Memory are measured in manifests.
+2. **Step 2: Pod-Level Scheduling (Section 2):** Calculating the total resource request of a Pod for scheduling decisions.
+3. **Step 3: Resource Enforcement (Section 3):** Distinguishing how CPU over-allocation (throttling) and Memory over-allocation (OOM kills) are managed by the kernel.
+
+By following this flow, you progress from **Resource Units → Scheduling Calculations → Runtime Enforcement**.
+
 ---
-![[../../Attachments/section3-lab-manifest.yml]]
 
+## 1. Resource Units
 
-The scheduler decides which node will run the pod we will use several parameters based on it the scheduler will schedule a pod on a node 
+* **CPU Units:** Measured in cores. Fractional values are specified in millicores (denoted with `m`).
+  * `1000m` is equivalent to 1 CPU core.
+  * `500m` is equivalent to 0.5 CPU cores.
+  * `1m` is the minimum allowable CPU increment.
+* **Memory Units:** Measured in bytes. It is best practice to use binary prefixes (power-of-2: `Ki`, `Mi`, `Gi`) rather than decimal prefixes (power-of-10: `K`, `M`, `G`) because OS memory calculations are binary-based.
+  * `128Mi` (Mebibytes) = $128 \times 1024 \times 1024$ bytes.
+  * `128M` (Megabytes) = $128 \times 1000 \times 1000$ bytes.
 
+---
 
-Resources = CPU - Memory 
+## 2. Pod-Level Scheduling Calculations
 
-The schedule decision is based on the free CPU - Memory in a node 
+The scheduler treats a Pod as a single resource reservation unit.
+* **Calculation:** The scheduler sums the resource requests of all containers inside the Pod.
+  * Container A request: `100m` CPU, `200Mi` Memory.
+  * Container B request: `100m` CPU, `200Mi` Memory.
+  * **Total Pod Request:** `200m` CPU, `400Mi` Memory.
+* **Placement:** The scheduler will only place the Pod on a node that has at least `200m` CPU and `400Mi` Memory of unallocated capacity. If no such node exists, the Pod remains in a `Pending` state.
 
-But how will the scheduler know how much resources the pod need ?? 
+---
 
-In reality no Component in kubernetes knows  much resources a Pod needs to run this is only known when the pod runs on a node ... 
+## 3. Runtime Resource Enforcement
 
-**The developer should and must have a rough estimate what the pod needs to Run And under several test environments we can have more accurate number of how much resources needed to Run a pod after the analysis kubernetes gave us ways to allocate the estimated resources to run the pod** 
+Kubernetes enforces resource usage differently for CPU and Memory:
 
+### A. CPU (Compressible Resource)
+* If a Pod exceeds its CPU request but remains below its CPU limit, the kernel will allow the Pod to use idle CPU cycles.
+* If multiple Pods surge and compete for CPU, the kernel allocates CPU shares proportionally based on their configured requests.
+* If a Pod exceeds its CPU **limit**, the kernel throttles the container's CPU shares, reducing performance without killing the process.
 
-cpu: "500m"  m -> milli, 500 milli core which 0.5 core 
-cpu: "1m" -> one milli core the smallest possible 
-
-memory: "128Mi" -> base 2 more preferred because base 2 is used in memory calculation 
-memory: "128M" -> base 10
-
-
-![[Pasted image 20250424132343.png]]
-
-
-Pod act as a unit: 
-suppose we two containers each needs 100m cpu and 200Mi 
-so the total needed resources for the two is 200m cpu and 400 Mi 
-The schedule will have to find a node with these resources available to schedule the pod if there we no nodes with this requirements the pod will not be scheduled containers in a pod is dealt with as one unit they must work together tightly coupled  
-
-![[Pasted image 20250424132439.png]]
-
-
-
-
----------
-If a pod is scheduled on a Node and suppose its the only pod on the node 
-
-with initial resources of 400Mi and 500m, and after some time the application in the pod it started to consume more resources the kernel on the node will provide the increase in usage of resources as long as there are resources available 
-
-CPU:
-Now we scheduled another pod the node will start to share the node resources over the two pods.... 
-if the 1st pod started to consume 2 Cpu and we only had 2 CPU and 2nd pods need 500m cpu the kernel will start to divide Cpu cycles over the 2 pods.
-Even if we added more and more PODS the cpu cycles will be divided among them as long as the pod is scheduled... 
-because of the pod that surges in its consumption at random times some pods may get scheduled when its normal so if they get scheduled and a surge occur in any of pods the kernel will just Divide CPU cycles among them which may hinder performance 
-
-
-Memory: 
-If one of the pods that where added tried to use more memory resources than requested the kernel will perform OOM (out of memory) kill **that is because the node resources are consumed because all the pods are trying to use more than the requested if there where free resources the kernel will allow the pod to use it**......
-the scheduler will try to **re-schedule the pod in another node that can at least provide the requested resources** 
-if all the nodes are out of resources the **pod status will be PENDING**
-
-OOM kill --> will result in killing pods (applications) randomly 
-
-
-
-**we need to add nodes or cloud instances expand vertically** 
-or 
-
-**use limits** 
-![[Pasted image 20250424142242.png]]
-
-
-resources --> indicates the minimum requirements 
-limits --> indicates maximum requirements the pod may need 
-
-Limits --> Allow me to secure my application (pod) from kernel OOM but it should be added with caution because it may need more than the limit and that will hinder performance (web-application -- server busy -- some requests are not fulfilled) no enough memory   
-
-
-
+### B. Memory (Non-Compressible Resource)
+* If a Pod attempts to allocate more memory than its configured request, the host kernel allows it as long as there is free physical memory on the host.
+* If the host experiences memory pressure, the kernel selectively terminates processes using the **Out of Memory (OOM) Killer**. The kernel assigns OOM scores based on the Pod's Quality of Service (QoS) tier (derived from requests and limits).
+* If a container attempts to allocate memory beyond its configured **limit**, the kernel immediately terminates it with an `OOMKilled` (Exit Code 137) error. The container is then restarted according to the Pod's restart policy.

@@ -1,37 +1,72 @@
-![[ingress+-+lab02+-+resources.html]]
+# Module 8-31: Ingress Lab 2 Walkthrough
 
+This module covers SSL/TLS termination inside an Ingress controller, including self-signed certificate generation and TLS secrets.
 
-### ANY ANNOTATION USED IN THIS LAB IS NGINX SPECIFIC 
+---
 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
 
+To build a strong intuition for this lab, follow the cryptographic workflow:
 
-In lab environments and environments that are not exposed to the internet we can do something called self signed certificates 
-
-Usually we use a CA like lets encrypt to get a cert with our website name (url domain name) to have a http request
-
-```ubuntu
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN=example.com/0=example.com"
-```
--nodes --> don't encrypt the keys 
--keyout [tls.key] --> key name
--out --> certificate name 
-canonical name --> CN=example.com
-organization name --> 0=example.com
-
-```
-ls -ltr
+```mermaid
+graph TD
+    A["Generate Private Key & Certificate (OpenSSL)"] --> B["Create TLS Secret Resource"]
+    B --> C["Apply TLS Termination Rules in Ingress Spec"]
 ```
 
-secret is a component to add confidential items like tls cert and tls key , api keys , password . we need to let ingress object know the secret name.. 
+1. **Step 1: Certificate Generation (Section 1):** Generating self-signed X.509 certificates.
+2. **Step 2: Secret Creation (Section 2):** Creating a TLS secret imperatively.
+3. **Step 3: Ingress Configuration (Section 3):** Mapping the certificate to the Ingress resource.
 
-secret like any kubernetes object can be created in an imperative way and a declarative way 
-we will use imperative way because its simpler and faster 
+---
 
-creating a secret object
-![[Pasted image 20250423235759.png]]
+## 1. Generating Certificates
 
-tls -> indicates that we are creating a secret of type tls so it waits for a cert and a key 
+In local development or test environments, you can generate self-signed certificates using OpenSSL:
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout tls.key -out tls.crt \
+  -subj "/CN=example.com/O=example.com"
+```
+* `-nodes`: Disables password encryption on the private key file.
+* `-keyout`: Output path for the private key.
+* `-out`: Output path for the certificate.
+* `-subj`: Configures the Common Name (`CN`) and Organization (`O`).
 
+---
 
-----------
+## 2. Creating TLS Secrets
 
+Create the TLS secret imperatively inside your namespace:
+```bash
+kubectl create secret tls example-com-tls --key=tls.key --cert=tls.crt
+```
+* The `tls` type ensures that the secret contains the keys `tls.key` and `tls.crt`.
+
+---
+
+## 3. Implementing TLS Termination in Ingress
+
+Configure the Ingress manifest to reference the TLS secret and enable SSL termination:
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tls-ingress
+spec:
+  tls:
+    - hosts:
+        - example.com
+      secretName: example-com-tls
+  rules:
+    - host: example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-service
+                port:
+                  number: 80
+```

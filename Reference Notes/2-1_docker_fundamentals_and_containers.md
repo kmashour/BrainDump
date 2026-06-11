@@ -7,7 +7,7 @@ domains:
 
 # Module 2-1: Docker Fundamentals & Container Mechanics
 
-This module covers the architectural foundations of Docker container virtualization. It details the Docker Engine client-server architecture, container vs. virtual machine isolation, container execution lifecycle commands, and the core concept of container process immutability.
+This module details the architectural and kernel foundations of container virtualization. It covers Linux namespace and control group (cgroups) isolation primitives, historical isolation mechanisms, Type 1 vs. Type 2 Hypervisor Virtual Machines, the Docker Engine client-daemon REST architecture, container execution lifecycles, process persistence (PID 1), container process immutability, and Docker Desktop virtualization structures.
 
 ---
 
@@ -15,17 +15,18 @@ This module covers the architectural foundations of Docker container virtualizat
 
 ```mermaid
 graph TD
-    subgraph VM["Virtual Machine Isolation"]
-        AppV["Application process"] --> GuestOS["Guest OS Kernel (Full overhead)"]
-        GuestOS --> Hypervisor["Hypervisor (ESXi, KVM, VirtualBox)"]
-        Hypervisor --> HostOS1["Host OS & Hardware"]
+    subgraph VM["Virtual Machine Isolation (Hardware Virtualization)"]
+        AppV["Application Process"] --> GuestOS["Guest OS Kernel (Full Overhead)"]
+        GuestOS --> Ring1["Guest Kernel (Ring 1)"]
+        Ring1 --> Hypervisor["Hypervisor (Ring 0 - Bare-Metal/Hosted)"]
+        Hypervisor --> HostOS1["Host OS & Physical Hardware"]
     end
 
-    subgraph DockerContainer["Docker Container Isolation"]
-        AppC["Application process (Host Namespace)"] --> cgroups["cgroups (Resource limits)"]
-        cgroups --> namespaces["Namespaces (PID, Net, IPC isolation)"]
+    subgraph DockerContainer["Docker Container Isolation (OS Virtualization)"]
+        AppC["Application Process (Host Namespace)"] --> cgroups["cgroups (Resource limits & QoS)"]
+        cgroups --> namespaces["Namespaces (PID, Net, Mount, IPC, UTS, User)"]
         namespaces --> HostKernel["Shared Host Kernel"]
-        HostKernel --> HostOS2["Host Hardware"]
+        HostKernel --> HostOS2["Host Physical Hardware"]
     end
 ```
 
@@ -33,87 +34,94 @@ graph TD
 
 ## 1. Container vs. Virtual Machine Isolation
 
-Distributed scaling requires choosing the correct isolation boundary. Containers provide process-level virtualization, whereas VMs provide hardware-level virtualization.
+Distributed systems scale using varying isolation boundaries. Choosing between hardware-level virtualization (VMs) and operating-system-level virtualization (containers) impacts resource utilization, security surface, and scaling metrics.
 
-### A. Virtual Machine Virtualization
-Virtual Machines run on top of a Hypervisor. Every VM contains a complete copy of a Guest Operating System, virtual device drivers, and the application files.
-* **Key Characteristics:** Strong hardware-level isolation, high startup overhead (minutes), large image footprints (gigabytes).
+### A. Historical Context & Primitive Tools
+Before modern containers, Unix/Linux systems utilized lower-level isolation primitives:
+*   **`chroot` (Change Root / Root Jail, 1979):** The oldest isolation primitive. It changes the root directory of a running process and its children to a new location in the directory tree. This isolates file-system access, creating a replica directory structure. It does not isolate network interfaces, process trees, users, or memory limits.
+*   **`ulimit` (User Limits):** Used to set limits on system resource consumption (e.g., maximum open file descriptors, maximum processes). However, it cannot control CPU time sharing effectively because CPU resources remain shared and cannot be hard-capped.
+*   **`nice` / `renice`:** Configures CPU scheduling priority (niceness value ranging from -20 to 19). While these modify process scheduling frequency, they are priority adjusters, not absolute resource limiters.
 
-#### Deep-Intuition (AARF) Breakdown:
-1. **The Answer (Core Pattern):** Deploy full Virtual Machines when hypervisor-level isolation, strict kernel customization (different kernels per tenant), or running different guest operating systems (e.g., Windows guest on Linux host) is required.
-2. **The Assumptions (Context):** The hypervisor must manage physical CPU/Memory resource allocations, and slow boot times (minutes) must be acceptable for scaling patterns.
-3. **The Rationale (Why):** Virtualization happens at the hardware level. The Guest OS does not interact directly with the Host OS kernel; it talks to virtualized hardware simulated by the Hypervisor.
-4. **The Failure Loop (What if not):** Attempting to scale microservices horizontally using full VMs causes severe resource exhaustion. Memory is pre-allocated and locked per VM guest, meaning idle VMs consume active RAM, reducing host bin-packing density.
-5. **Alternative Case (When to use 'if not'):** For high-density, sub-second horizontal scaling of microservices, containerization should be used instead.
+### B. Linux Kernel Isolation Primitives (Namespaces and cgroups)
+Modern containerization wraps two core features of the Linux kernel (introduced around 2002-2008):
+1.  **Namespaces:** Provide process isolation by virtualizing system resources. A process inside a namespace sees only its allocated slice of the system:
+    *   **Mount (mnt):** Isolates filesystem mount points. The container cannot see or access host mounts.
+    *   **PID:** Isolates the process ID space. The container's primary process becomes PID 1, completely isolated from the host's process tree.
+    *   **Network (net):** Isolates network devices, IP routing tables, port bindings, and firewall rules.
+    *   **IPC (Inter-Process Communication):** Isolates shared memory, System V IPC, and POSIX message queues.
+    *   **UTS (Unix Timesharing System):** Isolates hostnames and domain names.
+    *   **User:** Maps UIDs and GIDs inside the container to a different set of UIDs/GIDs on the host (allowing a process to run as root inside the container while mapped to a non-privileged user on the host).
+2.  **Control Groups (cgroups):** Enforce hierarchical resource management, accounting, and limiting. A control group tree (root and child nodes) restricts:
+    *   **CPU Limit:** Restricts CPU time slices via CPU controllers.
+    *   **Memory Limit:** Sets hard memory limits. If exceeded, the memory controller triggers the Out-Of-Memory (OOM) killer to terminate the process.
+    *   **I/O and Network Bandwidth:** Throttles disk read/write throughput and network traffic.
+    *   **QoS (Quality of Service):** Guarantees resource availability in multi-tenant environments.
 
-### B. Container Virtualization (Docker)
-Containers run as isolated processes directly on the host operating system, sharing the host OS kernel.
-* **Key Technologies:** Linux **namespaces** (walls for PID, network, mount isolation) and Linux **cgroups** (resource limits).
-* **Key Characteristics:** Instant boot times (milliseconds), extremely lightweight footprints (megabytes).
-
-#### Deep-Intuition (AARF) Breakdown:
-1. **The Answer (Core Pattern):** Use Docker containers to package applications and their direct dependencies, allowing multiple isolated environments to run on the same shared host kernel.
-2. **The Assumptions (Context):** The host OS kernel must be secure, and all containers must be compatible with the host kernel version.
-3. **The Rationale (Why):** Virtualization happens at the process level. Namespaces slice host resources so a process sees only its own resources (like virtual network interfaces or specific file mounts), while cgroups enforce execution limits.
-4. **The Failure Loop (What if not):** Without containerization, dependency conflicts arise (e.g., App A requires Node v14, App B requires Node v18 on the same host). Managing system-level packages becomes a deployment bottleneck.
-5. **Alternative Case (When to use 'if not'):** If the application requires low-level kernel modifications, custom kernel modules, or running a completely different OS kernel, containers cannot be used; VMs are mandatory.
+### C. VM Virtualization Mechanics
+Virtual Machines run on top of a **Hypervisor** that simulates virtual hardware (vCPU, vRAM, vNIC, virtual disks).
+*   **Type 1 (Bare-Metal) Hypervisors:** Run directly on the physical hardware (e.g., VMware ESXi, KVM). The hypervisor operates in Ring 0 (kernel space), while the Guest OS kernels run in Ring 1.
+*   **Type 2 (Hosted) Hypervisors:** Run as software on a host OS (e.g., VirtualBox, VMware Workstation).
+*   **Base Disks (.VHD) vs. Differencing Disks (.AVHD):** In VM cloning, the parent `.VHD` base disk remains read-only. Clone VMs utilize a differencing disk (`.AVHD`) to record modification layers. The clone's logical drive represents the merged parent + diff layers. Containers apply a similar concept using Union Filesystems (UFS) and image layers.
 
 ---
 
-## 2. Docker Engine Client-Server Architecture
+## 2. Deep-Intuition (AARF) Breakdowns
 
-Docker is structured as a client-server application consisting of the Docker CLI client, the dockerd daemon REST API server, and a registry.
+### A. OS-Shared Kernel vs. VM Hardware Virtualization
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Deploy applications as Docker containers to share a single host OS kernel, reserving Virtual Machines for cases requiring custom kernel configurations or heterogeneous guest operating systems (e.g., running Windows on a Linux physical host).
+2. **The Assumptions (Context):** The host kernel must be stable, secure, and compatible with the application's runtime. The application must not require low-level kernel driver modifications.
+3. **The Rationale (Why):** Linux distributions (Ubuntu, RedHat, SUSE, Alpine) share the same underlying Linux kernel interface. A container strips away the redundant guest kernel and GUI subsystems (user mode), packaging only application files and dependencies. It calls host kernel daemons directly, eliminating hypervisor translation overhead.
+4. **The Failure Loop (What if not):** Provisioning a full VM for every microservice wastes CPU, RAM, and disk storage. Booting a VM takes minutes because it must initialize virtual hardware and run a guest kernel boot sequence. If VM allocations are pre-committed, idle microservices lock host physical RAM, leading to memory exhaustion and low host bin-packing density.
+5. **Alternative Case (When to use 'if not'):** If hosting multi-tenant environments with untrusted code, Hypervisor-level VM isolation is mandatory. Containers share the host kernel; a kernel-level vulnerability (e.g., container breakout exploits) can compromise the host machine.
+
+### B. Namespace Isolation vs. cgroup Limits
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Implement namespaces to establish logical boundaries (who can see what) and cgroups to enforce physical resource limits (how much they can consume).
+2. **The Assumptions (Context):** The container runtime environment must support cgroups v2 for consolidated resource management and namespaces for process tree separation.
+3. **The Rationale (Why):** Namespaces virtualize OS resources (network stack, mount points, PIDs). However, they do not prevent a process from consuming 100% of the host's CPU or memory. cgroups constrain resource allocations by scheduling CPU time slices and tracking memory allocations.
+4. **The Failure Loop (What if not):** Running containers with namespaces but without cgroup limits leaves the system open to "noisy neighbor" issues. A memory leak in Container A will consume all host RAM, triggering the host OS kernel OOM killer. The OOM killer might terminate critical host processes or stable containers (like Container B), causing cascade failures.
+5. **Alternative Case (When to use 'if not'):** When running administrative container tools (e.g., host monitoring agents, packet sniffers), select namespaces must be shared with the host (e.g., `--network=host`, `--pid=host`) to allow the tool to view host-level metrics.
+
+---
+
+## 3. Docker Engine Client-Server Architecture
+
+Docker operates as a client-server application. It decouples command input from container execution.
 
 ```mermaid
 sequenceDiagram
-    participant CLI as Docker CLI (docker run)
+    participant Client as Docker CLI
+    participant Host as Docker Group (Non-Sudo)
     participant Daemon as dockerd Daemon (REST API)
-    participant Registry as Registry (Docker Hub)
-    participant Container as Container Process
+    participant Registry as Registry (Docker Hub / GHCR)
+    participant Storage as /var/lib/docker/overlay2
+    participant Container as Container (Namespaces & cgroups)
 
-    CLI->>Daemon: POST /containers/create
-    Note over Daemon: Checks local image store
-    Daemon-->>Registry: GET /images (Pull if missing)
-    Registry-->>Daemon: Stream Image Layers
-    Daemon->>Container: Spawn namespaces & cgroups
-    Daemon-->>CLI: Return Container ID
+    Client->>Host: docker run -d nginx
+    Note over Host: Group membership checks permissions
+    Host->>Daemon: POST /containers/create (REST API)
+    Daemon->>Daemon: Check local image store
+    alt Image not found locally
+        Daemon->>Registry: GET /manifests/list (Find matching OS/Arch)
+        Registry-->>Daemon: Return Manifest details
+        Daemon->>Registry: GET /layers (Pull layers)
+        Registry-->>Daemon: Stream read-only layers
+        Daemon->>Storage: Unpack layers under driver directory
+    end
+    Daemon->>Container: Spawn process, configure namespaces & cgroups
+    Daemon-->>Client: Return Container ID
 ```
 
-* **CLI Client:** The command-line tool used to write instructions (e.g., `docker run`, `docker build`).
-* **dockerd Daemon:** A persistent background process (`systemd` service) that listens for Docker API requests and manages Docker objects (images, containers, networks, volumes).
-* **Registry:** A repository service (like Docker Hub or AWS ECR) used to store and distribute images.
+*   **Docker CLI Client:** Sends commands to the daemon. By default, accessing the Docker daemon socket (`/var/run/docker.sock`) requires root permissions. Adding the user account to the docker group (`sudo usermod -aG docker $USER`) allows running commands without `sudo` by granting access to the socket.
+*   **dockerd Daemon:** A systemd background service that listens for REST API requests. It manages images, containers, networks, volumes, and communicates with container runtimes (containerd/runc) to spawn isolation environments.
+*   **Manifest Lists:** Docker Hub and other registries store images using a Manifest List. When a client pulls an image (e.g., `ubuntu`), the daemon checks the host machine's architecture (e.g., `amd64` vs. `arm64`) and operating system to fetch the correct manifest and layer hashes.
 
 ---
 
-## 3. Container Lifecycle Operations & Commands
+## 4. Container Lifecycle Operations & Commands
 
-Containers transition through states (Created, Running, Paused, Stopped, Exited).
-
-### A. Lifecycle Command Reference:
-*   `docker run -d -p 80:80 --name web nginx`: Creates and starts a container in detached mode, mapping ports.
-*   `docker stop <id>`: Sends a `SIGTERM` signal to the container's primary process (PID 1), followed by `SIGKILL` if it fails to stop within 10 seconds.
-*   `docker kill <id>`: Sends an immediate `SIGKILL` signal to terminate the process instantly.
-*   `docker ps -a`: Lists all containers, including stopped ones.
-*   `docker logs -f <id>`: Follows the stdout/stderr logs of the container.
-*   `docker exec -it <id> sh`: Spawns an interactive shell inside the container's active namespaces.
-*   `docker rm <id>`: Deletes a stopped container.
-*   `docker rm -f <id>`: Forcefully deletes a running container by sending a `SIGKILL` first.
-
-### B. Container Immutability & Process Persistence (PID 1)
-A container runs as long as its primary process (PID 1) is active. Once this process exits, the container stops.
-
-#### Deep-Intuition (AARF) Breakdown:
-1. **The Answer (Core Pattern):** Ensure the container's entrypoint command runs in the foreground as PID 1 (e.g., `ENTRYPOINT ["nginx", "-g", "daemon off;"]`).
-2. **The Assumptions (Context):** The process must handle OS signals (like `SIGTERM`) properly to clean up connections before shutting down.
-3. **The Rationale (Why):** The container runtime monitors the execution state of the process assigned to PID 1. If that process exits or runs in the background (like traditional systemd service daemons), the container immediately exits.
-4. **The Failure Loop (What if not):** Invoking service startups like `service nginx start` inside a container starting script causes the script to finish and exit immediately. The Docker daemon interprets this script exit as container completion, transitioning the container state to `Exited (0)` instantly.
-5. **Alternative Case (When to use 'if not'):** For persistent background workers or cron-like batch jobs that do not need to run continuously, configure the container entrypoint to execute a script and exit naturally upon task completion.
-
----
-
-## 4. Visual Verification: Container Commands & States
-
-Below is a flowchart tracing common container operations and state transitions:
+Containers transition through states based on process status. A container is a sandbox wrapping a single primary process.
 
 ```mermaid
 stateDiagram-v2
@@ -127,3 +135,89 @@ stateDiagram-v2
     Stopped --> [*] : docker rm
     Killed --> [*] : docker rm
 ```
+
+### A. Lifecycle Command Reference
+*   `docker info`: Displays system-wide information (storage driver, kernel version, CPU/memory resources, active container count).
+*   `docker run -d -p 8080:80 --name web nginx`: Creates, starts, and detaches a container, mapping host port 8080 to container port 80.
+*   `docker ps -a`: Lists all containers, including stopped ones.
+*   `docker logs -f <id>`: Follows stdout/stderr streams from the container's PID 1.
+*   `docker exec -it <id> sh`: Spawns an interactive shell process *inside* the container's active namespaces. It creates a sub-process of the container but does not replace PID 1.
+*   `docker attach <id>`: Binds terminal input/output directly to the container's active PID 1 process.
+*   `docker rm -f <id>`: Forcefully removes a running container by sending a `SIGKILL` signal to PID 1 before deleting its writable layer.
+
+### B. Persistent Background Execution Flags
+When launching containers, execution flags determine shell attachment:
+*   `-d` (Detached): Runs the container in the background. It will exit immediately if the primary command completes.
+*   `-dit` (Detached, Interactive, TTY): Runs the container in the background while keeping stdin open and allocating a pseudo-TTY. This is useful for keeping interactive shells (like `sh` or `bash`) running in the background.
+*   `sleep infinity`: Keeping a container running indefinitely without a web server or daemon process can be achieved by passing `sleep infinity` as the command.
+
+---
+
+## 5. Deep-Intuition (AARF) Breakdowns: Lifecycle & Troubleshooting
+
+### A. Container Lifetime & PID 1 Process Persistence
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Ensure the container's entrypoint runs the main application in the foreground as PID 1, and configure it to handle OS lifecycle signals (`SIGTERM`) gracefully.
+2. **The Assumptions (Context):** The container runtime monitors only the process designated as PID 1. If this process exits, the container halts.
+3. **The Rationale (Why):** Containers are process wrappers, not system initializers. There is no `systemd` or `init` system inside a standard container. Once the PID 1 process exits, the namespace execution context collapses.
+4. **The Failure Loop (What if not):** Invoking background daemons (e.g., using `service nginx start` or running a script that forks processes and exits) causes the shell executor to finish. Because the parent script terminates, the container immediately transitions to `Exited (0)`. If PID 1 does not handle `SIGTERM`, stopping the container (`docker stop`) triggers a 10-second timeout followed by a hard `SIGKILL`, resulting in connection drops, database lock corruption, and lost files.
+5. **Alternative Case (When to use 'if not'):** For batch tasks, scripts, or database migration jobs, exiting the container upon task completion is the desired behavior. The entrypoint should execute the task script and allow the container to exit naturally with status `0`.
+
+### B. Troubleshooting Crashed Containers via Filesystem Commits
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Investigate stopped or crashing containers by committing their filesystem state to a temporary image and running a shell wrapper to override the entrypoint:
+    ```bash
+    # 1. Commit the stopped container's state to a temporary debug image
+    docker commit <crashed_container_id> debug_image:temp
+    # 2. Run the debug image with a shell entrypoint to inspect files
+    docker run -it --entrypoint sh debug_image:temp
+    ```
+2. **The Assumptions (Context):** The container must have stopped or crashed with data intact in its writable layer. The debug image does not inherit original environment variables, volume mounts, or network configurations; these must be passed manually if needed.
+3. **The Rationale (Why):** When a container's PID 1 crashes immediately upon startup (e.g., due to configuration errors or missing dependencies), it transitions to `Exited`. `docker exec` requires a running container to attach a sub-process to the namespace. Committing the container merges its read-only layers with the modified writable layer, preserving the exact filesystem state at the time of the crash.
+4. **The Failure Loop (What if not):** Attempting to troubleshoot immediate startup crashes without entrypoint overrides is impossible since the container will not stay running long enough to execute diagnostics. Re-running the original image starts from scratch, wiping out the specific configuration changes or log files written to the crashed container's writable layer.
+5. **Alternative Case (When to use 'if not'):** If log routing is configured to stream stdout/stderr externally (e.g., to Elasticsearch or CloudWatch), container startup logs can be inspected directly without committing the filesystem.
+
+### C. Container Immutability & Ephemeral Lifecycle
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Treat containers as ephemeral, immutable units of execution. Never modify running container configurations (ports, mounts, network interfaces) or write application state directly to the writable layer.
+2. **The Assumptions (Context):** The system must utilize declarative configurations (Docker Compose, Kubernetes manifests). State must be externalized to volumes or databases.
+3. **The Rationale (Why):** Ports and volumes are bound at container startup. Modifying port mappings requires altering host `iptables` NAT tables and Docker daemon routing rules. Injecting new storage mounts requires updating the container's active Mount namespace, which is blocked by the kernel to prevent access violations and filesystem corruption.
+4. **The Failure Loop (What if not):** Trying to maintain containers like traditional VMs (applying patches inside a running container, dynamically adding configurations) creates "snowflake" containers. If the physical host fails, these manual changes cannot be reproduced. The application fails to scale because new containers spun up from the base image lack the manual changes.
+5. **Alternative Case (When to use 'if not'):** In development phases, bind mounts are utilized to sync host source code directories to the container for hot-reloading. However, the container itself remains immutable; only the source files on the host change.
+
+---
+
+## 6. Docker Desktop Virtualization Architecture
+
+Docker requires Linux kernel primitives (namespaces and cgroups) to execute containers. Because macOS and Windows do not run Linux kernels natively, Docker Desktop utilizes virtualization.
+
+```mermaid
+graph TD
+    subgraph HostOS["Host Operating System (Windows / macOS)"]
+        CLI["Docker CLI Client"]
+        DesktopUI["Docker Desktop GUI Dashboard"]
+    end
+
+    subgraph Hypervisor["Hypervisor Layer (WSL2 / Hyper-V / macOS Hypervisor.framework)"]
+        VM["Lightweight Linux VM (Linux Kernel)"]
+    end
+
+    subgraph LinuxKernelInsideVM["Linux VM Kernel Space"]
+        Daemon["dockerd Daemon"]
+        Storage["/var/lib/docker"]
+        Containers["Containers (Namespaces & cgroups)"]
+    end
+
+    CLI -->|TCP/Unix Socket Connection| Daemon
+    DesktopUI -->|Control Commands| Daemon
+    Daemon --> Containers
+```
+
+### A. Windows and macOS Virtualization
+*   **macOS:** Docker Desktop runs a lightweight Linux VM using Apple's native `Hypervisor.framework`. This VM boots a minimal Linux kernel containing the required namespace and cgroup implementations.
+*   **Windows:** Docker Desktop utilizes the **Windows Subsystem for Linux 2 (WSL2)** or Hyper-V. WSL2 runs a real Linux kernel in a lightweight utility VM, allowing native execution speed and resource management.
+*   **API Routing:** The Docker CLI on the host machine communicates with the daemon (`dockerd`) running *inside* the Linux VM via a socket proxy or local TCP port.
+
+### B. Linux Native vs. Docker Desktop for Linux
+*   **Native Linux Engine:** Runs directly on the host operating system. Containers are native host processes sharing the host's kernel and filesystem namespaces. Storage resides directly under `/var/lib/docker` on the host disk.
+*   **Docker Desktop for Linux:** Runs the Docker engine inside a virtualized sandbox. This provides security isolation, preventing container processes from interacting directly with host system files or kernel threads unless explicitly configured.

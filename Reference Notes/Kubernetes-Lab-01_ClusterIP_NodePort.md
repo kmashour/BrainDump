@@ -1,102 +1,105 @@
+# Module 8-25: Lab 01: ClusterIP and NodePort Services
 
+This module covers the hands-on configuration, validation, and testing of ClusterIP and NodePort services in a local cluster environment.
 
-#kubernetes_follow_up 
+---
 
-Cluster configuration 
-master plane 
-worker plane 
-Get your terminologies in check 
+## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
 
-Running kubernetes on kind 
-Running kubernetes on bare-metal 
+To build a strong intuition for this lab, follow these sequential steps:
 
------------------------------------------------
+```mermaid
+graph TD
+    A["Deploy Backing Pods & Custom HTML"] --> B["Apply ClusterIP Service Manifest"]
+    B --> C["Validate Internal Routing (Client Pod & Port-Forward)"]
+    C --> D["Transition to NodePort Service & Verify External Access"]
+```
 
-![[service+discovery+-+lab01.html]]
-The lab setup is kubernetes running on bare-metal 
+1. **Step 1: Pod Deployments (Section 1):** Running multiple Pods with customized index pages to observe load balancing.
+2. **Step 2: ClusterIP Verification (Section 2 & 3):** Creating a ClusterIP service and testing it internally.
+3. **Step 3: NodePort Verification (Section 4):** Reconfiguring the Service as a NodePort and testing access via node IPs.
 
-![[Screenshot from 2025-04-21 12-30-09.png]]
+---
 
-consider the following scenario so we will run two web apps under a service 
-we will edit the default html file in one of the pods
-to see the load balancing option 
+## 1. Lab Architecture & Pod Setup
 
-Implement the Pods manifest::::
+We deploy two Pods running Nginx. To verify that load balancing functions, we edit the index pages of the containers to identify the host Pod:
+* **Container IP Isolation:** Containers running inside separate Pods are allocated unique IPs on the cluster network, preventing port conflicts even if they use the same port.
 
-![[../../Attachments/Screenshot from 2025-04-21 10-59-26.png]]
+---
 
-Would making two containers with same Ip cause a conflict or we avoided that by using the name ?? 
-Absolutely no because they are on different pods hence different Ip 
+## 2. Implementing a ClusterIP Service
 
-![[Screenshot from 2025-04-21 11-27-40.png]]
+Create a ClusterIP service manifest to group the Pods.
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod-1
+  labels:
+    app: my-web-app
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+```
+Apply the default Service (which configures a ClusterIP):
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-clusterip-service
+spec:
+  selector:
+    app: my-web-app
+  ports:
+    - port: 80
+      targetPort: 80
+```
 
+---
 
+## 3. Testing Internal Cluster Routing
 
-Edit the html in the 1st pod to see the load balancing feature 
-![[Screenshot from 2025-04-21 11-28-34.png]]
+To test the ClusterIP service internally without exposing it, deploy a temporary interactive client Pod:
+```bash
+# Launch a temporary curl client pod
+kubectl run client-pod --image=curlimages/curl -it --rm -- sh
+```
+* **Note on `--rm`:** This flag automatically deletes the Pod when the interactive shell session exits, saving manual cleanup steps.
+* **Execute Tests:** Run curl commands against the Service DNS name inside the client shell:
+  ```bash
+  curl my-clusterip-service.default.svc.cluster.local
+  ```
+  The responses will alternate between the two backends in a round-robin sequence.
 
+### Local Port Forwarding
+Developers can test ClusterIP services locally by forwarding traffic from a local port to the service:
+```bash
+kubectl port-forward svc/my-clusterip-service 8080:80
+```
+Open a browser and navigate to `http://localhost:8080` to verify connectivity.
 
-Edit the html in the 2nd pod to see the load balancing feature
+---
 
-![[Pasted image 20250421112922.png]]
+## 4. Transitioning to a NodePort Service
 
-
-Implement the service manifest::: 
-![[Screenshot from 2025-04-21 11-31-59.png]]
-**service type is by default clusterIp**
-
-
-![[Pasted image 20250421113234.png]]
-
-Shows the running services on kubernetes:::
-![[Screenshot from 2025-04-21 11-33-48.png]]
-
-
-I need to be a component within the cluster itself to access the service but the problem Iam an end-user Iam not an insider within the cluster,, So we make a pod especially that works as a client through it try to open connection with the service of the type clusterIP
-
-Imperative way of creating a pod :::
-![[Pasted image 20250421113627.png]]
-
-This pod will be created once then we don't need again so imperative is better since it will only be used to run a command ( أخطف و اجري )
-
---rm-- --> when i finish with the command and exit the command which is the shell it will automatically remove the pod, وفرت عليا خطوة 
-
-Now I want to test the service of the type clusterIP we can use any http client to test the service::: 
-- apt update 
-- apt install -y curl 
-- curl my-clusterip-service.default.svc.cluster.local
-- curl my-clusterip-service.default.svc.cluster.local
-- curl my-clusterip-service.default.svc.cluster.local
-   it will juggle between the two pods according to Round Robbin 
-we can use the directly not the full DNS since we are under the same namespace    
-
-what if i want my service to be of type clusterIp and I want to try it as a user, Iam a developer and I want to test ??? 
-
-using a command called port forward this is part of kubectl 
-
-connected to a raspberry pi by ssh which is the host machine-- on that host machine we had  a  master-plane node (vm) since this lab was conducted on a bare metal kubernetes cluster....
-
-**the port forwarding is done through the host machine it self**
-
-we can make port-forward on the pod directly but in our case we will apply port forwarding on the service :::
-![[Pasted image 20250421115041.png]]
-
-
-From local Browser :::
-Local Host:8080 
-
-![[Pasted image 20250421115341.png]]
-
-
-but this is not the best approach its better to use a service of type Node-Cluster 
-
-![[Pasted image 20250421122225.png]]
-
-![[Pasted image 20250421122336.png]]
-
-
-we will access through any node ip:port inside the cluster whether its the master node or a worker node 
-
-![[Screenshot from 2025-04-21 12-26-54.png]]
-
-192.168.2.76 or 192.168.2.77 or 192.168.2.78
+Modify the Service manifest to set `type: NodePort`:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-nodeport-service
+spec:
+  type: NodePort
+  selector:
+    app: my-web-app
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 32000
+```
+Verify that the Service is accessible from the host system or external machines by querying any cluster node's IP address on port `32000`:
+```bash
+curl http://192.168.2.76:32000
+```

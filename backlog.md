@@ -3,6 +3,37 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-11] - BGP, Python, and Web Fundamentals Reference Consolidation
+
+### Refactored / Upgraded
+- **Consolidated BGP Routing Reference Notes:** Merged 6 raw BGP files (basic topologies, eBGP vs iBGP peering, path vector selection, route reflectors, and redundancy) into the primary BGP routing module:
+  - [4-1_bgp_routing_fundamentals_and_topologies.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/4-1_bgp_routing_fundamentals_and_topologies.md): Expanded with deep-dive concepts on TCP connection mechanics, state machine transitions, path attributes (AS-PATH, NEXT-HOP, Origin Codes), loopback peering load-balancing, and Route Reflector Cluster ID loops prevention.
+- **Consolidated Python Programming Reference Notes:** Merged 7 raw Python files (objects, statements, versions, comparison operators, and Flask modules) into the primary Python fundamentals module:
+  - [7-1_python_programming_fundamentals.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/7-1_python_programming_fundamentals.md): Detailed with pyenv version switching, isolated virtual environments, dependency constraint structures (`requirements.txt`), custom f-string float formatting, zip/enumerate iterators, and the Flask App Factory pattern utilizing PyMongo DB connections.
+- **Consolidated HTML Semantic Reference Notes:** Merged 5 raw HTML files (document hierarchy, semantic tags, content categories, and nesting limits) into the primary HTML module:
+  - [6-1_html_semantics_and_document_structure.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/6-1_html_semantics_and_document_structure.md): Enriched with document-level layout definitions, viewport responsive scales, content category outlines (Flow vs Sectioning), accessibility navigation, and strict block-level nesting validations.
+- **Consolidated CSS Box Model and Inheritance Reference Notes:** Merged 5 raw CSS files (box properties, units, inheritance rules, and spacing resets) into the primary CSS module:
+  - [6-2_css_box_model_and_styling_inheritance.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/6-2_css_box_model_and_styling_inheritance.md): Detailed standard vs alternative box model sizing, universal `box-sizing: inherit` reset configurations, physical vs logical device pixels, em/rem responsive typography choices, and forced inheritance overrides via the `inherit` keyword.
+- **Consolidated AWS S3 Transfer Acceleration Notes:** Integrated S3 Transfer Acceleration details from [Exam-1.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/Exam-1.md) into [3-2_aws_compute_and_storage_services.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-2_aws_compute_and_storage_services.md).
+- **Created Miscellaneous (MISC) Reference Modules:** Merged 5 raw systems and cloud files into 3 new dedicated MISC reference modules cataloged in the main index:
+  - [git_fundamentals_and_workflows.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/git_fundamentals_and_workflows.md): Detailing Git workspace staging areas, checkout/switch branch management, non-destructive reverts vs destructive resets, stashing, and collaborative forks/PRs.
+  - [linux_system_administration_and_troubleshooting.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/linux_system_administration_and_troubleshooting.md): Detailing physical file type verification (`file`), common GNU/Linux exit codes mapping, system error translation (`perror`), password hashing (bcrypt), and remote SSH client control (`paramiko`).
+  - [openstack_cloud_infrastructure.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/openstack_cloud_infrastructure.md): Detailing private cloud virtualization, comparing hyperscalers, and the 6 core components required to host an IaaS cloud environment.
+- **Cleaned Up Raw Notes:** Deleted all 32 raw `.md` files and index files from `Reference Notes/` directory to maintain vault cleanliness.
+
+---
+
+## [2026-06-11] - Jenkins Reference Modules Consolidation
+
+### Refactored / Upgraded
+- **Consolidated Jenkins Reference Notes:** Merged 11 raw Jenkins files (e.g., architecture, history, triggers, variables, upgrades, troubleshooting, JUnit) into the 3 standardized Jenkins reference modules:
+  - [5-1_jenkins_architecture_and_pipeline_structure.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/5-1_jenkins_architecture_and_pipeline_structure.md): Enriched with details on controller-agent distributed topologies (SSH vs JNLP protocols), Docker container runtimes (workspace mounts), and structural Declarative pipeline components.
+  - [5-2_jenkins_build_triggers_and_pipeline_variables.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/5-2_jenkins_build_triggers_and_pipeline_variables.md): Consolidated Git triggers (webhooks vs polling schedules), Cron `H` hashing algorithms, and compilation environment scoping (`environment {}` block limitations vs dynamic script assignments), alongside JUnit XML reports and trends.
+  - [5-3_jenkins_administration_and_troubleshooting.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/5-3_jenkins_administration_and_troubleshooting.md): Integrated Docker-based core upgrades, safe plugin installations, safe system restarts (`/safeRestart`), exit code debugging (`sh` step error detection), and manual gating CD release strategies (Blue-Green, Canary, Rolling).
+- **Cleaned Up Raw Notes:** Deleted all 11 consolidated raw `.md` notes and the temporary `Jenkins-Index.md` from the `Reference Notes/` directory to maintain vault cleanliness.
+
+---
+
 ## [2026-06-11] - Ingestion of NTI & Practitioner Study Notes (Notes_AWS_Docker_Kubernets)
 
 ### Added
@@ -34,7 +65,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Main Notes / Software Architecture Patterns:** Created landing note `Main Notes/software-architecture-patterns.md` and deeper-dive concept note `Main Notes/software-architecture-patterns - Core Patterns.md`.
 - **Main Notes / Distributed Communication & Queues:** Created landing note `Main Notes/distributed-communication.md` and deeper-dive concept note `Main Notes/distributed-communication - Async Queues and Streams.md`.
 
-### Refactored / Upgraded
+### Refactored / Upgraded 
 - **Frontmatter Compliance Sweep:** Proactively audited and resolved 22 frontmatter schema warnings across 14 atomic deeper-dive notes inside `Main Notes/`, ensuring 100% template compliance.
 - **Reference Notes (1-1 to 1-6) Upgrades:** Distributed raw topics (Availability, Latency, Forward/Reverse Proxy, Connection Pooling, SQL/NoSQL Wide-column, Graph, Time-series, Vector databases, Sharding, Partitioning, Encryption, SSO, SAML) across existing modules in Deep-Intuition (AARF) style.
 - **Advanced Clippings Ingestion:** Integrated advanced system design concepts: database consistency models (ACID vs. BASE in Module 1-3), API protocol trade-offs (REST, GraphQL, gRPC in Module 1-5), and security paradigms (OAuth 2.0 4-roles/3-tokens and JWT structure/stateless verification AARF breakdowns in Module 1-6).

@@ -64,3 +64,6 @@ Select a domain to view its reference modules, learning tracks, and hands-on ver
 ### 📦 Miscellaneous Projects (MISC)
 *Individual projects and chapters that combine multiple administrative domains (e.g. self-hosted git servers, Linux host storage configuration, and custom webserver reverse proxies) but do not belong to a standard study track.*
 - 🐙 **[Gitea GitOps Workflows on RHEL 8](gitea_installation_and_workflows.md)**: RHEL 8 security hardening, LVM logical volume zoning, Apache reverse proxy, and act_runner CI/CD automation.
+- 🌳 **[Git Version Control Fundamentals & Workflows](git_fundamentals_and_workflows.md)**: Git staging mechanics, checkout/switch branch management, reset vs. revert recoveries, stashing, and collaborative pull requests.
+- 🐧 **[Linux System Administration & Troubleshooting Reference](linux_system_administration_and_troubleshooting.md)**: Core Linux troubleshooting commands, GNU/Linux exit code mapping, MySQL and OS system error parsing via `perror`, file system type querying, and password cryptographic hashing algorithms (bcrypt/paramiko).
+- ☁️ **[OpenStack Private Cloud Infrastructure](openstack_cloud_infrastructure.md)**: On-premise private cloud virtualization, comparing hyperscalers with self-hosted private clouds, and the 6 core services required to construct an IaaS compute/storage network environment.
