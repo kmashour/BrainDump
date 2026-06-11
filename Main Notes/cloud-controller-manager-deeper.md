@@ -14,10 +14,11 @@ use_cases:
 external_links:
   - "[Mumshad CKA Course](https://kodekloud.com)"
   - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/architecture/cloud-controller-manager/)"
+sub_type: core-concept
+source_type: udemy
 tags:
   - kubernetes/deep-dive
 ---
-
 # cloud-controller-manager deeper
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[cloud-controller-manager]] > **deeper dive**

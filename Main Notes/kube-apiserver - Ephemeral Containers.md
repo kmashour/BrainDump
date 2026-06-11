@@ -7,11 +7,11 @@ sub_type: use-case
 sources:
   - "Kubernetes Official Docs"
   - "Newsletter Article: Debugging in K8s"
+source_type: documentation
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/deep-dive
 ---
-
 # kube-apiserver - Ephemeral Containers
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **Ephemeral Containers**

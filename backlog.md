@@ -12,6 +12,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Main Notes / Distributed Communication & Queues:** Created landing note `Main Notes/distributed-communication.md` and deeper-dive concept note `Main Notes/distributed-communication - Async Queues and Streams.md`.
 
 ### Refactored / Upgraded
+- **Frontmatter Compliance Sweep:** Proactively audited and resolved 22 frontmatter schema warnings across 14 atomic deeper-dive notes inside `Main Notes/`, ensuring 100% template compliance.
 - **Reference Notes (1-1 to 1-6) Upgrades:** Distributed raw topics (Availability, Latency, Forward/Reverse Proxy, Connection Pooling, SQL/NoSQL Wide-column, Graph, Time-series, Vector databases, Sharding, Partitioning, Encryption, SSO, SAML) across existing modules in Deep-Intuition (AARF) style.
 - **Advanced Clippings Ingestion:** Integrated advanced system design concepts: database consistency models (ACID vs. BASE in Module 1-3), API protocol trade-offs (REST, GraphQL, gRPC in Module 1-5), and security paradigms (OAuth 2.0 4-roles/3-tokens and JWT structure/stateless verification AARF breakdowns in Module 1-6).
 - **Mermaid Visualizations:** Injected sequence and topology diagrams for Load Balancer Health Checking, Connection Pool checkout flows, JWT Token structure, database horizontal sharding vs partitioning, and the 10 architecture patterns.

@@ -7,11 +7,11 @@ sub_type: architecture
 sources:
   - "Mumshad CKA Course"
   - "Kubernetes Official Docs"
+source_type: udemy
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/deep-dive
 ---
-
 # kube-apiserver - API Groups and Versions
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **API Groups and Versions**

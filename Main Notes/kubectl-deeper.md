@@ -13,10 +13,11 @@ use_cases:
 external_links:
   - "[Mumshad CKA Course](https://kodekloud.com)"
   - "[kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)"
+sub_type: core-concept
+source_type: udemy
 tags:
   - kubernetes/deep-dive
 ---
-
 # kubectl deeper
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **deeper dive**

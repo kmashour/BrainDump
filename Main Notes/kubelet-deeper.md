@@ -14,10 +14,11 @@ use_cases:
 external_links:
   - "[Mumshad CKA Course](https://kodekloud.com)"
   - "[Kubernetes Official Docs](https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet/)"
+sub_type: core-concept
+source_type: udemy
 tags:
   - kubernetes/deep-dive
 ---
-
 # kubelet deeper
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **deeper dive**

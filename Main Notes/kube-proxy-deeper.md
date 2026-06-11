@@ -12,10 +12,11 @@ use_cases:
 external_links:
   - "[Mumshad CKA Course](https://kodekloud.com)"
   - "[Kubernetes Official Docs](https://kubernetes.io/docs/reference/command-line-tools-reference/kube-proxy/)"
+sub_type: core-concept
+source_type: udemy
 tags:
   - kubernetes/deep-dive
 ---
-
 # kube-proxy deeper
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-proxy]] > **deeper dive**

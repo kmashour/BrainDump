@@ -7,11 +7,11 @@ sub_type: core-concept
 sources:
   - "Mumshad CKA Course"
   - "Kubernetes Official Docs"
+source_type: udemy
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/deep-dive
 ---
-
 # kube-apiserver - Request Lifecycle
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **Request Lifecycle**

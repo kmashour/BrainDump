@@ -7,11 +7,11 @@ sub_type: use-case
 sources:
   - "Kubernetes Official Docs"
   - "CKA Upgrade Guide"
+source_type: documentation
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/deep-dive
 ---
-
 # kube-apiserver - Mixed Version Proxy
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **Mixed Version Proxy**

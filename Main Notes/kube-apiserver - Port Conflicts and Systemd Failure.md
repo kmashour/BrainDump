@@ -7,12 +7,12 @@ sub_type: pitfall
 sources:
   - "CKA Practice Exam Troubleshooting Section"
   - "K8s Troubleshooting Newsletter"
+source_type: documentation
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/pitfall
   - kubernetes/troubleshooting
 ---
-
 # kube-apiserver - Port Conflicts and Systemd Failure
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-apiserver]] > **Port Conflicts and Systemd Failure**

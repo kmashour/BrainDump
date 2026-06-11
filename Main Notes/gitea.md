@@ -4,10 +4,10 @@ class: landing-note
 tier: main-note
 role: infra
 domains:
-  - "git"
-  - "linux"
+  - git
+  - linux
 related_concepts:
-  - "[[git]]"
+  - "[[GIT]]"
   - "[[podman]]"
 against:
   - "[[gitlab]]"

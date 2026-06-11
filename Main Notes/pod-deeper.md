@@ -15,10 +15,11 @@ use_cases:
 external_links:
   - "[Mumshad CKA Course](https://kodekloud.com)"
   - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/workloads/pods/)"
+sub_type: core-concept
+source_type: udemy
 tags:
   - kubernetes/deep-dive
 ---
-
 # pod deeper
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **deeper dive**

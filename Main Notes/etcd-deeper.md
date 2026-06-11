@@ -13,10 +13,11 @@ use_cases:
 external_links:
   - "[Mumshad CKA Course](https://kodekloud.com)"
   - "[etcd official website](https://etcd.io)"
+sub_type: core-concept
+source_type: udemy
 tags:
   - kubernetes/deep-dive
 ---
-
 # etcd deeper
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > **deeper dive**
