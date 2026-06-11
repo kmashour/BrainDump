@@ -3,6 +3,24 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-11] - Systems Design & Architecture Patterns Ingestion
+
+### Added
+- **Module 1-7: Software Architecture Patterns:** Created new Reference Note `Reference Notes/1-7_software_architecture_patterns.md` in the AARF style, containing deep dives on Monolith, Modular Monolith, Microservices, Event-Driven Architecture, Serverless, DDD, Clean Architecture, Strangler Fig, BFF, and CQRS, complete with 10 custom Mermaid.js diagrams.
+- **Module 1-8: Distributed Communication & Queues:** Created new Reference Note `Reference Notes/1-8_distributed_communication_and_queues.md` in the AARF style, containing deep dives on synchronous/asynchronous communication, Pub/Sub, message queues, and streaming (Kafka) with scaling diagrams.
+- **Main Notes / Software Architecture Patterns:** Created landing note `Main Notes/software-architecture-patterns.md` and deeper-dive concept note `Main Notes/software-architecture-patterns - Core Patterns.md`.
+- **Main Notes / Distributed Communication & Queues:** Created landing note `Main Notes/distributed-communication.md` and deeper-dive concept note `Main Notes/distributed-communication - Async Queues and Streams.md`.
+
+### Refactored / Upgraded
+- **Reference Notes (1-1 to 1-6) Upgrades:** Distributed raw topics (Availability, Latency, Forward/Reverse Proxy, Connection Pooling, SQL/NoSQL Wide-column, Graph, Time-series, Vector databases, Sharding, Partitioning, Encryption, SSO, SAML) across existing modules in Deep-Intuition (AARF) style.
+- **Mermaid Visualizations:** Injected sequence and topology diagrams for Load Balancer Health Checking, Connection Pool checkout flows, JWT Token structure, database horizontal sharding vs partitioning, and the 10 architecture patterns.
+
+### Ingested Inflow Sources
+The following files have been processed and integrated:
+- `inflow/Architecture_Patterns_Playbook_Raw.md`
+- `inflow/System_Design_Handbook_Raw.md`
+
+---
 
 ## [2026-06-10] - CKA GOLD Extension & Advanced Playbook Release
 

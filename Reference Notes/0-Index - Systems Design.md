@@ -29,6 +29,10 @@ This index contains our system design study modules focused on high-level archit
   *   RESTful HTTP, GraphQL single-endpoint client schemas, transport layer protocols (TCP vs. UDP), and gRPC multiplexing/Protobuf over HTTP/2.
 - 🛡️ **[Module 1-6: Access Control & API Security](1-6_access_control_and_api_security.md)**
   *   AAA foundation, session-based vs. stateless JWT auth, RBAC/ABAC, OAuth 2.0/OIDC, and edge security shields (Rate Limiting, WAF, CORS, SQLi protection).
+- 🏛️ **[Module 1-7: Software Architecture Patterns](1-7_software_architecture_patterns.md)**
+  *   The 10 core architectural patterns: Monolith, Modular Monolith, Microservices, Event-Driven, Serverless, DDD, Clean Architecture, Strangler Fig, BFF, and CQRS in Deep-Intuition (AARF) Style.
+- 📨 **[Module 1-8: Distributed Communication & Queues](1-8_distributed_communication_and_queues.md)**
+  *   Synchronous vs. Asynchronous communication, Pub/Sub, message queues, and distributed streaming (Kafka).
 
 ---
 

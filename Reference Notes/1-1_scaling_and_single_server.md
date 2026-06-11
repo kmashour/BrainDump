@@ -91,3 +91,27 @@ graph LR
         LB --> Node3["Server Node 3"]
     end
 ```
+
+---
+
+## 3. Foundational Metrics: Availability & Latency
+
+### A. Availability (Uptime & Fault Tolerance)
+Availability is the percentage of time a system remains operational and accessible. It is commonly expressed in "nines" (e.g., 99.99% is "four nines", allowing ~52.6 minutes of downtime per year).
+
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Design for high availability using horizontal scaling, active-active or active-passive redundancy, health-checked load balancers, and multi-region replication.
+2. **The Assumptions (Context):** Requires stateless application tiers, network connectivity between regions/nodes, and database engines that support replication (e.g., read replicas or multi-primary).
+3. **The Rationale (Why):** Eliminating Single Points of Failure (SPOF) prevents a single hardware or software crash from taking down the entire service. Load balancers dynamically route traffic away from unhealthy nodes, and replicas preserve data.
+4. **The Failure Loop (What if not):** If a single node is used without redundancy (SPOF), any hardware crash, network partition, or application deadlock leads to a complete service outage (triggering `502 Bad Gateway`, `Connection Refused`, or connection timeouts). A failure of the primary database without failover leaves the app read-only or entirely offline.
+5. **Alternative Case (When to use 'if not'):** For non-critical internal tools, dev/staging environments, or batch processing jobs where brief downtime is acceptable, running a single server avoids the massive cost and synchronization complexity (e.g., CAP theorem tradeoffs) of distributed redundancy.
+
+### B. Latency (Response Time & Snappiness)
+Latency is the time taken to complete a single request or operation, measured in milliseconds (ms) or microseconds (μs).
+
+#### Deep-Intuition (AARF) Breakdown:
+1. **The Answer (Core Pattern):** Minimize latency by introducing edge CDNs for static assets, local in-memory caching (e.g., Redis), connection pooling, optimized database indexes, and database query tuning.
+2. **The Assumptions (Context):** Assumes the application read path can tolerate eventual consistency if cached data is slightly stale, and requires RAM capacity on caching servers.
+3. **The Rationale (Why):** High latency degrades user experience. Users perceive delays above 100ms as non-instantaneous, which directly impacts conversion rates. Total latency is cumulative across network hops, DNS resolution, TLS handshakes, application processing, and database execution.
+4. **The Failure Loop (What if not):** Without latency optimization (e.g., uncached heavy queries, lack of database indexes), application threads block waiting on I/O. Under load, this exhausts the server thread pool, causing request queues to grow, leading to latency cascades, socket timeouts (`Gateway Timeout - 504`), and system collapse.
+5. **Alternative Case (When to use 'if not'):** For heavy analytical workloads (OLAP), reports generation, and asynchronous ETL batch processing, latency is secondary. Prioritizing throughput (processing millions of rows in batches) is more cost-efficient and computationally sensible than optimizing for immediate sub-second responses.

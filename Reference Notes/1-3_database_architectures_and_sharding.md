@@ -31,53 +31,101 @@ graph TD
 
 ## 1. Database Paradigms
 
-A critical decision in system design is selecting the correct database model based on data relations, write/read volume, and transaction consistency requirements.
+Selecting the correct database model depends on data relationship complexity, write/read volumes, latency SLAs, and transaction consistency requirements.
 
 ### A. Relational Databases (SQL / RDBMS)
 * **Examples:** PostgreSQL, MySQL, SQLite, Oracle.
-* **Data Model:** Structured tables with columns, rows, and foreign key relations.
-* **Query Language:** Structured Query Language (SQL).
-* **Key Advantages:**
-  - Support for complex **JOIN operations** across multiple tables.
-  - Strict transaction safety governed by **ACID properties**:
-    - **Atomicity:** All operations in a transaction succeed, or the entire transaction is rolled back (all-or-nothing).
-    - **Consistency:** A transaction shifts the database from one valid state to another, enforcing schemas and constraints.
-    - **Isolation:** Concurrent transactions execute independently without interfering with each other.
-    - **Durability:** Committed transactions survive system crashes.
+* **Data Model:** Highly structured tables with columns, rows, and foreign key relations.
+* **Core Guarantees:** Strict **ACID** (Atomicity, Consistency, Isolation, Durability) transactions.
+* **Key Advantages:** Complex JOIN support; strict relational integrity; standardized SQL.
 
 ### B. Non-Relational Databases (NoSQL)
-NoSQL databases sacrifice relational completeness (JOINs) and sometimes absolute consistency for massive scale, flexibility, and low-latency performance.
+NoSQL engines sacrifice complex joins and absolute consistency to achieve horizontal scaling, schema flexibility, and low-latency performance.
 
 1. **Document Stores:**
    - *Examples:* MongoDB, CouchDB.
-   - *Data Model:* Semi-structured JSON-like documents.
-   - *Best For:* Content management, user profiles, rapidly changing schemas.
+   - *Data Model:* Semi-structured, nested JSON-like documents.
+   - *Best For:* User profiles, catalogs, or domains with rapidly evolving schemas.
 2. **Key-Value Stores:**
    - *Examples:* Redis, Memcached.
-   - *Data Model:* Simple dictionary mapping keys to values, optimized for RAM storage.
-   - *Best For:* Session caching, database query caching, real-time message brokering.
-3. **Wide-Column / Columnar Stores:**
+   - *Data Model:* High-speed distributed hash map storing arbitrary values mapped to unique keys.
+   - *Best For:* Session tokens, rate limiting counters, database query caching.
+3. **Wide-Column / Columnar Family Stores:**
    - *Examples:* Apache Cassandra, ScyllaDB, HBase.
-   - *Data Model:* Multi-dimensional tables indexing rows by partition and clustering keys.
-   - *Best For:* Time-series telemetry, write-heavy logs, multi-region horizontal scaling.
+   - *Data Model:* Multi-dimensional tables indexing rows by partition and clustering keys. Columns can vary per row.
+   - *Best For:* Telemetry log ingestion, large sparse datasets, write-heavy event logging at scale.
 4. **Graph Databases:**
    - *Examples:* Neo4j, Amazon Neptune.
    - *Data Model:* Nodes (entities), Edges (relationships), and Properties.
-   - *Best For:* Recommendation engines, social network mapping, fraud detection.
+   - *Best For:* Relationship-centric applications, social networks, recommendation engines, fraud detection. Traverses links directly (index-free adjacency) without SQL joins.
+5. **Time-Series Databases (TSDB):**
+   - *Examples:* InfluxDB, Prometheus, TimescaleDB.
+   - *Data Model:* Continuously appended time-stamped data points, optimizing time-axis writes and range queries.
+   - *Best For:* Server metrics, IoT sensor telemetry, application logs. Employs delta encoding and compression to minimize disk usage.
+6. **Vector Databases:**
+   - *Examples:* Pinecone, Milvus, Qdrant, Chroma.
+   - *Data Model:* High-dimensional mathematical vectors (embeddings) representing semantic content.
+   - *Best For:* Semantic search, AI-native workflows, LLM retrieval (RAG). Queries use similarity algorithms (Approximate Nearest Neighbors - ANN) instead of exact key matching.
 
 ### C. Selection Matrix
-* **Choose SQL when:** Your schema is highly structured and stable, relationships between entities are dense, and you require strict transactional integrity (e.g., financial ledger).
-* **Choose NoSQL when:** You handle unstructured or semi-structured data, need to write massive volumes of write-heavy events, require sub-millisecond read latencies, or must scale horizontally across multiple regions.
+* **Choose SQL when:** Transactional safety (ACID) is critical, relationships are highly structured, and multi-row consistency is required (e.g., financial ledger).
+* **Choose NoSQL when:** Scale out is the main driver, schema flexibility is required, or access patterns match specialized models (e.g., graph relationships, timeseries logs, similarity vector search).
 
 ---
 
 ## 2. Database Scaling: Partitioning & Sharding
 
-When a single database node hits capacity, we scale the data layer:
-1. **Read Replicas:** Writes go to a primary database node, which replicates data asynchronously to one or more read-only replicas. This scales read volume but introduces **eventual consistency** delays and does not increase write capacity.
-2. **Sharding (Horizontal Partitioning):** Splits a single table horizontally by storing subsets of rows across independent database servers (shards).
-   - **Sharding Key:** The attribute used to route a row to a specific shard (e.g., `user_id`). Choosing a bad sharding key creates **Hot Spots** where one shard handles a disproportionate share of the load, causing latency spikes.
-   - **Re-sharding Complexity:** If nodes are added or removed, data must be redistributed, which is highly CPU-intensive and can cause service degradation.
+As data sizes and throughput requirements grow, we must scale the storage tier horizontally.
+
+### A. Read Replicas
+Writes go to a primary database node, which replicates data asynchronously to one or more read-only replicas. This scales read volume but introduces **eventual consistency** delays and does not increase write capacity.
+
+### B. Partitioning vs. Sharding
+* **Partitioning (Vertical/Horizontal):** Splitting a single table into smaller subsets (partitions) *within the same physical database instance*.
+* **Sharding:** Distributing horizontal subsets of a table across *multiple independent database host servers*.
+
+```mermaid
+graph TD
+    subgraph logical_table["Logical Table (Users)"]
+        R1["Row 1 (ID: 1, Name: Alice)"]
+        R2["Row 2 (ID: 2, Name: Bob)"]
+        R3["Row 3 (ID: 101, Name: Charlie)"]
+        R4["Row 4 (ID: 102, Name: David)"]
+    end
+
+    subgraph partitioning["Partitioning (Single Database Server)"]
+        direction TB
+        subgraph db_host["Database Host Server"]
+            subgraph part1["Partition 1 (IDs 1-100)"]
+                R1
+                R2
+            end
+            subgraph part2["Partition 2 (IDs 101-200)"]
+                R3
+                R4
+            end
+        end
+    end
+
+    subgraph sharding["Sharding (Multiple Database Servers)"]
+        direction LR
+        subgraph shard1["Shard Server A (IDs 1-100)"]
+            SR1["Row 1 (ID: 1, Name: Alice)"]
+            SR2["Row 2 (ID: 2, Name: Bob)"]
+        end
+        subgraph shard2["Shard Server B (IDs 101-200)"]
+            SR3["Row 3 (ID: 101, Name: Charlie)"]
+            SR4["Row 4 (ID: 102, Name: David)"]
+        end
+    end
+```
+
+#### Deep-Intuition (AARF) Breakdown for Database Sharding:
+1. **The Answer (Core Pattern):** Shard a database by choosing a high-cardinality Sharding Key (e.g., hashed `user_id`) and routing queries via consistent hashing or a configuration lookup service.
+2. **The Assumptions (Context):** Requires application-level query routing or database proxy middleware (e.g., Vitess, Citus) and database clients that support distributed routing.
+3. **The Rationale (Why):** Single database instances hit hardware ceilings on disk I/O, memory, and CPU. Sharding partitions both data and physical hardware resources, providing linear scalability for write operations.
+4. **The Failure Loop (What if not):** Selecting a low-cardinality or poorly distributed shard key (e.g., `country` or `created_date`) results in "Hot Spots" where a single shard receives the majority of writes, leading to CPU exhaustion and write latency spikes. If queries omit the shard key, the database must perform a "scatter-gather" query across all shards, adding significant latency.
+5. **Alternative Case (When to use 'if not'):** For read-heavy applications with low write volumes, scaling reads with read replicas is vastly simpler and avoids the immense engineering, transactional, and cross-shard join complexities of sharding.
 
 ---
 
