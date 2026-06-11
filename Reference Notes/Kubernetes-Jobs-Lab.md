@@ -19,4 +19,4 @@ graph TD
 
 ## 1. Lab Resources
 
-* **Interactive Lab HTML Logs:** [jobs.html](jobs.html) (embed: `![[jobs.html]]`)
+* **Interactive Lab HTML Logs:** [../Attachments/jobs.html](../Attachments/jobs.html) (embed: `![[../Attachments/jobs.html]]`)

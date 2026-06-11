@@ -27,7 +27,7 @@ In this lab, we configure user contexts to demonstrate how namespaced Roles rest
 
 ## 2. Interactive Lab Logs
 
-* **Interactive Lab HTML Logs:** [rbac.html](rbac.html) (embed: `![[rbac.html]]`)
+* **Interactive Lab HTML Logs:** [../Attachments/rbac.html](../Attachments/rbac.html) (embed: `![[../Attachments/rbac.html]]`)
 * **Verification Command:** To verify if a user has access to perform a specific action, run:
   ```bash
   kubectl auth can-i create pods --as=developer-user

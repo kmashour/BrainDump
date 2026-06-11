@@ -27,4 +27,4 @@ KinD (Kubernetes in Docker) allows running local multi-node clusters that simula
 
 ## 2. Interactive Lab Logs
 
-* **Interactive Lab HTML Logs:** [resources_lab01.html](../../Attachments/resources_lab01.html) (embed: `![[../../Attachments/resources_lab01.html]]`)
+* **Interactive Lab HTML Logs:** [resources_lab01.html](../Attachments/resources_lab01.html) (embed: `![[../Attachments/resources_lab01.html]]`)

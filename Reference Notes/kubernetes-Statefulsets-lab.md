@@ -19,4 +19,4 @@ graph TD
 
 ## 1. Lab Resources
 
-* **Interactive Lab HTML Logs:** [statefulset-lab.html](statefulset-lab.html) (embed: `![[statefulset-lab.html]]`)
+* **Interactive Lab HTML Logs:** [../Attachments/statefulset-lab.html](../Attachments/statefulset-lab.html) (embed: `![[../Attachments/statefulset-lab.html]]`)

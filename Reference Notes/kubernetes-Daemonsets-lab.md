@@ -19,4 +19,4 @@ graph TD
 
 ## 1. Lab Resources
 
-* **Interactive Lab HTML Logs:** [daemonsets.html](daemonsets.html) (embed: `![[daemonsets.html]]`)
+* **Interactive Lab HTML Logs:** [../Attachments/daemonsets.html](../Attachments/daemonsets.html) (embed: `![[../Attachments/daemonsets.html]]`)

@@ -20,7 +20,7 @@ graph TD
 
 ## 1. Lab Resources & Interactive Logs
 
-* **Interactive Lab HTML Logs:** [deployments.html](../../Attachments/deployments.html) (embed: `![[../../Attachments/deployments.html]]`)
+* **Interactive Lab HTML Logs:** [deployments.html](../Attachments/deployments.html) (embed: `![[../Attachments/deployments.html]]`)
 
 ---
 

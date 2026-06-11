@@ -19,4 +19,4 @@ graph TD
 
 ## 1. Rollout and Rollback Logs
 
-* **Interactive Lab HTML Logs:** [rolling+out+and+rolling+back.html](rolling+out+and+rolling+back.html) (embed: `![[rolling+out+and+rolling+back.html]]`)
+* **Interactive Lab HTML Logs:** [../Attachments/rolling+out+and+rolling+back.html](../Attachments/rolling+out+and+rolling+back.html) (embed: `![[../Attachments/rolling+out+and+rolling+back.html]]`)

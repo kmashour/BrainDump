@@ -27,4 +27,4 @@ In this lab, we configure connection mapping to a target application running on 
 
 ## 2. Interactive Lab Logs
 
-* **Interactive Lab HTML Logs:** [service+discovery+-+lab02+-+resources 1.html](service+discovery+-+lab02+-+resources 1.html) (embed: `![[service+discovery+-+lab02+-+resources 1.html]]`)
+* **Interactive Lab HTML Logs:** [../Attachments/service+discovery+-+lab02+-+resources 1.html](../Attachments/service+discovery+-+lab02+-+resources 1.html) (embed: `![[../Attachments/service+discovery+-+lab02+-+resources 1.html]]`)

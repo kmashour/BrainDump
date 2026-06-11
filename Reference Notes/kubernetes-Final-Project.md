@@ -24,7 +24,7 @@ graph TD
 
 The final project implements a decoupled microservices architecture. A central authentication service handles credential validation and security mappings:
 * **Lab Resources:**
-  * **Architecture Mappings:** [auth-service-resources.html](auth-service-resources.html) (embed: `![[auth-service-resources.html]]`)
+  * **Architecture Mappings:** [../Attachments/auth-service-resources.html](../Attachments/auth-service-resources.html) (embed: `![[../Attachments/auth-service-resources.html]]`)
 
 ---
 

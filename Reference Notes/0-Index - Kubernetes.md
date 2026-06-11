@@ -129,3 +129,4 @@ tags:
 - 🧪 **[Kubernetes Final Project Playbook](kubernetes-Final-Project.md)**
 - 🛠️ **[Kubernetes Tooling & KinD Setup](Kubernetes-Tooling.md)**
 - 🧪 **[Kind Multi-Node Installation](kubernetes-KinD.md)**
+- ⏰ **[Pod Priority and Preemption](PRIORITY-CLASS_Mumshad.md)**

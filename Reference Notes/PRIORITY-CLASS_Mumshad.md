@@ -1,4 +1,34 @@
-Let us now look at priority classes in Kubernetes.
+---
+domains:
+  - "kubernetes"
+tags:
+  - kubernetes/scheduling
+  - kubernetes/priority-class
+---
+
+# Module 8-44: Kubernetes Pod Priority and Preemption
+
+This module covers Kubernetes Pod PriorityClasses, scheduler queue ordering, preemption policy configurations, and resource reservation logic.
+
+---
+
+## 🗺️ Cognitive Map: Pod Priority and Preemption Flow
+
+```mermaid
+flowchart TD
+    Pod["Pending Pod (Priority Class: High)"] --> Scheduler["Scheduler Queue"]
+    Scheduler -->|"1. Inspect Priority Value"| CheckResources{"Resources Available?"}
+    CheckResources -->|"Yes"| Schedule["Schedule Pod"]
+    CheckResources -->|"No"| PreemptPolicy{"Preemption Policy?"}
+    PreemptPolicy -->|"Preempt (Default)"| Evict["Evict Lower Priority Pod"] --> Schedule
+    PreemptPolicy -->|"Never"| Wait["Wait in Queue"]
+```
+
+---
+
+## 1. Concepts & Priority Range
+
+This section covers priority classes in Kubernetes.
 
 We know that Kubernetes runs different applications as pods with different priorities.
 
@@ -10,7 +40,7 @@ Similarly, we may have priority databases, critical applications running on the 
 
 lower priority workloads like background jobs.
 
-Now, we need a way to make sure that higher priority workloads always get scheduled without being interrupted
+We must make sure that higher priority workloads always get scheduled without being interrupted
 
 by lower priority workloads.
 
@@ -158,8 +188,6 @@ But will it kill the existing preempt, or will it evict the existing workload or
 
 That is defined by the preemption policy.
 
-Well, that's it for this lecture.
 
-Head over to the labs and practice what we just learned.
 
 ![CKA: Certified Kubernetes Administrator](https://img-c.udemycdn.com/open-badges/v2/badge-class/1632574960/cka_from_cncfsite__281_2911058048046883505391.png)
