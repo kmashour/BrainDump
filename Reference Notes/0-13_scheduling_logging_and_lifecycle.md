@@ -1840,21 +1840,68 @@ flowchart TD
 ---
 
 ### 5.4 Pod Priority and Preemption
-When resources are scarce, Kubernetes can terminate lower-priority workloads to make room for critical services.
 
-#### 1. Define Priority Classes:
-A `PriorityClass` is a cluster-scoped object that defines a priority value.
+When resources are scarce, Kubernetes can terminate or evict lower-priority workloads to make room for higher-priority critical services. This is controlled by cluster-scoped **PriorityClass** resources.
+
+#### 1. Priority Ranges & Defaults
+*   **Object Scope:** PriorityClasses are non-namespaced (cluster-scoped) resources. Once defined, they can be referenced by any Pod across any namespace.
+*   **User Application Range:** Defined using a 32-bit integer from `-2,000,000,000` to `1,000,000,000`. Larger numbers indicate higher priority.
+*   **System Critical Range:** Integers from `2,000,000,001` to `2,000,000,000` (or up to `2,000,001,000`) are reserved for system-critical components (such as `kube-apiserver` or `kubelet` daemons) to prevent them from being preempted by user applications.
+*   **System Classes:** By default, Kubernetes includes:
+    *   `system-node-critical` (Value: `2000001000`)
+    *   `system-cluster-critical` (Value: `2000000000`)
+*   **Default Pod Priority:** Pods without an explicit `priorityClassName` are assigned a default priority value of `0`. You can change this behavior by marking a single PriorityClass with `globalDefault: true`. Only one PriorityClass in the cluster can be the global default.
+
+#### 2. Define a PriorityClass
 ```yaml
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: high-priority-db
-value: 1000000
-globalDefault: false
+value: 1000000                  # Numeric priority value
+globalDefault: false            # If true, sets this as default for all pods without priorityClassName
+preemptionPolicy: PreemptLowerPriority # PreemptLowerPriority (default) or Never
 description: "Used for core database pods."
 ```
 
-#### 2. Pod Preemption Flow:
+#### 3. Pod Specification Mapping
+Reference the PriorityClass name inside the Pod spec:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: critical-db-pod
+spec:
+  priorityClassName: high-priority-db
+  containers:
+  - name: mysql
+    image: mysql
+```
+
+#### 4. Preemption Policies
+The scheduling behavior of a pending pod when resources are fully consumed is dictated by its `preemptionPolicy`:
+*   **`PreemptLowerPriority` (Default):** The scheduler enters the preemption phase, identifies a node where evicting lower-priority pods will free up enough resources, evicts those lower-priority pods (sending them `SIGTERM`), and schedules the higher-priority pod.
+*   **`Never` (Non-Preempting):** The pod behaves as non-preempting. It will **never** trigger the eviction or termination of lower-priority workloads. Instead, it remains in the scheduling queue, waiting for resources to free up naturally. However, once resources do free up, it is still prioritized for scheduling over other lower-priority pods also waiting in the queue.
+
+#### 5. CLI Management
+```bash
+# List all priority classes in the cluster
+kubectl get priorityclasses
+# or
+kubectl get pc
+```
+
+#### 6. Detailed Pod Preemption Flow
+```mermaid
+flowchart TD
+    Pod["Pending Pod (Priority Class: High)"] --> Scheduler["Scheduler Queue"]
+    Scheduler -->|"1. Inspect Priority Value"| CheckResources{"Resources Available?"}
+    CheckResources -->|"Yes"| Schedule["Schedule Pod"]
+    CheckResources -->|"No"| PreemptPolicy{"Preemption Policy?"}
+    PreemptPolicy -->|"Preempt (Default)"| Evict["Evict Lower Priority Pod"] --> Schedule
+    PreemptPolicy -->|"Never"| Wait["Wait in Queue"]
+```
+
 1.  A high-priority Pod is created but cannot find a node with enough resources.
 2.  The scheduler enters the **Preemption** phase.
 3.  It scans nodes to find a node where evicting lower-priority Pods will free up enough CPU/memory.

@@ -367,15 +367,17 @@ Kubelet TLS bootstrapping allows new worker nodes to join the cluster and obtain
 
 ---
 
-## 4. Kubeconfig
+## 4. Kubeconfig and API Connection Profiles
 
-Kubeconfig files manage cluster access information, client credentials, and contexts. The default location is `~/.kube/config`.
+Kubeconfig files manage cluster access information, client credentials, and contexts. `kubectl` uses these configuration profiles to locate, authenticate, and route commands to target Kubernetes clusters.
 
-### 4.1 Structure of Kubeconfig
-A Kubeconfig is divided into three sections:
-- **Clusters:** API endpoints and corresponding Certificate Authorities.
-- **Users:** Credentials (token, client certificate/key, or password).
-- **Contexts:** Binds a user to a cluster and sets a default namespace.
+### 4.1 KUBECONFIG Components
+A KUBECONFIG file organizes connection information using three collections:
+* **Clusters:** Defines cluster API server endpoints and their associated Certificate Authority (CA) data:
+  * `server`: The target API server URL.
+  * `certificate-authority` or `certificate-authority-data`: The file path or base64-encoded CA certificate used to verify the server's certificate.
+* **Users:** Stores the credentials used to authenticate against the clusters (e.g., client certificates, tokens, or cloud provider SSO details).
+* **Contexts:** Binds a specific `user` to a specific `cluster` and default `namespace` (e.g., `context: user-admin + prod-cluster`).
 
 ```yaml
 apiVersion: v1
@@ -404,40 +406,52 @@ contexts:
 current-context: prod-admin-context
 ```
 
-### 4.2 Kubeconfig Management Commands
-```bash
-# View the merged active kubeconfig
-kubectl config view
+### 4.2 Config Management & CLI Selection
+* **Default Path:** `kubectl` searches for a config file at `${HOME}/.kube/config` unless overridden.
+* **Environment Variable Merging:** You can specify multiple configuration paths using the `KUBECONFIG` environment variable (separated by colons on Linux/macOS). `kubectl` merges these configurations at runtime.
+* **Command Override:** You can target a specific config file directly using the `--kubeconfig` flag:
+  ```bash
+  kubectl --kubeconfig=/path/to/custom/config get pods
+  ```
+* **Context Management & Switching:**
+  ```bash
+  # View the merged active kubeconfig configuration details
+  kubectl config view
+  
+  # Switch the current-context
+  kubectl config use-context prod-admin-context
+  
+  # Set the default namespace for the current context
+  kubectl config set-context --current --namespace=finance
+  
+  # Create a new cluster entry
+  kubectl config set-cluster staging-cluster \
+    --server=https://192.168.1.20:6443 \
+    --certificate-authority=/etc/kubernetes/pki/ca.crt \
+    --embed-certs=true
+  
+  # Create a new user entry
+  kubectl config set-credentials dev-user \
+    --client-certificate=/etc/kubernetes/pki/users/dev-user.crt \
+    --client-key=/etc/kubernetes/pki/users/dev-user.key \
+    --embed-certs=true
+  
+  # Create a new context entry binding user and cluster
+  kubectl config set-context dev-context \
+    --cluster=staging-cluster \
+    --user=dev-user \
+    --namespace=dev
+  ```
 
-# View a custom kubeconfig file
-kubectl config view --kubeconfig=/root/custom-config.yaml
+### 4.3 TLS Trust and Certificate Validation
+* **TLS Handshake:** During the initial connection, the API server sends its certificate. `kubectl` uses the configured `certificate-authority` data to verify that the certificate was signed by a trusted authority.
+* **Bypass Verification:** For test environments, you can disable TLS verification, though this exposes the connection to man-in-the-middle attacks:
+  ```yaml
+  insecure-skip-tls-verify: true
+  ```
+* **KinD Clusters:** KinD generates a KUBECONFIG file during cluster bootstrap using `kubeadm` commands executed inside control-plane containers, storing the TLS certs automatically.
 
-# Switch the current-context
-kubectl config use-context prod-admin-context
-
-# Set the default namespace for the current context
-kubectl config set-context --current --namespace=finance
-
-# Create a new cluster entry
-kubectl config set-cluster staging-cluster \
-  --server=https://192.168.1.20:6443 \
-  --certificate-authority=/etc/kubernetes/pki/ca.crt \
-  --embed-certs=true
-
-# Create a new user entry
-kubectl config set-credentials dev-user \
-  --client-certificate=/etc/kubernetes/pki/users/dev-user.crt \
-  --client-key=/etc/kubernetes/pki/users/dev-user.key \
-  --embed-certs=true
-
-# Create a new context entry binding user and cluster
-kubectl config set-context dev-context \
-  --cluster=staging-cluster \
-  --user=dev-user \
-  --namespace=dev
-```
-
-### 4.3 Merging Kubeconfigs
+### 4.4 Merging Kubeconfigs manually
 If you have multiple separate Kubeconfig files and need to consolidate them:
 ```bash
 # Concatenate files in the KUBECONFIG environment variable, then flatten and save
@@ -483,7 +497,15 @@ graph LR
 
 ## 6. Role-Based Access Control (RBAC)
 
-RBAC controls API access using Roles and RoleBindings. Resources in Kubernetes are either Namespaced or Cluster-scoped:
+RBAC controls API access using Roles and RoleBindings. 
+
+### 6.1 Authentication vs. Authorization
+* **Authentication (AuthN):** Verifies the identity of the client sending the request (e.g., verifying TLS certificates, tokens, or Single Sign-On credentials).
+* **Authorization (AuthZ):** Determines what actions the authenticated client is permitted to perform.
+* **Zero-Trust Default Policy:** Kubernetes operates on a zero-trust model. By default, authenticated users have zero authorizations and cannot access any cluster resources until explicitly configured.
+
+### 6.2 Namespaced vs. Cluster-Scoped Resources
+Resources in Kubernetes are either Namespaced or Cluster-scoped:
 - **Namespaced:** Pods, Services, Deployments, ConfigMaps, Secrets, PVCs.
 - **Cluster-scoped:** Nodes, Namespaces, PersistentVolumes, ClusterRoles, ClusterRoleBindings, CustomResourceDefinitions (CRDs).
 
@@ -495,11 +517,12 @@ kubectl api-resources --namespaced=true
 kubectl api-resources --namespaced=false
 ```
 
-### 6.1 RBAC Primitives
-- **Role:** Defines rules (apiGroups, resources, verbs) *within a single namespace*.
+### 6.3 RBAC Primitives
+- **Role:** Defines rules (apiGroups, resources, verbs) *within a single namespace*. Confined to a single namespace and cannot authorize access to cluster-scoped resources (such as Nodes or PVs).
 - **RoleBinding:** Assigns a Role to subjects (Users, Groups, ServiceAccounts) *within that namespace*.
-- **ClusterRole:** Defines rules *cluster-wide* (applies to non-namespaced resources, or all namespaces).
+- **ClusterRole:** Defines rules *cluster-wide* (applies to non-namespaced resources, or all namespaces). Used to manage cluster-scoped resources or namespaced resources across all namespaces.
 - **ClusterRoleBinding:** Assigns a ClusterRole to subjects *cluster-wide*.
+- **RoleBinding to ClusterRole:** If you bind a ClusterRole using a namespaced `RoleBinding`, the permissions defined in the ClusterRole are restricted to the namespace of that RoleBinding.
 
 ```
 NAMESPACE SCOPE:
@@ -509,7 +532,7 @@ CLUSTER SCOPE:
 [ClusterRole: node-admin] <=====(ClusterRoleBinding)=====> [User: michelle] (Applies to all namespaces and cluster-wide resources)
 ```
 
-### 6.2 Complete YAML Templates
+### 6.4 Complete YAML Templates
 
 #### Role (Namespaced)
 ```yaml
@@ -578,7 +601,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 
-### 6.3 Restricting Access by Resource Names
+### 6.5 Restricting Access by Resource Names
 You can limit access to specific resource instances using `resourceNames`:
 ```yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -593,12 +616,12 @@ rules:
   verbs: ["get", "update"]
 ```
 
-### 6.4 ClusterRole bound with RoleBinding (Best Practice)
+### 6.6 ClusterRole bound with RoleBinding (Best Practice)
 > [!TIP]
 > You can bind a `ClusterRole` using a `RoleBinding` in a specific namespace. This grants the permissions of the ClusterRole *only within that namespace*. This allows you to define a single common policy (e.g., `view-only-clusterrole`) and reuse it across multiple namespaces without duplicating Role objects.
 
-### 6.5 Testing Permissions with `kubectl auth can-i`
-Verify RBAC configurations using the `can-i` command line utility:
+### 6.7 Testing and Verifying Permissions (`kubectl auth can-i`)
+Verify RBAC configurations using the `can-i` command-line utility. This allows administrators to test and debug API access policies without logging in as the target user:
 
 ```bash
 # Check if you can perform an action
@@ -607,6 +630,9 @@ kubectl auth can-i create deployments
 # Check if a specific user can perform an action in a namespace
 kubectl auth can-i list secrets --as dev-user --namespace dev
 
+# Verify if a user can create pods (impersonation test)
+kubectl auth can-i create pods --as=developer-user
+
 # Check if a ServiceAccount can perform an action
 kubectl auth can-i get pods --as system:serviceaccount:dev:build-agent-sa --namespace dev
 
@@ -614,7 +640,9 @@ kubectl auth can-i get pods --as system:serviceaccount:dev:build-agent-sa --name
 kubectl auth can-i delete pv --as-group system:masters
 ```
 
-### 6.6 Step-by-Step Walkthrough: Restricting ServiceAccount Access
+* **Interactive Lab HTML Logs:** Refer to the hands-on verification logs: [../Attachments/rbac.html](../Attachments/rbac.html) (embed: `![[../Attachments/rbac.html]]`)
+
+### 6.8 Step-by-Step Walkthrough: Restricting ServiceAccount Access
 Following the principle of least privilege, we will create a service account representing an application workspace, grant it read-only access to pods in a specific namespace, and verify the isolation.
 
 #### Step 1: Create an Isolated Namespace
@@ -1040,15 +1068,23 @@ kubectl run trusted-client --image=busybox --labels="access=true" -n netpol-test
 
 ## 11. ConfigMap & Secret Security Management
 
-Managing application configurations and secrets securely is a key operational requirement.
+Decoupling configuration parameters and credentials from container images allows application containers to remain environment-agnostic, running unchanged across development, test, and production stages.
 
 ### 11.1 ConfigMaps vs. Secrets
-* **ConfigMaps:** Store non-sensitive configuration data (e.g., environment variables, config files) in plaintext.
-* **Secrets:** Store sensitive data (e.g., passwords, API keys, certificates) encoded in Base64.
-  * **Important:** Base64 is NOT encryption. It is merely encoding. Anyone who can read the Secret object can decode it: `echo "base64-string" | base64 --decode`.
+* **ConfigMaps:** Store non-sensitive configuration data (e.g., environment variables, settings, config files) in plaintext.
+* **Secrets:** Store sensitive data (e.g., passwords, API keys, certificates) in Base64-encoded format.
+  * **Important:** Base64 is NOT encryption. It is merely encoding. Anyone who has permission to read the Secret object can easily decode it:
+    ```bash
+    echo "base64-encoded-string" | base64 --decode
+    ```
 
-### 11.2 Secret Protection Mechanisms
+### 11.2 Secret Protection & Runtime Security
 * **tmpfs Mounting:** When a Secret is mounted as a volume inside a Pod, the Kubelet writes the secret files into a **`tmpfs`** (RAM-backed) filesystem. The secret data is never written to the physical storage disk of the worker node.
+* **Decryption at Runtime:** External encryption-at-rest tools (such as HashiCorp Vault or AWS KMS) encrypt secrets before they reach the cluster, but Kubernetes decrypts them at the API layer so container processes can consume them in plain text.
+* **Environment Verification:** Inside a container, environment variables sourced from secrets are exposed in plain text to allow the application process to consume them. You can audit this state via:
+  ```bash
+  kubectl exec -it <pod-name> -- env
+  ```
 * **Encryption at Rest:** By default, Secrets are stored in `etcd` in plaintext. To encrypt them, you must configure an `EncryptionConfiguration` object on the `kube-apiserver` using providers like `aescbc` or KMS:
   ```yaml
   apiVersion: apiserver.config.k8s.io/v1
@@ -1065,14 +1101,107 @@ Managing application configurations and secrets securely is a key operational re
   ```
   Enable this by adding the flag `--encryption-provider-config=/etc/kubernetes/enc/enc.yaml` to the api-server.
 
-### 11.3 Injection Methods
-ConfigMaps and Secrets can be injected into containers in two ways:
-1. **Environment Variables:**
-   * Values are loaded when the container starts.
-   * **Pitfall:** If values are updated in the ConfigMap/Secret, env variables are NOT updated inside the running container until it restarts.
-2. **Volume Mounts:**
-   * ConfigMaps and Secrets are mounted as directories, with keys appearing as files.
-   * **Advantage:** Kubelet periodically syncs updates. Modifications to the ConfigMap/Secret will automatically propagate as file updates inside the container within a few minutes (without restarting the container).
+### 11.3 Core Secret Types
+Kubernetes classifies secrets by their intended usage patterns to validate their structures:
+
+* **Opaque Secrets (`Opaque`):** The default type for general-purpose configuration secrets (such as databases or API keys). Keys and values are arbitrary base64-encoded strings.
+* **TLS Secrets (`kubernetes.io/tls`):** Designed specifically for storing TLS certificates and private keys. Must contain two keys: `tls.crt` and `tls.key`. Applications (such as Ingress Controllers) rely on these exact keys to load certificates.
+* **Docker Registry Secrets (`kubernetes.io/dockerconfigjson`):** Stores credentials for pulling images from private container registries. Configured inside the Pod spec using `imagePullSecrets`.
+* **Service Account Secrets (`kubernetes.io/service-account-token`):** Used by Pods to authenticate requests to the Kubernetes API server. The API server generates the token secret automatically when a ServiceAccount is created, and mounts it into the Pod at `/var/run/secrets/kubernetes.io/serviceaccount`.
+* **Basic Authentication Secrets (`kubernetes.io/basic-auth`):** Designed for basic HTTP authentication, requiring two keys: `username` and `password`.
+* **SSH Authentication Secrets (`kubernetes.io/ssh-auth`):** Used for SSH key credential authentication. The private key is mounted into the container as a read-only volume to prevent modifications.
+
+### 11.4 Injection Methods & Decoupling Mechanics
+ConfigMaps and Secrets can be injected into container runtimes in three ways:
+
+#### A. Environment Variables
+Injects keys as environment variables directly available to the application process.
+* **YAML Syntax:**
+  ```yaml
+  spec:
+    containers:
+      - name: app
+        image: my-app
+        env:
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: LOG_LEVEL
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: DB_PASSWORD
+  ```
+* **Pitfall:** If values are updated in the ConfigMap/Secret, env variables are **NOT** updated inside the running container until the container is restarted.
+
+#### B. Command-Line Arguments
+Injects ConfigMap or Secret values as start arguments for the container entrypoint.
+```yaml
+spec:
+  containers:
+    - name: app
+      image: my-app
+      command: ["/bin/sh", "-c"]
+      args: ["echo $(MY_CONFIG_VAR)"]
+      env:
+        - name: MY_CONFIG_VAR
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: MY_CONFIG_VAR
+```
+
+#### C. Volume Mounts
+You can mount an entire ConfigMap or Secret as a volume, exposing keys as configuration files inside the container filesystem:
+* **YAML Syntax:** To declare multi-line files inside a YAML ConfigMap, use the literal block scalar indicator `|`.
+* **subPath Usage:** When mounting a configuration file into an existing directory (such as `/etc/nginx/`), configure `subPath` to prevent the volume mount from overwriting other files in that directory.
+```yaml
+spec:
+  containers:
+    - name: web
+      image: nginx
+      volumeMounts:
+        - name: nginx-config-vol
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+  volumes:
+    - name: nginx-config-vol
+      configMap:
+        name: nginx-config
+```
+* **Advantage:** Kubelet periodically syncs updates. Modifications to the ConfigMap/Secret will automatically propagate as file updates inside the container within a few minutes (without restarting the container). Note that subPath mounts do not receive automatic updates.
+
+### 11.5 Imperative Workflows & Version Control Export
+To build configurations quickly, use imperative commands and export them for version control:
+
+#### A. Imperative CLI Creation
+* **ConfigMap:**
+  ```bash
+  kubectl create configmap app-config \
+    --from-literal=LOG_LEVEL="INFO" \
+    --from-literal=DATABASE_URL="mysql://db:3306"
+  ```
+* **Generic Secret (Opaque):**
+  ```bash
+  kubectl create secret generic app-secret \
+    --from-literal=DB_PASSWORD="super-secret-password"
+  ```
+* **Docker Registry Secret:**
+  ```bash
+  kubectl create secret docker-registry my-registry-secret \
+    --docker-server=<registry-server> \
+    --docker-username=<username> \
+    --docker-password=<password> \
+    --docker-email=<email>
+  ```
+
+#### B. Exporting to Version Control
+To store configurations in git, export the live settings as a clean template YAML:
+```bash
+kubectl get configmap app-config -o yaml > app-config.yaml
+```
 
 ---
 

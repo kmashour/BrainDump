@@ -606,3 +606,51 @@ workload-leader-election       2098              2d
    ```bash
    kubectl delete validatingwebhookconfiguration audit-webhook-poc
    ```
+
+---
+
+## 10. Kubernetes Core Architecture, Node Heartbeats, and Pod Design Patterns
+
+### 10.1 Orchestration Needs & Scaling Limits
+* **Compose Limitations:** Standalone engines (like Docker Compose) can manage small container groups but struggle to scale beyond 50 containers. They lack native support for container-to-container network isolation, cross-host routing, and automated failover.
+* **Kubernetes Value:** Kubernetes provides a clustered runtime environment to automate the lifecycle, scaling, and recovery of large-scale container deployments.
+
+### 10.2 Control Plane & Worker Node Component Deep-Dive
+* **Control Plane (Master Node):**
+  * `kube-apiserver`: The REST gateway for the cluster. All components communicate via the API server. No component can write directly to `etcd`. It handles authentication, authorization, and schema validation.
+  * `etcd`: A highly secure, low-latency, key-value datastore that stores the entire cluster configuration and metadata.
+  * `kube-scheduler`: Evaluates resource requirements (e.g., CPU, Memory requests) and assigns Pods to the most appropriate worker nodes. By default, it targets a maximum allocation of 80% of node capacity.
+  * `kube-controller-manager`: Runs controller loops (such as Node Controller, Job Controller) to regulate cluster state and reconcile differences between observed and desired configurations.
+* **Worker Node:**
+  * `kubelet`: Node agent that communicates with the control plane API. It receives Pod specs, instructs the container runtime (e.g., `containerd`) to run containers, and monitors states.
+  * `kube-proxy`: Manages host network rules, distributing IPs and configuring packet routing to balance traffic across Pods. It decouples the network namespace from the container runtime to prevent routing conflicts.
+
+### 10.3 Node Lifecycle Monitoring & Failure Detection Windows
+The Controller Manager monitors node health through a series of status checks:
+1. **Heartbeat:** The `kubelet` sends a status update to the API server every **5 seconds**.
+2. **Grace Period (40 seconds):** If the API server does not receive an update within **40 seconds**, the Controller Manager flags the node as unreachable.
+3. **Unreachable Status:** The API server stops routing new requests to the node.
+4. **Eviction Window (5 minutes):** If the node remains unreachable for **5 minutes**, the Controller Manager initiates Pod eviction, terminating the workloads and rescheduling them to healthy nodes.
+* **Cloud Abstraction:** In managed cloud environments (such as AWS EKS), Control Plane host components are abstracted from users. Control Plane failures or VM maintenance are managed by the cloud provider.
+
+### 10.4 Pod Design Patterns: Single-Container vs. Multi-Container Sidecars
+* **Atomic Workload Units:** The Pod is the smallest unit of deployment in Kubernetes. By default, a Pod contains a single container running the main application process.
+* **Multi-Container Sidecar Pattern:** In advanced configurations, a Pod can host multiple containers that work in tandem:
+  * **Sidecar Container:** A helper container that runs alongside the main application container to perform auxiliary tasks (e.g., a logging agent that reads the main container's stdout and streams it to a collector).
+  * **Lifecycle:** Both containers share the same network namespace and volume mounts, starting up and shutting down together.
+
+---
+
+## 11. Microservice Security & JWT Authentication Flow
+
+The final project implements a decoupled microservices architecture. A central authentication service handles credential validation and security mappings:
+
+### 11.1 JWT-Based Authentication Flow
+To secure communications between services:
+1. The user logs in via the authentication service.
+2. The authentication service generates a signed JSON Web Token (JWT).
+3. The user passes this JWT in the HTTP authorization headers of all subsequent requests.
+4. Internal microservices decode and validate the token signature to authorize access without re-querying the authentication database.
+
+* **Lab Resources:**
+  * **Auth Service Architecture Mappings:** [../Attachments/auth-service-resources.html](../Attachments/auth-service-resources.html) (embed: `![[../Attachments/auth-service-resources.html]]`)

@@ -180,7 +180,12 @@ You can configure the backing medium for `emptyDir`:
 - **Memory (RAM-backed tmpfs):** Sets `medium: Memory`. Files are written directly to RAM. 
   - *Warning:* tmpfs volumes count against your container's memory limit. If your app writes data exceeding the container's memory limits, the Pod will be evicted with an **OOMKilled** or **Evicted** status.
 
-#### 3. Pod Manifest Example
+#### 3. Common Use Cases
+* **Caching:** Storing temporary cache databases (e.g., redis or application caches) to reduce external database queries.
+* **Process Checkpoints:** Saving application checkpoints or session logs for long-running processes so they can resume from where they stopped if a container crashes and restarts.
+* **Scratch Space:** Providing temporary filesystem space for data sorting, processing, or merging operations.
+
+#### 4. Pod Manifest Example
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -253,6 +258,21 @@ spec:
       path: /var/log
       type: Directory
 ```
+
+---
+
+### C. Network File System (`nfs`)
+An `nfs` volume mounts an external Network File System export into the Pod over the network.
+* **Persistence:** Because the storage is decoupled from the cluster nodes, data is persistent even if Pods are rescheduled to other nodes.
+* **Shared Write (RWX):** Multiple Pods running on different nodes can read from and write to the same NFS volume simultaneously, making it suitable for shared file systems.
+* **Example Config:**
+  ```yaml
+  volumes:
+    - name: nfs-storage
+      nfs:
+        server: 192.168.1.8
+        path: /mnt/shared
+  ```
 
 ---
 

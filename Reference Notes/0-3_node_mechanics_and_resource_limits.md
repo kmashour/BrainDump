@@ -426,14 +426,47 @@ When a node transitions to `NotReady`, the primary diagnostic path starts with h
 
 Kubernetes enables cluster resource isolation and partitioning using declarative limits.
 
-### A. Resource Requests & Limits
+### A. Resource Measurement Units
+To configure resource boundaries, containers declare CPU and memory values in the following units:
+* **CPU Units:** Measured in cores. Fractional values are specified in millicores (denoted with `m`).
+  * `1000m` is equivalent to 1 CPU core.
+  * `500m` is equivalent to 0.5 CPU cores.
+  * `1m` is the minimum allowable CPU increment.
+* **Memory Units:** Measured in bytes. It is best practice to use **binary prefixes** (power-of-2: `Ki`, `Mi`, `Gi`) rather than **decimal prefixes** (power-of-10: `K`, `M`, `G`) because host operating systems evaluate RAM in binary bytes.
+  * `128Mi` (Mebibytes) = $128 \times 1024 \times 1024 = 134,217,728$ bytes.
+  * `128M` (Megabytes) = $128 \times 1000 \times 1000 = 128,000,000$ bytes.
+  * `1Gi` (Gibibyte) = $1 \times 1024^3$ bytes.
+  * `1G` (Gigabyte) = $1 \times 1000^3$ bytes.
+
+### B. Resource Requests & Limits
 Containers in a Pod specify CPU and memory resources using `requests` and `limits`:
 * **Requests:** Used by `kube-scheduler` during scheduling to decide which node has enough unallocated capacity to fit the Pod.
-  * CPU requests map to CPU shares in Linux cgroups.
+  * CPU requests map to relative weights (`cpu.shares` in cgroups v1 / `cpu.weight` in cgroups v2).
   * Memory requests represent the memory that the container is guaranteed.
 * **Limits:** Enforces hard boundaries on resource usage.
-  * CPU limits are enforced using CFS (Completely Fair Scheduler) quotas. If a container exceeds its CPU limit, it is **throttled**, but not terminated.
-  * Memory limits are enforced as hard limits. If a container exceeds its memory limit, the host kernel terminates the process with an Out Of Memory (OOM) error, raising `Exit Code 137` (OOMKilled).
+  * CPU limits are enforced using CFS (Completely Fair Scheduler) quotas.
+  * Memory limits are enforced as hard limits.
+
+### C. Pod-Level Scheduling Calculations
+The `kube-scheduler` treats a Pod as a single resource reservation unit.
+* **Calculation:** The scheduler sums the resource requests of all containers inside the Pod.
+  * *Container A:* Requests `100m` CPU, `200Mi` Memory.
+  * *Container B:* Requests `100m` CPU, `200Mi` Memory.
+  * *Total Pod Request:* `200m` CPU, `400Mi` Memory.
+* **Placement:** The scheduler will only place the Pod on a node that has at least `200m` CPU and `400Mi` Memory of unallocated capacity (i.e. Allocatable capacity minus sum of existing Pod requests). If no such node exists, the Pod remains in a **Pending** state.
+
+### D. Runtime Resource Enforcement
+Kubernetes enforces resource usage differently based on whether resources are compressible or non-compressible:
+
+#### 1. CPU (Compressible Resource)
+* If a Pod exceeds its CPU request but remains below its CPU limit, the kernel allows the Pod to consume idle CPU cycles if they are available.
+* If multiple Pods surge and compete for CPU, the kernel allocates CPU shares proportionally based on their configured requests.
+* If a Pod exceeds its CPU **limit**, the kernel throttles the container's CPU shares using CFS bandwidth quotas, reducing application performance without terminating the process.
+
+#### 2. Memory (Non-Compressible Resource)
+* If a Pod attempts to allocate more memory than its configured request, the host kernel allows it as long as there is free physical memory on the host.
+* If the host experiences memory pressure, the kernel selectively terminates processes using the **Out of Memory (OOM) Killer**, assigning OOM scores based on the Pod's Quality of Service (QoS) tier.
+* If a container attempts to allocate memory beyond its configured **limit**, the host kernel immediately terminates it with an `OOMKilled` (Exit Code 137) error. The container is then restarted according to the Pod's restart policy.
 
 ### B. LimitRange (`LimitRange`)
 LimitRanges enforce resource constraints (min, max, and defaults) at the namespace level.

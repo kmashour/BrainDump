@@ -53,63 +53,112 @@ Kubernetes is built to react to failures at different structural levels. Failure
 
 Probes are health checks executed periodically by the local `kubelet` to monitor container health and manage traffic flow.
 
+### A. Process Monitoring vs. Deep Health Checks
+* **Default PID Monitoring:** By default, the `kubelet` only checks if the container's main process ID (PID 1) is active. If an application crashes or exits, the Kubelet detects it.
+* **The Deadlock Trap:** If the application experiences a internal deadlock, memory lock, or database connection pool freeze but the process remains running, basic PID checks report the container as healthy. Users, however, will face request timeouts or HTTP 500 errors.
+* **Deep Probes:** Active probes query HTTP endpoints, attempt TCP handshakes, or execute scripts inside the container to verify the application is fully functional.
+
+### B. Pod Lifecycle Phases and Conditions
+
+#### 1. Pod Lifecycle Phases (`status.phase`)
+The overall state of a Pod is tracked through five distinct phases:
+1. **Pending:** The Pod has been accepted by the API server but one or more containers are not yet running (e.g. scheduling decisions are being made, or container images are downloading).
+2. **Running:** The Pod has been scheduled to a node, all containers have been created, and at least one container is running, starting, or restarting.
+3. **Succeeded:** All containers in the Pod have terminated successfully (exit code 0) and will not be restarted.
+4. **Failed:** All containers in the Pod have terminated, and at least one container has terminated in failure (non-zero exit code).
+5. **Unknown:** The state of the Pod cannot be obtained, usually due to a communication failure between the control plane and the worker node's Kubelet.
+
+#### 2. Pod Conditions (`status.conditions`)
+Conditions are granular status boolean gates checked throughout the Pod lifecycle:
+* `PodScheduled`: The Pod has been successfully scheduled to a node.
+* `Initialized`: All `initContainers` have started and completed successfully.
+* `ContainersReady`: All containers inside the Pod are ready to run.
+* `Ready`: The Pod is healthy and ready to serve network requests, indicating it should be added to the load-balancing pools of matching Services.
+
+---
+
+### C. Probe Types and Actions
+
+| Probe Type | Primary Use Case | Action on Failure | Traffic Handling |
+| :--- | :--- | :--- | :--- |
+| **Startup Probe** | Guard slow-starting, legacy, or heavy applications during boot. | Kills container and triggers restart. | Ignored (traffic routing is already blocked). |
+| **Liveness Probe** | Detect runtime deadlocks, freezes, or memory locks. | Kills container and triggers restart. | Ignored (failsafe restart happens). |
+| **Readiness Probe** | Verify container is fully prepared to handle client traffic (e.g. database sync, warm caches). | None (container continues running). | Removes Pod IP from Service endpoint pools immediately. |
+
+* **Startup Probe Mechanics:** Disables liveness and readiness probes until the startup probe successfully passes. This gives slow containers a generous initialization window (e.g. 5 minutes) without risking premature liveness restarts.
+* **Readiness Probe Recovery:** Unlike liveness failures, a readiness failure does not trigger a container reboot. Once the container passes its readiness check again, its IP address is automatically restored to the Service endpoints pool.
+
+---
+
+### D. Probe Execution Methods
+* **Exec Command:** Runs a command inside the container namespaces. An exit status of `0` is healthy; any non-zero exit code (e.g. 1) is unhealthy.
+* **HTTP GET:** Sends an HTTP GET request to the container's IP on a specified port and path.
+  * **Success:** Status code $\ge 200$ and $< 400$.
+  * **Failure:** Status code $\ge 400$ or connection failures.
+* **TCP Socket:** Attempts to establish a TCP 3-way handshake on the specified port. If the port is open and the connection is successful, the container is healthy.
+
+---
+
+### E. Configuration Timing Parameters
+Probes are defined in the container spec. Fine-tune behavior using these settings:
+* `initialDelaySeconds`: Wait time (in seconds) after the container starts before launching the first probe. Default is `0`.
+* `periodSeconds`: Execution frequency (in seconds) of the probe. Default is `10`.
+* `timeoutSeconds`: Maximum time (in seconds) to wait for a probe response before marking it a failure. Default is `1`.
+* `successThreshold`: Consecutive successful probe results required to transition an unhealthy container back to a healthy state. Default is `1` (must be `1` for liveness/startup probes).
+* `failureThreshold`: Consecutive probe failures required to transition the container to an unhealthy state. Default is `3`.
+
+### F. Grace Period Operations
+When a liveness probe fails and triggers a container restart:
+1. The Kubelet initiates a graceful shutdown, sending `SIGTERM` to the container process.
+2. The Kubelet honors the `terminationGracePeriodSeconds` configuration (default: 30s) to allow processes to flush buffers and close connections.
+3. If the grace period expires before the process terminates, the host kernel issues `SIGKILL` to force termination.
+4. For readiness failures, the container is NOT shut down; instead, its traffic routing is immediately paused in the endpoints pool.
+
+### G. Example Configuration Template
+
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: probe-demo-pod
+  name: probe-heavy-pod
 spec:
   containers:
-  - name: app-container
+  - name: web-app
     image: nginx:1.25.0
     ports:
-    - containerPort: 80
+    - containerPort: 8080
       name: http-port
-    - containerPort: 3306
-      name: db-port
     
-    # 1. Readiness Probe (HTTP GET)
-    readinessProbe:
+    # 1. Startup Probe: 300-second window (30 * 10s) to boot
+    startupProbe:
       httpGet:
-        path: /
+        path: /healthz
         port: http-port
-      initialDelaySeconds: 5
       periodSeconds: 10
-      timeoutSeconds: 2
-      successThreshold: 1
-      failureThreshold: 3
+      failureThreshold: 30
       
-    # 2. Liveness Probe (TCP Socket)
+    # 2. Liveness Probe: Checks for deadlocks every 20s
     livenessProbe:
-      tcpSocket:
-        port: db-port
-      initialDelaySeconds: 15
+      httpGet:
+        path: /healthz
+        port: http-port
       periodSeconds: 20
-      timeoutSeconds: 5
-      successThreshold: 1
+      timeoutSeconds: 2
       failureThreshold: 3
+
+    # 3. Readiness Probe: Evaluates database connectivity or caches
+    readinessProbe:
+      exec:
+        command:
+        - /bin/sh
+        - -c
+        - /app/check_db_conn.sh
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      timeoutSeconds: 3
+      successThreshold: 1
+      failureThreshold: 2
 ```
-
-### A. Mechanical Breakdown: Configuration Fields
-* **`readinessProbe`**: Declares a check that determines if a container is ready to receive network traffic from Services.
-* **`livenessProbe`**: Declares a check that determines if a container is alive. If this fails, the kubelet kills the container and triggers its restart sequence.
-* **`httpGet` / `tcpSocket`**: Specifies the mechanism of the probe:
-  * **`httpGet`**: Performs an HTTP GET request on the specified path and port. A status code $\ge 200$ and $< 400$ indicates success.
-  * **`tcpSocket`**: Attempts to establish a TCP handshake on the specified port. Success is achieved if the connection opens.
-* **`path: /`**: The path to fetch for HTTP probes.
-* **`port: http-port`**: The port to probe (can be a port number e.g. `80` or a named port declared in `ports`).
-* **`initialDelaySeconds`**: The number of seconds the kubelet waits after a container has started before running the first probe. Prevents early boot failures.
-* **`periodSeconds`**: How frequently (in seconds) the kubelet performs the check.
-* **`timeoutSeconds`**: The maximum amount of time (in seconds) the probe is allowed to take before being flagged as a timeout failure.
-* **`successThreshold`**: The consecutive number of successful checks required after a failure to transition back to a healthy state. (Must be `1` for liveness probes).
-* **`failureThreshold`**: The consecutive number of failures required to transition the container's status:
-  * For **Readiness**: The container is marked unready and its IP is evicted from Service Endpoint lists.
-  * For **Liveness**: The container is terminated and restarted.
-
-### B. Startup Probe
-* **Purpose:** Protects slow-starting, complex, or legacy applications that require long initialization times.
-* **Mechanism:** When a startup probe is configured, all liveness and readiness checks are disabled until the startup probe successfully passes.
-* **Action on Failure:** If the startup probe does not succeed within its configured `failureThreshold` $\times$ `periodSeconds` timeline, the kubelet kills the container and initiates a standard restart sequence.
 
 ---
 

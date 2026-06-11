@@ -453,16 +453,35 @@ A Service's ClusterIP is not assigned to any physical interface. Instead, it is 
     ps -aux | grep kube-apiserver | grep service-cluster-ip-range
     ```
 
----
+### 4.2 Service Types, Port Mapping, and Traffic Flow
 
-### 4.2 Service Types & Traffic Flow
+*   **`ClusterIP`:** Exposes the service on a cluster-internal IP (default). Backends can only be accessed by other Pods running within the same cluster.
+*   **`NodePort`:** Exposes the service on each node's IP at a static port (in the `30000-32767` range). External clients can connect to the Service by querying any node's IP address on the allocated `nodePort`.
+*   **`LoadBalancer`:** Provisions an external cloud load balancer pointing to the node's NodePorts. Cloud platforms generate a public IP or DNS name. To optimize cost, organizations typically route external traffic to a single Ingress Controller NodePort/LoadBalancer rather than provisioning a separate LoadBalancer service for every internal microservice.
 
-*   **`ClusterIP`:** Exposes the service on a cluster-internal IP (default).
-*   **`NodePort`:** Exposes the service on each node's IP at a static port (in the `30000-32767` range).
-*   **`LoadBalancer`:** Provisions an external cloud load balancer pointing to the node's NodePorts.
+#### Port Mapping & Named Ports
+A Service matches incoming requests to backend container ports:
+*   `port`: The port that the Service listens on inside the cluster.
+*   `targetPort`: The port on the container where traffic is forwarded.
+*   **Named Ports:** You can assign a name to a container port in the Pod spec and reference that name in the Service's `targetPort`. This isolates the Service from changes to the physical port numbers, allowing you to update container port numbers without modifying the Service YAML.
 
 ```yaml
-# Example: ClusterIP and NodePort Service Templates
+# Example: Pod with Named Port
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-pod-named
+  labels:
+    app: web-app
+spec:
+  containers:
+  - name: web
+    image: nginx
+    ports:
+    - name: http-web-port
+      containerPort: 80
+---
+# Example: ClusterIP Service with Named targetPort
 apiVersion: v1
 kind: Service
 metadata:
@@ -475,8 +494,9 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080
+      targetPort: http-web-port
 ---
+# Example: NodePort Service
 apiVersion: v1
 kind: Service
 metadata:
@@ -645,6 +665,63 @@ Both commands imperatively generate services, but they operate under completely 
 | **Headless Service Support** | ❌ No. | 🟢 Yes. Pass `--clusterip="None"`. |
 
 ---
+
+### 4.8 On-Premises Load Balancing (MetalLB)
+
+For bare-metal or on-premises clusters that lack cloud provider integrations, exposing services with standard cloud `LoadBalancer` specs fails. Administrators deploy **MetalLB** to handle this:
+*   **Layer 2 Mode (ARP):** MetalLB allocates virtual IP addresses to Services from a configured IP pool. One node acts as the traffic leader, answering ARP requests for the virtual IP on the local network. All traffic routes through this leader node.
+*   **BGP Mode (Layer 3):** Cluster nodes establish BGP (Border Gateway Protocol) sessions with network routers, advertising routing paths directly to the Service's virtual IP. This permits true multi-node load balancing and routing redundancy.
+*   **Manual External Load Balancing:** Alternatively, you can configure software reverse proxies (such as Nginx/HAProxy) or physical hardware load balancers (such as F5 BIG-IP) by manually registering the cluster node IPs and NodePort values as backend pools.
+
+---
+
+### 4.9 External Services Integrations
+
+Kubernetes allows workloads to connect to external databases, APIs, or legacy servers running outside the cluster while maintaining local DNS addresses.
+
+#### 1. IP-Based Integration (Selectorless Services & EndPointSlices)
+To route requests to an external service using its static IP address:
+*   **Selectorless Service:** Create a Service without a label selector. Because there is no selector, the control plane does not automatically generate Endpoints or EndPointSlices.
+*   **Manual EndPointSlice:** Manually create an `EndPointSlice` mapping to the external resource's IP and port. 
+*   *Note:* Kubernetes does **not** perform automatic health checking or liveness checks on manually registered external endpoints.
+
+#### 2. DNS-Based Integration (ExternalName Services)
+Maps a Service to a CNAME DNS record pointing to an external domain.
+*   **Mechanism:** When a pod queries the local DNS for the Service, CoreDNS returns a `CNAME` pointing to the external domain (e.g. `db.external.net`). The client pod's network stack then resolves the external domain and routes traffic directly.
+*   **YAML Template:**
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: external-db
+    spec:
+      type: ExternalName
+      externalName: db.external.net
+    ```
+*   **Interactive Lab HTML Logs:** Refer to the External Services configuration logs: [../Attachments/service+discovery+-+lab02+-+resources 1.html](../Attachments/service+discovery+-+lab02+-+resources 1.html) (embed: `![[../Attachments/service+discovery+-+lab02+-+resources 1.html]]`)
+
+---
+
+### 4.10 Local Port Forwarding and Verification
+
+Administrators and developers can inspect, test, and debug internal Services locally without exposing them to the internet:
+
+#### 1. Testing Internal Routing via Client Pod
+Launch a temporary interactive client pod containing troubleshooting tools (such as curl). The `--rm` flag ensures the pod is automatically destroyed when you exit the shell:
+```bash
+kubectl run client-pod --image=curlimages/curl -it --rm -- sh
+```
+Inside the container, test resolution and load-balancing against the service FQDN:
+```bash
+curl my-clusterip-service.default.svc.cluster.local
+```
+
+#### 2. Local Port Forwarding
+Forward connections from a local port on your workstation directly to a ClusterIP service port:
+```bash
+kubectl port-forward svc/my-clusterip-service 8080:80
+```
+Traffic sent to `http://localhost:8080` will be tunnelled securely to the service's port `80` inside the cluster.
 
 ---
 
@@ -824,32 +901,20 @@ kubectl edit configmap coredns -n kube-system
 
 ## 6. Ingress Control and Resources
 
-An Ingress controller is an L7 reverse proxy that routes external HTTP/HTTPS traffic into cluster services. An Ingress resource defines the routing rules that configure the controller.
+### 6.1 Limitations of Service Exposure & Ingress Architecture
+In microservice architectures, exposing every internal service using a `NodePort` or `LoadBalancer` is highly inefficient and expensive:
+*   **NodePort Drawbacks:** Requires managing custom port numbers (30000-32767) for each service and exposes node IPs directly to users.
+*   **LoadBalancer Drawbacks:** Allocating a dedicated LoadBalancer service for each application on cloud platforms incurs substantial hosting costs.
 
-```mermaid
-graph TD
-    Client[External Client] -->|HTTP Request| IC[Ingress Controller Pod]
-    
-    subgraph Control Plane
-        Ingress[Ingress Resource] -->|Configures| IC
-    end
+An **Ingress** acts as an L7 reverse proxy and unified gateway. It consolidates routing rules into a single resource, routing traffic to different internal ClusterIP services based on HTTP host headers or URI paths.
 
-    subgraph Data Plane [Data Plane Routing]
-        IC -->|Path: wear.store.com/wear| PodWear1[wear-pod-1]
-        IC -->|Path: wear.store.com/wear| PodWear2[wear-pod-2]
-        IC -->|Path: watch.store.com/watch| PodWatch1[watch-pod-1]
-    end
+#### Ingress Routing Layout
+![Ingress Routing Layout](../Attachments/Screenshot%20from%202025-04-21%2023-50-42.png)
 
-    subgraph Logical Services
-        wear-service[wear-service ClusterIP] -.->|Logical Link| PodWear1
-        wear-service -.->|Logical Link| PodWear2
-        watch-service[watch-service ClusterIP] -.->|Logical Link| PodWatch1
-    end
-```
+---
 
-### 6.1 Ingress Controller vs Ingress Resource
-
-1.  **Ingress Controller:** The running application pod (e.g. Nginx Ingress Controller, Traefik, HAProxy) that acts as the data plane. It watches the API server for changes to Ingress resources and dynamically updates its configuration.
+### 6.2 Ingress Controller vs Ingress Resource
+1.  **Ingress Controller:** The running reverse proxy pod (e.g. Nginx Ingress Controller, Traefik, HAProxy) that acts as the data plane. It monitors the API server for changes to Ingress resources, updates its configuration rules dynamically, and routes external traffic to the appropriate internal Pod IPs.
 2.  **Ingress Resource:** The control plane configuration file defining matching paths, hosts, SSL secrets, and backend target services.
 
 > [!NOTE]
@@ -857,8 +922,7 @@ graph TD
 
 ---
 
-### 6.2 Ingress Resource Spec (`networking.k8s.io/v1`)
-
+### 6.3 Ingress Resource Spec (`networking.k8s.io/v1`)
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -884,7 +948,9 @@ spec:
 
 ---
 
-### 6.3 Routing Patterns
+### 6.4 Routing Patterns
+*   **Prefix PathType:** Routes any path matching the specified prefix (e.g., `/api` matches `/api`, `/api/v1`, and `/api/v2`).
+*   **Exact PathType:** Routes only exact path matches.
 
 #### Path-Based Routing (Single Host, Multiple Paths)
 ```yaml
@@ -908,7 +974,7 @@ spec:
               number: 80
 ```
 
-#### Host-Based Routing (Multiple Hosts, Distinct Paths)
+#### Host-Based Routing (Multiple Hosts/Subdomains, Distinct Paths)
 ```yaml
 spec:
   rules:
@@ -936,48 +1002,57 @@ spec:
 
 ---
 
-### 6.4 SSL/TLS Termination
+### 6.5 SSL/TLS Termination
+Ingress controllers can terminate SSL connections using private keys and certificates stored in Kubernetes Secrets of type `kubernetes.io/tls`.
 
-Ingress controllers can terminate SSL connections using private keys and certificates stored in Kubernetes Secrets.
+#### 1. Generate Self-Signed Certificates (OpenSSL)
+In local development or test environments, you can generate self-signed certificates using OpenSSL:
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout tls.key -out tls.crt \
+  -subj "/CN=example.com/O=example.com"
+```
+*   `-nodes`: Disables password encryption on the private key file.
+*   `-keyout`: Output path for the private key.
+*   `-out`: Output path for the certificate.
 
-*   **Generate a TLS Secret:**
-    ```bash
-    kubectl create secret tls store-tls-secret \
-      --cert=path/to/tls.crt \
-      --key=path/to/tls.key \
-      --namespace=default
-    ```
-*   **Associate the Secret with the Ingress Resource:**
-    ```yaml
-    apiVersion: networking.k8s.io/v1
-    kind: Ingress
-    metadata:
-      name: secure-ingress
-      namespace: default
-    spec:
-      ingressClassName: nginx
-      tls:
-      - hosts:
-        - my-online-store.com
-        secretName: store-tls-secret
-      rules:
-      - host: my-online-store.com
-        http:
-          paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: secure-service
-                port:
-                  number: 443
-    ```
+#### 2. Create the TLS Secret
+Create the TLS secret imperatively inside your namespace:
+```bash
+kubectl create secret tls store-tls-secret --key=tls.key --cert=tls.crt
+```
+*   The `tls` type ensures that the secret contains the keys `tls.key` and `tls.crt`.
+
+#### 3. Associate the Secret with the Ingress Resource
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: secure-ingress
+  namespace: default
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - my-online-store.com
+    secretName: store-tls-secret
+  rules:
+  - host: my-online-store.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: secure-service
+            port:
+              number: 443
+```
 
 ---
 
-### 6.5 Advanced Annotations: Rewrite Target
-
-When an Ingress matches paths like `/pay` and forwards them to a backend service, the backend service must expect requests on the `/pay` path. If the backend service is configured to handle traffic on the root path `/` instead, the Ingress controller must rewrite the URL path before forwarding the request.
+### 6.6 Advanced Annotations: Rewrite Target
+When an Ingress routes traffic via a sub-path (like `/app`), the backend application frequently expects requests at the root path `/`. We use annotations to rewrite the path before forwarding it to the backend:
 
 #### Basic URL Path Rewrite
 ```yaml
@@ -1007,6 +1082,46 @@ spec:
               number: 80
 ```
 *   *Request:* `http://store.com/service1/login` → *Forwarded to service as:* `http://service1:80/login`
+
+---
+
+### 6.7 Hands-on Lab: Ingress Controllers & KinD Setup
+To run Ingress local testing using KinD (Kubernetes in Docker), you must map host ports `80` and `443` into the KinD node containers during cluster bootstrapping.
+
+#### 1. Cluster Configuration Manifest (`kind-ingress-config.yaml`)
+```yaml
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+```
+Bootstrap the cluster:
+```bash
+kind create cluster --config kind-ingress-config.yaml
+```
+
+#### 2. Deploy Nginx Ingress Controller
+Deploy the controller daemon configured for KinD port binding:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+```
+
+#### 3. Interactive Lab HTML Logs
+*   **Ingress Lab 1 Logs:** [../Attachments/resources_lab01.html](../Attachments/resources_lab01.html) (embed: `![[../Attachments/resources_lab01.html]]`)
+*   **Ingress Lab 2 (TLS) Logs:** [../Attachments/ingress+-+lab02+-+resources.html](../Attachments/ingress+-+lab02+-+resources.html) (embed: `![[../Attachments/ingress+-+lab02+-+resources.html]]`)
 
 ---
 

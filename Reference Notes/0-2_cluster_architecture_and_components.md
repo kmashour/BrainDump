@@ -77,21 +77,38 @@ graph TD
     end
 ```
 
-### A. The Control Plane (The Brains)
-* **Purpose:** Manages the overall cluster state, schedules workloads, makes global decisions (e.g., detecting node failures), and exposes the API.
-* **Core Components:**
-  * **`kube-apiserver`**: The front door of the cluster; validates and configures data for API objects (Pods, Services, etc.).
-  * **`etcd`**: Key-value data store representing the source of truth for all cluster configuration.
-  * **`kube-scheduler`**: Matches unassigned Pods to nodes based on resource capacity, constraints, and affinity rules.
-  * **`kube-controller-manager`**: Evaluates and reconciles the actual state of the cluster with the desired state (e.g., node controller, replicaset controller).
-* **Workload Hosting:** By default, the control plane does not host user applications. In production, control plane nodes are dedicated and isolated.
+### A. Core Architectural Foundations
 
-### B. Worker Nodes (The Muscle)
-* **Purpose:** Runs your containerized applications (Pods).
+Before container orchestration, deploying multi-tier applications (e.g., UI, backend, database) in **standalone containers** posed major reliability challenges:
+* **Host Failures:** If a container crashed, the host system restarted it. However, if the entire host machine crashed, all containers went offline.
+* **Network Resolution:** Manually resolving container network locations across different hosts required custom, fragile routing layers.
+* **Orchestration Need:** An orchestrator acts as a control agent to handle container runtime states, configure virtual networks, scale containers, and automate recovery.
+  * **Docker Swarm:** A lightweight, simple orchestrator suitable for small teams but hard to scale for massive configurations.
+  * **Kubernetes:** A mature, open-source orchestrator developed by Google (derived from their internal project **Borg**).
+
+Kubernetes operates as both an **Orchestrator** (managing container lifecycle, networks, and configurations) and a **Cluster** (pooling compute, memory, and storage from multiple physical or virtual nodes into a single unified resource pool).
+* **Node Redundancy:** If a node crashes, other nodes complement the resource deficiency and take over the workloads.
+* **Horizontal Scaling (Scale Out/In):** Dynamically adding or removing nodes to adjust cluster compute capacity.
+* **Vertical Scaling:** Increasing or decreasing the CPU/Memory resources allocated to a node or a container.
+
+### B. The Control Plane (The Brains / Master Nodes)
+* **Purpose:** Manages overall cluster state, schedules workloads, makes global decisions (e.g., detecting node failures), and exposes the API.
+* **Linux Domain:** Runs on one or more Linux-based nodes, referred to as **Master Node(s)**.
+* **Cluster Decoupling:** Kubernetes completely decouples the master control plane from the worker data plane. This ensures that control plane resources are not overloaded by high-resource user application loads, protecting cluster management performance. In small-scale or development environments, both control plane and worker components may run on a single node.
+* **Production Sizing:** In production, master nodes must be deployed in **odd numbers** (e.g., 3, 5) to achieve consensus quorum (majority) and avoid split-brain issues.
 * **Core Components:**
-  * **`kubelet`**: The captain daemon on each worker node; ensures containers are running in a Pod according to the PodSpecs.
+  * **`kube-apiserver`**: The front gate; receives and validates API requests, writing state directly to etcd.
+  * **`etcd`**: Key-value data store representing the source of truth for all cluster configurations.
+  * **`kube-scheduler`**: Matches unassigned Pods to nodes based on resource capacity, constraints, and affinity rules.
+  * **`kube-controller-manager`**: Runs controller loops to compare actual cluster state with desired state.
+
+### C. Worker Nodes (The Muscle / Data Plane)
+* **Purpose:** Runs your containerized applications (Pods).
+* **OS Support:** One or more nodes running Linux or Windows (Linux remains the dominant, primary platform for containers; Windows support exists but is specialized).
+* **Core Components:**
+  * **`kubelet`**: The node captain service; ensures containers are running inside Pods according to the PodSpecs.
   * **`kube-proxy`**: The network manager; maintains host network routing rules to implement Services.
-  * **`Container Runtime`**: The container execution engine (e.g., containerd) that downloads images and runs containers.
+  * **`Container Runtime`**: The container execution engine (e.g., `containerd` or `cri-o`) that pulls images and runs containers.
 * **Operation:** Receives instructions from the control plane, pulls images, launches containers, and continuously feeds health telemetry back to the API server. For details on node registration, resources, and leases, see [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md). For Pod lifecycle and probing details, see [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md).
 
 ---
@@ -99,11 +116,13 @@ graph TD
 ## 2. Control Plane & Core Components (Deep Dive)
 
 ### A. `kube-apiserver` (The Front Gate)
-* **Central Management:** Serves as the primary entry point for all control operations. Authenticates requests, validates them against OpenAPI schemas, applies admission plug-ins (e.g. `NodeRestriction`, `ResourceQuota`), and updates state.
+* **Central Management:** Serves as the primary entry point for all control operations. Without it, the control plane cannot receive commands.
+* **HTTP & JSON Protocol:** Receives incoming requests using standard HTTP protocol (REST API Web Server) but **always responds in JSON format**, which is parsed by tools (like `kubectl`) and applications to communicate.
+* **Security Checks:** Authenticates the caller, validates their authorization permissions (e.g., checking if the user is allowed to create nodes or pods), applies admission plug-ins (e.g., `NodeRestriction`, `LimitRanger`), and persists state.
 * **Configurations & Flags:**
   * `--advertise-address`: IP address to advertise to cluster members.
   * `--etcd-servers`: List of backend `etcd` URLs.
-  * `--authorization-mode`: Decides auth chain order (e.g. `Node,RBAC`).
+  * `--authorization-mode`: Decides auth chain order (e.g., `Node,RBAC`).
   * `--enable-admission-plugins`: Sequence of admission controllers (e.g., `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`).
 * **Verification Paths:**
   * **kubeadm Clusters:** Configured as a Static Pod. Manifest path: `/etc/kubernetes/manifests/kube-apiserver.yaml`.
@@ -112,7 +131,10 @@ graph TD
 
 ### B. `etcd` (The Source of Truth)
 * **Key-Value Store vs Relational:** Relational databases use rigid rows/columns. `etcd` is a key-value store, organizing configuration data as independent, nested JSON documents, allowing highly flexible schemas.
+* **Independence:** It runs as an independent entity outside the API server (it is a standalone cluster/process).
 * **Consensus & Ports:** Uses the **Raft consensus algorithm** to prevent split-brain. Client communication listens on port **`2379`** (used by API Server), and peer cluster node communication listens on port **`2380`**.
+* **High Availability Quorum:** To work efficiently and guarantee high availability, the number of etcd members must be **odd** (e.g., 3, 5). This is required to achieve **Quorum** (the majority needed to agree on writes and elect a leader):
+  $$\text{Quorum} = \left\lfloor \frac{N}{2} \right\rfloor + 1$$
 * **Configurations & Flags:**
   * `--listen-client-urls` and `--advertise-client-urls`: Handles inbound API requests.
   * `--initial-cluster`: Lists peers (`controller-0=https://...:2380,controller-1=https://...:2380`) for cluster formation.
@@ -133,8 +155,9 @@ graph TD
 
 ### C. `kube-scheduler` (The Matchmaker)
 * **Role:** Watches the API server for unassigned Pods (`spec.nodeName` is blank) and assigns them to nodes.
+* **Resource Utilization & Metrics:** Evaluates nodes using algorithms that assess node health, available vs. utilized resources (percentage of free memory/CPU), and checks if the pod has any node affinity/anti-affinity bindings to verify if the placement can occur.
 * **Scheduling Pipeline Phases:**
-  1. **Filtering (Predicates):** Evaluates nodes and filters out those unable to accommodate the Pod (e.g. checks CPU/Memory requests, node selectors, taints).
+  1. **Filtering (Predicates):** Evaluates nodes and filters out those unable to accommodate the Pod (e.g., checks CPU/Memory requests, node selectors, taints).
   2. **Ranking (Priorities):** Scores the remaining candidate nodes on a scale of `0` to `10` using priority functions (e.g., resource balance, image locality). The node with the highest score is selected.
   3. **Binding:** Submits a binding object to the API server, which writes the selected node name to `spec.nodeName`. Kubelet then detects and executes this binding.
 * **Configurations & Customization:** Schedulers are highly customizable. You can configure multiple custom schedulers in the same cluster and reference them via `spec.schedulerName` in your Pod manifests.
@@ -144,20 +167,45 @@ graph TD
   * Process check: `ps -aux | grep kube-scheduler`.
 
 ### D. `kube-controller-manager` (The Enforcer)
-* **Mechanism:** Runs multiple asynchronous control loops packaged into a single binary.
-* **Reconciliation Loop:** Continually compares the Desired State (from `etcd`) with the Actual State (from the nodes).
+* **Mechanism:** Runs multiple asynchronous control loops packaged into a single binary. Every entity or resource in Kubernetes is managed by a specific controller loop.
+* **Hierarchy Flow:** A parent resource controller manages child resources. For example, a `Deployment Controller` manages `ReplicaSet` creation, which in turn commands the `ReplicaSet Controller`, which controls the `Pod Controller`.
+* **Reconciliation Loop:** Continually compares the Desired State (from `etcd`) with the Observed/Actual State (from the nodes) to reconcile discrepancies.
 * **Key Controllers:**
-  * **Node Controller:** Detects when nodes go offline (see node heartbeat eviction timers in [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api)).
-  * **ReplicaSet Controller:** Keeps the correct number of Pod replicas running (see replication control in [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md#1-the-four-pillars-of-self-healing)).
+  * **Node Controller:** Detects when nodes go offline (see node heartbeat eviction timers below).
+  * **ReplicaSet Controller:** Keeps the correct number of Pod replicas running.
   * **Endpoints Controller:** Links Service objects to the actual Pod IP addresses.
 * **Verification Paths:**
   * **kubeadm:** Manifest at `/etc/kubernetes/manifests/kube-controller-manager.yaml`.
   * **Manual Setup:** Service file at `/etc/systemd/system/kube-controller-manager.service`.
 
-### E. `kube-proxy` (The Network Router)
+> [!NOTE] Object vs. Resource Terminologies
+> * A **Kubernetes object** is a persistent *record of intent* in the cluster. It represents a specific instance of something you want to exist. When created, you tell Kubernetes your desired state (spec) and Kubernetes ensures the actual state (status) is reconciled to match it ("make it so and keep it that way"). Objects have a `spec`, `status`, and `metadata`.
+> * A **resource** is a category or API class of objects.
+> * *Example:* **Pod** is a resource type, while **my-app-pod** is an instance object of that Pod resource type.
+
+### E. Pod Creation Lifecycle Flow
+When a user applies a manifest (e.g., `kubectl apply -f pod.yaml`):
+1. The `kube-apiserver` receives the HTTP POST request containing the manifest data.
+2. The API server performs authentication, authorization, and validation checks.
+3. Upon approval, the API server saves the Pod specification as a record of intent in `etcd`.
+4. The API server publishes a "Pod Created" event.
+5. The `kube-scheduler` (which is subscribed/watching the API server event stream) detects the new unscheduled Pod (where `spec.nodeName` is empty).
+6. The scheduler runs its filter/rank algorithms, chooses a worker node, and writes the selected host back to the API server (`binding` operation).
+7. The API server updates `etcd` and publishes a binding event.
+8. The `kubelet` running on the selected worker node (also watching the API server) detects that a Pod has been assigned to its node.
+9. The `kubelet` interfaces with the local Container Runtime (CRI) to pull the image and run the containers, writing the status back to the API server.
+
+### F. Worker Node Status Telemetry & Eviction Timings
+Worker nodes through their `kubelet` actively update the control plane with health telemetry:
+* **Kubelet Status Heartbeat:** The `kubelet` updates the node status every **5 seconds**.
+* **Lease Timeout (40s):** If the API server does not receive a heartbeat for **40 seconds** (the node lease expiry window), the Node Controller flags the node as unreachable and stops routing new traffic/requests to it.
+* **Eviction Timeout (5m):** To the user, everything might still appear ready or pending, but once **5 minutes** (default eviction grace period) passes, the node status is fully updated to `NotReady` and the node controller initiates cascading deletions to evict the Pods and reschedule them to healthy nodes.
+
+### G. `kube-proxy` (The Network Router)
 * **Role:** A network agent running on every node that enables cluster-wide network routing for Services.
 * **Service Virtual Entity:** Services are virtual entities in the cluster's memory—they do not correspond to any container, network card, or physical interface.
 * **Routing Mechanism:** Kube-proxy watches the API Server for new Services and Endpoints. It configures host-level network rules (`iptables` or `IPVS` tables) so that traffic sent to a Service's IP is automatically redirected to the actual IP of an active backend Pod.
+* **Important Distinction:** `kube-proxy` is for **Service networking** (handling client-to-service routing), not for API server-to-node control plane communications (which is handled directly by the `kubelet`).
 * **Verification & Deployment:**
   * **kubeadm:** Deployed as a `DaemonSet` in the `kube-system` namespace.
   * Retrieve DaemonSet configuration: `kubectl get daemonset -n kube-system kube-proxy`.
