@@ -1,0 +1,1 @@
+https://medium.com/@Vishwa22/secure-pod-traffic-with-k8s-network-policies-w-kind-hands-on-68845d94b017

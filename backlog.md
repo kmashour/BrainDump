@@ -3,6 +3,18 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-11] - Ingestion of NTI & Practitioner Study Notes (Notes_AWS_Docker_Kubernets)
+
+### Added
+- **Module Library: NTI & Practitioner Notes:** Integrated a comprehensive library of 134 study files under `Reference Notes/Notes_AWS_Docker_Kubernets/` covering AWS Cloud Practitioner, AWS Solution Architect Associate (SAA), BGP Routing, CSS/HTML Fundamentals, Docker Engine & Compose operations, Jenkins CI/CD Architecture, and Python programming fundamentals.
+- **Media Attachments Library:** Tracked and validated 557 media files under `Attachments/` representing slides, diagrams, and screenshots linked within the study notes, achieving 100% link resolution.
+- **Inflow Sources Tracking:** Tracked raw inflow clippings for Systems Design and API protocols to ensure complete source control.
+
+### Refactored / Upgraded
+- **Image Link Auditing:** Verified 573 internal image links (`![[...]]` and standard markdown) mapping notes to their respective files in `Attachments/` with zero missing resources.
+
+---
+
 ## [2026-06-11] - Systems Design & Architecture Patterns Ingestion
 
 ### Added

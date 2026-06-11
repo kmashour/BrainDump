@@ -1,0 +1,30 @@
+{
+	"nodes":[
+		{"id":"b0ed424b8839671d","type":"text","text":"kubelet : \n- Each worker has a kubelet \n- The kubelet it the component that gets the work done through it a POD is created for example \n- Updates the status of the worker node \n","x":176,"y":-40,"width":484,"height":260},
+		{"id":"18ac210d55a6a5ee","type":"text","text":"Two way Direct connection\n","x":126,"y":-168,"width":354,"height":50},
+		{"id":"b5f6a6d29e9a0071","type":"text","text":"control plane ","x":-960,"y":-58,"width":205,"height":60},
+		{"id":"b5655d931aaeebe1","type":"text","text":"Cluster","x":-1160,"y":252,"width":250,"height":60},
+		{"id":"03ea5c3c9e79c82a","type":"text","text":"API-SERVER:\nDirect Connection with kubelet direction with kubelet \nDirect Connection with kubernetes client (end-user)\nStores any updates and operations in ETCD\nGets status update from scheduler\nGets status update from scheduler\nPublish events for all master node components \n","x":-755,"y":-480,"width":865,"height":266},
+		{"id":"28563798b89eecb2","x":-1589,"y":-300,"width":339,"height":172,"type":"text","text":"Controller Manager :\nContains all controller that are responsible for any action on the cluster "},
+		{"id":"aa1bdeb332a9fb38","type":"text","text":"Data plane","x":-65,"y":360,"width":175,"height":60},
+		{"id":"dc9d606b72281798","x":343,"y":360,"width":417,"height":200,"type":"text","text":"Container Runtime:\nLower level of execution this component addresses the container directly and as a user Iam abstracted from its execution..."},
+		{"id":"0b79e706e6f462b3","x":343,"y":640,"width":777,"height":200,"type":"text","text":"kube proxy :\n\t- Ensures that Pod-to-Pod and Pod-to-Service communications work correctly within the cluster.\n\t- **kube-proxy** is for **Service networking**, not API server ↔ node communication."},
+		{"id":"ad531253ca53480e","x":-1232,"y":-920,"width":250,"height":60,"type":"text","text":"Cloud controller manager "},
+		{"id":"5c2c00a4b764e99a","x":-1545,"y":-623,"width":438,"height":143,"type":"text","text":"ETCD :\nlite weight database \nvery fast \nstore metadata of all the cluster"},
+		{"id":"8ee182d1adde7a45","x":-960,"y":-920,"width":446,"height":120,"type":"text","text":"Scheduler:  In kubernetes it means to put a pod on a worker node according to some metrics "}
+	],
+	"edges":[
+		{"id":"2e633ec48aab1d66","fromNode":"b5f6a6d29e9a0071","fromSide":"top","toNode":"03ea5c3c9e79c82a","toSide":"bottom"},
+		{"id":"ed4520b01dd97d88","fromNode":"b5655d931aaeebe1","fromSide":"right","toNode":"b5f6a6d29e9a0071","toSide":"left"},
+		{"id":"92c466670a3fd13a","fromNode":"b5655d931aaeebe1","fromSide":"bottom","toNode":"aa1bdeb332a9fb38","toSide":"left"},
+		{"id":"3287b1e404f62cf2","fromNode":"aa1bdeb332a9fb38","fromSide":"top","toNode":"b0ed424b8839671d","toSide":"bottom"},
+		{"id":"87351b19c207f0d1","fromNode":"b0ed424b8839671d","fromSide":"top","toNode":"18ac210d55a6a5ee","toSide":"bottom"},
+		{"id":"adf673af8126bc31","fromNode":"b5f6a6d29e9a0071","fromSide":"top","toNode":"5c2c00a4b764e99a","toSide":"bottom"},
+		{"id":"cbf8a03287d3d731","fromNode":"b5f6a6d29e9a0071","fromSide":"top","toNode":"28563798b89eecb2","toSide":"bottom"},
+		{"id":"c53f56f54e9681f9","fromNode":"b5f6a6d29e9a0071","fromSide":"top","toNode":"8ee182d1adde7a45","toSide":"bottom"},
+		{"id":"fe9c97431b516d73","fromNode":"18ac210d55a6a5ee","fromSide":"top","toNode":"03ea5c3c9e79c82a","toSide":"right"},
+		{"id":"f763561b113ab211","fromNode":"b5f6a6d29e9a0071","fromSide":"top","toNode":"ad531253ca53480e","toSide":"bottom"},
+		{"id":"28ccab8a581031fe","fromNode":"aa1bdeb332a9fb38","fromSide":"right","toNode":"dc9d606b72281798","toSide":"left"},
+		{"id":"1ec57d69568f886c","fromNode":"aa1bdeb332a9fb38","fromSide":"bottom","toNode":"0b79e706e6f462b3","toSide":"left"}
+	]
+}

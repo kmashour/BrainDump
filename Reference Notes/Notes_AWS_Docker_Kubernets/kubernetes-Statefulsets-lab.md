@@ -1,0 +1,2 @@
+![[statefulset-lab.html]]
+
