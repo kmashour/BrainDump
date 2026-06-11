@@ -82,3 +82,50 @@ tags:
 | Scheduling & Placements | **[Module 13](0-13_scheduling_logging_and_lifecycle.md)** | Taints/Tolerations & Custom Scheduler Leases |
 | Observability & Flow Control | **[Module 14](0-14_cluster_administration_and_observability.md)** | API Priority & Fairness Queueing Config |
 | Extensions & CRDs | **[Module 15](0-15_kubernetes_api_extension_and_operators.md)** | CustomResourceDefinitions & Operator Informers |
+---
+
+## 🧪 Domain 8: NTI & Udemy Practice Labs
+*Hands-on Kubernetes labs, ConfigMaps/Secrets volumes, Ingress ingress configurations, taints/tolerations scheduling, and custom RBAC setup.*
+- 🧠 **[Kubernetes Idea & Architecture](Notes_AWS_Docker_Kubernets/kubernetes-Idea-behind-it.md)**
+- 📦 **[Why Kubernetes uses Pods](Notes_AWS_Docker_Kubernets/kubernetes-Why-uses-Pods.md)**
+- 🥾 **[Working and Running a Pod](Notes_AWS_Docker_Kubernets/kubernetes-working-running-a-pod.md)**
+- ✏️ **[Creating Pods Configuration](Notes_AWS_Docker_Kubernets/kubernetes-creating-Pods.md)**
+- 🏷️ **[Using Labels and Selectors](Notes_AWS_Docker_Kubernets/kubernetes-using-labels.md)**
+- 📝 **[Using Annotations Metadata](Notes_AWS_Docker_Kubernets/kubernetes-using-annotations.md)**
+- 🏥 **[Liveness, Readiness & Startup Probes](Notes_AWS_Docker_Kubernets/kubernetes-liveness-readiness-startup-probes.md)**
+- ⚙️ **[Probes Configurations Reference](Notes_AWS_Docker_Kubernets/kubernetes-Probes-Configurations.md)**
+- 💎 **[Pods Requests and Limits Math](Notes_AWS_Docker_Kubernets/kubernetes-pods-requests-and-limits.md)**
+- 🔄 **[What is a ReplicaSet](Notes_AWS_Docker_Kubernets/kubernetes-what-is-a-Replica-set.md)**
+- 🧪 **[ReplicaSet Lab Walkthrough](Notes_AWS_Docker_Kubernets/Kubernetes-Replica-set-lab.md)**
+- 🏗️ **[What is a Deployment](Notes_AWS_Docker_Kubernets/kubernetes-what-is-a-Deployment.md)**
+- 🧪 **[Deployment Lab Walkthrough](Notes_AWS_Docker_Kubernets/kubernetes-Deployment-lab.md)**
+- 🧪 **[Advanced Deployment Lab 2](Notes_AWS_Docker_Kubernets/kubernetes-Deployment-lab-2.md)**
+- 🔒 **[Introduction to Secrets](Notes_AWS_Docker_Kubernets/kubernetes-introduction-to-secrets.md)**
+- ⚙️ **[ConfigMaps Configurations](Notes_AWS_Docker_Kubernets/kubernetes-Config-Maps.md)**
+- 🧪 **[ConfigMaps & Secrets Lab](Notes_AWS_Docker_Kubernets/kubernetes-Config-maps-secrets-lab.md)**
+- 🎛️ **[DaemonSets Configurations](Notes_AWS_Docker_Kubernets/kubernetes-Daemonsets.md)**
+- 🧪 **[DaemonSet Lab Walkthrough](Notes_AWS_Docker_Kubernets/kubernetes-Daemonsets-lab.md)**
+- 💾 **[Volumes and Storage mounts](Notes_AWS_Docker_Kubernets/kubernetes-Volumes.md)**
+- 🏗️ **[StatefulSets Configurations](Notes_AWS_Docker_Kubernets/kubernetes-StatefulSets.md)**
+- 🧪 **[StatefulSets Lab Walkthrough](Notes_AWS_Docker_Kubernets/kubernetes-Statefulsets-lab.md)**
+- 🔌 **[What is a Service Object](Notes_AWS_Docker_Kubernets/Kubernetes-service-what-it-is.md)**
+- 🔌 **[Service Types Comparison](Notes_AWS_Docker_Kubernets/kubernetes-service-types.md)**
+- 🧪 **[Lab 01: ClusterIP and NodePort Services](Notes_AWS_Docker_Kubernets/Kubernetes-Lab-01_ClusterIP_NodePort.md)**
+- 🔌 **[External Services Integrations](Notes_AWS_Docker_Kubernets/Kubernetes-External-Services.md)**
+- 🧪 **[Lab 02: External Services Insights](Notes_AWS_Docker_Kubernets/Kubernetes-Lab-02-insights_External_Services.md)**
+- 🕸️ **[What is an Ingress Object](Notes_AWS_Docker_Kubernets/kubernetes-what-is-Ingress.md)**
+- 🕸️ **[The Ingress Object Details](Notes_AWS_Docker_Kubernets/kubernetes-The-Ingress-Object.md)**
+- 🧪 **[Ingress Lab 1 Walkthrough](Notes_AWS_Docker_Kubernets/kubernetes-Ingress-Lab-1.md)**
+- 🧪 **[Ingress Lab 2 Walkthrough](Notes_AWS_Docker_Kubernets/kubernetes-Ingress-Lab-2.md)**
+- ⏰ **[Jobs and CronJobs Scopes](Notes_AWS_Docker_Kubernets/kubernetes-Jobs-cronjobs.md)**
+- 🧪 **[Jobs Lab Walkthrough](Notes_AWS_Docker_Kubernets/Kubernetes-Jobs-Lab.md)**
+- 🔑 **[KUBECONFIG File Anatomy](Notes_AWS_Docker_Kubernets/kubernetes-KUBECONFIG-FILE.md)**
+- 🔑 **[RBAC: What is a Role](Notes_AWS_Docker_Kubernets/kubernetes-what-is-a-Role-%28RBAC%29.md)**
+- 🔑 **[RBAC: Cluster Roles](Notes_AWS_Docker_Kubernets/kubernetes-cluster-Role.md)**
+- 🧪 **[Roles & ClusterRoles Lab](Notes_AWS_Docker_Kubernets/kubernetes-Roles-ClusterRole-lab.md)**
+- 🛡️ **[Security and NetworkPolicies](Notes_AWS_Docker_Kubernets/kubernetes-Security-NetworkPolicies.md)**
+- 🥾 **[Kubernetes NTI Day 1 Lab](Notes_AWS_Docker_Kubernets/kubernetes-NTI-Day-1.md)**
+- 🥾 **[Kubernetes NTI Day 2 Lab](Notes_AWS_Docker_Kubernets/kubernetes-NTI-Day-2.md)**
+- 🧪 **[Kubernetes Final Project Playbook](Notes_AWS_Docker_Kubernets/kubernetes-Final-Project.md)**
+- 🛠️ **[Kubernetes Tooling & KinD Setup](Notes_AWS_Docker_Kubernets/Kubernetes-Tooling.md)**
+- 🧪 **[Kind Multi-Node Installation](Notes_AWS_Docker_Kubernets/kubernetes-KinD.md)**

@@ -25,6 +25,42 @@ Select a domain to view its active landing concepts, deeper dive notes, and arch
 *Distributed scaling frameworks, database selector models, caching write topologies, geographical CDN edge nodes, and API communication protocols/security.*
 - **Go to MOC:** [[0-Index - Systems Design|Systems Design MOC]]
 
+---
+
+### 🐳 [Docker MOC](../Reference%20Notes/2-Index%20-%20Docker.md)
+*Process isolation, container lifecycle states, Dockerfiles layer caching, volumes persistency, and multi-container orchestration.*
+- **Go to MOC:** [[Reference Notes/2-Index - Docker|Docker MOC]]
+
+---
+
+### ☁️ [AWS MOC](../Reference%20Notes/3-Index%20-%20AWS.md)
+*Identity and Access Management policies, customer keys KMS, block/shared storage, and elastic VPC networking.*
+- **Go to MOC:** [[Reference Notes/3-Index - AWS|AWS MOC]]
+
+---
+
+### 🌐 [BGP Routing MOC](../Reference%20Notes/4-Index%20-%20BGP%20Routing.md)
+*Exterior network routing paths, eBGP/iBGP peer setups, and Route Reflector scalability.*
+- **Go to MOC:** [[Reference Notes/4-Index - BGP Routing|BGP Routing MOC]]
+
+---
+
+### 📨 [Jenkins CI/CD MOC](../Reference%20Notes/5-Index%20-%20Jenkins.md)
+*Orchestrated automation pipelines, declarative build rules, triggers, and multi-node execution agents.*
+- **Go to MOC:** [[Reference Notes/5-Index - Jenkins|Jenkins MOC]]
+
+---
+
+### 🎨 [Web Fundamentals MOC](../Reference%20Notes/6-Index%20-%20Web%20Fundamentals.md)
+*Semantic document layout markup and CSS box model styling definitions.*
+- **Go to MOC:** [[Reference Notes/6-Index - Web Fundamentals|Web Fundamentals MOC]]
+
+---
+
+### 🐍 [Python Programming MOC](../Reference%20Notes/7-Index%20-%20Python.md)
+*General scripting and automation syntax, virtual environments isolation, and Flask WSGI microservers.*
+- **Go to MOC:** [[Reference Notes/7-Index - Python|Python Programming MOC]]
+
 ### 📦 Miscellaneous Projects & Tooling (MISC)
 *Self-hosted version control, automated runner deployment contexts, developer introspection clients, and system command-line utilities.*
 - **Version Control & GitOps:** [[gitea|Gitea Git Server Setup]]

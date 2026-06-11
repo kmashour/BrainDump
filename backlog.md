@@ -9,9 +9,20 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Module Library: NTI & Practitioner Notes:** Integrated a comprehensive library of 134 study files under `Reference Notes/Notes_AWS_Docker_Kubernets/` covering AWS Cloud Practitioner, AWS Solution Architect Associate (SAA), BGP Routing, CSS/HTML Fundamentals, Docker Engine & Compose operations, Jenkins CI/CD Architecture, and Python programming fundamentals.
 - **Media Attachments Library:** Tracked and validated 557 media files under `Attachments/` representing slides, diagrams, and screenshots linked within the study notes, achieving 100% link resolution.
 - **Inflow Sources Tracking:** Tracked raw inflow clippings for Systems Design and API protocols to ensure complete source control.
+- **Structured Reference Indices & Modules:** Formally compiled the raw study notes into structured reference indices and modules inside `Reference Notes/`:
+  - **Docker (Track 2):** Created `2-Index - Docker.md` and 5 core AARF-style modules (`2-1_` to `2-5_`).
+  - **AWS (Track 3):** Created `3-Index - AWS.md` and 4 core AARF-style modules (`3-1_` to `3-4_`).
+  - **BGP Routing (Track 4):** Created `4-Index - BGP Routing.md` and module `4-1_`.
+  - **Jenkins CI/CD (Track 5):** Created `5-Index - Jenkins.md` and 3 core AARF-style modules (`5-1_` to `5-3_`).
+  - **Web Fundamentals (Track 6):** Created `6-Index - Web Fundamentals.md` and modules `6-1_`, `6-2_`.
+  - **Python (Track 7):** Created `7-Index - Python.md` and module `7-1_`.
+- **Conceptual Landing & Deeper-Dive Notes:** Created landing notes (e.g., `docker.md`, `aws.md`, `bgp.md`, `jenkins.md`, `web-fundamentals.md`, `python.md`) and their corresponding deeper-dive use case/architecture notes in `Main Notes/` in 100% template compliance.
+- **OS Isolation Pattern Note:** Created `Digital Garden/Pattern - Container Runtime Socket Interface and OS Isolation.md` detailing Kubelet CRI Unix socket mechanics and Linux kernel isolation.
 
 ### Refactored / Upgraded
 - **Image Link Auditing:** Verified 573 internal image links (`![[...]]` and standard markdown) mapping notes to their respective files in `Attachments/` with zero missing resources.
+- **Central Index MOC Integrations:** Refactored `Reference Notes/--Index--.md` and `Main Notes/0-Index.md` to cleanly integrate all 6 new domains as first-class citizens.
+- **Kubernetes Labs Indexing:** Appended a dedicated "Domain 8: NTI & Udemy Practice Labs" section to `Reference Notes/0-Index - Kubernetes.md` containing all 44 raw practice lab notes.
 
 ---
 
