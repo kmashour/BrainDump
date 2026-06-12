@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy"
 author: "Kubernetes Authors"
 course_title: "CKA Exam Prep"
+against: []
 tags:
   - kubernetes/deployment
   - deployment/strategy

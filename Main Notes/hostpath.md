@@ -7,6 +7,7 @@ sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/storage/volumes/#hostpath"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/storage
   - kubernetes/volumes

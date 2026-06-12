@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/tutorials/services/source-ip/"
 author: "Kubernetes Authors"
 course_title: "Kubernetes Service Tutorials"
+against: []
 tags:
   - kubernetes/service
   - kubernetes/deep-dive

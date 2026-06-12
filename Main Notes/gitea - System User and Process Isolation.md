@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://docs.gitea.com/installation/install-from-binary"
 author: "Gitea Authors"
 course_title: "Linux Service Administration"
+against: []
 tags:
   - git/gitea
   - security/isolation

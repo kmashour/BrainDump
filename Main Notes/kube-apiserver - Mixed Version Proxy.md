@@ -8,6 +8,7 @@ sources:
   - "Kubernetes Official Docs"
   - "CKA Upgrade Guide"
 source_type: documentation
+against: []
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/deep-dive

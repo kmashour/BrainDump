@@ -63,7 +63,7 @@ A `PersistentVolumeClaim` (PVC) is a request for storage by a user. It allows de
 This table automatically displays all deeper notes, use cases, and pitfalls associated with **persistentvolumeclaim**.
 
 ```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), this.file.name)
+TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
+WHERE class = "deeper-dive" AND (contains(parent_concept, this.file.link) OR icontains(string(parent_concept), this.file.name))
 SORT file.name ASC
 ```

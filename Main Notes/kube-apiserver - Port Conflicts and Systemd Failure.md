@@ -8,6 +8,7 @@ sources:
   - "CKA Practice Exam Troubleshooting Section"
   - "K8s Troubleshooting Newsletter"
 source_type: documentation
+against: []
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/pitfall

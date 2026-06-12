@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://gitea.com/gitea/act_runner"
 author: "Gitea Actions Authors"
 course_title: "Offline CI-CD Infrastructure"
+against: []
 tags:
   - git/gitea
   - cicd/act-runner

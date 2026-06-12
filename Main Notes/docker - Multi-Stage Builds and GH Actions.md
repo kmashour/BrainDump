@@ -8,6 +8,7 @@ source_type: book
 source_url: "https://nigelpoulton.com/books"
 author: "Nigel Poulton"
 course_title: "Docker Deep Dive"
+against: []
 tags:
   - docker/multistage
   - docker/cicd

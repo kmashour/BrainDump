@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://www.youtube.com/watch?v=C842vFY5kRo"
 author: "Hayk Simonyan"
 course_title: "System Design Course"
+against: []
 tags:
   - system-design/database
   - system-design/deep-dive

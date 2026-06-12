@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/"
 author: "Kubernetes Authors"
 course_title: "Kubernetes Service Concepts"
+against: []
 tags:
   - kubernetes/service
   - kubernetes/deep-dive

@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubelet]]"
+parent_concept: "[[kubelet-deeper]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/configure-pod-container/static-pod/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/kubelet
   - kubernetes/static-pods
@@ -14,7 +15,7 @@ tags:
 
 # kubelet - Static Pods
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **Static Pods**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > [[kubelet-deeper]] > **Static Pods**
 
 ---
 

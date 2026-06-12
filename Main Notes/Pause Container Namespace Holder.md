@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[container-runtime]]"
+parent_concept: "[[container-runtime-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/pods/#pod-networking"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/container-runtime
   - kubernetes/pod
@@ -14,7 +15,7 @@ tags:
 
 # container-runtime - Pause Container Namespace Holder
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > **Pause Container**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > [[container-runtime-deeper]] > **Pause Container**
 
 ---
 

@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks"
 author: "Git Core Team"
 course_title: "Git Server Administration"
+against: []
 tags:
   - git/gitea
   - git/hooks

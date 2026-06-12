@@ -8,6 +8,7 @@ sources:
   - "Kubernetes Official Docs"
   - "Newsletter Article: Debugging in K8s"
 source_type: documentation
+against: []
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/deep-dive

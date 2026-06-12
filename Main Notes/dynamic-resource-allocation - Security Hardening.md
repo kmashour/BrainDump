@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/security/hardening-guide/dynamic-resource-allocation/"
 author: "Kubernetes Authors"
 course_title: "Kubernetes Security Hardening"
+against: []
 tags:
   - kubernetes/resource
   - kubernetes/deep-dive

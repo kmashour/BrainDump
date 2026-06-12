@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Storage.html"
 author: "AWS Documentation"
 course_title: "AWS Elastic Block Store & EFS Storage Guides"
+against: []
 tags:
   - aws/ebs
   - aws/efs

@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[etcd]]"
+parent_concept: "[[etcd-deeper]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#backing-up-an-etcd-cluster"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/etcd
   - kubernetes/administration
@@ -14,7 +15,7 @@ tags:
 
 # etcd - etcd Backup and Restore
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > **etcd Backup and Restore**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > [[etcd-deeper]] > **etcd Backup and Restore**
 
 ---
 

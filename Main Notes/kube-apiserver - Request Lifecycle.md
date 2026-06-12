@@ -8,6 +8,7 @@ sources:
   - "Mumshad CKA Course"
   - "Kubernetes Official Docs"
 source_type: udemy
+against: []
 tags:
   - kubernetes/kube-apiserver
   - kubernetes/deep-dive

@@ -2,6 +2,7 @@
 obsidianUIMode: preview
 class: index-note
 tier: main-note
+against: []
 tags:
   - kubernetes/index
   - obsidian/moc
@@ -18,7 +19,6 @@ tags:
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
-FROM "Main Notes"
 WHERE class = "landing-note" AND role = "control-plane"
 SORT file.name ASC
 ```

@@ -5,6 +5,7 @@ tier: main-note
 parent_concept: "[[aws]]"
 sub_type: core-concept
 source_type: udemy
+against: []
 tags:
   - aws/compute
   - aws/deep-dive

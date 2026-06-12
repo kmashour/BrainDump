@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/overview/working-with-objects/finalizers/"
 author: "Kubernetes Documentation"
 course_title: "Kubernetes Concepts Overview"
+against: []
 tags:
   - kubernetes/finalizer
   - kubernetes/deep-dive

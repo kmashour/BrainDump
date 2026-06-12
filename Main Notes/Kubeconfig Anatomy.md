@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubectl]]"
+parent_concept: "[[kubectl-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/kubectl
   - kubernetes/configuration
@@ -14,7 +15,7 @@ tags:
 
 # kubectl - Kubeconfig Anatomy
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **Kubeconfig Anatomy**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > [[kubectl-deeper]] > **Kubeconfig Anatomy**
 
 ---
 

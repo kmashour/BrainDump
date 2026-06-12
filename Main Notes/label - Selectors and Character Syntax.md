@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/"
 author: "Kubernetes Documentation"
 course_title: "Kubernetes Concepts Overview"
+against: []
 tags:
   - kubernetes/label
   - kubernetes/deep-dive

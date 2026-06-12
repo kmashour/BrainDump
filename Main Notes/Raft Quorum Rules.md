@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[etcd]]"
+parent_concept: "[[etcd-deeper]]"
 sub_type: architecture
 source_type: documentation
 source_url: "https://etcd.io/docs/v3.5/faq/"
 author: "etcd Maintainers"
+against: []
 tags:
   - kubernetes/etcd
   - etcd/architecture
@@ -14,7 +15,7 @@ tags:
 
 # etcd - Raft Quorum Rules
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > **Raft Quorum Rules**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > [[etcd-deeper]] > **Raft Quorum Rules**
 
 ---
 

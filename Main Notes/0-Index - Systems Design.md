@@ -2,6 +2,7 @@
 obsidianUIMode: preview
 class: index-note
 tier: main-note
+against: []
 tags:
   - system-design/index
   - obsidian/moc
@@ -18,7 +19,6 @@ tags:
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
-FROM "Main Notes"
 WHERE class = "landing-note" AND role = "infra" AND (contains(domains, "database") OR contains(domains, "networking") OR contains(domains, "infra") OR contains(domains, "security") OR contains(domains, "system-design"))
 SORT file.name ASC
 ```

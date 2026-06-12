@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubelet]]"
+parent_concept: "[[kubelet-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/architecture/nodes/#heartbeats"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/kubelet
   - kubernetes/architecture
@@ -14,7 +15,7 @@ tags:
 
 # kubelet - Kubelet Heartbeats & The Lease API
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **Kubelet Heartbeats**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > [[kubelet-deeper]] > **Kubelet Heartbeats**
 
 ---
 

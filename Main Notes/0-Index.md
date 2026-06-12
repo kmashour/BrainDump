@@ -2,6 +2,7 @@
 obsidianUIMode: preview
 class: index-note
 tier: main-note
+against: []
 tags:
   - kubernetes/index
   - obsidian/moc
@@ -73,7 +74,6 @@ Select a domain to view its active landing concepts, deeper dive notes, and arch
 
 ```dataview
 TABLE parent_concept AS "Component", sub_type AS "Type", tags AS "Tags"
-FROM "Main Notes"
 WHERE class = "deeper-dive"
 SORT parent_concept ASC, file.name ASC
 ```

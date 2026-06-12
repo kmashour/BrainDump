@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler]]"
+parent_concept: "[[kube-scheduler-deeper]]"
 sub_type: use-case
 source_type: udemy
 author: "Mumshad Mannambeth"
 course_title: "Certified Kubernetes Administrator (CKA)"
+against: []
 tags:
   - kubernetes/kube-scheduler
   - kubernetes/troubleshooting
@@ -14,7 +15,7 @@ tags:
 
 # kube-scheduler - Manual Node Assignment
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Manual Node Assignment**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Manual Node Assignment**
 
 ---
 

@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubelet]]"
+parent_concept: "[[kubelet-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/kubelet
   - kubernetes/eviction
@@ -14,7 +15,7 @@ tags:
 
 # kubelet - Node Conditions and Hard Eviction Thresholds
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **Eviction Thresholds**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > [[kubelet-deeper]] > **Eviction Thresholds**
 
 ---
 

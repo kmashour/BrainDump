@@ -5,6 +5,7 @@ tier: main-note
 parent_concept: "[[bgp]]"
 sub_type: core-concept
 source_type: book
+against: []
 tags:
   - bgp/route-reflector
   - bgp/deep-dive

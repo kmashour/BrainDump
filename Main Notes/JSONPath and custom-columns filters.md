@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubectl]]"
+parent_concept: "[[kubectl-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/reference/kubectl/jsonpath/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/kubectl
   - kubernetes/telemetry
@@ -14,7 +15,7 @@ tags:
 
 # kubectl - JSONPath and custom-columns filters
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **JSONPath Filters**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > [[kubectl-deeper]] > **JSONPath Filters**
 
 ---
 

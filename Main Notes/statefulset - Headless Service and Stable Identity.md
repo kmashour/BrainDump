@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#stable-network-identities"
 author: "Kubernetes Authors"
 course_title: "CKA Exam Prep"
+against: []
 tags:
   - kubernetes/statefulset
   - networking/dns

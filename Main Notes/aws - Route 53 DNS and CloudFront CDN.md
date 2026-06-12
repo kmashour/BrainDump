@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://docs.aws.amazon.com/route53/"
 author: "AWS Documentation"
 course_title: "Route 53 & CloudFront Integration Guides"
+against: []
 tags:
   - aws/route53
   - aws/cloudfront

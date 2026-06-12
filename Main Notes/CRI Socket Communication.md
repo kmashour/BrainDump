@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubelet]]"
+parent_concept: "[[kubelet-deeper]]"
 sub_type: architecture
 source_type: documentation
 source_url: "https://kubernetes.io/docs/setup/production-environment/container-runtimes/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/kubelet
   - kubernetes/cri
@@ -14,7 +15,7 @@ tags:
 
 # kubelet - CRI Socket Communication
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **CRI Socket Communication**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > [[kubelet-deeper]] > **CRI Socket Communication**
 
 ---
 

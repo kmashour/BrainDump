@@ -5,6 +5,7 @@ tier: main-note
 parent_concept: "[[jenkins]]"
 sub_type: core-concept
 source_type: udemy
+against: []
 tags:
   - jenkins/pipeline
   - jenkins/deep-dive

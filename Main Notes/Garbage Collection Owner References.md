@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-controller-manager]]"
+parent_concept: "[[kube-controller-manager-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/architecture/garbage-collection/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/controller-manager
   - kubernetes/garbage-collection
@@ -14,7 +15,7 @@ tags:
 
 # kube-controller-manager - Garbage Collection Owner References
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-controller-manager]] > **Owner References**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-controller-manager]] > [[kube-controller-manager-deeper]] > **Owner References**
 
 ---
 

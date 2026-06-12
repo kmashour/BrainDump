@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubelet]]"
+parent_concept: "[[kubelet-deeper]]"
 sub_type: use-case
 source_type: udemy
 author: "Mumshad Mannambeth"
 course_title: "Certified Kubernetes Administrator (CKA)"
+against: []
 tags:
   - kubernetes/kubelet
   - kubernetes/troubleshooting
@@ -14,7 +15,7 @@ tags:
 
 # kubelet - Inspecting kubelet systemd service logs
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **Troubleshooting Logs**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > [[kubelet-deeper]] > **Troubleshooting Logs**
 
 ---
 

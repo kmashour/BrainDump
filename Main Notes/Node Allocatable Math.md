@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[node]]"
+parent_concept: "[[node-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/node
   - kubernetes/architecture
@@ -14,7 +15,7 @@ tags:
 
 # node - Node Allocatable Math
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > **Node Allocatable Math**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > [[node-deeper]] > **Node Allocatable Math**
 
 ---
 

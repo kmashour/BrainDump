@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler]]"
+parent_concept: "[[kube-scheduler-deeper]]"
 sub_type: core-concept
 source_type: udemy
 author: "Mumshad Mannambeth"
 course_title: "Certified Kubernetes Administrator (CKA)"
+against: []
 tags:
   - kubernetes/kube-scheduler
   - kubernetes/deep-dive
@@ -14,7 +15,7 @@ tags:
 
 # kube-scheduler - Node Selector and Affinity
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Node Selector and Affinity**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Node Selector and Affinity**
 
 ---
 

@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://docs.aws.amazon.com/sqs/"
 author: "AWS Documentation"
 course_title: "AWS Microservice Integration Patterns"
+against: []
 tags:
   - aws/sqs
   - aws/sns

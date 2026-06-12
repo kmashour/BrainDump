@@ -7,6 +7,7 @@ sub_type: core-concept
 source_type: documentation
 author: "Level Up Coding"
 course_title: "Architecture Patterns Playbook"
+against: []
 tags:
   - system-design/architecture
   - system-design/deep-dive

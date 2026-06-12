@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/security/pod-security-admission/"
 author: "Kubernetes Authors"
 course_title: "Kubernetes Security Hardening"
+against: []
 tags:
   - kubernetes/security
   - kubernetes/deep-dive

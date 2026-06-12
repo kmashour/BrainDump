@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler]]"
+parent_concept: "[[kube-scheduler-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/#filtering"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/kube-scheduler
   - kubernetes/deep-dive
@@ -14,7 +15,7 @@ tags:
 
 # kube-scheduler - Scheduling Filtering Predicates
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Filtering Predicates**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Filtering Predicates**
 
 ---
 

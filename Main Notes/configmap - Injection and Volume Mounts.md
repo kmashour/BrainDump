@@ -7,6 +7,7 @@ sub_type: core-concept
 source_type: udemy
 author: "Mumshad Mannambeth"
 course_title: "Certified Kubernetes Administrator (CKA)"
+against: []
 tags:
   - kubernetes/configmap
   - kubernetes/deep-dive

@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://docs.aws.amazon.com/kms/"
 author: "AWS Documentation"
 course_title: "AWS KMS Developer Guide"
+against: []
 tags:
   - aws/security
   - aws/kms

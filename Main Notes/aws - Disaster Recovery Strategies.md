@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-of-workloads-on-aws/disaster-recovery-of-workloads-on-aws.html"
 author: "AWS Whitepaper"
 course_title: "Disaster Recovery of Workloads on AWS"
+against: []
 tags:
   - aws/disaster-recovery
   - aws/dr

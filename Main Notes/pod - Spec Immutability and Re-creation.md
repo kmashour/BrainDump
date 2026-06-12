@@ -2,12 +2,13 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[pod]]"
+parent_concept: "[[pod-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/pods/"
 author: "Kubernetes Authors"
 course_title: "CKA Exam Prep"
+against: []
 tags:
   - kubernetes/pod
   - troubleshooting/recreation
@@ -15,7 +16,7 @@ tags:
 
 # pod - Spec Immutability and Re-creation
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **Spec Immutability and Re-creation**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > [[pod-deeper]] > **Spec Immutability and Re-creation**
 
 ---
 

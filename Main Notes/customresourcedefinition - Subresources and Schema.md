@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/"
 author: "Kubernetes Authors"
 course_title: "Kubernetes API Extensions"
+against: []
 tags:
   - kubernetes/extending
   - kubernetes/deep-dive

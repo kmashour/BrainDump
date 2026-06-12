@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[container-runtime]]"
+parent_concept: "[[container-runtime-deeper]]"
 sub_type: architecture
 source_type: documentation
 source_url: "https://github.com/containerd/containerd/blob/main/docs/design/shim.md"
 author: "containerd Maintainers"
+against: []
 tags:
   - kubernetes/container-runtime
   - containerd/architecture
@@ -14,7 +15,7 @@ tags:
 
 # container-runtime - containerd-shim mechanics
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > **containerd-shim**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > [[container-runtime-deeper]] > **containerd-shim**
 
 ---
 

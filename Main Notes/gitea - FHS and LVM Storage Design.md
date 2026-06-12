@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://docs.gitea.com/administration/dir-to-var-symlink"
 author: "Linux Filesystem Standard"
 course_title: "RHCSA Storage Architecture"
+against: []
 tags:
   - git/gitea
   - storage/lvm

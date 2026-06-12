@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/extend-kubernetes/operator/"
 author: "Kubernetes Authors"
 course_title: "Kubernetes Operators"
+against: []
 tags:
   - kubernetes/extending
   - kubernetes/deep-dive

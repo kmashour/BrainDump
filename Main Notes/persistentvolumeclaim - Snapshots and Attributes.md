@@ -8,6 +8,7 @@ source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/storage/volume-snapshots/"
 author: "Kubernetes Authors"
 course_title: "Kubernetes Storage Concepts"
+against: []
 tags:
   - kubernetes/storage
   - kubernetes/deep-dive

@@ -7,6 +7,7 @@ sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/metadata
 ---

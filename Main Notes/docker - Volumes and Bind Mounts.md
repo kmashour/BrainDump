@@ -8,6 +8,7 @@ source_type: udemy
 source_url: "https://www.udemy.com"
 author: "Udemy Instructor"
 course_title: "Docker and Containerization"
+against: []
 tags:
   - docker/storage
   - docker/deep-dive

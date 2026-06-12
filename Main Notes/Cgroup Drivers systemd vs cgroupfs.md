@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[container-runtime]]"
+parent_concept: "[[container-runtime-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/setup/production-environment/container-runtimes/#cgroup-drivers"
 author: "Kubernetes Documentation"
+against: []
 tags:
   - kubernetes/container-runtime
   - kubernetes/kubelet
@@ -14,7 +15,7 @@ tags:
 
 # container-runtime - Cgroup Drivers systemd vs cgroupfs
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > **Cgroup Drivers**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > [[container-runtime-deeper]] > **Cgroup Drivers**
 
 ---
 
