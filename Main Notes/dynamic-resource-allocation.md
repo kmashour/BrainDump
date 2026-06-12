@@ -63,6 +63,6 @@ This table automatically displays all deeper notes, use cases, and pitfalls asso
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
 FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[dynamic-resource-allocation]]
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), "dynamic-resource-allocation")
 SORT file.name ASC
 ```

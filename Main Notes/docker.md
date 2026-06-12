@@ -63,6 +63,6 @@ This table automatically displays all deeper notes, use cases, and pitfalls asso
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
 FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[docker]]
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), "docker")
 SORT file.name ASC
 ```

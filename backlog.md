@@ -3,6 +3,12 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-12] - Vault-wide Dataview Query Upgrade for Robust Search
+
+### Refactored / Upgraded
+- **Dataview Query Upgrades:** Upgraded all 48 landing notes in `Main Notes/` to use the case-insensitive and type-resilient `icontains(string(parent_concept), "<concept-name>")` filter. This resolves Dataview matching failures caused by link objects stored as quoted strings (e.g. `parent_concept: "[[aws]]"`) in frontmatter YAML, establishing absolute query integrity across the entire second brain.
+
+
 ## [2026-06-12] - Ingest Tasks Index and Core CKA Concept Resolutions
 
 ### Added

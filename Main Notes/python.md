@@ -43,6 +43,6 @@ Python serves as the main language for scripting administrative utilities (e.g. 
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
 FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[python]]
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), "python")
 SORT file.name ASC
 ```

@@ -43,6 +43,6 @@ Web Fundamentals provide the foundation for client-side rendering engines (brows
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
 FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[web-fundamentals]]
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), "web-fundamentals")
 SORT file.name ASC
 ```

@@ -43,6 +43,6 @@ BGP forms the control plane routing engine of the global internet and is frequen
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
 FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[bgp]]
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), "bgp")
 SORT file.name ASC
 ```
