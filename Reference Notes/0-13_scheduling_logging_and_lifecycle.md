@@ -834,7 +834,61 @@ spec:
    ```bash
    kubectl create configmap my-scheduler-config --from-file=my-scheduler-config.yaml -n kube-system
    ```
-2. **Deploy the Scheduler:**
+2. **Configure RBAC Permissions for the Scheduler:**
+   Create a manifest `my-scheduler-rbac.yaml` to grant the custom scheduler's ServiceAccount permissions equivalent to the default scheduler (such as accessing Pods and creating Bindings):
+   ```yaml
+   apiVersion: v1
+   kind: ServiceAccount
+   metadata:
+     name: my-custom-scheduler-sa
+     namespace: kube-system
+   ---
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRoleBinding
+   metadata:
+     name: my-custom-scheduler-as-kube-scheduler
+   subjects:
+   - kind: ServiceAccount
+     name: my-custom-scheduler-sa
+     namespace: kube-system
+   roleRef:
+     kind: ClusterRole
+     name: system:kube-scheduler
+     apiGroup: rbac.authorization.k8s.io
+   ---
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRoleBinding
+   metadata:
+     name: my-custom-scheduler-as-volume-scheduler
+   subjects:
+   - kind: ServiceAccount
+     name: my-custom-scheduler-sa
+     namespace: kube-system
+   roleRef:
+     kind: ClusterRole
+     name: system:volume-scheduler
+     apiGroup: rbac.authorization.k8s.io
+   ---
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: RoleBinding
+   metadata:
+     name: my-custom-scheduler-extension-apiserver-authentication-reader
+     namespace: kube-system
+   subjects:
+   - kind: ServiceAccount
+     name: my-custom-scheduler-sa
+     namespace: kube-system
+   roleRef:
+     kind: Role
+     name: extension-apiserver-authentication-reader
+     apiGroup: rbac.authorization.k8s.io
+   ```
+   Apply it:
+   ```bash
+   kubectl apply -f my-scheduler-rbac.yaml
+   ```
+3. **Deploy the Scheduler:**
+   Create a manifest `my-scheduler-deployment.yaml`:
    ```yaml
    apiVersion: apps/v1
    kind: Deployment
@@ -851,7 +905,7 @@ spec:
          labels:
            app: my-custom-scheduler
        spec:
-         serviceAccountName: my-custom-scheduler-sa # Requires ClusterRole permissions for scheduling
+         serviceAccountName: my-custom-scheduler-sa
          containers:
          - name: scheduler
            image: registry.k8s.io/kube-scheduler:v1.30.0
@@ -866,6 +920,10 @@ spec:
          - name: config-volume
            configMap:
              name: my-scheduler-config
+   ```
+   Apply it:
+   ```bash
+   kubectl apply -f my-scheduler-deployment.yaml
    ```
 
 #### 4. Assigning Schedulers to Pods

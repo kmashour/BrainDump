@@ -716,4 +716,133 @@ cat /proc/sys/kernel/pid_max
 kubectl describe node <node-name> | grep -i PIDPressure
 ```
 
+---
+
+## 13. Deploying & Troubleshooting Multiple Schedulers
+
+If asked to configure, deploy, or debug an additional scheduler on the CKA exam, follow this checklist:
+
+### A. Define Scheduler Configuration (ConfigMap)
+The second scheduler requires a unique configuration file. Create the YAML profile and inject it as a ConfigMap:
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+leaderElection:
+  leaderElect: false # Or true if running in high availability (requires a unique Lease name in 'resourceName')
+profiles:
+  - schedulerName: my-custom-scheduler
+```
+Apply it:
+```bash
+kubectl create configmap my-scheduler-config --from-file=my-scheduler-config.yaml -n kube-system
+```
+
+### B. Configure RBAC Permissions
+The custom scheduler requires cluster-wide API access permissions. Apply the SA, ClusterRoleBindings, and RoleBinding:
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-custom-scheduler-sa
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-custom-scheduler-as-kube-scheduler
+subjects:
+- kind: ServiceAccount
+  name: my-custom-scheduler-sa
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:kube-scheduler
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-custom-scheduler-as-volume-scheduler
+subjects:
+- kind: ServiceAccount
+  name: my-custom-scheduler-sa
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: system:volume-scheduler
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: my-custom-scheduler-extension-apiserver-authentication-reader
+  namespace: kube-system
+subjects:
+- kind: ServiceAccount
+  name: my-custom-scheduler-sa
+  namespace: kube-system
+roleRef:
+  kind: Role
+  name: extension-apiserver-authentication-reader
+  apiGroup: rbac.authorization.k8s.io
+```
+
+### C. Deploy and Assign Schedulers
+Deploy the scheduler Pod/Deployment in `kube-system`, referencing `serviceAccountName: my-custom-scheduler-sa` and passing the config via `--config`:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-custom-scheduler
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-custom-scheduler
+  template:
+    metadata:
+      labels:
+        app: my-custom-scheduler
+    spec:
+      serviceAccountName: my-custom-scheduler-sa
+      containers:
+      - name: scheduler
+        image: registry.k8s.io/kube-scheduler:v1.30.0
+        command:
+        - kube-scheduler
+        - --config=/etc/kubernetes/scheduler/my-scheduler-config.yaml
+        - --v=2
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/kubernetes/scheduler
+      volumes:
+      - name: config-volume
+        configMap:
+          name: my-scheduler-config
+```
+
+To schedule a Pod using the new scheduler, specify `spec.schedulerName`:
+```yaml
+spec:
+  schedulerName: my-custom-scheduler
+```
+
+### D. Verification and Troubleshooting
+1. **Verify placement and events:**
+   ```bash
+   # Sort cluster events to find the scheduler assignment message
+   kubectl get events -n default --sort-by='.metadata.creationTimestamp' -o wide
+   
+   # Expected message:
+   # Successfully assigned default/pod-name to worker-node by my-custom-scheduler
+   ```
+2. **If Pod is stuck in `Pending` state:**
+   - Describe the Pod (`kubectl describe pod <pod-name>`) to see if any Scheduler attempted assignment. If the `Source` field is blank or missing, it means the custom scheduler is not executing or did not pick it up.
+   - Inspect custom scheduler logs to diagnose failures:
+     ```bash
+     kubectl logs -n kube-system -l app=my-custom-scheduler
+     ```
+
+
 ```

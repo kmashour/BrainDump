@@ -3,6 +3,21 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-12] - Ingest Custom Scheduler Inflows
+
+### Added
+- **Main Note / Multiple Custom Schedulers:** Created new deeper-dive concept note [Multiple Custom Schedulers.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Multiple%20Custom%20Schedulers.md) detailing custom scheduling purposes, filtering/scoring control loop mechanics, lease name isolation for High Availability (HA), RBAC authentication configurations, and CKA troubleshooting procedures, resolving the placeholder wiki-link.
+
+### Refactored / Upgraded
+- **Module 0-13 Upgrade:** Enriched [0-13_scheduling_logging_and_lifecycle.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md) with concrete ServiceAccount, ClusterRoleBindings (for `system:kube-scheduler` and `system:volume-scheduler`), and RoleBinding (for `extension-apiserver-authentication-reader` in namespace `kube-system`) YAML configs to reflect Kubernetes production deployment requirements.
+- **Workloads Exam Checklist:** Appended Section 13 covering custom scheduler deployment manifests, ConfigMaps configurations, pod assignment spec properties, and event-based/log-based debugging steps to the primary CKA workloads checklist: [Exam Checklist - Workloads and Scheduling.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/Exam%20Checklist%20-%20Workloads%20and%20Scheduling.md).
+
+### Ingested Inflow Sources
+Processed and integrated the following files:
+- `inflow/Custom_scheduler_mumshad.md` (and scraped official Kubernetes documentation from `https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/`)
+
+---
+
 ## [2026-06-12] - Ingest Scheduling and PriorityClass Inflows
 
 ### Refactored / Upgraded
