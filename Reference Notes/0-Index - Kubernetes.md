@@ -44,6 +44,10 @@ tags:
 - 🏥 **[Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md)** (Module 04)
 - 🎛️ **[Workloads & Controllers](0-6_kubernetes_workloads_and_controllers.md)** (Module 06)
 - 🎯 **[Scheduling, Logging & Lifecycle](0-13_scheduling_logging_and_lifecycle.md)** (Module 13)
+- 🌐 **[Advanced Scheduling in Kubernetes](advanced_scheduling_in_kubernetes.md)** (Reference Article)
+- 🔀 **[How does the Kubernetes scheduler work?](how_does_the_kubernetes_scheduler_work.md)** (Reference Article)
+- ⚙️ **[Scheduler Code Hierarchy Overview](scheduling_code_hierarchy_overview.md)** (Reference Article)
+- 💬 **[How does Kubernetes scheduler work? (StackOverflow)](how_does_kubernetes_scheduler_work_stackoverflow.md)** (Reference Article)
 
 ---
 
