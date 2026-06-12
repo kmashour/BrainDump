@@ -65,21 +65,21 @@ tags:
 
 ## 🔎 Quick Navigation Matrix
 
-| Core Focus | Study Module | Key Hands-on PoC / Playbook |
-| :--- | :--- | :--- |
-| API Mechanics & kubectl | **[Module 01](0-1_kube_api_and_kubectl.md)** | JSONPath & Custom Columns Data Extraction |
-| Cluster Components | **[Module 02](0-2_cluster_architecture_and_components.md)** | HA Stacked Kubeadm Architecture |
-| Node & Resource Limits | **[Module 03](0-3_node_mechanics_and_resource_limits.md)** | Cgroup configuration & Resource limits |
-| Self-Healing & Probes | **[Module 04](0-4_workload_lifecycle_and_healing.md)** | Probe-based recovery & Cascading GC |
-| Runtimes & Sandboxing | **[Module 05](0-5_containers_runtimes_and_lifecycle.md)** | gVisor RuntimeClass & Ephemeral debugging |
-| Controllers & Templates | **[Module 06](0-6_kubernetes_workloads_and_controllers.md)** | StatefulSet ordinals & Helm rollbacks |
-| Security & NetPolicies | **[Module 07](0-7_security_and_network_policies.md)** | RBAC service-account audits & NetworkPolicies |
-| Storage & CSI | **[Module 08](0-8_storage_mechanics_and_csi.md)** | Dynamic local-path PV mounting |
-| Networking, DNS & Ingress | **[Module 09](0-9_networking_dns_and_ingress.md)** | CNI overlay packet tracing & Ingress routing |
-| Bootstrapping & Upgrades | **[Module 10](0-10_maintenance_upgrades_and_etcd.md)** | Cluster Upgrade & ETCD Restore Playbook |
-| Troubleshooting & Diagnostics | **[Module 11](0-11_troubleshooting_and_diagnostics.md)** | Diagnostic node logs & static pod recoveries |
-| API Declarative Updates | **[Module 12](0-12_kubernetes_api_management_and_pod_immutability.md)** | 3-Way Merge annotation & Pod replacement |
-| Scheduling & Placements | **[Module 13](0-13_scheduling_logging_and_lifecycle.md)** | Taints/Tolerations & Custom Scheduler Leases |
-| Observability & Flow Control | **[Module 14](0-14_cluster_administration_and_observability.md)** | API Priority & Fairness Queueing Config |
+| Core Focus                    | Study Module                                                            | Key Hands-on PoC / Playbook                   |
+| :---------------------------- | :---------------------------------------------------------------------- | :-------------------------------------------- |
+| API Mechanics & kubectl       | **[Module 01](0-1_kube_api_and_kubectl.md)**                            | JSONPath & Custom Columns Data Extraction     |
+| Cluster Components            | **[Module 02](0-2_cluster_architecture_and_components.md)**             | HA Stacked Kubeadm Architecture               |
+| Node & Resource Limits        | **[Module 03](0-3_node_mechanics_and_resource_limits.md)**              | Cgroup configuration & Resource limits        |
+| Self-Healing & Probes         | **[Module 04](0-4_workload_lifecycle_and_healing.md)**                  | Probe-based recovery & Cascading GC           |
+| Runtimes & Sandboxing         | **[Module 05](0-5_containers_runtimes_and_lifecycle.md)**               | gVisor RuntimeClass & Ephemeral debugging     |
+| Controllers & Templates       | **[Module 06](0-6_kubernetes_workloads_and_controllers.md)**            | StatefulSet ordinals & Helm rollbacks         |
+| Security & NetPolicies        | **[Module 07](0-7_security_and_network_policies.md)**                   | RBAC service-account audits & NetworkPolicies |
+| Storage & CSI                 | **[Module 08](0-8_storage_mechanics_and_csi.md)**                       | Dynamic local-path PV mounting                |
+| Networking, DNS & Ingress     | **[Module 09](0-9_networking_dns_and_ingress.md)**                      | CNI overlay packet tracing & Ingress routing  |
+| Bootstrapping & Upgrades      | **[Module 10](0-10_maintenance_upgrades_and_etcd.md)**                  | Cluster Upgrade & ETCD Restore Playbook       |
+| Troubleshooting & Diagnostics | **[Module 11](0-11_troubleshooting_and_diagnostics.md)**                | Diagnostic node logs & static pod recoveries  |
+| API Declarative Updates       | **[Module 12](0-12_kubernetes_api_management_and_pod_immutability.md)** | 3-Way Merge annotation & Pod replacement      |
+| Scheduling & Placements       | **[Module 13](0-13_scheduling_logging_and_lifecycle.md)**               | Taints/Tolerations & Custom Scheduler Leases  |
+| Observability & Flow Control  | **[Module 14](0-14_cluster_administration_and_observability.md)**       | API Priority & Fairness Queueing Config       |
 | Extensions & CRDs | **[Module 15](0-15_kubernetes_api_extension_and_operators.md)** | CustomResourceDefinitions & Operator Informers |
----
+
