@@ -95,3 +95,13 @@ Query the API schema directly from the CLI:
 * **`kubectl explain <resource>`:** Renders inline documentation for fields (e.g., `kubectl explain pod.spec.containers.securityContext`).
 
 *Read more in [0-1_kube_api_and_kubectl.md](../Reference%20Notes/0-1_kube_api_and_kubectl.md#5-kubectl-cli-formula--speed-tricks).*
+
+## 🔍 Sub-Concepts & Use Cases
+This table automatically displays all deeper notes, use cases, and configurations associated with **kubectl-deeper**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), "kubectl-deeper")
+SORT file.name ASC
+```

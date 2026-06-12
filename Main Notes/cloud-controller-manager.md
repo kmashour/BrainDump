@@ -63,12 +63,7 @@ The `cloud-controller-manager` is an optional, pluggable Control Plane component
 * **Routing Failures:** If node IP addresses change, the underlying VPC routes will become stale, cutting off Pod-to-Pod communications.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **cloud-controller-manager**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[cloud-controller-manager-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "cloud-controller-manager")
-SORT file.name ASC
-```

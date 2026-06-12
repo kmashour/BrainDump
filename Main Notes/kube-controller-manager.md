@@ -70,12 +70,7 @@ The `kube-controller-manager` is an active administrative agent in the Control P
 * **No Volume Attachment Control:** Volumes will fail to attach or detach from nodes when pods move, freezing workload migrations.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kube-controller-manager**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[kube-controller-manager-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "kube-controller-manager")
-SORT file.name ASC
-```

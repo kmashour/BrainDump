@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[pod]]"
+parent_concept: "[[pod-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/"
@@ -14,7 +14,7 @@ tags:
 
 # pod - Health Probes (liveness readiness startup)
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **Health Probes**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > [[pod-deeper]] > **Health Probes**
 
 ---
 

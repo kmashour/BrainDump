@@ -64,12 +64,7 @@ deeper_dive: "[[etcd-deeper]]"
 * **Complete Data Loss Risk:** If all `etcd` instances fail and no backup exists, the cluster's entire state (all resources, configuration, and security settings) is lost, requiring a complete redeployment of the cluster.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **etcd**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[etcd-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "etcd")
-SORT file.name ASC
-```

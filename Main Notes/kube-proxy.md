@@ -65,12 +65,7 @@ deeper_dive: "[[kube-proxy-deeper]]"
 * **No Load Balancer/NodePort Traffic:** External traffic coming through NodePorts or LoadBalancers will fail to distribute to backend pods.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kube-proxy**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[kube-proxy-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "kube-proxy")
-SORT file.name ASC
-```

@@ -3,6 +3,16 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-12] - Nested Deeper-Dive MOC Restructure
+
+### Refactored / Upgraded
+- **Nested MOC Architecture:** Restructured the 10 core control plane and component concepts to utilize a clean nested hierarchy.
+  - Main landing notes (e.g. [kube-scheduler.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kube-scheduler.md)) now have `deeper_dive: "[[kube-scheduler-deeper]]"` in their frontmatter and a visible, clickable body section pointing to the dedicated deeper MOC note, with their individual sub-concept Dataview tables removed.
+  - Deeper MOC notes (e.g. [kube-scheduler-deeper.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kube-scheduler-deeper.md)) now host the resilient Dataview query block, displaying all related sub-concepts and use cases.
+  - All task-based sub-concept child notes (e.g. [Scheduling Filtering Predicates.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Scheduling%20Filtering%20Predicates.md)) have their `parent_concept` redirected to `"[[kube-scheduler-deeper]]"` (and corresponding MOCs) and their breadcrumbs updated to represent the intermediate path.
+- **Flat Architecture Retention:** Left all other 38 landing notes on a clean, flat architecture where sub-concepts link directly to the main note and queries run there, as they lack intermediate `-deeper` MOC files.
+
+
 ## [2026-06-12] - Vault-wide Dataview Query Upgrade for Robust Search
 
 ### Refactored / Upgraded

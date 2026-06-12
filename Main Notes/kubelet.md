@@ -71,12 +71,7 @@ The `kubelet` sits on the boundary between the Kubernetes cluster control plane 
 * **Frozen State:** Any updates (such as image changes, scaling requests, or config modifications) cannot be applied to workloads on that node.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kubelet**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[kubelet-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "kubelet")
-SORT file.name ASC
-```

@@ -65,12 +65,7 @@ The `kube-scheduler` runs as an independent control loop:
 * **Manual Bypass:** Administrators can bypass a failed scheduler by manually defining `spec.nodeName: <node-name>` directly inside a Pod's YAML manifest at creation time.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **kube-scheduler**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[kube-scheduler-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "kube-scheduler")
-SORT file.name ASC
-```

@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-controller-manager]]"
+parent_concept: "[[kube-controller-manager-deeper]]"
 sub_type: architecture
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/architecture/nodes/#heartbeats"
@@ -14,7 +14,7 @@ tags:
 
 # kube-controller-manager - HA Leader Election Leases
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-controller-manager]] > **HA Leader Election Leases**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-controller-manager]] > [[kube-controller-manager-deeper]] > **HA Leader Election Leases**
 
 ---
 

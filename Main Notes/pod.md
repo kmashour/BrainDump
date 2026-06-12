@@ -69,12 +69,7 @@ The Pod is the building block of all workloads in the cluster:
 * **Broken Helper Relationships:** Helper containers cannot easily share the same network address space or file systems with primary containers, breaking standard architectural patterns (like sidecar proxies).
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **pod**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[pod-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "pod")
-SORT file.name ASC
-```

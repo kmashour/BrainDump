@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubectl]]"
+parent_concept: "[[kubectl-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/manage-kubernetes-objects/declarative-config/"
@@ -15,7 +15,7 @@ tags:
 
 # kubectl - Declarative vs Imperative and 3-Way Merge
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **Declarative vs Imperative and 3-Way Merge**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > [[kubectl-deeper]] > **Declarative vs Imperative and 3-Way Merge**
 
 ---
 

@@ -65,12 +65,7 @@ Nodes form the execution plane (Worker Nodes) of the cluster:
 * **Split Brain & Frozen State:** If a node suffers a network partition, the control plane marks it `NotReady` but cannot terminate its processes, potentially leading to volume conflicts if the node is still running workloads locally.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **node**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[node-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "node")
-SORT file.name ASC
-```

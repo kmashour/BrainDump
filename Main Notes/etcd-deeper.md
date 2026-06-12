@@ -113,3 +113,13 @@ You can switch the active API version for `etcdctl` using one of two methods:
 +| **Watch Key Changes** | `etcdctl watch key1` | `etcdctl watch key1` | In v3, watching keys provides detailed transaction events. |
 
 *Read more in [0-10_maintenance_upgrades_and_etcd.md](../Reference%20Notes/0-10_maintenance_upgrades_and_etcd.md#41-etcd-api-v2-vs-v3-client-management)*
+
+## 🔍 Sub-Concepts & Use Cases
+This table automatically displays all deeper notes, use cases, and configurations associated with **etcd-deeper**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), "etcd-deeper")
+SORT file.name ASC
+```

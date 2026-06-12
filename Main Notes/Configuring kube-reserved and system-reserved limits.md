@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[node]]"
+parent_concept: "[[node-deeper]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/administer-cluster/reserve-compute-resources/"
@@ -14,7 +14,7 @@ tags:
 
 # node - Configuring kube-reserved and system-reserved limits
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > **Configuring Reserved Limits**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > [[node-deeper]] > **Configuring Reserved Limits**
 
 ---
 

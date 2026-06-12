@@ -63,12 +63,7 @@ The `container-runtime` resides on the host OS of every cluster node:
 * **Scheduling Freeze:** Any pods assigned to the node fail to create, hanging in `ContainerCreating` or displaying `CRIInitializationError` status.
 ---
 
-## 🔍 Deeper Dive Notes
-This table automatically displays all deeper notes, use cases, and pitfalls associated with the **container-runtime**.
+## 🔍 Deeper Dive
+For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
+* **[[container-runtime-deeper]]**
 
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "container-runtime")
-SORT file.name ASC
-```
