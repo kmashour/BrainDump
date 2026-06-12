@@ -43,7 +43,6 @@ AWS serves as the underlying physical and virtual hosting fabric for modern micr
 ## 🔍 Deeper Dive Notes
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "aws")
+WHERE class = "deeper-dive" AND contains(parent_concept, this.file.link)
 SORT file.name ASC
 ```

@@ -78,7 +78,6 @@ This table automatically displays all deeper notes, use cases, and configuration
 
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "cloud-controller-manager-deeper")
+WHERE class = "deeper-dive" AND contains(parent_concept, this.file.link)
 SORT file.name ASC
 ```

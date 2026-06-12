@@ -42,7 +42,6 @@ Jenkins operates as the core execution hub inside development teams, connecting 
 ## 🔍 Deeper Dive Notes
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "jenkins")
+WHERE class = "deeper-dive" AND contains(parent_concept, this.file.link)
 SORT file.name ASC
 ```

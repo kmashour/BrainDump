@@ -42,7 +42,6 @@ BGP forms the control plane routing engine of the global internet and is frequen
 ## 🔍 Deeper Dive Notes
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND icontains(string(parent_concept), "bgp")
+WHERE class = "deeper-dive" AND contains(parent_concept, this.file.link)
 SORT file.name ASC
 ```
