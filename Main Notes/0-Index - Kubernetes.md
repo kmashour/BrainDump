@@ -30,7 +30,6 @@ SORT file.name ASC
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
-FROM "Main Notes"
 WHERE class = "landing-note" AND role = "worker-node"
 SORT file.name ASC
 ```
@@ -42,7 +41,6 @@ SORT file.name ASC
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
-FROM "Main Notes"
 WHERE class = "landing-note" AND role = "workload" AND !contains(domains, "networking") AND !contains(domains, "storage")
 SORT file.name ASC
 ```
@@ -54,7 +52,6 @@ SORT file.name ASC
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
-FROM "Main Notes"
 WHERE class = "landing-note" AND (contains(domains, "networking") OR role = "network") AND role != "control-plane" AND role != "infra"
 SORT file.name ASC
 ```
@@ -66,7 +63,6 @@ SORT file.name ASC
 
 ```dataview
 TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
-FROM "Main Notes"
 WHERE class = "landing-note" AND (contains(domains, "storage") OR role = "storage")
 SORT file.name ASC
 ```
