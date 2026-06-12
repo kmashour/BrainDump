@@ -71,7 +71,7 @@ For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
 
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
-WHERE class = "deeper-dive" AND (contains(parent_concept, this.file.link) OR icontains(string(parent_concept), this.file.name))
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), this.file.name)
 SORT file.name ASC
 ```
 
