@@ -67,6 +67,15 @@ flowchart TD
     P -->|Wait| Hold[Hold Pod]
 ```
 
+### C. Scheduler Cache, Informer & Requeueing Mechanics
+To achieve high throughput (scheduling tens of thousands of Pods in minutes), the scheduler does not query the API server for all cluster resources on every cycle. Instead, it relies on event-driven caching:
+* **SharedInformers & Event Queue:** The scheduler registers a `SharedInformer` that watches for new Pod events. When a Pod without a `nodeName` is created, it is pushed onto an internal queue (`podQueue`).
+* **The `scheduleOne` Loop:** The scheduler runs a continuous loop (`scheduleOne`) that pops the next Pod from `podQueue`, executes the scheduling cycle, and starts the binding cycle.
+* **Optimistic Cache (`AssumePod`):** Once a node is chosen, the scheduler immediately updates its local cache (`AssumePod`) to mark those resources as allocated before sending the binding request to the API server. This prevents the scheduler from double-allocating resources to two different Pods in rapid succession.
+* **Error Requeueing:** If a Pod fails to schedule (e.g. no nodes fit the predicates), the scheduler calls its error handler (`sched.config.Error(pod, err)`) which puts the Pod back on the `podQueue` to try again.
+* **No-Resync Policy:** The scheduler sets its informer resync period to `0` (never resync). Re-syncing forces the scheduler to query and process every object again, which degrades performance. The Kubernetes maintainers enforce a no-resync policy to ensure underlying correctness bugs (e.g. lost pods) are caught and fixed rather than hidden by periodic resyncs.
+* **Unreserve / Rollback:** If the asynchronous binding cycle fails (e.g. network timeout or API error), the scheduler executes an `Unreserve` operation to free the cached resources on the node and make them available for other pods.
+
 ### A. Filtering (Predicates)
 Evaluates nodes against boolean checks. If a node fails any check, it is removed from the candidate list:
 * `PodFitsResources`: Checks if the node has enough unallocated CPU and Memory to meet the Pod's resource requests.
