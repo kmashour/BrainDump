@@ -19,7 +19,8 @@ flowchart TD
         P1 --> P2["Phase 2: Context Audit"]
         P2 --> P25["Phase 2.5: Diagram Design"]
         P25 --> P3["Phase 3: Project PoC Compilation"]
-        P3 --> P4["Phase 4: Conceptual Main Notes"]
+        P3 --> P35["Phase 3.5: Hands-on Lab Design"]
+        P35 --> P4["Phase 4: Conceptual Main Notes"]
         P4 --> P5["Phase 5: Garden Intersection Mapping"]
         P5 --> P6["Phase 6: Exam Focus (Domain Specific)"]
     end
@@ -50,6 +51,11 @@ flowchart TD
 - **Orchestrated Agent:** **MultiDomainPoCAgent** (`System/Agents/poc_developer.md`)
 - **Governing Skill:** `System/Skills/project_poc.md`
 - **Output:** Takes hands-on implementation scripts, configurations (e.g., Nginx, Docker, Terraform), and CLI validation recipes, and packages them as a standalone project note inside the `Projects/` folder (e.g., `Projects/Systems Design/`), referencing the core Second Brain concepts. Pointers are added to the Reference/Main notes to link them.
+
+### Phase 3.5: Hands-on Lab Architecture & Review
+- **Orchestrated Agent:** **LabArchitectAgent** (`System/Agents/lab_architect.md`)
+- **Governing Skill:** `System/Skills/lab_design.md`
+- **Output:** Audits the reference notes to identify practical gaps. Ensures every applicable system module (e.g., Kubernetes, Docker, AWS) contains or links to step-by-step verification labs covering its AARF failure loop scenarios.
 
 ### Phase 4: Main Notes (Conceptual Atomicity)
 - **Orchestrated Agent:** **IntegrationAgent** (Main Session)

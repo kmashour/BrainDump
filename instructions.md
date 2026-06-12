@@ -36,6 +36,7 @@ The specialized subagents and their profiles are defined in the `System/Agents/`
 - **AuditAgent:** [auditor.md](System/Agents/auditor.md) (Context Auditor & Tangent Expander)
 - **DiagramAgent:** [diagrammer.md](System/Agents/diagrammer.md) (Mermaid.js Concept Designer)
 - **MultiDomainPoCAgent:** [poc_developer.md](System/Agents/poc_developer.md) (Verification & Hands-on Implementation Developer)
+- **LabArchitectAgent:** [lab_architect.md](System/Agents/lab_architect.md) (Specialized Lab Architect & Hands-on Lab Compiler)
 - **GardenAgent:** [garden_architect.md](System/Agents/garden_architect.md) (Cross-Domain Connection & Pattern Architect)
 - **CKAExamAgent:** [exam_expert.md](System/Agents/exam_expert.md) (Exam checklist & speed-optimization expert)
 
