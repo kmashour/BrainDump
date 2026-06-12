@@ -1889,6 +1889,18 @@ The scheduling behavior of a pending pod when resources are fully consumed is di
 kubectl get priorityclasses
 # or
 kubectl get pc
+
+# Imperatively create a basic PriorityClass
+kubectl create priorityclass high-priority --value=1000 --description="high priority"
+
+# Imperatively create a default PriorityClass (global default)
+kubectl create priorityclass default-priority --value=1000 --global-default=true --description="default priority"
+
+# Imperatively create a non-preempting PriorityClass
+kubectl create priorityclass non-preempting --value=1000 --preemption-policy="Never" --description="non-preempting priority"
+
+# Dry-run generate PriorityClass YAML
+kubectl create priorityclass fast-lane --value=500000 --dry-run=client -o yaml
 ```
 
 #### 6. Detailed Pod Preemption Flow

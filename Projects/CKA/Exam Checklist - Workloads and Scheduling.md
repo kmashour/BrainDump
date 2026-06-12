@@ -555,9 +555,16 @@ If the exam asks you to spread Pods evenly across Availability Zones or Node Hos
 
 #### 2. Pod Priority and Preemption Debugging
 If a high-priority Pod is stuck `Pending` and you need to verify if it will preempt lower-priority Pods:
-1.  **Check the PriorityClass**:
+1.  **Create the PriorityClass imperatively** (Speed Hack):
     ```bash
-    kubectl get priorityclasses
+    # Basic creation:
+    kubectl create priorityclass high-priority-db --value=1000000 --description="core db pods"
+    
+    # Non-preempting priority (doesn't evict other pods, only gets queue priority):
+    kubectl create priorityclass non-preempting --value=500000 --preemption-policy="Never"
+    
+    # Global default priority:
+    kubectl create priorityclass default-priority --value=500 --global-default=true
     ```
 2.  **Define priorityClassName on the Pod**:
     Ensure the Pod spec contains `priorityClassName: <class-name>`.

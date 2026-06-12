@@ -8,9 +8,10 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ### Refactored / Upgraded
 - **Ingested PriorityClass Inflows:** Processed and audited the following files:
   - `inflow/PriorityClass_Mumshad.md` (verified and fully covered in [0-13_scheduling_logging_and_lifecycle.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md))
+  - `inflow/PriorityClass_Docs.md` (scraped core API & CLI reference URLs; ingested imperative commands)
   - `inflow/docs/03-Scheduling/21-Admission Controllers.md` (empty/0-bytes, ignored)
   - `inflow/docs/03-Scheduling/Validating and Mutation Admission Controllers.md` (empty/0-bytes, ignored)
-- **Verified Coverage & Placements:** Confirmed that PriorityClass 32-bit integer ranges (1B to -2B), system cluster critical values (2B), default priority value (0), preemption policies (`PreemptLowerPriority` vs. `Never`), and CLI verification commands are fully detailed in [0-13_scheduling_logging_and_lifecycle.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md) and [kube-scheduler - Priority Preemption and Topology Spread.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kube-scheduler%20-%20Priority%20Preemption%20and%20Topology%20Spread.md).
+- **Verified Coverage & Placements:** Confirmed that PriorityClass 32-bit integer ranges (1B to -2B), system cluster critical values (2B), default priority value (0), preemption policies (`PreemptLowerPriority` vs. `Never`), and CLI verification commands are fully detailed in [0-13_scheduling_logging_and_lifecycle.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md) and [kube-scheduler - Priority Preemption and Topology Spread.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kube-scheduler%20-%20Priority%20Preemption%20and%20Topology%20Spread.md). Added imperative `kubectl create priorityclass` speed-run command patterns to the CKA Workloads exam checklist and Module 13 CLI reference.
 
 ---
 
