@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[container-runtime-deeper]]"
+parent_concept: "[[container-runtime]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/debug/debug-cluster/crictl/"
@@ -14,7 +14,7 @@ tags:
 
 # container-runtime - CRI troubleshooting with crictl
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > [[container-runtime-deeper]] > **crictl Troubleshooting**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > **crictl Troubleshooting**
 
 ---
 

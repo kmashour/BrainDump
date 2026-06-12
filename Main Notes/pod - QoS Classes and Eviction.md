@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[pod-deeper]]"
+parent_concept: "[[pod]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/"
@@ -15,7 +15,7 @@ tags:
 
 # pod - QoS Classes and Eviction
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > [[pod-deeper]] > **QoS Classes and Eviction**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **QoS Classes and Eviction**
 
 ---
 

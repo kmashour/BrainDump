@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[pod-deeper]]"
+parent_concept: "[[pod]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/debug/debug-application/debug-running-pod/#ephemeral-container"
@@ -14,7 +14,7 @@ tags:
 
 # pod - Debugging with Ephemeral Containers
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > [[pod-deeper]] > **Ephemeral Containers**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **Ephemeral Containers**
 
 ---
 

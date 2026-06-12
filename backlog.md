@@ -3,6 +3,15 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-12] - Pure Flat MOC Architecture Implementation
+
+### Refactored / Upgraded
+- **Flat MOC Integration:** Consolidating user preference for direct backward/forward navigation by merging the technical contents of the 10 `-deeper` notes directly into their corresponding main landing notes (e.g. [kube-scheduler.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kube-scheduler.md), [node.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/node.md), [pod.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/pod.md)).
+- **Sub-concept Redirection:** Updated the `parent_concept` in all sub-concept notes (like [Scheduling Filtering Predicates.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Scheduling%20Filtering%20Predicates.md)) to link directly to their main landing notes and simplified their breadcrumbs to clean up navigation paths.
+- **Query Restoration:** Restored the resilient `contains(parent_concept, this.file.link)` Dataview query directly at the bottom of the main landing notes, making all child sub-concepts discoverable in a single hop.
+- **Redundant MOC Deletion:** Deleted the 10 intermediate `-deeper.md` notes to avoid duplicate index files.
+
+
 ## [2026-06-12] - Nested Deeper-Dive MOC Restructure
 
 ### Refactored / Upgraded

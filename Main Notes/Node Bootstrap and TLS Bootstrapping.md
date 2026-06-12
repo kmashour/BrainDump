@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubelet-deeper]]"
+parent_concept: "[[kubelet]]"
 sub_type: architecture
 source_type: documentation
 source_url: "https://kubernetes.io/docs/reference/access-authn-authz/kubelet-tls-bootstrapping/"
@@ -14,7 +14,7 @@ tags:
 
 # kubelet - Node Bootstrap and TLS Bootstrapping
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > [[kubelet-deeper]] > **TLS Bootstrapping**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **TLS Bootstrapping**
 
 ---
 

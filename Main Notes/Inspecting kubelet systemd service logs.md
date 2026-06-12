@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubelet-deeper]]"
+parent_concept: "[[kubelet]]"
 sub_type: use-case
 source_type: udemy
 author: "Mumshad Mannambeth"
@@ -14,7 +14,7 @@ tags:
 
 # kubelet - Inspecting kubelet systemd service logs
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > [[kubelet-deeper]] > **Troubleshooting Logs**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubelet]] > **Troubleshooting Logs**
 
 ---
 

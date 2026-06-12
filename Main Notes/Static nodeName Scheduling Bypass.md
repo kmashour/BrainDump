@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler-deeper]]"
+parent_concept: "[[kube-scheduler]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodename"
@@ -14,7 +14,7 @@ tags:
 
 # kube-scheduler - Static nodeName Scheduling Bypass
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Static nodeName Scheduling Bypass**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Static nodeName Scheduling Bypass**
 
 ---
 

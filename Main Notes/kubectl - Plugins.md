@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubectl-deeper]]"
+parent_concept: "[[kubectl]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/"
@@ -16,7 +16,7 @@ tags:
 
 # kubectl - Plugins
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > [[kubectl-deeper]] > **Plugins**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **Plugins**
 
 ---
 
