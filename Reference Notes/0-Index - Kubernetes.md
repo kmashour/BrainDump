@@ -11,6 +11,9 @@ tags:
 
 **Breadcrumbs:** [[--Index--|🏠 Index]] > **Kubernetes Reference MOC**
 
+> [!TIP]
+> **CKA Exam Study Roadmap:** If you are studying using Mumshad's course and want to skip the videos, see the [[0-CKA Study Alignment Guide|CKA Study Alignment & Reference Map]] to follow the syllabus directly using these deep modules.
+
 ---
 
 ## 🏗️ Domain 1: Cluster Architecture & Administration
