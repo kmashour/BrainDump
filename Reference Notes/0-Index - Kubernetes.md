@@ -61,6 +61,9 @@ tags:
 ## 🛡️ Domain 6: Cluster Security & Policy Governance
 *X.509 certs, RBAC rules, pod securityContexts, network policies, and Pod Security Admission (PSA/PSS).*
 - 🔑 **[Cluster Security & Network Policies](0-7_security_and_network_policies.md)** (Module 07)
+- 🧬 **[Admission Controllers Reference](admission_controllers_reference.md)** (Reference Article)
+- 🔀 **[A Guide to Kubernetes Admission Controllers](a_guide_to_kubernetes_admission_controllers.md)** (Reference Article)
+- 🛡️ **[Pod Security Admission Reference](pod_security_admission_reference.md)** (Reference Article)
 
 ---
 
