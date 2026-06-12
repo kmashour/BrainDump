@@ -98,6 +98,11 @@ graph TD
 4. **The Failure Loop (What if not):** Since JWTs are stateless, they cannot be revoked on-demand if compromised. An attacker who steals a token can impersonate the user until the expiration (`exp`) claim expires. Storing secrets in the payload is a vulnerability because the payload is Base64Url-encoded and fully readable by anyone.
 5. **Alternative Case (When to use 'if not'):** Use traditional stateful session-based cookies when immediate logout/revocation is business-critical, or when payload size constraints prevent sending large token headers with every request.
 
+##### Key JWT Trade-offs & Security Concerns:
+- **Revocation Complexity:** Because JWTs are self-contained and verified locally, there is no central session database to check. If a user logs out or their account is compromised, the token remains valid until it naturally expires. Revoking a token early requires implementing stateful workarounds (like a Redis-based token blacklist or rotating signing keys), which partially compromises the stateless design.
+- **Outdated Permissions (Stale Claims):** A JWT’s claims are fixed at the moment of issuance. If a user’s role is updated (e.g., promoted from `user` to `admin` or stripped of access), those changes are not reflected in the active JWT. The user retains their old permissions until the token expires and they obtain a new one.
+- **Payload Visibility:** JWT payloads are base64url-encoded, **not encrypted**. Anyone who intercepts the token can read all claims (including user ID, email, and roles). Never store sensitive or confidential data (like passwords, keys, or personal health info) in a JWT unless you apply an encryption layer (JSON Web Encryption - JWE).
+
 ### B. Authorization Models
 - **Role-Based Access Control (RBAC):** Permissions are bound to logical roles (e.g. `admin`, `editor`, `reader`), and users are assigned to roles. Highly audit-friendly.
 - **Attribute-Based Access Control (ABAC):** Evaluates attributes of the subject, resource, and context (e.g. "Department = Finance", "Resource = Secret", "Time = Working Hours"). Extremely flexible but complex to implement.
@@ -115,6 +120,15 @@ graph TD
     - *Refresh Token:* Long-lived credential used only at the Token Endpoint to get a new access token without re-authenticating the user. Never send this to the Resource Server.
     - *ID Token:* A signed JWT carrying *authentication claims* (user identity information) issued by the OpenID Provider.
 - **OpenID Connect (OIDC):** An identity verification layer built on top of OAuth 2.0. Adds the `id_token` to verify user authentication. **An ID token is not an OAuth token.** OAuth is for authorization, OIDC is for authentication.
+
+##### Client Types & Token Security Guidelines:
+OAuth classifies clients based on their ability to protect credentials:
+1. **Confidential Clients (Secure Backends):** Applications running on servers where the client secret can be kept hidden (e.g., traditional MVC web apps, backend microservices).
+   - *Best Practice:* Store refresh and access tokens entirely on the backend. Communicate with the browser using a secure, encrypted `HttpOnly` session cookie. The frontend browser never touches raw tokens, preventing Cross-Site Scripting (XSS) token theft.
+2. **Public Clients (Unsecure Clients):** Applications running on devices where secrets cannot be protected (e.g., mobile apps, desktop apps, Single-Page Apps in browsers).
+   - *Mobile/Desktop Best Practice:* Implement **Authorization Code Flow + PKCE** (Proof Key for Code Exchange). PKCE prevents authorization code hijacking by requiring the client to verify its identity dynamically using a code verifier. Open the user's login in the default system browser (not an embedded webview) and store refresh tokens in secure platform storage (Keychain/Keystore).
+   - *Single-Page App (SPA) Best Practice:* Deploy the **Backend-for-Frontend (BFF) Pattern**. The browser communicates with a lightweight backend proxy using secure cookies; this backend handles the OAuth exchange and holds the raw tokens.
+   - *SPA Fallback (if BFF is not possible):* Use Authorization Code + PKCE, validate the `state` parameter to block CSRF, keep tokens strictly in-memory (never in `localStorage` or `sessionStorage` where they are vulnerable to XSS), and lock down CORS rules tightly.
 
 #### OAuth 2.0 Delegated Authorization AARF Breakdown:
 1. **The Answer (Core Config):** Implement delegated authorization using OAuth 2.0 flows, separating authorization logic (Authorization Server) from data logic (Resource Server), and using short-lived Access Tokens for resource requests.

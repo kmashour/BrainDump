@@ -97,21 +97,33 @@ At the network layer, APIs and communication channels run on top of Transport pr
 
 ---
 
-## 3. gRPC & Protocol Buffers (HTTP/2 Multiplexing)
+## 3. gRPC & Protocol Buffers (HTTP/2 Multiplexing & Streaming)
 
-gRPC is a high-performance, open-source Remote Procedure Call (RPC) framework developed by Google.
+gRPC is a high-performance, open-source Remote Procedure Call (RPC) framework developed by Google. Instead of mapping requests to HTTP verbs and URL resource nouns, gRPC allows services to invoke remote functions on other services directly as if they were local calls.
 
-### A. HTTP/2 Transport Foundation
-gRPC requires **HTTP/2**, which supports:
-- **Multiplexing:** Allows sending multiple bidirectional streams concurrently over a single TCP connection, eliminating the head-of-line blocking problem of HTTP/1.1.
-- **Header Compression (HPACK):** Compresses headers to reduce byte overhead.
-- **Bidirectional Streaming:** Enables client-side, server-side, or fully bidirectional streaming connections.
+### A. HTTP/2 Transport & Binary Framing Foundation
+gRPC runs exclusively over **HTTP/2**, which introduces fundamental improvements over HTTP/1.1:
+- **Multiplexing:** Requests and responses run concurrently over a single shared TCP connection. This eliminates **Head-of-Line (HoL) blocking** at the application layer, preventing a slow request from delaying other requests on the same connection.
+- **Binary Framing Layer:** Unlike HTTP/1.1 which parses messages as plain text, HTTP/2 breaks communication into smaller, self-contained binary frames (such as `HEADERS` and `DATA`). This allows servers to parse frames in hardware/memory much faster without CPU-intensive text parsing.
+- **Header Compression (HPACK):** Compresses redundant headers (like user-agent or host) to reduce network byte overhead on subsequent calls.
 
-### B. Protocol Buffers (Protobuf)
-gRPC serializes payloads into a compressed binary format (Protobuf) rather than plain-text JSON. It uses tag indexes instead of string keys, dramatically shrinking network packet size.
+### B. Protocol Buffers (Protobuf) Serialization
+gRPC serializes payloads into a compressed binary format called **Protocol Buffers** instead of plain-text JSON:
+- **Tag Indexes vs. Field Keys:** JSON repeats text keys (e.g., `"user_id": 12345`) in every message. Protobuf replaces keys with numeric tags (e.g., field index `1`), shrinking payload sizes by up to 60–80%.
+- **Type Safety & Contracts:** API structures are declared in static `.proto` files. Both client and server must conform to this schema, eliminating dynamic type mismatch errors in production.
+- **Backward & Forward Compatibility:** Field changes are managed by adding new fields with unique tag numbers. Old services ignore unknown tags, and new services handle default values for missing tags.
 
-### C. Code Generation
-Protobuf schemas (`.proto` files) generate client stubs and server skeletons in multiple languages, enforcing type safety and architectural consistency.
+### C. The Four gRPC Call Patterns
+gRPC provides first-class support for streaming and bidirectional patterns:
+1. **Unary RPC (Simple Request-Response):** The client sends a single request and receives a single response, behaving like a traditional REST endpoint.
+2. **Server-Streaming RPC:** The client sends one request, and the server returns a stream of responses (e.g., a stock ticker feed or server metrics log).
+3. **Client-Streaming RPC:** The client sends a stream of requests (e.g., uploading a large backup file in chunks) and receives a single response once the stream is complete.
+4. **Bidirectional-Streaming RPC:** Both client and server send a stream of messages concurrently over the same persistent connection, allowing real-time chat, multiplayer state syncing, or active peer communication.
+
+### D. Architectural Boundaries: REST vs. gRPC
+Most modern architectures do not choose between REST and gRPC; they split responsibility:
+- **gRPC Inside the Network:** Used for service-to-service communication behind an API gateway or service mesh, where low latency, high throughput, and polyglot code consistency (Go, Java, Python sharing the same `.proto` stub) are required.
+- **REST/JSON at the Edge:** Used for public-facing client APIs, web browsers, and third-party integrations where ease of debugging (e.g. via `curl` or browser inspector) and universal compatibility are more important than microsecond performance.
 
 ```mermaid
 graph LR

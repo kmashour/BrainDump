@@ -1920,6 +1920,26 @@ flowchart TD
 4.  The lower-priority Pods are sent a `SIGTERM` signal and set to `Terminating` status.
 5.  Once the space is cleared, the high-priority Pod is scheduled on the node.
 
+#### 7. Admission Controller Mutation & The Preemption Paradox
+
+##### A. Admission Controller Mutation Timeline
+*   **Governance Guardrails:** Users/developers cannot manually hardcode numeric `spec.priority` integers or `spec.preemptionPolicy` rules directly in their Pod specifications. Trying to bypass the `PriorityClass` and save a raw priority number triggers an API-level `Forbidden` rejection.
+*   **Separation of Concerns:** The Cluster Admin controls the Priority values (via cluster-scoped `PriorityClass` resources), while users reference them by name (`priorityClassName`).
+*   **API Mutation Pipeline:** The **Priority Admission Controller** intercepts the request *before* the pod is stored in `etcd`:
+    1. **Interception:** Pauses the Pod creation request.
+    2. **Lookup:** Queries `etcd` for a matching `PriorityClass`.
+    3. **Extraction & Injection:** Retrieves the integer `value` and `preemptionPolicy` from the class, and stamps them directly into the Pod's in-memory specification (`spec.priority` and `spec.preemptionPolicy`).
+    4. **Persistence:** The mutated Pod is saved to `etcd` in a `Pending` state.
+*   **Execution Order:** This mutation happens *before* scheduling. The `kube-scheduler` only watches the database for pods with an empty `spec.nodeName` and acts on the mutated fields post-persistence.
+
+##### B. Resolving the Preemption Paradox (Priority vs. Affinity Conflict)
+What happens when a high-priority Pod has a strict Node Affinity rule (`requiredDuringSchedulingIgnoredDuringExecution`), but the only matching node is fully occupied by pods of an *even higher* priority?
+*   **Scheduler Resolution:** The Pod remains `Pending` indefinitely.
+*   **Architectural Precedence:**
+    1. **Affinity is Absolute:** The scheduler is mathematically prohibited from scheduling the pod on any node that violates its strict Node Affinity.
+    2. **Priority Hierarchy is Absolute:** The scheduler will **never** evict a higher-priority pod to accommodate a lower-priority pod.
+*   **Diagnostics:** The scheduler hits a logical impasse, raises a `FailedScheduling` event, and logs the condition in the Pod events (visible via `kubectl describe pod`).
+
 ---
 
 ### 5.5 Pod Overhead & Dynamic Resource Allocation (DRA)

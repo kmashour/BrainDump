@@ -1561,7 +1561,7 @@ kubectl exec -n kube-system \
 kubectl get configmap -n kube-system kube-proxy -o jsonpath={'.data.config\.conf}' | yq e .clusterCIDR -
 ```
 
-Both should report the same CIDR range, e.g. `10.244.0.0/16`. If they are not both the same (doesn't matter what they actually are, but must be the same), then the lab has the bug. Should you encounter this (netpol not working even though you have followed the solution below), then practice your skills of [manual pod scheduling](../../inflow/docs/03-Scheduling/02-Manual-Scheduling.md), and get all three concerned pods to restart on the same worker node (choose either node). Then the netpol should take effect.
+Both should report the same CIDR range, e.g. `10.244.0.0/16`. If they are not both the same (doesn't matter what they actually are, but must be the same), then the lab has the bug. Should you encounter this (netpol not working even though you have followed the solution below), then practice your skills of [manual pod scheduling](../../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#a-manual-scheduling-bypassing-the-scheduler), and get all three concerned pods to restart on the same worker node (choose either node). Then the netpol should take effect.
 
 
 
