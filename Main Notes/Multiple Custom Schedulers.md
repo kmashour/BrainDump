@@ -52,16 +52,61 @@ When running multiple replicas of a custom scheduler for high availability, only
 - Schedulers use a **Lease** object (distributed lock in `kube-system`) to elect a leader.
 - **CRITICAL:** Each custom scheduler profile must have a unique Lease lock name (`leaderElection.resourceName`). If a custom scheduler shares `kube-scheduler` with the default control plane, they will collide, continuously evicting each other's leadership.
 
----
+## 🛠️ RBAC, Zero Trust Authorization & Deployment Configurations
+The `kube-apiserver` operates on a strict **Zero Trust** security model. If a custom scheduler pod boots up and attempts to update the `nodeName` of a pending Pod (which is done by sending an HTTP POST request to the pod's `/binding` sub-resource), the API server will reject it with a `403 Forbidden` error.
 
-## 🛠️ RBAC & Authorization (CKA Exam Requirement)
-A custom scheduler is a control-plane client that reads and writes API objects. To deploy it as a Deployment in the cluster, you **must** configure its `ServiceAccount` with the following RBAC bindings:
+To authorize your scheduler, you must configure a verified identity (`ServiceAccount`) and map the explicit permissions needed by the control plane client.
 
-1. **`system:kube-scheduler` (ClusterRoleBinding):** Grants standard permissions required for scheduling (watching pods, reading nodes, modifying bindings).
-2. **`system:volume-scheduler` (ClusterRoleBinding):** Grants permissions to evaluate volume constraints and bind PV/PVC storage topology.
-3. **`extension-apiserver-authentication-reader` (RoleBinding in `kube-system`):** Allows the scheduler to access the API server's client certification configurations.
+### 1. Step-by-Step Security Chain
+*   **Step 1: The Identity (`ServiceAccount`):** Create a ServiceAccount (e.g. `my-scheduler` in the `kube-system` namespace). This acts as the official "passport" for the custom scheduler application.
+*   **Step 2: Token Injection:** When your scheduler Pod is created with `spec.serviceAccountName: my-scheduler`, the admission controller automatically mounts a verified JSON Web Token (JWT) into the container filesystem at `/var/run/secrets/kubernetes.io/serviceaccount/token`.
+*   **Step 3: Permission Roles:** The scheduler needs to watch Pods across all namespaces, read Node states, and update bindings. These are defined globally via ClusterRoles. You can bind built-in Kubernetes roles:
+    *   `system:kube-scheduler`: Grants permissions to watch Pods, read Nodes, and modify Pod bindings.
+    *   `system:volume-scheduler`: Grants permissions to evaluate volume constraints and bind PV/PVC storage topology.
+    *   `extension-apiserver-authentication-reader` (RoleBinding in `kube-system`): Allows the scheduler to access the API server's client certification configurations.
+*   **Step 4: The Glue (`ClusterRoleBinding`):** Bind the `my-scheduler` ServiceAccount to the ClusterRoles above. When the scheduler sends requests with its JWT, the RBAC gatekeeper validates the token and maps it to the bound roles, authorizing the binding operations.
 
----
+### 2. Custom Scheduler Pod Manifest Example
+The Pod manifest attaches the identity to the process. The process itself is configured to act both as an API client (scheduling pods) and an API server (serving its own health `/healthz` and metrics `/metrics` on port `10259`).
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-custom-scheduler
+  namespace: kube-system
+  labels:
+    component: my-custom-scheduler
+spec:
+  # ---------------------------------------------------------
+  # ATTACHES SERVICE ACCOUNT IDENTITY TO THE POD
+  serviceAccountName: my-scheduler
+  # ---------------------------------------------------------
+  containers:
+  - name: my-custom-scheduler
+    image: registry.k8s.io/kube-scheduler:v1.29.0
+    command:
+    - kube-scheduler
+    # Delegated Auth flags: use kube-apiserver to authenticate and authorize requests to metrics port 10259
+    - --authentication-kubeconfig=/etc/kubernetes/scheduler.conf
+    - --authorization-kubeconfig=/etc/kubernetes/scheduler.conf
+    # Brain configuration file (ComponentConfig API)
+    - --config=/etc/kubernetes/my-scheduler-config.yaml
+    - --secure-port=10259
+```
+
+### 3. ComponentConfig API (`my-scheduler-config.yaml`)
+Modern versions of Kubernetes use ComponentConfig API files instead of long command-line flags. The config file maps directly to a `KubeSchedulerConfiguration` object:
+
+```yaml
+apiVersion: kubescheduler.config.k8s.io/v1
+kind: KubeSchedulerConfiguration
+profiles:
+  - schedulerName: my-custom-scheduler # <-- Declares scheduler name to the cluster
+leaderElection:
+  leaderElect: false
+```
+
 
 ## 🟢 Operational Validation & Troubleshooting
 

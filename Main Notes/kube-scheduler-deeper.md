@@ -9,12 +9,17 @@ sub_concepts:
   - "[[Scheduling Filtering Predicates]]"
   - "[[Scheduling Scoring Priorities]]"
   - "[[Multiple Custom Schedulers]]"
+  - "[[Scheduler Profiles]]"
 use_cases:
   - "[[Manual Node Assignment]]"
   - "[[Static nodeName Scheduling Bypass]]"
 external_links:
   - "[Mumshad CKA Course](https://kodekloud.com)"
   - "[Kubernetes Official Docs](https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/)"
+  - "[Scheduling Code Hierarchy](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-scheduling/scheduling_code_hierarchy_overview.md)"
+  - "[Advanced Scheduling in Kubernetes](https://kubernetes.io/blog/2017/03/advanced-scheduling-in-kubernetes/)"
+  - "[How does the Kubernetes scheduler work? (Julia Evans)](https://jvns.ca/blog/2017/07/27/how-does-the-kubernetes-scheduler-work/)"
+  - "[How does Kubernetes scheduler work? (StackOverflow)](https://stackoverflow.com/questions/28857993/how-does-kubernetes-scheduler-work)"
 against: []
 tags:
   - kubernetes/deep-dive
@@ -78,8 +83,9 @@ Scores remaining candidate nodes from 0 to 10 to find the best fit:
 ---
 
 ## 🛠️ 2. Multiple Custom Schedulers
-You can run multiple instances of the scheduler in a cluster, each using a different configuration policy (e.g., custom predicates or priorities):
-* **Deployment:** Custom schedulers can be deployed as standard Pods/Deployments in the `kube-system` namespace.
+You can run multiple instances of the scheduler in a cluster, each using a different configuration policy (e.g., custom predicates or priorities).
+* **Running Multiple Binaries:** Custom schedulers can be deployed as standard Pods/Deployments in the `kube-system` namespace. See **[[Multiple Custom Schedulers]]** for details.
+* **Running Multiple Profiles:** Since Kubernetes v1.18, you can run multiple profiles (names) inside a single scheduler binary to prevent resource race conditions. See **[[Scheduler Profiles]]** for details.
 * **Manifest Example:** To target a custom scheduler, specify `spec.schedulerName` in your Pod definition:
   ```yaml
   apiVersion: v1
