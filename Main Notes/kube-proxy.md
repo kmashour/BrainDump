@@ -16,6 +16,7 @@ tags:
   - kubernetes/component
   - status/completed
 against: []
+deeper_dive: "[[kube-proxy-deeper]]"
 ---
 
 # kube-proxy

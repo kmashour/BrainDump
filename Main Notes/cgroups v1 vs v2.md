@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[node]]"
+parent_concept: "[[node-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/architecture/nodes/#cgroups-version"
@@ -14,7 +14,7 @@ tags:
 
 # node - cgroups v1 vs v2
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > **cgroups v1 vs v2**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > [[node-deeper]] > **cgroups v1 vs v2**
 
 ---
 

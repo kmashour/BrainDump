@@ -72,3 +72,14 @@ Because the CCM must create VMs, routes, and load balancers, it runs with high-p
 * **Credentials Secret:** On self-hosted cloud installations, cloud credentials (such as an OpenStack clouds.yaml or AWS credentials file) are mounted into the CCM Pod via a Secret.
 
 *Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive).*
+
+
+## 🔍 Sub-Concepts & Use Cases
+This table automatically displays all deeper notes, use cases, and configurations associated with **cloud-controller-manager-deeper**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[cloud-controller-manager-deeper]]
+SORT file.name ASC
+```

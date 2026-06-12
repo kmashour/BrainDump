@@ -124,3 +124,14 @@ Modern clusters require explicit configurations for socket endpoints:
 > `sudo systemctl restart kubelet`
 
 *Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture)*
+
+
+## 🔍 Sub-Concepts & Use Cases
+This table automatically displays all deeper notes, use cases, and configurations associated with **container-runtime-deeper**.
+
+```dataview
+TABLE sub_type AS "Type", tags AS "Tags"
+FROM "Main Notes"
+WHERE class = "deeper-dive" AND parent_concept = [[container-runtime-deeper]]
+SORT file.name ASC
+```

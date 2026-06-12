@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[pod]]"
+parent_concept: "[[pod-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/#sidecar-containers"
@@ -14,7 +14,7 @@ tags:
 
 # pod - Native Sidecars (v1.29+)
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **Native Sidecars**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > [[pod-deeper]] > **Native Sidecars**
 
 ---
 

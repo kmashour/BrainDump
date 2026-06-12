@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[pod]]"
+parent_concept: "[[pod-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/"
@@ -14,7 +14,7 @@ tags:
 
 # pod - Pod Phases and Lifecycle States
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **Pod Phases and Lifecycle**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > [[pod-deeper]] > **Pod Phases and Lifecycle**
 
 ---
 

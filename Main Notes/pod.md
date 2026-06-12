@@ -17,6 +17,7 @@ tags:
   - kubernetes/workload
   - status/completed
 against: []
+deeper_dive: "[[pod-deeper]]"
 ---
 
 # pod

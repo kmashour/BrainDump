@@ -15,6 +15,7 @@ tags:
   - kubernetes/infrastructure
   - status/completed
 against: []
+deeper_dive: "[[node-deeper]]"
 ---
 
 # node

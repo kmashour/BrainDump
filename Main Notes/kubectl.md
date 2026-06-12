@@ -14,6 +14,7 @@ tags:
   - kubernetes/cli
   - status/completed
 against: []
+deeper_dive: "[[kubectl-deeper]]"
 ---
 
 # kubectl

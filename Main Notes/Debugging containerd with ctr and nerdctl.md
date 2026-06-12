@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[container-runtime]]"
+parent_concept: "[[container-runtime-deeper]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://github.com/containerd/containerd/blob/main/docs/getting-started.md"
@@ -14,7 +14,7 @@ tags:
 
 # container-runtime - Debugging containerd with ctr and nerdctl
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > **ctr & nerdctl**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[container-runtime]] > [[container-runtime-deeper]] > **ctr & nerdctl**
 
 ---
 

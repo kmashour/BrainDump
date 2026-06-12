@@ -14,6 +14,7 @@ tags:
   - kubernetes/component
   - status/completed
 against: []
+deeper_dive: "[[container-runtime-deeper]]"
 ---
 
 # container-runtime

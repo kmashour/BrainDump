@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[node]]"
+parent_concept: "[[node-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/architecture/nodes/#self-registration"
@@ -14,7 +14,7 @@ tags:
 
 # node - Node Registration Pathway
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > **Node Registration Pathway**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > [[node-deeper]] > **Node Registration Pathway**
 
 ---
 

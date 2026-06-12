@@ -19,6 +19,7 @@ tags:
   - kubernetes/component
   - status/completed
 against: []
+deeper_dive: "[[kubelet-deeper]]"
 ---
 
 # kubelet

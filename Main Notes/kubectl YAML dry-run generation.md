@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubectl]]"
+parent_concept: "[[kubectl-deeper]]"
 sub_type: use-case
 source_type: udemy
 author: "Mumshad Mannambeth"
@@ -14,7 +14,7 @@ tags:
 
 # kubectl - kubectl YAML dry-run generation
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **YAML dry-run generation**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > [[kubectl-deeper]] > **YAML dry-run generation**
 
 ---
 

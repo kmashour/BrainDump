@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[etcd]]"
+parent_concept: "[[etcd-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://etcd.io/docs/v3.5/op-guide/configuration/"
@@ -14,7 +14,7 @@ tags:
 
 # etcd - etcd network ports
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > **etcd Network Ports**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > [[etcd-deeper]] > **etcd Network Ports**
 
 ---
 

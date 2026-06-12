@@ -15,6 +15,7 @@ tags:
   - kubernetes/component
   - status/completed
 against: []
+deeper_dive: "[[kube-scheduler-deeper]]"
 ---
 
 # kube-scheduler

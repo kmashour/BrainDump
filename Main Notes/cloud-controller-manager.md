@@ -15,6 +15,7 @@ tags:
   - kubernetes/component
   - status/completed
 against: []
+deeper_dive: "[[cloud-controller-manager-deeper]]"
 ---
 
 # cloud-controller-manager

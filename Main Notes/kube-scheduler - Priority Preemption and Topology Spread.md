@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler]]"
+parent_concept: "[[kube-scheduler-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/"
@@ -15,7 +15,7 @@ tags:
 
 # kube-scheduler - Priority Preemption and Topology Spread
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Priority Preemption and Topology Spread**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Priority Preemption and Topology Spread**
 
 ---
 

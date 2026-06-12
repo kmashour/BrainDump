@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubectl]]"
+parent_concept: "[[kubectl-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/overview/kubernetes-api/"
@@ -14,7 +14,7 @@ tags:
 
 # kubectl - API Discovery and explanation
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **API Discovery & Explanation**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > [[kubectl-deeper]] > **API Discovery & Explanation**
 
 ---
 

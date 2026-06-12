@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[pod]]"
+parent_concept: "[[pod-deeper]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/pods/init-containers/"
@@ -15,7 +15,7 @@ tags:
 
 # pod - Init and Sidecar Containers
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > **Init and Sidecar Containers**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[pod]] > [[pod-deeper]] > **Init and Sidecar Containers**
 
 ---
 
