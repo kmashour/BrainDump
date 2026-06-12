@@ -234,6 +234,59 @@ kubectl run redis-pod --image=redis --dry-run=client -o yaml > redis.yaml
 
 ---
 
+## 9. Extending kubectl with Plugins
+
+To extend the capabilities of the `kubectl` CLI without modifying its core code, you can create and install custom plugins. This is an important skill tested in the CKA exam.
+
+### A. Naming and Installation Conventions
+- **Naming Rule:** A plugin must be a standalone executable binary or script in your PATH whose filename starts with the prefix `kubectl-` (followed by hyphens separating subcommands). For example, `kubectl-my_plugin` becomes the subcommand `kubectl my-plugin`.
+- **Installation:** To install a plugin, make the file executable (`chmod +x`) and place it in any directory listed in your system's `PATH` environment variable (e.g., `/usr/local/bin` or `/usr/bin`).
+- **Execution:** Once in the path, `kubectl` automatically discovers the binary and maps it. Run it using `kubectl <plugin-name>` (e.g., `kubectl my-plugin`).
+
+### B. Listing and Verifying Plugins
+To view all installed plugins and scan for configuration errors (such as duplicate plugins or executables that are not marked executable):
+```bash
+kubectl plugin list
+```
+
+### C. Creating a Simple Bash Plugin (CKA Scenario Example)
+1. Write a shell script named `kubectl-node-status`:
+   ```bash
+   #!/bin/bash
+   echo "=== Node Status Checklist ==="
+   kubectl get nodes -o custom-columns=NODE:.metadata.name,STATUS:.status.conditions[-1].type,IP:.status.addresses[0].address
+   ```
+2. Make it executable:
+   ```bash
+   chmod +x kubectl-node-status
+   ```
+3. Move it into the path:
+   ```bash
+   sudo mv kubectl-node-status /usr/local/bin/
+   ```
+4. Verify and execute:
+   ```bash
+   kubectl plugin list
+   kubectl node-status
+   ```
+
+### D. The Krew Plugin Manager
+**Krew** is the official plugin manager for `kubectl`. It is used to discover, install, and update plugins:
+- Install a plugin from the krew index:
+  ```bash
+  kubectl krew install <plugin-name>
+  ```
+- List plugins installed via krew:
+  ```bash
+  kubectl krew list
+  ```
+- Search for plugins:
+  ```bash
+  kubectl krew search
+  ```
+
+---
+
 ## 🛠️ Practical Proof of Concept (PoC)
 
 ### Target Scenario

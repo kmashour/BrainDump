@@ -3,6 +3,42 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-12] - Ingest Tasks Index and Core CKA Concept Resolutions
+
+### Added
+- **Main Notes / CKA Concepts:** Created 45+ detailed deeper-dive concept notes under `Main Notes/` covering the full range of CKA-relevant tasks from the official docs index and resolving all core placeholder warnings:
+  - **Scheduling:** [Scheduling Filtering Predicates.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Scheduling%20Filtering%20Predicates.md), [Scheduling Scoring Priorities.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Scheduling%20Scoring%20Priorities.md), [Manual Node Assignment.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Manual%20Node%20Assignment.md), [Static nodeName Scheduling Bypass.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Static%20nodeName%20Scheduling%20Bypass.md).
+  - **Controller Manager:** [Reconciliation Loop Mechanics.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Reconciliation%20Loop%20Mechanics.md), [Node Eviction Grace Periods.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Node%20Eviction%20Grace%20Periods.md), [HA Leader Election Leases.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/HA%20Leader%20Election%20Leases.md), [Cascading Deletions.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Cascading%20Deletions.md), [Garbage Collection Owner References.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Garbage%20Collection%20Owner%20References.md).
+  - **Node Mechanics:** [Node Registration Pathway.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Node%20Registration%20Pathway.md), [Node Conditions & Lifecycle.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Node%20Conditions%20%26%20Lifecycle.md), [Node Allocatable Math.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Node%20Allocatable%20Math.md), [Node Leases (Heartbeat Mechanism).md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Node%20Leases%20(Heartbeat%20Mechanism).md), [cgroups v1 vs v2.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/cgroups%20v1%20vs%20v2.md), [Configuring kube-reserved and system-reserved limits.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Configuring%20kube-reserved%20and%20system-reserved%20limits.md).
+  - **kubectl Client Tools:** [Kubeconfig Anatomy.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Kubeconfig%20Anatomy.md), [API Discovery and explanation.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/API%20Discovery%20and%20explanation.md), [kubectl YAML dry-run generation.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kubectl%20YAML%20dry-run%20generation.md), [Force Deletion bypass.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Force%20Deletion%20bypass.md), [JSONPath and custom-columns filters.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/JSONPath%20and%20custom-columns%20filters.md).
+  - **Storage:** [emptydir.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/emptydir.md), [hostpath.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/hostpath.md).
+  - **Metadata:** [annotation.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/annotation.md).
+  - **etcd Administration:** [etcd Backup and Restore.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/etcd%20Backup%20and%20Restore.md), [Raft Consensus.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Raft%20Consensus.md), [Raft Quorum Rules.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Raft%20Quorum%20Rules.md), [etcd network ports.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/etcd%20network%20ports.md), [etcd TLS certificate configurations.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/etcd%20TLS%20certificate%20configurations.md).
+  - **Pod Lifecycle & Debugging:** [Pod Phases and Lifecycle States.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Pod%20Phases%20and%20Lifecycle%20States.md), [Quality of Service (QoS) Classes.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Quality%20of%20Service%20(QoS)%20Classes.md), [Health Probes (liveness readiness startup).md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Health%20Probes%20(liveness%20readiness%20startup).md), [Init Containers.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Init%20Containers.md), [Native Sidecars (v1.29+).md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Native%20Sidecars%20(v1.29%2B).md), [Debugging with Ephemeral Containers.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Debugging%20with%20Ephemeral%20Containers.md), [Container Lifecycle Hooks (postStart preStop).md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Container%20Lifecycle%20Hooks%20(postStart%20preStop).md).
+  - **Kubelet & Runtime Mechanics:** [Node Bootstrap and TLS Bootstrapping.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Node%20Bootstrap%20and%20TLS%20Bootstrapping.md), [Node Conditions and Hard Eviction Thresholds.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Node%20Conditions%20and%20Hard%20Eviction%20Thresholds.md), [Kubelet Heartbeats & The Lease API.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Kubelet%20Heartbeats%20%26%20The%20Lease%20API.md), [CRI Socket Communication.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/CRI%20Socket%20Communication.md), [Static Pods.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Static%20Pods.md), [Inspecting kubelet systemd service logs.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Inspecting%20kubelet%20systemd%20service%20logs.md), [containerd-shim mechanics.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/containerd-shim%20mechanics.md), [Pause Container Namespace Holder.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Pause%20Container%20Namespace%20Holder.md), [Cgroup Drivers systemd vs cgroupfs.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Cgroup%20Drivers%20systemd%20vs%20cgroupfs.md), [Debugging containerd with ctr and nerdctl.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/Debugging%20containerd%20with%20ctr%20and%20nerdctl.md), [CRI troubleshooting with crictl.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/CRI%20troubleshooting%20with%20crictl.md).
+
+### Ingested Inflow Sources
+Processed and integrated the following files:
+- Scraped official Kubernetes documentation index `https://kubernetes.io/docs/tasks/` to extract CKA-relevant tasks and mapped them to core deep-dive notes, resolving all placeholder link warnings.
+
+---
+
+## [2026-06-12] - Ingest Tasks Index and Kubectl Plugins Inflows
+
+### Added
+- **Main Note / kubectl Plugins:** Created new deeper-dive concept note [kubectl - Plugins.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kubectl%20-%20Plugins.md) detailing custom subcommand prefix rules (`kubectl-`), PATH loading resolution, listing/verifying commands, and a step-by-step custom CKA bash script scenario example.
+
+### Refactored / Upgraded
+- **Module 0-1 Upgrade:** Updated [0-1_kube_api_and_kubectl.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/0-1_kube_api_and_kubectl.md) to add Section 9 covering naming requirements, executable PATH settings, plugin verification list commands, and Krew plugin manager search/install instructions.
+- **kubectl Deeper Concept:** Linked `[[kubectl - Plugins|kubectl Plugins]]` to the `sub_concepts` frontmatter list in [kubectl-deeper.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/kubectl-deeper.md), resolving a placeholder warning.
+- **Core API Exam Checklist:** Appended Section 8 covering plugin naming/PATH rules, listing executables, and creation/test playbooks to the CKA Core API checklist: [Exam Checklist - Core Architecture and API.md](file:///home/karim/Desktop/BrainDump/Projects/CKA/Exam%20Checklist%20-%20Core%20Architecture%20and%20API.md).
+
+### Ingested Inflow Sources
+Processed and integrated the following files:
+- `inflow/Docs-Tasks-section.md` (scraped tasks index `https://kubernetes.io/docs/tasks/` and extending page `https://kubernetes.io/docs/tasks/extend-kubectl/kubectl-plugins/` to isolate CKA-relevant topics)
+
+---
+
 ## [2026-06-12] - Ingest Custom Scheduler Inflows
 
 ### Added

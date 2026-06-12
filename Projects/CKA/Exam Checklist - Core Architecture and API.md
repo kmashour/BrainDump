@@ -412,3 +412,42 @@ kubectl get crd backups.stable.example.com
 
 * **Namespace Prefix Check:**
   Verify that custom namespaces do not conflict with reserved `kube-` prefix names. All namespaces starting with `kube-` are reserved for system operations.
+
+---
+
+## 8. kubectl Plugins
+
+If asked to install, configure, verify, or write a `kubectl` plugin on the CKA exam, follow this checklist:
+
+### A. Naming and PATH Rules
+- **Naming Rule:** The plugin filename must start with `kubectl-` (with hyphens separating subcommands). For example, `kubectl-my-cmd` becomes the subcommand `kubectl my-cmd`.
+- **Installation Directory:** Move the executable file to a directory in your `$PATH` (typically `/usr/local/bin` or `/usr/bin` for system-wide access).
+- **Executable Permission:** Ensure the file has execute permissions:
+  ```bash
+  chmod +x /path/to/kubectl-my-cmd
+  ```
+
+### B. Verification & Troubleshooting Commands
+- **List Installed Plugins:** Scan for all available plugins in the path and output warnings for duplicates or bad configurations:
+  ```bash
+  kubectl plugin list
+  ```
+  *Tip: If your plugin does not show up, ensure it is in a folder listed in `echo $PATH` and is marked executable.*
+
+### C. Create a Quick Plugin (CKA Task Example)
+If asked to "create a plugin named `kubectl-info` that outputs cluster info":
+1. Write the script content:
+   ```bash
+   echo '#!/bin/bash' > kubectl-info
+   echo 'echo "=== Cluster Information ==="' >> kubectl-info
+   echo 'kubectl cluster-info' >> kubectl-info
+   ```
+2. Make it executable and move it:
+   ```bash
+   chmod +x kubectl-info
+   sudo mv kubectl-info /usr/local/bin/
+   ```
+3. Test it:
+   ```bash
+   kubectl info
+   ```

@@ -6,6 +6,7 @@ parent_concept: "[[kubectl]]"
 sub_concepts:
   - "[[Kubeconfig Anatomy]]"
   - "[[API Discovery and explanation]]"
+  - "[[kubectl - Plugins|kubectl Plugins]]"
 use_cases:
   - "[[kubectl YAML dry-run generation]]"
   - "[[Force Deletion bypass]]"
