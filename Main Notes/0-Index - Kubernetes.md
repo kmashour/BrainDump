@@ -12,6 +12,9 @@ tags:
 
 **Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > **Kubernetes MOC**
 
+> [!TIP]
+> **CKA Conceptual Study Roadmap:** If you want to study the core concepts and deeper-dive files in the exact order of the CKA exam syllabus, see the [[0-CKA Study Roadmap|CKA Conceptual Study Roadmap]] to follow a step-by-step pathway.
+
 ---
 
 ## 🏛️ Domain 1: Control Plane & Cluster Core
