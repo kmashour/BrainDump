@@ -62,6 +62,6 @@ This table automatically displays all deeper notes, use cases, and pitfalls asso
 
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", sources AS "Sources"
-WHERE class = "deeper-dive" AND contains(parent_concept, this.file.link)
+WHERE class = "deeper-dive" AND icontains(string(parent_concept), this.file.name)
 SORT file.name ASC
 ```
