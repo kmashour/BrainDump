@@ -3,6 +3,24 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-12] - Ingest AWS Raw Notes into Core Reference Modules
+
+### Refactored / Upgraded
+- **Consolidated AWS Reference Notes:** Decoupled and ingested all raw AWS files from git history and `inflow/` (AWS Practitioner, SAA, KMS, load balancing, databases, etc.) into exactly 8 new domain-specific modules in `Reference Notes/`:
+  - [3-1_aws_global_infrastructure.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-1_aws_global_infrastructure.md): Global footprint, Regions, AZs, Edge Locations, CloudFront edge caching, cloud deployment/provisioning models, 6 pillars of Well-Architected Framework, VPC CIDR subnets, Route Tables, Internet/NAT Gateways, SG/NACL ephemeral ports, NAT topologies, and SAA VPC deep-dive labs.
+  - [3-2_aws_iam.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-2_aws_iam.md): Identity federation, AWS STS role assumptions, temporary credentials, IAM policies, multi-account governance (AWS Organizations & SCPs), and S3 EC2-role validation labs.
+  - [3-3_aws_kms_security.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-3_aws_kms_security.md): KMS encryption key types (Customer Managed CMKs vs AWS Managed Keys), envelope encryption mechanics, key rotation policies, Secrets Manager vs SSM Parameter Store, Cognito user pools, WAF, and Shield.
+  - [3-4_aws_ec2_compute.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-4_aws_ec2_compute.md): EC2 instance families, VM lifecycle, User Data bootstrapping, IMDSv1/v2 security, purchasing models (on-demand/spot/savings), placement groups, Elastic Load Balancers (ALB/NLB), Auto Scaling Groups (ASG), app integration decoupling (SQS/SNS), and SQS-RDS HA labs.
+  - [3-5_aws_ebs_efs_storage.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-5_aws_ebs_efs_storage.md): EBS volume types (gp3 vs io2 Block Express), snapshots, encryption sharing, local ephemeral Instance Store, RAID configurations, and network EFS NFS shared storage.
+  - [3-6_aws_s3_storage.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-6_aws_s3_storage.md): S3 bucket policies, storage classes (Standard to Glacier Deep Archive), lifecycle rules, versioning, replication, transfer acceleration, and Athena SQL analytics.
+  - [3-7_aws_rds_aurora_databases.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-7_aws_rds_aurora_databases.md): RDS Multi-AZ vs Read Replicas, Aurora architecture, endpoints, database migrations (DMS), and schema conversion (SCT).
+  - [3-8_aws_dynamodb_nosql.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-8_aws_dynamodb_nosql.md): DynamoDB partition key design, RCUs/WCUs, DynamoDB Accelerator (DAX) cache, ElastiCache (Redis vs Memcached), and Redshift data warehouse.
+- **Updated MOC Index:** Re-indexed all AWS reference materials in [3-Index - AWS.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-Index%20-%20AWS.md) to link to exactly the 8 core modules.
+- **Fixed Broken Links:** Resolved three broken relative links inside [aws - Virtual Private Cloud.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/aws%20-%20Virtual%20Private%20Cloud.md) and [aws - EC2 and Elastic Load Balancing.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/aws%20-%20EC2%20and%20Elastic%20Load%20Balancing.md) pointing to obsolete/deleted modules.
+- **Cleaned Up Obsolete Modules:** Deleted redundant modules `3-9_` to `3-16_` to keep vault reference structures clean and aligned.
+
+---
+
 ## [2026-06-11] - BGP, Python, and Web Fundamentals Reference Consolidation
 
 ### Refactored / Upgraded
