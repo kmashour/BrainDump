@@ -10,4 +10,4 @@ tags:
   - aws/deep-dive
 ---
 # aws - Identity and Access Management
-*Read more in [3-1_aws_global_infrastructure_and_iam.md](../Reference%20Notes/3-1_aws_global_infrastructure_and_iam.md#2-identity--access-management-iam)*
+*Read more in [3-2_aws_iam.md](../Reference%20Notes/3-2_aws_iam.md)*

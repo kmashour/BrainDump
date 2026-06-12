@@ -10,4 +10,4 @@ tags:
   - aws/deep-dive
 ---
 # aws - Virtual Private Cloud
-*Read more in [3-3_aws_networking_and_elastic_load_balancing.md](../Reference%20Notes/3-3_aws_networking_and_elastic_load_balancing.md#1-virtual-private-cloud-vpc-infrastructure)*
+*Read more in [3-9_aws_vpc_networking.md](../Reference%20Notes/3-9_aws_vpc_networking.md)*

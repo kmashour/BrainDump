@@ -10,4 +10,4 @@ tags:
   - aws/deep-dive
 ---
 # aws - Simple Storage Service
-*Read more in [3-2_aws_compute_and_storage_services.md](../Reference%20Notes/3-2_aws_compute_and_storage_services.md#2-block-storage-ebs-vs-shared-storage-efs)*
+*Read more in [3-6_aws_s3_storage.md](../Reference%20Notes/3-6_aws_s3_storage.md)*
