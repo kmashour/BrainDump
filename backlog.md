@@ -6,7 +6,18 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ## [2026-06-12] - Ingest AWS Raw Notes into Core Reference Modules
 
 ### Refactored / Upgraded
-- **Consolidated AWS Reference Notes:** Decoupled and ingested all raw AWS files from git history and `inflow/` (AWS Practitioner, SAA, KMS, load balancing, databases, etc.) into exactly 8 new domain-specific modules in `Reference Notes/`:
+- **Consolidated AWS Reference Notes:** Decoupled and ingested all raw AWS files from `inflow/` and git history, specifically:
+  - `inflow/AWS-SAA-Amazon-Web-Services-Solution-Architect-Associate.md`
+  - `inflow/AWS-SAA-Amazon-Web-Services-Solution-Architect-Associate-LABS.md`
+  - `inflow/AWS-KMS.md`
+  - `inflow/AWS-Eissa-Abo-Sherif-Elastic-Load-Balancing-AutoScaling(6).md`
+  - `inflow/AWS-Day-1-Practitioner.md` to `inflow/AWS-Day-5-Practitioner.md`
+  - `inflow/AWS-NTI-VPC-EC2-DAY1.md`
+  - `inflow/AWS-NTI-More-On-EC2-EBS-EFS-DAY2.md`
+  - `inflow/AWS-NTI-S3-Database-RDS.md`
+  - `inflow/AWS-NTI-Loadbalancing-Autoscaling-SystemManager-Day3.md`
+  - `inflow/AWS-Practitioner-2025-4-15.md` to `inflow/AWS-Practitioner-2025-4-15-4.md`
+  into exactly 16 domain-specific modules in `Reference Notes/`:
   - [3-1_aws_global_infrastructure.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-1_aws_global_infrastructure.md): Global footprint, Regions, AZs, Edge Locations, CloudFront edge caching, cloud deployment/provisioning models, 6 pillars of Well-Architected Framework, VPC CIDR subnets, Route Tables, Internet/NAT Gateways, SG/NACL ephemeral ports, NAT topologies, and SAA VPC deep-dive labs.
   - [3-2_aws_iam.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-2_aws_iam.md): Identity federation, AWS STS role assumptions, temporary credentials, IAM policies, multi-account governance (AWS Organizations & SCPs), and S3 EC2-role validation labs.
   - [3-3_aws_kms_security.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-3_aws_kms_security.md): KMS encryption key types (Customer Managed CMKs vs AWS Managed Keys), envelope encryption mechanics, key rotation policies, Secrets Manager vs SSM Parameter Store, Cognito user pools, WAF, and Shield.
