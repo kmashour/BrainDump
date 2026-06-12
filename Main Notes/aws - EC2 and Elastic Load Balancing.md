@@ -10,4 +10,4 @@ tags:
   - aws/deep-dive
 ---
 # aws - EC2 and Elastic Load Balancing
-*Read more in [3-4_aws_ec2_compute.md](../Reference%20Notes/3-4_aws_ec2_compute.md)*
+*Read more in [3-10_aws_elb_load_balancing.md](../Reference%20Notes/3-10_aws_elb_load_balancing.md)*

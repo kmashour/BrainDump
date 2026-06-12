@@ -1,13 +1,13 @@
 ---
 domains:
   - "aws"
-  - "storage"
 class: reference-note
 tier: reference-note
 tags:
   - aws/s3
-  - aws/object-storage
 ---
+
+# Module 3-6: AWS S3 Storage
 
 # Module 3-6: AWS S3 Storage
 
@@ -15,8 +15,9 @@ This module covers scalable object storage using **Amazon Simple Storage Service
 
 ---
 
-## 🗺️ Cognitive Map: S3 Gateway Endpoints & Caching
+---
 
+## 🗺️ Cognitive Map: S3 Gateway Endpoints & Caching
 ```mermaid
 graph TD
     Client["Client Browser"] -->|"1. Request"| CloudFront["CloudFront Edge Cache"]
@@ -29,11 +30,16 @@ graph TD
 
 ---
 
+---
+
 ## 1. Amazon S3 (Simple Storage Service) Core Concepts
 Amazon S3 is object storage designed for 99.999999999% (11 9s) durability.
 
 ### A. Core Features & Architecture
 ![[Pasted image 20250509111142.png]]
+
+---
+
 ## AWS S3 -Simple Storage Service / Object Storage
 ![[Pasted image 20250509113404.png]]
 - It's Object Storage based, Data & Meta-Data stored as whole object & not divided into objects "as in Block Storage".
@@ -54,21 +60,6 @@ Amazon S3 is object storage designed for 99.999999999% (11 9s) durability.
 Regional scope 
 
 ---
-
-## 2. Content Delivery Networks & CloudFront Integration
-## CDN - Content Delivery Network (Amazon CloudFront)
-- Amazon CloudFront Provides highly available cache to compensate using multiple resources for less latency "**ex:** Accessing data from S3 buckets through different countries"
-- using CloudFront is more economically efficient than using different Buckets.
-- These Cache Locations are called Edge Locations.
-![Pasted image 20221103030233](https://user-images.githubusercontent.com/109697567/200859517-5740e0c2-2478-4a47-9fc4-df78dd78be47.png)
-
-
-Red squares refers to edge locations, if edge locations doesn't have the requested data cached it uses its high speed links to the main s3 bucket source and fetch the data so the fetch process was faster than the user connecting directly to the s3 and if the data was requested again its already cached in the edge location 
-
-Using Cloud-Front is guaranteed to be cheaper than fetching content directly from an s3 bucket, can be a question on how to reduce s3 bucket cost usage 
-
-
-## Amazon Route 53 
 
 ---
 
@@ -98,31 +89,10 @@ Using Cloud-Front is guaranteed to be cheaper than fetching content directly fro
 
 ---
 
+---
+
 ## 4. Athena Querying & Caching Tiers
 *   **Amazon Athena:** An interactive query service allowing SQL queries directly against data sitting inside S3 buckets without needing database loading.
 *   **Storage Tiers:** S3 Standard, Intelligent-Tiering, Standard-IA, One Zone-IA, Glacier Instant/Flexible/Deep Archive.
 
 ---
-
-## 5. Hands-on Lab: Configuring S3 Bucket Policies
-Create a bucket policy restricting reads strictly to specific IAM Roles inside an organization:
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "AllowSpecificRole",
-      "Effect": "Allow",
-      "Principal": "*",
-      "Action": "s3:GetObject",
-      "Resource": "arn:aws:s3:::my-secure-data-bucket/*",
-      "Condition": {
-        "ArnEquals": {
-          "aws:PrincipalArn": "arn:aws:iam::123456789012:role/AppExecutionRole"
-        }
-      }
-    }
-  ]
-}
-```
-

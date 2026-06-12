@@ -1,14 +1,13 @@
 ---
 domains:
   - "aws"
-  - "storage"
 class: reference-note
 tier: reference-note
 tags:
-  - aws/ebs
-  - aws/efs
   - aws/storage
 ---
+
+# Module 3-5: AWS EBS & EFS Storage
 
 # Module 3-5: AWS EBS & EFS Storage
 
@@ -16,8 +15,9 @@ This module details persistent block storage using **Amazon Elastic Block Store 
 
 ---
 
-## 🗺️ Cognitive Map: Storage Topology Comparison
+---
 
+## 🗺️ Cognitive Map: Storage Topology Comparison
 ```mermaid
 graph TD
     EC2["Amazon EC2 Instance"]
@@ -26,6 +26,8 @@ graph TD
     EC2 -->|"local ephemeral NVMe"| InstStore["Instance Store (volatile)"]
     EC2 -->|"network file POSIX (NFSv4)"| EFS["Elastic File System (EFS)"]
 ```
+
+---
 
 ---
 
@@ -44,7 +46,10 @@ EBS can be backed up manually or automatically
 EFS is available over the VPC so any AZ under the VPC can use the EFS its like NAT a Paas everything is handled by aws scaling and backups so aws ensures that my data on efs will always be availabe 
 
 EFS is inside the VPC for security reasons so no one could access it 
-CloudWatch Events ---> Event Bridge 
+CloudWatch Events ---> Event Bridge
+
+---
+
 ## EC2 Instance-Store
 - Instance store volumes provide temporary block-storage.
 - It is ideal for temporary storage of data that changes frequently. For example, Buffers and caches, Scratch data, Temporary content.
@@ -53,7 +58,9 @@ CloudWatch Events ---> Event Bridge
 - They can provide millions of IOPS, while EBS has a maximum limit of 64000 IOPS.
 https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage-optimized-instances.html
 
-The architecture of Instance Store will compensate for its volatile storage nature, since if its a DB cluster if one fails others will work and as long as the operations and state is saved regulary in intervals we can compensate for the volatile nature of instance store and use its high speed input output 
+The architecture of Instance Store will compensate for its volatile storage nature, since if its a DB cluster if one fails others will work and as long as the operations and state is saved regulary in intervals we can compensate for the volatile nature of instance store and use its high speed input output
+
+---
 
 ## Elastic Block Store (EBS)
 ![[Pasted image 20250527153621.png]]
@@ -155,6 +162,8 @@ Snapshots by default have permissions set to private & can only be viewed by the
 - An encrypted snapshot that was encrypted by the default CMK "AWS-managed CMKs (*aws/service_name*)" cannot be shared.
 ![Pasted image 20221205192100](https://user-images.githubusercontent.com/109697567/206048254-23c21bf8-f24b-42b5-a5db-e973fd54e70f.png)
 
+---
+
 ## AMIs & Golden AMIs, Creating AMI From an EBS-Backed EC2 Instance
 (AMI: Amazon Machine Images. *ex:* Linux image)
 
@@ -177,6 +186,8 @@ After launching an instance and customizing it; customer creates his own AMI, wh
 ![Pasted image 20221205224425](https://user-images.githubusercontent.com/109697567/206048309-eaa7aa65-9b56-45cf-86c7-4019305f773d.png)
 *Note:* When creating an AMI image, it's registered automatically in AWS, **Deregistration** is required first before deletion.
 
+---
+
 ## RAID (Redundant Array of Independent Disks)
 It's combining multiple volumes & using them as one volume, either for redundancy or performance, & can be used to increase number of IOPS.
 - EBS volumes support all RAID types. 
@@ -195,16 +206,6 @@ It's combining multiple volumes & using them as one volume, either for redundanc
 - Combines the benefits of RAID 0 and RAID 1.
 - Provides redundancy and performance enhancements.
 
-## AWS Batch
-AWS Batch is a fully managed service that simplifies running batch jobs "recurring Jobs" of any scale across multiple availability zones within a region.
-- Regional Scale
-- It plans, schedules, and executes the batch computing workloads and provisions the optimal quantity of compute required. 
-- Customers do not have to run or maintain servers or schedulers. 
-- It can scale to hundreds of thousands of batch computing jobs. 
-- Use cases include digital media rendering, drug screening, and post trade analysis.
-
-![[Pasted image 20250529143446.png]] 
-
 ---
 
 ## 2. EBS Snapshots, Copying, and Sharing (Eissa Notes)
@@ -216,6 +217,8 @@ Snapshots are incremental backups of EBS volumes stored in Amazon S3.
 
 ---
 
+---
+
 ## 3. RAID Configurations on EBS Volumes
 If an application requires performance or redundancy beyond a single EBS volume, RAID can be configured within the guest OS:
 *   **RAID 0 (Striping):** Combines volumes to increase I/O speed. No redundancy; if one volume fails, all data is lost.
@@ -224,7 +227,14 @@ If an application requires performance or redundancy beyond a single EBS volume,
 
 ---
 
+---
+
 ## 4. Deep-Intuition (AARF) Breakdowns
+
+
+---
+
+## Deep-Intuition (AARF) Breakdowns
 
 ### AARF Breakdown: EBS gp3 vs. io2 Volume Selection
 1.  **The Answer (Core Pattern):** Utilize EBS gp3 for standard applications and database instances. Transition to io2 Block Express only when baseline storage performance requires sustained IOPS above 16,000 or absolute sub-millisecond write performance.
@@ -232,4 +242,3 @@ If an application requires performance or redundancy beyond a single EBS volume,
 3.  **The Rationale (Why):** gp3 provides independent performance configuration (3,000 IOPS and 125 MB/s baseline included free) which is highly cost-efficient. io2 offers 99.999% durability and consistent provisioned performance but at a steep pricing tier, which is wasted if the database is throttled by CPU or memory limits rather than storage bottlenecks.
 4.  **The Failure Loop (What if not):** Provisioning high IOPS on gp2 volumes relies on a "burst credit balance" model. When credits are exhausted during peak database writes, the volume throttles to a baseline of 100 IOPS, database connections saturate, query latency spikes to seconds, and the app server connection pools fail.
 5.  **Alternative Case (When to use 'if not'):** For distributed, scratch-pad filesystems or cache clusters requiring maximum read/write performance without persistence, deploy Instance Store NVMe disks.
-
