@@ -78,14 +78,3 @@ Static Pods are managed directly by the Kubelet without scheduler involvement:
 * **Mirror Pods:** The API Server creates a read-only "Mirror Pod" so administrators can see the static pod using `kubectl get pods`, but attempting to delete it via `kubectl` will not stop it (it must be deleted by removing the YAML file from the node's disk).
 
 *Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#21-component-configuration-paths-quick-reference) and [0-3_node_mechanics_and_resource_limits.md](../Reference%20Notes/0-3_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api).*
-
-
-## 🔍 Sub-Concepts & Use Cases
-This table automatically displays all deeper notes, use cases, and configurations associated with **kubelet-deeper**.
-
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[kubelet-deeper]]
-SORT file.name ASC
-```

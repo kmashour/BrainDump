@@ -72,14 +72,3 @@ Since kube-proxy runs as a DaemonSet, you can inspect it with these commands:
   ```
 
 *Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#e-kube-proxy-the-network-router).*
-
-
-## 🔍 Sub-Concepts & Use Cases
-This table automatically displays all deeper notes, use cases, and configurations associated with **kube-proxy-deeper**.
-
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[kube-proxy-deeper]]
-SORT file.name ASC
-```

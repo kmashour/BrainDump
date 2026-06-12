@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler-deeper]]"
+parent_concept: "[[kube-scheduler]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/#scoring"
@@ -14,7 +14,7 @@ tags:
 
 # kube-scheduler - Scheduling Scoring Priorities
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Scoring Priorities**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Scoring Priorities**
 
 ---
 

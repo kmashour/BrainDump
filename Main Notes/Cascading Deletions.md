@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-controller-manager-deeper]]"
+parent_concept: "[[kube-controller-manager]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/architecture/garbage-collection/#cascading-deletion"
@@ -14,7 +14,7 @@ tags:
 
 # kube-controller-manager - Cascading Deletions
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-controller-manager]] > [[kube-controller-manager-deeper]] > **Cascading Deletions**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-controller-manager]] > **Cascading Deletions**
 
 ---
 

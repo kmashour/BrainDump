@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[node-deeper]]"
+parent_concept: "[[node]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/architecture/nodes/#condition"
@@ -14,7 +14,7 @@ tags:
 
 # node - Node Conditions & Lifecycle
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > [[node-deeper]] > **Node Conditions**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[node]] > **Node Conditions**
 
 ---
 

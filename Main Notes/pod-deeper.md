@@ -91,14 +91,3 @@ Triggered at specific points in a container's lifecycle:
 * **`PreStop`:** Blocks container shutdown. Called immediately before a container is terminated due to an API request, liveness probe failure, or resource eviction. Useful for initiating graceful shutdowns or saving state.
 
 *Read more in [0-3_node_mechanics_and_resource_limits.md](../Reference%20Notes/0-3_node_mechanics_and_resource_limits.md#4-quality-of-service-qos-classes), [0-4_workload_lifecycle_and_healing.md](../Reference%20Notes/0-4_workload_lifecycle_and_healing.md#2-garbage-collection-gc), and [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#6-container-lifecycle-hooks).*
-
-
-## 🔍 Sub-Concepts & Use Cases
-This table automatically displays all deeper notes, use cases, and configurations associated with **pod-deeper**.
-
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[pod-deeper]]
-SORT file.name ASC
-```

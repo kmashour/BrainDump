@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[etcd-deeper]]"
+parent_concept: "[[etcd]]"
 sub_type: architecture
 source_type: documentation
 source_url: "https://etcd.io/docs/v3.5/learning/faq/"
@@ -14,7 +14,7 @@ tags:
 
 # etcd - Raft Consensus
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > [[etcd-deeper]] > **Raft Consensus**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > **Raft Consensus**
 
 ---
 

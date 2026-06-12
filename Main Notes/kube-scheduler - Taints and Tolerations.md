@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler-deeper]]"
+parent_concept: "[[kube-scheduler]]"
 sub_type: core-concept
 source_type: udemy
 author: "Mumshad Mannambeth"
@@ -14,7 +14,7 @@ tags:
 
 # kube-scheduler - Taints and Tolerations
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Taints and Tolerations**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Taints and Tolerations**
 
 ---
 

@@ -123,14 +123,3 @@ To assign a running `Pending` pod to a node, post a `Binding` resource directly 
 ```
 
 *Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#c-kube-scheduler-the-matchmaker).*
-
-
-## 🔍 Sub-Concepts & Use Cases
-This table automatically displays all deeper notes, use cases, and configurations associated with **kube-scheduler-deeper**.
-
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[kube-scheduler-deeper]]
-SORT file.name ASC
-```

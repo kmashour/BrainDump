@@ -80,14 +80,3 @@ Control Groups (`cgroups`) are the Linux kernel feature used to limit container 
 * **Driver Alignment:** Always ensure that the Container Runtime and the Kubelet use the same driver (`systemd` is recommended on modern OSs). A mismatch causes duplicate hierarchies and node crashes under load.
 
 *Read more in [0-3_node_mechanics_and_resource_limits.md](../Reference%20Notes/0-3_node_mechanics_and_resource_limits.md#2-node-status-and-conditions).*
-
-
-## 🔍 Sub-Concepts & Use Cases
-This table automatically displays all deeper notes, use cases, and configurations associated with **node-deeper**.
-
-```dataview
-TABLE sub_type AS "Type", tags AS "Tags"
-FROM "Main Notes"
-WHERE class = "deeper-dive" AND parent_concept = [[node-deeper]]
-SORT file.name ASC
-```

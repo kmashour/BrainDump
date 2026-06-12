@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kube-scheduler-deeper]]"
+parent_concept: "[[kube-scheduler]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/"
@@ -16,7 +16,7 @@ tags:
 
 # kube-scheduler - Multiple Custom Schedulers
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > [[kube-scheduler-deeper]] > **Multiple Custom Schedulers**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kube-scheduler]] > **Multiple Custom Schedulers**
 
 ---
 

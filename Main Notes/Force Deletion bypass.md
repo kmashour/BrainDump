@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[kubectl-deeper]]"
+parent_concept: "[[kubectl]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-garbage-collection"
@@ -14,7 +14,7 @@ tags:
 
 # kubectl - Force Deletion bypass
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > [[kubectl-deeper]] > **Force Deletion Bypass**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[kubectl]] > **Force Deletion Bypass**
 
 ---
 

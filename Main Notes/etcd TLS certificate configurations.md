@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[etcd-deeper]]"
+parent_concept: "[[etcd]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/"
@@ -14,7 +14,7 @@ tags:
 
 # etcd - etcd TLS certificate configurations
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > [[etcd-deeper]] > **etcd TLS Configurations**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[etcd]] > **etcd TLS Configurations**
 
 ---
 
