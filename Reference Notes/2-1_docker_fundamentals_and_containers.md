@@ -224,6 +224,531 @@ graph TD
 
 ---
 
+---
+
+## 📖 Detailed Study: Docker Deep Dive (Nigel Poulton)
+
+![[../Attachments/docker_deep_dive_book.jpeg]]  
+![[../Attachments/docker_deep_dive_nigelpoulton.jpg]]  
+
+
+
+**[Docker Deep Dive: Zero to Docker in a single book](https://www.amazon.com/gp/product/B01LXWQUFF/ref=dbs_a_def_rwt_bibl_vppi_i1)**
+
+# Virtualization
+
+- **HW-Level Virtualization**  
+    - **Network Virtualization**  
+    - **Storage Virtualization**  
+    - **Server  Virtualization**  
+- **Application Virtualization**  
+- **OS-Level Virtualization**
+
+# 1: Containers from a 30,000 feet
+
+## The bad old days
+## Hello VMWare!
+## Hello Containers!
+- **Linux subsystems**  
+- **Mainframe**
+
+## Hello Docker!
+- **Docker, Inc. 1999**
+- **Windows Containers**  
+- **[Docker in GitHub](https://github.com/docker)**  
+
+## Windows containers vs Linux containers
+## What about Mac containers
+## What about Kubernetes
+
+---------
+
+# 2: Docker
+
+- **Docker, Inc. the company**  
+- **Docker the technology**
+
+## Docker - The TLDR
+
+
+- **Software runs on Windows and Linux**  
+- **Create, Manage and Orchestrate containers**  
+- **Created by a companyn called Docker, Inc. in 1999**
+
+
+## Docker, Inc.
+![[../Attachments/docker_deep_dive_1.png]]
+
+- **Was dotCloud**  
+- **Started as PaaS provider**  
+- **Build on Linux containers**  
+- **In 2013 Became Docker, Inc."**
+- **Two Main products:**
+    - **Docker Desktop**  
+    - **Docker Hub**
+
+## The Docker technology
+
+**Architecture**  
+![[../Attachments/docker_deep_dive_2.png]]
+
+**1. The runtime**  
+- ``runc``  
+    - Reference implementation of Open Containers Initiative (OCI) runtime-spec  
+    - Start/Stop containers  
+    - Build OS Constructs  
+- ``containerd``  
+    - Pull images  
+    - Create network interfaces  
+    - Manage runc  
+    - Open source project from CNCF  
+    
+**2. The daemon (a.k.a engine) ``dockerd``**  
+- Expose the Docker remote API  
+- Manage images  
+- Manage columes  
+- Manage netwroks  
+- etc.  
+
+**3. The orchestrator**  
+- Native support for managing clusters of nodes running Docker
+- Clusters of nodes running Docker are called swarm
+
+## The Open Container Initiative (OCI)
+
+- **A governance council responsible for standardizing the low-level fundamental components of container infrastructure** 
+- **Image formats. [image-spec](https://github.com/opencontainers/image-spec)**  
+- **container runtime. [runtime-spec](https://github.com/opencontainers/runtime-spec)**  
+
+----
+
+# 3: Installing Docker
+
+- **Windows, Mac and Linux**  
+- **Local and Cloud**  
+- **Manual, Scripted and Wizard-based**
+
+- Docker Desktop:  
+    * Windows 10  
+    * Mac  
+- Server installs:  
+    - Linux  
+    - Windows Server 2019  
+- Play with Docker  
+
+## Docker Desktop
+
+- Single-engine Docker 
+- Docker Compose
+- Single-node Kubernetes cluster
+
+## Installing Docker on Linux
+
+**[Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)**
+
+```
+$ sudo apt-get update
+$ sudo apt-get remove docker docker-engine docker.io containerd runc
+
+$ sudo apt-get update
+$ sudo apt-get install ca-certificates curl gnupg lsb-release
+
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+$ echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+
+$ sudo apt-get update --allow-unauthenticated --allow-insecure-repositories
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+
+$ sudo docker --version
+$ sudo docker info
+```
+
+**[Play with Docker](https://labs.play-with-docker.com/)**
+
+----
+
+# 4: The Big Picture
+
+## Quick overview on DevOps of the containers
+
+### The Ops perspective
+
+- Download images
+- Start containers
+- Log in to containers
+- Run commands inside containers
+- List containers
+- etc.
+
+#### Confirm Installation
+
+`$ sudo docker version`
+
+**note: you might need to add your user account to the local docker group rather than using "sudo" always**  
+- To check the current local groups:  
+    `$ sudo getent group`  
+- To check the groups you're currently in:  
+    `$ groups`  
+- To add a user to the local docker group:  
+    `$ sudo usermod -a -G docker <username>`  
+    `$ groups`  
+
+#### Images
+
+List all images  
+`$ docker image ls`
+
+Pull the `ubuntu:latest` image  
+`$ docker image pull ubuntu:latest`
+
+Launch a container from an image  
+`$ docker container run -it ubuntu:latest /bin/bash`
+
+Exit a container without terminating it: `Ctrl-PQ`
+
+Attach to a running container  
+`$ docker container exec -it <containername> bash`
+
+Stop a running container  
+`$ docker container stop <containername>`
+
+Start a stopped container  
+`$ docker container start <containername>`  
+
+Delete a stopped container  
+`$ docker container rm <containername>`  
+
+### The Dev perspective
+
+Clone a github repo that has a docker file  
+`$ git clone https://github.com/nigelpoulton/psweb.git`
+
+Inspect the Dockerfile  
+`$ cat Dockerfile`
+
+Create a new image from the Dockerfile in the repo  
+Run the following command from inside the repo directory  
+`$ docker image build -t test:latest .`
+
+List images after build. You should see 3 images (2 of them related to the newly built Dockerfile)  
+`$ docker image ls`
+
+Launch a container from the test image  
+``` >
+$ docker container run -d \
+  --name web1 \
+  --publish 8080:8080 \
+  test:latest
+```
+
+----
+
+# 5: The Docker Engine
+
+## Docker Engine - The TLDR
+
+![[../Attachments/docker_deep_dive_5.png]]
+
+### Docker Engine - The Deep Dive
+
+![[../Attachments/docker_deep_dive_6.png]]
+
+### The influence of the Open Container Initiative (OCI)
+
+#### **`runc`**
+
+- CLI wrapper  
+- Only creates containers
+- Standalone container runtime tool
+- Also called "the OCI layer"
+- [`runc` lastest release information](https://github.com/opencontainers/runc/releases)
+
+#### **`containerd`**
+
+- Backgroud process (`$ ps -elf | grep containerd`)
+- Manage container lifecycle(`start | stop | pause | rm ...`)
+- Image pulls, volumes, networks, etc.
+- Initially developed by Docker, Inc. then denoted to CNCF
+- [`containerd` latest release information](https://github.com/containerd/containerd/releases)
+
+#### Starting a new container (example)
+
+`$ docker container run --name ctr1 -it alpine:latest sh`
+
+1. Docker client converts it into appropriate API payload  
+2. POSTs it into API endpoint exposed by Docker daemon (`/var/run/docker.sock` on Linux)  
+3. Daemon calls `containerd`  
+4. `containerd` converts the required Docker image into an OCI bundle and uses `runc` to create the container  
+5. `runc` interfaces with the OS kernel to pull together all of th constructs necessary as a child-process of `runc`  
+6. After the child-process starts `runc` exits  
+
+![[../Attachments/docker_deep_dive_7.png]]
+
+**One huge benefit of this model**  
+- Container runtime is decoupled from the Docker daemon: "daemonless containers"  
+- You can perform maintenance and upgrades on the Docker daemon without impacting running containers
+
+**What’s this shim all about?**  
+- Reduced version of `containerd` that remains running after `runc` exists after creating the container  
+- STDIN and STDOUT streams remain open even after the daemon is restarted  
+- Reports container status to daemon
+
+- `dockerd` (the Docker daemon)
+- `docker-containerd` (containerd)
+- `docker-containerd-shim` (shim)
+- `docker-runc` (runc)
+
+`$ ps -elf | grep container`
+
+**Securing client and daemon communication**
+
+Locally over IPC sockets:
+- `/var/run/docker.sock` on Linux  
+- `//./pipe/docker_engine` on Windows
+
+Over the network unsecure HTTP socket call on port `2375/tcp`
+
+![[../Attachments/docker_deep_dive_8.png]]
+
+**TLS can be enforced on both client and daemon**  
+1. Configure a CA and certificates 
+2. Create a CA  
+3. Create and sign keys for the Daemon  
+4. Create and sign keys for the Client  
+5. Distribute keys  
+6. Configure Docker to use TLS  
+7. Configure daemon mode  
+8. Configure client mode  
+
+**[Protect the Docker daemon socket](https://docs.docker.com/engine/security/protect-access/)**
+
+![[../Attachments/docker_deep_dive_9.png]]
+
+![[../Attachments/docker_deep_dive_10.png]]
+
+----
+
+# 7: Containers
+
+**[Open Container Initiative (OCI)](https://www.opencontainers.org)**
+
+## Docker containers - The TLDR
+
+- A container is the runtime instance of an image.
+- Instead of running a full-blown OS like a VM, containers share the OS/kernel with the host they’re running on.
+- A single Docker image can be used to start multiple Docker containers.
+
+![[../Attachments/docker_deep_dive_22.png]]
+
+- `docker container run <image> <app>`
+- `$ docker container run -it ubuntu /bin/bash`
+- `$ docker container run -it alpine:latest sleep 10`
+
+To stop the container:  
+`docker container stop`
+
+To start the container:  
+`docker container start`
+
+To delete a container forever:  
+`docker container rm`
+
+
+
+## Docker containers - The deep dive
+
+### Containers vs VMs
+
+**VMs Architecture**
+
+![[../Attachments/docker_deep_dive_23.png]]
+
+**Containers Architecture**
+
+![[../Attachments/docker_deep_dive_24.png]]
+
+- Hypervisors perform **hardware virtualization** — they carve up physical hardware resources into virtual versions called VMs.
+- Containers perform **OS virtualization** — they carve OS resources into virtual versions called containers.
+
+
+
+### The VM tax
+
+- Less resources
+- Less licenses
+- Faster
+- Single kerner, single surface of attack
+
+
+
+### Running containers
+
+- Docker Desktop on Mac or Windows
+- docker.io on Linux
+
+
+
+### Checking that Docker is running
+
+`$ sudo docker version`
+
+To check the current local groups:  
+`$ sudo getent group`  
+To check the groups you're currently in:  
+`$ groups`  
+To add a user to the local docker group:  
+`$ sudo usermod -a -G docker <username>`  
+`$ groups`
+
+Check service status:  
+`$ service docker status`  
+`$ systemctl is-active docker`
+
+
+
+### Starting a simple container
+
+`$ docker container run -it ubuntu:latest`  
+1. Docker client POSTs the request to Docker API on local socket `/var/run/docker.sock`  
+2. Docker daemon checks the local repo for the `ubuntu:latest` image, if it's not their it will check Docker Hub.
+3. After obtaining the image it instructs `containerd` and 'runc' to create and run the container.
+
+- `-i` run container in interactive mode keeping STDIN stream open  
+- `-t` Allocate a pseudo-TTY  
+- `/bin/bash` this makes Bash shell **one and only process running inside of the container**. Run `ps -elf` to validate.
+- `root@50949b614477:/#` container pseudo terminal
+
+### Container processes
+
+- `/bin/bash` is the only process running in the container, hence if you run `exit` it will exit and terminate the container.
+- If you run `Ctrl-PQ` it will exist the container without terminating it.
+- **killing the main process in the container will kill the container**
+
+### Container lifecycle
+
+**Change the name of the running container**  
+`$ docker container run --name sawsan -it ubuntu:latest /bin/bash`
+
+**Write data to container**  
+`# cd tmp`   
+`# echo "Jan 25th, the day Egypt stood still" > newfile`  
+`# ls -l`  
+`# cat newfile`
+
+**Stop containers**  
+`docker container stop <container-id or container-name>`
+
+**Start containers**  
+`docker container start <container-name>`
+
+**Start containers in detached mode (run it in the background)**  
+`docker container run -d <container-name>`
+
+**Connect to running container**  
+`docker container exec -it <container-name> bash`
+
+**Try to access the text file created (newfile) after restarting and reconnecting to the container**
+
+**Notes**  
+1. The data created in this example is stored on the Docker hosts local filesystem. If the Docker host fails, the data will be lost.  
+2. Containers are designed to be immutable objects and it’s not a good practice to write data to them
+
+**Kill a running container**  
+- In one step:
+    - `docker container rm -f <container-name>`
+- In two steps:
+    - `docker container stop <container-name>`
+    - `docker container rm <container-name>`
+
+
+
+### Stopping containers gracefully
+
+- `docker container stop` sends a **SIGTERM** signal to PID(1)
+- If the process doesn't exit in 10 sec it sends a **SIGKILL** signal  
+
+
+
+### Self-healing containers with restart policies
+
+Restart policies are applied per-container, and can be configured imperatively on the command line as part of `docker container run` commands, or declaratively in YAML files for use with higher-level tools
+
+**`always`**  
+container will always restart if the main process is killed from inside the container but won't restart if you manually stopped it. Will restart if the Docker daemon restarts.  
+**`unless-stopped`**  
+container will always restart if the main process is killed from inside the container but won't restart if you manually stopped it. However will NOT restart if the Docker daemon restarts.  
+**`on-failue`**  
+container will always restart if the main process exits with non-zero code (i.e. with error) but won't restart if you manually stopped it. However will restart if the Docker daemon restarts.  
+
+
+`docker container run --name <container-name> --restart always <image-name> <process>`
+
+1. `$ docker container run --name neversaydie -it --restart always alpine sh`
+2. `# exit`
+3. `$ docker container ls`
+4. `$ docker container inspect neversaydie`
+
+check the `RestartCount` item in the inspection json.
+
+
+
+### Web server example
+
+1. `$ docker container run -d --name webserver -p 80:80 nginx:latest`
+2. open browser http://localhost:80
+3. stop the container 
+4. open browser again and refresh
+5. start the container
+6. open browser again and refresh
+
+### SQL Example
+
+**[Docker Hub - Microsoft SQL Server Repo](https://hub.docker.com/_/microsoft-mssql-server)**
+
+`$ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=P@ssw0rd" -e "MSSQL_PID=Express" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2019-latest`
+
+
+
+### Inspecting containers
+
+- When building a Docker image, you can embed an instruction that lists the default app for any containers that use the image. You can see this for any image by running a `docker image inspect`  
+- `Cmd` show the command/app that the container will run unless you override it with a different one when you launch the container with `docker container run`
+- sometimes the default app is listed as `Entrypoint` instead of `Cmd`
+
+
+
+### Tidying up
+
+Delete all containers by force  
+`$ docker container rm $(docker container ls -aq) -f`  
+Delete all images by force  
+`$ docker image rm $(docker image ls -q) -f`
+
+
+
+## Containers - The commands
+
+- `docker container run`  // start new containers.
+- `docker container run -it ubuntu /bin/bash`
+- `Ctrl-PQ`  // will detach your shell from the terminal of a container and leave the container running (UP) in the background.
+- `docker container ls`  // lists all containers in the running (UP). Add -a flag to list (Existed) containers.
+- `docker container exec`  // runs a new process inside of a running container.
+- `docker container stop`  // stop a running container and put it in the Exited (0) state.
+- `docker container start`  // will restart a stopped (Exited) container.
+- `docker container rm`  // delete a stopped container.
+- `docker container stop`  // stops a running (UP) container .
+- `docker container inspect`  // will show you detailed configuration and runtime information about a container.
+
+
+
+----
+
+---
+
 ## 🛠️ Practical Proof of Concept (PoC): Container Isolation & Lifecycle Verification
 
 ### Target Scenario

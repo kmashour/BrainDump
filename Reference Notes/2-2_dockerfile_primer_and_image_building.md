@@ -159,6 +159,420 @@ Modern Docker engines utilize **BuildKit** as the backend compiler, offering enh
 
 ---
 
+---
+
+## 📖 Detailed Study: Docker Deep Dive (Nigel Poulton)
+
+# 6: Images
+
+## Docker images - The TLDR
+
+- A unit of packaging that contains everything required for an application to run
+- Application code
+- Application dependencies
+- OS Constructs
+
+- In VM analogy an image is like a template VM (Stopped VM)
+- Get an image by "Pulling" it from a registry. By default Docker Hub is used
+- Consists of layers stacked on top of each other
+
+## Docker images - The deep dive
+
+- Images are considered _build-time_ constructs where containers are _runtime_ constructs.
+
+![[../Attachments/docker_deep_dive_11.png]]
+
+### Images and containers
+
+To start a container from an image  
+- `docker container run`  
+- `docker service create`
+
+### Images are usually small
+
+- Images have _just enought operating system_  
+- They normally don't include kernel  
+- Some images are really small:  
+- [Alpine image in Docker Hub](https://hub.docker.com/_/alpine)  
+- [Alpine Linux](https://alpinelinux.org/downloads/)
+
+### Pulling images
+
+- Fresh installation of Docker comes with no images  
+- The local repo of Docker is in `/var/lib/docker/<storage-driver>`  
+- Use `docker image ls` to list all of the current images in the local repo
+
+- Use `$ docker image pull redis:latest` to pull the latest redis image  
+- Use `$ docker image pull alpine:latest` to pull the latest alpine linux image
+
+### Image naming
+
+**Image Registries**  
+- Images are stored in centralized places called _image registries_.  
+- The most common registry is [Docker Hub](https://hub.docker.com)  
+- Other 3rd party registries and local registries can also be used.
+- Use `$ docker info` to check the current "Registry" option.
+- Image registries contain one or more _image repositories_. Each repo can have one or more versions of the image.
+
+![[../Attachments/docker_deep_dive_12.png]]
+
+### Official and unofficial repositories
+
+- **_Official repositories_** are the home to images that have been vetted and curated by Docker, Inc.  
+- **_Unofficial repositories_** may not be safe, well-documented or built according to best practices.
+
+- _Official repos_ exist on the top level namespace in docker hub:
+    - nginx: https://hub.docker.com/_/nginx/
+    - busybox: https://hub.docker.com/_/busybox/
+    - redis: https://hub.docker.com/_/redis/
+    - mongo: https://hub.docker.com/_/mongo/
+- _Unofficial repos_ will have user account name in the url and not in the top level namespace:
+    - nigelpoulton/tu-demo — https://hub.docker.com/r/nigelpoulton/tu-demo/
+    - nigelpoulton/pluralsight-docker-ci — https://hub.docker.com/r/nigelpoulton/pluralsight-docker-ci/
+    - https://hub.docker.com/repository/docker/asami76/web
+
+### Image naming and tagging
+
+**Pulling images from Official repos**
+
+- `$ docker image pull <repository>:<tag>`  
+- `$ docker image pull alpine:latest`
+- `$ docker image pull mongo:4.2.6`
+- `$ docker image pull alpine`
+
+**Pulling images from Unofficial repos**
+
+- `$ docker image pull nigelpoulton/tu-demo:v2`  
+
+**Pulling images from 3rd party registries (not Docker Hub)**
+
+Pulling from `google-containers/git-sync` repo:  
+`$ docker image pull gcr.io/google-containers/git-sync:v3.1.5`
+
+### Images with multiple tags
+
+`$ docker image pull -a <imagename>` // will pull all versions of the image from the repo  
+`$ docker image prune` // remove all images that are not referenced by any container  
+`$ docker image prune -a` //remove all dangling images (images with no tags)
+
+### Searching Docker Hub from the CLI
+
+- Use `docker search`  
+- `$ docker search nigelpoulton`
+- `$ docker search asami76`
+
+`--filter "is-official=true"`
+
+- `$ docker search alpine --filter "is-official=true"`  
+- `$ docker search ubuntu --filter "is-official=true"`
+
+### Images and layers
+
+- A Docker image is a bunch of loosely-connected read-only layers.  
+- Each layer is one or more files
+
+![[../Attachments/docker_deep_dive_13.png]]
+
+![[../Attachments/docker_deep_dive_15.png]]
+
+![[../Attachments/docker_deep_dive_14.png]]
+
+Another way to see the layers of an image is to use `docker image inspect <image-name>`
+
+`$ docker image inspect ubuntu:latest`
+
+- All Docker images start with a _base layer_  
+- New layers are added on top as new content is added to the image
+
+**Example:**  
+Create a Python application on top over ubuntu 20.04 then some source code is added
+
+![[../Attachments/docker_deep_dive_16.png]]
+
+![[../Attachments/docker_deep_dive_17.png]]
+
+![[../Attachments/docker_deep_dive_18.png]]
+
+**Docker uses a _storage driver_ in order to stack and merge all layers and present them as a single image.**  
+- `AUFS`, `overlay2`, `devicemapper`, `btrfs` and `zfs` for Linux
+- `windowsfilter` for Windows NTFS.
+
+![[../Attachments/docker_deep_dive_19.png]]
+
+### Sharing image layers
+
+Multiple images can, and do, share layers. This leads to efficiencies in space and performance.
+
+`$ docker image pull -a nigelpoulton/tu-demo`
+
+![[../Attachments/docker_deep_dive_20.png]]
+
+### Pulling images by digest
+
+- What happens after you download an image with a tag and then the vendor uploads another image with the same tag?
+- Docker 1.10 introduced a content addressable storage model.
+-  As part of this model, all images get a _cryptographic content hash_.
+- This has is referred to as the _digest_.
+- Every time you pull an image, the `docker image pull` command includes the image’s digest as part of the information returned
+
+- `$ docker image pull alpine`
+- `$ docker image ls --digests alpine`
+
+- You can use the digest of the image when pulling it to ensure that we get **exactly the image we expect**
+
+### A little bit more about image hashes (digests)
+
+- The _image_ itself is a configuration file that lists the layers and some metadata.
+- The _layers_ are where the data lives (files, codes, etc.).
+- Each layer is independent.
+- Each image is identified by a crypto ID which is a hash of the config file.
+- Each layer is identified by a crypto ID which is a has of the contents (also called _content hashes_).
+
+- If and image or a layer is changed the hash changes.
+- When pushing or pulling an image docker compresses the image to save network bandwidth - But this changes the hashes.
+- That's why each layer also has a **_distribution hash_** which is the hash of the image after compression.
+
+### Multi-architecture images
+
+- Windows and Linux, on variations of ARM, ARM 64, IBM Z, IBM POWER, x64, PowerPC, and s390x.
+- A single image tag supporting multiple platforms and architectures.
+- To make this happen, the Registry API supports two important constructs:
+    - **`manifest lists`**
+    - **`manifests`**
+
+![[../Attachments/docker_deep_dive_21.png]]
+
+1. When pulling the image the Docker client makes a call to the Docker Registry API exposed by Docker Hub.
+2. Docker Registry API inspect the platform/Arch of the calling docker client.  
+3. If a **manifest list** exists for the image it will be parsed to see if there's a **manifest** for the calling client.
+4. If a **manifest** exists the API will retrieve the layers in it.
+
+**All official images have manifest lists.**
+
+`$ docker manifest inspect golang` // inspects manifest file on Docker Hub
+
+To build an image for Linux/ARM:  
+`$ docker buildx build --platform linux/arm/v7 -t myimage:arm-v7`
+
+To create your own manifest lists:  
+`docker manifest create`
+
+### Deleting Images
+
+`$ docker image rm <imagename or id>..<imagename or id>`
+
+Delete all images:  
+`$ docker image rm $(docker image ls -q) -f`
+
+`$ docker image ls -q` // returns a list containing just the image IDs of all images pulled locally on the system
+
+## Images - The commands
+
+- `docker image pull` is the command to download images.  
+- `docker image ls` lists all of the images stored in your Docker host’s local image cache.  
+- `docker image inspect` all of the details of an image — layer data and metadata.  
+- `docker manifest inspect` allows you to inspect the manifest list of any image stored on Docker Hub.  
+- `docker buildx` is a Docker CLI plugin that extends the Docker CLI to support multi-arch builds.  
+- `docker image rm` is the command to delete images.
+
+
+
+
+
+----
+
+# 8: Containerizing an App
+
+The process of taking an application and configuring it to run as a container is called “containerizing".
+
+
+
+## Containerizing an app - The TLDR
+
+The process of containerizing an app looks like this:
+
+1. Start with your application code and dependencies
+2. Create a _Dockerfile_ that describes your app, its dependencies, and how to run it
+3. Feed the _Dockerfile_ into the `docker image build` command
+4. Push the new image to a registry (optional)
+5. Run container from the image
+
+![[../Attachments/docker_deep_dive_25.png]]
+
+
+
+## Containerizing an app - The deep dive
+
+
+
+### Containerize a single-container app
+
+- Clone the repo to get the app code
+- Inspect the Dockerfile
+- Containerize the app
+- Run the app
+- Test the app
+- Look a bit closer
+- Move to production with Multi-stage Builds
+- A few best practices
+
+
+
+#### Getting the application code
+
+`$ git clone https://github.com/nigelpoulton/psweb.git`
+
+
+
+#### Inspecting the Dockerfile
+
+1. All Dockerfiles start with the `FROM` instruction. This will be the base layer of the image, and the rest of the app will be added on top as additional layers.
+
+![[../Attachments/docker_deep_dive_26.png]]
+
+2. Next, the Dockerfile creates a `LABEL` that specifies “nigelpoulton@hotmail.com” as the maintainer of the image
+
+3. The `RUN apk add --update nodejs nodejs-npm` instruction uses the Alpine `apk` package manager to install `nodejs` and `nodejs-npm` into the image.
+
+![[../Attachments/docker_deep_dive_27.png]]
+
+4. The `COPY . /src` instruction creates another new layer and copies in the application and dependency files from the _build context_.
+
+![[../Attachments/docker_deep_dive_28.png]]
+
+5. Next, the Dockerfile uses the `WORKDIR` instruction to set the working directory inside the image filesystem for the rest of the instructions in the file
+
+6. Then the `RUN npm install` instruction creates a new layer and uses `npm` to install application dependencies listed in the `package.json` file in the build context.
+
+![[../Attachments/docker_deep_dive_29.png]]
+
+7. The application exposes a web service on TCP port 8080, so the Dockerfile documents this with the `EXPOSE 8080` instruction.
+
+8. Finally, the `ENTRYPOINT` instruction is used to set the main application that the image (container) should run. This is also added as metadata and not an image layer.
+
+
+
+#### Containerize the app/build the image
+
+`$ docker image build -t web:latest .`
+
+`$ docker images`
+
+`$ docker image inspect web:latest`
+
+
+
+#### Pushing images
+
+First login to the Docker Hub registry:  
+`docker login`
+
+Docker needs the following information when pushing an image:
+- `Registry`
+- `Repository`
+- `Tag`
+
+The `tag` should include the `repository` name (your user account on Docker Hub):  
+`$ docker image tag <current-tag> <repository-name>/<new-tag>`  
+`$ docker image tag web:latest asami76/newweb:latest`
+
+`$ docker image push asami76/newweb:latest`
+
+![[../Attachments/docker_deep_dive_30.png]]
+
+You can also create multiple image tags and push them to the same repo:  
+
+`$ docker image tag web:latest asami76/newweb:v2`
+
+Check the following URL to find all of the tags in the `newweb` repo  
+**[asami76/newweb](https://hub.docker.com/repository/docker/asami76/newweb)**
+
+#### Run the app
+
+Remove all images from the local repo.
+
+Run the following command to create a container named c1 based on the image we just pushed:  
+ `$ docker container run -d --name c1 -p 80:8080 asami76/newweb:latest`
+
+
+
+#### Test the app
+
+Open the browser in the Docker Host on URL http://localhost:80
+
+
+
+#### Looking a bit closer
+
+The `docker image build` command parses the Dockerfile one-line-at-a-time starting from the top.
+
+Comment lines start with the `#` character.
+
+**Instructions** and take the format `INSTRUCTION argument`.
+
+View the instructions that were used to build the image with the `docker image history` command.
+
+- Each line corresponds to an instruction in the Dockerfile (starting from the bottom and working up).  
+- The CREATED BY column even lists the exact Dockerfile instruction that was executed.  
+- Only 4 of the lines displayed in the output create new layers (the ones with non-zero values in the SIZE column).
+
+The `docker image build` executes in the following order:  
+`spin up a temporary container` > `run the Dockerfile instruction inside of that container` > `save the results as a new image layer` > `remove the temporary container`
+
+**[Dockerfile Instructions Cheatsheet](https://medium.com/@oap.py/dockerfile-cheat-sheet-4ad12569aa0b)**
+
+
+
+### Moving to production with Multi-stage Builds
+
+Multi-stage builds have a single Dockerfile containing multiple FROM instructions. Each FROM instruction is a new **build stage** that can easily COPY artefacts from previous **stages**.
+
+
+
+### A few best practices
+
+#### Leverage the build cache
+
+Artefacts from the first build, such as layers, are cached and leveraged by later builds.
+
+During the `docker image build` and for each instruction in the Dockerfile, Docker looks to see if it already has an image layer for that instruction in its cache. If it does, this is a _cache hit_ and it uses that layer. If it doesn’t, this is a _cache miss_ and it builds a new layer from the instruction.
+
+
+
+#### Squash the image
+
+Squashing an image means that after building the image all layers will be merged(squashed) into a single layer.
+
+Add the `--squash` flag to the `docker image build` command if you want to create a squashed image.
+
+![[../Attachments/docker_deep_dive_31.png]]
+
+
+
+#### Use no-install-recommends
+
+- `no-install-recommends` flag with the `apt-get` install command.
+- This makes sure that apt only installs main dependencies (packages in the Depends field) and not recommended or suggested packages.
+
+
+
+## Containerizing an app - The commands
+
+- `docker image build` // the command that reads a Dockerfile and containerizes an application
+- Dockerfile instructions:
+    - `FROM`  // specifies the base image for the new image you will build. It is usually the first instruction in a Dockerfile
+    - `RUN`  // run commands inside the image. Each RUN instruction creates a single new layer.
+    - `COPY`  // adds files into the image as a new layer. It is common to use the COPY instruction to copy your application code into an image.
+    - `EXPOSE`  // documents the network port that the application uses.
+    - `ENTRYPOINT`  // sets the default application to run when the image is started as a container.
+    - Other Dockerfile instructions include LABEL, ENV, ONBUILD, HEALTHCHECK, CMD and more…
+
+
+
+----
+
+---
+
 ## 🛠️ Practical Proof of Concept (PoC): Layer Caching & Image Commits Verification
 
 ### Target Scenario

@@ -181,6 +181,51 @@ jobs:
 
 ---
 
+---
+
+## 📖 Detailed Study: Docker Deep Dive (Nigel Poulton)
+
+# 10: Docker Swarm
+
+
+
+
+
+
+
+----
+
+# 14: Deploying apps with Docker Stacks
+
+
+
+
+
+
+
+----
+
+# 15: Security in Docker
+
+
+
+
+
+
+
+
+
+
+
+
+
+# USED IMAGES
+
+Microsoft Official Repo  
+https://hub.docker.com/publishers/microsoftowner
+
+---
+
 ## 🛠️ Practical Proof of Concept (PoC): Multi-Stage Build & Target Optimization
 
 ### Target Scenario

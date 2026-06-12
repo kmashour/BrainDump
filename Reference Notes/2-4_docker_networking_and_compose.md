@@ -177,6 +177,349 @@ Docker Compose commands must be run from the directory containing the `docker-co
 
 ---
 
+---
+
+## 📖 Detailed Study: Docker Deep Dive (Nigel Poulton)
+
+# 9: Deploying Apps with Docker Compose
+
+## Deploying apps with Compose - The TLDR
+
+“microservices”. A simple example might be an app with the following seven services:
+
+- Web front-end
+- Ordering
+- Catalog
+- Back-end database
+- Logging
+- Authentication
+- Authorization
+
+**Docker Compose** lets you describe an entire app in a single declarative configuration file, and deploy it with a single command
+
+## Deploying apps with Compose - The Deep Dive
+
+### Compose background
+
+- Fig was a powerful Python tool, created by a company called Orchard, let you define entire multi-container apps in a single YAML file.
+- Docker, Inc. acquired Orchard and re-branded Fig as Docker Compose.
+- In April 2020 announced open standard for defining multi-container cloud-native apps.
+
+**[Compse Specficiation](https://github.com/compose-spec/compose-spec)**
+
+
+
+### Installing Compose
+
+Windows and Mac: Part of Docker Desktop
+
+#### Installing Compose on Linux
+
+1. Download the binary using the curl command.
+2. Make it executable using chmod
+
+**[docker-compose repo in GitHub](https://github.com/docker/compose/releases)**
+
+`$ sudo curl -L \
+https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 \
+-o /usr/local/bin/docker-compose`
+
+`$ sudo chmod +x /usr/local/bin/docker-compose`
+
+`$ docker-compose --version`
+
+
+
+### Compose files
+
+- Compose uses YAML files to define multi-service applications. 
+- YAML is a subset of JSON, so you can also use JSON. 
+- The default name for a Compose YAML file is `docker-compose.yml`.
+
+Four top-level keys:
+- `version`
+- `services`
+- `networks`
+- `volumes`
+
+
+
+### Deploying an app with Compose
+
+`$ git clone https://github.com/nigelpoulton/counter-app.git`
+
+Inspect the files
+
+Build the App:  
+`$ docker-compose up &`
+
+The multi-container app defined in a Compose file is called a _Compose app_.
+
+`docker-compose up` expects the name of the Compose file to `docker-compose.yml`.
+
+Or use the `-f` flag to specify a different compose file name:  
+`$ docker-compose -f prod-equus-bass.yml up`
+
+We can see that three images were either built or pulled as part of the deployment.
+
+Run the container in a browser
+
+
+
+### Managing an app with Compose
+
+start, stop, delete, and get the status of applications being managed by Docker Compose
+
+To stop and remove all containers in an App  
+`$ docker-compose down`
+
+`counter-net` network removed  
+`counter-vol` volume NOT rmeoved (persistent)
+
+To start the App in the background `-d`  
+`$ docker-compose up -d`
+
+To list the processes running inside of each service (container)  
+`$ docker-compose top`
+
+To stop the app without deleting its resources  
+`$ docker-compose stop`
+
+To delete a stopped Compose app  
+`$ docker-compose rm`
+
+To Restart the app  
+`$ docker-compose restart`
+
+
+
+## Deploying apps with Compose - The commands
+
+- `docker-compose up`  // deploy a Compose app.
+- `docker-compose stop`  // stop all of the containers in a Compose app without deleting them from the system.
+- `docker-compose rm`  // delete a stopped Compose app.
+- `docker-compose restart`  // restart a Compose app that has been stopped with docker-compose stop.
+- `docker-compose ps`  // list each container in the Compose app.
+- `docker-compose down`  // stop and delete a running Compose app. It deletes containers and networks, but not volumes and images.
+
+
+
+----
+
+# 11: Docker Networking
+
+## Docker Networking - The TLDR
+
+- container-to-container
+- continer to other network
+- container to VLAN
+
+- Docker networking is based on open-source Container Network Model (CNM).
+- `libnetwork` is Docker's implementation of CNM.
+    - single-host bridge networks
+    - multi-host overlays
+    - plugins for existing VLANs
+    - native service discovery
+    - basic container load balancing
+
+## Docker Networking - The Deep Dive
+
+### The theory
+
+Docker networking components:
+- The Container Network Model (CNM)
+- libnetwork
+- Drivers
+
+![[../Attachments/docker_deep_dive_32.png]]
+
+### The Container Network Model (CNM)
+
+**[CNM Design Specifications on GitHub](https://github.com/docker/libnetwork/blob/master/docs/design.md)**
+
+CNM Building Blocks:
+- **Sandboxes**: an isolated network stack. It includes; Ethernet interfaces, ports, routing tables, and DNS config.
+- **Endpoints**: virtual network interfaces responsible for making sandboxes connect to networks.
+- **Networks**: software implementation of an switch (802.1d bridge)
+
+![[../Attachments/docker_deep_dive_33.png]]
+
+![[../Attachments/docker_deep_dive_34.png]]
+
+![[../Attachments/docker_deep_dive_35.png]]
+
+## `libnetwork`
+
+### Drivers
+
+`libnetwork` implements the control plane and management plane functions and drivers implement the data plane.
+
+![[../Attachments/docker_deep_dive_36.png]]
+
+- Linux drivers: `bridge`, `overlay`, and `macvlan`.  
+- Windows drivers: `nat`, `overlay`, `transparent`, and `l2bridge`.
+- 3rd parties can also write _remote drivers_ or plugins.
+- The driver is responsible for creating, managing and deletings network resources.
+
+### Single-host bridge networks
+
+- **Single-host**: only exists on a single Docker host and can only connect containers that are on the same host.
+- **Bridge**: implementation of an 802.1d bridge (layer 2 switch).
+
+- Linux: created by `bridge` driver.
+- Windows: created by `nat` driver.
+
+![[../Attachments/docker_deep_dive_37.png]]
+
+All new containers will be connected to this default network unless `--network` flag is used.
+
+To list all current networks:  
+`$ docker network ls`
+
+To inspect network driver:  
+`$ docker network inspect`
+
+The default “bridge” network, on all Linux-based Docker hosts, maps to an underlying _Linux bridge_ in the kernel called **“docker0”**  
+`$ ip link show`
+
+![[../Attachments/docker_deep_dive_39.png]]
+
+To create a new single-host bridge network called "localnet":  
+`$ docker network create -d bridge localnet`
+
+Check it by:  
+`$ ip link show`
+
+![[../Attachments/docker_deep_dive_40.png]]
+
+Create a container and attach it to the new localnet bridge network:  
+`$ docker container run -d --name c1 --network localnet alpine sleep 1d`
+
+![[../Attachments/docker_deep_dive_41.png]]
+
+**Beware:** _The default `bridge` network on Linux does not support name resolution via the Docker DNS service. All other user-defined bridge networks do. The following demo will work because the container is on the user-defined `localnet` network._
+
+Create a new container called "c2":  
+`$ docker container run -it --name c2 --network localnet alpine sh`
+
+`# ping c1`
+
+Local DNS resolver forwards requests to an internal Docker DNS server that maintains name mapping for containers started with `--name` or `--net-alias` flags.
+
+### Port Mapping
+
+Containers connected to bridge networks cannot communicate outside it except in the case of _Port Mapping_
+
+![[../Attachments/docker_deep_dive_42.png]]
+
+`$ docker container run -d --name web --network localnet --publish 5000:80 nginx`
+
+To verify port mapping:  
+`docker port <container-name>`  
+`$ docker port web`
+
+### Connecting to existing networks
+
+A common example is a partially containerized app
+
+The built-in `MACVLAN` driver (`transparent` on Windows) was created with this in mind.
+
+![[../Attachments/docker_deep_dive_43.png]]
+
+on the negative side, it requires the host NIC to be in **promiscuous mode**
+
+![[../Attachments/docker_deep_dive_44.png]]
+
+``$ docker network create -d macvlan \
+  --subnet=10.0.0.0/24 \
+  --ip-range=10.0.0.0/25 \
+  --gateway=10.0.0.1 \
+  -o parent=eth0.100 \
+  macvlan100``
+
+![[../Attachments/docker_deep_dive_45.png]]
+
+Create a container with the macvlan100 network:  
+`$ docker container ran -d --name mactainer1 --network macvlan100 alpine sleep 1d`
+
+![[../Attachments/docker_deep_dive_46.png]]
+
+![[../Attachments/docker_deep_dive_47.png]]
+
+### Service discovery
+
+_Service discovery_ allows all containers and Swarm services to locate each other by name.
+
+![[../Attachments/docker_deep_dive_48.png]]
+
+_service discovery_ is network-scoped. This means that name resolution only works for containers and Services on the same network
+
+`--dns` flag specifies external DNS server.  
+`--dns-search` specifies custom search domain suffix  
+
+`$ docker container run -it --name c1 \
+  --dns=8.8.8.8 \
+  --dns-search=nigelpoulton.com \
+  alpine sh`
+
+### Ingress load balancing
+
+Swarm support:  
+- Ingress mode (default)
+- Host mode
+
+![[../Attachments/docker_deep_dive_49.png]]
+
+
+
+## Docker Networking - The Commands
+
+- `docker network ls`  // Lists all networks on the local Docker host.
+- `docker network create`  // Creates new Docker networks.
+- `docker network inspect`  // Provides detailed configuration information about a Docker network.
+- `docker network prune`  // Deletes all unused networks on a Docker host.
+- `docker network rm`  // Deletes specific networks on a Docker host.
+
+
+
+----
+
+# 12: Docker overlay networking
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+---
+
 ## 🛠️ Practical Proof of Concept (PoC): Container DNS & Docker Compose Orchestration
 
 ### Target Scenario

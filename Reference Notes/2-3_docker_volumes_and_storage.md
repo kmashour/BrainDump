@@ -78,6 +78,114 @@ Docker-managed storage where the volume is assigned a randomly generated hash na
 
 ---
 
+---
+
+## 📖 Detailed Study: Docker Deep Dive (Nigel Poulton)
+
+# 13: Volumes and persistent data
+
+## Volumes and persistent data - The TLDR
+
+two main categories of data — persistent and non-persistent.
+
+### Volumes and persistent data - The Deep Dive
+
+#### Containers and non-persistent data
+
+- Containers are designed to be immutable
+- many applications require a read-write filesystem in order to simply run – they won’t even run on a read-only filesystem.
+- Every Docker container is created by adding a thin read-write layer on top of the read-only image it’s based on
+- The writeable layer is called many names: _local storage_, _ephemeral storage_, and _graphdriver storage_.
+- It’s typically located on the Docker host in these locations:
+    - Linux Docker hosts: `/var/lib/docker/<storage-driver>/...`
+    - Windows Docker hosts: `C:\ProgramData\Docker\windowsfilter\...`
+- it gets created when the container is created and it gets deleted when the container is deleted
+- Managed on Docker host using a storage driver (Ubuntu: `overlay2` or `aufs`. `overlay2` is recommended)
+
+![[../Attachments/docker_deep_dive_50.png]]
+
+#### Containers and persistent data
+
+- _Volumes_ are the recommended way to persist data in containers.
+    - Volumes are independent objects that are not tied to the lifecycle of a container
+    - Volumes can be mapped to specialized external storage systems
+    - Volumes enable multiple containers on different Docker hosts to access and share the same data
+
+1. Create a volume
+2. Create a container 
+3. Mount the volume into it 
+4. The volume is mounted into a directory in the container’s filesystem
+5. Anyhing written to that directory is stored in the volume
+6. If you delete the container, the volume and its data will still exist.
+
+![[../Attachments/docker_deep_dive_51.png]]
+
+### Creating and managing Docker volumes
+
+To create a volume using `local` driver:  
+`$ docker volume create myvol`
+
+Third-party volume drivers are available as plugins (Cloud, SAN, NAS, etc.)
+
+![[../Attachments/docker_deep_dive_52.png]]
+
+To Inspect a volume:  
+`$ docker volume inspect myvol`
+
+Two ways to delete a Docker volume:  
+- Remove all volumes not used by any container: `$ docker volume prune`
+- Choose which volume to remove: `$ docker volume rm <volume-name>`
+
+#### Volumes in Dockerfiles
+
+- it’s also possible to deploy volumes via Dockerfiles using the VOLUME instruction
+- The format is `VOLUME <container-mount-point>`
+- you cannot specify a directory on the host when defining a volume in a Dockerfile
+
+#### Demonstrating volumes with containers and services
+
+- `$ docker container run -dit --name voltainer --mount source=bizvol,target=/vol alpine`
+- `$ docker volume ls`
+- `$ docker volume rm bizvol`    /// error
+
+Write something to volume:  
+- `$ docker container exec -it voltainer sh`
+    - `# echo "I Think Therefore I Am" > /vol/file1`
+    - `# cat /vol/file1`
+    - `# exit`
+- `$ docker container rm voltainer -f`
+- `$ docker volume ls`
+- `$ ls -l /var/lib/docker/volumes/bizvol/_data/`
+
+Create another container and attach it to the previous volume:  
+- `$ docker run --name hellcat --mount source=bizvol,target=/vol alpine sleep 1d`
+
+### Sharing storage across cluster nodes
+
+![[../Attachments/docker_deep_dive_53.png]]
+
+Docker Hub is the best place to find volume plugins
+
+
+
+## Volumes and persistent data - The Commands
+
+- `docker volume create`  /// create new volumes.
+- `docker volume ls`  /// list all volumes on the local Docker host.
+- `docker volume inspect`  /// shows detailed volume information.
+- `docker volume prune`  /// delete all volumes that are not in use by a container or service replica. Use with caution!
+- `docker volume rm`   /// deletes specific volumes that are not in use.
+- `docker plugin install`  /// install new volume plugins from Docker Hub.
+- `docker plugin ls`  /// lists all plugins installed on a Docker host.
+
+
+
+
+
+----
+
+---
+
 ## 3. Practical Verification & Volume CLI Syntax
 
 ```bash
