@@ -156,3 +156,85 @@ Modern Docker engines utilize **BuildKit** as the backend compiler, offering enh
 
 *   **Enabling BuildKit:** Set the environment variable `DOCKER_BUILDKIT=1` before executing builds.
 *   **Static Code Analysis (Hadolint):** Utilize a Dockerfile linter like `hadolint` in CI pipelines to scan code. It flags insecure patterns (running as root, missing pinned tags, apt cache files not cleaned up) and ensures compliance with image creation best practices.
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC): Layer Caching & Image Commits Verification
+
+### Target Scenario
+We will build a custom Nginx image, verify how changing local files invalidates the layer cache at different steps, and perform a manual `docker commit` modification.
+
+### Step-by-Step Guided Steps
+
+1. **Setup the Build Context**:
+   Create a directory and two static files:
+   ```bash
+   mkdir -p build-poc && cd build-poc
+   echo "Version 1.0" > app_version.txt
+   echo "Welcome to Nginx PoC" > index.html
+   ```
+
+2. **Write a Layer-Optimized Dockerfile**:
+   Write the following Dockerfile:
+   ```dockerfile
+   cat <<EOF > Dockerfile
+   FROM nginx:alpine
+   RUN apk add --no-cache curl
+   COPY app_version.txt /usr/share/nginx/html/version.txt
+   COPY index.html /usr/share/nginx/html/index.html
+   EOF
+   ```
+
+3. **Perform the Initial Build**:
+   Build the image and observe the layer compilation:
+   ```bash
+   DOCKER_BUILDKIT=1 docker build -t cache-poc:v1 .
+   ```
+   Note that all steps (`apk add`, `COPY`) are executed fresh.
+
+4. **Verify Layer Caching (No Changes)**:
+   Rebuild the image immediately:
+   ```bash
+   DOCKER_BUILDKIT=1 docker build -t cache-poc:v1 .
+   ```
+   Observe the build output. BuildKit will mark steps with `CACHED`, meaning no layers were re-compiled.
+
+5. **Trigger Cache Invalidation (Cache Busting)**:
+   - Modify the `index.html` file (affects the last layer):
+     ```bash
+     echo "Welcome to Nginx PoC - Updated" > index.html
+     DOCKER_BUILDKIT=1 docker build -t cache-poc:v1 .
+     ```
+     Observe that only the step `COPY index.html ...` runs fresh; the preceding step `COPY app_version.txt ...` is resolved from cache.
+   - Modify the `app_version.txt` file (affects an earlier layer):
+     ```bash
+     echo "Version 2.0" > app_version.txt
+     DOCKER_BUILDKIT=1 docker build -t cache-poc:v1 .
+     ```
+     Observe that because `app_version.txt` is copied *before* `index.html`, changing it invalidates the cache for its step *and all subsequent steps* (both COPY commands are re-run).
+
+6. **Perform a Container Commit**:
+   - Run the container in the background:
+     ```bash
+     docker run -d --name commit-poc cache-poc:v1
+     ```
+   - Make an ad-hoc change directly inside the running container:
+     ```bash
+     docker exec -it commit-poc sh -c 'echo "Manual Patch" > /usr/share/nginx/html/patch.txt'
+     ```
+   - Commit the modified container state into a new image:
+     ```bash
+     docker commit commit-poc cache-poc:patched
+     ```
+   - Destroy the running container and verify the patched file exists in the newly created image:
+     ```bash
+     docker rm -f commit-poc
+     docker run --rm cache-poc:patched cat /usr/share/nginx/html/patch.txt
+     ```
+     This should output `Manual Patch`, proving the state was captured in the new image layer.
+
+7. **Clean Up**:
+   ```bash
+   docker rmi cache-poc:v1 cache-poc:patched
+   cd .. && rm -rf build-poc
+   ```

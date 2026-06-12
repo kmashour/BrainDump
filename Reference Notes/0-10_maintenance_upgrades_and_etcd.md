@@ -776,3 +776,92 @@ kubectl exec -n kube-system etcd-controlplane -- sh -c \
 kubectl exec -n kube-system etcd-controlplane -- sh -c \
   "ETCDCTL_API=3 etcdctl --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key get / --prefix --keys-only"
 ```
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC): ETCD Backup & Node Maintenance Lab
+
+### Target Scenario
+We will perform a complete backup of the ETCD database on a live control plane, verify the integrity of the snapshot file, and execute a node drain procedure to simulate host maintenance while protecting running workloads.
+
+### Step-by-Step Guided Steps
+
+1. **Perform an ETCD Snapshot Backup**:
+   - Access the control plane node (or run via `kubectl exec` if running inside a containerized setup like `kind`):
+     ```bash
+     # Locate static pod etcd configuration details:
+     kubectl get pod etcd-controlplane -n kube-system -o yaml
+     ```
+   - Execute the backup command, feeding the TLS keys and CA certificate paths:
+     ```bash
+     sudo ETCDCTL_API=3 etcdctl \
+       --endpoints=https://127.0.0.1:2379 \
+       --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+       --cert=/etc/kubernetes/pki/etcd/server.crt \
+       --key=/etc/kubernetes/pki/etcd/server.key \
+       snapshot save /tmp/etcd-backup.db
+     ```
+     You should see output similar to: `Snapshot saved at /tmp/etcd-backup.db`.
+
+2. **Verify Snapshot Integrity**:
+   - Run the status check to inspect status variables and hash integrity:
+     ```bash
+     sudo ETCDCTL_API=3 etcdctl --write-out=table snapshot status /tmp/etcd-backup.db
+     ```
+     Ensure the table outputs valid rows showing a non-zero `Revision` number, proving the snapshot contains database objects and is not corrupted.
+
+3. **Execute Node Maintenance (Drain)**:
+   - Identify the worker node name:
+     ```bash
+     kubectl get nodes
+     ```
+   - Deploy a mock application deployment:
+     ```yaml
+     cat <<EOF > test-app.yaml
+     apiVersion: apps/v1
+     kind: Deployment
+     metadata:
+       name: test-app
+     spec:
+       replicas: 3
+       selector:
+         matchLabels:
+           app: test-app
+       template:
+         metadata:
+           labels:
+             app: test-app
+         spec:
+           containers:
+           - name: nginx
+             image: nginx:alpine
+     EOF
+     kubectl apply -f test-app.yaml
+     ```
+   - Drain the node (e.g. `node01` or `cka-controlplane-worker`) to trigger rescheduling:
+     ```bash
+     # Force drain ignoring DaemonSets and local storage:
+     kubectl drain cka-controlplane-worker --ignore-daemonsets --delete-emptydir-data --force
+     ```
+     Observe that the scheduler terminates the pods running on that node and recreates them on other available nodes.
+   - Verify the scheduling status:
+     ```bash
+     kubectl get nodes
+     ```
+     The drained node should show `Ready,SchedulingDisabled`.
+
+4. **Restore Node Schedulability (Uncordon)**:
+   - Once maintenance is complete, re-enable scheduling on the node:
+     ```bash
+     kubectl uncordon cka-controlplane-worker
+     ```
+   - Verify status returns to `Ready`:
+     ```bash
+     kubectl get nodes
+     ```
+
+5. **Clean Up**:
+   ```bash
+   kubectl delete -f test-app.yaml
+   rm -f test-app.yaml /tmp/etcd-backup.db
+   ```

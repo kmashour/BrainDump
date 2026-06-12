@@ -178,3 +178,88 @@ jobs:
 2.  **Buildx Setup (`setup-buildx-action`):** Initializes a Buildx builder instance. Buildx is the CLI tool wrapper for BuildKit. It is required to execute multi-platform compilation and export advanced build caches.
 3.  **Registry Login (`login-action`):** Authenticates to the target container registry. For GHCR, use `ghcr.io` as the registry and feed it the repository owner username and the auto-generated `${{ secrets.GITHUB_TOKEN }}`. For Docker Hub, use secrets stored in repository environment variables (`${{ secrets.DOCKERHUB_USERNAME }}`, `${{ secrets.DOCKERHUB_TOKEN }}`).
 4.  **Build and Push (`build-push-action`):** Performs the build. The `tags` parameter compiles and pushes multiple tags simultaneously (e.g., tagging the build with `latest` and the specific Git commit SHA `${{ github.sha }}`). This provides version tracking for rollbacks.
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC): Multi-Stage Build & Target Optimization
+
+### Target Scenario
+We will create a simple Go application, write a multi-stage Dockerfile, build it in development mode (targeting the builder stage), build the optimized production release, and compare their sizes to verify the size reduction.
+
+### Step-by-Step Guided Steps
+
+1. **Setup the Go App Codebase**:
+   Create a temporary development workspace:
+   ```bash
+   mkdir -p multi-stage-poc && cd multi-stage-poc
+   ```
+   Write a simple Go web server (`main.go`):
+   ```go
+   cat <<EOF > main.go
+   package main
+   import (
+       "fmt"
+       "net/http"
+   )
+   func handler(w http.ResponseWriter, r *http.Request) {
+       fmt.Fprintf(w, "Multi-stage PoC Successful")
+   }
+   func main() {
+       http.HandleFunc("/", handler)
+       http.ListenAndServe(":8080", nil)
+   }
+   EOF
+   ```
+
+2. **Write a Multi-Stage Dockerfile**:
+   Write the following multi-stage Dockerfile:
+   ```dockerfile
+   cat <<EOF > Dockerfile
+   # Stage 1: Development & Compilation Environment
+   FROM golang:1.20-alpine AS builder
+   WORKDIR /app
+   COPY main.go .
+   RUN CGO_ENABLED=0 GOOS=linux go build -o myapp main.go
+
+   # Stage 2: Minimal Production Runtime Environment
+   FROM alpine:3.18 AS release
+   WORKDIR /root/
+   COPY --from=builder /app/myapp .
+   EXPOSE 8080
+   ENTRYPOINT ["./myapp"]
+   EOF
+   ```
+
+3. **Build Target Stage (Development Mode)**:
+   Build only the compilation stage (contains the Go compiler, SDK, and source code):
+   ```bash
+   docker build --target builder -t myapp:dev .
+   ```
+   Verify that Go development tools are present in this dev image:
+   ```bash
+   docker run --rm myapp:dev go version
+   ```
+
+4. **Build the Final Stage (Production Release Mode)**:
+   Build the optimized production release image:
+   ```bash
+   docker build --target release -t myapp:prod .
+   ```
+   Verify that Go development tools are *absent* from the production image (expected to fail):
+   ```bash
+   docker run --rm myapp:prod go version
+   ```
+   This command should return an error (`executable file not found in $PATH`), verifying that the SDK layer was discarded.
+
+5. **Compare Image Sizes**:
+   Inspect the size difference between the development image and the production release image:
+   ```bash
+   docker images --format "table {{.Repository}}:{{.Tag}}\t{{.Size}}" | grep myapp
+   ```
+   Observe the output. The dev image (`myapp:dev`) should be around 250MB+ (due to the embedded Go compiler/SDK), while the production image (`myapp:prod`) should be less than 15MB (due to the minimal alpine base runtime containing only the compiled binary), proving a **94%+ size reduction**.
+
+6. **Clean Up**:
+   ```bash
+   docker rmi myapp:dev myapp:prod
+   cd .. && rm -rf multi-stage-poc
+   ```

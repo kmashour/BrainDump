@@ -1279,4 +1279,155 @@ Ensure a basic security baseline for control planes, hosts, and applications:
 * [ ] Drop `ALL` Linux capabilities, explicitly adding only what's required.
 * [ ] Scan container images for vulnerabilities, pin specific image digests, and pull only from verified registries.
 * [ ] Run untrusted workloads inside isolated environments using sandboxed runtimes (e.g. gVisor, Kata Containers) via `RuntimeClass`.
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC): Network Security & RBAC Hardening Lab
+
+### Target Scenario
+We will build a secure multi-tenant namespace, deploy database and web frontend workloads, apply a default-deny-ingress network policy, configure custom ingress rules to permit traffic only from the web tier, and verify access. Additionally, we will construct a least-privilege RBAC role for testing namespace access.
+
+### Step-by-Step Guided Steps
+
+1. **Verify or Provision Cluster**:
+   Ensure you have a running cluster (e.g., using `kind`):
+   ```bash
+   kind create cluster --name cka-security-poc
+   ```
+
+2. **Setup Isolated Namespaces and Workloads**:
+   - Create a dedicated namespace:
+     ```bash
+     kubectl create namespace secure-apps
+     ```
+   - Deploy Nginx representational workloads representing the Web tier and Database tier:
+     ```bash
+     # Web Tier Pod
+     kubectl run web-tier -n secure-apps --labels="role=web" --image=nginx:alpine --port=80
+     # Database Tier Pod (running an Nginx server listening on port 80 to verify connectivity)
+     kubectl run db-tier -n secure-apps --labels="role=db" --image=nginx:alpine --port=80
+     # Untrusted External Pod
+     kubectl run external-tier -n secure-apps --labels="role=external" --image=nginx:alpine --port=80
+     ```
+
+3. **Establish Default-Deny-Ingress Policy**:
+   - Apply a default-deny-ingress network policy to isolate the database:
+     ```yaml
+     cat <<EOF > db-default-deny.yaml
+     apiVersion: networking.k8s.io/v1
+     kind: NetworkPolicy
+     metadata:
+       name: db-default-deny
+       namespace: secure-apps
+     spec:
+       podSelector:
+         matchLabels:
+           role: db
+       policyTypes:
+       - Ingress
+     EOF
+     kubectl apply -f db-default-deny.yaml
+     ```
+   - Verify network isolation. Execute a connection check from both the Web pod and the External pod:
+     ```bash
+     # Check from external-tier (expected to time out / fail)
+     kubectl exec -n secure-apps external-tier -- curl --connect-timeout 3 http://db-tier
+     
+     # Check from web-tier (expected to time out / fail)
+     kubectl exec -n secure-apps web-tier -- curl --connect-timeout 3 http://db-tier
+     ```
+     Observe that both connection attempts fail, confirming the database pod is successfully isolated.
+
+4. **Allow Specific Ingress from Web Tier**:
+   - Apply an ingress allowance policy targeting the database pod:
+     ```yaml
+     cat <<EOF > db-allow-web.yaml
+     apiVersion: networking.k8s.io/v1
+     kind: NetworkPolicy
+     metadata:
+       name: db-allow-web
+       namespace: secure-apps
+     spec:
+       podSelector:
+         matchLabels:
+           role: db
+       policyTypes:
+       - Ingress
+       ingress:
+       - from:
+         - podSelector:
+             matchLabels:
+               role: web
+         ports:
+         - protocol: TCP
+           port: 80
+     EOF
+     kubectl apply -f db-allow-web.yaml
+     ```
+   - Verify network connectivity:
+     ```bash
+     # Check from web-tier (expected to SUCCEED and return Nginx index HTML)
+     kubectl exec -n secure-apps web-tier -- curl --connect-timeout 3 http://db-tier
+     
+     # Check from external-tier (expected to FAIL and time out)
+     kubectl exec -n secure-apps external-tier -- curl --connect-timeout 3 http://db-tier
+     ```
+     Confirm that the Web pod can connect to the Database pod while the External pod is still blocked.
+
+5. **Deploy and Audit Least-Privilege RBAC Controls**:
+   - Create a ServiceAccount inside the namespace:
+     ```bash
+     kubectl create serviceaccount web-auditor -n secure-apps
+     ```
+   - Create a Role allowing read-only access to Pods only:
+     ```yaml
+     cat <<EOF > auditor-role.yaml
+     apiVersion: rbac.authorization.k8s.io/v1
+     kind: Role
+     metadata:
+       name: pod-auditor
+       namespace: secure-apps
+     rules:
+     - apiGroups: [""]
+       resources: ["pods"]
+       verbs: ["get", "list"]
+     EOF
+     kubectl apply -f auditor-role.yaml
+     ```
+   - Bind the ServiceAccount to the Role:
+     ```yaml
+     cat <<EOF > auditor-binding.yaml
+     apiVersion: rbac.authorization.k8s.io/v1
+     kind: RoleBinding
+     metadata:
+       name: audit-pods
+       namespace: secure-apps
+     subjects:
+     - kind: ServiceAccount
+       name: web-auditor
+       namespace: secure-apps
+     roleRef:
+       kind: Role
+       name: pod-auditor
+       apiGroup: rbac.authorization.k8s.io
+     EOF
+     kubectl apply -f auditor-binding.yaml
+     ```
+   - Validate permissions as the ServiceAccount using `can-i`:
+     ```bash
+     # Can the auditor list pods? (Expected: yes)
+     kubectl auth can-i list pods --as=system:serviceaccount:secure-apps:web-auditor -n secure-apps
+     
+     # Can the auditor delete pods? (Expected: no)
+     kubectl auth can-i delete pods --as=system:serviceaccount:secure-apps:web-auditor -n secure-apps
+     
+     # Can the auditor read services? (Expected: no)
+     kubectl auth can-i get services --as=system:serviceaccount:secure-apps:web-auditor -n secure-apps
+     ```
+
+6. **Clean Up**:
+   ```bash
+   kubectl delete namespace secure-apps
+   rm -f db-default-deny.yaml db-allow-web.yaml auditor-role.yaml auditor-binding.yaml
+   ```
 ```

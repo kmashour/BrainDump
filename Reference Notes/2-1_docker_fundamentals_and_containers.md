@@ -221,3 +221,65 @@ graph TD
 ### B. Linux Native vs. Docker Desktop for Linux
 *   **Native Linux Engine:** Runs directly on the host operating system. Containers are native host processes sharing the host's kernel and filesystem namespaces. Storage resides directly under `/var/lib/docker` on the host disk.
 *   **Docker Desktop for Linux:** Runs the Docker engine inside a virtualized sandbox. This provides security isolation, preventing container processes from interacting directly with host system files or kernel threads unless explicitly configured.
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC): Container Isolation & Lifecycle Verification
+
+### Target Scenario
+We will verify namespace isolation, cgroup resource constraints, and process immutability in action on a live container.
+
+### Step-by-Step Guided Steps
+
+1. **Launch a Container with Resource Restrictions**:
+   Run an Nginx container in the background, limiting its memory allocation to 128MB and CPU utilization to 0.5 shares:
+   ```bash
+   docker run -d --name isolation-poc --memory="128m" --cpus="0.5" nginx
+   ```
+
+2. **Audit Namespace Isolation (PIDs)**:
+   - Run `docker top` to inspect the container processes:
+     ```bash
+     docker top isolation-poc
+     ```
+     Observe that the parent process inside the container has `PID 1`.
+   - Now, search for the Nginx process from your host terminal:
+     ```bash
+     ps aux | grep nginx
+     ```
+     Note that on the host system, the same Nginx process runs under a standard high-number PID (e.g., `31452`), demonstrating PID namespace mapping.
+
+3. **Verify cgroups Memory and CPU Limits**:
+   - Inspect the configuration state directly from the Docker daemon:
+     ```bash
+     docker inspect isolation-poc | grep -E "Memory|NanoCpus"
+     ```
+     Ensure `Memory` is set to `134217728` bytes (128MB) and `NanoCpus` is configured to `500000000` (0.5 CPU cores).
+   - Read the cgroup filesystem from within the running container:
+     ```bash
+     docker exec -it isolation-poc cat /sys/fs/cgroup/memory/memory.limit_in_bytes
+     ```
+     The output should return `134217728`, showing the container runtime has projected the cgroup constraints inside the container's virtualized filesystem.
+
+4. **Verify Container Process Immutability**:
+   - Create a temporary file inside the container:
+     ```bash
+     docker exec -it isolation-poc touch /tmp/ephemeral_file.txt
+     ```
+   - Restart the container and verify that the file remains (process state is preserved across reboots):
+     ```bash
+     docker restart isolation-poc
+     docker exec -it isolation-poc ls /tmp/ephemeral_file.txt
+     ```
+   - Now destroy the container and verify the state is completely lost (ephemeral container storage layer is destroyed):
+     ```bash
+     docker rm -f isolation-poc
+     docker run -d --name isolation-poc nginx
+     docker exec -it isolation-poc ls /tmp/ephemeral_file.txt
+     ```
+     This command will return an error `ls: cannot access /tmp/ephemeral_file.txt: No such file or directory`, proving the immutability design.
+
+5. **Clean Up**:
+   ```bash
+   docker rm -f isolation-poc
+   ```

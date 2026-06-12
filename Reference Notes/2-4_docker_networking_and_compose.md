@@ -174,3 +174,102 @@ Docker Compose commands must be run from the directory containing the `docker-co
 *   `docker compose down`: Stops running containers and deletes containers, networks, and internal interface adapters created by `up`.
 *   `docker compose down -v`: Stops containers and deletes networks along with any **named volumes** declared in the YAML file. This is crucial for troubleshooting database initialization scripts from scratch.
 *   **Version History:** Version 1 & 2 are deprecated. Version 3 introduced declarative `networks` configuration, replacing the legacy `links` parameter, allowing container engines to route traffic dynamically without rigid, hard-linked dependencies.
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC): Container DNS & Docker Compose Orchestration
+
+### Target Scenario
+We will verify that containers attached to a user-defined bridge network resolve each other automatically via name-based DNS, while default bridge containers fail. Then we will write and launch a multi-tier web application using Docker Compose.
+
+### Step-by-Step Guided Steps
+
+1. **Verify Default Bridge DNS Limitation**:
+   - Start two alpine containers on the default bridge network:
+     ```bash
+     docker run -d --name default-c1 alpine sleep 1000
+     docker run -d --name default-c2 alpine sleep 1000
+     ```
+   - Attempt to resolve `default-c1` from `default-c2`:
+     ```bash
+     docker exec -it default-c2 ping -c 2 default-c1
+     ```
+     Observe that this command fails with `ping: bad address 'default-c1'`. Automatic DNS resolution is disabled on the default bridge.
+   - Clean up:
+     ```bash
+     docker rm -f default-c1 default-c2
+     ```
+
+2. **Verify User-Defined Bridge Service Discovery**:
+   - Create a user-defined bridge network:
+     ```bash
+     docker network create custom-net
+     ```
+   - Start two containers attached to the new network:
+     ```bash
+     docker run -d --name custom-c1 --network custom-net alpine sleep 1000
+     docker run -d --name custom-c2 --network custom-net alpine sleep 1000
+     ```
+   - Perform automatic DNS lookup:
+     ```bash
+     docker exec -it custom-c2 ping -c 2 custom-c1
+     ```
+     Observe that the ping succeeds. The Docker daemon resolves the hostname `custom-c1` to its allocated container IP within the subnet.
+   - Clean up:
+     ```bash
+     docker rm -f custom-c1 custom-c2
+     docker network rm custom-net
+     ```
+
+3. **Orchestrate a Multi-Tier Stack using Docker Compose**:
+   - Setup a temporary orchestration workspace:
+     ```bash
+     mkdir -p compose-poc && cd compose-poc
+     ```
+   - Create a compose file defining Nginx (reverse proxy) and an alpine server representing the backend:
+     ```yaml
+     cat <<EOF > docker-compose.yml
+     version: "3.8"
+     services:
+       web-proxy:
+         image: nginx:alpine
+         ports:
+           - "8080:80"
+         depends_on:
+           - api-backend
+         networks:
+           - internal-net
+
+       api-backend:
+         image: alpine
+         command: sh -c "echo 'Backend API operational' > /tmp/index.html && httpd -f -p 80 -h /tmp"
+         networks:
+           - internal-net
+
+     networks:
+       internal-net:
+         driver: bridge
+     EOF
+     ```
+   - Spin up the stack in detached mode:
+     ```bash
+     docker compose up -d
+     ```
+   - Inspect the created resources and verify service statuses:
+     ```bash
+     docker compose ps
+     ```
+   - Test connectivity from Nginx to backend using DNS:
+     ```bash
+     docker compose exec web-proxy curl http://api-backend
+     ```
+     Output should print: `Backend API operational`.
+   - Tear down the stack and delete its allocated network adapters:
+     ```bash
+     docker compose down
+     ```
+
+4. **Clean Up Workspace**:
+   ```bash
+   cd .. && rm -rf compose-poc
+   ```

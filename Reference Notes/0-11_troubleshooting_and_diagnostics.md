@@ -586,3 +586,153 @@ Filter outputs using labels or resource attributes.
      ```bash
      kubectl get pods --field-selector status.phase!=Running --all-namespaces
      ```
+
+---
+
+## 🛠️ Practical Proof of Concept (PoC): Application & Service Troubleshooting Lab
+
+### Target Scenario
+We will deploy a series of deliberately misconfigured workloads (manifest errors, run-time crash-loops, and service selector mismatches) and execute a standard systems engineering protocol to diagnose and resolve the faults.
+
+### Step-by-Step Guided Steps
+
+1. **Verify or Provision Cluster**:
+   Ensure you have a running cluster (e.g., using `kind`):
+   ```bash
+   kind create cluster --name cka-troubleshoot-poc
+   ```
+
+2. **Diagnose and Fix an ImagePullBackOff Fault**:
+   - Deploy a misconfigured pod:
+     ```yaml
+     cat <<EOF > broken-image-pod.yaml
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: broken-image-pod
+     spec:
+       containers:
+       - name: web
+         image: nginx:alpin-typo-123
+     EOF
+     kubectl apply -f broken-image-pod.yaml
+     ```
+   - Diagnose the failure loop:
+     ```bash
+     # Check the status of the pod
+     kubectl get pod broken-image-pod
+     # Fetch the exact event logs
+     kubectl describe pod broken-image-pod
+     ```
+     Under the events list, observe the error: `Failed to pull image "nginx:alpin-typo-123": rpc error: code = NotFound`.
+   - Apply the fix:
+     Update the manifest to point to a valid image tag (`nginx:alpine`) and re-apply:
+     ```bash
+     kubectl set image pod/broken-image-pod web=nginx:alpine
+     kubectl get pod broken-image-pod -w
+     ```
+
+3. **Diagnose and Fix a CrashLoopBackOff Fault**:
+   - Deploy a pod configured with a failing startup command:
+     ```yaml
+     cat <<EOF > crashing-pod.yaml
+     apiVersion: v1
+     kind: Pod
+     metadata:
+       name: crashing-pod
+     spec:
+       containers:
+       - name: app
+         image: alpine
+         command: ["sh", "-c", "echo 'Booting...'; sleep 2; exit 1"]
+     EOF
+     kubectl apply -f crashing-pod.yaml
+     ```
+   - Diagnose the failure loop:
+     ```bash
+     # Monitor the transition to CrashLoopBackOff
+     kubectl get pod crashing-pod -w
+     # Check the logs of the previous crashed run
+     kubectl logs crashing-pod --previous
+     ```
+     Observe `Booting...` followed by pod termination. The logs show it exited with error code 1.
+   - Apply the fix:
+     Modify the command to stay running in the foreground (PID 1 persistence):
+     ```bash
+     kubectl delete pod crashing-pod
+     sed -i 's/exit 1/sleep 3600/g' crashing-pod.yaml
+     kubectl apply -f crashing-pod.yaml
+     kubectl get pod crashing-pod
+     ```
+
+4. **Diagnose and Fix an Empty Service Endpoints Fault**:
+   - Deploy a backend deployment:
+     ```yaml
+     cat <<EOF > web-deployment.yaml
+     apiVersion: apps/v1
+     kind: Deployment
+     metadata:
+       name: web-backend
+     spec:
+       replicas: 2
+       selector:
+         matchLabels:
+           app: backend-app
+       template:
+         metadata:
+           labels:
+             app: backend-app
+         spec:
+           containers:
+           - name: nginx
+             image: nginx:alpine
+             ports:
+             - containerPort: 80
+     EOF
+     kubectl apply -f web-deployment.yaml
+     ```
+   - Deploy a service with a mismatched selector label:
+     ```yaml
+     cat <<EOF > web-service.yaml
+     apiVersion: v1
+     kind: Service
+     metadata:
+       name: web-service
+     spec:
+       ports:
+       - port: 80
+         targetPort: 80
+       selector:
+         app: backend-mismatch  # Mismatched selector!
+     EOF
+     kubectl apply -f web-service.yaml
+     ```
+   - Audit the endpoints routing:
+     ```bash
+     kubectl get service web-service
+     kubectl get endpoints web-service
+     ```
+     Observe that the endpoints column lists `<none>`.
+   - Apply the fix:
+     Correct the selector in the service to target `app: backend-app` and re-apply:
+     ```bash
+     kubectl patch svc web-service -p '{"spec":{"selector":{"app":"backend-app"}}}'
+     kubectl get endpoints web-service
+     ```
+     Observe that the endpoints now list the IPs of the backend pods.
+
+5. **Execute JSONPATH Diagnostic Auditing Queries**:
+   - Audit all pod names and their corresponding private IPs in the namespace:
+     ```bash
+     kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.podIP}{"\n"}{end}'
+     ```
+   - List all container images running in the default namespace:
+     ```bash
+     kubectl get pods -o jsonpath='{.items[*].spec.containers[*].image}'
+     ```
+
+6. **Clean Up**:
+   ```bash
+   kubectl delete -f broken-image-pod.yaml -f crashing-pod.yaml -f web-deployment.yaml -f web-service.yaml
+   rm -f broken-image-pod.yaml crashing-pod.yaml web-deployment.yaml web-service.yaml
+   ```
