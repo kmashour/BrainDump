@@ -86,27 +86,27 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     1. Drain node
 
-        ```
+        ```bash
         kubectl drain controlplane --ignore-daemonsets
         ```
 
     1. Upgrade kubeadm
 
-        ```
+        ```bash
         apt-mark unhold kubeadm
         apt install -y kubeadm=1.29.0-1.1
         ```
 
     1. Plan and apply upgrade
 
-        ```
+        ```bash
         kubeadm upgrade plan
         kubeadm upgrade apply v1.29.0
         ```
 
     1. Upgrade the kubelet
 
-        ```
+        ```bash
         apt-mark unhold kubelet
         apt install -y kubelet=1.29.0-1.1
         systemctl daemon-reload
@@ -115,20 +115,20 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     1. Reinstate controlplane node
 
-        ```
+        ```bash
         kubectl uncordon controlplane
         ```
 
     1. Upgrade kubectl
 
-        ```
+        ```bash
         apt-mark unhold kubectl
         apt install -y kubectl=1.29.0-1.1
         ```
 
     1. Re-hold packages
 
-        ```
+        ```bash
         apt-mark hold kubeadm kubelet kubectl
         ```
 
@@ -136,13 +136,13 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     1. Drain the worker node
 
-        ```
+        ```bash
         kubectl drain node01 --ignore-daemonsets
         ```
 
     1. Go to worker node
 
-        ```
+        ```bash
         ssh node01
         ```
 
@@ -152,20 +152,20 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     1. Upgrade kubeadm
 
-        ```
+        ```bash
         apt-mark unhold kubeadm
         apt install -y kubeadm=1.29.0-1.1
         ```
 
     1. Upgrade node
 
-        ```
+        ```bash
         kubeadm upgrade node
         ```
 
     1. Upgrade the kubelet
 
-        ```
+        ```bash
         apt-mark unhold kubelet
         apt install kubelet=1.29.0-1.1
         systemctl daemon-reload
@@ -174,25 +174,25 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     1. Re-hold packages
 
-        ```
+        ```bash
         apt-mark hold kubeadm kubelet
         ```
 
     1. Return to controlplane
 
-        ```
+        ```bash
         exit
         ```
 
     1. Reinstate worker node
 
-        ```
+        ```bash
         kubectl uncordon node01
         ```
 
     1. Verify `gold-nginx` is scheduled on controlplane node
 
-        ```
+        ```bash
         kubectl get pods -o wide | grep gold-nginx
         ```
 
@@ -209,7 +209,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     This is a job for `custom-columns` output of kubectl
 
-    ```
+    ```bash
     kubectl -n admin2406 get deployment -o custom-columns=DEPLOYMENT:.metadata.name,CONTAINER_IMAGE:.spec.template.spec.containers[].image,READY_REPLICAS:.status.readyReplicas,NAMESPACE:.metadata.namespace --sort-by=.metadata.name > /opt/admin2406_data
     ```
     
@@ -245,13 +245,14 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
     ```bash
     kubectl get pods --kubeconfig /root/CKA/admin.kubeconfig
     ```
+    
     </details>
 
 
 4.  <details>
     <summary>Create a new deployment called nginx-deploy, with image nginx:1.16 and 1 replica. Next upgrade the deployment to version 1.17 using rolling update.</summary>
 
-    ```
+    ```bash
     kubectl create deployment nginx-deploy --image=nginx:1.16
     kubectl set image deployment/nginx-deploy nginx=nginx:1.17 --record
     ```
@@ -269,20 +270,20 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     Inspect the deployment to check the environment variable is set. Here I'm using `yq` which is like `jq` but for YAML to not have to view the _entire_ deployment YAML, just the section beneath `containers` in the deployment spec.
 
-    ```
+    ```bash
     kubectl get deployment -n alpha alpha-mysql  -o yaml | yq e .spec.template.spec.containers -
     ```
 
     Find out why the deployment does not have minimum availability. We'll have to find out the name of the deployment's pod first, then describe the pod to see the error.
 
-    ```
+    ```bash
     kubectl get pods -n alpha
     kubectl describe pod -n alpha alpha-mysql-xxxxxxxx-xxxxx
     ```
 
     We find that the requested PVC isn't present, so create it. First, examine the Persistent Volume to find the values for access modes, capacity (storage), and storage class name
 
-    ```
+    ```bash
     kubectl get pv alpha-pv
     ```
 
@@ -302,6 +303,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
           storage: 1Gi
       storageClassName: slow
     ```
+    
   </details>
 
 6.  <details>
@@ -311,7 +313,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     Know that the certificates we need for authentication of `etcdctl` are located in `/etc/kubernetes/pki/etcd`
 
-    ```
+    ```bash
     ETCDCTL_API='3' etcdctl snapshot save \
       --cacert=/etc/kubernetes/pki/etcd/ca.crt \
       --cert=/etc/kubernetes/pki/etcd/server.crt \
@@ -320,6 +322,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
     ```
 
     Whilst we _could_ also use the argument `--endpoints=127.0.0.1:2379`, it is not necessary here as we are on the controlplane node, same as `etcd` itself. The default endpoint is the local host.
+    
     </details>
 
 7.  <details>
@@ -331,13 +334,13 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     1. Use imperative command to get a starter manifest
 
-        ```
+        ```bash
         kubectl run secret-1401 -n admin1401 --image busybox --dry-run=client -o yaml --command -- sleep 4800 > admin.yaml
         ```
 
     1. Edit this manifest to add in the details for mounting the secret
 
-        ```
+        ```bash
         vi admin.yaml
         ```
 
@@ -371,7 +374,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
     1. And create the pod
 
-        ```
+        ```bash
         kubectl create -f admin.yaml
         ```
 
@@ -397,8 +400,9 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
   1. Apply below manifests:
 
      <details>
+     <summary>Reveal Solution</summary>
      
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -415,50 +419,60 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
        restartPolicy: Always
      status: {}
      ```
+     
      </details>
 
   2. Run below command which create a pod with labels:
 
      <details>
+     <summary>Reveal Solution</summary>
      
-     ```
+     ```bash
      kubectl run messaging --image=redis:alpine --labels=tier=msg
      ```
+     
      </details>
 
  
   3. Run below command to create a namespace:
      
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      kubectl create namespace apx-x9984574
      ```
+     
      </details>
 
   4. Use the below command which will redirect the o/p:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      kubectl get nodes -o json > /opt/outputs/nodes-z3444kd9.json
      ```
+     
      </details>
 
   5. Execute below command which will expose the pod on port 6379:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      kubectl expose pod messaging --port=6379 --name messaging-service
      ```
+     
      </details>
 
   6. Apply below manifests:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-      ```
+      ```yaml
       apiVersion: apps/v1
       kind: Deployment
       metadata:
@@ -486,16 +500,18 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
       ```
       
       In v1.19, we can add `--replicas` flag with `kubectl create deployment` command:
-      ```
+      ```bash
       kubectl create deployment hr-web-app --image=kodekloud/webapp-color --replicas=2
       ```
+      
      </details>
 
   7. To Create a static pod, copy it to the static pods directory. In this case, it is `/etc/kubernetes/manifests`. Apply below manifests:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -515,44 +531,50 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
        restartPolicy: Always
      status: {}
      ```
+     
      </details>
 
   8. Run below command to create a pod in namespace `finance`:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      kubectl run temp-bus --image=redis:alpine -n finance
      ```
+     
      </details>
 
   9. Run below command and troubleshoot step by step:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      kubectl describe pod orange
      ```
 
      Export the running pod using below command and correct the spelling of the command **`sleeeep`** to **`sleep`** 
 
-     ```
+     ```bash
      kubectl get pod orange -o yaml > orange.yaml
      ```
    
      Delete the running Orange pod and recreate the pod using command.
      
-     ```
+     ```bash
      kubectl delete pod orange
      kubectl create -f orange.yaml
      ```
+     
      </details>
 
   10. Apply below manifests:
 
       <details>
+      <summary>Reveal Solution</summary>
 
-      ```
+      ```yaml
       apiVersion: v1
       kind: Service
       metadata:
@@ -572,22 +594,26 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
       status:
         loadBalancer: {}
       ```
+      
       </details>
 
   11. Run the below command to redirect the o/p:
 
       <details>
+      <summary>Reveal Solution</summary>
 
-      ``` 
+      ```bash
       kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}' > /opt/outputs/nodes_os_x43kj56.txt
       ```
+      
       </details>
 
   12. Apply the below manifest to create a PV:
 
       <details>
+      <summary>Reveal Solution</summary>
      
-       ```
+       ```yaml
        apiVersion: v1
        kind: PersistentVolume
        metadata:
@@ -601,6 +627,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
          hostPath:
              path: /pv/data-analytics
        ```
+       
        </details>
 
 ---
@@ -610,17 +637,20 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
   1. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      ETCDCTL_API=3 etcdctl snapshot save --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key --endpoints=127.0.0.1:2379 /opt/etcd-backup.db
      ```
+     
      </details>
 
   2. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -644,13 +674,15 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
       restartPolicy: Always
      status: {}
      ```
+     
      </details>
  
   3. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -665,13 +697,15 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
            capabilities:
              add: ["SYS_TIME"]
      ```
+     
      </details>
 
   4. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
      
-     ```
+     ```yaml
      apiVersion: v1
      kind: PersistentVolumeClaim
      metadata:
@@ -684,7 +718,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
            storage: 10Mi      
      ```
     
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -704,15 +738,17 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
          persistentVolumeClaim:
            claimName: my-pvc
      ```
+     
      </details>
 
   5. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
  
      For Kubernetes Version <=1.17
  
-     ```
+     ```bash
      kubectl run nginx-deploy --image=nginx:1.16 --replicas=1 --record
      kubectl rollout history deployment nginx-deploy
      kubectl set image deployment/nginx-deploy nginx=nginx:1.17 --record
@@ -721,7 +757,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
  
      For Kubernetes Version >1.17
  
-     ```
+     ```yaml
      kubectl create deployment nginx-deploy --image=nginx:1.16 --dry-run=client -o yaml > deploy.yaml
    
      apiVersion: apps/v1
@@ -745,19 +781,21 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
              name: nginx
      ```
      
-     ```
+     ```bash
      kubectl create -f deploy.yaml --record
      kubectl rollout history deployment nginx-deploy
      kubectl set image deployment/nginx-deploy nginx=nginx:1.17 --record
      kubectl rollout history deployment nginx-deploy
      ```
+     
      </details>
   
   6. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```yaml
       apiVersion: certificates.k8s.io/v1
       kind: CertificateSigningRequest
       metadata:
@@ -773,7 +811,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
         - system:authenticated
        ```
  
-      ```
+      ```bash
       kubectl certificate approve john-developer
       kubectl create role developer --resource=pods --verb=create,list,get,update,delete --namespace=development
       kubectl create rolebinding developer-role-binding --role=developer --user=john --namespace=development
@@ -785,8 +823,9 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
   7. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```bash
      kubectl run nginx-resolver --image=nginx
      kubectl expose pod nginx-resolver --name=nginx-resolver-service --port=80 --target-port=80 --type=ClusterIP
      kubectl run test-nslookup --image=busybox:1.28 --rm -it --restart=Never -- nslookup nginx-resolver-service
@@ -804,8 +843,9 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
   8. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```bash
      kubectl run nginx-critical --image=nginx --dry-run=client -o yaml > static.yaml
      
      cat static.yaml - Copy the contents of this file.
@@ -838,14 +878,15 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 1. Run the below command for solution: 
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      kubectl create serviceaccount pvviewer
      kubectl create clusterrole pvviewer-role --resource=persistentvolumes --verb=list
      kubectl create clusterrolebinding pvviewer-role-binding --clusterrole=pvviewer-role --serviceaccount=default:pvviewer
      ```
 
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -860,22 +901,26 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
          resources: {}
        serviceAccountName: pvviewer
      ```
+     
      </details>
 
 2. Run the below command for solution: 
 
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```bash
      kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="InternalIP")].address}' > /root/CKA/node_ips
      ```
+     
      </details>
  
 3. Run the below command for solution:  
  
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -895,13 +940,15 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
            value: beta
      status: {}
      ```
+     
      </details>
  
 4. Run the below command for solution:
  
      <details>
+     <summary>Reveal Solution</summary>
      
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -914,13 +961,15 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
        - name: non-root-pod
          image: redis:alpine
      ```
+     
      </details>
  
 5. Run the below command for solution:  
  
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```yaml
      apiVersion: networking.k8s.io/v1
      kind: NetworkPolicy
      metadata:
@@ -937,25 +986,27 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
          - protocol: TCP
            port: 80
      ```
+     
      </details>
    
 6. Run the below command for solution: 
  
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```bash
      kubectl taint node node01 env_type=production:NoSchedule
      ```
 
      Deploy `dev-redis` pod and to ensure that workloads are not scheduled to this `node01` worker node.
-     ```
+     ```bash
      kubectl run dev-redis --image=redis:alpine
 
      kubectl get pods -owide
      ```
 
      Deploy new pod `prod-redis` with toleration to be scheduled on `node01` worker node.
-     ```
+     ```yaml
      apiVersion: v1
      kind: Pod
      metadata:
@@ -972,41 +1023,48 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
      ```
 
      View the pods with short details: 
-     ```
+     ```bash
      kubectl get pods -owide | grep prod-redis
      ```
+     
      </details>
  
 7. Run the below command for solution: 
  
      <details>
+     <summary>Reveal Solution</summary>
  
-     ```
+     ```bash
      kubectl create namespace hr
      kubectl run hr-pod --image=redis:alpine --namespace=hr --labels=environment=production,tier=frontend
      ```
+     
      </details>
 
 8. Run the below command for solution:
 
      <details>
+     <summary>Reveal Solution</summary>
 
-     ```
+     ```bash
      vi /root/CKA/super.kubeconfig
 
      Change the 2379 port to 6443 and run the below command to verify
      
      kubectl cluster-info --kubeconfig=/root/CKA/super.kubeconfig     
      ```
+     
      </details>
 
 9. Run the below command for solution:
    
      <details>
+     <summary>Reveal Solution</summary>
      
-     ```
+     ```bash
      sed -i 's/kube-contro1ler-manager/kube-controller-manager/g' kube-controller-manager.yaml
      ```
+     
      </details>
 
 ---
@@ -1046,7 +1104,7 @@ This type of question is about cluster state, and the state of the cluster chang
 Store the `pod names` and their `ip addresses` from all namespaces at `/root/pod_ips_ckad02_svcn` where the output is sorted by their IPs.
 
 Please ensure the format as shown below:
-```
+```text
 POD_NAME        IP_ADDR
 pod-1           ip-1
 pod-3           ip-2
@@ -1060,13 +1118,13 @@ From the required output, this clearly requires Custom Columns
 
     Note the use of the `--context` argument here. This ensures the command is run on the correct cluster, irrespective of whether you ran `kubectl config use-context`
 
-    ```
+    ```bash
     kubectl --context=cluster3 get pods -A -o custom-columns="POD_NAME:.metadata.name,IP_ADDR:.status.podIP" --sort-by=".status.podIP"
     ```
 
 1.  Adjust this to write to the output file and check the output
 
-    ```
+    ```bash
     kubectl --context=cluster3 get pods -A -o custom-columns="POD_NAME:.metadata.name,IP_ADDR:.status.podIP" --sort-by=".status.podIP" > /root/pod_ips_ckad02_svcn
     ```
 
@@ -1077,7 +1135,7 @@ From the required output, this clearly requires Custom Columns
 
 1.  Now use `vi` to create a file `run-at-end.sh`
 
-    ```
+    ```bash
     vi run-at-end.sh
     ```
 
@@ -1085,7 +1143,7 @@ From the required output, this clearly requires Custom Columns
 
 1.  Test it
 
-    ```
+    ```bash
     rm -f /root/pod_ips_ckad02_svcn
     source run-at-end.sh
     cat /root/pod_ips_ckad02_svcn
@@ -1095,7 +1153,7 @@ From the required output, this clearly requires Custom Columns
 
 1.  Finally when you are finished and before pressing `End Exam`, re-run your script
 
-    ```
+    ```bash
     source run-at-end.sh
     ```
 
@@ -1114,13 +1172,13 @@ Use a similar approach whether the stat is CPU or memory, or the resource is Pod
 * Manual version
     1. Get all the cluster names
 
-        ```
+        ```bash
         kubectl config get-contexts -o name
         ```
 
     1.  Examine the pod usage on each cluster. Run this command with each value for `--context`
 
-        ```
+        ```bash
         kubectl --context=cluster1 top pods -A --sort-by=cpu
         ```
 
@@ -1152,7 +1210,7 @@ Use a similar approach whether the stat is CPU or memory, or the resource is Pod
         1. `--sort-by=cpu` ensures the pod we need from this cluster is the first pod listed. In `kubectl top`, sort order is descending.
         1. Then we pipe the output to `head -1` to get only the first line of results (the top pod for this cluster).
         1. Then we pipe it to `awk` to format the output close to what we need, passing in the cluster name so we can include it in the output. The output will look like this
-            ```
+            ```text
             cluster1,default,frontend-stable-cka05-arch,396m
             ```
     1. After `done` there will be one line like above for each of the clusters. It would look like this, and note they are in cluster order, not CPU usage order:
@@ -1174,11 +1232,11 @@ Use a similar approach whether the stat is CPU or memory, or the resource is Pod
             ```
 
     1. Pipe to `tail -1` to get the last entry in the sorted list which is the one we need, which will yield
-        ```
+        ```text
         cluster1,default,frontend-stable-cka05-arch,396m
         ```
     1. Finally pipe to `sed` to remove the CPU value and only output the first 3 fields as required by the question. The `sed` expression matches comma, followed by one or more digits, followed by zero or more letters, followed by end of line using extended regex (`-E`) and replaces it with an empty string, thus deleting the matched text. This yields the required output:
-        ```
+        ```text
         cluster1,default,frontend-stable-cka05-arch
         ```
         Then redirect the output to the requested file.
@@ -1191,7 +1249,7 @@ NOTE: This question is also present in the Ultimate CKAD Mocks. The service name
 
 For this question, please set the context to cluster3 by running:
 
-```
+```bash
 kubectl config use-context cluster3
 ```
 
@@ -1204,7 +1262,7 @@ Fix the issue so that other pods within cluster3 can use `external-webserver-cka
 
 For this we are told that we need to wire up the service to a web server that's running on `student-node` at port `9999`. Let's verify this. On student node run the following
 
-```
+```bash
 curl localhost:9999
 ```
 
@@ -1240,13 +1298,13 @@ Yup, it's there!
 
 The important thing to note is that this web server is *outside* of the cluster, therefore the service is going to need to talk to an IP which is not inside the cluster, it is in fact the primary IP address of `student-node`. Let's find that by running the following on `student-node`:
 
-```
+```bash
 ifconfig
 ```
 
 > Output (note that the values you get for each interface will almost certainly be different)
 
-```
+```text
 eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1450
         inet 192.37.66.3  netmask 255.255.255.0  broadcast 192.37.66.255
         ether 02:42:c0:25:42:03  txqueuelen 0  (Ethernet)
@@ -1295,13 +1353,13 @@ Create this in a file and `kubectl apply` it.
 
 Now let's test it using a `wbitt/network-multitool` pod that will contain curl so that we can call the service.<br/> TIP - remember this image! It contains many common networking and DNS tools that can be useful in troubleshooting - and yes it can be used in the real exam.
 
-```
+```bash
 k run test-pod --image wbitt/network-multitool --restart Never -it -- curl external-webserver-cka03-svcn.default.svc
 ```
 
 > Output
 
-```
+```html
 The directory /usr/share/nginx/html is not mounted.
 Therefore, over-writing the default index.html file with some useful information:
 WBITT Network MultiTool (with NGINX) - test-pod - 10.42.0.13 - HTTP: 80 , HTTPS: 443 . (Formerly praqma/network-multitool)
@@ -1341,7 +1399,7 @@ So what we have achieved here is to configure a ClusterIP service that allows po
 For this question, please set the context to `cluster1` by running:
 
 
-```
+```bash
 kubectl config use-context cluster1
 ```
 
@@ -1366,19 +1424,19 @@ We want to deploy a python based application on the cluster using a template loc
 
 1.  Examine what we have...
 
-    ```
+    ```bash
     cat /root/olive-app-cka10-str
     ```
 
     The PVC volume claim is already present. Look for the PVC
 
-    ```
+    ```bash
     kubectl get pvc
     ```
 
     It is not present, therefore it will have to be created first.
 
-    ```
+    ```bash
     kubectl get pv
     ```
 
@@ -1471,7 +1529,7 @@ We want to deploy a python based application on the cluster using a template loc
 
 1.  Create the resources
 
-    ```
+    ```bash
     kubectl apply -f /root/olive-app-cka10-str
     ```
 
@@ -1481,7 +1539,7 @@ We want to deploy a python based application on the cluster using a template loc
 
 For this question, please set the context to cluster1 by running:
 
-```
+```bash
 kubectl config use-context cluster1
 ```
 
@@ -1497,7 +1555,7 @@ Troubleshoot and fix this issue, making sure that orange-pvc-cka13-trb PVC is in
 
 1. Describe the PVC and determine the issue
 
-    ```
+    ```bash
     kubectl describe pvc orange-pvc-cka13-trb
     ```
 
@@ -1505,20 +1563,20 @@ Troubleshoot and fix this issue, making sure that orange-pvc-cka13-trb PVC is in
 
 2.  Describe the PV and determine its properties. Note that PVC properties must be adjusted to match
 
-    ```
+    ```bash
     kubectl describe pv orange-pv-cka13-trb
     ```
 
 3.  Adjust the PVC. Note that you cannot directly edit a PVC size to be smaller, so we have to replace it.
 
-    ```
+    ```bash
     kubectl get pvc orange-pvc-cka13-trb -o yaml  > pvc.yaml
     vi pvc.yaml
     ```
 
     Change the requested size to match the size of the PV. Save and exit vi, then replace the PVC with the edited manifest:
 
-    ```
+    ```bash
     kubectl replace --force -f pvc.yaml
     ```
 
@@ -1528,7 +1586,7 @@ Troubleshoot and fix this issue, making sure that orange-pvc-cka13-trb PVC is in
 
 For this question, please set the context to cluster1 by running:
 
-```
+```bash
 kubectl config use-context cluster1
 ```
 
@@ -1558,7 +1616,7 @@ The solution given below is correct, however in some instances it doesn't work d
 
 TL;DR - To detect the presence of this bug, run the following two commands. Bonus - see if you can understand how they work! Note that the first one is split across multiple lines with `\` for legibility. This is a valid construct in shell script.
 
-```
+```bash
 kubectl exec -n kube-system \
    $(kubectl get po -n kube-system --selector name=weave-net -o jsonpath='{.items[0].metadata.name}') \
    -c weave -- printenv | grep IPALLOC
@@ -1575,7 +1633,7 @@ Both should report the same CIDR range, e.g. `10.244.0.0/16`. If they are not bo
 
 First, let's examine the policy we have
 
-```
+```bash
 k get netpol -n cyan-ns-cka28-trb cyan-np-cka28-trb -o yaml
 ```
 
@@ -1613,7 +1671,7 @@ The egress policy you find here is a [red herring](https://dictionary.cambridge.
 
 There are two issues that need fixing here. You can modify the policy and make both these changes with a single invocation of:
 
-```
+```bash
 kubectl edit netpol -n cyan-ns-cka28-trb cyan-np-cka28-trb
 ```
 
@@ -1664,7 +1722,7 @@ Which basically means pods in namespace `default` **AND** with correct labels.
 
 Let's test this. We will use the `--connect-timeout` argument for `curl` so as not to wait too long for the expected failed connection from the black pod.
 
-```
+```bash
 k exec -n default cyan-white-cka28-trb -it -- curl --connect-timeout 10 cyan-svc-cka28-trb.cyan-ns-cka28-trb.svc
 ```
 
@@ -1698,13 +1756,13 @@ Commercial support is available at
 </html>
 ```
 
-```
+```bash
 k exec -n default cyan-black-cka28-trb -it -- curl --connect-timeout 10 cyan-svc-cka28-trb.cyan-ns-cka28-trb.svc
 ```
 
 > Output
 
-```
+```text
 curl: (28) Connection timeout after 10000 ms
 command terminated with exit code 28
 ```
@@ -1733,13 +1791,13 @@ Sometimes you may have a question that asks you to block ingress to a pod on all
 
 Fortunately, the default Python distribution contains a simple server that can have its port number configured from the command line, meaning you can run it imperatively. Let's say the network policy requires blocking all but port 9000. We can start a server test pod to listen on 9000 like so. If it's a different port, just put that port number instead of 9000.
 
-```
+```bash
 kubectl run server --image python --command -- python -m http.server 9000
 ```
 
 Get the pod's IP address. Using the IP for curl test is quicker than typing out the DNS name.
 
-```
+```bash
 controlplane $ k get pod server -o wide
 NAME     READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
 server   1/1     Running   0          16s   192.168.1.12   node01   <none>           <none>
@@ -1747,7 +1805,7 @@ server   1/1     Running   0          16s   192.168.1.12   node01   <none>      
 
 Now run a pod with `curl` in and test connection to the server
 
-```
+```bash
 curl 192.168.1.12:9000
 ```
 
@@ -1803,7 +1861,7 @@ The following simulates a pod found in one of the Killer.sh network policy quest
     ```
 1. Get the pod's IP address. Using the IP for curl test is quicker than typing out the DNS name.
 
-    ```
+    ```bash
     controlplane $ k get pod server -o wide
     NAME     READY   STATUS    RESTARTS   AGE   IP             NODE     NOMINATED NODE   READINESS GATES
     db-1     1/1     Running   0          16s   192.168.1.12   node01   <none>           <none>
@@ -1811,7 +1869,7 @@ The following simulates a pod found in one of the Killer.sh network policy quest
 
 1. Now run a pod with `curl` in and test connection to the server
 
-    ```
+    ```bash
     curl 192.168.1.12:1111
     ```
 
@@ -1837,13 +1895,13 @@ and many more.
 
 You run it like so. Commit the image name to memory - this image is a lifesaver! There is nothing to stop you using it in the exam.
 
-```
+```bash
 kubectl run tester --image wbitt/network-multitool
 ```
 
 When the pod is running, you can exec into it and run the commands
 
-```
+```bash
 $ kubectl exec tester -it -- bash
 
 /# curl something
@@ -1853,7 +1911,7 @@ $ kubectl exec tester -it -- bash
 
 Or run the commands directly if you need to send the results to a file
 
-```
+```bash
 $ kubectl exec tester -it -- nslookup my-service.default.svc > /opt/some-file.txt
 ```
 
