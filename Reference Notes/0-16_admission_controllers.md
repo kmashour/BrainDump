@@ -270,8 +270,175 @@ If `defaultAllow` is set to `false`, any pod creation request will fail if the s
 Error from server (Forbidden): Pod "nginx-deployment" is forbidden: image policy webhook "checker_webhook" denied the request: Failed to contact webhook
 ```
 
----
-
 #### 5. Alternative Case (When to use 'if not')
 * **`defaultAllow: true`:** Useful during staging migrations. If the scanner goes down, the cluster remains functional. However, this creates a security gap as malicious images could bypass validation during outages.
 * **Policy Engines (Kyverno/Gatekeeper):** Rather than setting up complex config files and mounting directories on control plane hosts, administrators can deploy custom resource policies in the cluster using Kyverno or OPA Gatekeeper to inspect pod container image registries. Kyverno is much easier to manage as a soft-layer extension.
+
+---
+
+## 5. Hands-on Lab: Deploying a Custom Mutating Admission Webhook
+
+This section covers the end-to-end setup and validation of a custom mutating admission webhook that enforces secure security contexts on newly created pods.
+
+### 🏛️ Deep-Intuition (AARF) Protocol
+
+#### 1. The Answer (Core Configuration)
+
+Follow these steps to deploy and test the custom mutating webhook:
+
+##### Step A: Prepare the Namespace & TLS Secret
+The webhook server requires a TLS secret for HTTPS.
+```bash
+# 1. Create the dedicated namespace
+kubectl create ns webhook-demo
+
+# 2. Create the TLS secret using existing keys
+kubectl -n webhook-demo create secret tls webhook-server-tls \
+  --cert=/etc/webhook/certs/tls.crt \
+  --key=/etc/webhook/certs/tls.key
+```
+
+##### Step B: Deploy the Webhook Server & Service
+Create a Deployment and expose it using a Service on port 443 (mapping to port 8443 inside the container):
+```yaml
+# webhook-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-server
+  namespace: webhook-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook-server
+  template:
+    metadata:
+      labels:
+        app: webhook-server
+    spec:
+      containers:
+      - name: webhook-server
+        image: security-webhook:latest
+        ports:
+        - containerPort: 8443
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/webhook/certs
+          readOnly: true
+      volumes:
+      - name: certs
+        secret:
+          secretName: webhook-server-tls
+---
+# webhook-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-service
+  namespace: webhook-demo
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    app: webhook-server
+```
+Apply the resources:
+```bash
+kubectl apply -f webhook-deployment.yaml
+kubectl apply -f webhook-service.yaml
+```
+
+##### Step C: Register the Mutating Webhook Configuration
+Register the webhook config to intercept `CREATE` operations on `pods`:
+```yaml
+# webhook-configuration.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: mutating-security-webhook
+webhooks:
+  - name: webhook-server.webhook-demo.svc
+    clientConfig:
+      service:
+        name: webhook-service
+        namespace: webhook-demo
+        path: "/mutate"
+      caBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t..." # CA Bundle PEM base64
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    timeoutSeconds: 5
+```
+Apply the configuration:
+```bash
+kubectl apply -f webhook-configuration.yaml
+```
+
+##### Step D: Test Webhook Enforcement
+The webhook enforces the following rules on Pod creation:
+1. **Default Injection:** If no security context is provided, it injects `runAsNonRoot: true` and `runAsUser: 1234`.
+2. **Overrides:** It allows root execution (`runAsUser: 0`) only if `runAsNonRoot` is explicitly set to `false`.
+3. **Conflicts:** It rejects the pod if `runAsNonRoot` is set to `true` but `runAsUser` is set to `0` (conflict).
+
+---
+
+#### 2. The Assumptions (Context & Prerequisites)
+* **TLS Certificates:** Webhook servers MUST serve traffic over HTTPS using certificates signed by a CA that the API server trusts.
+* **Admission Review Versions:** The `admissionReviewVersions` property determines the version of `AdmissionReview` requests the webhook server receives (e.g. `v1`). The server code must support serialization for these formats.
+
+---
+
+#### 3. The Rationale (Why)
+Writing custom mutating webhooks decouples policy defaults from application files. Developers don't have to remember to write secure security contexts in every manifest because the cluster automatically injects secure values (`runAsNonRoot: true`, `runAsUser: 1234`) on admission.
+
+---
+
+#### 4. The Failure Loop (What if not)
+
+##### Symptom A: Request Rejection (Conflict Error)
+If a developer tries to create a pod with conflicting settings (`runAsNonRoot: true` and `runAsUser: 0`), the validating check inside the mutating webhook rejects the request:
+```bash
+kubectl apply -f pod-with-conflict.yaml
+```
+* **Expected Error Message:**
+  ```text
+  Error from server (InternalError): error when creating "pod-with-conflict.yaml": Internal error occurred: admission webhook "webhook-server.webhook-demo.svc" denied the request: runAsNonRoot specified, but runAsUser set to 0 (the root user)
+  ```
+
+##### Symptom B: Deployment Timeout (Webhook Service Unreachable)
+If the webhook server is down or its service endpoints are misconfigured:
+```text
+Error from server (InternalError): error when creating "pod.yaml": Internal error occurred: failed calling webhook "webhook-server.webhook-demo.svc": Post "https://webhook-service.webhook-demo.svc:443/mutate": context deadline exceeded
+```
+
+---
+
+#### 5. Alternative Case (When to use 'if not')
+* **`failurePolicy: Ignore`:** Set to `Ignore` if the webhook is not critical for cluster security. If the webhook server fails, pods will be allowed to start without defaulting, preventing control-plane outages from blocking standard pod schedules.
+* **Declarative Policies (Kyverno):** Instead of deploying custom Go/Python servers, use Kyverno policies to mutate specs:
+  ```yaml
+  apiVersion: kyverno.io/v1
+  kind: ClusterPolicy
+  metadata:
+    name: set-default-security-context
+  spec:
+    rules:
+    - name: mutate-pod-security-context
+      match:
+        resources:
+          kinds:
+          - Pod
+      mutate:
+        patchStrategicMerge:
+          spec:
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1234
+  ```
+

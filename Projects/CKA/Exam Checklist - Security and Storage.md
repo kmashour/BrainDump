@@ -481,3 +481,118 @@ volumes:
   ```
 
 
+## 10. Custom Mutating Admission Webhook Configuration Checklist
+
+Use this checklist to deploy and verify an external Mutating Admission Webhook inside the cluster.
+
+### A. Secret & TLS Setup
+The webhook server requires certificates to serve traffic over HTTPS:
+```bash
+# 1. Create the target namespace
+kubectl create namespace webhook-demo
+
+# 2. Create the TLS secret containing the signed webhook certificate/key
+kubectl -n webhook-demo create secret tls webhook-server-tls \
+  --cert=/etc/webhook/certs/tls.crt \
+  --key=/etc/webhook/certs/tls.key
+```
+
+### B. Deployment & Service Configuration
+Deploy the webhook server app and expose it using an internal Service on port 443:
+```yaml
+# webhook-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-server
+  namespace: webhook-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webhook-server
+  template:
+    metadata:
+      labels:
+        app: webhook-server
+    spec:
+      containers:
+      - name: webhook-server
+        image: security-webhook:latest
+        ports:
+        - containerPort: 8443
+        volumeMounts:
+        - name: certs
+          mountPath: /etc/webhook/certs
+          readOnly: true
+      volumes:
+      - name: certs
+        secret:
+          secretName: webhook-server-tls
+---
+# webhook-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-service
+  namespace: webhook-demo
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    app: webhook-server
+```
+Deploy the configurations:
+```bash
+kubectl apply -f webhook-deployment.yaml
+kubectl apply -f webhook-service.yaml
+```
+
+### C. Webhook Registration Configuration
+Register the mutating webhook with the API server, ensuring the `caBundle` matches the CA certificate signing the webhook cert:
+```yaml
+# webhook-configuration.yaml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: mutating-security-webhook
+webhooks:
+  - name: webhook-server.webhook-demo.svc
+    clientConfig:
+      service:
+        name: webhook-service
+        namespace: webhook-demo
+        path: "/mutate"
+      caBundle: "<BASE64_CA_PEM_HERE>"
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    admissionReviewVersions: ["v1"]
+    sideEffects: None
+    timeoutSeconds: 5
+```
+Apply the configuration:
+```bash
+kubectl apply -f webhook-configuration.yaml
+```
+
+### D. Operational Testing
+* **Test Case 1 (Defaults Injection):** Deploy a pod with no security context. Check if the webhook automatically injected the default values:
+  ```bash
+  kubectl get pod pod-with-defaults -o yaml | grep -A 2 securityContext
+  # Expected output:
+  # securityContext:
+  #   runAsNonRoot: true
+  #   runAsUser: 1234
+  ```
+* **Test Case 2 (Overrides):** Deploy a pod with `runAsNonRoot: false`. The webhook should allow it to run as root.
+* **Test Case 3 (Conflict):** Deploy a pod with `runAsNonRoot: true` and `runAsUser: 0`. The webhook should reject the creation:
+  ```text
+  Error from server (InternalError): error when creating "pod-with-conflict.yaml": Internal error occurred: admission webhook "webhook-server.webhook-demo.svc" denied the request: runAsNonRoot specified, but runAsUser set to 0 (the root user)
+  ```
+
+
+
