@@ -39,8 +39,7 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 
 ## Solution to LL-1
 
-1.  <details>
-    <summary>Upgrade the current version of kubernetes from 1.28.0 to 1.29.0 exactly using the kubeadm utility.</summary>
+1.  Upgrade the current version of kubernetes from 1.28.0 to 1.29.0 exactly using the kubeadm utility.
 
     Make sure that the upgrade is carried out one node at a time starting with the controlplane node. To minimize downtime, the deployment `gold-nginx` should be rescheduled on an alternate node before upgrading each node.
 
@@ -204,47 +203,50 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
     While `kubeadm upgrade apply` is running on `controlplane`, which takes some minutes, open a second terminal and perform steps `ii`, `iii` and `iv` of "Upgrade `node01`", so that it is ready for `kubeadm upgrade node` as soon as you have drained it.
 
 
-    </details>
 
-2.  <details>
-    <summary>Print the names of all deployments in the admin2406 namespace in the following format...</summary>
+
+2.  Print the names of all deployments in the admin2406 namespace in the following format...
 
     This is a job for `custom-columns` output of kubectl
 
     ```
     kubectl -n admin2406 get deployment -o custom-columns=DEPLOYMENT:.metadata.name,CONTAINER_IMAGE:.spec.template.spec.containers[].image,READY_REPLICAS:.status.readyReplicas,NAMESPACE:.metadata.namespace --sort-by=.metadata.name > /opt/admin2406_data
     ```
-    </details>
+    
 
 3.  <details>
     <summary>A kubeconfig file called admin.kubeconfig has been created in /root/CKA. There is something wrong with the configuration. Troubleshoot and fix it.</summary>
 
-    First, let's test this kubeconfig
+    First, test this kubeconfig file to observe the connection error:
 
-    ```
+    ```bash
     kubectl get pods --kubeconfig /root/CKA/admin.kubeconfig
     ```
 
-    Notice the error message.
+    *Diagnostic Output:* Typically shows a connection failure to an incorrect port (e.g., `4380`).
 
-    Now look at the default kubeconfig for the correct setting.
+    Compare it with the default working configuration to verify the correct control plane API server port:
 
-    ```
+    ```bash
     cat ~/.kube/config
     ```
 
-    Make the correction
+    Modify the port in `admin.kubeconfig` from `4380` to `6443` (the default API server port):
 
-    ```
+    ```bash
     vi /root/CKA/admin.kubeconfig
+    # Under clusters -> cluster -> server:
+    # Change port from 4380 to 6443:
+    # server: https://controlplane:6443
     ```
 
-    Test
+    Test the connectivity again to verify it is resolved:
 
-    ```
+    ```bash
     kubectl get pods --kubeconfig /root/CKA/admin.kubeconfig
     ```
-  </details>
+    </details>
+
 
 4.  <details>
     <summary>Create a new deployment called nginx-deploy, with image nginx:1.16 and 1 replica. Next upgrade the deployment to version 1.17 using rolling update.</summary>
@@ -1010,9 +1012,12 @@ This playbook compiles practice questions, scenario requirements, diagnostic ste
 ---
 
 
-# Section 3: Ultimate Mocks
 
-## Introduction
+
+
+#  Section 3: Ultimate Mocks
+
+##  Introduction
 
 NOTE: CKA Ultimate Mocks is a separate course from the main CKA course, and as such requires a separate payment or is included in Pro subscription.
 
