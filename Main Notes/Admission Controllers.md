@@ -12,6 +12,7 @@ related_concepts:
 against:
   - "[[rbac]]"
 reference_guides:
+  - "[[Reference Notes/0-16_admission_controllers.md]]"
   - "[[Reference Notes/admission_controllers_reference.md]]"
   - "[[Reference Notes/a_guide_to_kubernetes_admission_controllers.md]]"
 tags:

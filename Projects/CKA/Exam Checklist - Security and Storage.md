@@ -390,3 +390,94 @@ kubectl exec -n kube-system etcd-control-plane -- etcdctl \
 ### C. Restricting Namespace Metadata Access
 * **Escalation Vector:** Restrict developer RoleBindings from granting `patch` or `update` access on `namespaces`. Since PSA and NetworkPolicies rely on namespace labels, users could downgrade namespace security parameters by altering labels.
 
+
+## 9. ImagePolicyWebhook Configuration Checklist
+
+Use this checklist to configure external container image scanning at API admission time.
+
+### A. Directory & File Setup
+Create a dedicated config directory on the control plane node and populate the configuration files:
+```bash
+# 1. Create configuration directory
+mkdir -p /etc/kubernetes/imgvalidation
+
+# 2. Write Admission Configuration file
+cat <<EOF > /etc/kubernetes/imgvalidation/admission-configuration.yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: AdmissionConfiguration
+plugins:
+  - name: ImagePolicyWebhook
+    path: /etc/kubernetes/imgvalidation/imagepolicy-conf.yaml
+EOF
+
+# 3. Write ImagePolicy configuration file
+cat <<EOF > /etc/kubernetes/imgvalidation/imagepolicy-conf.yaml
+imagePolicy:
+  kubeConfigFile: /etc/kubernetes/imgvalidation/kubeconf.yaml
+  allowTTL: 50
+  denyTTL: 50
+  retryBackoff: 500
+  defaultAllow: false
+EOF
+
+# 4. Write Webhook Kubeconfig file
+cat <<EOF > /etc/kubernetes/imgvalidation/kubeconf.yaml
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    certificate-authority: /etc/kubernetes/imgvalidation/webhook.crt
+    server: https://image-checker-webhook.default.svc:1323/image_policy
+  name: checker_webhook
+contexts:
+- context:
+    cluster: checker_webhook
+    user: api-server
+  name: checker_validator
+current-context: checker_validator
+preferences: {}
+users:
+- name: api-server
+  user:
+    client-certificate: /etc/kubernetes/pki/front-proxy-client.crt
+    client-key: /etc/kubernetes/pki/front-proxy-client.key
+EOF
+```
+
+### B. Kube-APIServer Configuration
+Mount the directory and enable the plugin inside the kube-apiserver static pod manifest (`/etc/kubernetes/manifests/kube-apiserver.yaml`):
+
+```yaml
+# Add command flags:
+- --enable-admission-plugins=NodeRestriction,ImagePolicyWebhook
+- --admission-control-config-file=/etc/kubernetes/imgvalidation/admission-configuration.yaml
+
+# Add VolumeMount inside container:
+volumeMounts:
+- mountPath: /etc/kubernetes/imgvalidation
+  name: imgvalidation
+  readOnly: true
+
+# Add HostPath Volume inside spec:
+volumes:
+- hostPath:
+    path: /etc/kubernetes/imgvalidation
+    type: DirectoryOrCreate
+  name: imgvalidation
+```
+
+### C. Troubleshooting & Verification
+* **API Server restart:** Check if the API server starts up successfully:
+  ```bash
+  watch crictl ps
+  ```
+* **Read api-server logs if it crash loops:**
+  ```bash
+  tail -f /var/log/pods/kube-system_kube-apiserver-*/kube-apiserver/*.log
+  ```
+* **Verify webhook enforcement:** Test creating a pod. If the webhook works, pods using unauthorized images will be blocked with a clear message:
+  ```text
+  Error from server (Forbidden): Pod "unauthorized-pod" is forbidden: image policy webhook denied the request
+  ```
+
+

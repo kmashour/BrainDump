@@ -3,6 +3,26 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-14] - Admission Controllers & Webhooks Ingestion
+
+### Added
+- **Reference Notes:** Created [[0-16_admission_controllers|0-16_admission_controllers.md]] (Module 16) covering the admission request lifecycle (mutating/validating), built-in admission plugins, dynamic admission webhooks, Flask webhook server configurations, and a comprehensive ImagePolicyWebhook configuration lab using the AARF framework.
+- **Main Notes:** Created [[Admission Controllers - ImagePolicyWebhook|Admission Controllers - ImagePolicyWebhook.md]] detailing image vulnerability scanning at admission time.
+- **Digital Garden:** Created [[Pattern - Dynamic Security Admission and Webhook TLS Verification|Pattern - Dynamic Security Admission and Webhook TLS Verification.md]] mapping cross-domain intersections between API admission gates, webhook configurations, and mutual TLS authentication.
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[0-Index - Kubernetes|0-Index - Kubernetes.md]] and [[0-CKA Study Alignment Guide|0-CKA Study Alignment Guide.md]] to catalog the new Module 16 and integrate it into the CKA syllabus roadmap.
+- **Main Notes:** Updated [[Admission Controllers|Admission Controllers.md]] and [[Admission Webhooks - Mutating and Validating|Admission Webhooks - Mutating and Validating.md]] to link to the new Module 16 guide.
+- **CKA Exam Checklists:** Appended Section 9 "ImagePolicyWebhook Configuration Checklist" to [[Exam Checklist - Security and Storage|Exam Checklist - Security and Storage.md]].
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `Admission-Controller_Docs.md`
+- `Mutation-Admission-Controller.md`
+- `Notes on the labs.md`
+- `Picture-Example-of-a-webhook-server-Python flask.md`
+
+
 ## [2026-06-12] - Pure Flat MOC Architecture Implementation
 
 ### Refactored / Upgraded

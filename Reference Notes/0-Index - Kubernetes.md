@@ -61,6 +61,7 @@ tags:
 ## 🛡️ Domain 6: Cluster Security & Policy Governance
 *X.509 certs, RBAC rules, pod securityContexts, network policies, and Pod Security Admission (PSA/PSS).*
 - 🔑 **[Cluster Security & Network Policies](0-7_security_and_network_policies.md)** (Module 07)
+- 🧬 **[Admission Controllers & Webhooks](0-16_admission_controllers.md)** (Module 16)
 - 🧬 **[Admission Controllers Reference](admission_controllers_reference.md)** (Reference Article)
 - 🔀 **[A Guide to Kubernetes Admission Controllers](a_guide_to_kubernetes_admission_controllers.md)** (Reference Article)
 - 🛡️ **[Pod Security Admission Reference](pod_security_admission_reference.md)** (Reference Article)
@@ -91,5 +92,6 @@ tags:
 | API Declarative Updates       | **[Module 12](0-12_kubernetes_api_management_and_pod_immutability.md)** | 3-Way Merge annotation & Pod replacement      |
 | Scheduling & Placements       | **[Module 13](0-13_scheduling_logging_and_lifecycle.md)**               | Taints/Tolerations & Custom Scheduler Leases  |
 | Observability & Flow Control  | **[Module 14](0-14_cluster_administration_and_observability.md)**       | API Priority & Fairness Queueing Config       |
-| Extensions & CRDs | **[Module 15](0-15_kubernetes_api_extension_and_operators.md)** | CustomResourceDefinitions & Operator Informers |
+| Extensions & CRDs             | **[Module 15](0-15_kubernetes_api_extension_and_operators.md)**         | CustomResourceDefinitions & Operator Informers |
+| Security & Webhooks           | **[Module 16](0-16_admission_controllers.md)**                          | ImagePolicyWebhook scanner integrations       |
 
