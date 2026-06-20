@@ -11,11 +11,11 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Digital Garden:** Created [[Digital Garden/Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md|Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md]] mapping inter-container separation of concern patterns.
 
 ### Refactored / Upgraded
-- **Reference Notes:**
-  - Integrated full built-in Secret types, dotfile mounts, and signer sidecar partitioning use cases into [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md|0-13_scheduling_logging_and_lifecycle.md]] (Module 13).
-  - Decoupled configuration manifests and the etcdctl encryption-at-rest diagnostic run sheet into the new Project note.
-  - Added OS-level deep-dives for Base64 character sets, Linux kernel `tmpfs` RAM filesystem operations, and projected token auto-rotation renamed swap loops.
-- **CKA Exam Checklists:** Added cross-reference guides and hands-on project links to Section 8 of [[Projects/CKA/Exam Checklist - Security and Storage.md|Projects/CKA/Exam Checklist - Security and Storage.md]].
+- **Reference Notes & Architecture Realignment:**
+  - Relocated advanced Secrets security architecture, cryptography (Base64 vs. encryption math), Linux `tmpfs` page-cache mechanics, ServiceAccount Token Projection & auto-rotation, and Signer Container Partitioning from [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md|0-13_scheduling_logging_and_lifecycle.md]] (Module 13) to Section 11 of [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] (Module 7) to align with security boundaries.
+  - Simplified Module 13's Secrets section to act purely as a configuration injection guide, linking directly to Module 7 for security hardening.
+  - Updated all dependent links in [[Main Notes/secret.md|secret.md]], [[Main Notes/Secret - ServiceAccount Token Projection.md|Secret - ServiceAccount Token Projection.md]], [[Main Notes/secret - Encryption at Rest and Ingestion.md|secret - Encryption at Rest and Ingestion.md]], [[Digital Garden/Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md|Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md]], and [[Projects/CKA/Exam Checklist - Security and Storage.md|Projects/CKA/Exam Checklist - Security and Storage.md]] to reference Module 7.
+
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from the `inflow/` directory:

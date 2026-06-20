@@ -73,4 +73,5 @@ spec:
    * The token has been active for **24 hours**.
 4. **Atomic Write Swap:** Kubelet writes the new token to a temporary file (`.token.tmp`) and executes an atomic Linux `rename()` system call to replace the active token. This avoids partial read corruption and allows the container to dynamically consume the rotated token without needing a Pod restart.
 
-*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#2-modern-tokenrequest-api-vs-legacy-serviceaccount-token-secrets)*
+*Read more in [0-7_security_and_network_policies.md](../Reference%20Notes/0-7_security_and_network_policies.md#115-modern-tokenrequest-api--serviceaccount-token-projection)*
+

@@ -1073,36 +1073,36 @@ Decoupling configuration parameters and credentials from container images allows
 ### 11.1 ConfigMaps vs. Secrets
 * **ConfigMaps:** Store non-sensitive configuration data (e.g., environment variables, settings, config files) in plaintext.
 * **Secrets:** Store sensitive data (e.g., passwords, API keys, certificates) in Base64-encoded format.
-  * **Important:** Base64 is NOT encryption. It is merely encoding. Anyone who has permission to read the Secret object can easily decode it:
+  * **Important:** Base64 is NOT encryption. It is merely transport encoding. Anyone who has permission to read the Secret object can easily decode it:
     ```bash
     echo "base64-encoded-string" | base64 --decode
     ```
 
-### 11.2 Secret Protection & Runtime Security
-* **tmpfs Mounting:** When a Secret is mounted as a volume inside a Pod, the Kubelet writes the secret files into a **`tmpfs`** (RAM-backed) filesystem. The secret data is never written to the physical storage disk of the worker node.
-* **Decryption at Runtime:** External encryption-at-rest tools (such as HashiCorp Vault or AWS KMS) encrypt secrets before they reach the cluster, but Kubernetes decrypts them at the API layer so container processes can consume them in plain text.
-* **Environment Verification:** Inside a container, environment variables sourced from secrets are exposed in plain text to allow the application process to consume them. You can audit this state via:
-  ```bash
-  kubectl exec -it <pod-name> -- env
-  ```
-* **Encryption at Rest:** By default, Secrets are stored in `etcd` in plaintext. To encrypt them, you must configure an `EncryptionConfiguration` object on the `kube-apiserver` using providers like `aescbc` or KMS:
-  ```yaml
-  apiVersion: apiserver.config.k8s.io/v1
-  kind: EncryptionConfiguration
-  resources:
-    - resources:
-        - secrets
-      providers:
-        - aescbc:
-            keys:
-              - name: key1
-                secret: d3JpdGUtby1maWxlLWRpc2stcGF0aC1zZWNyZXQ= # Example 32-byte key
-        - identity: {}
-  ```
-  Enable this by adding the flag `--encryption-provider-config=/etc/kubernetes/enc/enc.yaml` to the api-server.
+### 11.2 Cryptographic Transport Encoding vs. Encryption
+A common security misconception is that Base64-encoding a Secret provides security or confidentiality. **It does not.** Base64 is a simple transport encoding scheme, whereas cryptography/encryption is a mathematical process of securing data using a secret key.
 
-### 11.3 Core Secret Types
-Kubernetes classifies secrets by their intended usage patterns to validate their structures:
+| Attribute | Base64 Encoding | Cryptography / Encryption |
+| :--- | :--- | :--- |
+| **Primary Purpose** | Translate binary data into ASCII characters for text-based transport protocols (HTML, JSON, YAML). | Enforce data confidentiality and restrict access only to authorized key holders. |
+| **Algorithm Type** | Non-cryptographic, public standard lookup table (RFC 4648). | Cryptographic ciphers (e.g., AES-GCM, ChaCha20) relying on mathematical complexity. |
+| **Secret Key Requirement** | None. No password or key is required to encode or decode. | Mandatory. Requires a strong cryptographic key (and optional Initialization Vectors). |
+| **Security Level** | **Zero Security.** Anyone who can view the encoded string can immediately reverse it to plaintext. | **High Security.** Without the key, decrypting the ciphertext is mathematically infeasible. |
+| **Integrity Check** | None. Tampering with the bytes will corrupt the decoded output but won't be caught by the encoding. | Built-in (e.g., AEAD ciphers generate authentication tags to detect data tampering). |
+
+#### Mathematical Mapping & Character Set Mechanics:
+Base64 works by converting 3 bytes (24 bits) of raw binary input data into 4 ASCII characters (each representing 6 bits, since $2^6 = 64$).
+1. **Alphabet Index:** The encoding maps each 6-bit value to a specific index in a fixed 64-character public alphabet: `A-Z` (indices 0-25), `a-z` (26-51), `0-9` (52-61), `+` (62), and `/` (63).
+2. **Step-by-Step Translation:**
+   * Take the string `ABC` $\rightarrow$ ASCII values: `65`, `66`, `67` $\rightarrow$ Binary: `01000001 01000010 01000011`.
+   * Re-group these 24 bits into four 6-bit segments: `010000` (16), `010100` (20), `001001` (9), `000011` (3).
+   * Map indices to the alphabet: `16` $\rightarrow$ `Q`, `20` $\rightarrow$ `U`, `9` $\rightarrow$ `J`, `3` $\rightarrow$ `D`. Resulting string is `QUJD`.
+3. **Padding (`=`):** If the input size is not a multiple of 3 bytes, padding characters (`=`) are appended to complete the 4-character blocks.
+
+Because this mapping is entirely deterministic and does not involve any variable keys, **Base64 provides exactly the same level of security as plaintext**.
+
+### 11.3 Core Secret Types & Manifest Examples
+Kubernetes classifies secrets by their intended usage patterns to validate their structures.
+*See complete implementation manifest examples and CLI creation commands in [[Projects/kubernetes/Project - Secrets Management and Encryption.md#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > Secrets Implementation]].*
 
 * **Opaque Secrets (`Opaque`):** The default type for general-purpose configuration secrets (such as databases or API keys). Keys and values are arbitrary base64-encoded strings.
 * **TLS Secrets (`kubernetes.io/tls`):** Designed specifically for storing TLS certificates and private keys. Must contain two keys: `tls.crt` and `tls.key`. Applications (such as Ingress Controllers) rely on these exact keys to load certificates.
@@ -1111,7 +1111,256 @@ Kubernetes classifies secrets by their intended usage patterns to validate their
 * **Basic Authentication Secrets (`kubernetes.io/basic-auth`):** Designed for basic HTTP authentication, requiring two keys: `username` and `password`.
 * **SSH Authentication Secrets (`kubernetes.io/ssh-auth`):** Used for SSH key credential authentication. The private key is mounted into the container as a read-only volume to prevent modifications.
 
-### 11.4 Injection Methods & Decoupling Mechanics
+### 11.4 Linux `tmpfs` Volatile Memory Mechanics
+To prevent sensitive data from leaking into non-volatile storage, the Kubelet mounts Secret volumes using a Linux `tmpfs` (Temporary Filesystem) mount.
+
+#### How `tmpfs` Works at the Operating System Level:
+* **Virtual Memory File System:** Unlike physical disk-backed filesystems (e.g., ext4, xfs) which format block devices and write data blocks to disk spindles or flash cells, `tmpfs` is a dynamic, memory-based filesystem. It writes files directly into the Linux kernel's **page cache**.
+* **RAM and Swap Backing:** Pages allocated for `tmpfs` reside in volatile system RAM. However, if the node runs low on physical memory (memory pressure), the Linux kernel's virtual memory manager (VMM) can page out inactive `tmpfs` data blocks to the node's **swap space** (if swap is enabled on the host).
+* **Dynamic Resource Allocation:** A `tmpfs` mount is dynamic. It does not pre-allocate memory. A 1GB `tmpfs` mount holding a 10KB Secret file only consumes 10KB of host memory, growing and shrinking dynamically based on file size.
+* **Bypassing Physical Disk Write Queues:** Because writes to `tmpfs` do not hit physical disk block queues, journaling engines, or flash-translation layers, they are executed at RAM speeds and never write dirty pages to block storage.
+
+#### Why Kubernetes Uses `tmpfs` for Secrets:
+* **Anti-Forensics & Leak Prevention:** Standard file deletions on mechanical disks or SSDs only delete pointers (inodes) in metadata, leaving the actual file contents intact in physical storage blocks until overwritten. If worker nodes write secrets to disk, anyone who steals the node, gets read access to raw block storage, or recovers deleted files could extract plain-text credentials. `tmpfs` ensures the secrets reside only in volatile memory.
+* **Host-to-Container Mount Path:**
+  1. When a Pod with a Secret volume is scheduled, the Kubelet creates a volume directory on the host: `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~secret/<volume-name>`.
+  2. The Kubelet mounts a `tmpfs` instance onto that directory: `mount -t tmpfs -o size=<limit> tmpfs /var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~secret/<volume-name>`.
+  3. The Kubelet writes the decrypted Secret values into files inside this mount.
+  4. The container runtime (e.g. containerd) bind-mounts this host `tmpfs` directory into the container's mount namespace (`mountPath`).
+  5. When the Pod terminates, the Kubelet unmounts the volume (`umount`). The kernel immediately frees the corresponding page cache pages, flushing the secret from RAM. The data never touched the node's physical storage blocks.
+
+### 11.5 Modern TokenRequest API & ServiceAccount Token Projection
+The mechanism by which workloads authenticate to the Kubernetes API server has evolved to improve the cluster's security posture:
+
+| Characteristic | Legacy ServiceAccount Token Secrets (`kubernetes.io/service-account-token`) | Modern TokenRequest API & ServiceAccount Token Projection |
+| :--- | :--- | :--- |
+| **Lifecycle** | Stored in the API server as a persistent `Secret` object. Valid indefinitely until explicitly deleted. | Generated dynamically by the API server. Ephemeral and not stored as a `Secret` resource. |
+| **Expiration** | None (non-expiring, long-lived credentials). | Short-lived (typically 1 hour, customizable via `expirationSeconds`). |
+| **Rotation** | Manual rotation required if leaked. | Automatic rotation handled by the kubelet prior to expiration. |
+| **Audience Binding** | No audience restriction. Token can be used to authenticate to any endpoint/service. | Cryptographically bound to a specific audience (e.g. standard `api` or third-party service). |
+| **Workload Binding** | Independent of Pod lifecycle. If the Pod is deleted, the Secret token remains valid. | Cryptographically bound to the running Pod instance. If the Pod is terminated, the token is invalidated. |
+| **Kubernetes Version** | Standard until v1.21. Deprecated starting in v1.22+. | Recommended standard for v1.22 and later. |
+
+##### ServiceAccount Token Projection Manifest Example:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: projected-token-pod
+spec:
+  containers:
+  - name: app-container
+    image: alpine
+    volumeMounts:
+    - name: sa-token-vol
+      mountPath: /var/run/secrets/projected/serviceaccount
+      readOnly: true
+  serviceAccountName: my-serviceaccount
+  volumes:
+  - name: sa-token-vol
+    projected:
+      sources:
+      - serviceAccountToken:
+          audience: api
+          expirationSeconds: 3600
+          path: token
+```
+
+##### ServiceAccount Token Projection & Auto-Rotation Mechanics
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Pod as "Pod (Container)"
+    participant Kubelet as "Kubelet"
+    participant APIServer as "API Server"
+
+    Note over Pod, Kubelet: Pod Creation and Scheduling
+    Kubelet->>Kubelet: Mounts memory-backed tmpfs volume
+    Kubelet->>APIServer: Requests token via TokenRequest API (audience, expirationSeconds)
+    APIServer->>APIServer: Issues token with specific audience/expiration
+    APIServer-->>Kubelet: Returns signed ServiceAccount Token
+    Kubelet->>Kubelet: Writes token file atomically to tmpfs mount
+    Pod->>Pod: Reads token dynamically from disk
+    Pod->>APIServer: Requests resources using token
+    APIServer->>APIServer: Validates token signature, audience, and expiration
+    APIServer-->>Pod: Returns resources/action response
+    
+    Note over Kubelet: Token TTL Monitoring and Rotation
+    Kubelet->>Kubelet: Monitors TTL (checks if age >= 80% of TTL or 24h)
+    Kubelet->>APIServer: Requests fresh token via TokenRequest API
+    APIServer-->>Kubelet: Returns new ServiceAccount Token
+    Kubelet->>Kubelet: Writes new token atomically using temporary file rename
+    Pod->>Pod: Reads updated token dynamically for subsequent requests
+```
+
+When a Pod projects a ServiceAccount token, it uses the `TokenRequest` API instead of reading a static, long-lived Secret. The end-to-end lifecycle operates as follows:
+
+1. **The `TokenRequest` Flow:**
+   * During Pod creation, the `kube-apiserver` processes the Pod spec. Seeing the `projected.sources.serviceAccountToken` definition, it initializes the Pod but does not immediately generate the token.
+   * When the Pod is scheduled onto a node, the local **Kubelet** handles volume preparation.
+   * The Kubelet calls the API server's `TokenRequest` endpoint (a subresource of the ServiceAccount: `POST /api/v1/namespaces/{namespace}/serviceaccounts/{name}/token`).
+   * In this API call, the Kubelet specifies the requested **Audience** (`audience`) and **Time-to-Live** (`expirationSeconds`).
+   * The API server generates a JSON Web Token (JWT), signs it using the cluster's private service account key (defined by `--service-account-key-file` on the API server), and returns the signed token. The token contains claims that cryptographically bind it to the specific Pod (`kubernetes.io/pod.name` and `kubernetes.io/pod.uid`).
+   * The Kubelet receives the token and writes it as a file to a node-local memory-backed (`tmpfs`) volume mount, making it accessible to the container at the configured path (e.g., `/var/run/secrets/projected/serviceaccount/token`).
+
+2. **Automatic Token Rotation:**
+   * Because these projected tokens are short-lived (usually expiring in 1 hour), they must be refreshed periodically without interrupting the running container.
+   * The Kubelet runs a background manager that tracks the lifetime of all projected tokens on the node.
+   * **The Rotation Threshold:** The Kubelet automatically triggers a refresh when either of the following conditions is met:
+     * The token's age reaches **80% of its total Time-To-Live (TTL)** (e.g., 48 minutes for a 1-hour token).
+     * The token has been active on the node for **24 hours** (for long-lived tokens).
+   * **Atomic File Swap:** To write the new token without causing race conditions or corruption (where an application might read a partially-written or empty file), the Kubelet performs an atomic write sequence:
+     1. It writes the newly fetched token to a temporary file in the same directory (e.g., `.token.tmp`).
+     2. It executes an atomic `rename()` system call (renaming `.token.tmp` to `token`). In Linux, `rename` is atomic at the VFS (Virtual File System) level, ensuring that any read operations on `token` either return the old file completely or the new file completely, with no intermediate state.
+   * **Application Hot-Reload:** Most official Kubernetes client libraries (like `client-go`) do not load the token into memory once at startup. Instead, they read the token file dynamically from disk for every new API connection or re-read it periodically. Therefore, when the Kubelet atomically replaces the file, the application automatically uses the rotated token on its next API call without needing a restart.
+   * *See complete conceptual guide in [[Main Notes/Secret - ServiceAccount Token Projection.md|Secret - ServiceAccount Token Projection.md]].*
+
+### 11.6 Advanced Workload Isolation: Signer Container Partitioning
+To protect highly sensitive secrets (such as private cryptographic keys or signing certificates) from remote code execution (RCE) exploits, the application logic can be split across two containers running inside the same Pod:
+1. **Frontend Container:** Handles the public-facing, complex application logic (e.g., HTTP APIs, HTML parsing). It has no access to the Secret key volume.
+2. **Signer Container:** An isolated, low-privilege sidecar container that mounts the Secret volume containing the private signing key. It exposes a simple endpoint over localhost (or a shared Unix domain socket) that accepts payload signing requests and returns the signature.
+
+```mermaid
+flowchart TD
+    subgraph Pod ["Pod Boundary"]
+        subgraph Frontend ["Frontend Container"]
+            FE["Business Logic (Port 80/443)"]
+        end
+
+        subgraph Signer ["Signer Container"]
+            SC["Signer Service (Port 8080 on localhost)"]
+        end
+
+        SV[("Secret Volume (Private Key)")]
+    end
+
+    %% External Traffic
+    Client("External Client / Traffic") -->|Port 80/443| FE
+
+    %% Inter-container Communication over localhost
+    FE -->|Requests signing over localhost:8080| SC
+
+    %% Secret Volume Mounting
+    SV -->|Mounted only to Signer| SC
+    
+    %% Styling or comments to highlight isolation
+    style SV fill:#f9f,stroke:#333,stroke-width:2px
+    style FE fill:#bbf,stroke:#333,stroke-width:1px
+    style SC fill:#bfb,stroke:#333,stroke-width:1px
+```
+
+###### Manifest Design:
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: private-signing-key
+type: Opaque
+stringData:
+  hmac-key: "super-secret-signing-key-value"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: partitioned-signer-pod
+spec:
+  volumes:
+    - name: signing-key-volume
+      secret:
+        secretName: private-signing-key
+    - name: shared-ipc-volume
+      emptyDir: {}
+  containers:
+    # 1. Frontend Container: Handles user requests, no access to the secret key
+    - name: app-frontend
+      image: nginx:alpine
+      volumeMounts:
+        - name: shared-ipc-volume
+          mountPath: /var/run/signer
+    # 2. Signer Container: Accesses the secret key, runs on loopback
+    - name: hmac-signer
+      image: python:alpine
+      command:
+        - python
+        - -c
+        - |
+          import socket, hmac, hashlib
+          # Read private signing key from mounted volume
+          with open('/etc/keys/hmac-key', 'r') as f:
+              key = f.read().strip().encode()
+          # Set up loopback TCP socket to process signing requests
+          server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+          server.bind(('127.0.0.1', 8080))
+          server.listen(5)
+          print("Signer service active on 127.0.0.1:8080")
+          while True:
+              conn, addr = server.accept()
+              data = conn.recv(1024)
+              if not data: break
+              # Compute HMAC-SHA256 signature
+              signature = hmac.new(key, data, hashlib.sha256).hexdigest()
+              conn.sendall(signature.encode())
+              conn.close()
+      volumeMounts:
+        - name: signing-key-volume
+          readOnly: true
+          mountPath: "/etc/keys"
+        - name: shared-ipc-volume
+          mountPath: /var/run/signer
+```
+*See complete architectural pattern in [[Digital Garden/Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md|Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md]].*
+
+### 11.7 Alternatives to Native Secrets
+Instead of creating native Kubernetes Secret objects to manage secrets, you can utilize the following structural alternatives:
+* **Projected ServiceAccount Tokens:** For inter-component authentication within the cluster. Workloads authenticate to other apps using auto-rotating, short-lived ServiceAccount tokens projected via volume mounts.
+* **External Secret Store Providers:** Use centralized external secret management tools (e.g., HashiCorp Vault, AWS Secrets Manager, Google Secret Manager, Azure Key Vault). Workloads can query these stores directly via HTTPS.
+  * **Secrets Store CSI Driver:** Mounts secrets directly from the external vault into Pod volumes, bypassing the creation of persistent API objects.
+* **CertificateSigningRequests (CSR):** For workload identity and X.509 certificate issuance. Workloads generate a private key locally on the node, submit a CSR to the Kubernetes API, and receive a signed certificate. This keeps the private key local and prevents it from ever being transmitted across the network or stored in API objects.
+* **Device Plugins for Node-Local Encryption Hardware:** Utilize hardware security modules (HSMs) or Trusted Platform Modules (TPM) on worker nodes. Workloads are scheduled on these nodes and interact with the hardware via device plugins, ensuring keys are cryptographically bound to physical hardware.
+* **Operator Pattern for Session Token Rotation:** Deploy a custom Kubernetes Operator that fetches short-lived session tokens from an external identity provider (IdP) and dynamically generates/rotates local Kubernetes Secrets.
+
+### 11.8 Immutable ConfigMaps and Secrets
+* You can mark ConfigMaps and Secrets as immutable by setting `immutable: true` in their spec:
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: mysecret
+  immutable: true
+  data:
+    key: dmFsdWUK
+  ```
+* **Benefits:**
+  * Protects against accidental updates that could cause application outages.
+  * Improves cluster performance. For clusters with tens of thousands of Secret to Pod mounts, marking them immutable reduces load on `kube-apiserver` because the kubelet does not need to maintain a watch on them.
+* **Caveat:** Once marked immutable, you cannot change the `data` or revert the setting. You must delete and recreate the object.
+
+### 11.9 ETCD Encryption at Rest & Envelope Encryption
+By default, secrets are stored in etcd as unencrypted base64 strings. Any user with root access to the master host or etcd can read them. Enable **etcd Encryption at Rest** to encrypt secret resources.
+
+Kubernetes supports several encryption providers to secure secrets in the backing `etcd` store. These are categorized into **Static Providers** and **KMS Envelope Encryption**.
+
+#### 1. Static Providers
+Static providers use keys stored in a configuration file on the control plane node's local disk.
+* **`identity`:** The default provider. No encryption. It writes the secret directly to etcd as a plaintext JSON/Protobuf structure.
+* **`aescbc`:** Recommended symmetric provider. Uses AES-CBC with PKCS#7 padding and a 32-byte user-provided key. Provides strong, industry-standard cryptographic protection.
+* **`secretbox`:** Uses XSalsa20 and Poly1305 for symmetric encryption. A modern alternative to AES, but less widely adopted in enterprise compliance audits than AES-CBC.
+* **Security Limitation:** Because the raw encryption key is stored on the control plane node in `/etc/kubernetes/encryption/config.yaml`, anyone who gains root access to the control plane can steal the key and decrypt all secrets.
+
+#### 2. KMS Envelope Encryption (KMS v1 and KMS v2)
+KMS envelope encryption delegates key management to an external Key Management Service (e.g., HashiCorp Vault, AWS KMS, Google Cloud KMS, Azure Key Vault) via a local gRPC plugin.
+* **How it works (Envelope Encryption):**
+  1. The API Server generates a unique, short-lived **Data Encryption Key (DEK)** locally for each Secret write.
+  2. The API Server encrypts the Secret payload using the DEK.
+  3. The API Server sends the DEK to the KMS provider via gRPC over a UNIX domain socket.
+  4. The KMS encrypts the DEK using its master **Key Encryption Key (KEK)** and returns the encrypted DEK.
+  5. The API Server writes the encrypted Secret payload and the encrypted DEK together into `etcd`.
+  6. On read, the API Server extracts the encrypted DEK, asks the KMS to decrypt it, and uses the returned plaintext DEK to decrypt the Secret.
+* **Advantages:** The master KEK never leaves the external KMS HSMs. Access to the key can be audited, revoked instantly, and rotated automatically without restarting Kubernetes components.
+* *See complete implementation steps and the step-by-step etcdctl diagnostic run sheet in [[Projects/kubernetes/Project - Secrets Management and Encryption.md#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > ETCD Encryption Setup & Verification]].*
+
+### 11.10 ConfigMap & Secret Injection Methods (Application Runtimes)
 ConfigMaps and Secrets can be injected into container runtimes in three ways:
 
 #### A. Environment Variables
@@ -1155,7 +1404,6 @@ spec:
 
 #### C. Volume Mounts
 You can mount an entire ConfigMap or Secret as a volume, exposing keys as configuration files inside the container filesystem:
-* **YAML Syntax:** To declare multi-line files inside a YAML ConfigMap, use the literal block scalar indicator `|`.
 * **subPath Usage:** When mounting a configuration file into an existing directory (such as `/etc/nginx/`), configure `subPath` to prevent the volume mount from overwriting other files in that directory.
 ```yaml
 spec:
@@ -1173,7 +1421,7 @@ spec:
 ```
 * **Advantage:** Kubelet periodically syncs updates. Modifications to the ConfigMap/Secret will automatically propagate as file updates inside the container within a few minutes (without restarting the container). Note that subPath mounts do not receive automatic updates.
 
-### 11.5 Imperative Workflows & Version Control Export
+### 11.11 Imperative Workflows & Version Control Export
 To build configurations quickly, use imperative commands and export them for version control:
 
 #### A. Imperative CLI Creation

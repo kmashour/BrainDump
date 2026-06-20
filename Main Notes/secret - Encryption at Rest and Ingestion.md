@@ -101,4 +101,5 @@ For enterprise deployments, storing static keys in `/etc/kubernetes/` is a secur
 *   **KEK (Key Encryption Key):** Managed by an external KMS (e.g., AWS KMS, HashiCorp Vault). Kube-apiserver calls the KMS plugin over a local gRPC UNIX socket to encrypt/decrypt the DEK.
 *   **Benefit:** The actual master key never resides on the control plane server disk.
 
-*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#d-secrets-sensitive-data-isolation)*
+*Read more in [0-7_security_and_network_policies.md](../Reference%20Notes/0-7_security_and_network_policies.md#119-etcd-encryption-at-rest--envelope-encryption)*
+
