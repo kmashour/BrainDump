@@ -360,6 +360,9 @@ If you need temporary scratch space that requires dynamic provisioning (e.g. SSD
 
 ## 8. Pod Security Admission & Secrets Hardening Checklist
 
+*Reference Guide:* [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md|0-13_scheduling_logging_and_lifecycle.md]]
+*Hands-on Project:* [[Projects/kubernetes/Project - Secrets Management and Encryption.md|Project - Secrets Management and Encryption.md]]
+
 ### A. Pod Security Admission Namespace Labeling
 Verify and apply Pod Security Standards (PSS) to namespaces:
 ```bash

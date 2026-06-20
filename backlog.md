@@ -3,6 +3,26 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-20] - Secrets Management Ingestion & Decoupling
+
+### Added
+- **Projects:** Created [[Projects/kubernetes/Project - Secrets Management and Encryption.md|Project - Secrets Management and Encryption.md]] containing complete playbooks for mounting diverse secret types, projected token volume configuration, and enabling symmetric etcd encryption.
+- **Main Notes:** Created [[Main Notes/Secret - ServiceAccount Token Projection.md|Secret - ServiceAccount Token Projection.md]] describing token lifetimes and rotation mechanics.
+- **Digital Garden:** Created [[Digital Garden/Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md|Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md]] mapping inter-container separation of concern patterns.
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Integrated full built-in Secret types, dotfile mounts, and signer sidecar partitioning use cases into [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md|0-13_scheduling_logging_and_lifecycle.md]] (Module 13).
+  - Decoupled configuration manifests and the etcdctl encryption-at-rest diagnostic run sheet into the new Project note.
+  - Added OS-level deep-dives for Base64 character sets, Linux kernel `tmpfs` RAM filesystem operations, and projected token auto-rotation renamed swap loops.
+- **CKA Exam Checklists:** Added cross-reference guides and hands-on project links to Section 8 of [[Projects/CKA/Exam Checklist - Security and Storage.md|Projects/CKA/Exam Checklist - Security and Storage.md]].
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `Secrets.md`
+
+---
+
 ## [2026-06-20] - Admission Controllers Ingestion & Decoupling
 
 ### Added
