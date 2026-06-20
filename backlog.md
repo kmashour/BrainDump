@@ -3,6 +3,27 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-20] - Admission Controllers Ingestion & Decoupling
+
+### Added
+- **Projects:** Created [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]] containing complete playbooks for the ImagePolicyWebhook scan backend and custom mutating Flask server (including Kubernetes container resources and securityContext best practices).
+- **Main Notes:** Created [[Main Notes/Admission Controllers - ValidatingAdmissionPolicy.md|Admission Controllers - ValidatingAdmissionPolicy.md]] to conceptualize the CEL-based validation engine in Kubernetes v1.36.
+- **System Profiles:** Created [[System/Agents/poc_kubernetes_developer.md|poc_kubernetes_developer.md]] to act as the specialized domain developer.
+
+### Refactored / Upgraded
+- **Reference Notes:** 
+  - Integrated 35 built-in admission plugins from `inflow/Admission-Controller_Docs.md` into [[Reference Notes/0-16_admission_controllers.md|0-16_admission_controllers.md]].
+  - Decoupled hands-on lab code and configuration blocks into the new Project note, replacing them with wiki-links.
+  - Expanded the module with deep-dive audits on JSON Patch syntax, mTLS verification, and CEL syntax.
+- **Digital Garden:** Updated [[Digital Garden/Pattern - Dynamic Security Admission and Webhook TLS Verification.md|Pattern - Dynamic Security Admission and Webhook TLS Verification.md]] with links to the new project note.
+- **CKA Exam Checklists:** Added cross-reference guides and hands-on project links to Sections 9 & 10 of [[Projects/CKA/Exam Checklist - Security and Storage.md|Exam Checklist - Security and Storage.md]].
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `Admission-Controller_Docs.md`
+
+---
+
 ## [2026-06-14] - Admission Controllers & Webhooks Ingestion
 
 ### Added

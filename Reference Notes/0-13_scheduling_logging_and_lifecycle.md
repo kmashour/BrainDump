@@ -1465,9 +1465,11 @@ Unlike ConfigMaps, which store plain text, Secret manifests require data in the 
   echo -n "admin123" | base64
   # Output: YWRtaW4xMjM=
   ```
+
   > [!IMPORTANT]
   > **Avoid Trailing Newlines:**
   > Always use `echo -n` or `printf` when base64 encoding strings. Standard `echo` appends a newline character `\n` to the output, causing authentication failures when the application decodes the secret.
+
 * **Decoding Data:**
   ```bash
   echo -n "YWRtaW4xMjM=" | base64 --decode

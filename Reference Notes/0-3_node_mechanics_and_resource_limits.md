@@ -31,7 +31,7 @@ By following this flow, you progress from **OS Prerequisites (Bootstrapping) →
 
 The **`kubelet`** is the node-level agent responsible for managing workloads. It acts as the "captain of the ship" on each worker node, registering the host machine, launching containers, monitoring their health, and feeding telemetry back to the control plane.
 
-Unlike other Kubernetes components (API Server, Scheduler, etc.) which can run inside containers, the `kubelet` must run as a native service directly on the host operating system. This is because it requires root privileges to modify host directories, configure network interfaces, and interact with the kernel namespaces/cgroups.
+Unlike other Kubernetes components (API Server, Scheduler, etc.) which can run inside containers, the `kubelet` must run as a native service directly on the host operating system. This is because **it requires root privileges to modify host directories**, **configure network interfaces**, and **interact** with the **kernel namespaces/cgroups.**
 
 ### A. Node Registration Pathways
 Nodes are registered as objects in `etcd` in two ways:

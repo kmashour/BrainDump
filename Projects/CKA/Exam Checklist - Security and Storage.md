@@ -393,6 +393,9 @@ kubectl exec -n kube-system etcd-control-plane -- etcdctl \
 
 ## 9. ImagePolicyWebhook Configuration Checklist
 
+*Reference Guide:* [[Reference Notes/0-16_admission_controllers.md|0-16_admission_controllers.md]]
+*Hands-on Project:* [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]]
+
 Use this checklist to configure external container image scanning at API admission time.
 
 ### A. Directory & File Setup
@@ -482,6 +485,9 @@ volumes:
 
 
 ## 10. Custom Mutating Admission Webhook Configuration Checklist
+
+*Reference Guide:* [[Reference Notes/0-16_admission_controllers.md|0-16_admission_controllers.md]]
+*Hands-on Project:* [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]]
 
 Use this checklist to deploy and verify an external Mutating Admission Webhook inside the cluster.
 

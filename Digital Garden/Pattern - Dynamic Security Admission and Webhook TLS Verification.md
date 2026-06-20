@@ -59,7 +59,8 @@ To prevent authentication hijacking, communication between the `kube-apiserver` 
 
 ## 🛠️ Verification & Practical Implementation
 
-For configuration playbooks, TLS setups, and Static Pod mounting configurations, see the following guides:
+For complete configuration playbooks, Python Flask implementations, and TLS setups, see:
 
-* **Admission Configuration:** See the reference module [[0-16_admission_controllers|0-16_admission_controllers.md]].
-* **Hands-on Practice:** See the [[Exam Checklist - Security and Storage|CKA Security & Storage Checklist]] for the `ImagePolicyWebhook` setup.
+* **Conceptual reference:** See the reference module [[Reference Notes/0-16_admission_controllers.md|0-16_admission_controllers.md]].
+* **Hands-on project:** See the complete configuration and code playbook in [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]].
+* **Exam Prep Checklist:** See the [[Projects/CKA/Exam Checklist - Security and Storage.md|CKA Security & Storage Checklist]] for fast configuration dry-runs.

@@ -169,7 +169,7 @@ Kubernetes operates as both an **Orchestrator** (managing container lifecycle, n
 ### D. `kube-controller-manager` (The Enforcer)
 * **Mechanism:** Runs multiple asynchronous control loops packaged into a single binary. Every entity or resource in Kubernetes is managed by a specific controller loop.
 * **Hierarchy Flow:** A parent resource controller manages child resources. For example, a `Deployment Controller` manages `ReplicaSet` creation, which in turn commands the `ReplicaSet Controller`, which controls the `Pod Controller`.
-* **Reconciliation Loop:** Continually compares the Desired State (from `etcd`) with the Observed/Actual State (from the nodes) to reconcile discrepancies.
+* **Reconciliation Loop:** Continually compares the Desired State (from `etcd`) with the Observed/Actual State (from the nodes) to reconcile discrepancies(unexpected difference or inconsistency).
 * **Key Controllers:**
   * **Node Controller:** Detects when nodes go offline (see node heartbeat eviction timers below).
   * **ReplicaSet Controller:** Keeps the correct number of Pod replicas running.
@@ -188,10 +188,10 @@ When a user applies a manifest (e.g., `kubectl apply -f pod.yaml`):
 1. The `kube-apiserver` receives the HTTP POST request containing the manifest data.
 2. The API server performs authentication, authorization, and validation checks.
 3. Upon approval, the API server saves the Pod specification as a record of intent in `etcd`.
-4. The API server publishes a "Pod Created" event.
+4. The API server **publishes** a "Pod Created" event.  # Important note
 5. The `kube-scheduler` (which is subscribed/watching the API server event stream) detects the new unscheduled Pod (where `spec.nodeName` is empty).
 6. The scheduler runs its filter/rank algorithms, chooses a worker node, and writes the selected host back to the API server (`binding` operation).
-7. The API server updates `etcd` and publishes a binding event.
+7. The API server updates `etcd` and **publishes** a binding event. .  # Important note
 8. The `kubelet` running on the selected worker node (also watching the API server) detects that a Pod has been assigned to its node.
 9. The `kubelet` interfaces with the local Container Runtime (CRI) to pull the image and run the containers, writing the status back to the API server.
 
@@ -199,13 +199,13 @@ When a user applies a manifest (e.g., `kubectl apply -f pod.yaml`):
 Worker nodes through their `kubelet` actively update the control plane with health telemetry:
 * **Kubelet Status Heartbeat:** The `kubelet` updates the node status every **5 seconds**.
 * **Lease Timeout (40s):** If the API server does not receive a heartbeat for **40 seconds** (the node lease expiry window), the Node Controller flags the node as unreachable and stops routing new traffic/requests to it.
-* **Eviction Timeout (5m):** To the user, everything might still appear ready or pending, but once **5 minutes** (default eviction grace period) passes, the node status is fully updated to `NotReady` and the node controller initiates cascading deletions to evict the Pods and reschedule them to healthy nodes.
+* **Eviction Timeout (5m):** To the user, everything might still appear ready or pending, but once **5 minutes** (default eviction grace period) passes, the node status is fully updated to `NotReady` and the **node controller initiates cascading deletions** to evict the Pods and reschedule them to healthy nodes.
 
 ### G. `kube-proxy` (The Network Router)
 * **Role:** A network agent running on every node that enables cluster-wide network routing for Services.
-* **Service Virtual Entity:** Services are virtual entities in the cluster's memory—they do not correspond to any container, network card, or physical interface.
+* **Service Virtual Entity:** Services are *virtual entities in the cluster's memory*  — they do not correspond to any container, network card, or physical interface.
 * **Routing Mechanism:** Kube-proxy watches the API Server for new Services and Endpoints. It configures host-level network rules (`iptables` or `IPVS` tables) so that traffic sent to a Service's IP is automatically redirected to the actual IP of an active backend Pod.
-* **Important Distinction:** `kube-proxy` is for **Service networking** (handling client-to-service routing), not for API server-to-node control plane communications (which is handled directly by the `kubelet`).
+* **Important Distinction:** `kube-proxy` is for **Service networking** (handling client-to-service routing), not for API server-to-node ---> control plane communications to worker nodes (is handled directly by the `kubelet` to api-server).
 * **Verification & Deployment:**
   * **kubeadm:** Deployed as a `DaemonSet` in the `kube-system` namespace.
   * Retrieve DaemonSet configuration: `kubectl get daemonset -n kube-system kube-proxy`.
@@ -215,18 +215,18 @@ Worker nodes through their `kubelet` actively update the control plane with heal
 
 ## 2.1 Component Configuration Paths Quick Reference
 
-| Component | Installation Mode | Config File / Path | Check Status Command |
-| :--- | :--- | :--- | :--- |
-| **Kube API Server** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-apiserver.yaml` | `kubectl get po -n kube-system -l component=kube-apiserver` |
-| | Manual (systemd) | `/etc/systemd/system/kube-apiserver.service` | `systemctl status kube-apiserver` |
-| **etcd** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/etcd.yaml` | `kubectl get po -n kube-system -l component=etcd` |
-| | Manual (systemd) | `/etc/systemd/system/kube-apiserver.service` | `systemctl status etcd` |
-| **Kube Scheduler** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-scheduler.yaml` | `kubectl get po -n kube-system -l component=kube-scheduler` |
-| | Manual (systemd) | `/etc/systemd/system/kube-scheduler.service` | `systemctl status kube-scheduler` |
+| Component              | Installation Mode    | Config File / Path                                       | Check Status Command                                                 |
+| :--------------------- | :------------------- | :------------------------------------------------------- | :------------------------------------------------------------------- |
+| **Kube API Server**    | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-apiserver.yaml`          | `kubectl get po -n kube-system -l component=kube-apiserver`          |
+|                        | Manual (systemd)     | `/etc/systemd/system/kube-apiserver.service`             | `systemctl status kube-apiserver`                                    |
+| **etcd**               | kubeadm (Static Pod) | `/etc/kubernetes/manifests/etcd.yaml`                    | `kubectl get po -n kube-system -l component=etcd`                    |
+|                        | Manual (systemd)     | `/etc/systemd/system/kube-apiserver.service`             | `systemctl status etcd`                                              |
+| **Kube Scheduler**     | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-scheduler.yaml`          | `kubectl get po -n kube-system -l component=kube-scheduler`          |
+|                        | Manual (systemd)     | `/etc/systemd/system/kube-scheduler.service`             | `systemctl status kube-scheduler`                                    |
 | **Controller Manager** | kubeadm (Static Pod) | `/etc/kubernetes/manifests/kube-controller-manager.yaml` | `kubectl get po -n kube-system -l component=kube-controller-manager` |
-| | Manual (systemd) | `/etc/systemd/system/kube-controller-manager.service` | `systemctl status kube-controller-manager` |
-| **Kube Proxy** | kubeadm (DaemonSet) | `kubectl edit ds/kube-proxy -n kube-system` | `kubectl get ds -n kube-system -l k8s-app=kube-proxy` |
-| | Manual (systemd) | `/etc/systemd/system/kube-proxy.service` | `systemctl status kube-proxy` |
+|                        | Manual (systemd)     | `/etc/systemd/system/kube-controller-manager.service`    | `systemctl status kube-controller-manager`                           |
+| **Kube Proxy**         | kubeadm (DaemonSet)  | `kubectl edit ds/kube-proxy -n kube-system`              | `kubectl get ds -n kube-system -l k8s-app=kube-proxy`                |
+|                        | Manual (systemd)     | `/etc/systemd/system/kube-proxy.service`                 | `systemctl status kube-proxy`                                        |
 
 ---
 
@@ -387,7 +387,7 @@ Every Kubernetes object has a name that is unique for that resource type within 
 * **Names & UIDs:** Objects are identified by a string `name` and a globally unique `UID` generated by the cluster.
 * **DNS Subdomain Names (RFC 1123):** Most resource names must conform to RFC 1123 subdomain rules:
   * Maximum 253 characters.
-  * Contain only lowercase alphanumeric characters, `-` or `.`.
+  * Contain only ==lowercase== alphanumeric characters, `-` or `.`.
   * Start and end with an alphanumeric character.
 * **RFC 1123 Label Names:** Some object names (like Pods) must be valid RFC 1123 labels:
   * Maximum 63 characters.
@@ -405,7 +405,7 @@ Labels are key/value pairs attached to objects (like Pods) that serve as identif
   * The prefixes `kubernetes.io/` and `k8s.io/` are strictly reserved for core components.
   * Label values must be 63 characters or less, start/end with an alphanumeric, and can contain `-`, `_`, `.`.
 * **Selectors:** Used to query groups of labeled resources.
-  * **Equality-based:** `=` or `==` (equals), `!=` (not equal). E.g., `environment=production`.
+  * **Equality-based:** = or == (equals), `!=` (not equal). E.g., `environment=production`.
   * **Set-based:** `in`, `notin`, `exists` (specified by key), and `!exists` (by key negation). E.g., `tier in (frontend, backend)`.
 * **ReplicaSet Selector Overlaps:** ReplicaSet selectors must not overlap with other controllers in the same namespace, or controllers will conflict/thrash trying to reclaim pods.
 
@@ -437,7 +437,7 @@ Kubernetes uses owner references to track relationships between parent resources
 * **Cascading Deletion Modes:**
   * **Foreground:** Parent is deleted, but remains in "Terminating" state. The `foregroundDeletion` finalizer blocks deletion until all dependents with `ownerReferences.blockOwnerDeletion=true` are deleted.
   * **Orphan:** Deletes the parent resource, leaving dependents running in the cluster. Their owner references are removed, making them orphans.
-* **Cross-Namespace Restrictions:** Cross-namespace owner references are strictly disallowed. A namespaced dependent must have its owner in the same namespace. If a mismatch is detected, Kubernetes ignores the reference and reports an `OwnerRefInvalidNamespace` event.
+* **Cross-Namespace Restrictions:** ==Cross-namespace owner references are strictly disallowed. ==A namespaced dependent must have its owner in the same namespace. If a mismatch is detected, Kubernetes ignores the reference and reports an `OwnerRefInvalidNamespace` event.
 
 ---
 
