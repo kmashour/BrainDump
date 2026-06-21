@@ -80,6 +80,12 @@ Select a domain to view its active landing concepts, deeper dive notes, and arch
 *State backend lock configurations, loop meta-arguments, custom configuration modules, and automated drift self-healing.*
 - **Go to MOC:** [[Reference Notes/10-Index - Terraform on AWS|Terraform MOC]]
 
+---
+
+### ⚙️ [AWS CloudOps MOC](aws-cloudops.md)
+*Unified CloudWatch metrics, Systems Manager auto-remediation, performance tuning, failover architectures, multi-region CloudFormation StackSets, and hybrid routing.*
+- **Go to MOC:** [[Main Notes/aws-cloudops|AWS CloudOps MOC]]
+
 ### 📦 Miscellaneous Projects & Tooling (MISC)
 *Self-hosted version control, automated runner deployment contexts, developer introspection clients, and system command-line utilities.*
 - **Version Control & GitOps:** [[gitea|Gitea Git Server Setup]]

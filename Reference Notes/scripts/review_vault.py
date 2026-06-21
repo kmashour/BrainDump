@@ -196,10 +196,6 @@ def check_inflow_coverage():
             status = "Ignored/Useless"
             justification = "URL index links only; redundant."
             ignored_count += 1
-        elif file_name == "AWS_CloudOps.md":
-            status = "Ignored/Useless"
-            justification = "SysOps/CloudOps Admin content to be processed in a future track."
-            ignored_count += 1
         elif file_name == "CKA_ExamTips_Mumshad.md":
             status = "Ignored/Useless"
             justification = "Shorthand speed tips already in Vim and Terminal Setup."

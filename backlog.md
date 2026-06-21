@@ -3,6 +3,30 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-22] - Ingestion: AWS CloudOps Study Guide & Projects
+
+### Added
+- **Reference Notes:** Created the central index note [[Reference Notes/11-Index - AWS CloudOps.md|11-Index - AWS CloudOps.md]] and 6 detailed reference modules:
+  - [[Reference Notes/11-1_cloudops_monitoring_and_logging.md|11-1_cloudops_monitoring_and_logging.md]]
+  - [[Reference Notes/11-2_incident_response_and_ssm.md|11-2_incident_response_and_ssm.md]]
+  - [[Reference Notes/11-3_performance_optimization.md|11-3_performance_optimization.md]]
+  - [[Reference Notes/11-4_disaster_recovery_and_backups.md|11-4_disaster_recovery_and_backups.md]]
+  - [[Reference Notes/11-5_governance_and_compliance.md|11-5_governance_and_compliance.md]]
+  - [[Reference Notes/11-6_automation_and_hybrid_networks.md|11-6_automation_and_hybrid_networks.md]]
+- **Projects:** Created 3 detailed hands-on project playbooks:
+  - [[Projects/aws-cloudops/Project - AWS Systems Manager Automation and Remediation.md|Project - AWS Systems Manager Automation and Remediation.md]]
+  - [[Projects/aws-cloudops/Project - CloudWatch Log Streaming and Metric Filtering.md|Project - CloudWatch Log Streaming and Metric Filtering.md]]
+  - [[Projects/aws-cloudops/Project - Hybrid VPC Peering and Transit Gateway Troubleshooting.md|Project - Hybrid VPC Peering and Transit Gateway Troubleshooting.md]]
+- **Main Notes:** Created [[Main Notes/aws-cloudops.md|aws-cloudops.md]] landing note, [[Main Notes/aws-cloudops - Systems Manager and Runbooks.md|aws-cloudops - Systems Manager and Runbooks.md]] deeper-dive note, and [[Main Notes/aws-cloudops - CloudWatch Agent and Metrics.md|aws-cloudops - CloudWatch Agent and Metrics.md]] deeper-dive note.
+- **Digital Garden:** Created [[Digital Garden/Pattern - Automated Operations and Event-Driven Remediation.md|Pattern - Automated Operations and Event-Driven Remediation.md]] pattern note.
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[Reference Notes/--Index--.md|--Index--.md]] and [[Main Notes/0-Index.md|0-Index.md]] to catalog the new AWS CloudOps study track.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `AWS_CloudOps.md`
+
 ## [2026-06-22] - Ingestion: AWS Terraform Study Guide & Projects
 
 ### Added

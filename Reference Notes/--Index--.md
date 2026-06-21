@@ -79,6 +79,12 @@ Select a domain to view its reference modules, learning tracks, and hands-on ver
 *Infrastructure as Code, state backend locking, variables and type constraints, custom modules, managed EKS clusters, serverless event triggers, and automatic drift remediation.*
 - **Go to MOC:** [[10-Index - Terraform on AWS|Terraform on AWS Reference MOC]]
 
+---
+
+### ⚙️ [AWS CloudOps Reference MOC](11-Index%20-%20AWS%20CloudOps.md)
+*Unified CloudWatch metrics, Systems Manager automation, compute/storage optimization, Route 53 DNS failover, AWS Organizations governance, and hybrid networking.*
+- **Go to MOC:** [[11-Index - AWS CloudOps|AWS CloudOps Reference MOC]]
+
 ### 📦 Miscellaneous Projects (MISC)
 *Individual projects and chapters that combine multiple administrative domains (e.g. self-hosted git servers, Linux host storage configuration, and custom webserver reverse proxies) but do not belong to a standard study track.*
 - 🐙 **[Gitea GitOps Workflows on RHEL 8](gitea_installation_and_workflows.md)**: RHEL 8 security hardening, LVM logical volume zoning, Apache reverse proxy, and act_runner CI/CD automation.
