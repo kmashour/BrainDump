@@ -3,6 +3,28 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-22] - Ingestion: Linux & Systems Administration Guides
+
+### Added
+- **Reference Notes:** Created the central index note [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] and 8 detailed reference modules:
+  - [[Reference Notes/8-1_linux_architecture_and_kernel.md|8-1_linux_architecture_and_kernel.md]]
+  - [[Reference Notes/8-2_filesystems_and_storage.md|8-2_filesystems_and_storage.md]]
+  - [[Reference Notes/8-3_networking_and_services.md|8-3_networking_and_services.md]]
+  - [[Reference Notes/8-4_user_management_and_hardening.md|8-4_user_management_and_hardening.md]]
+  - [[Reference Notes/8-5_system_services_and_initialization.md|8-5_system_services_and_initialization.md]]
+  - [[Reference Notes/8-6_monitoring_logs_and_diagnostics.md|8-6_monitoring_logs_and_diagnostics.md]]
+  - [[Reference Notes/8-7_high_availability_and_clustering.md|8-7_high_availability_and_clustering.md]]
+  - [[Reference Notes/8-8_automation_backup_and_cloud.md|8-8_automation_backup_and_cloud.md]]
+- **Projects:** Created [[Projects/Linux/Project - HA Keepalived Load Balancing.md|Project - HA Keepalived Load Balancing.md]] and [[Projects/Linux/Project - Migrating Legacy Init Scripts to systemd.md|Project - Migrating Legacy Init Scripts to systemd.md]] playbooks.
+- **Main Notes:** Created [[Main Notes/linux.md|linux.md]] and [[Main Notes/process-supervision.md|process-supervision.md]] landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `linux-admin-comprehensive-guide.md`
+- `linux-admin-2-comprehensive-guide.md`
+
+---
+
 ## [2026-06-21] - Ingestion: Vertical Pod Autoscaler & In-Place Pod Resizing
 
 ### Added
