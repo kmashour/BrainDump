@@ -50,3 +50,4 @@ When ingesting raw files or executing restructuring requests:
    - **The Rationale (Why):** The underlying architecture reason for this configuration.
    - **The Failure Loop (What if not):** The exact warning, pod crash event, CLI error, or security threat that triggers if misconfigured or omitted.
    - **The Alternative Case (When to use 'if not'):** When the alternative or opposite configuration is actually the desired configuration for production.
+   - **The Evolutionary Bridge:** When discussing classic OS systems (e.g., Maurice Bach's UNIX design) or older AWS features, explicitly detail the bridge to modern equivalents (e.g., Linux page cache, CFS/EEVDF, clone namespaces, or S3 strong consistency) and describe *why* the design evolved.
