@@ -6,3 +6,10 @@ Whenever you ingest files (using `@ingest` or otherwise processing raw files in 
 2. **Scrape Sub-Links:** You MUST parse the fetched document to extract relevant sub-links (sub-sections, adjacent concepts, nested setting references) and recursively scrape those sub-links as well.
 3. **Merge Before Refinement:** Combine the main URL text and all sub-link details with the inflow file's raw notes *before* starting Phase 1 (Refinement) of the multi-agent pipeline.
 4. **Enforce Gating:** The verification script `review_vault.py` will automatically reject commits if documentation URLs inside inflow files are not cited and covered in the compiled vault.
+
+## 🇸🇦 Multilingual Ingestion Rule (Arabic Transcripts)
+Whenever raw material (such as transcripts or notes) inside `inflow/` is provided in Arabic:
+1. **Translate to English:** You MUST translate the core technical concepts, configurations, and summaries to English during Phase 1 (Refinement) to align with the rest of the English vault.
+2. **Preserve Terminology:** Keep standard technical keywords in English, and translate explanations, definitions, and contextual descriptions into high-quality technical English.
+3. **Citations:** Note in the YAML frontmatter and in the reference notes that the source material was originally in Arabic, preserving a reference/link to the original source.
+
