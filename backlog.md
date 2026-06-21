@@ -3,6 +3,21 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-21] - Ingestion: Secrets Encryption at Rest Reference and Labs
+
+### Refactored / Upgraded
+- **Reference Notes:** Expanded [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] (Module 7) with a comprehensive comparison table of all encryption providers, wildcard matching rules, resource exemption precedence, zero-downtime key rotation protocol steps, and automatic reloading configuration options.
+- **Projects:** Updated [[Projects/kubernetes/Project - Secrets Management and Encryption.md|Project - Secrets Management and Encryption.md]] to detail local `etcd-client` diagnostic installation, process-checking queries, and a live key rotation and automatic reload validation lab.
+- **CKA Exam Checklists:** Appended key rotation guidelines, host-level `etcdctl` query methods, and automatic reload configurations under Section 8 of [[Projects/CKA/Exam Checklist - Security and Storage.md|Exam Checklist - Security and Storage.md]].
+- **Main Notes:** Added automatic reloading configuration parameters to [[Main Notes/secret - Encryption at Rest and Ingestion.md|secret - Encryption at Rest and Ingestion.md]].
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `Encrypting Secrets At Rest.md`
+- `Notes on Encryption at rest.md`
+
+---
+
 ## [2026-06-21] - Ingestion: A Note on Secrets
 
 ### Refactored / Upgraded

@@ -297,9 +297,24 @@ Verify that secrets are written to ETCD as encrypted blobs rather than plaintext
 ssh admin@control-plane-node-ip
 ```
 
-#### Step B: Query raw secret content directly from ETCD
-Establish environmental parameters and query ETCD using `etcdctl`:
+*Diagnostic Check (Optional):* If `etcdctl` is not available on the control plane host, install the diagnostic client utility:
 ```bash
+sudo apt-get update && sudo apt-get install -y etcd-client
+```
+
+*Static Pod Restart Verification:* Verify the static API server pod successfully restarted and runs with the new configuration parameters:
+```bash
+# Check running processes
+ps aux | grep kube-apiserver | grep encryption-provider-config
+
+# Check static pod runtime container status via container engine CLI
+sudo crictl pods --name kube-apiserver
+```
+
+#### Step B: Query raw secret content directly from ETCD
+Establish environmental parameters and query ETCD using `etcdctl` (or query inside the etcd container using `kubectl exec`):
+```bash
+# Method A: Node Local CLI Client
 export ETCDCTL_API=3
 export ETCD_CERTS="/etc/kubernetes/pki/etcd"
 
@@ -314,6 +329,13 @@ sudo etcdctl \
   --cacert=$ETCD_CERTS/ca.crt \
   --cert=$ETCD_CERTS/server.crt \
   --key=$ETCD_CERTS/server.key \
+  get /registry/secrets/secure-secrets/validation-secret --print-value-only
+
+# Method B: In-Cluster Execution (Alternative)
+kubectl exec -n kube-system etcd-control-plane -- etcdctl \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
   get /registry/secrets/secure-secrets/validation-secret --print-value-only
 ```
 
@@ -330,7 +352,71 @@ kubectl delete secret validation-secret -n secure-secrets
 
 ---
 
-### 2. Verifying `tmpfs` Memory Mounts inside Pods
+### 2. Live Key Rotation & Automatic Reload Verification
+Validate key rotation without API server downtime using the automatic reloading controller.
+
+#### Step A: Enable Automatic Reloading
+Ensure `--encryption-provider-config-automatic-reload=true` is appended to the API Server arguments.
+
+#### Step B: Add a Secondary Key for Decryption
+Generate a new key:
+```bash
+head -c 32 /dev/urandom | base64
+# Output: w9eQ3fR8yT5uV2x4z6A8b0c2d4e6f8g9h1k=
+```
+Append the new key as the second entry in `/etc/kubernetes/encryption/config.yaml`:
+```yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+      - secrets
+    providers:
+      - aescbc:
+          keys:
+            - name: key1          # Kept as active write key
+              secret: gKzP0rL4w9eQ3fR8yT5uV2x4z6A8b0c2d4e6f8g9h1k=
+            - name: key2          # New decryption key
+              secret: w9eQ3fR8yT5uV2x4z6A8b0c2d4e6f8g9h1k=
+      - identity: {}
+```
+Wait 60 seconds. The API server will poll the configuration and print the reloading success metric to logs.
+
+#### Step C: Promote the New Key to Active (First Entry)
+Swap the keys array order in `/etc/kubernetes/encryption/config.yaml`:
+```yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+      - secrets
+    providers:
+      - aescbc:
+          keys:
+            - name: key2          # Promoted: active write key
+              secret: w9eQ3fR8yT5uV2x4z6A8b0c2d4e6f8g9h1k=
+            - name: key1          # Kept for decrypting old secrets
+              secret: gKzP0rL4w9eQ3fR8yT5uV2x4z6A8b0c2d4e6f8g9h1k=
+      - identity: {}
+```
+Wait 60 seconds. Create a new validation secret and query etcd:
+```bash
+kubectl create secret generic rotation-test --from-literal=val=data123 -n secure-secrets
+# Check prefix
+kubectl exec -n kube-system etcd-control-plane -- etcdctl [...] get /registry/secrets/secure-secrets/rotation-test
+```
+*Expected Output:* The prefix is `k8s:enc:aescbc:v1:key2:...` proving the promoted key is now active.
+
+#### Step D: Force Global Re-encryption and Retire Old Key
+Re-encrypt all secrets:
+```bash
+kubectl get secrets -A -o json | kubectl replace -f -
+```
+Remove `key1` from `/etc/kubernetes/encryption/config.yaml`, leaving only `key2`. Clear the old key from backups.
+
+---
+
+### 3. Verifying `tmpfs` Memory Mounts inside Pods
 Verify that secrets do not persist to physical disk sectors, and instead reside only in volatile memory namespaces.
 
 #### Method A: From inside the Container Namespace

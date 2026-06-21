@@ -78,6 +78,7 @@ Update the Kubeadm static pod manifest `/etc/kubernetes/manifests/kube-apiserver
 *   **Flags:**
     ```yaml
     - --encryption-provider-config=/etc/kubernetes/enc/enc-config.yaml
+    - --encryption-provider-config-automatic-reload=true # Syncs rotations without API Server restarts
     ```
 *   **Volume Mounts:** Ensure the file path is mounted from the host into the API server container.
 

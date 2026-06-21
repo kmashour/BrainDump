@@ -1341,24 +1341,77 @@ By default, secrets are stored in etcd as unencrypted base64 strings. Any user w
 
 Kubernetes supports several encryption providers to secure secrets in the backing `etcd` store. These are categorized into **Static Providers** and **KMS Envelope Encryption**.
 
-#### 1. Static Providers
-Static providers use keys stored in a configuration file on the control plane node's local disk.
-* **`identity`:** The default provider. No encryption. It writes the secret directly to etcd as a plaintext JSON/Protobuf structure.
-* **`aescbc`:** Recommended symmetric provider. Uses AES-CBC with PKCS#7 padding and a 32-byte user-provided key. Provides strong, industry-standard cryptographic protection.
-* **`secretbox`:** Uses XSalsa20 and Poly1305 for symmetric encryption. A modern alternative to AES, but less widely adopted in enterprise compliance audits than AES-CBC.
-* **Security Limitation:** Because the raw encryption key is stored on the control plane node in `/etc/kubernetes/encryption/config.yaml`, anyone who gains root access to the control plane can steal the key and decrypt all secrets.
+#### 1. Available Encryption Providers Comparison
 
-#### 2. KMS Envelope Encryption (KMS v1 and KMS v2)
-KMS envelope encryption delegates key management to an external Key Management Service (e.g., HashiCorp Vault, AWS KMS, Google Cloud KMS, Azure Key Vault) via a local gRPC plugin.
-* **How it works (Envelope Encryption):**
-  1. The API Server generates a unique, short-lived **Data Encryption Key (DEK)** locally for each Secret write.
-  2. The API Server encrypts the Secret payload using the DEK.
-  3. The API Server sends the DEK to the KMS provider via gRPC over a UNIX domain socket.
-  4. The KMS encrypts the DEK using its master **Key Encryption Key (KEK)** and returns the encrypted DEK.
-  5. The API Server writes the encrypted Secret payload and the encrypted DEK together into `etcd`.
-  6. On read, the API Server extracts the encrypted DEK, asks the KMS to decrypt it, and uses the returned plaintext DEK to decrypt the Secret.
-* **Advantages:** The master KEK never leaves the external KMS HSMs. Access to the key can be audited, revoked instantly, and rotated automatically without restarting Kubernetes components.
-* *See complete implementation steps and the step-by-step etcdctl diagnostic run sheet in [[Projects/kubernetes/Project - Secrets Management and Encryption.md#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > ETCD Encryption Setup & Verification]].*
+| Provider Name | Encryption Algorithm | Strength | Speed | Key Length | Key Management & Security Characteristics |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **`identity`** | None | N/A | N/A | N/A | Default provider. Resources written as plaintext JSON/Protobuf. If set as the first provider, resources are decrypted upon write. Does not provide any confidentiality. |
+| **`aescbc`** | AES-CBC (PKCS#7 padding) | Moderate/Weak | Fast | 16, 24, 32-byte | Not recommended for high-security environments due to CBC's susceptibility to padding oracle attacks. Raw keys are stored in a plaintext configuration file on the control plane disk. |
+| **`aesgcm`** | AES-GCM (Random Nonce) | Strong | Fastest | 16, 24, 32-byte | Extremely fast. Recommended only if an automated key rotation scheme is implemented. GCM nonce reuse becomes unsafe if keys are not rotated every 200,000 writes. Keys are stored locally on the control plane. |
+| **`secretbox`** | XSalsa20 + Poly1305 | Strong | Faster | 32-byte | Uses relatively newer cryptographic constructions. May not meet strict corporate compliance standards that mandate standard NIST-approved ciphers. Keys are stored locally on the control plane node. |
+| **`kms` v1** | Envelope Encryption (AES-GCM DEK) | Strongest | Slow | 32-byte DEK | delegates key management to external KMS via local gRPC plugin. Kube-apiserver calls KMS to encrypt a unique Data Encryption Key (DEK) generated for each secret write using the KMS Master Key Encryption Key (KEK). Deprecated in v1.28. |
+| **`kms` v2** | Envelope Encryption (AES-GCM DEK) | Strongest | Fast | 32-byte DEK | Generates a new DEK per API server instance from a secret seed. KEK rotation occurs externally and is controlled by the user. Recommended for production. Stable from v1.29+. |
+
+#### 2. Wildcard Matching & Resource Exemption Precedence
+`EncryptionConfiguration` supports wildcarding to specify which resources should be encrypted.
+* **Wildcards:** Use `*.<group>` to match all resources in a group (e.g., `*.apps`), `*.` to match all resources in the core API group, or `*.*` to match all resources (including custom resources added after server startup).
+* **Overlap Limitation:** You cannot define overlapping wildcard rules within the same resource list or across multiple entries since part of the configuration would be ineffective.
+* **Precedence Rule:** Processing is executed sequentially according to the order listed in the `resources` config array.
+* **Exempting Resources:** To exempt specific resources (like Events or ConfigMaps) from a wildcard encryption configuration, you must place a specific resource entry with the `identity` provider **earlier** in the resources list than the wildcard entry.
+  ```yaml
+  resources:
+    - resources:
+        - events
+        - configmaps
+      providers:
+        - identity: {} # Exempt: Write plaintext
+    - resources:
+        - '*.*'
+      providers:
+        - aescbc:
+            keys:
+              - name: key1
+                secret: <BASE64_KEY>
+  ```
+
+#### 3. Zero-Downtime Key Rotation Protocol
+Changing or rotating keys without API server downtime requires a precise multi-step roll:
+1. **Prepare New Key:** Generate a new 32-byte key (`head -c 32 /dev/urandom | base64`). Add it as the **second** key in the keys array under the active provider on all control plane nodes.
+   ```yaml
+   providers:
+     - aescbc:
+         keys:
+           - name: key1          # Active key used for encryption
+             secret: <OLD_SECRET>
+           - name: key2          # New key added for decryption only
+             secret: <NEW_SECRET>
+   ```
+2. **Reload / Restart API Servers (Phase 1):** Restart or reload all `kube-apiserver` processes to ensure every instance is capable of decrypting secrets encrypted with the new key.
+3. **Promote New Key (Active):** Modify the config file across all nodes, making the new key (`key2`) the **first** entry in the keys array.
+   ```yaml
+   providers:
+     - aescbc:
+         keys:
+           - name: key2          # Promoted: Now used for new encryption writes
+             secret: <NEW_SECRET>
+           - name: key1          # Kept for decrypting old secrets
+             secret: <OLD_SECRET>
+   ```
+4. **Reload / Restart API Servers (Phase 2):** Restart/reload all `kube-apiserver` processes to ensure the promoted key is now used for all new writes.
+5. **Re-encrypt Backing Store:** Execute a global update command to rewrite all existing secrets using the new active key:
+   ```bash
+   kubectl get secrets --all-namespaces -o json | kubectl replace -f -
+   ```
+6. **Retire Old Key:** Remove the old key (`key1`) from the configuration array and restart/reload all API servers. Any accidental raw plaintext reads will now be rejected.
+
+#### 4. Automatic Configuration Reloading
+Instead of manually restarting the `kube-apiserver` pods during key rotation, configure the API server with:
+```yaml
+--encryption-provider-config-automatic-reload=true
+```
+When enabled, the API server polls the configuration file every minute. The rotation controller automatically updates the decryption ciphers in memory without process restarts. Monitor reloading status using the `apiserver_encryption_config_controller_automatic_reload_last_timestamp_seconds` metrics.
+
+*See complete implementation steps and the step-by-step etcdctl diagnostic run sheet in [[Projects/kubernetes/Project - Secrets Management and Encryption.md#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > ETCD Encryption Setup & Verification]].*
 
 ### 11.10 ConfigMap & Secret Injection Methods (Application Runtimes)
 ConfigMaps and Secrets can be injected into container runtimes in three ways:

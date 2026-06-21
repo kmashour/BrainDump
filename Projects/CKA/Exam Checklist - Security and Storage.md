@@ -383,13 +383,40 @@ Verify that encryption-at-rest is enabled and functioning:
 # Verify api-server process arguments for encryption provider configuration
 ps -aux | grep kube-apiserver | grep encryption-provider-config
 
-# Query etcd registry directly to verify cipher text encryption (returns encrypted format, not plaintext values)
+# Check static pod runtime container status
+crictl pods --name kube-apiserver
+
+# If local etcdctl client is missing, install it:
+sudo apt-get update && sudo apt-get install -y etcd-client
+
+# Query etcd registry (Method A - container command):
 kubectl exec -n kube-system etcd-control-plane -- etcdctl \
   --cacert=/etc/kubernetes/pki/etcd/ca.crt \
   --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key \
   get /registry/secrets/default/my-secret
+
+# Query etcd registry (Method B - host command):
+sudo etcdctl --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  get /registry/secrets/default/my-secret
 ```
+
+#### Zero-Downtime Key Rotation Steps:
+1. **Add new key as second item** in `/etc/kubernetes/encryption/config.yaml` keys list.
+2. **Reload / Restart API servers** to load key for decryption.
+3. **Move new key to first position** in config.yaml keys list (promotes it to active write cipher).
+4. **Reload / Restart API servers** to start writing with the new key.
+5. **Re-encrypt all existing Secrets**:
+   ```bash
+   kubectl get secrets --all-namespaces -o json | kubectl replace -f -
+   ```
+6. **Remove the old key** from the config file and reload/restart API servers.
+
+#### Automatic reloading configuration:
+Confirm API server configuration contains: `--encryption-provider-config-automatic-reload=true`. This allows rotations to sync within 60 seconds without static pod restarts.
 
 ### C. Restricting Namespace Metadata Access
 * **Escalation Vector:** Restrict developer RoleBindings from granting `patch` or `update` access on `namespaces`. Since PSA and NetworkPolicies rely on namespace labels, users could downgrade namespace security parameters by altering labels.
