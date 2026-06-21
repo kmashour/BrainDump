@@ -207,7 +207,10 @@ kubectl patch pod inplace-pod --patch '{"spec":{"containers":[{"name":"app","res
 ```
 
 #### The Assumptions:
-*   The Kubernetes control plane and worker nodes must run v1.27+ with the `InPlacePodVerticalScaling` feature gate enabled.
+*   The Kubernetes control plane and worker nodes must run:
+    *   v1.35+ for Container-level resizing (Stable, enabled by default).
+    *   v1.36+ for Pod-level resizing (Beta, enabled by default).
+    *   Older versions (v1.27 to v1.34) require the `InPlacePodVerticalScaling` feature gate explicitly enabled.
 *   Workload is running on Linux hosts (Windows OS containers do not support dynamic cgroups updates).
 
 #### The Rationale (Why):

@@ -10,7 +10,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - **Projects:** Created [[Projects/kubernetes/Project - Vertical Pod Autoscaler.md|Project - Vertical Pod Autoscaler.md]] containing playbooks for VPA installation, Auto mode validation, and manual in-place patching diagnostics.
 
 ### Refactored / Upgraded
-- **Reference Notes:** Upgraded Section 12.5 "Workload Autoscaling (HPA & VPA)" in [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md|0-6_kubernetes_workloads_and_controllers.md]] to incorporate HPA vs VPA comparisons and manual in-place scaling workflows.
+- **Reference Notes:** Upgraded Section 12.5 "Workload Autoscaling (HPA & VPA)" in [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md|0-6_kubernetes_workloads_and_controllers.md]] to incorporate HPA vs VPA comparisons and manual in-place scaling workflows, aligned with v1.35 GA (container-level) and v1.36 Beta (pod-level) resource resize features.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from the `inflow/` directory:

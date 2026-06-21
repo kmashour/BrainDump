@@ -24,11 +24,14 @@ tags:
 
 By default, modifying container resource requests or limits in an active Pod spec (typically done by changing the Deployment configuration) is disruptive. The control plane destroys the existing Pod and recreates it with the new specifications. To avoid this disruption, Kubernetes introduces **In-Place Pod Vertical Scaling**, allowing dynamic resource scaling of running container boundaries without restarting the Pod.
 
-### ⚙️ Feature Configuration
-*   **Feature Gate:** Controlled by the `InPlacePodVerticalScaling` gate. It was introduced as Alpha in v1.27 and promoted to Beta in v1.33+ (enabled by default in newer versions).
-*   **Resize Policy (`spec.containers[*].resizePolicy`):** Defines how the container runtime reacts to changes in CPU and memory individually:
+### ⚙️ Feature Configuration & Levels
+*   **Feature Status:** 
+    *   **Container-level Resizing** (`spec.containers[*].resources`) is **Stable (GA) in Kubernetes v1.35+** (enabled by default).
+    *   **Pod-level Resizing** (`spec.resources`) is **Beta in Kubernetes v1.36+** (enabled by default).
+*   **Resize Policy (`spec.containers[*].resizePolicy`):** Defines how the container runtime reacts to changes in CPU and memory individually at the container level:
     *   `RestartNotRequired` (Default for CPU): The container runtime dynamically adjusts resource allocations (e.g. updating CPU cgroups) on the fly without stopping the container.
     *   `Restart` (Default for Memory): The container runtime restarts the container process to safely apply the new resource parameters.
+*   **Pod-Level Resource Limits (`spec.resources`):** Instead of specifying resources purely per container, you can declare requests/limits under `spec.resources` at the Pod level. This acts as the aggregate upper bound of resources consumed by the Pod. Kubelet configures the Pod-level cgroups limits, and you can dynamically patch this aggregate boundary.
 
 ---
 

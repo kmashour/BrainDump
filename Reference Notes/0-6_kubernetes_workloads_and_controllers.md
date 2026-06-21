@@ -1348,8 +1348,10 @@ VPA dynamically adjusts container CPU and memory requests and limits to rightsiz
 
 #### 4. In-Place Pod Vertical Scaling (Manual In-Place Resizing)
 By default, altering resource requests or limits in a Pod's specification (e.g. inside a Deployment template) requires the API server to recreate the Pod. To allow dynamic resource scaling without Pod termination, Kubernetes provides the **In-Place Pod Vertical Scaling** mechanism.
-*   **Feature Gate Requirement:** The feature is controlled by the `InPlacePodVerticalScaling` gate (Alpha in v1.27, Beta in v1.33+).
-*   **Resize Policy Spec (`resizePolicy`):** You can define how the container runtime reacts to CPU and memory scaling actions individually:
+*   **Feature Status & Levels:**
+    *   **Container-level Resizing** (`spec.containers[*].resources`): **Stable (GA) in v1.35+** (enabled by default).
+    *   **Pod-level Resizing** (`spec.resources`): **Beta in v1.36+** (enabled by default), allowing aggregate limits for the entire Pod sandbox in-place.
+*   **Resize Policy Spec (`resizePolicy`):** For container-level resize, you can define how the container runtime reacts to CPU and memory scaling actions individually:
     *   `RestartNotRequired` (Default for CPU): The container runtime dynamically adjusts CPU cgroups shares on the fly without stopping the container.
     *   `Restart` (Often used for memory): The container runtime restarts the target container to apply the new memory parameters.
     *   **YAML Spec Example:**
