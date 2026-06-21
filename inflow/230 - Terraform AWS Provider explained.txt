@@ -1,0 +1,2038 @@
+00:00 Hello everyone and welcome back to the
+00:02 
+
+00:02 channel. My name is Push. This is day
+00:04 
+
+00:04 two in 30 days of AWS Terraform. In this
+00:07 
+
+00:07 video, we'll be looking into Terraform
+00:09 
+
+00:09 providers. Before we actually do the
+00:11 
+
+00:11 hands-on, before we start writing
+00:14 
+
+00:14 Terraform scripts and before we actually
+00:16 
+
+00:16 start provisioning the infrastructure,
+00:18 
+
+00:18 it is important to understand what
+00:20 
+
+00:20 actually is a provider. Because provider
+00:22 
+
+00:22 is the plug-in provider is something
+00:25 
+
+00:25 that does everything for you and it's
+00:29 
+
+00:29 not really a good advice to continue the
+00:32 
+
+00:32 learning without understanding the
+00:33 
+
+00:33 teraphform provider. So let's start with
+00:35 
+
+00:35 the provider then. So what exactly it is
+00:39 
+
+00:39 as you see it bridges the gap between
+00:42 
+
+00:42 your terraform the installable the
+00:44 
+
+00:44 binary of terraform and your cloud
+00:46 
+
+00:46 provider. Okay. So it's basically a
+00:49 
+
+00:49 plug-in that translate your Terraform
+00:51 
+
+00:51 code into the code that your cloud
+00:55 
+
+00:55 provider understand. Okay. So let me
+00:57 
+
+00:57 give you more example. So you have your
+00:60 
+
+01:00 cloud providers over here, right? So
+01:03 
+
+01:03 when you are provisioning a resource
+01:04 
+
+01:04 with your cloud provider such as AWS,
+01:07 
+
+01:07 you want to create an S3 bucket, let's
+01:09 
+
+01:09 say. So you are actually calling AWS S3
+01:12 
+
+01:12 API to provision the resource for you.
+01:14 
+
+01:14 Whether you are using cloud console or
+01:17 
+
+01:17 whether you are using CLI commands or
+01:20 
+
+01:20 any other thing right so you are
+01:22 
+
+01:22 actually calling the API of AWS S3. Now
+01:27 
+
+01:27 how Terraform will do that for you
+01:29 
+
+01:29 because even if you are using Terapform
+01:31 
+
+01:31 you are still calling the AWS API. So
+01:34 
+
+01:34 Terraform will do that with the help of
+01:37 
+
+01:37 AWS Teraphform provider. Okay. So these
+01:41 
+
+01:41 providers are nothing but the plugins
+01:44 
+
+01:44 that translate terapform code because as
+01:46 
+
+01:46 I've told you this terapform code is
+01:49 
+
+01:49 written into TF format which is
+01:52 
+
+01:52 basically HCL language right Hashi corp
+01:56 
+
+01:56 configuration language and then your
+01:59 
+
+01:59 cloud providers such as AWS Azure or GCP
+02:02 
+
+02:02 they do not understand the language
+02:04 
+
+02:04 right so we need a plug-in that
+02:07 
+
+02:07 translate this HCL language to the
+02:10 
+
+02:10 language uage that your cloud API
+02:12 
+
+02:12 understand. So that's what this provider
+02:14 
+
+02:14 does for you, right? So when you use
+02:16 
+
+02:16 terapform provider, you actually first
+02:19 
+
+02:19 initialize the provider using terapform
+02:21 
+
+02:21 init command and then you actually
+02:24 
+
+02:24 download like it like you don't have to
+02:26 
+
+02:26 download it but it automatically
+02:28 
+
+02:28 download the terraform provider for you.
+02:31 
+
+02:31 So that whenever you run any terapform
+02:33 
+
+02:33 command it will translate that code
+02:36 
+
+02:36 automatically for you like we'll see
+02:37 
+
+02:37 that everything in action right. So
+02:39 
+
+02:39 there are different type of uh terapform
+02:41 
+
+02:41 providers. There are official, there are
+02:44 
+
+02:44 partner provider and then there are
+02:46 
+
+02:46 community providers. Community providers
+02:48 
+
+02:48 as in which is maintained by opensource
+02:50 
+
+02:50 community. Official such as AWS, Azure,
+02:53 
+
+02:53 GCP and then there are partner provider
+02:56 
+
+02:56 which is not maintained by uh AWS or
+02:59 
+
+02:59 like these cloud providers but
+03:01 
+
+03:01 maintained by third party. So there are
+03:02 
+
+03:02 different type of teraphform providers.
+03:04 
+
+03:04 uh this is what I have already explained
+03:07 
+
+03:07 and these target APIs that you are
+03:09 
+
+03:09 hitting with your provider these target
+03:11 
+
+03:11 APIs could be your cloud providers
+03:13 
+
+03:13 endpoint or these could be other
+03:16 
+
+03:16 services such as docker kubernetes data
+03:19 
+
+03:19 do prometheus graphfana and many more
+03:21 
+
+03:21 right so that's all about provider what
+03:25 
+
+03:25 exactly it is now I want you to go to
+03:28 
+
+03:28 the terraform documentation and get
+03:30 
+
+03:30 yourself familiar with how does it work
+03:32 
+
+03:32 okay so what you're going to
+03:34 
+
+03:34 is search for terraform AWS provider.
+03:38 
+
+03:38 Okay. And go to this link which says
+03:41 
+
+03:41 registry.apform.io.
+03:44 
+
+03:44 Okay. Go over here and then you will see
+03:48 
+
+03:48 a page something like this. Okay. What
+03:50 
+
+03:50 it is? It is the AWS provider page the
+03:54 
+
+03:54 main landing page and on the left side
+03:57 
+
+03:57 you will see all the services that this
+04:00 
+
+04:00 provider support. So using AWS Terapform
+04:03 
+
+04:03 provider you can run you can provision
+04:07 
+
+04:07 infrastructure within AWS of all of
+04:09 
+
+04:09 these services that are supported. As
+04:11 
+
+04:11 you can see there are a lot I think
+04:13 
+
+04:13 almost all the services are covered as
+04:15 
+
+04:15 part of it. Right now the important
+04:18 
+
+04:18 thing to understand is Terraform
+04:21 
+
+04:21 provider has a version and the same way
+04:24 
+
+04:24 Terraform itself has its version. So
+04:27 
+
+04:27 there are two different versions. So if
+04:29 
+
+04:29 we go back
+04:31 
+
+04:31 okay over here we'll see the example of
+04:34 
+
+04:34 a Terraform provider file like how does
+04:36 
+
+04:36 it look like. So it is as you can see
+04:39 
+
+04:39 enclosed within Terraform. Terraform is
+04:41 
+
+04:41 the main um what you call is the at the
+04:45 
+
+04:45 root level and inside that you specify
+04:48 
+
+04:48 your providers like AWS, Azure or GCP
+04:53 
+
+04:53 and then there are some third party
+04:54 
+
+04:54 providers such as random. Random is a
+04:57 
+
+04:57 type of provider by Hashior which helps
+04:60 
+
+04:60 you generate random strings or you know
+05:02 
+
+05:02 random values for different use cases
+05:04 
+
+05:04 such as let's say you want to uh
+05:07 
+
+05:07 generate a unique name for your S3
+05:09 
+
+05:09 bucket. So you can use this random
+05:11 
+
+05:11 provider to generate a random name for
+05:13 
+
+05:13 your bucket that's that's all the that's
+05:15 
+
+05:15 the provider block and inside that there
+05:17 
+
+05:17 is as you can see required version. Now
+05:20 
+
+05:20 this required version is your Terraform
+05:22 
+
+05:22 version. So over here this version is
+05:25 
+
+05:25 your provider version which is 6.7.0 and
+05:29 
+
+05:29 over here it it is your terraform
+05:31 
+
+05:31 version which is 1.0. This one 3.1 is
+05:34 
+
+05:34 your version of random provider.
+05:38 
+
+05:38 Okay. And here you specify your provider
+05:42 
+
+05:42 block for like let's say AWS. And inside
+05:46 
+
+05:46 that you can hardcode some config like
+05:48 
+
+05:48 you can hardcode secrets, you can
+05:50 
+
+05:50 hardcode region authentication but like
+05:52 
+
+05:52 again I have not added the secret key
+05:55 
+
+05:55 and secret access ID. It's because it's
+05:58 
+
+05:58 not really a best practice to do that.
+05:60 
+
+06:00 You don't want to hardcode your secrets
+06:03 
+
+06:03 in in the provider config. That's why I
+06:05 
+
+06:05 have not used it not even for the
+06:07 
+
+06:07 example. But I I was just telling you
+06:10 
+
+06:10 that but let's say if I have used region
+06:12 
+
+06:12 over here US East one that means when we
+06:15 
+
+06:15 initialize this provider by default it
+06:18 
+
+06:18 will take us east1 as your region. Okay.
+06:22 
+
+06:22 So now you don't have to obviously you
+06:24 
+
+06:24 don't have to remember everything right
+06:26 
+
+06:26 so how do you write your first provider
+06:28 
+
+06:28 config is you go over here in the doc
+06:31 
+
+06:31 and on the right side if you see use
+06:33 
+
+06:33 provider. So when you click on that it
+06:35 
+
+06:35 will generate the code for you. Okay. So
+06:37 
+
+06:37 the same code that we have just seen
+06:39 
+
+06:39 over there and um you can you can start
+06:42 
+
+06:42 using it. So it has your required
+06:45 
+
+06:45 provider which is the provider version
+06:48 
+
+06:48 for your AWS and then it has your
+06:51 
+
+06:51 provider AWS config. It does not have
+06:53 
+
+06:53 the terapform version. Why it doesn't
+06:55 
+
+06:55 have because if you don't specify the
+06:57 
+
+06:57 Teraphform version by default it will
+06:59 
+
+06:59 take the latest version. Okay. So if you
+07:04 
+
+07:04 go over here, we need to understand why
+07:07 
+
+07:07 does version matters and why can't we
+07:09 
+
+07:09 just use the latest terapform version
+07:11 
+
+07:11 which is the default as well and I'll
+07:13 
+
+07:13 tell you why. So if you don't specify
+07:16 
+
+07:16 yes latest version will be used but your
+07:19 
+
+07:19 configuration might not be compatible
+07:21 
+
+07:21 with the latest version. So you see you
+07:23 
+
+07:23 have a terapform version and then you
+07:26 
+
+07:26 have a provider version. Your providers
+07:28 
+
+07:28 are maintained separately than terraform
+07:31 
+
+07:31 itself. your Terraform binary and the
+07:34 
+
+07:34 version of it is maintained by Hashior
+07:36 
+
+07:36 Cororb right it's their official product
+07:38 
+
+07:38 Terraform but then when we talk about
+07:41 
+
+07:41 your Terraform providers so in this case
+07:44 
+
+07:44 AWS provider is maintained by AWS
+07:48 
+
+07:48 community or AWS itself so it's not
+07:51 
+
+07:51 maintained by Teraphform so there are
+07:54 
+
+07:54 high chances that there are
+07:55 
+
+07:55 compatibility issues between the
+07:57 
+
+07:57 Terraform provider version and the
+07:59 
+
+07:59 Teraphform version if it is not tested
+08:01 
+
+08:01 it properly and if it has not been
+08:04 
+
+08:04 stable enough, if it is just new, right?
+08:07 
+
+08:07 So that is why we need to lock the
+08:09 
+
+08:09 version. And how do we lock the version
+08:12 
+
+08:12 and how do we know which version we
+08:14 
+
+08:14 should use? So the version that you use
+08:17 
+
+08:17 to develop your Terapform code at the
+08:19 
+
+08:19 first place and tested your Terapform
+08:21 
+
+08:21 configuration with, you should use that
+08:24 
+
+08:24 version. And whenever you want like
+08:26 
+
+08:26 let's say your version is outdated and
+08:29 
+
+08:29 like it's been a long time that you have
+08:31 
+
+08:31 updated it to the newest possible
+08:32 
+
+08:32 version first you need to test it
+08:35 
+
+08:35 thoroughly with the latest version or
+08:37 
+
+08:37 with the whatever version you are
+08:39 
+
+08:39 upgrading to in your nonpro environment.
+08:42 
+
+08:42 Once you have run all your tests
+08:44 
+
+08:44 everything works fine then only you do
+08:46 
+
+08:46 that in your production environment.
+08:48 
+
+08:48 Right? So it is really important to
+08:50 
+
+08:50 understand why do we need the version
+08:53 
+
+08:53 and why it matters. Now there are a lot
+08:56 
+
+08:56 of things about version that you need to
+08:58 
+
+08:58 understand. So let's understand the
+09:01 
+
+09:01 version constraints like what it is. So
+09:04 
+
+09:04 as you see over here we see the version
+09:07 
+
+09:07 which is provider version right. So in
+09:09 
+
+09:09 this example or in this example as well.
+09:12 
+
+09:12 So this version inside required provider
+09:15 
+
+09:15 block it's your provider version.
+09:18 
+
+09:18 Right? Which will look something like
+09:20 
+
+09:20 this. And then there is required
+09:22 
+
+09:22 version. Required version which is
+09:26 
+
+09:26 um yeah I think which is what I have
+09:29 
+
+09:29 shown you over here. Yeah required
+09:30 
+
+09:30 version. This one this is your terapform
+09:32 
+
+09:32 version your terapform core version or
+09:34 
+
+09:34 your terapform binary version.
+09:37 
+
+09:37 Now these two are different. And you
+09:40 
+
+09:40 also would have noticed like I have used
+09:43 
+
+09:43 certain operators with it. Right? So
+09:46 
+
+09:46 over here there's a tilt sign and then
+09:48 
+
+09:48 there is a arrow and over here as well
+09:50 
+
+09:50 there is sign. So what are these? These
+09:52 
+
+09:52 are nothing but the operators that you
+09:54 
+
+09:54 use with the version. Let's understand
+09:56 
+
+09:56 what are these different operators. So
+09:59 
+
+09:59 equal to is like what is logical equal
+10:02 
+
+10:02 to that means it would match the exact
+10:05 
+
+10:05 same version. So if I have written like
+10:08 
+
+10:08 version equal to 6.7.0 0. So it will not
+10:12 
+
+10:12 upgrade even if the newest version is
+10:14 
+
+10:14 available. It will always stick to 6.7.0
+10:18 
+
+10:18 and not equal to means it will exclude
+10:21 
+
+10:21 the exact version and it will use any
+10:23 
+
+10:23 other latest available version. So this
+10:26 
+
+10:26 is your operator over here and this is
+10:29 
+
+10:29 your version. Now what are these less
+10:32 
+
+10:32 than equal to greater than equal to and
+10:33 
+
+10:33 how does it work? So what it does it it
+10:36 
+
+10:36 does a boolean comparison and it will
+10:39 
+
+10:39 allow the version if it is true. Okay,
+10:41 
+
+10:41 what do we mean by that? So let's say it
+10:44 
+
+10:44 is less than that means version. Okay,
+10:47 
+
+10:47 I'll just write it down over here. Let's
+10:48 
+
+10:48 say this is version
+10:52 
+
+10:52 less than 6.7.0.
+10:55 
+
+10:55 So that means it will use the version
+10:58 
+
+10:58 just one less than this. So maybe 6.11
+11:03 
+
+11:03 or something whatever it is the previous
+11:05 
+
+11:05 version of this and it will stick to
+11:07 
+
+11:07 that right it will not upgrade it.
+11:09 
+
+11:09 Similarly
+11:11 
+
+11:11 oh sorry I I said the other way around.
+11:13 
+
+11:13 So that was this what I already talked
+11:16 
+
+11:16 about. Now if I talk about greater than
+11:20 
+
+11:20 so greater than meaning it will always
+11:23 
+
+11:23 go with the higher version than 6.7.0.
+11:26 
+
+11:26 It could be 6.8. It could be 6.7.1
+11:29 
+
+11:29 6.7.2. to anything but greater than
+11:31 
+
+11:31 this. If it is available, it will use
+11:34 
+
+11:34 that. Similarly, greater than equal to
+11:36 
+
+11:36 less than equal to work. Now, what
+11:37 
+
+11:37 exactly is equal to and then this sign
+11:40 
+
+11:40 over here. So, tild
+11:44 
+
+11:44 less than the one that we just saw
+11:46 
+
+11:46 above. What does it mean is TF can
+11:49 
+
+11:49 install like Terraform can install the
+11:51 
+
+11:51 version 6.7.0
+11:54 
+
+11:54 and anything greater than that but
+11:58 
+
+11:58 6.7.1.
+11:60 
+
+11:60 Okay, because only the last the last
+12:02 
+
+12:02 patch version will be changed, right? So
+12:05 
+
+12:05 because it says version should be
+12:08 
+
+12:08 greater than and then this tilt sign
+12:11 
+
+12:11 that means it should be 6.7.1 or 6.7.2
+12:16 
+
+12:16 or 6.7.3 anything that is available but
+12:19 
+
+12:19 it cannot be 6.8 8 right it will not
+12:24 
+
+12:24 exceed this uh the middle part of it
+12:27 
+
+12:27 right so it should be anything which is
+12:30 
+
+12:30 greater than 6.7.0 but less than 6.8 8
+12:34 
+
+12:34 because the middle part cannot change.
+12:36 
+
+12:36 So that's what it means. And if the
+12:38 
+
+12:38 version that you have used is let's say
+12:41 
+
+12:41 6.7.
+12:43 
+
+12:43 Okay. So there is no.0
+12:45 
+
+12:45 or maybe like let's say not not in this
+12:48 
+
+12:48 case. Uh let's keep it the way it is.
+12:51 
+
+12:51 Okay. I'll just keep it the way it is
+12:53 
+
+12:53 and let's use that in place of the
+12:56 
+
+12:56 terraform version. So terraform version
+12:58 
+
+12:58 is let's say if we have specified tilt
+13:02 
+
+13:02 greater than equal to 1.0.
+13:06 
+
+13:06 Okay. So what do we mean by that is it
+13:10 
+
+13:10 will go above 1.0 if it is available but
+13:14 
+
+13:14 it will only change the last part which
+13:18 
+
+13:18 is let's say 1.2 or 1.3 or 1.4 but it
+13:24 
+
+13:24 cannot go to 2.0. zero. Okay, let's take
+13:29 
+
+13:29 another example. I I'm I'm pretty sure
+13:31 
+
+13:31 it is confusing, but once you understand
+13:34 
+
+13:34 this part, it is pretty easy. So, let's
+13:36 
+
+13:36 take this example. Okay, so if you take
+13:39 
+
+13:39 the version as 1.0.4
+13:42 
+
+13:42 with this sign and greater than sign
+13:45 
+
+13:45 that means Terraform can install 1.0.5,
+13:49 
+
+13:49 1.010,
+13:51 
+
+13:51 1.07,
+13:52 
+
+13:52 but not 1.1.0.
+13:56 
+
+13:56 This middle part cannot change. Only the
+13:58 
+
+13:58 last part will change. Similarly, if we
+14:01 
+
+14:01 use tilt 1.1, so terapform can install
+14:04 
+
+14:04 1.2 1.3 up to 1.10 but not 2.0. Why?
+14:09 
+
+14:09 Only last part will change in this as
+14:11 
+
+14:11 well. So that's that's how the version
+14:15 
+
+14:15 works and that's how the version matters
+14:17 
+
+14:17 in terapform. Okay. So do a little
+14:20 
+
+14:20 practice try to understand from the docs
+14:23 
+
+14:23 as well over here and you will get the
+14:25 
+
+14:25 idea right. So now we are going to write
+14:28 
+
+14:28 our first terapform script. So we'll
+14:30 
+
+14:30 always start with the terapform
+14:32 
+
+14:32 provider. Okay. So what you could do you
+14:35 
+
+14:35 could just use a file. Okay. Um name it
+14:39 
+
+14:39 main.tf or provider.tf TF anything for
+14:43 
+
+14:43 now because we'll be doing a lot of
+14:45 
+
+14:45 things in upcoming videos and I don't
+14:47 
+
+14:47 want to fit everything in one single
+14:48 
+
+14:48 video like I I have to go step by step
+14:51 
+
+14:51 so that everyone will understand. So
+14:53 
+
+14:53 what we'll do um we you can either copy
+14:57 
+
+14:57 it from here like the provider config or
+15:01 
+
+15:01 you can copy it from here. I can just
+15:04 
+
+15:04 generate the code from GitHub copilot or
+15:06 
+
+15:06 from any LLM that I'm using. But I won't
+15:09 
+
+15:09 suggest it because you should always
+15:12 
+
+15:12 consider this Terraform documentation as
+15:15 
+
+15:15 the latest or as the single source of
+15:17 
+
+15:17 truth because it changes really
+15:19 
+
+15:19 frequently and most of the LLMs might
+15:22 
+
+15:22 not have all the up-to-date information
+15:25 
+
+15:25 right because it it it get trained on
+15:27 
+
+15:27 the data from time to time. It's not a
+15:29 
+
+15:29 realtime data. So what you can do is you
+15:32 
+
+15:32 can just copy it from here and then
+15:33 
+
+15:33 we'll see everything about it. Okay. So
+15:36 
+
+15:36 let's go over here and in this folder
+15:40 
+
+15:40 that I have used earlier. So I'm just
+15:42 
+
+15:42 going to create another folder. Okay.
+15:44 
+
+15:44 Let's create another folder and let's
+15:47 
+
+15:47 call it day02. And inside that I'm going
+15:50 
+
+15:50 to create a file main.tf.
+15:55 
+
+15:55 All right.
+15:57 
+
+15:57 Okay. How do I open it?
+16:02 
+
+16:02 Oh, I think it has created a folder. So,
+16:05 
+
+16:05 let me just delete this. Okay, inside
+16:08 
+
+16:08 this, let's create main.tf.
+16:12 
+
+16:12 Okay, now because I already have the
+16:14 
+
+16:14 Terraform extension installed, that's
+16:16 
+
+16:16 why it is showing the symbol and it will
+16:19 
+
+16:19 provide me all the autocomp completions
+16:21 
+
+16:21 and errors if there are any syntactical
+16:24 
+
+16:24 errors. So, make sure you have the
+16:25 
+
+16:25 Terapform extension installed. Okay. Now
+16:28 
+
+16:28 I have pasted the code that I have
+16:30 
+
+16:30 copied from the documentation. So over
+16:33 
+
+16:33 here I'm using the latest version but
+16:35 
+
+16:35 I'm locking it to 6.0. And if you cons
+16:38 
+
+16:38 if you know what what it is doing it
+16:41 
+
+16:41 will upgrade it to 6 till 6.10 whenever
+16:45 
+
+16:45 it is available but it will not go to
+16:47 
+
+16:47 7.0 even if it is available. So I'm
+16:50 
+
+16:50 locking the Teraphform provider version
+16:53 
+
+16:53 so that uh I don't face any
+16:55 
+
+16:55 compatibility issues because this is the
+16:58 
+
+16:58 ma major version and this is the minor
+16:60 
+
+16:60 version. I can t take risk with the
+17:02 
+
+17:02 minor versions considering there are
+17:04 
+
+17:04 only bug fixes and no major feature
+17:07 
+
+17:07 change but going from 6 to 7 could
+17:11 
+
+17:11 include a major release and that's where
+17:14 
+
+17:14 you need to do proper testing before you
+17:16 
+
+17:16 do that. Right? So that's what I'm doing
+17:18 
+
+17:18 right now. And then you need to
+17:20 
+
+17:20 configure your provider. This part is
+17:22 
+
+17:22 optional. So you can leave the blank,
+17:24 
+
+17:24 but you need to have the provider block,
+17:26 
+
+17:26 right? So you just need to have provider
+17:28 
+
+17:28 AWS block. And over here I'm creating a
+17:31 
+
+17:31 resource. Okay? Just an example. We'll
+17:33 
+
+17:33 see this in detail. What do we do? How
+17:36 
+
+17:36 do we do it? But for now, this is the uh
+17:40 
+
+17:40 resource we are creating in AWS VPC. So
+17:42 
+
+17:42 how does it work? Resource. This is the
+17:44 
+
+17:44 resource keyword. Whenever we need to
+17:46 
+
+17:46 create any resource in terraform, we
+17:49 
+
+17:49 start with resource keyword. Then this
+17:52 
+
+17:52 is the resource type which is AWS_VPC.
+17:56 
+
+17:56 Now how do we know what resource type we
+17:58 
+
+17:58 need to use? Let's go back to the
+17:60 
+
+18:00 documentation over here. Search for VPC,
+18:04 
+
+18:04 right? So currently there are multiple
+18:06 
+
+18:06 things. There are data sources.
+18:07 
+
+18:07 Resources. So there are data sources and
+18:10 
+
+18:10 resources. Data sources we'll cover
+18:12 
+
+18:12 later on. Just focus on resources for
+18:14 
+
+18:14 now. Okay. So, search for VPC resource
+18:18 
+
+18:18 over here. Um, let's see where it is
+18:21 
+
+18:21 because a lot of resources starts with
+18:24 
+
+18:24 VPC. But over here, you see inside VPC
+18:27 
+
+18:27 there are multiple sub resources for
+18:30 
+
+18:30 network ACL, route table, subnet, VPC
+18:33 
+
+18:33 and so on. So, this is what we need to
+18:35 
+
+18:35 use AWS default VPC.
+18:38 
+
+18:38 Okay. So
+18:42 
+
+18:42 where it is? Uh I just need to look at
+18:44 
+
+18:44 an example. Okay, let's see AWS VPC not
+18:50 
+
+18:50 the default VPC. Okay, so this is what
+18:52 
+
+18:52 we need. Okay, so resource AWS VPC which
+18:56 
+
+18:56 is the resource type and this is what we
+18:58 
+
+18:58 have used already, right? So forget
+19:01 
+
+19:01 about rest of the things for now. Just
+19:03 
+
+19:03 we just need to test the basic usage,
+19:06 
+
+19:06 right? So that's what I have already uh
+19:09 
+
+19:09 copied. Okay. So let's go back over here
+19:13 
+
+19:13 and it's going to use a field C block.
+19:17 
+
+19:17 So if you go back, so there is a C
+19:20 
+
+19:20 block. Now if you scroll down and you
+19:22 
+
+19:22 will see the argument reference. So
+19:24 
+
+19:24 these are the fields that are inside
+19:26 
+
+19:26 that resource block. Okay. So region is
+19:30 
+
+19:30 optional. I can have a region listed
+19:33 
+
+19:33 over there. But region is optional. Even
+19:35 
+
+19:35 C block is optional. So all the fields
+19:38 
+
+19:38 inside the C inside the VPC resource as
+19:42 
+
+19:42 you can see are optional. So that means
+19:44 
+
+19:44 it will use some default values to
+19:46 
+
+19:46 create it. Right? So everything is
+19:48 
+
+19:48 optional. If there are some mandatory
+19:50 
+
+19:50 field we have to add that field
+19:51 
+
+19:51 otherwise it will throw some error. So
+19:53 
+
+19:53 what fields are there? Let's see.
+19:56 
+
+19:56 And this example over here this is not
+19:59 
+
+19:59 the VPC name. This is the local name of
+20:01 
+
+20:01 the resource through which we'll refer
+20:04 
+
+20:04 it internally within teraphform like
+20:06 
+
+20:06 let's say if I have to create another
+20:09 
+
+20:09 resource okay so let's call it resource
+20:13 
+
+20:13 um let's say EC2 server right so AWS EC2
+20:17 
+
+20:17 is this the resource
+20:20 
+
+20:20 um EC2
+20:23 
+
+20:23 um
+20:24 
+
+20:24 with EC2 there are a lot of resources
+20:28 
+
+20:28 So EC2
+20:32 
+
+20:32 maybe host it's not actually EC2 server
+20:35 
+
+20:35 but let's just for the for the sake of
+20:37 
+
+20:37 this uh example so if I use this now how
+20:41 
+
+20:41 do I provide the value of AWS VPC that
+20:44 
+
+20:44 create this EC2 host within this VPC
+20:47 
+
+20:47 right so what I do over here is there
+20:49 
+
+20:49 might be a field for VPC ID right so
+20:53 
+
+20:53 this is what I'm going to do right VPC
+20:55 
+
+20:55 ID is equal to first you need to provide
+20:58 
+
+20:58 the resource type.
+21:01 
+
+21:01 So which is AWS_VPC
+21:04 
+
+21:04 is the resource type. I have actually
+21:06 
+
+21:06 GitHub copilot installed that's why it
+21:08 
+
+21:08 is autocompleting it but I'm I'm just
+21:10 
+
+21:10 going to type it out so that you will
+21:12 
+
+21:12 understand right. So AWS_VPC
+21:16 
+
+21:16 which is this the resource type now I
+21:19 
+
+21:19 need to refer this VPC. So I have to
+21:22 
+
+21:22 provide this name over here. So this is
+21:23 
+
+21:23 the internal reference of Terraform. So
+21:26 
+
+21:26 AWS_VPC.example.
+21:30 
+
+21:30 And now as you can see I have to provide
+21:32 
+
+21:32 VPC ID over here. We don't know the ID
+21:34 
+
+21:34 but Teraphform knows it from this
+21:37 
+
+21:37 resource once it is created. Right. So
+21:40 
+
+21:40 example do ID. That's how we can get the
+21:43 
+
+21:43 ID of VPC. Okay. So I'm just going to
+21:45 
+
+21:45 delete it for now. [snorts] Okay. So
+21:49 
+
+21:49 what are we doing? Just a quick recap.
+21:51 
+
+21:51 We have initialized the provider over
+21:53 
+
+21:53 here. provider config and just a simple
+21:56 
+
+21:56 VPC resource. Okay, now I'll just go
+22:00 
+
+22:00 inside the folder day 02 and run my
+22:04 
+
+22:04 first command which is let's just
+22:08 
+
+22:08 maximize it which is TF init. If you
+22:11 
+
+22:11 remember in the previous video I already
+22:12 
+
+22:12 created the alias for Terraform with the
+22:15 
+
+22:15 name TF. So that's what I'm going to run
+22:18 
+
+22:18 TF in it. This is the first command.
+22:21 
+
+22:21 This will initialize the terraform. This
+22:24 
+
+22:24 will initialize the back end. Back end
+22:26 
+
+22:26 we'll talk about later on. But it will
+22:29 
+
+22:29 as you can see it has initialized the
+22:32 
+
+22:32 provider plug-in. Okay. So what is this
+22:35 
+
+22:35 provider plug-in? If you remember we
+22:37 
+
+22:37 talked about that a provider is a
+22:39 
+
+22:39 plug-in that helps us translate code the
+22:42 
+
+22:42 terapform files to the API the like the
+22:46 
+
+22:46 way API expect the input. So this
+22:49 
+
+22:49 provider will be downloaded in your
+22:51 
+
+22:51 current directory. So there is a
+22:53 
+
+22:53 directory created terraform. If you
+22:55 
+
+22:55 expand this, there is a license file and
+22:58 
+
+22:58 there is a provider plug-in over here.
+23:00 
+
+23:00 As you can see, because I am in Mac, so
+23:03 
+
+23:03 this is in the format of Mac. If you are
+23:05 
+
+23:05 in Windows and running this, this will
+23:07 
+
+23:07 be an EXE or MSI file. If you are on
+23:10 
+
+23:10 Linux, it could be a different
+23:11 
+
+23:11 extension. It auto detect the operating
+23:14 
+
+23:14 system and based on that it download the
+23:16 
+
+23:16 plug-in, right? And uh yes so it has
+23:21 
+
+23:21 initialized the terraform. Now if I need
+23:24 
+
+23:24 to run TF plan what it will do
+23:28 
+
+23:28 it will check the config. Okay. Oh there
+23:32 
+
+23:32 is an error. So what it says retrieving
+23:35 
+
+23:35 AWS account details validity valid
+23:38 
+
+23:38 credential color identity. So basically
+23:41 
+
+23:41 it is saying you don't have permission
+23:43 
+
+23:43 because I have not really done the
+23:46 
+
+23:46 authentication and authorization with
+23:48 
+
+23:48 AWS yet. So there are multiple ways and
+23:51 
+
+23:51 we look all of those ways later on but
+23:53 
+
+23:53 for now I'm just going to talk about the
+23:56 
+
+23:56 simplest way. So you can just run AWS
+23:60 
+
+23:60 configure.
+24:02 
+
+24:02 I'm sure I might have shown it in the
+24:04 
+
+24:04 previous video but even if I haven't so
+24:06 
+
+24:06 this is how you can do it. run AWS
+24:08 
+
+24:08 configure and it will ask you a few
+24:11 
+
+24:11 details. It will ask you make sure you
+24:13 
+
+24:13 have AWS CLI installed.
+24:16 
+
+24:16 Okay. And I'm not sure why it is stuck.
+24:19 
+
+24:19 Okay. Yeah. So it's asking me AWS access
+24:22 
+
+24:22 key ID which I can go to my AWS login
+24:27 
+
+24:27 page.
+24:31 
+
+24:31 All right.
+24:33 
+
+24:33 Sign into console.
+24:39 
+
+24:39 Okay, let's go to my account. Let's
+24:43 
+
+24:43 select my user. Let's hit enter.
+24:47 
+
+24:47 And we can go to IM.
+24:51 
+
+24:51 Okay, over here it is.
+24:53 
+
+24:53 And then inside IM, let's click on any
+24:57 
+
+24:57 user that have access to create S3
+24:59 
+
+24:59 bucket or you can create a new user if
+25:01 
+
+25:01 you want. So let's create a new user
+25:05 
+
+25:05 S3 create. Okay, hit next.
+25:10 
+
+25:10 Um attach policy directly
+25:13 
+
+25:13 and let's search for S3 bucket access
+25:16 
+
+25:16 policy. Okay, so let's say S3 full
+25:20 
+
+25:20 access.
+25:23 
+
+25:23 Okay, hit next.
+25:26 
+
+25:26 Create user.
+25:28 
+
+25:28 Okay, now S3 create. This is the user.
+25:31 
+
+25:31 Now go inside the user and we need to go
+25:35 
+
+25:35 to security credentials over here and
+25:37 
+
+25:37 generate an access key over here. Okay.
+25:41 
+
+25:41 So this is the key that we'll be using
+25:42 
+
+25:42 it. Now it'll ask you different options
+25:44 
+
+25:44 like how are you planning to use these
+25:46 
+
+25:46 keys. So I'm going to select CLI. Okay.
+25:50 
+
+25:50 It is asking you there is there are
+25:52 
+
+25:52 alternatives which is you can just run
+25:54 
+
+25:54 it directly from here which is AWS cloud
+25:57 
+
+25:57 shell or you can use CLI V2 and enable
+26:01 
+
+26:01 authentication through an user in IM
+26:03 
+
+26:03 identity center maybe we'll do that
+26:05 
+
+26:05 later on for now for the sake of
+26:07 
+
+26:07 simplicity we'll just select the CLI
+26:09 
+
+26:09 option okay and I understand the
+26:12 
+
+26:12 recommendation and hit next now hit
+26:16 
+
+26:16 create access keys now this is the
+26:18 
+
+26:18 access key ID copy Copy it and go over
+26:22 
+
+26:22 here and just run it. Now it is asking
+26:25 
+
+26:25 secret access key which is this one over
+26:29 
+
+26:29 here. Copy it
+26:31 
+
+26:31 and just paste it over here. Hit enter.
+26:35 
+
+26:35 Now default region is US East1. It might
+26:38 
+
+26:38 have taken it from the main.tf. So we
+26:41 
+
+26:41 have it inside.
+26:44 
+
+26:44 Okay. Not this one. We have it inside
+26:46 
+
+26:46 this section, right? US- East one. the
+26:49 
+
+26:49 provider config. So it has taken it from
+26:51 
+
+26:51 there. So I'm just going to hit enter
+26:54 
+
+26:54 and hit enter one more time and that's
+26:56 
+
+26:56 it. So now I have initialized myself
+26:58 
+
+26:58 with the AWS configure. That means I
+27:01 
+
+27:01 have authenticated myself. Now I can
+27:03 
+
+27:03 access the resources. I have the
+27:05 
+
+27:05 permissions
+27:07 
+
+27:07 that is being provided with this access
+27:09 
+
+27:09 key which is S3. So I can create S3
+27:13 
+
+27:13 bucket. I can delete S3 bucket and so
+27:15 
+
+27:15 on. So what I'm going to do is I'm going
+27:19 
+
+27:19 to just run terapform plan now.
+27:22 
+
+27:22 Okay.
+27:24 
+
+27:24 So terapform plan as you can see it has
+27:27 
+
+27:27 created an state file.
+27:31 
+
+27:31 Uh where did it go? It was just here. I
+27:34 
+
+27:34 just saw it. Anyways we'll talk about it
+27:36 
+
+27:36 later on. Um so uh there is terraform
+27:41 
+
+27:41 plan. What it has done? it has created
+27:44 
+
+27:44 an state file. Okay, I'm not getting
+27:47 
+
+27:47 into specific of state file because
+27:48 
+
+27:48 that's the topic for a different day. So
+27:51 
+
+27:51 for now just consider uh that terraform
+27:54 
+
+27:54 what it will do it will compare your TF
+27:58 
+
+27:58 file or your Terraform configuration
+28:01 
+
+28:01 files with your actual environment.
+28:04 
+
+28:04 Right? So the environment in which you
+28:07 
+
+28:07 have authenticated it will check if
+28:08 
+
+28:08 there is an AWS VPC. Oh uh I I made a
+28:13 
+
+28:13 mistake. I have not provided the access
+28:15 
+
+28:15 to S3 bucket. Maybe we'll do that later.
+28:18 
+
+28:18 But for now just understand my
+28:20 
+
+28:20 credential only have access to manage S3
+28:23 
+
+28:23 bucket. But I'm trying to create a VPC
+28:26 
+
+28:26 resource. So it should fail. But it will
+28:28 
+
+28:28 not fail in the planning phase because
+28:30 
+
+28:30 in the planning it has not made the API
+28:32 
+
+28:32 call yet. It has just checked with the
+28:37 
+
+28:37 Terraform state file. So there is a
+28:40 
+
+28:40 state file. What it will do is it will
+28:42 
+
+28:42 check your terraform configuration if it
+28:44 
+
+28:44 is matching with the environment. So it
+28:46 
+
+28:46 will go and compare that. So it will
+28:48 
+
+28:48 find that oh this resource is not been
+28:50 
+
+28:50 created yet. So this resource is there
+28:53 
+
+28:53 in your TF file but it's not there in
+28:55 
+
+28:55 your environment. So you need to create
+28:57 
+
+28:57 it. So that's what it is showing right.
+28:60 
+
+28:60 It will show that Terraform will uh
+29:02 
+
+29:02 perform the following action. AWS VPC
+29:05 
+
+29:05 will be created with all these fields
+29:08 
+
+29:08 and there are some fields which has
+29:10 
+
+29:10 values such as C block because I have
+29:12 
+
+29:12 provided that but the rest of the fields
+29:15 
+
+29:15 like there are some ids some host name
+29:18 
+
+29:18 and these will be known after apply
+29:20 
+
+29:20 because you wouldn't know the ID before
+29:24 
+
+29:24 the object or resources already created
+29:27 
+
+29:27 right so that's why it is known after
+29:29 
+
+29:29 apply and over here it will show you the
+29:32 
+
+29:32 summary like plan is one to add, zero to
+29:35 
+
+29:35 change, zero to destroy.
+29:37 
+
+29:37 That means there is one new addition to
+29:40 
+
+29:40 the infrastructure. There are no updates
+29:43 
+
+29:43 to be made and there are no uh resources
+29:45 
+
+29:45 to be destroyed. Okay. So, we'll look
+29:48 
+
+29:48 that into later video. In this video, I
+29:51 
+
+29:51 wanted you to see how the Terraform
+29:53 
+
+29:53 provider works. So, that's it for this
+29:55 
+
+29:55 video. We're going to stop it right here
+29:58 
+
+29:58 because, you know, I don't want to
+30:00 
+
+30:00 overburden you with a lot of details. We
+30:03 
+
+30:03 have covered terapform provider in
+30:05 
+
+30:05 depth. Now I want you to stop right here
+30:09 
+
+30:09 and in the next video we'll see further
+30:12 
+
+30:12 details like how do we create resources
+30:15 
+
+30:15 in terraform with a continuation to this
+30:18 
+
+30:18 video. Okay. I hope this video was
+30:21 
+
+30:21 valuable and I'm not trying to pace
+30:23 
+
+30:23 things up. I'm just trying to go step by
+30:26 
+
+30:26 step one step at a time so that it will
+30:28 
+
+30:28 not be a rush for you as well. Even if
+30:31 
+
+30:31 you are a beginner, you will fully
+30:32 
+
+30:32 understand and follow along. Okay, so
+30:34 
+
+30:34 that's it and I will see you soon with
+30:36 
+
+30:36 the next video. Thank you so much for
+30:38 
+
+30:38 watching. Have a good day.

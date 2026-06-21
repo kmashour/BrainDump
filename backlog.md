@@ -3,6 +3,60 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-22] - Ingestion: AWS Terraform Study Guide & Projects
+
+### Added
+- **Reference Notes:** Created the central index note [[Reference Notes/10-Index - Terraform on AWS.md|10-Index - Terraform on AWS.md]] and 6 detailed reference modules:
+  - [[Reference Notes/10-1_terraform_foundations_and_state.md|10-1_terraform_foundations_and_state.md]]
+  - [[Reference Notes/10-2_variables_types_and_expressions.md|10-2_variables_types_and_expressions.md]]
+  - [[Reference Notes/10-3_meta_arguments_lifecycle_and_state.md|10-3_meta_arguments_lifecycle_and_state.md]]
+  - [[Reference Notes/10-4_networking_website_and_security.md|10-4_networking_website_and_security.md]]
+  - [[Reference Notes/10-5_modules_eks_and_serverless.md|10-5_modules_eks_and_serverless.md]]
+  - [[Reference Notes/10-6_cicd_gitops_observability_and_drift.md|10-6_cicd_gitops_observability_and_drift.md]]
+- **Projects:** Created 3 detailed hands-on project playbooks:
+  - [[Projects/terraform/Project - HA 3-Tier Architecture on AWS.md|Project - HA 3-Tier Architecture on AWS.md]]
+  - [[Projects/terraform/Project - EKS GitOps and ArgoCD.md|Project - EKS GitOps and ArgoCD.md]]
+  - [[Projects/terraform/Project - Terraform Automation and Drift Remediation.md|Project - Terraform Automation and Drift Remediation.md]]
+- **Main Notes:** Created [[Main Notes/terraform.md|terraform.md]] landing note, [[Main Notes/terraform - State and Backend Locking.md|terraform - State and Backend Locking.md]] deeper-dive note, and [[Main Notes/terraform - Meta-Arguments and Loops.md|terraform - Meta-Arguments and Loops.md]] deeper-dive note.
+- **Digital Garden:** Created [[Digital Garden/Pattern - Immutable Infrastructure and GitOps Reconciliation.md|Pattern - Immutable Infrastructure and GitOps Reconciliation.md]] pattern note.
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[Reference Notes/--Index--.md|--Index--.md]] and [[Main Notes/0-Index.md|0-Index.md]] to catalog the new Terraform on AWS study track.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `130 - How Does Terraform Work  Intro to IAC.txt`
+- `230 - Terraform AWS Provider explained.txt`
+- `330 -  Create an AWS S3 Bucket Using Terraform (it's simple).txt`
+- `430 - Terraform State file management with AWS S3  Remote Backend.txt`
+- `530 - Terraform Variables in AWS - Input vs Output vs Local Variables.txt`
+- `630 - AWS Terraform Project Structure Best Practices.txt`
+- `730 - AWS Terraform Type Constraints Explained (with realtime examples).txt`
+- `830 - AWS Terraform Meta Arguments Made EASY  Count, depends_on , for_each.txt`
+- `930 - AWS Terraform Lifecycle Rules Explained.txt`
+- `1030 - AWS Terraform  Conditional Expressions , Splat Expressions and Dynamic Block.txt`
+- `1130 - AWS Terraform Functions - Part 1.txt`
+- `1230 - AWS Terraform Functions - Part 2.txt`
+- `1330 - Terraform Data Source AWS Explained (with demo).txt`
+- `1430 - Host A Static Website In AWS S3 And Cloudfront (using terraform).txt`
+- `1530 -  AWS VPC Peering Using Terraform - Mini project.txt`
+- `1630 - AWS IAM User Management with Terraform - Mini Project.txt`
+- `1730 - AWS Terraform Blue-Green Deployment Using Elastic Beanstalk.txt`
+- `1830 - Image Processing Serverless Project using AWS Lambda(with terraform).txt`
+- `1930 - Terraform Provisioners (with demo) - local vs remote vs file.txt`
+- `2030 - Terraform Custom Modules for EKS - From Zero to Production.txt`
+- `2130 - AWS Policy and Governance Setup Using Terraform.txt`
+- `2330 - Setup End-to-End Observability in AWS Using Terraform (Real-Time Project).txt`
+- `2430 - Highly Available and Scalable Architecture Using Terraform.txt`
+- `2530 - Terraform Import In AWS Explained With Demo.txt`
+- `2630 - HCP Terraform Explained with Demo - Terraform Projects and Workspaces.txt`
+- `2730 - Automate AWS Infra Using Terraform and GitHub Actions  Realtime Project.txt`
+- `2830 - AWS 3-tier Architecture With Terraform  End-to-End Real-Time Project.txt`
+- `2930 - End-to-end GitOps With Terraform and ArgoCD For EKS  Production-grade Kubernetes Project.txt`
+- `3030 - Drift Detection and Remediation Using Terraform and GitHub Actions  Real Time Project.txt`
+
+---
+
 ## [2026-06-22] - Ingestion: GitHub Actions Study Guide
 
 ### Added

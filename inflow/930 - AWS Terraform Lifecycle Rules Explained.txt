@@ -1,0 +1,2050 @@
+00:00 Hello and welcome back to the course. My
+00:02 
+
+00:02 name is Push. This is day nine in 30
+00:05 
+
+00:05 days of AWS Terraform. And in this
+00:07 
+
+00:07 video, we'll be looking into Terraform
+00:09 
+
+00:09 life cycle rules. We'll understand
+00:12 
+
+00:12 everything. We'll do the demo and at the
+00:15 
+
+00:15 end you will have a task that you need
+00:17 
+
+00:17 to do in the GitHub repository of day 9
+00:21 
+
+00:21 folder. So make sure you do that. Make
+00:23 
+
+00:23 sure you do the submission and let's get
+00:26 
+
+00:26 started with this. So uh what exactly is
+00:30 
+
+00:30 a life cycle rule? Life cycle rule in
+00:32 
+
+00:32 Terraform is something that change the
+00:35 
+
+00:35 behavior or that actually controls how a
+00:39 
+
+00:39 resource is being created or destroyed
+00:41 
+
+00:41 or updated in Terraform. Like we need
+00:44 
+
+00:44 these life cycle rules to improve
+00:47 
+
+00:47 security to improve accidental deletions
+00:52 
+
+00:52 of resources or accidental modification
+00:54 
+
+00:54 of resources in Terraform. It improves
+00:57 
+
+00:57 your infrastructure manageability and
+00:60 
+
+00:60 operationalize it. Right? So there are
+01:02 
+
+01:02 different type of options that we have.
+01:04 
+
+01:04 First one is ignore changes. What it
+01:07 
+
+01:07 will do is if there is ignore changes
+01:09 
+
+01:09 enabled, it will not do any changes on
+01:12 
+
+01:12 the terraform resource that we are
+01:14 
+
+01:14 talking about. Then we have create
+01:16 
+
+01:16 before destroy. Create before destroy
+01:19 
+
+01:19 make sure that when you make any change
+01:21 
+
+01:21 to the resource and it needs to recreate
+01:24 
+
+01:24 the resource. So this will make sure
+01:27 
+
+01:27 that your new resource will be created
+01:29 
+
+01:29 first and then the previous resource
+01:32 
+
+01:32 will be destroyed. So let's say you have
+01:34 
+
+01:34 an EC2 instance you are changing
+01:36 
+
+01:36 something in that you are changing the
+01:38 
+
+01:38 AMI of EC2. Now to make that change
+01:41 
+
+01:41 terraform has to recreate that resource.
+01:44 
+
+01:44 So if you have create before destroy
+01:46 
+
+01:46 enabled that means the new EC2 instance
+01:50 
+
+01:50 with the newer AM AM ID will be created
+01:53 
+
+01:53 first and then the old one will be
+01:55 
+
+01:55 destroyed. This will make sure that you
+01:57 
+
+01:57 have minimum downtime of your
+01:58 
+
+01:58 application because it will not wait for
+02:01 
+
+02:01 the new resource to be created. Once it
+02:04 
+
+02:04 is created only then it will make the
+02:06 
+
+02:06 changes. Then we have prevent destroy.
+02:09 
+
+02:09 What it will do? Prevent destroy will
+02:12 
+
+02:12 make sure that you do not do any
+02:14 
+
+02:14 accidental deletion of resources. For
+02:17 
+
+02:17 example, you have an S3 bucket that is
+02:20 
+
+02:20 being managed by Terraform, but you
+02:22 
+
+02:22 don't want anyone to accidentally delete
+02:25 
+
+02:25 it. So you enable prevent destroy on
+02:27 
+
+02:27 that bucket and it will not be deleted
+02:31 
+
+02:31 unless and until someone just update
+02:34 
+
+02:34 this life cycle rule to false. Okay. So
+02:37 
+
+02:37 it will avoid any accidental deletions.
+02:40 
+
+02:40 Then we have replace triggered by.
+02:42 
+
+02:42 Replace triggered by set the
+02:44 
+
+02:44 dependencies between multiple resources
+02:46 
+
+02:46 like you have created a resource. So uh
+02:49 
+
+02:49 let's say you have this resource over
+02:50 
+
+02:50 here. Um and we creating a dependency to
+02:55 
+
+02:55 other resource. So this resource could
+02:57 
+
+02:57 be your EC2. Okay. And this resource
+03:03 
+
+03:03 could be your security group rules. So
+03:06 
+
+03:06 what we are saying whenever there is any
+03:10 
+
+03:10 change in this security group rule
+03:14 
+
+03:14 replace EC2 instance with a newer
+03:16 
+
+03:16 instance. So we are actually creating a
+03:20 
+
+03:20 replace triggered by life cycle rule and
+03:24 
+
+03:24 this replace will be triggered by any
+03:26 
+
+03:26 changes in the SG rules security group
+03:29 
+
+03:29 rules. Right?
+03:31 
+
+03:31 Then we have pre and post conditions. So
+03:35 
+
+03:35 you can add certain u validations before
+03:38 
+
+03:38 creating your resource whether it is an
+03:41 
+
+03:41 allowed resource or not like u you are
+03:45 
+
+03:45 creating a resource in US east one but
+03:47 
+
+03:47 that location is not allowed for you to
+03:50 
+
+03:50 provision the resources so you can add
+03:52 
+
+03:52 that as a pre-check similarly post
+03:54 
+
+03:54 condition after the resource has been
+03:56 
+
+03:56 created it will perform certain checks
+03:58 
+
+03:58 and throw you the error like what is the
+04:01 
+
+04:01 issue with that okay so now we'll
+04:03 
+
+04:03 practice each of these these resources
+04:05 
+
+04:05 one by one. Let's go to
+04:08 
+
+04:08 the VS code. I have day 9 folder. I have
+04:11 
+
+04:11 copied everything from the previous
+04:13 
+
+04:13 video and we can just start writing
+04:15 
+
+04:15 in.tf. So let's create a resource of
+04:18 
+
+04:18 type EC2 instance AWS
+04:23 
+
+04:23 instance
+04:26 
+
+04:26 right and
+04:28 
+
+04:28 yeah I don't want a lot of metadata. So
+04:31 
+
+04:31 let's just use example and
+04:35 
+
+04:35 what we need we need an AMI.
+04:39 
+
+04:39 So AMI we can take it from the
+04:42 
+
+04:42 documentation. So let's say AWS
+04:46 
+
+04:46 AMI Linux.
+04:48 
+
+04:48 Okay, let's go to this page and if you
+04:51 
+
+04:51 scroll down,
+04:53 
+
+04:53 okay, this will show you the AMI of the
+04:56 
+
+04:56 latest release which is this one. Okay.
+04:59 
+
+04:59 And uh US East one. This is what I need.
+05:03 
+
+05:03 So I'm just going to copy the AM ID from
+05:05 
+
+05:05 here. And let's put it over here. Okay.
+05:10 
+
+05:10 So that's the AMID. Now I need instance
+05:12 
+
+05:12 type as well. And I already have a
+05:16 
+
+05:16 variable um with the instance type. So
+05:20 
+
+05:20 let's see what was the variable name. uh
+05:23 
+
+05:23 there is allowed region and then there
+05:25 
+
+05:25 is allowed VM type in which there is a
+05:27 
+
+05:27 list of string with multiple VM types.
+05:29 
+
+05:29 Okay. So let's take this instance type
+05:32 
+
+05:32 equal to v dot allowed
+05:36 
+
+05:36 VM types. Okay. And let's take the value
+05:40 
+
+05:40 of one. And similarly you can add the
+05:44 
+
+05:44 region.
+05:46 
+
+05:46 for region as well. We have bar dot
+05:50 
+
+05:50 allowed
+05:53 
+
+05:53 region.
+05:54 
+
+05:54 Let's see if uh this is what we need.
+05:58 
+
+05:58 Um
+05:60 
+
+05:60 allowed region actually this is a set of
+06:02 
+
+06:02 strings. So we cannot use it directly.
+06:04 
+
+06:04 We have to convert that into list.
+06:09 
+
+06:09 Okay. So let's go back
+06:13 
+
+06:13 and let's do two list
+06:18 
+
+06:18 and I believe this is correct.
+06:22 
+
+06:22 Let's just quickly validate this if we
+06:25 
+
+06:25 are missing anything or let's add tax as
+06:27 
+
+06:27 well. vt tax.
+06:31 
+
+06:31 So TF which folder I am day 09 TF plan.
+06:38 
+
+06:38 Okay, it says two plan to add but it is
+06:41 
+
+06:41 that it is adding
+06:43 
+
+06:43 it is creating
+06:46 
+
+06:46 an S3 bucket
+06:48 
+
+06:48 but why
+06:52 
+
+06:52 um maybe I'm not running it from oh I
+06:56 
+
+06:56 have another file over here so let me
+06:58 
+
+06:58 just comment it
+07:04 
+
+07:04 okay let's go back and let's run TF plan
+07:07 
+
+07:07 Okay,
+07:08 
+
+07:08 now it says one plan to add
+07:12 
+
+07:12 and I hope this is the EC2 instance. Oh
+07:14 
+
+07:14 no, it says uh deleting the resources
+07:17 
+
+07:17 because I already have some a S3 buckets
+07:20 
+
+07:20 created from the previous video, right?
+07:22 
+
+07:22 So let me just delete it. Let's call it
+07:25 
+
+07:25 day 08
+07:27 
+
+07:27 TF destroy
+07:30 
+
+07:30 auto approve.
+07:33 
+
+07:33 And did it also show what it is adding?
+07:36 
+
+07:36 Let's see. It's deleting. Deleting. So,
+07:39 
+
+07:39 there are these minus signs, right?
+07:41 
+
+07:41 These are not hyphens. These are like
+07:43 
+
+07:43 suggesting that it's been deleted. If
+07:46 
+
+07:46 the newer resources will be there, it
+07:48 
+
+07:48 there'll be a plus in front of it. So,
+07:50 
+
+07:50 I'll show you for the new resource.
+07:54 
+
+07:54 Let's you see over here. So, there is
+07:56 
+
+07:56 plus and what resource is this?
+08:02 
+
+08:02 This is the instance that we were
+08:04 
+
+08:04 creating AWS instance. Okay.
+08:07 
+
+08:07 So yeah, it's taking T2 small and then
+08:10 
+
+08:10 US EU west one which would be as per
+08:13 
+
+08:13 this allowed regions. So let's go back
+08:17 
+
+08:17 to allowed regions.
+08:21 
+
+08:21 Um let's choose region. There's a
+08:23 
+
+08:23 variable for region as well or
+08:26 
+
+08:26 or you can change
+08:29 
+
+08:29 the region to
+08:33 
+
+08:33 US West one. No, wait. There is allow
+08:36 
+
+08:36 region.
+08:39 
+
+08:39 Yeah. So, so it is taking
+08:42 
+
+08:42 this one. US West 2. We don't need that.
+08:47 
+
+08:47 Um, let's go back. Main.tf.
+08:51 
+
+08:51 Where was it?
+08:54 
+
+08:54 EU Western. Why it is showing EU West
+08:57 
+
+08:57 one? It should be US- West one. allowed
+08:60 
+
+08:60 region zero which is US east one but
+09:06 
+
+09:06 over here it is showing EU west one okay
+09:09 
+
+09:09 so why it is doing that uh we need to
+09:12 
+
+09:12 find out maybe
+09:15 
+
+09:15 there is like do we have anything with
+09:18 
+
+09:18 EU yeah EU west one is 012
+09:22 
+
+09:22 second element
+09:24 
+
+09:24 and over here uh it's zero element so
+09:28 
+
+09:28 something is not adding up. Maybe it's
+09:31 
+
+09:31 an assignment for you. Let me know in
+09:33 
+
+09:33 the comments if you are able to find why
+09:35 
+
+09:35 it is doing that. You see where dot
+09:38 
+
+09:38 allowed region I'm setting zero element
+09:42 
+
+09:42 and still like let me run the TF plan
+09:45 
+
+09:45 again.
+09:47 
+
+09:47 Okay. So,
+09:55 
+
+09:55 am I using the correct folder? Oh, I
+09:59 
+
+09:59 went back again to day 08. Let me run TF
+10:02 
+
+10:02 plan one more time. Sorry, be with me.
+10:06 
+
+10:06 Okay, one plan to add. Um, that's good.
+10:10 
+
+10:10 Now,
+10:13 
+
+10:13 EU West one. So, you see the region over
+10:16 
+
+10:16 here is EU West one. But over here we
+10:20 
+
+10:20 have used V.allowed allowed region at
+10:22 
+
+10:22 the zero location and which is
+10:27 
+
+10:27 from here it should be this one US east
+10:31 
+
+10:31 one which is the zeroth element but
+10:33 
+
+10:33 maybe it is doing that because it's a
+10:38 
+
+10:38 set so when it okay let me tell you I
+10:41 
+
+10:41 think that is the issue but I I want you
+10:43 
+
+10:43 to still figure it out uh from my
+10:46 
+
+10:46 understanding it is because we are using
+10:48 
+
+10:48 set in set The sequence of element
+10:52 
+
+10:52 doesn't matter for set there is no
+10:54 
+
+10:54 sequence you can just put anything and
+10:56 
+
+10:56 then it will take the different element
+10:60 
+
+10:60 and then when we are converting it to
+11:02 
+
+11:02 list only then it is taking the value
+11:04 
+
+11:04 but it has already sorted those values
+11:07 
+
+11:07 as per its understanding right so maybe
+11:09 
+
+11:09 that's why so let's go back and I'm
+11:14 
+
+11:14 going to just change it to v dot region
+11:19 
+
+11:19 Okay. So let's run TF plan again.
+11:24 
+
+11:24 Okay. Let's see
+11:27 
+
+11:27 US East one. It is coming fine. Now, now
+11:30 
+
+11:30 what we need is now we need to test out
+11:33 
+
+11:33 the life cycle rule. So let's add life
+11:35 
+
+11:35 cycle and create before destroy equal to
+11:40 
+
+11:40 true. what it will do whenever we are
+11:43 
+
+11:43 making any change any destructive change
+11:46 
+
+11:46 then it will make sure the resource is
+11:48 
+
+11:48 created before we destroy it. So let's
+11:51 
+
+11:51 say um okay for that we need to apply
+11:54 
+
+11:54 the changes first and create the
+11:56 
+
+11:56 instance.
+11:57 
+
+11:57 So auto approve and it might take uh
+12:01 
+
+12:01 some time. So I'm just going to pause
+12:03 
+
+12:03 the recording till then.
+12:06 
+
+12:06 Oh it is throwing example. It says um
+12:09 
+
+12:09 AMID AMI ID does not found. We are using
+12:13 
+
+12:13 US East one region and over here is I
+12:17 
+
+12:17 think it's uh US East one is North
+12:19 
+
+12:19 Virginia.
+12:21 
+
+12:21 So let's verify it from here.
+12:25 
+
+12:25 North Virginia is US East one. Yeah. So
+12:27 
+
+12:27 I'm going to just take a different AMI
+12:29 
+
+12:29 ID.
+12:32 
+
+12:32 Okay.
+12:34 
+
+12:34 And let's apply the changes again.
+12:39 
+
+12:39 Okay. Now it is creating it. So I'm just
+12:41 
+
+12:41 going to pause the recording for now.
+12:43 
+
+12:43 Okay. So this is completed now. The
+12:46 
+
+12:46 instance has been created and uh if I
+12:51 
+
+12:51 let's first do this. Let's first change
+12:54 
+
+12:54 it to false. That means the instance
+12:56 
+
+12:56 will be destroyed first or in parallel
+12:58 
+
+12:58 to the other instance the newer instance
+13:00 
+
+13:00 has created. Okay. So let's go ahead and
+13:04 
+
+13:04 take any other AMI. Maybe I'll take a
+13:07 
+
+13:07 different release. So this is release
+13:10 
+
+13:10 2018 03
+13:13 
+
+13:13 and let's take 2017.
+13:18 
+
+13:18 I'm not sure why we have so many so old
+13:22 
+
+13:22 uh releases but
+13:25 
+
+13:25 let's take the instance ID and
+13:32 
+
+13:32 update it. Oh, is it the same?
+13:35 
+
+13:35 Maybe AMD does not change over the
+13:37 
+
+13:37 release. So this Oh no, it's still 2018.
+13:43 
+
+13:43 Okay, but I click 2017 release notes.
+13:46 
+
+13:46 Okay, so AMI ID is the same. Okay, so
+13:50 
+
+13:50 let's take uh maybe E of this one over
+13:54 
+
+13:54 here with instance store.
+14:03 
+
+14:03 Okay. And now you see the create before
+14:07 
+
+14:07 destroy is false. That means the
+14:11 
+
+14:11 resource should be destroyed first. So
+14:12 
+
+14:12 if I run tf apply now let's see what's
+14:16 
+
+14:16 going to happen.
+14:23 
+
+14:23 Okay. You see um it is destroying first
+14:28 
+
+14:28 and it has not started creating the
+14:30 
+
+14:30 instance because we have create before
+14:33 
+
+14:33 destroy false that means it will destroy
+14:35 
+
+14:35 the it first and then it will create the
+14:37 
+
+14:37 new resource. So this will introduce
+14:40 
+
+14:40 some downtime because your application
+14:42 
+
+14:42 is getting destroyed first and then it
+14:45 
+
+14:45 is provisioning a new resource. So let
+14:48 
+
+14:48 me just pause the video while it's doing
+14:50 
+
+14:50 its work. Now it has one more issue.
+14:52 
+
+14:52 I'll tell you what. So it destroyed the
+14:54 
+
+14:54 resource. Okay. Over here the
+14:57 
+
+14:57 destruction is completed and then it
+14:59 
+
+14:59 started creating the newer instance with
+15:02 
+
+15:02 the updated AMI ID. But there is some
+15:04 
+
+15:04 error. For example, there is a bad
+15:06 
+
+15:06 request that image is not authorized to
+15:08 
+
+15:08 be provisioned. So due to that error, it
+15:12 
+
+15:12 did not create the resource and it
+15:14 
+
+15:14 destroyed the existing ones. So your
+15:16 
+
+15:16 users will face downtime, right? So
+15:19 
+
+15:19 that's why it should always be true.
+15:23 
+
+15:23 create before destroy um so to avoid any
+15:27 
+
+15:27 issues me just update the image version
+15:30 
+
+15:30 as well which is let's keep it back this
+15:33 
+
+15:33 one okay and let me apply the changes so
+15:37 
+
+15:37 that was the first one which is create
+15:39 
+
+15:39 before destroy now the second one is
+15:42 
+
+15:42 let's see over here
+15:45 
+
+15:45 um
+15:47 
+
+15:47 we have create before destroy and then
+15:49 
+
+15:49 we have ignore changes we have prevent
+15:52 
+
+15:52 destroy Okay, so let's try using this
+15:54 
+
+15:54 prevent destroy. Okay, so resources
+15:56 
+
+15:56 completed and we can add more life cycle
+15:59 
+
+15:59 rules in the same same block, right? So
+16:02 
+
+16:02 let's add prevent destroy equal to true.
+16:06 
+
+16:06 Oops, not false. Prevent destroy equal
+16:08 
+
+16:08 to true. So basically what we are doing,
+16:11 
+
+16:11 we are saying to terapform that if
+16:13 
+
+16:13 someone try to destroy this resource,
+16:16 
+
+16:16 block that. Okay. So even if there is
+16:19 
+
+16:19 any destructible operation like if we
+16:20 
+
+16:20 have changed the AMI uh name or AMI ID
+16:25 
+
+16:25 which enforces the instance to be
+16:28 
+
+16:28 recreated that will also be blocked
+16:30 
+
+16:30 because it needs instance to be
+16:32 
+
+16:32 recreated and we are preventing the
+16:34 
+
+16:34 destroy operation. So if now I run
+16:37 
+
+16:37 terraform destroy okay it says
+16:40 
+
+16:40 refreshing state and then it throw the
+16:42 
+
+16:42 error that instance cannot be destroyed.
+16:45 
+
+16:45 Why? because it has a life cycle prevent
+16:48 
+
+16:48 destroy set. But the plan calls for this
+16:51 
+
+16:51 resource to be destroyed. To avoid this
+16:54 
+
+16:54 either set the prevent destroyed false
+16:56 
+
+16:56 or reduce the scope. So when we are
+16:59 
+
+16:59 running this we are destroying
+17:01 
+
+17:01 everything in this folder. Okay. But we
+17:04 
+
+17:04 can also set the target with this hyphen
+17:06 
+
+17:06 target option. But we only have one
+17:08 
+
+17:08 resource so we don't need to do that. So
+17:10 
+
+17:10 that was the other one which is prevent
+17:12 
+
+17:12 destroy. Then we have let's say replace
+17:16 
+
+17:16 triggered by for that let me just add a
+17:19 
+
+17:19 couple of more resources. So over here
+17:22 
+
+17:22 somewhere I was just testing this out
+17:25 
+
+17:25 earlier before the recording. So I'm
+17:28 
+
+17:28 just going to take something from here.
+17:30 
+
+17:30 Um there are a lot of examples actually
+17:32 
+
+17:32 but don't worry these all will be there
+17:34 
+
+17:34 in the task empty file as well. Okay.
+17:37 
+
+17:37 And ignore changes. Okay let's take
+17:40 
+
+17:40 this. Okay, let's go to main.tf and I'm
+17:46 
+
+17:46 just going to unccomment everything. So
+17:48 
+
+17:48 there is a launch template and then
+17:50 
+
+17:50 there is image ID. Let's take the image
+17:52 
+
+17:52 ID that we took earlier. The reason why
+17:56 
+
+17:56 I'm updating is because we have not
+17:57 
+
+17:57 covered data sources. So that's why. And
+18:00 
+
+18:00 then we have instance type. So where dot
+18:03 
+
+18:03 allowed VM types one tags remove this
+18:08 
+
+18:08 part again because we have not covered
+18:11 
+
+18:11 merge function yet. So let's just use
+18:15 
+
+18:15 where dot tags. Okay. And then we have
+18:17 
+
+18:17 an autoscaling group which says minimum
+18:19 
+
+18:19 size is one. Maximum size is five.
+18:22 
+
+18:22 Desired capacity is two. Availability
+18:25 
+
+18:25 zones. I'm going to update this to where
+18:28 
+
+18:28 dot allowed region where dotallowed
+18:31 
+
+18:31 region. What was that? That was
+18:33 
+
+18:33 availability zones, right? Yeah. So it
+18:35 
+
+18:35 should be an availability zone, not the
+18:37 
+
+18:37 instance.
+18:39 
+
+18:39 And um
+18:42 
+
+18:42 okay it's not a mandatory field so let's
+18:44 
+
+18:44 skip it let's remove this or you can
+18:47 
+
+18:47 write every availability zone from US
+18:50 
+
+18:50 east one region because that's the
+18:52 
+
+18:52 region we have used that's all right and
+18:55 
+
+18:55 now this is launch template details
+18:58 
+
+18:58 okay let's use these tags that's fine
+19:02 
+
+19:02 okay so this is what uh what we are
+19:05 
+
+19:05 doing so we are using ignore changes on
+19:08 
+
+19:08 desired cap capacity.
+19:10 
+
+19:10 Okay. So what it will do um terapform
+19:13 
+
+19:13 won't try to revert the capacity changes
+19:17 
+
+19:17 made outside of teraphform. That means
+19:19 
+
+19:19 if someone updated the capacity like
+19:23 
+
+19:23 desired capacity from autoscaling group
+19:26 
+
+19:26 which is two someone updated it from
+19:29 
+
+19:29 outside the terraform let's say from the
+19:31 
+
+19:31 autoscaling group. It won't make the uh
+19:34 
+
+19:34 changes over here. It won't revert the
+19:36 
+
+19:36 changes over here because we are saying
+19:38 
+
+19:38 ignore changes desired capacity. That
+19:40 
+
+19:40 means this desired capacity field is
+19:45 
+
+19:45 allowed to be updated externally.
+19:49 
+
+19:49 Okay. So I'll show you that as well.
+19:51 
+
+19:51 Let's run terraform apply over here.
+19:54 
+
+19:54 Okay. Let it provision the instance
+19:57 
+
+19:57 autoscaling group uh instance template
+19:60 
+
+19:60 everything and then we'll come back to
+20:01 
+
+20:01 this. Okay. It is throwing some error
+20:03 
+
+20:03 that um autoscaling group availability
+20:06 
+
+20:06 zone is a mandatory field. So yeah, it's
+20:08 
+
+20:08 not optional. It is a mandatory field.
+20:12 
+
+20:12 Let's try to add it over here. I believe
+20:16 
+
+20:16 it was yeah in the autoscaling group and
+20:19 
+
+20:19 we were checking in the documentation.
+20:21 
+
+20:21 We were checking in the AWC instance. So
+20:23 
+
+20:23 that's why it was not showing it. But
+20:26 
+
+20:26 yeah, over here we need it. So I've
+20:28 
+
+20:28 added all the availability zones. Now
+20:32 
+
+20:32 let's run it again.
+20:38 
+
+20:38 Okay, it is creating. So let it create
+20:40 
+
+20:40 and then we'll come back to this. Okay,
+20:43 
+
+20:43 it did those changes. So it's applied.
+20:46 
+
+20:46 So let's go over here on the console.
+20:50 
+
+20:50 Let's search for autoscaling
+20:53 
+
+20:53 group
+20:55 
+
+20:55 over here
+20:59 
+
+20:59 and
+21:02 
+
+21:02 but it is not showing anything.
+21:08 
+
+21:08 Okay, let's see if the EC2 instances are
+21:10 
+
+21:10 provisioned yet.
+21:14 
+
+21:14 Yeah, it says five instances are running
+21:17 
+
+21:17 which is app server ASG. Um, yeah, these
+21:22 
+
+21:22 four instances and there was
+21:27 
+
+21:27 1 2 3 4. Okay, fifth one is
+21:30 
+
+21:30 initializing. So, uh these are the five
+21:33 
+
+21:33 instances that's been provisioned.
+21:37 
+
+21:37 And if you go to
+21:40 
+
+21:40 autoscaling group over here somewhere.
+21:44 
+
+21:44 Okay. Um this is the autoscaling group.
+21:47 
+
+21:47 It has instances two two desired one
+21:51 
+
+21:51 minimum five maximum. Okay.
+21:55 
+
+21:55 So let's go over here and let's try to
+21:59 
+
+21:59 make the change. Let's change from
+22:01 
+
+22:01 desired from 2 to 1. Let's update it.
+22:06 
+
+22:06 Okay. So the desired has been updated
+22:08 
+
+22:08 over here. Go back
+22:12 
+
+22:12 um this one. Okay, desired is one.
+22:16 
+
+22:16 Scaling is 1 to five. So that means if
+22:19 
+
+22:19 there's nothing that is running um one
+22:23 
+
+22:23 instance will be up because it's
+22:26 
+
+22:26 scheduled uh one is desired.
+22:30 
+
+22:30 Now there are more instances because
+22:34 
+
+22:34 they
+22:38 
+
+22:38 Yeah, this instance is a different one.
+22:42 
+
+22:42 Yeah, this is my EKS instance for some
+22:45 
+
+22:45 other video I have created.
+22:48 
+
+22:48 And yeah, this one as well is a
+22:51 
+
+22:51 different one. So for this particular
+22:53 
+
+22:53 demo, we have these three instances
+22:56 
+
+22:56 which is app ASG,
+22:60 
+
+22:60 dev instance and this one, right?
+23:03 
+
+23:03 because these three are the only
+23:04 
+
+23:04 instances
+23:06 
+
+23:06 those were created right now. Yeah.
+23:11 
+
+23:11 Uh actually two instances this instance
+23:13 
+
+23:13 also was created earlier. I did not
+23:16 
+
+23:16 destroy it. Okay. So these two app
+23:19 
+
+23:19 server as and app server as these two
+23:22 
+
+23:22 instances were created. But then now
+23:25 
+
+23:25 that I have updated the desired capacity
+23:27 
+
+23:27 to one, it deleted one instance. Now it
+23:30 
+
+23:30 only has one instance. you see over here
+23:32 
+
+23:32 and we can see that in autoscaling group
+23:34 
+
+23:34 as well. So go to autoscaling group app
+23:37 
+
+23:37 server ASG and
+23:41 
+
+23:41 instance refresh. Okay, not this one
+23:45 
+
+23:45 instance management. So you see it only
+23:47 
+
+23:47 has one instance over here and uh
+23:52 
+
+23:52 activity.
+23:54 
+
+23:54 So this was the recent activity which
+23:57 
+
+23:57 says terminating the instance because
+23:59 
+
+23:59 desired capacity change from 2 to 1. Now
+24:04 
+
+24:04 if we go back over here because we had a
+24:07 
+
+24:07 life cycle rule which says ignore
+24:10 
+
+24:10 changes on desired capacity.
+24:14 
+
+24:14 Right? So if we have updated the change
+24:17 
+
+24:17 over there but if we run terapform apply
+24:21 
+
+24:21 over here again. So ideally without the
+24:24 
+
+24:24 life cycle rule this should update the
+24:27 
+
+24:27 desired capacity to two again because in
+24:29 
+
+24:29 the terraform file we have desired
+24:31 
+
+24:31 capacity as two right. So let's see what
+24:33 
+
+24:33 it's going to do.
+24:37 
+
+24:37 Says refreshing refreshing state and no
+24:40 
+
+24:40 changes your infrastructure matches the
+24:42 
+
+24:42 configuration. Why? Because we have
+24:45 
+
+24:45 ignored those changes simply right. So
+24:48 
+
+24:48 let's destroy these ones and let's move
+24:52 
+
+24:52 ahead. Auto approve.
+24:56 
+
+24:56 Okay. Um so the next one is
+25:00 
+
+25:00 we have covered ignore changes create
+25:02 
+
+25:02 before destroy prevent destroy. Now look
+25:05 
+
+25:05 into replace triggered by. So again I'm
+25:09 
+
+25:09 just going to okay it says instance
+25:11 
+
+25:11 cannot be destroyed because we have a
+25:12 
+
+25:12 life cycle rule. So let's remove the
+25:16 
+
+25:16 life cycle rule which is prevent
+25:17 
+
+25:17 destroy. Either we can remove it or set
+25:20 
+
+25:20 it to false. Okay, let's destroy again.
+25:26 
+
+25:26 And for the next life cycle rule, we
+25:29 
+
+25:29 need another sample from here
+25:34 
+
+25:34 which is let's say this is prevent
+25:37 
+
+25:37 destroy. We have covered it. Create
+25:40 
+
+25:40 before destroy is also done.
+25:48 
+
+25:48 It's precondition post condition. Okay,
+25:51 
+
+25:51 here it is. Replace triggered by
+25:59 
+
+25:59 and in main.tf
+26:02 
+
+26:02 is it still? Yeah, it's still destroying
+26:04 
+
+26:04 the resources.
+26:06 
+
+26:06 That's okay.
+26:09 
+
+26:09 And let's do one thing. Let's delete
+26:13 
+
+26:13 everything and paste it over here.
+26:16 
+
+26:16 Okay. And I'm just going to uncomment
+26:19 
+
+26:19 all those lines.
+26:23 
+
+26:23 So what it is doing it is creating a
+26:26 
+
+26:26 security group. Okay. So that's a
+26:28 
+
+26:28 security group over here that is
+26:30 
+
+26:30 allowing ingress traffic on port 80 from
+26:34 
+
+26:34 anywhere and also on port 443 and egress
+26:38 
+
+26:38 on all the protocols to everything like
+26:40 
+
+26:40 to internet 000000
+26:43 
+
+26:43 and then we have an EC2 instance that
+26:47 
+
+26:47 get replaced with security group
+26:48 
+
+26:48 changes. So there is this EC2 instance
+26:52 
+
+26:52 um resource over here. Again you can
+26:55 
+
+26:55 replace the AMI ID over here and let's
+26:60 
+
+26:60 take it from this.
+27:10 
+
+27:10 Okay. And it has instance type which is
+27:13 
+
+27:13 where dot allowed
+27:17 
+
+27:17 VM types zero security group ids which
+27:21 
+
+27:21 is AWS security group uh which is this
+27:25 
+
+27:25 one dot app SG which is there and then
+27:30 
+
+27:30 dot id and then tags and here we have
+27:33 
+
+27:33 added the life cycle rule which says
+27:35 
+
+27:35 replace triggered by okay AWS security
+27:39 
+
+27:39 group appsg do ID that means whenever
+27:42 
+
+27:42 there is any changes in this resource
+27:46 
+
+27:46 over here it will replace this resource
+27:49 
+
+27:49 which is EC2 instance okay now it is
+27:52 
+
+27:52 throwing some error
+27:55 
+
+27:55 um let's see why it is doing that
+27:59 
+
+27:59 say unclo configuration block there is
+28:01 
+
+28:01 no close bracket maybe we are missing a
+28:04 
+
+28:04 bracket somewhere let's see
+28:07 
+
+28:07 so
+28:08 
+
+28:08 that's for ingress That's for ingress.
+28:11 
+
+28:11 That's for egress. Yeah. Over here. Yep.
+28:15 
+
+28:15 That's cool. And then we have security
+28:18 
+
+28:18 group. Yeah. So yeah, I'm I'm not
+28:20 
+
+28:20 applying the changes, but you can test
+28:22 
+
+28:22 it out and you will know um like what
+28:25 
+
+28:25 does it actually mean and how does it
+28:27 
+
+28:27 actually work. But create this create
+28:31 
+
+28:31 all these resources and as soon as you
+28:34 
+
+28:34 make any changes to the security group,
+28:36 
+
+28:36 it will force the recreation of
+28:38 
+
+28:38 instance. So you need to try it out.
+28:39 
+
+28:39 Okay. Now the next one is precondition
+28:43 
+
+28:43 and post condition. Okay. So in
+28:47 
+
+28:47 precondition and post condition. Let me
+28:50 
+
+28:50 just take a few example from here.
+28:54 
+
+28:54 Actually I'm just going to test
+28:55 
+
+28:55 precondition and then you can test the
+28:57 
+
+28:57 post condition from the because it's the
+28:59 
+
+28:59 same thing, right? So let's copy this
+29:03 
+
+29:03 resource from here.
+29:12 
+
+29:12 Okay,
+29:13 
+
+29:13 again it's missing
+29:16 
+
+29:16 dot. Okay, so what it is doing first let
+29:18 
+
+29:18 me fix the error that's for life cycle
+29:22 
+
+29:22 and then there there is missing for this
+29:24 
+
+29:24 one as well. Okay. So what it is doing
+29:27 
+
+29:27 uh it's creating an S3 resource with the
+29:29 
+
+29:29 internal name compliance bucket and then
+29:33 
+
+29:33 um the bucket name will be compliance
+29:35 
+
+29:35 bucket hyphen v where environment hyphen
+29:38 
+
+29:38 allowed region one whatever it is okay
+29:42 
+
+29:42 and then there are tags and then there
+29:44 
+
+29:44 is the life cycle rule that says there
+29:46 
+
+29:46 is this precondition okay oh I I've
+29:51 
+
+29:51 taken the post condition so okay let's
+29:53 
+
+29:53 try it out that's fine post condition.
+29:56 
+
+29:56 Okay. So you can have a precondition or
+29:58 
+
+29:58 you can have a post condition. Now in
+30:00 
+
+30:00 those condition you will have a
+30:02 
+
+30:02 condition and error message. Condition
+30:05 
+
+30:05 is what it needs to check. Okay. So it's
+30:08 
+
+30:08 check contains which is a function. We
+30:10 
+
+30:10 haven't covered the function yet but uh
+30:12 
+
+30:12 we'll cover it at some point. For now
+30:14 
+
+30:14 just understand contains check if this
+30:19 
+
+30:19 value okay which is self.ext tags, which
+30:22 
+
+30:22 I have not have it over here. So, let's
+30:26 
+
+30:26 just change it to keys.
+30:30 
+
+30:30 Um, I'm not sure if it's going to work
+30:33 
+
+30:33 because it should have been a map. Um,
+30:36 
+
+30:36 but let's see. We'll see. Okay, it says
+30:39 
+
+30:39 v. tags compliance should be there in
+30:43 
+
+30:43 this uh list of tags. Okay, that's what
+30:46 
+
+30:46 it is checking the condition and if that
+30:49 
+
+30:49 condition is not satisfied, it will
+30:51 
+
+30:51 throw an error. Bucket must have
+30:53 
+
+30:53 compliance tag for audit purpose. Okay,
+30:56 
+
+30:56 so let's run tf apply
+30:59 
+
+30:59 or let me just use the shortcut.
+31:06 
+
+31:06 I'm not sure why it's not showing it,
+31:08 
+
+31:08 but that's all right. Can just type it.
+31:15 
+
+31:15 Okay. Um, what is it says? It says a
+31:18 
+
+31:18 V.allow region is a set of strings.
+31:21 
+
+31:21 That's why it is not able to get it from
+31:23 
+
+31:23 there. So, let's just use V dot region
+31:27 
+
+31:27 or else we have to convert that into a
+31:29 
+
+31:29 list to get the value. Okay.
+31:32 
+
+31:32 I'm sure the data types would be clear
+31:34 
+
+31:34 by now and rest of the things will uh
+31:36 
+
+31:36 will cover everything. Don't worry about
+31:38 
+
+31:38 it. Okay. Now, it says V.ext text is a
+31:41 
+
+31:41 map of string with three elements and it
+31:45 
+
+31:45 says uh yeah post condition field
+31:50 
+
+31:50 it says key where do
+31:54 
+
+31:54 compliance bucket must have compliance
+31:57 
+
+31:57 I'm not sure if this is because let me
+32:00 
+
+32:00 check if this is correct
+32:04 
+
+32:04 contains
+32:05 
+
+32:05 uh keys
+32:09 
+
+32:09 yeah we don't need keys either I believe
+32:11 
+
+32:11 over here uh or do we
+32:16 
+
+32:16 contains
+32:20 
+
+32:20 V or it should be V or tags. No, it is
+32:24 
+
+32:24 saying yeah we need to use keys.
+32:27 
+
+32:27 So um yeah it it clearly suggests that
+32:31 
+
+32:31 that post check failed. So let's try to
+32:33 
+
+32:33 add another tag in the list.
+32:37 
+
+32:37 Um here the tags are so
+32:42 
+
+32:42 compliance equal to yes. Okay
+32:46 
+
+32:46 let's use that and let's run tf apply
+32:49 
+
+32:49 again.
+32:54 
+
+32:54 Okay. Now, now it worked because we have
+32:57 
+
+32:57 added a post check that bucket name
+32:60 
+
+32:60 should contain the tag which is
+33:02 
+
+33:02 compliance and then only it will create
+33:05 
+
+33:05 otherwise it will block the execution.
+33:08 
+
+33:08 Okay. So that's what it did. Now let's
+33:10 
+
+33:10 try to check the precondition as well.
+33:16 
+
+33:16 Okay. Precondition could be something
+33:18 
+
+33:18 like uh maybe bucket name should have
+33:21 
+
+33:21 these things or similarly like tag you
+33:24 
+
+33:24 can check if the allowed region the
+33:27 
+
+33:27 region in which we are creating the
+33:28 
+
+33:28 bucket is allowed or not. Okay. So try
+33:31 
+
+33:31 to add those examples and if you want to
+33:34 
+
+33:34 test everything is there in the um like
+33:36 
+
+33:36 the taskmd file of day which day was it
+33:40 
+
+33:40 day 9 folder. So have we covered all of
+33:44 
+
+33:44 those precondition postcond condition.
+33:46 
+
+33:46 Yeah we have we have covered almost all
+33:48 
+
+33:48 the life cycle rules. So make sure you
+33:50 
+
+33:50 go to day 9 and over there there will be
+33:54 
+
+33:54 code as well of what we have done so far
+33:56 
+
+33:56 and there will be something extra as
+33:58 
+
+33:58 well and then there is task.md
+34:01 
+
+34:01 which will basically says yeah uh I mean
+34:05 
+
+34:05 whatever you have learned from the video
+34:07 
+
+34:07 just try to practice it and these are
+34:10 
+
+34:10 all the things that you need to test it
+34:12 
+
+34:12 out by yourself all the notes all the
+34:16 
+
+34:16 code snippets everything will be there
+34:18 
+
+34:18 but you need to practice it. Okay, make
+34:20 
+
+34:20 sure you practice it. Otherwise, you
+34:22 
+
+34:22 will forget everything that we have
+34:24 
+
+34:24 learned so far. So, yeah, that's it for
+34:27 
+
+34:27 this video as well. Thank you so much
+34:28 
+
+34:28 for watching. I will see you tomorrow.
+34:30 
+
+34:30 Um, and have a good day. Take care.
+34:32 
+
+34:32 Bye-bye.

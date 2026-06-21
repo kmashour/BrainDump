@@ -1,0 +1,3172 @@
+00:00 Hello and welcome back to my channel. My
+00:02 
+
+00:02 name is Puj. This is day 14 of 30 days
+00:04 
+
+00:04 of AWS Terraform. Till day 13, we have
+00:08 
+
+00:08 completed most of the Terraform concept.
+00:09 
+
+00:09 So now it's time to get our hands dirty
+00:12 
+
+00:12 with the realtime project. So we'll be
+00:14 
+
+00:14 starting with some simple projects. We
+00:16 
+
+00:16 call it mini project. And in this video,
+00:19 
+
+00:19 specifically day 14 video, we'll be
+00:21 
+
+00:21 looking into hosting a static website
+00:23 
+
+00:23 using S3 backed by CloudFront. And we'll
+00:27 
+
+00:27 be doing everything using Terraform. You
+00:29 
+
+00:29 might have done it manually. You might
+00:31 
+
+00:31 have done it via AWS console. But in
+00:34 
+
+00:34 this video, we'll be looking into how do
+00:36 
+
+00:36 we do that via Terraform. And as always,
+00:39 
+
+00:39 there'll be task in the GitHub
+00:40 
+
+00:40 repository of day 14. So you can
+00:43 
+
+00:43 complete it afterwards. Make sure you do
+00:45 
+
+00:45 the submission. Make sure you watch the
+00:47 
+
+00:47 series in the same sequence from day
+00:50 
+
+00:50 zero onwards. Don't directly jump into
+00:52 
+
+00:52 this video if you have never worked with
+00:53 
+
+00:53 Terraform or AWS before. Okay. So with
+00:56 
+
+00:56 that being said, let me show you the
+00:57 
+
+00:57 video and let me start the introduction
+00:60 
+
+00:60 of this. So if you can see my screen,
+01:03 
+
+01:03 you will see a diagram like this. So
+01:05 
+
+01:05 this is how CloudFront and S3 work
+01:08 
+
+01:08 together. So if you have not worked with
+01:10 
+
+01:10 CloudFront, let me just give you a brief
+01:12 
+
+01:12 introduction. So let's say you have
+01:14 
+
+01:14 users in multiple location. As your
+01:16 
+
+01:16 website is global, you will be having
+01:19 
+
+01:19 users from multiple geographical
+01:21 
+
+01:21 location. There is some user from India,
+01:24 
+
+01:24 some user from United States, there'll
+01:26 
+
+01:26 be someone from Australia, someone from
+01:29 
+
+01:29 Latin America, South America, North
+01:31 
+
+01:31 America and so on. Right? But when you
+01:34 
+
+01:34 have all the files inside an S3 bucket,
+01:38 
+
+01:38 by the way, we are using S3 bucket to
+01:40 
+
+01:40 host the static website. So all our
+01:43 
+
+01:43 static files like images, JavaScript
+01:46 
+
+01:46 file, HTML file, CSS, everything will
+01:49 
+
+01:49 reside in the S3 bucket. But if we were
+01:53 
+
+01:53 not using CloudFront, if we were
+01:54 
+
+01:54 directly serving the website through the
+01:57 
+
+01:57 S3 bucket, it will have multiple
+01:59 
+
+01:59 challenges. One is cost. So let's say if
+02:02 
+
+02:02 your bucket is hosted somewhere uh in
+02:05 
+
+02:05 Africa and someone from India is
+02:07 
+
+02:07 accessing that bucket, each time the
+02:10 
+
+02:10 download the get request, it will cost a
+02:13 
+
+02:13 lot plus the data transfer cost plus the
+02:16 
+
+02:16 storage cost. then the bucket has to be
+02:18 
+
+02:18 public in that case because these users
+02:21 
+
+02:21 will need direct access to the website
+02:23 
+
+02:23 which is not a secure way of uh using an
+02:26 
+
+02:26 S3 bucket right and there are multiple
+02:28 
+
+02:28 other challenges like it is prone to DOS
+02:31 
+
+02:31 attack there could be multiple other
+02:33 
+
+02:33 reasons why we should not use it
+02:35 
+
+02:35 directly and especially cost and
+02:38 
+
+02:38 security will be a lot high and it's not
+02:40 
+
+02:40 recommended so that's why we have
+02:42 
+
+02:42 cloudfront in place what does cloudfront
+02:45 
+
+02:45 do so you create a distribution ution,
+02:47 
+
+02:47 cloud front distribution and edge
+02:49 
+
+02:49 location. So edge locations are the
+02:51 
+
+02:51 nearest locations to your users. Let's
+02:53 
+
+02:53 say there is someone in India. So they
+02:55 
+
+02:55 will have an edge location somewhere
+02:57 
+
+02:57 let's say in Mumbai region. There is one
+02:60 
+
+03:00 user in US. So there'll be edge location
+03:02 
+
+03:02 in let's say US east one, US East 2 and
+03:06 
+
+03:06 US west one. Right? So multiple edge
+03:09 
+
+03:09 location close to their geographical
+03:11 
+
+03:11 proximity. Now these edge location will
+03:14 
+
+03:14 cache the frequently accessed files
+03:18 
+
+03:18 so that the user can directly serve the
+03:21 
+
+03:21 file from their edge location instead of
+03:24 
+
+03:24 going to the S3 bucket. Now this will
+03:27 
+
+03:27 have multiple advantage right. So what
+03:30 
+
+03:30 we are doing we are not doing this okay
+03:33 
+
+03:33 we are accessing it directly from here.
+03:36 
+
+03:36 So first is you are not making your S3
+03:40 
+
+03:40 bucket public. you are letting the user
+03:43 
+
+03:43 to access the files from their nearest
+03:46 
+
+03:46 location. So the data transfer cost will
+03:49 
+
+03:49 be regional. It's not global now like
+03:52 
+
+03:52 your request doesn't have to traverse
+03:54 
+
+03:54 through multiple continents to reach to
+03:57 
+
+03:57 the origin S3 bucket. It can be directly
+03:59 
+
+03:59 served locally. Plus these files are
+04:02 
+
+04:02 cached that means the access will be
+04:05 
+
+04:05 faster. There will be less latency.
+04:09 
+
+04:09 There will be immediate serving and
+04:11 
+
+04:11 rendering of files to the user's
+04:13 
+
+04:13 browser. Now it is cached for a TTL. TTL
+04:16 
+
+04:16 as in time to live. The default is 24
+04:19 
+
+04:19 hours I believe. So if a user access the
+04:22 
+
+04:22 file already from here and if there is
+04:24 
+
+04:24 another user who is accessing the
+04:25 
+
+04:25 similar file, similar website from the
+04:28 
+
+04:28 same geographical location, then that
+04:31 
+
+04:31 user will not have to get the files from
+04:34 
+
+04:34 S3 bucket because it's already cached
+04:36 
+
+04:36 locally. So the response time is much
+04:39 
+
+04:39 faster now and these files will only be
+04:42 
+
+04:42 fetched from S3 if it's not cached
+04:44 
+
+04:44 locally. Right? So that's the main
+04:46 
+
+04:46 advantage of using edge location. Files
+04:50 
+
+04:50 will be accessed locally. It doesn't
+04:53 
+
+04:53 have to go through S3 bucket. But it
+04:55 
+
+04:55 will only fetch the files from S3 bucket
+04:58 
+
+04:58 when it is not cached locally. And also
+05:01 
+
+05:01 only your cloudfront distribution have
+05:04 
+
+05:04 access to S3 bucket not your users your
+05:07 
+
+05:07 user will not have access to it. So your
+05:09 
+
+05:09 bucket will be private. Okay. And uh you
+05:12 
+
+05:12 can just access it locally. Similar case
+05:16 
+
+05:16 will be for the users in other
+05:18 
+
+05:18 continents other geographical location
+05:20 
+
+05:20 and it will make your website secure uh
+05:23 
+
+05:23 much faster cost effective much secure
+05:27 
+
+05:27 and so on. Right? So, so that's the idea
+05:30 
+
+05:30 behind using a cloudfront distribution
+05:32 
+
+05:32 in front of a S3 hosted static website.
+05:36 
+
+05:36 Now, let's understand what are we going
+05:39 
+
+05:39 to do in this video. So, this is u an
+05:43 
+
+05:43 architectural diagram that we'll be
+05:44 
+
+05:44 following. So, we'll have an S3 bucket.
+05:47 
+
+05:47 Okay. And this bucket will be a private
+05:49 
+
+05:49 S3 bucket. Only the cloud fund
+05:52 
+
+05:52 distribution have access to it via
+05:54 
+
+05:54 origin access control. Okay. Original
+05:56 
+
+05:56 access control is an identity management
+05:58 
+
+05:58 that works well with S3 bucket and
+06:00 
+
+06:00 cloudfront distribution. Earlier it used
+06:02 
+
+06:02 to be origin access identity but that's
+06:05 
+
+06:05 been deprecated now and this is the
+06:08 
+
+06:08 recommended way of doing that. So what
+06:10 
+
+06:10 it will do it will make sure that only
+06:12 
+
+06:12 this cloud fun distribution has access
+06:15 
+
+06:15 to this S3 bucket via a managed identity
+06:18 
+
+06:18 provided by AWS. Okay. So it is a secure
+06:22 
+
+06:22 access. It is the encrypted connection
+06:24 
+
+06:24 that it will establish. Then this bucket
+06:27 
+
+06:27 will also have a bucket policy so that
+06:30 
+
+06:30 cloudford distribution can get and list
+06:34 
+
+06:34 files from the S3 bucket because it has
+06:36 
+
+06:36 to cache the files in the edge locations
+06:39 
+
+06:39 right so it should have the bucket
+06:41 
+
+06:41 policy attached to it and because it's a
+06:43 
+
+06:43 private bucket so it should have so this
+06:45 
+
+06:45 is authentication and this is
+06:47 
+
+06:47 authorization. So we are setting up
+06:49 
+
+06:49 authentication and authorization on the
+06:51 
+
+06:51 S3 bucket. Now these bucket have static
+06:55 
+
+06:55 files like index.html
+06:57 
+
+06:57 style dot CSS script do JavaScript or
+07:00 
+
+07:00 any other image videos etc. So all the
+07:03 
+
+07:03 static file can go in the S3 bucket. Now
+07:06 
+
+07:06 the files will be cached in the edge
+07:08 
+
+07:08 locations. So what we'll be creating?
+07:10 
+
+07:10 We'll be creating S3 bucket a private S3
+07:12 
+
+07:12 bucket. Make it private. We'll be
+07:14 
+
+07:14 uploading files. We'll be creating
+07:16 
+
+07:16 bucket policy. We'll be creating origin
+07:18 
+
+07:18 access control. We'll be creating a
+07:20 
+
+07:20 cloudfront distribution. And then we'll
+07:23 
+
+07:23 be having multiple other services like
+07:25 
+
+07:25 route 53 to route the request to the
+07:27 
+
+07:27 nearest edge location and certificate
+07:30 
+
+07:30 manager which provide HTTPS certificate.
+07:33 
+
+07:33 So I will leave these two things for you
+07:35 
+
+07:35 to complete because if I do everything
+07:38 
+
+07:38 in this video so there isn't much
+07:41 
+
+07:41 learning. So I will leave some things
+07:43 
+
+07:43 for you in the task.md of day 14 so that
+07:46 
+
+07:46 you can complete this project in your
+07:48 
+
+07:48 own way and you can explore a bit from
+07:50 
+
+07:50 your side as well. Okay. So let's go
+07:53 
+
+07:53 ahead in our VS code and let's start
+07:55 
+
+07:55 with this. Now where am I? I'm in
+07:60 
+
+07:60 AWSTF folder. Okay. So let me just make
+08:03 
+
+08:03 a copy of the previous day 13 folder and
+08:06 
+
+08:06 let's call it day 14 now. Okay. And
+08:09 
+
+08:09 let's go inside day 14.
+08:12 
+
+08:12 Now inside day 14, I don't need the
+08:15 
+
+08:15 content of main.tf. So let's just remove
+08:18 
+
+08:18 this. And I'll also add ww folder to the
+08:23 
+
+08:23 same directory. So this folder will have
+08:25 
+
+08:25 the static file. Uh don't worry, you can
+08:28 
+
+08:28 get this file from the GitHub
+08:30 
+
+08:30 repository.
+08:32 
+
+08:32 Okay. Okay. I'm not able to drag drop.
+08:35 
+
+08:35 Let's just do this.
+08:37 
+
+08:37 CP - RF www.
+08:42 
+
+08:42 It's actually at the root directory.
+08:44 
+
+08:44 Okay. So, let's go one more directory
+08:47 
+
+08:47 back.
+08:49 
+
+08:49 Nope,
+08:55 
+
+08:55 I'm inside D14 and oh, actually it's in
+08:60 
+
+09:00 the workspace, not in the directory.
+09:10 
+
+09:10 Okay, I think I can move these files
+09:12 
+
+09:12 manually but somehow I'm not able to
+09:14 
+
+09:14 move the folder. That's okay.
+09:16 
+
+09:16 So over here inside day 14, let's create
+09:19 
+
+09:19 a new folder called www.
+09:22 
+
+09:22 And inside that I'm going to move my
+09:24 
+
+09:24 index.html
+09:26 
+
+09:26 script. JavaScript and style.css.
+09:32 
+
+09:32 All right. Um now let's go inside day 14
+09:35 
+
+09:35 again.
+09:40 
+
+09:40 Okay now my folder is over here. So
+09:43 
+
+09:43 let's start with main.tf.
+09:45 
+
+09:45 So first we'll start with creating the
+09:48 
+
+09:48 S3 bucket. So S3 bucket if you remember
+09:51 
+
+09:51 it's AWS S3. Oops. Let's start with the
+09:55 
+
+09:55 resource field first. resource and then
+09:59 
+
+09:59 AWS
+10:01 
+
+10:01 S3
+10:03 
+
+10:03 bucket and give this a local name.
+10:06 
+
+10:06 Let's call it first bucket.
+10:11 
+
+10:11 Okay, so bucket needs a prefix. Prefix
+10:14 
+
+10:14 is the bucket name. Okay, so
+10:22 
+
+10:22 bucket.
+10:23 
+
+10:23 So we have a bucket prefix and then we
+10:26 
+
+10:26 have a bucket name. So bucket name I
+10:30 
+
+10:30 believe we have a environment variable
+10:32 
+
+10:32 already. If not we can create one.
+10:35 
+
+10:35 So inside
+10:38 
+
+10:38 over here
+10:44 
+
+10:44 variable
+10:46 
+
+10:46 let's call it bucket name.
+10:53 
+
+10:53 and give this
+10:55 
+
+10:55 a default value of
+11:00 
+
+11:00 tech tutorials with py-101.
+11:05 
+
+11:05 Okay, side main.tf. Now we can just
+11:08 
+
+11:08 access it with var.bucket name.
+11:12 
+
+11:12 So that's the S3 bucket. If we just want
+11:15 
+
+11:15 to test this out quickly, let's do first
+11:18 
+
+11:18 let's set an alias for terraform and
+11:20 
+
+11:20 let's just do TF in it
+11:26 
+
+11:26 and TF plan.
+11:30 
+
+11:30 Okay, it says one to add and the bucket
+11:32 
+
+11:32 name should be this.
+11:36 
+
+11:36 All right, now the next part is we need
+11:40 
+
+11:40 to make this S3 bucket private. Okay.
+11:42 
+
+11:42 So, let's go to the Terraform
+11:43 
+
+11:43 documentation
+11:47 
+
+11:47 AWS provider Terraform and let's go over
+11:51 
+
+11:51 here
+11:56 
+
+11:56 search for AWS S3 bucket
+11:60 
+
+11:60 and inside that we need to search for
+12:06 
+
+12:06 AWS S3 public access block. this one
+12:11 
+
+12:11 right? So just copy this
+12:15 
+
+12:15 and let me show you how it works. So
+12:19 
+
+12:19 over here what are we saying? We are
+12:21 
+
+12:21 saying use this public access block.
+12:24 
+
+12:24 Let's call it block and the bucket is
+12:28 
+
+12:28 AWS S3 bucket. The bucket name was first
+12:31 
+
+12:31 bucket
+12:33 
+
+12:33 dot ID. So this should be the bucket ID
+12:36 
+
+12:36 over here.
+12:38 
+
+12:38 Right? And now what we are seeing block
+12:40 
+
+12:40 public access control block public
+12:43 
+
+12:43 policy ignore public ACL restrict public
+12:46 
+
+12:46 buckets. So we are making sure that this
+12:48 
+
+12:48 bucket is private. So we are disabling
+12:52 
+
+12:52 everything. So by default I believe the
+12:54 
+
+12:54 bucket will be private but just to be
+12:56 
+
+12:56 sure uh you can add this block. Okay. So
+12:60 
+
+12:60 now we had made the bucket as public.
+13:03 
+
+13:03 The next is origin access control for
+13:06 
+
+13:06 like whatever we have seen in this
+13:08 
+
+13:08 diagram over here. Right? So we have
+13:10 
+
+13:10 created this. We have made this private.
+13:12 
+
+13:12 Now we need to work on origin access
+13:14 
+
+13:14 control. So let's go ahead and search
+13:17 
+
+13:17 for
+13:19 
+
+13:19 origin access control.
+13:23 
+
+13:23 So there is origin access control.
+13:25 
+
+13:25 Origin access identity. So we need this
+13:27 
+
+13:27 one origin access control.
+13:31 
+
+13:31 Okay. Now you can just copy this part
+13:34 
+
+13:34 from here
+13:37 
+
+13:37 and we can just make the changes.
+13:43 
+
+13:43 Okay. AWS control uh cloudfront origin
+13:46 
+
+13:46 access control and let's call it origin
+13:49 
+
+13:49 access control OC as for short name is
+13:54 
+
+13:54 let's call it demo OC. uh let's keep it
+13:58 
+
+13:58 the same way. signing behavior always
+13:60 
+
+14:00 and u origin access control type should
+14:03 
+
+14:03 be S3 because this is what we need and
+14:06 
+
+14:06 signing protocol let's keep it sigv4 and
+14:09 
+
+14:09 if you need any further details if you
+14:11 
+
+14:11 know want to know more about these
+14:14 
+
+14:14 values so you can check out these things
+14:16 
+
+14:16 right so origin access control type uh
+14:18 
+
+14:18 these are the valid values so it could
+14:21 
+
+14:21 be a lambda function media package v2
+14:23 
+
+14:23 media store or s3 and then signing
+14:26 
+
+14:26 behavior could be always never no
+14:28 
+
+14:28 Override signing protocol the only valid
+14:31 
+
+14:31 value is SIGB4. So this is to
+14:33 
+
+14:33 authenticate how CloudFront will
+14:36 
+
+14:36 authenticate with S3 bucket. Okay. So
+14:38 
+
+14:38 you can check this argument reference
+14:40 
+
+14:40 from the documentation. Now we have
+14:42 
+
+14:42 created the origin access control. Now
+14:44 
+
+14:44 this part is also done. Now what we need
+14:47 
+
+14:47 is a bucket policy. So let's go back
+14:50 
+
+14:50 again over here and let's search for
+14:54 
+
+14:54 bucket policy.
+14:57 
+
+14:57 AWS S3 bucket policy.
+15:00 
+
+15:00 Okay, let's copy this and then we'll
+15:02 
+
+15:02 make the changes.
+15:14 
+
+15:14 So here is the oh let me just hide this
+15:17 
+
+15:17 part.
+15:20 
+
+15:20 AWS has three bucket policy and this is
+15:23 
+
+15:23 what we are saying allow access from
+15:25 
+
+15:25 let's call it allow
+15:29 
+
+15:29 cloudfront
+15:31 
+
+15:31 okay and the bucket is AWS S3 bucket dot
+15:35 
+
+15:35 uh what was the bucket name
+15:40 
+
+15:40 bucket oh we don't need this part we
+15:42 
+
+15:42 already have that bucket and our bucket
+15:46 
+
+15:46 name was first bucket so let's use that
+15:50 
+
+15:50 first bucket do ID
+15:53 
+
+15:53 okay and then we have policy so policy
+15:56 
+
+15:56 you can take it from a JSON so in this
+15:59 
+
+15:59 we are just importing a JSON data source
+16:02 
+
+16:02 from an IM policy document so that's one
+16:05 
+
+16:05 way of doing it the other way is you can
+16:09 
+
+16:09 have the policy created as well so let's
+16:12 
+
+16:12 just use that instead of this part okay
+16:17 
+
+16:17 so over here
+16:20 
+
+16:20 uh let's try to add the policy is equal
+16:24 
+
+16:24 to and what we need to add we need to
+16:28 
+
+16:28 add an IM policy over here okay so how
+16:31 
+
+16:31 do we create the IM policy IM policy can
+16:35 
+
+16:35 be created uh like there is a policy
+16:38 
+
+16:38 creator document I guess so AWS S3
+16:42 
+
+16:42 policy generator I believe this is the
+16:45 
+
+16:45 one okay you can add just uh details
+16:48 
+
+16:48 over here like there is a type of policy
+16:51 
+
+16:51 which is uh IM policy or S3 bucket
+16:54 
+
+16:54 policy. So let's select S3 bucket policy
+16:57 
+
+16:57 add statement and you need to provide
+16:58 
+
+16:58 the principle. So principle for us is
+17:01 
+
+17:01 cloudfront right. So let's just add
+17:06 
+
+17:06 this cloudfront.mazon aws.com
+17:09 
+
+17:09 and actions that we need is we should be
+17:12 
+
+17:12 able to get bucket object right so get
+17:16 
+
+17:16 object this should be the action and
+17:18 
+
+17:18 resource should be either you can add
+17:21 
+
+17:21 your bucket arn or all the buckets if
+17:23 
+
+17:23 you want right uh you can add the star
+17:26 
+
+17:26 with it so uh you can just use okay for
+17:31 
+
+17:31 now just let's just use star and we'll
+17:33 
+
+17:33 update later on. And do we need a
+17:35 
+
+17:35 condition? So let's add a condition.
+17:38 
+
+17:38 What condition we need? Source ARN. So
+17:41 
+
+17:41 search for
+17:43 
+
+17:43 source ARN. I guess this is the one ARN
+17:47 
+
+17:47 equals
+17:49 
+
+17:49 and search for
+17:53 
+
+17:53 source ARN over here. Okay. Source ARN
+17:57 
+
+17:57 and value should be your CloudFront
+17:59 
+
+17:59 distributions ARN. So let's just add
+18:02 
+
+18:02 ARN.
+18:04 
+
+18:04 Okay. And let's see if we need anything
+18:07 
+
+18:07 else. I think this should be it. And
+18:10 
+
+18:10 click on generate policy. Add one or
+18:12 
+
+18:12 more statement above to generate a
+18:14 
+
+18:14 policy. Let's add a statement. Okay. We
+18:17 
+
+18:17 need to add the statement. And now hit
+18:19 
+
+18:19 generate policy. So this is the JSON
+18:21 
+
+18:21 that you get and copy this JSON. And
+18:24 
+
+18:24 then we'll make the changes in that. We
+18:25 
+
+18:25 still need to add the resource details
+18:27 
+
+18:27 over here. Right? So copy policy. Now we
+18:30 
+
+18:30 have the JSON created. So come back to
+18:33 
+
+18:33 this. And if you remember when we were
+18:36 
+
+18:36 looking into functions um we also
+18:38 
+
+18:38 touched about like you cannot use the
+18:40 
+
+18:40 JSON directly in the Terapform file. You
+18:43 
+
+18:43 have to encode it with JSON encode
+18:45 
+
+18:45 function. Okay. So let's do that. JSON
+18:49 
+
+18:49 encode. This is the function that you
+18:51 
+
+18:51 need to use. And inside that uh you can
+18:54 
+
+18:54 just add the policy document.
+18:57 
+
+18:57 Okay. So I've just pasted it over here.
+18:60 
+
+18:60 And it is throwing some error. Um let's
+19:02 
+
+19:02 see what these errors are. So you have
+19:06 
+
+19:06 version.
+19:08 
+
+19:08 Okay. I think I have an extra
+19:12 
+
+19:12 this thing.
+19:18 
+
+19:18 Okay. So it says attribute policy name
+19:21 
+
+19:21 is not expected over here. Oh, because
+19:24 
+
+19:24 it has to be over here. This one, right?
+19:28 
+
+19:28 So let's remove that and let's remove
+19:31 
+
+19:31 that.
+19:33 
+
+19:33 Okay, now it's better.
+19:38 
+
+19:38 And
+19:40 
+
+19:40 uh we also need to remove this part
+19:48 
+
+19:48 or let me just
+19:51 
+
+19:51 comment this because we will need some
+19:53 
+
+19:53 details from here. For example, let's
+19:55 
+
+19:55 say if you want to uh apply this on all
+19:57 
+
+19:57 the buckets, right? So you can add this
+20:01 
+
+20:01 in the resources. Let's copy this.
+20:05 
+
+20:05 Uh where are the resources? Instead of
+20:07 
+
+20:07 star, let's add this.
+20:10 
+
+20:10 We have a duplicate double quotes. I'm
+20:13 
+
+20:13 going to remove that. So what it is
+20:14 
+
+20:14 saying AWS S3 bucket and the bucket name
+20:17 
+
+20:17 was first bucket.
+20:20 
+
+20:20 Okay. ARN. ARN is the unique uh URL for
+20:24 
+
+20:24 that resource and then head star. So any
+20:28 
+
+20:28 resource as in this is for all the
+20:30 
+
+20:30 objects inside that bucket. Right? So
+20:33 
+
+20:33 get bucket and then let's add list
+20:36 
+
+20:36 bucket as well just for to be sure.
+20:42 
+
+20:42 Okay. So we have added the list bucket
+20:44 
+
+20:44 get bucket. Now let me just verify this
+20:47 
+
+20:47 once. So we have JSON in code inside
+20:49 
+
+20:49 version. Then we have a statement.
+20:51 
+
+20:51 Statement has an SID. You can just call
+20:54 
+
+20:54 it let's say allow
+20:57 
+
+20:57 cloudfront
+21:02 
+
+21:02 and
+21:04 
+
+21:04 okay effect is allow and then the
+21:06 
+
+21:06 principle is cloudfront.mazon aws.com
+21:10 
+
+21:10 action is S3 get bucket and list bucket.
+21:15 
+
+21:15 That's okay. I think just get object
+21:17 
+
+21:17 would work. Then we have a resource and
+21:20 
+
+21:20 then I have also added the condition why
+21:23 
+
+21:23 it is not over here. So let's just add
+21:26 
+
+21:26 the condition manually.
+21:28 
+
+21:28 A condition should have also been there
+21:30 
+
+21:30 but somehow it's not there. So I'm just
+21:32 
+
+21:32 going to add the condition which says
+21:35 
+
+21:35 string equals uh source ARN equal to AWS
+21:38 
+
+21:38 cloud fun distribution and the
+21:40 
+
+21:40 distribution name was what was the
+21:44 
+
+21:44 distribution name? Oh, we have not
+21:45 
+
+21:45 created it yet.
+21:47 
+
+21:47 Okay. So, let's keep it the way it is.
+21:50 
+
+21:50 S3 distribution and we'll uh update it.
+21:54 
+
+21:54 Then, yeah, let's remove this part from
+21:57 
+
+21:57 here.
+21:59 
+
+21:59 And I believe we have some um
+22:01 
+
+22:01 indentation error or it says unexpected.
+22:06 
+
+22:06 Let's see. So, there is one closed over
+22:09 
+
+22:09 here, here, here. And
+22:13 
+
+22:13 this is the statement uh statement. And
+22:16 
+
+22:16 then this is closing over here. This is
+22:19 
+
+22:19 closing over here. This is over here.
+22:22 
+
+22:22 Over here.
+22:24 
+
+22:24 Okay, I think this is missing inside the
+22:27 
+
+22:27 statement. So let's just add one more.
+22:30 
+
+22:30 Okay, now it's fine, I believe. And now
+22:34 
+
+22:34 we need to create the S3 distribution.
+22:36 
+
+22:36 Let's do one thing. Uh let's add a
+22:39 
+
+22:39 dependency of this bucket policy on the
+22:45 
+
+22:45 bucket access control. Right? So this
+22:49 
+
+22:49 should be dependent on this. But here we
+22:51 
+
+22:51 have specified the implicit dependency.
+22:54 
+
+22:54 Right? We are saying that this resource
+22:57 
+
+22:57 is dependent on AWS S3 bucket because we
+22:60 
+
+23:00 have specified bucket is equal to AWS
+23:02 
+
+23:02 S3.firstbucket id. So this is implicit
+23:05 
+
+23:05 dependency. Now over here u S3 bucket
+23:09 
+
+23:09 policy we also need to make sure that
+23:11 
+
+23:11 this resource which is bucket policy to
+23:14 
+
+23:14 be created after the bucket right so we
+23:18 
+
+23:18 I think this should do it because we are
+23:20 
+
+23:20 adding that uh implicit dependency on
+23:23 
+
+23:23 the bucket but let's add one more
+23:25 
+
+23:25 dependency on the private access of the
+23:28 
+
+23:28 bucket as well so uh let's call it
+23:31 
+
+23:31 depends on and the depend on should be
+23:35 
+
+23:35 AWS S3 bucket get public access block
+23:38 
+
+23:38 dot block
+23:40 
+
+23:40 um dot what's the name of this um yeah
+23:44 
+
+23:44 it's it's called block
+23:47 
+
+23:47 yeah so this should be good right so now
+23:50 
+
+23:50 we have created an explicit dependency
+23:53 
+
+23:53 as well on the second resource so this
+23:56 
+
+23:56 should do um now we can just upload the
+24:00 
+
+24:00 files so we need to create a resource
+24:02 
+
+24:02 that will upload the files to the static
+24:04 
+
+24:04 website as
+24:06 
+
+24:06 Right. So for that uh we need to create
+24:08 
+
+24:08 AWS S3 object. So let's go back again.
+24:14 
+
+24:14 Let's leave this and let's search for
+24:17 
+
+24:17 AWS S3 object.
+24:22 
+
+24:22 Uh let's search for S3 object. It's over
+24:26 
+
+24:26 here.
+24:28 
+
+24:28 Okay. So we need to provide the bucket
+24:30 
+
+24:30 name, key, and the path to the file.
+24:34 
+
+24:34 and D and then an MD5 sum file MD5 it's
+24:39 
+
+24:39 like a unique hash for that particular
+24:41 
+
+24:41 file. Okay. So let's copy this. Okay.
+24:45 
+
+24:45 And let's go back over here.
+24:48 
+
+24:48 So we have AWS S3 bucket object and
+24:52 
+
+24:52 bucket name is equal to AWS
+24:56 
+
+24:56 S3 bucket first bucket dot name
+25:01 
+
+25:01 or just bucket.
+25:04 
+
+25:04 Okay. And then we have key. Key should
+25:07 
+
+25:07 be your actually this should be the ID
+25:10 
+
+25:10 not the bucket name because we have
+25:12 
+
+25:12 multiple files to upload right. So we
+25:14 
+
+25:14 need to use a for loop for each loop. So
+25:17 
+
+25:17 let's start with that for each is equal
+25:21 
+
+25:21 to we need to provide the path of that
+25:23 
+
+25:23 particular file or because there are
+25:26 
+
+25:26 multiple files right. So we need to
+25:28 
+
+25:28 create a function called file set. in
+25:30 
+
+25:30 the file set we need to provide the um
+25:34 
+
+25:34 the regress expression of where the file
+25:37 
+
+25:37 actually are located. So we'll start
+25:40 
+
+25:40 with if you can just hover your mouse it
+25:42 
+
+25:42 says the first argument of this function
+25:46 
+
+25:46 is a path and then the pattern. Okay,
+25:49 
+
+25:49 it's over here, right? So, first let's
+25:51 
+
+25:51 start with the path which is again we
+25:54 
+
+25:54 need to use interpolation
+25:56 
+
+25:56 and path
+25:59 
+
+25:59 dot
+26:01 
+
+26:01 module. So this is how we can use the
+26:04 
+
+26:04 variables and this will be your
+26:06 
+
+26:06 workspace for that particular folder
+26:08 
+
+26:08 which is uh day 14 in our case and then
+26:11 
+
+26:11 inside that www. So that's the folder
+26:14 
+
+26:14 from where we'll be uploading the files
+26:17 
+
+26:17 and let's use the star star that means
+26:22 
+
+26:22 all the files with any extension and it
+26:24 
+
+26:24 has to be also in double quotes.
+26:29 
+
+26:29 Okay. So that's uh we have initialized
+26:31 
+
+26:31 the for each. Now the next is actually
+26:36 
+
+26:36 this has to go inside for each.
+26:40 
+
+26:40 Now key should be instead of new object
+26:43 
+
+26:43 key it should be each dot value because
+26:46 
+
+26:46 we have to iterate it through multiple
+26:47 
+
+26:47 values. There are multiple files inside
+26:50 
+
+26:50 that. So key equal to each dot value and
+26:54 
+
+26:54 then we have source. Source is just copy
+26:57 
+
+26:57 from here. Yeah just copy from here and
+27:00 
+
+27:00 paste it. And inside that we need to
+27:03 
+
+27:03 provide each dot value. So this one each
+27:08 
+
+27:08 dot value and close it over here.
+27:13 
+
+27:13 Let's remove this double quote.
+27:16 
+
+27:16 Okay. So that's uh path why this is
+27:20 
+
+27:20 throwing error. It says bucket is
+27:22 
+
+27:22 deprecated. The reason this terraform
+27:25 
+
+27:25 AWS S3 bucket first bucket ID. It says
+27:28 
+
+27:28 bucket is deprecated. So let's see what
+27:30 
+
+27:30 is there in this uh AWS S3 object. I
+27:34 
+
+27:34 mean it is still bucket over here and in
+27:38 
+
+27:38 all the examples. So I'm not sure why it
+27:40 
+
+27:40 is throwing the error for this
+27:44 
+
+27:44 um bucket. Oh, it says your bucket name.
+27:47 
+
+27:47 So it should be the bucket name, not the
+27:50 
+
+27:50 ID.
+27:53 
+
+27:53 So let's use bucket.
+27:55 
+
+27:55 Nope, still throwing the error. It is
+27:58 
+
+27:58 throwing the error for the key, not the
+27:60 
+
+27:60 value. This Okay, we we'll see. We'll
+28:02 
+
+28:02 see about that.
+28:04 
+
+28:04 Uh for now let's just use the ID.
+28:09 
+
+28:09 Now uh we have key which is each dot
+28:11 
+
+28:11 value. We have source. Now we need E
+28:14 
+
+28:14 tag. Okay. Let me just remove this.
+28:23 
+
+28:23 Okay. So E tag is path to file. Now what
+28:27 
+
+28:27 we need to do uh we need to use file MD5
+28:30 
+
+28:30 function to convert all the files in
+28:32 
+
+28:32 this format and uh where are all the
+28:35 
+
+28:35 files here are all the files okay so
+28:38 
+
+28:38 each dot value
+28:41 
+
+28:41 I'm sure now you would have understood
+28:43 
+
+28:43 what we are doing and why we are doing
+28:45 
+
+28:45 so we are creating a for each loop so
+28:48 
+
+28:48 that we can iterate it through multiple
+28:50 
+
+28:50 files we have index html uh and
+28:52 
+
+28:52 javascript file css file we have to
+28:54 
+
+28:54 iterate all of those files files then we
+28:57 
+
+28:57 are uh fetching the values of each of
+28:59 
+
+28:59 the file from each dot value. Source is
+29:03 
+
+29:03 where is the file located and e tag is
+29:06 
+
+29:06 we are converting each of these file
+29:09 
+
+29:09 into file MD5.
+29:11 
+
+29:11 Okay. Now we need to one more thing we
+29:14 
+
+29:14 need to add a lookup function. Okay. So
+29:16 
+
+29:16 lookup we have already discussed during
+29:18 
+
+29:18 the function but over here we need to do
+29:21 
+
+29:21 one more thing. Uh so when you actually
+29:24 
+
+29:24 do this manually when you upload the
+29:26 
+
+29:26 bucket objects manually you have to
+29:28 
+
+29:28 change the content type of each of the
+29:32 
+
+29:32 files. Okay. So because it needs a
+29:35 
+
+29:35 certain file. So that's why I'm adding
+29:37 
+
+29:37 this function over here. You can go
+29:39 
+
+29:39 through it and read about it. But what
+29:41 
+
+29:41 it will do basically it will uh run a
+29:44 
+
+29:44 lookup on HTML. when there is HTML you
+29:47 
+
+29:47 need to use text - HTML uh CSS then text
+29:51 
+
+29:51 - CSS and so on. So it checks the file
+29:56 
+
+29:56 extension if it is HTML then it will use
+29:58 
+
+29:58 the value as text- HTML. So there is a
+30:02 
+
+30:02 content type field over here which is
+30:04 
+
+30:04 like this application stat octed stream
+30:07 
+
+30:07 and this function is doing that split
+30:10 
+
+30:10 like whatever logic I have explained to
+30:12 
+
+30:12 you. It will split each of the value
+30:15 
+
+30:15 based on their um like minus one is the
+30:20 
+
+30:20 last element. Last element is the file
+30:22 
+
+30:22 type or file extension and it will split
+30:25 
+
+30:25 it based on the dot extension. You you
+30:28 
+
+30:28 can go through it and you can maybe use
+30:31 
+
+30:31 uh if you want more details on it you
+30:33 
+
+30:33 can try to see uh what this split is
+30:36 
+
+30:36 doing then what this length is doing
+30:38 
+
+30:38 then what this is doing. We have
+30:40 
+
+30:40 discussed it multiple times during
+30:41 
+
+30:41 function. So uh I'm sure it will be uh
+30:44 
+
+30:44 understandable.
+30:46 
+
+30:46 Now we need to figure out why this is
+30:48 
+
+30:48 throwing the error. So let's just save
+30:52 
+
+30:52 this. We'll we'll do everything at once.
+30:54 
+
+30:54 Now the next part is we need to create
+30:56 
+
+30:56 the CloudFront distribution. So let's go
+30:58 
+
+30:58 over here
+31:03 
+
+31:03 distribution.
+31:08 
+
+31:08 Okay. and
+31:10 
+
+31:10 d bucket policy cloudfront origin here
+31:14 
+
+31:14 it is so this is what we need let's copy
+31:18 
+
+31:18 this
+31:21 
+
+31:21 there is a lot of things inside that we
+31:23 
+
+31:23 might not need everything but I'm just
+31:25 
+
+31:25 going to copy till here okay
+31:31 
+
+31:31 let's paste it over here
+31:33 
+
+31:33 and let's see what do we need
+31:36 
+
+31:36 we need to make a lot of changes over
+31:38 
+
+31:38 here. So distribution name is S3
+31:40 
+
+31:40 distribution and this is what we have
+31:42 
+
+31:42 used earlier as well in the if you can
+31:45 
+
+31:45 see over here right uh resource source
+31:49 
+
+31:49 ARN so this is good now the domain name
+31:53 
+
+31:53 is there is one more thing about uh
+31:55 
+
+31:55 hosting your static website on S3 bucket
+31:57 
+
+31:57 the domain name has to be same as the
+32:00 
+
+32:00 bucket name so let's say if you have the
+32:03 
+
+32:03 domain wpsuchdeva.com
+32:07 
+
+32:07 so My bucket name should be the same
+32:10 
+
+32:10 with WW extension as well, right? So AWS
+32:13 
+
+32:13 S3 bucket and the bucket is what was the
+32:17 
+
+32:17 bucket? First bucket
+32:19 
+
+32:19 dot uh what was the field over here?
+32:28 
+
+32:28 Uh bucket regional domain name. Okay.
+32:35 
+
+32:35 Bucket regional domain name. Now origin
+32:38 
+
+32:38 access control ID which is origin access
+32:40 
+
+32:40 control. Uh let's see where it is.
+32:44 
+
+32:44 Origin access control and the name is
+32:46 
+
+32:46 OAC.
+32:48 
+
+32:48 So let's make the change. OAC do ID and
+32:52 
+
+32:52 then origin ID is equal to local dot S3
+32:56 
+
+32:56 origin ID. So
+32:59 
+
+32:59 we need to take this from here.
+33:05 
+
+33:05 Okay, we have origin ID.
+33:10 
+
+33:10 From where do we get this field? Okay,
+33:12 
+
+33:12 let's check the documentation
+33:15 
+
+33:15 and search for this origin ID
+33:25 
+
+33:25 should be over here in the okay unique
+33:28 
+
+33:28 identifier for the origin but from where
+33:30 
+
+33:30 do we get this okay so we can we can
+33:33 
+
+33:33 create this origin ID so let's do that
+33:36 
+
+33:36 you can create a local if you want and
+33:39 
+
+33:39 use that uh as this this this So let's
+33:42 
+
+33:42 create a local uh do we have a folder
+33:44 
+
+33:44 over here? No. Let's create a file
+33:48 
+
+33:48 local.tf
+33:50 
+
+33:50 and let's create a locals and um let's
+33:54 
+
+33:54 call it
+33:57 
+
+33:57 origin
+33:59 
+
+33:59 ID is equal to so we can just append it
+34:03 
+
+34:03 to the S3 name. Uh so let's use this
+34:06 
+
+34:06 format S3
+34:10 
+
+34:10 and uh we can use the bucket name which
+34:13 
+
+34:13 is AWS oops
+34:21 
+
+34:21 uh which is AWS S3
+34:24 
+
+34:24 uh bucket
+34:29 
+
+34:29 dot
+34:31 
+
+34:31 first bucket dot id. So now the origin
+34:35 
+
+34:35 id will become s3-en the bucket name.
+34:38 
+
+34:38 Okay. So I just need local origin ID to
+34:41 
+
+34:41 access this on main.tf.
+34:44 
+
+34:44 So
+34:46 
+
+34:46 local dot origin id. Okay. This is good.
+34:50 
+
+34:50 Now pp enabled equal to true. IPv4
+34:53 
+
+34:53 enabled.
+34:54 
+
+34:54 And
+34:57 
+
+34:57 okay default root object is index.html.
+34:60 
+
+35:00 This is good. Now we don't need alias
+35:03 
+
+35:03 for this. Let's remove this
+35:06 
+
+35:06 default cache behavior. Uh only allowed
+35:09 
+
+35:09 method should be get and head. Okay. So
+35:15 
+
+35:15 let's remove the extra method.
+35:18 
+
+35:18 So get and head.
+35:22 
+
+35:22 Okay. And the other methods will not
+35:24 
+
+35:24 even have access because this is not how
+35:26 
+
+35:26 we have used it. Cached method as well.
+35:29 
+
+35:29 get an head and then target origin ID
+35:33 
+
+35:33 should be local dot origin id. Okay. Now
+35:37 
+
+35:37 forwarded value let's keep it the same
+35:40 
+
+35:40 forward equal to none. Now we need
+35:43 
+
+35:43 viewer policy. We don't need to do allow
+35:46 
+
+35:46 all. We can just do
+35:50 
+
+35:50 redirect to HTTPS. So that even if there
+35:52 
+
+35:52 is a default HTTP request it should
+35:54 
+
+35:54 redirect to HTTPS. Minimum TL TTL is
+35:57 
+
+35:57 zero. Default TTL is 3600 seconds and
+36:01 
+
+36:01 this is the max. Okay, this is for the
+36:04 
+
+36:04 time the data will be cast uh in the
+36:07 
+
+36:07 edge location.
+36:09 
+
+36:09 Okay, and then we have
+36:13 
+
+36:13 okay, we don't need this cache behavior.
+36:18 
+
+36:18 Let's remove this part.
+36:22 
+
+36:22 Okay. So there are multiple cache
+36:24 
+
+36:24 behavior that it is uh there in the
+36:26 
+
+36:26 example and every cache behavior has a
+36:29 
+
+36:29 precedence. So we can just use one for
+36:31 
+
+36:31 this demo the default cache behavior and
+36:34 
+
+36:34 remove rest of those.
+36:37 
+
+36:37 Okay.
+36:39 
+
+36:39 Now there is price class.
+36:42 
+
+36:42 So price class if you want to read it
+36:44 
+
+36:44 should be over here. Let's see
+36:48 
+
+36:48 price class equal to price class for the
+36:50 
+
+36:50 distribution. Uh so there is all 100 200
+36:56 
+
+36:56 and if you want to read more about it I
+36:59 
+
+36:59 think uh you can read it from the AWS
+37:02 
+
+37:02 documentation they don't have much
+37:03 
+
+37:03 details over here. So let's use uh maybe
+37:06 
+
+37:06 price class as 100.
+37:09 
+
+37:09 I believe it will be based on uh your
+37:11 
+
+37:11 usage.
+37:13 
+
+37:13 Okay. So price class is done. Now
+37:16 
+
+37:16 restrictions
+37:18 
+
+37:18 uh you can set geio restriction and
+37:21 
+
+37:21 whitelist any particular location if you
+37:23 
+
+37:23 want right or you can just remove the
+37:25 
+
+37:25 restriction if you want uh every
+37:28 
+
+37:28 location to be part of it. Right? So you
+37:30 
+
+37:30 can just do restriction type is equal to
+37:35 
+
+37:35 none.
+37:37 
+
+37:37 Okay. And then you have tags. If you
+37:41 
+
+37:41 want you can remove that for now.
+37:44 
+
+37:44 And you have your certificate. So this
+37:46 
+
+37:46 is the certificate from ACM which is
+37:49 
+
+37:49 what you need to configure. So for this
+37:51 
+
+37:51 demo I'm just going to keep it the
+37:53 
+
+37:53 default certificate equal to true. It
+37:56 
+
+37:56 will use the CloudFront default
+37:57 
+
+37:57 certificate. And I think that's it. Uh
+38:00 
+
+38:00 so these were the changes that we made.
+38:03 
+
+38:03 Now let's see. Yeah, this is still
+38:05 
+
+38:05 throwing the error.
+38:07 
+
+38:07 Let's run TF plan and see if it makes
+38:10 
+
+38:10 any change.
+38:14 
+
+38:14 Okay. Yes, it is throwing the error on E
+38:17 
+
+38:17 tag. But it is saying a reference to the
+38:19 
+
+38:19 resource type must be followed by if one
+38:22 
+
+38:22 of the attribute specifying the resource
+38:24 
+
+38:24 name. So there must be something wrong
+38:26 
+
+38:26 with it. Let's see path.module.
+38:30 
+
+38:30 Uh D. Let's check the documentation once
+38:36 
+
+38:36 and search for AWS S3 bucket
+38:42 
+
+38:42 object.
+38:46 
+
+38:46 AWS S3 bucket object. Oh, it says the
+38:49 
+
+38:49 AWS S3 bucket object resource is
+38:52 
+
+38:52 depregated and removed in future. So,
+38:54 
+
+38:54 use AWS S3 bucket instead. Okay. So
+38:58 
+
+38:58 let's search for AWS S3 bucket and where
+39:01 
+
+39:01 it is. I don't know why do they do that
+39:04 
+
+39:04 like they they changes they play with
+39:08 
+
+39:08 the name of the resources a lot in each
+39:10 
+
+39:10 of the provider version. So, so that's
+39:13 
+
+39:13 what you remember uh during the initial
+39:16 
+
+39:16 videos I have mentioned we need to lock
+39:19 
+
+39:19 in the Terraform provider version that
+39:21 
+
+39:21 we are using because let's say if you
+39:22 
+
+39:22 were using an older Teraphform provider
+39:24 
+
+39:24 version that resource that we had it
+39:27 
+
+39:27 would have worked just fine but because
+39:29 
+
+39:29 we are on the newer Terraform provider
+39:31 
+
+39:31 version that version has the bucket uh
+39:34 
+
+39:34 this resource name changed to AWS S3
+39:36 
+
+39:36 bucket so we need to use this resource
+39:38 
+
+39:38 name now okay
+39:42 
+
+39:42 Um yeah, let's just try to update the
+39:45 
+
+39:45 name. I believe rest of the fields will
+39:47 
+
+39:47 be same. Oh no, that's AWS S3 bucket.
+39:50 
+
+39:50 No, no, not this. We need a AWS. What
+39:54 
+
+39:54 was that?
+39:55 
+
+39:55 AWS S3 object, not the bucket.
+40:02 
+
+40:02 AWS S3 object over here. And yeah, this
+40:07 
+
+40:07 looks the same. Rest of the fields are
+40:09 
+
+40:09 same. Just the resource name is changed.
+40:11 
+
+40:11 So let's go back over here and let's
+40:15 
+
+40:15 update this. Okay, now that error is
+40:17 
+
+40:17 gone.
+40:19 
+
+40:19 Let's run TF plan again. Okay, now
+40:21 
+
+40:21 there's a different error. It says
+40:23 
+
+40:23 invalid reference on line 57
+40:28 
+
+40:28 which is for E tag uh path.module/www
+40:34 
+
+40:34 each doal.
+40:36 
+
+40:36 Okay, which is over here.
+40:41 
+
+40:41 That's the only error. Or does it have
+40:43 
+
+40:43 any more error? Let's see. And oh no,
+40:46 
+
+40:46 that's not the only one. It has error in
+40:48 
+
+40:48 this source field as well
+40:53 
+
+40:53 and it has error in the for each as
+40:56 
+
+40:56 well. So looks like it is not able to
+40:57 
+
+40:57 find that path. So this should be file
+41:01 
+
+41:01 set and then
+41:03 
+
+41:03 path. Oh, I get it. I get it. It's
+41:06 
+
+41:06 because it has to be outside this now.
+41:11 
+
+41:11 Okay. And I have copied all the lines.
+41:13 
+
+41:13 So that's why it is throwing error for
+41:15 
+
+41:15 everything. So path domodule has to be
+41:17 
+
+41:17 separate from www. So I just need to
+41:20 
+
+41:20 change the closing of this bracket.
+41:23 
+
+41:23 I think this should do it.
+41:27 
+
+41:27 Okay. So let's run TF plan again. All
+41:30 
+
+41:30 right. Now let's run TF apply auto
+41:34 
+
+41:34 approve. And now we wait. Cloud fun
+41:36 
+
+41:36 distribution might take a couple of
+41:37 
+
+41:37 minutes. So I'm just going to let it run
+41:40 
+
+41:40 and then we'll see. I'm going to pause
+41:42 
+
+41:42 the recording. Okay. So it got completed
+41:44 
+
+41:44 but it uh throws some error on the
+41:47 
+
+41:47 bucket policy. It says invalid principle
+41:49 
+
+41:49 in the policy. So let's see the bucket
+41:51 
+
+41:51 policy object over here. Uh which is
+41:55 
+
+41:55 principle is this one.
+41:58 
+
+41:58 And it says
+42:01 
+
+42:01 was is throwing the error for this.
+42:03 
+
+42:03 Let's see. invalid principle in the
+42:06 
+
+42:06 policy. Okay. And on line 24
+42:11 
+
+42:11 as in the object it is throwing the
+42:13 
+
+42:13 object. Okay. So the principle
+42:17 
+
+42:17 we have is oh uh it should not be AWS.
+42:21 
+
+42:21 It should be I believe service
+42:24 
+
+42:24 and cloud front. Yeah this should be
+42:26 
+
+42:26 good. Let's apply the changes again.
+42:31 
+
+42:31 And it says one plan to change. It is
+42:34 
+
+42:34 creating the bucket policy.
+42:39 
+
+42:39 Okay. Meanwhile, let's just check the
+42:43 
+
+42:43 policy document for AWSS3 bucket policy.
+42:47 
+
+42:47 This resource.
+42:51 
+
+42:51 So, I'm just going to paste it over
+42:53 
+
+42:53 here. AWSS3 bucket
+42:57 
+
+42:57 uh policy which is over here.
+43:01 
+
+43:01 Okay. And
+43:04 
+
+43:04 principle
+43:05 
+
+43:05 type should be AWS and identify should
+43:09 
+
+43:09 be your account
+43:16 
+
+43:16 in the data source. No, we don't have
+43:19 
+
+43:19 much details. Let's see if it working or
+43:22 
+
+43:22 not.
+43:24 
+
+43:24 It's still creating.
+43:26 
+
+43:26 And if we just check like let's say AWS
+43:32 
+
+43:32 um
+43:34 
+
+43:34 bucket
+43:35 
+
+43:35 policy example let's check in the
+43:38 
+
+43:38 documentation
+43:42 
+
+43:42 and let's see a sample
+43:46 
+
+43:46 okay over here principle they have used
+43:48 
+
+43:48 as star uh we don't need star
+43:53 
+
+43:53 but in the principle there goes
+43:57 
+
+43:57 AWS this or we could add service as well
+44:00 
+
+44:00 which is what we did. So but this is
+44:04 
+
+44:04 principle should be AWS and inside AWS
+44:07 
+
+44:07 we can mention multiple accounts but
+44:10 
+
+44:10 earlier what we did AWS equal to service
+44:12 
+
+44:12 name. So which is not uh really a valid
+44:15 
+
+44:15 key value pair right so either it should
+44:18 
+
+44:18 be like this a principle equal to AWS
+44:20 
+
+44:20 and the account name or it should be
+44:22 
+
+44:22 service and then the service name.
+44:25 
+
+44:25 I'm just looking at if there is an
+44:27 
+
+44:27 example which says service
+44:30 
+
+44:30 um let's see
+44:33 
+
+44:33 principle AWS AWS
+44:36 
+
+44:36 principle service okay over here this is
+44:38 
+
+44:38 what we need right so this is what we
+44:40 
+
+44:40 did but over here that in this example
+44:43 
+
+44:43 it is for logging S3 but uh in our
+44:45 
+
+44:45 example we are using cloudfront so this
+44:47 
+
+44:47 should work uh no it did not throw the
+44:51 
+
+44:51 error again let's see what does it say
+44:52 
+
+44:52 policy put bucket operation d This is a
+44:55 
+
+44:55 different error. It should put bucket
+44:58 
+
+44:58 policy HTTPS response code 400 API error
+45:02 
+
+45:02 malformed policy action does not apply
+45:04 
+
+45:04 to any action. So looks like some issues
+45:06 
+
+45:06 with the policy statement. So let's see.
+45:10 
+
+45:10 So we have SID uh and then if allow
+45:16 
+
+45:16 principle is this action is S3 get
+45:21 
+
+45:21 object list bucket. Let's remove this.
+45:26 
+
+45:26 Okay. And then the resource is S3 bucket
+45:30 
+
+45:30 uh first bucket ARN.
+45:33 
+
+45:33 And then the condition string equals AWS
+45:36 
+
+45:36 source ARN equal to CloudFund
+45:37 
+
+45:37 distribution S3 distribution ARN. Yeah,
+45:41 
+
+45:41 this should be good. The only thing is
+45:45 
+
+45:45 I'm not sure if SID matters, but let's
+45:48 
+
+45:48 just try to add it like this.
+45:52 
+
+45:52 And let's apply the changes again. And
+45:54 
+
+45:54 meanwhile we can just check the
+45:56 
+
+45:56 statement.
+46:00 
+
+46:00 Let's search for this particular
+46:04 
+
+46:04 policy SID.
+46:14 
+
+46:14 Okay. So we need to identify what
+46:16 
+
+46:16 exactly is SID in the bucket policy.
+46:23 
+
+46:23 SID stands for uh statement ID. It's
+46:26 
+
+46:26 optional.
+46:28 
+
+46:28 But if you are adding it, you can
+46:31 
+
+46:31 provide a meaningful name for SID. So I
+46:34 
+
+46:34 don't think it will matter like what
+46:35 
+
+46:35 name we are providing.
+46:39 
+
+46:39 Uh let's see.
+46:42 
+
+46:42 You can provide a statement ID for the
+46:45 
+
+46:45 policy. You can assign away to each
+46:47 
+
+46:47 statement.
+46:50 
+
+46:50 Okay. Yeah, it it can be anything. I
+46:52 
+
+46:52 don't think it will matter but let's see
+46:54 
+
+46:54 oh it completed I I believe the issue
+46:56 
+
+46:56 was with the permission that we were
+46:58 
+
+46:58 providing right because uh we were
+47:01 
+
+47:01 providing this permission in the policy
+47:03 
+
+47:03 documentation but maybe we did not have
+47:05 
+
+47:05 access to do that because
+47:08 
+
+47:08 uh we had uh the origin access control
+47:12 
+
+47:12 set to different policy right it only
+47:16 
+
+47:16 has the get object right over there.
+47:26 
+
+47:26 No. Yeah, it only has Oh, that's the
+47:29 
+
+47:29 cachy behavior.
+47:32 
+
+47:32 Uh, no, that's all right. Like, uh,
+47:34 
+
+47:34 check it out and let me know if you know
+47:36 
+
+47:36 why it did not work. Maybe
+47:39 
+
+47:39 let's do one thing. Let's try to update
+47:41 
+
+47:41 this SID to something else and see if it
+47:43 
+
+47:43 was just because of the permission.
+47:52 
+
+47:52 here. Let's just call it AWS CloudFront.
+47:57 
+
+47:57 Okay. And let's apply the change again.
+48:08 
+
+48:08 Yeah, that was not the issue. SID was
+48:11 
+
+48:11 not the issue. The action was the issue
+48:14 
+
+48:14 because earlier we were doing list
+48:16 
+
+48:16 bucket as well. But this policy will
+48:18 
+
+48:18 only work on the bucket objects because
+48:22 
+
+48:22 we have specified the resource as arn
+48:25 
+
+48:25 star uh /star not on the bucket on the
+48:31 
+
+48:31 objects of the bucket that's why we we
+48:33 
+
+48:33 cannot add the other permission that we
+48:35 
+
+48:35 had for the list bucket. Okay. So now it
+48:38 
+
+48:38 is completed and it might have uh given
+48:42 
+
+48:42 us the cloudfront URL as well. Oh, it
+48:47 
+
+48:47 did not. Maybe because we did not have
+48:49 
+
+48:49 the output variable set.
+48:52 
+
+48:52 I'm not sure why I did that. But you can
+48:54 
+
+48:54 set the output variables uh next time
+48:56 
+
+48:56 you are making this change. Uh but for
+48:59 
+
+48:59 now, it should be there somewhere in the
+49:01 
+
+49:01 logs
+49:04 
+
+49:04 or you can check it out from your
+49:07 
+
+49:07 console as well. Let's see. Um this is
+49:12 
+
+49:12 the distribution name.
+49:15 
+
+49:15 distribution ARN and this is the S3
+49:18 
+
+49:18 bucket.
+49:21 
+
+49:21 Uh
+49:27 
+
+49:27 yeah, let's go back to our AWS account
+49:30 
+
+49:30 and search for CloudFront.
+49:38 
+
+49:38 Okay. Uh the distribution,
+49:41 
+
+49:41 this is the one. Click on that and what
+49:46 
+
+49:46 you need is the DNS name of that
+49:48 
+
+49:48 distribution which is over here. Copy
+49:50 
+
+49:50 this and open this in a new tab and here
+49:52 
+
+49:52 is your website that you have just
+49:55 
+
+49:55 deployed. So this is HTTPS enabled by
+49:58 
+
+49:58 default but it is using a default
+50:00 
+
+50:00 certificate. Make sure you use a
+50:02 
+
+50:02 certificate from ACM and make sure you
+50:05 
+
+50:05 redirect this. Make sure you create the
+50:07 
+
+50:07 DNS record and use route 53 and
+50:10 
+
+50:10 everything has to be done with with
+50:12 
+
+50:12 terapform. So this is what you need to
+50:14 
+
+50:14 do next. After this you need to use a
+50:17 
+
+50:17 custom domain. If you have a custom
+50:19 
+
+50:19 domain you need to create SSL
+50:21 
+
+50:21 certificate with ACM. Try to implement a
+50:24 
+
+50:24 CI/CD pipeline for automated deployment.
+50:28 
+
+50:28 Try to use it on multiple environments.
+50:30 
+
+50:30 So we have not covered this how to do
+50:32 
+
+50:32 that multiple environment in terapform
+50:34 
+
+50:34 yet but if you know you can do that
+50:36 
+
+50:36 otherwise wait for the video in which
+50:37 
+
+50:37 I'll explain this and then you can also
+50:41 
+
+50:41 set custom error pages security header
+50:43 
+
+50:43 etc in the cloudfront distribution.
+50:46 
+
+50:46 Okay. Um so yeah that's uh a simple
+50:49 
+
+50:49 static website that we have deployed
+50:51 
+
+50:51 using S3 and uh using CloudFront. If you
+50:54 
+
+50:54 make any changes to your S3 bucket, the
+50:56 
+
+50:56 changes will not be reflected over here
+50:58 
+
+50:58 instantly because this is coming from
+51:01 
+
+51:01 cache and cache has a default time to
+51:03 
+
+51:03 live. So it will be available once the
+51:06 
+
+51:06 time to live is over or there is one
+51:09 
+
+51:09 more feature in cloud fun distribution
+51:12 
+
+51:12 which is called cache invalidation. So
+51:14 
+
+51:14 if you go over here and create the
+51:16 
+
+51:16 invalidation, you can invalidate the
+51:18 
+
+51:18 cache. That means it will load the fresh
+51:20 
+
+51:20 file from the S3 bucket then and there.
+51:22 
+
+51:22 So yeah, we have gone around 1 hour or
+51:26 
+
+51:26 so. I did not expect this video to go
+51:28 
+
+51:28 that long, but that's okay. We got some
+51:30 
+
+51:30 error. We fixed that. We now know how do
+51:32 
+
+51:32 we troubleshoot and how do we understand
+51:35 
+
+51:35 that carefully. I didn't I I never plan
+51:38 
+
+51:38 to make the video as short as possible
+51:40 
+
+51:40 for views. I make sure that I include
+51:44 
+
+51:44 each and everything that a beginner
+51:47 
+
+51:47 should be able to understand because
+51:49 
+
+51:49 this is what we are doing. We are doing
+51:51 
+
+51:51 this for learning purpose. If I show you
+51:54 
+
+51:54 the happy path without any errors,
+51:56 
+
+51:56 without anything, it won't be much of a
+51:58 
+
+51:58 learning experience, right? So I make
+52:01 
+
+52:01 sure that whatever error we face, I fix
+52:04 
+
+52:04 it during the demo. And if you have been
+52:06 
+
+52:06 following me for long, you know the
+52:08 
+
+52:08 pattern. You know how do I do the
+52:09 
+
+52:09 recording. So yeah, that's it for this
+52:12 
+
+52:12 video. I hope you had a good learning
+52:14 
+
+52:14 experience. Let's catch up soon in the
+52:15 
+
+52:15 next video. Hopefully, it will be
+52:17 
+
+52:17 tomorrow. Um so stay tuned and make sure
+52:20 
+
+52:20 you complete the assignment the task
+52:22 
+
+52:22 given in the GitHub repository and
+52:24 
+
+52:24 submit your assignment. So that's it.
+52:26 
+
+52:26 Thank you so much. Happy learning.

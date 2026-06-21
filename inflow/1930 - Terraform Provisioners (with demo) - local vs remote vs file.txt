@@ -1,0 +1,1561 @@
+00:00 Hello and welcome back to 30 days of AWS
+00:03 
+
+00:03 Terapform. My name is Push and this is
+00:05 
+
+00:05 day 19 in the series and till now we
+00:08 
+
+00:08 have covered a great lot of stuff and
+00:10 
+
+00:10 give yourself a pat on the back if you
+00:12 
+
+00:12 have been following me in this journey
+00:14 
+
+00:14 from day zero. Till now we have
+00:16 
+
+00:16 completed a lots of concepts and uh a
+00:18 
+
+00:18 few mini projects and I believe a couple
+00:21 
+
+00:21 of real-time projects as well. In this
+00:23 
+
+00:23 video we'll be looking into another
+00:25 
+
+00:25 concept. You can treat this as a mini
+00:27 
+
+00:27 project or you can convert this into a
+00:29 
+
+00:29 mini project. And uh we'll be discussing
+00:32 
+
+00:32 Terraform provisioners in this video. So
+00:35 
+
+00:35 I hope you have been consistently uh
+00:38 
+
+00:38 doing the practice doing the hands-on
+00:39 
+
+00:39 and completing the task given in task.md
+00:42 
+
+00:42 files of each of the repository of each
+00:44 
+
+00:44 of the folder and I hope you have been
+00:47 
+
+00:47 learning consistently so far. So uh
+00:49 
+
+00:49 thank you for that and thank you for
+00:51 
+
+00:51 supporting the channel and thank you for
+00:53 
+
+00:53 publishing your progress on LinkedIn,
+00:55 
+
+00:55 Twitter and so on. So without any
+00:57 
+
+00:57 further ado, let's start with the video.
+00:60 
+
+00:60 So uh in this video we'll be looking
+01:02 
+
+01:02 into as I've told you Terapform
+01:03 
+
+01:03 provisioners. Okay, let me just make a
+01:06 
+
+01:06 small change. I need to exit the Docker
+01:09 
+
+01:09 desktop. It's adding some load on my
+01:12 
+
+01:12 system.
+01:15 
+
+01:15 Okay. Yeah, hopefully it should be
+01:18 
+
+01:18 better now. Okay. So, what are the
+01:21 
+
+01:21 provisioners uh in Terapform? Right. So,
+01:23 
+
+01:23 there are three type of provisioners in
+01:25 
+
+01:25 Terraform. Now, what is provisioner?
+01:27 
+
+01:27 Provisioner is something that performs a
+01:29 
+
+01:29 task. Okay, this task could be as simple
+01:33 
+
+01:33 as running a file, executing a file like
+01:37 
+
+01:37 let's say I'll just add it over here. uh
+01:40 
+
+01:40 executing
+01:43 
+
+01:43 a script
+01:47 
+
+01:47 or something like running a command
+01:53 
+
+01:53 or doing some operation, right? Some
+01:57 
+
+01:57 sort of operation. So that's the main
+01:59 
+
+01:59 purpose of provisioner in Terraform.
+02:03 
+
+02:03 Now u there are different things that
+02:07 
+
+02:07 you need to understand when working with
+02:09 
+
+02:09 provisioners. There are three type of
+02:10 
+
+02:10 provisioners each suitable for different
+02:12 
+
+02:12 use cases. Okay. So the first one is
+02:16 
+
+02:16 over here which is local exec. Local
+02:19 
+
+02:19 exec is used when you want to execute
+02:22 
+
+02:22 some script some command locally for
+02:25 
+
+02:25 some purpose. Right? So this is like in
+02:27 
+
+02:27 your local terminal where your terraform
+02:33 
+
+02:33 host resides. Right? Where you have
+02:34 
+
+02:34 installed your terraform you will run
+02:36 
+
+02:36 those commands over here. For example,
+02:38 
+
+02:38 in this series like what I have shown
+02:40 
+
+02:40 you in the demo so far, I'm running
+02:42 
+
+02:42 terapform commands locally from my
+02:44 
+
+02:44 MacBook, right? So for me, the local
+02:47 
+
+02:47 exec will be running on locally on my
+02:49 
+
+02:49 machine. Okay? And I will show you
+02:50 
+
+02:50 examples as well. So basically, you
+02:53 
+
+02:53 know, execute the system time running
+02:56 
+
+02:56 few commands locally on the machine.
+02:58 
+
+02:58 It's uh like local exec. That's how it
+03:00 
+
+03:00 works. Now there is remote exec as the
+03:05 
+
+03:05 name suggest it will help you execute
+03:08 
+
+03:08 the commands remotely on a machine.
+03:11 
+
+03:11 Okay. So that's why the name remote
+03:13 
+
+03:13 execution and because we are running the
+03:16 
+
+03:16 commands remotely over a machine or a
+03:18 
+
+03:18 server or a cloud virtual machine. This
+03:20 
+
+03:20 has to be over the SSH connection. So
+03:23 
+
+03:23 that means you would need the SSH
+03:25 
+
+03:25 connection details for it like your key
+03:27 
+
+03:27 pair public private key pair and so on
+03:29 
+
+03:29 and the authentication authorization for
+03:31 
+
+03:31 that right. So remote exec is something
+03:33 
+
+03:33 that you would run over SSH remotely
+03:36 
+
+03:36 over a machine. So this could be running
+03:38 
+
+03:38 like a copy command remotely or you know
+03:41 
+
+03:41 installing I'll just add it over here.
+03:43 
+
+03:43 So let's say installing enginex on a
+03:46 
+
+03:46 machine as a bootstrap or when your
+03:48 
+
+03:48 servers uh are starting you know at the
+03:51 
+
+03:51 initial first step installing engineext
+03:53 
+
+03:53 or you know running apt get update
+03:57 
+
+03:57 and so on right so anything that you run
+03:59 
+
+03:59 remotely over a machine is remote exec
+04:02 
+
+04:02 and the last one is file
+04:06 
+
+04:06 okay so file is file provisioner uh is
+04:11 
+
+04:11 when you have to copy copy a file. So
+04:14 
+
+04:14 let's say this is the file. Let me
+04:16 
+
+04:16 change the color. So when you have to
+04:18 
+
+04:18 copy a file from locally or from one
+04:20 
+
+04:20 machine to another machine, right? So
+04:22 
+
+04:22 that's when you would use remote exec
+04:24 
+
+04:24 again for this as well. You would need a
+04:26 
+
+04:26 SSH connection and like you would need
+04:30 
+
+04:30 the key pair as well for this and this
+04:34 
+
+04:34 for local exec you don't need a key pair
+04:36 
+
+04:36 because it's running locally, right? So
+04:38 
+
+04:38 this is what a provisioner is and this
+04:41 
+
+04:41 is why we use provisioners and now we'll
+04:43 
+
+04:43 be doing the demo of these provisioners
+04:45 
+
+04:45 in depth like how do we do that. So
+04:48 
+
+04:48 let's go back. This is my VS code. Okay.
+04:53 
+
+04:53 So uh day 19 folder again check out the
+04:55 
+
+04:55 code from the git repo and I will walk
+04:57 
+
+04:57 you through. I'll um add the code for
+04:59 
+
+04:59 provisioner and I have some basic code
+05:02 
+
+05:02 in over here. So that's the provider
+05:05 
+
+05:05 block over here
+05:07 
+
+05:07 and we have a data source because we
+05:08 
+
+05:08 need to get the AMI details right. So we
+05:11 
+
+05:11 are getting AWS AMI for Ubuntu from the
+05:15 
+
+05:15 uh data source right we have added the
+05:17 
+
+05:17 filter as well. Now we have created one
+05:20 
+
+05:20 uh security group which allows ingress
+05:24 
+
+05:24 from all the IPs on port 22 so that I
+05:27 
+
+05:27 can just SSH into the server. Egress to
+05:30 
+
+05:30 all the IPs for the outbound access.
+05:34 
+
+05:34 Now I'll be creating a AWS instance. Um
+05:38 
+
+05:38 so AMI details is we are getting from
+05:41 
+
+05:41 the data source. Then instance type we
+05:43 
+
+05:43 are getting from a variable. key name we
+05:45 
+
+05:45 are getting from the variable and group
+05:47 
+
+05:47 id like VPC security group ID we are
+05:50 
+
+05:50 getting from the AWS security group dot
+05:53 
+
+05:53 id. So this is the AWS security group we
+05:55 
+
+05:55 are getting the ID from here. Now these
+05:58 
+
+05:58 are the tags.
+06:00 
+
+06:00 Okay. And here's the connection string
+06:03 
+
+06:03 because I've told you right u if we are
+06:05 
+
+06:05 using okay sorry this is the connection
+06:08 
+
+06:08 string for EC2 instance like type is SSH
+06:13 
+
+06:13 user is V. SSH, private key and host. So
+06:17 
+
+06:17 now there is a keyword self which we
+06:20 
+
+06:20 have not used earlier. Right? So self is
+06:23 
+
+06:23 for this resource. Right? So let's say
+06:26 
+
+06:26 we want to add the host details. So host
+06:28 
+
+06:28 details of this host this resource.
+06:33 
+
+06:33 So we can access the uh private key or
+06:35 
+
+06:35 public key or whatever resources using
+06:37 
+
+06:37 self keyword over here.
+06:39 
+
+06:39 type is SSH and user is SSH user like
+06:43 
+
+06:43 it's from the variable and we'll be
+06:46 
+
+06:46 providing the private key in a file.
+06:48 
+
+06:48 Okay. And file path will be providing in
+06:51 
+
+06:51 the variable. So if you can check the
+06:53 
+
+06:53 variables, right? So there is an
+06:55 
+
+06:55 instance type which is T3 micro. Key
+06:57 
+
+06:57 name um will pass it from the command
+07:01 
+
+07:01 line. Then private key path will pass it
+07:03 
+
+07:03 from the command line. SSH user is
+07:06 
+
+07:06 Ubuntu. Okay. Now let's go back over
+07:09 
+
+07:09 here. So this is the connection details
+07:11 
+
+07:11 and and that's the basic uh connection
+07:14 
+
+07:14 string for AWS instance, right? So now
+07:18 
+
+07:18 uh what we'll do is uh I'm inside the
+07:20 
+
+07:20 same folder. Okay, so we'll we'll start
+07:22 
+
+07:22 with creating uh a key pair. Okay, so
+07:26 
+
+07:26 I'm going to go over here and I'm going
+07:28 
+
+07:28 to execute the CLI command. So AWS EC2
+07:32 
+
+07:32 create key pair key pair name is
+07:34 
+
+07:34 terapform demo key and the same key will
+07:37 
+
+07:37 will be passing uh in the variable file
+07:40 
+
+07:40 right and um query key material output
+07:44 
+
+07:44 text is this is the file name okay and
+07:47 
+
+07:47 then we are just providing permissions
+07:48 
+
+07:48 to that file okay next
+07:52 
+
+07:52 uh it says keep pair already exist
+07:55 
+
+07:55 that's fine uh if it's already exist
+07:57 
+
+07:57 then we don't have to do or maybe I'll
+07:60 
+
+07:60 just delete it. Yeah, for the sake of
+08:03 
+
+08:03 simplicity, let's just delete it.
+08:07 
+
+08:07 AWS.
+08:09 
+
+08:09 Okay. And key pair you will get in the
+08:12 
+
+08:12 EC2 section. And don't get confused with
+08:16 
+
+08:16 this key pair with the IM keys, right?
+08:19 
+
+08:19 Because this key is specifically for EC2
+08:23 
+
+08:23 instance which we'll be finding over
+08:24 
+
+08:24 here, right? So, I'll just delete it
+08:26 
+
+08:26 from here.
+08:29 
+
+08:29 Delete.
+08:32 
+
+08:32 Okay. And let's execute the command
+08:34 
+
+08:34 again.
+08:36 
+
+08:36 It says permission denied. Uh that's
+08:38 
+
+08:38 okay. Maybe
+08:40 
+
+08:40 this does not have a certain permission.
+08:43 
+
+08:43 So I'll just use the pseudo ch mode 400.
+08:46 
+
+08:46 This is the permission that it needs.
+08:49 
+
+08:49 Okay, I'll just add the password. And
+08:52 
+
+08:52 that's done. Okay, now it'll have Oh, I
+08:55 
+
+08:55 think it has a sufficient permission
+08:57 
+
+08:57 400. So read, write, execute. So 4 2 1.
+09:01 
+
+09:01 Yeah, it it has a sufficient permission.
+09:03 
+
+09:03 U it's it's fine. We don't need to worry
+09:05 
+
+09:05 about it. Okay. Now the key has been
+09:09 
+
+09:09 added. Let's do a terapform init over
+09:12 
+
+09:12 here. I'm not sure if alias is set. So
+09:15 
+
+09:15 I'm just going to set the alias. So TF
+09:18 
+
+09:18 initialize
+09:21 
+
+09:21 the back end. Okay. And
+09:25 
+
+09:25 blah blah. Let's do a TF plan now.
+09:30 
+
+09:30 Okay, it's asking me the key value pair.
+09:34 
+
+09:34 So let's do one thing because we have
+09:35 
+
+09:35 not added that key value pair somewhere
+09:38 
+
+09:38 in the variable. We'll pass it from the
+09:40 
+
+09:40 command line. Okay, so let's just
+09:42 
+
+09:42 directly run terraform apply and var uh
+09:46 
+
+09:46 if you remember in the environment
+09:48 
+
+09:48 variables and variables when we have
+09:49 
+
+09:49 discussed I have told you like this is
+09:51 
+
+09:51 also a way you can pass the variables
+09:53 
+
+09:53 directly at the runtime. Okay. So,
+09:56 
+
+09:56 hyphen v is equal to name which is key
+09:60 
+
+09:60 name is equal to terraform
+10:04 
+
+10:04 demo key.
+10:06 
+
+10:06 Okay. And
+10:09 
+
+10:09 go to the next line.
+10:12 
+
+10:12 The next variable is
+10:17 
+
+10:17 private key path.
+10:21 
+
+10:21 Okay. equal to
+10:24 
+
+10:24 dot
+10:26 
+
+10:26 terraform
+10:29 
+
+10:29 demo key dotpm.
+10:33 
+
+10:33 Okay. So this is how we'll apply. It
+10:36 
+
+10:36 says maybe yeah there's a spelling
+10:39 
+
+10:39 mistake. So let's correct it.
+10:45 
+
+10:45 Okay. Now it says uh must already exist
+10:49 
+
+10:49 in the chosen region. EC2 key pair
+10:52 
+
+10:52 terapform demo key. Let's check the name
+10:56 
+
+10:56 if it's the correct name.
+10:60 
+
+10:60 Oh, I did create that. Maybe it was not
+11:04 
+
+11:04 created.
+11:08 
+
+11:08 Okay, let's
+11:10 
+
+11:10 remove that file. Terraform demo key.
+11:15 
+
+11:15 Okay. And let's run that command again
+11:17 
+
+11:17 to generate the key pair.
+11:22 
+
+11:22 Okay. Uh it shouldn't take that long but
+11:25 
+
+11:25 let's see.
+11:29 
+
+11:29 Yeah, it's created now.
+11:32 
+
+11:32 Okay. And this command is also
+11:33 
+
+11:33 completed. Now let's run terraform apply
+11:36 
+
+11:36 again.
+11:39 
+
+11:39 Um name of the existing key value pair
+11:42 
+
+11:42 the name already exists. So let's check
+11:45 
+
+11:45 if the variable name is correct or not.
+11:48 
+
+11:48 Oh yeah, there is a different right. So
+11:50 
+
+11:50 you see uh what it expect is key name
+11:53 
+
+11:53 and what we are giving is key name. So
+11:56 
+
+11:56 that's the difference and you can check
+11:59 
+
+11:59 it from
+12:02 
+
+12:02 here somewhere u where SSH user key path
+12:07 
+
+12:07 um
+12:10 
+
+12:10 here you see where dot key name key name
+12:14 
+
+12:14 okay
+12:16 
+
+12:16 so let's update the command one one more
+12:18 
+
+12:18 time and I'll replace the hyphen with
+12:22 
+
+12:22 underscore four.
+12:27 
+
+12:27 This should work now.
+12:30 
+
+12:30 Okay. Enter a value. Yes.
+12:33 
+
+12:33 And it will create the security group as
+12:36 
+
+12:36 well as the EC2 instance. So that that
+12:39 
+
+12:39 that is our basic uh infrastructure
+12:43 
+
+12:43 done. But we have not covered the
+12:46 
+
+12:46 provisioners yet. So that's what we
+12:48 
+
+12:48 going to do. Uh it's done now. It has
+12:51 
+
+12:51 been created. This is the instance ID
+12:53 
+
+12:53 and this is the public ID of the
+12:54 
+
+12:54 instance. Public IP of the instance.
+12:58 
+
+12:58 Now what we'll do, we'll create some uh
+13:01 
+
+13:01 more resources over here. And this time
+13:04 
+
+13:04 uh the resources will be of type
+13:05 
+
+13:05 provisioners, right? So first is uh
+13:08 
+
+13:08 we're going to start with a local
+13:10 
+
+13:10 provisioner. So the way we do that is
+13:14 
+
+13:14 provisioner keyword and then the type of
+13:16 
+
+13:16 the provisioner. So let's start with
+13:18 
+
+13:18 local exec
+13:20 
+
+13:20 and the same format over here. Uh it
+13:23 
+
+13:23 says the provisioner is not expected
+13:26 
+
+13:26 over here. Maybe it goes inside. Yeah,
+13:31 
+
+13:31 provisioner goes inside the instance.
+13:33 
+
+13:33 Right.
+13:37 
+
+13:37 Okay. Now uh we need to add like what we
+13:40 
+
+13:40 need to do is with it, right? So it has
+13:42 
+
+13:42 a field called command. So we need to
+13:45 
+
+13:45 add the command over here. let's say a
+13:46 
+
+13:46 Unix command. So I'm going to do echo
+13:51 
+
+13:51 local exec
+13:55 
+
+13:55 created instance. Okay. And let's add
+13:58 
+
+13:58 the instance ID. So I'm going to do the
+14:01 
+
+14:01 string interpolation again. And how do I
+14:04 
+
+14:04 get the instance ID? Because now I'm
+14:07 
+
+14:07 running this local executioner or local
+14:09 
+
+14:09 executor on the AWS instance. Right?
+14:13 
+
+14:13 It's already there in the machine. So I
+14:16 
+
+14:16 can just directly use self do ID okay
+14:19 
+
+14:19 for the instance ID
+14:22 
+
+14:22 and with IP now I can just add the IP
+14:26 
+
+14:26 over here. IP is your public IP. So
+14:28 
+
+14:28 again
+14:30 
+
+14:30 self dot public IP. Okay. So this
+14:35 
+
+14:35 command will be executed as locally
+14:38 
+
+14:38 inside the local provisioner. Right. So
+14:41 
+
+14:41 save this and let's run the terapform
+14:44 
+
+14:44 apply again.
+14:52 
+
+14:52 Okay, it says no changes because we have
+14:55 
+
+14:55 not done anything yet. But this echo
+14:59 
+
+14:59 will be done on the machine itself. So
+15:01 
+
+15:01 you will not see it over here, right? So
+15:03 
+
+15:03 it did not make any changes because
+15:05 
+
+15:05 there were no changes like it's it's a
+15:08 
+
+15:08 different thing like provisioner or
+15:09 
+
+15:09 local exec. It's not the update to the
+15:12 
+
+15:12 infrastructure. So, so terapform will
+15:13 
+
+15:13 not make any change, right? So, to
+15:16 
+
+15:16 reinforce the recreation of resource, we
+15:18 
+
+15:18 can use a command called terraform
+15:20 
+
+15:20 taint. Terraform taint what it does? Uh,
+15:23 
+
+15:23 let me clear the screen. Terraform taint
+15:26 
+
+15:26 says that the resource has been degraded
+15:28 
+
+15:28 or resource has been broken and just
+15:30 
+
+15:30 recreate it. Okay. So, I'm just going to
+15:32 
+
+15:32 taint the resource. Resource name is AWS
+15:36 
+
+15:36 instance
+15:37 
+
+15:37 demo, I guess. Yeah, AWS instance.demo.
+15:40 
+
+15:40 I'll just taint this and I'm going to
+15:43 
+
+15:43 apply the changes again. It has been
+15:45 
+
+15:45 marked as tainted. So now it should
+15:48 
+
+15:48 force the recreation of instance and now
+15:50 
+
+15:50 we should see some uh provisioner
+15:52 
+
+15:52 execution. Okay. Set yes
+15:57 
+
+15:57 it will destroy and then it will
+15:59 
+
+15:59 recreate the resource. So let me just
+16:00 
+
+16:00 pause the recording for short time.
+16:02 
+
+16:02 Okay. So the resource apply has been
+16:05 
+
+16:05 completed. So one added, one destroyed.
+16:07 
+
+16:07 That means it destroyed the existing
+16:09 
+
+16:09 resource and then created a new
+16:10 
+
+16:10 resource. Here are the output. Now if
+16:13 
+
+16:13 you will see over here inside the
+16:15 
+
+16:15 resource creation, you will see a local
+16:17 
+
+16:17 executioner as well. Do you see that in
+16:20 
+
+16:20 the output? So it says executing shell
+16:24 
+
+16:24 with this command and echo local
+16:27 
+
+16:27 executioner create instance. This is the
+16:30 
+
+16:30 instance ID with IP. So it has executed
+16:33 
+
+16:33 this command on the virtual machine
+16:36 
+
+16:36 itself. Now this is not a remote
+16:37 
+
+16:37 execution because we have provided the
+16:40 
+
+16:40 local exact inside the provisioner
+16:42 
+
+16:42 block. We were already inside that. So
+16:44 
+
+16:44 it's not a remote execution, it's a
+16:46 
+
+16:46 local execution. Right? So now the next
+16:49 
+
+16:49 is um we'll work with remote executioner
+16:54 
+
+16:54 and then the file executioner. So you
+16:56 
+
+16:56 can call it remote exec executioner or
+16:58 
+
+16:58 provisioner. Provisioner is the right
+16:60 
+
+16:60 term but because the name says local
+17:02 
+
+17:02 exec or remote exec it kind of like
+17:04 
+
+17:04 executioners right so doesn't matter
+17:07 
+
+17:07 what name you call it but provisioner
+17:08 
+
+17:08 should be the right word okay so now uh
+17:11 
+
+17:11 the remote executioner
+17:13 
+
+17:13 remote exec let's let's let's just just
+17:16 
+
+17:16 call it remote exec okay the way it will
+17:18 
+
+17:18 work is uh let's say you have to run
+17:21 
+
+17:21 some commands remotely on the machine
+17:24 
+
+17:24 okay now what you will do is you will
+17:28 
+
+17:28 add let's say a provisioner block over
+17:30 
+
+17:30 here.
+17:33 
+
+17:33 Okay. And this time you will call it
+17:36 
+
+17:36 remote exec.
+17:38 
+
+17:38 And now you can just provide the inline
+17:41 
+
+17:41 script or whatever you want to run
+17:43 
+
+17:43 remotely. So I'm going to use inline
+17:46 
+
+17:46 and let's oops not the absolute function
+17:50 
+
+17:50 inline and then let's run sudoappcat
+17:55 
+
+17:55 update
+17:58 
+
+17:58 y
+18:00 
+
+18:00 and let's run echo
+18:05 
+
+18:05 hello from oops not double single quote
+18:09 
+
+18:09 hello from remote exec check
+18:13 
+
+18:13 and I'm going to add this to a temporary
+18:17 
+
+18:17 file. Okay, so sudo t temp
+18:23 
+
+18:23 remote exec txt. Okay, so it will create
+18:27 
+
+18:27 a temporary file and I'm going to close
+18:30 
+
+18:30 it over here.
+18:33 
+
+18:33 Okay, so multiple commands. So it has to
+18:36 
+
+18:36 be separated by comma because I'm just
+18:38 
+
+18:38 using the inline commands, right? So now
+18:40 
+
+18:40 it should create a file remotely on the
+18:44 
+
+18:44 machine with the hello from remote exec
+18:47 
+
+18:47 this content right. So let's hit save
+18:50 
+
+18:50 and let's run the terraform apply again
+18:54 
+
+18:54 or let's taint the resource again and
+18:57 
+
+18:57 then apply.
+18:60 
+
+18:60 Okay. And then apply the changes again.
+19:03 
+
+19:03 Now once this is done you should see
+19:05 
+
+19:05 this file created in the remote machine.
+19:08 
+
+19:08 Now with this the file was not created.
+19:10 
+
+19:10 It just took the metadata and then it
+19:13 
+
+19:13 executes the command locally. Right? So
+19:16 
+
+19:16 there is the difference between a local
+19:18 
+
+19:18 and remote executioner. Okay. I just
+19:20 
+
+19:20 said it again uh remote exec. So let's
+19:23 
+
+19:23 wait for it to destroy and recreate the
+19:26 
+
+19:26 result. Okay. Now that uh it has been
+19:28 
+
+19:28 completed uh let's log into the instance
+19:31 
+
+19:31 and see if that file is created or not.
+19:34 
+
+19:34 Okay. Um let's go to EC2
+19:38 
+
+19:38 dashboard instances.
+19:40 
+
+19:40 This is the instance that's been
+19:42 
+
+19:42 created.
+19:43 
+
+19:43 Let's connect.
+19:47 
+
+19:47 Okay. The file should be there in the
+19:50 
+
+19:50 temp directory.
+19:52 
+
+19:52 So that's what I'm going to do.
+19:55 
+
+19:55 Okay.
+19:58 
+
+19:58 Oops.
+20:02 
+
+20:02 cd /temp.
+20:07 
+
+20:07 Okay. Um, the file is here
+20:10 
+
+20:10 remoteexc.txt.
+20:12 
+
+20:12 If I do cat on this, oops, cat remoteex
+20:15 
+
+20:15 exec.txt, it says hello from remote exe.
+20:19 
+
+20:19 This is what we already added inside our
+20:21 
+
+20:21 terapform script. Right? So this is how
+20:25 
+
+20:25 uh remote exec work. Now the last one
+20:28 
+
+20:28 which is file provisioner. So file
+20:30 
+
+20:30 provisioners let's copy a file from the
+20:33 
+
+20:33 local machine to the remote machine.
+20:35 
+
+20:35 Okay. So for that we'll use a file
+20:37 
+
+20:37 provisioner. So again provisioner
+20:43 
+
+20:43 um yeah file
+20:49 
+
+20:49 pro okay
+20:53 
+
+20:53 okay provisioner is file. Now what we
+20:56 
+
+20:56 need to provide inside that we need to
+20:58 
+
+20:58 provide uh like over here it it was
+21:02 
+
+21:02 inline or command right but over here we
+21:04 
+
+21:04 need to provide source and destination.
+21:06 
+
+21:06 So the source file and the destination
+21:08 
+
+21:08 file. So source is the local file. So
+21:12 
+
+21:12 let's say from the same directory which
+21:15 
+
+21:15 is
+21:18 
+
+21:18 module.path
+21:21 
+
+21:21 this is how we access the current
+21:22 
+
+21:22 directory.
+21:24 
+
+21:24 No, actually path domodule.
+21:30 
+
+21:30 Okay. And inside that there'll be a
+21:32 
+
+21:32 scripts folder.
+21:35 
+
+21:35 Inside scripts there is a welcome.sh
+21:37 
+
+21:37 file.
+21:39 
+
+21:39 And let's put that inside double quotes.
+21:43 
+
+21:43 Okay. So that's source and destination u
+21:46 
+
+21:46 will be the destination inside the
+21:49 
+
+21:49 remote directory. Right. So slashtemp
+21:53 
+
+21:53 slash
+21:55 
+
+21:55 welcome.sh you can give it the same name
+21:57 
+
+21:57 and you can or you can give it different
+21:59 
+
+21:59 name doesn't matter right it's like we
+22:01 
+
+22:01 have to just provide the absolute path
+22:03 
+
+22:03 of it. So now what you can do is after
+22:07 
+
+22:07 this you can create another remote
+22:09 
+
+22:09 executioner which will execute this file
+22:11 
+
+22:11 as well. You can do that if you want but
+22:13 
+
+22:13 for now we're just copying the file
+22:15 
+
+22:15 right. So let's taint this again
+22:20 
+
+22:20 and I'm going to execute this one more
+22:24 
+
+22:24 time. Terraform apply. Yes. So currently
+22:27 
+
+22:27 if you go and see there is no welcome.sh
+22:31 
+
+22:31 over here. So if I do that there is no
+22:33 
+
+22:33 welcome.sh here. Now this instance will
+22:36 
+
+22:36 be recreated. So IP might change. This
+22:38 
+
+22:38 will not be the same instance once it is
+22:41 
+
+22:41 destroyed and once it is recreated. So
+22:44 
+
+22:44 we'll log to the new instance again once
+22:46 
+
+22:46 it is created. So let me just pause the
+22:48 
+
+22:48 recording again. Okay, it has completed
+22:50 
+
+22:50 now. Let's go and check the instance.
+22:56 
+
+22:56 Is it the same instance? No, it's u it's
+22:59 
+
+22:59 froze now. Let's go back. Uh a new
+23:02 
+
+23:02 instance might have been created. So
+23:03 
+
+23:03 let's hit refresh.
+23:06 
+
+23:06 Okay, this one. And hit connect. Hit
+23:10 
+
+23:10 connect.
+23:12 
+
+23:12 And now there should be two files inside
+23:14 
+
+23:14 the temp directory. One is welcome.sh.
+23:16 
+
+23:16 Another one is remote exec.sh. So cd
+23:20 
+
+23:20 temp.
+23:24 
+
+23:24 Oops. Okay.
+23:27 
+
+23:27 Come on. Okay. Now we have welcome.sh
+23:30 
+
+23:30 and we have remote exec.sh.
+23:33 
+
+23:33 And you can check the content. Uh so
+23:35 
+
+23:35 this is simple script that um that will
+23:40 
+
+23:40 create another file and then it will add
+23:43 
+
+23:43 some metadata like you name a and the
+23:46 
+
+23:46 welcome message whatever right so you
+23:49 
+
+23:49 can test this out yourself you can check
+23:52 
+
+23:52 uh and there'll be task in the GitHub
+23:54 
+
+23:54 repository as always so you can try
+23:56 
+
+23:56 executing that and you can do the
+23:59 
+
+23:59 submission but make sure you destroy the
+24:01 
+
+24:01 resources as well otherwise this EC2
+24:03 
+
+24:03 instance will keep on running and keep
+24:05 
+
+24:05 accumulating the bill which I don't want
+24:07 
+
+24:07 you to do. All right. Um thank you so
+24:09 
+
+24:09 much. Share the video and the playlist
+24:11 
+
+24:11 among your friends, colleagues, whoever
+24:13 
+
+24:13 can take advantage of this learning
+24:15 
+
+24:15 thing. And if you haven't subscribed the
+24:17 
+
+24:17 channel, please do so and support it. Uh
+24:20 
+
+24:20 thank you and I will see you tomorrow
+24:21 
+
+24:21 with the next video. Happy learning.

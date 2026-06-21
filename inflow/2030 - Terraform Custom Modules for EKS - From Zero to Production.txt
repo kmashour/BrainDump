@@ -1,0 +1,2185 @@
+00:00 In this video, we'll be implementing
+00:02 
+
+00:02 this project end to end using Terraform.
+00:05 
+
+00:05 Hello everyone. If you are new here, my
+00:07 
+
+00:07 name is Push and this is day 20 of 30
+00:10 
+
+00:10 days of AWS Terapform. We'll be
+00:12 
+
+00:12 implementing a realtime project using
+00:15 
+
+00:15 Terraform that uses custom modules. Yes,
+00:18 
+
+00:18 I'm going to explain everything about
+00:20 
+
+00:20 custom modules, what are modules, what
+00:22 
+
+00:22 is custom modules, what are the
+00:23 
+
+00:23 differences and everything and why do we
+00:25 
+
+00:25 need custom modules? And we'll be
+00:27 
+
+00:27 implementing an end toend Kubernetes
+00:29 
+
+00:29 cluster with all the you know
+00:32 
+
+00:32 infrastructure component like VPC
+00:34 
+
+00:34 subnets uh OIDC for authentication
+00:37 
+
+00:37 secret manager for using and storing the
+00:40 
+
+00:40 keys that will be used by this EKS
+00:42 
+
+00:42 cluster and we'll be doing everything
+00:45 
+
+00:45 and if you are new here and if you have
+00:47 
+
+00:47 just discovered the series make sure you
+00:50 
+
+00:50 follow the series in the same sequence
+00:52 
+
+00:52 like if you are new to Terapform or if
+00:54 
+
+00:54 you are new to AWS is make sure you go
+00:57 
+
+00:57 through day zero video which will have
+00:60 
+
+00:60 everything the course structure the
+01:02 
+
+01:02 challenge details because this 30 days
+01:04 
+
+01:04 of AWS terraform it's a learning
+01:06 
+
+01:06 challenge that is being managed by our
+01:08 
+
+01:08 community and yes there'll be prizes at
+01:10 
+
+01:10 the end as well so make sure you go
+01:12 
+
+01:12 through day zero video and if you are
+01:16 
+
+01:16 not new here if you are someone who has
+01:17 
+
+01:17 been following this series from the
+01:19 
+
+01:19 beginning then kudos to you for
+01:21 
+
+01:21 implementing so many concepts so many
+01:24 
+
+01:24 hands-on and tasks by your own. Um I
+01:27 
+
+01:27 just gave you the direction and you did
+01:29 
+
+01:29 rest of it. So uh a huge appreciation
+01:32 
+
+01:32 for you to do that and let's continue
+01:35 
+
+01:35 with this video and I'm sure you have
+01:37 
+
+01:37 been supporting the channel. You have
+01:39 
+
+01:39 been uh sharing it with your friends,
+01:41 
+
+01:41 colleagues and whoever you want to.
+01:44 
+
+01:44 Okay. So this is a realtime project, a
+01:47 
+
+01:47 production grade project and you can
+01:49 
+
+01:49 extend it further with whatever you feel
+01:51 
+
+01:51 like. Here is this concept that we did
+01:54 
+
+01:54 not talk about yet which is custom
+01:56 
+
+01:56 modules. So why do I mention custom
+01:58 
+
+01:58 modules and how it is different from
+02:00 
+
+02:00 what we have been doing so far. So let's
+02:03 
+
+02:03 first try to understand this concept of
+02:06 
+
+02:06 modules in terraform. Okay. So what are
+02:08 
+
+02:08 modules in terapform? Modules is
+02:11 
+
+02:11 something you know it's it's just a
+02:13 
+
+02:13 reusable piece of code.
+02:16 
+
+02:16 Okay. So reusable piece of code. Now how
+02:20 
+
+02:20 it is different from Terapform function?
+02:22 
+
+02:22 As you already know in Terapform,
+02:24 
+
+02:24 Terapform is not a fullyfledged
+02:26 
+
+02:26 programming language, right? It's a
+02:28 
+
+02:28 configuration language. So it provides
+02:30 
+
+02:30 you limited functionality of a
+02:32 
+
+02:32 programming language. So it only
+02:34 
+
+02:34 supports the pre-built functions. But if
+02:38 
+
+02:38 you want to create reusable code, then
+02:40 
+
+02:40 we can create our own modules and
+02:44 
+
+02:44 publish it to our GitHub repository.
+02:47 
+
+02:47 I'll I'll walk you through that step as
+02:49 
+
+02:49 well. So this is why do we need okay
+02:52 
+
+02:52 it's just a reusable piece of code in
+02:55 
+
+02:55 which you encapsulate the complexity of
+02:57 
+
+02:57 your Terraform and you can just import
+02:60 
+
+02:60 that module and start using it with few
+03:02 
+
+03:02 details. Now there are different type of
+03:05 
+
+03:05 modules in terapform. So there are
+03:07 
+
+03:07 public modules. So these modules are
+03:10 
+
+03:10 usually published by Terraform providers
+03:14 
+
+03:14 such as AWS, Hashi Cororp,
+03:18 
+
+03:18 GCP,
+03:20 
+
+03:20 then Azure, then many other providers,
+03:23 
+
+03:23 right? So that's the public module and
+03:27 
+
+03:27 then we also have partner modules. So
+03:30 
+
+03:30 partner modules are sometimes part of
+03:33 
+
+03:33 public modules but these are the
+03:36 
+
+03:36 partners that have a collaboration with
+03:39 
+
+03:39 Hashi Corp. So if you go to this
+03:41 
+
+03:41 documentation right uh the Terapform
+03:43 
+
+03:43 registry documentation and click over
+03:44 
+
+03:44 here to the modules. So you will see
+03:47 
+
+03:47 multiple uh filters over here. One is
+03:50 
+
+03:50 for providers. So these are the
+03:52 
+
+03:52 providers like Alibaba, AWS, Azure,
+03:54 
+
+03:54 Google, Helm, Nomad you know Oracle and
+03:57 
+
+03:57 so on. And then from these list of
+03:59 
+
+03:59 provider we also have some partners.
+04:01 
+
+04:01 Partners that have a joint collaboration
+04:03 
+
+04:03 with Hashior. For example, let's say
+04:06 
+
+04:06 this particular cloud pose. I I'm not
+04:08 
+
+04:08 sure what that is. But let's say this is
+04:10 
+
+04:10 the company who has published their oh
+04:13 
+
+04:13 it has 169 million downloads. So it oh
+04:16 
+
+04:16 that's that's the null provider. Okay.
+04:18 
+
+04:18 So we have been using the null resource
+04:20 
+
+04:20 right earlier. So it's published by this
+04:23 
+
+04:23 particular company or this particular
+04:25 
+
+04:25 provider. Now if you want to use that
+04:28 
+
+04:28 you can just go inside that and you can
+04:30 
+
+04:30 just start using it like this. I'll go
+04:32 
+
+04:32 through the syntax later on. Right? But
+04:35 
+
+04:35 the way they do that is they are the
+04:40 
+
+04:40 Terraform
+04:41 
+
+04:41 provider, right? But they are not the
+04:44 
+
+04:44 partner. This particular module is
+04:47 
+
+04:47 solely maintained by them. Okay? So they
+04:50 
+
+04:50 are maintaining this module. So any
+04:53 
+
+04:53 updates, any changes, anything has to be
+04:55 
+
+04:55 done by them. But if you filter it by
+04:58 
+
+04:58 partner, let's say Google Cloud is a
+04:60 
+
+04:60 partner. So, Terraform Google modules
+05:02 
+
+05:02 that is one of the uh partner of
+05:05 
+
+05:05 Terraform. So, that means this
+05:07 
+
+05:07 particular module is jointly managed by
+05:10 
+
+05:10 Google cloud and Hashi Cororb right. So
+05:12 
+
+05:12 that's what we mean by partner. It says
+05:14 
+
+05:14 they are official Hashior Corp partner
+05:17 
+
+05:17 meaning they are jointly maintaining the
+05:20 
+
+05:20 module. Okay. So that's the main
+05:22 
+
+05:22 difference between a public module and a
+05:24 
+
+05:24 partner module. So partner module is
+05:27 
+
+05:27 something that is managed by
+05:30 
+
+05:30 partner
+05:32 
+
+05:32 plus hashi corp. Okay. And public
+05:36 
+
+05:36 modules are managed by you know the
+05:38 
+
+05:38 public providers. Now there is another
+05:41 
+
+05:41 term which is called custom modules. So
+05:44 
+
+05:44 custom modules is something that is not
+05:47 
+
+05:47 managed by partner or public modules. It
+05:50 
+
+05:50 is managed by either community or you or
+05:54 
+
+05:54 your organization. Right? So you can
+05:57 
+
+05:57 create like anyone can create custom
+05:58 
+
+05:58 modules. Okay. So the step is you create
+06:02 
+
+06:02 the module. Okay.
+06:06 
+
+06:06 You create a GitHub repo.
+06:11 
+
+06:11 Then you publish the module
+06:17 
+
+06:17 to GitHub repo. And then you tag the
+06:20 
+
+06:20 release because when you publish the
+06:23 
+
+06:23 module, okay, uh I'll just highlight
+06:25 
+
+06:25 this part.
+06:28 
+
+06:28 So when you publish the module, uh you
+06:30 
+
+06:30 can create a version as well, right? So
+06:32 
+
+06:32 that that is why we are tagging the
+06:34 
+
+06:34 release. So you can tag the release and
+06:36 
+
+06:36 you can create multiple versions of your
+06:38 
+
+06:38 volume whenever you make a new change.
+06:40 
+
+06:40 So this is version control as well. So
+06:42 
+
+06:42 that's why we use the module. Okay, we
+06:44 
+
+06:44 use the module first. It is a usable
+06:46 
+
+06:46 piece of code. Then you can encapsulate
+06:50 
+
+06:50 all the complexity of your Terapform
+06:52 
+
+06:52 code into the module and then publish it
+06:54 
+
+06:54 internally for your organization or for
+06:56 
+
+06:56 your personal use or you can make it
+06:58 
+
+06:58 available for the public via a public
+06:60 
+
+07:00 GitHub repository. And then you can also
+07:04 
+
+07:04 version control it. You can also tag the
+07:06 
+
+07:06 release. Okay. And
+07:10 
+
+07:10 the other thing is you can lock some
+07:13 
+
+07:13 values. Let's say you want to avoid
+07:15 
+
+07:15 making any changes to certain values. So
+07:17 
+
+07:17 instead of putting that in your
+07:18 
+
+07:18 Terapform code, you put that value maybe
+07:21 
+
+07:21 hardcoded and put that in the module
+07:23 
+
+07:23 because it's been published. If anyone
+07:25 
+
+07:25 has to make the change, they have to
+07:27 
+
+07:27 make the change to the module if they
+07:28 
+
+07:28 have access to it. Right? So that's why
+07:32 
+
+07:32 we need to use modules. That's why it is
+07:35 
+
+07:35 important to understand when considering
+07:37 
+
+07:37 a production grade project. Now you must
+07:40 
+
+07:40 be thinking why do we have so like if we
+07:42 
+
+07:42 have public modules or if we have
+07:43 
+
+07:43 partner modules, why do we need to
+07:45 
+
+07:45 create our own modules? Because of the
+07:47 
+
+07:47 very same reason because public module
+07:50 
+
+07:50 or the partner module they have been
+07:52 
+
+07:52 created by these organizations right and
+07:54 
+
+07:54 they take full control over the module
+07:56 
+
+07:56 right you cannot make any changes to the
+07:58 
+
+07:58 module unless you do the open source
+08:00 
+
+08:00 contribution if they are available for
+08:02 
+
+08:02 open source and also you have to be
+08:06 
+
+08:06 dependent on them. So if anything breaks
+08:10 
+
+08:10 your change you have to wait for them to
+08:12 
+
+08:12 fix the change right. So you don't have
+08:14 
+
+08:14 the full control of the underlying
+08:17 
+
+08:17 module definition. But if you create
+08:19 
+
+08:19 your own module, if you create custom
+08:21 
+
+08:21 module, then you retain the full control
+08:23 
+
+08:23 and you retain who should have access to
+08:25 
+
+08:25 this module or not. Right? So that's why
+08:28 
+
+08:28 in most of the organizations we use
+08:29 
+
+08:29 custom modules. Okay. So that's what
+08:33 
+
+08:33 we'll be doing in this video. We'll be
+08:35 
+
+08:35 creating multiple custom modules. Okay.
+08:38 
+
+08:38 And now let's understand the structure
+08:40 
+
+08:40 of a module or structure of a custom
+08:42 
+
+08:42 module. Okay. So when you write a
+08:46 
+
+08:46 Terraform code, let's say whatever we
+08:48 
+
+08:48 have done. So let's say you have created
+08:50 
+
+08:50 a main.tf, you've created a backend.tf
+08:56 
+
+08:56 and a variables.tf,
+08:59 
+
+08:59 then output.tf
+09:03 
+
+09:03 and TFAS and so on, right? Multiple
+09:06 
+
+09:06 files you have created. So this is let's
+09:08 
+
+09:08 consider this as your terraform
+09:11 
+
+09:11 hierarchy like the folder structure of
+09:14 
+
+09:14 your terapform project.
+09:17 
+
+09:17 [snorts] Now this is because you have
+09:19 
+
+09:19 not specified any module you have not
+09:21 
+
+09:21 created any module but still because you
+09:25 
+
+09:25 have created everything inside a folder.
+09:28 
+
+09:28 So this is called a root module. Okay.
+09:32 
+
+09:32 Even though you did not specified any
+09:35 
+
+09:35 module explicitly still it's called as a
+09:38 
+
+09:38 root module. Okay, it's important to
+09:40 
+
+09:40 understand. So whatever we have been
+09:42 
+
+09:42 doing so far we were using root module.
+09:45 
+
+09:45 We were creating root modules multiple
+09:47 
+
+09:47 times. Okay. So let's say this is your
+09:51 
+
+09:51 okay let me just drag my VS code over
+09:54 
+
+09:54 here. Okay. So let's say in this day 19
+09:57 
+
+09:57 video right we had a code and everything
+09:60 
+
+10:00 inside this directory like provision
+10:03 
+
+10:03 directory so main.tf TF output blah blah
+10:06 
+
+10:06 blah variables. So this is inside this
+10:09 
+
+10:09 particular folder, right? So this folder
+10:11 
+
+10:11 uh which says provisioner demo this
+10:14 
+
+10:14 contains the root module. Okay. So
+10:17 
+
+10:17 that's the root module that you've been
+10:19 
+
+10:19 using. Now when we create modules like
+10:22 
+
+10:22 how do we create uh we create similar
+10:25 
+
+10:25 file structure but inside another
+10:29 
+
+10:29 folder. Okay. So if we consider let's
+10:33 
+
+10:33 say this as day 20 okay this is inside
+10:38 
+
+10:38 day 20 now this is a root module inside
+10:42 
+
+10:42 day 20 you will have multiple modules
+10:45 
+
+10:45 okay so one is this let's say one is
+10:48 
+
+10:48 this okay there are multiple modules so
+10:51 
+
+10:51 I'm just going to squeeze it down and
+10:54 
+
+10:54 this and this okay so it'll have the
+10:57 
+
+10:57 similar file structure but it will be
+11:00 
+
+11:00 inside another subfolder. So let's say
+11:04 
+
+11:04 this folder is for EKS.
+11:08 
+
+11:08 Okay. And this folder is for VPC.
+11:14 
+
+11:14 This folder is for IM. Right? So this is
+11:18 
+
+11:18 what we are doing. Uh we are creating a
+11:20 
+
+11:20 root module uh which will have your
+11:22 
+
+11:22 main.tf. And this is from where the
+11:24 
+
+11:24 execution will start. And inside that
+11:26 
+
+11:26 you will have multiple subfolders. And
+11:29 
+
+11:29 these subfolders are your custom
+11:31 
+
+11:31 modules. So that's one module, that's
+11:33 
+
+11:33 two module, that's third module. Okay?
+11:35 
+
+11:35 And you can name it whatever you want.
+11:37 
+
+11:37 Now, how do these modules and root
+11:40 
+
+11:40 modules talk to each other? So they talk
+11:42 
+
+11:42 to each other with the help of these
+11:45 
+
+11:45 variable files, right? So it has
+11:48 
+
+11:48 variables.tf
+11:49 
+
+11:49 and then it'll have output.tf. So that's
+11:53 
+
+11:53 how they talk to each other. And the
+11:56 
+
+11:56 main.tf of root module also talk with
+12:00 
+
+12:00 main.tf of your custom modules. Right?
+12:03 
+
+12:03 This is like calling a function with
+12:05 
+
+12:05 parameters. Right? So we define
+12:08 
+
+12:08 something in the root module. Okay.
+12:11 
+
+12:11 First step is we source the module.
+12:14 
+
+12:14 Okay. In source we provide the location.
+12:17 
+
+12:17 Let's say it has to be inside current
+12:19 
+
+12:19 directory and then EKS. So this is how
+12:21 
+
+12:21 we are sourcing the module. That's the
+12:23 
+
+12:23 first step. That's how Terraform knows
+12:25 
+
+12:25 okay where your module definition
+12:27 
+
+12:27 resides. If it's over here then you can
+12:29 
+
+12:29 just use source like this. If it's
+12:32 
+
+12:32 already published in a GitHub repository
+12:34 
+
+12:34 then you provide the GitHub URL over
+12:36 
+
+12:36 here right and you can specify version
+12:38 
+
+12:38 of your module as well. So that's the
+12:41 
+
+12:41 first part and then inside your root
+12:44 
+
+12:44 module you create certain values right
+12:46 
+
+12:46 because you have sourced it already but
+12:48 
+
+12:48 then you create certain values and then
+12:50 
+
+12:50 value that map with the EKS. I will walk
+12:53 
+
+12:53 you through that. So don't worry about
+12:54 
+
+12:54 it just yet. Just understand the
+12:56 
+
+12:56 structure of it. Right? So if you go
+12:58 
+
+12:58 back over here, so let me just do the
+13:00 
+
+13:00 full screen. So we have day 20. Okay. So
+13:04 
+
+13:04 you see over here in day 20. So we have
+13:07 
+
+13:07 a folder called code which is a root
+13:10 
+
+13:10 module. Everything resides in that. So
+13:12 
+
+13:12 we have main.tf provider variables and
+13:15 
+
+13:15 so on. And inside that we have again a
+13:17 
+
+13:17 different folder called modules. Inside
+13:20 
+
+13:20 modules we have EKS, IM, secret manager,
+13:22 
+
+13:22 VPC, all the modules have been created
+13:24 
+
+13:24 inside this. Now the root module
+13:27 
+
+13:27 structure is what I have told you
+13:29 
+
+13:29 already. Main.tf provider output and the
+13:32 
+
+13:32 similar structure will be there inside
+13:33 
+
+13:33 these modules. So main.tf output
+13:36 
+
+13:36 variables and so on. So you start with
+13:39 
+
+13:39 creating your custom module. Okay. So
+13:41 
+
+13:41 I've created the folder structure,
+13:43 
+
+13:43 right? And then inside folder structure,
+13:45 
+
+13:45 let's say you go inside VPC and you
+13:47 
+
+13:47 create your main.tf. Now this is like a
+13:50 
+
+13:50 resource that you have been creating so
+13:52 
+
+13:52 far right. So if you go to AWS VPC
+13:55 
+
+13:55 resource over here inside terraform
+13:58 
+
+13:58 documentation you search with AWS VPC
+13:60 
+
+14:00 right so you will see that this is your
+14:03 
+
+14:03 like the basic usage and you can add
+14:06 
+
+14:06 more details like with tags with other
+14:08 
+
+14:08 additional fields okay so similarly from
+14:11 
+
+14:11 here you can just create AWS VPC
+14:14 
+
+14:14 resource with let's say C block some
+14:17 
+
+14:17 other arguments tags and so on right now
+14:21 
+
+14:21 this C block needs some values from the
+14:24 
+
+14:24 variable right so let's say where dotVPC
+14:27 
+
+14:27 C ID or you have created a variable so
+14:30 
+
+14:30 this variable should be present in this
+14:32 
+
+14:32 variables TF inside the VPC module okay
+14:36 
+
+14:36 like the local reference variable over
+14:38 
+
+14:38 here so if you see VPC C is here but
+14:41 
+
+14:41 from where it is getting the value the
+14:43 
+
+14:43 value has not defined over here so it is
+14:47 
+
+14:47 getting the value from the root modules
+14:49 
+
+14:49 variable TF okay so if you go to root
+14:52 
+
+14:52 module and variables.tf TF you see over
+14:55 
+
+14:55 here VPC C I and it has a default value.
+14:58 
+
+14:58 Okay. So remember I told you like
+15:01 
+
+15:01 variables talk to each other from their
+15:03 
+
+15:03 name and their like the variable files
+15:05 
+
+15:05 and that is how they are doing. Now
+15:07 
+
+15:07 coming back to this. So this is what we
+15:09 
+
+15:09 did for this. Okay. So now once you have
+15:12 
+
+15:12 specified your custom module resource
+15:15 
+
+15:15 block there are other resources I will
+15:17 
+
+15:17 walk you through that.
+15:18 
+
+15:18 Once you have specified your custom
+15:21 
+
+15:21 module resource block then you go back
+15:23 
+
+15:23 to your root modules main.tf. Okay. So
+15:26 
+
+15:26 you have created the module definition.
+15:28 
+
+15:28 Now you have to use that definition in
+15:30 
+
+15:30 your terraform. So this is where you
+15:32 
+
+15:32 will do that. So you go over here. Okay.
+15:35 
+
+15:35 So uh I'll explain this to you in a bit
+15:38 
+
+15:38 but first let's explain the module. So
+15:41 
+
+15:41 what's the syntax of module? So you
+15:43 
+
+15:43 start with module keyword. Earlier we
+15:45 
+
+15:45 were using the resource keyword but
+15:47 
+
+15:47 because now we are using a module even
+15:50 
+
+15:50 even though we use a public module or a
+15:52 
+
+15:52 custom module it starts with module
+15:54 
+
+15:54 keyword right the source will change if
+15:57 
+
+15:57 it's a custom module you give a
+15:59 
+
+15:59 different source if it's a public module
+16:01 
+
+16:01 you give a different source okay uh rest
+16:03 
+
+16:03 the definition is same so you start with
+16:04 
+
+16:04 module a reference name and then inside
+16:07 
+
+16:07 that now you will see first is source
+16:10 
+
+16:10 this is what I explained it to you
+16:11 
+
+16:11 where's the source it's inside modules
+16:14 
+
+16:14 folder inside VPC folder. So this is our
+16:17 
+
+16:17 module name. Okay. So this name this is
+16:19 
+
+16:19 the path that matches with this module
+16:21 
+
+16:21 path. Now it has different field but you
+16:24 
+
+16:24 would notice that there are some fields
+16:26 
+
+16:26 that is not a valid argument. Right? So
+16:28 
+
+16:28 if you go to like let's say the VPC
+16:30 
+
+16:30 resource over here. Okay. So these are
+16:33 
+
+16:33 all the available arguments region C
+16:35 
+
+16:35 block IPv4 and enable DNS support blah
+16:39 
+
+16:39 blah blah tags. But there is nothing
+16:42 
+
+16:42 called a. So how we have used it?
+16:45 
+
+16:45 Because this is our custom resource, we
+16:48 
+
+16:48 can pass these values and then it will
+16:50 
+
+16:50 map to the internal terraform name. I
+16:52 
+
+16:52 will explain. So let's say you have
+16:55 
+
+16:55 entered some value that you want to be
+16:57 
+
+16:57 part of this resource provisioning.
+16:59 
+
+16:59 Right? So you have created name.t prefix
+17:01 
+
+17:01 name uh prefix. Okay. Now this name
+17:05 
+
+17:05 underscore prefix is v.cluster name.
+17:09 
+
+17:09 Okay. So you have created a variable
+17:10 
+
+17:10 over here. And let's see where it is
+17:14 
+
+17:14 here. Cluster name. So we have defined
+17:16 
+
+17:16 the value. Now this particular resource
+17:19 
+
+17:19 will have a name prefix. We might have
+17:21 
+
+17:21 used it later on. I will show you that.
+17:23 
+
+17:23 But for now we are just initializing
+17:25 
+
+17:25 this particular argument with this
+17:27 
+
+17:27 variable. Now similarly VPC we can use
+17:31 
+
+17:31 the same name as well which is what we
+17:33 
+
+17:33 have done equal to this. Now we are
+17:35 
+
+17:35 taking a from a data source. Okay. Now
+17:39 
+
+17:39 data source is over here. Instead of
+17:42 
+
+17:42 hard coding what are all the
+17:43 
+
+17:43 availability zones available, we are
+17:46 
+
+17:46 just using the data source. It will
+17:47 
+
+17:47 check what are all the available data
+17:49 
+
+17:49 source from the current region and then
+17:52 
+
+17:52 we are using data. AWS uh availability
+17:55 
+
+17:55 zones dot available which is the
+17:57 
+
+17:57 internal reference name dot names and it
+18:00 
+
+18:00 will provide a list of string. Now we
+18:03 
+
+18:03 are just doing a slice of it. Okay, it's
+18:05 
+
+18:05 a slice function that we have uh learned
+18:08 
+
+18:08 earlier as well. we are doing just slice
+18:09 
+
+18:09 of it from zero to third element. Okay.
+18:11 
+
+18:11 So it will take uh those availability
+18:14 
+
+18:14 zones. So let's say we are taking the
+18:16 
+
+18:16 three availability zones. So it will
+18:17 
+
+18:17 take three availability zone and put
+18:18 
+
+18:18 that inside a. Now how do we use that
+18:23 
+
+18:23 particular value inside our module? So
+18:26 
+
+18:26 let's go back to the module definition
+18:28 
+
+18:28 over here. Okay. And inside that let's
+18:31 
+
+18:31 see where we have used a. So inside okay
+18:35 
+
+18:35 over here you see inside the AWS subnet
+18:38 
+
+18:38 resource we have a field called
+18:40 
+
+18:40 availability zones okay it's an
+18:42 
+
+18:42 attribute a terapform attribute over
+18:44 
+
+18:44 here we are using the value from vasc
+18:48 
+
+18:48 count dot index okay now if you go
+18:51 
+
+18:51 inside this we'll have a as a variable
+18:55 
+
+18:55 which is a list of string and from where
+18:57 
+
+18:57 it is getting the value we are getting
+18:59 
+
+18:59 the value from the root module okay
+19:02 
+
+19:02 inside root module we have okay let's
+19:05 
+
+19:05 let's let's take a step back again okay
+19:08 
+
+19:08 so we have maintf over here okay I want
+19:13 
+
+19:13 you to spend some little extra time on
+19:15 
+
+19:15 this because if you understand this
+19:17 
+
+19:17 concept the custom modules will be
+19:19 
+
+19:19 pretty straightforward and easy okay so
+19:22 
+
+19:22 we needed to use some value like like we
+19:25 
+
+19:25 needed to create a set of few elements
+19:29 
+
+19:29 okay so that this is where from where we
+19:32 
+
+19:32 got the value we assigned that to a
+19:34 
+
+19:34 variable called a this variable we
+19:38 
+
+19:38 defined internally inside the root
+19:41 
+
+19:41 module. Okay. Now because we have
+19:43 
+
+19:43 specified it over this will be available
+19:46 
+
+19:46 for the entire terraform project inside
+19:49 
+
+19:49 the custom module as well. Right. So the
+19:51 
+
+19:51 values of these variables of what we
+19:53 
+
+19:53 specify inside the root module is
+19:56 
+
+19:56 available for the entire terraform
+19:58 
+
+19:58 project inside even custom modules.
+20:00 
+
+20:00 Okay. So we got the values of a we have
+20:03 
+
+20:03 a set of elements. Now inside this we go
+20:08 
+
+20:08 ahead and we create a variable with the
+20:10 
+
+20:10 same name. Okay. Because this is the
+20:12 
+
+20:12 value that is available for us. We are
+20:15 
+
+20:15 just defining that variable. We have the
+20:17 
+
+20:17 value. We are just defining that
+20:19 
+
+20:19 variable over here. It's a list of
+20:21 
+
+20:21 string. Now in the main.tf
+20:24 
+
+20:24 we are just acquiring the value from the
+20:27 
+
+20:27 variable. Okay. So what we did
+20:32 
+
+20:32 inside our root okay the root module is
+20:35 
+
+20:35 already here. So let's use this inside a
+20:38 
+
+20:38 root module. We got the value. Okay. AZ
+20:43 
+
+20:43 is
+20:44 
+
+20:44 let's say um availability zone US
+20:48 
+
+20:48 central 1 A,
+20:51 
+
+20:51 US
+20:53 
+
+20:53 central 1B and US
+20:58 
+
+20:58 central
+20:59 
+
+20:59 1 C. Okay. So we got the value over here
+21:03 
+
+21:03 in the root module and this is inside
+21:05 
+
+21:05 your main.tf. Now what we did we
+21:09 
+
+21:09 actually in the variables TF we have
+21:13 
+
+21:13 defined the value. So inside
+21:17 
+
+21:17 over here availability zones which is
+21:24 
+
+21:24 do we have a variable over here? I don't
+21:28 
+
+21:28 think we have just give me a second.
+21:34 
+
+21:34 Okay. No, no, no. We are using it from
+21:36 
+
+21:36 data source. So that's fine. Uh we just
+21:38 
+
+21:38 got the value from data source. Okay. So
+21:42 
+
+21:42 this value we got from there was a file
+21:45 
+
+21:45 over here. Let's call data.tf.
+21:48 
+
+21:48 We used it from main.tf. But it's a good
+21:50 
+
+21:50 practice to have a separate file for
+21:52 
+
+21:52 data source. So let's say we got the
+21:55 
+
+21:55 value from data.tf. Now it is because we
+21:58 
+
+21:58 have the value it is available for all
+22:00 
+
+22:00 the modules to consume or the other way
+22:03 
+
+22:03 around actually but I'm just walking you
+22:06 
+
+22:06 through how do we use the value now
+22:09 
+
+22:09 you've got the value now you have uh
+22:12 
+
+22:12 variables over here in EKS and in this
+22:17 
+
+22:17 you have defined a equal to like you
+22:20 
+
+22:20 have defined a variable right so you
+22:22 
+
+22:22 have defined variable as a which is a
+22:27 
+
+22:27 set of list sorry set of string.
+22:32 
+
+22:32 Okay, you have defined it over here and
+22:35 
+
+22:35 then in your main.tf what you are doing
+22:37 
+
+22:37 in your main.tf you are telling that the
+22:41 
+
+22:41 variable which is what was the variable
+22:43 
+
+22:43 name inside main.tf TF uh yeah
+22:47 
+
+22:47 availability zones which is a Terraform
+22:49 
+
+22:49 attribute for public subnet. You are
+22:51 
+
+22:51 saying over here availability zone
+22:56 
+
+22:56 is equal to
+23:01 
+
+23:01 war
+23:04 
+
+23:04 count dot index.
+23:06 
+
+23:06 Okay. A is actually a is the variable
+23:09 
+
+23:09 name. Okay. So you are using this. Now
+23:12 
+
+23:12 you have a variable over here. Okay, you
+23:15 
+
+23:15 are assigning this value to the
+23:17 
+
+23:17 availability zone which is what
+23:18 
+
+23:18 Terraform needs. But where you are
+23:21 
+
+23:21 getting this value, you're getting this
+23:22 
+
+23:22 value from the root module. So in a
+23:26 
+
+23:26 nutshell, you are defining the values
+23:29 
+
+23:29 over here. Okay, in the module itself in
+23:33 
+
+23:33 the custom module and you are passing
+23:36 
+
+23:36 the value from the root module. So
+23:39 
+
+23:39 that's how you're making the interaction
+23:41 
+
+23:41 between root module and custom modules
+23:43 
+
+23:43 possible. Okay. So that's important to
+23:45 
+
+23:45 understand. If you are still confused,
+23:47 
+
+23:47 maybe just go back to previous few
+23:50 
+
+23:50 minutes where we have started
+23:51 
+
+23:51 understanding it and try it out yourself
+23:53 
+
+23:53 once then you will get it better. Okay.
+23:56 
+
+23:56 So that's uh where were we? We were at
+23:60 
+
+23:60 main.tf. Okay. So that's how we got the
+24:02 
+
+24:02 value of a now we have a few different
+24:05 
+
+24:05 other things like private subnets,
+24:07 
+
+24:07 public subnet. We have used the same
+24:08 
+
+24:08 variables. Now enable net gateway single
+24:11 
+
+24:11 gateway we have used it like boolean
+24:13 
+
+24:13 true true true true then we have defined
+24:15 
+
+24:15 some tags public subnet tags private
+24:17 
+
+24:17 subnet tags okay I defined the values of
+24:20 
+
+24:20 it it's again it's a map right key value
+24:23 
+
+24:23 pair now how have we used it let's go
+24:25 
+
+24:25 inside main.tf TF and let's see over
+24:29 
+
+24:29 here you see we are using v.public
+24:32 
+
+24:32 public subnet tags which is a variable
+24:34 
+
+24:34 and we are merging it with other tags.
+24:37 
+
+24:37 Okay, so we are merging it with tags. We
+24:39 
+
+24:39 are merging it with this and using a
+24:41 
+
+24:41 merge function. Okay, that's inside the
+24:44 
+
+24:44 VPC custom module. Now let's go back. Um
+24:48 
+
+24:48 this is the tags that we have merged.
+24:50 
+
+24:50 Now the next module is IM module. Same
+24:53 
+
+24:53 thing module reference name and then
+24:56 
+
+24:56 source. inside this we are just
+24:58 
+
+24:58 initializing the cluster name and rest
+25:00 
+
+25:00 all the variables are defined inside im
+25:03 
+
+25:03 module let's see so we have the cluster
+25:06 
+
+25:06 name from the variable okay let's go
+25:09 
+
+25:09 inside IM main.tf TF and over here like
+25:12 
+
+25:12 I told you when we want to hardcode
+25:14 
+
+25:14 something we don't want to make any
+25:16 
+
+25:16 changes when user provision
+25:18 
+
+25:18 infrastructure or when user creates
+25:21 
+
+25:21 terapform code to provision the
+25:23 
+
+25:23 infrastructure so we are hard coding a
+25:25 
+
+25:25 policy document over here right so it
+25:28 
+
+25:28 says uh use this name prefix which is
+25:31 
+
+25:31 coming from vclustluster name okay and
+25:33 
+
+25:33 vcluster name is our cluster name okay
+25:37 
+
+25:37 the one that is coming from the root
+25:38 
+
+25:38 module use this as the name prefix and
+25:42 
+
+25:42 use this policy. Okay, here's the tag
+25:45 
+
+25:45 and then there are some additional
+25:47 
+
+25:47 resources. So remember I told you it's a
+25:49 
+
+25:49 reusable piece of code. So you define
+25:51 
+
+25:51 everything over here inside IM. Now the
+25:54 
+
+25:54 next time you have to create uh IM
+25:57 
+
+25:57 resource with IM role with policy policy
+25:60 
+
+25:60 attachment and so many other resources.
+26:02 
+
+26:02 You don't have to write everything. You
+26:04 
+
+26:04 can just go to your root module. Okay.
+26:08 
+
+26:08 uh which is over here and just write
+26:13 
+
+26:13 this piece of code and that's all about
+26:15 
+
+26:15 it. Okay. And it will use everything
+26:17 
+
+26:17 inside the IM module. So consider this
+26:20 
+
+26:20 as a package with main.tf variables
+26:23 
+
+26:23 output and everything. So we were over
+26:26 
+
+26:26 here. So it has some uh required cluster
+26:29 
+
+26:29 policies some policy attachment. And
+26:32 
+
+26:32 then we are also creating IM role for
+26:34 
+
+26:34 the node group because we are
+26:35 
+
+26:35 provisioning an EKS cluster. So that's
+26:38 
+
+26:38 that. And then again the policy uh
+26:41 
+
+26:41 required policies for node worker
+26:43 
+
+26:43 policy, node CNI policy, node registry
+26:46 
+
+26:46 policy and so on. Then that was the IM
+26:49 
+
+26:49 module. Let's go back to main.tf. And
+26:52 
+
+26:52 then we have EKS module. Again we are
+26:54 
+
+26:54 providing values. Similar thing nothing
+26:57 
+
+26:57 new. Cluster name, Kubernetes version,
+26:59 
+
+26:59 VPC, subnet. So these name could be same
+27:02 
+
+27:02 and then we can reference it. But like
+27:04 
+
+27:04 how we are referencing it now over here
+27:07 
+
+27:07 you see VPC ID we are not taking it from
+27:10 
+
+27:10 the variables or data source we are
+27:12 
+
+27:12 taking it from modules as well. So
+27:15 
+
+27:15 right these modules can also talk to
+27:17 
+
+27:17 each other.
+27:21 
+
+27:21 So so this is what we are doing over
+27:23 
+
+27:23 here. We are taking the value of VPC ID
+27:26 
+
+27:26 from module
+27:28 
+
+27:28 VPC dotVPC ID. Okay, which is coming
+27:32 
+
+27:32 from module is VPC. So it will go inside
+27:34 
+
+27:34 VPC and from here it will take the VPC
+27:38 
+
+27:38 ID like however it has gotten the VPC
+27:42 
+
+27:42 ID. So it will take the VPC ID from that
+27:45 
+
+27:45 um like output variable. Okay. So output
+27:49 
+
+27:49 of this module will become the input of
+27:51 
+
+27:51 root module. Okay. So let me just make
+27:54 
+
+27:54 the changes. So oh no sorry. Uh so these
+27:58 
+
+27:58 custom modules does not talk to each
+28:00 
+
+28:00 other. They talk through root module.
+28:03 
+
+28:03 Okay. So we are using values inside
+28:07 
+
+28:07 main.tf.
+28:08 
+
+28:08 Okay. From output.tf of a custom module.
+28:12 
+
+28:12 Okay. Now what we did we are using like
+28:16 
+
+28:16 this uh module
+28:19 
+
+28:19 dot VPC
+28:21 
+
+28:21 dot VPC ID. Oops.
+28:28 
+
+28:28 Let me just write it below so that it is
+28:31 
+
+28:31 easily readable. Module dovPC dot
+28:36 
+
+28:36 VPC ID.
+28:43 
+
+28:43 Oops. So many mistakes. Okay.
+28:47 
+
+28:47 Right. Uh so inside this not this
+28:50 
+
+28:50 actually this.
+28:54 
+
+28:54 Okay. from VPC we had the VPC ID right
+28:59 
+
+28:59 we created a VPC so we got the ID but
+29:02 
+
+29:02 then how does root module know that we
+29:04 
+
+29:04 have the VPC ID from where it'll get it
+29:07 
+
+29:07 will get when we define that the uh
+29:09 
+
+29:09 output variable so from there uh the
+29:12 
+
+29:12 root module can get the value similarly
+29:14 
+
+29:14 root module can talk to other modules
+29:17 
+
+29:17 via their outputtf
+29:20 
+
+29:20 okay and I'm just going to make another
+29:22 
+
+29:22 arrow over here
+29:25 
+
+29:25 right now these root modu uh custom
+29:28 
+
+29:28 modules cannot talk to each other okay
+29:30 
+
+29:30 they are independent they cannot talk to
+29:32 
+
+29:32 each other if they want to talk they
+29:34 
+
+29:34 have to talk through root module so if
+29:37 
+
+29:37 let's say if EKS has to use some value
+29:40 
+
+29:40 from VPC so what we can do is first the
+29:43 
+
+29:43 value is acquired by root module okay
+29:46 
+
+29:46 through output variable and then we can
+29:49 
+
+29:49 use the value from the root module in
+29:52 
+
+29:52 the EKC Okay. So let's go back and we
+29:56 
+
+29:56 were over here. So that's the custom
+29:59 
+
+29:59 modules. We've got the value defined
+30:02 
+
+30:02 everything what we want and then we are
+30:04 
+
+30:04 using an implicit dependency that this
+30:06 
+
+30:06 is dependent on IM module to be
+30:09 
+
+30:09 provisioned. Similar thing we are doing
+30:11 
+
+30:11 for secret manager because secret
+30:13 
+
+30:13 manager is where we are storing our
+30:15 
+
+30:15 secret keys for database like DB secret
+30:18 
+
+30:18 API secrets and so on. Okay. database
+30:21 
+
+30:21 credentials. So we are storing
+30:23 
+
+30:23 everything inside secret manager and
+30:25 
+
+30:25 that's all about it. Right? So this is
+30:27 
+
+30:27 what we have done. We have uh created
+30:31 
+
+30:31 multiple modules, multiple custom
+30:33 
+
+30:33 modules. We have created the root
+30:36 
+
+30:36 module. We defined everything in root
+30:38 
+
+30:38 module. We actually sourced all the
+30:40 
+
+30:40 custom modules and everything was
+30:42 
+
+30:42 defined inside the custom modules. The
+30:45 
+
+30:45 important thing to understand is how
+30:48 
+
+30:48 these variables are talking to each
+30:50 
+
+30:50 other right what's the dependency and
+30:53 
+
+30:53 how we are initializing the variables if
+30:55 
+
+30:55 you understand this part then custom
+30:58 
+
+30:58 module will be a piece of cake that's
+30:59 
+
+30:59 the important part to understand so I
+31:01 
+
+31:01 would suggest first try to create a
+31:04 
+
+31:04 simple resource let's say a VPC okay VPC
+31:06 
+
+31:06 will have as you can see VPC will not
+31:09 
+
+31:09 just have the single VPC it will have uh
+31:12 
+
+31:12 VPC internet gateway and then public
+31:14 
+
+31:14 subnet, private subnet, elastic IP for
+31:17 
+
+31:17 net gateway and then finally net gateway
+31:19 
+
+31:19 route table. So there are actually a lot
+31:21 
+
+31:21 of things but uh maybe you can start
+31:23 
+
+31:23 with VPC subnet and internet gateway
+31:26 
+
+31:26 just these three things and just try to
+31:29 
+
+31:29 see how these variables are working with
+31:31 
+
+31:31 each other. How root module is talking
+31:34 
+
+31:34 to the custom module to get the values
+31:37 
+
+31:37 how we are defining the values and how
+31:39 
+
+31:39 we are actually using the values. If you
+31:43 
+
+31:43 create those three resources that I told
+31:45 
+
+31:45 you, if you create that and if you use
+31:47 
+
+31:47 all these variable interaction, if you
+31:50 
+
+31:50 are able to provision these resources,
+31:51 
+
+31:51 then I would recommend going to the day
+31:55 
+
+31:55 20 repository and then implementing this
+31:59 
+
+31:59 entire project end to end by using the
+32:01 
+
+32:01 documentation and by following the
+32:04 
+
+32:04 method that I have told you about. Okay.
+32:07 
+
+32:07 So yeah, that's it about this video.
+32:10 
+
+32:10 Make sure you do the hands-on otherwise
+32:12 
+
+32:12 you know that drill right? I have told
+32:13 
+
+32:13 you this multiple times. So uh let's
+32:16 
+
+32:16 skip it for now and complete the task.
+32:19 
+
+32:19 Submit your submissions and I will see
+32:21 
+
+32:21 you tomorrow with the next video. Thank
+32:22 
+
+32:22 you so much. Happy learning.

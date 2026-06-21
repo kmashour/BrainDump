@@ -1,0 +1,3514 @@
+00:00 All right, welcome back to the video. My
+00:03 
+
+00:03 name is Push and this is day 30 in 30
+00:05 
+
+00:05 days of AWS Terraform. Yes, this is the
+00:07 
+
+00:07 last day. Finally, we are here after so
+00:11 
+
+00:11 much of effort, so much of
+00:12 
+
+00:12 troubleshooting and after so much of
+00:14 
+
+00:14 wait. I hope you are having a good
+00:17 
+
+00:17 learning experience and I hope you would
+00:19 
+
+00:19 have implemented all these projects, all
+00:21 
+
+00:21 these concept by yourself and you have
+00:24 
+
+00:24 completed the task given in each of the
+00:27 
+
+00:27 day videos challenge. So this is the
+00:31 
+
+00:31 last video. So we'll be implementing
+00:33 
+
+00:33 this. So we'll be doing drift detection
+00:36 
+
+00:36 using GitHub action and Terraform which
+00:38 
+
+00:38 is a real time end to end project. If
+00:40 
+
+00:40 you have implemented this by yourself,
+00:42 
+
+00:42 you will understand end to end
+00:44 
+
+00:44 Terraform. You will understand end to
+00:45 
+
+00:45 end GitHub actions. Although GitHub
+00:48 
+
+00:48 actions uh is not something that we will
+00:50 
+
+00:50 be covering in this video in depth like
+00:53 
+
+00:53 I will walk you through everything but
+00:55 
+
+00:55 we will not go like from the very basic
+00:57 
+
+00:57 or from the in-depth. If you need a
+01:01 
+
+01:01 separate dedicated playlist for GitHub
+01:03 
+
+01:03 actions let me know in the comment I can
+01:05 
+
+01:05 start working on it. But I want to
+01:07 
+
+01:07 restrict this video within 1 hour or so.
+01:09 
+
+01:09 uh I don't want to go above 1 hour
+01:11 
+
+01:11 because after that you guys will feel
+01:14 
+
+01:14 bored and then uh you will just skip the
+01:16 
+
+01:16 video. So there is no point of doing
+01:18 
+
+01:18 that. Plus uh uh I think this series is
+01:22 
+
+01:22 dedicated to Terraform and we have
+01:25 
+
+01:25 covered all the related concept related
+01:27 
+
+01:27 tools but if we stick to the Terraform
+01:29 
+
+01:29 that will be better so that we can keep
+01:32 
+
+01:32 GitHub actions aside but because it's a
+01:34 
+
+01:34 requirement for this video we'll be
+01:36 
+
+01:36 covering that as well right so we'll be
+01:39 
+
+01:39 uh covering the end to end drift
+01:41 
+
+01:41 detection using GitHub action and
+01:43 
+
+01:43 Terraform. Oh yeah, I was saying that if
+01:45 
+
+01:45 you have completed this project by
+01:46 
+
+01:46 yourself, so you should be able to
+01:48 
+
+01:48 understand end to end GitHub action, end
+01:50 
+
+01:50 to end terraform and how does a drift
+01:54 
+
+01:54 detection work real time in an
+01:56 
+
+01:56 organization. How would you create pull
+01:58 
+
+01:58 request? How will you merge the changes
+02:00 
+
+02:00 and so on. So do not miss this project.
+02:03 
+
+02:03 Watch it till the end and try to
+02:04 
+
+02:04 implement it by yourself. Yes, you must
+02:07 
+
+02:07 be wondering what about the results of
+02:09 
+
+02:09 30 days of AWS Terapform winners. Yes,
+02:12 
+
+02:12 let me finish. the recording. Let let
+02:15 
+
+02:15 you I'll let you finish all the tasks
+02:18 
+
+02:18 and maybe after a couple of weeks I will
+02:20 
+
+02:20 uh announce the winners. So there are
+02:23 
+
+02:23 like 700 plus submissions already
+02:25 
+
+02:25 pending for us to review. There is a lot
+02:28 
+
+02:28 of work. So give us some time and we'll
+02:31 
+
+02:31 be reviewing it. But this time we'll be
+02:33 
+
+02:33 doing some strict review. uh because
+02:36 
+
+02:36 earlier when we did the review there
+02:38 
+
+02:38 were a lot of mistakes like people uh
+02:41 
+
+02:41 pushed AI generated like completely AI
+02:44 
+
+02:44 generated blogs and uh diagrams and like
+02:48 
+
+02:48 the requirements of the task were not
+02:50 
+
+02:50 fulfilled right so we gave them chance
+02:52 
+
+02:52 to update it some of you have updated
+02:55 
+
+02:55 some of you ignored it so this time
+02:57 
+
+02:57 because there are a lot many more
+03:00 
+
+03:00 submissions pending to review we don't
+03:03 
+
+03:03 have time to review and then get back to
+03:06 
+
+03:06 you and like you know doing back and
+03:08 
+
+03:08 forth. So if the requirement is not
+03:11 
+
+03:11 fulfilled as per the task even we will
+03:12 
+
+03:12 be rejecting that particular issue. I
+03:14 
+
+03:14 hope you understand this right. So okay
+03:18 
+
+03:18 let's get back to the video. So what are
+03:21 
+
+03:21 we doing? Okay so this is the flow. Let
+03:23 
+
+03:23 me explain this flow. But this is the
+03:25 
+
+03:25 project that we'll be implementing.
+03:27 
+
+03:27 Okay. So what this project is uh let's
+03:30 
+
+03:30 just zoom in a little bit. This is what
+03:33 
+
+03:33 we have covered earlier as well. So you
+03:34 
+
+03:34 might be familiar if you are already
+03:36 
+
+03:36 following this series. So it's um an AWS
+03:40 
+
+03:40 VPC with the public sub two public
+03:42 
+
+03:42 subnet two private subnet in public
+03:44 
+
+03:44 subnet we have two net gateways so that
+03:46 
+
+03:46 EC2 instances in the private subnet can
+03:50 
+
+03:50 get access to the internet to download
+03:52 
+
+03:52 updates to download the docker images
+03:54 
+
+03:54 and so on because we'll be downloading
+03:57 
+
+03:57 the docker images from dockerhub over
+03:59 
+
+03:59 here right which is uh like a public
+04:01 
+
+04:01 docker hub registry so these EC2
+04:04 
+
+04:04 instances inside the private subnet need
+04:07 
+
+04:07 access to that. So that access is
+04:10 
+
+04:10 securely done via net gateway. We should
+04:13 
+
+04:13 not be putting uh these backend servers
+04:15 
+
+04:15 in public subnets. That is why we did
+04:17 
+
+04:17 that. And then uh they are part of an
+04:20 
+
+04:20 autoscaling group and they span multiple
+04:22 
+
+04:22 availability zones for high
+04:24 
+
+04:24 availability. As you can see if one goes
+04:26 
+
+04:26 down another will spin up in the
+04:27 
+
+04:27 different zone. So autoscaling group has
+04:30 
+
+04:30 been set with minimum one desired two
+04:32 
+
+04:32 and maximum five EC2 instances.
+04:35 
+
+04:35 Okay. Um this like we have seen this
+04:38 
+
+04:38 earlier as well and this we have worked
+04:40 
+
+04:40 on it earlier as well. So I'll just uh
+04:42 
+
+04:42 move on. Okay. So this is the project uh
+04:46 
+
+04:46 the end to end project that we have.
+04:47 
+
+04:47 Okay. So you have a GitHub repository
+04:49 
+
+04:49 which has your infrastructure
+04:51 
+
+04:51 provisioning code your Terraform code
+04:53 
+
+04:53 which is over here right day 30 folder
+04:57 
+
+04:57 and then there is a code folder. Inside
+04:59 
+
+04:59 code folder you have scripts and all the
+05:01 
+
+05:01 terapform files. Now
+05:04 
+
+05:04 uh when a developer or the infrared team
+05:08 
+
+05:08 make the changes in the dev repository
+05:10 
+
+05:10 in the dev branch via pull request so it
+05:15 
+
+05:15 will trigger the GitHub actions
+05:17 
+
+05:17 workflow. Okay. So what workflow we have
+05:20 
+
+05:20 if you go to the root of this repository
+05:22 
+
+05:22 we have three workflows created for this
+05:25 
+
+05:25 particular video which is inside the
+05:27 
+
+05:27 workflow folder and it is terapform.l
+05:30 
+
+05:30 camel which is for infrastructure
+05:32 
+
+05:32 provisioning and maintenance. Drift
+05:34 
+
+05:34 detection to detect the drift and make
+05:37 
+
+05:37 the suggested changes and destroy to
+05:39 
+
+05:39 destroy the infra. Now um these all can
+05:43 
+
+05:43 be executed manually as well and this is
+05:46 
+
+05:46 what it says. It can be a manual trigger
+05:49 
+
+05:49 and a chrome trigger right. U so chron
+05:52 
+
+05:52 trigger is the pipeline will keep
+05:54 
+
+05:54 checking if there are any changes in the
+05:57 
+
+05:57 infra. So if there is any drift detected
+06:00 
+
+06:00 then it will uh then it will execute the
+06:04 
+
+06:04 changes otherwise you can manually
+06:05 
+
+06:05 trigger it or if there is any changes to
+06:09 
+
+06:09 the code then also it will trigger the
+06:11 
+
+06:11 pipeline. So what are the workflow step?
+06:14 
+
+06:14 First it will check out the code then it
+06:16 
+
+06:16 will determine the environment based on
+06:18 
+
+06:18 the branch that you have selected. If
+06:20 
+
+06:20 you have selected the dev branch it will
+06:22 
+
+06:22 provision it will set the environment
+06:24 
+
+06:24 variable for dev environment. If you
+06:26 
+
+06:26 have triggered production um if you have
+06:30 
+
+06:30 uh merged the changes on the main branch
+06:33 
+
+06:33 then it will determine prod as the
+06:35 
+
+06:35 environment and it will set the
+06:37 
+
+06:37 variables and credentials accordingly.
+06:40 
+
+06:40 Then it moves to the next step which is
+06:42 
+
+06:42 terapform. So terraform setup you know
+06:45 
+
+06:45 uh because uh we'll be running that
+06:46 
+
+06:46 GitHub action on an GitHub runner which
+06:49 
+
+06:49 is hosted on GitHub. So it needs that
+06:53 
+
+06:53 Terraform installable. So uh that's what
+06:55 
+
+06:55 we are doing over here. Then initate
+06:58 
+
+06:58 back end plan detection and so on. Now
+07:01 
+
+07:01 here is the part of drift detection.
+07:04 
+
+07:04 What it does? It will compare the plan.
+07:08 
+
+07:08 It will compare the output of terraform
+07:10 
+
+07:10 plan command with what we have over here
+07:14 
+
+07:14 in the state file. Right? So it will
+07:16 
+
+07:16 compare if there is any changes in the
+07:19 
+
+07:19 terraform environment. Sorry. It will
+07:22 
+
+07:22 compare the changes of your code that is
+07:27 
+
+07:27 there right that is there in the GitHub
+07:30 
+
+07:30 repository. It will compare that changes
+07:33 
+
+07:33 with the Terraform plan output. So if
+07:37 
+
+07:37 there is a mismatch that means someone
+07:39 
+
+07:39 has made some changes on the environment
+07:42 
+
+07:42 directly. So it detects the drift and
+07:44 
+
+07:44 whenever there is a drift detected so it
+07:47 
+
+07:47 will do these things right. So there is
+07:49 
+
+07:49 this decision gateway. So we have some
+07:51 
+
+07:51 control condition. I will show you that
+07:52 
+
+07:52 as well. So based on that it will check
+07:55 
+
+07:55 if there is a drift detected. If there
+07:58 
+
+07:58 are no drifts that means your uh that
+08:01 
+
+08:01 means your environment your desired
+08:03 
+
+08:03 state is equal to actual state or if the
+08:06 
+
+08:06 plan failed then it will just exit it.
+08:08 
+
+08:08 Right? So if there is a drift detected
+08:11 
+
+08:11 what will happen? So let's move ahead
+08:13 
+
+08:13 over here. So if the drift is detected
+08:16 
+
+08:16 then it will
+08:18 
+
+08:18 apply the changes again from the code so
+08:21 
+
+08:21 that the changes made manually should be
+08:24 
+
+08:24 overridden
+08:26 
+
+08:26 right it will apply the changes it will
+08:28 
+
+08:28 update the resources in the environment
+08:31 
+
+08:31 and then it will verify the fix and it
+08:33 
+
+08:33 will send the notification via Slack
+08:36 
+
+08:36 channel Slack alert because we have set
+08:38 
+
+08:38 this and also it will close the GitHub
+08:41 
+
+08:41 issue. Okay.
+08:45 
+
+08:45 And it will like fix the status. Yes,
+08:47 
+
+08:47 that's the part of it. Now, if the plan
+08:49 
+
+08:49 failed, that means the workflow will
+08:51 
+
+08:51 exit because the plan failed. There is
+08:52 
+
+08:52 some issues uh on the on the files or
+08:55 
+
+08:55 the configuration code or whatever. If
+08:58 
+
+08:58 there are no drift, it will not take any
+08:60 
+
+08:60 actions and it will just update that in
+09:02 
+
+09:02 the summary report. Okay. And yeah, so
+09:06 
+
+09:06 that's it. O over here when we configure
+09:08 
+
+09:08 the AWS credentials it will authenticate
+09:11 
+
+09:11 to the AWS environment like dev
+09:13 
+
+09:13 environment or prod environment based on
+09:15 
+
+09:15 what you have selected based on the
+09:17 
+
+09:17 environment that has been determined
+09:19 
+
+09:19 based on the branch that you have
+09:21 
+
+09:21 checked in your code to okay so that's
+09:24 
+
+09:24 that's the um like the highlevel
+09:28 
+
+09:28 architecture of it what what are we
+09:30 
+
+09:30 going to do let's move ahead to the
+09:33 
+
+09:33 GitHub repository so that I can show to
+09:36 
+
+09:36 you.
+09:38 
+
+09:38 All right,
+09:42 
+
+09:42 let me close these things. Okay, so
+09:47 
+
+09:47 if I go to Yeah, first let me just Okay,
+09:51 
+
+09:51 I'm not going to walk you through the
+09:52 
+
+09:52 code because code is something that we
+09:54 
+
+09:54 have used multiple times earlier. So, it
+09:56 
+
+09:56 will just waste your time and I don't
+09:58 
+
+09:58 want to do that. I'll just walk you
+09:60 
+
+10:00 through the some prerequisite and some
+10:03 
+
+10:03 different things that we have done over
+10:04 
+
+10:04 here. Okay. So for the back end we have
+10:08 
+
+10:08 created two files one for the dev back
+10:10 
+
+10:10 end which is this it's acl file
+10:13 
+
+10:13 something that we have not used earlier
+10:15 
+
+10:15 but this is consider this something like
+10:17 
+
+10:17 terapform.tfr TFR files but for the back
+10:20 
+
+10:20 end okay and it's in the form of key
+10:22 
+
+10:22 value pair okay so we have created
+10:24 
+
+10:24 separate bucket for dev and separate
+10:28 
+
+10:28 bucket for prod
+10:30 
+
+10:30 right and actually that's the like the
+10:34 
+
+10:34 file and folder name uh bucket name is
+10:36 
+
+10:36 uh over here so we are using same bucket
+10:39 
+
+10:39 but different files inside that bucket
+10:41 
+
+10:41 you can use separate bucket as well
+10:43 
+
+10:43 that's not an issue and we are using the
+10:45 
+
+10:45 log file feature Dynamob uh lock file
+10:49 
+
+10:49 state file has been deprecated. So this
+10:51 
+
+10:51 is what we are using and rest of the
+10:55 
+
+10:55 infra I think it's same in the script
+10:57 
+
+10:57 folder you can set up your back end from
+10:59 
+
+10:59 here. So you can run this command to set
+11:01 
+
+11:01 up your back end. I already have the
+11:03 
+
+11:03 back end setup so I don't have to do it
+11:05 
+
+11:05 and it does basically the same thing
+11:07 
+
+11:07 that we have been doing in almost all
+11:09 
+
+11:09 the videos. Okay. Now um
+11:14 
+
+11:14 make sure you update these files. um
+11:17 
+
+11:17 otherwise it will try to find these
+11:19 
+
+11:19 buckets and it won't find it. It will
+11:22 
+
+11:22 throw the error and then you will fix it
+11:23 
+
+11:23 again. So make sure you update these two
+11:25 
+
+11:25 files and then there will be um there'll
+11:29 
+
+11:29 be variables.tf where you can set the
+11:31 
+
+11:31 default values okay and
+11:37 
+
+11:37 okay
+11:39 
+
+11:39 then um there is backend.tf TF but it
+11:42 
+
+11:42 has been commented because these values
+11:45 
+
+11:45 we are using from these files okay
+11:50 
+
+11:50 then we have okay so this is back end
+11:52 
+
+11:52 this is user data so that uh it it's
+11:55 
+
+11:55 basically doing installation of docker
+11:58 
+
+11:58 on the virtual machine on the EC2
+11:60 
+
+11:60 instances and then spinning up a Django
+12:02 
+
+12:02 container and this Django is basically a
+12:05 
+
+12:05 web app uh an e-commerce web app I will
+12:07 
+
+12:07 show you that and that um let me show
+12:10 
+
+12:10 you in So this web app has been exposed
+12:13 
+
+12:13 with an application load balancer. So
+12:16 
+
+12:16 this is what you will see once you log
+12:18 
+
+12:18 into the DNS. Um so does it show the
+12:24 
+
+12:24 load balancer. Yeah, over here it should
+12:25 
+
+12:25 be there, right? So application load
+12:28 
+
+12:28 balancer over here.
+12:30 
+
+12:30 Okay. So now uh let's go back. This is
+12:35 
+
+12:35 the load balancer. I have provisioned
+12:37 
+
+12:37 the infra uh before the recording
+12:39 
+
+12:39 because this is what we have done
+12:40 
+
+12:40 multiple times. I don't want you to go
+12:43 
+
+12:43 through that again because in this video
+12:45 
+
+12:45 we are specifically testing for drift
+12:47 
+
+12:47 detection. So that's what we'll be
+12:49 
+
+12:49 focusing on. Okay. So let's talk about
+12:51 
+
+12:51 drift detection. What we what we need to
+12:54 
+
+12:54 do in days 27 I will show you how to
+12:56 
+
+12:56 create and how to trigger GitHub action.
+12:58 
+
+12:58 So we are using the same in the root of
+13:01 
+
+13:01 the repository. We have created three
+13:03 
+
+13:03 files. Terapform YAML, drift detection
+13:05 
+
+13:05 and destroy. Okay. So let's
+13:08 
+
+13:08 talk about terapform.yamel.
+13:11 
+
+13:11 So this file name is terapform cicd.
+13:13 
+
+13:13 This is the main file which will trigger
+13:16 
+
+13:16 the workflow. Okay. whenever you make
+13:19 
+
+13:19 any changes and how it will trigger on
+13:22 
+
+13:22 push of these two branches. If you push
+13:25 
+
+13:25 on main or dev trigger this workflow or
+13:29 
+
+13:29 if you create a pull request on main and
+13:32 
+
+13:32 dev branch right I mean when the pull
+13:35 
+
+13:35 request will be accepted then only it
+13:38 
+
+13:38 will be triggered. Now based on the
+13:41 
+
+13:41 branch that you have set it will set uh
+13:44 
+
+13:44 I will show you that later on where it
+13:46 
+
+13:46 is setting the variables. I think it's
+13:48 
+
+13:48 over. Yeah, you see over here if the
+13:52 
+
+13:52 branch name is main that environment is
+13:54 
+
+13:54 broad and set this to this variable and
+13:57 
+
+13:57 this variable if the
+13:60 
+
+13:60 if the environment is dev. Oh sorry if
+14:03 
+
+14:03 the branch name is not main that means
+14:06 
+
+14:06 is dev which is in the else part. So
+14:10 
+
+14:10 environment is dev and set this to these
+14:12 
+
+14:12 variables. Okay now let's go back over
+14:15 
+
+14:15 here. So we covered till here. So this
+14:17 
+
+14:17 is the trigger. Then we have
+14:19 
+
+14:19 permissions. Permissions is because the
+14:22 
+
+14:22 GitHub runner bot or the tool or
+14:26 
+
+14:26 whatever you want to call it, it needs
+14:27 
+
+14:27 some permission on your project on your
+14:31 
+
+14:31 GitHub to comment and to write the pull
+14:35 
+
+14:35 request details, right? So it should
+14:37 
+
+14:37 have permission to read the content and
+14:40 
+
+14:40 it should have permission to write
+14:43 
+
+14:43 issues. That means it should be able to
+14:45 
+
+14:45 write comment on the issues, close the
+14:47 
+
+14:47 pull request, close the issues. So it
+14:49 
+
+14:49 should have that right permission and
+14:50 
+
+14:50 that's what we are providing. Now these
+14:53 
+
+14:53 are the environment variables we are
+14:55 
+
+14:55 setting. So use the AWS region as this,
+14:58 
+
+14:58 Terraform version as this. Then here's
+15:00 
+
+15:00 the job. Job is what in GitHub action?
+15:03 
+
+15:03 Job is something that runs on an agent.
+15:05 
+
+15:05 Agent over here is GitHub runner. Okay.
+15:08 
+
+15:08 So let's say if you are familiar with
+15:10 
+
+15:10 Jenkins in Jenkins you create Jenkins
+15:12 
+
+15:12 agents or Jenkins slaves. Okay. So that
+15:15 
+
+15:15 slave is nothing but an executor on
+15:17 
+
+15:17 which you run something or you can call
+15:20 
+
+15:20 it a build server, a CI server or a CD
+15:22 
+
+15:22 server, right? You can call it with many
+15:24 
+
+15:24 name. So similarly in GitHub action it's
+15:26 
+
+15:26 a runner it's a GitHub runner and that's
+15:29 
+
+15:29 how we are running any job on that. So
+15:32 
+
+15:32 jobs this is the job name which is
+15:34 
+
+15:34 terraform plan. Okay. and um runs on
+15:39 
+
+15:39 Ubuntu latest. We are using Ubuntu as
+15:41 
+
+15:41 the base image for that runner and then
+15:45 
+
+15:45 default run on this directory because um
+15:47 
+
+15:47 like this repository has day 30 videos
+15:50 
+
+15:50 and we just want to run the code on this
+15:52 
+
+15:52 uh directory which is for day 30 inside
+15:55 
+
+15:55 code. So we are setting the working
+15:57 
+
+15:57 directory and here's the output variable
+16:00 
+
+16:00 um like environment which is from this
+16:03 
+
+16:03 step whatever environment variable comes
+16:05 
+
+16:05 as an output set this to the like
+16:07 
+
+16:07 environment variable. Okay, then the
+16:10 
+
+16:10 next step uh so that's the first step
+16:12 
+
+16:12 which is basically actually that's not
+16:14 
+
+16:14 even a step this is just some
+16:15 
+
+16:15 prerequisite settings. The first step is
+16:18 
+
+16:18 the checkout. Okay, in the checkout we
+16:21 
+
+16:21 are using a GitHub action is doing check
+16:23 
+
+16:23 check out of your good repository. Then
+16:26 
+
+16:26 determine environment. This is what we
+16:28 
+
+16:28 have already seen. If the event type is
+16:30 
+
+16:30 pull request then branch name set this.
+16:33 
+
+16:33 Else branch name set this. Okay. and set
+16:36 
+
+16:36 the environment variable based on the
+16:39 
+
+16:39 branch. Then echo deploying to
+16:41 
+
+16:41 environment, right? Then configure AWS
+16:44 
+
+16:44 credentials. AWS credentials has been
+16:46 
+
+16:46 set in the GitHub actions and where it
+16:49 
+
+16:49 is set. So if you go back uh to the
+16:52 
+
+16:52 repository which is over here and go to
+16:55 
+
+16:55 settings of this repository
+16:58 
+
+16:58 and scroll down to
+17:00 
+
+17:00 environment
+17:02 
+
+17:02 and scroll down to
+17:05 
+
+17:05 do okay here are the environments as
+17:07 
+
+17:07 well that you need to set dev and prod
+17:10 
+
+17:10 right so
+17:12 
+
+17:12 just like it should not have a lot of
+17:14 
+
+17:14 details so which this is dev environment
+17:17 
+
+17:17 and prod should have this thing pro
+17:20 
+
+17:20 should have a required reviewer so that
+17:22 
+
+17:22 we have a manual approver be before the
+17:24 
+
+17:24 pro deployment okay and uh we need to
+17:28 
+
+17:28 set secrets over here inside security
+17:30 
+
+17:30 you see secrets and variables and
+17:33 
+
+17:33 actions
+17:34 
+
+17:34 Okay, so here are three secrets that I
+17:37 
+
+17:37 have set. One is Slack web hook URL, AWS
+17:39 
+
+17:39 key ID, AWS secret access key. We are at
+17:42 
+
+17:42 the end of the video. I am pretty sure
+17:45 
+
+17:45 I'm 100% sure you know how to get these
+17:48 
+
+17:48 values now. Okay, so I'm not going to
+17:50 
+
+17:50 bore you with that. So the other thing
+17:53 
+
+17:53 is Slack web hook URL. Slack web hook
+17:56 
+
+17:56 URL. You can just go to uh let's say
+18:00 
+
+18:00 Slack web hook uh and search for this
+18:03 
+
+18:03 api.slack.com.
+18:06 
+
+18:06 Uh there is an app which is
+18:10 
+
+18:10 uh alert or whatever your app is. So
+18:14 
+
+18:14 basically you have to configure this app
+18:16 
+
+18:16 which is of type alert and inside that
+18:19 
+
+18:19 there'll be a section called incoming
+18:21 
+
+18:21 web hook. Click on that and create a new
+18:25 
+
+18:25 web hook. copy the web hook URL from
+18:27 
+
+18:27 here. Okay, so this is the web hook URL
+18:29 
+
+18:29 which is what I've just created and you
+18:32 
+
+18:32 go back over here and paste the value in
+18:35 
+
+18:35 this secret. Okay, so this is how we are
+18:38 
+
+18:38 setting all these uh variables and this
+18:41 
+
+18:41 is how it is getting the value from. So
+18:43 
+
+18:43 AWS access key and uh access key id it
+18:47 
+
+18:47 is getting from secrets. What are these
+18:49 
+
+18:49 secrets? These are the secrets of GitHub
+18:51 
+
+18:51 actions which we have just seen and AWS
+18:54 
+
+18:54 region value it is getting from the
+18:56 
+
+18:56 terraform environment variable. Now the
+18:59 
+
+18:59 next step is set up terraform. Okay. And
+19:02 
+
+19:02 it says name this uses this. That means
+19:05 
+
+19:05 use this uh package of terraform to
+19:10 
+
+19:10 install that. Right. With terapform
+19:12 
+
+19:12 version the version that we set in the
+19:14 
+
+19:14 beginning. Teraphform wrapper equal to
+19:16 
+
+19:16 false. Then terapform init what we are
+19:20 
+
+19:20 doing teraphform init reconfigure
+19:21 
+
+19:21 backend configure backend
+19:24 
+
+19:24 environment name.hccl.
+19:27 
+
+19:27 Remember we have two files one for dev,
+19:29 
+
+19:29 one for prod. So we are initializing
+19:31 
+
+19:31 over here based on the branch that we
+19:34 
+
+19:34 have set. So you see there are a lot of
+19:36 
+
+19:36 places where we are dynamically setting
+19:38 
+
+19:38 the values. We are not hard- coding any
+19:40 
+
+19:40 value. Right? So it should be able to
+19:43 
+
+19:43 detect the value of the environment, the
+19:46 
+
+19:46 value of the branch and based on that it
+19:48 
+
+19:48 set all the things. Okay. So the next
+19:51 
+
+19:51 step is terapform format check. We are
+19:53 
+
+19:53 doing a terapform format check for any
+19:55 
+
+19:55 formatting issue. We are using terraform
+19:58 
+
+19:58 validate uh for the syntax validation
+20:00 
+
+20:00 and all. Then terapform plan. Now what
+20:03 
+
+20:03 we are doing terapform plan output tf
+20:06 
+
+20:06 plan
+20:08 
+
+20:08 right and then we are moving that into a
+20:11 
+
+20:11 file called plan output.txt.
+20:15 
+
+20:15 So basically output of terraform plan uh
+20:19 
+
+20:19 with some formatting and we are putting
+20:21 
+
+20:21 that into a text file.
+20:24 
+
+20:24 Now what we say is over here comment PR
+20:27 
+
+20:27 with plan that means if the event name
+20:30 
+
+20:30 is pull request so use the GitHub action
+20:33 
+
+20:33 GitHub script and set the GitHub token
+20:36 
+
+20:36 you can like it'll automatically take
+20:39 
+
+20:39 the GitHub token from GitHub and then
+20:41 
+
+20:41 there is a small JavaScript code over
+20:43 
+
+20:43 here what it is doing so it is uh it is
+20:46 
+
+20:46 importing an FS JavaScript package for
+20:50 
+
+20:50 file system right and what it is doing.
+20:54 
+
+20:54 It is doing a read file sync. That means
+20:56 
+
+20:56 it is reading this file asynchronously.
+20:59 
+
+20:59 Which file? Plan output.txt a
+21:02 
+
+21:02 synchronously in this format. Okay. Not
+21:04 
+
+21:04 in the binary format but in this format.
+21:07 
+
+21:07 And
+21:10 
+
+21:10 once it completes it set the value of
+21:12 
+
+21:12 this variable as plan output. Okay. So
+21:14 
+
+21:14 now we have the content of plan output
+21:19 
+
+21:19 which is terraform plan output inside
+21:22 
+
+21:22 this variable.
+21:24 
+
+21:24 Okay. And then we are setting another
+21:25 
+
+21:25 constant which is output and in that
+21:29 
+
+21:29 there is like a string which says
+21:30 
+
+21:30 terapform plan for this this should be
+21:32 
+
+21:32 printed on the screen. Then there is
+21:35 
+
+21:35 some uh text like HTML text sort of
+21:38 
+
+21:38 right details summary and so on format
+21:42 
+
+21:42 validation plan this this will be
+21:45 
+
+21:45 visible in the logs and uh on the UI so
+21:47 
+
+21:47 don't worry about it then terraform plan
+21:50 
+
+21:50 status if step if the terapform plan is
+21:53 
+
+21:53 failed then exit one that means exit uh
+21:56 
+
+21:56 the pipeline workflow should be failed
+21:58 
+
+21:58 if it is success then upload the plan
+22:01 
+
+22:01 the file that we had upload that file
+22:03 
+
+22:03 file with the name TF plan dev to this
+22:08 
+
+22:08 directory. Okay. And keep it for 5 days
+22:10 
+
+22:10 for retention. Right. So we are now
+22:12 
+
+22:12 uploading terapform plan to the
+22:15 
+
+22:15 repository.
+22:16 
+
+22:16 Now terraform apply. So what we are
+22:19 
+
+22:19 saying if github event name equal to
+22:21 
+
+22:21 push and terraform plan dot result equal
+22:25 
+
+22:25 to success then again run on this
+22:28 
+
+22:28 particular um runner and on this working
+22:32 
+
+22:32 directory using this environment and
+22:35 
+
+22:35 what are the steps check out determine
+22:38 
+
+22:38 environment configure credentials same
+22:41 
+
+22:41 thing right uh set up terraform
+22:44 
+
+22:44 terapform init using the same backend
+22:46 
+
+22:46 file then download the plan. Now we are
+22:49 
+
+22:49 not running TF plan. It's already been
+22:51 
+
+22:51 done. So now we are just downloading it
+22:53 
+
+22:53 from where it was uploaded earlier. And
+22:56 
+
+22:56 now we say if this this is just an
+22:58 
+
+22:58 validation. If the plan exists then do
+23:01 
+
+23:01 this. If the plan does not exist then no
+23:03 
+
+23:03 plan found and infrastructure may
+23:04 
+
+23:04 already be up to date. Just a validation
+23:06 
+
+23:06 check. And here we are applying the
+23:09 
+
+23:09 changes. So what it says if plan exist
+23:11 
+
+23:11 again another uh additional validation
+23:14 
+
+23:14 then run this command terapform apply
+23:17 
+
+23:17 auto approve with the plan that we have
+23:20 
+
+23:20 downloaded.
+23:22 
+
+23:22 Okay. And no changes to apply. If plan
+23:24 
+
+23:24 does not exist, then no changes to
+23:26 
+
+23:26 apply. Infrastructure is up to date and
+23:29 
+
+23:29 output infrastructure info. Uh which is
+23:32 
+
+23:32 like we are just echoing some of the
+23:35 
+
+23:35 text and so on. Right? So this is your
+23:37 
+
+23:37 terraform.yamel
+23:39 
+
+23:39 which will make the change, it will
+23:41 
+
+23:41 update the change and so on. Now this is
+23:44 
+
+23:44 important which is drift detection. It's
+23:46 
+
+23:46 it's a long file. So I'll just walk you
+23:49 
+
+23:49 through with the important steps. First
+23:52 
+
+23:52 is when it will trigger either you can
+23:54 
+
+23:54 run it manually and it can also be
+23:57 
+
+23:57 scheduled as a chron job. So this is
+23:59 
+
+23:59 what we are doing trigger on schedule
+24:02 
+
+24:02 chron syntax run every minute and you
+24:04 
+
+24:04 can change the syntax as well. I mean
+24:06 
+
+24:06 you can change the frequency as well as
+24:08 
+
+24:08 per your need but 1 minute is too much
+24:12 
+
+24:12 for a production environment. Maybe 10
+24:14 
+
+24:14 minutes is ideal for product. It totally
+24:16 
+
+24:16 depends on your organization settings.
+24:19 
+
+24:19 Right.
+24:20 
+
+24:20 And also we are saying um workflow
+24:23 
+
+24:23 dispatch that means allow manual
+24:25 
+
+24:25 triggering.
+24:27 
+
+24:27 Now permission again it should have some
+24:29 
+
+24:29 permissions
+24:30 
+
+24:30 um environment variables are slack web
+24:33 
+
+24:33 hook URL and AWS region. So slack you
+24:36 
+
+24:36 slack message it will only send when it
+24:38 
+
+24:38 will detect some drift and it will send
+24:40 
+
+24:40 the message over there. Uh we'll see
+24:43 
+
+24:43 that then jobs the job is drift
+24:46 
+
+24:46 detection run on Ubuntu and run on this
+24:48 
+
+24:48 directory. Steps is check out determine
+24:51 
+
+24:51 environment which is based on the branch
+24:54 
+
+24:54 configure AWS credentials then setup
+24:57 
+
+24:57 terapform terapform in it terapform plan
+24:59 
+
+24:59 okay so here is the logic for drift
+25:02 
+
+25:02 detection inside terapform plan what we
+25:04 
+
+25:04 are saying terapform plan detailed exit
+25:06 
+
+25:06 code is equal to plan output okay and
+25:10 
+
+25:10 all the error to the dev null uh like
+25:14 
+
+25:14 all the errors to the same file like uh
+25:17 
+
+25:17 std out and std error to the Same file
+25:19 
+
+25:19 plan output.txt. Now we are checking the
+25:22 
+
+25:22 exit code. See if the terraform plan
+25:25 
+
+25:25 fails. So the exit code is something
+25:30 
+
+25:30 other than zero. Right? So this is what
+25:34 
+
+25:34 we are checking. Echoexit code. We'll
+25:36 
+
+25:36 set the exit code based on whatever it
+25:38 
+
+25:38 is. And then we get the plan and then
+25:42 
+
+25:42 exit zero. So it should exit after that.
+25:45 
+
+25:45 Oh, it should continue after that. It
+25:47 
+
+25:47 should not fail the step. The next is
+25:50 
+
+25:50 let's analyze the drift. If the exit
+25:53 
+
+25:53 code that we got from the previous step
+25:56 
+
+25:56 which is how can we check steps. So this
+25:58 
+
+25:58 is the step right dot plan which is the
+26:02 
+
+26:02 id of the step dot output which is the
+26:05 
+
+26:05 output variable and what is the variable
+26:08 
+
+26:08 name? Exit code. So steps.pl.output
+26:12 
+
+26:12 exit code is equal to two. that means
+26:16 
+
+26:16 it's not successful. If it's not zero
+26:18 
+
+26:18 that means it is not successful and if
+26:20 
+
+26:20 it is two that means
+26:23 
+
+26:23 um that means we need to perform these
+26:25 
+
+26:25 actions right what it is it is checking
+26:27 
+
+26:27 that if it is true that means there is
+26:29 
+
+26:29 some change in the file like it doesn't
+26:32 
+
+26:32 match like the terraform plan is is does
+26:36 
+
+26:36 doesn't match with the
+26:43 
+
+26:43 okay let's check what this command does
+26:46 
+
+26:46 just to show you. So if I run terraform
+26:50 
+
+26:50 plan
+26:52 
+
+26:52 help,
+26:53 
+
+26:53 not sure if this will show, but let's
+26:55 
+
+26:55 see. Uh detailed exit code. What do we
+26:57 
+
+26:57 mean by that?
+27:04 
+
+27:04 Okay, it's not Oh, here I just saw it
+27:08 
+
+27:08 somewhere. Okay, so return detailed exit
+27:11 
+
+27:11 code when the command exit. This will
+27:13 
+
+27:13 change the meaning of exit code to zero.
+27:16 
+
+27:16 If diff is empty that means if there are
+27:19 
+
+27:19 no changes. If the terraform plan file
+27:22 
+
+27:22 has no changes that means it is zero
+27:24 
+
+27:24 succeeded. If it is error one and two
+27:28 
+
+27:28 with two also it is a success but that
+27:30 
+
+27:30 means there is a difference between
+27:32 
+
+27:32 desired state and the actual state. So
+27:34 
+
+27:34 that means the drift is detected right
+27:36 
+
+27:36 and that is what this code is doing.
+27:40 
+
+27:40 If uh sorry not this one this part if
+27:44 
+
+27:44 the exit code is two that means the
+27:46 
+
+27:46 drift is detected. So what we need to do
+27:48 
+
+27:48 we are again uh using that fs import and
+27:53 
+
+27:53 then setting it as a constant constant
+27:55 
+
+27:55 for plan output reading the file plan
+27:57 
+
+27:57 output.txt txt the one that we got
+27:59 
+
+27:59 earlier right and then
+28:03 
+
+28:03 um we are printing this message right
+28:07 
+
+28:07 and then show plan all those details we
+28:10 
+
+28:10 are printing and then finally we'll be
+28:12 
+
+28:12 applying the changes so this is just you
+28:15 
+
+28:15 can go through it I'm not going to
+28:16 
+
+28:16 explain each and every line of it but
+28:19 
+
+28:19 you can go through it I mean you can
+28:21 
+
+28:21 take the help of LLM uh or my favorite
+28:25 
+
+28:25 is this one like GitHub copilot it will
+28:28 
+
+28:28 explain it to you whatever you want. So
+28:31 
+
+28:31 u it will check that and then what it
+28:34 
+
+28:34 does it will autofix the drift that
+28:36 
+
+28:36 means it will override the changes from
+28:40 
+
+28:40 the GitHub code. Okay. So it will do
+28:43 
+
+28:43 terapform apply auto approve and apply
+28:46 
+
+28:46 output will be in a separate file and
+28:48 
+
+28:48 continue on error. Then it will also
+28:51 
+
+28:51 notify slack right in the slack message
+28:55 
+
+28:55 based on the condition if they are true
+28:58 
+
+28:58 it will send the message it will post uh
+29:01 
+
+29:01 because it's a web hook call right so
+29:02 
+
+29:02 it's just uh doing a post request over
+29:05 
+
+29:05 there and uh with this message uh with
+29:10 
+
+29:10 this header and text and so on right so
+29:13 
+
+29:13 it will send all those details and then
+29:16 
+
+29:16 if it has failed then this is what it
+29:18 
+
+29:18 will do uh on on on the failure.
+29:22 
+
+29:22 Okay. And update issue on success like
+29:24 
+
+29:24 if it is exit code is two and the step
+29:28 
+
+29:28 apply outcome is equal to success that
+29:30 
+
+29:30 means if the drift was detected and the
+29:32 
+
+29:32 apply was successful then it will update
+29:35 
+
+29:35 the GitHub issue as well and it will so
+29:38 
+
+29:38 here this is creating the comment and
+29:41 
+
+29:41 this is updating the issue and marking
+29:43 
+
+29:43 it as closed. Okay. And then it will
+29:46 
+
+29:46 publish the drift summary. then it will
+29:49 
+
+29:49 close all drift issues as well where
+29:53 
+
+29:53 exit code was zero
+29:56 
+
+29:56 and if there is no drift then as I've
+29:58 
+
+29:58 told you it will just say no drift
+29:60 
+
+29:60 detected and it will put that in GitHub
+30:03 
+
+30:03 step summary
+30:05 
+
+30:05 okay so that was drift detection and
+30:08 
+
+30:08 destroy is similar it will just destroy
+30:10 
+
+30:10 the environment uh uh it's all like
+30:13 
+
+30:13 everything is similar so you can go
+30:15 
+
+30:15 through it let's go back over here and
+30:18 
+
+30:18 we have the info ready like so let's try
+30:20 
+
+30:20 to make some changes and let's try to
+30:22 
+
+30:22 test this out
+30:26 
+
+30:26 okay um yeah so uh let's go back over
+30:31 
+
+30:31 here in day 30 repository uh which is
+30:34 
+
+30:34 over here okay
+30:38 
+
+30:38 lessons
+30:42 
+
+30:42 and day 30
+30:47 
+
+30:47 inside code.
+30:50 
+
+30:50 Okay, let's try to make some changes.
+30:52 
+
+30:52 So, first let me just check out the dev
+30:55 
+
+30:55 branch. So, get checkout dev. Okay,
+30:59 
+
+30:59 already on dev. That's good. Now, let's
+31:02 
+
+31:02 make some changes in
+31:06 
+
+31:06 let's go to main.tf.
+31:09 
+
+31:09 Uh, it doesn't have much. Let's
+31:11 
+
+31:11 backend.tf. Okay, this is just the back
+31:14 
+
+31:14 end. Let's go to ALB. Let's update the
+31:18 
+
+31:18 tag of load balancer. Right in the app
+31:21 
+
+31:21 load balancer, let's keep it as app load
+31:23 
+
+31:23 balancer 2. Okay, just a small change.
+31:27 
+
+31:27 And let's go back over here.
+31:30 
+
+31:30 In fact, okay. Yeah, first let's do that
+31:33 
+
+31:33 and then we'll uh test the drift
+31:35 
+
+31:35 detection.
+31:39 
+
+31:39 So
+31:42 
+
+31:42 you can go over here. Here's the tag
+31:45 
+
+31:45 which is app load balancer. Okay.
+31:48 
+
+31:48 So let's make this change. Uh dev and
+31:52 
+
+31:52 then let's do a get add.
+31:55 
+
+31:55 Okay. Get status which is one file
+31:59 
+
+31:59 lb.tf. Let me just pull it up. and then
+32:04 
+
+32:04 get commit- m
+32:07 
+
+32:07 test the dev workflow. Okay.
+32:12 
+
+32:12 And then get push origin dev to push the
+32:16 
+
+32:16 remote dev branch.
+32:18 
+
+32:18 Okay. Changes have been pushed. Let's go
+32:21 
+
+32:21 back over here.
+32:24 
+
+32:24 Okay. Yeah, over here. No, in the GitHub
+32:27 
+
+32:27 repository. I think I have closed it.
+32:30 
+
+32:30 That's okay.
+32:34 
+
+32:34 Okay. And yeah and let's go to actions.
+32:39 
+
+32:39 See the workflow has been triggered and
+32:42 
+
+32:42 it will make the changes. You can click
+32:44 
+
+32:44 on that. And that was the first job
+32:47 
+
+32:47 terapform plan. This is the second job.
+32:49 
+
+32:49 Terapform apply
+32:51 
+
+32:51 and you will see all the details over
+32:54 
+
+32:54 here like the output of each and every
+32:56 
+
+32:56 stage. So these are the different
+32:57 
+
+32:57 stages. Terapform in it download plan
+32:60 
+
+32:60 check if exist check the plan exist and
+33:04 
+
+33:04 then terapform apply
+33:06 
+
+33:06 and once so it is you see it is why it
+33:09 
+
+33:09 is modifying asg. Uh yeah maybe there is
+33:14 
+
+33:14 something that it has to modify even
+33:17 
+
+33:17 after we did not make any changes but
+33:20 
+
+33:20 you can verify terapform plan if you
+33:21 
+
+33:21 want. Um now it is applying the changes
+33:26 
+
+33:26 to load balancer which is what we want.
+33:30 
+
+33:30 So once it is applied we should see the
+33:33 
+
+33:33 updated tag over here. See it's done.
+33:36 
+
+33:36 App load balancer 2. So that's just the
+33:39 
+
+33:39 normal change that we have like the
+33:41 
+
+33:41 normal GitHub workflow that we have seen
+33:43 
+
+33:43 earlier as well. Now we need to detect
+33:45 
+
+33:45 the drift. So for that uh actually not
+33:49 
+
+33:49 detect the drift we need to test the
+33:51 
+
+33:51 drift. So let it complete. Okay. Is it
+33:54 
+
+33:54 complete? Yeah, this is complete yet.
+33:56 
+
+33:56 Okay. And oh, still it's not marked as
+34:00 
+
+34:00 complete. Okay. Now it is completed. If
+34:03 
+
+34:03 I click on that, yeah, it is completed.
+34:06 
+
+34:06 Now over here, um, let's make some
+34:08 
+
+34:08 change.
+34:11 
+
+34:11 Okay, let's see how can we update the
+34:15 
+
+34:15 tag. Tag why I'm adding because it
+34:17 
+
+34:17 doesn't need to recreate the resource
+34:19 
+
+34:19 and it will be fast. So that's why
+34:21 
+
+34:21 otherwise you should be doing something
+34:23 
+
+34:23 else.
+34:24 
+
+34:24 Um
+34:26 
+
+34:26 load balancers.
+34:30 
+
+34:30 Okay. Over here click that
+34:35 
+
+34:35 and
+34:36 
+
+34:36 tags. Okay. So manage tags. Let's update
+34:40 
+
+34:40 the tag. So let me make it terraform.
+34:45 
+
+34:45 Okay. Managed by not terapform. Managed
+34:47 
+
+34:47 by push. Now what it should do because
+34:52 
+
+34:52 we have that drift detection workflow
+34:55 
+
+34:55 continuously polling
+34:57 
+
+34:57 between desired state and actual state
+34:59 
+
+34:59 after every 1 minute as per the chrome.
+35:02 
+
+35:02 It will detect I mean it should detect
+35:05 
+
+35:05 if there is any difference between the
+35:07 
+
+35:07 desired state and actual state. it will
+35:09 
+
+35:09 find that someone has made the changes
+35:11 
+
+35:11 directly from from the UI or from the
+35:15 
+
+35:15 console or not from the terraform and it
+35:17 
+
+35:17 should revert the changes and why like
+35:20 
+
+35:20 why what is the use case of this uh I'm
+35:22 
+
+35:22 I'm going to explain it to you while uh
+35:24 
+
+35:24 it takes it time to run and to detect
+35:27 
+
+35:27 the change so why do we do that like
+35:30 
+
+35:30 let's say in an organization what
+35:32 
+
+35:32 happens when you work on something okay
+35:35 
+
+35:35 so there are dedicated teams for each of
+35:38 
+
+35:38 these things, right? So, there is a team
+35:40 
+
+35:40 dedicated for networking resources.
+35:42 
+
+35:42 There is a team to maintain and manage
+35:43 
+
+35:43 dev environment. For production
+35:46 
+
+35:46 environment, there is a separate team,
+35:48 
+
+35:48 right? So, each team has certain roles
+35:50 
+
+35:50 and responsibilities. Each team has
+35:52 
+
+35:52 certain level of permissions on the
+35:54 
+
+35:54 environment on the organization and so
+35:56 
+
+35:56 on. And ideally, every single change
+36:00 
+
+36:00 that has been made should be tracked,
+36:03 
+
+36:03 right? And it should be as per the
+36:06 
+
+36:06 desired state that we have set. And that
+36:08 
+
+36:08 is why we use terraform as well. Right?
+36:10 
+
+36:10 If you go back to day one video in which
+36:12 
+
+36:12 I have explained why do we need
+36:14 
+
+36:14 terapform. In that I have explained with
+36:16 
+
+36:16 multiple examples why do we need
+36:18 
+
+36:18 terapform.
+36:19 
+
+36:19 So
+36:21 
+
+36:21 with that in mind
+36:24 
+
+36:24 we need to track every single change. If
+36:26 
+
+36:26 we make the changes from UI, how do we
+36:29 
+
+36:29 keep history of it? Like we have to go
+36:31 
+
+36:31 and check the cloud trail logs and
+36:34 
+
+36:34 multiple other places. it will be a
+36:36 
+
+36:36 complicated process right so and if it's
+36:40 
+
+36:40 a prod environment let's say no one
+36:42 
+
+36:42 should be able to make any changes
+36:46 
+
+36:46 without a proper change request without
+36:48 
+
+36:48 a proper CR what we call it right so or
+36:53 
+
+36:53 proper incident uh we should have a
+36:55 
+
+36:55 maintenance window right so to block all
+36:58 
+
+36:58 those changes first like not everyone
+37:00 
+
+37:00 should have permission to make the
+37:02 
+
+37:02 changes that's first thing other thing
+37:04 
+
+37:04 is to avoid any accidental changes we
+37:08 
+
+37:08 implement drift detection so that only
+37:10 
+
+37:10 the GitHub repository only the code in
+37:13 
+
+37:13 the GitHub repository will act as a
+37:15 
+
+37:15 single source of truth and this is what
+37:18 
+
+37:18 we are doing now I think it's been few
+37:21 
+
+37:21 minutes already let's see if it has been
+37:23 
+
+37:23 triggered
+37:25 
+
+37:25 okay uh it's not been triggered
+37:29 
+
+37:29 let's see terraform drift detection
+37:31 
+
+37:31 workflow
+37:33 
+
+37:33 and That's not been triggered. The
+37:36 
+
+37:36 workflow. Okay, it says the workflow has
+37:39 
+
+37:39 a workflow dispatch event trigger
+37:42 
+
+37:42 and use the workflow from dev branch and
+37:46 
+
+37:46 run the workflow maybe. Okay, no. So
+37:48 
+
+37:48 this is the manual trigger. We should
+37:50 
+
+37:50 not trigger it manually.
+37:53 
+
+37:53 Let me check why it has not been
+37:56 
+
+37:56 triggered. Okay,
+38:03 
+
+38:03 I think I found the issue. Let's test
+38:05 
+
+38:05 this out. Um, this has been configured
+38:09 
+
+38:09 to trigger only on the default branch
+38:11 
+
+38:11 which is dev, right? Which is main. So
+38:15 
+
+38:15 let's just add this like push on both
+38:19 
+
+38:19 the branches like whenever there's a
+38:20 
+
+38:20 drip detectives on branch main or dev
+38:23 
+
+38:23 you should do that should trigger this.
+38:26 
+
+38:26 So let's commit the changes.
+38:30 
+
+38:30 And now either we can manually push it
+38:32 
+
+38:32 or we can try to make any other change.
+38:36 
+
+38:36 Oh, it actually detected first. Um,
+38:40 
+
+38:40 yeah, it detected twice. Okay. No. So
+38:43 
+
+38:43 this is terapform cicd because we made
+38:45 
+
+38:45 some changes in dev branch and this one
+38:49 
+
+38:49 is the drift detection because it
+38:52 
+
+38:52 detected the drift like there is a
+38:54 
+
+38:54 change between your terraform plan and
+38:57 
+
+38:57 terraform
+38:59 
+
+38:59 uh like the desired and the actual state
+39:02 
+
+39:02 and now it is saying apply terraform
+39:05 
+
+39:05 changes to fix the drift. So let's see
+39:07 
+
+39:07 that.
+39:10 
+
+39:10 Okay. So I think the job has been
+39:13 
+
+39:13 completed. Uh which says let's see what
+39:15 
+
+39:15 it did. Says uh run this and drift
+39:20 
+
+39:20 detected and autofixed.
+39:23 
+
+39:23 And these are the variables that it set.
+39:33 
+
+39:33 Okay.
+39:35 
+
+39:35 It skipped uh the other other steps
+39:38 
+
+39:38 which is not valid in this case. And
+39:42 
+
+39:42 then in the complete job it has just
+39:44 
+
+39:44 cleaned up the orphan processes.
+39:51 
+
+39:51 Here is the slack notification as well.
+39:53 
+
+39:53 We'll check that. But first let's test
+39:57 
+
+39:57 the drift. Okay.
+39:60 
+
+39:60 So
+40:02 
+
+40:02 the load balancer
+40:04 
+
+40:04 tag we updated.
+40:07 
+
+40:07 We made it managed by PU. Let's refresh.
+40:11 
+
+40:11 Oh, it's still managed by PE.
+40:13 
+
+40:13 So what changes did it make?
+40:22 
+
+40:22 Okay.
+40:24 
+
+40:24 Environment is production. Oh, because
+40:28 
+
+40:28 default environment it took as
+40:30 
+
+40:30 production.
+40:33 
+
+40:33 Let's check the Slack notification as
+40:35 
+
+40:35 well. Here's my Slack channel and yeah,
+40:38 
+
+40:38 here is the Slack notification. It says
+40:42 
+
+40:42 branch dev
+40:44 
+
+40:44 uh applied the changes, detected drift
+40:47 
+
+40:47 and it says view run as well from here.
+40:50 
+
+40:50 So this is basically the locks that we
+40:52 
+
+40:52 just see
+40:54 
+
+40:54 and it says drift detection summary. So
+40:57 
+
+40:57 it says terapform is detected fix. Let's
+40:60 
+
+40:60 check the logs
+41:03 
+
+41:03 and
+41:11 
+
+41:11 okay um what I need to check is where
+41:16 
+
+41:16 did it detected it like what changes
+41:20 
+
+41:20 have it analyzed. Let's see this
+41:22 
+
+41:22 terraform plan.
+41:24 
+
+41:24 Okay, says desired capacity will be
+41:29 
+
+41:29 updated from 1 to two and yes, so tags
+41:33 
+
+41:33 will be
+41:36 
+
+41:36 managed
+41:38 
+
+41:38 first. It'll delete this tag
+41:41 
+
+41:41 and then it will update it from that to
+41:45 
+
+41:45 from push to terraform, right? Which is
+41:48 
+
+41:48 what we have in the configuration.
+41:52 
+
+41:52 And let's click on this analyze drift.
+41:57 
+
+41:57 Now it ran this particular script. There
+42:01 
+
+42:01 is no output for that. There is just the
+42:08 
+
+42:08 command for it. It detected it and it's
+42:12 
+
+42:12 there in the plan as well. But when it
+42:15 
+
+42:15 applied the plan, it's not there. Why?
+42:17 
+
+42:17 Let's see. Terraform apply auto approve.
+42:20 
+
+42:20 No color. Oh,
+42:22 
+
+42:22 why there is no Terraform?
+42:26 
+
+42:26 Um,
+42:29 
+
+42:29 I think it's because it's not using the
+42:32 
+
+42:32 same back end. I believe that's the
+42:35 
+
+42:35 issue.
+42:38 
+
+42:38 Uh, let's check. There is only one load
+42:41 
+
+42:41 balancer, right?
+42:44 
+
+42:44 Okay.
+42:51 
+
+42:51 What's that? Okay.
+42:54 
+
+42:54 Um
+43:04 
+
+43:04 take issue and let's check the GitHub
+43:07 
+
+43:07 status as well. Uh is there any issue
+43:10 
+
+43:10 for it?
+43:14 
+
+43:14 Uh there is
+43:17 
+
+43:17 state should be closed.
+43:20 
+
+43:20 Yeah. Uh here is the issue that it
+43:23 
+
+43:23 closed. Let's check this as well. Says
+43:27 
+
+43:27 show plan. Okay. This is the plan and
+43:30 
+
+43:30 yes the changes were two. It should be
+43:33 
+
+43:33 from
+43:35 
+
+43:35 this to push that change should be made.
+43:42 
+
+43:42 And it says like it added the comment
+43:46 
+
+43:46 drift has been remediated closing issue
+43:48 
+
+43:48 and it actually closed the issue. GitHub
+43:50 
+
+43:50 action closed this. Now if we go back
+43:53 
+
+43:53 over here in the environment let's click
+43:56 
+
+43:56 on this
+43:59 
+
+43:59 go to tags
+44:02 
+
+44:02 I still oh it is I'm not sure why it was
+44:05 
+
+44:05 not getting reflected earlier. So now
+44:08 
+
+44:08 you see it's managed by Terraform. it
+44:10 
+
+44:10 has made the changes. So it override the
+44:13 
+
+44:13 changes whatever we made from here from
+44:15 
+
+44:15 the UI. It override the changes with
+44:17 
+
+44:17 what we have in the GitHub repository.
+44:19 
+
+44:19 And what we have in the GitHub
+44:22 
+
+44:22 over here we have this one tag for load
+44:26 
+
+44:26 balancer.
+44:27 
+
+44:27 It should have some default tags as well
+44:30 
+
+44:30 and that is why it was showing a manage
+44:32 
+
+44:32 with terapform. So let's see where have
+44:34 
+
+44:34 we configured it. You see default tax
+44:38 
+
+44:38 and this is the one managed by
+44:40 
+
+44:40 terraform. So that is why it was there.
+44:44 
+
+44:44 So this is the drift detection that we
+44:46 
+
+44:46 wanted to test. Now there are some more
+44:48 
+
+44:48 steps that you can try it out. So if you
+44:50 
+
+44:50 go to the GitHub repository
+44:54 
+
+44:54 because those are simple steps and you
+44:56 
+
+44:56 can test it out without any issues. So I
+44:58 
+
+44:58 want you to do that. So if you go to
+44:60 
+
+44:60 lessons
+45:01 
+
+45:01 and day 30 inside that
+45:07 
+
+45:07 um you see we tested this drift now what
+45:12 
+
+45:12 you can do oh the changes are not okay
+45:15 
+
+45:15 changes are not in the main branch it's
+45:17 
+
+45:17 there in the dev branch I did not merge
+45:19 
+
+45:19 the branch yet so this is what you can
+45:22 
+
+45:22 do um
+45:24 
+
+45:24 test the drift which is what we already
+45:26 
+
+45:26 did now watch in GitHub action ctions
+45:29 
+
+45:29 after dev succeed merge to main. Now
+45:31 
+
+45:31 merge your dev branch to the main branch
+45:34 
+
+45:34 so that it will create the infra from
+45:37 
+
+45:37 production as well and when it create
+45:40 
+
+45:40 the infra for the production you will
+45:42 
+
+45:42 have the approval button in the GitHub
+45:43 
+
+45:43 action. Once you approve it will
+45:44 
+
+45:44 provision the resources and then you
+45:47 
+
+45:47 modify a resource manually using AWS CLI
+45:50 
+
+45:50 or from the AWS UI and it should detect
+45:53 
+
+45:53 the drift and it should apply the
+45:55 
+
+45:55 changes. It should revert those changes.
+45:57 
+
+45:57 So try it out and don't forget to
+46:01 
+
+46:01 destroy. Destroy also we can do that
+46:03 
+
+46:03 with uh with this GitHub action
+46:06 
+
+46:06 pipeline. Let's see terraform destroy.
+46:10 
+
+46:10 And let's run the workflow. Select the
+46:13 
+
+46:13 branch. Branch is dev. Environment to
+46:16 
+
+46:16 destroy is dev. And then here is type
+46:20 
+
+46:20 destroy run workflow.
+46:23 
+
+46:23 So um
+46:31 
+
+46:31 Let's see. Yeah, it's in progress.
+46:41 
+
+46:41 Okay, so it should destroy completed so
+46:46 
+
+46:46 soon. No, it says no objects to be
+46:49 
+
+46:49 destroyed. Again, I think it is also
+46:51 
+
+46:51 working on the default dev branch. So,
+46:54 
+
+46:54 let me fix that as well. So if we go
+46:57 
+
+46:57 back to destroy this file
+47:04 
+
+47:04 and let's select the branch to dev
+47:10 
+
+47:10 select this
+47:12 
+
+47:12 okay on so these are just the workflow
+47:15 
+
+47:15 like the inputs but what we need is I
+47:19 
+
+47:19 think it was
+47:21 
+
+47:21 oops uh what we added over here did we
+47:25 
+
+47:25 add over here. No. Right. Okay. So,
+47:27 
+
+47:27 let's take it from
+47:30 
+
+47:30 the terraform yaml. So, what we need is
+47:33 
+
+47:33 this. Oh, no. It should not be on push
+47:38 
+
+47:38 or this this this. It should be this
+47:41 
+
+47:41 should work. So, we are setting default
+47:45 
+
+47:45 branch as dev. Setting options as dev.
+47:48 
+
+47:48 Confirm destroy true.
+47:51 
+
+47:51 And this terraform destroy. Now this is
+47:56 
+
+47:56 de Oh, over here. So there is a mistake.
+47:60 
+
+47:60 Is this the same file?
+48:03 
+
+48:03 Wait, this is day 27, right? So we
+48:07 
+
+48:07 should have another for destroy. Okay,
+48:11 
+
+48:11 this is the one. Now, did we run this or
+48:15 
+
+48:15 the other one? I don't remember it. Now
+48:18 
+
+48:18 let's go back.
+48:20 
+
+48:20 Uh let's go back to actions
+48:24 
+
+48:24 and
+48:26 
+
+48:26 let's run terraform. Okay. So there are
+48:28 
+
+48:28 two terraform
+48:30 
+
+48:30 destroy. There is one terapform destroy
+48:35 
+
+48:35 for day 27. It is picking
+48:39 
+
+48:39 I think because we created I created not
+48:43 
+
+48:43 not we I created the file with the same
+48:46 
+
+48:46 name that is why it is not picking it.
+48:49 
+
+48:49 So let's make that change in the dev
+48:55 
+
+48:55 github
+48:58 
+
+48:58 workflows
+48:60 
+
+48:60 and destroy.yamel
+49:03 
+
+49:03 terraform destroy
+49:06 
+
+49:06 day 30. Let's make the change over here
+49:09 
+
+49:09 and this should trigger the destroy
+49:12 
+
+49:12 pipeline. If not we can manually trigger
+49:14 
+
+49:14 it as well now.
+49:16 
+
+49:16 So first it detected it triggered the
+49:21 
+
+49:21 okay terapform cicd this now let's
+49:25 
+
+49:25 trigger the terraform
+49:27 
+
+49:27 destroy it's still not coming over here
+49:31 
+
+49:31 refresh
+49:35 
+
+49:35 it should come as the new workflow right
+49:38 
+
+49:38 terraform destroy
+49:40 
+
+49:40 day 30 like what we configured right now
+49:45 
+
+49:45 so Let's see why it is not coming.
+49:57 
+
+49:57 So day oh okay no no no not on the main
+50:01 
+
+50:01 branch dev branch. So destroy.yamel
+50:05 
+
+50:05 destroy day27.yamel.
+50:10 
+
+50:10 And if we check this
+50:15 
+
+50:15 terraform destroy day 30.
+50:20 
+
+50:20 Um
+50:23 
+
+50:23 yeah uh changes are there in the dev
+50:25 
+
+50:25 branch. So why that workflow is not
+50:30 
+
+50:30 visible over here?
+50:40 
+
+50:40 Reform destroy. Oh no, no, no. These are
+50:44 
+
+50:44 the other runs. Drift detection
+50:49 
+
+50:49 from CICD.
+50:55 
+
+50:55 And
+50:59 
+
+50:59 I'm not sure maybe I'm sleepy. It's
+51:03 
+
+51:03 almost 1:00.
+51:05 
+
+51:05 Yeah, I've been up for past I'm not sure
+51:08 
+
+51:08 20 hours or so. My mind is not working
+51:11 
+
+51:11 right now. Maybe it's just a silly
+51:12 
+
+51:12 mistake and maybe you are able to find
+51:15 
+
+51:15 it out. So if you do, let me know as
+51:17 
+
+51:17 well what mistake I am making. So what I
+51:20 
+
+51:20 did, let me check just one more time. If
+51:22 
+
+51:22 not, I'm just going to close it. Okay.
+51:24 
+
+51:24 So in the dev branch,
+51:26 
+
+51:26 I have a GitHub workflow with the name
+51:31 
+
+51:31 destroy.l.
+51:33 
+
+51:33 There is no other file with the same
+51:35 
+
+51:35 name.
+51:36 
+
+51:36 In
+51:39 
+
+51:39 this file, we have the file name as
+51:43 
+
+51:43 terapform dro. Maybe I'll just create a
+51:45 
+
+51:45 new file with this content.
+51:49 
+
+51:49 Let's do that.
+51:55 
+
+51:55 TF destroy.
+51:57 
+
+51:57 Okay.
+52:00 
+
+52:00 in the dev branch.
+52:03 
+
+52:03 Let's commit the changes.
+52:07 
+
+52:07 Okay. And go to actions.
+52:11 
+
+52:11 And
+52:13 
+
+52:13 still not here, right?
+52:22 
+
+52:22 It triggered all like both of the
+52:24 
+
+52:24 pipelines. But why not the workflow
+52:27 
+
+52:27 visible over here?
+52:34 
+
+52:34 Maybe
+52:38 
+
+52:38 I'm not sure.
+52:40 
+
+52:40 Uh yeah, I need to go and get some sleep
+52:43 
+
+52:43 now. If you find it out, let me know. If
+52:46 
+
+52:46 you don't, then I mean try it out. I
+52:50 
+
+52:50 will also try it out. Okay, so yeah,
+52:54 
+
+52:54 that's it. That's it from this video. So
+52:56 
+
+52:56 I hope you found it valuable and this
+52:60 
+
+52:60 marks the end of this wonderful series.
+53:02 
+
+53:02 Thank you for all the love, all the
+53:04 
+
+53:04 support that you have shown. Um I admire
+53:08 
+
+53:08 your patience. I like because the videos
+53:12 
+
+53:12 were you know 1 hour in length or more
+53:14 
+
+53:14 than 1 hour in length and you patiently
+53:16 
+
+53:16 sit there and watch. And why I'm saying
+53:19 
+
+53:19 this now after the end of the video
+53:21 
+
+53:21 because I'm I wanted to say thank you to
+53:23 
+
+53:23 each one of you who are still here even
+53:26 
+
+53:26 after we have completed the video even
+53:28 
+
+53:28 after we have completed the series. So
+53:31 
+
+53:31 thank you so much and u keep learning.
+53:34 
+
+53:34 Let me know in the comments which next
+53:36 
+
+53:36 series you want me to work on. Um I will
+53:38 
+
+53:38 start probably from next month. I will
+53:41 
+
+53:41 also create a poll on my LinkedIn social
+53:44 
+
+53:44 like all the social medias and let me
+53:47 
+
+53:47 know uh which series I should be working
+53:49 
+
+53:49 on next and the most requested series.
+53:53 
+
+53:53 So I will definitely create a playlist
+53:55 
+
+53:55 on that and let me also share
+53:59 
+
+53:59 um like share your feedback also about
+54:02 
+
+54:02 this series. What did you like about
+54:04 
+
+54:04 this series and what you did not like?
+54:06 
+
+54:06 so that I can make those changes from
+54:08 
+
+54:08 the next series like from my side what I
+54:11 
+
+54:11 feel like I gave too much in this series
+54:15 
+
+54:15 like there are around seven eight
+54:17 
+
+54:17 realtime projects 10 mini projects maybe
+54:19 
+
+54:19 it was not necessary maybe it was little
+54:21 
+
+54:21 too much considering the scope of
+54:23 
+
+54:23 terraform if you also feel the same let
+54:25 
+
+54:25 me know so that from the next series
+54:27 
+
+54:27 onward whatever series we work on maybe
+54:31 
+
+54:31 I focus more on the concept and create
+54:33 
+
+54:33 one or two
+54:35 
+
+54:35 realtime project but it's all in one
+54:38 
+
+54:38 project like one big complex project if
+54:42 
+
+54:42 even it's going to take three hour for
+54:44 
+
+54:44 the recording four hour doesn't matter
+54:46 
+
+54:46 if you want that then let me know if you
+54:48 
+
+54:48 want to keep me to keep the same format
+54:51 
+
+54:51 then also let me know yeah uh yeah do
+54:54 
+
+54:54 share your feedback and this is how we
+54:56 
+
+54:56 work this is how we improve day by day
+54:59 
+
+54:59 um it's a learning for me as well every
+55:01 
+
+55:01 time and uh yeah that's it uh Thank you
+55:05 
+
+55:05 so much. I will see you soon with the
+55:07 
+
+55:07 next video. I hope you have a good day.
+55:09 
+
+55:09 I hope you have a good learning
+55:10 
+
+55:10 experience. Happy learning. Signing off
+55:12 
+
+55:12 now.

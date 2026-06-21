@@ -1,0 +1,3295 @@
+00:01 Hello and welcome back to my channel. My
+00:03 
+
+00:03 name is Piyush. This is day 26 in 30
+00:05 
+
+00:05 days of AWS Terraform. And in this video
+00:08 
+
+00:08 we'll be looking into HashiCorp Cloud
+00:10 
+
+00:10 Platform or HCP. We'll try to understand
+00:14 
+
+00:14 what it is, why do we need it, and how
+00:16 
+
+00:16 it is different from the CLI based
+00:19 
+
+00:19 Terraform that we were using till now.
+00:21 
+
+00:21 And we'll be doing the demo as well.
+00:23 
+
+00:23 So, if you are new here, hello. My name
+00:25 
+
+00:25 is Piyush and in this channel we
+00:29 
+
+00:29 simplify cloud and DevOps concept into
+00:31 
+
+00:31 bite-size chunks so that anyone can
+00:34 
+
+00:34 understand it even for a beginner. We do
+00:37 
+
+00:37 that with the help of demos, practical
+00:40 
+
+00:40 examples, and real-time projects. And
+00:43 
+
+00:43 this is what we always do.
+00:46 
+
+00:46 And if you are
+00:48 
+
+00:48 if you have just started watching this
+00:50 
+
+00:50 series, I would suggest starting from
+00:52 
+
+00:52 the beginning from the day zero onwards
+00:54 
+
+00:54 so that you get to know the details
+00:56 
+
+00:56 about 30 days of AWS Terraform
+00:58 
+
+00:58 challenge, how to participate, how to
+00:59 
+
+00:59 win prizes, and it's basically a
+01:02 
+
+01:02 learning journey that we
+01:04 
+
+01:04 are in this together.
+01:06 
+
+01:06 And um
+01:08 
+
+01:08 yeah, uh so let's dive into the video.
+01:11 
+
+01:11 We'll start with understanding what
+01:13 
+
+01:13 exactly is this HashiCorp Cloud
+01:15 
+
+01:15 Platform. But before that, we need
+01:17 
+
+01:17 to understand what were the challenges
+01:19 
+
+01:19 with the existing system and why do we
+01:21 
+
+01:21 actually need this, okay?
+01:23 
+
+01:23 So,
+01:23 
+
+01:23 >> [clears throat]
+01:24 
+
+01:24 >> this is a Visual Codes uh Visual Code
+01:28 
+
+01:28 screenshot, right? The one that we were
+01:30 
+
+01:30 using till now. So, you see we were
+01:32 
+
+01:32 creating multiple files over here and
+01:34 
+
+01:34 there were many challenges with it. What
+01:37 
+
+01:37 What were the challenges? First is with
+01:39 
+
+01:39 the login credentials. Okay, so whenever
+01:42 
+
+01:42 we were trying to authenticate, we had
+01:44 
+
+01:44 to do like Azure login or AWS login. And
+01:50 
+
+01:50 and it's basically asking you to provide
+01:53 
+
+01:53 your credential details. It's not stored
+01:55 
+
+01:55 anywhere unless you want to store it
+01:57 
+
+01:57 locally in your shell or environment
+01:60 
+
+01:60 variable.
+02:01 
+
+02:01 Um so there was no secure way of doing
+02:03 
+
+02:03 that, right?
+02:05 
+
+02:05 Then it comes to secrets. So secrets
+02:08 
+
+02:08 were encoded but not encrypted and there
+02:12 
+
+02:12 were no good way of using it without
+02:14 
+
+02:14 using a third-party service or even like
+02:17 
+
+02:17 HashiCorp service such as HashiCorp
+02:19 
+
+02:19 Vault or um AWS secret manager and if
+02:23 
+
+02:23 you were using Azure Azure key vault and
+02:25 
+
+02:25 so on, right? So there were no inbuilt
+02:28 
+
+02:28 mechanism to store and use the secrets
+02:30 
+
+02:30 within Terraform.
+02:32 
+
+02:32 Then there was no automation um workflow
+02:36 
+
+02:36 or orchestration layer that's been
+02:38 
+
+02:38 provided to you, right? You have to run
+02:41 
+
+02:41 Terraform commands manually to provision
+02:43 
+
+02:43 and to manage the infrastructure. So
+02:46 
+
+02:46 there were no inbuilt CI/CD support
+02:48 
+
+02:48 unless again you use a third-party tool
+02:50 
+
+02:50 such as GitHub actions or Azure DevOps
+02:53 
+
+02:53 pipeline, AWS pipelines, and so on,
+02:55 
+
+02:55 right? There was nothing inbuilt within
+02:57 
+
+02:57 Terraform.
+02:58 
+
+02:58 Then uh the modules that you had like
+03:01 
+
+03:01 the custom modules that you've created,
+03:03 
+
+03:03 so you were creating it and you were
+03:07 
+
+03:07 using it locally from your machine. You
+03:09 
+
+03:09 there is no
+03:11 
+
+03:11 registry inbuilt within that Terraform
+03:14 
+
+03:14 offerings that you can use to upload
+03:17 
+
+03:17 your um custom modules and use that
+03:20 
+
+03:20 further, right? Um
+03:23 
+
+03:23 and
+03:24 
+
+03:24 unless again you use a third-party
+03:26 
+
+03:26 registry to store your modules. Then we
+03:28 
+
+03:28 had the details the issue about the
+03:31 
+
+03:31 environments. So
+03:34 
+
+03:34 you had to duplicate your code if you
+03:37 
+
+03:37 want to deploy the same code to multiple
+03:39 
+
+03:39 environments, which is again not a good
+03:40 
+
+03:40 way of doing the things, right? So there
+03:42 
+
+03:42 were all these challenges and these
+03:45 
+
+03:45 challenges were solved by HCP, which is
+03:48 
+
+03:48 HashiCorp Cloud Platform. It's a
+03:50 
+
+03:50 GUI-based offering.
+03:52 
+
+03:52 Okay? And yes, it comes with the free
+03:53 
+
+03:53 trial as well. There are some
+03:55 
+
+03:55 limitations, but you can use it and
+03:56 
+
+03:56 we'll we'll use it right after we finish
+03:59 
+
+03:59 understanding what it is.
+04:01 
+
+04:01 So, it's a GUI based. It has in-built
+04:05 
+
+04:05 integration with the Git repo. So,
+04:07 
+
+04:07 earlier we were using Git cloning and
+04:10 
+
+04:10 you know, we were pushing the code to
+04:12 
+
+04:12 Git and then Terraform was taking the
+04:14 
+
+04:14 code from there or we had to first pull
+04:16 
+
+04:16 the code. Now, we don't have to do
+04:18 
+
+04:18 anything. As part of the workflow run or
+04:21 
+
+04:21 the at as part of your Terraform code
+04:24 
+
+04:24 execution, it will check out the code by
+04:27 
+
+04:27 itself, right? So, you don't have to do
+04:29 
+
+04:29 that extra steps of pulling the latest
+04:31 
+
+04:31 code every time you want to run.
+04:33 
+
+04:33 Then, it has in-built
+04:35 
+
+04:35 workspace and projects. So, you can
+04:38 
+
+04:38 divide your Terraform organization into
+04:40 
+
+04:40 multiple projects and workspace. Again,
+04:43 
+
+04:43 we'll look into that shortly.
+04:45 
+
+04:45 Then, it has in-built place to store
+04:48 
+
+04:48 your variables. Again, you don't need a
+04:50 
+
+04:50 TFR files now. There is a place where
+04:53 
+
+04:53 you can store your variables, even your
+04:55 
+
+04:55 credentials, your secret variables,
+04:57 
+
+04:57 and your state file. So, that means we
+04:59 
+
+04:59 don't need a backend.tf or we don't need
+05:02 
+
+05:02 a remote backend now if we are using
+05:05 
+
+05:05 HCP.
+05:07 
+
+05:07 Then, it has in-built support for
+05:08 
+
+05:08 private registry. Private registry as in
+05:10 
+
+05:10 you can create your modules and you can
+05:12 
+
+05:12 push your module to the Terraform
+05:14 
+
+05:14 registry
+05:15 
+
+05:15 and you can use that right away, right?
+05:17 
+
+05:17 So, there were a lot of features that
+05:21 
+
+05:21 was needed for a production Git project,
+05:23 
+
+05:23 but it was missing in the CLI based
+05:25 
+
+05:25 Terraform.
+05:26 
+
+05:26 And it's been provided by HCP. Now,
+05:29 
+
+05:29 let's try to understand the format of it
+05:32 
+
+05:32 is, like how does it work, okay?
+05:34 
+
+05:34 So, at the root of it, you start by
+05:36 
+
+05:36 creating an organization.
+05:38 
+
+05:38 Okay? So, organization is at the
+05:42 
+
+05:42 root layer. So, organization such as
+05:44 
+
+05:44 let's say for my channel or for my
+05:46 
+
+05:46 series or let's say if this were the
+05:49 
+
+05:49 name of my company,
+05:51 
+
+05:51 I start with creating a organization
+05:52 
+
+05:52 with the name Tech Tutorials with
+05:54 
+
+05:54 Piyush.
+05:55 
+
+05:55 Then organizations have multiple
+05:58 
+
+05:58 projects. You can create multiple
+05:60 
+
+05:60 projects within your organization. Now,
+06:02 
+
+06:02 what are these projects? So, these could
+06:04 
+
+06:04 be let's say you have separated as per
+06:07 
+
+06:07 your environments or you have separated
+06:10 
+
+06:10 as per
+06:11 
+
+06:11 your
+06:12 
+
+06:12 cloud provider if you are using multi
+06:14 
+
+06:14 multiple cloud providers, right? So,
+06:15 
+
+06:15 let's say you created one project for
+06:17 
+
+06:17 Azure, one for AWS, one for GCP, and so
+06:20 
+
+06:20 on.
+06:21 
+
+06:21 And inside each project, you can create
+06:23 
+
+06:23 multiple workspaces. Now, workspace is a
+06:26 
+
+06:26 further segregation of project or you
+06:30 
+
+06:30 can say that a collection of similar
+06:32 
+
+06:32 workspaces creates a project. Now, what
+06:35 
+
+06:35 type of project you can create? You can
+06:37 
+
+06:37 create like let's say we have 30 30
+06:41 
+
+06:41 different folders created for 30 videos.
+06:43 
+
+06:43 So, you can create
+06:45 
+
+06:45 one workspace for each of the day or
+06:48 
+
+06:48 you can create a project for each
+06:52 
+
+06:52 environment or each application. Let's
+06:54 
+
+06:54 say
+06:55 
+
+06:55 test,
+06:57 
+
+06:57 dev,
+06:58 
+
+06:58 and prod. Okay, you can do that as well.
+07:01 
+
+07:01 So, it's based on how your organization
+07:03 
+
+07:03 has
+07:05 
+
+07:05 uh which um organization hierarchy you
+07:08 
+
+07:08 are using to manage and to maintain your
+07:10 
+
+07:10 projects. So, you can use these things
+07:13 
+
+07:13 as well.
+07:14 
+
+07:14 Okay.
+07:15 
+
+07:15 Now, you must be thinking what is what
+07:19 
+
+07:19 what do we mean by a test workspace?
+07:22 
+
+07:22 Okay. So, workspace is nothing but
+07:25 
+
+07:25 a collection of Oops, that's too big of
+07:29 
+
+07:29 a font. Let's keep it small.
+07:32 
+
+07:32 Okay. So, a workspace is nothing but a
+07:35 
+
+07:35 collection of
+07:39 
+
+07:39 collection of TF
+07:43 
+
+07:43 together
+07:46 
+
+07:46 to provision the infra.
+07:48 
+
+07:48 Okay? So, what do we mean by that? Let's
+07:50 
+
+07:50 say you have created a day
+07:54 
+
+07:54 day three project in which we just
+07:56 
+
+07:56 created an S3 bucket, right? So, all the
+07:59 
+
+07:59 files for that S3 bucket can go to a
+08:02 
+
+08:02 workspace.
+08:03 
+
+08:03 Okay?
+08:04 
+
+08:04 Or let's say you have created um
+08:07 
+
+08:07 something else. Let's say over here is
+08:08 
+
+08:08 our GitHub repo and let's say in
+08:13 
+
+08:13 day Let's go over here.
+08:17 
+
+08:17 So, let's say a day 14 in which we did
+08:20 
+
+08:20 static website hosting a mini project,
+08:22 
+
+08:22 right?
+08:22 
+
+08:22 So, you can create a workspace for
+08:24 
+
+08:24 static website hosting so that all your
+08:27 
+
+08:27 related components are grouped together
+08:29 
+
+08:29 in a single workspace in a single
+08:32 
+
+08:32 placeholder so that let's say you have
+08:34 
+
+08:34 hosted your maybe portfolio website
+08:37 
+
+08:37 using that, right? So, all your files of
+08:39 
+
+08:39 your portfolio website will be there in
+08:41 
+
+08:41 one dedicated workspace, right? So, we
+08:44 
+
+08:44 are just logically separating your
+08:46 
+
+08:46 files.
+08:47 
+
+08:47 So, that's the benefit of using a
+08:49 
+
+08:49 workspace.
+08:50 
+
+08:50 Okay? Um now,
+08:53 
+
+08:53 it has So, there is workspace, okay? And
+08:56 
+
+08:56 in workspace, we understood like there
+08:58 
+
+08:58 are variables, state files, registry,
+08:60 
+
+08:60 version control.
+09:01 
+
+09:01 Plus, it is GUI based so it will have
+09:03 
+
+09:03 history, logs, runs, etc. Like you can
+09:06 
+
+09:06 see everything in a pipeline.
+09:09 
+
+09:09 But then, to use the workspace, you
+09:11 
+
+09:11 start with creating something called as
+09:14 
+
+09:14 a workflow.
+09:15 
+
+09:15 Okay? So, a workflow is
+09:19 
+
+09:19 Let me just squeeze it a little bit to
+09:21 
+
+09:21 make it readable.
+09:24 
+
+09:24 Okay? And
+09:26 
+
+09:26 all right.
+09:28 
+
+09:28 So, work uh workflow have multiple
+09:32 
+
+09:32 options. You can use multiple workflows.
+09:35 
+
+09:35 First is a version control based. What
+09:37 
+
+09:37 do you mean by that? That means you
+09:39 
+
+09:39 place your code in Git repo.
+09:42 
+
+09:42 Okay, and you integrate that Git repo
+09:45 
+
+09:45 from the workflow, and that's it. Your
+09:48 
+
+09:48 code will be checked out every time from
+09:49 
+
+09:49 the Git repo or whenever you make the
+09:51 
+
+09:51 changes over there, it will be executed
+09:53 
+
+09:53 and latest changes will be applied.
+09:55 
+
+09:55 Then there is CLI based. CLI based
+09:58 
+
+09:58 meaning the one that we were using. So,
+10:00 
+
+10:00 let's say we were using this, okay?
+10:04 
+
+10:04 And over here
+10:05 
+
+10:05 >> [clears throat]
+10:06 
+
+10:06 >> let's say we have day 16 folder, okay?
+10:09 
+
+10:09 So, we map this day 16 folder, which is
+10:12 
+
+10:12 locally on our machine. We map this with
+10:14 
+
+10:14 the workspace in Terraform Cloud, and
+10:17 
+
+10:17 whatever commands we run over here,
+10:18 
+
+10:18 let's say we run Terraform apply,
+10:20 
+
+10:20 Terraform plan, it will be executed in
+10:22 
+
+10:22 the GUI. Right? In the real-time logs
+10:25 
+
+10:25 will be exported in the GUI. Backend
+10:28 
+
+10:28 variables, everything can be used from
+10:30 
+
+10:30 the GUI. So, that's another powerful
+10:32 
+
+10:32 feature, which is CLI based.
+10:34 
+
+10:34 And then there is API based, which is
+10:36 
+
+10:36 like nothing but making API calls to the
+10:39 
+
+10:39 workflow, and again, you make the API
+10:41 
+
+10:41 calls from your code, from your like
+10:46 
+
+10:46 whatever supported language you are
+10:47 
+
+10:47 using, and it will be executed on the
+10:50 
+
+10:50 GUI.
+10:51 
+
+10:51 Right? So, that's basically the gist of
+10:54 
+
+10:54 what exactly is Terraform Cloud, what is
+10:57 
+
+10:57 a workspace, what is project, how do we
+10:59 
+
+10:59 separate these together.
+11:01 
+
+11:01 Now, time for the demo. So, let's jump
+11:03 
+
+11:03 into the demo, and let's let's see how
+11:05 
+
+11:05 does it actually works.
+11:08 
+
+11:08 Okay. So,
+11:10 
+
+11:10 let me just log in to my Terraform.
+11:15 
+
+11:15 You can go over here to
+11:18 
+
+11:18 portal.cloud.hashicorp.com,
+11:20 
+
+11:20 or you can just search
+11:22 
+
+11:22 Hashicorp Cloud login. Okay?
+11:25 
+
+11:25 So, it will redirect you to to this
+11:27 
+
+11:27 page.
+11:29 
+
+11:29 Or you can go over here at cp.terraform.
+11:31 
+
+11:31 I think that would also redirect to the
+11:34 
+
+11:34 same page.
+11:36 
+
+11:36 Now, uh you can create an account. So, I
+11:38 
+
+11:38 already have an account, but let's start
+11:40 
+
+11:40 from the very beginning so that you can
+11:42 
+
+11:42 follow along. So, let's hit on create an
+11:44 
+
+11:44 account.
+11:45 
+
+11:45 Give it a username, email, a and a
+11:48 
+
+11:48 password. Okay. So, let's give it a
+11:51 
+
+11:51 username, Piyush_Sachteva.
+11:55 
+
+11:55 Oops.
+11:58 
+
+11:58 Let's give it a email.
+12:01 
+
+12:01 tutorials with
+12:03 
+
+12:03 piyush@
+12:06 
+
+12:06 gmail.com.
+12:09 
+
+12:09 Let's give it a password.
+12:11 
+
+12:11 Okay. I agree to terms of use. I agree
+12:14 
+
+12:14 to privacy policy. Create Terraform
+12:17 
+
+12:17 account.
+12:18 
+
+12:18 Okay, password must be eight character
+12:21 
+
+12:21 long. All right. So,
+12:25 
+
+12:25 let's
+12:26 
+
+12:26 give it a secure password and hit
+12:28 
+
+12:28 create.
+12:30 
+
+12:30 Now, it says we have sent you an email
+12:34 
+
+12:34 confirmation. So, that's what we're
+12:37 
+
+12:37 going to do. I have got the confirmation
+12:39 
+
+12:39 over my phone. So, let me just accept
+12:41 
+
+12:41 it.
+12:42 
+
+12:42 And basically, yeah, you just need to
+12:45 
+
+12:45 click the link provided in the email
+12:48 
+
+12:48 and it will verify as soon as you do
+12:50 
+
+12:50 that. Oh, it says you need to sign in
+12:52 
+
+12:52 and sign up before continuing.
+12:54 
+
+12:54 So, let me just sign in as well.
+12:58 
+
+12:58 Okay, let me show you over here.
+12:60 
+
+12:60 Just give me a second.
+13:04 
+
+13:04 Okay. So, here's the email. It says
+13:07 
+
+13:07 click on this link. Let's click on this
+13:09 
+
+13:09 link.
+13:10 
+
+13:10 Okay, and now you're logged in. Now,
+13:13 
+
+13:13 when you log in for the first time, it
+13:15 
+
+13:15 will ask you to create your first
+13:16 
+
+13:16 organization. Okay. So, it will ask you
+13:19 
+
+13:19 you have to create an organization.
+13:21 
+
+13:21 There is no other way to proceed
+13:23 
+
+13:23 further. Okay, so let's hit on creating
+13:24 
+
+13:24 the new organization.
+13:27 
+
+13:27 And now it says create a new
+13:28 
+
+13:28 organization and it's not editable after
+13:31 
+
+13:31 the creation. So, make sure you uh
+13:34 
+
+13:34 choose the details
+13:37 
+
+13:37 uh carefully because there is a business
+13:39 
+
+13:39 option and personal option. With
+13:40 
+
+13:40 business option, um
+13:43 
+
+13:43 it says
+13:44 
+
+13:44 uh there will be some charges associated
+13:46 
+
+13:46 with it uh later on.
+13:48 
+
+13:48 And it'll have some different
+13:52 
+
+13:52 format or pricing. So, let's go ahead
+13:54 
+
+13:54 with the personal one for now. Give it a
+13:56 
+
+13:56 unique name.
+13:58 
+
+13:58 Okay, and let's me give the same name,
+14:00 
+
+14:00 Tech Tutorials with Piyush, and here's
+14:02 
+
+14:02 my email address. Hit create
+14:03 
+
+14:03 organization.
+14:05 
+
+14:05 Name has already taken because I might
+14:07 
+
+14:07 have used it earlier. So, let's call it
+14:09 
+
+14:09 Tech Tutorials with Piyush 2.
+14:12 
+
+14:12 Okay, hit create.
+14:14 
+
+14:14 Okay, now my organization has been
+14:16 
+
+14:16 created over here as you can see.
+14:19 
+
+14:19 And if you go to click manage
+14:20 
+
+14:20 organization, you can create more
+14:22 
+
+14:22 organization as well if you are using
+14:24 
+
+14:24 personal. If you are using business, I
+14:26 
+
+14:26 believe with the free version there is
+14:27 
+
+14:27 only one
+14:29 
+
+14:29 organization that you can create. Okay.
+14:32 
+
+14:32 And that's um
+14:34 
+
+14:34 the organization type which is
+14:35 
+
+14:35 standalone.
+14:37 
+
+14:37 Okay. So, now I'm in my organization.
+14:40 
+
+14:40 In organization, now we have projects,
+14:42 
+
+14:42 workspaces, registry. We'll look at all
+14:44 
+
+14:44 of these one by one, but first we'll
+14:46 
+
+14:46 start with the projects. So, as I've
+14:48 
+
+14:48 told you, there is um
+14:50 
+
+14:50 uh we need to create multiple projects
+14:52 
+
+14:52 to segregate our resources.
+14:54 
+
+14:54 Um we can separate it with the cloud
+14:57 
+
+14:57 provider, we can separate it with the
+14:59 
+
+14:59 application, or however you want to do
+15:01 
+
+15:01 that. So,
+15:03 
+
+15:03 um
+15:04 
+
+15:04 the way we did it in this particular
+15:07 
+
+15:07 uh example,
+15:09 
+
+15:09 we separated it with the cloud provider.
+15:11 
+
+15:11 But, instead of this, you can do that as
+15:13 
+
+15:13 well. Like, instead of a cloud provider,
+15:15 
+
+15:15 you can see let's say you have multiple
+15:17 
+
+15:17 application, right? You have
+15:20 
+
+15:20 >> [clears throat]
+15:20 
+
+15:20 >> you have uh like let's say this
+15:23 
+
+15:23 organization is nothing but a bank,
+15:25 
+
+15:25 okay?
+15:26 
+
+15:26 Let's call it Some Bank, CIBC Bank,
+15:30 
+
+15:30 okay? So, like this is the bank that I
+15:32 
+
+15:32 used to work before, so I'm just giving
+15:34 
+
+15:34 an example of this. Now, the bank have
+15:36 
+
+15:36 different verticals, like they have
+15:38 
+
+15:38 different line of businesses. So, these
+15:41 
+
+15:41 projects could become those line of
+15:42 
+
+15:42 businesses.
+15:44 
+
+15:44 Okay? The reason I'm giving you this
+15:45 
+
+15:45 example so that I can give you a
+15:48 
+
+15:48 real-time example of how it works in an
+15:50 
+
+15:50 organization, right?
+15:52 
+
+15:52 So, let's say
+15:54 
+
+15:54 with this bank, you have multiple line
+15:56 
+
+15:56 of businesses. You have commercial
+15:58 
+
+15:58 banking, okay?
+16:03 
+
+16:03 Commercial banking, you have personal
+16:05 
+
+16:05 banking.
+16:06 
+
+16:06 You have
+16:09 
+
+16:09 foreign exchange.
+16:13 
+
+16:13 Right?
+16:13 
+
+16:13 And similarly, you have um other things
+16:17 
+
+16:17 like uh like treasury.
+16:20 
+
+16:20 You have
+16:24 
+
+16:24 What else do we have in the banking? So,
+16:26 
+
+16:26 you have uh derivatives.
+16:31 
+
+16:31 Okay? So, these could become your
+16:34 
+
+16:34 separate projects.
+16:37 
+
+16:37 Okay? And now in each project, you can
+16:39 
+
+16:39 create multiple workspaces for each of
+16:41 
+
+16:41 the environment like test, dev, and
+16:42 
+
+16:42 prod, okay? So, now this looks more like
+16:45 
+
+16:45 a real-time example.
+16:47 
+
+16:47 So, let's go back over here, and there's
+16:48 
+
+16:48 a default project that's been created.
+16:50 
+
+16:50 It You can create your own project.
+16:51 
+
+16:51 Let's call it test.
+16:54 
+
+16:54 Okay? And you can add tags over here if
+16:57 
+
+16:57 you want, and hit create.
+16:60 
+
+16:60 Now,
+17:01 
+
+17:01 as soon as I created the test project, I
+17:04 
+
+17:04 automatically went inside the test
+17:06 
+
+17:06 project. You can go back,
+17:09 
+
+17:09 right? And you can click on the test
+17:10 
+
+17:10 project, and over here, now you can
+17:12 
+
+17:12 create workspaces. It says, "Add your
+17:15 
+
+17:15 first workspace."
+17:17 
+
+17:17 Now, if you remember the workspace they
+17:19 
+
+17:19 have different option to create the
+17:20 
+
+17:20 workspace. Let's click on create a
+17:22 
+
+17:22 workspace.
+17:23 
+
+17:23 We have three options.
+17:25 
+
+17:25 Version control.
+17:27 
+
+17:27 Okay, it is best for those who need
+17:29 
+
+17:29 traceability and transparency because we
+17:31 
+
+17:31 are using version control and like I
+17:33 
+
+17:33 don't have to explain the benefits of
+17:34 
+
+17:34 using a version control. I'm sure you
+17:36 
+
+17:36 all are aware of it.
+17:38 
+
+17:38 Then there is
+17:40 
+
+17:40 CLI driven workflow. It is comfortable
+17:42 
+
+17:42 best for those who are comfortable with
+17:44 
+
+17:44 Terraform CLI and don't want to use
+17:46 
+
+17:46 version control for some reason.
+17:48 
+
+17:48 Okay.
+17:50 
+
+17:50 >> [cough]
+17:50 
+
+17:50 >> Then we have
+17:52 
+
+17:52 API driven workflow best for those with
+17:54 
+
+17:54 custom integration and pipeline where
+17:56 
+
+17:56 you are using your own SDKs and you want
+17:58 
+
+17:58 to trigger the
+17:60 
+
+17:60 um trigger the run or trigger the
+18:02 
+
+18:02 workflow using your API calls, right?
+18:05 
+
+18:05 So, let's start with this version
+18:06 
+
+18:06 control.
+18:08 
+
+18:08 Now, as soon as you select, it'll ask
+18:10 
+
+18:10 you to connect to a version control
+18:12 
+
+18:12 provider.
+18:14 
+
+18:14 And the version control that it supports
+18:16 
+
+18:16 is GitHub, GitLab, Bitbucket, Azure
+18:19 
+
+18:19 DevOps. These are the integration
+18:21 
+
+18:21 available for you to use. Let's select
+18:23 
+
+18:23 with
+18:25 
+
+18:25 Okay, now with GitHub as well, there are
+18:26 
+
+18:26 multiple options. github.com, which is
+18:28 
+
+18:28 the public offering, free version,
+18:30 
+
+18:30 GitHub Enterprise, which is a paid
+18:32 
+
+18:32 enterprise version, and then there is
+18:34 
+
+18:34 custom github.com uh for the custom
+18:36 
+
+18:36 domain.
+18:38 
+
+18:38 Let's go ahead with github.com. It will
+18:40 
+
+18:40 ask you for authentication. Let's select
+18:42 
+
+18:42 the organization. This is my
+18:45 
+
+18:45 organization. Now, select the repository
+18:47 
+
+18:47 where your code resides. So, what we'll
+18:50 
+
+18:50 do, we'll try to pick some basic
+18:52 
+
+18:52 example, okay? Um
+18:55 
+
+18:55 So, let's pick something from the
+18:56 
+
+18:56 starting videos. Let's pick this, day
+18:58 
+
+18:58 three.
+18:59 
+
+18:59 Okay, day three it'll have just an S3
+19:01 
+
+19:01 bucket creation.
+19:03 
+
+19:03 So, let's go back, select repository,
+19:06 
+
+19:06 and search for AWS
+19:09 
+
+19:09 uh Terraform full course AWS.
+19:12 
+
+19:12 And inside that, click on advanced
+19:15 
+
+19:15 option. Now, you need to select your
+19:17 
+
+19:17 working directory because in my
+19:18 
+
+19:18 directory, there are multiple mono repos
+19:21 
+
+19:21 and inside that there are
+19:23 
+
+19:23 uh different folders for each of the
+19:25 
+
+19:25 day, right? So, we need to select day
+19:27 
+
+19:27 three folder.
+19:28 
+
+19:28 So, you need to select your working
+19:30 
+
+19:30 directory. And what is the working
+19:31 
+
+19:31 directory? It's uh So, if you go over
+19:34 
+
+19:34 here,
+19:36 
+
+19:36 and you can see working directory is
+19:37 
+
+19:37 inside lessons day three.
+19:39 
+
+19:39 Okay? So, let's select this.
+19:42 
+
+19:42 Lessons
+19:44 
+
+19:44 and
+19:45 
+
+19:45 day three. Let me just
+19:48 
+
+19:48 quickly verify. Yeah, day zero three.
+19:52 
+
+19:52 Okay. Now, it says
+19:54 
+
+19:54 um Terraform will change into this
+19:57 
+
+19:57 directory prior to execution any option.
+19:59 
+
+19:59 Uh so, it will run all the commands
+20:01 
+
+20:01 inside this particular directory, which
+20:03 
+
+20:03 is the day three folder.
+20:05 
+
+20:05 Okay, over here.
+20:06 
+
+20:06 Now, it will have a main.tf,
+20:09 
+
+20:09 which has just a resource, a simple
+20:12 
+
+20:12 resource provisioning, okay?
+20:15 
+
+20:15 Uh let me just change the name uh
+20:17 
+
+20:17 because this bucket might already be
+20:19 
+
+20:19 existed. I might not have deleted it. Uh
+20:22 
+
+20:22 my Let's just give it
+20:25 
+
+20:25 101. Okay?
+20:29 
+
+20:29 By the way, you might have seen this
+20:32 
+
+20:32 name uh in multiple videos. Babav Babav
+20:34 
+
+20:34 is my teammate who helped me with the
+20:36 
+
+20:36 content. So, that is why it's not like I
+20:38 
+
+20:38 have not uh
+20:40 
+
+20:40 uh stolen this content from somewhere.
+20:42 
+
+20:42 It's It's part of my like he's part of
+20:44 
+
+20:44 my team. So, he helped me with a lot of
+20:46 
+
+20:46 uh content these days.
+20:48 
+
+20:48 Right? Okay. So, Terraform working
+20:51 
+
+20:51 directory lessons day zero three. Then,
+20:53 
+
+20:53 there is an option in which you can
+20:54 
+
+20:54 select to use auto apply along with your
+20:58 
+
+20:58 commands, right? So, unless it it will
+21:00 
+
+21:00 wait for the prompt.
+21:02 
+
+21:02 Uh do you want to continue? Yes, then it
+21:04 
+
+21:04 will continue. So, it is good if you
+21:06 
+
+21:06 want to verify your own before the
+21:08 
+
+21:08 execution and it is better for your
+21:10 
+
+21:10 broad environment mostly.
+21:12 
+
+21:12 For the lower environment, you can click
+21:14 
+
+21:14 this options auto apply on, right?
+21:17 
+
+21:17 Now, uh the trigger type if you have uh
+21:21 
+
+21:21 a a Git flow implemented in your
+21:24 
+
+21:24 project, uh then you can use like
+21:27 
+
+21:27 whichever branch you want to
+21:29 
+
+21:29 uh trigger it on. Otherwise, just
+21:32 
+
+21:32 you can go ahead with the default
+21:33 
+
+21:33 branch. Let's just keep it default,
+21:35 
+
+21:35 which is main branch for me.
+21:37 
+
+21:37 And it says automatic run triggering.
+21:40 
+
+21:40 That means whenever there is a change,
+21:43 
+
+21:43 it will always trigger the run.
+21:45 
+
+21:45 Or you can select this option which says
+21:48 
+
+21:48 only trigger when the files in specified
+21:51 
+
+21:51 path changes, okay? So, let's select
+21:54 
+
+21:54 this and you can provide the pattern or
+21:56 
+
+21:56 the prefix, okay? So, pattern for
+21:59 
+
+21:59 example, like it's it's a regex, right?
+22:01 
+
+22:01 So, pattern let's say I just want this
+22:05 
+
+22:05 to be triggered when any file inside day
+22:07 
+
+22:07 03 folder changes, okay?
+22:12 
+
+22:12 And you can add more things like, you
+22:15 
+
+22:15 know, star.tf if any Terraform file
+22:19 
+
+22:19 change, only then trigger it, okay?
+22:23 
+
+22:23 Then, yeah, uh that's it and hit create.
+22:27 
+
+22:27 So, now I have created my
+22:33 
+
+22:33 a workspace,
+22:35 
+
+22:35 but
+22:37 
+
+22:37 it says it might need some variables for
+22:40 
+
+22:40 the authentication, right? We have not
+22:41 
+
+22:41 provided it yet.
+22:43 
+
+22:43 And over here, do we have a back end
+22:46 
+
+22:46 file?
+22:47 
+
+22:47 Let's see. I don't think we have a back
+22:49 
+
+22:49 end file in this because this was like
+22:51 
+
+22:51 right in the beginning where we did not
+22:53 
+
+22:53 cover the back end. So, that's why it
+22:54 
+
+22:54 does not have a back end, okay?
+22:56 
+
+22:56 So, uh let's go over here and hit start
+23:00 
+
+23:00 a new plan.
+23:02 
+
+23:02 And I will show you when it throws the
+23:04 
+
+23:04 error, I will show you how to fix those
+23:05 
+
+23:05 errors as well, okay?
+23:07 
+
+23:07 So, run name, okay? Demo run first.
+23:12 
+
+23:12 Okay, then run type is either plan and
+23:14 
+
+23:14 apply or just refresh the state plan
+23:16 
+
+23:16 only. There are multiple options, okay?
+23:18 
+
+23:18 So, plan and apply.
+23:21 
+
+23:21 And enable debugging mode, it will
+23:23 
+
+23:23 enable the debug logs as well. So, let's
+23:25 
+
+23:25 keep it default and hit start.
+23:30 
+
+23:30 Okay, it says uh triggered.
+23:33 
+
+23:33 Plan queued, waiting for the resources.
+23:36 
+
+23:36 Now, you can also cancel the run in
+23:38 
+
+23:38 between if you want. But for now, it is
+23:41 
+
+23:41 just doing the planning. Planning as in
+23:43 
+
+23:43 Terraform plan command it is executing.
+23:45 
+
+23:45 So, let's wait for it to do its thing.
+23:50 
+
+23:50 You see?
+23:51 
+
+23:51 It says no valid credential source found
+23:54 
+
+23:54 because we did not provide any
+23:55 
+
+23:55 credentials, right? So, it is failing to
+23:58 
+
+23:58 reach the metadata server. It is not
+23:60 
+
+23:60 able to authenticate to your AWS
+24:02 
+
+24:02 provider.
+24:04 
+
+24:04 Now, this is just a plan failed. It's uh
+24:09 
+
+24:09 it's still waiting. It's not timed out
+24:11 
+
+24:11 yet.
+24:12 
+
+24:12 So, it will it will fail for sure. So,
+24:15 
+
+24:15 let's go back to run and yeah, it's it's
+24:18 
+
+24:18 errored out, right? And if you go back
+24:20 
+
+24:20 again over here, you can check the logs.
+24:23 
+
+24:23 You can download the raw logs. It will
+24:25 
+
+24:25 show you the complete log. But we know
+24:27 
+
+24:27 the issue what what the issue is, right?
+24:29 
+
+24:29 So, now what we need is we need to go to
+24:32 
+
+24:32 variables and we need to set the
+24:34 
+
+24:34 variable for the authentication. Now,
+24:37 
+
+24:37 there are multiple options. So, there is
+24:40 
+
+24:40 workspace variable, there is and you can
+24:42 
+
+24:42 also create sensitive variable for your
+24:44 
+
+24:44 credentials.
+24:46 
+
+24:46 Or you can create variable set as well
+24:48 
+
+24:48 which you can apply to multiple
+24:50 
+
+24:50 uh
+24:51 
+
+24:51 runs or multiple workspaces.
+24:54 
+
+24:54 Let's hit add a variable.
+24:56 
+
+24:56 And you can use a Terraform variable,
+24:58 
+
+24:58 which will be used by Terraform code
+25:00 
+
+25:00 itself, or you need to use environment
+25:03 
+
+25:03 variable, which is what we need in this
+25:05 
+
+25:05 case. Okay?
+25:06 
+
+25:06 So, let's check the Terraform
+25:08 
+
+25:08 documentation. Terraform
+25:11 
+
+25:11 registry AWS login.
+25:15 
+
+25:15 Okay?
+25:16 
+
+25:16 Let's go over here, and let's see
+25:19 
+
+25:19 the variable that we need for
+25:21 
+
+25:21 authentication.
+25:23 
+
+25:23 So, go down, and basically we need a
+25:26 
+
+25:26 access key and secret key. But, the
+25:29 
+
+25:29 variable that we need, environment
+25:30 
+
+25:30 variable, is AWS access key ID and AWS
+25:34 
+
+25:34 secret access key.
+25:36 
+
+25:36 And optionally AWS session token. So, we
+25:39 
+
+25:39 don't need it for now. So, but we we do
+25:42 
+
+25:42 need these two. Right?
+25:44 
+
+25:44 Um AWS region, it will take from the
+25:46 
+
+25:46 file. It will throw the error, then
+25:48 
+
+25:48 we'll see. Um but, for now we need these
+25:50 
+
+25:50 two. So, AWS access key.
+25:53 
+
+25:53 Okay? And I can check the or I can
+25:57 
+
+25:57 create a new access key.
+26:08 
+
+26:08 Okay, let's go to IAM.
+26:17 
+
+26:17 Mm mm mm
+26:18 
+
+26:18 users, and here's my user.
+26:22 
+
+26:22 Let me create
+26:25 
+
+26:25 a security credential,
+26:28 
+
+26:28 and create access key over here. Yeah,
+26:32 
+
+26:32 that's the one.
+26:35 
+
+26:35 Okay, CLI.
+26:39 
+
+26:39 Okay, and yes, I understand. Hit next.
+26:43 
+
+26:43 Tag value, let's call it TF demo.
+26:48 
+
+26:48 Hit create.
+26:50 
+
+26:50 Now, you can copy your access key from
+26:52 
+
+26:52 here
+26:53 
+
+26:53 and paste it over here, access key.
+26:57 
+
+26:57 And let's select sensitive, okay?
+27:01 
+
+27:01 And again, create one more variable,
+27:04 
+
+27:04 type environment variable, and the name
+27:08 
+
+27:08 should be AWS secret access key.
+27:12 
+
+27:12 Okay, hit sensitive.
+27:14 
+
+27:14 And this is the value, secret access
+27:16 
+
+27:16 key.
+27:18 
+
+27:18 So, let's paste it over here and hit add
+27:20 
+
+27:20 variable. Okay, it's been added. Now,
+27:22 
+
+27:22 let's try it again. Click on new run.
+27:26 
+
+27:26 Okay, hit start.
+27:29 
+
+27:29 Okay, ideally now it should
+27:31 
+
+27:31 authenticate. If there are any error,
+27:33 
+
+27:33 there should be some other error, but
+27:34 
+
+27:34 not specifically to authentication or
+27:38 
+
+27:38 um the error that we saw, which is
+27:40 
+
+27:40 failure to connect with metadata server.
+27:41 
+
+27:41 That shouldn't be the case now.
+27:47 
+
+27:47 >> [clears throat]
+27:49 
+
+27:49 >> Okay, it says one plan to create. What
+27:52 
+
+27:52 are we creating? S3 bucket. If you
+27:55 
+
+27:55 expand this,
+27:57 
+
+27:57 it shows you the details, uh the output
+27:59 
+
+27:59 of the Terraform plan, everything on
+28:01 
+
+28:01 GUI, right? Tags and uh the name,
+28:04 
+
+28:04 everything. Then here it is applying.
+28:07 
+
+28:07 Because we did not We selected the
+28:10 
+
+28:10 option, right? Auto approve. That's why
+28:12 
+
+28:12 it is applying automatically. I will
+28:14 
+
+28:14 show you what will happen when you don't
+28:16 
+
+28:16 select that option, okay?
+28:18 
+
+28:18 It says it's done. It's created. And uh
+28:21 
+
+28:21 state file version has also been created
+28:23 
+
+28:23 over here. So, if you go over here,
+28:25 
+
+28:25 states,
+28:27 
+
+28:27 and you see um
+28:32 
+
+28:32 Here is the state file. I
+28:34 
+
+28:34 think, yeah, here's the state file. You
+28:35 
+
+28:35 see, it has everything.
+28:38 
+
+28:38 So, it created a state file in that
+28:41 
+
+28:41 workspace for that run, right? You don't
+28:44 
+
+28:44 have to create the back end, you don't
+28:45 
+
+28:45 have to create other details. If If you
+28:47 
+
+28:47 had the back end file over there, it
+28:50 
+
+28:50 would have thrown the error.
+28:51 
+
+28:51 Right, I will show you that.
+28:53 
+
+28:53 Okay, now let's um
+28:56 
+
+28:56 go back to overview. Okay.
+28:59 
+
+28:59 And let's select uh let's try to edit
+29:03 
+
+29:03 that workspace.
+29:04 
+
+29:04 Workspace is basically now that you have
+29:06 
+
+29:06 understand workspace is basically a
+29:08 
+
+29:08 file, right? So, because I have
+29:11 
+
+29:11 integrated it with the GitHub repo, you
+29:13 
+
+29:13 see our GitHub repo details are visible
+29:16 
+
+29:16 over here as well now. So, this is the
+29:18 
+
+29:18 readme file from the GitHub repo.
+29:20 
+
+29:20 Okay.
+29:21 
+
+29:21 Um now, if you want to make any change
+29:25 
+
+29:25 to it, let's see how we can make the
+29:27 
+
+29:27 change to the workspace itself from
+29:29 
+
+29:29 here.
+29:30 
+
+29:30 So, here is the resource, okay?
+29:33 
+
+29:33 And
+29:36 
+
+29:36 click over here, update settings. Now,
+29:38 
+
+29:38 it says auto apply.
+29:40 
+
+29:40 Let's remove this.
+29:43 
+
+29:43 Okay. And I think this is auto auto
+29:45 
+
+29:45 saved. Yeah, it's auto saved.
+29:47 
+
+29:47 Let's go back.
+29:49 
+
+29:49 Hit new run.
+29:51 
+
+29:51 Let's hit start.
+29:55 
+
+29:55 Okay, now it will plan.
+29:57 
+
+29:57 But, currently it will not make any
+29:59 
+
+29:59 changes because we have not made any
+30:01 
+
+30:01 changes to the Terraform code itself,
+30:04 
+
+30:04 right?
+30:05 
+
+30:05 So, let's wait. And now it will show you
+30:09 
+
+30:09 that no changes have been found. So,
+30:11 
+
+30:11 what we'll do is we'll make some changes
+30:14 
+
+30:14 on the GitHub repo and let it run.
+30:17 
+
+30:17 Okay.
+30:19 
+
+30:19 So, it says no your infrastructure
+30:22 
+
+30:22 matches the configuration, no changes,
+30:24 
+
+30:24 and there is no apply. Apply will not
+30:26 
+
+30:26 run over here, you see.
+30:28 
+
+30:28 So, now let's go back to our GitHub
+30:29 
+
+30:29 repo.
+30:31 
+
+30:31 Edit this file.
+30:33 
+
+30:33 And instead of this, um let's add one
+30:36 
+
+30:36 more bucket.
+30:38 
+
+30:38 Okay.
+30:40 
+
+30:40 Let's give it 102.
+30:43 
+
+30:43 Okay, and bucket two.
+30:46 
+
+30:46 Okay, uh tag is my bucket two for test.
+30:52 
+
+30:52 That's it. Commit the changes.
+30:54 
+
+30:54 And now we are also testing the auto
+30:58 
+
+30:58 triggering of the workflow. So, let's go
+31:01 
+
+31:01 back
+31:02 
+
+31:02 and hit on runs.
+31:05 
+
+31:05 Do you see any run? You see, it just
+31:07 
+
+31:07 started a few seconds ago. It's
+31:09 
+
+31:09 planning.
+31:10 
+
+31:10 And the run is done via
+31:14 
+
+31:14 It says triggered a run from GitHub.
+31:16 
+
+31:16 Earlier run was showing triggered a run
+31:19 
+
+31:19 from uh from the UI or from the GUI,
+31:22 
+
+31:22 right? Now it has been triggered from
+31:24 
+
+31:24 the GitHub itself. It It's It auto
+31:26 
+
+31:26 triggered it. It says file changes
+31:28 
+
+31:28 detected in the track directory because
+31:31 
+
+31:31 we specifically said if there are any
+31:33 
+
+31:33 changes in the day three folder in any
+31:35 
+
+31:35 of the TF file, then trigger the run.
+31:38 
+
+31:38 So, that's what it did and based on this
+31:39 
+
+31:39 commit ID.
+31:41 
+
+31:41 Now, over here uh you see it has
+31:45 
+
+31:45 provided the
+31:49 
+
+31:49 Okay, it did apply the changes which I
+31:52 
+
+31:52 didn't want. It did not
+31:54 
+
+31:54 ask for the input. Maybe we are missing
+31:56 
+
+31:56 something, but here is uh like it added
+31:59 
+
+31:59 the
+32:00 
+
+32:00 uh the new resource 102 and then it
+32:03 
+
+32:03 applied the changes.
+32:04 
+
+32:04 But, uh we didn't want that, right?
+32:07 
+
+32:07 Um so, maybe there is some other setting
+32:10 
+
+32:10 that we missed. So, let's go back to the
+32:14 
+
+32:14 workspace.
+32:15 
+
+32:15 Okay. And where is the workspace?
+32:19 
+
+32:19 Let's go back to the workspace. This is
+32:20 
+
+32:20 the workspace.
+32:22 
+
+32:22 And view settings.
+32:25 
+
+32:25 Okay.
+32:27 
+
+32:27 And okay. So, this one.
+32:31 
+
+32:31 Let's remove this.
+32:34 
+
+32:34 And
+32:36 
+
+32:36 save settings. There are many other
+32:37 
+
+32:37 options you are you can play around with
+32:40 
+
+32:40 it. Like what it is, why do we need it?
+32:42 
+
+32:42 And let's make one more change. Now,
+32:46 
+
+32:46 what we'll do is we'll delete the new
+32:47 
+
+32:47 resource that we have added, the new S3
+32:49 
+
+32:49 bucket. So, ideally it should destroy
+32:52 
+
+32:52 this resource.
+32:55 
+
+32:55 Okay, I have deleted it. Let's commit
+32:57 
+
+32:57 the changes.
+32:59 
+
+32:59 Okay, and let's go back.
+33:04 
+
+33:04 Workspace.
+33:06 
+
+33:06 Let's see if it triggered anything.
+33:09 
+
+33:09 Where it is runs.
+33:11 
+
+33:11 And yeah, it triggered it. Let's go over
+33:14 
+
+33:14 here.
+33:15 
+
+33:15 Says run details triggered from GitHub.
+33:18 
+
+33:18 Uh
+33:19 
+
+33:19 And it will show you what changes. It
+33:21 
+
+33:21 says one resource to destroy.
+33:25 
+
+33:25 >> [cough]
+33:27 
+
+33:27 >> Okay, it's still running the plan.
+33:29 
+
+33:29 And now over here it says apply pending
+33:31 
+
+33:31 and it will ask your permission. So, you
+33:33 
+
+33:33 can discard the run.
+33:35 
+
+33:35 Or you can confirm and apply. Okay, so
+33:38 
+
+33:38 this is like a prompt when you run
+33:40 
+
+33:40 Terraform apply without the auto approve
+33:42 
+
+33:42 flag. Okay. So, let's say confirm and
+33:45 
+
+33:45 apply. Only then it will execute it.
+33:47 
+
+33:47 Okay, let's say
+33:49 
+
+33:49 approved.
+33:52 
+
+33:52 Okay, hit confirm plan.
+33:53 
+
+33:53 So, this is step is a good um option if
+33:58 
+
+33:58 you are
+33:59 
+
+33:59 handling the Terraform pipelines or
+34:01 
+
+34:01 workspaces in a production environment.
+34:04 
+
+34:04 So, there is always
+34:06 
+
+34:06 uh a good to have like uh one of the
+34:08 
+
+34:08 best practices to have a manual approval
+34:11 
+
+34:11 or the manual check before actually
+34:13 
+
+34:13 making any changes to the production
+34:15 
+
+34:15 live environment, right?
+34:17 
+
+34:17 Because someone might have accidentally
+34:18 
+
+34:18 done it. Uh so, you want to avoid all
+34:21 
+
+34:21 those things, right? So, it says deleted
+34:23 
+
+34:23 one resource. The additional resource
+34:24 
+
+34:24 has been destroyed now.
+34:27 
+
+34:27 Okay, um so that's the Terraform run for
+34:30 
+
+34:30 the
+34:31 
+
+34:31 like we have tested it for the couple of
+34:33 
+
+34:33 options. Now, let's go back again and
+34:36 
+
+34:36 create another workspace.
+34:39 
+
+34:39 Okay, hit
+34:40 
+
+34:40 workspace.
+34:42 
+
+34:42 Select the project. Let's select the
+34:43 
+
+34:43 test project. Create. Now, choose the
+34:46 
+
+34:46 workflow. Now, the workflow that we want
+34:49 
+
+34:49 is CLI driven.
+34:51 
+
+34:51 Okay.
+34:52 
+
+34:52 Workspace name is Let's give it a name.
+34:57 
+
+34:57 Uh TF CLI.
+34:59 
+
+34:59 Project is test. That's cool. Hit
+35:02 
+
+35:02 create.
+35:04 
+
+35:04 It's been created. Now, it will give you
+35:06 
+
+35:06 the options how you can map your local
+35:09 
+
+35:09 folder uh with this Terraform workspace.
+35:12 
+
+35:12 Okay. So, first, let's select the folder
+35:15 
+
+35:15 which we want to map.
+35:17 
+
+35:17 Um let's select day four. In day four,
+35:20 
+
+35:20 what did we do?
+35:23 
+
+35:23 Uh day four has a back end and
+35:29 
+
+35:29 um S3 bucket, VPC, AWS instance, and so
+35:33 
+
+35:33 on. Okay. So, let's select day four.
+35:35 
+
+35:35 Okay. Now, what we need is Where am I?
+35:39 
+
+35:39 AWS TF day zero four.
+35:42 
+
+35:42 Okay, I'm inside this folder now.
+35:45 
+
+35:45 Now, it is saying you
+35:48 
+
+35:48 to first run Terraform login command.
+35:50 
+
+35:50 Okay. So, let's copy this and execute it
+35:53 
+
+35:53 over here.
+35:54 
+
+35:54 And it says um
+35:56 
+
+35:56 now,
+35:58 
+
+35:58 do you want to proceed? Yes, I want to
+36:00 
+
+36:00 proceed.
+36:02 
+
+36:02 Now, it will prompt this window and it
+36:04 
+
+36:04 will generate a token for you. Okay,
+36:06 
+
+36:06 create a user token that will expire in
+36:08 
+
+36:08 so many so days. So, let's say it will
+36:11 
+
+36:11 expire in 1 day.
+36:12 
+
+36:12 Hit generate token.
+36:14 
+
+36:14 Now, here's the token. You can copy the
+36:16 
+
+36:16 token.
+36:18 
+
+36:18 Okay, and let's go back and enter the
+36:21 
+
+36:21 token value over here.
+36:26 
+
+36:26 Okay, done. You have entered the token
+36:28 
+
+36:28 value and now it says welcome to HCP
+36:30 
+
+36:30 Terraform.
+36:31 
+
+36:31 And basically you are over here in the
+36:35 
+
+36:35 you have retrieved the token for the
+36:37 
+
+36:37 user.
+36:38 
+
+36:38 And you can now run your commands to
+36:41 
+
+36:41 execute it on Terraform Cloud over
+36:44 
+
+36:44 there.
+36:45 
+
+36:45 Right?
+36:46 
+
+36:46 So, let's go back.
+36:51 
+
+36:51 Go to org and then go to TFCLI
+36:54 
+
+36:54 workspace.
+36:56 
+
+36:56 Okay, and now it says add a code block
+36:59 
+
+36:59 to a Terraform configuration which says
+37:02 
+
+37:02 uh
+37:02 
+
+37:02 basically you need to add this.
+37:05 
+
+37:05 So, let's copy this and let's go back to
+37:08 
+
+37:08 your main.tf file.
+37:11 
+
+37:11 Okay? So, instead of this, you need to
+37:16 
+
+37:16 add the option from here.
+37:18 
+
+37:18 So, let's keep the required workspaces.
+37:21 
+
+37:21 Let's keep the back end.
+37:24 
+
+37:24 And let's just add this cloud option.
+37:30 
+
+37:30 Okay?
+37:32 
+
+37:32 So, I've added cloud organization and
+37:34 
+
+37:34 workspace detail, right? You need to
+37:36 
+
+37:36 provide which organization are we
+37:38 
+
+37:38 referring to and which workspace are we
+37:40 
+
+37:40 referring to and so on, right?
+37:42 
+
+37:42 So, now over here, let's run Terraform
+37:45 
+
+37:45 in it.
+37:47 
+
+37:47 Says
+37:52 
+
+37:52 You see, it says migrating from S3 to
+37:55 
+
+37:55 SCP
+37:56 
+
+37:56 uh Terraform, right? Uh because we
+37:58 
+
+37:58 already have
+37:59 
+
+37:59 back end over here in this file, it is
+38:01 
+
+38:01 migrating to SCP, but there are some
+38:03 
+
+38:03 error during initialization.
+38:06 
+
+38:06 And it says conflicting cloud and back
+38:08 
+
+38:08 end configuration block are present.
+38:10 
+
+38:10 Okay, so this is Remember, this is what
+38:12 
+
+38:12 I have told you earlier as well.
+38:14 
+
+38:14 If you are using Terraform Cloud or the
+38:16 
+
+38:16 HashiCorp Cloud Platform, you should not
+38:19 
+
+38:19 be having the back end details over here
+38:21 
+
+38:21 because it automatically manages it. So,
+38:23 
+
+38:23 let's remove this part.
+38:25 
+
+38:25 We don't need the back end.
+38:29 
+
+38:29 Okay, save the file and run Terraform
+38:31 
+
+38:31 init again.
+38:33 
+
+38:33 Okay, now there is another
+38:35 
+
+38:35 issue which says
+38:38 
+
+38:38 incompatible Terraform version. The
+38:40 
+
+38:40 local Terraform version 1.3.3 does not
+38:42 
+
+38:42 meet the required version for remote
+38:44 
+
+38:44 Terraform workspace 1.14.0. So, we need
+38:47 
+
+38:47 to upgrade our version to match the
+38:50 
+
+38:50 Terraform Cloud version over here.
+38:53 
+
+38:53 Okay. So, it says if you want to upgrade
+38:56 
+
+38:56 the state, you can force Terraform to
+38:58 
+
+38:58 continue using ignore remote version.
+38:60 
+
+38:60 This may result in unusable workspace,
+39:02 
+
+39:02 which is what we don't want to do. So,
+39:04 
+
+39:04 we can upgrade our version to 1.14.
+39:07 
+
+39:07 So, Terraform
+39:09 
+
+39:09 hyphen hyphen version.
+39:13 
+
+39:13 Okay, it says the latest version is
+39:16 
+
+39:16 this. You can upgrade downloading from
+39:18 
+
+39:18 here.
+39:19 
+
+39:19 Um we are using 1.13.3.
+39:22 
+
+39:22 Let's try to see if I can upgrade it
+39:25 
+
+39:25 using Brew.
+39:27 
+
+39:27 Brew upgrade Terraform.
+39:35 
+
+39:35 Um please wait for it. Okay, so it's
+39:39 
+
+39:39 just running some updates.
+39:42 
+
+39:42 Uh it totally depends how you have
+39:44 
+
+39:44 installed it, how you have downloaded
+39:45 
+
+39:45 the Terraform earlier. But over here uh
+39:48 
+
+39:48 you see I have used the Brew, which is a
+39:52 
+
+39:52 package manager for Mac OS.
+39:54 
+
+39:54 So, it says upgrading outdated package
+39:57 
+
+39:57 from 1.33.3 to 1.14.3.
+40:01 
+
+40:01 But then it says
+40:04 
+
+40:04 um
+40:07 
+
+40:07 there is some error, failure to execute
+40:10 
+
+40:10 this this this.
+40:11 
+
+40:11 Let me try doing a sudo.
+40:15 
+
+40:15 Maybe some permissioning issues.
+40:17 
+
+40:17 I don't know. Let's try it.
+40:26 
+
+40:26 Okay, it says
+40:29 
+
+40:29 no, it will not work in pseudo because
+40:32 
+
+40:32 it's extremely dangerous and no longer
+40:34 
+
+40:34 supported. Okay.
+40:37 
+
+40:37 So, let's uh
+40:40 
+
+40:40 run this brew upgrade command again.
+40:47 
+
+40:47 I think it worked this time.
+40:53 
+
+40:53 Okay, yeah, it worked. So, let's
+40:55 
+
+40:55 run Terraform {hyphen} {hyphen} version.
+41:00 
+
+41:00 And yes, it upgraded it to 1.14.3.
+41:05 
+
+41:05 So, now let's run Terraform in it.
+41:09 
+
+41:09 Okay, it's migrating this, initializing
+41:11 
+
+41:11 the provider, and it's initialized.
+41:14 
+
+41:14 Now, if I run
+41:15 
+
+41:15 Terraform plan,
+41:20 
+
+41:20 preparing the remote plan, that means
+41:22 
+
+41:22 the plan will be
+41:24 
+
+41:24 um remotely
+41:27 
+
+41:27 available as well on the GUI, right?
+41:29 
+
+41:29 So, let's go back over here, and let's
+41:32 
+
+41:32 hit runs.
+41:34 
+
+41:34 So, you see triggered via CLI, which is
+41:36 
+
+41:36 what we did. It is planning right now.
+41:40 
+
+41:40 Okay, and the details will be populated
+41:44 
+
+41:44 over here.
+41:47 
+
+41:47 Says no valid credential source found
+41:49 
+
+41:49 because again, we did the same thing. We
+41:51 
+
+41:51 did not use the credentials for this
+41:53 
+
+41:53 particular workspace. The The credential
+41:56 
+
+41:56 that we had was for the other workspace
+41:58 
+
+41:58 that we set. So, let's go to variables.
+42:01 
+
+42:01 Create a workspace variable,
+42:04 
+
+42:04 and type environment variable.
+42:08 
+
+42:08 Access key uh access key name is access
+42:11 
+
+42:11 key ID. So, let's copy this.
+42:14 
+
+42:14 And then hit sensitive access key.
+42:20 
+
+42:20 Okay. And the other one, which is also
+42:23 
+
+42:23 environment variable and sensitive, is
+42:26 
+
+42:26 AWS secret access key.
+42:30 
+
+42:30 And then this is the secret access key.
+42:33 
+
+42:33 Add variable.
+42:35 
+
+42:35 And let's go back over here and run TF
+42:37 
+
+42:37 plan again. So, you see the difference
+42:39 
+
+42:39 between the first uh option and the
+42:43 
+
+42:43 second option. First with the GitHub um
+42:46 
+
+42:46 with the version [clears throat]
+42:46 
+
+42:46 control. The other one with the CLI.
+42:49 
+
+42:49 So, over in the first version, we just
+42:52 
+
+42:52 made the changes in our GitHub repo and
+42:55 
+
+42:55 it auto triggered it. But over here, we
+42:58 
+
+42:58 are mapping our local folder
+43:02 
+
+43:02 to the Terraform workspace and we are
+43:04 
+
+43:04 running the commands from the CLI and it
+43:06 
+
+43:06 is doing the same thing.
+43:09 
+
+43:09 Okay. So, now it executed the plan.
+43:12 
+
+43:12 And over here, if you go to runs, so
+43:14 
+
+43:14 this is the second run, which is
+43:15 
+
+43:15 triggered by CLI.
+43:17 
+
+43:17 Says plan finished, three resources to
+43:19 
+
+43:19 add and this is the output. It did not
+43:22 
+
+43:22 apply the changes because we did not run
+43:25 
+
+43:25 the Terraform apply command. We just ran
+43:27 
+
+43:27 Terraform plan and that's what it did.
+43:29 
+
+43:29 It says three to add. One EC2, one VPC
+43:32 
+
+43:32 ID and there is one S3 bucket. So, three
+43:34 
+
+43:34 resources to be created.
+43:36 
+
+43:36 So, again, if you run the Terraform
+43:38 
+
+43:38 apply, it will show you the apply run
+43:40 
+
+43:40 over here and it will execute those
+43:42 
+
+43:42 things over there. Right?
+43:44 
+
+43:44 So, um yeah, I think we have covered
+43:48 
+
+43:48 everything that we wanted to cover in
+43:50 
+
+43:50 this video. There's no point of dragging
+43:52 
+
+43:52 this further. I hope you understood it.
+43:54 
+
+43:54 I hope you are able to do the demo. Make
+43:57 
+
+43:57 sure you play around with it, understand
+43:59 
+
+43:59 all the different options that is
+44:01 
+
+44:01 available out there.
+44:02 
+
+44:02 And
+44:04 
+
+44:04 most importantly, understand
+44:06 
+
+44:06 what benefits does it have over the
+44:09 
+
+44:09 Terraform CLI? Because this could be one
+44:11 
+
+44:11 of the interview question as well. And
+44:12 
+
+44:12 if you are preparing for the Terraform
+44:15 
+
+44:15 certification exam, so there could be
+44:16 
+
+44:16 some questions from this uh particular
+44:18 
+
+44:18 video as well.
+44:20 
+
+44:20 Okay.
+44:21 
+
+44:21 So, yeah, that's it. Thank you so much
+44:22 
+
+44:22 for watching. I will see you tomorrow
+44:23 
+
+44:23 with the next video. Have a good day.
+44:25 
+
+44:25 Happy learning. Thank you.

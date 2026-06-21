@@ -1,0 +1,2635 @@
+00:00 Hello and welcome back to my channel. My
+00:02 
+
+00:02 name is Push and this is day 12 in 30
+00:04 
+
+00:04 days of AWS Terapform and this is the
+00:07 
+
+00:07 continuation to the previous video day
+00:09 
+
+00:09 11 video in which we started with
+00:11 
+
+00:11 Terapform functions. So we covered some
+00:13 
+
+00:13 functions, we did the demo and we
+00:15 
+
+00:15 understood it and we'll continue from
+00:17 
+
+00:17 the rest of it from here. Okay. So make
+00:20 
+
+00:20 sure you are watching like I'm saying
+00:21 
+
+00:21 this in every video but make sure you
+00:23 
+
+00:23 are watching the video in every single
+00:26 
+
+00:26 sequence that we are using. Okay,
+00:28 
+
+00:28 because what happens you know uh when I
+00:31 
+
+00:31 publish any video series. Okay, so let's
+00:33 
+
+00:33 just talk about it for a few seconds and
+00:34 
+
+00:34 then I'll go back to video. So what
+00:37 
+
+00:37 happens is like let's say I have
+00:39 
+
+00:39 published the CK series which is one of
+00:42 
+
+00:42 the popular series on my channel that
+00:44 
+
+00:44 video series has 59 videos 59 fulllength
+00:48 
+
+00:48 videos it's more than 30 hours of
+00:50 
+
+00:50 content maybe 35 plus hour of content
+00:53 
+
+00:53 people start watching from any any
+00:56 
+
+00:56 random video out of it let's say someone
+00:58 
+
+00:58 who is a new Kubernetes user or a
+01:00 
+
+01:00 beginner to Kubernetes start watching it
+01:02 
+
+01:02 from day 30 and then they complain like
+01:05 
+
+01:05 you have not explained explained the
+01:06 
+
+01:06 basics. You have not explained what is a
+01:08 
+
+01:08 pod, what is a deployment. And I am just
+01:11 
+
+01:11 tired of explaining this to everyone
+01:13 
+
+01:13 that do not start the playlist from the
+01:16 
+
+01:16 middle or from the end or from any
+01:19 
+
+01:19 random video. Start from the beginning
+01:20 
+
+01:20 if you want to understand every single
+01:22 
+
+01:22 concept. If you are a beginner then you
+01:25 
+
+01:25 should start from day one or day zero
+01:27 
+
+01:27 video otherwise you will not understand
+01:29 
+
+01:29 the fundamentals because the way I
+01:31 
+
+01:31 publish the video series I cover each
+01:34 
+
+01:34 and every topic in bits from day one
+01:37 
+
+01:37 onwards right so that I don't have to
+01:39 
+
+01:39 explain in each and every concept in
+01:41 
+
+01:41 every video and it is not possible as
+01:43 
+
+01:43 well so that's why we are doing this
+01:45 
+
+01:45 okay so make sure you start the series
+01:48 
+
+01:48 from day zero onwards okay let's let's
+01:50 
+
+01:50 go back now okay so we uh started with
+01:54 
+
+01:54 terapform function in day 11. We covered
+01:56 
+
+01:56 some functions like we covered lookup
+01:58 
+
+01:58 function. So let's mark it in green.
+02:01 
+
+02:01 Okay. And I don't think the text is
+02:04 
+
+02:04 visible anymore. So let's just change
+02:05 
+
+02:05 the color of it. So lookup function we
+02:08 
+
+02:08 did and then we did uh type conversion.
+02:11 
+
+02:11 No, we did collection function.
+02:13 
+
+02:13 So let's mark this in green as well.
+02:17 
+
+02:17 And then we did string function.
+02:22 
+
+02:22 Okay. So majorly we covered these three
+02:26 
+
+02:26 and in this video uh we'll cover the
+02:28 
+
+02:28 rest of the functions validations file
+02:30 
+
+02:30 date and time type conversion and
+02:32 
+
+02:32 numeric. Okay. So let's go back to VS
+02:37 
+
+02:37 code and yeah I'll just reuse the same
+02:39 
+
+02:39 folder. Uh let's just change the name of
+02:42 
+
+02:42 this folder from day 11 to day 11 - 12.
+02:45 
+
+02:45 Okay. Now um yeah so in this video we'll
+02:50 
+
+02:50 start with the validation functions. So
+02:52 
+
+02:52 validation function is something that
+02:54 
+
+02:54 helps you with prevalidation of
+02:57 
+
+02:57 something right. So similar to what we
+02:59 
+
+02:59 did uh in the terraform like S3 naming
+03:03 
+
+03:03 convention over here right but over here
+03:06 
+
+03:06 it will just make the changes it will
+03:08 
+
+03:08 not throw any validation error. If I
+03:10 
+
+03:10 want that validation error to be thrown
+03:13 
+
+03:13 out if the name is not as expected then
+03:16 
+
+03:16 we'll use validation function and I'll
+03:18 
+
+03:18 show you how we can use that. So um we
+03:21 
+
+03:21 can use and it has to be done inside the
+03:23 
+
+03:23 variable declaration not over here and
+03:26 
+
+03:26 let's see how we can do. So first let's
+03:28 
+
+03:28 go to variable.tf TF. Okay, let's create
+03:32 
+
+03:32 a variable name
+03:35 
+
+03:35 instance
+03:37 
+
+03:37 type.
+03:39 
+
+03:39 Okay, instance type and let's add a
+03:42 
+
+03:42 default value which is T2 dot micro. Now
+03:47 
+
+03:47 I want certain validations to be done in
+03:51 
+
+03:51 this instance type whenever user is
+03:53 
+
+03:53 providing any value. Okay. So I'll start
+03:55 
+
+03:55 with validation keyword and inside
+03:58 
+
+03:58 validation I'll start with this. Now you
+04:02 
+
+04:02 can add multiple validations as well. So
+04:04 
+
+04:04 let's just copy this. Let's say you need
+04:06 
+
+04:06 to add two validations. Currently it's
+04:08 
+
+04:08 throwing error because I have not added
+04:09 
+
+04:09 anything inside it. Right? So you need
+04:11 
+
+04:11 to provide certain things inside
+04:13 
+
+04:13 validation. So it is expecting a
+04:16 
+
+04:16 condition like when the validation will
+04:19 
+
+04:19 be occurred. Right? So what what is the
+04:22 
+
+04:22 condition when the validation will
+04:23 
+
+04:23 happen? So let's say uh the first
+04:25 
+
+04:25 validation you want to do is the
+04:27 
+
+04:27 instance type that you are using it
+04:29 
+
+04:29 should not be greater than 20
+04:32 
+
+04:32 characters. So let's say between 2 and
+04:35 
+
+04:35 20 characters. So this is the validation
+04:37 
+
+04:37 that you need to do. Okay. So for that
+04:40 
+
+04:40 you need to use my book fell down.
+04:43 
+
+04:43 That's okay. So um you need to use the
+04:47 
+
+04:47 length function first. Okay. So length
+04:51 
+
+04:51 for v dot instance
+04:54 
+
+04:54 uh type
+04:57 
+
+04:57 greater than equal to two. Okay, it
+05:00 
+
+05:00 should be greater than equal to two. And
+05:03 
+
+05:03 so we use logical and. So and and means
+05:06 
+
+05:06 we are using logical and we are
+05:08 
+
+05:08 combining two conditions together. Okay.
+05:11 
+
+05:11 So it's not or it's and that means both
+05:14 
+
+05:14 the condition has to be true. So and
+05:17 
+
+05:17 again length function where dot instance
+05:22 
+
+05:22 type should be less than equal to 20.
+05:27 
+
+05:27 Okay, I hope this is making sense. Now
+05:31 
+
+05:31 what are we doing? We are saying the
+05:34 
+
+05:34 length of v.in instance type
+05:38 
+
+05:38 which is t2.m domicro. This is the
+05:40 
+
+05:40 instant type. Currently we have 1 2 3 4
+05:43 
+
+05:43 5 6 7 8 characters right? So we are
+05:46 
+
+05:46 saying the length should be greater than
+05:48 
+
+05:48 two characters. I mean the length of
+05:50 
+
+05:50 characters inside that variable and it
+05:53 
+
+05:53 should be less than 20. Okay. My
+05:56 
+
+05:56 daughter woke up in the middle of the
+05:58 
+
+05:58 night so I had to go put her to bed and
+06:01 
+
+06:01 now I am back and it's been half an hour
+06:04 
+
+06:04 and I I forgot where was I. So uh please
+06:08 
+
+06:08 forgive me if I just repeat certain
+06:10 
+
+06:10 thing of if I skip anything like I try
+06:12 
+
+06:12 not to skip anything but if I repeat
+06:14 
+
+06:14 anything please bear with me. Okay. I
+06:18 
+
+06:18 think we were talking about this
+06:21 
+
+06:21 condition. Okay. So the instance type
+06:24 
+
+06:24 that we have selected is let's say it's
+06:27 
+
+06:27 between 2 and 20 characters of length.
+06:30 
+
+06:30 So uh here we have few characters some
+06:33 
+
+06:33 eight characters I believe. So it's
+06:36 
+
+06:36 within 2 to 20 characters right? So
+06:39 
+
+06:39 that's the condition. The next thing is
+06:43 
+
+06:43 we need to set the error message when
+06:45 
+
+06:45 this condition violates. Okay. So let's
+06:48 
+
+06:48 say if there is some value of this
+06:51 
+
+06:51 variable which is either less than two
+06:54 
+
+06:54 or greater than 20. So what error
+06:56 
+
+06:56 message should uh be printed as the
+06:59 
+
+06:59 validation error should be provided over
+07:02 
+
+07:02 here. Okay. So uh we can say instance
+07:06 
+
+07:06 type must be between
+07:10 
+
+07:10 2 and 20 characters.
+07:14 
+
+07:14 All right. Uh yeah. So that's first
+07:17 
+
+07:17 validation. You can add another
+07:19 
+
+07:19 validation. Let's say you are specifying
+07:21 
+
+07:21 that only T2 or T3 instances should be
+07:25 
+
+07:25 allowed. Okay. So that's let's say
+07:27 
+
+07:27 another condition. So inside that we can
+07:32 
+
+07:32 use a rag x which is a regular
+07:34 
+
+07:34 expression and uh you use a function
+07:37 
+
+07:37 called can. So first let's add rag x. So
+07:40 
+
+07:40 there is a rag x function uh in
+07:42 
+
+07:42 terapform. So rag x if you want to know
+07:45 
+
+07:45 more about rag x and if you don't know
+07:47 
+
+07:47 about it you can just google it. So it
+07:49 
+
+07:49 works with most of the programming
+07:50 
+
+07:50 languages even with shell scripting and
+07:53 
+
+07:53 everything. So yeah, reg x is a regular
+07:56 
+
+07:56 expression in which you add some wild
+07:58 
+
+07:58 card characters uh and it'll take care
+08:01 
+
+08:01 of it. Okay. So let's say you want to
+08:03 
+
+08:03 see that um the instance type should
+08:05 
+
+08:05 start with t. So either t2, t3, t4 and
+08:09 
+
+08:09 so on, right? So it should start with uh
+08:12 
+
+08:12 t. So that's why you can add something
+08:15 
+
+08:15 like this inside reg x you add double
+08:19 
+
+08:19 quotes and then uh the starting
+08:22 
+
+08:22 character will be with this symbol.
+08:25 
+
+08:25 Okay. And t t is the first character
+08:28 
+
+08:28 that we are expecting t2 or t3. So now
+08:31 
+
+08:31 we are also saying that it should be
+08:33 
+
+08:33 either t2 or t3. So that's why we can
+08:36 
+
+08:36 add 2 - 3 inside the square bracket. So
+08:41 
+
+08:41 this will say first character and this
+08:44 
+
+08:44 will say so two or three. Okay. Um now
+08:49 
+
+08:49 uh so this is the first string and then
+08:52 
+
+08:52 it should be dot. So t2 dot micro t3 dot
+08:55 
+
+08:55 micro and so on. Right. So uh so there
+08:57 
+
+08:57 is dot but you cannot directly use dot.
+08:59 
+
+08:59 You have to escape this character. This
+09:01 
+
+09:01 is a special character. Right? So the
+09:03 
+
+09:03 way we escape it using
+09:06 
+
+09:06 two backslashes.
+09:08 
+
+09:08 Okay. So that's how you will use uh rag
+09:11 
+
+09:11 x. Um but then you need to check this
+09:14 
+
+09:14 rag x in something right. So you need to
+09:16 
+
+09:16 check check this rag x in instance type.
+09:19 
+
+09:19 So that's why you use another function
+09:21 
+
+09:21 with it which is scan. So can is this is
+09:25 
+
+09:25 the first expression
+09:29 
+
+09:29 v dot
+09:31 
+
+09:31 instance [snorts] type. Okay. Uh am I
+09:34 
+
+09:34 making any syntax error? Let's see. So
+09:37 
+
+09:37 this rag X uh this is enclosed over
+09:40 
+
+09:40 here. Oops, sorry. Um like this. Yeah,
+09:45 
+
+09:45 this this should be correct. The error
+09:47 
+
+09:47 it is throwing because we have not added
+09:48 
+
+09:48 the error message yet, right? So let's
+09:51 
+
+09:51 add error message.
+09:54 
+
+09:54 Error message is by the way if you want
+09:56 
+
+09:56 to see like why it is throwing the
+09:58 
+
+09:58 error. So you can just hover the mouse
+09:60 
+
+09:60 around it and it will show you right. So
+10:02 
+
+10:02 now it will show you and this is coming
+10:04 
+
+10:04 from the uh terapform extension. It is
+10:07 
+
+10:07 not coming from copilot. It is coming
+10:09 
+
+10:09 from the terraform extension that we
+10:10 
+
+10:10 have. So it is saying required
+10:13 
+
+10:13 attributes error message not specified
+10:15 
+
+10:15 and error message is required here.
+10:17 
+
+10:17 Okay. So let's add error message and the
+10:22 
+
+10:22 value is instance type must
+10:26 
+
+10:26 start
+10:28 
+
+10:28 with T2 or T3. Right? So that's why we
+10:33 
+
+10:33 have added the validation.
+10:35 
+
+10:35 So just a quick recap, we added a
+10:38 
+
+10:38 variable, added the default value, then
+10:41 
+
+10:41 we added a couple of validation
+10:42 
+
+10:42 conditions and the error message that it
+10:46 
+
+10:46 will throw if that condition is not
+10:47 
+
+10:47 specified. Now how do we test it? Let's
+10:51 
+
+10:51 say we have a variable over here. So
+10:54 
+
+10:54 let's remove this one. We don't need
+10:56 
+
+10:56 this. Let's add a variable instance
+10:58 
+
+10:58 type. And let's use something else.
+10:60 
+
+10:60 Let's see. T4 dot large. I'm not sure
+11:05 
+
+11:05 even if if this is a valid one. It could
+11:08 
+
+11:08 be, but let's see. Okay. And let's clear
+11:12 
+
+11:12 the screen and run TF plan.
+11:15 
+
+11:15 So, ideally, it should throw the error.
+11:17 
+
+11:17 Let's see.
+11:19 
+
+11:19 Okay. So, this is a custom error message
+11:22 
+
+11:22 that it is throwing. It is a custom
+11:24 
+
+11:24 validation message. So, it is saying
+11:26 
+
+11:26 instance type must start with T2 or T3.
+11:29 
+
+11:29 Okay, so that's the validation. This was
+11:31 
+
+11:31 checked by the validation rule add
+11:33 
+
+11:33 variable, it is showing the exact file
+11:35 
+
+11:35 and exact line as well. Now if we do uh
+11:39 
+
+11:39 instead of T4 large, let's say we are
+11:41 
+
+11:41 using T2 but we are doing some value
+11:46 
+
+11:46 which is greater than 20. So now it will
+11:49 
+
+11:49 pass the first validation which the
+11:51 
+
+11:51 second validation it will pass but it
+11:53 
+
+11:53 will fail on the first validation. So
+11:54 
+
+11:54 let's run TF plan again. And here it is.
+11:58 
+
+11:58 You see instance type must be between 2
+12:01 
+
+12:01 and 20 characters. So both of the
+12:03 
+
+12:03 prevalidation error we have checked.
+12:06 
+
+12:06 Okay. So let's just use T2 micro. And if
+12:10 
+
+12:10 I run it again, this should work without
+12:12 
+
+12:12 any issues.
+12:15 
+
+12:15 Okay, it's working. No error now. So
+12:19 
+
+12:19 that's um the validation functions that
+12:22 
+
+12:22 we have checked. Now let's check the
+12:24 
+
+12:24 other one which is we'll check uh again
+12:27 
+
+12:27 some operations u some functions that is
+12:30 
+
+12:30 ends with and sensitive. Okay. So let's
+12:34 
+
+12:34 use this variable.
+12:38 
+
+12:38 Okay. I'm going to copy it at the end.
+12:42 
+
+12:42 And so what what are we doing? We are
+12:44 
+
+12:44 using a variable name backup name. And
+12:46 
+
+12:46 then we are adding a validation. What
+12:48 
+
+12:48 validation we are adding? So it's
+12:50 
+
+12:50 another type of validation function. So
+12:52 
+
+12:52 it is adding a condition. Let's say ends
+12:54 
+
+12:54 with v dotbackup name
+12:58 
+
+12:58 backup and backup name must end with
+13:01 
+
+13:01 hyphen backup. Okay. So we are saying we
+13:04 
+
+13:04 are creating a backup variable but the
+13:06 
+
+13:06 name should end with hyphen backup.
+13:09 
+
+13:09 Okay. And that's the validation
+13:11 
+
+13:11 condition. So how do we test it? So
+13:15 
+
+13:15 let's use this variable name inside
+13:17 
+
+13:17 terapform
+13:19 
+
+13:19 backup name is equal to
+13:22 
+
+13:22 uh let's call it uh daily
+13:27 
+
+13:27 backup.
+13:28 
+
+13:28 Okay. And let's run tf plan. This should
+13:32 
+
+13:32 work because the backup name has hyphen
+13:34 
+
+13:34 a backup at the end. But if I use
+13:39 
+
+13:39 hyphen backup instead of underscore
+13:41 
+
+13:41 backup. Now this is failing with the
+13:44 
+
+13:44 validation error. Backup name must end
+13:46 
+
+13:46 with underscore backup at this line
+13:48 
+
+13:48 validation rule fail. Right? So that's
+13:50 
+
+13:50 another type of validation function
+13:52 
+
+13:52 which is named as ends with. So another
+13:56 
+
+13:56 validation is with actually it's not a
+13:59 
+
+13:59 function it's a type of feature within
+14:02 
+
+14:02 variable. Okay. So when we are adding um
+14:05 
+
+14:05 variables over here like so currently we
+14:08 
+
+14:08 are using the default values and it'll
+14:10 
+
+14:10 be printed on the screen as well. It
+14:12 
+
+14:12 will be printed in uh state file as
+14:14 
+
+14:14 well. What if we want to keep some
+14:16 
+
+14:16 values as sensitive okay so let's say um
+14:21 
+
+14:21 variable
+14:24 
+
+14:24 credentials like you don't put the
+14:26 
+
+14:26 credentials generally in the variable
+14:28 
+
+14:28 files like I I'll show you why. So um
+14:32 
+
+14:32 variable equal to credentials let's add
+14:34 
+
+14:34 a default value is equal to xyz 1 2 3
+14:39 
+
+14:39 that's the value but we are also saying
+14:41 
+
+14:41 sensitive is equal to true what it does
+14:45 
+
+14:45 so till now we were only using variable
+14:47 
+
+14:47 with the default value and somewhere we
+14:50 
+
+14:50 were using type and description right so
+14:52 
+
+14:52 this is the first time we are using
+14:54 
+
+14:54 sensitive equal to true what it will do
+14:57 
+
+14:57 let's use this variable and let's use um
+15:01 
+
+15:01 this in the output file as well. Let's
+15:03 
+
+15:03 create an output variable. Output name
+15:06 
+
+15:06 is
+15:08 
+
+15:08 credentials
+15:09 
+
+15:09 and
+15:11 
+
+15:11 value is equal to v dot credentials.
+15:16 
+
+15:16 Okay. So let's run tf plan again. Okay.
+15:21 
+
+15:21 Now it says um output refers to
+15:24 
+
+15:24 sensitive value. That's why it is not
+15:26 
+
+15:26 showing the output of that variable. If
+15:28 
+
+15:28 you intend to export this data, annotate
+15:31 
+
+15:31 the value as sensitive by adding the
+15:33 
+
+15:33 following argument. It's saying add
+15:36 
+
+15:36 sensitive in output as well because the
+15:38 
+
+15:38 variable itself is sensitive. Okay. So
+15:41 
+
+15:41 if I add sensitive over here,
+15:44 
+
+15:44 let's run the TF plan again. Okay. Now
+15:48 
+
+15:48 it is saying backup must end with hyphen
+15:51 
+
+15:51 backup. This is the validation error
+15:53 
+
+15:53 that was coming from earlier.
+15:56 
+
+15:56 just corrected it and running the TF
+15:58 
+
+15:58 plan again. Okay. So we are mostly
+15:60 
+
+15:60 concerned with um the value of
+16:04 
+
+16:04 credentials. You see over here it is not
+16:07 
+
+16:07 showing anything and it says sensitive
+16:09 
+
+16:09 value. So it will not come in the logs.
+16:11 
+
+16:11 It will not it will not be printed on
+16:13 
+
+16:13 the std out or std error. That's why we
+16:16 
+
+16:16 use sensitive but again it's not uh
+16:19 
+
+16:19 really encrypted. It's encoded. It's
+16:21 
+
+16:21 base 64 encoded. Anyone can decode it.
+16:24 
+
+16:24 because it will be there in the TF state
+16:25 
+
+16:25 file. So use that with cautions. Uh I'm
+16:28 
+
+16:28 I'm just telling you the example like
+16:31 
+
+16:31 there could be other use cases but I'm
+16:33 
+
+16:33 just saying it it as an example. It's
+16:36 
+
+16:36 not the actual credential that you store
+16:38 
+
+16:38 in the variable. Okay. Now um that was
+16:42 
+
+16:42 validation and so we cover a couple of
+16:45 
+
+16:45 more validation and the credential type.
+16:48 
+
+16:48 Okay. The next assignment is about yeah
+16:52 
+
+16:52 type conversion functions right. So uh
+16:55 
+
+16:55 let's create two more variables inside
+16:58 
+
+16:58 variables.tf. I'm going to create these
+17:01 
+
+17:01 two variables.
+17:02 
+
+17:02 One is user location and another one is
+17:06 
+
+17:06 default location. In user location we
+17:07 
+
+17:07 have some duplicate values like us east
+17:10 
+
+17:10 one is there twice. It's list but it has
+17:15 
+
+17:15 duplicate values. Right? And this is
+17:18 
+
+17:18 again a list but a single value. So if
+17:21 
+
+17:21 you remember list does not allow
+17:23 
+
+17:23 duplicate values only set allows
+17:25 
+
+17:25 duplicate value. Okay. So if I were to
+17:30 
+
+17:30 um concatenate this uh let's see how
+17:34 
+
+17:34 does it work. Okay. So let's go ahead
+17:38 
+
+17:38 over here. Uh main.tf.
+17:42 
+
+17:42 Okay. Inside locals we have a lot of
+17:45 
+
+17:45 variables in local. now.
+17:48 
+
+17:48 Okay. And u let's do all locations
+17:54 
+
+17:54 is equal to and now we're going to
+17:56 
+
+17:56 concatenate all the locations and then
+17:58 
+
+17:58 we'll see what is the result. So we use
+18:01 
+
+18:01 concat function and inside that we
+18:04 
+
+18:04 provide uh you can hover the mouse and
+18:05 
+
+18:05 it will show you you provide two or more
+18:08 
+
+18:08 list and combine them into a single
+18:10 
+
+18:10 list. Okay. So the first list was where
+18:14 
+
+18:14 dot
+18:17 
+
+18:17 user locations. Uh where it is user
+18:20 
+
+18:20 locations and second is where dot
+18:23 
+
+18:23 default location.
+18:25 
+
+18:25 Okay, it works the same way as merge. It
+18:28 
+
+18:28 just merge is for maps and concat is for
+18:33 
+
+18:33 string. Okay,
+18:36 
+
+18:36 so now we have merged it uh together.
+18:40 
+
+18:40 Okay. And if we were to print this out
+18:44 
+
+18:44 location, let's go in the output
+18:49 
+
+18:49 output and let's add all locations
+18:55 
+
+18:55 value is equal to local dotall
+18:59 
+
+18:59 locations.
+19:00 
+
+19:00 Okay. and like TF plan um or let's do a
+19:05 
+
+19:05 TF output
+19:08 
+
+19:08 and let's just use all location I don't
+19:10 
+
+19:10 want to print everything right so let's
+19:12 
+
+19:12 just use this the output uh yeah um
+19:18 
+
+19:18 because I haven't run TF plan yet that's
+19:20 
+
+19:20 why it is not showing so I have to run
+19:21 
+
+19:21 TF plan once so that it refreshes the TF
+19:24 
+
+19:24 state file right so now if I run TF
+19:29 
+
+19:29 output put all location. Uh it's still
+19:33 
+
+19:33 saying it's not there.
+19:36 
+
+19:36 Okay. Uh let's run TF plan.
+19:44 
+
+19:44 Okay. I'm looking for the output
+19:45 
+
+19:45 variables.
+19:47 
+
+19:47 Let's see where it is. Um
+19:54 
+
+19:54 okay, here is all locations. Now if you
+19:57 
+
+19:57 see in all location because it's a list
+19:60 
+
+19:60 it provided you all the values right and
+20:04 
+
+20:04 it has duplicates as well east one east
+20:07 
+
+20:07 one it has duplicate values as well
+20:09 
+
+20:09 right so what if you need only the
+20:11 
+
+20:11 unique values okay for that if you
+20:14 
+
+20:14 remember only set has the unique values
+20:17 
+
+20:17 so what I can do I can create one more
+20:20 
+
+20:20 variable over here so let's call it
+20:23 
+
+20:23 unique location
+20:26 
+
+20:26 And instead of concat um we can use to
+20:30 
+
+20:30 set
+20:32 
+
+20:32 okay two set function that means we are
+20:34 
+
+20:34 converting this list into a set. Set
+20:37 
+
+20:37 only will have unique values. Okay. So
+20:41 
+
+20:41 let's use where dot all locations. Oops
+20:45 
+
+20:45 sorry not where it's a local. So local
+20:48 
+
+20:48 dot
+20:50 
+
+20:50 all locations and hit save. Now if I add
+20:54 
+
+20:54 this in the output variable
+20:58 
+
+20:58 output
+20:60 
+
+21:00 um
+21:03 
+
+21:03 unique locations value is equal to local
+21:07 
+
+21:07 dot unique locations.
+21:10 
+
+21:10 Okay. So let's use tf plan
+21:14 
+
+21:14 grap
+21:16 
+
+21:16 unique locations. Uh okay. So I need few
+21:20 
+
+21:20 more lines after this because it's a
+21:21 
+
+21:21 list. So let's do grap hyphen A5. So it
+21:24 
+
+21:24 will show you five lines after this grap
+21:27 
+
+21:27 result A5. You can do B5 to see before
+21:31 
+
+21:31 results. But yeah, that's it. So if you
+21:34 
+
+21:34 see now there's a list and it removed
+21:36 
+
+21:36 the duplicate value. It has only the
+21:38 
+
+21:38 unique value. US East one, US West one,
+21:41 
+
+21:41 US West 2. Only unique value because
+21:43 
+
+21:43 it's a set now. It's not a list. And
+21:46 
+
+21:46 this is what we did the type conversion.
+21:48 
+
+21:48 we converted the list into set over
+21:51 
+
+21:51 here. Okay. Uh let's go ahead to the
+21:56 
+
+21:56 next and um assignment which is around
+21:59 
+
+21:59 the number functions. Okay. So we'll
+22:02 
+
+22:02 look into sum, max and absolute.
+22:05 
+
+22:05 Okay. So let's create a variable.
+22:09 
+
+22:09 So let's create this variable over here.
+22:13 
+
+22:13 What it is doing it's u monthly cost. It
+22:17 
+
+22:17 has it it's a list with multiple values.
+22:20 
+
+22:20 Okay. So negative value means it's a
+22:22 
+
+22:22 credit. So this is debit and this is
+22:24 
+
+22:24 credit. Okay. Now what you need to do?
+22:28 
+
+22:28 You need to do some calculations. You
+22:29 
+
+22:29 need to use some function uh like sum
+22:32 
+
+22:32 max um and then you need to do the
+22:35 
+
+22:35 calculation based on these elements.
+22:38 
+
+22:38 Okay. So let's go inside your main and
+22:42 
+
+22:42 inside your locals. So let's do a few
+22:45 
+
+22:45 things. First let's calculate only the
+22:48 
+
+22:48 positive cost. Okay. So for that let's
+22:51 
+
+22:51 create a variable called positive cost.
+22:54 
+
+22:54 And now what we have to do we have to
+22:56 
+
+22:56 iterate through multiple elements.
+22:58 
+
+22:58 Right? Because there is no function to
+22:59 
+
+22:59 calculate the positive cost. So we have
+23:01 
+
+23:01 to iterate it through the multiple
+23:03 
+
+23:03 elements. Actually you can use absolute
+23:06 
+
+23:06 function as well. But then you cannot
+23:08 
+
+23:08 use absolute in a list. In fact let's
+23:10 
+
+23:10 try using it. So if I were to use
+23:13 
+
+23:13 absolute
+23:15 
+
+23:15 where dot cost what was that monthly
+23:17 
+
+23:17 cost let's see if it works positive cost
+23:21 
+
+23:21 equal to absolute where dot monthly cost
+23:23 
+
+23:23 so let's create an output variable as
+23:25 
+
+23:25 well
+23:28 
+
+23:28 output and
+23:32 
+
+23:32 positive cost value is equal to local
+23:37 
+
+23:37 dot
+23:39 
+
+23:39 positive cost.
+23:43 
+
+23:43 Now TF plan uh let's use it over here.
+23:47 
+
+23:47 The same variable positive cost. Yeah,
+23:50 
+
+23:50 it says invalid value for number
+23:53 
+
+23:53 required but have tpple. Actually that's
+23:55 
+
+23:55 not even a list because it has a
+23:57 
+
+23:57 negative value. So it is a tpple
+24:00 
+
+24:00 different data types within the list.
+24:04 
+
+24:04 So for that because absolute function
+24:07 
+
+24:07 doesn't work on tpple you have to
+24:09 
+
+24:09 iterate it using a for loop. Okay. So
+24:13 
+
+24:13 how do we do that? Absolute is fine. Uh
+24:16 
+
+24:16 but then you have to use the absolute in
+24:20 
+
+24:20 a counter and we have to execute the
+24:22 
+
+24:22 counter. Okay. So for let's say cost in
+24:26 
+
+24:26 we have used the for loop before as
+24:28 
+
+24:28 well. So I hope you understand it. inv
+24:32 
+
+24:32 dot monthly cost
+24:37 
+
+24:37 monthly cost colon absolute. Now
+24:41 
+
+24:41 absolute should be on cost on each of
+24:46 
+
+24:46 the counter. It will check the absolute
+24:48 
+
+24:48 value and then
+24:51 
+
+24:51 use
+24:52 
+
+24:52 the um what is saying no declaration for
+24:57 
+
+24:57 for dot monthly cost
+25:01 
+
+25:01 um what was the variable name let's see
+25:05 
+
+25:05 was monthly costs there is was an s
+25:09 
+
+25:09 monthly costs okay for cost n monthly
+25:14 
+
+25:14 uh v dot monthly cost and then absolute
+25:18 
+
+25:18 cost.
+25:20 
+
+25:20 So now let's run TF plan again and let's
+25:23 
+
+25:23 see it's not showing anything now like
+25:27 
+
+25:27 there is no grab maybe because there is
+25:29 
+
+25:29 an error. So let's see TF plan.
+25:37 
+
+25:37 Okay. Uh okay
+25:42 
+
+25:42 because
+25:45 
+
+25:45 um
+25:51 
+
+25:51 positive why it was not coming in the
+25:53 
+
+25:53 graph result I'm not sure because it's
+25:55 
+
+25:55 definitely over here. So what it is
+25:57 
+
+25:57 doing it is checking each and every
+25:59 
+
+25:59 value and converting everything into
+26:01 
+
+26:01 absolute value. So everything is now
+26:04 
+
+26:04 coming as positive even if we had one
+26:07 
+
+26:07 value which is minus 50. So everything
+26:10 
+
+26:10 is coming as positive now because we
+26:12 
+
+26:12 have converted everything into absolute
+26:14 
+
+26:14 values. Now that was uh for converting a
+26:19 
+
+26:19 tpple into positive values like we are
+26:22 
+
+26:22 using a for loop for that. Now let's
+26:25 
+
+26:25 calculate the maximum cost.
+26:29 
+
+26:29 So if we were to calculate the maximum
+26:31 
+
+26:31 cost, let's show you this thing. So if I
+26:34 
+
+26:34 do maximum cost equal to max of
+26:38 
+
+26:38 where dot monthly costs, right? If I
+26:42 
+
+26:42 were to do this, this will again throw
+26:43 
+
+26:43 the error because again similar to
+26:46 
+
+26:46 absolute function max does not work on
+26:49 
+
+26:49 tpple. These are functions for uh
+26:52 
+
+26:52 numbers or you know integers. It does
+26:54 
+
+26:54 not work on tpples. So for this as well
+26:57 
+
+26:57 we have to run for loop. But because we
+27:01 
+
+27:01 have already executed the for loop and
+27:03 
+
+27:03 we already have the result in positive
+27:05 
+
+27:05 cost we don't have to do it again. We
+27:07 
+
+27:07 can just do max of
+27:11 
+
+27:11 local dot positive cost.
+27:15 
+
+27:15 Okay. And similarly we can do min as
+27:19 
+
+27:19 well
+27:22 
+
+27:22 which is min of uh this this this and we
+27:26 
+
+27:26 can also check total cost. Total cost is
+27:29 
+
+27:29 equal to sum of
+27:33 
+
+27:33 local dot
+27:35 
+
+27:35 positive cost and we can also calculate
+27:39 
+
+27:39 average as well. So average cost
+27:42 
+
+27:42 is equal to now average cost will be
+27:45 
+
+27:45 total cost upon length of total cost
+27:49 
+
+27:49 right. So it should be local dot total
+27:52 
+
+27:52 cost
+27:54 
+
+27:54 divided by
+27:56 
+
+27:56 length
+27:58 
+
+27:58 of
+27:60 
+
+27:60 local dot positive cost. So length is
+28:03 
+
+28:03 four right. So that's how we calculate
+28:05 
+
+28:05 average.
+28:08 
+
+28:08 Now if I were to print all of these uh
+28:11 
+
+28:11 let's go to output. So we have the
+28:13 
+
+28:13 positive cost. Let me just do it fast.
+28:16 
+
+28:16 Uh now we need not the positive cost. We
+28:19 
+
+28:19 need let's say total cost.
+28:22 
+
+28:22 So local dot total cost. Then we have
+28:27 
+
+28:27 max cost
+28:31 
+
+28:31 which is local dot max cost. Then we
+28:34 
+
+28:34 have min cost.
+28:38 
+
+28:38 which is local dot
+28:42 
+
+28:42 min cost. Then we have average cost. You
+28:46 
+
+28:46 get the idea, right? So average cost
+28:49 
+
+28:49 local dot
+28:51 
+
+28:51 average cost.
+28:54 
+
+28:54 Now let's do a TF plan over here. And
+28:59 
+
+28:59 that should provide us all the details.
+29:02 
+
+29:02 Oops.
+29:03 
+
+29:03 Now it's saying local.positive positive
+29:06 
+
+29:06 cost is a tpple of four elements because
+29:10 
+
+29:10 we might have done something wrong.
+29:11 
+
+29:11 Okay, let's go back. Local.positive cost
+29:17 
+
+29:17 is a tuple of Okay, it's showing max has
+29:21 
+
+29:21 issues.
+29:23 
+
+29:23 Um, sum has issues. Okay, so it's still
+29:29 
+
+29:29 still not a number, right? It's it's
+29:31 
+
+29:31 still so yeah, my bad. Even though we
+29:34 
+
+29:34 converted everything in the positive
+29:35 
+
+29:35 cost, it's still a tuple. Uh it's it's
+29:38 
+
+29:38 still not a number. These only works in
+29:41 
+
+29:41 case of number separated by comma.
+29:44 
+
+29:44 Right? So what you can do is you can
+29:46 
+
+29:46 create one more variable. I'm just
+29:48 
+
+29:48 trying it out. Um I might make some
+29:50 
+
+29:50 mistake. So bear with me. We we'll
+29:52 
+
+29:52 correct it together. Don't worry. Okay.
+29:54 
+
+29:54 So if you remember we worked through
+29:58 
+
+29:58 split function, right? So let's do that
+30:00 
+
+30:00 thing only. So let's uh create a
+30:03 
+
+30:03 variable name list cost. Okay, I'm just
+30:08 
+
+30:08 giving any random name. And uh what
+30:11 
+
+30:11 we're going to do is we're going to use
+30:13 
+
+30:13 split function. And we'll use the split
+30:16 
+
+30:16 function in local.ositive
+30:18 
+
+30:18 cost.
+30:20 
+
+30:20 Okay. And um the second substring is oh
+30:24 
+
+30:24 no, this is the substring and the first
+30:27 
+
+30:27 is the separator. So let's add the
+30:29 
+
+30:29 separator which is comma.
+30:32 
+
+30:32 Okay. And now instead of over here let's
+30:35 
+
+30:35 replace it with list cost.
+30:39 
+
+30:39 Now this should work fine. But let's see
+30:43 
+
+30:43 if it doesn't. So total cost equal to
+30:47 
+
+30:47 yeah
+30:50 
+
+30:50 df plan. Okay. Uh invalid value for
+30:54 
+
+30:54 number number required but have list of
+30:56 
+
+30:56 string. Oh, it doesn't work in list as
+30:58 
+
+30:58 well. Okay, because what we did, we
+31:02 
+
+31:02 converted that into a list. We could
+31:04 
+
+31:04 have used two list, but still we need
+31:08 
+
+31:08 numbers separated by comma, right? So,
+31:12 
+
+31:12 we need multiple values of a number. So,
+31:14 
+
+31:14 for that I think this is the only way we
+31:17 
+
+31:17 can use for loop.
+31:21 
+
+31:21 Okay. So instead of this
+31:24 
+
+31:24 I'm going to remove this as well. So
+31:27 
+
+31:27 let's paste it over here. Instead of abs
+31:30 
+
+31:30 let's say max
+31:32 
+
+31:32 for cost invar dot you can use positive
+31:36 
+
+31:36 cost or monthly cost uh doesn't matter
+31:39 
+
+31:39 actually I'm going to remove this part
+31:42 
+
+31:42 and over here that's the max cost over
+31:46 
+
+31:46 here is min
+31:52 
+
+31:52 over here is sum
+31:56 
+
+31:56 and length should work. This is positive
+32:01 
+
+32:01 cost.
+32:04 
+
+32:04 Okay, let's run it again.
+32:07 
+
+32:07 Now it is throwing error. Cannot sum
+32:09 
+
+32:09 noniterable.
+32:11 
+
+32:11 Okay, in value for list total cost has
+32:14 
+
+32:14 some issues. Okay, what it is saying uh
+32:17 
+
+32:17 for cost in V do monthly cost. Oh, okay.
+32:21 
+
+32:21 Because it has a negative uh sign as
+32:24 
+
+32:24 well, right? So instead of that, let's
+32:26 
+
+32:26 use positive cost.
+32:31 
+
+32:31 Okay. Not where it's a local
+32:37 
+
+32:37 and uh we are doing length also the
+32:40 
+
+32:40 positive cost. Yeah. Let's let's run it
+32:43 
+
+32:43 again.
+32:45 
+
+32:45 Okay. What it is saying still throwing
+32:48 
+
+32:48 the same error for total cost which is
+32:52 
+
+32:52 um we are doing sum of all the elements
+32:57 
+
+32:57 in the cost for cost in local dot
+33:01 
+
+33:01 positive cost
+33:04 
+
+33:04 which has a list. Oh because we are
+33:07 
+
+33:07 doing it one by one. Okay.
+33:12 
+
+33:12 So
+33:14 
+
+33:14 yeah it will throw the error for
+33:18 
+
+33:18 sum and
+33:24 
+
+33:24 invalid function. Okay just wait
+33:29 
+
+33:29 um let me think about it what can be
+33:32 
+
+33:32 done. Okay I understood the mistake that
+33:34 
+
+33:34 I was making. We don't need uh these
+33:37 
+
+33:37 four loops in max and min. So let me
+33:40 
+
+33:40 just replace it first.
+33:55 
+
+33:55 Don't need the split function as well.
+34:01 
+
+34:01 Okay. So um the way we were doing max
+34:05 
+
+34:05 and min on uh this positive cost uh will
+34:09 
+
+34:09 not work because this is a list right
+34:12 
+
+34:12 and this max function works on
+34:15 
+
+34:15 individual numbers. So what we need is a
+34:18 
+
+34:18 spread operator which will treat
+34:21 
+
+34:21 individual elements for max and min.
+34:23 
+
+34:23 Okay. And this should be min. So the
+34:25 
+
+34:25 spread operator is something like this.
+34:28 
+
+34:28 At the end of the variable, you just add
+34:30 
+
+34:30 three dots. Okay. Same for min. That's
+34:34 
+
+34:34 it. Okay. And let's run TF plan. Okay.
+34:39 
+
+34:39 Now, it worked. So, here's the total
+34:41 
+
+34:41 cost. 425.
+34:43 
+
+34:43 Um, you can just check it out. 200, 300,
+34:46 
+
+34:46 375, and this was plus 50 because we
+34:50 
+
+34:50 converted that into plus, right? So,
+34:52 
+
+34:52 425.
+34:54 
+
+34:54 And this is where the total cost is. Uh
+34:57 
+
+34:57 where are the other output variables?
+35:00 
+
+35:00 That's the positive cost.
+35:03 
+
+35:03 Uh and then we have average cost.
+35:07 
+
+35:07 And then we have max cost which is 200.
+35:09 
+
+35:09 Min cost which is 50. Okay. So every
+35:12 
+
+35:12 variable was printed successfully and we
+35:15 
+
+35:15 have covered all the numeric functions
+35:17 
+
+35:17 now with this assignment. So let's move
+35:20 
+
+35:20 ahead with the next one which is
+35:23 
+
+35:23 timestamp.
+35:25 
+
+35:25 Okay. So uh let's try to use different
+35:30 
+
+35:30 timestamps uh based on the time stamp
+35:33 
+
+35:33 function. For that uh let's use locals
+35:37 
+
+35:37 itself.
+35:39 
+
+35:39 Okay. And let's simply start with
+35:42 
+
+35:42 printing the time stamp. Okay. So
+35:45 
+
+35:45 current timestamp
+35:48 
+
+35:48 is equal to if you remember we discussed
+35:50 
+
+35:50 about time stamp function it does not
+35:52 
+
+35:52 need any argument. So let's just print
+35:54 
+
+35:54 this like this and in the output
+35:58 
+
+35:58 output
+35:60 
+
+35:60 time okay and
+36:04 
+
+36:04 value
+36:06 
+
+36:06 is equal to local dot
+36:09 
+
+36:09 um current time stamp.
+36:13 
+
+36:13 Okay, let's print TF plan GP time. Okay,
+36:20 
+
+36:20 so it says time equal to known after
+36:22 
+
+36:22 apply because we have not applied the
+36:24 
+
+36:24 changes yet. That's why it is not
+36:25 
+
+36:25 showing the current time stamp. So,
+36:27 
+
+36:27 which is good. Okay, this is what we
+36:30 
+
+36:30 need. Um, let's go ahead and let's do
+36:34 
+
+36:34 some let's do some more formatting.
+36:36 
+
+36:36 Okay. So, uh let's say
+36:40 
+
+36:40 we need uh in specific format, right?
+36:43 
+
+36:43 So, let's use format one is equal to
+36:48 
+
+36:48 format date. This is another function
+36:51 
+
+36:51 that use time stamp as the substring
+36:53 
+
+36:53 timestamp function and also we need to
+36:56 
+
+36:56 provide the format. So, let's say y
+36:60 
+
+36:60 mm dd. If you want you can use
+37:04 
+
+37:04 m M D like this like capital M means uh
+37:08 
+
+37:08 it will come in uh the upper case
+37:11 
+
+37:11 smaller M smaller M means lower case it
+37:14 
+
+37:14 doesn't matter if it's a numeric but if
+37:16 
+
+37:16 you do M O N that means it will print
+37:19 
+
+37:19 the first three letter of the month
+37:21 
+
+37:21 right like J an in upper case and so on
+37:24 
+
+37:24 right and then you use local dot
+37:29 
+
+37:29 um current time stamp So that's one
+37:32 
+
+37:32 format
+37:33 
+
+37:33 and similarly you can print another
+37:36 
+
+37:36 format which is let's say
+37:40 
+
+37:40 y Y
+37:42 
+
+37:42 mm MM TD okay
+37:46 
+
+37:46 and then you can also append that with
+37:49 
+
+37:49 the
+37:52 
+
+37:52 let's call it timestamp name is equal to
+37:55 
+
+37:55 append the time stamp with another
+37:57 
+
+37:57 variable let's say backup top hyphen
+38:02 
+
+38:02 and using the string interpolation
+38:06 
+
+38:06 we can add local dot uh format one
+38:10 
+
+38:10 whatever format we need and then we can
+38:12 
+
+38:12 add this timestamp name in front of any
+38:14 
+
+38:14 variable.
+38:16 
+
+38:16 Okay. So you can put that in output
+38:18 
+
+38:18 variable and try it out. Uh we have
+38:20 
+
+38:20 already seen that multiple times. Now we
+38:22 
+
+38:22 are in the last uh assignment of this
+38:26 
+
+38:26 video which is around file handling. So
+38:29 
+
+38:29 we'll uh look into few of the file
+38:31 
+
+38:31 handling function. So let's create a
+38:34 
+
+38:34 JSON file to test this out. Okay. In the
+38:36 
+
+38:36 same folder I'm going to create let's
+38:38 
+
+38:38 say a file called config.json.
+38:42 
+
+38:42 This is the content. Okay. So what it
+38:44 
+
+38:44 has? It has a database uh map with host
+38:49 
+
+38:49 port username password and API with
+38:52 
+
+38:52 endpoint and timeout. Okay. So that's uh
+38:57 
+
+38:57 config.json. JSON
+39:00 
+
+39:00 and um
+39:03 
+
+39:03 okay so let's see if how it's going to
+39:07 
+
+39:07 verify the changes
+39:09 
+
+39:09 okay so let's uh inside the local let's
+39:13 
+
+39:13 add a variable called config file exist
+39:18 
+
+39:18 it will check the file okay so how do we
+39:21 
+
+39:21 check the file function is file exists
+39:24 
+
+39:24 so that is the function using which it
+39:26 
+
+39:26 will check if the file exists or Not.
+39:28 
+
+39:28 Now if you hover the mouse over it, it
+39:30 
+
+39:30 will show you the path and the string.
+39:33 
+
+39:33 Okay, path which is a string. So uh for
+39:37 
+
+39:37 that you need to do doty-
+39:41 
+
+39:41 config. Dyphen is for the current
+39:43 
+
+39:43 directory. So config dot JSON.
+39:48 
+
+39:48 Okay. And if you want to see the data,
+39:52 
+
+39:52 if you want to print the data of the
+39:54 
+
+39:54 config file or whatever, then you can
+39:56 
+
+39:56 use config data
+39:59 
+
+39:59 data is equal to first you need to check
+40:02 
+
+40:02 if the file exists. So local.config file
+40:05 
+
+40:05 exists. The first one if it exists. So
+40:08 
+
+40:08 this is like a conditional expression
+40:11 
+
+40:11 that we have seen earlier, right? So we
+40:13 
+
+40:13 are saying if it exists, this is a
+40:14 
+
+40:14 condition. then question mark which is
+40:17 
+
+40:17 the true condition which is JSON decode.
+40:21 
+
+40:21 So the file is let's say encoded we need
+40:23 
+
+40:23 to decode it. Okay. And inside that we
+40:28 
+
+40:28 use a file function
+40:30 
+
+40:30 and we provide the file path config dot
+40:36 
+
+40:36 JSON
+40:41 
+
+40:41 and yeah it should be in double quotes.
+40:45 
+
+40:45 So we are using two functions. One is a
+40:47 
+
+40:47 file function to read the content of the
+40:49 
+
+40:49 file and then we also have to decode the
+40:53 
+
+40:53 file content to print it.
+40:55 
+
+40:55 Okay. And then we provide colon and the
+41:00 
+
+41:00 false condition. So let's just put it
+41:02 
+
+41:02 blank. Okay. If the file does not exist,
+41:05 
+
+41:05 then it will uh print the blank.
+41:08 
+
+41:08 Okay. And I think now we can just add
+41:13 
+
+41:13 that in output variable
+41:17 
+
+41:17 output
+41:19 
+
+41:19 config
+41:21 
+
+41:21 and value
+41:23 
+
+41:23 is equal to local dot config data.
+41:29 
+
+41:29 So let's run tf plan grap config.
+41:35 
+
+41:35 There is no function name formatted.
+41:37 
+
+41:37 Okay. There is a typo over here. So
+41:40 
+
+41:40 let's fix that.
+41:42 
+
+41:42 Uh format
+41:46 
+
+41:46 date.
+41:48 
+
+41:48 Okay. There's one more thing. Uh
+41:49 
+
+41:49 whenever there is an incorrect name, the
+41:52 
+
+41:52 function name will come in white. Now
+41:54 
+
+41:54 that it is oh it's based on actually the
+41:56 
+
+41:56 theme that you are using. But the uh the
+41:58 
+
+41:58 name of the function will be highlighted
+41:60 
+
+42:00 if it's correct, right? As you can see
+42:02 
+
+42:02 over here.
+42:05 
+
+42:05 So let's run it again.
+42:12 
+
+42:12 Okay. Um, yeah, it is coming as blank
+42:14 
+
+42:14 because it's there are multiple fields
+42:16 
+
+42:16 to it. So, I'm going to use grap - a10
+42:20 
+
+42:20 to print the next n lines after the
+42:23 
+
+42:23 search. And as you can see, this is the
+42:25 
+
+42:25 config output. So, it is printing the
+42:28 
+
+42:28 entire file over here. Okay. So, that
+42:31 
+
+42:31 was few of the functions for file
+42:34 
+
+42:34 operations. You can test out more. You
+42:36 
+
+42:36 can check out directory name. There is
+42:38 
+
+42:38 uh we have covered file decode. There is
+42:40 
+
+42:40 file encode function, JSON encode
+42:43 
+
+42:43 function and so on. You can check out
+42:44 
+
+42:44 the documentation and see if there are
+42:46 
+
+42:46 more function that you want to try. But
+42:48 
+
+42:48 make sure you try out um all the
+42:51 
+
+42:51 examples uh and make sure you complete
+42:53 
+
+42:53 the assignment. Make sure you submit the
+42:55 
+
+42:55 assignment. Again, if you don't do the
+42:57 
+
+42:57 hands-on, it won't be of much help. But
+42:60 
+
+42:60 I hope you enjoyed the video. I hope you
+43:01 
+
+43:01 like the video. Thank you so much. I
+43:03 
+
+43:03 will see you tomorrow. Happy learning.

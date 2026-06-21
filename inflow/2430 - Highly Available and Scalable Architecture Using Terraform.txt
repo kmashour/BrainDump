@@ -1,0 +1,2710 @@
+00:00 All right, in this video we'll be
+00:02 
+
+00:02 implementing this amazing project. It
+00:04 
+
+00:04 looks complex but trust me it is a mini
+00:07 
+
+00:07 project and we'll be doing that with the
+00:09 
+
+00:09 help of Terraform. So if you are new
+00:12 
+
+00:12 here, hello, my name is Push and this is
+00:14 
+
+00:14 day 24 in 30 days of AWS Terraform
+00:17 
+
+00:17 series and we'll be implementing an end
+00:20 
+
+00:20 toend mini project for a web application
+00:24 
+
+00:24 hosting in AWS. will be making sure that
+00:27 
+
+00:27 this application is highly available and
+00:29 
+
+00:29 fall tolerance as per the best practices
+00:31 
+
+00:31 as per well architected framework. This
+00:34 
+
+00:34 is a mini project. It will not have the
+00:36 
+
+00:36 database or the back end layer. So it'll
+00:38 
+
+00:38 have front end and then it'll have
+00:41 
+
+00:41 autoscaling groups and it'll have few
+00:44 
+
+00:44 other infrastructure concept which is
+00:46 
+
+00:46 really important to understand and later
+00:49 
+
+00:49 on in one of those videos uh when we
+00:51 
+
+00:51 understood all these concepts how it
+00:53 
+
+00:53 works then we'll be extending this
+00:55 
+
+00:55 project into a three- tier architecture
+00:57 
+
+00:57 which will be again fall tolerant and
+00:60 
+
+00:60 highly available. So without wasting any
+01:02 
+
+01:02 time let's start with the video. Uh I'm
+01:05 
+
+01:05 sure you have been supporting the
+01:06 
+
+01:06 channel. I'm sure you have been
+01:08 
+
+01:08 following along and implementing all the
+01:10 
+
+01:10 projects, all the videos by yourself and
+01:13 
+
+01:13 I'm sure it will be a good learning
+01:15 
+
+01:15 experience. If so, let me know in the
+01:17 
+
+01:17 comment and let me know if you are
+01:18 
+
+01:18 facing any issues. Okay. So, let's try
+01:21 
+
+01:21 to understand this project and then
+01:23 
+
+01:23 we'll be looking into the code and like
+01:26 
+
+01:26 all the other things as well. So, as you
+01:28 
+
+01:28 can see here is the user. This is the
+01:30 
+
+01:30 user which is accessing the web
+01:32 
+
+01:32 application. Okay. The request will be
+01:34 
+
+01:34 made over the public internet on port 80
+01:38 
+
+01:38 or 443 HTTP or HTTPS and then that
+01:42 
+
+01:42 internet gateway the request will go to
+01:45 
+
+01:45 application load balancer. So we are
+01:47 
+
+01:47 exposing this application through an
+01:49 
+
+01:49 application load balancer provided by
+01:51 
+
+01:51 AWS. This application load balancer has
+01:55 
+
+01:55 two target groups. one is EC2 instance
+01:58 
+
+01:58 in private subnet A and another one in
+02:01 
+
+02:01 EC2 instance private subnet B. Okay. So
+02:04 
+
+02:04 these two subnets are in different
+02:07 
+
+02:07 availability zones. So this will what
+02:09 
+
+02:09 make the app highly available right?
+02:12 
+
+02:12 This is in different availability zones.
+02:14 
+
+02:14 So even if one entire zone goes down
+02:17 
+
+02:17 even if this zone goes down then the
+02:20 
+
+02:20 request will be forwarded to the
+02:22 
+
+02:22 secondary zone which is over here. If
+02:24 
+
+02:24 this goes down, the request will be
+02:26 
+
+02:26 served through the primary zone. Right?
+02:28 
+
+02:28 So it is highly available because we are
+02:30 
+
+02:30 spanning the app across multiple
+02:32 
+
+02:32 availability zones and because it has an
+02:35 
+
+02:35 application load balancer in the front.
+02:37 
+
+02:37 Application load balancer can span
+02:39 
+
+02:39 across multiple availability zones.
+02:41 
+
+02:41 Okay. And then we are making sure that
+02:43 
+
+02:43 this application is not directly exposed
+02:46 
+
+02:46 to public internet. We are exposing our
+02:48 
+
+02:48 application load balancer endpoint but
+02:51 
+
+02:51 we are keeping the back end or like the
+02:55 
+
+02:55 application logic behind private subnet.
+02:58 
+
+02:58 So these instances will not be
+02:59 
+
+02:59 accessible over public instances that is
+03:03 
+
+03:03 what making it more secure. So spanning
+03:06 
+
+03:06 the app across multiple availability
+03:08 
+
+03:08 zone is what it will make as fall
+03:11 
+
+03:11 tolerant right because the application
+03:14 
+
+03:14 can withstand a availability zone
+03:17 
+
+03:17 failure right but what happens when the
+03:21 
+
+03:21 load on the server increases and it
+03:24 
+
+03:24 needs additional server to fulfill those
+03:26 
+
+03:26 request so that is where our autoscaling
+03:29 
+
+03:29 groups come into the picture. These
+03:31 
+
+03:31 instances are behind an autoscaling
+03:33 
+
+03:33 group. So we have set minimum, maximum
+03:36 
+
+03:36 and desired number of instances over
+03:38 
+
+03:38 here. So minimum is one that means at a
+03:40 
+
+03:40 time one instance will be running in
+03:43 
+
+03:43 both of the availability zone. Maximum
+03:45 
+
+03:45 it can go up to five instances and
+03:48 
+
+03:48 desired is two. That means it will start
+03:51 
+
+03:51 with two instances when the server will
+03:54 
+
+03:54 provision when we start it. It will
+03:55 
+
+03:55 start with two instances in each of the
+03:58 
+
+03:58 availability zone. The max it can go to
+04:00 
+
+04:00 five uh sorry not in each of the
+04:03 
+
+04:03 availability zone. I mean the total
+04:04 
+
+04:04 should be two and when the load is
+04:07 
+
+04:07 really low and below the threshold of
+04:10 
+
+04:10 whatever we have set it can go up to
+04:13 
+
+04:13 minimum of one instances that means one
+04:15 
+
+04:15 instance can be deleted but it will be a
+04:18 
+
+04:18 good practice if we keep minimum and
+04:19 
+
+04:19 desired as two and then maximum can go
+04:22 
+
+04:22 up to five. That means it can add
+04:24 
+
+04:24 additional three more instances. Okay.
+04:27 
+
+04:27 When it will do that, it will do that
+04:29 
+
+04:29 based on certain metrics that we have
+04:31 
+
+04:31 set. I will walk you through that as
+04:33 
+
+04:33 well. So whenever let's say CPU
+04:35 
+
+04:35 utilization goes above 70%. Then it will
+04:38 
+
+04:38 add additional server. When CPU
+04:41 
+
+04:41 utilization goes above 60% it will have
+04:43 
+
+04:43 additional server something like that
+04:44 
+
+04:44 and few other metrics that we can use.
+04:47 
+
+04:47 Okay. So using the same app across
+04:51 
+
+04:51 multiple availability zone is what
+04:54 
+
+04:54 making it fault tolerant and putting the
+04:56 
+
+04:56 EC2 instances behind an autoscaling
+04:59 
+
+04:59 group is what making the app highly
+05:01 
+
+05:01 available. Right? So application load
+05:04 
+
+05:04 balancer will forward the traffic to EC2
+05:06 
+
+05:06 instances. Now these EC2 instances we
+05:08 
+
+05:08 are not directly hosting the application
+05:10 
+
+05:10 on these instances. What we have done is
+05:13 
+
+05:13 we have installed docker on these
+05:14 
+
+05:14 machines and the app is running as a
+05:18 
+
+05:18 docker container. So there is this
+05:20 
+
+05:20 Django app and what we are doing we are
+05:22 
+
+05:22 doing port mapping. So there is the host
+05:24 
+
+05:24 port port 80 that is open and then that
+05:27 
+
+05:27 port 80 is being mapped to the container
+05:29 
+
+05:29 port 8,000. Right? So it will do the
+05:32 
+
+05:32 port mapping and the app will be running
+05:33 
+
+05:33 on container port 8,000 but it will be
+05:36 
+
+05:36 available on port 80 because we have
+05:38 
+
+05:38 done the port mapping. the same for the
+05:41 
+
+05:41 other because they are being built on
+05:43 
+
+05:43 the same instance template. So uh the
+05:46 
+
+05:46 same same thing will be for the other
+05:47 
+
+05:47 server as well. Okay. So that's the
+05:49 
+
+05:49 inbound traffic how user will access. So
+05:52 
+
+05:52 it will go from uh here to the internet
+05:55 
+
+05:55 gateway to application load balancer.
+05:57 
+
+05:57 Application load balancer forwards the
+05:59 
+
+05:59 traffic to either of the EC2 instances.
+06:02 
+
+06:02 If there is additional load on the
+06:04 
+
+06:04 server, the autoscaling group will add
+06:06 
+
+06:06 more servers. And if the entire
+06:09 
+
+06:09 availability zone goes down, the
+06:11 
+
+06:11 application will still be serving the
+06:14 
+
+06:14 traffic through the secondary
+06:15 
+
+06:15 availability zones. Right? So that's the
+06:18 
+
+06:18 first part of it. Second part of it, now
+06:20 
+
+06:20 that we have the servers in private
+06:23 
+
+06:23 subnet, how it will pull the Docker
+06:25 
+
+06:25 images, right? Our Docker images are
+06:27 
+
+06:27 let's say residing in a docker hub
+06:29 
+
+06:29 registry over here which is outside AWS
+06:32 
+
+06:32 network or let's say we are using a
+06:34 
+
+06:34 third party uh artifactory or uh you
+06:37 
+
+06:37 know Nexus any other thirdparty docker
+06:40 
+
+06:40 registry how would we able to pull the
+06:43 
+
+06:43 images or how would be able to patch
+06:46 
+
+06:46 these servers for security updates for
+06:48 
+
+06:48 vulnerability fixes and so on right so
+06:50 
+
+06:50 it needs the outbound internet access
+06:53 
+
+06:53 but because these servers are in private
+06:55 
+
+06:55 subnet that means it doesn't have the
+06:57 
+
+06:57 outbound internet access. So that is why
+06:59 
+
+06:59 we are using an amazing service which is
+07:03 
+
+07:03 called NAD gateway. So we have placed
+07:06 
+
+07:06 one net gateway in each of the
+07:08 
+
+07:08 availability zone because net gateway is
+07:11 
+
+07:11 zone specific right. So we have to
+07:14 
+
+07:14 create net gateway in each of the
+07:16 
+
+07:16 availability zone in the public subnet.
+07:19 
+
+07:19 Okay. So there is this public subnet A1
+07:22 
+
+07:22 and the public subnet A2 and both of
+07:25 
+
+07:25 them has the net gateway. So now when in
+07:28 
+
+07:28 this EC2 instance will try to pull the
+07:30 
+
+07:30 image the request the outbound request
+07:32 
+
+07:32 will go to the net gateway and to the
+07:35 
+
+07:35 internet gateway and through the
+07:36 
+
+07:36 internet gateway it will go to docker
+07:38 
+
+07:38 hub to pull the image. Right? The same
+07:41 
+
+07:41 thing over here as well. The request
+07:44 
+
+07:44 will go to net gateway and to the
+07:47 
+
+07:47 internet gateway and then to the docker
+07:49 
+
+07:49 hub. So what will happen in this case?
+07:52 
+
+07:52 Instead of EC2 instances going directly
+07:55 
+
+07:55 to the internet actually no it will not
+07:58 
+
+07:58 go to the internet gateway it will go
+08:00 
+
+08:00 from net gateway to docker hub. Yes.
+08:04 
+
+08:04 Okay. Let me just verify this real
+08:07 
+
+08:07 quick. So if we go to AWS white papers
+08:12 
+
+08:12 and the white paper was three tier
+08:15 
+
+08:15 architecture
+08:17 
+
+08:17 let's see
+08:19 
+
+08:19 not serverless traditional web hosting
+08:22 
+
+08:22 okay so uh if we look at this and let's
+08:28 
+
+08:28 go back I'm not sure if in this they
+08:32 
+
+08:32 have used net gateway or Not
+08:38 
+
+08:38 okay. So let's search for net gateway
+08:43 
+
+08:43 AWS
+08:45 
+
+08:45 and yeah let's look at this over here.
+08:50 
+
+08:50 So this is a medium article but I think
+08:52 
+
+08:52 this is good enough. So the request goes
+08:55 
+
+08:55 from EC2 to net gateway to the internet
+08:59 
+
+08:59 gateway. Oh yes it it goes to internet
+09:01 
+
+09:01 gateway. That means let's just verify it
+09:04 
+
+09:04 one more time on the official
+09:06 
+
+09:06 documentation
+09:09 
+
+09:09 um net gateway basics. They don't have a
+09:14 
+
+09:14 yeah over here. So if you can see client
+09:18 
+
+09:18 net pairing destination okay
+09:21 
+
+09:21 but what I'm trying to look is um how it
+09:26 
+
+09:26 access the internet right so uh private
+09:29 
+
+09:29 subnet net gateway and from net gateway
+09:32 
+
+09:32 to internet gateway and then internet
+09:34 
+
+09:34 okay yeah so that that's correct so
+09:36 
+
+09:36 instead of going directly from uh public
+09:39 
+
+09:39 subnet to internet gateway it is going
+09:41 
+
+09:41 from private subnet to net gateway and
+09:44 
+
+09:44 then net gateway is routing the traffic
+09:46 
+
+09:46 to internet gateway which is what we
+09:48 
+
+09:48 have done in our use case. Okay. So this
+09:51 
+
+09:51 is correct. So this is how it will pull
+09:53 
+
+09:53 the image and this is how it will
+09:55 
+
+09:55 download the updates on the server as
+09:58 
+
+09:58 well. So that's that's the additional
+10:00 
+
+10:00 part and yeah I believe that is all that
+10:05 
+
+10:05 is what we are going to do in this
+10:07 
+
+10:07 video. So let's go to our VS code over
+10:11 
+
+10:11 here. Um I'm inside day 24 which is
+10:19 
+
+10:19 over here. Okay, day 24 code. Okay, now
+10:23 
+
+10:23 it will have as you can see. Let me just
+10:25 
+
+10:25 set the alias
+10:28 
+
+10:28 and let me also change the terminal to
+10:31 
+
+10:31 make it readable. I'm inside day 24.
+10:35 
+
+10:35 Okay. So over here what we have done is
+10:38 
+
+10:38 we have divided the resources into
+10:40 
+
+10:40 different u terraform files. So first is
+10:45 
+
+10:45 alb a and then asg main. Let's start
+10:48 
+
+10:48 with the main. In the main it'll only
+10:50 
+
+10:50 have the provider configuration. You can
+10:52 
+
+10:52 call it provider.tf or whatever you want
+10:55 
+
+10:55 to call that's okay. So over here we are
+10:57 
+
+10:57 using the same AWS provider that we have
+10:60 
+
+10:60 been using 5.0 or 6.0. So in most of the
+11:04 
+
+11:04 videos I have used five 5.0 and some of
+11:06 
+
+11:06 the videos I have used 6.0 both of them
+11:09 
+
+11:09 are working for me. And then we have
+11:12 
+
+11:12 also used the random provider to
+11:14 
+
+11:14 generate some random strings. Here are
+11:17 
+
+11:17 the provider details with some default
+11:19 
+
+11:19 tags and the default region. Now start
+11:23 
+
+11:23 with the ALB. Okay. So ALB is uh for the
+11:27 
+
+11:27 load balancer. Okay. And we are making
+11:30 
+
+11:30 sure that it is not an internal load
+11:32 
+
+11:32 balancer. It has to be the external load
+11:34 
+
+11:34 balancer. And load balancer type is
+11:37 
+
+11:37 application. So we have different load
+11:39 
+
+11:39 balancer in AWS. We have application uh
+11:41 
+
+11:41 we have classic load balancer, network
+11:43 
+
+11:43 load balancer and yeah I believe we have
+11:47 
+
+11:47 four different type of load balancer in
+11:48 
+
+11:48 AWS. So what we need is an application
+11:51 
+
+11:51 load balancer and security group is AWS
+11:55 
+
+11:55 security group which we have created in
+11:57 
+
+11:57 a different file ALBSG and ID. So for
+11:60 
+
+12:00 ALB we have created a separate security
+12:02 
+
+12:02 group. Let's check this security group
+12:04 
+
+12:04 first. So AWS uh security group ALB and
+12:09 
+
+12:09 VPC ID which is the VPC that we have
+12:11 
+
+12:11 created. And for this load balancer we
+12:14 
+
+12:14 are enabling um HTTP from internet on
+12:17 
+
+12:17 port 80 and HTTPS from internet on port
+12:20 
+
+12:20 443 which is what is required and egress
+12:23 
+
+12:23 is allow all outbound and that is for
+12:26 
+
+12:26 ALB. For EC2, we are enabling port 80
+12:31 
+
+12:31 access only from ALB, right? We don't
+12:35 
+
+12:35 want to expose our EC2 instances
+12:37 
+
+12:37 publicly. That's why we are only
+12:38 
+
+12:38 enabling it from load balancer. So here
+12:41 
+
+12:41 we have provided security groups equal
+12:43 
+
+12:43 to AWS security groups
+12:45 
+
+12:45 do ID which is this one. Okay. And same
+12:50 
+
+12:50 thing for port 443 only from the ALB
+12:54 
+
+12:54 security group. Now this is security
+12:56 
+
+12:56 group for SSH access. Let's say if you
+12:58 
+
+12:58 have some issues, you want to
+12:60 
+
+12:60 troubleshoot, you are admin, you should
+13:02 
+
+13:02 have the SSH access. So for that you are
+13:05 
+
+13:05 providing SSH access to the EC2
+13:07 
+
+13:07 instances. For now I have kept it at
+13:09 
+
+13:09 0000 but make sure you change it to your
+13:12 
+
+13:12 IP or your C for your organization or if
+13:16 
+
+13:16 you are behind a VPN your VPN C right so
+13:19 
+
+13:19 it should be secure and then this is an
+13:22 
+
+13:22 additional group that we have created.
+13:24 
+
+13:24 So you can ignore this if you want.
+13:28 
+
+13:28 And also this one is also we have used
+13:31 
+
+13:31 the ALB security group. So ignore this
+13:33 
+
+13:33 one as well. Right. Uh now let's go to
+13:37 
+
+13:37 VPC security group. So we have created a
+13:39 
+
+13:39 VPC with enable DNS support and enable
+13:42 
+
+13:42 DNS host name. This is important
+13:44 
+
+13:44 otherwise our apps would not be
+13:45 
+
+13:45 accessible outside the VPC.
+13:48 
+
+13:48 Right? And then C block we have used the
+13:51 
+
+13:51 variable for that. Now we have created
+13:54 
+
+13:54 multiple subnets and these things these
+13:59 
+
+13:59 functions and everything we have already
+14:01 
+
+14:01 explained multiple times. So uh what we
+14:04 
+
+14:04 are creating is a public subnet for net
+14:07 
+
+14:07 gateway actually two public subnets and
+14:10 
+
+14:10 that is why we have used count.index
+14:12 
+
+14:12 over here. Uh we are doing it two times
+14:15 
+
+14:15 for one for each of the subnet and one
+14:17 
+
+14:17 for each availability zone. That is why
+14:19 
+
+14:19 we have used count.index over here. So
+14:22 
+
+14:22 two subnet will be created with this
+14:24 
+
+14:24 resource and two private subnets will be
+14:26 
+
+14:26 created with this resource. Now how do
+14:29 
+
+14:29 we differentiate between the names. So
+14:31 
+
+14:31 if you have noticed in the tax we are
+14:33 
+
+14:33 using count index + one. Okay. So the
+14:37 
+
+14:37 first will be created as public subnet
+14:39 
+
+14:39 1. Second one will be created as public
+14:41 
+
+14:41 subnet 2. Similarly over here as well.
+14:45 
+
+14:45 Now same thing we are creating a public
+14:47 
+
+14:47 route table. Okay. And then we are
+14:52 
+
+14:52 creating routes. So this is the route
+14:54 
+
+14:54 for the internet gateway. And then we
+14:57 
+
+14:57 are associating it with the public
+14:58 
+
+14:58 subnet. Then we are creating an internet
+15:02 
+
+15:02 gateway over here. And now we are
+15:04 
+
+15:04 creating route table for the private
+15:06 
+
+15:06 subnet. Over here is the route for
+15:10 
+
+15:10 private subnet. And as you can see
+15:12 
+
+15:12 destination is 0000 but the net gateway
+15:15 
+
+15:15 is the target for that. And then we are
+15:18 
+
+15:18 associating it with the route table. I'm
+15:20 
+
+15:20 I'm not going into the specific of route
+15:23 
+
+15:23 tables and networking because I'm sure
+15:25 
+
+15:25 you would have watched the days zero
+15:27 
+
+15:27 video in which I have explained there
+15:28 
+
+15:28 are some prerequisite for this series
+15:31 
+
+15:31 and I have provided the video as well in
+15:34 
+
+15:34 which you understand all these VPC
+15:36 
+
+15:36 related concepts. So I'm just going on a
+15:38 
+
+15:38 high level otherwise this video will be
+15:40 
+
+15:40 4 hour long. I don't want to do that.
+15:42 
+
+15:42 Okay. [snorts]
+15:43 
+
+15:43 So then we are associating private
+15:45 
+
+15:45 subnet with that route table and then we
+15:48 
+
+15:48 are creating one net gateway per
+15:50 
+
+15:50 availability zone. Again we are doing
+15:53 
+
+15:53 that with count.index.
+15:55 
+
+15:55 So allocation ID, subnet ID and the tag
+15:58 
+
+15:58 as well. Now this net gateway also need
+16:01 
+
+16:01 an elastic IP. So that is why we have
+16:04 
+
+16:04 created one elastic IP per net gateway
+16:07 
+
+16:07 instance
+16:09 
+
+16:09 and the same way the name has been given
+16:11 
+
+16:11 in the incremental order. But this will
+16:13 
+
+16:13 be dependent on the internet gateway.
+16:16 
+
+16:16 Okay. So these are the main
+16:18 
+
+16:18 infrastructure resources and we were
+16:21 
+
+16:21 looking into ALB as well. So application
+16:23 
+
+16:23 load balancer created and after that the
+16:26 
+
+16:26 target group will be created target
+16:28 
+
+16:28 group which will redirect the traffic
+16:30 
+
+16:30 from the load balancer to the backend
+16:32 
+
+16:32 server. Backend servers are the EC2
+16:34 
+
+16:34 instances. Right? So over here we are
+16:37 
+
+16:37 saying HTTP protocol with VPC ID as
+16:40 
+
+16:40 this. The first target group will do the
+16:43 
+
+16:43 health check on path slash and then this
+16:46 
+
+16:46 is the interval time out healthy
+16:48 
+
+16:48 threshold unhealthy threshold. Healthy
+16:51 
+
+16:51 threshold meaning it will do the health
+16:53 
+
+16:53 check after every 30 seconds and as soon
+16:56 
+
+16:56 as it get two successful replies
+16:59 
+
+16:59 consequently then it will add the
+17:02 
+
+17:02 servers to the target group of load
+17:04 
+
+17:04 balancer. If it gets too unhealthy
+17:07 
+
+17:07 threshold back to back then it will
+17:10 
+
+17:10 remove those servers. That means those
+17:12 
+
+17:12 servers are not healthy and it will
+17:14 
+
+17:14 replace it with the new server. Okay. So
+17:16 
+
+17:16 that's the health check for the target
+17:18 
+
+17:18 group. Now there is a listener as well.
+17:23 
+
+17:23 So there is a target group and then
+17:24 
+
+17:24 there is a listener. Listener is what is
+17:26 
+
+17:26 responsible for forwarding the traffic
+17:29 
+
+17:29 to the target group. Okay. Target group
+17:32 
+
+17:32 is which is doing the health check on
+17:34 
+
+17:34 the servers. But then listener is
+17:37 
+
+17:37 responsible for forwarding that HTTP
+17:39 
+
+17:39 traffic to the target group. So we
+17:41 
+
+17:41 provide the default action target group
+17:43 
+
+17:43 ARN as the target. I mean if you have
+17:46 
+
+17:46 HTTPS enabled if you have installed SSL
+17:49 
+
+17:49 certificate then you need to add HTTPS
+17:51 
+
+17:51 listener as well and then you need to
+17:54 
+
+17:54 add the target group for HTTPS as well.
+17:57 
+
+17:57 Okay. So then we have autoscaling group.
+18:01 
+
+18:01 Now autoscaling group has a launch
+18:03 
+
+18:03 template right because when a server is
+18:05 
+
+18:05 deleted so let's say this server is
+18:08 
+
+18:08 deleted new server will be replaced by
+18:10 
+
+18:10 this right or when the load on the
+18:13 
+
+18:13 server increases uh a new server will be
+18:16 
+
+18:16 provisioned but then how would that new
+18:18 
+
+18:18 server know the instructions to install
+18:21 
+
+18:21 docker or do the port mapping or to
+18:24 
+
+18:24 execute this Django app and the
+18:26 
+
+18:26 container mapping to it how would it
+18:28 
+
+18:28 know like what it needs to be run. So
+18:31 
+
+18:31 all those instructions are there in the
+18:33 
+
+18:33 launch template. So that is why we need
+18:36 
+
+18:36 to create the launch template and
+18:38 
+
+18:38 associate that with the autoscaling
+18:40 
+
+18:40 group. Okay. So launch template uh will
+18:43 
+
+18:43 have an AMI ID a default uh base image
+18:48 
+
+18:48 and then we pass the instance type. We
+18:50 
+
+18:50 provide uh the security group ids to be
+18:53 
+
+18:53 associated with it and then there'll be
+18:56 
+
+18:56 a user data script. So this is the user
+18:58 
+
+18:58 data script which will have the
+18:60 
+
+19:00 instructions to uh install docker pull
+19:04 
+
+19:04 the docker image and run the container
+19:06 
+
+19:06 right so it's there in this script
+19:07 
+
+19:07 folder and then some meta data u tags
+19:11 
+
+19:11 and so on right so that was the launch
+19:13 
+
+19:13 template once the launch template is
+19:15 
+
+19:15 created then we create the autoscaling
+19:17 
+
+19:17 group autoscaling group will have the
+19:19 
+
+19:19 details like minimum size maximum size
+19:22 
+
+19:22 desired capacity and VPC zone identifier
+19:25 
+
+19:25 okay so over here we are providing the
+19:27 
+
+19:27 subnet id of the private id. So private
+19:30 
+
+19:30 star if you remember from the video day
+19:33 
+
+19:33 10 I believe we have discussed splat
+19:35 
+
+19:35 expressions right. So this is what we
+19:37 
+
+19:37 are using over here. This is the splat
+19:39 
+
+19:39 expression. Then target group ARN like
+19:42 
+
+19:42 the target group that we have created
+19:43 
+
+19:43 for load balancer. Health check type is
+19:46 
+
+19:46 elb which is elastic load balancer
+19:48 
+
+19:48 health check and this is the greatest
+19:50 
+
+19:50 period and the launch template that we
+19:53 
+
+19:53 are using for this autoscaling group. So
+19:56 
+
+19:56 launch template that we have just
+19:57 
+
+19:57 created. Okay. And then the tags. Then
+20:00 
+
+20:00 we need to create the autoscaling policy
+20:03 
+
+20:03 because how would it know how to scale
+20:05 
+
+20:05 up or how to scale down. Right. So
+20:09 
+
+20:09 actually there is a concept of scale up
+20:11 
+
+20:11 scale down and scale in and scale out.
+20:13 
+
+20:13 Right? So scale up scale down is usually
+20:15 
+
+20:15 referred in when we are upgrading the
+20:19 
+
+20:19 server to a bigger server. Right? But
+20:22 
+
+20:22 when we are adding additional server
+20:25 
+
+20:25 then we call it scale out. Okay. So
+20:28 
+
+20:28 there is a difference between horizontal
+20:29 
+
+20:29 scaling and vertical scaling. Okay. So
+20:33 
+
+20:33 over here uh we are creating the scale
+20:36 
+
+20:36 out policy. What we are saying scaling
+20:39 
+
+20:39 adjustment one cool down period is 300.
+20:42 
+
+20:42 And then similarly we have the scalein
+20:45 
+
+20:45 policy which says cool down period is
+20:47 
+
+20:47 300 second. And now we need to provide
+20:50 
+
+20:50 the metrics based on what it will track
+20:54 
+
+20:54 the scale in and scale out. Right? So
+20:56 
+
+20:56 over here we are saying that where
+20:58 
+
+20:58 policy type is target uh tracking
+21:01 
+
+21:01 scaling and here's the target predefined
+21:03 
+
+21:03 matrix ASG average CPU utilization is
+21:06 
+
+21:06 70. So there is a matrix for ASG average
+21:09 
+
+21:09 CP utilization. Whenever this matrix is
+21:12 
+
+21:12 above 70% then it will do the scale in.
+21:16 
+
+21:16 Okay. So that's what we are saying over
+21:18 
+
+21:18 here.
+21:19 
+
+21:19 And then we are also setting the
+21:21 
+
+21:21 cloudatch alarm. So whenever there is
+21:23 
+
+21:23 high CPU uh meaning there is a different
+21:28 
+
+21:28 matrix over here which says threshold is
+21:30 
+
+21:30 80 average period. So that means over a
+21:34 
+
+21:34 period of 120 seconds over a period of 2
+21:36 
+
+21:36 minute when the average CPU utilization
+21:40 
+
+21:40 is above 80% then it will kick off the
+21:43 
+
+21:43 cloudatch alarm and then
+21:48 
+
+21:48 this is the alarm for low CPU as well.
+21:50 
+
+21:50 So when it goes below 20% that means it
+21:54 
+
+21:54 might delete the server. So that is what
+21:56 
+
+21:56 we are doing over here. Okay. And
+21:59 
+
+21:59 basically that's it. uh you can check
+22:02 
+
+22:02 the variables over here. So we have
+22:04 
+
+22:04 variables for region, environment, VPC,
+22:06 
+
+22:06 CI, public subnets um which is a list of
+22:10 
+
+22:10 string, private subnet which is also a
+22:14 
+
+22:14 list of string and then public subnet
+22:17 
+
+22:17 count is two. Private subnet count is
+22:19 
+
+22:19 two. Availability zones are these two.
+22:21 
+
+22:21 This is the AMI ID. Instance type is T2
+22:25 
+
+22:25 micro desired maximum minimum and S3
+22:30 
+
+22:30 bucket is optional like we have used it
+22:32 
+
+22:32 for additional storage if we need it but
+22:34 
+
+22:34 uh it we won't be using that in this
+22:36 
+
+22:36 project. Okay. So now that we have seen
+22:40 
+
+22:40 everything it's time to run TF init TF
+22:44 
+
+22:44 plan and TF apply. So let's do and let's
+22:46 
+
+22:46 see if we get any error. We'll fix that
+22:49 
+
+22:49 on the fly.
+22:51 
+
+22:51 So TF plan okay it says 42 resources
+22:57 
+
+22:57 will be created.
+22:59 
+
+22:59 So we did not see any error. Now let's
+23:01 
+
+23:01 run Terraform. Apply
+23:04 
+
+23:04 auto approve. [snorts] Okay. So because
+23:09 
+
+23:09 it it needs to create autoscaling groups
+23:12 
+
+23:12 and servers inside it. Run some user
+23:15 
+
+23:15 script install Docker and a lot of
+23:17 
+
+23:17 things. So it might take some time. I'm
+23:20 
+
+23:20 going to pause the recording till then
+23:22 
+
+23:22 and then we'll come back and see the
+23:24 
+
+23:24 servers.
+23:26 
+
+23:26 Okay, it says the resources have been
+23:29 
+
+23:29 provisioned. So, let's go and check the
+23:30 
+
+23:30 load balancer URL first. Uh, which is
+23:34 
+
+23:34 over here
+23:36 
+
+23:36 and let's check this out. Oops, bad
+23:40 
+
+23:40 gateway. So, it might be coming up. So,
+23:43 
+
+23:43 let's go and check the resources.
+23:46 
+
+23:46 Um what I need is load balancer
+23:52 
+
+23:52 which is over here
+23:55 
+
+23:55 and here is my load balancer which says
+23:57 
+
+23:57 it is active
+23:60 
+
+23:60 and let's check the listener. So it says
+24:02 
+
+24:02 we have a listener rule which is
+24:05 
+
+24:05 forwarding the traffic to app target
+24:07 
+
+24:07 group and um if we see the resource map.
+24:12 
+
+24:12 So this is how it works. So resource uh
+24:14 
+
+24:14 the instances are not healthy yet
+24:16 
+
+24:16 because it is still doing those health
+24:18 
+
+24:18 checks, right? So the listener is
+24:21 
+
+24:21 running on port uh HTTP port 80. There
+24:24 
+
+24:24 is one rule which forwards the traffic
+24:26 
+
+24:26 to the target group to the instance and
+24:29 
+
+24:29 there are two targets. Both of them are
+24:31 
+
+24:31 unhealthy at the moment. Health check is
+24:33 
+
+24:33 failed. So we need to wait for the
+24:36 
+
+24:36 health check to be
+24:39 
+
+24:39 fulfilled and
+24:42 
+
+24:42 we'll make sure that the servers are
+24:44 
+
+24:44 healthy. So let's go to EC2 and let's
+24:46 
+
+24:46 log one of those servers. So this is the
+24:49 
+
+24:49 app instance one and two and let's go
+24:52 
+
+24:52 inside one of these servers. Connect.
+24:56 
+
+24:56 And I'm just okay. It's not uh giving me
+24:59 
+
+24:59 the connect option because it doesn't
+25:02 
+
+25:02 have public IP. Maybe that's why. Yeah,
+25:05 
+
+25:05 no public IP address assigned. So that's
+25:09 
+
+25:09 another lesson for me. We need to attach
+25:11 
+
+25:11 the public IP to the EC2 instance to be
+25:14 
+
+25:14 able to log into that. So let's just
+25:17 
+
+25:17 wait for some time for the server to
+25:19 
+
+25:19 become healthy or else we'll add the
+25:21 
+
+25:21 public IP and for that the servers has
+25:25 
+
+25:25 to be recreated and then it will
+25:27 
+
+25:27 reattach to the autoscaling group. But I
+25:30 
+
+25:30 think if this is what we have to do. So
+25:32 
+
+25:32 yeah, we'll do that for the
+25:33 
+
+25:33 troubleshooting. Otherwise, we wouldn't
+25:34 
+
+25:34 know what the issue is. If there is any
+25:37 
+
+25:37 issue. So let's go again to the target
+25:40 
+
+25:40 group uh
+25:45 
+
+25:45 which is this one.
+25:47 
+
+25:47 And it says two unhealthy. Let's see if
+25:50 
+
+25:50 it shows any errors over here.
+25:56 
+
+25:56 Uh health checks. These are the health
+25:58 
+
+25:58 checks. And
+26:01 
+
+26:01 if we do the monitoring, it says two
+26:05 
+
+26:05 unhealthy hosts
+26:09 
+
+26:09 and let's go to targets.
+26:15 
+
+26:15 Yeah, it won't show the error over here.
+26:19 
+
+26:19 Okay. So it is draining the other one
+26:21 
+
+26:21 because after some time when it couldn't
+26:24 
+
+26:24 find it healthy for some time then it
+26:27 
+
+26:27 will drain it and try to add the
+26:29 
+
+26:29 instance again.
+26:31 
+
+26:31 Um so
+26:36 
+
+26:36 yeah I think let's do that. Let's try to
+26:40 
+
+26:40 uh make those instances public and we'll
+26:42 
+
+26:42 see if there are any issues or not.
+26:45 
+
+26:45 Okay. So let's go back to our code and
+26:48 
+
+26:48 let's see where the changes needs to be
+26:51 
+
+26:51 done. So if we go to autoscaling group
+26:54 
+
+26:54 okay inside
+26:57 
+
+26:57 launch template I believe uh that has to
+27:02 
+
+27:02 be done. Okay. So, let's see the
+27:04 
+
+27:04 resource AWS
+27:12 
+
+27:12 launch template over here.
+27:16 
+
+27:16 And
+27:19 
+
+27:19 let's see.
+27:24 
+
+27:24 Uh
+27:26 
+
+27:26 I'm going to just search for public
+27:29 
+
+27:29 associate public IP address equal to
+27:32 
+
+27:32 true. So we need just need to add this
+27:34 
+
+27:34 tag network interfaces
+27:36 
+
+27:36 inside the launch template. Okay.
+27:40 
+
+27:40 And here it is. So I'm just going to add
+27:43 
+
+27:43 it over here.
+27:45 
+
+27:45 And then let's run the apply again.
+27:52 
+
+27:52 Wait, those instances are not public,
+27:56 
+
+27:56 right? Yeah. So, we should not be adding
+27:58 
+
+27:58 it because we have kept that in a
+27:60 
+
+27:60 private subnet for a reason. Sorry, my
+28:02 
+
+28:02 bad, my bad, my bad. Let me remove it.
+28:05 
+
+28:05 So, why it's not letting us do the SS
+28:08 
+
+28:08 login? It's It's not letting us do from
+28:10 
+
+28:10 there, but we should be able to do it uh
+28:13 
+
+28:13 from the back end. Okay. Um, so let me
+28:17 
+
+28:17 just check this one more time if it is
+28:20 
+
+28:20 still unhealthy.
+28:25 
+
+28:25 Yeah, it it tried to add a new instance,
+28:28 
+
+28:28 but that is also unhealthy.
+28:31 
+
+28:31 Okay. And uh if I do connect, it says
+28:36 
+
+28:36 Okay. Let's try to see if it is letting
+28:38 
+
+28:38 me connect through the private IP. Okay.
+28:43 
+
+28:43 Um now we need to select an endpoint. We
+28:46 
+
+28:46 don't have an EC2 instance connect
+28:48 
+
+28:48 endpoint uh to connect. So let's try to
+28:51 
+
+28:51 create this endpoint and choose a subnet
+28:54 
+
+28:54 on which this endpoint will reside. So
+28:58 
+
+28:58 let's choose public subnet one
+29:02 
+
+29:02 security group. It says allow SSH create
+29:06 
+
+29:06 endpoint.
+29:08 
+
+29:08 Okay. And it says creation in progress.
+29:11 
+
+29:11 So I'm just going to let it create.
+29:14 
+
+29:14 If it doesn't work, we'll figure out
+29:16 
+
+29:16 something else.
+29:18 
+
+29:18 But let's try to see.
+29:24 
+
+29:24 Okay, I think the app is active now. We
+29:26 
+
+29:26 don't even have to log in. So let's try
+29:30 
+
+29:30 to check um
+29:36 
+
+29:36 load balancer
+29:40 
+
+29:40 and inside load balancer listener and
+29:43 
+
+29:43 rules or maybe resource map.
+29:48 
+
+29:48 So it says one server is healthy now. So
+29:52 
+
+29:52 it took some time and then one server is
+29:57 
+
+29:57 healthy and one is still failing the
+29:60 
+
+29:60 health check. So it might come up soon.
+30:04 
+
+30:04 So we need to just wait for that and we
+30:08 
+
+30:08 can just actively monitor from the
+30:10 
+
+30:10 target groups over here.
+30:15 
+
+30:15 Uh target groups and then targets. Okay.
+30:19 
+
+30:19 Over here it is not. Yeah, it is showing
+30:22 
+
+30:22 as healthy and this these are all
+30:24 
+
+30:24 draining. So this 1A has been replaced
+30:27 
+
+30:27 by a healthy instance over here and this
+30:30 
+
+30:30 will be done shortly as well. So yeah,
+30:34 
+
+30:34 so there is this new instance that has
+30:37 
+
+30:37 been added and it is doing target
+30:40 
+
+30:40 registration in progress and we need to
+30:44 
+
+30:44 just wait for some time for this to
+30:46 
+
+30:46 happen.
+30:50 
+
+30:50 It's currently at the initial health
+30:52 
+
+30:52 check. It is doing the initial health
+30:54 
+
+30:54 check. So let's just wait for that.
+31:02 
+
+31:02 Okay, it is unhealthy.
+31:06 
+
+31:06 But ideally because both the instance
+31:08 
+
+31:08 are being created from the same instance
+31:10 
+
+31:10 template. So either both should work or
+31:14 
+
+31:14 none of those should work. Right?
+31:16 
+
+31:16 So let's go ahead over here. The
+31:19 
+
+31:19 instance is running but still it is
+31:21 
+
+31:21 failing the health checks. Maybe the
+31:24 
+
+31:24 user data script did not run properly on
+31:26 
+
+31:26 that or something else.
+31:30 
+
+31:30 But there is I believe no point of
+31:32 
+
+31:32 logging into that because even if I
+31:34 
+
+31:34 loging by the time I log in
+31:38 
+
+31:38 that instance will be deleted and
+31:39 
+
+31:39 replaced by a newer one. Right? Uh so
+31:43 
+
+31:43 let's go ahead over here target and see.
+31:48 
+
+31:48 Yeah,
+31:51 
+
+31:51 let's just try to do that. Okay,
+31:55 
+
+31:55 instance connect using a private IP.
+31:58 
+
+31:58 Still creation in progress. Okay, maybe
+32:01 
+
+32:01 it's going to take some time.
+32:07 
+
+32:07 Come on. Okay, by the way, our app is
+32:09 
+
+32:09 active and we have seen the live example
+32:13 
+
+32:13 of high availability and fall tolerant,
+32:15 
+
+32:15 right? So, our app is running. This is a
+32:17 
+
+32:17 Django app, a static application that we
+32:19 
+
+32:19 have. Even though one of the server is
+32:21 
+
+32:21 down, one availability zone is not
+32:25 
+
+32:25 working. Our application is still being
+32:27 
+
+32:27 served from the other availability zone.
+32:29 
+
+32:29 So, if you keep hitting refresh, the app
+32:32 
+
+32:32 is still running, right?
+32:34 
+
+32:34 Um
+32:36 
+
+32:36 let's see if this is working.
+32:40 
+
+32:40 Okay, it might take some time.
+32:43 
+
+32:43 The other thing you can do is put some
+32:45 
+
+32:45 load on the application and see if it is
+32:49 
+
+32:49 able to create more servers or not.
+32:52 
+
+32:52 Right? But before that we need to
+32:56 
+
+32:56 um we need to connect to the instance
+32:59 
+
+32:59 which is somehow it is taking some time.
+33:02 
+
+33:02 Okay. So, let's try to
+33:08 
+
+33:08 load balancers
+33:10 
+
+33:10 and let's go to
+33:13 
+
+33:13 target group.
+33:17 
+
+33:17 Okay. Now, both the instances are
+33:19 
+
+33:19 healthy. Okay. So, let's not log in.
+33:22 
+
+33:22 Maybe you can figure out the login, but
+33:24 
+
+33:24 it's it's highly unlikely that either of
+33:27 
+
+33:27 the instance is not working because it's
+33:30 
+
+33:30 the underlying instance template. It's
+33:32 
+
+33:32 same. We have used the same instance
+33:34 
+
+33:34 group. We have used the same security
+33:36 
+
+33:36 group rules. Everything is same for both
+33:37 
+
+33:37 the servers. So either both will not
+33:40 
+
+33:40 work or both will work. Right? So it was
+33:43 
+
+33:43 just taking time to register the target
+33:45 
+
+33:45 for to do the health check and that is
+33:47 
+
+33:47 it. Now both the servers are healthy.
+33:50 
+
+33:50 And now the next part is you can try to
+33:54 
+
+33:54 push some load on the server and see if
+33:57 
+
+33:57 it is able to add additional servers or
+33:60 
+
+33:60 not. So there are multiple ways. Uh one
+34:02 
+
+34:02 way is uh this is what I have shown you
+34:05 
+
+34:05 earlier as well using an app called
+34:07 
+
+34:07 Apache JMeter. Um where is my terminal?
+34:11 
+
+34:11 Okay. Yeah. So I can just run JMeter and
+34:16 
+
+34:16 I can launch multiple threads on this
+34:19 
+
+34:19 application.
+34:21 
+
+34:21 um
+34:23 
+
+34:23 add a thread group
+34:27 
+
+34:27 and then inside the thread group I just
+34:31 
+
+34:31 have to
+34:38 
+
+34:38 number of threads let's say 1,000
+34:41 
+
+34:41 threads and I need to pass a file as
+34:46 
+
+34:46 well why it is not showing that maybe if
+34:48 
+
+34:48 I want to save your plan first. No.
+34:54 
+
+34:54 So, uh I think I need to add this or
+34:59 
+
+34:59 let's open a file
+35:02 
+
+35:02 and it was there in user push downloads.
+35:09 
+
+35:09 Okay, here it is.
+35:12 
+
+35:12 Nope, nope, nope, nope, not this. Wait,
+35:15 
+
+35:15 let's just remove this.
+35:18 
+
+35:18 Okay. And let's open a new file now.
+35:23 
+
+35:23 Open.
+35:26 
+
+35:26 Okay. Now it's open. Now we need to
+35:28 
+
+35:28 provide number of threads. Let's say
+35:31 
+
+35:31 1,000 threads. And if you go to HTTP
+35:34 
+
+35:34 request, you just need to provide your
+35:36 
+
+35:36 server IP over here. Server name or IP.
+35:40 
+
+35:40 So I'll just put my load balancer DNS
+35:44 
+
+35:44 which I can get from
+35:48 
+
+35:48 here
+35:50 
+
+35:50 upload balancer and there will be
+35:54 
+
+35:54 DNS name over here scope let's provide
+35:58 
+
+35:58 the DNS name and port number is 80
+36:03 
+
+36:03 protocol is HTTP path is slash that's
+36:06 
+
+36:06 good and let's hit start.
+36:10 
+
+36:10 Okay. Now, if we can see the result, it
+36:12 
+
+36:12 has spawn,000 concurrent threads to this
+36:15 
+
+36:15 server to the load balancer
+36:19 
+
+36:19 and let's go ahead and see the health of
+36:23 
+
+36:23 the load balancer. So, go to monitoring
+36:29 
+
+36:29 and we see there are a huge number of
+36:32 
+
+36:32 requests being piled up. So lots of
+36:35 
+
+36:35 requests are coming and it it takes some
+36:38 
+
+36:38 time uh for the requests to be shown
+36:42 
+
+36:42 over here but you will see something in
+36:46 
+
+36:46 ASG group. So let's go to EC2 server and
+36:51 
+
+36:51 then uh look for ASG application secure
+36:56 
+
+36:56 autoscaling group
+36:59 
+
+36:59 over here and
+37:02 
+
+37:02 [laughter]
+37:04 
+
+37:04 let's see we need to check if it
+37:06 
+
+37:06 increase the CPU utilization or not.
+37:10 
+
+37:10 Okay. Um
+37:20 
+
+37:20 so here are our scale in and scale out
+37:22 
+
+37:22 policies that we have created. CPU
+37:24 
+
+37:24 greater than 80 for two consecutive
+37:27 
+
+37:27 periods for 120 seconds then it will add
+37:31 
+
+37:31 new server and less than 20 it will
+37:33 
+
+37:33 delete the server
+37:35 
+
+37:35 now. Okay. So we need to check if there
+37:38 
+
+37:38 are load on the server or not. So let's
+37:40 
+
+37:40 go to each of these instances. Okay, one
+37:43 
+
+37:43 server. Okay, no, both are running. So
+37:46 
+
+37:46 let's go to this instance and go to
+37:49 
+
+37:49 monitoring.
+37:53 
+
+37:53 Okay. And
+37:56 
+
+37:56 CPU utilization is not that bad still.
+38:02 
+
+38:02 So that's why I did not add more
+38:04 
+
+38:04 servers.
+38:08 
+
+38:08 Okay, it peaked to 55% and then it went
+38:12 
+
+38:12 down. Maybe because it started the
+38:17 
+
+38:17 thread and then it somehow the request
+38:19 
+
+38:19 has been blocked. It's getting failed
+38:21 
+
+38:21 now. Uh we're getting 502. But if we
+38:25 
+
+38:25 check the app from here, okay, so the
+38:28 
+
+38:28 app is overloaded.
+38:30 
+
+38:30 Looks like it, but it did not increase
+38:33 
+
+38:33 the CPU for that. Let's see. Uh let's
+38:37 
+
+38:37 hit refresh.
+38:41 
+
+38:41 Okay.
+38:43 
+
+38:43 And
+38:45 
+
+38:45 says
+38:54 
+
+38:54 CPU and
+39:02 
+
+39:02 uh status and alarm.
+39:06 
+
+39:06 Okay. No alarm
+39:21 
+
+39:21 somehow maybe AWS detected it as a brute
+39:26 
+
+39:26 force attack and blocked the request and
+39:29 
+
+39:29 now I'm not able to access the
+39:30 
+
+39:30 application.
+39:32 
+
+39:32 Yeah.
+39:34 
+
+39:34 So what you can do is um let's let's
+39:38 
+
+39:38 just stop this. Okay, it's getting the
+39:41 
+
+39:41 response code back again.
+39:44 
+
+39:44 I think the application is back now. So
+39:47 
+
+39:47 what it did? Let's let's check if it did
+39:50 
+
+39:50 anything or not or it was just a
+39:53 
+
+39:53 temporary block.
+39:56 
+
+39:56 Um let's go to
+39:59 
+
+39:59 resource map and
+40:06 
+
+40:06 target group.
+40:12 
+
+40:12 Okay. Um it drained both the Okay. Now
+40:15 
+
+40:15 it is healthy one. Okay. One instance
+40:18 
+
+40:18 came back up but it did not add more
+40:21 
+
+40:21 instances. So maybe it overloaded the
+40:24 
+
+40:24 server but it did not actually overload
+40:27 
+
+40:27 it based on the CPU did not increase the
+40:29 
+
+40:29 CPU so that it could additional server.
+40:32 
+
+40:32 So it overloaded the server maybe um
+40:35 
+
+40:35 memory utilization or maybe the network
+40:38 
+
+40:38 bandwidth it occupied everything and
+40:40 
+
+40:40 then it forced it to recreate the server
+40:43 
+
+40:43 rather than adding additional server.
+40:45 
+
+40:45 Right? So this test would not work in
+40:48 
+
+40:48 this case. Okay. So, I'm just going to
+40:50 
+
+40:50 stop this.
+40:52 
+
+40:52 Okay,
+40:54 
+
+40:54 shut down all the threads, please. Okay,
+40:57 
+
+40:57 it's gone down to zero. So, let me just
+41:02 
+
+41:02 remove this. Uh, it will add the server
+41:04 
+
+41:04 back. Now, what you can do is you can
+41:07 
+
+41:07 test this by
+41:11 
+
+41:11 u running curl on this load balancer UR
+41:14 
+
+41:14 multiple times or just keep hitting
+41:16 
+
+41:16 refresh, you know.
+41:19 
+
+41:19 and maybe reduce the autoscaling group
+41:23 
+
+41:23 from 80 to
+41:26 
+
+41:26 let's say 10% something like that so
+41:28 
+
+41:28 that you should be able to test it
+41:29 
+
+41:29 quickly right I don't think manually it
+41:33 
+
+41:33 will be able to put that much of load on
+41:36 
+
+41:36 the CPU but you can try it out using a
+41:38 
+
+41:38 for loop inside the curl and put the
+41:42 
+
+41:42 load on the server or you can run any
+41:44 
+
+41:44 sort of stress test application
+41:47 
+
+41:47 Okay. Um,
+41:53 
+
+41:53 yeah, it is still trying to add the
+41:55 
+
+41:55 additional server. Uh, it has not, but
+41:58 
+
+41:58 it's going to take some time. So, I
+41:59 
+
+41:59 don't want to waste more time on that.
+42:01 
+
+42:01 Uh, the actual demo we have already
+42:03 
+
+42:03 seen. So maybe this is on you to test
+42:07 
+
+42:07 this out. Test how to implement how how
+42:09 
+
+42:09 do we test out the uh the high
+42:12 
+
+42:12 availability? How do we put more load on
+42:15 
+
+42:15 the server so that it could add
+42:16 
+
+42:16 additional servers? Okay. To increase
+42:19 
+
+42:19 the CPU utilization for now, make sure
+42:22 
+
+42:22 if you have completed everything, make
+42:24 
+
+42:24 sure you
+42:26 
+
+42:26 do the cleanup otherwise
+42:29 
+
+42:29 um you know it'll cost a lot. Okay. So,
+42:32 
+
+42:32 TF destroy
+42:34 
+
+42:34 auto approve. Load balancer is a costly
+42:37 
+
+42:37 resource. So even if you have a minimum
+42:41 
+
+42:41 number of servers running, load balancer
+42:43 
+
+42:43 could cost you a lot of money. So make
+42:45 
+
+42:45 sure you destroy the resources once you
+42:47 
+
+42:47 are done. And yeah, basically that's it
+42:51 
+
+42:51 from this demo. I hope you found it
+42:53 
+
+42:53 helpful. I hope you had a good learning
+42:55 
+
+42:55 experience. Make sure you implement the
+42:56 
+
+42:56 project by yourself end to end. Go to
+42:59 
+
+42:59 the task.md of this repository as always
+43:02 
+
+43:02 and try to implement the project. Okay.
+43:04 
+
+43:04 So thank you so much for watching. Uh
+43:07 
+
+43:07 have a good day and I will see you
+43:08 
+
+43:08 tomorrow with the next day 25 video.
+43:11 
+
+43:11 Happy learning.

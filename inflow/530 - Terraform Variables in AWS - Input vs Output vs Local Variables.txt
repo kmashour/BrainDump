@@ -1,0 +1,2302 @@
+00:00 All right, welcome back to the channel.
+00:02 
+
+00:02 My name is P. This is day five in 30
+00:04 
+
+00:04 days of AWS Terraform. Make sure you
+00:07 
+
+00:07 watch the previous videos because it has
+00:10 
+
+00:10 some prerequisites and we are just
+00:12 
+
+00:12 following along. It's a playlist. Do not
+00:14 
+
+00:14 start the playlist in between from
+00:16 
+
+00:16 somewhere. Make sure you start it from
+00:18 
+
+00:18 the beginning. Also make sure you watch
+00:21 
+
+00:21 day zero video in which I have explained
+00:23 
+
+00:23 the details of the challenge, how to do
+00:26 
+
+00:26 the submissions, how to complete the
+00:28 
+
+00:28 task and the details about the GitHub
+00:31 
+
+00:31 repository and everything. You can find
+00:32 
+
+00:32 the link in the description as well. In
+00:35 
+
+00:35 this video, we'll be talking about
+00:37 
+
+00:37 variables in AWS and Terraform like how
+00:41 
+
+00:41 does it work. So, uh for that, let's
+00:44 
+
+00:44 have a look at this diagram. Okay. So
+00:47 
+
+00:47 there are different type of variables.
+00:49 
+
+00:49 So based on purpose that means how do we
+00:52 
+
+00:52 categorize these variables together in
+00:54 
+
+00:54 terapform plus based on values right? So
+00:59 
+
+00:59 don't worry like it will be a little
+01:01 
+
+01:01 overwhelming if you are using the
+01:03 
+
+01:03 terraform for the first time but I will
+01:06 
+
+01:06 explain everything. We'll do hands-on
+01:08 
+
+01:08 for everything. So don't worry about it.
+01:10 
+
+01:10 Don't stress it too much as of now.
+01:12 
+
+01:12 Okay. So just understand let's let's
+01:14 
+
+01:14 let's take a step back okay let's
+01:17 
+
+01:17 understand what is a variable and why do
+01:19 
+
+01:19 we need it in terapform or in any
+01:21 
+
+01:21 programming language right so let's
+01:24 
+
+01:24 start with the basic question so why we
+01:27 
+
+01:27 need variables in the first place okay
+01:30 
+
+01:30 so whenever you have to use certain
+01:35 
+
+01:35 values again and again in a file in a
+01:38 
+
+01:38 program or in a script then you have to
+01:41 
+
+01:41 type the value again and again, right?
+01:44 
+
+01:44 So, let me show you this example. Um,
+01:47 
+
+01:47 this is the day 4 main.tf that we did
+01:51 
+
+01:51 earlier, right? So, in that you see
+01:53 
+
+01:53 there are different values. We only
+01:55 
+
+01:55 created an S3 bucket. So, we have a S3
+01:58 
+
+01:58 bucket name which is this one over here,
+01:60 
+
+01:60 right? And then it has tags which is
+02:02 
+
+02:02 environment. So, let's say this file
+02:05 
+
+02:05 instead of having just one resource
+02:08 
+
+02:08 because in the actual environment you
+02:09 
+
+02:09 won't be having just one S3 bucket. you
+02:11 
+
+02:11 will have hundreds and thousands of
+02:13 
+
+02:13 resources right so let's say you have
+02:15 
+
+02:15 created another resource let's say you
+02:17 
+
+02:17 have created a VPC so don't worry about
+02:20 
+
+02:20 it like how it is created all that
+02:22 
+
+02:22 difference I'll explain it later but now
+02:23 
+
+02:23 we are just focusing on um variables
+02:27 
+
+02:27 right so let's just create a VPC AWS VPC
+02:33 
+
+02:33 let's give it a name sample
+02:37 
+
+02:37 okay let's add a C talk
+02:41 
+
+02:41 and let's give it tags. Tags are
+02:44 
+
+02:44 important. Okay. So now I want to use
+02:48 
+
+02:48 the same tag again because it's for a
+02:50 
+
+02:50 dev environment. So let's use the same
+02:51 
+
+02:51 tag which is environment equal to dev.
+02:54 
+
+02:54 Okay. And there is a name tag for the
+02:57 
+
+02:57 VPC and it should be like I want the tag
+02:60 
+
+02:60 should be environment name which is dev
+03:03 
+
+03:03 hyphen the name of the resource which is
+03:06 
+
+03:06 VPC or the other way around. Okay, so
+03:10 
+
+03:10 that's one thing. Let's create another
+03:12 
+
+03:12 resource which is resource and let's
+03:15 
+
+03:15 create an EC2 instance now. Okay, AWS
+03:18 
+
+03:18 EC2.
+03:19 
+
+03:19 Now let's use the predefined fields and
+03:22 
+
+03:22 a tag. Tag let's use environment dev and
+03:27 
+
+03:27 name equal to dev EC2 instance. Now if
+03:32 
+
+03:32 you see what we have done over here,
+03:35 
+
+03:35 just zoom out a little bit. So what we
+03:39 
+
+03:39 are doing over here we are using this
+03:41 
+
+03:41 particular field environment equal to
+03:44 
+
+03:44 dev over here in S3 bucket. Same thing
+03:47 
+
+03:47 over here in AWS VPC and same thing over
+03:51 
+
+03:51 here in EC2 instance. There could be
+03:54 
+
+03:54 hundreds of more resources which will
+03:56 
+
+03:56 have the same tag and we have to
+03:59 
+
+03:59 initialize it again and again with the
+04:02 
+
+04:02 same value. Now I could make some
+04:04 
+
+04:04 mistake as well like over here instead
+04:06 
+
+04:06 of dev I could write staging or
+04:08 
+
+04:08 something else and then it will make our
+04:11 
+
+04:11 terraform files inconsistent because
+04:13 
+
+04:13 this was supposed to be a dev and this
+04:14 
+
+04:14 was just an human error right plus I
+04:17 
+
+04:17 have to do it again and again what if I
+04:19 
+
+04:19 want to make the changes in the
+04:20 
+
+04:20 terraform file right because when we are
+04:23 
+
+04:23 using this file we'll be using it for
+04:25 
+
+04:25 multiple environments so if I have to
+04:28 
+
+04:28 make it from dev to stage I have to do
+04:31 
+
+04:31 it in every single resource, right?
+04:34 
+
+04:34 Stage over here, stage over here.
+04:40 
+
+04:40 Okay. And stage in the third one as
+04:42 
+
+04:42 well. So it's a lot of work, right? And
+04:44 
+
+04:44 plus it's not efficient use of any
+04:48 
+
+04:48 coding or any scripting language. So
+04:51 
+
+04:51 instead what we do, let me first change
+04:53 
+
+04:53 it back to dev
+04:56 
+
+04:56 and let's change it back to dev.
+05:05 
+
+05:05 Where else was it? Okay, let's keep it.
+05:07 
+
+05:07 Okay, so what we do instead instead of
+05:11 
+
+05:11 making the changes to all the places,
+05:13 
+
+05:13 what we'll do is we'll create a
+05:15 
+
+05:15 variable. So let's create a variable
+05:17 
+
+05:17 over here, it starts with variable and
+05:21 
+
+05:21 let's give it the the syntax is same,
+05:24 
+
+05:24 right? You start with the keyword
+05:25 
+
+05:25 variable and then the name of a
+05:28 
+
+05:28 variable. variable name which is that
+05:31 
+
+05:31 this is the local name. This is not the
+05:32 
+
+05:32 actual name. Okay. So, uh let's call it
+05:37 
+
+05:37 env.
+05:39 
+
+05:39 Okay. And then default equal to dev.
+05:42 
+
+05:42 This is how we have initialized the
+05:43 
+
+05:43 value. Default equal to dev. Type equal
+05:47 
+
+05:47 to string. So, we'll come back to this
+05:51 
+
+05:51 type later on. But for now, just focus
+05:53 
+
+05:53 on this thing. Okay. So, variable name
+05:55 
+
+05:55 is env. The the local name of the
+05:57 
+
+05:57 variable is env. The actual value of the
+05:60 
+
+05:60 variable is dev. So we'll access this
+06:04 
+
+06:04 variable with where env or just give it
+06:07 
+
+06:07 another name because this could sound
+06:10 
+
+06:10 confusing. Env is a shell variable as
+06:12 
+
+06:12 well. So let's not use that variable
+06:15 
+
+06:15 environment default equal to dev and
+06:18 
+
+06:18 type equal to string. This is the
+06:20 
+
+06:20 optional field. You can just remove it
+06:22 
+
+06:22 for now or just follow along. Okay. So
+06:25 
+
+06:25 now instead of adding every hard-coded
+06:29 
+
+06:29 values over here over here and
+06:30 
+
+06:30 everywhere what we can do is simply
+06:32 
+
+06:32 instead of this
+06:35 
+
+06:35 just replace it with v dot environment.
+06:38 
+
+06:38 Okay. Now it will have the value dev
+06:41 
+
+06:41 because that's what the default value of
+06:43 
+
+06:43 the dev environment variable is. The
+06:46 
+
+06:46 same thing now over here
+06:49 
+
+06:49 instead of dev you can just add where
+06:52 
+
+06:52 dot environment and at the third place
+06:55 
+
+06:55 as well which is over here where dot
+06:58 
+
+06:58 environment right it's simple and now
+07:01 
+
+07:01 you might have understood the use case
+07:03 
+
+07:03 of it why do we use the variable and how
+07:06 
+
+07:06 to use it first you define the variable
+07:08 
+
+07:08 in the variable block you define it give
+07:11 
+
+07:11 it a value okay even if you don't want
+07:14 
+
+07:14 to give the value there are other
+07:15 
+
+07:15 options which we'll talk about in some
+07:17 
+
+07:17 time but this is the simplest possible
+07:20 
+
+07:20 way of using a variable. You define it,
+07:22 
+
+07:22 give it a default value, set the type
+07:25 
+
+07:25 and then you use that variable in your
+07:28 
+
+07:28 Terraform. How how do you access that v
+07:31 
+
+07:31 dot environment and this environment is
+07:34 
+
+07:34 nothing but the local name of the
+07:36 
+
+07:36 variable over here. You are not
+07:38 
+
+07:38 accessing it with v.dev because this
+07:40 
+
+07:40 value could change. We are accessing
+07:43 
+
+07:43 with the value over here. So that's how
+07:45 
+
+07:45 we access all the resources within
+07:47 
+
+07:47 Terraform with the variable name, the
+07:50 
+
+07:50 local variable name. Okay. So I hope
+07:54 
+
+07:54 this is understood. So let's go back to
+07:56 
+
+07:56 this diagram now. Okay. So what we did,
+07:59 
+
+07:59 we created an input variable that is an
+08:02 
+
+08:02 input variable which is taking the input
+08:04 
+
+08:04 from us. Okay. We are defining it and we
+08:08 
+
+08:08 are providing it a value that it can use
+08:10 
+
+08:10 in the entire Terraform workflow. So
+08:13 
+
+08:13 that's based on purpose. So based on
+08:16 
+
+08:16 purpose we have three type input, output
+08:18 
+
+08:18 and locals. And then based on value if
+08:21 
+
+08:21 you remember over there we set type
+08:24 
+
+08:24 equal to string. Meaning that's a string
+08:26 
+
+08:26 variable. String is in the form of uh
+08:29 
+
+08:29 letters, characters, words, you know it
+08:31 
+
+08:31 could be multiple characters separated
+08:34 
+
+08:34 by comma everything like like you write
+08:36 
+
+08:36 like if you write hello world this is a
+08:38 
+
+08:38 string. If you just write hello this is
+08:40 
+
+08:40 also a string. So we are just specifying
+08:44 
+
+08:44 the type as string. So that is based on
+08:47 
+
+08:47 the value. So based on the value we have
+08:49 
+
+08:49 these many types. These are also called
+08:52 
+
+08:52 as type constraint. So based on value we
+08:56 
+
+08:56 have primitive and complex. It's
+08:57 
+
+08:57 categorized into primitive and complex.
+08:60 
+
+08:60 So primitive is the simplest possible
+09:02 
+
+09:02 one which does not have the complex data
+09:04 
+
+09:04 structure. So string number bool. Bool
+09:08 
+
+09:08 is boolean right? uh it returns either
+09:10 
+
+09:10 true or false. We'll look at the example
+09:13 
+
+09:13 as well. And then we have complex which
+09:15 
+
+09:15 is list set map object and tuple. Then
+09:18 
+
+09:18 we have special type which is null. Null
+09:21 
+
+09:21 means you are not defining any data type
+09:24 
+
+09:24 for the variable. It's it's null. And
+09:27 
+
+09:27 then you have any meaning if you don't
+09:29 
+
+09:29 define the type like in this over here
+09:34 
+
+09:34 if I just don't mention the type. If I
+09:37 
+
+09:37 remove this part over here, type equal
+09:39 
+
+09:39 to string, then it will take it as any.
+09:43 
+
+09:43 It's a valid type. It's a special type
+09:45 
+
+09:45 in which it will auto select the
+09:48 
+
+09:48 variable type based on the value that we
+09:49 
+
+09:49 have provided. Okay. So that's any. Now
+09:53 
+
+09:53 that was
+09:55 
+
+09:55 we covered input variable. Now there are
+09:58 
+
+09:58 output and locals. Okay. So let's come
+10:01 
+
+10:01 to locals first. What is local and why
+10:04 
+
+10:04 do we need it? So locals if you see over
+10:06 
+
+10:06 here let's say the tags that you have
+10:10 
+
+10:10 used okay instead of my bucket let's
+10:12 
+
+10:12 change it to something else let's change
+10:14 
+
+10:14 it to uh so so that we can make it
+10:17 
+
+10:17 consistent with the other things right
+10:20 
+
+10:20 so let's change it to like how do we use
+10:22 
+
+10:22 it over here environment name and then
+10:24 
+
+10:24 the resource name okay so let's do that
+10:26 
+
+10:26 over here as well so dev bucket okay now
+10:32 
+
+10:32 what we want is
+10:34 
+
+10:34 Instead of mentioning dev over here over
+10:38 
+
+10:38 here, over here first thing is we can
+10:40 
+
+10:40 use variable right and the other thing
+10:43 
+
+10:43 is we can also use local. So using
+10:47 
+
+10:47 variable over here is
+10:50 
+
+10:50 first you need to create dollar sign and
+10:54 
+
+10:54 this is how we create the variable.
+10:58 
+
+10:58 So you see dollar and dollar after
+11:01 
+
+11:01 dollar sign we have the curly braces.
+11:04 
+
+11:04 Why do we need that? Because earlier we
+11:06 
+
+11:06 were just accessing it with v.
+11:08 
+
+11:08 environment because now it's string
+11:11 
+
+11:11 concatenation that we are doing right.
+11:14 
+
+11:14 We are first we need to resolve the
+11:17 
+
+11:17 value of this variable and then add it
+11:19 
+
+11:19 to hyphen bucket. you see over here
+11:22 
+
+11:22 that's why we need to follow this syntax
+11:24 
+
+11:24 over here and it's inside the double
+11:27 
+
+11:27 quotes so that it could resolve the
+11:29 
+
+11:29 value what it is coming from. So if I
+11:31 
+
+11:31 just do let's say if I just do where dot
+11:37 
+
+11:37 environment
+11:43 
+
+11:43 it's not a valid syntax it will not
+11:45 
+
+11:45 resolve the value it is asking me to
+11:47 
+
+11:47 make the changes to this right
+11:50 
+
+11:50 but
+11:52 
+
+11:52 if I have to resolve the value of ven
+11:55 
+
+11:55 environment what I need to do we need to
+11:57 
+
+11:57 add dollar in front of it then enclose
+11:59 
+
+11:59 it in the curly brace addresses like
+12:02 
+
+12:02 this. Okay. Now, we can do the same over
+12:05 
+
+12:05 here,
+12:08 
+
+12:08 right? So, name is this. So, let's use
+12:13 
+
+12:13 this where environment VPC
+12:17 
+
+12:17 and then where environment
+12:20 
+
+12:20 EC2 instance.
+12:23 
+
+12:23 So, that's one way. Okay. The other way
+12:26 
+
+12:26 of using it efficiently is define this
+12:30 
+
+12:30 value once and then use it later on. For
+12:34 
+
+12:34 example, we can have a type of variable
+12:38 
+
+12:38 which is local. So the way we use it
+12:40 
+
+12:40 locals. Okay. And then the we define the
+12:44 
+
+12:44 value over here. So enval environment or
+12:49 
+
+12:49 we can have the bucket name created like
+12:53 
+
+12:53 this.
+12:54 
+
+12:54 And then we can also have
+12:57 
+
+12:57 um something for
+13:02 
+
+13:02 let's say for for the VPC as well. We
+13:04 
+
+13:04 need we can just use it once over here.
+13:07 
+
+13:07 So VPC
+13:11 
+
+13:11 VPC name is equal to
+13:15 
+
+13:15 local.env. So instead of environment now
+13:18 
+
+13:18 we are using it local.env. env we have
+13:21 
+
+13:21 defined it over here or we can just use
+13:24 
+
+13:24 local dot environment as well. Oh
+13:27 
+
+13:27 actually it has to be where dot
+13:29 
+
+13:29 environment because that's what we have
+13:31 
+
+13:31 used we can remove this. Okay and then
+13:34 
+
+13:34 we can use the same over here where dot
+13:37 
+
+13:37 environment.
+13:38 
+
+13:38 So what we have done now instead of
+13:42 
+
+13:42 using this value like tag tutorials with
+13:45 
+
+13:45 py bucket hyphen it was supposed to be
+13:48 
+
+13:48 let's say dev instead of using this
+13:52 
+
+13:52 value of bucket what we have done we
+13:54 
+
+13:54 have created a local in which we are
+13:57 
+
+13:57 creating this variable value okay so we
+14:00 
+
+14:00 are using different sources like we you
+14:02 
+
+14:02 could add multiple other variables over
+14:05 
+
+14:05 here so we are creating it um like this
+14:10 
+
+14:10 tech tutorials with puge uh bucket or
+14:13 
+
+14:13 you can have another variable
+14:17 
+
+14:17 let's call it variable
+14:21 
+
+14:21 channel okay default equal to tech
+14:23 
+
+14:23 tutorials with p channel name now over
+14:26 
+
+14:26 here as well instead of this you can
+14:29 
+
+14:29 just write dollar and then curly braces
+14:33 
+
+14:33 where dot channel name okay so now we
+14:37 
+
+14:37 have created create a bucket name from
+14:39 
+
+14:39 the existing variables or there are
+14:41 
+
+14:41 multiple other use cases of it not just
+14:44 
+
+14:44 from the variables we can take the value
+14:46 
+
+14:46 from any other resource like its ID name
+14:49 
+
+14:49 and something else so we'll do that
+14:51 
+
+14:51 later on the complex example but the
+14:53 
+
+14:53 simplest example is this one over here
+14:55 
+
+14:55 so we have taken the value of channel
+14:58 
+
+14:58 name bucket hyphen environment so this
+15:02 
+
+15:02 will become tech tutorials with push
+15:04 
+
+15:04 hyphen bucket hyphen dev and now when we
+15:07 
+
+15:07 have to use this bucket name over here.
+15:10 
+
+15:10 Now instead of using this entire value,
+15:14 
+
+15:14 what we can simply do? We can do local
+15:17 
+
+15:17 dotbucket name. And that's it. Now it is
+15:20 
+
+15:20 simplified. Now whenever there is a
+15:22 
+
+15:22 reference of this bucket anywhere in
+15:25 
+
+15:25 this particular script or the entire
+15:27 
+
+15:27 configuration, we can just refer it with
+15:30 
+
+15:30 the local local.bucket name. And for
+15:34 
+
+15:34 here as well. Now uh in the tag let's
+15:37 
+
+15:37 use the same thing right local dot
+15:41 
+
+15:41 bucket name
+15:42 
+
+15:42 right so that's one way of using locals
+15:46 
+
+15:46 now you can do the same for other things
+15:50 
+
+15:50 like uh over here as well you can for
+15:53 
+
+15:53 the VPC
+15:54 
+
+15:54 you can create a local VPC name equal to
+15:57 
+
+15:57 ven environment VPC and over here where
+16:02 
+
+16:02 is the VPC configuration Instead of this
+16:06 
+
+16:06 entire name what you can simply do local
+16:10 
+
+16:10 VPC name
+16:12 
+
+16:12 okay and same thing you can do for
+16:15 
+
+16:15 others right and then there is let's say
+16:21 
+
+16:21 another
+16:23 
+
+16:23 configuration
+16:24 
+
+16:24 uh which is in bucket is global but for
+16:28 
+
+16:28 let's say VPC you specify region over
+16:31 
+
+16:31 here right so region you have specify
+16:34 
+
+16:34 ified USD one and then you do that for
+16:38 
+
+16:38 your EC2 instance as well. Right now
+16:41 
+
+16:41 instead of doing that what you can do
+16:44 
+
+16:44 you can create a variable over here and
+16:47 
+
+16:47 the way we do first we initialize the
+16:50 
+
+16:50 variable variable region and then set a
+16:53 
+
+16:53 default value which is US east one. You
+16:55 
+
+16:55 can give it a type or you can just leave
+16:57 
+
+16:57 it blank for now. Okay. And now in the
+17:00 
+
+17:00 region as well we use the same
+17:04 
+
+17:04 we give region equal to
+17:07 
+
+17:07 where dot region.
+17:10 
+
+17:10 Okay. And over here as well we can do
+17:14 
+
+17:14 where dot region.
+17:16 
+
+17:16 Okay. Now the bucket name that we had in
+17:20 
+
+17:20 that we can add another string to it
+17:23 
+
+17:23 because the bucket name has to be
+17:25 
+
+17:25 unique. But make sure you are within the
+17:28 
+
+17:28 within the maximum allowed characters in
+17:30 
+
+17:30 the bucket name. And if it is allowed,
+17:33 
+
+17:33 if it is not that big, let's make it
+17:36 
+
+17:36 small. So let's call it TTWP.
+17:40 
+
+17:40 Now you see over here, now we are
+17:42 
+
+17:42 referencing bucket name at multiple
+17:44 
+
+17:44 place. But we can change it just by
+17:47 
+
+17:47 changing the variable value over here.
+17:50 
+
+17:50 We don't have to do it at multiple
+17:52 
+
+17:52 places. Right? So now this will be
+17:54 
+
+17:54 reflected over here. And now this bucket
+17:56 
+
+17:56 name will become TTWP- bucket dev. And
+17:60 
+
+17:60 then we can add another variable over
+18:04 
+
+18:04 here which is v dot region
+18:09 
+
+18:09 for example. I'm not sure if the region
+18:11 
+
+18:11 like this will be yeah it should be
+18:13 
+
+18:13 supported. Yeah. So that's what we can
+18:15 
+
+18:15 do. So that's variable and that's locals
+18:19 
+
+18:19 for you. So now let's do one thing. Oh,
+18:21 
+
+18:21 I made the changes in the same folder.
+18:24 
+
+18:24 Um that's okay. Okay. So let's do that.
+18:28 
+
+18:28 Um let's run terraform plan. I don't
+18:32 
+
+18:32 have to run terapform in it because this
+18:34 
+
+18:34 configuration is already initialized in
+18:36 
+
+18:36 the local directory. So let's just run
+18:38 
+
+18:38 tf plan.
+18:41 
+
+18:41 It says invalid resource type AWS EC2
+18:44 
+
+18:44 instance.
+18:46 
+
+18:46 uh AWS EC2 instance is not valid because
+18:51 
+
+18:51 it it's not really a resource type. This
+18:53 
+
+18:53 is incorrect. So what we can do? Let's
+18:56 
+
+18:56 go back Terraform documentation. Let's
+18:59 
+
+18:59 search for AWS EC2.
+19:04 
+
+19:04 Let's search the exact resource type.
+19:08 
+
+19:08 And that's why why I said in the
+19:10 
+
+19:10 beginning like in the previous videos,
+19:12 
+
+19:12 you don't be fully dependent on LLM. I'm
+19:14 
+
+19:14 using GitHub copilot and it might have
+19:18 
+
+19:18 trained on the data by the previous
+19:20 
+
+19:20 provider version. So in the provider
+19:23 
+
+19:23 version when there's a new version they
+19:25 
+
+19:25 could change the name as well for the
+19:26 
+
+19:26 resource, right? And this is probably
+19:28 
+
+19:28 what would have happened over here. So
+19:31 
+
+19:31 let's find EC2 resource. There are so
+19:36 
+
+19:36 many resources that start with EC2
+19:38 
+
+19:38 probably. So let's add one more thing.
+19:47 
+
+19:47 Okay. Data source VPC. It should be in
+19:50 
+
+19:50 No, it's not inside VPC. It's not inside
+19:54 
+
+19:54 transit.
+19:56 
+
+19:56 That's RDS
+19:59 
+
+19:59 outpost EMR
+20:02 
+
+20:02 ECR. Okay. It should be over here
+20:04 
+
+20:04 somewhere.
+20:07 
+
+20:07 Resources. Okay. Uh EC2
+20:16 
+
+20:16 Is this EC2 host?
+20:19 
+
+20:19 No, that's a dedicated host.
+20:23 
+
+20:23 Let's search for just with EC2 and
+20:27 
+
+20:27 let's focus on EC2 resource only.
+20:34 
+
+20:34 Okay, over here
+20:36 
+
+20:36 AWS EC2 host. No, we don't need this EC2
+20:42 
+
+20:42 instance state. No, EC2 AWS instance.
+20:45 
+
+20:45 Okay, so this is the right name. Okay,
+20:50 
+
+20:50 so let's go back and AWS instance.
+20:56 
+
+20:56 Okay, let's run TF plan again.
+20:60 
+
+20:60 It says AWS subnet.sample.id
+21:03 
+
+21:03 has not been declared because we have
+21:06 
+
+21:06 used this but we have not created the
+21:08 
+
+21:08 subnet. So let's remove this. We don't
+21:10 
+
+21:10 need it for now.
+21:19 
+
+21:19 Okay. Now it says three plan to add.
+21:22 
+
+21:22 What needs to add? It will show you the
+21:25 
+
+21:25 details over here. So it will be
+21:27 
+
+21:27 created.
+21:29 
+
+21:29 AWS VPC will be created. Then an S3
+21:33 
+
+21:33 bucket will be created
+21:36 
+
+21:36 over here. And then the third resource
+21:38 
+
+21:38 was AWS VPC will be created
+21:42 
+
+21:42 which is oh sorry AW as instance will be
+21:45 
+
+21:45 created which is an EC2 instance.
+21:48 
+
+21:48 Now what we can do is
+21:53 
+
+21:53 we have seen locals and we have seen
+21:56 
+
+21:56 input variables. Now let's check output
+21:58 
+
+21:58 variables. What is output variable?
+21:60 
+
+22:00 Output variable as the name suggests
+22:02 
+
+22:02 provide output to a value. Right? So if
+22:07 
+
+22:07 you go over here and write output and
+22:11 
+
+22:11 the syntax is similar with the variable.
+22:14 
+
+22:14 So it start with the keyword output.
+22:16 
+
+22:16 Let's give it a name. For example, let's
+22:19 
+
+22:19 say we want to check VPC ID once it is
+22:22 
+
+22:22 created. VPC ID is something that we
+22:24 
+
+22:24 have not provided over here, right? It's
+22:25 
+
+22:25 an autogenerated value or anything else
+22:29 
+
+22:29 like EC2 instance ID. So what we can do
+22:32 
+
+22:32 if we want to know the value of it or we
+22:34 
+
+22:34 need to pass that value to some other
+22:36 
+
+22:36 variable to some other files maybe use
+22:38 
+
+22:38 it later on then we can create an output
+22:41 
+
+22:41 variable and it will be printed on the
+22:43 
+
+22:43 console once the resource is created. So
+22:47 
+
+22:47 let's give it a name. Let's call it VPC
+22:50 
+
+22:50 ID.
+22:51 
+
+22:51 Okay. And the way we get it is from the
+22:54 
+
+22:54 value is
+22:57 
+
+22:57 the resource name was resource type was
+23:00 
+
+23:00 AWS VPC the resource name was sample
+23:03 
+
+23:03 right so AWS_VPC
+23:07 
+
+23:07 dot sample and what we need if you do a
+23:10 
+
+23:10 dot it will show you all the available
+23:12 
+
+23:12 fields you see over here tags if we need
+23:16 
+
+23:16 tags region everything over here right
+23:19 
+
+23:19 so let's say we just need the ID so
+23:21 
+
+23:21 let's put id over here. Okay. The same
+23:24 
+
+23:24 way if we need instance ID then you can
+23:27 
+
+23:27 use EC2 ID
+23:32 
+
+23:32 and value is
+23:36 
+
+23:36 AWS instance.ample
+23:38 
+
+23:38 dot id.
+23:41 
+
+23:41 Okay. So this will show the value of it.
+23:45 
+
+23:45 So if I run TF plan again,
+23:50 
+
+23:50 it won't show it over here because these
+23:53 
+
+23:53 ids are created after apply. But now
+23:55 
+
+23:55 this is showing the output variables.
+23:57 
+
+23:57 Earlier there were no output variables.
+23:60 
+
+23:60 Now we have added these two output
+24:01 
+
+24:01 variables. But we cannot see the value
+24:04 
+
+24:04 of it because they have not been created
+24:06 
+
+24:06 yet. These values are only populated
+24:09 
+
+24:09 once the resources are created. So if I
+24:11 
+
+24:11 run terraform apply -
+24:15 
+
+24:15 auto approve.
+24:18 
+
+24:18 Okay, it will provision the resources
+24:20 
+
+24:20 and then it will show you the values.
+24:23 
+
+24:23 Okay, for now I'm getting some error. So
+24:26 
+
+24:26 let's see. Uh the image ID is invalid or
+24:30 
+
+24:30 does not exist because
+24:33 
+
+24:33 you know the reason, right? So let's use
+24:36 
+
+24:36 a different AMI.
+24:39 
+
+24:39 Let's go back over here and in the AWS
+24:43 
+
+24:43 instance um let's see
+24:48 
+
+24:48 okay let's take it from the example over
+24:51 
+
+24:51 here
+24:56 
+
+24:56 or you can go to AWS documentation and
+24:58 
+
+24:58 find a valid uh AMI ID okay
+25:03 
+
+25:03 let's run it again so this type of error
+25:06 
+
+25:06 it will not show you in TF plan because
+25:09 
+
+25:09 you will only get the instance ID or so
+25:11 
+
+25:11 am ID once you hit the actual API right
+25:15 
+
+25:15 and oh I don't have the permission
+25:16 
+
+25:16 because the ID that I'm using the IM
+25:19 
+
+25:19 user it only has S3 permissions right if
+25:22 
+
+25:22 you remember in the first uh or the
+25:25 
+
+25:25 second video when we have created the
+25:27 
+
+25:27 resource so let's make those changes as
+25:30 
+
+25:30 well over here let's go to I am
+25:36 
+
+25:36 and the user that I was using. Okay,
+25:40 
+
+25:40 just wait
+25:46 
+
+25:46 users and that user was S3 create. So
+25:51 
+
+25:51 let's give it additional permissions or
+25:53 
+
+25:53 maybe just add it to the group. Add
+25:56 
+
+25:56 users to the group. I have an admin
+25:58 
+
+25:58 group. So let's add it over here. And
+26:02 
+
+26:02 now it should have the permission. So
+26:04 
+
+26:04 let's go back and let's run it again.
+26:10 
+
+26:10 Okay, now it is creating VPC sample. It
+26:14 
+
+26:14 is creating instance. VPC has been
+26:17 
+
+26:17 created. This is the VPC ID. But this is
+26:20 
+
+26:20 just showing it over here. We need it in
+26:22 
+
+26:22 the output variable, right? So let's see
+26:24 
+
+26:24 how it will. Okay, it's done. Now you
+26:28 
+
+26:28 see over here EC2 ID, VPC ID, it is
+26:31 
+
+26:31 showing as the output variable which we
+26:33 
+
+26:33 can reference to other modules and which
+26:36 
+
+26:36 we can refer to other terapform scripts
+26:38 
+
+26:38 and which we can print as well if we
+26:41 
+
+26:41 want it. So what you can do now is you
+26:44 
+
+26:44 can also run terraform output show
+26:48 
+
+26:48 because now that we have cleared the
+26:49 
+
+26:49 screen we don't know the output value
+26:51 
+
+26:51 and we just want to see the value of
+26:52 
+
+26:52 output variables without actually
+26:55 
+
+26:55 running the terraform apply again. So
+26:57 
+
+26:57 what you can use terapform output show
+26:60 
+
+26:60 says output variable could not be find
+27:02 
+
+27:02 in terapform state file. Am I doing
+27:04 
+
+27:04 something wrong? So let's run terapform
+27:06 
+
+27:06 output - help.
+27:09 
+
+27:09 And these are the
+27:12 
+
+27:12 maybe just terapform output.
+27:16 
+
+27:16 Yeah, actually uh the show was for the
+27:20 
+
+27:20 state file. So my bad. So just terapform
+27:23 
+
+27:23 output. If you run it will show you the
+27:24 
+
+27:24 value of the output variables.
+27:27 
+
+27:27 Okay. So if you go to the GitHub repo
+27:31 
+
+27:31 over here in day five, you will see a
+27:35 
+
+27:35 lot of examples. You will see a lot of
+27:38 
+
+27:38 task that you can complete by yourself
+27:40 
+
+27:40 and then you can do the submission.
+27:42 
+
+27:42 Right? So here are all the things that
+27:44 
+
+27:44 we have discussed. It could not be the
+27:46 
+
+27:46 same because I have created it on
+27:48 
+
+27:48 runtime. But this is what you can
+27:50 
+
+27:50 practice. So input variables locals
+27:54 
+
+27:54 uh and then output variables
+27:57 
+
+27:57 then it will provide you more details
+27:59 
+
+27:59 like how to initialize the variable, how
+28:02 
+
+28:02 to use the variable, provide value to
+28:04 
+
+28:04 it. Okay. So now the second part of this
+28:08 
+
+28:08 video is we have uh looked into these
+28:11 
+
+28:11 three right. So there is based on value
+28:13 
+
+28:13 which is type constraint which is
+28:15 
+
+28:15 covered in the next video or maybe the
+28:17 
+
+28:17 video after that. The next that I want
+28:19 
+
+28:19 to cover is okay this we have covered
+28:22 
+
+28:22 already the variable syntax variable has
+28:25 
+
+28:25 a type and value and then few other
+28:28 
+
+28:28 details right so these all are the
+28:30 
+
+28:30 optional field and we'll look at when we
+28:33 
+
+28:33 move forward right now I don't want it
+28:36 
+
+28:36 to be a complex demo because we have
+28:37 
+
+28:37 just started we are just on day five I
+28:40 
+
+28:40 want to take the things slow that's why
+28:41 
+
+28:41 I'm not explaining the rest of the
+28:43 
+
+28:43 things but let's move forward now you
+28:46 
+
+28:46 see what we Did we declare the val
+28:50 
+
+28:50 variable and then we initialize it with
+28:52 
+
+28:52 the default value. Okay, but where did
+28:55 
+
+28:55 we do that? We did that within the the
+28:59 
+
+28:59 default itself which is not mentioned
+29:01 
+
+29:01 over here. Okay, so let's go to
+29:04 
+
+29:04 Terraform
+29:06 
+
+29:06 variable
+29:09 
+
+29:09 precedence. Okay. And let's go to the
+29:13 
+
+29:13 variable blog reference the
+29:15 
+
+29:15 documentation.
+29:17 
+
+29:17 Okay. And then
+29:21 
+
+29:21 okay. So over here we have different
+29:23 
+
+29:23 ways using which we can initialize our
+29:26 
+
+29:26 variable. Right. So what we have already
+29:29 
+
+29:29 done is
+29:32 
+
+29:32 using the default. Okay. So that's the
+29:36 
+
+29:36 first way.
+29:38 
+
+29:38 Okay. Let me move it a bit.
+29:41 
+
+29:41 So that's first way in which inside the
+29:43 
+
+29:43 variable we have defined the default
+29:45 
+
+29:45 equal to this value. Then we have
+29:47 
+
+29:47 environment variable. So what we can do
+29:50 
+
+29:50 is
+29:52 
+
+29:52 so instead of uh having the value over
+29:55 
+
+29:55 here where the value of environment was
+29:57 
+
+29:57 let's say
+29:59 
+
+29:59 um we have defined it somewhere over
+30:02 
+
+30:02 here right uh environment equal to this.
+30:05 
+
+30:05 So what we can do is instead of that we
+30:08 
+
+30:08 can create an environment variable the
+30:10 
+
+30:10 shell variable export tf var in the
+30:15 
+
+30:15 capital letters and then environment
+30:18 
+
+30:18 equal to let's say stage
+30:21 
+
+30:21 once we do that and when we run tf plan
+30:25 
+
+30:25 now let's see what it does
+30:32 
+
+30:32 okay it says some changes will be
+30:34 
+
+30:34 happening What changes will be
+30:36 
+
+30:36 happening? One to change. What is
+30:38 
+
+30:38 changed? The tax will be changed from
+30:41 
+
+30:41 dev to stage. The name will be changed
+30:43 
+
+30:43 from dev PVC to stage PVC. So it will
+30:48 
+
+30:48 update the variable value from dev to
+30:52 
+
+30:52 stage. Now we already have it mentioned
+30:55 
+
+30:55 over here default equal to dev. Then why
+30:58 
+
+30:58 it is taking the environment variable
+30:59 
+
+30:59 from the shell that we have defined this
+31:02 
+
+31:02 one over here. It's because environment
+31:04 
+
+31:04 variable has the higher precedence than
+31:07 
+
+31:07 this. Okay, higher precedence meaning
+31:10 
+
+31:10 now this will have less weightage
+31:12 
+
+31:12 because we already have the values
+31:15 
+
+31:15 defined over here. It will take this
+31:17 
+
+31:17 value. This has the higher precedence.
+31:19 
+
+31:19 Okay. So this is what I have defined
+31:21 
+
+31:21 over here from low to high. This is
+31:24 
+
+31:24 having the lowest precedence.
+31:26 
+
+31:26 This is having the higher precedence
+31:29 
+
+31:29 than this one. Okay. So environment
+31:31 
+
+31:31 variable has higher precedence than the
+31:34 
+
+31:34 default one. Then we have another way
+31:36 
+
+31:36 which is terraform.tfs.
+31:38 
+
+31:38 So instead of initializing it from here
+31:42 
+
+31:42 or inside the variable what we can do is
+31:44 
+
+31:44 we can go over here and we can create
+31:48 
+
+31:48 another file
+31:50 
+
+31:50 and call it
+31:53 
+
+31:53 terapform.tf
+31:56 
+
+31:56 vs. Once we do that, it will open a new
+31:59 
+
+31:59 file and this is just a key value
+32:01 
+
+32:01 format. Key value format we provide the
+32:03 
+
+32:03 name of the environment variable. Let's
+32:05 
+
+32:05 say environment
+32:08 
+
+32:08 and equal to value which is dev and
+32:11 
+
+32:11 stage we have already used. So let's
+32:13 
+
+32:13 call it uh pre-road.
+32:16 
+
+32:16 Okay. So now what we have done is we
+32:20 
+
+32:20 just created a new file and provided the
+32:23 
+
+32:23 value over here key value pair. And now
+32:25 
+
+32:25 if I run terraform plan again now this
+32:29 
+
+32:29 will take the precedence over the other
+32:31 
+
+32:31 two. Let's see. So you see over here now
+32:35 
+
+32:35 from dev it will become pre-pro.
+32:38 
+
+32:38 Now we have three different ways of
+32:41 
+
+32:41 initializing the variable value and the
+32:43 
+
+32:43 third one is having the higher
+32:45 
+
+32:45 precedence than the other two. So now
+32:48 
+
+32:48 TFR will have the higher precedence. Now
+32:51 
+
+32:51 this TFAR will be loaded automatically.
+32:54 
+
+32:54 You don't have to provide the value
+32:55 
+
+32:55 because this is the default format. Any
+32:57 
+
+32:57 file with the extension TFR will be
+32:60 
+
+32:60 autoloaded. Similarly, we have tf.json.
+33:04 
+
+33:04 We have any string auto.tfrs. So, these
+33:07 
+
+33:07 will be loaded automatically and these
+33:09 
+
+33:09 will have higher precedence to the
+33:11 
+
+33:11 previous ones. You can test it out. I
+33:13 
+
+33:13 have provided the sample in the GitHub
+33:15 
+
+33:15 repository as well. You can try it out.
+33:18 
+
+33:18 And then there is last option which has
+33:20 
+
+33:20 the highest precedence over everything.
+33:23 
+
+33:23 And this is with hyphen var or hyphen
+33:26 
+
+33:26 var file option. What it does is you go
+33:30 
+
+33:30 over here and let's say when you are
+33:34 
+
+33:34 running terraform plan you provide
+33:36 
+
+33:36 hyphen v is equal to the name of the
+33:39 
+
+33:39 variable. Let's say environment is equal
+33:42 
+
+33:42 to prod. Once we do that it take this as
+33:47 
+
+33:47 an environment variable to the command
+33:50 
+
+33:50 and it will try to make the changes.
+33:52 
+
+33:52 what changes it is making. Let's go back
+33:55 
+
+33:55 over here. And if you see now the
+33:58 
+
+33:58 environment variable will be changed
+33:60 
+
+33:60 from dev to pro because this has the
+34:02 
+
+34:02 higher precedence, right? So we have
+34:04 
+
+34:04 used the variable value using multiple
+34:08 
+
+34:08 different techniques, right? We have
+34:09 
+
+34:09 used TFRs, we have used in default, we
+34:12 
+
+34:12 have used an environment variable and
+34:15 
+
+34:15 now we can also use with hyphen var or
+34:17 
+
+34:17 hyphen var files. Hyphen var file how it
+34:20 
+
+34:20 works? you can just provide this uh in a
+34:22 
+
+34:22 different file other than TFRS and then
+34:25 
+
+34:25 you can just provide it over here like
+34:27 
+
+34:27 the way we are doing right now. Okay. So
+34:31 
+
+34:31 that's the variable precedence that I
+34:34 
+
+34:34 wanted to cover. Now which is the
+34:36 
+
+34:36 preferred way what you should be using
+34:38 
+
+34:38 it totally depends on your use case.
+34:39 
+
+34:39 Like if it is not a sensitive value you
+34:41 
+
+34:41 can use terapform.tfs
+34:43 
+
+34:43 which is one of the standards. If it is
+34:46 
+
+34:46 something that you are passing on
+34:47 
+
+34:47 command and you don't want it to be
+34:50 
+
+34:50 entered in the tfar files then you can
+34:53 
+
+34:53 actually use either this option hyphen
+34:58 
+
+34:58 var because some like let's say some
+35:00 
+
+35:00 password some credentials that you are
+35:02 
+
+35:02 passing or you can use an environment
+35:05 
+
+35:05 variable like using export but again
+35:08 
+
+35:08 this will be inserted in your shell
+35:11 
+
+35:11 history bash history right so you you
+35:14 
+
+35:14 use a third IT secret management tool
+35:16 
+
+35:16 for that purpose. Right? So which
+35:18 
+
+35:18 technique you use it totally depends on
+35:20 
+
+35:20 your use case. Uh you can also use the
+35:22 
+
+35:22 default one if it is something that you
+35:24 
+
+35:24 don't change really often. The benefits
+35:27 
+
+35:27 of the variable files separate variable
+35:30 
+
+35:30 files is whenever you need to make a
+35:33 
+
+35:33 change you just need to make the change
+35:35 
+
+35:35 in that file and you don't have to touch
+35:37 
+
+35:37 any other file at all. Right? It'll
+35:40 
+
+35:40 it'll be easier to manage. it will be
+35:42 
+
+35:42 easier to track your changes and that's
+35:43 
+
+35:43 why we do it. So this is the other way.
+35:46 
+
+35:46 So make sure you go through the GitHub
+35:48 
+
+35:48 repository try it out these demo samples
+35:51 
+
+35:51 that we have given over here right and
+35:53 
+
+35:53 it like it's it's everything that we
+35:56 
+
+35:56 have discussed plus it has more examples
+35:58 
+
+35:58 that you can test it out by yourself
+36:01 
+
+36:01 and
+36:02 
+
+36:02 yeah uh try out these commands as well
+36:05 
+
+36:05 and at the end of the demo don't forget
+36:08 
+
+36:08 to destroy the resources. So tf destroy
+36:12 
+
+36:12 hyphen auto approve.
+36:16 
+
+36:16 All right, once you do that, your
+36:18 
+
+36:18 environment will be cleaned up and you
+36:20 
+
+36:20 will be ready for the next demo.
+36:24 
+
+36:24 Okay, so that's it for this video. I
+36:26 
+
+36:26 hope you found it helpful. Thank you so
+36:28 
+
+36:28 much for watching. Let's catch up in the
+36:30 
+
+36:30 next one.

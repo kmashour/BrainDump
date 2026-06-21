@@ -1,0 +1,3436 @@
+00:00 Hello and welcome back to the series. My
+00:02 
+
+00:02 name is Push and this is day 11 in 30
+00:05 
+
+00:05 days of AWS Terraform. I'm sure you have
+00:09 
+
+00:09 been following the series in the same
+00:11 
+
+00:11 sequence as it have been uploaded
+00:13 
+
+00:13 meaning from day one onwards and day
+00:16 
+
+00:16 zero has some important information
+00:17 
+
+00:17 about this 30 days of AWS Terraform
+00:20 
+
+00:20 challenge. how to participate in that
+00:22 
+
+00:22 and how to uh submit your assignments,
+00:25 
+
+00:25 results and everything to be eligible
+00:28 
+
+00:28 for the gift at the end of this series.
+00:31 
+
+00:31 Okay. So in this video we'll be covering
+00:33 
+
+00:33 into Terraform functions. So it's a long
+00:36 
+
+00:36 topic. There are so many things to
+00:38 
+
+00:38 cover. So I have decided to divide this
+00:41 
+
+00:41 particular topic into two different
+00:43 
+
+00:43 videos. So we'll cover half of these
+00:45 
+
+00:45 functions or whatever we could in this
+00:47 
+
+00:47 video and rest will be covered in the
+00:49 
+
+00:49 next video. day 12 which will be
+00:51 
+
+00:51 uploaded tomorrow as we are uploading in
+00:54 
+
+00:54 the same sequence. So yeah um if you are
+00:57 
+
+00:57 new here hi my name is push and um cloud
+01:00 
+
+01:00 and devops is what I do all day long. I
+01:02 
+
+01:02 have been in IT for past 13 plus years
+01:04 
+
+01:04 and I am teaching cloud and devops to
+01:07 
+
+01:07 everyone for the past four years through
+01:09 
+
+01:09 this channel through blogs and through
+01:11 
+
+01:11 many other mediums like I have a Udemy
+01:14 
+
+01:14 course I have published a book as well
+01:16 
+
+01:16 as you can see it over here. Um yeah so
+01:18 
+
+01:18 this is what I know and this is what I
+01:20 
+
+01:20 love sharing with everyone. So without
+01:22 
+
+01:22 wasting any time let's move ahead with
+01:25 
+
+01:25 the video. So before understanding
+01:29 
+
+01:29 terapform functions if you are a
+01:31 
+
+01:31 beginner I'm assuming you are someone
+01:34 
+
+01:34 who is not from a programming background
+01:35 
+
+01:35 right. So what exactly is a function?
+01:39 
+
+01:39 Let's forget about terapform function.
+01:41 
+
+01:41 Let's just understand what exactly is a
+01:43 
+
+01:43 function. Okay. So in simple language
+01:46 
+
+01:46 function is something that makes our
+01:48 
+
+01:48 life easy. Okay. How would it make our
+01:51 
+
+01:51 life easy? It makes our life easy by
+01:54 
+
+01:54 letting us reuse the code again and
+01:57 
+
+01:57 again. For example, let's say you have a
+01:59 
+
+01:59 simple task, right? So, you have to uh
+02:02 
+
+02:02 add two numbers and provide the results.
+02:05 
+
+02:05 So, you will start writing a program
+02:07 
+
+02:07 something like a = 2, b = 3 and c = a +
+02:15 
+
+02:15 b. And then oops, what happened?
+02:19 
+
+02:19 And then finally you will do
+02:24 
+
+02:24 print C. So this is something that you
+02:28 
+
+02:28 would do in a typical programming
+02:29 
+
+02:29 language like syntax could be different
+02:32 
+
+02:32 and like the values could change but
+02:34 
+
+02:34 this is something that you would do to
+02:36 
+
+02:36 provide the result to print the result
+02:39 
+
+02:39 of a sum of two numbers. Right? So you
+02:42 
+
+02:42 just write this code. This is a fourline
+02:44 
+
+02:44 code or you can write this in one line
+02:45 
+
+02:45 whatever but that's not the point. The
+02:47 
+
+02:47 point is if you have to do it once you
+02:50 
+
+02:50 will just write these four line but how
+02:52 
+
+02:52 about if you have to do it multiple
+02:54 
+
+02:54 times let's say 10 times so what you
+02:56 
+
+02:56 will do you will write the similar code
+02:58 
+
+02:58 10 different time this is not efficient
+03:02 
+
+03:02 this is not the right way of do
+03:04 
+
+03:04 programming even though it's not
+03:06 
+
+03:06 considered a program but still it's not
+03:08 
+
+03:08 really the right way and it will take a
+03:11 
+
+03:11 lot of memory it will take a lot of time
+03:13 
+
+03:13 for the execution in a way it's not a
+03:16 
+
+03:16 good choice
+03:17 
+
+03:17 So what you can do instead instead of
+03:21 
+
+03:21 copying these multiple times you can
+03:23 
+
+03:23 just write it once. Okay. So let's say
+03:26 
+
+03:26 you have written it once and you wrap
+03:29 
+
+03:29 this inside a function. Okay. So
+03:33 
+
+03:33 consider this as a function. These are
+03:35 
+
+03:35 the content of a function and you just
+03:38 
+
+03:38 name this function something. Let's say
+03:41 
+
+03:41 sum. Okay.
+03:43 
+
+03:43 And whenever you have to provide the
+03:47 
+
+03:47 result of sum of two numbers, what you
+03:49 
+
+03:49 will do is you will just call this
+03:52 
+
+03:52 function using sum and that's it. So
+03:56 
+
+03:56 let's say you have to provide I'm I'm
+03:59 
+
+03:59 not getting into specifics of any
+04:01 
+
+04:01 programming language but let's say you
+04:02 
+
+04:02 just have to provide the sum of 2 + 3.
+04:06 
+
+04:06 So you can just call sum and you can
+04:08 
+
+04:08 just pass the value 2a 3. uh this is
+04:12 
+
+04:12 value A value B the value will be
+04:14 
+
+04:14 captured by this function and then print
+04:16 
+
+04:16 the result C okay and like return the
+04:20 
+
+04:20 result C and so on and you can do this
+04:23 
+
+04:23 multiple times so now let's say if you
+04:24 
+
+04:24 have to execute the values four
+04:26 
+
+04:26 different times with even different set
+04:29 
+
+04:29 of inputs so instead of 2 three let's
+04:31 
+
+04:31 say 1 three or 2 two something like that
+04:35 
+
+04:35 right so you you don't have to write
+04:37 
+
+04:37 these four lines again and again you
+04:38 
+
+04:38 just rotate once wrap that inside a sum
+04:41 
+
+04:41 function and then you can just call that
+04:44 
+
+04:44 function with different value. Right? So
+04:47 
+
+04:47 this is why we use function. This is uh
+04:51 
+
+04:51 what exactly is a function in a very
+04:53 
+
+04:53 basic simple language. Okay? Now you
+04:56 
+
+04:56 probably already know and we have
+04:58 
+
+04:58 covered this as well earlier that
+04:60 
+
+05:00 terraform is not a programming language
+05:02 
+
+05:02 like it's HCL which is Hashi
+05:07 
+
+05:07 configuration language right it it's not
+05:10 
+
+05:10 a full-fledged programming language it's
+05:12 
+
+05:12 a configuration language that means it
+05:14 
+
+05:14 provides you similar functionality of a
+05:17 
+
+05:17 programming but you cannot do a lot of
+05:20 
+
+05:20 things like it does not have classes it
+05:22 
+
+05:22 does not have objects it does not have
+05:25 
+
+05:25 oops and like lot more concept. It does
+05:28 
+
+05:28 not provide you all the flexibility of a
+05:30 
+
+05:30 programming language. Still it helps you
+05:33 
+
+05:33 do what it is famous for which is
+05:36 
+
+05:36 infrastructure provisioning or
+05:37 
+
+05:37 infrastructure as a code. Now because
+05:40 
+
+05:40 this is not a programming language. Why
+05:42 
+
+05:42 did I mention it's not a programming
+05:44 
+
+05:44 language? Because unlike in the
+05:46 
+
+05:46 programming language you cannot create
+05:48 
+
+05:48 your own function in Terraform, right?
+05:51 
+
+05:51 So no custom functions. You can only use
+05:55 
+
+05:55 inbuilt functions. Okay. In a
+05:58 
+
+05:58 programming language, you can create as
+05:59 
+
+05:59 many as function you want. You can use
+06:01 
+
+06:01 inbuilt functions as well as you can
+06:03 
+
+06:03 create your own functions. But in
+06:05 
+
+06:05 terapform because it's not a programming
+06:07 
+
+06:07 language, you cannot create your custom
+06:10 
+
+06:10 functions. But you will have a lot of
+06:12 
+
+06:12 inbuilt function provided by Teraphform
+06:14 
+
+06:14 that you can use wherever you want.
+06:17 
+
+06:17 Okay. So these functions are categorized
+06:20 
+
+06:20 broadly into these categories. Right? So
+06:22 
+
+06:22 there are validation functions, lookup
+06:25 
+
+06:25 functions, date and time function, type
+06:28 
+
+06:28 conversion, collection, numeric, string
+06:31 
+
+06:31 and file. Okay. So all these functions
+06:34 
+
+06:34 are categorized into these and inside
+06:37 
+
+06:37 each of these category there are
+06:38 
+
+06:38 multiple functions which we'll be
+06:40 
+
+06:40 covering in this video. So we'll cover
+06:42 
+
+06:42 with the help of Terraform console first
+06:46 
+
+06:46 and then we'll do the assignments that
+06:47 
+
+06:47 will be given in the GitHub repository.
+06:50 
+
+06:50 I hope it is making some sense now but
+06:52 
+
+06:52 it'll make more sense when we do the
+06:54 
+
+06:54 demo. Okay. So let's start with it. So
+06:57 
+
+06:57 first what you have to do is you just go
+06:59 
+
+06:59 to your uh Terraform terminal whatever
+07:03 
+
+07:03 you have been using. I'm using VS code
+07:05 
+
+07:05 since day one of this video. So I'm
+07:07 
+
+07:07 going to use the same and you just write
+07:09 
+
+07:09 terapform console. This will open a
+07:13 
+
+07:13 console prompt like a shell inside the
+07:16 
+
+07:16 shell. But this shell is like a
+07:18 
+
+07:18 terapform shell in which you can execute
+07:20 
+
+07:20 terraform commands without writing the
+07:23 
+
+07:23 terapform files. Right. So you can
+07:25 
+
+07:25 execute the functions directly over
+07:27 
+
+07:27 here. All right. So um yeah and you
+07:30 
+
+07:30 don't have to um install this terapform
+07:33 
+
+07:33 console separately. It's built in within
+07:35 
+
+07:35 terapform. So if you have installed
+07:36 
+
+07:36 Terraform already, you should be able to
+07:38 
+
+07:38 use this. Okay. So now uh let's start
+07:42 
+
+07:42 with some basic functions. Okay. So
+07:44 
+
+07:44 there are some string functions, right?
+07:46 
+
+07:46 Like there is lower and upper function.
+07:49 
+
+07:49 Okay. So let's start with the first
+07:50 
+
+07:50 function. Uh there are few functions in
+07:53 
+
+07:53 string function. So we have I mean
+07:55 
+
+07:55 discussed over here there are multiple
+07:57 
+
+07:57 type of functions. So we'll start with
+07:59 
+
+07:59 the string function. Okay. So there are
+08:01 
+
+08:01 upper function and lower function which
+08:03 
+
+08:03 are the most common ones. So um first
+08:06 
+
+08:06 let's add a string okay inside double
+08:10 
+
+08:10 quotes because if it's a string it has
+08:12 
+
+08:12 to be enclosed inside double quotes and
+08:15 
+
+08:15 let's call it
+08:17 
+
+08:17 hello 30 days of AWS terraform. Okay and
+08:23 
+
+08:23 now we have enclosed this inside double
+08:25 
+
+08:25 quotes and inside square bracket. And
+08:27 
+
+08:27 now we can add the function name in
+08:29 
+
+08:29 front of it. So let's say upper. So what
+08:32 
+
+08:32 it will do it's a function that will
+08:35 
+
+08:35 convert this string inside this function
+08:38 
+
+08:38 into uppercase. Now if you remember when
+08:41 
+
+08:41 I talked about calling the function by
+08:44 
+
+08:44 passing the values right. So we have
+08:46 
+
+08:46 passed value 2 3 1 2 and so on when we
+08:50 
+
+08:50 were calling the function we are doing
+08:51 
+
+08:51 the same over here. So instead of over
+08:54 
+
+08:54 here instead of doing sum 2a 3 in this
+08:58 
+
+08:58 the values that we are passing to this
+08:60 
+
+08:60 function is a and b which is in numeric
+09:03 
+
+09:03 form right because this function expect
+09:05 
+
+09:05 the values to be passed in the numeric
+09:07 
+
+09:07 form. So instead of passing values to
+09:10 
+
+09:10 the numeric form now because we are
+09:13 
+
+09:13 using a string manipulation function we
+09:16 
+
+09:16 are passing the value in a string
+09:18 
+
+09:18 format.
+09:20 
+
+09:20 Okay. So what it will do? What this
+09:22 
+
+09:22 function will do? This function which is
+09:24 
+
+09:24 an inbuilt function named upper. We are
+09:26 
+
+09:26 calling this function over here in the
+09:28 
+
+09:28 definition of the function where it has
+09:30 
+
+09:30 been defined. So it has some internal
+09:32 
+
+09:32 logic which will convert all the
+09:35 
+
+09:35 characters in this string into
+09:37 
+
+09:37 uppercase. Okay. So let's hit enter. And
+09:40 
+
+09:40 here you will see now it converted
+09:42 
+
+09:42 everything to uppercase. Now the same
+09:45 
+
+09:45 way you just copy this because
+09:47 
+
+09:47 everything is in uppercase. Now if you
+09:49 
+
+09:49 do lower
+09:51 
+
+09:51 and add this inside the string now this
+09:55 
+
+09:55 will change it back to lower case
+09:57 
+
+09:57 because now we are using a lower
+09:58 
+
+09:58 function. So that's uh the string
+10:01 
+
+10:01 function and this is how you call if you
+10:02 
+
+10:02 understand this concept maybe watch this
+10:05 
+
+10:05 section twice because if you understand
+10:08 
+
+10:08 this concept the concept of function
+10:10 
+
+10:10 will be clear at least from the
+10:12 
+
+10:12 terraform perspective. Okay that's the
+10:14 
+
+10:14 uh the most common one which is upper
+10:16 
+
+10:16 and lower. Then we have trim function.
+10:19 
+
+10:19 Trim what it will do as the name suggest
+10:22 
+
+10:22 it will trim the blank spaces inside the
+10:25 
+
+10:25 string. For example, let's say I've
+10:27 
+
+10:27 added one space first and then I've
+10:30 
+
+10:30 written let's call it AWSTF and then one
+10:34 
+
+10:34 space after it. So if I do that and hit
+10:36 
+
+10:36 enter. Oops. Says not enough function
+10:40 
+
+10:40 argument trim expect two arguments. All
+10:44 
+
+10:44 right. So I'm doing something wrong
+10:47 
+
+10:47 maybe because we have to provide value
+10:50 
+
+10:50 as well like how do we want to trim it.
+10:53 
+
+10:53 Okay. So trim is not just to trim the
+10:56 
+
+10:56 blank spaces but to trim anything. Okay.
+10:58 
+
+10:58 So the way it works is first the first
+11:00 
+
+11:00 argument is the string and then we have
+11:04 
+
+11:04 to provide the second argument as well
+11:07 
+
+11:07 uh which says trim the occurrence of a
+11:09 
+
+11:09 particular character. For example, if we
+11:11 
+
+11:11 have to trim the space, we have to
+11:12 
+
+11:12 provide space as the second character.
+11:15 
+
+11:15 So, let's try it again. Uh, and let's do
+11:18 
+
+11:18 comma and then let's add a blank space.
+11:21 
+
+11:21 I'm not sure if it will work, but uh,
+11:24 
+
+11:24 yeah, it did not. So, let's add a blank
+11:27 
+
+11:27 space in double quotes. Yeah, now it
+11:29 
+
+11:29 worked. Okay. So as you can see this is
+11:34 
+
+11:34 the string which has a blank space in
+11:38 
+
+11:38 the beginning blank space at the end and
+11:41 
+
+11:41 with comma we provided a substring. Okay
+11:44 
+
+11:44 substring has the character which is
+11:47 
+
+11:47 space. So it removed space from the
+11:50 
+
+11:50 string. Let's take another example of
+11:52 
+
+11:52 this. Okay instead of the blank space
+11:56 
+
+11:56 let's add something else. Let's add or
+11:59 
+
+11:59 let's just trim the f word from it.
+12:02 
+
+12:02 Okay. So from that let's just add f over
+12:05 
+
+12:05 here. Now I've removed all the spaces or
+12:08 
+
+12:08 you can just keep the space so that it
+12:11 
+
+12:11 will show you that space is not trimmed
+12:13 
+
+12:13 if it's not in the substring. Now string
+12:16 
+
+12:16 is space awstf
+12:19 
+
+12:19 and the substring is f. So ideally it
+12:21 
+
+12:21 should only remove f from this string.
+12:24 
+
+12:24 So if you hit enter you see AWST it
+12:27 
+
+12:27 removed the f okay so and space is also
+12:32 
+
+12:32 there. So that's how trim works. The
+12:34 
+
+12:34 next one is replace. Replace works as
+12:38 
+
+12:38 the name suggests it replaces occurrence
+12:40 
+
+12:40 of a character with additional
+12:42 
+
+12:42 characters right that we provide. So the
+12:44 
+
+12:44 way it works is let's say replace
+12:48 
+
+12:48 hello world this is the string and then
+12:50 
+
+12:50 we provide source character that we want
+12:53 
+
+12:53 to replace. So let's say we want to
+12:55 
+
+12:55 replace space with hyphen. Okay so
+12:58 
+
+12:58 inside double quotes is the space the
+13:01 
+
+13:01 third element which is the second string
+13:03 
+
+13:03 and let's add it hyphen.
+13:07 
+
+13:07 Okay hit enter. Now hello space word
+13:10 
+
+13:10 becomes hello world. So what we did we
+13:13 
+
+13:13 provided a string. First substring is
+13:16 
+
+13:16 the character that we want to replace
+13:18 
+
+13:18 and the second substring is the
+13:20 
+
+13:20 character that we want as the new
+13:24 
+
+13:24 character in place of the old one. So
+13:26 
+
+13:26 that's how replace works. The next one
+13:29 
+
+13:29 is substring. So substring works like
+13:32 
+
+13:32 this. So you provide the string. Okay.
+13:35 
+
+13:35 And you are saying comma 0 comma 3. So
+13:39 
+
+13:39 what it will do? It will check from the
+13:41 
+
+13:41 zeroth element. Okay. And it will only
+13:46 
+
+13:46 trim till third element. Okay. Sorry. 0
+13:49 
+
+13:49 to three that means first, second, third
+13:52 
+
+13:52 element. Okay. So that's how it will do
+13:55 
+
+13:55 first, second and third element. It will
+13:58 
+
+13:58 cut only that part. So that's again one
+13:60 
+
+13:60 of the string manipulation function. Um
+14:03 
+
+14:03 the next is numeric. So numeric as the
+14:06 
+
+14:06 name suggest it will work on the
+14:09 
+
+14:09 numeric. So like the sum function that
+14:11 
+
+14:11 we were looking into. So there is an
+14:12 
+
+14:12 inbuilt function for sum as well. So sum
+14:15 
+
+14:15 2a 5.
+14:17 
+
+14:17 Oh sum is not there actually. So um
+14:20 
+
+14:20 there is no sum function in terapform
+14:22 
+
+14:22 but you can do max min and absolute. So
+14:24 
+
+14:24 let's start with max and you can provide
+14:27 
+
+14:27 multiple numbers like max 12 1 and it
+14:32 
+
+14:32 will provide you the max out of all the
+14:33 
+
+14:33 numbers. Similarly we have min. So 5 12
+14:37 
+
+14:37 1 and minimum should be 1. Okay. And
+14:40 
+
+14:40 then there is absolute. It will provide
+14:42 
+
+14:42 you the absolute value of the numeric.
+14:46 
+
+14:46 So - 42 becomes 42 because that's the
+14:48 
+
+14:48 absolute value. Then we have um
+14:52 
+
+14:52 collection functions. Okay. So I'll just
+14:54 
+
+14:54 write it down. Collection. Okay. It will
+14:57 
+
+14:57 show you the error because I was just
+14:58 
+
+14:58 trying to show you that uh from here we
+15:00 
+
+15:00 are starting the collection. Um now I
+15:02 
+
+15:02 see why it's a bad idea. I think you got
+15:05 
+
+15:05 the point right. So collection works
+15:07 
+
+15:07 like this. So you provide um length and
+15:11 
+
+15:11 inside the brackets you provide a list.
+15:15 
+
+15:15 So let's say a list of element 1 2 4 3
+15:19 
+
+15:19 4. Okay, you provided the multiple
+15:21 
+
+15:21 elements in a list. So the length
+15:24 
+
+15:24 function will calculate the number of
+15:26 
+
+15:26 elements inside this list. Okay, so
+15:30 
+
+15:30 there are four elements. So if you could
+15:32 
+
+15:32 just add like instead of four you add
+15:34 
+
+15:34 two it will still show as four elements
+15:36 
+
+15:36 right. Then we have concat. Concat
+15:39 
+
+15:39 function is for concatenation. It will
+15:41 
+
+15:41 concatenate multiple values into one. So
+15:47 
+
+15:47 uh if we want to add 1 2 and then uh
+15:51 
+
+15:51 comma 3 4.
+15:54 
+
+15:54 So we are trying to concatenate two
+15:57 
+
+15:57 lists. Okay. So it becomes 1 2 3 4
+16:00 
+
+16:00 inside one list. Okay. So that's one
+16:03 
+
+16:03 list. Now uh if you want to use merge.
+16:07 
+
+16:07 So there is a merge function. As the
+16:09 
+
+16:09 name suggests merge works similar to
+16:11 
+
+16:11 concatenation but uh in a way it works
+16:14 
+
+16:14 on a key value pair. Okay. So let's say
+16:18 
+
+16:18 concatenate works on list or string on
+16:21 
+
+16:21 numeric as well. Let's see if
+16:22 
+
+16:22 concatenate work on string as well. So
+16:24 
+
+16:24 let's say concat and inside this you
+16:28 
+
+16:28 provide hello
+16:31 
+
+16:31 and another element is world.
+16:35 
+
+16:35 Yeah it does not work on uh list. It
+16:39 
+
+16:39 says all argument must be list or
+16:41 
+
+16:41 tpples. We got string. Okay. So it does
+16:43 
+
+16:43 not work on string. So the next is um
+16:46 
+
+16:46 merge. Okay. Merge works on key value
+16:50 
+
+16:50 pair which is uh tpple set and so on.
+16:53 
+
+16:53 Right? Set not not set which is tpples
+16:56 
+
+16:56 in this case. So um let's start with a =
+17:01 
+
+17:01 1
+17:03 
+
+17:03 and b = 2. If we try to merge these two
+17:08 
+
+17:08 we'll say inside one single map it says
+17:11 
+
+17:11 a equal to 1 b equal to 2. Okay. Now the
+17:14 
+
+17:14 next type of function is and like I I'm
+17:17 
+
+17:17 just I'm just going through it with the
+17:20 
+
+17:20 help of the simplest example like how
+17:22 
+
+17:22 this function would work if these were
+17:24 
+
+17:24 not in terapform okay but I will explain
+17:26 
+
+17:26 each and every function inside terapform
+17:29 
+
+17:29 as well with the help of terapform file
+17:30 
+
+17:30 so don't worry about it let me just walk
+17:33 
+
+17:33 you through it a few more functions and
+17:35 
+
+17:35 then we'll see in action in terapform
+17:37 
+
+17:37 okay so just be with me now the next one
+17:40 
+
+17:40 is type conversion okay so type
+17:42 
+
+17:42 conversion as the name suggest test it
+17:44 
+
+17:44 converts one type to another. For
+17:46 
+
+17:46 example, if you want to convert list
+17:48 
+
+17:48 into set. So how do we do that to set
+17:53 
+
+17:53 okay and just provide the values of a
+17:55 
+
+17:55 list. So let's say a
+17:59 
+
+17:59 b
+18:00 
+
+18:00 and a. Now if you remember uh when I was
+18:05 
+
+18:05 covering type constraint I mentioned
+18:07 
+
+18:07 that list can have duplicate values but
+18:11 
+
+18:11 sets don't have duplicate values. So now
+18:13 
+
+18:13 because it's a list currently it has
+18:16 
+
+18:16 duplicate values like a and a
+18:18 
+
+18:18 occurrences twice. But when we convert
+18:20 
+
+18:20 it into set the duplicates will be
+18:23 
+
+18:23 removed. Okay. So if I hit enter now you
+18:26 
+
+18:26 see when it converted into set now it
+18:28 
+
+18:28 only has a and b because the duplicate
+18:30 
+
+18:30 has been removed. So that's how we know
+18:32 
+
+18:32 that it's been converted into set now.
+18:35 
+
+18:35 So that's one example of type conversion
+18:38 
+
+18:38 function. Now another is let's say uh
+18:42 
+
+18:42 two number
+18:43 
+
+18:43 and let's say there is a string with the
+18:46 
+
+18:46 number something 23. Now we need to
+18:48 
+
+18:48 convert it into a number. Now you could
+18:51 
+
+18:51 say like 23 is a number. Why are you
+18:53 
+
+18:53 saying you're converting it into a
+18:55 
+
+18:55 number? 23 is a number but when we
+18:57 
+
+18:57 enclose that into double strings uh
+19:00 
+
+19:00 double quotes it becomes a string.
+19:03 
+
+19:03 Everything that goes inside double
+19:06 
+
+19:06 quotes is a string. Okay. So that's why
+19:09 
+
+19:09 Terapform is considering this as a
+19:11 
+
+19:11 string and when we put two number
+19:13 
+
+19:13 function in front of it, it becomes a
+19:15 
+
+19:15 number after this. So now 23 is a
+19:17 
+
+19:17 number. Okay. The same way if I do two
+19:21 
+
+19:21 string and if I do let's say 23 without
+19:25 
+
+19:25 double quotes now it will return the
+19:28 
+
+19:28 value in double quotes that means now it
+19:30 
+
+19:30 become a string that's type conversion
+19:32 
+
+19:32 function and then we have finally we
+19:36 
+
+19:36 have date and time function. So let's
+19:38 
+
+19:38 say timestamp
+19:40 
+
+19:40 time stamp shows you the current time in
+19:43 
+
+19:43 a predefined format. Now if you want to
+19:46 
+
+19:46 change the format to something as per
+19:48 
+
+19:48 your requirement what you can do is you
+19:50 
+
+19:50 can do format date. So format date is
+19:52 
+
+19:52 another function and then you can
+19:54 
+
+19:54 provide the format in double quotes.
+19:56 
+
+19:56 Let's say dd mm y y y y y y y y y y y y
+19:59 
+
+19:59 y y y y y y y y y y y y y y y y y y y y
+19:59 
+
+19:59 y y y y y y y y y y y y y y y y y y y y
+19:59 
+
+19:59 y y y y y y y y y or y y y y y y y y y y
+20:00 
+
+20:00 y y y y y y y y y y y y y y y y y y y y
+20:00 
+
+20:00 y y y y y y y y y y y y y y y y y y y y
+20:01 
+
+20:01 y y y y y y y y y y y y y y y y y y y y
+20:01 
+
+20:01 y y y y y y y y y y y y y y y y y y y y
+20:01 
+
+20:01 y y y y y y y y y y y y, whatever format
+20:02 
+
+20:02 you need, comma, timestamp. So what we
+20:05 
+
+20:05 are saying use the timestamp function to
+20:08 
+
+20:08 print the current time which is this one
+20:11 
+
+20:11 but then change that time into this
+20:13 
+
+20:13 format dd mm y. So if I hit enter now it
+20:17 
+
+20:17 will show you dd
+20:20 
+
+20:20 mm and y. Okay. So these are like few
+20:25 
+
+20:25 examples of these functions. Now we'll
+20:27 
+
+20:27 move ahead and see these functions into
+20:30 
+
+20:30 terraform. How do we do that? All right.
+20:34 
+
+20:34 So let's um like always first I'm going
+20:36 
+
+20:36 to exit terapform console and let's see
+20:39 
+
+20:39 where am I am I in this folder. So let's
+20:42 
+
+20:42 just make a copy of day 10
+20:45 
+
+20:45 folder and create day 11 folder.
+20:49 
+
+20:49 Now I'm going to go inside day 11 folder
+20:51 
+
+20:51 and from here as well.
+20:55 
+
+20:55 Okay let's just empty the day1 folder
+20:59 
+
+20:59 file um
+21:02 
+
+21:02 the main.tf only. Okay. And now we're
+21:05 
+
+21:05 going to start with uh some examples. So
+21:08 
+
+21:08 I'll just open the assignment on the
+21:10 
+
+21:10 side screen. Okay. So first is let's
+21:14 
+
+21:14 create a variable. So inside
+21:16 
+
+21:16 variables.tf.
+21:18 
+
+21:18 Okay.
+21:20 
+
+21:20 I'm going to remove everything. So let's
+21:22 
+
+21:22 create a variable name project name.
+21:27 
+
+21:27 Okay. And inside this I'm going to add a
+21:31 
+
+21:31 default name. And I think this should go
+21:35 
+
+21:35 up. Okay. So now variable project name
+21:38 
+
+21:38 and this is the project name. Project
+21:39 
+
+21:39 alpha resource in this alpha uh is in
+21:43 
+
+21:43 uppercase. So in this function we'll be
+21:46 
+
+21:46 converting the project name into lower
+21:48 
+
+21:48 case using the lower function that we
+21:50 
+
+21:50 have already seen but now we'll be doing
+21:52 
+
+21:52 it in terapform. Okay. So inside the
+21:55 
+
+21:55 main.tf let's create a locals. Okay. And
+21:58 
+
+21:58 inside locals what I'm going to do is
+21:60 
+
+21:60 I'm going to create formatted
+22:04 
+
+22:04 project name is equal to if you remember
+22:08 
+
+22:08 we have to convert that into let's say
+22:11 
+
+22:11 lower case. So we'll start with the
+22:14 
+
+22:14 lower and when you do that um so VS code
+22:17 
+
+22:17 if you have Terraform extension
+22:19 
+
+22:19 installed it will show you the
+22:20 
+
+22:20 suggestion like this is the format lower
+22:22 
+
+22:22 and then it expects the string. So
+22:26 
+
+22:26 string that means it expects the string.
+22:29 
+
+22:29 So now what it is saying is
+22:34 
+
+22:34 inside lower what is that where dot
+22:38 
+
+22:38 project name. Okay. And now we have to
+22:41 
+
+22:41 print this value. So let's go to outputs
+22:43 
+
+22:43 and inside output let's create output
+22:46 
+
+22:46 variable and call it
+22:49 
+
+22:49 formatted project name. You can use the
+22:52 
+
+22:52 same uh name because that was the input
+22:54 
+
+22:54 variable. This is output variable. They
+22:56 
+
+22:56 can be same. And uh add the value is
+23:01 
+
+23:01 equal to um
+23:04 
+
+23:04 locals
+23:06 
+
+23:06 dot formatted project name. Okay. And if
+23:11 
+
+23:11 I do TF in it, oops, I don't have alias
+23:14 
+
+23:14 set. So let's set the alias. And if I do
+23:17 
+
+23:17 TF in it
+23:20 
+
+23:20 and then TF plan,
+23:25 
+
+23:25 okay, it is throwing some error. Uh has
+23:27 
+
+23:27 not been declared. Locals do pro uh
+23:29 
+
+23:29 formatted project name has not been
+23:31 
+
+23:31 declared. Okay, so let's see. Main.tf uh
+23:35 
+
+23:35 formatted project name is this. Okay.
+23:38 
+
+23:38 And over here is variable is project
+23:41 
+
+23:41 name
+23:44 
+
+23:44 and output is equal to
+23:52 
+
+23:52 maybe we don't directly we cannot
+23:54 
+
+23:54 directly print locals.
+23:57 
+
+23:57 Um let's see not sure
+24:02 
+
+24:02 I mean now it is showing that
+24:12 
+
+24:12 it is throwing some warning but still um
+24:16 
+
+24:16 yeah
+24:17 
+
+24:17 still if you see the output will be
+24:20 
+
+24:20 formatted project name equal to project
+24:23 
+
+24:23 alpha resource. Now it is in lower case
+24:26 
+
+24:26 and you can verify that by using TF
+24:29 
+
+24:29 output
+24:31 
+
+24:31 or TF show output. Let's see. No outputs
+24:35 
+
+24:35 found. Uh D maybe because we did not run
+24:40 
+
+24:40 Terapform apply yet.
+24:42 
+
+24:42 So that's okay. Uh let's use Terapform
+24:45 
+
+24:45 output formatted project name the output
+24:49 
+
+24:49 variable.
+24:53 
+
+24:53 Okay. So it says please define an output
+24:55 
+
+24:55 with the output keyword to run terapform
+24:58 
+
+24:58 refresh for it to become available
+25:00 
+
+25:00 because we have not run the terapform
+25:02 
+
+25:02 plan even once. So if I do terapform
+25:05 
+
+25:05 refresh
+25:07 
+
+25:07 and after that if I run terapform output
+25:12 
+
+25:12 now it should show the value
+25:15 
+
+25:15 uh terapform output project formatted
+25:17 
+
+25:17 project name is project alpha resource.
+25:21 
+
+25:21 Okay. So it has converted uppercase to
+25:23 
+
+25:23 lower case. Now let's make one more
+25:26 
+
+25:26 change in the same file. Uh instead of
+25:29 
+
+25:29 now for making it lower case just the
+25:32 
+
+25:32 lower case let's add one more thing.
+25:35 
+
+25:35 Let's uh replace the space bars into
+25:39 
+
+25:39 hyphen. So what we can do that inside
+25:42 
+
+25:42 this function replace at the replace and
+25:46 
+
+25:46 that's the string. So it shows you the
+25:48 
+
+25:48 syntax. So replace and then first string
+25:51 
+
+25:51 then substring and then the replace
+25:54 
+
+25:54 string. Okay. So the first is project
+25:56 
+
+25:56 name,
+25:58 
+
+25:58 I'll add space
+25:60 
+
+26:00 and the last string is your new string
+26:03 
+
+26:03 which is hyphen. Okay. And let's close
+26:06 
+
+26:06 this. Okay. Uh I think there is a syntax
+26:09 
+
+26:09 error over here. Okay.
+26:14 
+
+26:14 All right. So this is how it would look
+26:17 
+
+26:17 like. Now let's do TF output again.
+26:19 
+
+26:19 Okay, it did not do anything because we
+26:21 
+
+26:21 have not run terapform refresh yet. You
+26:24 
+
+26:24 see because we have not applied the
+26:26 
+
+26:26 changes that's why it is not uh making
+26:29 
+
+26:29 the changes. It's not reflecting the
+26:31 
+
+26:31 changes. So if I do terapform refresh
+26:33 
+
+26:33 and now it is showing the output format
+26:36 
+
+26:36 correctly like spaces has been replaced
+26:38 
+
+26:38 by hyphen. So that was uh like how you
+26:42 
+
+26:42 can do lower, upper and replace and you
+26:45 
+
+26:45 can use multiple functions inside the
+26:48 
+
+26:48 same line like how we use first it will
+26:51 
+
+26:51 execute the inside function which is it
+26:53 
+
+26:53 will replace the spaces with comma and
+26:56 
+
+26:56 then it will convert everything into
+26:58 
+
+26:58 lower right. So how it will work? So
+27:02 
+
+27:02 let's say first replace function will
+27:04 
+
+27:04 work. Okay. So in the first iteration it
+27:07 
+
+27:07 will execute the replace function and
+27:10 
+
+27:10 how it will do that it will convert this
+27:14 
+
+27:14 let's say hello world
+27:19 
+
+27:19 this will be converted into
+27:22 
+
+27:22 hello world
+27:26 
+
+27:26 and let's say it was not like this it
+27:28 
+
+27:28 was hello world
+27:31 
+
+27:31 so first this will be replaced by this
+27:35 
+
+27:35 and then this entire string
+27:39 
+
+27:39 will be passed to the lower function or
+27:42 
+
+27:42 upper function whatever right. So lower
+27:44 
+
+27:44 function will have this string. Now what
+27:47 
+
+27:47 it will do because this is a lower
+27:50 
+
+27:50 function it will convert this into hello
+27:55 
+
+27:55 world like this into lower. So this
+27:58 
+
+27:58 string will become this string after we
+28:01 
+
+28:01 apply two different functions replace
+28:04 
+
+28:04 and lower inside the same one. All
+28:06 
+
+28:06 right. So that's how it's done. Now
+28:10 
+
+28:10 let's do a quick time check. We are at
+28:12 
+
+28:12 31 minutes mark. Let's Oh yeah, let's
+28:14 
+
+28:14 continue with this video for some more
+28:17 
+
+28:17 time. Maybe 20 25 minutes and then we'll
+28:19 
+
+28:19 see. Okay. Um the next one is um let's
+28:24 
+
+28:24 use the merge function.
+28:27 
+
+28:27 Okay. So to use the merge function first
+28:30 
+
+28:30 let's add a resource over here. Let's
+28:33 
+
+28:33 create an S3 bucket. So resource
+28:36 
+
+28:36 and AWS
+28:40 
+
+28:40 S3 bucket. Is this the correct resource
+28:43 
+
+28:43 name?
+28:47 
+
+28:47 We'll see.
+28:49 
+
+28:49 Um not enough labels specified. Must
+28:52 
+
+28:52 block have two labels. Okay. We'll see.
+28:56 
+
+28:56 name is equal to hello uh tech tutorials
+29:03 
+
+29:03 with push.
+29:06 
+
+29:06 Uh I think there is some issues with the
+29:08 
+
+29:08 resource name. So let's go and check um
+29:12 
+
+29:12 AWS Terraform provider documentation.
+29:16 
+
+29:16 Let's go inside this registry.apform.io
+29:19 
+
+29:19 IO and search for AWSS3.
+29:28 
+
+29:28 Where it is? Where it is? Where it is.
+29:35 
+
+29:35 Okay. All right. There. There are a lot.
+29:39 
+
+29:39 Let's use bucket.
+29:43 
+
+29:43 Yeah. AWS S3 bucket. Oh, that's the data
+29:46 
+
+29:46 source. Uh, not this one. AWSS3 bucket.
+29:49 
+
+29:49 So resource name is correct. So resource
+29:52 
+
+29:52 AWSS3 bucket. Oh, we did not provide the
+29:55 
+
+29:55 name of the resource. Why I'm making the
+29:56 
+
+29:56 same mistake again and again?
+29:59 
+
+29:59 Okay, so uh let's provide the internal
+30:02 
+
+30:02 name. Uh let's call it first S3 and
+30:05 
+
+30:05 inside that uh we have name of the
+30:08 
+
+30:08 bucket
+30:09 
+
+30:09 and oh not the name u the field name is
+30:14 
+
+30:14 inside it's bucket.
+30:16 
+
+30:16 Okay, so that's the only mandatory
+30:18 
+
+30:18 field. So let's add bucket over here.
+30:20 
+
+30:20 And over here, let's add tags. So tags
+30:27 
+
+30:27 are uh let's say environment is equal to
+30:32 
+
+30:32 dev. Okay.
+30:35 
+
+30:35 So that's the basic um AWS S3 bucket. So
+30:39 
+
+30:39 if I run TF plan,
+30:43 
+
+30:43 okay. uh
+30:45 
+
+30:45 yeah it says one plan to add which is an
+30:48 
+
+30:48 S3 bucket over here with the tag
+30:50 
+
+30:50 environment equal to dev and with the
+30:52 
+
+30:52 name that I have provided which is hello
+30:54 
+
+30:54 tech tutorials with push right now let's
+30:57 
+
+30:57 see how we can use the merge function so
+30:60 
+
+30:60 go inside variables and let's have these
+31:04 
+
+31:04 two
+31:06 
+
+31:06 variables created okay so there are two
+31:08 
+
+31:08 variables okay and we have not provided
+31:11 
+
+31:11 any type so it will select the type
+31:13 
+
+31:13 automatically. It's a key value pair. So
+31:15 
+
+31:15 know so you know it's it's a map. Okay.
+31:19 
+
+31:19 And it has two tags. One is company
+31:22 
+
+31:22 which is tech corp managed by terraform.
+31:24 
+
+31:24 That's one variable which is default
+31:26 
+
+31:26 tag. And then there is another variable
+31:28 
+
+31:28 which is environment tag and it has two
+31:32 
+
+31:32 more uh key value pair which is cost
+31:34 
+
+31:34 center and environment. Now there are
+31:38 
+
+31:38 some cases when we have to merge these
+31:40 
+
+31:40 two variables together to form a new
+31:43 
+
+31:43 variable. We can create a local and
+31:46 
+
+31:46 merge these two together or if we if we
+31:48 
+
+31:48 don't have many occurrences then we can
+31:50 
+
+31:50 do that directly over here. So inside
+31:53 
+
+31:53 tags wherever we have tags we can just
+31:56 
+
+31:56 use
+31:58 
+
+31:58 tags equal to merge. Inside merge
+32:03 
+
+32:03 you can just merge two maps together. So
+32:06 
+
+32:06 where dot default tags comma v dot
+32:10 
+
+32:10 environment tags. Okay, that's it. Hit
+32:14 
+
+32:14 save. And if I run tf plan again.
+32:18 
+
+32:18 So now if you see um
+32:22 
+
+32:22 I'm looking for the tags field. So you
+32:24 
+
+32:24 see here is the tag. So the tags are
+32:28 
+
+32:28 inside the bucket. Now we have four tags
+32:30 
+
+32:30 because we have used the merge function
+32:32 
+
+32:32 and merge all those tags together. So it
+32:35 
+
+32:35 is used to merge two maps together. So
+32:38 
+
+32:38 this is one map. This is another map. So
+32:41 
+
+32:41 we have merged both the maps together
+32:43 
+
+32:43 inside tags. Now you can do that over
+32:46 
+
+32:46 here or you can just do that like I'll
+32:49 
+
+32:49 just cut it and inside locals I have
+32:52 
+
+32:52 created a new tag and let's call it new
+32:56 
+
+32:56 tag. And inside new tag we can use merge
+32:60 
+
+33:00 function directly. And now what what is
+33:03 
+
+33:03 the benefit of doing that in locals? Now
+33:05 
+
+33:05 we can directly access the merge value
+33:08 
+
+33:08 of these two map with the help of just
+33:10 
+
+33:10 new tag variable. So now over here we
+33:13 
+
+33:13 can just do not where locals dot new tag
+33:19 
+
+33:19 and that's it. It will do the same thing
+33:22 
+
+33:22 but now we can do that at multiple
+33:24 
+
+33:24 places. Now if we want to use uh the
+33:27 
+
+33:27 same merge tag in multiple location we
+33:29 
+
+33:29 can do that. And now it is throwing the
+33:31 
+
+33:31 error again. It's just some something
+33:35 
+
+33:35 like I don't know why it is showing that
+33:38 
+
+33:38 but maybe we can use it local instead of
+33:42 
+
+33:42 locals. Yeah. So while defining it we
+33:46 
+
+33:46 use locals block but by when we use the
+33:49 
+
+33:49 value we use the value with local dot.
+33:53 
+
+33:53 Okay.
+33:55 
+
+33:55 So over here if you can see um the tags
+34:01 
+
+34:01 it does the same thing right it has
+34:02 
+
+34:02 these four tags. So we have merged it
+34:05 
+
+34:05 together and we have merged it inside a
+34:08 
+
+34:08 local variable and then have we have
+34:10 
+
+34:10 used that local over here inside the
+34:13 
+
+34:13 tag.
+34:14 
+
+34:14 So that's u the second assignment. The
+34:17 
+
+34:17 third one is uh which is bucket naming.
+34:21 
+
+34:21 So let's say we have the bucket name
+34:24 
+
+34:24 over here. Um variables inside variables
+34:28 
+
+34:28 I'm going to add the bucket name. So
+34:29 
+
+34:29 bucket name is something like this
+34:31 
+
+34:31 project alpha storage. There is a space
+34:34 
+
+34:34 with caps and spaces. And now we have to
+34:37 
+
+34:37 do the formatting of the bucket name. So
+34:39 
+
+34:39 instead of this first we'll do v
+34:42 
+
+34:42 dotbucket name. Okay let's see what it's
+34:45 
+
+34:45 going to print.
+34:47 
+
+34:47 Okay. So the bucket will be created with
+34:49 
+
+34:49 this name. the one that we have provided
+34:51 
+
+34:51 it has spaces it has special characters
+34:54 
+
+34:54 and everything I mean it will fail when
+34:56 
+
+34:56 we run terapform apply because s3 bucket
+34:59 
+
+34:59 has some um like conditions like the
+35:02 
+
+35:02 bucket name should not be these many
+35:04 
+
+35:04 characters long it should not have
+35:06 
+
+35:06 special characters or so on so it will
+35:09 
+
+35:09 fail also I don't think it should have a
+35:11 
+
+35:11 capital P so we need to make sure that
+35:14 
+
+35:14 we do the validation before applying the
+35:16 
+
+35:16 changes so what those validation is
+35:19 
+
+35:19 there are mult multiple validations.
+35:21 
+
+35:21 So first we have to convert the bucket
+35:24 
+
+35:24 name into lower case. Okay. So let's do
+35:28 
+
+35:28 create a local. So let's call it
+35:30 
+
+35:30 formatted
+35:33 
+
+35:33 bucket name. That's the name of the
+35:35 
+
+35:35 variable and let's do it into lo lower
+35:39 
+
+35:39 lower first. So lower where dotbucket
+35:42 
+
+35:42 name. Okay, that will change the bucket
+35:44 
+
+35:44 name into lower characters. What else
+35:46 
+
+35:46 does it have? It should not have more
+35:49 
+
+35:49 than 64 characters. That's the other
+35:51 
+
+35:51 limitation of the S3 bucket. So what we
+35:54 
+
+35:54 can do is we can uh trim the characters
+35:58 
+
+35:58 after 64. Okay. So we can use substring
+36:00 
+
+36:00 function. So subst str and inside that
+36:04 
+
+36:04 uh we'll just add zero and 63. So um in
+36:09 
+
+36:09 fact let's see uh what should be the
+36:11 
+
+36:11 value AWS S3 bucket naming
+36:19 
+
+36:19 general purpose laming loom the bucket
+36:21 
+
+36:21 name must be between three and 63
+36:24 
+
+36:24 characters okay and it can consist only
+36:28 
+
+36:28 lowerase number periods and hyphens okay
+36:31 
+
+36:31 so that's the basic requirement of an S3
+36:33 
+
+36:33 bucket so what we are doing we are
+36:35 
+
+36:35 saying u just maximum Minimum is 63.
+36:38 
+
+36:38 Minimum is zero. You can do minimum as
+36:40 
+
+36:40 three or whatever. But let's just do 63.
+36:45 
+
+36:45 So now first it will change it to
+36:48 
+
+36:48 lowerase then it will set the maximum
+36:50 
+
+36:50 length and then it will replace. So we
+36:53 
+
+36:53 need to now replace the character. So
+36:55 
+
+36:55 let's use the replace function over
+36:57 
+
+36:57 here. And let's move that to the next
+36:60 
+
+37:00 line inside replace. So we have one over
+37:03 
+
+37:03 here. Uh one one. Okay. And let's do
+37:09 
+
+37:09 spaces.
+37:11 
+
+37:11 Remove the spaces. And this.
+37:16 
+
+37:16 Okay.
+37:18 
+
+37:18 Okay. Let's let's first try it out.
+37:20 
+
+37:20 Maybe we are making some syntax error. I
+37:22 
+
+37:22 don't want to make it hard to debug. So
+37:25 
+
+37:25 let's do that first. Okay. So what
+37:28 
+
+37:28 should be the bucket name? Uh with just
+37:32 
+
+37:32 this. Let's see. Okay. So now it has
+37:35 
+
+37:35 removed. Oh, it did not remove spaces
+37:37 
+
+37:37 yet. That spaces I I can see the spaces
+37:41 
+
+37:41 over here.
+37:44 
+
+37:44 Or if I do tf refresh, I don't think it
+37:47 
+
+37:47 will make any difference. But let's just
+37:49 
+
+37:49 try.
+37:53 
+
+37:53 It will only make the changes to the
+37:54 
+
+37:54 output variable, I believe.
+37:57 
+
+37:57 Um, let's see.
+38:00 
+
+38:00 Yeah, spaces are still there. Why spaces
+38:03 
+
+38:03 are still there? It shouldn't be because
+38:07 
+
+38:07 we have used replace. Okay, let's let's
+38:10 
+
+38:10 add one more replace first and then
+38:12 
+
+38:12 we'll see. Now we also need to uh
+38:15 
+
+38:15 replace this as well. So let's remove
+38:18 
+
+38:18 these uh special characters as well.
+38:20 
+
+38:20 Let's use replace in front of
+38:23 
+
+38:23 everything.
+38:24 
+
+38:24 And over here, I'm going to add one
+38:28 
+
+38:28 more, which is this,
+38:33 
+
+38:33 this. And let's close this over here.
+38:35 
+
+38:35 Oops. No, I think it's already closed.
+38:38 
+
+38:38 Let's run TF, not refresh, sorry, TF
+38:41 
+
+38:41 plan again.
+38:44 
+
+38:44 TF plan.
+38:51 
+
+38:51 Okay,
+38:53 
+
+38:53 still there. Um
+38:56 
+
+38:56 semicolons are there and
+38:60 
+
+38:60 also it should be lowerase. Yeah. So
+39:06 
+
+39:06 buck formatted bucket name we have
+39:08 
+
+39:08 changed but we have not used it over
+39:10 
+
+39:10 here. Okay. That was the mistake that
+39:12 
+
+39:12 I'm making because it is taking the
+39:15 
+
+39:15 bucket name from here from v.bucket name
+39:18 
+
+39:18 right but we are making changes in the
+39:20 
+
+39:20 locals.
+39:21 
+
+39:21 Okay. So let's change it local dot
+39:24 
+
+39:24 formatted bucket name. Now it makes
+39:27 
+
+39:27 sense.
+39:31 
+
+39:31 KTF plan.
+39:34 
+
+39:34 And now the bucket name should be
+39:36 
+
+39:36 changed to the way that we want which is
+39:38 
+
+39:38 this one. Okay. Everything is in lower
+39:41 
+
+39:41 case. Spaces has been removed and
+39:43 
+
+39:43 exclamation marks have been removed. If
+39:46 
+
+39:46 you want you could have converted spaces
+39:48 
+
+39:48 into hyphens as well because hyphens are
+39:50 
+
+39:50 supported inside the bucket name. So
+39:53 
+
+39:53 that you could have done but like that's
+39:55 
+
+39:55 how you use multiple functions together.
+39:58 
+
+39:58 And this is like a real use case like
+40:01 
+
+40:01 like why do we need to use these
+40:03 
+
+40:03 functions like inside this variable we
+40:06 
+
+40:06 have used substring lower multiple time
+40:09 
+
+40:09 replace so that we make sure that the
+40:12 
+
+40:12 bucket name should be as expected even
+40:14 
+
+40:14 if someone provides the wrong input it
+40:18 
+
+40:18 should be able to autocorrect and the
+40:20 
+
+40:20 terraform command should not fail right
+40:22 
+
+40:22 we are handling it like it's it's a sort
+40:25 
+
+40:25 of error handling that we are doing okay
+40:27 
+
+40:27 so that's a good use case. The next is
+40:32 
+
+40:32 um we're going to use some other
+40:33 
+
+40:33 functions such as split, join, and yeah,
+40:39 
+
+40:39 four expressions. So, let's see. I'm
+40:41 
+
+40:41 going to create a security group rule.
+40:44 
+
+40:44 Uh was it there in day 10 video?
+40:48 
+
+40:48 Instead of actually create using this on
+40:51 
+
+40:51 u the security group u let's try to keep
+40:54 
+
+40:54 it simple because otherwise it'll be
+40:57 
+
+40:57 overwhelming. So let's do that. Let's
+41:00 
+
+41:00 create a variable with multiple ports.
+41:03 
+
+41:03 Okay. Uh inside variables.tf I'm going
+41:06 
+
+41:06 to create a variable called allowed
+41:09 
+
+41:09 ports and it has multiple ports. Now if
+41:11 
+
+41:11 you can see that all the ports are comma
+41:13 
+
+41:13 separated but everything is inside
+41:15 
+
+41:15 double quotes. That means it's a string.
+41:17 
+
+41:17 Okay. It's not a list, it's a string.
+41:19 
+
+41:19 Now, first we have to separate it into a
+41:22 
+
+41:22 list and then we have to iterate it
+41:24 
+
+41:24 through the list and do some
+41:27 
+
+41:27 modifications on that. Okay. So, let's
+41:29 
+
+41:29 go inside our locals. Okay. So, we have
+41:32 
+
+41:32 formatted project name, new tag and
+41:34 
+
+41:34 this. So, let's create another local
+41:36 
+
+41:36 over here. Okay. And um let's call it
+41:40 
+
+41:40 port list. So now what we are doing
+41:44 
+
+41:44 inside port list we have to first
+41:47 
+
+41:47 convert that into a list and we can do
+41:50 
+
+41:50 that using split function as well. So we
+41:52 
+
+41:52 can use type conversion or we can use
+41:54 
+
+41:54 split as well. So what we are saying
+41:56 
+
+41:56 split now we have to provide as you can
+41:59 
+
+41:59 see over here we have to provide a
+42:01 
+
+42:01 separator and then the string. So inside
+42:03 
+
+42:03 the split function first the separator
+42:06 
+
+42:06 which is comma okay inside double quotes
+42:09 
+
+42:09 comma sorry yeah comma and then the list
+42:13 
+
+42:13 list is what where dotallowed ports okay
+42:17 
+
+42:17 so now this port list will become an
+42:20 
+
+42:20 actual list with multiple ports and all
+42:22 
+
+42:22 of these are ports now now we create
+42:25 
+
+42:25 another
+42:27 
+
+42:27 uh local which is sg rules okay and
+42:30 
+
+42:30 inside sg rule we create a because we
+42:34 
+
+42:34 have to iterate it through the list
+42:37 
+
+42:37 right it it's a list now so we have to
+42:39 
+
+42:39 iterate it through the list so we can
+42:40 
+
+42:40 use the for expression so there is for
+42:43 
+
+42:43 each which we have seen earlier but then
+42:46 
+
+42:46 there is for as well so what we can do
+42:48 
+
+42:48 is for port in okay port in
+42:54 
+
+42:54 local dotport list I'm I'm going to
+42:57 
+
+42:57 explain it to you just just wait okay so
+43:01 
+
+43:01 port list.
+43:04 
+
+43:04 So now what what we are doing over here
+43:06 
+
+43:06 we are saying start a counter from
+43:10 
+
+43:10 inside this port list. So let's say this
+43:12 
+
+43:12 port list have four different uh values.
+43:15 
+
+43:15 It's a list the list have four different
+43:18 
+
+43:18 values. So we are saying create a
+43:20 
+
+43:20 counter variable with the name port and
+43:23 
+
+43:23 port will iterate from all the elements
+43:27 
+
+43:27 inside that list from element 0 1 2 so
+43:30 
+
+43:30 whatever the end of the list is. Okay.
+43:32 
+
+43:32 So we are iterating it through the
+43:34 
+
+43:34 values in the list and then colon. So
+43:38 
+
+43:38 this is the syntax how we use for loop
+43:40 
+
+43:40 inside terraform. Okay. and then we'll
+43:45 
+
+43:45 put everything inside curly braces.
+43:48 
+
+43:48 Okay, so for loop and then colon inside
+43:52 
+
+43:52 curly braces. So let's say we are
+43:54 
+
+43:54 setting name is equal to colon port
+44:00 
+
+44:00 dollar
+44:02 
+
+44:02 port. Okay, so now you see two ports
+44:05 
+
+44:05 over here. So don't get confused. The
+44:06 
+
+44:06 first port is the string which we have
+44:09 
+
+44:09 just entered. And because this port has
+44:12 
+
+44:12 a dollar sign in front of it. So this is
+44:16 
+
+44:16 this port counter. So what we are saying
+44:19 
+
+44:19 port 8080 port 80 port 3306. So the name
+44:25 
+
+44:25 of the security group rule will be port
+44:28 
+
+44:28 hyphen the port name. Okay. And this
+44:32 
+
+44:32 particular syntax if we have not covered
+44:34 
+
+44:34 it earlier it's called interpolation.
+44:37 
+
+44:37 So when we are accessing any variable
+44:39 
+
+44:39 inside terapform we can just directly do
+44:41 
+
+44:41 v dot something something right. But
+44:44 
+
+44:44 when we are concatenating it with
+44:46 
+
+44:46 another string inside a string then we
+44:50 
+
+44:50 have to use the variable inside the
+44:53 
+
+44:53 curly braces and prefix is dollar so
+44:57 
+
+44:57 that it can first convert this into
+44:60 
+
+44:60 value. Oops. And then add it to port. So
+45:03 
+
+45:03 it's called string interpolation.
+45:06 
+
+45:06 Okay. So the name will be this and port
+45:10 
+
+45:10 is equal to port. Okay. Um this is the
+45:14 
+
+45:14 direct port. We can access it directly.
+45:17 
+
+45:17 And then we have description. So
+45:20 
+
+45:20 description could go description could
+45:23 
+
+45:23 go something like
+45:26 
+
+45:26 uh allow traffic on port. Again the
+45:31 
+
+45:31 interpolation dollar port.
+45:35 
+
+45:35 Okay. So um yeah, that's why I did not
+45:38 
+
+45:38 use it on the actual security group rule
+45:40 
+
+45:40 because I don't want it to be more
+45:42 
+
+45:42 complicated than it already is. So let's
+45:44 
+
+45:44 let's do a quick recap of what we did.
+45:47 
+
+45:47 Okay. So we created a variable with
+45:50 
+
+45:50 multiple uh ports. Let's see it over
+45:52 
+
+45:52 here. So there are multiple ports but
+45:54 
+
+45:54 it's a string because it's separated by
+45:56 
+
+45:56 comma and then it has double quotes. So
+45:59 
+
+45:59 allowed ports is the variable name. Now
+46:02 
+
+46:02 inside main.tf TF what we did we first
+46:05 
+
+46:05 split that variable with comma as the
+46:08 
+
+46:08 separator okay and passed the string
+46:11 
+
+46:11 over here and we split that that would
+46:15 
+
+46:15 convert that into a list and we added
+46:17 
+
+46:17 that into port list which is list okay
+46:22 
+
+46:22 and then we have created another local
+46:25 
+
+46:25 with the name sg rules and created a for
+46:28 
+
+46:28 expression which will iterate inside all
+46:31 
+
+46:31 the elements of this local port list.
+46:34 
+
+46:34 Okay. And then it will set some
+46:36 
+
+46:36 variables. Okay. The first variable is
+46:38 
+
+46:38 name, port description. Okay. And
+46:43 
+
+46:43 let's uh yeah, let's create the output
+46:47 
+
+46:47 variable as well to see the values.
+46:50 
+
+46:50 Okay. So output and output name is let's
+46:54 
+
+46:54 say port list.
+46:59 
+
+46:59 port list value is equal to local dot
+47:04 
+
+47:04 uh port list. The same way we can do
+47:07 
+
+47:07 output on SG rules
+47:13 
+
+47:13 and value is equal to local dot SG
+47:17 
+
+47:17 rules.
+47:19 
+
+47:19 Okay. And let's do TF plan.
+47:27 
+
+47:27 So it should show the value. Um let's
+47:29 
+
+47:29 see what it shows.
+47:31 
+
+47:31 So go.
+47:36 
+
+47:36 Okay. So now if you see these are the
+47:39 
+
+47:39 output variables. So port list is now a
+47:41 
+
+47:41 list with 8443 808 03306 and SG rules uh
+47:48 
+
+47:48 which is
+47:49 
+
+47:49 as you can see it's now become a map
+47:54 
+
+47:54 with multiple elements. So the first
+47:56 
+
+47:56 element is this okay allow traffic on
+47:59 
+
+47:59 port 80 where this was the port and over
+48:02 
+
+48:02 here this was the port over here this
+48:04 
+
+48:04 was the port okay so it has iterated
+48:07 
+
+48:07 through all the values which is 80 43 8
+48:10 
+
+48:10 080 3306 right so this becomes the first
+48:13 
+
+48:13 element with 80 this become the second
+48:17 
+
+48:17 and third and fourth okay so this is how
+48:21 
+
+48:21 it will work uh when it comes to where
+48:25 
+
+48:25 it is.
+48:28 
+
+48:28 Oh yeah. So this is how you would use
+48:30 
+
+48:30 for expression split function and this
+48:33 
+
+48:33 is how you will iterate it through
+48:35 
+
+48:35 multiple values. So now over here we did
+48:39 
+
+48:39 not define the variable type over here
+48:42 
+
+48:42 as well. But the way we split it
+48:44 
+
+48:44 automatically gets it that yeah it's of
+48:46 
+
+48:46 type any but the way we are entering the
+48:49 
+
+48:49 value it become a list. Similarly over
+48:51 
+
+48:51 here it because we are iterating in a
+48:56 
+
+48:56 list but then we are using that values
+49:00 
+
+49:00 inside a map right so that's why it
+49:04 
+
+49:04 become a map with multiple values key
+49:07 
+
+49:07 value pair and so on.
+49:09 
+
+49:09 Okay let's move ahead. Um the next one
+49:13 
+
+49:13 is a lookup function. Okay let's see how
+49:16 
+
+49:16 the lookup will work. So we have a
+49:19 
+
+49:19 variable over here. This is the
+49:22 
+
+49:22 variable. Variable is instance sizes.
+49:25 
+
+49:25 Okay. Default values are dev equal to
+49:28 
+
+49:28 this, staging equal to this, prod equal
+49:30 
+
+49:30 to this. So we are basically setting up
+49:34 
+
+49:34 in advance like if it's a dev
+49:36 
+
+49:36 environment, use this instance. If it is
+49:38 
+
+49:38 staging environment, use this. If it is
+49:40 
+
+49:40 a prod environment, use this
+49:41 
+
+49:41 environment. But how would we add the
+49:45 
+
+49:45 logic over here like which environment
+49:47 
+
+49:47 to use? What do we do? Okay, so that's
+49:49 
+
+49:49 why we are using the lookup function. So
+49:52 
+
+49:52 inside locals
+49:54 
+
+49:54 over here, let's create instance size as
+49:58 
+
+49:58 local.
+49:60 
+
+49:60 Okay. And over here uh because we need
+50:03 
+
+50:03 to use lookup function based on the
+50:05 
+
+50:05 environment, right? So if you see um
+50:10 
+
+50:10 sorry
+50:11 
+
+50:11 add lookup and it will show you
+50:15 
+
+50:15 the expected values for lookup function.
+50:19 
+
+50:19 So if you see first is the input map
+50:23 
+
+50:23 which is like the input values that you
+50:25 
+
+50:25 are providing. Then there is key. Key
+50:28 
+
+50:28 meaning what value to look for and then
+50:31 
+
+50:31 there is default. Default is if it does
+50:34 
+
+50:34 not find anything what value to use.
+50:36 
+
+50:36 Okay. So the first is uh input which is
+50:40 
+
+50:40 where dot instance sizes. Okay. Second
+50:44 
+
+50:44 is based on environment because we are
+50:47 
+
+50:47 looking that set the instance size based
+50:49 
+
+50:49 on environment. Right. So that based on
+50:51 
+
+50:51 thing is environment. So where dot
+50:54 
+
+50:54 environment okay environment is not a
+50:56 
+
+50:56 variable that we have set. So let's set
+50:59 
+
+50:59 the variable environment as well.
+51:02 
+
+51:02 variable
+51:04 
+
+51:04 um
+51:05 
+
+51:05 environment
+51:09 
+
+51:09 and let's set a default value of dev.
+51:14 
+
+51:14 Let's go back um write v dot environment
+51:18 
+
+51:18 and then set a default value. If it
+51:20 
+
+51:20 doesn't find then use t2 dot micro.
+51:24 
+
+51:24 Okay. So now if I use um
+51:31 
+
+51:31 that's instance size. So let's create an
+51:33 
+
+51:33 output variable as well.
+51:38 
+
+51:38 output
+51:40 
+
+51:40 and instance size
+51:47 
+
+51:47 value is equal to
+51:52 
+
+51:52 local dot
+51:54 
+
+51:54 instance size. Okay.
+51:57 
+
+51:57 So let's run TF plan.
+52:01 
+
+52:01 Okay. Let's see the value.
+52:04 
+
+52:04 Um,
+52:06 
+
+52:06 instance size is T3 small. Okay, let's
+52:09 
+
+52:09 see why did it take P3 small
+52:14 
+
+52:14 main.tf uh lookup. We are doing size
+52:17 
+
+52:17 into
+52:19 
+
+52:19 environment and the values were defined
+52:21 
+
+52:21 inside variables.
+52:24 
+
+52:24 So if the environment is dev should have
+52:28 
+
+52:28 been T2 micro. But where we are using
+52:31 
+
+52:31 staging? Why it is taking staging?
+52:35 
+
+52:35 Because we might have it in TFS and if
+52:39 
+
+52:39 you remember TFR takes a precedence over
+52:43 
+
+52:43 the default values. Over here it was
+52:45 
+
+52:45 staging that's why it was taking
+52:46 
+
+52:46 staging. If I do it over here as prod
+52:51 
+
+52:51 okay and if I run the TF plan again so
+52:54 
+
+52:54 the value should have been let's see
+52:58 
+
+52:58 T3.large as per prod. Okay, let's see.
+53:04 
+
+53:04 T3.Large,
+53:06 
+
+53:06 right? And if I do anything like either
+53:10 
+
+53:10 dev or anything except these three,
+53:14 
+
+53:14 so it should take T2 do micro because
+53:17 
+
+53:17 that's there in the default. Okay, so
+53:20 
+
+53:20 let's say
+53:22 
+
+53:22 production.
+53:24 
+
+53:24 If I do that and if I run TF plan again,
+53:28 
+
+53:28 it should use T2.micro because that was
+53:30 
+
+53:30 the default value defined in main.tf.
+53:34 
+
+53:34 Here it is.
+53:37 
+
+53:37 Um,
+53:40 
+
+53:40 okay. Over here you see this is the
+53:42 
+
+53:42 default value T2.micro. So
+53:47 
+
+53:47 over here instance size is T2.micro
+53:50 
+
+53:50 because we have used the value as
+53:52 
+
+53:52 production which is not there inside
+53:54 
+
+53:54 this value. Right. So that's how lookup
+53:59 
+
+53:59 function works. Okay. And yeah I think
+54:03 
+
+54:03 this is enough for this video. We are on
+54:06 
+
+54:06 1 hour mark. Yeah we have crossed 1
+54:09 
+
+54:09 hour. So I think this should be more
+54:11 
+
+54:11 than enough for today. Make sure you do
+54:13 
+
+54:13 the practice. Make sure you check the uh
+54:15 
+
+54:15 assignments given in the GitHub
+54:17 
+
+54:17 repository. It will be the same and you
+54:20 
+
+54:20 can practice it yourself to understand
+54:21 
+
+54:21 it better to get your hands dirty.
+54:23 
+
+54:23 Otherwise, this will not uh be much
+54:26 
+
+54:26 helpful. Okay? So, do that and I will
+54:28 
+
+54:28 see you tomorrow from assignment six
+54:31 
+
+54:31 onwards. So, thank you so much for
+54:32 
+
+54:32 watching. I hope you had a good learning
+54:34 
+
+54:34 experience.

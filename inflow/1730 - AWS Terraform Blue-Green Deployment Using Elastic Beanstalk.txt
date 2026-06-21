@@ -1,0 +1,1336 @@
+00:00 Hello and welcome back to 30 days of AWS
+00:03 
+
+00:03 Terraform. My name is P. This is day 17.
+00:05 
+
+00:05 In this video, we'll be doing another
+00:07 
+
+00:07 mini project and that mini project will
+00:10 
+
+00:10 be about blue green deployment in AWS
+00:13 
+
+00:13 using Terraform. So yes, uh we'll
+00:15 
+
+00:15 package the application. We'll deploy
+00:17 
+
+00:17 the application in uh S3 bucket. We'll
+00:20 
+
+00:20 upload the code zip file in S3 bucket
+00:23 
+
+00:23 and then we'll deploy that in multiple
+00:25 
+
+00:25 environments like blue green
+00:27 
+
+00:27 environments using elastic beanto. Okay.
+00:30 
+
+00:30 So if you have not subscribed the
+00:31 
+
+00:31 channel, please do so. Please support
+00:33 
+
+00:33 the channel and please uh like, comment
+00:36 
+
+00:36 and share it with your friends and
+00:37 
+
+00:37 colleagues so that others can also take
+00:40 
+
+00:40 advantage of this learning opportunity.
+00:41 
+
+00:41 We are doing this as a learning
+00:43 
+
+00:43 challenge and learning challenge has to
+00:46 
+
+00:46 be done in a group not individually.
+00:48 
+
+00:48 It's not a sprint, it's a marathon. Uh
+00:50 
+
+00:50 we have to run together to achieve the
+00:53 
+
+00:53 same goal. Okay. So yeah, enough
+00:55 
+
+00:55 motivation talk. I'm not sure if even
+00:57 
+
+00:57 that was motivating but I I just tried
+00:60 
+
+00:60 it for myself. So let's get into the
+01:02 
+
+01:02 video and let's start understanding
+01:03 
+
+01:03 this. Okay. So this diagram looks pretty
+01:06 
+
+01:06 simple but it's not that simple because
+01:08 
+
+01:08 I have just included a few details over
+01:11 
+
+01:11 here. Right? So it's not the whole
+01:13 
+
+01:13 picture that we'll be doing. Firstly
+01:15 
+
+01:15 we'll start with uploading the
+01:17 
+
+01:17 application to the S3 bucket. As you can
+01:19 
+
+01:19 see we'll upload the application to S3
+01:21 
+
+01:21 bucket. Then we'll deploy it in multiple
+01:23 
+
+01:23 environments blue and green. So what
+01:26 
+
+01:26 exactly is the blue green deployment? I
+01:28 
+
+01:28 have shared one video about the
+01:29 
+
+01:29 deployment strategies as the
+01:31 
+
+01:31 prerequisite in day zero video. So I'm
+01:34 
+
+01:34 sure you would have watched it and if
+01:37 
+
+01:37 not you would already probably know what
+01:39 
+
+01:39 exactly is a blue green deployment. It's
+01:41 
+
+01:41 basically a deployment strategy in which
+01:44 
+
+01:44 uh this is let's say your production
+01:45 
+
+01:45 environment which is blue over here.
+01:48 
+
+01:48 This is your production live production
+01:50 
+
+01:50 environment right where your users is
+01:54 
+
+01:54 getting uh the traffic from and this is
+01:57 
+
+01:57 the active production environment. Now
+01:59 
+
+01:59 similar to this blue you create another
+02:01 
+
+02:01 environment and call it green. So this
+02:04 
+
+02:04 is an identical production environment.
+02:08 
+
+02:08 Okay. This is just like uh a copy of
+02:11 
+
+02:11 production with users with the same
+02:14 
+
+02:14 infrastructure, same configuration.
+02:16 
+
+02:16 Everything has to be same. And why we
+02:18 
+
+02:18 are doing this? Because when we create a
+02:21 
+
+02:21 green environment now, we don't have to
+02:23 
+
+02:23 touch the blue environment for any
+02:26 
+
+02:26 deployments, any patching, any changes.
+02:28 
+
+02:28 Whatever changes we have to do, we can
+02:32 
+
+02:32 just do it directly over here on the
+02:34 
+
+02:34 green environment. And then we create or
+02:37 
+
+02:37 we do something called as swap.
+02:41 
+
+02:41 What it will do? This swap will make the
+02:44 
+
+02:44 green as blue and blue as green. Okay.
+02:47 
+
+02:47 So it will just swap between production.
+02:50 
+
+02:50 You can consider this as a staging
+02:52 
+
+02:52 environment or pre-pro environment. Now
+02:54 
+
+02:54 you are making your pre-pro as prod and
+02:56 
+
+02:56 prod will become pre-pro. So let's say
+03:00 
+
+03:00 this uh blue has version 1.0.
+03:05 
+
+03:05 Okay.
+03:06 
+
+03:06 Now when you created an identical
+03:09 
+
+03:09 environment definitely it will also have
+03:11 
+
+03:11 the version 1.0. Okay you've tested it
+03:14 
+
+03:14 and you have verified everything. It is
+03:16 
+
+03:16 working as expected. Now instead of this
+03:19 
+
+03:19 1.0
+03:21 
+
+03:21 you have created another release 2.0 on
+03:24 
+
+03:24 this green environment. Okay. And you
+03:27 
+
+03:27 have tested everything. You have done
+03:30 
+
+03:30 the performance testing or whatever test
+03:32 
+
+03:32 cases you have. You have completed that.
+03:34 
+
+03:34 Now this green will become 2.0.
+03:37 
+
+03:37 And when you do the swap, now this
+03:40 
+
+03:40 active link over here will move from
+03:43 
+
+03:43 here to here. Right? And this standby
+03:47 
+
+03:47 link will go over here. Oops, it's not
+03:51 
+
+03:51 letting me. No.
+03:55 
+
+03:55 Okay. So, some issues with it.
+03:59 
+
+03:59 But you got the point, right? Let me let
+04:02 
+
+04:02 me try to fix this first. somehow it is
+04:05 
+
+04:05 attached to to it and it's not letting
+04:07 
+
+04:07 me change the association.
+04:11 
+
+04:11 Okay, let's remove this. Okay, now you
+04:14 
+
+04:14 got the point. Now this and I'll create
+04:17 
+
+04:17 a new arrow.
+04:19 
+
+04:19 Okay, now it's done. Okay, you see now
+04:22 
+
+04:22 this green will become active with an
+04:25 
+
+04:25 updated version uh 2.0. This blue had
+04:29 
+
+04:29 1.0 version. So now there are two things
+04:33 
+
+04:33 whether you can just upgrade this
+04:36 
+
+04:36 environment and make it 2.0 and then do
+04:39 
+
+04:39 the swap again or you can just destroy
+04:41 
+
+04:41 this environment and use this as the
+04:45 
+
+04:45 live production environment. But now
+04:48 
+
+04:48 this will become blue. Okay.
+04:52 
+
+04:52 So now this will become blue and this
+04:54 
+
+04:54 will become green. So this is your new
+04:56 
+
+04:56 blue environment with upto-date version.
+04:59 
+
+04:59 So what was the main benefit of doing
+05:01 
+
+05:01 this? We made the changes
+05:08 
+
+05:08 on non-live environment. Okay, the
+05:11 
+
+05:11 environment that was not really used by
+05:14 
+
+05:14 public and then we we made the swap.
+05:20 
+
+05:20 So it currently had no downtime or maybe
+05:24 
+
+05:24 minimum downtime.
+05:27 
+
+05:27 The only time that it required was when
+05:30 
+
+05:30 we were in the process of doing the
+05:33 
+
+05:33 swap. So with with the swap meaning we
+05:35 
+
+05:35 are just changing the DNS entries. Okay.
+05:37 
+
+05:37 Earlier it used to point to blue.com now
+05:40 
+
+05:40 it is pointing to uh green.com and then
+05:43 
+
+05:43 we did the DNS entry change. So whatever
+05:46 
+
+05:46 traffic was coming to blue.com it is
+05:48 
+
+05:48 coming to green.com now. But the name is
+05:51 
+
+05:51 the same like user would not have any
+05:54 
+
+05:54 visibility what is happening in the
+05:56 
+
+05:56 background. So uh it's one of the
+05:58 
+
+05:58 deployment strategy. It is one of the
+05:60 
+
+05:60 most common deployment strategy uh that
+06:02 
+
+06:02 we use in production these days and it
+06:05 
+
+06:05 help us save a lot of cost. Like it
+06:07 
+
+06:07 cannot be used everywhere because
+06:10 
+
+06:10 sometimes you have to roll out your
+06:13 
+
+06:13 release to a subset of users which is
+06:16 
+
+06:16 also called canary deployment and there
+06:18 
+
+06:18 are other strategies as well. So based
+06:20 
+
+06:20 on the requirement we use this. Okay. So
+06:23 
+
+06:23 let's move ahead and let's see that in
+06:25 
+
+06:25 action. So here is the GitHub repository
+06:28 
+
+06:28 and this is day 17. So let me just start
+06:31 
+
+06:31 by doing a git clone of this repo.
+06:36 
+
+06:36 Okay. Um
+06:39 
+
+06:39 I'll do the git clone and I explain the
+06:42 
+
+06:42 important parts. Um so let's go ahead
+06:47 
+
+06:47 and
+06:49 
+
+06:49 terminal
+06:52 
+
+06:52 and let's set the alias as well.
+06:56 
+
+06:56 Okay, where am I in day 17? Now let's do
+06:59 
+
+06:59 a get clone of this.
+07:03 
+
+07:03 Okay, now over here we need to go to
+07:06 
+
+07:06 lessons and then day 17 folder.
+07:11 
+
+07:11 Okay, uh lessons oops
+07:15 
+
+07:15 terraform
+07:18 
+
+07:18 lessons and day 17.
+07:23 
+
+07:23 All right. So as you can see it has two
+07:26 
+
+07:26 app versions so that we can test the
+07:28 
+
+07:28 deployment and then there is a blue
+07:31 
+
+07:31 environment.tf. The blue environment
+07:33 
+
+07:33 will have blue environment related
+07:36 
+
+07:36 configuration and then there is the
+07:37 
+
+07:37 green environment. So we are creating an
+07:39 
+
+07:39 S3 object with app v1.zip.
+07:43 
+
+07:43 This is our code package and then we are
+07:46 
+
+07:46 uploading it to a S3 bucket. Okay. Then
+07:51 
+
+07:51 we have not created the package yet. So
+07:53 
+
+07:53 we'll create that shortly. Then we are
+07:56 
+
+07:56 creating an elastic beanto application
+07:59 
+
+07:59 uh with a version v1. Okay, we are
+08:02 
+
+08:02 providing the description that this is
+08:04 
+
+08:04 application version v1 1.0 which is
+08:06 
+
+08:06 initial release and this will make this
+08:09 
+
+08:09 blue environment as the live production
+08:11 
+
+08:11 environment. Okay. So now it will have
+08:16 
+
+08:16 uh multiple environments. Okay. So it
+08:19 
+
+08:19 will have a solution stack name. This
+08:21 
+
+08:21 will come from the variable. Then this
+08:22 
+
+08:22 is your web tier. It will have some IM
+08:26 
+
+08:26 settings like uh which instance profile
+08:28 
+
+08:28 you need to use and uh like autoscaling
+08:32 
+
+08:32 configuration and so on. Right? So you
+08:35 
+
+08:35 will provide all the settings at
+08:36 
+
+08:36 different levels like there is the
+08:38 
+
+08:38 settings for instance there is setting
+08:39 
+
+08:39 for load balancer autoscaler. So make
+08:42 
+
+08:42 sure you know how elastic load balancer
+08:45 
+
+08:45 works before getting into this otherwise
+08:47 
+
+08:47 it will become difficult right
+08:50 
+
+08:50 and then it has this autoscaling
+08:52 
+
+08:52 settings which is let's say minimum size
+08:54 
+
+08:54 is one and maximum size is two then
+08:58 
+
+08:58 there are health checks there are health
+09:00 
+
+09:00 check path over here on the / repository
+09:03 
+
+09:03 and this is the health check port which
+09:05 
+
+09:05 is at80
+09:08 
+
+09:08 um some environment variables and
+09:10 
+
+09:10 deployment policy Let's say we are doing
+09:12 
+
+09:12 a rolling restart.
+09:15 
+
+09:15 So all the elastic bean stuck specific
+09:18 
+
+09:18 uh details will be here and these are
+09:21 
+
+09:21 the tags. So tags uh we have seen this
+09:23 
+
+09:23 merge function before uh which is used
+09:26 
+
+09:26 to merge multiple uh maps into a single
+09:30 
+
+09:30 variable tags. So where dot tags and
+09:32 
+
+09:32 then it has environment blue role is
+09:35 
+
+09:35 production. This is blue. Similarly we
+09:37 
+
+09:37 have green environment. Now green
+09:39 
+
+09:39 environment will have application
+09:41 
+
+09:41 version v2. Why? Because we need to make
+09:44 
+
+09:44 the swap. We need to make the changes.
+09:46 
+
+09:46 And as I've told you, you first deploy
+09:48 
+
+09:48 the identical production environment,
+09:50 
+
+09:50 then deploy the latest code on that. So
+09:53 
+
+09:53 this is what we are doing over here,
+09:56 
+
+09:56 right? It will have similar
+09:57 
+
+09:57 specification. It's just the newer code.
+10:01 
+
+10:01 Okay. Then we have main.tf over here. It
+10:03 
+
+10:03 has providers and then it has IM role
+10:07 
+
+10:07 for elastic beantock EC2 instances
+10:09 
+
+10:09 because beantock should have role to
+10:13 
+
+10:13 access your EC2 instances to make the
+10:15 
+
+10:15 changes right then you attach the manage
+10:18 
+
+10:18 policy for web tier for worker tier and
+10:22 
+
+10:22 for multicontainer docker and so on
+10:24 
+
+10:24 instance profile okay and then we have
+10:27 
+
+10:27 im ro for elastic beanto service we have
+10:30 
+
+10:30 seen this function before which is JSON
+10:32 
+
+10:32 and code and which will have the allowed
+10:35 
+
+10:35 policy right so this function will
+10:38 
+
+10:38 passse the JSON and we'll provide it to
+10:41 
+
+10:41 this uh assume role policy variable
+10:43 
+
+10:43 right then we attach the health check
+10:46 
+
+10:46 reporting update policy and uh elastic
+10:49 
+
+10:49 beanto application okay uh this will be
+10:52 
+
+10:52 your demo application then there is s3
+10:55 
+
+10:55 bucket for application versions we are
+10:57 
+
+10:57 creating the bucket over here in that uh
+10:60 
+
+11:00 blue environment green environment TF we
+11:02 
+
+11:02 have created create the bucket objects
+11:03 
+
+11:03 but here we are creating the buckets
+11:06 
+
+11:06 then we are blocking the bucket access
+11:08 
+
+11:08 public access because we need to keep
+11:10 
+
+11:10 the bucket private it's for our code
+11:12 
+
+11:12 repository right and then there is just
+11:15 
+
+11:15 data source for AWS account
+11:18 
+
+11:18 uh we have some output variables which
+11:20 
+
+11:20 is application name blue environment
+11:22 
+
+11:22 name blue environment URL C name green
+11:25 
+
+11:25 environment and so on like uh many um
+11:29 
+
+11:29 output variables and these are some just
+11:31 
+
+11:31 printed instruction instructions of
+11:33 
+
+11:33 step-by-step demo how you can do that
+11:35 
+
+11:35 how you can verify how you can do the
+11:37 
+
+11:37 swap and so on and then we have uh yeah
+11:42 
+
+11:42 so swap you can do it from the UI you
+11:45 
+
+11:45 can do it from CLI you can do it from
+11:47 
+
+11:47 terapform there are multiple ways of
+11:48 
+
+11:48 doing that then we have package
+11:51 
+
+11:51 applications so this uh there's a small
+11:53 
+
+11:53 script which will help you package your
+11:55 
+
+11:55 code it will uh create a zip of your
+11:58 
+
+11:58 folder and when you use the terraform it
+12:00 
+
+12:00 will upload that package to the S3
+12:02 
+
+12:02 bucket. Okay. So, we'll start it. Uh if
+12:06 
+
+12:06 you go to the repository, you can just
+12:08 
+
+12:08 start with doing the package. Uh where
+12:10 
+
+12:10 it is day 17. Let's go inside this.
+12:16 
+
+12:16 Okay. So over here you can just start if
+12:19 
+
+12:19 you are on Windows you can use PS uh
+12:21 
+
+12:21 yeah PS1 script which is for powershell
+12:24 
+
+12:24 and if you are on Linux or Mac you can
+12:27 
+
+12:27 just use the sh1 and then you can run
+12:29 
+
+12:29 init apply uh init plan and apply and
+12:32 
+
+12:32 then you can start the testing. Let's
+12:34 
+
+12:34 have a look.
+12:36 
+
+12:36 So what I'm doing is this is over here.
+12:40 
+
+12:40 Oh it doesn't have the execute
+12:41 
+
+12:41 permission. So make sure you provide the
+12:44 
+
+12:44 execute permission. Oh not this one.
+12:47 
+
+12:47 775
+12:48 
+
+12:48 and package apps.
+12:53 
+
+12:53 Now let's execute this. It says okay
+12:56 
+
+12:56 package successfully. So you would see
+12:59 
+
+12:59 uh the zip files created over here
+13:01 
+
+13:01 somewhere.
+13:02 
+
+13:02 Where it is? Where it is?
+13:05 
+
+13:05 Why I don't see it? Let's see.
+13:09 
+
+13:09 Um
+13:12 
+
+13:12 yeah over here it's for v_sub_1 and for
+13:16 
+
+13:16 v2 is over here right so it it did the
+13:19 
+
+13:19 zip and it deleted the folder content
+13:23 
+
+13:23 okay says success and yeah and now you
+13:26 
+
+13:26 can just start running the tf in it and
+13:29 
+
+13:29 apply after that
+13:32 
+
+13:32 so I did init
+13:37 
+
+13:37 and then you can just do tf F plan to
+13:40 
+
+13:40 see what all changes will be happening
+13:41 
+
+13:41 and if there are any errors.
+13:45 
+
+13:45 Okay. Uh no errors. It's just providing
+13:48 
+
+13:48 the output plan and then run TF apply.
+14:00 
+
+14:00 Okay. I'm just going to pause the
+14:02 
+
+14:02 recording while it's um starting up.
+14:05 
+
+14:05 All right. So after some time um it it
+14:08 
+
+14:08 has been completed. So let's check it
+14:10 
+
+14:10 out. Now it says
+14:14 
+
+14:14 so here are the steps. Here are uh the
+14:17 
+
+14:17 URLs as well. So let's go ahead and
+14:20 
+
+14:20 check the
+14:23 
+
+14:23 DNS for our blue app uh the blue
+14:26 
+
+14:26 production app which is this one. Okay.
+14:27 
+
+14:27 So I'm just going to copy this. Let's go
+14:30 
+
+14:30 over here and let's paste this. Okay. It
+14:33 
+
+14:33 says welcome to the blue green
+14:35 
+
+14:35 deployment demo. This is version 1.0.
+14:39 
+
+14:39 Okay. And it it is providing some
+14:40 
+
+14:40 metadata like server time, host name,
+14:42 
+
+14:42 etc. And it says this is the current
+14:45 
+
+14:45 production environment running stable
+14:47 
+
+14:47 version version 1.0 for the application.
+14:51 
+
+14:51 Let's go ahead over here and let's
+14:53 
+
+14:53 verify the green environment as well
+14:58 
+
+14:58 com.
+15:01 
+
+15:01 Okay. So let's hit enter and this should
+15:05 
+
+15:05 be our green environment with version
+15:07 
+
+15:07 2.0. Okay, it says it is in the status
+15:11 
+
+15:11 staging and these are the new features
+15:14 
+
+15:14 released in version v2.0.
+15:17 
+
+15:17 Okay, so this is green, this is blue,
+15:19 
+
+15:19 blue is 1.0 which is the live production
+15:22 
+
+15:22 environment. Green is 2.0 zero which is
+15:25 
+
+15:25 the staging environment but identical to
+15:27 
+
+15:27 production but an upto-date version or
+15:31 
+
+15:31 updated version and the later version of
+15:33 
+
+15:33 the production environment which we need
+15:35 
+
+15:35 to test. So this is where we need to
+15:38 
+
+15:38 test it out. We need to uh run some
+15:40 
+
+15:40 benchmarks. Uh we need to check if it is
+15:43 
+
+15:43 working fine for everything and then
+15:45 
+
+15:45 we'll make the swap. Okay. So now this
+15:47 
+
+15:47 is the time where we make the swap. So
+15:49 
+
+15:49 let's go ahead over here and search for
+15:52 
+
+15:52 beanto. As I've told you, there are
+15:54 
+
+15:54 multiple ways of doing the swap. So, one
+15:56 
+
+15:56 way is from the UI or from the console.
+15:59 
+
+15:59 So, let's go inside and let's go into
+16:01 
+
+16:01 the blue app.
+16:04 
+
+16:04 Okay. And
+16:07 
+
+16:07 there are all the details over here like
+16:10 
+
+16:10 what has been done, the health checks
+16:12 
+
+16:12 and all the things. And then if you go
+16:15 
+
+16:15 to actions, there is an option which
+16:18 
+
+16:18 says swap environment domain. Let's
+16:20 
+
+16:20 click on that.
+16:23 
+
+16:23 Okay. And let's select the environment.
+16:25 
+
+16:25 Now it is showing there is a green
+16:27 
+
+16:27 environment available for you to swap.
+16:29 
+
+16:29 So let's select this one. And it says uh
+16:32 
+
+16:32 it will modify the route 53DNS
+16:35 
+
+16:35 configuration. So if you are okay with
+16:37 
+
+16:37 that, hit swap.
+16:40 
+
+16:40 Okay. So once you hit the swap, it will
+16:42 
+
+16:42 take some time and you can verify the
+16:45 
+
+16:45 progress. Let me see from where we can
+16:47 
+
+16:47 verify the progress.
+16:51 
+
+16:51 um my blue app.
+16:56 
+
+16:56 Oh, it says completed swapping C name.
+16:58 
+
+16:58 So, it might have done that already. But
+17:00 
+
+17:00 maybe maybe uh these records will take
+17:04 
+
+17:04 some time to propagate. So, wait for a
+17:06 
+
+17:06 few minutes and then try to test it out.
+17:08 
+
+17:08 Now, this was blue, okay, version 1.0.
+17:11 
+
+17:11 Now, we did the swap. So, let's hit
+17:13 
+
+17:13 refresh over here. Now, it become green.
+17:16 
+
+17:16 Okay, so blue will become green with
+17:18 
+
+17:18 2.0. zero and if we check this one which
+17:21 
+
+17:21 is which was green now this will become
+17:24 
+
+17:24 blue. Okay. So we did the swap. Now this
+17:27 
+
+17:27 is uh your green environment is version
+17:30 
+
+17:30 2.0 but it is on blue green like blue
+17:35 
+
+17:35 app. It is there in the blue app. If you
+17:37 
+
+17:37 can see the URL is blue over here it is
+17:40 
+
+17:40 green. Okay. I hope you are not
+17:43 
+
+17:43 confused. I hope you are getting the
+17:46 
+
+17:46 point what we are doing. This is exactly
+17:48 
+
+17:48 what we discussed over here that we are
+17:50 
+
+17:50 going to do and this is exactly what we
+17:52 
+
+17:52 did. Okay. Um so we deployed version 1.0
+17:58 
+
+17:58 on I'm explaining this again because I
+18:01 
+
+18:01 think this could be confusing if you are
+18:03 
+
+18:03 not aware of the concept. So I'm just
+18:05 
+
+18:05 going to explain it one more time. Okay.
+18:08 
+
+18:08 So blue is 1.0 green is 2.0. That was in
+18:12 
+
+18:12 the beginning. Then we did the swap. Now
+18:16 
+
+18:16 this blue will become 2.0.
+18:19 
+
+18:19 Okay. And this will become 1.0. This was
+18:23 
+
+18:23 because this is now blue environment. We
+18:25 
+
+18:25 did the swap. Right? So now over here
+18:28 
+
+18:28 your blue app which is your live
+18:30 
+
+18:30 production app. Let's say Amazon.com.
+18:33 
+
+18:33 This is what you have deployed to. Now
+18:35 
+
+18:35 your amazon.com has the version 2.0 zero
+18:39 
+
+18:39 and the version that you had earlier
+18:42 
+
+18:42 which was pointing to now that will
+18:45 
+
+18:45 become amazon.com/staging
+18:47 
+
+18:47 the earlier version 1.0 zero of
+18:49 
+
+18:49 amazon.com. Okay. So this is how it
+18:52 
+
+18:52 works. How it works in the real time.
+18:54 
+
+18:54 Now make sure uh yeah you can go through
+18:57 
+
+18:57 the documentation you can go through the
+18:59 
+
+18:59 GitHub repository. We have added a ton
+19:01 
+
+19:01 of detail for you to learn and
+19:03 
+
+19:03 understand. But I think um these things
+19:06 
+
+19:06 will be uh beneficial. These things will
+19:09 
+
+19:09 be uh and yeah again one more thing. So
+19:12 
+
+19:12 you can also do the roll back. Let's say
+19:14 
+
+19:14 your newer application is not working
+19:17 
+
+19:17 fine. It has some issues. So you can
+19:18 
+
+19:18 instantly roll back by doing the swap
+19:20 
+
+19:20 again. Once you do the swap again, blue
+19:23 
+
+19:23 will become green, green will become
+19:24 
+
+19:24 blue and your code will be reverted.
+19:27 
+
+19:27 Okay. So let's just uh do the terraform
+19:30 
+
+19:30 destroy before I forget and make sure
+19:34 
+
+19:34 you also does the same. And uh
+19:39 
+
+19:39 and yeah, basically that's it. That's it
+19:41 
+
+19:41 uh from this video that I wanted you to
+19:44 
+
+19:44 show. And uh make sure you go through
+19:46 
+
+19:46 the GitHub repository and make sure you
+19:49 
+
+19:49 complete the assignment given in D27
+19:51 
+
+19:51 folder. Try it out yourself. Try to
+19:54 
+
+19:54 write the code yourself. Let me know if
+19:56 
+
+19:56 you are facing the any issues or let us
+19:58 
+
+19:58 know in the discord community as well.
+20:01 
+
+20:01 We have a dedicated uh community in our
+20:03 
+
+20:03 discord channel. So someone will help
+20:05 
+
+20:05 you out. Um yeah but try it out yourself
+20:08 
+
+20:08 first and then let us know if you are
+20:10 
+
+20:10 facing any issue. Okay. So thank you so
+20:12 
+
+20:12 much for watching. I hope you have a
+20:13 
+
+20:13 good learning experience. I will see you
+20:15 
+
+20:15 tomorrow with another video. Thank you.

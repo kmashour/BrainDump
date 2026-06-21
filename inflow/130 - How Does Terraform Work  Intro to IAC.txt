@@ -1,0 +1,1510 @@
+00:00 Before actually getting our hands dirty
+00:02 
+
+00:02 with Terraform code and all the
+00:04 
+
+00:04 complexity of it, we need to understand
+00:06 
+
+00:06 why do we actually need Terraform. And
+00:08 
+
+00:08 before that we need to understand what
+00:11 
+
+00:11 exactly is Terapform, how does it work
+00:13 
+
+00:13 and what is infrastructure as a code. So
+00:17 
+
+00:17 in this video we'll be covering all
+00:19 
+
+00:19 those aspects and all these are really
+00:21 
+
+00:21 important concept to understand why are
+00:24 
+
+00:24 we using something right? So otherwise
+00:27 
+
+00:27 the next 30 video will be of no use if
+00:29 
+
+00:29 you don't understand why are we even
+00:31 
+
+00:31 using it. You might be already familiar
+00:33 
+
+00:33 with the concept. You might be already
+00:35 
+
+00:35 aware of all these things. If that is
+00:37 
+
+00:37 the case you can skip this video and
+00:39 
+
+00:39 move on to the next one. If not uh let's
+00:42 
+
+00:42 go ahead with this video. Before that I
+00:44 
+
+00:44 just wanted to mention that 70% of the
+00:47 
+
+00:47 viewers just watch the video and don't
+00:49 
+
+00:49 subscribe the channel. So if you are one
+00:51 
+
+00:51 of those 75%
+00:53 
+
+00:53 please I request you to subscribe the
+00:55 
+
+00:55 channel. It really makes a lot of
+00:57 
+
+00:57 difference. It helps us to promote more
+00:59 
+
+00:59 such amazing content in a very high
+01:02 
+
+01:02 speed without compromising with the
+01:04 
+
+01:04 quality. But we need your support in
+01:06 
+
+01:06 doing that. So I'm sure you will do it.
+01:08 
+
+01:08 So let's u start with our video. We need
+01:11 
+
+01:11 to understand what exactly is infra as a
+01:14 
+
+01:14 code in the beginning. Okay. So what is
+01:17 
+
+01:17 infra as a code or infrastructure as a
+01:19 
+
+01:19 code meaning translating our
+01:21 
+
+01:21 infrastructure in a code in simple
+01:23 
+
+01:23 language you write the code for your
+01:26 
+
+01:26 infrastructure right such as you know
+01:29 
+
+01:29 from servers import EC2 or something
+01:31 
+
+01:31 like any any any programming language
+01:34 
+
+01:34 any shell script or anything in in in
+01:37 
+
+01:37 commands or any format you just write
+01:39 
+
+01:39 the code to provision your
+01:41 
+
+01:41 infrastructure like this infrastructure
+01:43 
+
+01:43 could be servers this infrastructure
+01:45 
+
+01:45 could be multiple other resources in
+01:48 
+
+01:48 cloud such as we are talking about AWS
+01:51 
+
+01:51 so virtual machines AWS VPC S3 firewall
+01:56 
+
+01:56 rules EBS IM and a lot more resources so
+01:60 
+
+01:60 with this particular approach when we
+02:03 
+
+02:03 write the code to provision the
+02:04 
+
+02:04 infrastructure this is called
+02:06 
+
+02:06 infrastructure as a code in the simple
+02:08 
+
+02:08 language now there are different tools
+02:10 
+
+02:10 for infrastructure as a code such as
+02:13 
+
+02:13 Terraform which is why we are doing this
+02:15 
+
+02:15 series. Terraform is the universal and
+02:17 
+
+02:17 most popular tool out of uh all of those
+02:20 
+
+02:20 tools. Pulumi is also one of the
+02:22 
+
+02:22 universal tool. Universal as in it works
+02:25 
+
+02:25 with most of the cloud providers. And
+02:27 
+
+02:27 then we have some cloudnative
+02:29 
+
+02:29 infrastructure as a code or the vendor
+02:31 
+
+02:31 lockin tools such as Azure ARM which is
+02:35 
+
+02:35 Azure resource manager template and
+02:38 
+
+02:38 bicep. These are Azure specific. Then we
+02:41 
+
+02:41 have AWS cloud formation, AWS CDK, AWS
+02:46 
+
+02:46 SAM. These all are AWS specific. Then we
+02:49 
+
+02:49 have GCP specific IES tools such as
+02:52 
+
+02:52 deployment manager, config controller or
+02:54 
+
+02:54 config connector. So you don't need to
+02:56 
+
+02:56 learn all the tools. You don't need to
+02:58 
+
+02:58 understand all the tools. So you need to
+03:00 
+
+03:00 just start with something that is most
+03:02 
+
+03:02 popular and that works with most of the
+03:05 
+
+03:05 cloud providers. So that is why we have
+03:07 
+
+03:07 chosen Terraform to do that. Now we need
+03:09 
+
+03:09 to also understand why do we actually
+03:12 
+
+03:12 need to do that? Why do we need to write
+03:14 
+
+03:14 the code when we can just log to the
+03:17 
+
+03:17 console. So each of the cloud provider
+03:19 
+
+03:19 has their own console like we have AWS
+03:22 
+
+03:22 console, Azure portal and GCP cloud
+03:24 
+
+03:24 console, right? If all of these cloud
+03:26 
+
+03:26 providers are providing you a nice GUI
+03:29 
+
+03:29 to interact with their services with
+03:31 
+
+03:31 their APIs for resource provisioning,
+03:34 
+
+03:34 why do we actually need to write the
+03:36 
+
+03:36 code for that? like why are we creating
+03:38 
+
+03:38 our life difficult with that? I'll
+03:41 
+
+03:41 explain it to you in a bit. But let's
+03:43 
+
+03:43 understand it a bit more. We need to
+03:45 
+
+03:45 understand the problem in a bit more.
+03:47 
+
+03:47 Okay, let's take this sample three- tier
+03:50 
+
+03:50 architecture. Okay, what a three- tier
+03:52 
+
+03:52 architecture is it's basically have
+03:54 
+
+03:54 multiple tiers like a web tier for the
+03:57 
+
+03:57 public facing applications, an app tier
+04:00 
+
+04:00 for hosting your back end and then a
+04:03 
+
+04:03 database tier for your database. Right?
+04:06 
+
+04:06 So uh just don't understand it from the
+04:10 
+
+04:10 AWS perspective for now. Just try to
+04:12 
+
+04:12 think about from an app hosting
+04:14 
+
+04:14 perspective. It could be any cloud and
+04:17 
+
+04:17 it could be on premises as well. The
+04:19 
+
+04:19 concept remain the same. You know it's a
+04:21 
+
+04:21 three- tier architecture that we are
+04:24 
+
+04:24 discussing. So we have multiple
+04:26 
+
+04:26 resources over here right. So you need
+04:28 
+
+04:28 to create multiple servers like multiple
+04:30 
+
+04:30 EC2 instances, autoscaling groups,
+04:33 
+
+04:33 multiple load balancer, one external
+04:35 
+
+04:35 facing, one internal facing load
+04:36 
+
+04:36 balancer. Then you will have uh maybe a
+04:40 
+
+04:40 CDN, route 53, health props and then you
+04:43 
+
+04:43 have databases, master and uh slave
+04:47 
+
+04:47 replica and so on, right? So there are
+04:49 
+
+04:49 so many resources that we are
+04:50 
+
+04:50 provisioning VPC as well. Now if you do
+04:53 
+
+04:53 all that manually from the cloud console
+04:57 
+
+04:57 it could take roughly 2 hours let's say
+04:59 
+
+04:59 because you know database also takes
+05:01 
+
+05:01 time to provision and you have to do
+05:03 
+
+05:03 each of these step one by one. So 2
+05:05 
+
+05:05 hours not a big deal right um you have
+05:07 
+
+05:07 spent 2 hours to provision an
+05:09 
+
+05:09 infrastructure but this is just for one
+05:12 
+
+05:12 single app and this is just for a simple
+05:15 
+
+05:15 three- tier architecture app. It doesn't
+05:17 
+
+05:17 have any complexity. it is not
+05:19 
+
+05:19 reflecting the actual application that
+05:21 
+
+05:21 an enterprise has. So if we go ahead and
+05:26 
+
+05:26 check this because earlier you see just
+05:29 
+
+05:29 one environment for one application. Now
+05:31 
+
+05:31 when you move into an enterprise you
+05:34 
+
+05:34 would have multiple environments for
+05:36 
+
+05:36 different use cases like you have a dev
+05:39 
+
+05:39 environment a system integration test
+05:41 
+
+05:41 environment performance testing
+05:43 
+
+05:43 environment a disaster recovery
+05:45 
+
+05:45 environment a prod environment and a
+05:47 
+
+05:47 pre-pro or staging environment right so
+05:50 
+
+05:50 now the complexity increases now instead
+05:53 
+
+05:53 of having a single environment now you
+05:56 
+
+05:56 have six environment per application so
+05:58 
+
+05:58 the time that it will take now is 12
+06:01 
+
+06:01 hours per application. Still not not not
+06:04 
+
+06:04 really bad, right? But an organization,
+06:08 
+
+06:08 an enterprise level company don't just
+06:10 
+
+06:10 run on a single application. They run on
+06:13 
+
+06:13 multiple hundreds and thousands of
+06:14 
+
+06:14 application. Now just calculate the
+06:16 
+
+06:16 time. Okay, things are getting scary,
+06:18 
+
+06:18 right? You cannot do all of these things
+06:21 
+
+06:21 manually. It becomes cumbersome. It
+06:24 
+
+06:24 becomes almost impossible and then there
+06:26 
+
+06:26 will be no point of using the cloud,
+06:28 
+
+06:28 right? If you are doing all of these
+06:30 
+
+06:30 efforts, if you are putting all of these
+06:32 
+
+06:32 efforts, there's no point of using the
+06:34 
+
+06:34 cloud. Now what all challenges that it
+06:37 
+
+06:37 comes with? So first is let's say your
+06:40 
+
+06:40 infra team is spending 12 hours per day
+06:43 
+
+06:43 per app to provision an infrastructure
+06:46 
+
+06:46 and your dev team and rest of the teams
+06:48 
+
+06:48 like your performance testing team, your
+06:50 
+
+06:50 QA team and rest of the teams are
+06:52 
+
+06:52 dependent on your infra team. So they
+06:54 
+
+06:54 cannot start working without infra team
+06:57 
+
+06:57 provisioning the environment right. So
+06:59 
+
+06:59 there is a dependency between them and
+07:01 
+
+07:01 most of the time they will sit idle. Now
+07:03 
+
+07:03 the other issues that you have yes time
+07:06 
+
+07:06 is an important issue. So you know this
+07:08 
+
+07:08 is too much and this is just for one
+07:10 
+
+07:10 app. There could be hundreds of apps. So
+07:13 
+
+07:13 calculate the time. Now there are a lot
+07:15 
+
+07:15 of people that you need to provision the
+07:17 
+
+07:17 infrastructure on a daily basis and
+07:19 
+
+07:19 those people will just be provisioning
+07:21 
+
+07:21 the infrastructure. It's not really an
+07:23 
+
+07:23 efficient use of resources, right? And
+07:26 
+
+07:26 because you need more people for
+07:27 
+
+07:27 infrastructure management, that means
+07:29 
+
+07:29 you have to spend a lot of cost for that
+07:32 
+
+07:32 and it becomes a repetitive task. You
+07:35 
+
+07:35 know, the the same team, let's say a
+07:37 
+
+07:37 team of 50 people just go to work and
+07:39 
+
+07:39 provision the infrastructure at the end
+07:41 
+
+07:41 of the day, they destroy the
+07:43 
+
+07:43 infrastructure to save the cost. I mean,
+07:45 
+
+07:45 that's not really a good use case of uh
+07:48 
+
+07:48 putting your infra team to use, right?
+07:49 
+
+07:49 And because they are all doing it
+07:51 
+
+07:51 manually that means there could be human
+07:54 
+
+07:54 errors. So instead of adding some
+07:56 
+
+07:56 database host that the application
+07:58 
+
+07:58 expect they could add something else and
+08:01 
+
+08:01 your application could go down or it
+08:03 
+
+08:03 could take some time to troubleshoot and
+08:05 
+
+08:05 mitigate the issue. So those issues
+08:07 
+
+08:07 could be there as well. Then it will
+08:09 
+
+08:09 become insecure because you are doing
+08:12 
+
+08:12 everything manually. Right? there is a
+08:14 
+
+08:14 chance that you miss something, you miss
+08:17 
+
+08:17 uh enabling encryption or you miss
+08:19 
+
+08:19 something that could exploit the
+08:20 
+
+08:20 application to outside world or to any
+08:22 
+
+08:22 intruder. And then the classic problems
+08:25 
+
+08:25 of it works on my machine because now
+08:28 
+
+08:28 let's say you are provisioning six
+08:30 
+
+08:30 different environment per application
+08:32 
+
+08:32 and you are doing manually and maybe the
+08:35 
+
+08:35 person that is doing the first
+08:37 
+
+08:37 environment is not doing the second one.
+08:39 
+
+08:39 There's a different person who is doing
+08:40 
+
+08:40 the other environment. So there is a
+08:42 
+
+08:42 high chance that these applications,
+08:45 
+
+08:45 these environment, these infrastructure
+08:47 
+
+08:47 is not consistent. So your dev and prod
+08:50 
+
+08:50 might have different setup or different
+08:52 
+
+08:52 configuration, different dependencies or
+08:54 
+
+08:54 libraries installation. Right? So there
+08:56 
+
+08:56 could be some code that will work on
+08:59 
+
+08:59 your local machine or your dev machine
+09:00 
+
+09:00 and it doesn't work on prod. Right? So
+09:03 
+
+09:03 it it arises with this problem. It works
+09:05 
+
+09:05 on my machine. Right? So you see there
+09:08 
+
+09:08 are numerous challenges that we had with
+09:11 
+
+09:11 the traditional approach especially when
+09:13 
+
+09:13 working with the cloud right. So what is
+09:16 
+
+09:16 the solution for that? So tools like
+09:19 
+
+09:19 terraform is why we use it. So what it
+09:22 
+
+09:22 does it instead of going and manually
+09:25 
+
+09:25 provisioning the infrastructure what we
+09:28 
+
+09:28 do is your DevOps team I'll just write
+09:30 
+
+09:30 it down over here. Let's say your DevOps
+09:33 
+
+09:33 team or your cloud engineering team or
+09:36 
+
+09:36 your infrastructure team whatever team
+09:39 
+
+09:39 is responsible for doing it they will
+09:41 
+
+09:41 just write the Terraform configuration
+09:43 
+
+09:43 once and then they just use it to
+09:46 
+
+09:46 provision the infrastructure which will
+09:48 
+
+09:48 save your resources. resources as in
+09:50 
+
+09:50 your cost, your people, your financial
+09:54 
+
+09:54 resources, time saving. It will save a
+09:57 
+
+09:57 lot of things. All the challenges that
+09:58 
+
+09:58 we discussed earlier and then it will
+10:01 
+
+10:01 help with the maintenance that means all
+10:03 
+
+10:03 the updates, any security patches, any
+10:06 
+
+10:06 updates can be done with the help of the
+10:08 
+
+10:08 same configurations.
+10:10 
+
+10:10 And then at the end of the day or when
+10:13 
+
+10:13 you don't need the environment
+10:14 
+
+10:14 specifically the non-pro environments
+10:16 
+
+10:16 like dev testing performance test if you
+10:19 
+
+10:19 don't need that to run 24x7 you can
+10:21 
+
+10:21 destroy those environment to save the
+10:23 
+
+10:23 cost and that also can be done easily
+10:25 
+
+10:25 with terraform right so it will help you
+10:27 
+
+10:27 with save time consistent environment
+10:30 
+
+10:30 because now you are using the same
+10:32 
+
+10:32 script same file to provision multiple
+10:35 
+
+10:35 environments you can create hundreds and
+10:37 
+
+10:37 thousands of environment and all of
+10:38 
+
+10:38 these environment will be consist
+10:40 
+
+10:40 consistent when it comes to their
+10:42 
+
+10:42 infrastructure, right? So it um works on
+10:46 
+
+10:46 dry principle that means write once
+10:49 
+
+10:49 deploy many actually dry is don't repeat
+10:51 
+
+10:51 yourself. So that is also a feature with
+10:54 
+
+10:54 the custom modules. We'll see that later
+10:56 
+
+10:56 on or with the modules as well. But for
+10:59 
+
+10:59 now uh write once and deploy many. That
+11:01 
+
+11:01 means you just have to write it once,
+11:04 
+
+11:04 make some changes if needed and then you
+11:06 
+
+11:06 can use that to deploy it hundreds and
+11:08 
+
+11:08 thousands of time. There is no limit to
+11:10 
+
+11:10 it. And then you can also track your
+11:12 
+
+11:12 changes to version control. Now with the
+11:14 
+
+11:14 manual approach, you wouldn't know what
+11:16 
+
+11:16 mistake someone made and when it was
+11:19 
+
+11:19 actually made, right? Someone can go to
+11:20 
+
+11:20 your environment and make your changes
+11:22 
+
+11:22 if that person has the permission. But
+11:24 
+
+11:24 with this now everything is committed to
+11:26 
+
+11:26 GitHub or a version control system. So
+11:29 
+
+11:29 you would know when the changes was
+11:32 
+
+11:32 made, when the infrastructure got
+11:34 
+
+11:34 changed or destroyed or provisioned,
+11:37 
+
+11:37 everything is tracked over there. So
+11:38 
+
+11:38 there is no blame game whatsoever and
+11:40 
+
+11:40 life become easy for everyone for
+11:42 
+
+11:42 infrastructure team for devops team for
+11:44 
+
+11:44 developers everyone is happy because now
+11:47 
+
+11:47 they can focus on what truly matters now
+11:49 
+
+11:49 they can focus on building their app and
+11:52 
+
+11:52 working on other things CI/CD pipeline
+11:54 
+
+11:54 and working on everything except their
+11:57 
+
+11:57 infrastructure creation and destruction
+11:60 
+
+11:60 because that is automated now okay so
+12:04 
+
+12:04 let's understand how does it work on a
+12:07 
+
+12:07 high level we'll we get to know in a
+12:10 
+
+12:10 much better way when we actually do it.
+12:13 
+
+12:13 But just to give you a gist of it, just
+12:15 
+
+12:15 to uh you know tell you what's coming up
+12:18 
+
+12:18 next, I'll just I'm just going to spend
+12:20 
+
+12:20 a few minutes on this. And I promise
+12:23 
+
+12:23 when we do the hands-on, when we do
+12:25 
+
+12:25 everything end to end, you should be
+12:28 
+
+12:28 able to create any infrastructure in AWS
+12:31 
+
+12:31 using Terraform, you know. So let's
+12:35 
+
+12:35 understand this how does it work. So you
+12:37 
+
+12:37 have a DevOps engineer or a DevOps
+12:39 
+
+12:39 engineering team who is responsible for
+12:41 
+
+12:41 writing TF files, right? So what is this
+12:44 
+
+12:44 TF file? This TF file is so the
+12:47 
+
+12:47 extension is TF, right? And it's a HCL
+12:51 
+
+12:51 language. HCL is Hashi configuration
+12:55 
+
+12:55 language. So for Terraform specifically,
+12:58 
+
+12:58 Hashior created a configuration
+13:01 
+
+13:01 language. It's similar to JSON but it
+13:05 
+
+13:05 has its own structure. It is human
+13:08 
+
+13:08 readable as well as machine readable
+13:10 
+
+13:10 right using this language and don't
+13:13 
+
+13:13 worry don't get scared about like it
+13:16 
+
+13:16 being a programming language because it
+13:18 
+
+13:18 is not it is so simple and easy to use.
+13:21 
+
+13:21 It is just like JSON like how do we use
+13:24 
+
+13:24 JSON? It is as simple as that. So uh
+13:27 
+
+13:27 this language uh and all the files are
+13:30 
+
+13:30 written in TF extension. So that
+13:32 
+
+13:32 terapform detects that it's a terapform
+13:34 
+
+13:34 file. So you write the file as a devops
+13:37 
+
+13:37 engineer check into github or the
+13:39 
+
+13:39 version control system that you are
+13:40 
+
+13:40 using. Now using github or using the
+13:44 
+
+13:44 files that you have written either you
+13:45 
+
+13:45 can run these commands manually. Okay.
+13:48 
+
+13:48 What are these commands? Terapform init
+13:50 
+
+13:50 to initialize the infrastructure. This
+13:52 
+
+13:52 is done for the first time. Teraphform
+13:55 
+
+13:55 validate to check if there is any syntax
+13:58 
+
+13:58 issues or any validation linting errors
+14:01 
+
+14:01 or so. Terapform plan to plan the
+14:04 
+
+14:04 changes like when you run terapform plan
+14:05 
+
+14:05 it will dry run your terapform command
+14:08 
+
+14:08 it will show you okay so after you run
+14:10 
+
+14:10 the apply these are all the changes that
+14:12 
+
+14:12 it's going to do. Maybe 10 resources
+14:14 
+
+14:14 will be created or four resources will
+14:16 
+
+14:16 be deleted. So it will give you a dry
+14:18 
+
+14:18 run plan for this. And once you run
+14:20 
+
+14:20 terraform apply then it will actually
+14:22 
+
+14:22 apply the changes then it will actually
+14:25 
+
+14:25 create the environment create the
+14:27 
+
+14:27 resources for you. And how does it do
+14:30 
+
+14:30 that? It actually interacts with so
+14:33 
+
+14:33 there is a one point missing over here.
+14:36 
+
+14:36 it actually to provision the infra or to
+14:39 
+
+14:39 modify the infra it actually
+14:42 
+
+14:42 calls AWS APIs.
+14:47 
+
+14:47 Okay. So using the API call like when
+14:50 
+
+14:50 you create a resource from AWS console
+14:53 
+
+14:53 it actually contacts the API. When you
+14:56 
+
+14:56 do that with AWS CLI it also interact
+15:00 
+
+15:00 with the API and this is what Terraform
+15:03 
+
+15:03 also do. It calls the AWS API to perform
+15:07 
+
+15:07 the action. It could be creation of
+15:09 
+
+15:09 resources, modification or deletion.
+15:12 
+
+15:12 Right? And this Terraform it does with
+15:15 
+
+15:15 Teraphform provider. Okay? I'm not
+15:17 
+
+15:17 getting into provider right now. It's
+15:18 
+
+15:18 the topic for the next video. So let's
+15:21 
+
+15:21 just understand this. Okay. So just a
+15:23 
+
+15:23 quick recap. DevOps engineer write.tf
+15:25 
+
+15:25 files which is in HCL language and then
+15:28 
+
+15:28 they store it in GitHub or version
+15:30 
+
+15:30 control system. Then using CLI they can
+15:33 
+
+15:33 run these terapform commands to make the
+15:35 
+
+15:35 changes or you could also have a CI/CD
+15:38 
+
+15:38 pipeline like GitHub actions to
+15:40 
+
+15:40 provision the infrastructure whenever
+15:42 
+
+15:42 there is a change uh in the GitHub
+15:45 
+
+15:45 repository. Right? So it will auto
+15:47 
+
+15:47 detect the changes and it will apply the
+15:49 
+
+15:49 changes to the infrastructure. Now using
+15:51 
+
+15:51 the terapform destroy command you can
+15:54 
+
+15:54 delete the infrastructure as well. So
+15:56 
+
+15:56 Terraform will check okay so these are
+15:57 
+
+15:57 all the files that we have and it will
+15:60 
+
+15:60 delete all the resources mentioned in
+16:02 
+
+16:02 the TF file if you have not specified
+16:05 
+
+16:05 which resource to be destroyed right so
+16:07 
+
+16:07 we'll see all of that in action but just
+16:09 
+
+16:09 wanted to give you a overview of it like
+16:12 
+
+16:12 how does it work okay so if we go back
+16:15 
+
+16:15 to the GitHub repo I'm sure you might
+16:17 
+
+16:17 have already seen it if you have not
+16:19 
+
+16:19 checked out the day zero video please go
+16:22 
+
+16:22 ahead and check it out because it will
+16:23 
+
+16:23 have a lot of important details about
+16:25 
+
+16:25 this series and 30 days of AWS Terraform
+16:28 
+
+16:28 challenge the prizes and like the
+16:31 
+
+16:31 submission details and how do you
+16:32 
+
+16:32 participate in that and um you can go
+16:35 
+
+16:35 ahead now in this AWS repo I will share
+16:38 
+
+16:38 the link in the description of every
+16:40 
+
+16:40 video if you ever stuck ever face any
+16:42 
+
+16:42 issue join this discord community and
+16:45 
+
+16:45 here are all the socials make sure you
+16:48 
+
+16:48 subscribe the YouTube channel right and
+16:51 
+
+16:51 here are some prerequisite like AWS
+16:54 
+
+16:54 fundamental You should have a visual
+16:56 
+
+16:56 studio code setup, git install, you
+16:59 
+
+16:59 know. Um, you should have the basic
+17:01 
+
+17:01 knowledge of Linux, shell scripting,
+17:03 
+
+17:03 YAML, JSON, and some fundamentals.
+17:05 
+
+17:05 Right? So, nothing fancy, nothing
+17:07 
+
+17:07 advanced, just some fundamentals
+17:09 
+
+17:09 knowledge now. In this video, we have
+17:11 
+
+17:11 covered all of these things. Now, we'll
+17:13 
+
+17:13 go ahead and start with Terraform
+17:15 
+
+17:15 installation and get ready for the next
+17:18 
+
+17:18 video because from the next video, we'll
+17:19 
+
+17:19 be doing a lot of hands-on. I mean all
+17:22 
+
+17:22 all of the videos after this will be
+17:25 
+
+17:25 complete hands-on. Okay. So let's go
+17:27 
+
+17:27 ahead. Uh I'm in my Visual Studio Code.
+17:29 
+
+17:29 Um so there is a dedicated folder that
+17:31 
+
+17:31 I've created. Now you can follow this
+17:35 
+
+17:35 link to
+17:37 
+
+17:37 let's open this link and this link will
+17:40 
+
+17:40 have the installation instructions. So
+17:42 
+
+17:42 there is installation command for Mac
+17:44 
+
+17:44 OS, Windows, Linux and so on. So
+17:46 
+
+17:46 whichever operating system you are using
+17:48 
+
+17:48 you can check it out. It's pretty
+17:49 
+
+17:49 straightforward, pretty simple. Like for
+17:51 
+
+17:51 Linux, you can just use the package
+17:53 
+
+17:53 manager and run these commands. For
+17:56 
+
+17:56 Santos, re uh similarly, you can run yum
+17:59 
+
+17:59 package manager and execute it. For Mac,
+18:03 
+
+18:03 you can use homebrew, which is what I'm
+18:05 
+
+18:05 going to use. So, brew tab hashb tab and
+18:07 
+
+18:07 then brew install hashikorb tab
+18:09 
+
+18:09 hashikorb. So, that's what I'm going to
+18:11 
+
+18:11 use. And this is same over here as well.
+18:13 
+
+18:13 So, let me just copy it and I'm going to
+18:16 
+
+18:16 paste it over here.
+18:21 
+
+18:21 Okay. So, Briu is a package manager for
+18:24 
+
+18:24 Mac OS. So, yeah, in case you don't know
+18:26 
+
+18:26 that, but uh yeah, it says
+18:32 
+
+18:32 okay, I think it should have been
+18:35 
+
+18:35 installed. Now, let's just run
+18:39 
+
+18:39 Terraform
+18:40 
+
+18:40 version. Okay, so it says version 1.13.3
+18:45 
+
+18:45 has been installed. Now, we'll do some
+18:47 
+
+18:47 setup. Let's set uh an alias so that
+18:50 
+
+18:50 it'll be easy to run terapform commands.
+18:52 
+
+18:52 So tf equal to terapform. Right? So now
+18:56 
+
+18:56 if I run any command like tf init which
+18:59 
+
+18:59 translates to terapform in it, it will
+19:01 
+
+19:01 say terapform initialize in an empty
+19:04 
+
+19:04 directory because I don't have any tf
+19:06 
+
+19:06 files over here. Right? So we'll see
+19:08 
+
+19:08 that later on. But just wanted to get
+19:10 
+
+19:10 started with it. Now you can also do the
+19:14 
+
+19:14 bash completion. what it what it will do
+19:16 
+
+19:16 is it will autocomplete your terapform
+19:18 
+
+19:18 commands. So I'm just going to run this
+19:20 
+
+19:20 terraform install- autocomplete. Okay,
+19:24 
+
+19:24 it says already installed in batch
+19:25 
+
+19:25 profile. So I don't have to do it.
+19:27 
+
+19:27 That's good. Now yeah, now the next
+19:31 
+
+19:31 thing in VS code you can install your
+19:34 
+
+19:34 extension for Terraform. So go ahead and
+19:36 
+
+19:36 search terapform and install this
+19:38 
+
+19:38 extension by Hashi Corp. Right? So that
+19:41 
+
+19:41 is sufficient that is more than enough
+19:44 
+
+19:44 for learning the terraform. I believe
+19:46 
+
+19:46 that is it for this video. Uh let me
+19:50 
+
+19:50 quickly check if there is anything
+19:52 
+
+19:52 missing. We have done all of those
+19:54 
+
+19:54 things. Yeah, I think that is it and in
+19:56 
+
+19:56 the next video we'll be doing terraform
+19:59 
+
+19:59 providers, version control, version
+20:02 
+
+20:02 constraint and operators and so all
+20:05 
+
+20:05 other things. Uh why does it matter? So
+20:08 
+
+20:08 make sure you complete the task. task is
+20:11 
+
+20:11 also there in the day one folder of this
+20:14 
+
+20:14 GitHub repo that I've just shown you.
+20:16 
+
+20:16 Make sure you complete the task and do
+20:18 
+
+20:18 the submission. All the details are
+20:20 
+
+20:20 already there in the GitHub plus I have
+20:22 
+
+20:22 provided in day zero repository. So I
+20:24 
+
+20:24 hope you are having a good learning
+20:26 
+
+20:26 experience and from now on you will be
+20:29 
+
+20:29 seeing one video daily. So make sure you
+20:32 
+
+20:32 follow this along. Make sure you
+20:33 
+
+20:33 complete each and every task for the
+20:35 
+
+20:35 better learning experience. I will see
+20:37 
+
+20:37 you tomorrow with the next video. Thank
+20:38 
+
+20:38 you so much for watching.

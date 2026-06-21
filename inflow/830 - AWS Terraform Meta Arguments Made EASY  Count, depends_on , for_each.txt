@@ -1,0 +1,1795 @@
+00:00 Hello and welcome back to the challenge.
+00:02 
+
+00:02 My name is Push. This is day eight in 30
+00:05 
+
+00:05 days of AWS Terraform. And in this
+00:07 
+
+00:07 video, we'll be looking into meta
+00:09 
+
+00:09 arguments in Terraform. Now, we'll be
+00:12 
+
+00:12 looking into the specifics of it. Why do
+00:14 
+
+00:14 we need it? What are different type of
+00:15 
+
+00:15 meta arguments and then we'll be do the
+00:18 
+
+00:18 practical demo of each one of those.
+00:21 
+
+00:21 Plus in the GitHub repository of day 8
+00:24 
+
+00:24 folder you will find the task.md file in
+00:27 
+
+00:27 which you can start uh doing the
+00:29 
+
+00:29 practice for from this video and also
+00:32 
+
+00:32 you can participate in 30 days of AWS
+00:35 
+
+00:35 terraform. If you don't know about the
+00:36 
+
+00:36 challenge I would highly recommend
+00:38 
+
+00:38 watching day zero video for the
+00:40 
+
+00:40 specifics and yeah let's get into the
+00:43 
+
+00:43 video. By the way my throat is little
+00:44 
+
+00:44 sore. I was under the weather. So, you
+00:46 
+
+00:46 will find me sipping through this uh
+00:48 
+
+00:48 homemade tea throughout this video. So,
+00:51 
+
+00:51 if I do that, it's not to disrespect
+00:53 
+
+00:53 anyone or not to disrespect your time.
+00:55 
+
+00:55 It just I'm unable to talk right now and
+00:59 
+
+00:59 uh this is the only thing that is giving
+01:01 
+
+01:01 me relief. So, uh I was not planning to
+01:03 
+
+01:03 record the video, but then it's been too
+01:06 
+
+01:06 long. You won't be probably noticing it
+01:08 
+
+01:08 because you are getting videos daily
+01:10 
+
+01:10 because I'm publishing daily. I have
+01:12 
+
+01:12 recorded these videos in batches and if
+01:15 
+
+01:15 I did not do it today, uh I probably
+01:19 
+
+01:19 have to wait for a few more days uh till
+01:21 
+
+01:21 I'm better. So that's why yeah this okay
+01:25 
+
+01:25 uh so yeah bear with me on that please.
+01:28 
+
+01:28 So let's uh start with the content of
+01:31 
+
+01:31 this video. What are we going to cover
+01:33 
+
+01:33 in terraform? Uh like we have arguments
+01:36 
+
+01:36 right? We have when we have created the
+01:39 
+
+01:39 resources. Let's take an example of this
+01:41 
+
+01:41 resource over here. Right? So there's as
+01:43 
+
+01:43 a resource type AWS security group rule.
+01:47 
+
+01:47 It has different arguments over here and
+01:50 
+
+01:50 you can find the argument reference in
+01:52 
+
+01:52 the same documentation like what are the
+01:54 
+
+01:54 mandatory ones, what are the optional
+01:56 
+
+01:56 ones and uh the type of those arguments
+02:00 
+
+02:00 and so on. Right? But then there are
+02:03 
+
+02:03 certain meta arguments as well that is
+02:05 
+
+02:05 provided by Terraform. So these
+02:08 
+
+02:08 arguments are provided by the provider
+02:10 
+
+02:10 itself. Provider here is AWS. So these
+02:14 
+
+02:14 arguments are provided by provider. But
+02:17 
+
+02:17 the meta arguments these are provided by
+02:19 
+
+02:19 Terapform itself to support the
+02:21 
+
+02:21 arguments. Okay. So it makes life easy.
+02:24 
+
+02:24 That's the simplest definition of it.
+02:26 
+
+02:26 When you use it, you will find it really
+02:29 
+
+02:29 easy to implement certain logic in your
+02:31 
+
+02:31 Terapform configuration without writing
+02:33 
+
+02:33 an external script. And I will show you
+02:35 
+
+02:35 everything about that. So there are uh
+02:38 
+
+02:38 multiple meta arguments. First is
+02:39 
+
+02:39 depends on depends on as the name
+02:42 
+
+02:42 suggest it establish the dependency
+02:45 
+
+02:45 between multiple resources. So let's say
+02:47 
+
+02:47 you have 10 different resources in in a
+02:50 
+
+02:50 terraform file. Okay, how would
+02:53 
+
+02:53 Teraphform know which resource to
+02:55 
+
+02:55 provision first and if you have 10
+02:57 
+
+02:57 different files which file to be
+02:59 
+
+02:59 executed first? So if you have multiple
+03:02 
+
+03:02 files then terraform executes or loads
+03:05 
+
+03:05 those files in the alphabetical order.
+03:08 
+
+03:08 But if you have a single file with
+03:10 
+
+03:10 multiple resources there is no way for
+03:13 
+
+03:13 Terraform to know which resource to be
+03:15 
+
+03:15 created first. Like let's say you have
+03:18 
+
+03:18 created VPC and then instance and then
+03:21 
+
+03:21 security group. So you want that
+03:24 
+
+03:24 instance should be created after the
+03:26 
+
+03:26 VPC. How do we set the dependency?
+03:29 
+
+03:29 Right? So there is implicit dependency
+03:32 
+
+03:32 which we'll talk about later and then
+03:34 
+
+03:34 there is explicit dependency. So
+03:37 
+
+03:37 explicit dependency is a type of meta
+03:39 
+
+03:39 argument in which we define that
+03:42 
+
+03:42 resource B is dependent on resource A.
+03:45 
+
+03:45 So Terraform will wait for the
+03:47 
+
+03:47 provisioning of resource B till the
+03:49 
+
+03:49 resource A is created. Right? So as you
+03:53 
+
+03:53 can see we have set the dependency
+03:54 
+
+03:54 between resource A and B. So first it
+03:57 
+
+03:57 will provision resource A once it is
+03:59 
+
+03:59 created then it will say to terapform
+04:02 
+
+04:02 okay the resource A is created now you
+04:04 
+
+04:04 can go ahead and create resource B right
+04:08 
+
+04:08 so that's explicit dependency the next
+04:11 
+
+04:11 meta argument is count as the name
+04:14 
+
+04:14 suggests it helps you count the values
+04:17 
+
+04:17 or you can call it iterator it actually
+04:21 
+
+04:21 works as a function but it's not a
+04:24 
+
+04:24 function it's a meta argument And it
+04:27 
+
+04:27 helps you count values in a list or set
+04:30 
+
+04:30 or map and then we can use those values
+04:33 
+
+04:33 later on. Right? For each is a kind of
+04:37 
+
+04:37 for loop uh for terraform which iterate
+04:41 
+
+04:41 through multiple values one by one. For
+04:44 
+
+04:44 example, you have a list of strings,
+04:47 
+
+04:47 right? Let's say that string has three
+04:49 
+
+04:49 elements. So it will iterate from zero
+04:52 
+
+04:52 index to first index to second index to
+04:56 
+
+04:56 get some values or to do some
+04:58 
+
+04:58 manipulation. So it's basically works uh
+05:00 
+
+05:00 similarly like how for loop work. But if
+05:03 
+
+05:03 you have not worked with for loop
+05:05 
+
+05:05 earlier or if you are new to programming
+05:07 
+
+05:07 and something that's that's fine too. I
+05:09 
+
+05:09 will explain everything with the help of
+05:11 
+
+05:11 example as well. Now we have provider
+05:14 
+
+05:14 which is basically a plug-in. This we
+05:16 
+
+05:16 have already covered earlier. Then we
+05:18 
+
+05:18 have life cycle rules. So this life
+05:21 
+
+05:21 cycle meta argument probably we will not
+05:24 
+
+05:24 be covering in this video otherwise
+05:25 
+
+05:25 it'll be too much. So in this video
+05:27 
+
+05:27 we'll be covering depends on count and
+05:30 
+
+05:30 for each life cycle we'll cover in the
+05:32 
+
+05:32 next video. Okay. So uh let's let's
+05:36 
+
+05:36 start with the demo then. All right. So
+05:38 
+
+05:38 I have logged into my VS code terminal.
+05:41 
+
+05:41 Uh let me create a new folder over here
+05:45 
+
+05:45 day 8. And I'm going to copy backend.tf
+05:50 
+
+05:50 and um provider.tf terraform tfs
+05:55 
+
+05:55 and variable.tf
+05:57 
+
+05:57 output.tf as well from this file from
+06:01 
+
+06:01 this folder day 7 to day 8. So I'm going
+06:04 
+
+06:04 to copy it over here. Okay. Now let's go
+06:07 
+
+06:07 inside day 8.
+06:15 
+
+06:15 All right. Now, we don't have main.tf.
+06:18 
+
+06:18 So, let's start with main.tf.
+06:21 
+
+06:21 So, what we're going to do first, we're
+06:23 
+
+06:23 going to see how count works in
+06:25 
+
+06:25 terraform. Okay. So, let's say you have
+06:27 
+
+06:27 a resource AWS S3 bucket. Okay.
+06:33 
+
+06:33 Now, we have created the S3 bucket uh
+06:36 
+
+06:36 before as well. So, I hope you are aware
+06:39 
+
+06:39 of the important fields. So, we start
+06:41 
+
+06:41 with the resource type AWS S3 bucket. We
+06:43 
+
+06:43 give it a simple name. So let's call it
+06:46 
+
+06:46 bucket one. Okay. So this name is
+06:49 
+
+06:49 internal to terraform. It's not the name
+06:52 
+
+06:52 of the resource. It's just the internal
+06:54 
+
+06:54 name that of using which we'll be
+06:57 
+
+06:57 referring this bucket internally within
+06:59 
+
+06:59 terraform. Okay. Now this is the bucket
+07:01 
+
+07:01 name over here. Okay. You won't probably
+07:03 
+
+07:03 see it because I haven't added it. Okay.
+07:06 
+
+07:06 So let's remove these fields for now. So
+07:09 
+
+07:09 when we add uh when we need bucket so it
+07:12 
+
+07:12 will be bucket equal to uh we just
+07:15 
+
+07:15 provide this a unique name let's call it
+07:17 
+
+07:17 my unique bucket blah blah blah so on
+07:21 
+
+07:21 right now okay let's add some tags as
+07:24 
+
+07:24 well let's copy the tags from the
+07:26 
+
+07:26 previous video
+07:30 
+
+07:30 okay previous in previous video we
+07:32 
+
+07:32 created actually a variable so if we go
+07:36 
+
+07:36 to variables tf and if We see
+07:41 
+
+07:41 let's see where are the tags. So that
+07:43 
+
+07:43 was a map variable tags and it has uh
+07:46 
+
+07:46 environment name and created by right.
+07:49 
+
+07:49 So let's go over here and we can just
+07:52 
+
+07:52 specify
+07:54 
+
+07:54 where dot common tags was it common tags
+07:60 
+
+07:60 where dot tags
+08:03 
+
+08:03 tags was the name actually.
+08:08 
+
+08:08 Okay. So that's just the simplest
+08:11 
+
+08:11 possible example. Now it is throwing
+08:13 
+
+08:13 error maybe because there is some issue
+08:15 
+
+08:15 with it. Now what is the issue? Let's
+08:18 
+
+08:18 see. Uh we have provider defined over
+08:22 
+
+08:22 here and in main.tf we have AWSS3
+08:26 
+
+08:26 bucket. Let's go and check the
+08:28 
+
+08:28 documentation. And whenever we face any
+08:30 
+
+08:30 issue, the first place that we should be
+08:32 
+
+08:32 going is the documentation
+08:36 
+
+08:36 S3 bucket.
+08:40 
+
+08:40 Okay, let's see. Um,
+08:44 
+
+08:44 okay. No, that's the data source. Data
+08:46 
+
+08:46 source we'll cover later on. So, don't
+08:48 
+
+08:48 worry about it yet.
+08:51 
+
+08:51 Uh, but for now, we need S3 bucket
+08:53 
+
+08:53 resource. Okay. AWS S3 bucket. Okay. So,
+08:56 
+
+08:56 the sample Oh.
+08:60 
+
+08:60 I forgot the resource keyword before the
+09:03 
+
+09:03 resource type. Okay. Now this is how it
+09:06 
+
+09:06 should be resource and then the resource
+09:08 
+
+09:08 type and then the internal name. Now if
+09:11 
+
+09:11 I over here if I run terapform in it and
+09:15 
+
+09:15 then terraform plan what it will show?
+09:18 
+
+09:18 It will show that an S3 bucket will be
+09:20 
+
+09:20 created with this name and with those
+09:23 
+
+09:23 three tags. Right? So if I do TF plan
+09:27 
+
+09:27 now
+09:28 
+
+09:28 let's see
+09:30 
+
+09:30 okay one plan to add and there are some
+09:34 
+
+09:34 metadata to it but these are the main
+09:37 
+
+09:37 things tags
+09:39 
+
+09:39 and then uh region is this one which is
+09:42 
+
+09:42 the default region and here's the bucket
+09:45 
+
+09:45 name right but what if I have to create
+09:49 
+
+09:49 multiple buckets using the same
+09:52 
+
+09:52 configuration right so So what we can do
+09:55 
+
+09:55 is uh there are multiple ways of doing
+09:56 
+
+09:56 that and one way is using count.
+09:60 
+
+09:60 Okay. So let's go to variable.tf
+10:03 
+
+10:03 and let's create another variable. Let's
+10:06 
+
+10:06 call it
+10:09 
+
+10:09 bucket name or bucket names right and in
+10:13 
+
+10:13 this bucket name now we have multiple
+10:15 
+
+10:15 option. We can either create a list of
+10:17 
+
+10:17 string we can create a set of string and
+10:20 
+
+10:20 we can also create map of a string. So
+10:22 
+
+10:22 let me show you all those things. Okay.
+10:25 
+
+10:25 So if the bucket name we have created a
+10:27 
+
+10:27 list of string it has multiple values.
+10:30 
+
+10:30 Let's say these two values. So these two
+10:32 
+
+10:32 bucket will be created with just that
+10:34 
+
+10:34 one block. And how we going to do that?
+10:37 
+
+10:37 Let's see. Let's go to main.tf. Now we
+10:40 
+
+10:40 don't need the bucket name over here.
+10:42 
+
+10:42 Okay.
+10:43 
+
+10:43 What we need? We need to read the bucket
+10:46 
+
+10:46 name but from the variable itself.
+10:49 
+
+10:49 Right? That's one way. Like if we know
+10:51 
+
+10:51 that uh we just need the first element
+10:55 
+
+10:55 because it's a list we can just get the
+10:57 
+
+10:57 first element. But if you want to
+10:60 
+
+10:60 iterate through all those elements and
+11:02 
+
+11:02 we create we need to use all the
+11:04 
+
+11:04 elements in the list. So what we'll do
+11:06 
+
+11:06 is we'll add another variable called
+11:09 
+
+11:09 count and let's say count equal to two
+11:13 
+
+11:13 and over here instead of v.bucket name
+11:16 
+
+11:16 right so we just write v.bucket bucket
+11:19 
+
+11:19 name and now the count is not zero right
+11:22 
+
+11:22 because we need to create two buckets
+11:25 
+
+11:25 but we don't need to hardcode it like
+11:27 
+
+11:27 zero or one so what do we do inside the
+11:31 
+
+11:31 square bracket we use count dot index
+11:35 
+
+11:35 now what it will do first it will come
+11:37 
+
+11:37 here okay count is two but then it will
+11:40 
+
+11:40 always start with zero index right so
+11:45 
+
+11:45 count is index starting with zero 0.
+11:48 
+
+11:48 Okay, over here this will be the value
+11:51 
+
+11:51 of first element which is at the zero
+11:54 
+
+11:54 index. Then it will increment the
+11:56 
+
+11:56 counter again. Now the count will become
+11:58 
+
+11:58 two because we have to iterate it twice,
+12:01 
+
+12:01 right? So when it goes again, it will
+12:04 
+
+12:04 iterate it again. And now the count of
+12:06 
+
+12:06 index will become one which is the
+12:08 
+
+12:08 second element. So first for the first
+12:11 
+
+12:11 counter it will take this element for
+12:14 
+
+12:14 the second counter it will take this
+12:16 
+
+12:16 element. Right.
+12:19 
+
+12:19 So now the bucket name will be both.
+12:22 
+
+12:22 Let's see what do we do.
+12:26 
+
+12:26 So let's run TF plan again. Okay. Now
+12:29 
+
+12:29 you see it says two to add. So there is
+12:34 
+
+12:34 this bucket
+12:37 
+
+12:37 with the name ending with day 08. My
+12:40 
+
+12:40 unique bucket day 08 1 2 3 4 5 6 2. And
+12:45 
+
+12:45 then there is another bucket which is
+12:48 
+
+12:48 day 0 1 2 3 4 5 6 1. It has two in the
+12:53 
+
+12:53 end. The first bucket has one in the
+12:54 
+
+12:54 end. So these both are separate buckets
+12:57 
+
+12:57 and we only wrote uh the terraform
+13:01 
+
+13:01 resource definition once. So there is
+13:03 
+
+13:03 only one definition and using the same
+13:06 
+
+13:06 we are creating multiple buckets. Now we
+13:08 
+
+13:08 can increase this count and add more
+13:10 
+
+13:10 values to the list and it will add more
+13:13 
+
+13:13 values. Right? Now what if there is
+13:18 
+
+13:18 instead of
+13:21 
+
+13:21 list let's create another variable over
+13:24 
+
+13:24 here but this time let's use set.
+13:27 
+
+13:27 Instead of list let's use set. And now
+13:32 
+
+13:32 let's use zero at the end and nine at
+13:36 
+
+13:36 this bucket name because bucket name has
+13:38 
+
+13:38 to be unique. Right? Now let's go back
+13:41 
+
+13:41 over here. Now if we need to use okay
+13:45 
+
+13:45 what's the variable name? Did we use the
+13:46 
+
+13:46 same name? No, let's not use the same
+13:48 
+
+13:48 name. Let's call it bucket name set.
+13:53 
+
+13:53 Okay. And yeah, that's all right. Let's
+13:57 
+
+13:57 go back now. Instead of where dotbucket
+13:60 
+
+13:60 name, let me just comment this value.
+14:05 
+
+14:05 use bucket
+14:07 
+
+14:07 is equal to where dot
+14:11 
+
+14:11 bucket
+14:12 
+
+14:12 name set.
+14:15 
+
+14:15 Okay. Now if we use count index it will
+14:18 
+
+14:18 not work. Why it will not work? Because
+14:21 
+
+14:21 if you remember when we discuss about
+14:24 
+
+14:24 data type constraints right we discussed
+14:27 
+
+14:27 that set does not have indexes only list
+14:31 
+
+14:31 have indexes. So if we want to traverse
+14:34 
+
+14:34 or if we want to iterate in a set then
+14:38 
+
+14:38 count.index would not work over here.
+14:41 
+
+14:41 Okay. So what we need to do is let's
+14:44 
+
+14:44 change this. Let's keep it the way it
+14:46 
+
+14:46 is. Okay. And let's create another
+14:48 
+
+14:48 resource
+14:50 
+
+14:50 over here.
+14:52 
+
+14:52 Resource
+14:54 
+
+14:54 AWS S3 bucket.
+15:00 
+
+15:00 and let's call it bucket 2.
+15:04 
+
+15:04 Now inside over here we're going to use
+15:08 
+
+15:08 another meta argument which is for each.
+15:12 
+
+15:12 Okay. So the way it works is for each.
+15:17 
+
+15:17 Okay. Now what do we need? We need the
+15:19 
+
+15:19 bucket name. Right. So AWS
+15:24 
+
+15:24 actually we need to use length function
+15:27 
+
+15:27 over here with where dot bucket name
+15:32 
+
+15:32 bucket name set okay I think this should
+15:36 
+
+15:36 work but let's see and over here now we
+15:40 
+
+15:40 need the bucket name so what a bucket
+15:43 
+
+15:43 name how we did get it so where
+15:45 
+
+15:45 dotbucket name
+15:48 
+
+15:48 set and inside curly braces is we'll use
+15:51 
+
+15:51 each dot key over here right at key or
+15:55 
+
+15:55 value both will work and I will explain
+15:57 
+
+15:57 it why would it happen so now okay it's
+16:02 
+
+16:02 suggesting something what is this maybe
+16:05 
+
+16:05 we don't have to provide the entire
+16:07 
+
+16:07 variable name that's what it is it is
+16:09 
+
+16:09 saying but let's see if it's going to
+16:11 
+
+16:11 throw the error or not so uh what did we
+16:13 
+
+16:13 do there is a set right which we have
+16:16 
+
+16:16 created in in the set
+16:19 
+
+16:19 is of type string string and in that we
+16:21 
+
+16:21 have two elements. Now because it's a
+16:24 
+
+16:24 set, it's not a list. We cannot iterate
+16:26 
+
+16:26 through the elements of the set. So what
+16:29 
+
+16:29 we need to do is we need to use for each
+16:31 
+
+16:31 for that. Okay. Now for each is a
+16:35 
+
+16:35 counter, right? It needs a counter. We
+16:37 
+
+16:37 need to initialize the counter and have
+16:39 
+
+16:39 it run for a certain time. So that's why
+16:42 
+
+16:42 we have used length function to
+16:44 
+
+16:44 calculate the length of this set. If you
+16:46 
+
+16:46 don't want to use the length function,
+16:48 
+
+16:48 you can just write for each equal to two
+16:50 
+
+16:50 over here. Right? That means just run it
+16:53 
+
+16:53 twice. Run it two times. If the set has
+16:55 
+
+16:55 three elements, so just use it three.
+16:57 
+
+16:57 But this is the easier way, right? You
+16:59 
+
+16:59 don't have to hardcore anything in this
+17:01 
+
+17:01 way. So you're calculating the length of
+17:03 
+
+17:03 elements in the bucket name set
+17:06 
+
+17:06 variable. All right? So this let's say
+17:10 
+
+17:10 this will be two for now. Now you need
+17:14 
+
+17:14 to set the bucket name. Now again for
+17:17 
+
+17:17 the bucket name you have to traverse
+17:19 
+
+17:19 through each of those values. So that's
+17:20 
+
+17:20 why you have used each dot key or each
+17:24 
+
+17:24 dot value. Now each dot key is there
+17:29 
+
+17:29 which means first it will traverse
+17:32 
+
+17:32 through the first element not from the
+17:35 
+
+17:35 index but from the length like order
+17:38 
+
+17:38 doesn't matter in the set. Order doesn't
+17:40 
+
+17:40 matter in the list. it matters because
+17:42 
+
+17:42 it has to go through zero element first
+17:44 
+
+17:44 and second right but in set order
+17:47 
+
+17:47 doesn't matter of the elements so that's
+17:49 
+
+17:49 why it will traverse through each of the
+17:50 
+
+17:50 elements one by one but it will traverse
+17:52 
+
+17:52 only twice so first time it will set the
+17:55 
+
+17:55 bucket value to the first element second
+17:57 
+
+17:57 time it will set it second one so if we
+18:01 
+
+18:01 run tf plan now let's see okay now it is
+18:04 
+
+18:04 throwing the error it is saying bucket
+18:06 
+
+18:06 name dot set is a set of strings so the
+18:09 
+
+18:09 suggestion that it was saying earlier
+18:11 
+
+18:11 move this where and we can directly
+18:14 
+
+18:14 access it with each dot key. Let's run
+18:17 
+
+18:17 TF plan again. Okay, it says uh for each
+18:21 
+
+18:21 argument is unsuitable. The for each
+18:23 
+
+18:23 argument must be a map or set of strings
+18:26 
+
+18:26 and you have provided a value of type
+18:28 
+
+18:28 number. Oh, okay. Because it's length.
+18:32 
+
+18:32 Okay. And what if we do each dot value
+18:42 
+
+18:42 Again it is saying it is of type number
+18:44 
+
+18:44 because in for each it is taking as one
+18:49 
+
+18:49 and each dot value is I mean it's just
+18:53 
+
+18:53 taking the number it's not taking the
+18:54 
+
+18:54 bucket name so somehow it is not
+18:56 
+
+18:56 traversing through it that means we
+18:59 
+
+18:59 don't need the length over here right
+19:00 
+
+19:00 because it has to traverse through the
+19:02 
+
+19:02 elements there is no index over here
+19:05 
+
+19:05 like in set we were using index that's I
+19:08 
+
+19:08 like we can use length over here like
+19:10 
+
+19:10 instead of count what we can do is we
+19:13 
+
+19:13 can just use length of v dot bucket name
+19:18 
+
+19:18 bucket names over here right it should
+19:21 
+
+19:21 work fine it will set the count as two
+19:25 
+
+19:25 but over here it cannot calculate the
+19:28 
+
+19:28 length because there is no indexes in
+19:30 
+
+19:30 set right so how do we calculate we just
+19:33 
+
+19:33 directly refer it with the variable name
+19:35 
+
+19:35 okay now it will set the value of for
+19:39 
+
+19:39 each for each of those elements of the
+19:42 
+
+19:42 set. Okay, now that's for each equal to
+19:46 
+
+19:46 bucket name set and then bucket equal to
+19:49 
+
+19:49 each dot value and tags are tax. Okay,
+19:51 
+
+19:51 so let's do that.
+19:53 
+
+19:53 Okay, now it is not throwing any error.
+19:55 
+
+19:55 It says four plans to add. The last two
+19:60 
+
+19:60 buckets that we have added ended with
+20:02 
+
+20:02 the number nine and then number zero
+20:06 
+
+20:06 which is over here right and rest two
+20:08 
+
+20:08 buckets are also there. So try to
+20:11 
+
+20:11 understand the difference between these
+20:13 
+
+20:13 two. Okay. So there is count. Okay. The
+20:18 
+
+20:18 way count works, count will work on
+20:20 
+
+20:20 list. But this for each will work on set
+20:25 
+
+20:25 or map as well. I will show you map as
+20:28 
+
+20:28 well. What will happen if I replace each
+20:30 
+
+20:30 dot value with each dot key. Okay, I
+20:34 
+
+20:34 just want to show you this thing as
+20:36 
+
+20:36 well. So let's run TF plan again.
+20:38 
+
+20:38 Nothing changed, right? So as you can
+20:40 
+
+20:40 see still there is this S3 bucket
+20:46 
+
+20:46 and then there is this S3 bucket nothing
+20:48 
+
+20:48 changed. So what's the difference in set
+20:51 
+
+20:51 there is no difference. You can use each
+20:53 
+
+20:53 dot key or each dot value. The
+20:55 
+
+20:55 difference will come when we use map.
+20:58 
+
+20:58 Why? Because in map only there is a key
+21:01 
+
+21:01 and then there is a value. Okay. So if
+21:03 
+
+21:03 you remember in the previous day what we
+21:06 
+
+21:06 did. So there is
+21:09 
+
+21:09 list
+21:10 
+
+21:10 list of string let's say okay which is
+21:14 
+
+21:14 something like this list of a string
+21:16 
+
+21:16 hello
+21:20 
+
+21:20 that's first element word that's second
+21:24 
+
+21:24 element okay so that's a list of string
+21:28 
+
+21:28 similarly we have
+21:32 
+
+21:32 set of string
+21:35 
+
+21:35 set of string it will look same but it's
+21:40 
+
+21:40 not the same and let me just add the
+21:42 
+
+21:42 values first
+21:44 
+
+21:44 hello world okay the difference is
+21:49 
+
+21:49 in this list of a string you can access
+21:51 
+
+21:51 the element from let's say list of zero
+21:56 
+
+21:56 and list of one
+22:00 
+
+22:00 right that's how you can access the
+22:02 
+
+22:02 elements in the list
+22:06 
+
+22:06 But you cannot do the same with set of
+22:09 
+
+22:09 strings. If you want to access the
+22:11 
+
+22:11 element 0 1, it will not work. So you
+22:14 
+
+22:14 have to use some sort of counter which
+22:17 
+
+22:17 will go through one element one by one.
+22:21 
+
+22:21 Okay. So that is why for that we use for
+22:25 
+
+22:25 each. Now in this set of string or list
+22:29 
+
+22:29 of string there are only values. There
+22:33 
+
+22:33 is no key right? So there is variable
+22:36 
+
+22:36 over here is the variable
+22:39 
+
+22:39 and over here is the value there is no
+22:43 
+
+22:43 key or value right so that's why in list
+22:48 
+
+22:48 and string key and value are same so
+22:51 
+
+22:51 this is the key and value if you access
+22:54 
+
+22:54 it like for uh each dot key then it will
+22:58 
+
+22:58 represent hello if it will uh write each
+23:01 
+
+23:01 dot value then it will say the
+23:04 
+
+23:04 But when we have something called as
+23:07 
+
+23:07 map.
+23:09 
+
+23:09 So the way map works is we have sort of
+23:12 
+
+23:12 a JSON syntax for it. Right? So let's
+23:17 
+
+23:17 say um name is equal to push
+23:23 
+
+23:23 and
+23:25 
+
+23:25 series is equal to terraform.
+23:28 
+
+23:28 Now this has two elements. This map of
+23:32 
+
+23:32 string has two element. First this is
+23:35 
+
+23:35 the key. This is the value or let me
+23:37 
+
+23:37 just write it down in the next line so
+23:39 
+
+23:39 that it will become more clear.
+23:43 
+
+23:43 Right? This will look something like
+23:45 
+
+23:45 this. So we have a key which is name
+23:48 
+
+23:48 value is p key and value. So in map we
+23:53 
+
+23:53 can use each dot key and each dot value.
+23:57 
+
+23:57 Okay. But not for list and string. Uh
+24:00 
+
+24:00 that's the main difference between using
+24:02 
+
+24:02 each dot key and each dot value. So we
+24:05 
+
+24:05 have covered count and for each. Now the
+24:08 
+
+24:08 next is dependency.
+24:10 
+
+24:10 Okay. So now you see let's see the
+24:13 
+
+24:13 status uh like the sequence of these
+24:15 
+
+24:15 buckets that's been created.
+24:19 
+
+24:19 So we have TF plan and let's just grab
+24:22 
+
+24:22 only the line in which it says uh will
+24:25 
+
+24:25 be created.
+24:27 
+
+24:27 Okay. So I just need this line. So let
+24:30 
+
+24:30 me just grab for this string.
+24:40 
+
+24:40 So the way it is creating uh why does it
+24:43 
+
+24:43 say bucket 1 01 bucket one? Okay. So
+24:46 
+
+24:46 yeah we shouldn't be using length over
+24:48 
+
+24:48 here as well. So as what I said earlier,
+24:50 
+
+24:50 please forget that I'm not feeling well.
+24:54 
+
+24:54 You see? Okay. So count let's skip it
+24:59 
+
+24:59 two again. Okay
+25:05 
+
+25:05 again it is uh showing the same thing
+25:08 
+
+25:08 bucket name dotbucket name count dot
+25:10 
+
+25:10 index. Yeah I don't think it matters.
+25:13 
+
+25:13 Let's let's try to create the bucket and
+25:16 
+
+25:16 see if it is actually showing it just
+25:18 
+
+25:18 like to refer the element of the list or
+25:22 
+
+25:22 it is actually using a fake name. So
+25:25 
+
+25:25 let's try to apply
+25:30 
+
+25:30 auto approve. Okay.
+25:35 
+
+25:35 Okay. It created four resources
+25:39 
+
+25:39 and the name is
+25:43 
+
+25:43 u creating creating uh bucket one.
+25:46 
+
+25:46 Bucket one. So bucket one. Oh no it it
+25:50 
+
+25:50 used the right name right. bucket one is
+25:52 
+
+25:52 this and bucket one second element like
+25:57 
+
+25:57 first element is this second element is
+25:59 
+
+25:59 this but if you see the sequence
+26:02 
+
+26:02 it started creating bucket 1 zero and
+26:06 
+
+26:06 then bucket two ideally it should have
+26:10 
+
+26:10 created in the same sequence the way we
+26:11 
+
+26:11 have written it right so how do we
+26:15 
+
+26:15 control that first let's destroy these
+26:18 
+
+26:18 resources
+26:20 
+
+26:20 auto
+26:24 
+
+26:24 approve.
+26:26 
+
+26:26 Okay. And now while it is running the
+26:28 
+
+26:28 command, we'll set something called as
+26:30 
+
+26:30 dependency between these resources.
+26:32 
+
+26:32 Okay. So what we'll do is in this bucket
+26:36 
+
+26:36 over here, we'll add another meta
+26:38 
+
+26:38 argument depends on. Okay, depends on.
+26:44 
+
+26:44 and then in the square bracket we will
+26:47 
+
+26:47 give the reference of the
+26:50 
+
+26:50 resource that this is dependent on.
+26:52 
+
+26:52 Okay. So we are saying AWS S3 bucket is
+26:55 
+
+26:55 dependent on AWS S3 bucket.bucket one.
+26:60 
+
+26:60 So once these two resources are created
+27:02 
+
+27:02 only these two resources will be
+27:04 
+
+27:04 provisioned. So let's try to run
+27:08 
+
+27:08 TF plan again.
+27:15 
+
+27:15 And over here you see bucket one of zero
+27:19 
+
+27:19 element, bucket one of one and then
+27:22 
+
+27:22 bucket two and then bucket two. So this
+27:25 
+
+27:25 is showing correctly. Let's see if it is
+27:27 
+
+27:27 showing that in apply as well.
+27:35 
+
+27:35 Okay. So let's see
+27:38 
+
+27:38 bucket zero. Bucket one creating
+27:41 
+
+27:41 creating bucket zero bucket one creation
+27:43 
+
+27:43 complete and once the creation of these
+27:46 
+
+27:46 two buckets are completed only then it
+27:50 
+
+27:50 proceeded with bucket 2 creation. So
+27:52 
+
+27:52 what we did we set the dependency
+27:55 
+
+27:55 between multiple resources. We are
+27:57 
+
+27:57 saying resource two is dependent on
+28:00 
+
+28:00 resource one. Only create resource two
+28:03 
+
+28:03 once resource A is healthy or once a
+28:07 
+
+28:07 resource A has been created. So that's
+28:10 
+
+28:10 what we did over here. I think that's
+28:13 
+
+28:13 all about this video what we wanted to
+28:15 
+
+28:15 cover. So let me just show you the
+28:18 
+
+28:18 GitHub repo as well for day eight. Okay.
+28:23 
+
+28:23 So that's like whatever we did code will
+28:25 
+
+28:25 be here as well on the repository and it
+28:29 
+
+28:29 has the example of life cycle meta
+28:31 
+
+28:31 argument but this we'll cover in the
+28:34 
+
+28:34 next video. Now there is task.md file
+28:37 
+
+28:37 over here. So make sure you practice
+28:39 
+
+28:39 these things to understand. If you don't
+28:42 
+
+28:42 practice if you just watch the video you
+28:44 
+
+28:44 will not get any benefit out of it.
+28:46 
+
+28:46 Right? So make sure you practice these
+28:49 
+
+28:49 tasks and make sure you submit these
+28:52 
+
+28:52 tasks as part of your assignment for
+28:55 
+
+28:55 today for 30 days of AWS Terraform
+28:59 
+
+28:59 and uh you can just submit the work.
+29:01 
+
+29:01 Submission MD file will have the
+29:03 
+
+29:03 instructions how do we do that and I
+29:05 
+
+29:05 have shared everything in today's zero
+29:07 
+
+29:07 video as well. So that's it from this
+29:09 
+
+29:09 video. Thank you so much for watching.
+29:10 
+
+29:10 I'll see you tomorrow with the next
+29:12 
+
+29:12 video. I hope you're having a good time.
+29:14 
+
+29:14 Thank you. Happy learning.

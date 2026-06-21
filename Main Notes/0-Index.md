@@ -74,6 +74,12 @@ Select a domain to view its active landing concepts, deeper dive notes, and arch
 *Workflow definitions, job parallel strategies, runner configurations, dynamic token secrets, and OpenID Connect cloud trust.*
 - **Go to MOC:** [[Reference Notes/9-Index - GitHub Actions|GitHub Actions MOC]]
 
+---
+
+### ⎈ [Terraform MOC](../Reference%20Notes/10-Index%20-%20Terraform%20on%20AWS.md)
+*State backend lock configurations, loop meta-arguments, custom configuration modules, and automated drift self-healing.*
+- **Go to MOC:** [[Reference Notes/10-Index - Terraform on AWS|Terraform MOC]]
+
 ### 📦 Miscellaneous Projects & Tooling (MISC)
 *Self-hosted version control, automated runner deployment contexts, developer introspection clients, and system command-line utilities.*
 - **Version Control & GitOps:** [[gitea|Gitea Git Server Setup]]

@@ -1,0 +1,2767 @@
+00:01 Hello and welcome back to day 27 in 30
+00:04 
+
+00:04 days of AWS Teraphform. We have seen a
+00:07 
+
+00:07 lot of Terraform realtime projects. We
+00:10 
+
+00:10 have created multiple multi-ter
+00:13 
+
+00:13 architecture. We have deployed multiple
+00:15 
+
+00:15 applications. We have seen blue green
+00:18 
+
+00:18 deployment. We have seen two-tier three
+00:20 
+
+00:20 tier projects. We have seen portfolio
+00:23 
+
+00:23 website or like S3 website static
+00:26 
+
+00:26 hosting and many other projects. But
+00:29 
+
+00:29 till now we haven't covered one special
+00:32 
+
+00:32 aspect which is how do we automate
+00:34 
+
+00:34 everything in terraform using a CI/CD
+00:37 
+
+00:37 pipeline. So this is what we are going
+00:39 
+
+00:39 to do in this video. As you can see
+00:41 
+
+00:41 we'll be using GitHub action to automate
+00:44 
+
+00:44 the provisioning and management of
+00:46 
+
+00:46 infrastructure using Terraform with the
+00:48 
+
+00:48 help of GitHub actions pipeline. So
+00:51 
+
+00:51 again uh this will be the infra that
+00:53 
+
+00:53 will be provisioned. Okay. So let me
+00:56 
+
+00:56 just walk you through it first what it
+00:57 
+
+00:57 is actually. So our developer over here
+01:02 
+
+01:02 and developer will issue a pull request
+01:05 
+
+01:05 to the GitHub repo to include their code
+01:08 
+
+01:08 changes to a feature branch. An approver
+01:11 
+
+01:11 uh reviews the pull request and approves
+01:13 
+
+01:13 it. Then it will trigger the GitHub
+01:15 
+
+01:15 action workflow. Okay. So we have
+01:17 
+
+01:17 created a GitHub actions pipeline. There
+01:19 
+
+01:19 is one pipeline for destroy the
+01:21 
+
+01:21 resources and one for provisioning and
+01:23 
+
+01:23 management of resources. So um that
+01:26 
+
+01:26 pipeline will be triggered and it'll
+01:28 
+
+01:28 have multiple branches like dev test
+01:30 
+
+01:30 main. So let's say for a feature branch
+01:32 
+
+01:32 it will be triggered and then it will
+01:35 
+
+01:35 initiate uh TF lint which is a terraform
+01:39 
+
+01:39 linting tool and then TV for security
+01:42 
+
+01:42 scanning. Once that is done it will plan
+01:44 
+
+01:44 and apply the changes uh using
+01:46 
+
+01:46 terraform. It will use S3 uh S3 back end
+01:51 
+
+01:51 for the state file management and
+01:52 
+
+01:52 locking and then it will provision the
+01:55 
+
+01:55 infra or update the infra. This is the
+01:57 
+
+01:57 infra. So basically it's a two-tier
+01:59 
+
+01:59 architecture
+02:01 
+
+02:01 with uh which is highly available fault
+02:04 
+
+02:04 tolerant because we are using
+02:05 
+
+02:05 autoscaling group that manages your
+02:08 
+
+02:08 instances in two private subnets which
+02:11 
+
+02:11 has enginex installed to serve the
+02:14 
+
+02:14 application and for the outbound access
+02:17 
+
+02:17 as you can see we are using net gateways
+02:19 
+
+02:19 which through which uh these instances
+02:22 
+
+02:22 will download the updates from internet
+02:25 
+
+02:25 or to uh pull any packages from internet
+02:28 
+
+02:28 and then on the public subnet uh we also
+02:31 
+
+02:31 have an application load balancer. Okay,
+02:34 
+
+02:34 so that application load balancer is
+02:36 
+
+02:36 actually um redirecting the traffic to
+02:39 
+
+02:39 the backend servers on the private
+02:41 
+
+02:41 subnet and in the public subnet we just
+02:43 
+
+02:43 have net gateways for each of the
+02:45 
+
+02:45 availability zones. So the user will uh
+02:49 
+
+02:49 come via internet through an HTTP or
+02:51 
+
+02:51 HTTPS request and um it will go to
+02:56 
+
+02:56 application load balancer. It will be
+02:58 
+
+02:58 redirected to the backend instances.
+03:00 
+
+03:00 These backend instances are managed by
+03:02 
+
+03:02 autoscaling group with minimum desired
+03:04 
+
+03:04 and maximum number of instances and the
+03:07 
+
+03:07 application will be served and this all
+03:10 
+
+03:10 will be happen with the help of a GitHub
+03:13 
+
+03:13 action CI/CD pipeline. Okay. So that's
+03:16 
+
+03:16 just the gist of it. That's just how
+03:19 
+
+03:19 what we are doing and how we are doing.
+03:21 
+
+03:21 But we'll be doing multiple demos in
+03:23 
+
+03:23 this video. So I want to focus more on
+03:26 
+
+03:26 demo rather than the actual code because
+03:28 
+
+03:28 code is uh like I I will focus on the
+03:30 
+
+03:30 GitHub action code. But other than that
+03:32 
+
+03:32 the code is something that we have seen
+03:34 
+
+03:34 hundreds of times already in this
+03:36 
+
+03:36 series. And if you are following like if
+03:40 
+
+03:40 you just got to know about this series,
+03:42 
+
+03:42 I would highly recommend starting from
+03:45 
+
+03:45 the beginning of the series otherwise
+03:46 
+
+03:46 you will lose uh you will miss a lot of
+03:49 
+
+03:49 important topics that we have covered
+03:50 
+
+03:50 already. Right? So and if you are a
+03:54 
+
+03:54 regular follower, make sure you
+03:56 
+
+03:56 implement this project. Make sure you do
+03:59 
+
+03:59 the hands-on and understand each and
+04:01 
+
+04:01 every part of it. Try to improve it
+04:04 
+
+04:04 further. try to include more steps into
+04:06 
+
+04:06 it to make it one realtime project.
+04:08 
+
+04:08 Okay, so let's go over here. This is our
+04:13 
+
+04:13 demo repository and this is what we're
+04:16 
+
+04:16 going to do. Okay, so you start with
+04:18 
+
+04:18 provisioning your S3 back end which is a
+04:20 
+
+04:20 one time thing. So I'll just copy this
+04:23 
+
+04:23 and I'll go ahead on my visual code and
+04:26 
+
+04:26 maybe run the command over here or is
+04:29 
+
+04:29 there a script over here as well? So
+04:32 
+
+04:32 make sure you download the latest check
+04:35 
+
+04:35 out the latest code.
+04:37 
+
+04:37 Okay. Um yeah there is no backend.tf. So
+04:40 
+
+04:40 let me just create a file over here.
+04:44 
+
+04:44 And
+04:46 
+
+04:46 yeah inside code let's call it oops
+04:52 
+
+04:52 inside code I'm going to create a new
+04:55 
+
+04:55 file called
+04:58 
+
+04:58 backend.sh. sh. Okay, paste the code
+05:02 
+
+05:02 over here and this should like basically
+05:04 
+
+05:04 AWS CLI commands to create the S3
+05:09 
+
+05:09 bucket. Okay,
+05:11 
+
+05:11 so this is the bucket name and then
+05:15 
+
+05:15 enable versioning, enable encryption and
+05:17 
+
+05:17 so on. Like there should be like a step
+05:20 
+
+05:20 to make it a private bucket. Uh but
+05:23 
+
+05:23 maybe I missed it but that's fine. You
+05:25 
+
+05:25 you understand what you want to do.
+05:26 
+
+05:26 Okay. And now let's give this a
+05:29 
+
+05:29 permission 775
+05:31 
+
+05:31 backend.sh
+05:34 
+
+05:34 and execute it. So this should be our
+05:36 
+
+05:36 first step.
+05:38 
+
+05:38 Okay, it will create the S3 bucket. Now
+05:40 
+
+05:40 let's go back. In fact, let me just open
+05:44 
+
+05:44 this in a separate window so that uh it
+05:47 
+
+05:47 won't be confusing and I will walk you
+05:49 
+
+05:49 through the steps over here. Right.
+05:53 
+
+05:53 Okay. Uh it says make bucket this bucket
+05:57 
+
+05:57 has been created. Cool. Now update the
+06:01 
+
+06:01 back end with your Terraform bucket
+06:02 
+
+06:02 name. So I'll just copy this and go to
+06:05 
+
+06:05 backend.tf.
+06:08 
+
+06:08 Okay. And here's the bucket name. I
+06:10 
+
+06:10 think this is the same but let me just
+06:12 
+
+06:12 update it.
+06:14 
+
+06:14 Okay. And uh with the bucket because uh
+06:17 
+
+06:17 you know like S3 has now the support for
+06:21 
+
+06:21 native state file locking. We don't need
+06:23 
+
+06:23 to use the Dynamob. So you just need to
+06:25 
+
+06:25 use use log file equal to true within
+06:28 
+
+06:28 your back end. And that would be it.
+06:31 
+
+06:31 Okay. Uh now we need to make some
+06:33 
+
+06:33 changes to the GitHub repository. So
+06:35 
+
+06:35 let's go back. Let's open the GitHub
+06:38 
+
+06:38 repo
+06:40 
+
+06:40 and
+06:42 
+
+06:42 let's go to AWS Terraform. This is day
+06:46 
+
+06:46 27.
+06:48 
+
+06:48 Actually not not over there. So just go
+06:50 
+
+06:50 to settings of your repo because we need
+06:52 
+
+06:52 to set the credentials for GitHub action
+06:54 
+
+06:54 pipeline. Right? So over here um go to
+06:59 
+
+06:59 secrets and variables and actions.
+07:02 
+
+07:02 Now we need to set some variables. Okay.
+07:05 
+
+07:05 For secret access key and secret access
+07:07 
+
+07:07 key ID.
+07:09 
+
+07:09 So manage environment secrets.
+07:13 
+
+07:13 Oh over here new repository secret.
+07:16 
+
+07:16 Okay. So secret name give it AWS access
+07:19 
+
+07:19 key ID
+07:21 
+
+07:21 and let me just do a quick login
+07:27 
+
+07:27 and go to I am
+07:37 
+
+07:37 now over here let's go to users go to my
+07:41 
+
+07:41 DevOps user and go to security
+07:44 
+
+07:44 credentials
+07:46 
+
+07:46 Let's create access key.
+07:50 
+
+07:50 Okay. CLI.
+07:53 
+
+07:53 Hit next. And let's give it the name day
+07:56 
+
+07:56 27 key.
+07:58 
+
+07:58 Create access key. So now just copy this
+08:01 
+
+08:01 access key from here. Paste it over
+08:03 
+
+08:03 here. Add secret.
+08:06 
+
+08:06 And another one which is your secret
+08:10 
+
+08:10 access key.
+08:12 
+
+08:12 And you need secret access key
+08:16 
+
+08:16 over here. Add secret.
+08:21 
+
+08:21 Okay. Now go to environments over here.
+08:25 
+
+08:25 Okay. There are no environments for this
+08:27 
+
+08:27 repo. Click on new environment and enter
+08:31 
+
+08:31 prod as the environment name.
+08:34 
+
+08:34 Configure.
+08:36 
+
+08:36 And let's say required reviewers. this
+08:38 
+
+08:38 we need reviewer to um review the
+08:43 
+
+08:43 pipeline before it actually executes it
+08:46 
+
+08:46 and
+08:48 
+
+08:48 um you can add yourself or your team
+08:50 
+
+08:50 member for this demo I'm going to add
+08:52 
+
+08:52 myself but uh like you need to add your
+08:56 
+
+08:56 reviewer the actual reviewer of your
+08:58 
+
+08:58 project okay
+09:00 
+
+09:00 and then
+09:04 
+
+09:04 save uh
+09:06 
+
+09:06 save protection rules Okay. And then you
+09:10 
+
+09:10 can also create your dev and test
+09:12 
+
+09:12 environment for tracking purpose. So you
+09:15 
+
+09:15 can do that.
+09:18 
+
+09:18 Let's go back to environments
+09:22 
+
+09:22 and let me create
+09:25 
+
+09:25 dev configure.
+09:27 
+
+09:27 And we don't need rigor for dev. That's
+09:30 
+
+09:30 okay.
+09:33 
+
+09:33 And
+09:35 
+
+09:35 let's go back
+09:37 
+
+09:37 and create one more for test
+09:41 
+
+09:41 configure
+09:43 
+
+09:43 and save protection rules. Okay. Now um
+09:49 
+
+09:49 because this is a multi-environment
+09:51 
+
+09:51 setup. Uh so what we are doing uh we
+09:54 
+
+09:54 have multiple TFRs for each of the
+09:56 
+
+09:56 environments. Okay. So there is a
+09:58 
+
+09:58 dev.tfrs.
+09:60 
+
+09:60 This is specifically for dev. Here we
+10:02 
+
+10:02 are saying if the environment is dev
+10:04 
+
+10:04 T2.micro
+10:06 
+
+10:06 instance should be used and this is the
+10:07 
+
+10:07 VPC that should be used. If the
+10:09 
+
+10:09 environment is broad then you need to
+10:12 
+
+10:12 use these public and private subnet.
+10:14 
+
+10:14 This is the VPC that you should be
+10:16 
+
+10:16 using. These are all the other details
+10:18 
+
+10:18 that you should be using. And similarly
+10:19 
+
+10:19 we have TFAR for test environment as
+10:22 
+
+10:22 well. Okay. So now we have already seen
+10:27 
+
+10:27 the workflow of GitHub actions pipeline.
+10:31 
+
+10:31 Now
+10:33 
+
+10:33 what we need to do, we should start with
+10:35 
+
+10:35 creating a feature branch to check out
+10:38 
+
+10:38 the code. Okay, so let's do that. Um, in
+10:43 
+
+10:43 our code report, let's go back over
+10:46 
+
+10:46 here.
+10:48 
+
+10:48 Let's run oops get checkout
+10:52 
+
+10:52 b uh let's create a new feature branch f
+10:56 
+
+10:56 let's call it scaleup dev. is going to
+10:59 
+
+10:59 make some autoscaling changes. Okay.
+11:02 
+
+11:02 Now switch to a new branch which scale
+11:04 
+
+11:04 up test and let's go to dev.tfs
+11:08 
+
+11:08 and over here let's change desired
+11:11 
+
+11:11 capacity from 1 to two. Okay. And that's
+11:16 
+
+11:16 it. Save the file and let's
+11:20 
+
+11:20 just commit the changes. So get add uh
+11:24 
+
+11:24 inside code there were dev.tfrs TFRS.
+11:28 
+
+11:28 Okay. And then let's do a get commit- m.
+11:34 
+
+11:34 So we have added a new feature. Let's
+11:36 
+
+11:36 say scale up dev environment.
+11:40 
+
+11:40 Okay. And let's just do a get push
+11:44 
+
+11:44 origin
+11:47 
+
+11:47 feature scaleup dev. Okay.
+11:52 
+
+11:52 Okay. It says uh done.
+11:56 
+
+11:56 Now it's done. So you go back to your
+11:59 
+
+11:59 GitHub.
+12:00 
+
+12:00 Okay. And let's go back over here. You
+12:05 
+
+12:05 see it says there is a recent push to
+12:08 
+
+12:08 your branch. So let's compare and create
+12:11 
+
+12:11 a pull request. Okay. Now uh what is
+12:15 
+
+12:15 this doing? It is merging your feature
+12:18 
+
+12:18 branch to the main branch. Okay. And you
+12:22 
+
+12:22 can just go and do the
+12:25 
+
+12:25 create pull request.
+12:28 
+
+12:28 Now because I am also the reviewer, I
+12:30 
+
+12:30 can just directly merge the pull
+12:32 
+
+12:32 request. But before that, you can just
+12:34 
+
+12:34 check the commits and file change. So
+12:37 
+
+12:37 this was the only change that was done.
+12:39 
+
+12:39 Okay, looks good. So, I'm going to go
+12:42 
+
+12:42 over here
+12:44 
+
+12:44 in the conversation and I'll just review
+12:47 
+
+12:47 it and
+12:50 
+
+12:50 merge pull request.
+12:52 
+
+12:52 Okay, confirm merge.
+12:55 
+
+12:55 Okay, so now it has done merged and
+13:00 
+
+13:00 closed. So, it should trigger the GitHub
+13:04 
+
+13:04 actions pipeline. So,
+13:08 
+
+13:08 let's go to action tab.
+13:11 
+
+13:11 And over here uh
+13:18 
+
+13:18 do we see any?
+13:25 
+
+13:25 So this is 12:25
+13:28 
+
+13:28 p.m. Okay. I think it has not triggered
+13:32 
+
+13:32 yet.
+13:34 
+
+13:34 Uh let's verify our GitHub actions
+13:36 
+
+13:36 pipeline first. Okay.
+13:40 
+
+13:40 So, um let's go inside
+13:44 
+
+13:44 lessons
+13:46 
+
+13:46 and it was day 27.
+13:49 
+
+13:49 Oh, our GitHub action pipeline code is
+13:52 
+
+13:52 not here or what? Okay, over here. So,
+13:56 
+
+13:56 GitHub/workflows.
+13:59 
+
+13:59 Okay. And here is the YAML. So, what it
+14:01 
+
+14:01 is saying
+14:04 
+
+14:04 this is the name. Okay. on when it will
+14:06 
+
+14:06 trigger on push to these branches. So
+14:10 
+
+14:10 currently we push to the main branch
+14:12 
+
+14:12 but we did it via pull request. So pull
+14:16 
+
+14:16 request also we have the trigger set
+14:17 
+
+14:17 based on the pull request on these
+14:19 
+
+14:19 branches. We are setting some
+14:21 
+
+14:21 environment variable which is TF log is
+14:24 
+
+14:24 info and AWS secret key ID and secret
+14:27 
+
+14:27 access key. This is what we have set in
+14:29 
+
+14:29 the secret variable earlier. We are
+14:32 
+
+14:32 giving some permissions over here and we
+14:34 
+
+14:34 are executing this job. Okay, first job
+14:36 
+
+14:36 is terapform plan. So it should uh run
+14:39 
+
+14:39 on an Ubuntu latest GitHub action
+14:42 
+
+14:42 runner. Then uh it will output these
+14:46 
+
+14:46 variables
+14:48 
+
+14:48 and then it will
+14:50 
+
+14:50 run a shell and these are the steps.
+14:52 
+
+14:52 First it will do the checkout. Then it
+14:55 
+
+14:55 will set up Terraform that means
+14:56 
+
+14:56 Terapform installation. It will set up
+14:59 
+
+14:59 TFlint. It will set up it will run TF
+15:03 
+
+15:03 lint in it. Then it will run the TF in
+15:06 
+
+15:06 it. Then it will run TV vulnerability
+15:09 
+
+15:09 scanning. Okay. Then it will run
+15:12 
+
+15:12 terraform in it. Terapform format
+15:14 
+
+15:14 validate. And again it will set some
+15:17 
+
+15:17 variables based on the pull request.
+15:20 
+
+15:20 Okay. So you can go through it. I'm not
+15:22 
+
+15:22 I'm just not going to bore you with the
+15:24 
+
+15:24 lot of details. If you are new to GitHub
+15:27 
+
+15:27 actions, I will create a dedicated video
+15:30 
+
+15:30 just for GitHub actions because it'll be
+15:32 
+
+15:32 hard if we do everything in one single
+15:34 
+
+15:34 video. So it is just like any other
+15:37 
+
+15:37 CI/CD pipeline, a YAML based pipeline.
+15:39 
+
+15:39 If you have watched my Azure DevOps
+15:41 
+
+15:41 series, this is similar to that. Okay.
+15:43 
+
+15:43 So this is just some conditional
+15:45 
+
+15:45 statements uh to set some GitHub
+15:47 
+
+15:47 environment variables and output
+15:49 
+
+15:49 variables. Then it will also because we
+15:52 
+
+15:52 are using Terraform workspaces as well
+15:54 
+
+15:54 over here. So it will select the
+15:55 
+
+15:55 workspace and run the plan update the
+15:58 
+
+15:58 pull request
+16:01 
+
+16:01 and
+16:02 
+
+16:02 like it does some metadata update. Okay.
+16:07 
+
+16:07 And then there is the Terraform apply.
+16:10 
+
+16:10 So it says if the event is push then
+16:12 
+
+16:12 again run on Ubuntu latest using this
+16:16 
+
+16:16 environment.
+16:17 
+
+16:17 Okay. And again TF init TF workspaces TF
+16:22 
+
+16:22 plan and finally TF apply using the TF
+16:25 
+
+16:25 plan that we have generated earlier.
+16:27 
+
+16:27 Okay. So these
+16:32 
+
+16:32 sorry
+16:38 
+
+16:38 so these are based on the pull requests
+16:42 
+
+16:42 that we have created and there are
+16:44 
+
+16:44 different steps for each of the
+16:46 
+
+16:46 workspaces that we have created like if
+16:48 
+
+16:48 it is um if the branch name is main then
+16:52 
+
+16:52 work workspace name will be prod if the
+16:54 
+
+16:54 branch name is test the workspace name
+16:56 
+
+16:56 will be test. So based on that it will
+16:58 
+
+16:58 execute the further steps based on on
+17:00 
+
+17:00 which branch we have merged the pull
+17:03 
+
+17:03 request to. Okay. So now what we need to
+17:07 
+
+17:07 check is if it had
+17:11 
+
+17:11 created the actions or not. Okay,
+17:23 
+
+17:23 let's go to so there is there are two
+17:26 
+
+17:26 workflow one is terraform drift
+17:28 
+
+17:28 detection this is for the 30 days of AWS
+17:31 
+
+17:31 terraform
+17:33 
+
+17:33 and
+17:35 
+
+17:35 we go over here
+17:38 
+
+17:38 um no this is not the one
+17:42 
+
+17:42 and this is not the one so we need to
+17:44 
+
+17:44 create a new workflow. Okay.
+17:48 
+
+17:48 So,
+17:58 
+
+17:58 yeah, actually we already have the
+17:60 
+
+17:60 files. So
+18:02 
+
+18:02 let's see if we need to set up like this
+18:05 
+
+18:05 or how do we need to do okay so
+18:11 
+
+18:11 workflow and in oh no it is selecting
+18:13 
+
+18:13 the GitHub actions at the root directory
+18:16 
+
+18:16 not that uh repo in which we are
+18:19 
+
+18:19 creating it right so for that let's see
+18:23 
+
+18:23 um cancel
+18:26 
+
+18:26 or what we can do is when we create the
+18:29 
+
+18:29 new workflow
+18:31 
+
+18:31 Let's do this. Set up a workflow
+18:33 
+
+18:33 yourself and not over here.
+18:39 
+
+18:39 Uh, it should be um
+18:44 
+
+18:44 now it's not allowing me to use the file
+18:47 
+
+18:47 inside that.
+19:03 
+
+19:03 Um,
+19:08 
+
+19:08 so let's go inside our code and lessons
+19:14 
+
+19:14 day 27
+19:17 
+
+19:17 and inside that code
+19:21 
+
+19:21 over here. And basically this is the
+19:24 
+
+19:24 file that we need for the actions,
+19:27 
+
+19:27 right?
+19:28 
+
+19:28 So
+19:30 
+
+19:30 um
+19:37 
+
+19:37 I think I understood the issue because
+19:40 
+
+19:40 um GitHub action is not recognizing my
+19:43 
+
+19:43 workflow inside the subdirectory. So I
+19:46 
+
+19:46 think I need to move this file to the
+19:48 
+
+19:48 root of the uh repository. Okay. Also I
+19:52 
+
+19:52 need to add some things over here like I
+19:54 
+
+19:54 need to add the
+19:57 
+
+19:57 uh instead of like along with branches I
+19:60 
+
+19:60 need to add the path right so that it
+20:02 
+
+20:02 will push only on um
+20:08 
+
+20:08 lessons
+20:11 
+
+20:11 day 27
+20:14 
+
+20:14 code this folder. Okay. So let me add it
+20:18 
+
+20:18 over here in the pull request as well.
+20:22 
+
+20:22 And I think I need to set
+20:27 
+
+20:27 the working directory as well.
+20:30 
+
+20:30 Um
+20:36 
+
+20:36 yeah, we need to set the working
+20:38 
+
+20:38 directory as well. So for that I'll just
+20:41 
+
+20:41 copy
+20:44 
+
+20:44 um inside the job uh which is
+20:49 
+
+20:49 over here
+20:51 
+
+20:51 um terraform runs on and along with runs
+20:56 
+
+20:56 on we need default run shell is bash and
+21:01 
+
+21:01 over here
+21:05 
+
+21:05 working
+21:06 
+
+21:06 directory Tory.
+21:09 
+
+21:09 Um, so this working directory should be
+21:12 
+
+21:12 the same over here.
+21:25 
+
+21:25 Where was it? Uh,
+21:31 
+
+21:31 okay. So, it should be this.
+21:36 
+
+21:36 um lessons at the root repository and
+21:39 
+
+21:39 then day 27 code inside
+21:44 
+
+21:44 the
+21:48 
+
+21:48 code.
+21:51 
+
+21:51 Yeah. Yeah. Inside the code directory.
+21:53 
+
+21:53 Okay. And yeah, I think this should do
+21:57 
+
+21:57 it. So,
+22:02 
+
+22:02 let me copy this. But let me see if
+22:05 
+
+22:05 there is any other job over here as well
+22:08 
+
+22:08 because we need to set the working
+22:10 
+
+22:10 directory in all the jobs. I think we
+22:13 
+
+22:13 only have one job. Let me just do a
+22:16 
+
+22:16 control F.
+22:18 
+
+22:18 There is this job. Yeah, there is one
+22:21 
+
+22:21 job
+22:23 
+
+22:23 or um so that's the job terapform plan.
+22:29 
+
+22:29 It has these steps
+22:34 
+
+22:34 and these are all the steps.
+22:38 
+
+22:38 Okay, there is terraform apply. This is
+22:41 
+
+22:41 also a job
+22:43 
+
+22:43 and um over here we need to provide the
+22:50 
+
+22:50 details. So let me get the detail from
+22:53 
+
+22:53 the job which is working directory over
+22:56 
+
+22:56 here.
+22:58 
+
+22:58 Enter a form apply.
+23:02 
+
+23:02 So over here we need to add the working
+23:04 
+
+23:04 directory
+23:06 
+
+23:06 and
+23:08 
+
+23:08 these are all the steps. That's cool.
+23:11 
+
+23:11 Yeah, that's it. So let me just copy
+23:14 
+
+23:14 this file and move that to the root
+23:18 
+
+23:18 directory
+23:21 
+
+23:21 inside this
+23:25 
+
+23:25 workflows.
+23:27 
+
+23:27 So over here I'll just add a new file
+23:30 
+
+23:30 and call it
+23:33 
+
+23:33 day 27
+23:37 
+
+23:37 GitHub
+23:40 
+
+23:40 provisioning
+23:42 
+
+23:42 provisioning.
+23:46 
+
+23:46 Okay.
+23:48 
+
+23:48 Okay. Paste it over here. And
+23:53 
+
+23:53 that's it. Let's commit the change.
+23:60 
+
+23:60 Okay. Now if we go to actions
+24:03 
+
+24:03 now I see my pipeline over here.
+24:06 
+
+24:06 Terraform multi-environment cicd
+24:10 
+
+24:10 there is no run. So let's make a change
+24:13 
+
+24:13 in that repo.
+24:18 
+
+24:18 Um you can do the same thing uh via
+24:21 
+
+24:21 GitHub actions like we did earlier. So
+24:23 
+
+24:23 yeah let's do that.
+24:28 
+
+24:28 Okay. Now desired capacity let's change
+24:31 
+
+24:31 from 2 to one. Okay. And let's run the
+24:37 
+
+24:37 commands which is
+24:40 
+
+24:40 get add.
+24:42 
+
+24:42 Okay. And then
+24:45 
+
+24:45 we'll do get commit.
+24:49 
+
+24:49 And let's do a get push.
+24:52 
+
+24:52 Okay. Done. Let's go back. Let's approve
+24:56 
+
+24:56 the pull request. Let's go over here
+25:01 
+
+25:01 and
+25:04 
+
+25:04 on which branch. Let's go to pull
+25:06 
+
+25:06 request.
+25:08 
+
+25:08 New pull request.
+25:10 
+
+25:10 Okay. And the pull request is
+25:16 
+
+25:16 feature this to this.
+25:19 
+
+25:19 Okay. And it says there is one change
+25:22 
+
+25:22 like this has been updated to one. Let's
+25:26 
+
+25:26 create the pull request.
+25:28 
+
+25:28 Hit create. And now as an approver I
+25:31 
+
+25:31 have the authority to approve it. So I'm
+25:33 
+
+25:33 just going to approve it. Confirm merge.
+25:37 
+
+25:37 Now it should trigger the GitHub action
+25:39 
+
+25:39 pipeline. So let's go to actions and
+25:41 
+
+25:41 let's wait. Okay. So over here you see
+25:45 
+
+25:45 um it actually triggered on
+25:52 
+
+25:52 it. Oh, it actually triggered on commit
+25:55 
+
+25:55 and on the pull request because we added
+25:57 
+
+25:57 on the pull request as well. So that's
+25:59 
+
+25:59 why it triggered for both. So this is
+26:02 
+
+26:02 the one that we need for now. Okay. And
+26:05 
+
+26:05 it says Terraform plan is running.
+26:08 
+
+26:08 What it did till now? It did terapform
+26:10 
+
+26:10 in it. Okay. Terapform format. Terraform
+26:14 
+
+26:14 validate. Okay. Configuration looks
+26:17 
+
+26:17 valid. set some environment variables.
+26:20 
+
+26:20 It says uh if the pull request
+26:24 
+
+26:24 then set the branch name is this. Okay.
+26:28 
+
+26:28 And so many other variables it said it
+26:31 
+
+26:31 it it did set the environment variable
+26:33 
+
+26:33 from the secrets. Then select workspace
+26:37 
+
+26:37 name.
+26:39 
+
+26:39 Okay. Switch to workspace prod terraform
+26:42 
+
+26:42 plan. Why prod? Because we made the
+26:45 
+
+26:45 changes to the main branch. That's why
+26:47 
+
+26:47 then there is the terraform plan.
+26:51 
+
+26:51 Okay. Uh it has some warning. That's
+26:54 
+
+26:54 okay.
+26:56 
+
+26:56 And there is a lot of details. So I'm
+26:59 
+
+26:59 just going to go at the very end. So you
+27:01 
+
+27:01 see there are some changes.
+27:05 
+
+27:05 Okay. And
+27:09 
+
+27:09 now it
+27:11 
+
+27:11 did the post checkout.
+27:15 
+
+27:15 But did it apply the changes? Let's see
+27:17 
+
+27:17 over here. Uh it says to perform exact
+27:21 
+
+27:21 in terraform apply plan.
+27:24 
+
+27:24 Then that's then this command update
+27:27 
+
+27:27 pull request
+27:29 
+
+27:29 over here
+27:32 
+
+27:32 and I think this is the step in which
+27:35 
+
+27:35 it's uh applying the changes. So let's
+27:38 
+
+27:38 go down.
+27:54 
+
+27:54 complete job. What does it have? Oh no,
+27:57 
+
+27:57 that was just that job. Here is the job
+27:60 
+
+27:60 for Terraform. Apply. It says skipped.
+28:05 
+
+28:05 Uh why did it skipped?
+28:10 
+
+28:10 Maybe terapform plan is still running.
+28:20 
+
+28:20 It did completed it.
+28:25 
+
+28:25 Okay. And
+28:28 
+
+28:28 no files were found with the provided
+28:30 
+
+28:30 path TF plan.
+28:34 
+
+28:34 Um maybe because
+28:37 
+
+28:37 over here terraform plan. Let's go back
+28:42 
+
+28:42 to the
+28:44 
+
+28:44 actions again.
+28:47 
+
+28:47 Okay. Um so this actually completed but
+28:52 
+
+28:52 it did not trigger the apply because it
+28:54 
+
+28:54 did not find the plan file.
+28:58 
+
+28:58 Okay. And the job was skipped. So
+29:03 
+
+29:03 let's go back
+29:06 
+
+29:06 to actions over here. Okay. And here is
+29:11 
+
+29:11 our multi-environment cicd.
+29:19 
+
+29:19 No, I just want to review the file. So
+29:23 
+
+29:23 let's go in the code
+29:27 
+
+29:27 GitHub.
+29:31 
+
+29:31 and workflows
+29:34 
+
+29:34 over here. Okay. So here it's fine. It
+29:38 
+
+29:38 was able to do all those things and then
+29:41 
+
+29:41 it let's see where it is generating the
+29:44 
+
+29:44 terraform plan file. Okay. Initate
+29:47 
+
+29:47 format validate environment variable.
+29:49 
+
+29:49 Okay. Over here. So terapform plan uh
+29:52 
+
+29:52 hyphen v file tf file
+29:56 
+
+29:56 output is tf plan
+29:59 
+
+29:59 okay
+30:01 
+
+30:01 and then update pull request
+30:06 
+
+30:06 terraform plan okay so there should be a
+30:09 
+
+30:09 variable over here which we'll see
+30:12 
+
+30:12 says if terraform plan status equal to
+30:15 
+
+30:15 failure
+30:17 
+
+30:17 then exit it
+30:21 
+
+30:21 and then upload terraform plan to the
+30:24 
+
+30:24 workspace
+30:26 
+
+30:26 with
+30:27 
+
+30:27 TF plan workspace name. So it should be
+30:30 
+
+30:30 TF plan prod path is TF plan
+30:35 
+
+30:35 and over here uh when we are doing the
+30:38 
+
+30:38 apply
+30:40 
+
+30:40 we are running this directory
+30:43 
+
+30:43 terapform init set environment
+30:46 
+
+30:46 variables.
+30:48 
+
+30:48 Okay. And then Terraform workspace
+30:50 
+
+30:50 select which is prod download the plan
+30:53 
+
+30:53 from TF plan prod
+30:57 
+
+30:57 and then apply. But it did not find it.
+31:01 
+
+31:01 So let's check it over here which is
+31:06 
+
+31:06 settings
+31:09 
+
+31:09 actions
+31:11 
+
+31:11 general.
+31:14 
+
+31:14 Um there is nothing over here.
+31:17 
+
+31:17 Let's go to secrets and variables for
+31:21 
+
+31:21 actions. I don't think it'll be there uh
+31:24 
+
+31:24 because it is just for secrets.
+31:28 
+
+31:28 Uh what else? Where else we can find it
+31:31 
+
+31:31 out? Go to actions.
+31:35 
+
+31:35 And over here do we have workspaces? No.
+31:43 
+
+31:43 And this one is also in waiting state.
+31:46 
+
+31:46 What happened to this? So there is
+31:47 
+
+31:47 terraform plan.
+31:50 
+
+31:50 Okay.
+31:52 
+
+31:52 And then for apply it is waiting for the
+31:55 
+
+31:55 approval because it's it's pro right. So
+31:58 
+
+31:58 for prod we have the manual approval
+31:59 
+
+31:59 step. So uh review pending approval.
+32:03 
+
+32:03 Okay let's approve this approve and
+32:05 
+
+32:05 deploy. Let's see if it this is also
+32:08 
+
+32:08 failing or not.
+32:13 
+
+32:13 Uh run Terraform in it. Initializing
+32:16 
+
+32:16 plugin.
+32:19 
+
+32:19 Okay. Uh branch is main terapform
+32:22 
+
+32:22 workspace name. Okay. Switch to pro
+32:25 
+
+32:25 download plan. Okay. So it's not able to
+32:27 
+
+32:27 find the artifacts.
+32:31 
+
+32:31 So um unable to find artifact for plans
+32:39 
+
+32:39 TF plan. Okay.
+32:43 
+
+32:43 Let's go back.
+32:50 
+
+32:50 So let's review the file one more time
+32:52 
+
+32:52 where we are uploading the TF plan and
+32:55 
+
+32:55 downloading it. Okay. So here is where
+32:58 
+
+32:58 we are downloading it. Let's see where
+32:60 
+
+32:60 we are uploading the file.
+33:04 
+
+33:04 Okay. So this is terraform apply. That's
+33:09 
+
+33:09 okay. Upload terraform plan. Okay. Oh,
+33:12 
+
+33:12 so we are uploading it to this directory
+33:14 
+
+33:14 but it should be um inside that
+33:18 
+
+33:18 directory like with code uh day 27 and
+33:22 
+
+33:22 so on, right? So it should be um let's
+33:26 
+
+33:26 add edit this.
+33:34 
+
+33:34 Let's search for upload
+33:38 
+
+33:38 upload plan artifact and yeah so this
+33:41 
+
+33:41 path should be
+33:46 
+
+33:46 lessons
+33:47 
+
+33:47 and day 27
+33:51 
+
+33:51 code TF plan. Okay. And I think the same
+33:56 
+
+33:56 should be when we are downloading it.
+34:01 
+
+34:01 uh which is
+34:04 
+
+34:04 over here somewhere.
+34:08 
+
+34:08 Terraform plan download path.
+34:19 
+
+34:19 I think this one
+34:23 
+
+34:23 plan upload and terapform plan
+34:28 
+
+34:28 download day 27 code. Okay. Yeah, this
+34:31 
+
+34:31 should be it. Let's commit the changes.
+34:37 
+
+34:37 Okay. And let's go to actions.
+34:43 
+
+34:43 Okay. This is the earlier failure. Now,
+34:45 
+
+34:45 let's trigger it manually because we
+34:47 
+
+34:47 have already seen the workflow of the
+34:49 
+
+34:49 pull request. So, I'm just going to
+34:52 
+
+34:52 trigger this workflow manually.
+34:56 
+
+34:56 I'm not sure if we can manually trigger
+34:59 
+
+34:59 it or not, but let's see.
+35:10 
+
+35:10 Or let me just make the changes directly
+35:13 
+
+35:13 over there.
+35:18 
+
+35:18 Okay.
+35:20 
+
+35:20 site code and it should be because it
+35:24 
+
+35:24 should be uh triggered based on the
+35:26 
+
+35:26 merge based on the check-in as well the
+35:29 
+
+35:29 code checkin. I'm going to go to lessons
+35:33 
+
+35:33 27
+35:35 
+
+35:35 code and dev.tfrs.
+35:40 
+
+35:40 Um let's make it again to two.
+35:50 
+
+35:50 Okay, let's go to actions
+35:52 
+
+35:52 and it triggered it. Um let's go over
+35:55 
+
+35:55 here and basically this is what we are
+35:59 
+
+35:59 looking for. Okay, so I'm just going to
+36:00 
+
+36:00 pause the recording for a couple of
+36:02 
+
+36:02 minutes while it's doing its work.
+36:06 
+
+36:06 Okay, plan completed. It's asking me to
+36:09 
+
+36:09 review the deployment and approve it.
+36:11 
+
+36:11 So, let me do that. Approve and deploy.
+36:16 
+
+36:16 And let's check it now.
+36:21 
+
+36:21 Okay. Um, setup in it
+36:27 
+
+36:27 environment variables.
+36:31 
+
+36:31 Okay. Download Terapform plan. Now, it
+36:34 
+
+36:34 did. So there is download happen and
+36:37 
+
+36:37 Terraform apply is also running now.
+36:44 
+
+36:44 Okay, it's creating the resources. So
+36:46 
+
+36:46 I'm just going to pause while it's doing
+36:48 
+
+36:48 its work or is it almost done? Yeah,
+36:51 
+
+36:51 it's
+36:53 
+
+36:53 it's faster than I thought. But I think
+36:56 
+
+36:56 uh creation of launch template and all
+36:59 
+
+36:59 those things, it's going to take a few
+37:01 
+
+37:01 minutes. So I'm just going to pause the
+37:03 
+
+37:03 recording again.
+37:07 
+
+37:07 Okay. So for after few minutes I see the
+37:10 
+
+37:10 apply has been completed and uh it it is
+37:14 
+
+37:14 all green now and it is showing me some
+37:17 
+
+37:17 Terraform outputs as well. I can check
+37:19 
+
+37:19 my load balancer DNS to see if app is
+37:23 
+
+37:23 healthy or not.
+37:25 
+
+37:25 So yeah here it is. It says welcome to
+37:28 
+
+37:28 infrastructure project. Now we need to
+37:30 
+
+37:30 check if our changes are applied or not
+37:32 
+
+37:32 which is what we did was desired
+37:34 
+
+37:34 instances equal to two. So let's go back
+37:37 
+
+37:37 over here and let's go to EC2
+37:43 
+
+37:43 and there should be two instances
+37:46 
+
+37:46 running which is I think yeah so there
+37:49 
+
+37:49 is app instance production app instance
+37:52 
+
+37:52 production two instances are running and
+37:55 
+
+37:55 they all should be part of the single
+37:57 
+
+37:57 autoscaling group which we can check
+37:59 
+
+37:59 from here so let's go to the autoscaling
+38:02 
+
+38:02 group desired capacities two which is
+38:04 
+
+38:04 what we did And let's check the
+38:09 
+
+38:09 instances
+38:12 
+
+38:12 instance management. There are two
+38:13 
+
+38:13 instances in service. Both of them are
+38:16 
+
+38:16 healthy. So this is what we have tested.
+38:18 
+
+38:18 Now let's do one more. Actually we'll be
+38:21 
+
+38:21 doing a few more uh deployment testing.
+38:24 
+
+38:24 So let's do one more. And this time
+38:27 
+
+38:27 we'll be testing the security scanning
+38:29 
+
+38:29 if it is working properly with our
+38:31 
+
+38:31 GitHub actions pipeline or not. So let's
+38:33 
+
+38:33 do this thing.
+38:35 
+
+38:35 Okay, let's check out a new branch and
+38:38 
+
+38:38 we're going to call it get checkout
+38:42 
+
+38:42 - B security.
+38:45 
+
+38:45 Okay.
+38:48 
+
+38:48 And let's make some changes um in the
+38:50 
+
+38:50 security group.tf file over here.
+38:54 
+
+38:54 Um
+38:58 
+
+38:58 let's for now do we have the SSH rule
+39:03 
+
+39:03 for the app tier?
+39:06 
+
+39:06 Let's say okay so security group SSH and
+39:12 
+
+39:12 it is actually open from anywhere
+39:16 
+
+39:16 uh which is from 0.0 zero which is
+39:20 
+
+39:20 restricted which should be restricted
+39:22 
+
+39:22 like it's not a good practice okay and
+39:29 
+
+39:29 so let's I think this should have
+39:31 
+
+39:31 already been captured in our pipeline so
+39:33 
+
+39:33 let's go back
+39:35 
+
+39:35 and let's go to actions
+39:38 
+
+39:38 okay
+39:40 
+
+39:40 and terapform plan
+39:43 
+
+39:43 let's check
+39:46 
+
+39:46 vulnerability scanning results over
+39:48 
+
+39:48 here.
+39:50 
+
+39:50 So we have
+39:55 
+
+39:55 um here it is there is this is where it
+39:58 
+
+39:58 is running it
+40:01 
+
+40:01 and then scanning root modules uh blah
+40:06 
+
+40:06 blah. Okay, let's go back.
+40:15 
+
+40:15 It has actually scanned all the files in
+40:17 
+
+40:17 all the folders. Okay.
+40:28 
+
+40:28 Now
+40:30 
+
+40:30 here is
+40:35 
+
+40:35 uh there are some you know critical
+40:37 
+
+40:37 vulnerabilities. It says application
+40:39 
+
+40:39 load balancer is not set to drop invalid
+40:42 
+
+40:42 headers. Okay, that's one.
+40:46 
+
+40:46 Then we have like it is providing the
+40:49 
+
+40:49 line details as well where you can fix
+40:52 
+
+40:52 it. Then load balancer is exposed
+40:54 
+
+40:54 publically.
+40:56 
+
+40:56 So
+40:58 
+
+40:58 because we are using an external load
+41:01 
+
+41:01 balancer, it was supposed to be exposed
+41:04 
+
+41:04 publically. U but it says there is a
+41:07 
+
+41:07 check. uh it just it just asking us it
+41:11 
+
+41:11 is really a valid thing to do for this
+41:13 
+
+41:13 particular use case. I mean it was
+41:15 
+
+41:15 really necessary right then we don't
+41:18 
+
+41:18 have the HTTPS we were only using HTTP
+41:22 
+
+41:22 traffic over port 80 which is also
+41:24 
+
+41:24 which is also not secure so it is
+41:26 
+
+41:26 providing all the vulnerability details
+41:28 
+
+41:28 and here are the here's the code snippet
+41:31 
+
+41:31 as well then now these are the details
+41:34 
+
+41:34 from other files which let's not worry
+41:38 
+
+41:38 for now but you see all the
+41:40 
+
+41:40 vulnerabilities it has already presented
+41:43 
+
+41:43 to us and it's it's highly detailed.
+41:46 
+
+41:46 There are a lot you can keep going on
+41:48 
+
+41:48 and on and uh it has it has checked all
+41:52 
+
+41:52 the vulnerabilities that we wanted to
+41:55 
+
+41:55 see. Now let's check the vulnerabilities
+41:57 
+
+41:57 for day 27.
+41:59 
+
+41:59 Okay. So this is for day 27. It say you
+42:02 
+
+42:02 should limit the provisioning of public
+42:03 
+
+42:03 IP for resources. Resource should not be
+42:05 
+
+42:05 exposed in public internet. Um maybe
+42:09 
+
+42:09 there is some over here you see public
+42:12 
+
+42:12 map public IP on launch equal to true
+42:14 
+
+42:14 for AWS subnet. I mean this was public
+42:17 
+
+42:17 subnet but still it is throwing the
+42:19 
+
+42:19 error for us. Um the same way it is
+42:24 
+
+42:24 doing for other one as well
+42:27 
+
+42:27 and here is the
+42:30 
+
+42:30 security group setting because we have
+42:32 
+
+42:32 opened it for the world. So now it is
+42:35 
+
+42:35 also saying that it is not recommended
+42:38 
+
+42:38 right you should allow only to your IP
+42:40 
+
+42:40 or your CI and it should not be allowed
+42:44 
+
+42:44 unrestricted ingress from any IP
+42:46 
+
+42:46 address. So these are all the
+42:47 
+
+42:47 vulnerability scannings that it did.
+42:51 
+
+42:51 Okay. Now let's go and test uh our
+42:54 
+
+42:54 second workflow which is for Terraform
+42:56 
+
+42:56 destruction. Okay. So let's go over here
+43:00 
+
+43:00 to
+43:03 
+
+43:03 actually we have to do the same thing
+43:05 
+
+43:05 for that we have to move the file from
+43:08 
+
+43:08 the subd directory to the root
+43:11 
+
+43:11 directory. Okay. Um so let's go inside
+43:14 
+
+43:14 lessons
+43:16 
+
+43:16 day 27
+43:19 
+
+43:19 and then code GitHub workflows terapform
+43:23 
+
+43:23 destroy this one. Okay. So let me copy
+43:27 
+
+43:27 this file content and let's
+43:31 
+
+43:31 go to the root directory
+43:36 
+
+43:36 inside GitHub uh workflows over here.
+43:40 
+
+43:40 Let's call it
+43:43 
+
+43:43 destroy
+43:45 
+
+43:45 date 27.
+43:47 
+
+43:47 Doesn't matter what file name we'll give
+43:49 
+
+43:49 because it will take the file name that
+43:51 
+
+43:51 is there over here right name.
+43:54 
+
+43:54 Okay. So let's verify this once on
+43:57 
+
+43:57 workflow dispatch input environment
+43:59 
+
+43:59 environment to destroy required equal to
+44:02 
+
+44:02 true. Default is dev choices are this.
+44:05 
+
+44:05 It'll ask your choices uh it's not on
+44:08 
+
+44:08 pull request or not on merge. It's u
+44:11 
+
+44:11 it's basically asking the user input
+44:12 
+
+44:12 which environment to destroy. Okay. And
+44:16 
+
+44:16 that's good. Then uh terapform destroy I
+44:19 
+
+44:19 think we need to run it on the same
+44:22 
+
+44:22 folder right. So let me copy that um
+44:27 
+
+44:27 from the other tab.
+44:31 
+
+44:31 So let's go to actions.
+44:36 
+
+44:36 Okay. And
+45:00 
+
+45:00 Okay, my mind have stopped working now.
+45:03 
+
+45:03 I'm not sure what I'm doing. So, let's
+45:07 
+
+45:07 go over here to this file workflows
+45:12 
+
+45:12 provisioning. Okay, so what we need is
+45:17 
+
+45:17 path
+45:18 
+
+45:18 which is from here working directory. So
+45:21 
+
+45:21 let's copy from here.
+45:24 
+
+45:24 Okay. And
+45:27 
+
+45:27 um this is for Terraform destroy. There
+45:29 
+
+45:29 is one job.
+45:32 
+
+45:32 Cool. And yeah, I think that should do
+45:35 
+
+45:35 it.
+45:40 
+
+45:40 Okay, let's commit the changes.
+45:43 
+
+45:43 And once you commit the changes now if
+45:47 
+
+45:47 you go to actions you should see another
+45:50 
+
+45:50 workflow over here which is for
+45:52 
+
+45:52 Terraform destroy. Click on that run
+45:55 
+
+45:55 workflow.
+45:56 
+
+45:56 Select the branch. Select the
+45:58 
+
+45:58 environment. I think we have prod
+45:60 
+
+45:60 environment. Type destroy to confirm and
+46:04 
+
+46:04 hit run workflow.
+46:06 
+
+46:06 Okay. Um
+46:09 
+
+46:09 still not triggered yet. So let's wait.
+46:13 
+
+46:13 Okay, it has been triggered. Click on
+46:17 
+
+46:17 that.
+46:18 
+
+46:18 Now it is waiting for my review because
+46:20 
+
+46:20 again it's a prod environment. So let's
+46:22 
+
+46:22 approve and deploy.
+46:26 
+
+46:26 Now let's check this in real time. It's
+46:29 
+
+46:29 verifying the confirmation. Yes, I did
+46:32 
+
+46:32 uh verify it with the destroy keyword
+46:35 
+
+46:35 over there.
+46:37 
+
+46:37 And then it is doing its work. It is
+46:40 
+
+46:40 running the terraform destroy.
+46:43 
+
+46:43 Destruction complete for route table. Uh
+46:46 
+
+46:46 yeah. So it is doing its destruction. So
+46:49 
+
+46:49 let me just pause the recording while
+46:51 
+
+46:51 it's fully destroy the infra. Okay.
+46:54 
+
+46:54 After few minutes uh it shows that it
+46:57 
+
+46:57 has completely destroyed 33 resources.
+47:01 
+
+47:01 Let's go and check out over here as well
+47:03 
+
+47:03 in autoscaling group. I don't see
+47:06 
+
+47:06 anything. Let's check in EC2.
+47:11 
+
+47:11 Oh, I still see no, it's gone. Uh, it
+47:14 
+
+47:14 was from the like it was not refreshed
+47:17 
+
+47:17 properly, right? And we can check the
+47:20 
+
+47:20 load balancer as well just to make sure
+47:26 
+
+47:26 there are no load balancer as well. So
+47:28 
+
+47:28 all the resources have been destroyed
+47:30 
+
+47:30 successfully. We have tested both the
+47:32 
+
+47:32 pipelines. We have tested the infra
+47:34 
+
+47:34 provisioning, destruction and changes
+47:37 
+
+47:37 including the security scanning um with
+47:40 
+
+47:40 Trivy and there were some TFlint result
+47:43 
+
+47:43 as well. So you can check those as well.
+47:46 
+
+47:46 Uh I hope you found this project helpful
+47:49 
+
+47:49 and valuable. This is a realtime use
+47:51 
+
+47:51 case again because when you work in an
+47:54 
+
+47:54 organization you won't be running
+47:56 
+
+47:56 Terapform commands manually. you most
+47:59 
+
+47:59 probably be using u any such CI/CD
+48:04 
+
+48:04 pipeline along with terraform
+48:07 
+
+48:07 and we had one more step missing in this
+48:10 
+
+48:10 which was drift detection and this is
+48:13 
+
+48:13 again a crucial one so which I have
+48:15 
+
+48:15 covered in one of the later videos so
+48:17 
+
+48:17 keep following keep watching and keep
+48:20 
+
+48:20 supporting the channel keep sharing it
+48:22 
+
+48:22 with your friends colleagues family
+48:24 
+
+48:24 whoever is trying to upskill into devops
+48:27 
+
+48:27 terraform etc
+48:28 
+
+48:28 And thank you for your support. Thank
+48:30 
+
+48:30 you for everything so far. And uh yeah,
+48:33 
+
+48:33 that's it. Thank you. And I hope you
+48:36 
+
+48:36 found it helpful and valuable. I will
+48:38 
+
+48:38 see you tomorrow with the next video.
+48:40 
+
+48:40 Thank you so much. Happy learning.

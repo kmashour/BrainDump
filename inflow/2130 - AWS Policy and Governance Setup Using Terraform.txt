@@ -1,0 +1,2263 @@
+00:00 Hello and welcome back to 30 days of AWS
+00:03 
+
+00:03 Terapform. My name is Push and this is
+00:05 
+
+00:05 day 21 I believe. Yes, it is uh day 21
+00:08 
+
+00:08 and in this video we'll be looking into
+00:11 
+
+00:11 AWS policy and governance. How we can
+00:14 
+
+00:14 automate the setup of policy and
+00:16 
+
+00:16 governance in AWS using Terraform. I
+00:19 
+
+00:19 hope you have been following the series
+00:20 
+
+00:20 in the same sequence from day zero
+00:22 
+
+00:22 onwards because most of the concepts I
+00:25 
+
+00:25 have already explained in the previous
+00:26 
+
+00:26 videos where we were looking into
+00:28 
+
+00:28 terraform core concepts and now we'll be
+00:31 
+
+00:31 practicing some realtime projects. Uh
+00:34 
+
+00:34 this is another realtime projects that
+00:37 
+
+00:37 we are working on and it would be really
+00:39 
+
+00:39 helpful if you have watched the previous
+00:41 
+
+00:41 videos to understand the nuance behind
+00:43 
+
+00:43 all the terraform concepts. Okay. So if
+00:46 
+
+00:46 you have done that then let's go and
+00:49 
+
+00:49 let's start with this video. In this
+00:51 
+
+00:51 video first let's try to understand what
+00:53 
+
+00:53 exactly is policy and governance right.
+00:56 
+
+00:56 So it's it's two part right policy and
+00:58 
+
+00:58 governance. Policy is as simple as when
+01:02 
+
+01:02 we are enforcing some rules. Okay. So we
+01:04 
+
+01:04 are creating some policies. We are
+01:06 
+
+01:06 creating some rules that our
+01:08 
+
+01:08 organization has to follow. In this case
+01:11 
+
+01:11 our AWS environment has to follows. So
+01:14 
+
+01:14 that's the policy. What are these kind
+01:16 
+
+01:16 of rules? So these kind of rules could
+01:18 
+
+01:18 be like if the user does not have MFA
+01:21 
+
+01:21 enabled then the user cannot delete any
+01:24 
+
+01:24 resource in AWS. That's one type of
+01:26 
+
+01:26 policy. Another type of policy could be
+01:30 
+
+01:30 whenever you upload an object to an S3
+01:32 
+
+01:32 bucket, it should be encrypted in
+01:34 
+
+01:34 transit. Encrypted in transit meaning
+01:37 
+
+01:37 like let's say there is a bucket over
+01:39 
+
+01:39 here. So whenever you are uploading an
+01:42 
+
+01:42 object to the bucket right it has to be
+01:47 
+
+01:47 done over HTTPS
+01:50 
+
+01:50 that means encrypted in transit. Okay
+01:53 
+
+01:53 encrypted and rest and encrypted in
+01:55 
+
+01:55 transit. Transit meaning when we are
+01:58 
+
+01:58 transferring it over a protocol such as
+02:01 
+
+02:01 HTTP it should be secured HTTP so that
+02:05 
+
+02:05 the data should be encrypted while in
+02:07 
+
+02:07 transit. transit as in when the data is
+02:10 
+
+02:10 transferring from client to the server.
+02:13 
+
+02:13 Server here is an S3 bucket, right? So
+02:15 
+
+02:15 that's encryption in transit. Another
+02:18 
+
+02:18 example of policy could be whenever you
+02:20 
+
+02:20 create an object such as an S3 bucket or
+02:24 
+
+02:24 let's say an EC2 instance, it should
+02:27 
+
+02:27 have some requirement tags. For example,
+02:30 
+
+02:30 environment equal to dev or like there
+02:33 
+
+02:33 should be a tag with the name
+02:35 
+
+02:35 environment. Okay. So that's some of the
+02:38 
+
+02:38 policies examples that we'll be
+02:40 
+
+02:40 creating. So this is IM policies and
+02:43 
+
+02:43 these policies will make sure that all
+02:46 
+
+02:46 the resources are compliant otherwise
+02:48 
+
+02:48 the creation would fail. Okay. Let's say
+02:50 
+
+02:50 if there is a user who does not have NF
+02:53 
+
+02:53 enabled and that user try to delete the
+02:57 
+
+02:57 object that action will be restricted.
+03:01 
+
+03:01 The same way if a user try to upload an
+03:04 
+
+03:04 object to the S3 bucket over HTTP
+03:07 
+
+03:07 without the secure HTTPS
+03:10 
+
+03:10 that upload will be restricted and so
+03:13 
+
+03:13 on. Right? So that's IM policies which
+03:17 
+
+03:17 prevent some bad action and basically
+03:20 
+
+03:20 blocks the request that is not approved.
+03:24 
+
+03:24 Okay. So that's policy. Now there is a
+03:26 
+
+03:26 part governance. Governance means
+03:29 
+
+03:29 storing all the activities, keeping a
+03:32 
+
+03:32 log of all the activities so that we
+03:35 
+
+03:35 know what is compliant and what is not
+03:37 
+
+03:37 compliant. Okay. So it's basically
+03:39 
+
+03:39 related to compliance. It covers
+03:41 
+
+03:41 compliance as well as audit. Okay. So
+03:43 
+
+03:43 for that we'll be using an AWS service
+03:46 
+
+03:46 called AWS config. Okay. AWS config if
+03:49 
+
+03:49 you have not worked before with it. AWS
+03:51 
+
+03:51 config is a service which helps you
+03:54 
+
+03:54 create config rules. So these rules are
+03:56 
+
+03:56 similar to IM policies but these rules
+03:59 
+
+03:59 will be applied after the action has
+04:02 
+
+04:02 been performed. Okay. Let's say it will
+04:04 
+
+04:04 allow the resources without the tax to
+04:08 
+
+04:08 be created but it will log that as an
+04:12 
+
+04:12 uncompliant resource or incompliant
+04:14 
+
+04:14 resource. Okay. So we'll be creating six
+04:16 
+
+04:16 different kind of rules in this video.
+04:19 
+
+04:19 So when we run the config, it will make
+04:22 
+
+04:22 sure that okay my room has turned into a
+04:25 
+
+04:25 disco light. Something wrong with my
+04:27 
+
+04:27 backlight. So I'm not doing that by the
+04:29 
+
+04:29 way. Uh it's just happening. So where
+04:32 
+
+04:32 was I? Okay. So we'll be creating six
+04:34 
+
+04:34 different rules and these rules will
+04:37 
+
+04:37 monitor and check for compliance like it
+04:39 
+
+04:39 will show you whether the resources are
+04:41 
+
+04:41 compliant or not compliant. Okay. And
+04:43 
+
+04:43 then we have an S3 bucket. We'll be
+04:46 
+
+04:46 creating an S3 bucket in which we'll be
+04:48 
+
+04:48 storing the audit logs. This bucket will
+04:50 
+
+04:50 be encrypted, versioned and public
+04:53 
+
+04:53 access will be blocked on this bucket.
+04:54 
+
+04:54 This will be a private bucket where
+04:56 
+
+04:56 we'll be storing our audit logs. Okay.
+04:58 
+
+04:58 So, end to end this will be a project
+05:01 
+
+05:01 for audit and compliance for policy and
+05:04 
+
+05:04 governance in which we'll be preventing
+05:07 
+
+05:07 some actions using IM. We'll be
+05:09 
+
+05:09 detecting some uncompliant resources
+05:11 
+
+05:11 using AWS config. And then finally we'll
+05:14 
+
+05:14 be storing all the audit logs and
+05:15 
+
+05:15 everything in the S3 bucket. And this is
+05:18 
+
+05:18 kind of a realtime project that we'll be
+05:21 
+
+05:21 doing. All right. So here is my day 21
+05:25 
+
+05:25 folder. You can clone the GitHub repo or
+05:27 
+
+05:27 you can write it from the scratch.
+05:29 
+
+05:29 Actually I would suggest you writing
+05:31 
+
+05:31 from the scratch otherwise you will not
+05:34 
+
+05:34 be able to understand all the things.
+05:36 
+
+05:36 But if you do that on your own by
+05:39 
+
+05:39 following through the documentation then
+05:41 
+
+05:41 it will be really helpful. So that is
+05:43 
+
+05:43 what I would suggest but if you are
+05:44 
+
+05:44 stuck somewhere you can just definitely
+05:46 
+
+05:46 take the guidance from the video and
+05:48 
+
+05:48 from the repo as well. So there are
+05:50 
+
+05:50 multiple files in which I have
+05:52 
+
+05:52 distributed the configuration. The first
+05:54 
+
+05:54 file is main.tf. In main.tf we are
+05:57 
+
+05:57 creating the s3 bucket in which we'll be
+05:60 
+
+06:00 storing our audit logs or config uh
+06:03 
+
+06:03 compliance and non-compliance related
+06:05 
+
+06:05 details. So we'll be creating the
+06:07 
+
+06:07 bucket. We'll make it encrypted. We'll
+06:10 
+
+06:10 block all the public access and then
+06:12 
+
+06:12 we'll enable versioning. We'll also
+06:15 
+
+06:15 attach bucket policy to it so that AWS
+06:17 
+
+06:17 config service can have access to this
+06:19 
+
+06:19 bucket and can upload objects to this
+06:21 
+
+06:21 bucket. Okay. So uh we'll start with uh
+06:24 
+
+06:24 with the resource S3 bucket. We'll
+06:26 
+
+06:26 create the bucket. Okay. Uh with a name
+06:29 
+
+06:29 over here we are using a random string
+06:31 
+
+06:31 suffix at the end and this is coming
+06:34 
+
+06:34 from this resource over here. Random
+06:36 
+
+06:36 string. Okay. Okay, so we are creating a
+06:38 
+
+06:38 random string resource with the
+06:40 
+
+06:40 reference name as suffix. Length is six.
+06:43 
+
+06:43 That means it will generate a string of
+06:45 
+
+06:45 six characters without any special
+06:48 
+
+06:48 characters because it is false and
+06:51 
+
+06:51 without any uppercase letter because it
+06:53 
+
+06:53 is also false. So lowerase sixlet string
+06:58 
+
+06:58 without any special character. It will
+07:00 
+
+07:00 append this as the
+07:03 
+
+07:03 suffix of this bucket name. Okay,
+07:05 
+
+07:05 because it's at the end and prefix will
+07:08 
+
+07:08 be the project name. Okay, so project
+07:10 
+
+07:10 name hyphen config bucket hyphen the
+07:12 
+
+07:12 suffix. Then it'll have some tags. Okay,
+07:17 
+
+07:17 then we'll enable versioning on the
+07:19 
+
+07:19 bucket. What are we doing? We are just
+07:23 
+
+07:23 using the AWS3 bucket versioning
+07:26 
+
+07:26 resource and in that we are making sure
+07:28 
+
+07:28 that versioning is enabled. So wherever
+07:30 
+
+07:30 you find any doubt you just go to
+07:33 
+
+07:33 Terraform provider documentation over
+07:36 
+
+07:36 here right and you can just search for
+07:40 
+
+07:40 the provider. For example for AWS
+07:42 
+
+07:42 provider the resource that we are using
+07:44 
+
+07:44 is AWS S3
+07:48 
+
+07:48 bucket versioning
+07:52 
+
+07:52 and let's search for the resource which
+07:55 
+
+07:55 is over here.
+07:57 
+
+07:57 Okay over here. Right. It says
+07:60 
+
+07:60 versioning configuration status is
+08:02 
+
+08:02 enabled. So that's the only field it
+08:04 
+
+08:04 needs other than the bucket name
+08:05 
+
+08:05 obviously because we are applying this
+08:07 
+
+08:07 uh bucket versioning on some bucket
+08:09 
+
+08:09 right so bucket name has to be there and
+08:11 
+
+08:11 this is what we are doing over here. So
+08:13 
+
+08:13 bucket name and then the versioning then
+08:15 
+
+08:15 enable encryption on config bucket. Now
+08:18 
+
+08:18 for the same thing you can just go and
+08:20 
+
+08:20 search for the resource. It will says
+08:23 
+
+08:23 three bucket server size encryption
+08:25 
+
+08:25 configuration.
+08:26 
+
+08:26 Now you might be thinking how do I know
+08:29 
+
+08:29 that this is the resource that I have to
+08:31 
+
+08:31 use right so u there are two things
+08:34 
+
+08:34 first is you start with because it's
+08:36 
+
+08:36 related to S3 bucket so you start
+08:39 
+
+08:39 searching the object with the name AWS
+08:41 
+
+08:41 S3 bucket okay in S3 bucket you will
+08:44 
+
+08:44 find all these different resource and
+08:46 
+
+08:46 then you select the one that you see
+08:47 
+
+08:47 most identical to the resource that you
+08:50 
+
+08:50 want to create for example you want to
+08:51 
+
+08:51 create bucket versioning right so AWS S3
+08:54 
+
+08:54 bucket that's the main resource and
+08:56 
+
+08:56 inside that you will see okay uh what
+08:58 
+
+08:58 are all the different resources. So we
+08:60 
+
+09:00 have bucket logging life cycle a bucket
+09:03 
+
+09:03 object notification object lock policy
+09:06 
+
+09:06 and then we have bucket server size uh
+09:10 
+
+09:10 encryption we have S3 bucket versioning
+09:13 
+
+09:13 right so these are the resource that we
+09:15 
+
+09:15 need and as you keep on practicing as
+09:18 
+
+09:18 you keep on using terraform you will
+09:21 
+
+09:21 know like you will you will it's like a
+09:23 
+
+09:23 muscle memory that you are building for
+09:24 
+
+09:24 yourself that is why I told you to write
+09:27 
+
+09:27 the terapform file on your phone. Okay.
+09:31 
+
+09:31 So, uh the same thing we can find bucket
+09:33 
+
+09:33 versioning. Same thing we can find
+09:34 
+
+09:34 server size encryption.
+09:37 
+
+09:37 For serverside encryption, you see there
+09:39 
+
+09:39 are different type of encryption that
+09:40 
+
+09:40 you can apply. So, and everything has to
+09:44 
+
+09:44 be inside the rule. So, this is what we
+09:46 
+
+09:46 are doing bucket name and then the rule.
+09:48 
+
+09:48 Now there is SSC algorithm which is from
+09:51 
+
+09:51 KMS. That means you will create a KMS
+09:54 
+
+09:54 key and use that to encrypt the server
+09:57 
+
+09:57 side objects on the bucket. Right? So
+09:60 
+
+09:60 that's one thing. There could be other
+10:02 
+
+10:02 type of rules. So this is one and then
+10:05 
+
+10:05 let's see what all rule definition. So
+10:08 
+
+10:08 here's the rule. Inside rule we have
+10:11 
+
+10:11 block encryption type bucket key
+10:13 
+
+10:13 enabled. It says optional whether or not
+10:16 
+
+10:16 to use Amazon S3 bucket key for KMS.
+10:20 
+
+10:20 Okay. And then inside that we have apply
+10:23 
+
+10:23 serverside encryption by default. Okay.
+10:25 
+
+10:25 So this is part of rule. Okay. Inside
+10:29 
+
+10:29 rule we have apply serverside encryption
+10:32 
+
+10:32 by default. So you can see this
+10:34 
+
+10:34 particular argument is part of rule. And
+10:38 
+
+10:38 if you click on that you will be
+10:39 
+
+10:39 redirected over here. And over here you
+10:41 
+
+10:41 have two things. one is SSC algorithm
+10:44 
+
+10:44 and KMS master key. KMS master key is
+10:47 
+
+10:47 optional and it will be only used when
+10:50 
+
+10:50 you want to use your KMS master keys ID
+10:53 
+
+10:53 for the SSC KMS encryption. Okay. And it
+10:56 
+
+10:56 will only be used when you have SSC
+10:59 
+
+10:59 algorithm set as AWS KMS. But if you
+11:02 
+
+11:02 don't store if you're not using your KMS
+11:05 
+
+11:05 key then you can use AES 256 and in that
+11:09 
+
+11:09 case you don't have to provide the
+11:10 
+
+11:10 master key ID. So this is what we are
+11:12 
+
+11:12 doing. Uh we're just enabling this and
+11:16 
+
+11:16 saying SSC algorithm is AE as 256. So
+11:19 
+
+11:19 this is the value uh where it is. So you
+11:23 
+
+11:23 you're using SSC algorithm. Okay. And
+11:27 
+
+11:27 now from where you get the value here
+11:29 
+
+11:29 inside SSC algorithm these are the valid
+11:32 
+
+11:32 values AES 256
+11:35 
+
+11:35 AWS KMS KMS DSSC and so on. Right? So we
+11:39 
+
+11:39 are using as 256 over here. Now the next
+11:43 
+
+11:43 is we are blocking public access to the
+11:45 
+
+11:45 bucket. We are making the bucket
+11:47 
+
+11:47 private. It's a config bucket. It
+11:48 
+
+11:48 shouldn't be exposed publicly. Right?
+11:50 
+
+11:50 It's one of the best practices. So uh in
+11:53 
+
+11:53 that all the default things. So
+11:54 
+
+11:54 everything has to be true. So that the
+11:57 
+
+11:57 access will be blocked your public ACL
+11:60 
+
+11:60 will be blocked public policy will be
+12:02 
+
+12:02 blocked and uh access should be
+12:04 
+
+12:04 restricted.
+12:06 
+
+12:06 Then we'll be creating an S3 bucket
+12:09 
+
+12:09 policy for the config. Okay. In that
+12:13 
+
+12:13 we'll be attaching multiple policy
+12:15 
+
+12:15 documents. Okay. What are these? First
+12:17 
+
+12:17 is config bucket permission check. So
+12:21 
+
+12:21 service config AWS config will check
+12:24 
+
+12:24 whether it has the permission to upload
+12:26 
+
+12:26 objects on the bucket or not to get the
+12:28 
+
+12:28 bucket ACL or not. And basically this is
+12:31 
+
+12:31 what it is right and to list the bucket
+12:33 
+
+12:33 or not. And finally to put the object on
+12:36 
+
+12:36 the bucket or not. Okay. Now there is
+12:38 
+
+12:38 this thing string equals S3 AMCL. I
+12:42 
+
+12:42 would highly recommend reading it out on
+12:44 
+
+12:44 the documentation and you will get the
+12:46 
+
+12:46 better idea about it. Right. So it will
+12:48 
+
+12:48 provide a bucket owner full control to
+12:51 
+
+12:51 the config service. Now it will also
+12:55 
+
+12:55 have uh a permission to deny the traffic
+12:59 
+
+12:59 if it is insecure. That means if it is
+13:02 
+
+13:02 over HTTP and not HTTPS, there is this
+13:05 
+
+13:05 condition as well which says bool AWS
+13:08 
+
+13:08 secure transport equal to false. Okay.
+13:11 
+
+13:11 Now if you're wondering how to generate
+13:14 
+
+13:14 this policy documentation, you can just
+13:16 
+
+13:16 go to AWS policy generator. Okay. This
+13:19 
+
+13:19 is uh over here. And then you can select
+13:22 
+
+13:22 type of policy as S3 bucket policy. You
+13:25 
+
+13:25 can select the statements allowed. You
+13:28 
+
+13:28 can add the principle which is I believe
+13:30 
+
+13:30 it was config and then you can select
+13:32 
+
+13:32 the action like uh put object
+13:37 
+
+13:37 right S3 put object you can select the
+13:40 
+
+13:40 resource AR and finally you can add the
+13:42 
+
+13:42 conditions over here. So there is a
+13:45 
+
+13:45 condition which is of type boolean okay
+13:48 
+
+13:48 it says if AWS secure transport is false
+13:52 
+
+13:52 and then it will return the value the
+13:54 
+
+13:54 boolean value true or false. The same
+13:56 
+
+13:56 way there is this condition which is
+13:59 
+
+13:59 string equals that means it will compare
+14:01 
+
+14:01 this string with this okay key and value
+14:05 
+
+14:05 comparison it will do
+14:08 
+
+14:08 and yeah so that was the bucket policy
+14:11 
+
+14:11 and then we are creating just a
+14:13 
+
+14:13 dependency on the bucket public access
+14:16 
+
+14:16 block. Okay. So this will be applied
+14:18 
+
+14:18 once the previous resources have been
+14:21 
+
+14:21 completed.
+14:23 
+
+14:23 Then we have IM. Inside IM, we are
+14:26 
+
+14:26 creating multiple policies and these
+14:29 
+
+14:29 policies will restrict certain actions
+14:31 
+
+14:31 on AWS resources for users. Right? So
+14:35 
+
+14:35 the first one is MFA delete policy.
+14:37 
+
+14:37 Okay. Resource type should be AWS IM
+14:39 
+
+14:39 policy. And if you can just check it
+14:42 
+
+14:42 over here in the documentation
+14:45 
+
+14:45 AWS IM policy over here what it is
+14:49 
+
+14:49 saying it is saying uh you add the name
+14:52 
+
+14:52 path description and finally the policy
+14:54 
+
+14:54 documentation which is in the form of
+14:57 
+
+14:57 JSON. So this will be a valid JSON
+15:00 
+
+15:00 syntax generated from the policy
+15:03 
+
+15:03 generator. Okay. Or like if you practice
+15:06 
+
+15:06 it enough, you might not be able to use
+15:09 
+
+15:09 the policy generator. You can directly
+15:12 
+
+15:12 write it down by yourself. But it's it's
+15:14 
+
+15:14 good to use the policy generator. Okay.
+15:17 
+
+15:17 So what it has it says uh SID which is a
+15:22 
+
+15:22 unique ID u you can write whatever you
+15:25 
+
+15:25 want over here. Then effect is deny. And
+15:29 
+
+15:29 what is action? S3 delete object on any
+15:32 
+
+15:32 resource. any S3 bucket if we are trying
+15:35 
+
+15:35 to delete that it will check the
+15:38 
+
+15:38 condition if the multiffactor
+15:40 
+
+15:40 authentication is false or not okay so
+15:44 
+
+15:44 access will be denied if the
+15:46 
+
+15:46 multiffactor authentication is false for
+15:48 
+
+15:48 that user so that's the first policy
+15:52 
+
+15:52 second policy is to enforce encryption
+15:54 
+
+15:54 in transit that means whenever we are
+15:57 
+
+15:57 uploading an object to the S3 bucket
+16:01 
+
+16:01 over HTTP it will be blocked. Okay. So,
+16:04 
+
+16:04 same thing the action should be put
+16:06 
+
+16:06 object and over here the condition will
+16:08 
+
+16:08 be secure transfer equal to false.
+16:13 
+
+16:13 Okay. The next uh policy is required
+16:16 
+
+16:16 tagging of resource creation. That means
+16:19 
+
+16:19 whenever we are creating a resource in
+16:21 
+
+16:21 AWS or in this uh environment where we
+16:24 
+
+16:24 are applying this config that resource
+16:26 
+
+16:26 should have a particular tag. What tag
+16:29 
+
+16:29 it is? So the effect is deny action is
+16:32 
+
+16:32 on EC2. So only on EC2 we are applying
+16:35 
+
+16:35 this policy and on like you have to
+16:38 
+
+16:38 provide the ARN which is this one. Now
+16:41 
+
+16:41 condition is it will be blocked if
+16:45 
+
+16:45 string not like this. So request tag or
+16:48 
+
+16:48 environment is not equal to dev staging
+16:51 
+
+16:51 or prod. If we are selecting uh the tag
+16:54 
+
+16:54 with request tag or environment is not
+16:57 
+
+16:57 equal to any of these then the request
+16:59 
+
+16:59 will be blocked and required owner tag
+17:03 
+
+17:03 also. So there are multiple tags. The
+17:05 
+
+17:05 other tag is owner tag. Owner tag should
+17:09 
+
+17:09 be true. Okay, that's another condition.
+17:14 
+
+17:14 Now the next is we are creating an IM
+17:17 
+
+17:17 user for demonstration. Okay, just just
+17:20 
+
+17:20 to demonstrate. Okay. Now we are
+17:22 
+
+17:22 attaching an MFA delete policy to the
+17:26 
+
+17:26 demo user. The one that we have created
+17:28 
+
+17:28 or basically the policy and and the
+17:30 
+
+17:30 user. Okay. So this is the policy that
+17:32 
+
+17:32 we have created and oh this is the user
+17:36 
+
+17:36 and then we have AWS IM policy MFA
+17:40 
+
+17:40 delete policy. We're attaching that
+17:42 
+
+17:42 policy to the user.
+17:45 
+
+17:45 Then we have IM role for AWS config
+17:48 
+
+17:48 service. Okay. So we applied uh an S3
+17:53 
+
+17:53 bucket policy on the bucket for the
+17:55 
+
+17:55 config but then we have to apply certain
+17:58 
+
+17:58 permissions on the config service as
+18:02 
+
+18:02 well. So right so for that we'll be
+18:04 
+
+18:04 creating a role. So this role will have
+18:07 
+
+18:07 the permission to assume role from the
+18:10 
+
+18:10 config because it has already been
+18:12 
+
+18:12 applied to the bucket right at the
+18:14 
+
+18:14 config. So we just have to assume the
+18:16 
+
+18:16 role over here. Now we have to attach
+18:19 
+
+18:19 that manage policy to the config role
+18:22 
+
+18:22 which is like this role policy RN and so
+18:25 
+
+18:25 on
+18:27 
+
+18:27 and we'll be providing additional policy
+18:29 
+
+18:29 for config to write to the S3 bucket
+18:32 
+
+18:32 right so it'll have the allow and get
+18:35 
+
+18:35 bucket versioning put object get object
+18:37 
+
+18:37 these type of permissions on the S3
+18:39 
+
+18:39 bucket so this is the bucket the audit
+18:42 
+
+18:42 bucket in which we'll be uploading all
+18:44 
+
+18:44 the audit logs config related and
+18:46 
+
+18:46 compliance and non-compliance related
+18:47 
+
+18:47 ated things right so this was the IM uh
+18:52 
+
+18:52 file now the next one is config in
+18:56 
+
+18:56 config we are creating basically the
+18:58 
+
+18:58 config recorder um in which um we'll be
+19:02 
+
+19:02 basically creating the config rules and
+19:05 
+
+19:05 so on right config creator config rules
+19:08 
+
+19:08 so first is the config recorder
+19:11 
+
+19:11 uh it says recording group all supported
+19:13 
+
+19:13 true include global resource type is
+19:15 
+
+19:15 true okay and Then a config delivery
+19:18 
+
+19:18 channel. Delivery channel is the S3
+19:20 
+
+19:20 bucket name. We'll be providing that
+19:22 
+
+19:22 over here. And then we'll be starting
+19:24 
+
+19:24 the config recorder. Uh we are just
+19:27 
+
+19:27 enabling it. And then we are saying it
+19:30 
+
+19:30 is depending on the delivery channel.
+19:32 
+
+19:32 Delivery channel which is this one.
+19:34 
+
+19:34 Okay. So once the bucket is there, you
+19:36 
+
+19:36 can start the config recorder. Now it is
+19:39 
+
+19:39 important to uh learn about AWS config
+19:42 
+
+19:42 before this video. That is why in the
+19:43 
+
+19:43 day zero video I have told you that uh
+19:46 
+
+19:46 the prerequisite of this series is you
+19:48 
+
+19:48 should have the fundamental knowledge of
+19:50 
+
+19:50 AWS services and that would be helpful
+19:52 
+
+19:52 right so yeah this is the config part
+19:56 
+
+19:56 and now we'll be creating config rules
+19:58 
+
+19:58 for the compliance check okay so
+20:00 
+
+20:00 remember in the beginning of the video I
+20:02 
+
+20:02 I told you that there's a difference
+20:04 
+
+20:04 between IM policy and config rule IM
+20:07 
+
+20:07 policy restrict the creation of
+20:09 
+
+20:09 resources or restrict any actions on the
+20:11 
+
+20:11 resources is when the policy is applied
+20:15 
+
+20:15 but the config rule will check the
+20:17 
+
+20:17 compliance if the resource is compliant
+20:20 
+
+20:20 or not. Right? So this will not prevent
+20:24 
+
+20:24 that to happen but this will log all
+20:26 
+
+20:26 those activities. So the first rule is
+20:29 
+
+20:29 we are saying that S3 bucket should not
+20:32 
+
+20:32 allow public write. Okay. So uh we are
+20:36 
+
+20:36 creating AWS config rule with a name
+20:38 
+
+20:38 source is uh owner is AWS and source
+20:41 
+
+20:41 identifier is S3 bucket public right
+20:44 
+
+20:44 prohibited. Okay. So if you can just go
+20:47 
+
+20:47 over there config rule.
+20:51 
+
+20:51 Okay. AWS config rule
+20:54 
+
+20:54 and then there are multiple uh examples
+20:57 
+
+20:57 given to you. Okay. First is bucket
+20:60 
+
+21:00 versioning enabled and then there are
+21:02 
+
+21:02 multiple things over here and
+21:08 
+
+21:08 so so these rules are predefined rule.
+21:11 
+
+21:11 You can also create custom rules I I
+21:13 
+
+21:13 believe. Yeah, you can create custom
+21:15 
+
+21:15 policies but we are using the uh
+21:18 
+
+21:18 predefined rules. Okay, so let me show
+21:20 
+
+21:20 you from where you can get the values of
+21:22 
+
+21:22 those rules. I guess this is the source.
+21:26 
+
+21:26 So we have valid values are AWS custom
+21:29 
+
+21:29 lambda or custom policy right. So AWS
+21:33 
+
+21:33 owner AWS meaning this is uh created by
+21:37 
+
+21:37 AWS. This these are some of the
+21:39 
+
+21:39 predefined rules that you are using
+21:42 
+
+21:42 custom lambda and custom policy you are
+21:44 
+
+21:44 creating it you're customizing it these
+21:47 
+
+21:47 are the manage rules so if you open this
+21:50 
+
+21:50 I believe this will show you all the
+21:51 
+
+21:51 available options list of manage rules
+21:55 
+
+21:55 yeah so these are all the manage rules
+21:57 
+
+21:57 so we are using from these rules so for
+21:60 
+
+22:00 example let's say if you search for here
+22:06 
+
+22:06 um S3 S3 bucket maybe
+22:11 
+
+22:11 S3. No, not this one.
+22:16 
+
+22:16 [snorts]
+22:17 
+
+22:17 Let's check from where did I get it.
+22:23 
+
+22:23 These are manage rules. So not this one.
+22:29 
+
+22:29 Wait, I think predefined identifier from
+22:33 
+
+22:33 where we get this predefined identifier.
+22:37 
+
+22:37 It was source identifier, right? So
+22:39 
+
+22:39 source over here.
+22:47 
+
+22:47 Source details.
+22:60 
+
+22:60 I I don't remember from where did I get
+23:02 
+
+23:02 these values.
+23:04 
+
+23:04 uh but I believe it will be from some of
+23:08 
+
+23:08 the documentation
+23:10 
+
+23:10 um it's not here list of manage rules
+23:13 
+
+23:13 it's not here
+23:27 
+
+23:27 um what was the name S3 okay I think the
+23:32 
+
+23:32 name is different for example if If I
+23:34 
+
+23:34 select this. Yeah. So the identifier.
+23:38 
+
+23:38 Okay. Okay. I got it now. So if I search
+23:41 
+
+23:41 S3
+23:44 
+
+23:44 bucket
+23:47 
+
+23:47 uh public right prohibited public
+23:52 
+
+23:52 access prohibited and public right
+23:55 
+
+23:55 prohibited. Okay. So this is over here
+23:58 
+
+23:58 and inside that there'll be an
+24:01 
+
+24:01 identifier in capital letters and
+24:03 
+
+24:03 instead of hyphen there'll be
+24:05 
+
+24:05 underscore. Okay. So this is what we
+24:07 
+
+24:07 have used over here. This the source
+24:09 
+
+24:09 identifier.
+24:11 
+
+24:11 Okay. So this source identifier will
+24:14 
+
+24:14 ensure that uh public right will be
+24:17 
+
+24:17 prohibited and there are as you can see
+24:19 
+
+24:19 hundreds and hundreds of these uh
+24:21 
+
+24:21 identifiers that you can use from. The
+24:24 
+
+24:24 next is ensure S3 bucket have encryption
+24:26 
+
+24:26 enabled. Again for that we have this
+24:29 
+
+24:29 identifier serverside encryption
+24:31 
+
+24:31 enabled.
+24:33 
+
+24:33 Then we are ensuring that S3 bucket
+24:35 
+
+24:35 block public access.
+24:38 
+
+24:38 So we are using S3 bucket public read
+24:40 
+
+24:40 prohibited. So we are blocking public
+24:42 
+
+24:42 read and write both.
+24:45 
+
+24:45 Now the next config rule is ensure EBS
+24:48 
+
+24:48 volumes are encrypted. So it will check
+24:51 
+
+24:51 that with the encrypted volume
+24:53 
+
+24:53 identifier. It will check if it has
+24:55 
+
+24:55 required tags or not. Now with required
+24:58 
+
+24:58 tags we have to provide the input
+24:59 
+
+24:59 parameter what tag it should look for.
+25:01 
+
+25:01 Right? So we need to provide tag one key
+25:04 
+
+25:04 value, tag two key value, right? So
+25:07 
+
+25:07 resources should have these two tags.
+25:08 
+
+25:08 That's what we are saying.
+25:11 
+
+25:11 And scope is uh instance and S3 bucket.
+25:14 
+
+25:14 So these two resources should be in the
+25:17 
+
+25:17 scope.
+25:18 
+
+25:18 Okay. And then we are also ensuring the
+25:21 
+
+25:21 root account has MFA enabled. So owner
+25:24 
+
+25:24 again AWS root account and MFA enabled
+25:27 
+
+25:27 and so on. Right? So these are all the
+25:30 
+
+25:30 main resources that we are creating. And
+25:34 
+
+25:34 uh yeah in variable I guess we only have
+25:36 
+
+25:36 AWS region and project name. That's it.
+25:40 
+
+25:40 So let's go ahead and let's execute the
+25:44 
+
+25:44 TF commands. So TF in it.
+25:48 
+
+25:48 All right. And TF plan.
+25:54 
+
+25:54 So let's check all the resources. Okay.
+25:56 
+
+25:56 It says 23 resources to be created.
+25:59 
+
+25:59 Let's apply. TF apply
+26:02 
+
+26:02 auto approve.
+26:13 
+
+26:13 Okay. I'm just going to pause the
+26:14 
+
+26:14 recording while it's doing its work.
+26:16 
+
+26:16 Okay, so it has been completed. All the
+26:19 
+
+26:19 resource has been applied. Now let's go
+26:21 
+
+26:21 and verify and then we can test as well.
+26:25 
+
+26:25 So I'm going to go to my AWS console and
+26:28 
+
+26:28 no not user.
+26:42 
+
+26:42 Okay. So let's go ahead and check the S3
+26:45 
+
+26:45 bucket first. So we created three type
+26:46 
+
+26:46 of resources. So S3 bucket S3 bucket for
+26:50 
+
+26:50 the config. So the name should be uh
+26:56 
+
+26:56 over here. Okay. Terapform governance
+26:58 
+
+26:58 demo config bucket and at the end there
+27:00 
+
+27:00 is a random string uh and that it has a
+27:03 
+
+27:03 folder of AWS logs uh with the config
+27:08 
+
+27:08 rules and everything. Right? So now
+27:11 
+
+27:11 let's go back over here and let's check
+27:13 
+
+27:13 the properties. If you check the
+27:15 
+
+27:15 properties, it will show you bucket
+27:17 
+
+27:17 versioning is enabled.
+27:20 
+
+27:20 Okay. And it has tags that we have
+27:23 
+
+27:23 created. And the default encryption is
+27:26 
+
+27:26 serverside encryption with S3 managed
+27:30 
+
+27:30 keys. And it should be bucket keys
+27:34 
+
+27:34 disabled because we used AES uh
+27:36 
+
+27:36 encryption.
+27:38 
+
+27:38 And
+27:39 
+
+27:39 yeah, I believe these were the all the
+27:42 
+
+27:42 things that we did for the S3 bucket.
+27:45 
+
+27:45 Now let's check the next uh resource
+27:47 
+
+27:47 which is IM policy.
+27:54 
+
+27:54 Okay. And policies over here
+27:58 
+
+27:58 let's filter it from customer managed.
+28:02 
+
+28:02 So these are the res uh policies that we
+28:05 
+
+28:05 have created. So these three policies uh
+28:08 
+
+28:08 MFA delete policy if the user does not
+28:11 
+
+28:11 have MFA enabled it should not be able
+28:13 
+
+28:13 to delete any resource and it has been
+28:16 
+
+28:16 applied. Then we have demo required tags
+28:21 
+
+28:21 S3 encryption in transit right and then
+28:25 
+
+28:25 we have finally we created the config
+28:28 
+
+28:28 rules. So AWS config
+28:32 
+
+28:32 inside AWS config will be having rules
+28:35 
+
+28:35 and it will also show you the compliance
+28:38 
+
+28:38 dashboard. So if you go over here and it
+28:42 
+
+28:42 will show you how many resources are
+28:44 
+
+28:44 compliant and how many resources are
+28:46 
+
+28:46 non-compliant. For example, it is
+28:48 
+
+28:48 showing that required tag. So there is
+28:50 
+
+28:50 one required tag that it should have
+28:52 
+
+28:52 that particular tag, right? So it is
+28:54 
+
+28:54 showing that one resource is not
+28:56 
+
+28:56 compliant. If we want to go and check
+28:57 
+
+28:57 that resource what that resource is that
+28:60 
+
+28:60 is the S3 bucket. So there is this uh
+29:03 
+
+29:03 demo bucket that we have created. It's
+29:05 
+
+29:05 non-compliant because it does not have
+29:07 
+
+29:07 that particular tag that it should have.
+29:10 
+
+29:10 Okay. So that's one. And the four
+29:13 
+
+29:13 compliant rules are like the rest of the
+29:16 
+
+29:16 rules. My root account has MFA enabled.
+29:18 
+
+29:18 That is why it is showing as compliant.
+29:20 
+
+29:20 S3 bucket that we have created has
+29:22 
+
+29:22 public read and write prohibited and
+29:25 
+
+29:25 serverside encryption is enabled for
+29:27 
+
+29:27 that. So all of these are compliant. Now
+29:29 
+
+29:29 let's try to force an uncompliant
+29:32 
+
+29:32 resource. Okay. So over here with the
+29:35 
+
+29:35 AWS CLI I'm going to create a new bucket
+29:39 
+
+29:39 object. So AWS oh I'm going to create a
+29:42 
+
+29:42 new bucket. So AWS S3
+29:45 
+
+29:45 uh MB. So this is the CLI command for
+29:47 
+
+29:47 that. and then s3 colon name of the
+29:50 
+
+29:50 bucket. So let's say test valation
+29:54 
+
+29:54 and let's add a random string. So I'm
+29:56 
+
+29:56 just going to add the date
+30:01 
+
+30:01 plus percentage s to it. Okay. So now
+30:06 
+
+30:06 what are we doing? We are creating a
+30:08 
+
+30:08 bucket without the serverside
+30:10 
+
+30:10 encryption. We have not provided the
+30:12 
+
+30:12 details for serverside encryption.
+30:14 
+
+30:14 Right? Okay. It says the bucket has been
+30:16 
+
+30:16 created. Now we need to wait for a few
+30:19 
+
+30:19 minutes before the violation is
+30:21 
+
+30:21 detected. Currently if we go over here
+30:24 
+
+30:24 in the dashboard uh it is not showing
+30:27 
+
+30:27 that resource that we have created.
+30:28 
+
+30:28 Right. So I'm just going to pause the
+30:30 
+
+30:30 recording for a few minute and then
+30:31 
+
+30:31 we'll see. Okay. So I have waited for
+30:33 
+
+30:33 like 2 minutes probably and now I can
+30:37 
+
+30:37 see two non-compliant resources. So if
+30:39 
+
+30:39 you click on that it says the bucket
+30:42 
+
+30:42 that we have just created is
+30:44 
+
+30:44 non-compliant. And if you click on that
+30:46 
+
+30:46 says why it is not uh uncompliant. Let's
+30:50 
+
+30:50 go ahead and check. It says the resource
+30:54 
+
+30:54 name is this
+30:57 
+
+30:57 view configuration item. over here. It
+30:60 
+
+30:60 says,
+31:03 
+
+31:03 let's see.
+31:14 
+
+31:14 Okay, required tags. Okay, sorry. The
+31:17 
+
+31:17 server side encryption is enabled by
+31:20 
+
+31:20 default and it is showing over here as
+31:22 
+
+31:22 well. Even with the CLI command, it is
+31:25 
+
+31:25 enabled. So that is why it is not
+31:27 
+
+31:27 throwing the compliant error for this
+31:29 
+
+31:29 thing but it did not have the required
+31:32 
+
+31:32 tags and that is why it is showing
+31:34 
+
+31:34 non-compliant. It ran the config rules
+31:37 
+
+31:37 against the resource for all the rules,
+31:39 
+
+31:39 right? Uh it checked for all the
+31:41 
+
+31:41 available rules for S3 related rules and
+31:44 
+
+31:44 it found that three were compliant and
+31:47 
+
+31:47 one was non-compliant and that is why it
+31:49 
+
+31:49 has thrown the error for. Now uh let's
+31:53 
+
+31:53 do one more thing. Let's check for one
+31:55 
+
+31:55 more config. Okay.
+31:59 
+
+31:59 So we have
+32:02 
+
+32:02 root account MFA enabled S3 bucket read
+32:05 
+
+32:05 prohibited server side encryption
+32:07 
+
+32:07 enabled uh encrypted volume there is no
+32:11 
+
+32:11 volume currently actually not not with
+32:13 
+
+32:13 the config because we config we have
+32:15 
+
+32:15 already seen let's check with the IM
+32:17 
+
+32:17 policy so we have uh this IM policy
+32:24 
+
+32:24 over here and
+32:26 
+
+32:26 what are the policies that we have Let's
+32:29 
+
+32:29 filter it by customer managed and we
+32:32 
+
+32:32 have MFA delete. So this user that I
+32:35 
+
+32:35 have logged in with it's it does not
+32:36 
+
+32:36 have MFA enabled. So if I try to delete
+32:39 
+
+32:39 anything from this and what all
+32:42 
+
+32:42 resources are in scope for this uh I
+32:45 
+
+32:45 believe uh S3 bucket only. So I should
+32:48 
+
+32:48 be denied S3 delete access right. So
+32:52 
+
+32:52 let's go back on S3 bucket and let's try
+32:56 
+
+32:56 to delete the bucket that I have just
+32:58 
+
+32:58 created which is this one. Okay. And
+33:03 
+
+33:03 first we need to empty the bucket.
+33:07 
+
+33:07 So let's permanently delete all the
+33:10 
+
+33:10 objects inside the bucket. Okay, it
+33:13 
+
+33:13 deleted the object. Now let's go back
+33:17 
+
+33:17 over here and let's delete
+33:21 
+
+33:21 provide the bucket name over here.
+33:25 
+
+33:25 Okay, now it says deleted the bucket. So
+33:29 
+
+33:29 why did it let me delete the bucket? Now
+33:32 
+
+33:32 I want you to let me know in the
+33:34 
+
+33:34 comments below why it let me delete the
+33:37 
+
+33:37 bucket when I have an IM policy created
+33:40 
+
+33:40 already. For this I had the IM policy I
+33:43 
+
+33:43 have shown you I have created with you
+33:45 
+
+33:45 which explicitly says if the MFA is not
+33:50 
+
+33:50 enabled for any particular user that
+33:53 
+
+33:53 access should be denied and if you can
+33:55 
+
+33:55 check uh this is my IM user from which I
+33:58 
+
+33:58 have logged in which is DevOps a user
+34:01 
+
+34:01 and this user click on the user and um
+34:08 
+
+34:08 let's see It's uh you see enabled
+34:12 
+
+34:12 without MFA. MFA is not enabled for this
+34:16 
+
+34:16 user. So this should have been
+34:18 
+
+34:18 restricted. It shouldn't have allowed me
+34:20 
+
+34:20 to delete the bucket. But still it did.
+34:23 
+
+34:23 Why did it happen? Now let me know in
+34:25 
+
+34:25 the comment section and let's see if you
+34:27 
+
+34:27 have understood it or not. Okay. So you
+34:29 
+
+34:29 can verify it from there as well. Uh the
+34:32 
+
+34:32 policy
+34:34 
+
+34:34 uh attach
+34:36 
+
+34:36 not this one.
+34:42 
+
+34:42 Um here right delete object. It says S3
+34:46 
+
+34:46 delete object is the action.
+34:48 
+
+34:48 Multiffactor authentication present
+34:50 
+
+34:50 should be false and the action is deny.
+34:53 
+
+34:53 But then why did it let me delete the
+34:56 
+
+34:56 object. Okay. Okay. That's it for this
+34:58 
+
+34:58 video. I hope you found it helpful. I
+35:00 
+
+35:00 hope you found it valuable and make sure
+35:03 
+
+35:03 to delete the resources before closing
+35:05 
+
+35:05 this session. I will see you tomorrow
+35:07 
+
+35:07 with the next video which will be day 22
+35:09 
+
+35:09 video. This was day 21 and we'll be
+35:12 
+
+35:12 doing more realtime projects. We'll be
+35:14 
+
+35:14 doing more hands-on and more interesting
+35:16 
+
+35:16 stuff. So that's it. Happy learning.
+35:19 
+
+35:19 Keep sharing. Keep commenting. Keep
+35:22 
+
+35:22 giving the support and keep learning.
+35:24 
+
+35:24 Have a good day. Have a good night and I
+35:26 
+
+35:26 will see you tomorrow.

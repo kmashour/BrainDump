@@ -1,0 +1,3067 @@
+00:00 Hello and welcome back to the channel.
+00:02 
+
+00:02 My name is Push. This is day seven in 30
+00:04 
+
+00:04 days of AWS Terraform. And this video
+00:07 
+
+00:07 we'll be looking into very important
+00:08 
+
+00:08 concept which is type constraints in
+00:10 
+
+00:10 terraform. And we'll be looking into all
+00:13 
+
+00:13 those type constraint that we have with
+00:15 
+
+00:15 the help of examples with the help of an
+00:18 
+
+00:18 end toend demo. So let's get started
+00:20 
+
+00:20 with it. Okay. So let's understand all
+00:23 
+
+00:23 the type of variables that we'll be
+00:25 
+
+00:25 covering in this video. So we have two
+00:27 
+
+00:27 type of variables on like at the broader
+00:30 
+
+00:30 level. One is based on purpose and based
+00:32 
+
+00:32 on values. So based on purpose we have
+00:34 
+
+00:34 already covered. So we have input
+00:35 
+
+00:35 variable, output variables and local
+00:37 
+
+00:37 variables. But then we have based on
+00:40 
+
+00:40 value and these are also called type
+00:42 
+
+00:42 constraint meaning the type of value
+00:46 
+
+00:46 that we store in a variable. It defines
+00:49 
+
+00:49 the type of variable it is. So we have
+00:51 
+
+00:51 two major categorization of this. One is
+00:55 
+
+00:55 primitive and another one is complex.
+00:58 
+
+00:58 Primitives are the simple
+00:59 
+
+00:59 straightforward that you have been using
+01:01 
+
+01:01 all the time. So string number and
+01:04 
+
+01:04 boolean string such as let's say an
+01:07 
+
+01:07 example of string which is let's call it
+01:10 
+
+01:10 name
+01:12 
+
+01:12 and p. Okay. Uh let me just increase the
+01:15 
+
+01:15 font size over here. Okay. So name equal
+01:19 
+
+01:19 to p. This is an example of a string.
+01:22 
+
+01:22 String could also have spaces. So
+01:24 
+
+01:24 instead of name we can have full
+01:26 
+
+01:26 underscore name is equal to p space
+01:31 
+
+01:31 sucha but how would it take the value we
+01:34 
+
+01:34 have to enclose the value in double
+01:35 
+
+01:35 quotes and that double quotes represent
+01:39 
+
+01:39 that value is a string okay so this is
+01:42 
+
+01:42 how we initialize the value of a string
+01:45 
+
+01:45 variable now we also have number okay so
+01:50 
+
+01:50 number is something let's say age so you
+01:52 
+
+01:52 can just enter the age age is 35
+01:55 
+
+01:55 something you know so uh that's of type
+01:60 
+
+01:60 number and then we have boolean or bool
+02:03 
+
+02:03 so bool is something which is either
+02:05 
+
+02:05 true or false so let's say is adult
+02:11 
+
+02:11 okay and the value is yes
+02:14 
+
+02:14 okay something like that
+02:18 
+
+02:18 so here are two example of strings this
+02:22 
+
+02:22 is number and this is bool. So this is
+02:25 
+
+02:25 all primitive type. Now we have complex
+02:27 
+
+02:27 type. Complex type if I explain it right
+02:30 
+
+02:30 now uh you will get confused. So it's
+02:32 
+
+02:32 better if we explain it while doing the
+02:34 
+
+02:34 demo. But just understand like complex
+02:38 
+
+02:38 will have multiple values. So over here
+02:40 
+
+02:40 we are storing one value in the variable
+02:42 
+
+02:42 but in all the complex type we'll have
+02:45 
+
+02:45 multiple values and each of these have a
+02:48 
+
+02:48 separate purpose. Like list will be used
+02:51 
+
+02:51 in certain cases. Set will be used in
+02:52 
+
+02:52 certain cases. Map, object, tpple,
+02:55 
+
+02:55 everything will be used in certain
+02:56 
+
+02:56 cases. And then we have special type of
+02:58 
+
+02:58 variable which is null. Null meaning we
+03:01 
+
+03:01 can store null values as well. That
+03:04 
+
+03:04 means the variable value can be null
+03:07 
+
+03:07 that could be empty. Right? Something
+03:10 
+
+03:10 that we don't store. It just reserved
+03:12 
+
+03:12 the space in the memory but it does not
+03:14 
+
+03:14 have any value. I mean we'll possibly
+03:16 
+
+03:16 look into example later on like the
+03:18 
+
+03:18 example of null and then if we don't set
+03:22 
+
+03:22 anything it would take the data type as
+03:25 
+
+03:25 any. Okay. So we'll be doing a demo now
+03:29 
+
+03:29 of all of these data types. So stay with
+03:32 
+
+03:32 me and at the end of this video you will
+03:34 
+
+03:34 understand each and every variables that
+03:38 
+
+03:38 we have each and every type constraints
+03:40 
+
+03:40 whatever you want to call it. So but
+03:42 
+
+03:42 just stay till the end. It could be a
+03:44 
+
+03:44 long video but just have some patience
+03:46 
+
+03:46 because I will be making some mistakes
+03:51 
+
+03:51 so that I will make you understand what
+03:54 
+
+03:54 could happen if we specify something
+03:56 
+
+03:56 that is not intended. Okay. So uh we'll
+03:59 
+
+03:59 be doing that. Uh so let's start with
+04:02 
+
+04:02 the demo. Okay. So here's my VS code and
+04:07 
+
+04:07 I believe this is visible. Now what I'm
+04:09 
+
+04:09 going to do is I'm going to make a copy
+04:10 
+
+04:10 of day six folder so that we can make
+04:12 
+
+04:12 the changes in that. I hope you have
+04:14 
+
+04:14 been following this series from the
+04:16 
+
+04:16 sequence from day zero. In the day zero
+04:19 
+
+04:19 I have shared the details about 30 days
+04:22 
+
+04:22 of AWS Terraform challenge. How to do
+04:24 
+
+04:24 the submission, how to participate in
+04:26 
+
+04:26 challenge and so on and I have shared
+04:28 
+
+04:28 more details about it. uh if you have
+04:30 
+
+04:30 not watched it go ahead watch that video
+04:33 
+
+04:33 and then come back to this or I would
+04:35 
+
+04:35 prefer and I would recommend watching
+04:38 
+
+04:38 the series in the same sequence so that
+04:40 
+
+04:40 you don't miss any concept okay if you
+04:43 
+
+04:43 have done that then it's well and good
+04:45 
+
+04:45 let's follow ahead u so what I'm going
+04:49 
+
+04:49 to do is I'm going to Oops
+04:53 
+
+04:53 why
+04:55 
+
+04:55 I'm getting okay
+04:58 
+
+04:58 let's go ahead in this folder. I'm just
+05:01 
+
+05:01 going to go in this folder over here.
+05:05 
+
+05:05 This is day four, day three.
+05:09 
+
+05:09 Okay, let's go over here. Open in
+05:12 
+
+05:12 terminal.
+05:14 
+
+05:14 Okay. Um,
+05:23 
+
+05:23 okay. Now what I'm going to do is I'm
+05:26 
+
+05:26 going to make a copy of this folder
+05:29 
+
+05:29 which is day 06
+05:32 
+
+05:32 and I'm going to
+05:35 
+
+05:35 make it day 07.
+05:38 
+
+05:38 All right, it's done. Now we have a
+05:41 
+
+05:41 folder called day07 with all the files
+05:43 
+
+05:43 and we will be making all the changes in
+05:46 
+
+05:46 this day 7 folder file. Okay, so let me
+05:49 
+
+05:49 first uh close all the files over here.
+05:54 
+
+05:54 so that I accidentally don't make any
+05:56 
+
+05:56 changes in any other folder. Okay. Now
+05:58 
+
+05:58 we are in day seven which is over here.
+06:00 
+
+06:00 Let's go to main.tf.
+06:03 
+
+06:03 Okay. So we'll be looking into all those
+06:05 
+
+06:05 type constraint one by one. So let's
+06:07 
+
+06:07 start with the first one which is
+06:10 
+
+06:10 number. Okay. So in number let's remove
+06:14 
+
+06:14 this S3 bucket
+06:17 
+
+06:17 and let's remove this VPC as well. We'll
+06:19 
+
+06:19 just start with basic. We'll start with
+06:22 
+
+06:22 AWS instance and we'll create some
+06:25 
+
+06:25 security group rules in in this as well.
+06:27 
+
+06:27 Okay. So over here do we have any number
+06:31 
+
+06:31 that we have used? No. So let's go back
+06:33 
+
+06:33 to the Terraform documentation over here
+06:36 
+
+06:36 and this is for AWS instance and let's
+06:41 
+
+06:41 go
+06:42 
+
+06:42 down and see if we can add okay first
+06:47 
+
+06:47 let's add over here. um let's say in AWS
+06:52 
+
+06:52 instance we have these two that we can
+06:54 
+
+06:54 use okay and we we'll look for more
+06:60 
+
+06:60 okay and let's see so basically we are
+07:04 
+
+07:04 looking for any data type that is of
+07:06 
+
+07:06 type number so that I can try fit that
+07:10 
+
+07:10 in the terapform file itself okay so
+07:17 
+
+07:17 okay so let's do one Over
+07:21 
+
+07:21 here we can add one um value which is
+07:27 
+
+07:27 count.
+07:28 
+
+07:28 Okay, count is optional and you can add
+07:31 
+
+07:31 it in multiple resources. Count is
+07:34 
+
+07:34 basically when we have to iterate it
+07:35 
+
+07:35 through values. So for now we'll just
+07:38 
+
+07:38 keep count as one. Okay. So we have kept
+07:43 
+
+07:43 count as one and let's just try to run
+07:47 
+
+07:47 terraform in it.
+07:49 
+
+07:49 Let me set the alias as well.
+07:52 
+
+07:52 Alias TF is equal to terraform.
+07:57 
+
+07:57 Okay. And TF in it. Now
+08:02 
+
+08:02 I'm not in correct directory. So let's
+08:04 
+
+08:04 go inside day 07 and run TF in it again.
+08:08 
+
+08:08 Okay. Now it has initialized the back
+08:10 
+
+08:10 end and it should be the remote backend
+08:12 
+
+08:12 because we have our backend.tf file over
+08:14 
+
+08:14 here. So let's quickly check
+08:17 
+
+08:17 initializing the back end
+08:20 
+
+08:20 and it doesn't say anything about that.
+08:23 
+
+08:23 I mean it should be good. So let's run
+08:26 
+
+08:26 TF plan.
+08:30 
+
+08:30 Okay, it says missing resource instance
+08:33 
+
+08:33 key which is AWS instance.example.
+08:37 
+
+08:37 ID.
+08:39 
+
+08:39 Okay, because AWS instance example do id
+08:46 
+
+08:46 because we have not provided the count
+08:50 
+
+08:50 value in the output variable. Okay. So
+08:53 
+
+08:53 if you see the output variable we have
+08:56 
+
+08:56 just specified AWS instance example do
+08:59 
+
+08:59 ID but now that we have specified count
+09:01 
+
+09:01 that means it is expecting multiple
+09:04 
+
+09:04 values. So it should be like count
+09:05 
+
+09:05 index. We have not covered this yet. So
+09:07 
+
+09:07 I'm not going to add it over here.
+09:09 
+
+09:09 Instead, what I'm going to do is remove
+09:11 
+
+09:11 this outputtf
+09:13 
+
+09:13 file. Okay.
+09:15 
+
+09:15 So don't worry if you have some
+09:17 
+
+09:17 confusion. It will be solved later on
+09:19 
+
+09:19 when we cover count.index and all those
+09:21 
+
+09:21 meta arguments. It's not covered in this
+09:23 
+
+09:23 video. That's why I have removed output.
+09:26 
+
+09:26 I'll be keeping things simple. Okay? And
+09:28 
+
+09:28 we'll go step by step like how I
+09:31 
+
+09:31 promised earlier. Okay? So now let's run
+09:33 
+
+09:33 TF plan again.
+09:38 
+
+09:38 Okay, now it says one plan to add and
+09:40 
+
+09:40 here are all the details. Count equal to
+09:44 
+
+09:44 one because we are creating one
+09:45 
+
+09:45 instance. When we had to create multiple
+09:48 
+
+09:48 instances of the same values, we can add
+09:51 
+
+09:51 count equal to two and we can iterate it
+09:53 
+
+09:53 through values. I I'll show you later on
+09:55 
+
+09:55 how do we do that. But for now, this is
+09:58 
+
+09:58 what we are doing. And now as we have
+10:01 
+
+10:01 seen we have initialize count equal to
+10:03 
+
+10:03 one. So what we can do instead of this
+10:06 
+
+10:06 we can create a variable. Let's go
+10:09 
+
+10:09 inside
+10:10 
+
+10:10 variables.tf.
+10:14 
+
+10:14 Okay. And over here let's
+10:17 
+
+10:17 declare a variable and instance count.
+10:22 
+
+10:22 Okay.
+10:23 
+
+10:23 Type equal to number. Even if you don't
+10:26 
+
+10:26 specify the type, it will automatically
+10:30 
+
+10:30 create a type with any. That means you
+10:33 
+
+10:33 can provide any values and whatever
+10:35 
+
+10:35 value you provide it will select the
+10:37 
+
+10:37 type of that variable. But you can
+10:40 
+
+10:40 specify the type and default equal to
+10:42 
+
+10:42 one. You can do that or
+10:45 
+
+10:45 what you can do is remove it from here
+10:47 
+
+10:47 and specify that in terapform.tfar
+10:50 
+
+10:50 file. Okay. So you can also mention it
+10:54 
+
+10:54 over here. Let's add it one. Now in your
+10:58 
+
+10:58 main.tf tf instead of count equal to 1
+11:00 
+
+11:00 you can do bar dot instance count okay
+11:05 
+
+11:05 so that's how you can create a variable
+11:09 
+
+11:09 and you can use a variable now we have
+11:11 
+
+11:11 used a variable of type number because
+11:15 
+
+11:15 count is expecting number format like
+11:18 
+
+11:18 not in abcd alpha numeric format or any
+11:22 
+
+11:22 other format count is expecting a number
+11:24 
+
+11:24 format so that's what we have specified
+11:27 
+
+11:27 in the variable able type. So variable
+11:29 
+
+11:29 it has multiple other fields but
+11:32 
+
+11:32 important fields are description and
+11:34 
+
+11:34 type. Okay. So uh we have specified
+11:37 
+
+11:37 instance count as number. So that was
+11:39 
+
+11:39 the first type constraint. Okay. The
+11:42 
+
+11:42 second one is string. String is again a
+11:45 
+
+11:45 common one. So let's see what string we
+11:48 
+
+11:48 can use. Maybe let's add one more tag
+11:52 
+
+11:52 over here and let's call it or yeah so
+11:58 
+
+11:58 for string let's do one thing uh so we
+12:01 
+
+12:01 already have this region right region v
+12:03 
+
+12:03 dot region which we have created the
+12:06 
+
+12:06 variable earlier so go to variables tf
+12:10 
+
+12:10 search for region and if we select the
+12:13 
+
+12:13 type as string that would just do it
+12:18 
+
+12:18 right so this is of type string. We can
+12:20 
+
+12:20 have multiple other like this is also a
+12:22 
+
+12:22 string. This is also a string. You can
+12:24 
+
+12:24 set the type string over here as well.
+12:27 
+
+12:27 And channel name. I don't think we are
+12:29 
+
+12:29 using it anymore because we are not
+12:30 
+
+12:30 using the S3 bucket. It was for the S3
+12:33 
+
+12:33 bucket. So let's remove this. Right? So
+12:36 
+
+12:36 we have now two string um and
+12:40 
+
+12:40 one number. It is throwing error
+12:42 
+
+12:42 locals.tf because it might have the
+12:45 
+
+12:45 reference of that channel name right
+12:47 
+
+12:47 over here. You see? So we can remove
+12:50 
+
+12:50 this local as well. We don't have the
+12:52 
+
+12:52 bucket anymore. Okay. Now if we
+12:57 
+
+12:57 run the TF plan again, it should not
+12:59 
+
+12:59 make any changes because we have not
+13:01 
+
+13:01 added more resources. We have just
+13:03 
+
+13:03 provided the variable type. Okay. So
+13:06 
+
+13:06 it's basically showing the same thing.
+13:09 
+
+13:09 Now the third type constraint is
+13:11 
+
+13:11 boolean. Okay. Boolean or bool. boolean
+13:14 
+
+13:14 which returns either true or false.
+13:20 
+
+13:20 Okay. So what do we mean by that? It
+13:23 
+
+13:23 checks a statement. If it is true then
+13:25 
+
+13:25 it returns true. If it is false then it
+13:27 
+
+13:27 returns false. I I will explain it to
+13:29 
+
+13:29 you what will happen. Okay. So we don't
+13:33 
+
+13:33 have any boolean data type over here.
+13:35 
+
+13:35 Let's go back to the Terraform
+13:37 
+
+13:37 documentation and maybe
+13:40 
+
+13:40 over here in the argument section
+13:45 
+
+13:45 search for monitoring maybe we'll we'll
+13:48 
+
+13:48 check if the monitoring uh enablement
+13:51 
+
+13:51 required or not. So we'll check a couple
+13:54 
+
+13:54 of uh arguments over here which is
+13:57 
+
+13:57 monitoring. Okay. So monitoring is of
+13:59 
+
+13:59 type boolean as if you know you can see
+14:02 
+
+14:02 over here it says if true the launch EC2
+14:05 
+
+14:05 instance will have detailed monitoring
+14:07 
+
+14:07 enabled. So if true that means it's of a
+14:10 
+
+14:10 type boolean. If you want to confirm you
+14:13 
+
+14:13 can click on that and I mean it doesn't
+14:15 
+
+14:15 have any further field. So that's fine.
+14:17 
+
+14:17 But yeah so this should be boolean. So
+14:20 
+
+14:20 let's add this monitoring
+14:23 
+
+14:23 and um let's add one more which is
+14:29 
+
+14:29 associate public IP where it is
+14:35 
+
+14:35 let me just search it
+14:38 
+
+14:38 associate
+14:42 
+
+14:42 public IP address. Okay because this is
+14:45 
+
+14:45 asking a question whether to associate a
+14:47 
+
+14:47 public IP within instance in a VPC.
+14:50 
+
+14:50 Whenever there is a question that means
+14:51 
+
+14:51 it is expecting either true or false
+14:53 
+
+14:53 right so that's why this is also boolean
+14:56 
+
+14:56 so let's add these two fields in our EC2
+14:60 
+
+14:60 instance
+15:01 
+
+15:01 okay so the first is monitoring okay and
+15:06 
+
+15:06 when you type monitoring it will also
+15:08 
+
+15:08 show you the type you know uh if you
+15:11 
+
+15:11 have that uh GitHub copilot enabled it
+15:14 
+
+15:14 will show you the type of value it is
+15:15 
+
+15:15 expecting so let's say true and assoc
+15:19 
+
+15:19 Associate public IP and if you see this
+15:21 
+
+15:21 is also highlighting optional and data
+15:24 
+
+15:24 type is boolean over here right so
+15:27 
+
+15:27 associate public IP address is equal to
+15:30 
+
+15:30 true now instead of hard- coding value
+15:32 
+
+15:32 over here because we are using variables
+15:35 
+
+15:35 to simplify the things to make the code
+15:38 
+
+15:38 manageable let's add it as a variable
+15:42 
+
+15:42 okay so again go to variables
+15:46 
+
+15:46 let's add variable And then the name of
+15:49 
+
+15:49 the variable was monitoring. So
+15:53 
+
+15:53 monitoring enabled default you can add
+15:56 
+
+15:56 it over here if you want. So let's add
+15:57 
+
+15:57 it over here instead of uh TFR. And the
+16:01 
+
+16:01 type is bool. Okay, that means it is
+16:03 
+
+16:03 expecting either true or false. The next
+16:06 
+
+16:06 variable is for um the second thing
+16:09 
+
+16:09 which is associate public IP. So
+16:11 
+
+16:11 associate public IP
+16:14 
+
+16:14 and again type is bool. Okay. default is
+16:18 
+
+16:18 true. So let's add it over here. And
+16:20 
+
+16:20 let's go back to main.tf and instead of
+16:24 
+
+16:24 this we can add v dot monitoring enabled
+16:30 
+
+16:30 and v dot associate public IP. You see
+16:33 
+
+16:33 over here the variable name and type is
+16:37 
+
+16:37 almost similar. I mean you can have it
+16:40 
+
+16:40 same as well if you want but it will
+16:42 
+
+16:42 take the value from the variable.
+16:45 
+
+16:45 So now monitoring will be v do
+16:47 
+
+16:47 monitoring enabled. V dot mononitoring
+16:50 
+
+16:50 enabled which is a variable and the
+16:52 
+
+16:52 value of that variable is true. So
+16:55 
+
+16:55 monitoring will become true. Associate
+16:57 
+
+16:57 public IP address will become true.
+16:59 
+
+16:59 Okay. So now if I run terraform plan
+17:03 
+
+17:03 over here now it should show the plan
+17:07 
+
+17:07 with two additional fields monitoring
+17:09 
+
+17:09 and the public IP enabled. Let's see
+17:12 
+
+17:12 over here.
+17:20 
+
+17:20 Okay, here it is. Monitoring is true
+17:23 
+
+17:23 and associate public IP address is also
+17:26 
+
+17:26 true. Okay, so that was the third type
+17:30 
+
+17:30 constraint which is boolean. Now the
+17:33 
+
+17:33 next type constraint is list. For that
+17:36 
+
+17:36 let's do one thing. Let's add one more
+17:38 
+
+17:38 resource. Let's add security group as
+17:40 
+
+17:40 well. Okay. So let's go to the Terraform
+17:43 
+
+17:43 documentation and search for AWS EC2
+17:46 
+
+17:46 security group over here. If it's not in
+17:49 
+
+17:49 the EC2 section then it will be
+17:53 
+
+17:53 something else. So let's search for
+17:56 
+
+17:56 security group.
+17:58 
+
+17:58 Now it it it is part of VPC resource. So
+18:02 
+
+18:02 let's go over here and
+18:07 
+
+18:07 let's copy the sample
+18:10 
+
+18:10 rule. Okay. So
+18:14 
+
+18:14 security group rule allow TLS. Uh let's
+18:18 
+
+18:18 pick a simple one. Do we have any other?
+18:24 
+
+18:24 Okay, that that is fine. Let's let's
+18:26 
+
+18:26 pick this one. So what it is doing allow
+18:28 
+
+18:28 TLS. It is allowing TLS inbound traffic
+18:31 
+
+18:31 and all outbound traffic. So it is
+18:34 
+
+18:34 allowing uh inbound traffic on port 443
+18:38 
+
+18:38 to port port 443 and also it is allowing
+18:42 
+
+18:42 it for IPv4 and IPv6
+18:45 
+
+18:45 and it is allowing
+18:48 
+
+18:48 egress traffic on all the uh like
+18:52 
+
+18:52 0.0.0.0
+18:54 
+
+18:54 like to everything. Okay. So let's copy
+18:58 
+
+18:58 this and let's go ahead.
+19:01 
+
+19:01 I'm going to paste it over here. Now
+19:04 
+
+19:04 we'll make the changes over here. Okay.
+19:06 
+
+19:06 So we don't have a VPC. So VPC ID will
+19:12 
+
+19:12 be like let's remove this because we
+19:15 
+
+19:15 have not created the VPC. So we want VPC
+19:18 
+
+19:18 to be auto detected. Okay. So let's skip
+19:23 
+
+19:23 this field. If we don't want VPC ID to
+19:26 
+
+19:26 be created from the Terraform like it
+19:28 
+
+19:28 will use the default VPC.
+19:31 
+
+19:31 Okay. Now security group allow TLS. This
+19:33 
+
+19:33 is fine. Tags we'll update it later on.
+19:38 
+
+19:38 Okay. Now security group ID equal to AWS
+19:40 
+
+19:40 security group which is this resource
+19:43 
+
+19:43 over here
+19:45 
+
+19:45 dot allow TLS which is the name dot ID.
+19:49 
+
+19:49 Okay. Because first resource that we
+19:52 
+
+19:52 have created is security group. Then
+19:55 
+
+19:55 we'll be creating security group rules.
+19:57 
+
+19:57 Security group rules itself is a
+19:59 
+
+19:59 separate resource. Okay. So first
+20:02 
+
+20:02 resource is AWS security group ingress
+20:04 
+
+20:04 rule. And then we have egress rule.
+20:07 
+
+20:07 Okay. So ingress rule for IPv4. So this
+20:10 
+
+20:10 is what we have used from port. Now from
+20:14 
+
+20:14 port to port you can again have it as a
+20:17 
+
+20:17 number or I will show you one more
+20:19 
+
+20:19 thing. The same way it is for IPv4 IPv6
+20:24 
+
+20:24 and the same way you have it for egress
+20:28 
+
+20:28 as well.
+20:33 
+
+20:33 Now the C over here we need to make
+20:36 
+
+20:36 changes over here as well because we
+20:37 
+
+20:37 don't have the VPC created. So let's add
+20:41 
+
+20:41 a C block
+20:44 
+
+20:44 and let's add something. Okay. So what
+20:48 
+
+20:48 we can do is we can just keep it blank
+20:50 
+
+20:50 for now. Okay. And let's make the
+20:53 
+
+20:53 changes later. So C ipv6
+20:58 
+
+20:58 actually let's remove the IPv6 rule for
+21:01 
+
+21:01 now.
+21:06 
+
+21:06 And the same way I'm going to remove the
+21:13 
+
+21:13 egress as well for IPv6.
+21:17 
+
+21:17 Okay. Now we have C ipv4
+21:23 
+
+21:23 and
+21:25 
+
+21:25 C ipv4 over here as well. Okay. So let's
+21:30 
+
+21:30 say we have to add multiple C blocks
+21:33 
+
+21:33 over here. Okay. So we are allowing TLS
+21:36 
+
+21:36 from multiple C block. What we can do is
+21:39 
+
+21:39 we can create a new variable. Let's go
+21:42 
+
+21:42 inside variables
+21:44 
+
+21:44 and variable and let's call it um C
+21:49 
+
+21:49 block. And this time I'm not going to
+21:53 
+
+21:53 select one type of variable. Right? What
+21:57 
+
+21:57 I will do is I will select multiple
+21:59 
+
+21:59 blocks. So I will put that inside
+22:02 
+
+22:02 square brackets. Okay. And I will add
+22:06 
+
+22:06 multiple blocks. So for example, one
+22:08 
+
+22:08 that I've added 10.0.0.0/16.
+22:12 
+
+22:12 I can add another one which is
+22:19 
+
+22:19 192.168.0.0/16.
+22:24 
+
+22:24 And I can add another one which is
+22:28 
+
+22:28 172.16.
+22:31 
+
+22:31 Okay. /12. And this we can change it to
+22:37 
+
+22:37 /ash8. Okay. Now this cannot be of type
+22:41 
+
+22:41 string. Why? Because you see it's not a
+22:46 
+
+22:46 single string. Now it is multiple
+22:48 
+
+22:48 strings. It is a combination of multiple
+22:51 
+
+22:51 strings. Right? This is one string comma
+22:55 
+
+22:55 second string comma third string. So
+22:57 
+
+22:57 what it is? It is a list of strings. So
+22:60 
+
+22:60 that means the data type is list. So how
+23:03 
+
+23:03 we can specify the data type? We can
+23:05 
+
+23:05 just write list and in brackets we can
+23:09 
+
+23:09 write string. So this can be a list of
+23:13 
+
+23:13 numbers. This can be a list of string.
+23:16 
+
+23:16 Right? It could have multiple values.
+23:18 
+
+23:18 But the data type has to be same. If it
+23:21 
+
+23:21 is a string then all of the strings
+23:23 
+
+23:23 should be there. If it is a number then
+23:26 
+
+23:26 all of the elements of the list should
+23:28 
+
+23:28 be number. Now how do we access the
+23:31 
+
+23:31 element? So these are different elements
+23:33 
+
+23:33 of the list. Like this is how array
+23:36 
+
+23:36 works as well. But if you don't know
+23:38 
+
+23:38 array so basically list start from the
+23:41 
+
+23:41 zero element. Okay. So let's say there
+23:43 
+
+23:43 are three elements okay over here. Okay.
+23:47 
+
+23:47 So let me just put it
+23:50 
+
+23:50 one in a line. Now if I want to access
+23:53 
+
+23:53 first element then it would be at index
+23:57 
+
+23:57 zero. If I want to access second element
+23:60 
+
+23:60 it would be at index 1 and this would be
+24:03 
+
+24:03 index two.
+24:05 
+
+24:05 So if we have three elements that means
+24:07 
+
+24:07 it will go from 0 1 2. So these are
+24:10 
+
+24:10 three list always start with zero index.
+24:14 
+
+24:14 Okay. I will show you how do we access
+24:16 
+
+24:16 it now. Okay. So that's that's one
+24:19 
+
+24:19 thing. So that's a list of string. If we
+24:22 
+
+24:22 go to main.tf and now we have to provide
+24:24 
+
+24:24 the C ipv4. So what we can do is where
+24:29 
+
+24:29 dot cider block
+24:32 
+
+24:32 okay and let's say if we want to access
+24:35 
+
+24:35 the first element. So what we can do is
+24:37 
+
+24:37 cider rore block and in square brackets
+24:41 
+
+24:41 we can enter the index of the element.
+24:44 
+
+24:44 Index is let's say zero. Zero index will
+24:48 
+
+24:48 be the first element. So if I do that
+24:51 
+
+24:51 and yeah let's keep it the same way and
+24:54 
+
+24:54 if I run TF plan. So let's see the value
+24:58 
+
+24:58 that it will have for the C block. Okay.
+25:01 
+
+25:01 Now it says four plan to add because we
+25:03 
+
+25:03 added one security group and two
+25:05 
+
+25:05 security group rules as well. So three
+25:07 
+
+25:07 additional resources will be created.
+25:10 
+
+25:10 Now let's see the C IPv4 which is
+25:14 
+
+25:14 10.0.0/8.
+25:17 
+
+25:17 And if we go to our variables and if we
+25:20 
+
+25:20 check this this was the first element.
+25:23 
+
+25:23 Okay, because we have selected zero
+25:25 
+
+25:25 element. Now if we go back again and if
+25:30 
+
+25:30 we select instead of zero if we select
+25:34 
+
+25:34 second so it will use the third element.
+25:39 
+
+25:39 Okay, let's check this out. Run TF plan
+25:41 
+
+25:41 again. And what was the third element?
+25:44 
+
+25:44 Let's see. Third element was 1726,
+25:47 
+
+25:47 right? So let's go over here. You see
+25:49 
+
+25:49 170 to 16. And if we want all the
+25:52 
+
+25:52 elements of the list to be included. So
+25:55 
+
+25:55 for that what we need to do is v dot
+25:57 
+
+25:57 cider block and we can just remove this
+26:00 
+
+26:00 or I think we cannot remove it. Let's
+26:04 
+
+26:04 see if we can just add star. Okay. And
+26:07 
+
+26:07 let's run TF plan again.
+26:11 
+
+26:11 Okay, now it is throwing the error
+26:13 
+
+26:13 because it's a list of string. Okay,
+26:17 
+
+26:17 so let's remove this part and
+26:21 
+
+26:21 let's run TF plan again.
+26:24 
+
+26:24 Okay, it is expecting the element. I
+26:28 
+
+26:28 might have made a mistake over here
+26:30 
+
+26:30 because ideally this should have worked.
+26:32 
+
+26:32 Let's go to variables.tf.
+26:35 
+
+26:35 This is list of string and
+26:40 
+
+26:40 these are all the allowed values
+26:44 
+
+26:44 says no declaration found forc
+26:47 
+
+26:47 block.
+26:52 
+
+26:52 Let's go and quickly check the
+26:53 
+
+26:53 documentation what we are doing wrong.
+26:56 
+
+26:56 Okay. So we have
+26:58 
+
+26:58 C IPv4
+27:01 
+
+27:01 and let's check its valid values
+27:05 
+
+27:05 for C IPv4.
+27:11 
+
+27:11 Okay. Um there is like argument is not
+27:14 
+
+27:14 specified because it's part of ingress
+27:16 
+
+27:16 rule. So if we go to
+27:20 
+
+27:20 ingress rule over here.
+27:23 
+
+27:23 Now this is the C ipv4
+27:28 
+
+27:28 and C IPv4 the source IPv4 range I think
+27:33 
+
+27:33 it is expecting just one value one C
+27:37 
+
+27:37 range but if we want to add multiple C
+27:41 
+
+27:41 range so let's see if it has any other I
+27:45 
+
+27:45 think we can add that in security group
+27:47 
+
+27:47 itself
+27:50 
+
+27:50 instead of separate
+27:52 
+
+27:52 ingress and egress rule. If we add one
+27:54 
+
+27:54 security group rule
+27:57 
+
+27:57 like this and specify type equal to
+27:60 
+
+27:60 ingress then we can have C blocks.
+28:04 
+
+28:04 Okay.
+28:08 
+
+28:08 Now C blocks. So yes this C blocks can
+28:13 
+
+28:13 have list of C blocks.
+28:16 
+
+28:16 Okay. So either we can do that. Either
+28:20 
+
+28:20 we can replace that ingress or egress
+28:23 
+
+28:23 rule with just one security group rule
+28:28 
+
+28:28 that has ingress and that has egress.
+28:32 
+
+28:32 Like instead of having different type of
+28:34 
+
+28:34 security group rule, we can have AWS
+28:36 
+
+28:36 security group rule. One of type
+28:38 
+
+28:38 ingress, other of type egress. So we can
+28:41 
+
+28:41 do that or we can just use the existing
+28:45 
+
+28:45 one and instead of specifying the entire
+28:49 
+
+28:49 we can just select the element let's say
+28:52 
+
+28:52 zero.
+28:54 
+
+28:54 Okay. And the same way over here um
+28:57 
+
+28:57 let's keep it the way it is. Now if we
+29:01 
+
+29:01 save this and run the TF plan again it
+29:05 
+
+29:05 should resolve the issue. I hope you
+29:07 
+
+29:07 understood uh what we have done. Um so
+29:11 
+
+29:11 now it is taking the zero element
+29:14 
+
+29:14 because this particular value should be
+29:17 
+
+29:17 of type string and it it is not
+29:21 
+
+29:21 expecting you see over here it says
+29:23 
+
+29:23 string it is not expecting a list right
+29:27 
+
+29:27 if you want to use a list you have to
+29:29 
+
+29:29 use a different resource type which is
+29:30 
+
+29:30 AWS VPC security group rule instead of
+29:34 
+
+29:34 ingress rule okay now we can use one
+29:38 
+
+29:38 more um list over here to showcase.
+29:41 
+
+29:41 Let's see where we can use it. Okay,
+29:43 
+
+29:43 let's say instance type. If we don't
+29:45 
+
+29:45 want to uh specify T2 micro over here,
+29:49 
+
+29:49 right? So, what we can do is we can
+29:52 
+
+29:52 create one more variable and let's call
+29:54 
+
+29:54 it variable
+29:57 
+
+29:57 allowed
+29:59 
+
+29:59 VM.
+30:00 
+
+30:00 Okay. So list of allowed VM or allowed
+30:04 
+
+30:04 uh what we can do is allowed VM type.
+30:09 
+
+30:09 Okay, this is more realistic. Okay, now
+30:12 
+
+30:12 we can have this allowed VM type
+30:15 
+
+30:15 variable created again of type list of
+30:19 
+
+30:19 string and we can add some values over
+30:22 
+
+30:22 here. So T2 micro, T3 uh T2 small, T3
+30:25 
+
+30:25 micro, T t3 small and so on. Right now
+30:28 
+
+30:28 in our main.tf TF instead of hard coding
+30:31 
+
+30:31 the value again what we can do is where
+30:34 
+
+30:34 dot allowed
+30:38 
+
+30:38 VM types and we can specify the index
+30:41 
+
+30:41 let's say first now if we do that and
+30:47 
+
+30:47 run TF plan again the variables.tf TF
+30:50 
+
+30:50 has first element as in this is zero and
+30:54 
+
+30:54 this is first. So it should create T2
+30:57 
+
+30:57 small. So let's see the type of VM that
+31:00 
+
+31:00 it will create.
+31:09 
+
+31:09 It should be in VM
+31:14 
+
+31:14 which is
+31:19 
+
+31:19 should be up over here t2 small instance
+31:21 
+
+31:21 type is t2 small which is zero and first
+31:25 
+
+31:25 so first index second element okay so
+31:30 
+
+31:30 that was list now list important thing
+31:33 
+
+31:33 to remember is okay maybe I'll I'll
+31:35 
+
+31:35 explain one more variable type and then
+31:37 
+
+31:37 I'll tell you one more thing about list
+31:40 
+
+31:40 okay now you see we have val region what
+31:44 
+
+31:44 if we want to create similar uh list
+31:47 
+
+31:47 like allowed VM types and so on. Right?
+31:51 
+
+31:51 So what we can do is we can create one
+31:54 
+
+31:54 more variables.tf
+31:59 
+
+31:59 variable allowed region.
+32:04 
+
+32:04 Okay. Why did I use the uppercase? Let's
+32:07 
+
+32:07 keep the consistent formatting. Allowed
+32:10 
+
+32:10 region. Okay. And in the allowed region
+32:14 
+
+32:14 now instead of list what we can do is we
+32:18 
+
+32:18 can create this of data type set of
+32:21 
+
+32:21 list. Now there is a difference between
+32:24 
+
+32:24 set and list. Okay. Now with set
+32:28 
+
+32:28 duplicates are not allowed. So over here
+32:31 
+
+32:31 you cannot add duplicate. Even if you
+32:33 
+
+32:33 add duplicate it will remove
+32:35 
+
+32:35 automatically.
+32:37 
+
+32:37 So let's let's try to add a duplicate
+32:39 
+
+32:39 string over here.
+32:42 
+
+32:42 Okay. So I have added the duplicate
+32:44 
+
+32:44 string. So now 0 1 2 3. Okay. So we have
+32:49 
+
+32:49 four element but again start with from
+32:51 
+
+32:51 zero. And let's go back to main.tf
+32:56 
+
+32:56 and instead of v dot region we can just
+32:59 
+
+32:59 write allowed regions.
+33:03 
+
+33:03 And let's add zeroth element. Now it
+33:05 
+
+33:05 will throw an error and I will tell you
+33:07 
+
+33:07 why.
+33:09 
+
+33:09 Okay,
+33:11 
+
+33:11 let's run TF plan.
+33:16 
+
+33:16 You see it says where dotallowed region
+33:20 
+
+33:20 is a set of string. Element of the
+33:22 
+
+33:22 string are identified only by their
+33:25 
+
+33:25 value and don't have any separate index
+33:27 
+
+33:27 or key. So it is only possible to
+33:30 
+
+33:30 perform operations on all elements of
+33:34 
+
+33:34 the set. Right? So because it's a set of
+33:38 
+
+33:38 string, you cannot access it by their
+33:41 
+
+33:41 index. Now if you want to do that, if
+33:44 
+
+33:44 you want to access it by their index,
+33:47 
+
+33:47 you have to convert it to a list. Okay?
+33:51 
+
+33:51 So for that what we need to do is you
+33:54 
+
+33:54 need to add a function called to list
+33:58 
+
+33:58 and enclose everything inside that
+34:00 
+
+34:00 function. Okay, we have not covered the
+34:03 
+
+34:03 function yet, but this is important to
+34:05 
+
+34:05 showcase how set works. For now, just
+34:08 
+
+34:08 remember this thing and I will when I
+34:10 
+
+34:10 will explain the function, I'll explain
+34:12 
+
+34:12 everything in detail. For now, just
+34:14 
+
+34:14 understand this thing. Whenever we have
+34:17 
+
+34:17 to access a particular element of the
+34:22 
+
+34:22 set, then we need to convert it into a
+34:25 
+
+34:25 list first. We cannot access set
+34:29 
+
+34:29 directly with the index. Okay. Now if
+34:32 
+
+34:32 you run the TF plan again, it should
+34:35 
+
+34:35 work. Oh, it says element are identified
+34:40 
+
+34:40 only by their values blah blah blah. Um,
+34:44 
+
+34:44 but I just converted that it to a list
+34:47 
+
+34:47 invalid index. Okay. So if we go to
+34:51 
+
+34:51 variables, I think over here, uh, yeah,
+34:56 
+
+34:56 that's the mistake. So this element
+34:58 
+
+34:58 should be outside the bracket like this.
+35:02 
+
+35:02 Why? Because first we have to convert
+35:05 
+
+35:05 the value of allowed region like the
+35:08 
+
+35:08 entire value of the list of of the set
+35:11 
+
+35:11 to the list. So this is where dotallowed
+35:14 
+
+35:14 region. It will return the entire value,
+35:16 
+
+35:16 right? And that's how you can convert it
+35:19 
+
+35:19 to list. Now it should be able to return
+35:23 
+
+35:23 the value of zero element. So let's run
+35:25 
+
+35:25 TF plan now.
+35:29 
+
+35:29 Okay, now it worked. And if you check
+35:31 
+
+35:31 the value of allowed region, which
+35:33 
+
+35:33 region did it select, which is US East
+35:37 
+
+35:37 one. US East one was
+35:41 
+
+35:41 the zero element.
+35:43 
+
+35:43 Okay. Now it can take duplicate as well.
+35:47 
+
+35:47 You see because list can have duplicate
+35:49 
+
+35:49 elements. Set cannot have duplicate
+35:52 
+
+35:52 elements. Now how do we use set without
+35:55 
+
+35:55 converting it to a list? Okay, for that
+35:60 
+
+35:60 you cannot have
+36:03 
+
+36:03 for example let's say okay we we took
+36:06 
+
+36:06 this as a set of oh sorry a list of
+36:08 
+
+36:08 string right so let's convert that into
+36:11 
+
+36:11 set of string now because we needed all
+36:14 
+
+36:14 the values so if we convert that to set
+36:16 
+
+36:16 of list and go back to main.tf TF and
+36:21 
+
+36:21 uh over here C where it is
+36:27 
+
+36:27 okay over here. So if we remove this C
+36:32 
+
+36:32 block would it work? Let's check out it
+36:36 
+
+36:36 says is a set of string. It says
+36:39 
+
+36:39 inappropriate value for attribute C
+36:42 
+
+36:42 string required but have set of string.
+36:46 
+
+36:46 says incorrect value of type.
+36:49 
+
+36:49 Now if I add the element over here,
+36:53 
+
+36:53 let's see if it's going to work. TF
+36:56 
+
+36:56 plan. Okay, it says the elements of set
+36:60 
+
+36:60 are identified only by their values and
+37:03 
+
+37:03 it does not have any index. So with set
+37:05 
+
+37:05 we cannot have it accessed by their
+37:08 
+
+37:08 index. That's an important thing to
+37:12 
+
+37:12 understand. Why? Because it's a set.
+37:14 
+
+37:14 It's not a list. Although it looks like
+37:16 
+
+37:16 a list but it's a set. It's not a list.
+37:18 
+
+37:18 So we cannot access it with the element
+37:22 
+
+37:22 like this. Okay. We have to only use the
+37:25 
+
+37:25 values. So how do we use the values? We
+37:29 
+
+37:29 have to first convert that into a list
+37:31 
+
+37:31 and then we can use it because it can
+37:34 
+
+37:34 have duplicate values. You see? So if we
+37:36 
+
+37:36 have duplicate value, how would it
+37:38 
+
+37:38 differentiate between the indexes,
+37:41 
+
+37:41 right? I mean index two and index three
+37:43 
+
+37:43 could have same value. So that's why uh
+37:47 
+
+37:47 this is not something that you can do.
+37:49 
+
+37:49 Okay. So over here um let's keep it the
+37:52 
+
+37:52 way it is and let's change this to list
+37:56 
+
+37:56 again.
+37:58 
+
+37:58 Okay. So that was set. So we have
+38:00 
+
+38:00 covered number, string, boolean, um list
+38:04 
+
+38:04 and set. Now the next one is map. How do
+38:09 
+
+38:09 we use a map? So let's go back over here
+38:12 
+
+38:12 and pick something. Let's say tags.
+38:15 
+
+38:15 Okay.
+38:17 
+
+38:17 So tag has multiple values. If you
+38:20 
+
+38:20 remember in previous videos I have told
+38:23 
+
+38:23 you like this is a different data type.
+38:25 
+
+38:25 Okay. And I did not explain what type of
+38:29 
+
+38:29 data type it is with which type
+38:31 
+
+38:31 constraint it is. But I just said that I
+38:33 
+
+38:33 will explain it to you later. So now is
+38:36 
+
+38:36 the time when I'm going to explain it.
+38:38 
+
+38:38 So as you see this tag variable has
+38:41 
+
+38:41 multiple keys and multiple values. So
+38:44 
+
+38:44 it's in the form of key value pair. It's
+38:46 
+
+38:46 like a JSON and it has multiple key
+38:49 
+
+38:49 value pair and we can add more values
+38:51 
+
+38:51 like we have environment which is v.t
+38:53 
+
+38:53 environment and then name uh which is
+38:56 
+
+38:56 the resource name and it has a value and
+38:58 
+
+38:58 we can add more thing like created by
+39:02 
+
+39:02 terraform right. So we can have multiple
+39:05 
+
+39:05 key values inside a single variable. So
+39:09 
+
+39:09 this type of data type is called map.
+39:13 
+
+39:13 Okay. So instead of having put
+39:16 
+
+39:16 everything over here, let's copy this
+39:18 
+
+39:18 and go to variable over here and create
+39:21 
+
+39:21 a new data type. Let's call it variable
+39:26 
+
+39:26 and tags.
+39:29 
+
+39:29 Okay. Now tags will have
+39:34 
+
+39:34 a type let's call it type is map of
+39:37 
+
+39:37 string. Again the same way we have a
+39:41 
+
+39:41 list of string we can have map of string
+39:44 
+
+39:44 map of uh number and so on. Right? So
+39:47 
+
+39:47 for now we are using map of string and
+39:49 
+
+39:49 we can add default value over here or in
+39:51 
+
+39:51 the terapform.tfr files. So let's add
+39:55 
+
+39:55 default value over here. So we have
+39:57 
+
+39:57 added environment which is derived from
+39:60 
+
+39:60 val. environment we have a name and then
+40:03 
+
+40:03 we have created by terraform. Now we
+40:05 
+
+40:05 have don't have to provide everything uh
+40:07 
+
+40:07 whenever there is a tag. So what we can
+40:09 
+
+40:09 do is go to main.tf and instead of this
+40:13 
+
+40:13 tags equal to v dot tags and that's it.
+40:18 
+
+40:18 So all three four lines have been
+40:21 
+
+40:21 replaced by this single line. Now if we
+40:24 
+
+40:24 go over here so instead of this thing we
+40:27 
+
+40:27 can have
+40:29 
+
+40:29 v.tax
+40:31 
+
+40:31 and yeah I mean this was just part of
+40:34 
+
+40:34 this.
+40:38 
+
+40:38 So now if I run tf plan again
+40:44 
+
+40:44 it says uh variables not allowed
+40:47 
+
+40:47 variable may not be used here because we
+40:49 
+
+40:49 are using variables inside the
+40:51 
+
+40:51 variables. Okay, let's go back to
+40:54 
+
+40:54 variables. Okay, we are interpolating it
+40:56 
+
+40:56 over here. So that's why it is not
+40:60 
+
+40:60 letting us do that. We remove this from
+41:03 
+
+41:03 here. I'm just trying it out. Uh right.
+41:07 
+
+41:07 Yeah, it is showing me to do that.
+41:12 
+
+41:12 Variables may not be used here.
+41:15 
+
+41:15 Variables not allowed. Uh we should have
+41:20 
+
+41:20 environment variable over here which is
+41:22 
+
+41:22 this one default value is environment
+41:27 
+
+41:27 but I think we cannot use it within
+41:30 
+
+41:30 this. So what we can do is maybe we can
+41:35 
+
+41:35 create a local for this name or yeah we
+41:39 
+
+41:39 can create local right but for now let's
+41:43 
+
+41:43 say if we remove that.
+41:53 
+
+41:53 Oops.
+41:57 
+
+41:57 Now it is throwing errors for the other
+42:01 
+
+42:01 one. Oh, because it did not it was there
+42:04 
+
+42:04 in the double quotes. Okay. So let's
+42:06 
+
+42:06 keep it simple over here. Let's put
+42:09 
+
+42:09 environment equal to dev
+42:12 
+
+42:12 and name is equal to let's call it dev
+42:16 
+
+42:16 instance
+42:18 
+
+42:18 created by derform. Okay. And
+42:21 
+
+42:21 environment also should be enclosed
+42:23 
+
+42:23 within double quotes because it's of
+42:25 
+
+42:25 type string.
+42:28 
+
+42:28 Now we have a map of multiple strings
+42:31 
+
+42:31 with key value pair. Now if we go back
+42:35 
+
+42:35 to main.tf as you can see tags equal to
+42:38 
+
+42:38 world. tags which is a map of string and
+42:41 
+
+42:41 when we run tf plan again. Okay. Now it
+42:45 
+
+42:45 says let's see the value of tags
+42:49 
+
+42:49 wherever it is. Uh D
+42:54 
+
+42:54 over here which is all three.
+42:58 
+
+42:58 Okay. And let's check over here as well.
+43:07 
+
+43:07 Over here as well. Right.
+43:10 
+
+43:10 So this is tags and tags. So this is I
+43:14 
+
+43:14 mean basically the same thing that is
+43:16 
+
+43:16 showing multiple times because it's
+43:18 
+
+43:18 showing the tag of the resource and then
+43:20 
+
+43:20 tags of all the resources above it. So
+43:22 
+
+43:22 that's fine. Okay. So we have added tags
+43:25 
+
+43:25 as well which is of type uh map. Okay.
+43:29 
+
+43:29 So we have covered map as well. Now the
+43:31 
+
+43:31 next data type is so there are two more
+43:33 
+
+43:33 left which is uh dictionary and tpple.
+43:37 
+
+43:37 Tupppel or pupil you can call it
+43:38 
+
+43:38 anything you want. But the way it works
+43:41 
+
+43:41 is tpple is something that can have
+43:45 
+
+43:45 multiple values and have multiple data
+43:48 
+
+43:48 type. It is similar to uh set but it
+43:53 
+
+43:53 could have multiple data type. So when
+43:56 
+
+43:56 we use set over here right
+44:00 
+
+44:00 over here it has one data type which is
+44:05 
+
+44:05 string. But you can have multiple data
+44:08 
+
+44:08 type inside a tuple. Okay. So let's see
+44:12 
+
+44:12 how we can use that over here. So for
+44:15 
+
+44:15 example we want to let's say use some
+44:18 
+
+44:18 values over here. Okay. From port IP to
+44:21 
+
+44:21 port. Let's copy this. Let's go inside
+44:24 
+
+44:24 variable and let's call it variable uh
+44:28 
+
+44:28 ingress values.
+44:31 
+
+44:31 Okay.
+44:34 
+
+44:34 and let's create it of type is equal to
+44:38 
+
+44:38 tuple.
+44:40 
+
+44:40 Okay. Now we have to specify the values
+44:43 
+
+44:43 that we want. Okay. So let's say um the
+44:46 
+
+44:46 first value that we want is
+44:50 
+
+44:50 a number. Second value that we want is a
+44:53 
+
+44:53 string. And the third value that we want
+44:55 
+
+44:55 is also a number. Now this sequence does
+44:58 
+
+44:58 matter because the value that we're
+45:00 
+
+45:00 going to put it has to be in the same
+45:02 
+
+45:02 order. So let's say default is equal to
+45:07 
+
+45:07 uh 443
+45:10 
+
+45:10 and then there is a string which is TCP
+45:14 
+
+45:14 and then there is a number again 443.
+45:17 
+
+45:17 Okay. So the way it works it will match
+45:21 
+
+45:21 the element position
+45:24 
+
+45:24 its data type with the value. Okay. So
+45:27 
+
+45:27 there is number at the first position.
+45:30 
+
+45:30 So this should be a number. There is
+45:32 
+
+45:32 string at the second position. This
+45:33 
+
+45:33 should be a string. There is number at
+45:35 
+
+45:35 the third position. So this should be a
+45:37 
+
+45:37 number. So the sequence matters. The
+45:39 
+
+45:39 data type matters. You can have multiple
+45:41 
+
+45:41 data types. Yes, you can have number,
+45:43 
+
+45:43 string, number. And you can have like
+45:45 
+
+45:45 map inside it. You can have list inside
+45:48 
+
+45:48 it. But the value should be at the same
+45:51 
+
+45:51 position. And how do we use that? If you
+45:54 
+
+45:54 go over here now instead of 443 port
+45:57 
+
+45:57 over here you can use v dot um what was
+46:00 
+
+46:00 the value ingress values
+46:04 
+
+46:04 zero which is zeroth element
+46:07 
+
+46:07 and um this one was v dot ingress value
+46:12 
+
+46:12 which is at the second element and tcp
+46:16 
+
+46:16 was the first element. So v dot ingress
+46:20 
+
+46:20 value first element. So this is how you
+46:22 
+
+46:22 would use the tpple. So let's run the TF
+46:25 
+
+46:25 plan again just to make sure that we
+46:27 
+
+46:27 have everything correct. Uh we'll run
+46:30 
+
+46:30 and yeah everything is good. So you see
+46:33 
+
+46:33 from port to port should be 443 and IP
+46:36 
+
+46:36 protocol is TCP 443. Okay. So this is
+46:40 
+
+46:40 how we use the tpple. Now the last one
+46:42 
+
+46:42 is dictionary. I'm not sure why I have
+46:44 
+
+46:44 been calling it dictionary for so long.
+46:46 
+
+46:46 It's not dictionary actually it is
+46:47 
+
+46:47 object. It is of type object. So what it
+46:50 
+
+46:50 does it it's a collection of multiple
+46:52 
+
+46:52 data types but not in the list format
+46:54 
+
+46:54 like the way we have seen is this right
+46:57 
+
+46:57 tpple have in this format which is a
+46:60 
+
+47:00 kind of list of multiple data types but
+47:05 
+
+47:05 object variable and let's call it um
+47:10 
+
+47:10 config
+47:11 
+
+47:11 okay and
+47:15 
+
+47:15 let's add type is equal to object
+47:19 
+
+47:19 object. Okay. Now, object could have
+47:23 
+
+47:23 let's say region is equal to string.
+47:27 
+
+47:27 Then we can have
+47:30 
+
+47:30 monitoring is equal to bool.
+47:34 
+
+47:34 Then we have instance
+47:37 
+
+47:37 count
+47:39 
+
+47:39 is equal to number. So we have used
+47:42 
+
+47:42 different data types inside the object
+47:45 
+
+47:45 but with a key value pair. It's not a
+47:48 
+
+47:48 type of list. It's a key value pair.
+47:51 
+
+47:51 It's a type of collection of different
+47:53 
+
+47:53 elements in a map. If you remember when
+47:56 
+
+47:56 we see map, map was again a key value
+47:59 
+
+47:59 pair. But they all had single data type
+48:02 
+
+48:02 which is defined over here, right?
+48:04 
+
+48:04 Because it was a map of string. So
+48:06 
+
+48:06 that's why all the values inside the map
+48:10 
+
+48:10 has of type string.
+48:12 
+
+48:12 But over here because we are not
+48:15 
+
+48:15 defining the data type of all the
+48:17 
+
+48:17 elements. Instead we are defining the
+48:19 
+
+48:19 data type of each of the element. So we
+48:22 
+
+48:22 have said region should be string.
+48:24 
+
+48:24 Monitoring should be boolean. Instance
+48:26 
+
+48:26 count should be number. And now we can
+48:29 
+
+48:29 have it its default value. So let's add
+48:32 
+
+48:32 default as well.
+48:35 
+
+48:35 Instance count is let's say one
+48:39 
+
+48:39 monitoring
+48:43 
+
+48:43 let's add the session monitoring true
+48:45 
+
+48:45 region is this and this is how it will
+48:49 
+
+48:49 look like
+48:51 
+
+48:51 okay so region is string so we have
+48:53 
+
+48:53 added the string over here monitoring is
+48:55 
+
+48:55 bool so we have added the value of
+48:57 
+
+48:57 boolean instance count is number so we
+48:59 
+
+48:59 added one over here now how do we access
+49:02 
+
+49:02 this let's go back and let's see in the
+49:05 
+
+49:05 region over here. Okay. So instead of
+49:08 
+
+49:08 using that set or let me just comment
+49:13 
+
+49:13 this
+49:14 
+
+49:14 and add
+49:17 
+
+49:17 region is equal to v dot um what was the
+49:22 
+
+49:22 name of it? Uh I believe config dot
+49:26 
+
+49:26 region.
+49:28 
+
+49:28 Okay.
+49:30 
+
+49:30 So this is how it will select the value.
+49:34 
+
+49:34 So v doconfig dot region which is
+49:36 
+
+49:36 variables v doconfig dot region. Okay we
+49:42 
+
+49:42 go back and if we run the tf plan again
+49:45 
+
+49:45 it should work. Okay it did not throw
+49:48 
+
+49:48 any error and it should have selected
+49:50 
+
+49:50 the region which is US east one that we
+49:53 
+
+49:53 have configured in the
+49:57 
+
+49:57 default region. So that's how you can
+49:60 
+
+49:60 access other values as well. So this is
+50:03 
+
+50:03 useful when you have to group the common
+50:07 
+
+50:07 values together. Let's say u config of a
+50:10 
+
+50:10 particular resource or the metadata of a
+50:14 
+
+50:14 particular resource and you can access
+50:16 
+
+50:16 it uh like how you would access the
+50:18 
+
+50:18 variable. Again wherever there is a key
+50:21 
+
+50:21 value pair you access it with the key.
+50:24 
+
+50:24 Okay. So variable name and the key.
+50:27 
+
+50:27 Wherever there is a list, you access it
+50:30 
+
+50:30 with the index like uh name of the
+50:33 
+
+50:33 variable dot the index zero element,
+50:37 
+
+50:37 first element, one element. So whenever
+50:39 
+
+50:39 there is a map, you can access it with
+50:42 
+
+50:42 key value pair. Whenever there is a set,
+50:46 
+
+50:46 set cannot have duplicate values. It
+50:48 
+
+50:48 will remove automatically. But list can
+50:50 
+
+50:50 have duplicate values. But you cannot
+50:53 
+
+50:53 access set with the indexes. You have to
+50:56 
+
+50:56 convert it to the list first. List can
+50:59 
+
+50:59 have duplicate value. You see over here
+51:01 
+
+51:01 we have T2 micro, T2 small, T3 micro, T3
+51:04 
+
+51:04 small. You can add T2 micro again and it
+51:06 
+
+51:06 will work without any issues. And you
+51:08 
+
+51:08 can access the list with the indexes
+51:10 
+
+51:10 because the order is fixed. You cannot
+51:13 
+
+51:13 change the order. Order is fixed for the
+51:15 
+
+51:15 list.
+51:18 
+
+51:18 And then we have boolean which is either
+51:21 
+
+51:21 true or false. So you can just access it
+51:23 
+
+51:23 directly. V dot variable name and then
+51:26 
+
+51:26 we have number and string which is also
+51:29 
+
+51:29 can be accessed directly but it is for
+51:31 
+
+51:31 number and um string is for string.
+51:35 
+
+51:35 Okay. So that's it from this video
+51:39 
+
+51:39 perspective. Make sure you complete the
+51:41 
+
+51:41 exercise in the day seven folder. There
+51:45 
+
+51:45 is a task.md. Complete that. Make sure
+51:47 
+
+51:47 you do the hands-on otherwise you will
+51:49 
+
+51:49 forget everything that we have discussed
+51:51 
+
+51:51 and it will be of no use. So, I hope you
+51:54 
+
+51:54 do that. I hope you try out it and I
+51:57 
+
+51:57 hope you do the submission as well for
+51:59 
+
+51:59 the day seven. That's it for this one. I
+52:02 
+
+52:02 know it was a long video, but I hope it
+52:04 
+
+52:04 was valuable. So, thank you so much. I
+52:06 
+
+52:06 will see you tomorrow with the next one.
+52:08 
+
+52:08 Thank you.

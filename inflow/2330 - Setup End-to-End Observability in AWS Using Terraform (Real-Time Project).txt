@@ -1,0 +1,3508 @@
+00:00 All right, welcome back to my channel.
+00:02 
+
+00:02 My name is Piyush. This is day 23 in 30
+00:05 
+
+00:05 days of AWS Terraform. In this video,
+00:07 
+
+00:07 we'll be doing a real-time project on
+00:10 
+
+00:10 AWS monitoring with Terraform. We'll be
+00:14 
+
+00:14 doing it an extensive way with a lot of
+00:19 
+
+00:19 different services, a lot of monitoring
+00:22 
+
+00:22 dashboards, alerts, metrics, logging,
+00:26 
+
+00:26 CloudWatch, CloudTrail, a lot of
+00:28 
+
+00:28 services that is really needed to
+00:31 
+
+00:31 understand how an end-to-end monitoring
+00:33 
+
+00:33 should work in a production-grade
+00:34 
+
+00:34 environment. This project should be
+00:36 
+
+00:36 helpful if you are trying to learn
+00:39 
+
+00:39 observability, specifically within a
+00:41 
+
+00:41 cloud environment, or how it is
+00:44 
+
+00:44 associated with a serverless project,
+00:46 
+
+00:46 which is what we'll be doing. So, if you
+00:48 
+
+00:48 are someone who's trying to build their
+00:50 
+
+00:50 portfolio, this would be an ideal
+00:52 
+
+00:52 project to add in your resume.
+00:55 
+
+00:55 But, make sure you understand it
+00:57 
+
+00:57 completely. Make sure you go through
+00:60 
+
+00:60 each and every file of it and try to do
+01:03 
+
+01:03 the hands-on. Try to follow all the
+01:05 
+
+01:05 steps that I'm going to show right away.
+01:08 
+
+01:08 Okay? So, keep supporting the channel.
+01:10 
+
+01:10 If you have not subscribed it yet,
+01:12 
+
+01:12 please do that. It will be really
+01:14 
+
+01:14 helpful and it will mean a lot. Let's
+01:18 
+
+01:18 begin our demo for today.
+01:21 
+
+01:21 But, before that, we need to understand
+01:22 
+
+01:22 what exactly is the demo about, right?
+01:25 
+
+01:25 So, this is the project that we are
+01:27 
+
+01:27 implementing. Actually, it's a
+01:28 
+
+01:28 combination of two projects. One is the
+01:32 
+
+01:32 deployment of a serverless application.
+01:34 
+
+01:34 The another one is setting up
+01:36 
+
+01:36 observability on top of that serverless
+01:39 
+
+01:39 application. So, it's a two-in-one
+01:41 
+
+01:41 project. As I've told you, it's a
+01:42 
+
+01:42 production-grade project. And if you
+01:44 
+
+01:44 complete this end-to-end, you can
+01:47 
+
+01:47 definitely add that in your resume
+01:50 
+
+01:50 because it will have a lot of value. It
+01:53 
+
+01:53 will have a lot of worth. Okay, so let's
+01:54 
+
+01:54 understand this piece by piece. But,
+01:57 
+
+01:57 please don't get overwhelmed with it. It
+01:59 
+
+01:59 could look complex. It is complex. But,
+02:02 
+
+02:02 actually, you need to add complex
+02:05 
+
+02:05 projects in your resume. Only then it
+02:07 
+
+02:07 will help. Otherwise, adding just simple
+02:10 
+
+02:10 project that we did in the beginning of
+02:12 
+
+02:12 the video, creation of S3 bucket, EC2
+02:14 
+
+02:14 instances, anyone would do that. You can
+02:17 
+
+02:17 do that by using just a prompt, right?
+02:19 
+
+02:19 It will have no value and please don't
+02:21 
+
+02:21 add those in your resume. Only add
+02:24 
+
+02:24 production-grade real-time projects in
+02:26 
+
+02:26 your resume. And this is one of those
+02:28 
+
+02:28 projects, okay?
+02:29 
+
+02:29 So, let's start. If you have completed
+02:31 
+
+02:31 day 18, I believe 18 or 19, in that
+02:35 
+
+02:35 video, there was a serverless project.
+02:37 
+
+02:37 So, this is an extension to that
+02:39 
+
+02:39 project, okay? So, what was that
+02:40 
+
+02:40 project? Whenever a user uploads a file
+02:44 
+
+02:44 to the S3 bucket, right? So, there is an
+02:46 
+
+02:46 S3 upload bucket over here. User uploads
+02:49 
+
+02:49 file over here. Then, this file upload
+02:52 
+
+02:52 will trigger an event to the Lambda
+02:54 
+
+02:54 function, okay? So, there is the Lambda
+02:56 
+
+02:56 function that will watch the S3 bucket.
+02:59 
+
+02:59 And as soon as you upload the file, it
+03:01 
+
+03:01 will start processing it. Okay? So, what
+03:05 
+
+03:05 is the logic inside this Lambda
+03:06 
+
+03:06 function? It will convert the uploaded
+03:09 
+
+03:09 image into five different formats,
+03:11 
+
+03:11 right? So, there'll be WebP format,
+03:14 
+
+03:14 there'll be JPG, there'll be PNG, and
+03:16 
+
+03:16 there'll be a thumbnail format, right?
+03:18 
+
+03:18 And all of those five files will be then
+03:20 
+
+03:20 uploaded to the S3 bucket named S3
+03:23 
+
+03:23 processed. So, that's one part. That's
+03:25 
+
+03:25 the part where our Lambda function work
+03:28 
+
+03:28 has been discussed, okay? So, that's
+03:31 
+
+03:31 done. Now, after that is done, this is a
+03:33 
+
+03:33 project. Now, we have a project that is
+03:36 
+
+03:36 live. We have some traffic. Users are
+03:38 
+
+03:38 using it. But, now we have to secure it.
+03:42 
+
+03:42 We have to build proactive monitoring,
+03:45 
+
+03:45 alerting, and logging around that
+03:48 
+
+03:48 real-time project. And this is what we
+03:50 
+
+03:50 are going to do next.
+03:51 
+
+03:51 Okay?
+03:52 
+
+03:52 So, what will happen?
+03:54 
+
+03:54 This Lambda function will emit some
+03:57 
+
+03:57 metrics, you know, some logs, some
+03:60 
+
+03:60 metrics like utilization, CPU, memory,
+04:02 
+
+04:02 and all.
+04:03 
+
+04:03 So, all of those will be published to
+04:06 
+
+04:06 the CloudWatch, okay? So, there'll be
+04:08 
+
+04:08 log stream and log group. Inside that,
+04:11 
+
+04:11 all the logs will be published. And
+04:13 
+
+04:13 then, there'll be monitoring will be
+04:14 
+
+04:14 done by CloudWatch. So, all the standard
+04:17 
+
+04:17 metrics from Lambda will be published to
+04:20 
+
+04:20 CloudWatch as well, okay? So, that's the
+04:24 
+
+04:24 next part of it. So, first part, there
+04:26 
+
+04:26 was image processing app deployed as a
+04:29 
+
+04:29 Lambda function. Then, Lambda metrics
+04:32 
+
+04:32 and logs will be transported to
+04:35 
+
+04:35 CloudWatch and cloud logging. Then,
+04:38 
+
+04:38 after that, we'll be having some custom
+04:41 
+
+04:41 metrics created. So, those custom
+04:44 
+
+04:44 metrics will also be published to
+04:46 
+
+04:46 CloudWatch monitoring over here. And
+04:48 
+
+04:48 then, it will be visualized based on
+04:50 
+
+04:50 CloudWatch dashboards over here. So,
+04:53 
+
+04:53 we'll be creating dashboard. It will
+04:54 
+
+04:54 have multiple widgets. So, this will
+04:56 
+
+04:56 also be done. And then, based on certain
+04:59 
+
+04:59 thresholds, some alarms will be
+05:02 
+
+05:02 triggered, okay? So, we'll set some
+05:04 
+
+05:04 threshold. We'll create some alerts.
+05:06 
+
+05:06 What are these alerts? Let's say a user
+05:08 
+
+05:08 uploaded an invalid file. So, an alarm
+05:11 
+
+05:11 should be triggered. Let's say a user is
+05:13 
+
+05:13 trying to download a file that does not
+05:16 
+
+05:16 exist. An alarm should be triggered.
+05:18 
+
+05:18 Let's say a user is trying to download a
+05:21 
+
+05:21 file that he or she is not authorized
+05:23 
+
+05:23 to. Then, an alarm should be triggered.
+05:25 
+
+05:25 All of these, there are around 12 alarms
+05:28 
+
+05:28 that we'll be creating in this project.
+05:30 
+
+05:30 And all of these will be sent to
+05:33 
+
+05:33 different email notification channels or
+05:36 
+
+05:36 SNS topics, right? So, there'll be
+05:38 
+
+05:38 critical SNS, there'll be performance
+05:40 
+
+05:40 and log alerts. And all of these
+05:42 
+
+05:42 notifications will be then delivered to
+05:45 
+
+05:45 the users.
+05:46 
+
+05:46 So, as I've told you, this this is an
+05:49 
+
+05:49 end-to-end observability project and on
+05:52 
+
+05:52 top of serverless, one of its kind.
+05:55 
+
+05:55 Make sure you understand it end-to-end,
+05:58 
+
+05:58 okay? So, that's just the gist of it.
+06:00 
+
+06:00 That's just the description. And now,
+06:02 
+
+06:02 we'll I walk you through the code and
+06:04 
+
+06:04 then we'll do the demo. Okay, here's my
+06:06 
+
+06:06 GitHub repository. So, I have cloned the
+06:09 
+
+06:09 repo with the latest changes.
+06:12 
+
+06:12 Okay, let me first show you the
+06:13 
+
+06:13 directory structure, how it is. So, it
+06:16 
+
+06:16 has a day 23 folder. Inside that,
+06:19 
+
+06:19 there is AWS Lambda monitoring and S3
+06:22 
+
+06:22 security monitoring. I guess this is
+06:25 
+
+06:25 what we did earlier because earlier I
+06:28 
+
+06:28 was testing it from a different project.
+06:29 
+
+06:29 So, this is what we need, AWS Lambda
+06:32 
+
+06:32 monitoring, okay? Inside that, there'll
+06:34 
+
+06:34 be again multiple folders, one for the
+06:36 
+
+06:36 Lambda function. Uh this is the same
+06:39 
+
+06:39 function that we used in day
+06:42 
+
+06:42 Okay, let's let's see which was it. I
+06:44 
+
+06:44 think it was day 18, yes.
+06:46 
+
+06:46 Yeah.
+06:47 
+
+06:47 So, uh same thing of day 18.
+06:50 
+
+06:50 Uh here's the Lambda function for image
+06:52 
+
+06:52 processing.
+06:54 
+
+06:54 And it will use Pillow library, I
+06:56 
+
+06:56 believe. Um so, there'll be a Pillow
+06:58 
+
+06:58 layer created for that and all. So, I've
+06:60 
+
+06:60 explained that thoroughly in day 18. If
+07:02 
+
+07:02 you want to know more about this Lambda
+07:04 
+
+07:04 function, then I would suggest watch day
+07:06 
+
+07:06 18 first, okay? Then, this folder has
+07:09 
+
+07:09 some scripts like to build the Docker
+07:11 
+
+07:11 layer, deploy, destroy, and so on.
+07:15 
+
+07:15 Um then, this will have the Terraform
+07:17 
+
+07:17 code. And there are some sample files
+07:18 
+
+07:18 over here.
+07:21 
+
+07:21 So, Terraform code. And also, one thing
+07:24 
+
+07:24 I forgot to mention, we'll be creating
+07:26 
+
+07:26 everything using custom module. So, we
+07:28 
+
+07:28 have created six different custom
+07:31 
+
+07:31 modules, one for CloudWatch alarm, one
+07:34 
+
+07:34 for CloudWatch metrics, one for Lambda
+07:36 
+
+07:36 function,
+07:37 
+
+07:37 log alerts, S3 bucket, and SNS
+07:39 
+
+07:39 notification, okay? So, execution starts
+07:43 
+
+07:43 from here as always, main.tf, okay?
+07:46 
+
+07:46 So, let's have a look. What are we doing
+07:48 
+
+07:48 over here?
+07:49 
+
+07:49 First is we are just using a random ID,
+07:52 
+
+07:52 which is a resource type to generate
+07:54 
+
+07:54 random strings.
+07:56 
+
+07:56 Okay? And then, we are setting some
+07:57 
+
+07:57 locals for bucket prefixes, bucket
+08:00 
+
+08:00 names, Lambda function name, and so on,
+08:02 
+
+08:02 okay? So, this is also what we have
+08:05 
+
+08:05 looked upon so many times. So, I'm just
+08:07 
+
+08:07 not going to go in depth of it. Then,
+08:10 
+
+08:10 over here, we are just setting some
+08:11 
+
+08:11 common tags as per the best practices.
+08:14 
+
+08:14 We are using variables. We are using
+08:16 
+
+08:16 timestamp function. Okay? Then, here is
+08:19 
+
+08:19 the Lambda layer. So, this will because
+08:23 
+
+08:23 we have Lambda function over here, but
+08:25 
+
+08:25 then we are creating a Lambda layer over
+08:28 
+
+08:28 here.
+08:29 
+
+08:29 Okay?
+08:30 
+
+08:30 So, this will take the file pillow
+08:33 
+
+08:33 layer.zip. And this file will be
+08:35 
+
+08:35 generated once you build the pillow
+08:38 
+
+08:38 layer using the Docker commands. I I
+08:40 
+
+08:40 will explain it to you how it works,
+08:42 
+
+08:42 okay? Then,
+08:44 
+
+08:44 here is the data source because we need
+08:46 
+
+08:46 to
+08:47 
+
+08:47 uh use the archive file. So, that's why
+08:49 
+
+08:49 we are using an archive file
+08:52 
+
+08:52 resource type of data source for to get
+08:55 
+
+08:55 the zip file, basically.
+08:57 
+
+08:57 Right? And from here, our actual module
+08:60 
+
+08:60 start. First is SNS notification. So,
+09:02 
+
+09:02 we'll create an SNS notification and
+09:04 
+
+09:04 source is module SNS notification, which
+09:07 
+
+09:07 is over here.
+09:09 
+
+09:09 Okay? Again, if you are not sure what
+09:12 
+
+09:12 are custom modules, how does it work, I
+09:14 
+
+09:14 have explained this end-to-end in day
+09:17 
+
+09:17 which was that day 20 video with EKS,
+09:21 
+
+09:21 right? So, make sure you understand
+09:22 
+
+09:22 that. So, you see, there are so many
+09:25 
+
+09:25 dependencies of one video to another
+09:28 
+
+09:28 video because if there were no
+09:30 
+
+09:30 dependency, I would have to do
+09:32 
+
+09:32 everything in one single video. And
+09:34 
+
+09:34 then, this Terraform video will be of 30
+09:36 
+
+09:36 hours long, which I didn't want to do.
+09:38 
+
+09:38 So, that is why I have divided every
+09:41 
+
+09:41 single topic in a different video. So,
+09:44 
+
+09:44 make sure you watch this series in the
+09:47 
+
+09:47 same sequence as published, okay? From
+09:49 
+
+09:49 day zero and onwards, okay? Don't pick
+09:52 
+
+09:52 any random video from between or don't
+09:54 
+
+09:54 just start directly from the project.
+09:56 
+
+09:56 Otherwise, you will lose the context.
+09:58 
+
+09:58 You will lose the fundamentals of
+09:60 
+
+09:60 Terraform or what we have already
+10:01 
+
+10:01 covered in one of the previous video.
+10:03 
+
+10:03 And then you will comment, "Okay,
+10:05 
+
+10:05 Piyush, you have explained the real-time
+10:06 
+
+10:06 project, but you did not explain custom
+10:08 
+
+10:08 modules. You did not explain variables,
+10:11 
+
+10:11 locals, backend, and so on, right?"
+10:13 
+
+10:13 Everything is covered, trust me. You
+10:15 
+
+10:15 just have to follow this playlist one by
+10:18 
+
+10:18 one, one video at a time in the same
+10:20 
+
+10:20 sequence, okay? Again, um
+10:23 
+
+10:23 here is the
+10:25 
+
+10:25 Terraform module for that, which is SNS
+10:28 
+
+10:28 notification over here.
+10:30 
+
+10:30 Okay, so it will set some variables, and
+10:32 
+
+10:32 it will
+10:33 
+
+10:33 um
+10:34 
+
+10:34 source this module, SNS notification. In
+10:37 
+
+10:37 that, you see there is an first is AWS
+10:40 
+
+10:40 SNS topic resource.
+10:43 
+
+10:43 In that, we are setting some mandatory
+10:46 
+
+10:46 fields, name, display name, and so on.
+10:50 
+
+10:50 Okay.
+10:51 
+
+10:51 Then we have another SNS topic for
+10:54 
+
+10:54 performance alerts. And then we have
+10:56 
+
+10:56 another one for log alerts.
+10:59 
+
+10:59 So, if you remember from the diagram, we
+11:01 
+
+11:01 have created three SNS topics, right?
+11:04 
+
+11:04 For three different channels.
+11:06 
+
+11:06 Then email subscription for critical
+11:09 
+
+11:09 alert over here. And here we are just
+11:12 
+
+11:12 setting the details of topic, protocol,
+11:15 
+
+11:15 and endpoint.
+11:18 
+
+11:18 Email for performance alert, and then
+11:20 
+
+11:20 email for log alert. Then we have
+11:23 
+
+11:23 optional SMS subscription if you want to
+11:25 
+
+11:25 enable that. Uh I I'm not be using it
+11:27 
+
+11:27 for this demo. It's an optional resource
+11:30 
+
+11:30 that you can use if you want. Then SNS
+11:33 
+
+11:33 topic policy, which will allow
+11:34 
+
+11:34 CloudWatch to publish the notifications,
+11:37 
+
+11:37 right? So, this is a policy. And policy
+11:40 
+
+11:40 also we have covered so many times, so
+11:42 
+
+11:42 this will just have the action for SNS
+11:44 
+
+11:44 publish on the resource, SNS topic,
+11:47 
+
+11:47 okay?
+11:49 
+
+11:49 Pretty straightforward. Then we have
+11:51 
+
+11:51 another policy.
+11:53 
+
+11:53 And there'll be another for three
+11:55 
+
+11:55 different type of alerts, right?
+11:56 
+
+11:56 Critical, performance, and log alerts.
+11:60 
+
+11:60 Okay, so this is SNS notification. Now,
+12:02 
+
+12:02 let's go back to main.tf.
+12:06 
+
+12:06 This is done. Second is S3 buckets.
+12:09 
+
+12:09 Okay, so we'll be creating S3 bucket for
+12:11 
+
+12:11 Lambda function. Again, it will use
+12:14 
+
+12:14 S3 buckets module. Inside that, there'll
+12:17 
+
+12:17 be two buckets created, one in which
+12:20 
+
+12:20 user will upload the file, the other
+12:22 
+
+12:22 bucket in which the process file will be
+12:24 
+
+12:24 uploaded, right? And it will have
+12:26 
+
+12:26 certain other resources like Okay, let
+12:28 
+
+12:28 me just show you.
+12:31 
+
+12:31 Uh which is
+12:33 
+
+12:33 Where is S3 buckets over here, main.tf,
+12:37 
+
+12:37 okay? So, as you can see, first is
+12:39 
+
+12:39 upload bucket, second is
+12:42 
+
+12:42 uh
+12:43 
+
+12:43 over here. Where it is? Destination
+12:46 
+
+12:46 bucket, which is process bucket. Along
+12:48 
+
+12:48 with that, we have different resources
+12:50 
+
+12:50 such as
+12:51 
+
+12:51 bucket versioning. We'll be enabling
+12:53 
+
+12:53 bucket versioning. Then server-side
+12:56 
+
+12:56 encryption will be enabled, AES-256 SSC
+12:60 
+
+12:60 algorithm, and uh we'll be blocking the
+13:03 
+
+13:03 public access. We'll be keeping these
+13:05 
+
+13:05 buckets as private.
+13:08 
+
+13:08 Okay.
+13:09 
+
+13:09 And same for destination bucket as well.
+13:12 
+
+13:12 Uh we'll be enabling versioning, we'll
+13:14 
+
+13:14 enable server-side encryption, and we'll
+13:16 
+
+13:16 block the public access, okay?
+13:19 
+
+13:19 So, everything that was done in day 18
+13:21 
+
+13:21 as well.
+13:22 
+
+13:22 Let's go back to main.tf. The next is
+13:25 
+
+13:25 Lambda function. For Lambda function as
+13:28 
+
+13:28 well, uh the same uh module will be
+13:30 
+
+13:30 called. And in this Lambda function,
+13:33 
+
+13:33 we'll be using the details of your
+13:35 
+
+13:35 buckets as well. Upload bucket ARN,
+13:37 
+
+13:37 upload bucket ID, process bucket ARN,
+13:40 
+
+13:40 process bucket ID, because these are the
+13:42 
+
+13:42 variables that our Lambda function needs
+13:45 
+
+13:45 or expect. So, if you go inside the
+13:48 
+
+13:48 Lambda function over here,
+13:53 
+
+13:53 right? Uh so, it has an IAM role.
+13:56 
+
+13:56 That role will allow it to assume the
+13:58 
+
+13:58 role to do something.
+14:00 
+
+14:00 IAM policy for the Lambda function to
+14:03 
+
+14:03 create log group, log stream, put log
+14:05 
+
+14:05 events. This is
+14:07 
+
+14:07 when the uh logs and events will be
+14:11 
+
+14:11 published to CloudWatch from Lambda. So,
+14:13 
+
+14:13 that's that role.
+14:16 
+
+14:16 Okay? And it will also get uh object and
+14:18 
+
+14:18 object version from the S3 bucket, based
+14:21 
+
+14:21 on which it will trigger the function,
+14:23 
+
+14:23 right?
+14:25 
+
+14:25 Also, put object, put object ACL for the
+14:27 
+
+14:27 destination bucket.
+14:29 
+
+14:29 Right? So, if you remember this, so
+14:32 
+
+14:32 there are these two buckets. This bucket
+14:35 
+
+14:35 should have the access from the Lambda
+14:37 
+
+14:37 function. Lambda function should have
+14:38 
+
+14:38 access to get events, get objects,
+14:41 
+
+14:41 right? Get object version.
+14:43 
+
+14:43 And this bucket should have access to
+14:47 
+
+14:47 get the files from here, or this Lambda
+14:49 
+
+14:49 function should have access to
+14:52 
+
+14:52 put files over here, right? Put files
+14:55 
+
+14:55 and put file version as well.
+14:57 
+
+14:57 Then it will also have access to put
+14:59 
+
+14:59 metrics data to the CloudWatch.
+15:02 
+
+15:02 Then uh similarly, we are creating
+15:05 
+
+15:05 log group for Lambda.
+15:08 
+
+15:08 And here's the Lambda function as well.
+15:11 
+
+15:11 Again, I'm not going into detail because
+15:13 
+
+15:13 it's already been covered in one of
+15:16 
+
+15:16 those videos.
+15:17 
+
+15:17 Okay, then let's go back over here.
+15:21 
+
+15:21 Lambda permission to be invoked by S3.
+15:24 
+
+15:24 Okay, so um this is again when S3 will
+15:28 
+
+15:28 be invoked, it should have this action
+15:32 
+
+15:32 attached to it. Right? That uh when
+15:35 
+
+15:35 there is a file uploaded to the S3
+15:36 
+
+15:36 bucket, invoke this Lambda function,
+15:38 
+
+15:38 right? So, we need to create this
+15:40 
+
+15:40 resource type, which is AWS Lambda
+15:42 
+
+15:42 permission.
+15:44 
+
+15:44 Then AWS S3 bucket notification upload
+15:47 
+
+15:47 trigger, that hey, file has been
+15:49 
+
+15:49 uploaded. For that notification, we'll
+15:51 
+
+15:51 be creating this resource. Then next one
+15:53 
+
+15:53 is CloudWatch metrics, okay? So, this is
+15:56 
+
+15:56 again uh a module call to the CloudWatch
+15:59 
+
+15:59 metrics. Where is the CloudWatch
+16:01 
+
+16:01 metrics? Over here, inside modules,
+16:04 
+
+16:04 main.tf.
+16:06 
+
+16:06 And if you can see over here, uh we are
+16:08 
+
+16:08 setting a log group name pattern to
+16:10 
+
+16:10 watch, because in in this particular
+16:13 
+
+16:13 resource, we are creating a log metrics
+16:16 
+
+16:16 filter, okay? So, we are
+16:18 
+
+16:18 exporting logs based on a filter. Okay?
+16:22 
+
+16:22 So, this filter, consider this as a and
+16:25 
+
+16:25 regex, right? So, here is the regex
+16:27 
+
+16:27 pattern over here. Transport the log
+16:30 
+
+16:30 metric from Lambda
+16:33 
+
+16:33 to the log group in this format,
+16:36 
+
+16:36 timestamp, request ID, and level equal
+16:39 
+
+16:39 to error star, right? And then there is
+16:41 
+
+16:41 the metrics transformation. With the
+16:44 
+
+16:44 value is one, default value zero, based
+16:47 
+
+16:47 on the Lambda errors, okay? So, you can
+16:49 
+
+16:49 read more about in the documentation.
+16:52 
+
+16:52 Now,
+16:53 
+
+16:53 here is the image processing time.
+16:56 
+
+16:56 So, there is a resource of type log
+16:58 
+
+16:58 metrics filter.
+16:60 
+
+16:60 And so, there was this resource type was
+17:03 
+
+17:03 Okay, CloudWatch log metrics filter.
+17:06 
+
+17:06 And this is also the same, but there are
+17:09 
+
+17:09 different metrics that we are filtering,
+17:11 
+
+17:11 okay? So, for this, we are filtering
+17:13 
+
+17:13 Lambda errors based on this pattern.
+17:16 
+
+17:16 And in this one,
+17:17 
+
+17:17 we are filtering the processing time of
+17:20 
+
+17:20 each image upload.
+17:22 
+
+17:22 Okay? So, pattern that we are using over
+17:25 
+
+17:25 here is timestamp, request ID, level,
+17:27 
+
+17:27 message, and processing time key.
+17:31 
+
+17:31 Okay? So, in this format. Again, it will
+17:34 
+
+17:34 have similarly metrics transformation.
+17:38 
+
+17:38 Now, there is one more for successful
+17:42 
+
+17:42 process.
+17:43 
+
+17:43 And pattern is where the message in the
+17:46 
+
+17:46 log is successfully processed. Why do we
+17:49 
+
+17:49 need these kind of custom metrics
+17:52 
+
+17:52 filters? Because based on this, we can
+17:56 
+
+17:56 create some graphs. We can plot it on
+17:59 
+
+17:59 the dashboard, like how many requests
+18:01 
+
+18:01 were successfully processed, and what
+18:03 
+
+18:03 was the average time taken for each of
+18:05 
+
+18:05 the processing using this processing
+18:08 
+
+18:08 time filter, or how many errors were
+18:11 
+
+18:11 logged using this Lambda error custom
+18:13 
+
+18:13 metrics filter, and so on, right?
+18:15 
+
+18:15 So,
+18:16 
+
+18:16 based on our requirement, we can create
+18:20 
+
+18:20 so many custom metrics based on so many
+18:22 
+
+18:22 metrics, and then
+18:24 
+
+18:24 create meaningful insights out of it
+18:26 
+
+18:26 using graphs and using dashboard
+18:28 
+
+18:28 widgets, etc. So, that's what we are
+18:30 
+
+18:30 doing. Similarly, we have another one,
+18:32 
+
+18:32 which is for successful processes. So,
+18:35 
+
+18:35 this is what we discussed. Then we have
+18:36 
+
+18:36 image size. Now, this will check when
+18:39 
+
+18:39 user uploaded the image, what was the
+18:41 
+
+18:41 size of that image. And again, that's
+18:44 
+
+18:44 the pattern it will log.
+18:46 
+
+18:46 Okay.
+18:48 
+
+18:48 And then we have S3 access denied for
+18:51 
+
+18:51 all the files in which there was an
+18:54 
+
+18:54 access denied API call. Yeah, this is
+18:57 
+
+18:57 this is captured from a CloudTrail logs,
+18:60 
+
+18:60 and then it will go to Lambda, and from
+19:02 
+
+19:02 Lambda, it will be uploaded to the log
+19:05 
+
+19:05 stream.
+19:07 
+
+19:07 Then we have CloudWatch dashboard. Here
+19:10 
+
+19:10 we are creating Lambda monitoring
+19:11 
+
+19:11 dashboard, okay? So, again, dashboard uh
+19:16 
+
+19:16 has a different kind of So, it's it's
+19:18 
+
+19:18 again a JSON code, um but it has a
+19:21 
+
+19:21 different format, which is in this, like
+19:24 
+
+19:24 widgets, type, properties. Now, over
+19:27 
+
+19:27 here, uh we'll be providing the metrics.
+19:29 
+
+19:29 Metrics is AWS Lambda invocation, stats
+19:33 
+
+19:33 is sum, label is total invocation,
+19:37 
+
+19:37 and then dot errors, the throttles,
+19:41 
+
+19:41 everything will be added over there as
+19:43 
+
+19:43 metrics.
+19:44 
+
+19:44 View is time series, because we need to
+19:48 
+
+19:48 monitor that based on different time
+19:51 
+
+19:51 frames.
+19:52 
+
+19:52 Right? Stacked is false, that means it
+19:53 
+
+19:53 will not be stacked. And then this will
+19:56 
+
+19:56 be the title. Period meaning it will be
+19:58 
+
+19:58 refreshed by after every 300 seconds or
+20:01 
+
+20:01 300 milliseconds, not sure. And then
+20:03 
+
+20:03 here is the widget dimensions. Right?
+20:07 
+
+20:07 So, widget
+20:09 
+
+20:09 uh width, height, and x-axis, y-axis,
+20:12 
+
+20:12 where it will be plotted in the
+20:14 
+
+20:14 dashboard, that particular widget.
+20:17 
+
+20:17 Okay. Then there is another widget,
+20:19 
+
+20:19 which is again of type metrics, and here
+20:22 
+
+20:22 will be the stats. So, first one was
+20:24 
+
+20:24 based on the sum of errors and sum of
+20:28 
+
+20:28 throttle, sum of total invocations,
+20:30 
+
+20:30 right? This one is about first is the
+20:33 
+
+20:33 average duration of the invocation, the
+20:36 
+
+20:36 maximum duration of the invocation, and
+20:39 
+
+20:39 P99 duration. With this P99 P99, you
+20:42 
+
+20:42 might have seen this in different
+20:44 
+
+20:44 graphs. P99 or P50, it's basically a
+20:48 
+
+20:48 performance metrics, which says
+20:50 
+
+20:50 P99 meaning the latency or the time it
+20:54 
+
+20:54 takes to complete 99% of of the request
+20:59 
+
+20:59 over a specified period of time.
+21:02 
+
+21:02 Right? So, how much duration it will
+21:06 
+
+21:06 take to complete 99% of the request, and
+21:10 
+
+21:10 let's say 1% requests are delayed. So,
+21:12 
+
+21:12 that's an important performance metrics,
+21:15 
+
+21:15 which is called P99. And again, for this
+21:18 
+
+21:18 as well, we are doing time series.
+21:20 
+
+21:20 >> And yes, 300 was milliseconds. So, this
+21:24 
+
+21:24 will be plotted on the graph like this.
+21:26 
+
+21:26 Y-axis left minimum is zero, dimension
+21:30 
+
+21:30 blah blah blah, and here are the
+21:32 
+
+21:32 details. The next one is concurrent
+21:34 
+
+21:34 executions. And stat is
+21:37 
+
+21:37 maximum. Maximum number of concurrent
+21:39 
+
+21:39 execution.
+21:41 
+
+21:41 So, again, it will be plotted on the
+21:43 
+
+21:43 graph. Then we have lambda errors, and
+21:47 
+
+21:47 it will provide you the sum of errors,
+21:49 
+
+21:49 right? Sum of errors as well as the
+21:50 
+
+21:50 successful process. So, both the things.
+21:54 
+
+21:54 It will be again plotted, then we'll
+21:56 
+
+21:56 have image processing time and the
+21:58 
+
+21:58 maximum processing time. So, average and
+22:01 
+
+22:01 maximum. This will take the average and
+22:03 
+
+22:03 this will take the maximum processing
+22:05 
+
+22:05 time. Again, this will be coming from
+22:07 
+
+22:07 the metrics that we have created before,
+22:09 
+
+22:09 the custom metrics.
+22:12 
+
+22:12 Okay. Then we have image size over here.
+22:15 
+
+22:15 So, average image size,
+22:17 
+
+22:17 then we have
+22:19 
+
+22:19 You see there there are a lot of
+22:21 
+
+22:21 widgets. We did a lot of hard work in
+22:23 
+
+22:23 creating this project, so make sure you
+22:25 
+
+22:25 understand it thoroughly. Make sure you
+22:27 
+
+22:27 implement it. Okay? And then we have
+22:29 
+
+22:29 source So, so there is the query. So,
+22:32 
+
+22:32 source is the log group name, and these
+22:34 
+
+22:34 are the fields that we need, timestamp,
+22:36 
+
+22:36 message, and filter message like error,
+22:39 
+
+22:39 and sort by timestamp, limit by 20,
+22:41 
+
+22:41 right? So, this will be instead of a
+22:44 
+
+22:44 metrics widget, it is a log widget. So,
+22:48 
+
+22:48 it will stream the logs based on the
+22:51 
+
+22:51 query that we have inserted over here.
+22:54 
+
+22:54 Okay? And title is recent error because
+22:56 
+
+22:56 we are filtering the recent errors, and
+22:59 
+
+22:59 we are sorting it by timestamp in the
+23:03 
+
+23:03 descending order. And limit is 20, that
+23:05 
+
+23:05 means only 20 logs will be displayed on
+23:08 
+
+23:08 that widget.
+23:10 
+
+23:10 Okay.
+23:11 
+
+23:11 So, yeah. So, that's all the widgets
+23:13 
+
+23:13 that we had.
+23:14 
+
+23:14 And main.tf over here,
+23:17 
+
+23:17 then we have CloudWatch alarms.
+23:20 
+
+23:20 Then we have log alerts over here.
+23:22 
+
+23:22 Again, I'll just quickly show you the
+23:24 
+
+23:24 log alert. And alarms In alarms we'll be
+23:27 
+
+23:27 having
+23:28 
+
+23:28 metrics alarm, which will be based on
+23:31 
+
+23:31 certain threshold. Let's say trigger
+23:32 
+
+23:32 when lambda function has more than
+23:35 
+
+23:35 these many errors, right? Which is
+23:37 
+
+23:37 coming from a variable.
+23:39 
+
+23:39 And then
+23:40 
+
+23:40 we have uh CloudWatch metrics alarm for
+23:44 
+
+23:44 lambda duration as well. So, trigger
+23:46 
+
+23:46 when lambda duration exceeds this much
+23:50 
+
+23:50 of threshold. And there are so many
+23:52 
+
+23:52 alarms in this. I've told you there are
+23:54 
+
+23:54 like 12 alarms. So, we'll be looking at
+23:56 
+
+23:56 it once they are created.
+23:59 
+
+23:59 Then we have
+24:02 
+
+24:02 Uh what was the last one? It was
+24:04 
+
+24:04 CloudWatch
+24:06 
+
+24:06 metrics.
+24:08 
+
+24:08 We have seen, I think. Yeah.
+24:10 
+
+24:10 Yeah.
+24:11 
+
+24:11 Yeah, I think these all are done.
+24:15 
+
+24:15 Now, let's try to
+24:17 
+
+24:17 run this project. Let's try to do the
+24:19 
+
+24:19 demo. So, you can follow the video,
+24:22 
+
+24:22 right? And then there'll be a quick
+24:24 
+
+24:24 start guide over here, a quick start.
+24:26 
+
+24:26 You can follow this if you want. So,
+24:28 
+
+24:28 first, log in to your AWS console, like
+24:31 
+
+24:31 from here AWS login or AWS get caller
+24:33 
+
+24:33 identity to verify if you have been
+24:35 
+
+24:35 logged in.
+24:36 
+
+24:36 Yes, you should already have AWS CLI if
+24:39 
+
+24:39 you have been following.
+24:41 
+
+24:41 Then verify your Docker is up and
+24:42 
+
+24:42 running. Okay, so let me just start my
+24:44 
+
+24:44 Docker. Okay, it should be up and
+24:47 
+
+24:47 running shortly. Now, go inside the
+24:49 
+
+24:49 script folder and execute the build
+24:52 
+
+24:52 layer docker.sh. Right? There is a
+24:54 
+
+24:54 script, which will run certain things.
+24:57 
+
+24:57 So, let me show you that script.
+24:59 
+
+24:59 Inside the scripts folder, build layer
+25:02 
+
+25:02 Docker. Okay? So, it will set some
+25:04 
+
+25:04 variables first. It will check if Docker
+25:06 
+
+25:06 is running, is it installed.
+25:08 
+
+25:08 And then it will create a Docker layer
+25:11 
+
+25:11 with Python 3.12, and then it will build
+25:15 
+
+25:15 that pillow layer for you. Okay?
+25:17 
+
+25:17 So, if you want to do that, you can do
+25:20 
+
+25:20 that locally as well.
+25:22 
+
+25:22 It just sometimes it won't work because,
+25:25 
+
+25:25 you know, once compiled this project
+25:27 
+
+25:27 into Ubuntu, and then when I try to do
+25:30 
+
+25:30 the same over here in a Mac, it won't
+25:32 
+
+25:32 work uh because of the dependencies.
+25:36 
+
+25:36 There is a architectural difference
+25:38 
+
+25:38 between the operating system that we are
+25:40 
+
+25:40 using. So, that's why I thought why
+25:43 
+
+25:43 don't I make it standard? So, that is
+25:45 
+
+25:45 why we are using Docker now.
+25:47 
+
+25:47 Okay. So, it will do the pip install,
+25:49 
+
+25:49 and it will build the Docker pillow
+25:51 
+
+25:51 layer, and then it will generate the zip
+25:53 
+
+25:53 file in the same folder. Okay? So, as
+25:57 
+
+25:57 per the instructions, let's execute that
+25:59 
+
+25:59 command. Go inside scripts folder. Oops,
+26:02 
+
+26:02 not here.
+26:03 
+
+26:03 AWS lambda monitoring scripts,
+26:07 
+
+26:07 and execute
+26:09 
+
+26:09 build layer docker.sh.
+26:14 
+
+26:14 Okay, it could take 3 to 4 minutes. So,
+26:17 
+
+26:17 I'm just going to pause the recording.
+26:19 
+
+26:19 Oh, it did not take that long actually.
+26:20 
+
+26:20 It just take few seconds. So, yeah, a
+26:23 
+
+26:23 zip has been created over here.
+26:26 
+
+26:26 Let's see. Here it is. Lambda function
+26:28 
+
+26:28 Oh, sorry. pillowlayer.zip.
+26:31 
+
+26:31 This one.
+26:33 
+
+26:33 Okay. So, that is done. Now, let's go
+26:35 
+
+26:35 back to quick start guide. This is done.
+26:37 
+
+26:37 Now, let's go to Terraform folder back
+26:40 
+
+26:40 again and update
+26:44 
+
+26:44 >> [laughter]
+26:45 
+
+26:45 >> There'll be a tfvars.example file. Just
+26:47 
+
+26:47 rename this file and make the changes
+26:49 
+
+26:49 over here.
+26:50 
+
+26:50 Okay. So, I'm just going to rename this.
+26:53 
+
+26:53 And let's see what changes we need.
+26:55 
+
+26:55 Region I'm good. US East 1 environment
+26:58 
+
+26:58 I'm good. Project name is image
+26:59 
+
+26:59 processor. There are some default
+27:02 
+
+27:02 variables that we have used, that's
+27:04 
+
+27:04 fine. And then let's add uh email for
+27:08 
+
+27:08 the alerts. So, p 2000
+27:13 
+
+27:13 @
+27:14 
+
+27:14 gmail.com.
+27:17 
+
+27:17 Okay.
+27:18 
+
+27:18 Uh if you want to configure SMS as well,
+27:20 
+
+27:20 you can do this, but I have not tested
+27:22 
+
+27:22 it, so I'm not sure if it has any errors
+27:24 
+
+27:24 or not. But this should be good.
+27:26 
+
+27:26 Alerting mail.
+27:28 
+
+27:28 Right? And then metrics namespace, this
+27:30 
+
+27:30 is fine. This is also good.
+27:34 
+
+27:34 Okay. Yeah.
+27:36 
+
+27:36 Let's save the file, and let's go back
+27:38 
+
+27:38 to quick start. Okay, so I have made
+27:40 
+
+27:40 those changes in the tfvars files. Alert
+27:44 
+
+27:44 emails is required, so make sure you add
+27:47 
+
+27:47 that. And then basically run Terraform
+27:49 
+
+27:49 init, plan, and apply, and then we'll
+27:51 
+
+27:51 see the resources, and then we'll test
+27:54 
+
+27:54 the resources. Okay?
+27:56 
+
+27:56 So,
+27:57 
+
+27:57 let me just set the alias first.
+28:01 
+
+28:01 Alias tf equal to Terraform,
+28:05 
+
+28:05 and then tf init.
+28:07 
+
+28:07 Oops, initializing empty baby. I'm not
+28:09 
+
+28:09 in the correct directory. No.
+28:11 
+
+28:11 So, let's go inside Terraform.
+28:15 
+
+28:15 tf init.
+28:17 
+
+28:17 Oops, it says failed to get existing
+28:20 
+
+28:20 workspace does not exist. Okay, so the
+28:23 
+
+28:23 bucket that I am using in backend.tf
+28:27 
+
+28:27 file, it says it's it does not exist.
+28:30 
+
+28:30 So, let me just try to see what Either I
+28:34 
+
+28:34 can create a new bucket for the backend,
+28:36 
+
+28:36 or I can use any existing backend
+28:38 
+
+28:38 bucket. So, let's see if I have I have a
+28:41 
+
+28:41 lot of buckets created.
+28:43 
+
+28:43 I should be start cleaning it. Anyways,
+28:46 
+
+28:46 okay, let's use this bucket.
+28:52 
+
+28:52 Okay, and the bucket details will be in
+28:55 
+
+28:55 backend.tf.
+29:02 
+
+29:02 Okay.
+29:03 
+
+29:03 Key is day23.tfstate, so it will create
+29:07 
+
+29:07 a new file. Okay.
+29:09 
+
+29:09 Um okay. Let's run tf init again. It
+29:12 
+
+29:12 says unable to list object with prefix
+29:16 
+
+29:16 env. Operation error, list object status
+29:20 
+
+29:20 code 400, invalid bucket name. Why
+29:25 
+
+29:25 invalid? The bucket exists.
+29:28 
+
+29:28 Okay.
+29:29 
+
+29:29 Um
+29:30 
+
+29:30 Oh, there is a space.
+29:32 
+
+29:32 Logs can't lie. So, yeah, there was an
+29:35 
+
+29:35 issue actually.
+29:36 
+
+29:36 This should be done. And let's run tf
+29:39 
+
+29:39 plan. And if it doesn't have any error,
+29:42 
+
+29:42 then we are good to run tf apply,
+29:45 
+
+29:45 which will take a good amount of time.
+29:48 
+
+29:48 We have a lot of resources actually. How
+29:50 
+
+29:50 many resources we have? Let's see.
+29:54 
+
+29:54 49 resources. Okay.
+29:58 
+
+29:58 So, let's run TF apply
+30:03 
+
+30:03 hyphen hyphen auto approve
+30:06 
+
+30:06 and I'll just let it run. I'm going to
+30:08 
+
+30:08 pause the recording till it's doing its
+30:10 
+
+30:10 work.
+30:13 
+
+30:13 Now, this was quick as well. Now, it did
+30:16 
+
+30:16 not take much time. There was no
+30:17 
+
+30:17 resource that could have taken a lot of
+30:19 
+
+30:19 time and all the resources have
+30:21 
+
+30:21 completed. So, now let's go over here
+30:25 
+
+30:25 and let's hit refresh. There should be
+30:27 
+
+30:27 two buckets created.
+30:29 
+
+30:29 Oops. No, not this.
+30:32 
+
+30:32 So, there is day 23 TF state. That is
+30:35 
+
+30:35 the TF state file. Okay, and let's go
+30:37 
+
+30:37 inside buckets.
+30:40 
+
+30:40 Over here, there should be two buckets.
+30:42 
+
+30:42 One is image processor dev upload and
+30:45 
+
+30:45 then there is image processor dev
+30:48 
+
+30:48 processed. Okay, one for upload, one for
+30:50 
+
+30:50 processed. Okay, currently it doesn't
+30:52 
+
+30:52 have anything.
+30:54 
+
+30:54 Let me duplicate this tab as well.
+30:58 
+
+30:58 And I can shut down my Docker now. It
+30:60 
+
+30:60 was only needed to build that image. So,
+31:02 
+
+31:02 let's just quit it. Over here, let's go
+31:05 
+
+31:05 ahead and check our lambda function.
+31:11 
+
+31:11 Okay, here's the lambda function.
+31:14 
+
+31:14 And
+31:16 
+
+31:16 here's the trigger on the S3 bucket.
+31:26 
+
+31:26 Okay, let's also go to CloudWatch.
+31:35 
+
+31:35 Okay, so
+31:36 
+
+31:36 let's check alarms first. All alarms.
+31:41 
+
+31:41 And there are 14 alarms. Maybe there
+31:43 
+
+31:43 were a couple of alarms that were there
+31:45 
+
+31:45 before as well. Yeah, so there were two
+31:47 
+
+31:47 billing alarms that were created
+31:49 
+
+31:49 earlier. So, this is like how I track my
+31:52 
+
+31:52 daily usage of AWS charges on this
+31:55 
+
+31:55 account and it notifies me.
+31:58 
+
+31:58 Make sure you understand billing alarm.
+31:59 
+
+31:59 It's very important. I'm not sure if I
+32:01 
+
+32:01 have covered in this series, but this is
+32:03 
+
+32:03 really important. Just Google it or it
+32:05 
+
+32:05 will be fairly simple and
+32:06 
+
+32:06 straightforward, right? I have set an
+32:09 
+
+32:09 alert threshold like whenever it reaches
+32:11 
+
+32:11 to a certain amount, I will get the
+32:13 
+
+32:13 email and that's how I know that I have
+32:15 
+
+32:15 left some resources undestroyed and I
+32:18 
+
+32:18 need to take care of it, right? And
+32:20 
+
+32:20 apart from that, there are like these 12
+32:22 
+
+32:22 alarms that have been created. Okay.
+32:25 
+
+32:25 And based on all the different things
+32:27 
+
+32:27 that we have discussed. Now, if you go
+32:29 
+
+32:29 to logs,
+32:34 
+
+32:34 so over here as well, you see there is a
+32:36 
+
+32:36 log group created. Image processor.
+32:40 
+
+32:40 And
+32:42 
+
+32:42 it will have a log stream once the log
+32:44 
+
+32:44 will start streaming. Currently, we
+32:46 
+
+32:46 don't have any invocation to the lambda
+32:47 
+
+32:47 function yet. That's why it is not
+32:49 
+
+32:49 showing.
+32:50 
+
+32:50 Then here are the metrics. All metrics
+32:54 
+
+32:54 and
+32:55 
+
+32:55 here is our custom namespace that we
+32:57 
+
+32:57 have created for the custom metrics.
+32:59 
+
+32:59 Okay, so if we click on that,
+33:02 
+
+33:02 so we have four metrics based on the
+33:05 
+
+33:05 function name. Okay.
+33:07 
+
+33:07 Which is
+33:09 
+
+33:09 processing success, image process,
+33:11 
+
+33:11 processing time, processing failure.
+33:14 
+
+33:14 And there are 11 metrics, no dimension
+33:17 
+
+33:17 like critical error, image processing
+33:19 
+
+33:19 time, memory errors, S3 access denied
+33:22 
+
+33:22 and so on.
+33:23 
+
+33:23 Right? So, I tried to add everything
+33:27 
+
+33:27 that a production grade project should
+33:29 
+
+33:29 have, right? Okay, so let's go back. So,
+33:32 
+
+33:32 these are the metrics and let's go back
+33:35 
+
+33:35 to CloudWatch.
+33:37 
+
+33:37 And
+33:39 
+
+33:39 metrics explorer and there should be
+33:43 
+
+33:43 dashboard as well. So, if you go to
+33:46 
+
+33:46 explorer, no. Log management,
+33:48 
+
+33:48 infrastructure monitoring, no.
+33:53 
+
+33:53 APM, no.
+33:59 
+
+33:59 Dashboard's over here. So, this is the
+34:01 
+
+34:01 dashboard that we have created.
+34:05 
+
+34:05 Okay, and here are all the widgets that
+34:07 
+
+34:07 we've created. Lambda invocation, lambda
+34:09 
+
+34:09 duration, custom metrics.
+34:12 
+
+34:12 So many things, right? And here will be
+34:14 
+
+34:14 the logs for the recent errors.
+34:17 
+
+34:17 So, let's try to test it now.
+34:20 
+
+34:20 First, let's try to upload a valid
+34:22 
+
+34:22 image. Okay, so over here
+34:26 
+
+34:26 and add files,
+34:28 
+
+34:28 let's upload
+34:31 
+
+34:31 this image over here.
+34:34 
+
+34:34 Okay, and hit upload.
+34:36 
+
+34:36 Now, what should happen? It should be
+34:38 
+
+34:38 processed into five different images and
+34:41 
+
+34:41 the lambda function should be triggered
+34:43 
+
+34:43 and all the metrics, many of the metrics
+34:46 
+
+34:46 log should be populated.
+34:48 
+
+34:48 So, let's go back and let's try to check
+34:52 
+
+34:52 in the other bucket which is
+34:56 
+
+34:56 dev processed. Okay, you see?
+34:59 
+
+34:59 With the same name day 15 bracket three
+35:02 
+
+35:02 hyphen, there are five different images
+35:05 
+
+35:05 created. One is a compressed image,
+35:07 
+
+35:07 another one is a low quality JPEG,
+35:10 
+
+35:10 another one is a PNG, a thumbnail and
+35:12 
+
+35:12 then the WebP with the WebP format. All
+35:15 
+
+35:15 these have been created just now. Now,
+35:18 
+
+35:18 let's go over here and let's hit refresh
+35:21 
+
+35:21 on this dashboard. Maybe it takes some
+35:24 
+
+35:24 time
+35:25 
+
+35:25 to reflect over here, but once it does,
+35:28 
+
+35:28 you should see the lambda invocations
+35:30 
+
+35:30 over here.
+35:35 
+
+35:35 So, let me just open two three different
+35:39 
+
+35:39 tabs to check different things.
+35:42 
+
+35:42 First is there shouldn't be any alarm
+35:45 
+
+35:45 actually.
+35:46 
+
+35:46 Yeah, log management
+35:48 
+
+35:48 and over here. So, here's the log stream
+35:52 
+
+35:52 which is expected. Now, if you go inside
+35:55 
+
+35:55 that, here are the logs. So, it says,
+35:57 
+
+35:57 okay, it triggered the lambda function
+35:59 
+
+35:59 with the request ID. It does the
+36:01 
+
+36:01 processing and then it ended it. Okay.
+36:05 
+
+36:05 Then we have metrics over here.
+36:10 
+
+36:10 Okay, so these are just the metrics. It
+36:12 
+
+36:12 won't show anything over here
+36:14 
+
+36:14 unless you have it in the graph, right?
+36:19 
+
+36:19 So, we'll
+36:20 
+
+36:20 see that on the dashboard only.
+36:22 
+
+36:22 Now,
+36:25 
+
+36:25 let's over here. Hit refresh.
+36:28 
+
+36:28 Still does not show anything.
+36:36 
+
+36:36 We need to wait for some more time.
+36:39 
+
+36:39 Okay, meanwhile, we can Okay, we have
+36:42 
+
+36:42 seen this. Let's go back to CloudWatch.
+36:46 
+
+36:46 And over here,
+36:49 
+
+36:49 okay, let's let's try to trigger while
+36:51 
+
+36:51 it's populating it. Let it take its
+36:53 
+
+36:53 time. Let's try to simulate some failure
+36:56 
+
+36:56 alerts. Okay, so for that Oh, before
+36:58 
+
+36:58 that, we need to do one more thing
+37:00 
+
+37:00 because we created three different SNS
+37:02 
+
+37:02 notifications subscriptions. So, go to
+37:05 
+
+37:05 your email and confirm the subscription.
+37:08 
+
+37:08 So, let me do that first.
+37:11 
+
+37:11 So, you will see three emails like this.
+37:14 
+
+37:14 Okay, so you have chosen to subscribe to
+37:16 
+
+37:16 the topic. One is image processor log
+37:18 
+
+37:18 alerts, dev performance alerts, critical
+37:21 
+
+37:21 alerts. So, click on the confirm
+37:23 
+
+37:23 subscription for each of those.
+37:31 
+
+37:31 Okay, subscribed, subscribed and
+37:34 
+
+37:34 subscribed. Okay.
+37:36 
+
+37:36 Now, in this email box only, you will
+37:38 
+
+37:38 get the alerts whenever it will be
+37:40 
+
+37:40 triggered.
+37:41 
+
+37:41 So, let's go back and hit refresh one
+37:44 
+
+37:44 more time. Hopefully Now, we see
+37:46 
+
+37:46 something. Okay, so over here you see
+37:48 
+
+37:48 there is a tiny dot because there was
+37:49 
+
+37:49 one invocation count is one over here on
+37:52 
+
+37:52 the Y axis. So, that is why you see one
+37:55 
+
+37:55 invocation. Total invocation is one.
+37:57 
+
+37:57 Zero errors, zero throttles. Okay.
+37:60 
+
+37:60 And here is the duration in
+38:01 
+
+38:01 milliseconds. It took 5.11 K
+38:04 
+
+38:04 milliseconds. And over here, concurrent
+38:07 
+
+38:07 execution is one. There was only one
+38:10 
+
+38:10 execution.
+38:12 
+
+38:12 Error versus success. Successful is one.
+38:14 
+
+38:14 There was zero errors.
+38:17 
+
+38:17 Okay, now let's try to simulate the
+38:20 
+
+38:20 error scenario. So, I'm going to go to
+38:23 
+
+38:23 general purpose buckets. Okay.
+38:26 
+
+38:26 Dev upload bucket. Upload a file. Let's
+38:30 
+
+38:30 say add files and I'm going to add these
+38:33 
+
+38:33 six large files. So, there was an alert
+38:36 
+
+38:36 that we have created which says if the
+38:39 
+
+38:39 file is greater than 5 MB, generate the
+38:41 
+
+38:41 alert. And there was another alert which
+38:44 
+
+38:44 says if there are more than five files
+38:48 
+
+38:48 at concurrently uploaded, then also
+38:51 
+
+38:51 generate the alert. So, this is what we
+38:54 
+
+38:54 are doing. So, I'm just going to upload
+38:56 
+
+38:56 all it all of these together.
+38:59 
+
+38:59 But they are not 5 MB.
+39:01 
+
+39:01 Okay, let's try.
+39:03 
+
+39:03 Upload.
+39:05 
+
+39:05 Okay.
+39:06 
+
+39:06 Uploaded. Now, let's go back. Let's
+39:11 
+
+39:11 check the
+39:14 
+
+39:14 dashboard. A dashboard will take some
+39:16 
+
+39:16 time.
+39:17 
+
+39:17 I forgot. But
+39:21 
+
+39:21 alarm should be fast. Let's say in
+39:25 
+
+39:25 alarm.
+39:27 
+
+39:27 Nothing in an alarm.
+39:29 
+
+39:29 Okay.
+39:31 
+
+39:31 All alarms.
+39:32 
+
+39:32 Everything is okay.
+39:41 
+
+39:41 Okay, it did not trigger any alarm yet.
+39:46 
+
+39:46 Maybe nothing was breached.
+39:50 
+
+39:50 Um
+39:59 
+
+39:59 Okay, it did not breach any alarm. Let's
+40:02 
+
+40:02 try to do something else as well.
+40:04 
+
+40:04 In the same bucket,
+40:07 
+
+40:07 uh let's try to upload
+40:11 
+
+40:11 Let's upload a file that is actually not
+40:13 
+
+40:13 an image. Let's upload something else.
+40:16 
+
+40:16 Some HTML file or some PDF, maybe.
+40:20 
+
+40:20 Yeah, let's try to upload a PDF.
+40:25 
+
+40:25 Uh
+40:26 
+
+40:26 or no, this is an image actually.
+40:35 
+
+40:35 Okay, let's try to upload this PDF.
+40:39 
+
+40:39 Okay, uploaded.
+40:45 
+
+40:45 Okay, and now let's go
+40:47 
+
+40:47 back over here.
+40:52 
+
+40:52 Still, it will wait for some time to
+40:53 
+
+40:53 trigger the alarm because if you uh go
+40:57 
+
+40:57 in the let's say
+41:00 
+
+41:00 CloudWatch alarms.
+41:04 
+
+41:04 Right?
+41:05 
+
+41:05 It says evaluation period is for for
+41:09 
+
+41:09 each of those, right? We have some
+41:11 
+
+41:11 duration of evaluation period. Like it
+41:14 
+
+41:14 should wait for some time before
+41:16 
+
+41:16 triggering the alarm.
+41:18 
+
+41:18 And then there is a threshold as well.
+41:21 
+
+41:21 So, to to to to to let's see.
+41:25 
+
+41:25 Concurrent execution, okay.
+41:27 
+
+41:27 So, this is what we tried to do. Trigger
+41:30 
+
+41:30 when concurrent execution exceeds
+41:33 
+
+41:33 uh where concurrent execution threshold.
+41:35 
+
+41:35 Let's see how much it is.
+41:38 
+
+41:38 Uh not from here, from the main
+41:40 
+
+41:40 variables.
+41:42 
+
+41:42 Concurrent Let's control F concurrent.
+41:46 
+
+41:46 Okay, not from here.
+41:49 
+
+41:49 Where it is? Yeah, here.
+41:53 
+
+41:53 Concurrent execution is default is 50.
+41:58 
+
+41:58 That's a lot.
+41:60 
+
+41:60 No, I don't need 50. Let's just keep it
+42:02 
+
+42:02 five, and then only we can try.
+42:06 
+
+42:06 Okay.
+42:07 
+
+42:07 Let's go back.
+42:10 
+
+42:10 Okay, now let's try to upload the image
+42:13 
+
+42:13 again.
+42:15 
+
+42:15 Let's upload all these six images again.
+42:20 
+
+42:20 Upload.
+42:25 
+
+42:25 Okay.
+42:27 
+
+42:27 Dev upload, yes.
+42:29 
+
+42:29 All right, and now let's see.
+42:38 
+
+42:38 Over here, uh there is some spike in the
+42:41 
+
+42:41 graph. There are because six
+42:43 
+
+42:43 invocations. Five images we uploaded
+42:45 
+
+42:45 recently.
+42:46 
+
+42:46 Now there is lambda duration over here,
+42:49 
+
+42:49 and then there is P99 duration, and then
+42:52 
+
+42:52 there is average duration. And then
+42:54 
+
+42:54 there are They all were successful. All
+42:57 
+
+42:57 six were successful.
+42:59 
+
+42:59 Even PDF
+43:00 
+
+43:00 upload was successful.
+43:03 
+
+43:03 It shouldn't be actually. Yeah, it's not
+43:05 
+
+43:05 plotted. The PDF is not plotted yet on
+43:08 
+
+43:08 the graph, so we'll see about that. And
+43:10 
+
+43:10 there were six concurrent executions
+43:12 
+
+43:12 over here, and the next five is not yet
+43:15 
+
+43:15 plotted, so it will come soon.
+43:18 
+
+43:18 Here are the errors as well, you see.
+43:20 
+
+43:20 Recent errors. It says
+43:23 
+
+43:23 Oops.
+43:27 
+
+43:27 I'm not able to Okay, over here you see
+43:30 
+
+43:30 says
+43:32 
+
+43:32 to to to to to to cannot identify image
+43:36 
+
+43:36 file. This is this This is for the PDF.
+43:40 
+
+43:40 Okay. So, logs transported soon, but
+43:44 
+
+43:44 it's not yet displayed in the alert or
+43:47 
+
+43:47 the dashboard.
+43:49 
+
+43:49 Okay.
+43:50 
+
+43:50 So, if we hit refresh again,
+43:54 
+
+43:54 uh let's see. What we are looking for is
+43:56 
+
+43:56 basically error on the graph.
+43:59 
+
+43:59 Uh which is
+44:02 
+
+44:02 let's say where it is.
+44:06 
+
+44:06 Log errors, is it? No, log errors is not
+44:10 
+
+44:10 there yet. Okay, and let's see if it
+44:13 
+
+44:13 triggered any alarm or no. No alarms.
+44:19 
+
+44:19 Yeah, alarm should have been triggered
+44:20 
+
+44:20 by now. There is something not quite
+44:24 
+
+44:24 good. So, dev processor, let's say
+44:27 
+
+44:27 uh
+44:28 
+
+44:28 high concurrency, okay.
+44:31 
+
+44:31 Now, in this it says concurrent
+44:33 
+
+44:33 execution 50 for two data points within
+44:36 
+
+44:36 two minutes.
+44:37 
+
+44:37 Oh.
+44:39 
+
+44:39 We made the changes, but we did not
+44:42 
+
+44:42 apply the changes, right? We made the
+44:44 
+
+44:44 changes only. So, let's keep the number
+44:47 
+
+44:47 as two.
+44:49 
+
+44:49 Okay, let's apply the changes first.
+45:02 
+
+45:02 Okay, it will make some changes. Okay,
+45:05 
+
+45:05 it did. Now let's go back, and I'm going
+45:07 
+
+45:07 to upload five more images.
+45:13 
+
+45:13 Let's do that.
+45:16 
+
+45:16 Upload.
+45:19 
+
+45:19 Okay.
+45:21 
+
+45:21 Now, let's wait.
+45:35 
+
+45:35 Okay, uh what does it says? It says
+45:37 
+
+45:37 concurrent execution six, then one, then
+45:40 
+
+45:40 six.
+45:42 
+
+45:42 Count is still 50 is the threshold. It
+45:45 
+
+45:45 should show as two now.
+45:48 
+
+45:48 Which is what it is not showing.
+45:51 
+
+45:51 So, let's go back. Let's hit refresh.
+45:55 
+
+45:55 And dev processor high concurrency.
+46:00 
+
+46:00 This still showing as 50.
+46:03 
+
+46:03 Is it coming from DFRs? Let's see
+46:05 
+
+46:05 because DFR takes precedence. If we uh
+46:09 
+
+46:09 Yes.
+46:12 
+
+46:12 All right, let's make change one more
+46:15 
+
+46:15 time.
+46:21 
+
+46:21 Okay, and hit refresh.
+46:25 
+
+46:25 Now we are talking. See, now the
+46:27 
+
+46:27 threshold is two.
+46:28 
+
+46:28 And it is going above the threshold now.
+46:33 
+
+46:33 But this shouldn't trigger the alarm
+46:34 
+
+46:34 because those upload have already been
+46:36 
+
+46:36 done before we made the changes, right?
+46:38 
+
+46:38 So, we'll we'll have to do the fresh
+46:40 
+
+46:40 upload again.
+46:43 
+
+46:43 Okay, so let's upload again.
+46:51 
+
+46:51 Um upload.
+46:53 
+
+46:53 Add files, and let's upload.
+46:58 
+
+46:58 Upload.
+47:01 
+
+47:01 Done. Let's go back.
+47:04 
+
+47:04 Okay, um
+47:10 
+
+47:10 No errors over here. Concurrent
+47:11 
+
+47:11 executions, yes.
+47:18 
+
+47:18 And over here,
+47:23 
+
+47:23 you see there is something plotted over
+47:25 
+
+47:25 here. Six concurrent execution.
+47:32 
+
+47:32 Two data points to alarm. Two out of two
+47:35 
+
+47:35 says.
+47:36 
+
+47:36 So, this yes, this is red now. In alarm.
+47:40 
+
+47:40 Okay, and if you go to dashboard,
+47:44 
+
+47:44 um
+47:48 
+
+47:48 over here errors are not there yet.
+47:51 
+
+47:51 But
+47:54 
+
+47:54 in
+47:55 
+
+47:55 CloudWatch
+47:57 
+
+47:57 um alarms, or you can see over here,
+48:01 
+
+48:01 right? It says concurrent executions.
+48:05 
+
+48:05 Or you can go to all alarms,
+48:08 
+
+48:08 and you see this one is in alarm. It
+48:10 
+
+48:10 says concurrent execution is greater
+48:12 
+
+48:12 than two for two data points within two
+48:14 
+
+48:14 minutes.
+48:16 
+
+48:16 Okay, and I should have received the
+48:17 
+
+48:17 email as well. So, let me just open the
+48:19 
+
+48:19 email, and here's the email as well that
+48:21 
+
+48:21 I've just got, which says to to to to da
+48:25 
+
+48:25 your threshold were greater than two,
+48:28 
+
+48:28 and state change from okay to alarm, and
+48:31 
+
+48:31 all the details about that.
+48:34 
+
+48:34 Right?
+48:35 
+
+48:35 So, that's this alarm, and then let's go
+48:39 
+
+48:39 and see if it triggered any more alarm.
+48:41 
+
+48:41 No.
+48:43 
+
+48:43 So, this is how you can simulate the
+48:45 
+
+48:45 alarms as well.
+48:47 
+
+48:47 Okay, and let's say
+48:50 
+
+48:50 what is this high alert? It says error
+48:52 
+
+48:52 greater than three for one data points
+48:54 
+
+48:54 within one minute. So, let's try to
+48:56 
+
+48:56 trigger this alarm as well. So, we need
+48:57 
+
+48:57 to upload three invalid files. Okay.
+49:03 
+
+49:03 Upload.
+49:05 
+
+49:05 Add files.
+49:07 
+
+49:07 So,
+49:09 
+
+49:09 let upload one GIF,
+49:12 
+
+49:12 one PDF, and another PDF.
+49:18 
+
+49:18 Okay, uploaded.
+49:20 
+
+49:20 Upload.
+49:24 
+
+49:24 Okay, and let's go back over here, and
+49:28 
+
+49:28 let's wait to see the magic. But before
+49:31 
+
+49:31 that, it should be plotted on the graph
+49:33 
+
+49:33 as well, right? So, inside dashboard,
+49:41 
+
+49:41 Something is wrong, but I want you to do
+49:43 
+
+49:43 the troubleshooting. Why these log
+49:45 
+
+49:45 errors are not updated over here, right?
+49:48 
+
+49:48 It It's showing over here, and this is
+49:51 
+
+49:51 the regex that we use, but still it is
+49:53 
+
+49:53 not updated over there in the graph. So,
+49:56 
+
+49:56 you need to check that. And what I am
+49:58 
+
+49:58 waiting for is like three concurrent
+50:02 
+
+50:02 failures. So, there are errors now again
+50:05 
+
+50:05 for the file that I just uploaded.
+50:08 
+
+50:08 And there should be Let's see.
+50:12 
+
+50:12 Image processing error. Yeah, this is
+50:15 
+
+50:15 the one, right? So, the earlier alarm
+50:17 
+
+50:17 was a different one, which is concurrent
+50:19 
+
+50:19 executions, high concurrency, and all.
+50:22 
+
+50:22 So, it's It's now in okay state because
+50:25 
+
+50:25 it will only capture within 2 minutes,
+50:27 
+
+50:27 right? Now,
+50:28 
+
+50:28 after that, it will be turned into green
+50:31 
+
+50:31 because for that to 2-minute duration,
+50:33 
+
+50:33 there is nothing.
+50:35 
+
+50:35 But right now, within past 1 minute,
+50:37 
+
+50:37 this alarm got triggered because we have
+50:40 
+
+50:40 image processing error. The threshold
+50:42 
+
+50:42 was two, and we had four image
+50:45 
+
+50:45 processing errors. Okay? So, that's why
+50:48 
+
+50:48 it triggered the alarm. You can try to
+50:50 
+
+50:50 test rest of the alarms if you want. You
+50:52 
+
+50:52 can try to create your own alarm. You
+50:54 
+
+50:54 can try to build your own customized
+50:57 
+
+50:57 dashboard.
+50:58 
+
+50:58 But I hope you understand it. I hope you
+51:02 
+
+51:02 now know how to
+51:04 
+
+51:04 set up continuous monitoring, alerting,
+51:06 
+
+51:06 and logging on a serverless application.
+51:10 
+
+51:10 And do not forget to destroy the
+51:12 
+
+51:12 resources.
+51:13 
+
+51:13 Um this is what we do at the end of
+51:16 
+
+51:16 every demo. And let's hit yes.
+51:19 
+
+51:19 And that's it. That's it for this video.
+51:22 
+
+51:22 I hope you found it valuable. I will see
+51:25 
+
+51:25 you tomorrow with day 24. So, thank you
+51:27 
+
+51:27 so much for watching. I hope you have a
+51:29 
+
+51:29 good day. Have a good night. Take rest.
+51:32 
+
+51:32 Sleep well, and happy learning. Thank
+51:34 
+
+51:34 you.

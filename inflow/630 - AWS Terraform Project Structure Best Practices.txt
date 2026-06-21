@@ -1,0 +1,790 @@
+00:00 Hello and welcome back to the course. My
+00:02 
+
+00:02 name is PJ. This is day six in 30 days
+00:05 
+
+00:05 of AWS Terraform. And in this video,
+00:07 
+
+00:07 we'll be looking into Terraform file
+00:09 
+
+00:09 structure and some best practices to
+00:12 
+
+00:12 organize your Terraform project across
+00:14 
+
+00:14 multiple files. So that's what we're
+00:17 
+
+00:17 going to do. Uh make sure you have
+00:18 
+
+00:18 watched the previous video especially
+00:20 
+
+00:20 the day zero video in which I have
+00:22 
+
+00:22 explained the challenge details 30 days
+00:24 
+
+00:24 of AWS Terraform challenge, how to do
+00:26 
+
+00:26 the submissions and how to participate
+00:28 
+
+00:28 in that. Now uh let's go over here and
+00:32 
+
+00:32 understand the terapform file structure.
+00:34 
+
+00:34 So earlier when we created the terapform
+00:37 
+
+00:37 project you might have seen what we did
+00:39 
+
+00:39 uh in let's say the day four folder
+00:41 
+
+00:41 which has day five content as well. We
+00:43 
+
+00:43 just created one terapform file main.tf
+00:46 
+
+00:46 and put everything over there. Why I did
+00:49 
+
+00:49 that? I did that to showcase you the
+00:52 
+
+00:52 basic principles like from where we just
+00:54 
+
+00:54 get started. So the idea is to get
+00:56 
+
+00:56 started and then get better and get
+00:60 
+
+00:60 better and get better. Right? So we just
+01:02 
+
+01:02 got started and now we'll try to improve
+01:06 
+
+01:06 the way we are working. We'll try to
+01:08 
+
+01:08 improve the way we are learning. So what
+01:10 
+
+01:10 we need to do is we'll create multiple
+01:14 
+
+01:14 files and we organize the resources
+01:16 
+
+01:16 across multiple files. So first have a
+01:18 
+
+01:18 look at what we're going to do and then
+01:20 
+
+01:20 we'll do that. So then there's your
+01:22 
+
+01:22 Terraform project, the root directory
+01:25 
+
+01:25 which is also called root modules. Okay.
+01:28 
+
+01:28 And then inside that we have multiple
+01:30 
+
+01:30 files. So that list is not exhaustive.
+01:32 
+
+01:32 This is just some recommendation, some
+01:34 
+
+01:34 best practices. There is no stick format
+01:38 
+
+01:38 to the file name that you need to use.
+01:40 
+
+01:40 But but this is some general
+01:42 
+
+01:42 recommendation from the terraform from
+01:44 
+
+01:44 the hashik site that you can use. Okay.
+01:46 
+
+01:46 So you start with your main.tf TF which
+01:48 
+
+01:48 has all of your resource definition
+01:51 
+
+01:51 right you have your S3 VPC EC2 and all
+01:55 
+
+01:55 the resources you can again divide that
+01:58 
+
+01:58 as per resource like instead of one
+01:60 
+
+02:00 main.tf for multiple resource you can
+02:03 
+
+02:03 have S3.tf you can have VPC.tf you can
+02:07 
+
+02:07 have EC2.tf TF and so on, right? But it
+02:10 
+
+02:10 become really complex when there are
+02:12 
+
+02:12 hundreds of resources. You should not be
+02:14 
+
+02:14 creating 100 different files for each
+02:16 
+
+02:16 resource type, right? So it totally
+02:17 
+
+02:17 depends on your structure. But in those
+02:19 
+
+02:19 cases, we'll use modules. Modules we are
+02:22 
+
+02:22 not covering yet. It's a little advanced
+02:24 
+
+02:24 topic. It shouldn't be covered at this
+02:26 
+
+02:26 point. But for now, we'll just create
+02:28 
+
+02:28 one main.tf. Then we'll also separate
+02:32 
+
+02:32 input variables. So currently input
+02:34 
+
+02:34 variables in main.tf will create a
+02:36 
+
+02:36 separate file
+02:37 
+
+02:37 variables.tf.f.f.f.f.f.f.f.f.f.f
+02:38 
+
+02:38 Similarly for output we'll have a
+02:40 
+
+02:40 different file. Then terapform version
+02:42 
+
+02:42 file should be inside versions.tf.
+02:46 
+
+02:46 Provider file will have providers.tf.
+02:49 
+
+02:49 Then we have backend.tf for the backend
+02:52 
+
+02:52 configuration. Teraphform.tfr file we
+02:55 
+
+02:55 have already created. And then you can
+02:57 
+
+02:57 also create terapform.tfr.example
+02:59 
+
+02:59 example which is like a template like
+03:01 
+
+03:01 what variable need values and uh you
+03:05 
+
+03:05 know and this file you can publish to
+03:06 
+
+03:06 GitHub but you should not be publishing
+03:09 
+
+03:09 your TFR files to the GitHub why because
+03:12 
+
+03:12 it will have the values like some values
+03:14 
+
+03:14 that you don't want others to see and
+03:17 
+
+03:17 maybe it doesn't make sense to them or
+03:19 
+
+03:19 it is not really helpful or maybe some
+03:22 
+
+03:22 confidential data that you don't want to
+03:24 
+
+03:24 expose right so in that case you just
+03:27 
+
+03:27 use a template which is example
+03:29 
+
+03:29 And then you have get ignore dot readme
+03:32 
+
+03:32 file and so on. Okay. So let's go ahead
+03:35 
+
+03:35 and do that changes. Okay. So over here
+03:38 
+
+03:38 we have the back end. So let's pick the
+03:41 
+
+03:41 backend configuration first. Okay. So
+03:44 
+
+03:44 let's copy this.
+03:46 
+
+03:46 Oh, I just need the backend. S3. So let
+03:50 
+
+03:50 me just cut this file from here and
+03:52 
+
+03:52 inside the same folder or let's create a
+03:56 
+
+03:56 separate folder. Let's not do that.
+03:59 
+
+03:59 Okay. So,
+04:01 
+
+04:01 copy it and
+04:06 
+
+04:06 I'm not sure how do I paste the folder
+04:08 
+
+04:08 over here. Can I create a duplicate
+04:11 
+
+04:11 folder?
+04:14 
+
+04:14 Um,
+04:17 
+
+04:17 okay. Let me do it from command line.
+04:20 
+
+04:20 Okay. Currently, I'm in day four. Let's
+04:23 
+
+04:23 go directory back. cp- rf day 04 and
+04:29 
+
+04:29 let's use that day 06.
+04:35 
+
+04:35 Okay, so day 06 folder has been created
+04:38 
+
+04:38 over here. Now we'll make the changes in
+04:40 
+
+04:40 the day 06 folder.
+04:44 
+
+04:44 Close all. Okay, so here we are main.tf.
+04:49 
+
+04:49 Now first let's pick the backend
+04:52 
+
+04:52 configuration.
+04:53 
+
+04:53 Okay. And let's create a new file in day
+04:56 
+
+04:56 six. Let's call it
+04:59 
+
+04:59 backend.tf.
+05:02 
+
+05:02 Paste it over here. Now you'll see there
+05:06 
+
+05:06 is a red sign over here means there is
+05:08 
+
+05:08 some issues with the file. It's because
+05:10 
+
+05:10 the backend configuration has to be
+05:11 
+
+05:11 inside the terraform block. Okay. So
+05:14 
+
+05:14 let's create a terraform block over here
+05:22 
+
+05:22 and let's close it over here. Okay, it's
+05:25 
+
+05:25 better now. So let's save this file. Now
+05:29 
+
+05:29 back end is out. Now let's separate the
+05:33 
+
+05:33 provider as well. So I'm just going to
+05:35 
+
+05:35 cut this from here. And the main file
+05:38 
+
+05:38 doesn't need to have the Terraform uh
+05:40 
+
+05:40 block, right? So Terraform auto detects
+05:44 
+
+05:44 uh all the files with TF extension and
+05:47 
+
+05:47 with the other extensions for the
+05:49 
+
+05:49 variable file. So you don't have to
+05:51 
+
+05:51 really provide like what names you are
+05:54 
+
+05:54 using. Just the extension should be
+05:56 
+
+05:56 correct which is TF. Okay. So
+06:00 
+
+06:00 providers.tf
+06:03 
+
+06:03 and paste it over here.
+06:06 
+
+06:06 Set save.
+06:08 
+
+06:08 Then let's go back to main. And then we
+06:10 
+
+06:10 have actually uh this. Yeah. Yeah. I
+06:15 
+
+06:15 mean we can keep it the same in the same
+06:17 
+
+06:17 file.
+06:22 
+
+06:22 Okay. And then let's go back and let's
+06:26 
+
+06:26 pick the variables from here.
+06:31 
+
+06:31 Ctrl X. And it is showing the error now
+06:34 
+
+06:34 because I just do a cut. And now it is
+06:38 
+
+06:38 saying these variables that you have
+06:40 
+
+06:40 used in the file doesn't have any
+06:42 
+
+06:42 reference. Where have you declared those
+06:43 
+
+06:43 variables? But as soon as I create the
+06:45 
+
+06:45 file, it will find the reference. Let's
+06:47 
+
+06:47 check this plus
+06:50 
+
+06:50 variables.tf
+06:52 
+
+06:52 and let's paste it over here. You see
+06:54 
+
+06:54 everything is green now. So let's go
+06:56 
+
+06:56 back to main and let's cut locals as
+06:58 
+
+06:58 well. So we are just separating every
+07:01 
+
+07:01 single thing that needs to be separated
+07:05 
+
+07:05 to make it readable, to make it
+07:07 
+
+07:07 efficient. Okay, locals.tf.
+07:12 
+
+07:12 Okay,
+07:14 
+
+07:14 now what else do we need? Okay, so
+07:16 
+
+07:16 resources are here. That's S3, uh, VPC,
+07:20 
+
+07:20 EC2, and let's separate outputs as well.
+07:28 
+
+07:28 Okay, output.tf
+07:33 
+
+07:33 could be outputs, it could be output,
+07:34 
+
+07:34 doesn't matter. Right? So this is our
+07:38 
+
+07:38 final structure now. So in the day six
+07:40 
+
+07:40 folder we have backend.tf locals.tf
+07:44 
+
+07:44 main output provider terapform.tfrs
+07:48 
+
+07:48 variables and then you can also have a
+07:51 
+
+07:51 readme file get ignore file because you
+07:54 
+
+07:54 don't want the terapform.tf TF file to
+07:56 
+
+07:56 be uploaded to GitHub right so let's
+07:58 
+
+07:58 create a git ignore dot get ignore
+08:03 
+
+08:03 and what we need to add in that so
+08:06 
+
+08:06 anything that start with terraform
+08:10 
+
+08:10 okay and anything that is TF state or
+08:15 
+
+08:15 TFT dot backup right and dot terraform
+08:20 
+
+08:20 dot log file crash.log log any log file
+08:24 
+
+08:24 override we don't have it but for now
+08:27 
+
+08:27 just let's just skip that part
+08:30 
+
+08:30 okay and then we also need to add
+08:34 
+
+08:34 terapformtf
+08:37 
+
+08:37 so terapformtf
+08:39 
+
+08:39 or anything that is startfr
+08:42 
+
+08:42 json right uh let's see anything else I
+08:47 
+
+08:47 think we are good for now and let's add
+08:50 
+
+08:50 dot terraform folder as well. Right? So,
+08:54 
+
+08:54 this will make sure that all of these
+08:56 
+
+08:56 files are not uploaded to GitHub. Some
+08:59 
+
+08:59 files we don't want that. Some files are
+09:02 
+
+09:02 unnecessary like you don't want to
+09:04 
+
+09:04 upload the Teraphform provider or this
+09:07 
+
+09:07 content of this Teraphform folder like
+09:09 
+
+09:09 it's just the metadata and some plug-in
+09:11 
+
+09:11 configuration dependencies that you need
+09:14 
+
+09:14 to use while running it. You don't need
+09:16 
+
+09:16 to uh expose it externally, right? So uh
+09:20 
+
+09:20 yeah I mean this is what we have done
+09:23 
+
+09:23 and this is the simpler structure. Now
+09:25 
+
+09:25 there is a complex structure which is
+09:26 
+
+09:26 this one. In that what we have done uh
+09:30 
+
+09:30 we have separated the files in different
+09:34 
+
+09:34 environments. So there are multiple ways
+09:37 
+
+09:37 you separate it in different
+09:38 
+
+09:38 environments like separate configuration
+09:40 
+
+09:40 for devs, separate configuration from
+09:42 
+
+09:42 staging from prod or you can create
+09:46 
+
+09:46 separate modules for each resource type
+09:48 
+
+09:48 like for networking there's a separate
+09:50 
+
+09:50 module for compute separate security
+09:52 
+
+09:52 separate and so on. Then you can also
+09:55 
+
+09:55 have different folder for script for
+09:59 
+
+09:59 docs of some global resources like IM3
+10:04 
+
+10:04 and you can have I think this is missing
+10:06 
+
+10:06 the TF var files uh this particular
+10:11 
+
+10:11 thing. Oh yeah over here. So currently
+10:14 
+
+10:14 what we are using we are using same
+10:17 
+
+10:17 files. So there are multiple ways one is
+10:19 
+
+10:19 this one in which we are using different
+10:21 
+
+10:21 files for each environment like
+10:23 
+
+10:23 different main.t TF for prod and
+10:25 
+
+10:25 different main.tf for staging. But there
+10:28 
+
+10:28 is another way in which we can use the
+10:30 
+
+10:30 same file and put that in the root
+10:32 
+
+10:32 directory or in the modules and then we
+10:35 
+
+10:35 just need to use different TFVAR files
+10:38 
+
+10:38 for each environment. Right? So all the
+10:41 
+
+10:41 environment specific configuration can
+10:42 
+
+10:42 go inside the TFR file of each of these
+10:45 
+
+10:45 environment. So this could be a little
+10:47 
+
+10:47 confusing at this point because like
+10:50 
+
+10:50 it's it's a lot if you are just a
+10:52 
+
+10:52 beginner, right? It's a lot. So we will
+10:55 
+
+10:55 be covering this. We'll create the
+10:57 
+
+10:57 entire end to end project later on this
+10:59 
+
+10:59 in this series. So for now just you just
+11:03 
+
+11:03 need to understand this part the one
+11:05 
+
+11:05 that we did for the demo. Okay. And
+11:07 
+
+11:07 that's more than sufficient. So that's
+11:09 
+
+11:09 it for this video. In the next video
+11:11 
+
+11:11 let's see what do we have in the next
+11:12 
+
+11:12 video. In day seven I believe it's type
+11:15 
+
+11:15 constraints.
+11:17 
+
+11:17 So if you go over here um
+11:22 
+
+11:22 we have covered till day six. Yeah. So
+11:25 
+
+11:25 day seven is type constraint. Now we'll
+11:27 
+
+11:27 be doing uh hands-on into these
+11:31 
+
+11:31 different type constraint with the help
+11:33 
+
+11:33 of example. So everything is hands-on uh
+11:36 
+
+11:36 going forward. So yeah let's let's catch
+11:39 
+
+11:39 up soon. Make sure you complete the task
+11:41 
+
+11:41 given in the GitHub repository. Make
+11:43 
+
+11:43 sure you do the submission and you do
+11:46 
+
+11:46 everything that you have been doing so
+11:47 
+
+11:47 far. You have been great. You have been
+11:49 
+
+11:49 working really well. You have been doing
+11:51 
+
+11:51 a good learning. So, make sure you do
+11:54 
+
+11:54 that. You keep doing that and you keep
+11:57 
+
+11:57 uh learning in public. Okay. So, that's
+11:60 
+
+11:60 it. Thank you so much. I'll see you
+12:02 
+
+12:02 tomorrow with the next video with day
+12:04 
+
+12:04 seven which is type constraint. Thank
+12:06 
+
+12:06 you so much for watching.

@@ -1,0 +1,2854 @@
+00:01 Hello and welcome back to my channel. My
+00:03 
+
+00:03 name is Puj. This is day 25 in 30 days
+00:06 
+
+00:06 of AWS Terraform. And in this video,
+00:08 
+
+00:08 we'll be looking into Terraform import.
+00:10 
+
+00:10 And we'll be doing a demo of how do we
+00:13 
+
+00:13 do that import using different methods
+00:16 
+
+00:16 that we have. We'll be focusing on all
+00:18 
+
+00:18 these different methods that are
+00:20 
+
+00:20 available for us to import the resources
+00:22 
+
+00:22 in Terraform. Uh don't worry I'll
+00:25 
+
+00:25 explain what terapform import is and
+00:27 
+
+00:27 what do we actually mean by import and
+00:29 
+
+00:29 all the different methods that we have.
+00:32 
+
+00:32 Um so let's dive into the video but
+00:34 
+
+00:34 before that make sure you have
+00:36 
+
+00:36 subscribed to the channel if you have
+00:38 
+
+00:38 found my content valuable and helpful.
+00:41 
+
+00:41 If you subscribe it helps me grow the
+00:43 
+
+00:43 channel more. It helps me bring more
+00:46 
+
+00:46 valuable content, more useful playlist
+00:50 
+
+00:50 like this, like CK, like Azure DevOps
+00:52 
+
+00:52 and many more in the future and I just
+00:55 
+
+00:55 need your support for that. Okay, so if
+00:58 
+
+00:58 you're supporting, thank you so much. If
+00:59 
+
+00:59 you are not supporting, that's okay too.
+01:01 
+
+01:01 I'll still be producing content. Um,
+01:04 
+
+01:04 okay. So, let's uh dive into this video.
+01:07 
+
+01:07 So, let's yeah, this is what we're going
+01:09 
+
+01:09 to do. Let's try to understand this uh
+01:12 
+
+01:12 process of terraform migration, resource
+01:15 
+
+01:15 migration. What exactly it is and when
+01:17 
+
+01:17 do we actually do it? Okay. So uh as you
+01:21 
+
+01:21 can see it says terapform resource
+01:23 
+
+01:23 migration and we have three different
+01:25 
+
+01:25 methods uh that we can use. First is
+01:28 
+
+01:28 terapform import which is supported
+01:31 
+
+01:31 natively by terapform. That means this
+01:33 
+
+01:33 is the recommended method although it
+01:36 
+
+01:36 needs some manual work. Although it
+01:38 
+
+01:38 needs some extra effort, still it is the
+01:42 
+
+01:42 recommended method. Then we have uh two
+01:46 
+
+01:46 open-source CLI tools. One is
+01:49 
+
+01:49 Terraformer, another one is AWS 2TF. So
+01:53 
+
+01:53 what it does is first let me explain
+01:55 
+
+01:55 what is Terapform import. With
+01:57 
+
+01:57 Teraphform import you actually import
+01:59 
+
+01:59 the resources. In the next diagram I
+02:02 
+
+02:02 will explain it to you. You actually
+02:04 
+
+02:04 let's say you have some resources
+02:06 
+
+02:06 created over here, right? So let's say
+02:08 
+
+02:08 you have uh VPC, you have S3 buckets,
+02:13 
+
+02:13 you have EC2 instances, you have some
+02:16 
+
+02:16 RDS database and many more. Right? So
+02:18 
+
+02:18 you have these resources created in AWS.
+02:23 
+
+02:23 Okay? Now when you created these
+02:25 
+
+02:25 resources, you created it manually.
+02:28 
+
+02:28 Okay? Maybe they were part of some
+02:29 
+
+02:29 legacy application or um they were
+02:32 
+
+02:32 created when your team was not using
+02:34 
+
+02:34 Terraform. Now you want to use terraform
+02:38 
+
+02:38 or it's been enforced on your team that
+02:40 
+
+02:40 yes we'll be going through uh we'll be
+02:42 
+
+02:42 going down to AWS infrastructure as a
+02:45 
+
+02:45 code route and this is what you need to
+02:48 
+
+02:48 do now from now onwards. So you've been
+02:51 
+
+02:51 tasked to migrate these resources to
+02:54 
+
+02:54 Terapform so that it will be further
+02:56 
+
+02:56 managed by Teraphform. Okay. So what
+02:59 
+
+02:59 will happen if you run the Terapform
+03:00 
+
+03:00 commands right now?
+03:03 
+
+03:03 it will try to create the resource again
+03:06 
+
+03:06 and if you are using the same name and
+03:09 
+
+03:09 same uh details like same VPC CIR or
+03:12 
+
+03:12 like the same underlying detail it will
+03:15 
+
+03:15 fail with the error resource already
+03:17 
+
+03:17 exist. So to avoid this error first you
+03:20 
+
+03:20 need to import these resources in
+03:23 
+
+03:23 terapform you know. So you have this
+03:25 
+
+03:25 file called TF state. TF state if you
+03:29 
+
+03:29 remember.
+03:31 
+
+03:31 So TF state if you remember the file
+03:34 
+
+03:34 this is very important file um and kind
+03:36 
+
+03:36 of the brain of Terraform when you are
+03:39 
+
+03:39 working with infrastructure as a code.
+03:41 
+
+03:41 So in this file what we store we store
+03:44 
+
+03:44 the actual state of the infrastructure
+03:47 
+
+03:47 right. So we have seen this like in
+03:50 
+
+03:50 earlier videos of this series and how it
+03:53 
+
+03:53 works is let's say you have your
+03:56 
+
+03:56 uh you have your terapform files over
+03:58 
+
+03:58 here right terraform files you know TF
+04:02 
+
+04:02 and so on. So when you run terraform
+04:06 
+
+04:06 your terraform
+04:08 
+
+04:08 client or like wherever you have
+04:09 
+
+04:09 installed terraform it will check your
+04:12 
+
+04:12 TF state file and then it will make sure
+04:16 
+
+04:16 that your desired infrastructure is
+04:19 
+
+04:19 equal to the actual infrastructure.
+04:21 
+
+04:21 Okay. So this terraform files will have
+04:25 
+
+04:25 the desired infrastructure and this TF
+04:28 
+
+04:28 state file will have the actual
+04:29 
+
+04:29 infrastructure. So instead of comparing
+04:32 
+
+04:32 your desired with the actual
+04:34 
+
+04:34 infrastructure into the cloud so if we
+04:39 
+
+04:39 going to do that it has to make API
+04:41 
+
+04:41 calls every single time plus it will be
+04:44 
+
+04:44 time consuming process so to avoid
+04:47 
+
+04:47 everything it checks the infrastructure
+04:51 
+
+04:51 status from the TF state file that means
+04:55 
+
+04:55 it don't have to go to like go and check
+04:58 
+
+04:58 all the resources in the cloud it can
+04:60 
+
+04:60 just get the details from the TF state
+05:02 
+
+05:02 file which is a JSON file. Now if the
+05:06 
+
+05:06 resource is not created by Terraform so
+05:09 
+
+05:09 there will be no details in TF state why
+05:12 
+
+05:12 would it be it's not created by
+05:13 
+
+05:13 Terapform right so in that case um in
+05:17 
+
+05:17 that case your TF state file will have
+05:20 
+
+05:20 will will not have anything and when you
+05:22 
+
+05:22 try to u create a new terapform file and
+05:26 
+
+05:26 let's say you have created a S3 bucket
+05:29 
+
+05:29 name over here with the name ABC okay
+05:31 
+
+05:31 just an example like it's not a valid
+05:33 
+
+05:33 bucket name just an example. So you have
+05:36 
+
+05:36 created um S3 bucket manually with the
+05:39 
+
+05:39 name ABC. Okay. And when you try to
+05:42 
+
+05:42 create the same bucket with the same
+05:45 
+
+05:45 name using Terraform, okay, it will go
+05:48 
+
+05:48 and check in the TF state, it won't find
+05:51 
+
+05:51 the infrastructure because it's not
+05:52 
+
+05:52 there, right? It's not been created yet
+05:55 
+
+05:55 with the Terraform. So it will try to
+05:57 
+
+05:57 provision this ABC in the in the region
+06:02 
+
+06:02 that you have selected, right? And then
+06:04 
+
+06:04 it will find oh there is a bucket
+06:06 
+
+06:06 already exist with the same name. So it
+06:09 
+
+06:09 will throw the error that bucket already
+06:12 
+
+06:12 exists.
+06:15 
+
+06:15 Bucket already exists. Right? But
+06:17 
+
+06:17 ideally what should have happened like
+06:19 
+
+06:19 in case of terapform if the bucket is
+06:22 
+
+06:22 already there with the same name it will
+06:24 
+
+06:24 it should not make any changes. Right?
+06:26 
+
+06:26 It will just say your infrastructure is
+06:29 
+
+06:29 up to date. That means your desired
+06:30 
+
+06:30 state is equal to the actual state. But
+06:32 
+
+06:32 we are not managing the infrastructure
+06:34 
+
+06:34 with the Teraphform yet. So to do that
+06:38 
+
+06:38 we are using this Terraform import. And
+06:41 
+
+06:41 to make sure that your infrastructure is
+06:45 
+
+06:45 managed by Terraform we are doing
+06:48 
+
+06:48 Teraphform import. And then you can
+06:51 
+
+06:51 manage the infrastructure with
+06:53 
+
+06:53 Teraphform. So let's see this with the
+06:56 
+
+06:56 help of an example over here. Okay. So
+06:59 
+
+06:59 you have your Terraform installed over
+07:02 
+
+07:02 here locally uh or your on your server
+07:05 
+
+07:05 and then you start by writing your
+07:07 
+
+07:07 Teraphform files. Okay, you did the
+07:10 
+
+07:10 authentication using AWS configure or
+07:12 
+
+07:12 OIDC or whatever method you have used.
+07:15 
+
+07:15 You did the authentication and
+07:17 
+
+07:17 authorization. So now you have access to
+07:20 
+
+07:20 provision the resources and to get the
+07:22 
+
+07:22 details of the resources that is already
+07:24 
+
+07:24 there. Now these resources let's say EC2
+07:28 
+
+07:28 server security group VPC these
+07:31 
+
+07:31 resources uh were created by these were
+07:35 
+
+07:35 created manually okay you did not create
+07:37 
+
+07:37 it it was created manually so what you
+07:40 
+
+07:40 will do is you write the bare minimum
+07:43 
+
+07:43 terapform files with just the mandatory
+07:45 
+
+07:45 fields but you have to write all the
+07:47 
+
+07:47 resource blocks in that I will explain
+07:49 
+
+07:49 it to you I will show you that in the
+07:51 
+
+07:51 demo and once you do that and once you
+07:54 
+
+07:54 run terapform form plan it will um it
+07:58 
+
+07:58 will show that these resources have not
+08:01 
+
+08:01 been provisioned yet right so it will it
+08:03 
+
+08:03 will try to create those resources in
+08:05 
+
+08:05 the terapform plan with the help of
+08:07 
+
+08:07 provider over here now once you run
+08:11 
+
+08:11 teraphform import okay and then you have
+08:13 
+
+08:13 to provide the resource details along
+08:15 
+
+08:15 with it then it will try to import the
+08:19 
+
+08:19 state of the resource like EC2 server
+08:21 
+
+08:21 VPC security group subnet whatever
+08:25 
+
+08:25 it will try to import the state of those
+08:28 
+
+08:28 resources inside your TF state. Okay.
+08:32 
+
+08:32 Now it will know that yes these are the
+08:34 
+
+08:34 resource that already exist and these
+08:36 
+
+08:36 will be further managed by Terraform. So
+08:39 
+
+08:39 then you can run Teraphform plan and
+08:41 
+
+08:41 then you can run Teraphform apply
+08:42 
+
+08:42 whatever changes you need to make after
+08:44 
+
+08:44 that. Okay. If it is still confusing I
+08:48 
+
+08:48 will explain it to you in the demo then
+08:49 
+
+08:49 it will be crystal clear. Okay. Now uh
+08:53 
+
+08:53 you see as I've told you there are three
+08:56 
+
+08:56 methods. First is terapform import which
+08:58 
+
+08:58 is what we have discussed and what we
+08:60 
+
+08:60 are looking the demo right after like in
+09:03 
+
+09:03 5 minutes. The other two meth the other
+09:07 
+
+09:07 two methods are terraformer and AWS 2TF.
+09:11 
+
+09:11 So these two are the open-source CLI
+09:14 
+
+09:14 projects. So uh there is this one AWS2TF
+09:18 
+
+09:18 which is managed by AWS
+09:21 
+
+09:21 [clears throat]
+09:22 
+
+09:22 and
+09:24 
+
+09:24 um so the usage is pretty
+09:26 
+
+09:26 straightforward simple you just go and
+09:28 
+
+09:28 clone the repo
+09:30 
+
+09:30 um do the pip install right and then
+09:33 
+
+09:33 start using the tool. The way you do
+09:36 
+
+09:36 that is let's say if you want to
+09:40 
+
+09:40 generate terapform files for all the
+09:42 
+
+09:42 VPCs in your account region. So you just
+09:45 
+
+09:45 go ahead and run this AWS2TF.
+09:48 
+
+09:48 py-t
+09:50 
+
+09:50 VPC. So it will generate the it will go
+09:54 
+
+09:54 to your account. It will check all the
+09:56 
+
+09:56 VPCs that are present. It will generate
+09:58 
+
+09:58 the Terraform files for that. Right? So
+10:01 
+
+10:01 remember I told you in the beginning
+10:03 
+
+10:03 that only this will need to uh this will
+10:07 
+
+10:07 need some manual work. You have to write
+10:09 
+
+10:09 some Terraform files um with the basic
+10:12 
+
+10:12 configuration. But for these two you
+10:14 
+
+10:14 don't have to write the terapform files.
+10:15 
+
+10:15 It will generate the terapform files for
+10:17 
+
+10:17 you. Okay. So it will generate the file
+10:21 
+
+10:21 for VPC. Similarly for S3 for subnet for
+10:24 
+
+10:24 EC2 you can just go ahead and generate
+10:26 
+
+10:26 the file
+10:28 
+
+10:28 and like this. Yeah. VPC EFS sage maker
+10:32 
+
+10:32 blah blah blah so on. Similarly, there
+10:36 
+
+10:36 is this tool called Terraformer
+10:39 
+
+10:39 um which was created by GCP and then
+10:43 
+
+10:43 they open sourced it. Uh now
+10:46 
+
+10:46 instructions are over here and it
+10:47 
+
+10:47 supports multiple clouds as you can see.
+10:51 
+
+10:51 Um we are looking for AWS. So yes AWS is
+10:54 
+
+10:54 one of the supported cloud. The way it
+10:56 
+
+10:56 works is um you know you run terapform
+10:60 
+
+10:60 import command along with some arguments
+11:03 
+
+11:03 right over here.
+11:05 
+
+11:05 and it like this. Okay. So, terapform
+11:09 
+
+11:09 import AWS - resources. What all the
+11:12 
+
+11:12 resources that we need? Uh you can also
+11:14 
+
+11:14 add filters. Uh you can add additional
+11:17 
+
+11:17 parameters such as regions and so on.
+11:18 
+
+11:18 And it will generate the
+11:22 
+
+11:22 um actually this yeah so you see this is
+11:25 
+
+11:25 not terapform import this is terraformer
+11:28 
+
+11:28 import right which is the utility.
+11:31 
+
+11:31 Okay. And uh yeah it will help you
+11:34 
+
+11:34 generate the terraform files and then
+11:36 
+
+11:36 you can just plan and apply the changes
+11:38 
+
+11:38 and that's it. Okay the instructions to
+11:41 
+
+11:41 install this is uh you you have brew
+11:44 
+
+11:44 package for Mac, you have chocolatey
+11:46 
+
+11:46 package for Windows and yeah you you
+11:49 
+
+11:49 have binaries installation as well. So
+11:51 
+
+11:51 there are multiple ways you can install
+11:53 
+
+11:53 or you can just download the uh binary
+11:56 
+
+11:56 as well and start using it. Okay. So
+11:59 
+
+11:59 that's another way. But I mean even
+12:02 
+
+12:02 though these two methods like AWS2TF and
+12:05 
+
+12:05 Terraformer these two are there which
+12:08 
+
+12:08 helps you generate the Teraphform
+12:10 
+
+12:10 configuration but even then this
+12:13 
+
+12:13 Terraform import is recommended method.
+12:17 
+
+12:17 Why? Because first it is supported by
+12:19 
+
+12:19 Teraphform obviously and then like these
+12:23 
+
+12:23 two are open source project right? So
+12:25 
+
+12:25 there'll be some bugs, there'll be some
+12:27 
+
+12:27 issues. Plus all the resources in a
+12:30 
+
+12:30 cloud provider are not supported, right?
+12:32 
+
+12:32 So it only supports a a wide range of
+12:36 
+
+12:36 resources, right? Even in case of AWS or
+12:39 
+
+12:39 Azure or GCP,
+12:42 
+
+12:42 uh it does not support all the resources
+12:44 
+
+12:44 but it will have some limitations,
+12:46 
+
+12:46 right? So that is why terafform import
+12:48 
+
+12:48 is the recommended method and this is
+12:49 
+
+12:49 what we're going to use in this video.
+12:52 
+
+12:52 Okay. So, let me just log to my AWS
+12:56 
+
+12:56 account and we can just start the demo.
+12:59 
+
+12:59 So, I am logged in through my DevOps
+13:01 
+
+13:01 user and what I'll do is I'll just
+13:05 
+
+13:05 create um a sample EC2 instance with VPC
+13:10 
+
+13:10 subnet and so on. Right? So, let's go
+13:12 
+
+13:12 ahead and create VPC.
+13:16 
+
+13:16 There is one more use case of using
+13:18 
+
+13:18 Terapform import. Let's say and this is
+13:21 
+
+13:21 in fact uh one of the interview question
+13:23 
+
+13:23 as well. Let's say accidentally you have
+13:26 
+
+13:26 deleted your terraform state file right
+13:30 
+
+13:30 um so you have lost the state of the
+13:33 
+
+13:33 infrastructure right now how would you
+13:35 
+
+13:35 manage the resources using terapform
+13:37 
+
+13:37 okay so you have to first import the
+13:39 
+
+13:39 resources only then you will be able to
+13:43 
+
+13:43 manage those resources using teraphform
+13:46 
+
+13:46 yes I mean there are other answers to
+13:48 
+
+13:48 this question like you can um you can
+13:51 
+
+13:51 restore the TF state file from backup up
+13:53 
+
+13:53 and so on. But if there is no backup
+13:56 
+
+13:56 available, if there is no um if multiple
+14:00 
+
+14:00 there there are no replicas available
+14:02 
+
+14:02 for that TF state file or if it was
+14:05 
+
+14:05 stored locally and got corrupted or
+14:07 
+
+14:07 deleted then the last resort is you use
+14:11 
+
+14:11 terapform import to import all the
+14:13 
+
+14:13 resources into the Terraform state file
+14:16 
+
+14:16 and then you start using it then you
+14:18 
+
+14:18 start managing your infrastructure using
+14:19 
+
+14:19 Terraform. Okay. So let's go ahead over
+14:23 
+
+14:23 here in the VPC and
+14:27 
+
+14:27 if I have if I create the VPC then I
+14:29 
+
+14:29 will have to create multiple
+14:33 
+
+14:33 um like route tables and it will be a
+14:37 
+
+14:37 lot of things right. So uh what instead
+14:39 
+
+14:39 I'll do I'll just create um an easy to
+14:42 
+
+14:42 server and then I'll create maybe
+14:45 
+
+14:45 security groups. Okay. So let's do that
+14:49 
+
+14:49 instead. EC2.
+14:53 
+
+14:53 Okay. And instances launch instance.
+14:59 
+
+14:59 Let's call this TF demo. Okay. I'm going
+15:03 
+
+15:03 to use Ubuntu image.
+15:06 
+
+15:06 And this is just uh like I have to just
+15:09 
+
+15:09 test the import. So I'll just use the
+15:12 
+
+15:12 one that is supported by free tier. Oh,
+15:16 
+
+15:16 T2 nano T2 micro. I guess it should be
+15:20 
+
+15:20 T2 micro.
+15:22 
+
+15:22 It doesn't say if it is eligible free
+15:24 
+
+15:24 tier, but anyways. Um, so yeah. Uh, and
+15:28 
+
+15:28 then you can just select a key pair. Um,
+15:37 
+
+15:37 okay. I might not be logging in. So,
+15:40 
+
+15:40 let's proceed without a key pair.
+15:43 
+
+15:43 Let's create a security group. Okay. So
+15:47 
+
+15:47 allow SSH from anywhere allow HTTP and
+15:50 
+
+15:50 HTTPS.
+15:52 
+
+15:52 Let's create the security group as well.
+15:54 
+
+15:54 And
+15:59 
+
+15:59 and there is an option addit over here
+16:01 
+
+16:01 to provide more details. So there is
+16:03 
+
+16:03 this uh VPC that we are using subnet.
+16:06 
+
+16:06 I'm not giving any preference. Uh and
+16:10 
+
+16:10 then
+16:12 
+
+16:12 it will auto assign public IP and it
+16:14 
+
+16:14 will create the security group. Let's
+16:16 
+
+16:16 give it a name. Test tf SG.
+16:22 
+
+16:22 Okay.
+16:24 
+
+16:24 And SSH uh HTTPS HTTP. Okay.
+16:31 
+
+16:31 All right. And then let's go to advanced
+16:33 
+
+16:33 details.
+16:41 
+
+16:41 Okay. And let's add a tag as well for
+16:45 
+
+16:45 the name.
+16:46 
+
+16:46 Where are the tags for that of the EC2
+16:51 
+
+16:51 instance?
+16:54 
+
+16:54 Should be
+16:56 
+
+16:56 let's see.
+17:06 
+
+17:06 Yeah, actually uh yeah, they have the
+17:08 
+
+17:08 name over here. So that's fine. Let's
+17:10 
+
+17:10 hit on launch instance
+17:13 
+
+17:13 now. Um,
+17:16 
+
+17:16 our instance will be ready shortly. Uh,
+17:18 
+
+17:18 yeah, it's it's already running. It's a
+17:20 
+
+17:20 small instance and like yeah, it it it
+17:23 
+
+17:23 is running. Now, let's go to my VS Code.
+17:29 
+
+17:29 Okay. And I'm going to just copy the
+17:33 
+
+17:33 folder of one of the previous days so
+17:35 
+
+17:35 that I don't have to write backend.tf
+17:37 
+
+17:37 and all other files. So this was day 23.
+17:43 
+
+17:43 Day 24. Day 24 had what? Yeah. Let's
+17:47 
+
+17:47 let's copy day 24.
+17:50 
+
+17:50 So
+17:57 
+
+17:57 copy day 24 to day 25.
+18:02 
+
+18:02 Okay.
+18:04 
+
+18:04 And let's cd into day 25. over here as
+18:08 
+
+18:08 well. We have day 25. Now,
+18:13 
+
+18:13 let's go inside code folder.
+18:16 
+
+18:16 Okay, I'm going to delete some extra
+18:18 
+
+18:18 files like we don't need these two. We
+18:21 
+
+18:21 don't need uh output.tf.
+18:24 
+
+18:24 Don't need this. Let's hit delete.
+18:28 
+
+18:28 Okay. And
+18:32 
+
+18:32 we have main.tf. Okay. which has
+18:35 
+
+18:35 provider details.
+18:37 
+
+18:37 Okay. And then we have security group.
+18:40 
+
+18:40 So let's just keep the security group
+18:43 
+
+18:43 for EC2 and we'll we'll change the name.
+18:48 
+
+18:48 Okay. We'll make the name as same as the
+18:51 
+
+18:51 security group that we have created.
+18:53 
+
+18:53 Okay. So let's delete rest of the
+18:55 
+
+18:55 resources.
+18:58 
+
+18:58 Security group for EC2.
+19:02 
+
+19:02 And uh so it has
+19:05 
+
+19:05 80.
+19:07 
+
+19:07 I don't need the description for now.
+19:11 
+
+19:11 So
+19:12 
+
+19:12 port 80 and then https
+19:19 
+
+19:19 and then
+19:21 
+
+19:21 SSH. Actually,
+19:27 
+
+19:27 yeah, let's delete rest of it.
+19:36 
+
+19:36 Okay. And I'm going to add this ingress
+19:39 
+
+19:39 rule as part of the previous one.
+19:43 
+
+19:43 So
+19:45 
+
+19:45 yeah.
+19:48 
+
+19:48 Okay. I'll explain it to you what I'm
+19:49 
+
+19:49 doing right now. So let me just copy the
+19:52 
+
+19:52 details first.
+19:56 
+
+19:56 Okay. So currently this is the security
+19:58 
+
+19:58 group. Okay. And this security group
+20:01 
+
+20:01 will say that
+20:04 
+
+20:04 um
+20:06 
+
+20:06 allow access on port 80 443. So there is
+20:10 
+
+20:10 one ingress for 80, one ingress for port
+20:12 
+
+20:12 443 and I'm going to add one more
+20:14 
+
+20:14 ingress for SSH, right? Because this is
+20:18 
+
+20:18 what we have in the existing
+20:21 
+
+20:21 um existing security group rule that we
+20:25 
+
+20:25 have. Okay. So now uh we'll just
+20:28 
+
+20:28 replicate the scenario over here. So
+20:30 
+
+20:30 let's go inside security group
+20:35 
+
+20:35 and the one that we've created just now
+20:39 
+
+20:39 was
+20:42 
+
+20:42 oops where here it is testf security
+20:46 
+
+20:46 group.
+20:48 
+
+20:48 Okay so I'm just going to put the same
+20:50 
+
+20:50 name over here.
+20:53 
+
+20:53 Okay. Now VPC we don't have the VPC. So
+20:56 
+
+20:56 VPC will get from the data source. Okay.
+20:60 
+
+20:60 So
+21:02 
+
+21:02 instead of this
+21:07 
+
+21:07 subnet route yeah we could have used
+21:10 
+
+21:10 this one as well. Uh but yeah that would
+21:12 
+
+21:12 be a too long demo. So for now and we
+21:16 
+
+21:16 you might get confused with a lot of
+21:19 
+
+21:19 details but uh what we'll do is instead
+21:22 
+
+21:22 of that we'll create a data source for
+21:24 
+
+21:24 VPC. Okay. So let's go to AWS terraform
+21:30 
+
+21:30 provider.
+21:32 
+
+21:32 Okay. And
+21:34 
+
+21:34 search for AWS VPC. Let's put that in
+21:39 
+
+21:39 double quotes so that it will find the
+21:40 
+
+21:40 exact string. So what I need is the data
+21:44 
+
+21:44 source. So go over here in the data
+21:46 
+
+21:46 source section and here it is. Okay.
+21:49 
+
+21:49 With that I I'll get the VPC ID. Okay.
+21:53 
+
+21:53 So you can just put it over here.
+21:57 
+
+21:57 AWS VPC selected and then ID will be
+22:01 
+
+22:01 v.VPC ID. Now if we go over here inside
+22:07 
+
+22:07 security group um so instead of this so
+22:12 
+
+22:12 data do AWSVPC dot selected dot id okay
+22:17 
+
+22:17 from here we'll get the ID
+22:20 
+
+22:20 now security group um if you see over
+22:23 
+
+22:23 here in this security group it says from
+22:27 
+
+22:27 where the connection is allowed right so
+22:31 
+
+22:31 if we go over Here uh in the security
+22:34 
+
+22:34 group we have these rules http https and
+22:39 
+
+22:39 source is this. So instead of
+22:43 
+
+22:43 security groups over here we should have
+22:46 
+
+22:46 something called source
+22:50 
+
+22:50 right and source we can add as 0.0.0.0
+22:56 
+
+22:56 zero
+22:58 
+
+22:58 right
+23:01 
+
+23:01 this is throwing error maybe it's not a
+23:04 
+
+23:04 valid field so let's check what it
+23:07 
+
+23:07 should be so I'm going to search AWS
+23:11 
+
+23:11 security
+23:13 
+
+23:13 group rules
+23:18 
+
+23:18 AWS security group uh nope not over here
+23:22 
+
+23:22 security group rule
+23:25 
+
+23:25 um security group rule. No, AWS security
+23:29 
+
+23:29 group. This is what we have used.
+23:32 
+
+23:32 And inside that um so we have
+23:39 
+
+23:39 which one uh we have used? We have used
+23:42 
+
+23:42 AWS security group and inside that we
+23:44 
+
+23:44 have used ingress. Right? So this is the
+23:48 
+
+23:48 security group
+23:50 
+
+23:50 and inside that we have used ingress
+23:54 
+
+23:54 which is like this.
+23:57 
+
+23:57 So for that
+23:60 
+
+23:60 um let's see the valid arguments inside
+24:03 
+
+24:03 the ingress block
+24:06 
+
+24:06 AWS security group instance.
+24:13 
+
+24:13 Okay. Um
+24:18 
+
+24:18 let's go inside ingress
+24:23 
+
+24:23 name um tags VPC ID okay over here so we
+24:28 
+
+24:28 have from port to port protocol
+24:32 
+
+24:32 and these are the optional um so we have
+24:35 
+
+24:35 security groups which is what we had we
+24:37 
+
+24:37 don't need that now uh so what we have
+24:40 
+
+24:40 is uh C block I think this This is the
+24:43 
+
+24:43 one that we need. So we have
+24:48 
+
+24:48 Yeah, I think this is it. From port to
+24:51 
+
+24:51 port protocol. Yeah. So C blocks
+25:03 
+
+25:03 and it says it's optional. It's a list
+25:06 
+
+25:06 of strings. So let's put that in double
+25:08 
+
+25:08 quotes.
+25:12 
+
+25:12 Okay, now I'm just going to add this
+25:15 
+
+25:15 into the other two uh ingresses as well
+25:20 
+
+25:20 which is over here. This one was a 443.
+25:26 
+
+25:26 Um so we have added that for port 80 443
+25:30 
+
+25:30 and for this it's already there for SSH
+25:33 
+
+25:33 right. Uh what else do we need to do? We
+25:37 
+
+25:37 don't we didn't have any tag for that.
+25:39 
+
+25:39 So let's just remove the tag.
+25:43 
+
+25:43 Okay. And now it is identical to what we
+25:47 
+
+25:47 have uh over there, right? Uh what we
+25:50 
+
+25:50 have in our manual resource, the manual
+25:53 
+
+25:53 resource that we created.
+25:56 
+
+25:56 Now um let's do one thing. Let's remove
+25:60 
+
+25:60 the extra files that we have which is
+26:04 
+
+26:04 uh we don't have anything else, right?
+26:06 
+
+26:06 Yeah, we just have security group
+26:09 
+
+26:09 resource over here. Okay, so let's run
+26:12 
+
+26:12 TF in it. Oops, I need to set the alias
+26:16 
+
+26:16 first. And now I can run TF in it
+26:20 
+
+26:20 and run TF plan.
+26:24 
+
+26:24 We need to provide the VPC ID over here
+26:28 
+
+26:28 because in the variable we have not
+26:29 
+
+26:29 provided the details. So
+26:33 
+
+26:33 uh
+26:36 
+
+26:36 variable so there is the variable VPC
+26:39 
+
+26:39 and have we used it somewhere let's see
+26:44 
+
+26:44 it says where dotVPC id no it uh
+26:49 
+
+26:49 we have defined the variable over here
+26:50 
+
+26:50 and then we are getting it from the data
+26:52 
+
+26:52 source which is fine then there'll be a
+26:55 
+
+26:55 variable over here as well with VPC ID
+26:57 
+
+26:57 so I need to remove that
+27:04 
+
+27:04 VPC ID is it?
+27:10 
+
+27:10 No, VPC ID is not there. Um, but then it
+27:14 
+
+27:14 says the root module input variable is
+27:16 
+
+27:16 not set.
+27:19 
+
+27:19 Uh,
+27:20 
+
+27:20 variable VPC ID.
+27:26 
+
+27:26 It should have taken the VPC ID from the
+27:31 
+
+27:31 from the data source, right? Uh let's go
+27:34 
+
+27:34 ahead and check the documentation again
+27:36 
+
+27:36 for the data source
+27:39 
+
+27:39 VPC.
+27:41 
+
+27:41 Um the way they have used VPC ID over
+27:44 
+
+27:44 here is data.VPC VPC ID selected C block
+27:50 
+
+27:50 and over here as well uh you see ID is
+27:53 
+
+27:53 equal to V dotVPC ID
+28:11 
+
+28:11 yeah I think it's not able to find that
+28:13 
+
+28:13 VPC and it expecting us to provide the
+28:17 
+
+28:17 value of the variable. So let's try to
+28:19 
+
+28:19 add maybe some filter or I don't want to
+28:23 
+
+28:23 add the ID because then there will be no
+28:24 
+
+28:24 purpose of using the data source right.
+28:28 
+
+28:28 So let's add this default equal to true.
+28:31 
+
+28:31 So so that it can take the default VPC
+28:33 
+
+28:33 in that region. Okay. Um
+28:37 
+
+28:37 it has to be inside this file data
+28:41 
+
+28:41 source file which is VPC.tF TF
+28:45 
+
+28:45 default is equal to true. Okay, let's
+28:49 
+
+28:49 try this again.
+28:52 
+
+28:52 No, it's still asking the VPC
+28:55 
+
+28:55 ID.
+28:57 
+
+28:57 Okay. Uh,
+29:00 
+
+29:00 let's delete this file.
+29:15 
+
+29:15 Okay. Yeah, it it was able to like I
+29:17 
+
+29:17 just had to hit enter and now it it was
+29:21 
+
+29:21 able to find the VPC ID
+29:26 
+
+29:26 but
+29:27 
+
+29:27 uh it says security group
+29:31 
+
+29:31 will be created. Okay.
+29:34 
+
+29:34 So even though the security group with
+29:36 
+
+29:36 the same name exist in the same region,
+29:38 
+
+29:38 it is still saying that security group
+29:40 
+
+29:40 will be created because we have not run
+29:43 
+
+29:43 the apply yet, right? Uh that error will
+29:47 
+
+29:47 come when we run the apply because it
+29:49 
+
+29:49 has not hit the post API yet. Okay. Uh
+29:54 
+
+29:54 it has not hit the post request of the
+29:57 
+
+29:57 cloud API yet. So uh let's verify
+30:01 
+
+30:01 everything and name is test DFSG which
+30:03 
+
+30:03 is the same over there and it has tags
+30:07 
+
+30:07 but the resource that we have it doesn't
+30:11 
+
+30:11 have tags over there. So let's yeah I
+30:15 
+
+30:15 just want to make it identical so that
+30:18 
+
+30:18 we can replicate the issue. So let's
+30:21 
+
+30:21 just remove the tags as well. Uh where
+30:24 
+
+30:24 are the tags?
+30:26 
+
+30:26 M
+30:28 
+
+30:28 there are no tags over here. Uh why it
+30:32 
+
+30:32 is adding the tags.
+30:44 
+
+30:44 Oh, it is taking from the default text.
+30:46 
+
+30:46 So let's just remove this.
+30:51 
+
+30:51 I don't want that. And let's make sure
+30:54 
+
+30:54 that it is the same region. So we can
+30:56 
+
+30:56 check the variable region which is US
+30:59 
+
+30:59 East one
+31:01 
+
+31:01 and over here we have US East one. Okay,
+31:06 
+
+31:06 this is fine now. Now now let's go back
+31:08 
+
+31:08 again and let's try to hit the apply
+31:12 
+
+31:12 first. Verify and then we'll just try to
+31:14 
+
+31:14 hit the apply to see what's going to
+31:16 
+
+31:16 happen. So TF apply.
+31:24 
+
+31:24 Okay, it says want to add. Yes, you see
+31:28 
+
+31:28 it says security group already exists
+31:32 
+
+31:32 for that VPC. Okay. Now, even though we
+31:36 
+
+31:36 have the Terraform file over here
+31:38 
+
+31:38 created, the same file
+31:41 
+
+31:41 and we have the VPC already created. So,
+31:44 
+
+31:44 if this was managed by Terraform, then
+31:46 
+
+31:46 the ideal error should be um no
+31:49 
+
+31:49 infrastructure changes needed, right? uh
+31:51 
+
+31:51 it's the desired state is equal to
+31:53 
+
+31:53 actual state but this is not the case
+31:55 
+
+31:55 because the infrastructure is not yet
+31:57 
+
+31:57 managed by terraform. So for that what
+31:60 
+
+31:60 we need to do we need to do one extra
+32:02 
+
+32:02 step. Okay. So for that we need to run
+32:05 
+
+32:05 the command terraform import
+32:08 
+
+32:08 and the resource type which is uh let's
+32:12 
+
+32:12 get the resource type over here AWS
+32:14 
+
+32:14 security group
+32:16 
+
+32:16 dot the internal reference name which is
+32:20 
+
+32:20 app sg
+32:22 
+
+32:22 and let's put a help I think we need to
+32:25 
+
+32:25 provide the resource ID so let's just
+32:29 
+
+32:29 try to add and if we get any error we'll
+32:31 
+
+32:31 see okay so Let's just check the
+32:35 
+
+32:35 resource ID that means the security
+32:37 
+
+32:37 group ID which is over here so that it
+32:39 
+
+32:39 knows which actual resource it has to
+32:42 
+
+32:42 import.
+32:44 
+
+32:44 Okay, let's hit enter. Okay, so there is
+32:47 
+
+32:47 an error maybe some syntax issue. So
+32:49 
+
+32:49 let's verify this. It says the command
+32:52 
+
+32:52 expect two arguments terapform global
+32:54 
+
+32:54 option import
+32:56 
+
+32:56 and then address ID. Maybe it's
+33:01 
+
+33:01 the space.
+33:03 
+
+33:03 So yeah, let's instead of dot, let's add
+33:07 
+
+33:07 the space over here. Yeah.
+33:12 
+
+33:12 Okay. It says reading this uh import
+33:14 
+
+33:14 successful.
+33:16 
+
+33:16 Okay. Uh prepared AWS security group for
+33:20 
+
+33:20 import and import successful.
+33:23 
+
+33:23 Now
+33:31 
+
+33:31 if we do terraform state list,
+33:37 
+
+33:37 it shows what all the resources are
+33:40 
+
+33:40 managed by Terraform. Now we have a data
+33:42 
+
+33:42 source for VPC
+33:44 
+
+33:44 but the data source is managed. VPC is
+33:46 
+
+33:46 not managed because we did not create
+33:47 
+
+33:47 the VPC u TF and we did not import it.
+33:51 
+
+33:51 We only imported AWS security group. Now
+33:54 
+
+33:54 you can do terraform state show and this
+33:57 
+
+33:57 name.
+34:01 
+
+34:01 Okay, it will show you the details of
+34:03 
+
+34:03 that uh resource group as well. So
+34:06 
+
+34:06 security group from the infrastructure
+34:10 
+
+34:10 from the AWS portal. So it has a
+34:12 
+
+34:12 complete ARN ID as well, right? And it
+34:15 
+
+34:15 was created on this this date and so on,
+34:18 
+
+34:18 right?
+34:20 
+
+34:20 Now
+34:22 
+
+34:22 if I run TF plan one more time what
+34:26 
+
+34:26 would happen?
+34:31 
+
+34:31 It's reading refreshing and now it says
+34:34 
+
+34:34 one plan to add but now what it is doing
+34:37 
+
+34:37 it is making changes to tags. Okay,
+34:41 
+
+34:41 because the tag is different over there
+34:43 
+
+34:43 and over here
+34:45 
+
+34:45 and because there's additional field
+34:47 
+
+34:47 right tags all and then
+34:51 
+
+34:51 owner ID it will change ID it will
+34:53 
+
+34:53 change but why it is making the change
+34:59 
+
+34:59 because description is different okay
+35:03 
+
+35:03 right so it is trying to recreate
+35:04 
+
+35:04 because we have added the description we
+35:07 
+
+35:07 should not have the description right
+35:09 
+
+35:09 Um,
+35:16 
+
+35:16 and it says
+35:20 
+
+35:20 yeah. So, let's just remove few more
+35:23 
+
+35:23 details. We don't need the description.
+35:26 
+
+35:26 So, let's just remove this.
+35:29 
+
+35:29 And
+35:32 
+
+35:32 what else? I mean, this comment would
+35:35 
+
+35:35 not matter still.
+35:38 
+
+35:38 Let's remove this description
+35:43 
+
+35:43 and let's check one more time.
+35:52 
+
+35:52 Still it is making some changes. Why? Uh
+35:56 
+
+35:56 now it says
+35:58 
+
+35:58 description of the
+36:04 
+
+36:04 um
+36:05 
+
+36:05 description of the security group,
+36:08 
+
+36:08 right? It does not matches with what we
+36:10 
+
+36:10 have over here. So uh is this a
+36:13 
+
+36:13 mandatory field? I'm not sure. Let's
+36:16 
+
+36:16 see.
+36:18 
+
+36:18 And let's try again.
+36:27 
+
+36:27 >> [cough and clears throat]
+36:30 
+
+36:30 >> It says uh it the description will
+36:34 
+
+36:34 change from what we had over here to
+36:37 
+
+36:37 managed by terraform.
+36:39 
+
+36:39 But then why it is recreating the
+36:42 
+
+36:42 resource? Ideally it should not make any
+36:44 
+
+36:44 changes to that. Right? So I I'm just
+36:47 
+
+36:47 I'm just wondering about that why it is
+36:49 
+
+36:49 making that change.
+36:52 
+
+36:52 There is a field for tags as well.
+36:57 
+
+36:57 I did not have tags. I removed it. It's
+36:60 
+
+36:60 not here.
+37:03 
+
+37:03 And if I [cough]
+37:04 
+
+37:04 [clears throat]
+37:06 
+
+37:06 if I check it over here,
+37:13 
+
+37:13 no tags. Let me remove uh these
+37:15 
+
+37:15 variables as well. [clears throat]
+37:18 
+
+37:18 I only need region. So I'm going to
+37:21 
+
+37:21 remove this.
+37:23 
+
+37:23 We don't need these variables
+37:29 
+
+37:29 desired max. Okay. Yeah.
+37:42 
+
+37:42 Still it is making some changes. Still
+37:44 
+
+37:44 it is.
+37:50 
+
+37:50 Let's check this. What does it have? Uh,
+37:52 
+
+37:52 it doesn't have any tag. Okay, the
+37:56 
+
+37:56 description is this one. Maybe we have
+37:59 
+
+37:59 to add this description over there or
+38:03 
+
+38:03 it's not a mandatory field. So, ideally,
+38:06 
+
+38:06 we shouldn't have. But, uh, let's just
+38:08 
+
+38:08 wait. What else do we have over here?
+38:13 
+
+38:13 >> [clears throat]
+38:19 
+
+38:19 >> Security group main.tf
+38:23 
+
+38:23 um okay security group.
+38:29 
+
+38:29 So we have um security group then data
+38:32 
+
+38:32 source then one ingress second ingress
+38:35 
+
+38:35 third ingress
+38:38 
+
+38:38 and one egress.
+38:41 
+
+38:41 So this is same.
+38:43 
+
+38:43 The only thing that is forcing the
+38:47 
+
+38:47 replacement of resource is
+38:51 
+
+38:51 it says this forces replacement is the
+38:54 
+
+38:54 description. So we might need to add the
+38:57 
+
+38:57 description. Let's see.
+39:01 
+
+39:01 Um
+39:05 
+
+39:05 or it has to be
+39:08 
+
+39:08 it says one to add zero to change one to
+39:11 
+
+39:11 destroy that means it will destroy the
+39:12 
+
+39:12 resource and it will create the
+39:13 
+
+39:13 resource. This is not what we want. We
+39:15 
+
+39:15 want it to be able to import the
+39:18 
+
+39:18 resource and use that right
+39:20 
+
+39:20 and the resource is already imported. So
+39:24 
+
+39:24 let me just try to add this the exact
+39:27 
+
+39:27 same description that is there in the
+39:28 
+
+39:28 resource over here in the security group
+39:32 
+
+39:32 description is equal to this
+39:39 
+
+39:39 sorry
+39:41 
+
+39:41 [snorts]
+39:47 
+
+39:47 okay yeah that that the change that we
+39:50 
+
+39:50 needed right so it has to be same um
+39:56 
+
+39:56 so I just added the description over
+39:57 
+
+39:57 here and now it says no changes your
+40:00 
+
+40:00 infrastructure matches the configuration
+40:02 
+
+40:02 your desired state is equal to actual
+40:04 
+
+40:04 state and that means you have imported
+40:07 
+
+40:07 the resource successfully now you can
+40:09 
+
+40:09 manage that security group with
+40:10 
+
+40:10 terapform you want to see that let's
+40:12 
+
+40:12 let's check this out so now if I add a
+40:15 
+
+40:15 tag so it doesn't have a tag over here
+40:17 
+
+40:17 right so if I add a tag over here let's
+40:20 
+
+40:20 say tags X
+40:23 
+
+40:23 is equal to
+40:26 
+
+40:26 um managed by
+40:35 
+
+40:35 Terraform. Okay. So if I just run TF
+40:39 
+
+40:39 plan again
+40:42 
+
+40:42 for VPC ID maybe I'm doing something
+40:44 
+
+40:44 wrong that is why it is giving the V dot
+40:46 
+
+40:46 thing. Okay. Now it says it will add
+40:50 
+
+40:50 this particular field which is tag.
+40:53 
+
+40:53 Okay. And it will not destroy the
+40:55 
+
+40:55 resource because tags is not a
+40:58 
+
+40:58 destructive operation updating the tag.
+40:60 
+
+40:60 That's why it will just change the tag.
+41:02 
+
+41:02 So if I run TF apply - auto approve.
+41:11 
+
+41:11 Okay, it made the changes. And let's go
+41:14 
+
+41:14 back over here and let's hit refresh.
+41:17 
+
+41:17 Where is the refresh button?
+41:20 
+
+41:20 Okay, let's refresh the page. If we
+41:22 
+
+41:22 don't have the button, that's okay.
+41:25 
+
+41:25 You see now it added the tag managed by
+41:27 
+
+41:27 Terraform even though the resource was
+41:30 
+
+41:30 created by like it was created manually
+41:33 
+
+41:33 but we have imported the state in the
+41:35 
+
+41:35 state file and now the resource is
+41:37 
+
+41:37 managed by Terraform. Okay, the same
+41:40 
+
+41:40 we'll do for EC2.
+41:43 
+
+41:43 Okay, so that was security group. Let's
+41:45 
+
+41:45 create another block
+41:49 
+
+41:49 over here. Uh or we can do that in
+41:51 
+
+41:51 main.tf. That's okay too. So AWS
+41:56 
+
+41:56 [clears throat]
+41:58 
+
+41:58 sorry not like resource AWS
+42:03 
+
+42:03 EC2
+42:05 
+
+42:05 instance.
+42:08 
+
+42:08 Okay. And let's just give it example.
+42:14 
+
+42:14 [snorts] We'll just get the mandatory
+42:15 
+
+42:15 fields of EC2 instance.
+42:18 
+
+42:18 Um over here
+42:25 
+
+42:25 WS EC2 instance or AWS instance. I think
+42:31 
+
+42:31 it's AWS instance. Yeah.
+42:36 
+
+42:36 Okay. So it should have uh an AMI. We
+42:41 
+
+42:41 can get it from the data source or we'll
+42:43 
+
+42:43 just hardcode the AMI of what is there
+42:45 
+
+42:45 over there uh in the resource. Okay. So
+42:49 
+
+42:49 let's just use this
+42:55 
+
+42:55 okay AWS instance and let's example is
+42:58 
+
+42:58 fine and let we can just get the AMI ID
+43:00 
+
+43:00 from there. So go to the instance
+43:04 
+
+43:04 and
+43:09 
+
+43:09 let's see AMI ID over here. Let's copy
+43:12 
+
+43:12 this.
+43:13 
+
+43:13 Add it over here.
+43:16 
+
+43:16 Instance type is T2 T2 micro.
+43:21 
+
+43:21 Okay. And do we have any tags? Yes,
+43:24 
+
+43:24 there is a tag name is TF demo.
+43:29 
+
+43:29 Okay.
+43:31 
+
+43:31 And what else do I need to add? Anything
+43:34 
+
+43:34 else? I don't think so. Oh yeah, we need
+43:37 
+
+43:37 to add the association of that instance
+43:40 
+
+43:40 with the VPC, right? So VPC
+43:44 
+
+43:44 security group ids.
+43:48 
+
+43:48 Um
+43:51 
+
+43:51 uh so we have resource AMI instance type
+43:54 
+
+43:54 if added.
+43:56 
+
+43:56 Then
+43:59 
+
+43:59 actually C block or VPC ID has to be
+44:03 
+
+44:03 inside subnet. We are not creating the
+44:05 
+
+44:05 subnet.
+44:07 
+
+44:07 Um let's see.
+44:27 
+
+44:27 VPC security group ids. Now this is uh
+44:32 
+
+44:32 let's see what that is actually.
+44:36 
+
+44:36 If you are creating instances in a VPC
+44:39 
+
+44:39 use VPC security group ids.
+44:43 
+
+44:43 Okay.
+44:45 
+
+44:45 um list of security groups
+44:49 
+
+44:49 ids to associate with
+44:53 
+
+44:53 security group ID. Okay. So security
+44:56 
+
+44:56 group we have already created. So AWS
+44:60 
+
+45:00 security group dot
+45:04 
+
+45:04 why it is not coming up. security group
+45:07 
+
+45:07 apps sg
+45:11 
+
+45:11 dot what was the name
+45:15 
+
+45:15 um app uh app sg is there do id
+45:20 
+
+45:20 should do
+45:23 
+
+45:23 um so now we have updated oh
+45:28 
+
+45:28 yeah that should be okay
+45:31 
+
+45:31 and then we have VPC Um
+45:37 
+
+45:37 then we have
+45:39 
+
+45:39 subnet ID.
+45:42 
+
+45:42 Subnet
+45:44 
+
+45:44 um
+45:45 
+
+45:45 do we need to provide the subnet ID?
+45:47 
+
+45:47 Yeah. Yeah, let's provide the subnet ID.
+45:49 
+
+45:49 Subnet ID we don't have. Maybe we need
+45:52 
+
+45:52 to create the data source for subnet
+45:56 
+
+45:56 from where we get the subnet ID or we
+45:58 
+
+45:58 can hardcode it, right? Um so you go
+46:01 
+
+46:01 over here. Let's check uh which subnet
+46:04 
+
+46:04 this instance is part of
+46:08 
+
+46:08 networking
+46:13 
+
+46:13 that's the VPC ID that's the subnet ID
+46:16 
+
+46:16 so let's take the subnet ID from here
+46:19 
+
+46:19 [snorts]
+46:20 
+
+46:20 and now it is this instance will be
+46:22 
+
+46:22 associated with this subnet
+46:26 
+
+46:26 okay or you can take it from data source
+46:28 
+
+46:28 we already have the data source for VPC
+46:30 
+
+46:30 from there you can filter it out or uh
+46:32 
+
+46:32 you can create the same subnet data
+46:34 
+
+46:34 source. Let's remove this. I'm not sure
+46:36 
+
+46:36 about this field yet. So we'll see if it
+46:38 
+
+46:38 throws any error. [snorts]
+46:41 
+
+46:41 Okay. Um yeah. So let's run terraform
+46:47 
+
+46:47 import
+46:50 
+
+46:50 and then
+46:52 
+
+46:52 AWS instance dot example
+46:56 
+
+46:56 and instance ID. Now instance ID would
+47:01 
+
+47:01 be this one.
+47:04 
+
+47:04 Let's see.
+47:09 
+
+47:09 Okay, it says import successful.
+47:13 
+
+47:13 Now if I run Terraform plan,
+47:20 
+
+47:20 okay, no changes to your infrastructure.
+47:22 
+
+47:22 So that means our EC2 instance is also
+47:26 
+
+47:26 imported. So if I do TF state list
+47:32 
+
+47:32 now it is showing security group
+47:34 
+
+47:34 instance and data source. If we make any
+47:38 
+
+47:38 changes over here now instead of over
+47:41 
+
+47:41 here like this was just the tag. So if I
+47:43 
+
+47:43 just add another tag call it managed by
+47:47 
+
+47:47 is equal to terraform.
+47:50 
+
+47:50 Okay. And if I run TF, let's directly
+47:54 
+
+47:54 hit apply hyphen
+47:57 
+
+47:57 auto
+47:58 
+
+47:58 approve.
+48:08 
+
+48:08 Okay, it says applied. Let's go ahead
+48:11 
+
+48:11 over here
+48:13 
+
+48:13 tags
+48:14 
+
+48:14 and hit refresh.
+48:21 
+
+48:21 Let's go to tags. Now we have the tag
+48:24 
+
+48:24 managed by Teraphform. So now these all
+48:26 
+
+48:26 resources are being managed by
+48:28 
+
+48:28 Terraform.
+48:30 
+
+48:30 So that is how import works. And now if
+48:33 
+
+48:33 I do terraform destroy
+48:38 
+
+48:38 hyphen or approve.
+48:44 
+
+48:44 Okay. So it will destroy the resources
+48:47 
+
+48:47 from Terraform that I created manually.
+48:50 
+
+48:50 Right? So it's destroying and if I hit
+48:55 
+
+48:55 refresh. Oh, there was a refresh button
+48:57 
+
+48:57 over here.
+48:60 
+
+48:60 Okay, it's still destroying. So it will
+49:02 
+
+49:02 first destroy the security group and
+49:05 
+
+49:05 then the instance. Okay, it will be
+49:08 
+
+49:08 done. So uh you see uh what we have done
+49:11 
+
+49:11 so far. Even though it has some extra
+49:13 
+
+49:13 work as compared to Terraformer or
+49:16 
+
+49:16 AWS.TF, still it is the recommended way
+49:19 
+
+49:19 if you are preparing for Terapform exam.
+49:21 
+
+49:21 Yes. Uh you will be asked for this uh
+49:25 
+
+49:25 the Terraform import not the other tools
+49:29 
+
+49:29 and also if you're working in an
+49:31 
+
+49:31 organization this is one of the
+49:32 
+
+49:32 recommended approach to import the
+49:34 
+
+49:34 terraform. Now you need to understand in
+49:38 
+
+49:38 what all situations or in what all cases
+49:41 
+
+49:41 we use terapform import okay
+49:44 
+
+49:44 these resources are destroyed hit
+49:46 
+
+49:46 refresh and just go to resources you
+49:50 
+
+49:50 won't see anything running because it
+49:52 
+
+49:52 has been destroyed now right so you see
+49:55 
+
+49:55 TF demo it has been terminated
+49:58 
+
+49:58 okay so this is what we wanted to see
+50:01 
+
+50:01 and we have destroyed the resource as
+50:02 
+
+50:02 well I hope you found it helpful I hope
+50:05 
+
+50:05 you found it valuable. I will see you
+50:07 
+
+50:07 tomorrow with the next video with day
+50:09 
+
+50:09 26. I hope you have been following and
+50:12 
+
+50:12 you have been enjoying the series so
+50:14 
+
+50:14 far. So give it a like, share it with
+50:16 
+
+50:16 your friends and colleagues and I will
+50:18 
+
+50:18 see you tomorrow. Happy learning.

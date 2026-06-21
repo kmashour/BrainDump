@@ -1,0 +1,2371 @@
+00:00 Hello and welcome back to 30 days of AWS
+00:03 
+
+00:03 Terraform. This is day 10 and in this
+00:05 
+
+00:05 video we'll be looking into Terraform
+00:07 
+
+00:07 expressions. Yes, we'll be doing demo.
+00:09 
+
+00:09 We'll be understanding the concept in
+00:11 
+
+00:11 detail in depth and then make sure you
+00:14 
+
+00:14 complete the task given in the GitHub
+00:15 
+
+00:15 repository of day 10 folder and make
+00:18 
+
+00:18 sure you do the submission for 30 days
+00:20 
+
+00:20 of AWS terapform challenge. If you are
+00:22 
+
+00:22 new here, hello, my name is Push and
+00:24 
+
+00:24 cloud and DevOps is what I do all day
+00:26 
+
+00:26 long. in this series. Uh make sure you
+00:29 
+
+00:29 watch day zero video because it has many
+00:32 
+
+00:32 important details, many important
+00:34 
+
+00:34 information that will be helpful for
+00:36 
+
+00:36 learning AWS Terraform as well as for
+00:39 
+
+00:39 completing this challenge which is like
+00:42 
+
+00:42 uh a marathon that we are doing together
+00:43 
+
+00:43 as a group as a community and there'll
+00:45 
+
+00:45 be prizes at the end as well. All the
+00:48 
+
+00:48 details will be given in day zero video.
+00:50 
+
+00:50 So make sure you watch that and let's
+00:52 
+
+00:52 get to the video now. Um, as I've
+00:54 
+
+00:54 mentioned in this video, we'll be
+00:55 
+
+00:55 looking into Terapform expressions. So,
+00:57 
+
+00:57 what are these? Terapform expressions
+00:59 
+
+00:59 are something that helps us avoiding to
+01:03 
+
+01:03 rewrite the code again and again. Um,
+01:06 
+
+01:06 you must be wondering so what is the use
+01:08 
+
+01:08 of function? Then consider this as a
+01:11 
+
+01:11 replacement of functions because
+01:13 
+
+01:13 functions we have not covered yet and
+01:15 
+
+01:15 we'll be looking into Terapform
+01:16 
+
+01:16 functions as well. But these are similar
+01:20 
+
+01:20 to functions as in you can just reuse
+01:22 
+
+01:22 your code or you can actually create
+01:25 
+
+01:25 meaningful insights of from the code
+01:28 
+
+01:28 without actually writing the function.
+01:31 
+
+01:31 So there are different type of terapform
+01:33 
+
+01:33 expressions that you have which is
+01:35 
+
+01:35 conditional expression, dynamic block
+01:37 
+
+01:37 and splat expression. Again these are
+01:39 
+
+01:39 not the functions. These are some
+01:43 
+
+01:43 helpful syntax given by Terraforms. As
+01:46 
+
+01:46 the name suggests these are the
+01:47 
+
+01:47 expressions. So in conditional
+01:49 
+
+01:49 expression and split expression these
+01:51 
+
+01:51 are just the oneliner things.
+01:53 
+
+01:53 Conditional expression consider this as
+01:55 
+
+01:55 true or false. Like in any programming
+01:57 
+
+01:57 language you have true or false right?
+01:59 
+
+01:59 So this is a conditional expression
+02:01 
+
+02:01 which either is true based on a
+02:04 
+
+02:04 condition or false. Then we have dynamic
+02:07 
+
+02:07 blocks. Dynamic blocks help us write the
+02:10 
+
+02:10 nested block with multiple values. And
+02:14 
+
+02:14 it may sound confusing at this point but
+02:17 
+
+02:17 when we'll do the demo everything will
+02:19 
+
+02:19 be clear I promise. Then we have splat
+02:21 
+
+02:21 expression. Splat expression is again a
+02:23 
+
+02:23 oneliner which help us to retrieve
+02:26 
+
+02:26 multiple values within just single line
+02:29 
+
+02:29 and using this star operator. Okay. So
+02:31 
+
+02:31 let's start with the first one which is
+02:33 
+
+02:33 conditional expression. So conditional
+02:35 
+
+02:35 expression is something that has a
+02:37 
+
+02:37 condition. Okay. condition could be um
+02:40 
+
+02:40 let's say your instance name or your
+02:44 
+
+02:44 environment name and then uh there is an
+02:47 
+
+02:47 operator which is question mark and then
+02:49 
+
+02:49 true value that means let's say if
+02:53 
+
+02:53 environment equal to dev then choose
+02:55 
+
+02:55 this instance type else this colon
+02:58 
+
+02:58 represents the false value and choose
+03:02 
+
+03:02 this instance type okay so let's say uh
+03:05 
+
+03:05 we are saying
+03:08 
+
+03:08 where dot
+03:09 
+
+03:09 environment equal to equal to if it is
+03:13 
+
+03:13 dev then question mark
+03:17 
+
+03:17 use if it's a dev environment then use
+03:20 
+
+03:20 where dot instance type is equal to t2
+03:26 
+
+03:26 micro for dev environment else if it's
+03:29 
+
+03:29 not a dev environment then colon
+03:33 
+
+03:33 where dot instance type is equal to
+03:37 
+
+03:37 let's say t3 3 micro or something else.
+03:40 
+
+03:40 Okay, so this is just an example and
+03:42 
+
+03:42 we'll be looking into this example now
+03:45 
+
+03:45 in our VS code uh with the help of a
+03:47 
+
+03:47 working demo. Okay, so let's go to our
+03:50 
+
+03:50 VS Code and uh I'm in day 9 folder. So
+03:55 
+
+03:55 let's go one directory back and create a
+03:58 
+
+03:58 new folder for day 10. So I'm just going
+04:01 
+
+04:01 to copy day 9 and create day 10 folder.
+04:07 
+
+04:07 Okay, so date and folder has been
+04:09 
+
+04:09 created. Now I don't need the main.tf
+04:12 
+
+04:12 and old.tf. So let's remove these files
+04:16 
+
+04:16 and let's remove this file. Oh, did I
+04:21 
+
+04:21 not in day 9 actually in day 10. Okay,
+04:24 
+
+04:24 let's delete this as well. Okay, now
+04:28 
+
+04:28 let's go inside day 10 folder. Okay, now
+04:32 
+
+04:32 I'm going to let's set the alias first.
+04:35 
+
+04:35 TF equal to terraform. This is something
+04:38 
+
+04:38 that we have covered multiple times. So
+04:40 
+
+04:40 uh I'm not explaining it. That's why we
+04:41 
+
+04:41 are in day 10 and I'm pretty sure you
+04:45 
+
+04:45 are following this series in the same
+04:47 
+
+04:47 sequence like from day one onwards and
+04:49 
+
+04:49 you might have gone through day zero as
+04:51 
+
+04:51 well. So that's my understanding. If
+04:53 
+
+04:53 that is not what you are doing, please
+04:55 
+
+04:55 make sure to follow in the same
+04:57 
+
+04:57 sequence. Okay. So
+05:00 
+
+05:00 um okay, I have set the alias now. Now
+05:03 
+
+05:03 let's run terraform in it to initialize
+05:05 
+
+05:05 the folder uh initialize the repo. I've
+05:08 
+
+05:08 just created this folder and I've
+05:09 
+
+05:09 initialized it. Now I'm going to create
+05:12 
+
+05:12 a new file inside day 10 uh and call it
+05:16 
+
+05:16 main.tf.
+05:18 
+
+05:18 Okay. The first section that we need or
+05:21 
+
+05:21 the first expression that we want to
+05:23 
+
+05:23 test is conditional expression. Okay. So
+05:26 
+
+05:26 let's create a resource type. So, I'm
+05:29 
+
+05:29 going to go and search for
+05:32 
+
+05:32 AWS Terraform provider documentation
+05:37 
+
+05:37 and let's go to the docs.
+05:41 
+
+05:41 Okay, this is uh provider documentation.
+05:43 
+
+05:43 Search for AWS instance
+05:47 
+
+05:47 and let's go ahead um AWS instance over
+05:52 
+
+05:52 here. Okay, I'm going to copy any sample
+05:57 
+
+05:57 configuration from here. So let's select
+05:59 
+
+05:59 the simplest one which is let's say this
+06:01 
+
+06:01 one. Oh dot data source we have not
+06:03 
+
+06:03 covered. So I'm not going to complicate
+06:05 
+
+06:05 things for you. So let's just copy from
+06:08 
+
+06:08 here
+06:10 
+
+06:10 and let's go back. Okay, I have pasted
+06:12 
+
+06:12 it over here. Now you can change the AMI
+06:15 
+
+06:15 name as well. I have shown you
+06:17 
+
+06:17 previously as well how to check the AMI
+06:19 
+
+06:19 name. So let's search for AWS AMI for
+06:24 
+
+06:24 Linux
+06:27 
+
+06:27 Amazon Linux 2
+06:31 
+
+06:31 Linux 2023 and go over here.
+06:40 
+
+06:40 Oh, not this one.
+06:45 
+
+06:45 Amazon Linux AMI. and scroll down and
+06:50 
+
+06:50 here are the
+06:53 
+
+06:53 um Linux images for the particular
+06:56 
+
+06:56 region. So I'm in US East Virginia which
+06:59 
+
+06:59 is US East one. So let's copy this AMI
+07:02 
+
+07:02 name from here and I can just replace
+07:06 
+
+07:06 this one.
+07:09 
+
+07:09 Okay. Now I have selected uh instance
+07:12 
+
+07:12 type as T3 micro for default. So let's
+07:15 
+
+07:15 just run this to make sure this does not
+07:18 
+
+07:18 throw any errors. So TF plan and if it
+07:22 
+
+07:22 doesn't show any error then we'll move
+07:24 
+
+07:24 ahead with making our changes. Okay, one
+07:26 
+
+07:26 plan to add. So no error reported. We
+07:28 
+
+07:28 are going great till now. So um let's go
+07:32 
+
+07:32 ahead and let's replace the tags with v.
+07:36 
+
+07:36 tags. If you have followed the previous
+07:40 
+
+07:40 videos um there is a configuration in
+07:42 
+
+07:42 variables.tf TF and if you check there
+07:45 
+
+07:45 was a tags variable over here. Let's see
+07:50 
+
+07:50 where it is. Okay, over here it's a map
+07:53 
+
+07:53 of string.
+07:55 
+
+07:55 Okay, it has uh multiple tags with the
+07:59 
+
+07:59 default values. So this is what I have
+08:01 
+
+08:01 used over here to simplify the things.
+08:04 
+
+08:04 Now instance type is T3 micro. Let's add
+08:07 
+
+08:07 another meta argument which is count.
+08:10 
+
+08:10 This is what we have covered. So let's
+08:12 
+
+08:12 say we are uh setting a variable count
+08:16 
+
+08:16 as v dot instance count. Instant count
+08:20 
+
+08:20 should be there in variables.tf. If not,
+08:22 
+
+08:22 you can add that. So let's see if it's
+08:25 
+
+08:25 there already. Instance count. Okay,
+08:28 
+
+08:28 it's over here. Um type is number but
+08:31 
+
+08:31 there is no default value. So let's see
+08:33 
+
+08:33 if there is default value in TFRs. Okay,
+08:36 
+
+08:36 here it is. So let's update the count to
+08:39 
+
+08:39 two. Okay. And let's um change the
+08:42 
+
+08:42 environment variable to dev. Now let's
+08:45 
+
+08:45 go back in main.tf.
+08:48 
+
+08:48 Now we'll be creating multiple instances
+08:53 
+
+08:53 uh with this AMI and instance type and
+08:56 
+
+08:56 um the name we have not given the name.
+08:60 
+
+08:60 Um so we'll add few details but before
+09:03 
+
+09:03 that we need to change this instance
+09:05 
+
+09:05 type. Now we want this instance type to
+09:08 
+
+09:08 be selected based on the environment
+09:10 
+
+09:10 type. Okay. So how we going to do that?
+09:13 
+
+09:13 So we're going to do that with the help
+09:14 
+
+09:14 of conditional expressions. Okay. So
+09:17 
+
+09:17 instead of this or let's just comment
+09:21 
+
+09:21 this line. Okay. And I'm going to write
+09:24 
+
+09:24 it again. Instance type
+09:27 
+
+09:27 is equal to
+09:29 
+
+09:29 where dot environment.
+09:33 
+
+09:33 Okay. equal to equal to dev. So what we
+09:37 
+
+09:37 are saying is set the instance type when
+09:39 
+
+09:39 v where dot environment equal to dev
+09:42 
+
+09:42 then set the instance type to let's say
+09:45 
+
+09:45 t2 micro
+09:47 
+
+09:47 else for else condition we have to
+09:49 
+
+09:49 provide
+09:51 
+
+09:51 colon
+09:54 
+
+09:54 t3 micro
+09:56 
+
+09:56 okay so this is the conditional
+09:58 
+
+09:58 expression that we are setting over here
+10:01 
+
+10:01 okay so what does it say let's
+10:03 
+
+10:03 understand this one more time I I want
+10:06 
+
+10:06 you to be clear enough. So that's why
+10:08 
+
+10:08 I'm explaining it again. Instead of just
+10:11 
+
+10:11 hard coding the value over here,
+10:13 
+
+10:13 instance type equal to T3 micro, we are
+10:16 
+
+10:16 setting the instance type based on the
+10:18 
+
+10:18 environment. Right? If it's a dev
+10:20 
+
+10:20 environment, we need smaller instance.
+10:23 
+
+10:23 If it's uh any other environment, let's
+10:26 
+
+10:26 say a higher environment, non-dev
+10:28 
+
+10:28 environment, then we are setting T3
+10:30 
+
+10:30 micro which is a bigger instance type
+10:32 
+
+10:32 instead of hard coding it like this. And
+10:34 
+
+10:34 how are we doing that? We are just
+10:37 
+
+10:37 setting the instance type is equal to
+10:39 
+
+10:39 equal to v where dot environment equal
+10:42 
+
+10:42 to equal to dev then t2 micro and if
+10:47 
+
+10:47 it's not then t3 micro if we want to
+10:50 
+
+10:50 look at this example again.
+10:54 
+
+10:54 So this is what we are doing. I'm sure
+10:56 
+
+10:56 it should be visible. Okay let's
+10:60 
+
+10:60 increase this a bit. So what we are
+11:02 
+
+11:02 doing is sorry. So what we are doing
+11:05 
+
+11:05 instance type
+11:08 
+
+11:08 is equal to
+11:11 
+
+11:11 where dot environment
+11:14 
+
+11:14 is equal to
+11:19 
+
+11:19 dev. Okay. And then question mark T2
+11:22 
+
+11:22 micro else T3 micro. Okay. So consider
+11:28 
+
+11:28 this um let me just
+11:31 
+
+11:31 write it like this. Consider this as
+11:37 
+
+11:37 the condition I mean not consider this
+11:39 
+
+11:39 is the condition actually which says
+11:41 
+
+11:41 where dot environment equal to dev that
+11:45 
+
+11:45 means this will be evaluated first. Okay
+11:48 
+
+11:48 this section will be evaluated first and
+11:50 
+
+11:50 then it will check the true value. This
+11:54 
+
+11:54 is the true value which is t2 micro and
+11:56 
+
+11:56 this is the false value which is t3
+11:58 
+
+11:58 micro. If this condition is true then
+12:01 
+
+12:01 set instance type equal to t2 micro.
+12:04 
+
+12:04 Okay like this
+12:08 
+
+12:08 and this will be set if this condition
+12:10 
+
+12:10 is true which is true in this case uh we
+12:13 
+
+12:13 have the value dev. If this condition is
+12:16 
+
+12:16 not true then set instance type as t3
+12:20 
+
+12:20 micro. So we'll test these things.
+12:23 
+
+12:23 Okay. So let's go back over here. And
+12:26 
+
+12:26 now if you remember we have the value in
+12:29 
+
+12:29 the variables.tf.
+12:32 
+
+12:32 We have
+12:34 
+
+12:34 um where it is where it is where it is
+12:36 
+
+12:36 where it is sorry terapform.tfrs we have
+12:40 
+
+12:40 environment equal to dev okay so let's
+12:44 
+
+12:44 go ahead and run tf plan now again.
+12:48 
+
+12:48 So based on this T2 micro should be set
+12:52 
+
+12:52 for the instance type. Okay. So let's
+12:55 
+
+12:55 check it out.
+12:59 
+
+12:59 So these are all the tags. Okay.
+13:03 
+
+13:03 And we are creating two instances
+13:05 
+
+13:05 because of the instance count that we
+13:07 
+
+13:07 have used. Now let's check the instance
+13:11 
+
+13:11 type. Okay. Instance type is T2 micro
+13:13 
+
+13:13 for one instance
+13:15 
+
+13:15 and instance type is T2 micro for the
+13:19 
+
+13:19 other instance as well. Let's see what
+13:21 
+
+13:21 will happen if we change the value of
+13:24 
+
+13:24 environment from dev to let's say
+13:25 
+
+13:25 anything staging or prod or whatever
+13:28 
+
+13:28 anything other than dev. Okay, let's run
+13:31 
+
+13:31 TF plan again. Okay, so in fact instead
+13:35 
+
+13:35 of just going through everything, let's
+13:37 
+
+13:37 add a grap over here to find the value.
+13:40 
+
+13:40 So grab instance type. So we'll just
+13:44 
+
+13:44 grab that line.
+13:47 
+
+13:47 Okay. So you see now instance type has
+13:50 
+
+13:50 changed from T2 micro to T3 micro based
+13:53 
+
+13:53 on the value of environment variable
+13:56 
+
+13:56 environment.
+13:58 
+
+13:58 Okay. So this is how a conditional
+14:00 
+
+14:00 expression works. Okay. So now um that's
+14:05 
+
+14:05 conditional expression. Now let's move
+14:06 
+
+14:06 ahead with dynamic block.
+14:09 
+
+14:09 Okay. So for that I'm going to make some
+14:11 
+
+14:11 changes to variables and I'll show you
+14:14 
+
+14:14 what I'm doing now. So let me just copy
+14:17 
+
+14:17 this. So I'm going to create a new
+14:20 
+
+14:20 variable over here in variables.tf.
+14:26 
+
+14:26 Okay. And
+14:30 
+
+14:30 here is the value of that variable. So
+14:32 
+
+14:32 the variable name is ingress rules. So
+14:35 
+
+14:35 we'll be creating a security group rule.
+14:37 
+
+14:37 Okay. The variable name is ingress rule.
+14:41 
+
+14:41 Now this variable is a list of object.
+14:46 
+
+14:46 Okay. So that means first it's an
+14:49 
+
+14:49 object. Okay. So there is one object
+14:51 
+
+14:51 with multiple values. So there is from
+14:54 
+
+14:54 port to port protocol C block uh C block
+14:58 
+
+14:58 again is a list of string because we are
+15:01 
+
+15:01 using nested data types. I'm sure it has
+15:04 
+
+15:04 been cleared now now that we have
+15:05 
+
+15:05 covered data types earlier or type
+15:08 
+
+15:08 constraint whatever you want to call it.
+15:10 
+
+15:10 So what we are doing is we are creating
+15:12 
+
+15:12 a list of objects. Object as you know is
+15:15 
+
+15:15 a type constraint that has multiple data
+15:18 
+
+15:18 types contained within it and that data
+15:21 
+
+15:21 type could have again multiple data
+15:23 
+
+15:23 types. For example in this example over
+15:25 
+
+15:25 here so there is a list of object. Okay,
+15:29 
+
+15:29 list of object as in so if I just write
+15:32 
+
+15:32 it down over here. So we have a list of
+15:35 
+
+15:35 object, right? So that means there is a
+15:38 
+
+15:38 variable called ingress rules. Okay,
+15:41 
+
+15:41 this is what this is a list. But it's a
+15:44 
+
+15:44 list of object. So that means it will
+15:47 
+
+15:47 have the values
+15:49 
+
+15:49 of object one,
+15:52 
+
+15:52 object two
+15:55 
+
+15:55 and so on because it's a list, right?
+15:58 
+
+15:58 But it's a list of object. That means
+16:01 
+
+16:01 this object again will have multiple key
+16:03 
+
+16:03 value pairs of different data types. So
+16:06 
+
+16:06 this is what it is. Okay. So the way it
+16:09 
+
+16:09 works is this object has multiple types
+16:13 
+
+16:13 and this is how we are defining it. So
+16:15 
+
+16:15 first is from port which is of type
+16:17 
+
+16:17 number. Second is to port which is of
+16:19 
+
+16:19 type number. Then protocol string. C
+16:22 
+
+16:22 block which is a list of string meaning
+16:24 
+
+16:24 it could have multiple C blocks. uh with
+16:28 
+
+16:28 for for this key right then description
+16:31 
+
+16:31 again string. Now while adding the
+16:33 
+
+16:33 default value as well we have to provide
+16:35 
+
+16:35 the same order right. So the first
+16:38 
+
+16:38 should be from port and the value should
+16:41 
+
+16:41 be a number because this is what we have
+16:42 
+
+16:42 specified over here. Second should be
+16:45 
+
+16:45 two port because this is two port is the
+16:48 
+
+16:48 next one and the value should be number
+16:49 
+
+16:49 again the same way right. So uh we have
+16:54 
+
+16:54 uh a default value this is 1 and then
+16:58 
+
+16:58 comma this is two. Why? Because it's a
+17:02 
+
+17:02 list. It could have multiple values. So
+17:04 
+
+17:04 the first value of that object is this.
+17:07 
+
+17:07 The second value of that object is this.
+17:09 
+
+17:09 We could have more values if you want.
+17:11 
+
+17:11 Right? And let me just close it as well.
+17:15 
+
+17:15 So now what we need to do is why we are
+17:18 
+
+17:18 using this uh so we are creating a
+17:20 
+
+17:20 security group rule. Okay. So let's copy
+17:23 
+
+17:23 the definition of security group rule
+17:25 
+
+17:25 from the documentation.
+17:27 
+
+17:27 So let's uh from here uh let's search
+17:32 
+
+17:32 for security group.
+17:38 
+
+17:38 Okay. So let's search for AWS security
+17:43 
+
+17:43 group.
+17:49 
+
+17:49 security group
+17:51 
+
+17:51 and um
+17:54 
+
+17:54 not this one. Uh we need the other
+17:57 
+
+17:57 resource which has ingress and egress.
+17:59 
+
+17:59 Okay, so like this, right? So it has an
+18:01 
+
+18:01 ingress and similarly it can have
+18:04 
+
+18:04 ingress as well. Okay, like this. So
+18:06 
+
+18:06 this is what we need. So let's copy this
+18:09 
+
+18:09 value from here
+18:13 
+
+18:13 and paste it over here. Now uh the
+18:16 
+
+18:16 resource is AWS security group. Let's
+18:19 
+
+18:19 call it
+18:21 
+
+18:21 ingress.
+18:23 
+
+18:23 Ingress rule or whatever you want to
+18:26 
+
+18:26 call it. VPC ID you can use the default
+18:28 
+
+18:28 VPC for that. Uh if we remove this I'm
+18:32 
+
+18:32 not sure if it's going to throw the
+18:33 
+
+18:33 error but uh it should take the default
+18:36 
+
+18:36 VPC. If we remove this value, let's
+18:39 
+
+18:39 double check this from here from the
+18:40 
+
+18:40 documentation. So go to the argument
+18:43 
+
+18:43 section over here, argument reference
+18:46 
+
+18:46 and search for VPC. VPC ID is optional,
+18:50 
+
+18:50 right? Default to regions default VPC.
+18:52 
+
+18:52 So if we omit this value, uh it will
+18:55 
+
+18:55 take the default VPC. Now ingress will
+18:58 
+
+18:58 have from port, to port, uh protocol and
+19:02 
+
+19:02 C block. Many of these values are
+19:04 
+
+19:04 optionals but we already have it. Uh so
+19:07 
+
+19:07 these three are mandatory from port to
+19:11 
+
+19:11 port protocol and C block. Okay. So
+19:14 
+
+19:14 let's put it over here inside ingress.
+19:18 
+
+19:18 We have from port.
+19:22 
+
+19:22 Okay. So let's put it AD then to port.
+19:27 
+
+19:27 Let's put it Eddie then um C
+19:33 
+
+19:33 uh what's the name of the let's see
+19:38 
+
+19:38 C blocks
+19:42 
+
+19:42 okay blocks and we know it's of type
+19:45 
+
+19:45 list so you can just put that inside
+19:48 
+
+19:48 square bracket 0.0.0.0/
+19:51 
+
+19:51 zero slash zero. Okay. And protocols
+19:57 
+
+19:57 protocol is HTTP.
+20:00 
+
+20:00 Okay. I think there is some mistake
+20:03 
+
+20:03 that's why it is showing this as red.
+20:04 
+
+20:04 What it is saying expected a comma to
+20:06 
+
+20:06 the beginning of line. Okay. So we need
+20:10 
+
+20:10 to separate it with comma I believe. No,
+20:13 
+
+20:13 still showing the error. Let's go back
+20:16 
+
+20:16 and
+20:20 
+
+20:20 Okay,
+20:24 
+
+20:24 let's check where we have uh ingress.
+20:32 
+
+20:32 Uh no, there is no um oh it has to be
+20:36 
+
+20:36 inside the curly curly braces, not the
+20:40 
+
+20:40 square braces.
+20:43 
+
+20:43 Okay. And um now we can remove the
+20:48 
+
+20:48 commas.
+20:49 
+
+20:49 And what's the issue with this? Fail to
+20:52 
+
+20:52 recognize the value of this number
+20:54 
+
+20:54 literal. Invalid number literal.
+20:58 
+
+20:58 Let's go back and um c blocks.
+21:04 
+
+21:04 Okay, it should be inside double quotes.
+21:08 
+
+21:08 Why? Because if you go over here, so
+21:12 
+
+21:12 this C blocks, it's a list of string.
+21:15 
+
+21:15 It's a list of string and a string has
+21:18 
+
+21:18 to be enclosed inside double quotes.
+21:21 
+
+21:21 That's why. Okay. So now the errors are
+21:22 
+
+21:22 gone. Now let's say if we want to uh
+21:26 
+
+21:26 create two security group rules, one for
+21:29 
+
+21:29 HTTP and another for HTTPS, right? So uh
+21:33 
+
+21:33 how do we do that over here? we have to
+21:36 
+
+21:36 provide the values twice, right? So this
+21:40 
+
+21:40 will just create one security group
+21:41 
+
+21:41 rule. So let's just save this
+21:43 
+
+21:43 configuration and let's run TF plan.
+21:48 
+
+21:48 Okay. Uh there is an error which says
+21:51 
+
+21:51 there is no closing braces for this
+21:53 
+
+21:53 block before the end of the file inside
+21:57 
+
+21:57 um variable inress 91. Maybe inside
+22:00 
+
+22:00 variables.
+22:02 
+
+22:02 Let's see. Uh, it says this and I'm
+22:07 
+
+22:07 missing a braces. Okay. Okay. Should be
+22:10 
+
+22:10 good. Uh, let's go back and run TF plan
+22:13 
+
+22:13 again. Okay. Now it says reference to
+22:16 
+
+22:16 a resource type must be followed by at
+22:19 
+
+22:19 least one attribute access specifying
+22:21 
+
+22:21 the resource name. It is throwing error
+22:23 
+
+22:23 on protocol equal to HTTP. Let's go back
+22:27 
+
+22:27 over here
+22:29 
+
+22:29 and um protocol is minus1 for egress
+22:35 
+
+22:35 minus one is I guess um any or like it
+22:38 
+
+22:38 will select the default port for that
+22:41 
+
+22:41 uh for default protocol for that. Okay.
+22:44 
+
+22:44 So let's search the valid values of
+22:48 
+
+22:48 protocol. Okay. It says required
+22:50 
+
+22:50 protocol. If you select a protocol of
+22:52 
+
+22:52 minus1 which is equivalent to all which
+22:55 
+
+22:55 is not a valid value here you must
+22:57 
+
+22:57 specify from port to port equal to zero
+22:59 
+
+22:59 supported value or blah blah blah. What
+23:01 
+
+23:01 are the other valid values of uh
+23:06 
+
+23:06 protocol? Um let's see. Yeah it doesn't
+23:09 
+
+23:09 provide much detail over here. So if I
+23:12 
+
+23:12 search protocol um yeah you can add oh
+23:16 
+
+23:16 this is IP protocol and yeah let's try
+23:20 
+
+23:20 to add
+23:22 
+
+23:22 maybe yeah this is also I guess a string
+23:27 
+
+23:27 so
+23:29 
+
+23:29 it has to be enclosed in
+23:33 
+
+23:33 double quotes right so that's why it is
+23:36 
+
+23:36 throwing the error so HTTP now let's
+23:40 
+
+23:40 select it again.
+23:42 
+
+23:42 Okay. Now it says inappropriate value
+23:45 
+
+23:45 for attribute ingress set of object
+23:47 
+
+23:47 required.
+23:48 
+
+23:48 All right. Now it is throwing a
+23:50 
+
+23:50 different error but it is saying that
+23:52 
+
+23:52 there is inappropriate value of
+23:55 
+
+23:55 attribute ingress set of object
+23:58 
+
+23:58 required. If we go back to
+24:02 
+
+24:02 okay we are not using any variable uh
+24:05 
+
+24:05 till now
+24:08 
+
+24:08 it is throwing the error on line 12
+24:12 
+
+24:12 says set of object required so if we
+24:16 
+
+24:16 check it over here
+24:19 
+
+24:19 yeah I could have prepared everything in
+24:21 
+
+24:21 advance and directly shown you the demo
+24:23 
+
+24:23 but that's not how we learn and if you
+24:25 
+
+24:25 have been following me for quite some
+24:26 
+
+24:26 time you will know that we troubleshoot
+24:28 
+
+24:28 put everything live over here so that we
+24:32 
+
+24:32 know like everyone knows you know and
+24:34 
+
+24:34 everyone who's watching the video know
+24:36 
+
+24:36 that where are we making the mistake and
+24:38 
+
+24:38 how do we actually debug it how do we
+24:40 
+
+24:40 actually fix it that's why the video
+24:42 
+
+24:42 could be longer but the learning is
+24:45 
+
+24:45 guaranteed okay so
+24:49 
+
+24:49 it says um the object something
+24:52 
+
+24:52 something is not valid something okay so
+24:54 
+
+24:54 let's see the format okay so we have
+24:57 
+
+24:57 from port to core protocol, C blocks and
+25:01 
+
+25:01 um it's enclosed within curly braces.
+25:05 
+
+25:05 It's part of the security group.
+25:08 
+
+25:08 But what is the issue with it? Why it is
+25:11 
+
+25:11 throwing the error? Let's go back
+25:16 
+
+25:16 and see from port to port C blocks and
+25:20 
+
+25:20 protocol. Now it says line 12 which is
+25:23 
+
+25:23 this ingress and it says incorrect
+25:27 
+
+25:27 attribute value type. Okay, I think I
+25:31 
+
+25:31 know the issue and it's a it's a silly
+25:34 
+
+25:34 mistake that I have done which is
+25:38 
+
+25:38 this equal to sign. It's not uh like
+25:42 
+
+25:42 ingress when we are doing this we are
+25:45 
+
+25:45 just setting this as a variable over
+25:47 
+
+25:47 here right it's not the correct way so
+25:49 
+
+25:49 I'm just going to remove this and let's
+25:52 
+
+25:52 run the plan again so basically your
+25:55 
+
+25:55 documentation is the true source of
+25:57 
+
+25:57 truth so make sure you follow along with
+25:59 
+
+25:59 the documentation and that's why I have
+26:01 
+
+26:01 disabled the GitHub copilot suggestion
+26:03 
+
+26:03 as well we don't need that at this point
+26:05 
+
+26:05 okay so now it says uh errors are gone
+26:09 
+
+26:09 now it says three plan to add what it is
+26:11 
+
+26:11 doing it is now setting the AWS security
+26:14 
+
+26:14 group rule uh with the configuration
+26:17 
+
+26:17 that we have provided. What if we want
+26:19 
+
+26:19 to add uh one more ingress rule? So how
+26:22 
+
+26:22 do we do that? We do that with the
+26:25 
+
+26:25 dynamic expression within this block
+26:27 
+
+26:27 without rewriting the configuration
+26:29 
+
+26:29 again without rewriting the security
+26:31 
+
+26:31 group rule again. And there could be 10
+26:34 
+
+26:34 20 whatever how many rules we can do
+26:37 
+
+26:37 that just within these five lines. And
+26:38 
+
+26:38 let me show you how. Okay. So first
+26:41 
+
+26:41 instead of ingress it start with dynamic
+26:46 
+
+26:46 and you just give this dynamic variable
+26:48 
+
+26:48 a name. So we are creating a dynamic
+26:50 
+
+26:50 variable that means the value will be
+26:53 
+
+26:53 changed as per the iterated value and
+26:55 
+
+26:55 let me show you how. So first you start
+26:58 
+
+26:58 with dynamic ingress and inside the
+27:01 
+
+27:01 dynamic ingress because now you have to
+27:03 
+
+27:03 iterate through multiple values right.
+27:05 
+
+27:05 So you start with for each and for each
+27:09 
+
+27:09 uh inside the which variable uh the
+27:12 
+
+27:12 variable that is over here ingress rules
+27:15 
+
+27:15 it has multiple values right it has this
+27:18 
+
+27:18 is the first value this is the second
+27:19 
+
+27:19 value. So that means we have to iterate
+27:23 
+
+27:23 in this list of object for the multiple
+27:26 
+
+27:26 values. So where dot ingress rules so
+27:30 
+
+27:30 for each is equal to v dot ingress
+27:32 
+
+27:32 rules. Now uh like everything inside
+27:36 
+
+27:36 this v.t ingress should come inside the
+27:39 
+
+27:39 content block. Okay. So content and then
+27:43 
+
+27:43 I'm just going to put that inside this
+27:46 
+
+27:46 curly braces. Okay. So this is how it
+27:48 
+
+27:48 should be. Okay. Let's do some
+27:50 
+
+27:50 indentation so that it will make more
+27:52 
+
+27:52 sense.
+27:54 
+
+27:54 Okay. So this is what we have done.
+27:57 
+
+27:57 Instead of uh an ingress object what we
+28:01 
+
+28:01 have created we have created a dynamic
+28:03 
+
+28:03 block over here right a dynamic block
+28:05 
+
+28:05 starts with dynamic keyword with a name.
+28:08 
+
+28:08 So this is just a name that we have
+28:10 
+
+28:10 provided and we are iterating through
+28:13 
+
+28:13 values defined inside ingress. Now you
+28:17 
+
+28:17 see it is still hardcoded over here. We
+28:20 
+
+28:20 don't need that. We need the values from
+28:22 
+
+28:22 the variables.tf.
+28:24 
+
+28:24 Okay. So from port 80 and then again
+28:26 
+
+28:26 from port 443. Now if you remember the
+28:30 
+
+28:30 type constraint video where we have
+28:32 
+
+28:32 discussed about map right how do we get
+28:34 
+
+28:34 the values from map using each dot key
+28:38 
+
+28:38 dot value right? So this is a key value
+28:40 
+
+28:40 pair. So what we can do over here from
+28:44 
+
+28:44 port we can do ingress. Now you don't
+28:47 
+
+28:47 have to access from where dot ingress
+28:51 
+
+28:51 values dot something something right
+28:52 
+
+28:52 because everything is inside this
+28:55 
+
+28:55 ingress dynamic block now. So you can
+28:57 
+
+28:57 directly access the value from here. So
+29:00 
+
+29:00 ingress dot value dot from port
+29:08 
+
+29:08 from port. Okay. Similarly,
+29:11 
+
+29:11 ingress
+29:13 
+
+29:13 dot value
+29:15 
+
+29:15 dot to port
+29:19 
+
+29:19 and C block which is ingress dot value
+29:24 
+
+29:24 dot
+29:26 
+
+29:26 C blocks
+29:30 
+
+29:30 and protocol again ingress dot value dot
+29:35 
+
+29:35 protocol.
+29:37 
+
+29:37 Okay. So now what it will do uh if we do
+29:41 
+
+29:41 a dry run of it first it will initialize
+29:44 
+
+29:44 the dynamic block with the name ingress.
+29:46 
+
+29:46 Now what will this ingress has? Ingress
+29:49 
+
+29:49 has the values of variable which is
+29:52 
+
+29:52 ingress dot rule and there is a counter
+29:55 
+
+29:55 for that. So that means if it has two
+29:58 
+
+29:58 elements then the counter will go from
+30:00 
+
+30:00 one and two okay two times. So first
+30:03 
+
+30:03 time it will select the first element.
+30:06 
+
+30:06 First element which is this one. This is
+30:09 
+
+30:09 the first element. So based on that it
+30:12 
+
+30:12 will go ahead and check ingress dot
+30:16 
+
+30:16 value. Now ingress is over here. Ingress
+30:18 
+
+30:18 dot value dot from port from port which
+30:23 
+
+30:23 is the value of the first element which
+30:25 
+
+30:25 is 80 and then two port protocol and C
+30:29 
+
+30:29 block and so on. Right? uh you can add
+30:32 
+
+30:32 the description as well and once this is
+30:35 
+
+30:35 done it will do the same for the second
+30:37 
+
+30:37 element which is for HTTPS and in that
+30:40 
+
+30:40 case the value will be 443 443 TCP and
+30:43 
+
+30:43 then the same C block and so on. So now
+30:47 
+
+30:47 if I run TF plan over here
+30:52 
+
+30:52 let's see what it does.
+30:56 
+
+30:56 Now let's see the security group rule.
+30:58 
+
+30:58 So there is a C block over here which is
+31:02 
+
+31:02 for AT and TCP
+31:06 
+
+31:06 and then there is a security group which
+31:09 
+
+31:09 is a new one which is for 443 which is
+31:11 
+
+31:11 HTTPS. We only have one content block
+31:15 
+
+31:15 over here and what it did it iterated
+31:18 
+
+31:18 through multiple values from the
+31:21 
+
+31:21 variable files. Okay. So if you are
+31:25 
+
+31:25 still confused with it make sure you do
+31:27 
+
+31:27 the practice. I will share everything in
+31:29 
+
+31:29 the GitHub repo. Make sure you complete
+31:30 
+
+31:30 the task given in the GitHub repo and it
+31:33 
+
+31:33 will be clear than ever. Right now uh
+31:36 
+
+31:36 the third part which is
+31:39 
+
+31:39 this one over here and it's called splat
+31:42 
+
+31:42 expression. Right. So for that let's uh
+31:46 
+
+31:46 do a small exercise for this as well.
+31:50 
+
+31:50 Okay. So let's do this.
+31:53 
+
+31:53 So we have created uh two instances over
+31:56 
+
+31:56 here, right? we have not created
+31:58 
+
+31:58 actually I mean we have planned it but
+31:60 
+
+31:60 it's uh working we have verified it with
+32:02 
+
+32:02 TF plan now what if we want to create a
+32:06 
+
+32:06 list of a variable which has the list of
+32:10 
+
+32:10 all the instance ids once it is
+32:12 
+
+32:12 generated how do we do that okay so for
+32:15 
+
+32:15 that we can use the splat expression
+32:17 
+
+32:17 okay so let's do create a local oh we
+32:22 
+
+32:22 already have a local file so inside
+32:24 
+
+32:24 local
+32:25 
+
+32:25 Um,
+32:27 
+
+32:27 oh, we don't have the local file. Okay,
+32:29 
+
+32:29 that's okay. You can do that within the
+32:31 
+
+32:31 same file or you can create a separate
+32:33 
+
+32:33 file. I'm going to use the same file for
+32:34 
+
+32:34 now. So to get the list of all the
+32:39 
+
+32:39 instance type, let's create a locals.
+32:42 
+
+32:42 And inside locals, what we can do is
+32:45 
+
+32:45 let's create a variable called all
+32:47 
+
+32:47 instance ID.
+32:49 
+
+32:49 And from where we get the ID? We get the
+32:53 
+
+32:53 id uh from where okay not where AWS
+32:58 
+
+32:58 instance do.example because this is the
+33:00 
+
+33:00 resource right? AWS instance example and
+33:04 
+
+33:04 dot id. Now this is the interesting
+33:08 
+
+33:08 part. If you just do this what will
+33:10 
+
+33:10 happen? Let's see u like we are just
+33:12 
+
+33:12 actually setting the value but we are
+33:14 
+
+33:14 not printing the value anywhere. So
+33:16 
+
+33:16 let's just use tf plan right now. Okay,
+33:19 
+
+33:19 let's see.
+33:21 
+
+33:21 Now it will throw the error. Why it will
+33:23 
+
+33:23 throw the error? Because AWS instance
+33:26 
+
+33:26 type has count set meaning it has two
+33:28 
+
+33:28 values. Its attribute must be accessed
+33:31 
+
+33:31 on specific instances. Like you have to
+33:34 
+
+33:34 provide the index count.index like how
+33:37 
+
+33:37 are you accessing the values. So if I do
+33:41 
+
+33:41 ID zero,
+33:45 
+
+33:45 should it work? Let's see.
+33:50 
+
+33:50 Okay, it said the value does not have
+33:52 
+
+33:52 indices. Why? Because it's not a list.
+33:55 
+
+33:55 We can only provide this with the list.
+33:58 
+
+33:58 So, how do we access this value? We
+33:60 
+
+33:60 access this value with uh we can add for
+34:03 
+
+34:03 each and then count index. That you can
+34:05 
+
+34:05 do. But what if we want to put all the
+34:08 
+
+34:08 values inside this variable. So for that
+34:12 
+
+34:12 we can just do do this example and over
+34:16 
+
+34:16 here star.
+34:19 
+
+34:19 Now what it will show if I run TF plan.
+34:24 
+
+34:24 Okay, now it does not throw any error.
+34:27 
+
+34:27 Um but let's see if the value will be
+34:29 
+
+34:29 printed. The value will not be printed
+34:31 
+
+34:31 over here. Why? Because it's not part of
+34:33 
+
+34:33 the resource, right? It's separate uh
+34:37 
+
+34:37 variable that we have created. So you
+34:39 
+
+34:39 can create an output variable. Let's
+34:42 
+
+34:42 create an output variable and call it
+34:45 
+
+34:45 instances.
+34:46 
+
+34:46 And inside that um you can print
+34:51 
+
+34:51 let's call it instances equal to
+34:55 
+
+34:55 locals dot all instance id count dot
+35:01 
+
+35:01 index oh
+35:04 
+
+35:04 star
+35:06 
+
+35:06 no it won't work like this
+35:08 
+
+35:08 uh required value um an attribute name
+35:12 
+
+35:12 value is required here okay so this is
+35:15 
+
+35:15 not how it works works output variables.
+35:19 
+
+35:19 Let's see the how it works. I might have
+35:23 
+
+35:23 forgotten it. Oops, these videos does
+35:27 
+
+35:27 not have the output variable. Okay, so
+35:29 
+
+35:29 it Oh, yeah. The syntax is like the
+35:30 
+
+35:30 output and then value equal to this.
+35:35 
+
+35:35 Okay. Um
+35:37 
+
+35:37 where it is? Okay. So, [snorts]
+35:39 
+
+35:39 it should be value equal to
+35:43 
+
+35:43 this.
+35:45 
+
+35:45 Okay. So let's let's run it again. Let's
+35:47 
+
+35:47 run the TF plan again.
+35:50 
+
+35:50 It says a managed resource local all
+35:52 
+
+35:52 instance ID has not been declared in the
+35:54 
+
+35:54 root module. Um local dot okay maybe we
+35:59 
+
+35:59 cannot use uh okay let's remove this.
+36:03 
+
+36:03 Okay now how do we actually print this?
+36:06 
+
+36:06 Let's have a look at this. So if I do
+36:09 
+
+36:09 output
+36:10 
+
+36:10 and let's call it instances
+36:13 
+
+36:13 and then value is equal to locals dot
+36:17 
+
+36:17 all instance ids. Uh let's see what it's
+36:21 
+
+36:21 going to throw. Okay. So it says
+36:24 
+
+36:24 instances is a list with two elements
+36:27 
+
+36:27 but the values will be known after apply
+36:30 
+
+36:30 once you apply the changes because if
+36:31 
+
+36:31 you remember instance ids will be
+36:34 
+
+36:34 generated
+36:35 
+
+36:35 after you apply the changes after the
+36:37 
+
+36:37 instance will be created. Okay so that's
+36:39 
+
+36:39 why it is showing non after apply but
+36:41 
+
+36:41 this suggests that it is working. Now
+36:44 
+
+36:44 how do we check this? How do we create
+36:46 
+
+36:46 the splat expression? Okay so you see we
+36:50 
+
+36:50 go to AWS instances.example.
+36:53 
+
+36:53 Okay, which is this resource over here.
+36:56 
+
+36:56 Okay, and now we need to get the value
+36:58 
+
+36:58 from it. This value could be ID, private
+37:01 
+
+37:01 ips, uh it could be something else. And
+37:05 
+
+37:05 the way we get it with adding star in
+37:08 
+
+37:08 front of it, that means the count could
+37:12 
+
+37:12 be many. So it will check all the
+37:16 
+
+37:16 values. It will iterate through all the
+37:18 
+
+37:18 instances and get the ID from each of
+37:21 
+
+37:21 these instances.
+37:22 
+
+37:22 Right? So that's how splat expression
+37:25 
+
+37:25 work. So you just use the operator
+37:28 
+
+37:28 before the actual field. Okay? You use
+37:31 
+
+37:31 operator star with the resource name
+37:34 
+
+37:34 which is example in this case. And then
+37:37 
+
+37:37 you can use this value in some other
+37:39 
+
+37:39 variable in output variables and there
+37:41 
+
+37:41 could be multiple use cases. So that's
+37:44 
+
+37:44 how splat expression work. So resource
+37:47 
+
+37:47 list star dot attribute. attribute is
+37:49 
+
+37:49 like ID, private IP, uh name or
+37:52 
+
+37:52 something else, tags, whatever, whatever
+37:54 
+
+37:54 fields that it has all the arguments
+37:56 
+
+37:56 inside it. Okay, so uh yeah, so that's
+38:01 
+
+38:01 about Terraform expression. Make sure
+38:02 
+
+38:02 you go through the GitHub repository as
+38:05 
+
+38:05 well and understand this in detail. Um
+38:08 
+
+38:08 make sure you do the practice, make sure
+38:10 
+
+38:10 you do the hands-on and make sure you
+38:11 
+
+38:11 support the channel. Make sure uh you
+38:13 
+
+38:13 follow us on social media and keep
+38:16 
+
+38:16 sharing your progress with everyone. So
+38:18 
+
+38:18 that's it from this video. Thank you so
+38:20 
+
+38:20 much. I hope you had a great learning
+38:22 
+
+38:22 experience. Thanks for following along.
+38:24 
+
+38:24 Happy learning.

@@ -1,0 +1,2242 @@
+00:00 Hello and welcome back to my channel. My
+00:02 
+
+00:02 name is Bush and this is day 16 in 30
+00:05 
+
+00:05 days of AWS Terraform. In this video,
+00:07 
+
+00:07 we'll be looking into a small mini
+00:10 
+
+00:10 project about user management in
+00:12 
+
+00:12 Terraform like how do we create bulk
+00:15 
+
+00:15 users in terapform, grant them access,
+00:18 
+
+00:18 assign them certain roles and
+00:20 
+
+00:20 permissions and how do we actually do
+00:23 
+
+00:23 that? I'll walk you through all the
+00:25 
+
+00:25 steps and uh yeah, if you have not
+00:27 
+
+00:27 subscribed the channel, please do so. If
+00:30 
+
+00:30 you are new here, make sure you watch
+00:32 
+
+00:32 this series from day zero onwards.
+00:34 
+
+00:34 Otherwise, you will miss a lot of
+00:36 
+
+00:36 context and also about the challenge 30
+00:39 
+
+00:39 days of AWS Terraform. So, there are
+00:42 
+
+00:42 prizes, there is a learning challenge
+00:44 
+
+00:44 that's been going on and uh day zero
+00:47 
+
+00:47 video has all the details about how to
+00:49 
+
+00:49 participate, how to do the submissions
+00:50 
+
+00:50 and so on. Okay, so yeah, let's uh get
+00:53 
+
+00:53 into the video. This is what we'll be
+00:56 
+
+00:56 doing in this video. Okay. So we'll
+00:58 
+
+00:58 create an CSV file, a commaepparated
+01:02 
+
+01:02 file with multiple users
+01:06 
+
+01:06 and we'll upload that in our Terraform
+01:08 
+
+01:08 repo using which Terraform will create
+01:12 
+
+01:12 users for us like multiple users because
+01:15 
+
+01:15 we'll be doing bulk creation not one by
+01:17 
+
+01:17 one and then we'll be creating multiple
+01:22 
+
+01:22 groups multiple IM groups and we'll be
+01:25 
+
+01:25 doing the assignment of I am users to
+01:28 
+
+01:28 each of these groups and that assignment
+01:30 
+
+01:30 will also be dynamic assignment not
+01:33 
+
+01:33 straightforward. So we'll be using many
+01:35 
+
+01:35 conditional statements loops and so on.
+01:38 
+
+01:38 Then uh we'll be also enabling console
+01:42 
+
+01:42 access to IM users and uh create login
+01:44 
+
+01:44 profiles for that meaning create
+01:46 
+
+01:46 temporary password so that they can
+01:48 
+
+01:48 login and reset their password after the
+01:50 
+
+01:50 first use and we'll be always uh using
+01:53 
+
+01:53 S3 remote file for the back end for the
+01:55 
+
+01:55 remote back end right so this is what
+01:57 
+
+01:57 we'll be doing as I've told you it's a
+01:59 
+
+01:59 mini project so we'll try to keep the
+02:01 
+
+02:01 things as simple as possible and these
+02:04 
+
+02:04 will be the next step for you as part of
+02:07 
+
+02:07 your assignment ment details is there in
+02:09 
+
+02:09 the GitHub repository of day 16 folder
+02:11 
+
+02:11 but just to give you an idea this is
+02:13 
+
+02:13 what you need to do after this you need
+02:15 
+
+02:15 to also create IM policies attach these
+02:19 
+
+02:19 policies to the groups enable MFAS setup
+02:23 
+
+02:23 AWS SSO and you can add more attributes
+02:26 
+
+02:26 to the CSV like currently it'll have few
+02:29 
+
+02:29 details but then you can add email phone
+02:31 
+
+02:31 number etc address as well and you can
+02:34 
+
+02:34 also like this step is optional uh you
+02:36 
+
+02:36 can also automate the onboarding by
+02:39 
+
+02:39 integrating this with your HR system.
+02:42 
+
+02:42 Right? If you uh don't have access to
+02:45 
+
+02:45 any such system, that's okay. This is
+02:46 
+
+02:46 just an optional step, but make sure you
+02:48 
+
+02:48 complete the rest of it. So, um yeah, so
+02:51 
+
+02:51 this is what we're going to do. Let's
+02:53 
+
+02:53 get into our VS Code and let's start
+02:56 
+
+02:56 working. So, I'm just going to set my
+02:59 
+
+02:59 terminal. Okay. Uh I'm in day 15 folder.
+03:05 
+
+03:05 Okay. So let's create another folder.
+03:08 
+
+03:08 I'm just going to copy day 65 and create
+03:12 
+
+03:12 day 16 folder so that I will have
+03:14 
+
+03:14 provider back end and all the you know
+03:17 
+
+03:17 um common files. So let's get into day
+03:20 
+
+03:20 16 now and we'll make our changes over
+03:23 
+
+03:23 here. First um yeah we don't need these
+03:28 
+
+03:28 files. Let's remove this.
+03:32 
+
+03:32 And then we also need to make some
+03:34 
+
+03:34 changes in provider. We only need one
+03:37 
+
+03:37 provider. So that's fine. Let's remove
+03:41 
+
+03:41 this one.
+03:44 
+
+03:44 Okay. And
+03:47 
+
+03:47 you can access it by alias or just keep
+03:51 
+
+03:51 the way it is because we only have one
+03:53 
+
+03:53 provider. That's okay. Let's
+03:55 
+
+03:55 [clears throat] get to main.tf. Okay.
+03:59 
+
+03:59 So the first step is to create the users
+04:02 
+
+04:02 u in terapform we need to create a CSV
+04:05 
+
+04:05 file as well right um with multiple
+04:08 
+
+04:08 details because we are doing the bulk
+04:10 
+
+04:10 upload. Okay so let me just put a sample
+04:13 
+
+04:13 CSV file over here
+04:15 
+
+04:15 and this CSV file will have around 26
+04:19 
+
+04:19 users. So um in this day 16 folder let's
+04:24 
+
+04:24 call it users doc csv
+04:28 
+
+04:28 and
+04:30 
+
+04:30 here the content. Okay so what fields
+04:33 
+
+04:33 does it have? So it has first name, last
+04:36 
+
+04:36 name, department and job title, right?
+04:40 
+
+04:40 Michael uh the first name, Scott is the
+04:42 
+
+04:42 last name, department is let's say
+04:45 
+
+04:45 education, job title is regional
+04:47 
+
+04:47 manager. Okay and so on. So there are 26
+04:51 
+
+04:51 entries in this because these are the 26
+04:55 
+
+04:55 members or 26 characters of a famous
+04:59 
+
+04:59 sitcom called The Office. If you have
+05:01 
+
+05:01 watched it, I'm a big fan of it. So
+05:03 
+
+05:03 that's why it's there. You probably have
+05:05 
+
+05:05 seen this in one of my other series as
+05:08 
+
+05:08 well. If not, that's okay. Um yeah, do
+05:10 
+
+05:10 you don't I mean uh watching that series
+05:13 
+
+05:13 is not a prerequisite, right? Okay. So
+05:17 
+
+05:17 there's the user file. So we have added
+05:19 
+
+05:19 the user file. Now let's move forward.
+05:22 
+
+05:22 Now what we'll be doing after that we'll
+05:26 
+
+05:26 be creating a local so that we can
+05:28 
+
+05:28 convert this file into a map. How would
+05:32 
+
+05:32 it does? So there is a function in
+05:35 
+
+05:35 terraform. So let's create a local over
+05:37 
+
+05:37 here. Locals. And there is a function
+05:40 
+
+05:40 called CSV decode. Okay. So what this
+05:45 
+
+05:45 function will do I think that's the name
+05:48 
+
+05:48 CSV decode. Yeah that's the name. So
+05:50 
+
+05:50 what it does so let's add the file
+05:53 
+
+05:53 first. File name is users dot CSV. Okay.
+05:59 
+
+05:59 And yeah I need to just assign the
+06:01 
+
+06:01 values to a variable users is equal to
+06:04 
+
+06:04 CSVD code. Okay. So what this function
+06:06 
+
+06:06 does let's go ahead on the Terapform
+06:09 
+
+06:09 documentation.
+06:12 
+
+06:12 Okay. And let's see what does it say?
+06:15 
+
+06:15 It's um decodes a string containing CSV
+06:18 
+
+06:18 formatted data and produce a list of
+06:21 
+
+06:21 maps representing that data. Meaning
+06:24 
+
+06:24 this function will convert the entire
+06:28 
+
+06:28 content of the CSV file into a list of
+06:31 
+
+06:31 map. So now each of these fields uh like
+06:36 
+
+06:36 each of these will become a list. So
+06:38 
+
+06:38 something like because it's a list of
+06:40 
+
+06:40 map right? So it will become something
+06:42 
+
+06:42 like let's say it's a users right so
+06:46 
+
+06:46 users is equal to and then because it's
+06:49 
+
+06:49 a list and then because the values
+06:53 
+
+06:53 inside the list is a map so key value
+06:55 
+
+06:55 pair right so it will be something like
+06:58 
+
+06:58 name Michael
+07:04 
+
+07:04 last name
+07:07 
+
+07:07 got
+07:12 
+
+07:12 something like this.
+07:16 
+
+07:16 Right? So that's the first element. Now
+07:19 
+
+07:19 there'll be other elements with the same
+07:22 
+
+07:22 attributes name, last name and their
+07:26 
+
+07:26 designation, department and so on.
+07:27 
+
+07:27 Right? So all of this logic will be
+07:31 
+
+07:31 taken care by this single function CSV
+07:34 
+
+07:34 decode. So now because why we have to
+07:37 
+
+07:37 convert it? We have to convert so that
+07:38 
+
+07:38 we can do the operations. It will be
+07:40 
+
+07:40 easier to parse the values from a data
+07:44 
+
+07:44 type that is known inside terraform.
+07:46 
+
+07:46 Otherwise it will be difficult or we
+07:49 
+
+07:49 have to add u multiple loops to get the
+07:52 
+
+07:52 values each time from that u CSV file.
+07:55 
+
+07:55 Right? So uh that's why we need to use
+07:58 
+
+07:58 this function now. What you can do is
+08:02 
+
+08:02 because to create the account we also
+08:06 
+
+08:06 need to get some details about the
+08:08 
+
+08:08 account that we are using right so we
+08:10 
+
+08:10 need to create a data as well a data
+08:14 
+
+08:14 source so data source for AWS
+08:18 
+
+08:18 caller identity I'll I'll explain it to
+08:21 
+
+08:21 you why we are using but for now let's
+08:23 
+
+08:23 just create a data source and let's just
+08:27 
+
+08:27 gather the value uh the account what
+08:29 
+
+08:29 does it say not enough labels for data.
+08:32 
+
+08:32 All data must have two labels. AWS
+08:35 
+
+08:35 caller identity. So this will get our um
+08:39 
+
+08:39 account ID I believe. So you can just
+08:42 
+
+08:42 verify it with the output variable
+08:45 
+
+08:45 account ID and the value is from this
+08:49 
+
+08:49 data source. So data do AWS
+08:53 
+
+08:53 caller identity dot account ID.
+08:57 
+
+08:57 Oops.
+09:01 
+
+09:01 count ID.
+09:03 
+
+09:03 Now I'm still not sure why it is
+09:06 
+
+09:06 throwing this error. Okay, we we'll fix
+09:08 
+
+09:08 that later on. Let's just do a TF in it.
+09:12 
+
+09:12 Oops. Alias.
+09:14 
+
+09:14 Uh TF in it.
+09:19 
+
+09:19 Okay. Uh it is still throwing the error.
+09:21 
+
+09:21 All data block must have two labels type
+09:24 
+
+09:24 and name. Uh it is expecting some value.
+09:27 
+
+09:27 I don't know why. Maybe it's because of
+09:30 
+
+09:30 the Terraform provider version I'm
+09:32 
+
+09:32 using. No. Um, let's go back. Let's
+09:36 
+
+09:36 check the Terraform documentation.
+09:40 
+
+09:40 AWS Terraform provider. Let's go inside
+09:44 
+
+09:44 and check for
+09:48 
+
+09:48 AWS
+09:50 
+
+09:50 caller identity.
+09:53 
+
+09:53 Okay, here's the data source. So it
+09:56 
+
+09:56 should work like this. Data AWS caller
+09:59 
+
+09:59 identity and then the name. Oh, I did
+10:02 
+
+10:02 not provide the name. Okay.
+10:05 
+
+10:05 So let's call it name.
+10:09 
+
+10:09 Okay. Now it should be fine. Let's do TF
+10:12 
+
+10:12 in it again. Okay. Initialize. Let's do
+10:15 
+
+10:15 TF plan. Currently we have not created
+10:18 
+
+10:18 uh any resource. So that's okay. Now it
+10:21 
+
+10:21 says users have not been declared in the
+10:23 
+
+10:23 root. Maybe it's not able to find the
+10:26 
+
+10:26 file. Okay. So, let's make the change.
+10:30 
+
+10:30 Uh where was it
+10:34 
+
+10:34 in local? Okay. Users doc CSV. So, let's
+10:39 
+
+10:39 add this. Oops.
+10:41 
+
+10:41 Yeah, it has to be in double quotes, I
+10:43 
+
+10:43 believe.
+10:45 
+
+10:45 Okay.
+10:48 
+
+10:48 Okay. Now it says the data source or
+10:51 
+
+10:51 account ID has not been declared in the
+10:53 
+
+10:53 root module. Okay. So data.tf
+10:58 
+
+10:58 blah blah blah is okay. Account ID. No
+11:01 
+
+11:01 account ID should be this name. So we
+11:03 
+
+11:03 can add name. That's it.
+11:07 
+
+11:07 You see I'm making a lot of mistake but
+11:09 
+
+11:09 that's how we learn right. Uh so uh this
+11:12 
+
+11:12 output variable will return my account
+11:14 
+
+11:14 ID. Now let's move ahead. uh inside
+11:18 
+
+11:18 main.tf. So we have got the account ID.
+11:20 
+
+11:20 We have created the local to decode the
+11:24 
+
+11:24 CSV to parse the CSV into list of maps.
+11:29 
+
+11:29 Now what we need to do is we need to
+11:32 
+
+11:32 create IM users. So for that there is a
+11:35 
+
+11:35 resource called AWS IM users.
+11:40 
+
+11:40 It's AWS IM users.
+11:45 
+
+11:45 Let's call it users. Okay. And let's
+11:50 
+
+11:50 start working on it. First, let's check
+11:52 
+
+11:52 this resource over here.
+11:59 
+
+11:59 AWS IM user. Oh, not users. AWS imer.
+12:04 
+
+12:04 Okay. So, this is how it should be. It
+12:08 
+
+12:08 should have name, path, tags, and so on.
+12:12 
+
+12:12 And then there'll be multiple other
+12:14 
+
+12:14 arguments over here. So let's change it
+12:18 
+
+12:18 to user AWS im user right. Yeah. Oh no
+12:22 
+
+12:22 we we actually are creating multiple
+12:25 
+
+12:25 users. So let's see if there is any
+12:28 
+
+12:28 other resource. Uh no the same will
+12:32 
+
+12:32 work. Okay.
+12:34 
+
+12:34 Now it is expecting some field that's
+12:36 
+
+12:36 why it is throwing the error. It says
+12:38 
+
+12:38 name is the required attribute. you have
+12:40 
+
+12:40 not specified the name. Okay, so that's
+12:44 
+
+12:44 okay. We'll just try to add that.
+12:48 
+
+12:48 But we have a CSV. We have multiple
+12:51 
+
+12:51 names. How do we get the names? So you
+12:53 
+
+12:53 might be thinking, yeah, we need
+12:55 
+
+12:55 probably some sort of iteration. We need
+12:57 
+
+12:57 some loops. So yes, if you are thinking
+12:59 
+
+12:59 that you're thinking in the right
+13:00 
+
+13:00 direction. First, we need to get the
+13:03 
+
+13:03 name of the user, right? So name of the
+13:05 
+
+13:05 user will be how would you get the name
+13:08 
+
+13:08 of the user? You can start by creating
+13:10 
+
+13:10 an output variable first. Right? So
+13:12 
+
+13:12 let's create an output variable so that
+13:15 
+
+13:15 we can just test out how we can get the
+13:17 
+
+13:17 name of the user. So let's create output
+13:20 
+
+13:20 user names and then in output if you
+13:24 
+
+13:24 remember we can create for loops. Yeah,
+13:26 
+
+13:26 we can use for loops right. So output
+13:30 
+
+13:30 usernames and then let's start with
+13:34 
+
+13:34 value equal to for and let's put that
+13:37 
+
+13:37 inside uh square brackets. So for user
+13:42 
+
+13:42 in now uh from where we get the user we
+13:45 
+
+13:45 have created the local already right. So
+13:47 
+
+13:47 local dot users
+13:50 
+
+13:50 colon and then we need to provide how do
+13:53 
+
+13:53 we get the value right? So string
+13:56 
+
+13:56 interpolation and user dot first name
+14:02 
+
+14:02 or if it was just the name. Yeah, user
+14:04 
+
+14:04 dot first name. It will take the field
+14:07 
+
+14:07 from the header of the CSV and then same
+14:09 
+
+14:09 thing user dot last name
+14:15 
+
+14:15 and it has to be inside double quotes
+14:18 
+
+14:18 from here and from here. Yeah, I missed
+14:23 
+
+14:23 a bracket over here.
+14:29 
+
+14:29 Uh wait so uh not this one. Okay now
+14:34 
+
+14:34 this is fine. Okay so if I run this now
+14:37 
+
+14:37 it will just print out the user's first
+14:39 
+
+14:39 name and last name. Okay what what are
+14:41 
+
+14:41 we doing? We are doing the iteration of
+14:45 
+
+14:45 a inside a map. Okay. And because it's a
+14:48 
+
+14:48 list of map so we are doing is inside
+14:51 
+
+14:51 the map and we are getting first name
+14:53 
+
+14:53 and last name from that map. So let's do
+14:56 
+
+14:56 a TF plan again.
+14:59 
+
+14:59 It says argument name is required but no
+15:02 
+
+15:02 definition is found. So oh it is
+15:04 
+
+15:04 throwing the error for this this
+15:06 
+
+15:06 function over here. So let's
+15:08 
+
+15:08 let's just comment it for now. Yeah.
+15:13 
+
+15:13 And let's run it again.
+15:16 
+
+15:16 Okay. So here are the details. First
+15:18 
+
+15:18 name, last name, first name, last name.
+15:21 
+
+15:21 Right? So that's the value of username
+15:25 
+
+15:25 output variable. Okay. So the same way
+15:27 
+
+15:27 we can get the value. So this output
+15:29 
+
+15:29 variable I have just created to show you
+15:32 
+
+15:32 how you can get the value inside this.
+15:34 
+
+15:34 So over here we'll create a for each
+15:37 
+
+15:37 loop because we have to use that in
+15:39 
+
+15:39 multiple resource creation, right? So
+15:41 
+
+15:41 that's why we need another iteration of
+15:43 
+
+15:43 for each loop. And then inside this we
+15:46 
+
+15:46 can use a similar for loop the one that
+15:48 
+
+15:48 we have used for output. So for user in
+15:52 
+
+15:52 local dot users okay and user dot first
+15:58 
+
+15:58 name
+16:02 
+
+16:02 user. Okay. So this will create the loop
+16:05 
+
+16:05 for each of these users because we are
+16:07 
+
+16:07 getting it from the list itself. Now for
+16:12 
+
+16:12 the name what we can do is because now
+16:15 
+
+16:15 we have a for each loop so we can just
+16:17 
+
+16:17 do each dot value dot first name each
+16:19 
+
+16:19 dot value.ast name right. So let's do
+16:22 
+
+16:22 that
+16:24 
+
+16:24 each dot
+16:26 
+
+16:26 value dot first name. So that that will
+16:29 
+
+16:29 give the first name only. Now maybe we
+16:31 
+
+16:31 need a username with some specified
+16:34 
+
+16:34 format right like it should have let's
+16:36 
+
+16:36 say uh the first character of the first
+16:39 
+
+16:39 name and the last name like mcot
+16:42 
+
+16:42 something like that right so how do we
+16:44 
+
+16:44 do that we can uh parse the values uh
+16:46 
+
+16:46 using substring function right so let's
+16:50 
+
+16:50 do subst strr
+16:52 
+
+16:52 and inside that we can each do value
+16:55 
+
+16:55 each dot first name and then zero and
+16:58 
+
+16:58 one so because now we We are providing
+17:01 
+
+17:01 the offset number like start from here
+17:03 
+
+17:03 and length to first character. This is
+17:06 
+
+17:06 how we have we have seen this function
+17:08 
+
+17:08 before as well. Right? So this is how it
+17:10 
+
+17:10 will work. The substring function and
+17:12 
+
+17:12 like because we need to concatenate it.
+17:14 
+
+17:14 So let's put that inside double quotes
+17:17 
+
+17:17 over here. And um that's the first name
+17:20 
+
+17:20 for the last name as well. We can just
+17:24 
+
+17:24 do each dot value
+17:27 
+
+17:27 dot last name and so that's the first
+17:31 
+
+17:31 name that's the last name and okay again
+17:34 
+
+17:34 this particular substring will be also
+17:37 
+
+17:37 inside the dollar sign because we are
+17:40 
+
+17:40 doing string interpolation over here
+17:41 
+
+17:41 right so that will give us first name
+17:43 
+
+17:43 and last name now you can convert this
+17:46 
+
+17:46 into lower case as well the first name
+17:48 
+
+17:48 let's say it's one of the requirement of
+17:50 
+
+17:50 creating I am user or maybe Yeah, it's
+17:53 
+
+17:53 not the requirement actually. Yeah, but
+17:55 
+
+17:55 you can do that or you can create a thin
+17:57 
+
+17:57 uppercase whatever. I just want to use
+17:59 
+
+17:59 this so that I can show you uh
+18:02 
+
+18:02 additional functions with this for loop.
+18:04 
+
+18:04 Okay, and yeah, let's use that the
+18:07 
+
+18:07 entire name. Is it throwing the error?
+18:09 
+
+18:09 I'm not sure. Okay, there is an error
+18:11 
+
+18:11 over here. Oh, yeah, this is also
+18:14 
+
+18:14 throwing the error.
+18:17 
+
+18:17 So, this one is closing over here. This
+18:20 
+
+18:20 one. And then there is this one for
+18:22 
+
+18:22 this. There is lower. It starts from
+18:26 
+
+18:26 here and it is okay. Yeah. Okay. There
+18:29 
+
+18:29 is the U should start over here and then
+18:33 
+
+18:33 over here.
+18:36 
+
+18:36 Yeah. This is fine now. Okay. So now we
+18:38 
+
+18:38 got the name. We got the name in the
+18:40 
+
+18:40 format mcot or PBS or whatever. Right
+18:45 
+
+18:45 now we got for list. We got name. Now
+18:47 
+
+18:47 the second is we need path. Path for the
+18:50 
+
+18:50 users would be path is equal to
+18:54 
+
+18:54 / users. Now you can just add tags.
+18:58 
+
+18:58 Tags could be um let's create tag.
+19:04 
+
+19:04 Let's use
+19:06 
+
+19:06 display name or I'll just copy it from
+19:09 
+
+19:09 the repository. Yeah, I don't want to
+19:12 
+
+19:12 type the tags. It's fine. Okay. So how
+19:15 
+
+19:15 we are getting the tags? Display name is
+19:17 
+
+19:17 again because we have a for each loop.
+19:19 
+
+19:19 So we are using each dot value first
+19:21 
+
+19:21 name each do.value dot last name. That's
+19:23 
+
+19:23 the display name. Department is each dot
+19:25 
+
+19:25 value. Departmentep department and job
+19:27 
+
+19:27 title is do.value job title. So this is
+19:29 
+
+19:29 why we use the for loop so that we can
+19:32 
+
+19:32 get the values using each dot value and
+19:35 
+
+19:35 that's why we use for each. We needed
+19:38 
+
+19:38 for loop because we need to iterate it
+19:40 
+
+19:40 through multiple username uh and like
+19:43 
+
+19:43 all the users. So that's why we used u
+19:46 
+
+19:46 this okay um so this is I am users block
+19:52 
+
+19:52 okay and this is ending over here okay
+19:55 
+
+19:55 so this is how we have created the user
+19:57 
+
+19:57 so let's just run tf plan once to see if
+19:59 
+
+19:59 it's working
+20:02 
+
+20:02 okay over here
+20:04 
+
+20:04 uh yeah it says 26 to add so it will
+20:07 
+
+20:07 create 26 users and these are all the
+20:10 
+
+20:10 users right so if you can check any user
+20:12 
+
+20:12 let's say it will create an I am user
+20:15 
+
+20:15 called Stanley. Okay. I am user over
+20:18 
+
+20:18 here. Yeah. So department will be sales
+20:21 
+
+20:21 and name would be S Hudson in lower
+20:24 
+
+20:24 case. So S is Stanley which is the first
+20:26 
+
+20:26 name. Hudson is the last name. The same
+20:29 
+
+20:29 way this user Toby Flanderson. So T
+20:33 
+
+20:33 Flanderson. Okay. Department is HR. So
+20:37 
+
+20:37 these are all the usernames and so on.
+20:40 
+
+20:40 Let's move ahead. So this is this will
+20:42 
+
+20:42 create users. Now we need login
+20:45 
+
+20:45 profiles. Okay. So for login profile uh
+20:48 
+
+20:48 let's go ahead over here and let's
+20:50 
+
+20:50 search for AWS IM
+20:53 
+
+20:53 login profile.
+20:57 
+
+20:57 Oops. Is it not there?
+20:60 
+
+21:00 I am
+21:02 
+
+21:02 nope.
+21:04 
+
+21:04 User.
+21:09 
+
+21:09 Okay. over here AWS IM user login
+21:12 
+
+21:12 profile.
+21:13 
+
+21:13 So for this we need name, path and force
+21:16 
+
+21:16 destroy
+21:18 
+
+21:18 and we can also provide password length
+21:20 
+
+21:20 which is an optional field and password
+21:23 
+
+21:23 reset required. That means whenever user
+21:26 
+
+21:26 will login for the first time it will
+21:28 
+
+21:28 ask the user to reset the password.
+21:30 
+
+21:30 Okay, so we'll add these fields as well.
+21:33 
+
+21:33 Maybe we don't need to add the password
+21:34 
+
+21:34 then but we'll add password reset. Okay.
+21:37 
+
+21:37 So, let's go back over here and let's
+21:39 
+
+21:39 create a new resource called
+21:42 
+
+21:42 AWS IM
+21:46 
+
+21:46 user login profile.
+21:49 
+
+21:49 Okay. And let's use the name users.
+21:54 
+
+21:54 Okay. Inside that again we need to get
+21:57 
+
+21:57 the values of users. Right. So
+22:00 
+
+22:00 for each
+22:03 
+
+22:03 AWS im users do user. Now we can get the
+22:06 
+
+22:06 value from AWS IM user.
+22:10 
+
+22:10 What was that? It's over here. Now we
+22:12 
+
+22:12 don't need to run the entire thing
+22:14 
+
+22:14 because we already got the values over
+22:16 
+
+22:16 here, right? So we can just get the user
+22:20 
+
+22:20 details.
+22:22 
+
+22:22 Now user is equal to we have already
+22:25 
+
+22:25 used the for each. So we can just do
+22:27 
+
+22:27 each dot value uh dot name.
+22:32 
+
+22:32 Okay. and password reset required
+22:37 
+
+22:37 [snorts] is true.
+22:40 
+
+22:40 Now we can add some life cycle rule over
+22:42 
+
+22:42 here as well because it's user profile.
+22:45 
+
+22:45 We don't want user to or we don't want
+22:48 
+
+22:48 anyone to change this requirement. So we
+22:50 
+
+22:50 can just add ignore changes in password
+22:55 
+
+22:55 reset required and password length.
+23:06 
+
+23:06 Okay. And you can output user password
+23:09 
+
+23:09 like you shouldn't do that uh but for
+23:13 
+
+23:13 for this demo we can do that so that we
+23:15 
+
+23:15 know like if the passwords have been
+23:17 
+
+23:17 created or not. So otherwise we
+23:19 
+
+23:19 generally put these passwords or you
+23:22 
+
+23:22 know output of uh things like this
+23:24 
+
+23:24 because this is a confidential data we
+23:25 
+
+23:25 should be putting that in a key vault
+23:27 
+
+23:27 somewhere or in a secret management
+23:29 
+
+23:29 system right maybe you can do that u
+23:32 
+
+23:32 this could be an assignment for you try
+23:34 
+
+23:34 to do that in maybe a secret manager
+23:37 
+
+23:37 just upload it directly to the secret
+23:39 
+
+23:39 manager somehow you need to create a
+23:41 
+
+23:41 secret vault uh and then every password
+23:45 
+
+23:45 will be a separate secret with a value
+23:48 
+
+23:48 which is sensitive in nature. So try it
+23:50 
+
+23:50 out. Okay. And so for now I'll just use
+23:52 
+
+23:52 user
+23:54 
+
+23:54 passwords
+23:56 
+
+23:56 and the value is
+24:02 
+
+24:02 for
+24:03 
+
+24:03 user profile in because we just don't
+24:08 
+
+24:08 need the uh one thing we need user and
+24:11 
+
+24:11 their password right so we need multiple
+24:13 
+
+24:13 things and we need to get the values
+24:16 
+
+24:16 from the login profile resource right so
+24:19 
+
+24:19 for user profile in AWS
+24:24 
+
+24:24 I am user login profiles dot users and
+24:30 
+
+24:30 then user
+24:36 
+
+24:36 password created
+24:39 
+
+24:39 and
+24:41 
+
+24:41 user must reset
+24:44 
+
+24:44 on first login. Okay, so this is the
+24:46 
+
+24:46 message that we are printing for every
+24:48 
+
+24:48 user and let's keep the value as
+24:50 
+
+24:50 sensitive.
+24:54 
+
+24:54 Okay, so let's do a TF plan again.
+24:58 
+
+24:58 Uh what does it say? Um
+25:01 
+
+25:01 oh there is double AWS over here.
+25:08 
+
+25:08 All right.
+25:10 
+
+25:10 Okay. So yeah it says user password for
+25:13 
+
+25:13 each of the user.
+25:18 
+
+25:18 Okay. So yeah. So let's see this output
+25:22 
+
+25:22 variable which is user password. That's
+25:25 
+
+25:25 account ID username and here's the user
+25:28 
+
+25:28 password. So value is sensitive and and
+25:31 
+
+25:31 yeah don't worry about that uh thing
+25:33 
+
+25:33 that we have added over here. We'll
+25:35 
+
+25:35 we'll see that. Okay. Um now let's move
+25:38 
+
+25:38 ahead. We have created I am users. We
+25:40 
+
+25:40 have created user login profiles. Now
+25:42 
+
+25:42 the next is we'll create IM groups.
+25:45 
+
+25:45 Okay.
+25:47 
+
+25:47 So uh let's create a separate file for
+25:50 
+
+25:50 that
+25:52 
+
+25:52 groups.tf.
+25:57 
+
+25:57 Okay. So we can create multiple groups
+25:59 
+
+25:59 right. up. So we can have resource
+26:03 
+
+26:03 AWS IM
+26:09 
+
+26:09 groups. Oh, group let's use
+26:14 
+
+26:14 education as the first group and the
+26:18 
+
+26:18 name is equal to
+26:22 
+
+26:22 education
+26:24 
+
+26:24 and path is equal to group. Similarly
+26:27 
+
+26:27 like how did we give the path for users.
+26:31 
+
+26:31 Okay. Now same way we can create other
+26:34 
+
+26:34 groups as well. So let's say we need to
+26:36 
+
+26:36 create an group called engineer and
+26:38 
+
+26:38 managers. So we can do that over here.
+26:42 
+
+26:42 Now we need to add users to the group.
+26:45 
+
+26:45 Okay. So we can just create a resource
+26:48 
+
+26:48 called AWS
+26:53 
+
+26:53 group membership.
+26:56 
+
+26:56 Okay. And let's we need to because we
+27:00 
+
+27:00 are creating this as association. So
+27:02 
+
+27:02 let's call it education members.
+27:06 
+
+27:06 Okay. Oops.
+27:12 
+
+27:12 Okay. So now let's give it a name. name
+27:15 
+
+27:15 is education
+27:19 
+
+27:19 group membership
+27:25 
+
+27:25 and the group value should be
+27:30 
+
+27:30 AWS IM group dot education
+27:35 
+
+27:35 okay dot name
+27:38 
+
+27:38 so education group which is this one dot
+27:41 
+
+27:41 name so this value will come in this
+27:44 
+
+27:44 group. Now we because we need to provide
+27:46 
+
+27:46 the association between users and group.
+27:48 
+
+27:48 So attach this user to this group.
+27:50 
+
+27:50 Right? Now it has to be a dynamic
+27:53 
+
+27:53 allocation as we have discussed in the
+27:55 
+
+27:55 beginning. So how do we do that? Again
+27:57 
+
+27:57 we need to use the for loop for that. So
+27:59 
+
+27:59 let's use users equal to
+28:04 
+
+28:04 now let's provide the value for user in
+28:08 
+
+28:08 AWS im users.
+28:11 
+
+28:11 Okay. and user dot name.
+28:15 
+
+28:15 Now how are we matching the value like
+28:17 
+
+28:17 which user should go to which group? We
+28:20 
+
+28:20 are doing that based on the tags. So we
+28:22 
+
+28:22 are pass providing a condition over
+28:24 
+
+28:24 here. If user dot name or user dot tags
+28:30 
+
+28:30 not the name user tag dot department
+28:35 
+
+28:35 equal to equal to education.
+28:38 
+
+28:38 Okay it's fairly simple. we have created
+28:40 
+
+28:40 a lot of other resources and used
+28:42 
+
+28:42 multiple for and for each loop. So this
+28:45 
+
+28:45 would be pretty simple to understand
+28:47 
+
+28:47 what are we doing for user in AWS IM
+28:50 
+
+28:50 users okay so all the users that we have
+28:53 
+
+28:53 uh inside this main.tf TF let's see
+28:55 
+
+28:55 where it is
+28:58 
+
+28:58 AWS IM users right for all the users
+29:01 
+
+29:01 inside this resource this resource has
+29:05 
+
+29:05 username which is in this format right
+29:08 
+
+29:08 now we are doing for all users in that
+29:11 
+
+29:11 get user dot name okay user dot name and
+29:15 
+
+29:15 if the department is equal to education
+29:18 
+
+29:18 then use that name over here as user
+29:21 
+
+29:21 okay so this is the group and this is
+29:23 
+
+29:23 the user Now we are getting all the
+29:25 
+
+29:25 users which has tag department equal to
+29:28 
+
+29:28 education and we are assigning that user
+29:30 
+
+29:30 to the education group. We can do that
+29:34 
+
+29:34 similar for other group association as
+29:37 
+
+29:37 well. So I'm just going to copy and
+29:39 
+
+29:39 paste it over here.
+29:41 
+
+29:41 So similarly we are doing for members.
+29:45 
+
+29:45 Oh sorry for managers
+29:48 
+
+29:48 and for so there is education. Oh, did I
+29:52 
+
+29:52 copy it twice? Actually, it should be
+29:56 
+
+29:56 engineers, not education. Th this has
+29:59 
+
+29:59 come twice. Okay, so let's just replace
+30:01 
+
+30:01 it. So, we are doing for engineers, uh,
+30:04 
+
+30:04 we are doing for education and we are
+30:06 
+
+30:06 doing for managers. Okay, so over here
+30:11 
+
+30:11 because with the manager what we are
+30:13 
+
+30:13 doing uh we are not just simply using
+30:16 
+
+30:16 department equal to engineering or
+30:18 
+
+30:18 department equal to education. We are
+30:20 
+
+30:20 doing if the user dot tag has job title.
+30:24 
+
+30:24 If they have a tag with the name job
+30:27 
+
+30:27 title and the tag value is either
+30:31 
+
+30:31 manager or CEO then only we are
+30:34 
+
+30:34 assigning that user to the group. And
+30:37 
+
+30:37 over here we have also used a can
+30:39 
+
+30:39 function. Can function is basically an
+30:41 
+
+30:41 error validation
+30:44 
+
+30:44 which will uh you know return an
+30:46 
+
+30:46 expression result if it's true or false.
+30:49 
+
+30:49 So it's it's sort of a a validation
+30:52 
+
+30:52 variable validation if we have not used
+30:54 
+
+30:54 it and if let's say if there is no user
+30:56 
+
+30:56 with this tag and the job title then it
+30:60 
+
+30:60 will it will fail over here right so we
+31:02 
+
+31:02 are just doing that validation okay so
+31:04 
+
+31:04 this is how we are adding the members to
+31:07 
+
+31:07 it so now let's do TF plan and I think
+31:11 
+
+31:11 we are done now we'll just apply the
+31:13 
+
+31:13 changes before we fix these errors let's
+31:15 
+
+31:15 see what it is it says for users and I'm
+31:18 
+
+31:18 um department equal to education spec uh
+31:22 
+
+31:22 a reference to a resource type must be
+31:24 
+
+31:24 followed by at least one attribute
+31:26 
+
+31:26 access. Okay. So what did we do wrong
+31:29 
+
+31:29 over here? Let's see.
+31:31 
+
+31:31 Um
+31:34 
+
+31:34 let's compare it with others.
+31:37 
+
+31:37 So if user tag dot department equal to
+31:42 
+
+31:42 equal to education.
+31:45 
+
+31:45 Okay, I think here is the issue. It
+31:48 
+
+31:48 should be AWS im user dot users. Okay,
+31:52 
+
+31:52 we need to get the values from
+31:54 
+
+31:54 somewhere, right? So that's why I think
+31:56 
+
+31:56 that was the issue. But let's see if
+31:58 
+
+31:58 this fixes it. Yes, it does.
+32:02 
+
+32:02 Okay, so now if you want to see how many
+32:05 
+
+32:05 resources will be created. So I'll just
+32:07 
+
+32:07 add a grap
+32:10 
+
+32:10 hyphen i will be created. This will find
+32:14 
+
+32:14 all this occurrence of this string.
+32:16 
+
+32:16 Okay. So now it says so these are the
+32:19 
+
+32:19 login profile for each users
+32:22 
+
+32:22 and then these are the users that will
+32:24 
+
+32:24 be created
+32:26 
+
+32:26 and these are the membership will be
+32:30 
+
+32:30 created meaning a user and group
+32:32 
+
+32:32 assignment and these groups will be
+32:35 
+
+32:35 created. Okay. So total these many
+32:37 
+
+32:37 resources will be created. So which is
+32:39 
+
+32:39 26 + 26 which is 52 + 3 which is 55 + 3
+32:44 
+
+32:44 which is 58. 58 resources should be
+32:46 
+
+32:46 created. So let's go ahead and let's
+32:49 
+
+32:49 apply the changes. A not AWS. So TF
+32:53 
+
+32:53 apply -
+32:56 
+
+32:56 approve and we'll let it create the
+32:58 
+
+32:58 resources.
+32:60 
+
+33:00 Um yeah it it should be fairly quick
+33:02 
+
+33:02 because it is just creating the user
+33:04 
+
+33:04 group uh doing the assignment. So these
+33:06 
+
+33:06 API calls are pretty fast. So as you can
+33:09 
+
+33:09 see it did that. Now let's go ahead over
+33:13 
+
+33:13 here.
+33:15 
+
+33:15 >> [snorts]
+33:16 
+
+33:16 >> And let's go to IM
+33:20 
+
+33:20 go to users. You will see all the users
+33:23 
+
+33:23 created. Okay. So let's see last
+33:26 
+
+33:26 activity.
+33:28 
+
+33:28 Okay. There is no activity from this
+33:31 
+
+33:31 user. So uh you can just sort it with
+33:33 
+
+33:33 that. And let's say all the users are
+33:36 
+
+33:36 here. Let's let's pick this user Dwight
+33:38 
+
+33:38 Shoot. And as you can see uh MFA is not
+33:43 
+
+33:43 a label because you have to do it. And
+33:46 
+
+33:46 then groups it's already assigned to the
+33:49 
+
+33:49 group manager.
+33:51 
+
+33:51 And these are the tags that it has. Why
+33:54 
+
+33:54 did it assign the group to the manager?
+33:56 
+
+33:56 Uh he's not a manager because it has the
+33:59 
+
+33:59 job title. In the job title it has
+34:01 
+
+34:01 something called manager. Right? Even
+34:04 
+
+34:04 though it is he is assistant to the
+34:06 
+
+34:06 regional manager but then it has the
+34:10 
+
+34:10 manager in the job title tag. So that's
+34:12 
+
+34:12 why there are let's see there are no
+34:15 
+
+34:15 security credential access key
+34:17 
+
+34:17 generated.
+34:19 
+
+34:19 But now um when the user will try to
+34:23 
+
+34:23 login we need to provide them the
+34:25 
+
+34:25 password
+34:26 
+
+34:26 and that's how they will get to know and
+34:30 
+
+34:30 that's how they will be able to login
+34:32 
+
+34:32 for the first time. Now you might have
+34:34 
+
+34:34 noticed something like because uh the
+34:37 
+
+34:37 password autogenerated passwords are not
+34:40 
+
+34:40 provided over here the values are
+34:42 
+
+34:42 sensitive. It's because AWS does not
+34:44 
+
+34:44 provide autogenerated password uh if the
+34:47 
+
+34:47 PGP encryption is not available. So
+34:49 
+
+34:49 which we have not done right. So the
+34:52 
+
+34:52 other option that you have is you can go
+34:54 
+
+34:54 to security credential for each of the
+34:56 
+
+34:56 user
+34:57 
+
+34:57 and
+34:60 
+
+34:60 I think it should be the first one which
+35:03 
+
+35:03 is uh manage console access.
+35:08 
+
+35:08 Okay. And hit on reset password.
+35:11 
+
+35:11 And then you can use an autogenerated
+35:14 
+
+35:14 password or you can create a customer
+35:16 
+
+35:16 password and provide this to your user.
+35:18 
+
+35:18 Okay. And you can also select this user
+35:22 
+
+35:22 must must create new password or which
+35:24 
+
+35:24 is the password reset I yeah um yeah and
+35:27 
+
+35:27 then hit on reset password then the user
+35:30 
+
+35:30 will be able to login using that
+35:32 
+
+35:32 credential.
+35:33 
+
+35:33 Now I hope uh you found it helpful. Make
+35:36 
+
+35:36 sure you complete the assignment given
+35:38 
+
+35:38 in the repository of day 16 folder
+35:41 
+
+35:41 because we have just done the simple
+35:43 
+
+35:43 implementation of user management but
+35:45 
+
+35:45 it's not what we do in production. uh we
+35:48 
+
+35:48 have a lot more steps after this right
+35:50 
+
+35:50 as I've told you we need to um enable uh
+35:53 
+
+35:53 single sign on or any identity
+35:56 
+
+35:56 management system we have to use then we
+35:59 
+
+35:59 also like whatever is there in the
+36:01 
+
+36:01 GitHub repository make sure you follow
+36:03 
+
+36:03 those and make sure you practice this uh
+36:06 
+
+36:06 by yourself especially the for each for
+36:08 
+
+36:08 loops how does it work why do we need it
+36:11 
+
+36:11 uh syntax and everything but if you
+36:13 
+
+36:13 practice it then um you should be good
+36:16 
+
+36:16 Okay. So, thank you so much for
+36:18 
+
+36:18 watching. Uh, I hope you had a good
+36:20 
+
+36:20 learning experience. I will see you
+36:21 
+
+36:21 tomorrow with the next one. Thank you so
+36:23 
+
+36:23 much.
+36:30 
+
+36:30 >> [music]

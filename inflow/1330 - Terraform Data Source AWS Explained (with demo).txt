@@ -1,0 +1,1315 @@
+00:00 Hello and welcome back to day 13 of 30
+00:03 
+
+00:03 days of AWS Terraform. In this video
+00:06 
+
+00:06 we'll be looking into data source and
+00:09 
+
+00:09 again I just want to remind you if you
+00:11 
+
+00:11 are not following the series in the same
+00:12 
+
+00:12 sequence then you might miss a lot of
+00:15 
+
+00:15 concepts. So make sure you follow the
+00:17 
+
+00:17 series in the same sequence from day
+00:18 
+
+00:18 zero video onwards and if you have not
+00:21 
+
+00:21 subscribed the channel this is your
+00:22 
+
+00:22 chance. Subscribe the channel support
+00:24 
+
+00:24 the channel and I will keep publishing
+00:26 
+
+00:26 more quality content like this. All
+00:28 
+
+00:28 right. So let's dive into the video.
+00:30 
+
+00:30 Let's understand what exactly is a data
+00:33 
+
+00:33 source and why do we need it. Okay. So
+00:35 
+
+00:35 for example, let's say you need to
+00:38 
+
+00:38 provision an EC2 instance. Okay. Just a
+00:41 
+
+00:41 simple example. So here we are
+00:43 
+
+00:43 provisioning a EC2 instance. Now it
+00:45 
+
+00:45 needs various fields. Uh and it also
+00:49 
+
+00:49 needs an AMI. Okay. Now AMI is something
+00:53 
+
+00:53 which is a machine learning image which
+00:55 
+
+00:55 is a Amazon machine image and let's call
+00:59 
+
+00:59 it AMI over here. So for Linux there are
+01:03 
+
+01:03 different versions of AMI for Ubuntu uh
+01:06 
+
+01:06 for Amazon Linux for Santos. So every
+01:10 
+
+01:10 operating system has a different version
+01:12 
+
+01:12 of AMI and it's based on the releases.
+01:15 
+
+01:15 So there could be multiple versions of
+01:17 
+
+01:17 it and these AMIs are not stored inside
+01:21 
+
+01:21 your AWS environment. It's outside AWS.
+01:24 
+
+01:24 It's uh basically it's an open-source
+01:26 
+
+01:26 kind of repository from where you
+01:28 
+
+01:28 download the image and you provision the
+01:31 
+
+01:31 instance. Right now while provisioning
+01:34 
+
+01:34 EC2 instance as you have noticed um we
+01:37 
+
+01:37 need to provide the AMI ID or AMI name.
+01:40 
+
+01:40 Okay. Now how do we get that detail?
+01:45 
+
+01:45 First is like the one that we did. You
+01:48 
+
+01:48 go to AMI release page and just copy the
+01:50 
+
+01:50 AMI ID from there. But this is not
+01:52 
+
+01:52 something that you would do if you are
+01:54 
+
+01:54 using Terraform in an automated
+01:56 
+
+01:56 environment. Right? You want everything
+01:58 
+
+01:58 to be done without any manual
+02:00 
+
+02:00 intervention or as minimum manual
+02:03 
+
+02:03 intervention as possible. Right? So you
+02:05 
+
+02:05 don't want to hardcode the AMI ID. So
+02:08 
+
+02:08 what you do is so there is a resource
+02:10 
+
+02:10 available in terapform and it's called
+02:12 
+
+02:12 data source. Okay? data source meaning
+02:15 
+
+02:15 this AMI has a data source and now you
+02:18 
+
+02:18 can just get the AMI ID from this data
+02:22 
+
+02:22 source okay and you just need to provide
+02:25 
+
+02:25 let's say your Amazon Linux 2 um like
+02:29 
+
+02:29 your operating system you just need to
+02:31 
+
+02:31 provide that and then you can just say
+02:34 
+
+02:34 okay so fetch me the latest image of
+02:37 
+
+02:37 Amazon Linux 2 once you do that it will
+02:40 
+
+02:40 fetch the latest image inside the EC2 E2
+02:43 
+
+02:43 and that's how you would use data source
+02:45 
+
+02:45 and that's the basic example of how do
+02:48 
+
+02:48 we use EC2. Now what are we going to do
+02:51 
+
+02:51 in this video? So here is a diagram. So
+02:54 
+
+02:54 we are taking a an example like how
+02:57 
+
+02:57 would uh an enterprise would use data
+02:59 
+
+02:59 source. It's not a big project because
+03:01 
+
+03:01 we are taking things slow. So we'll
+03:03 
+
+03:03 slowly move ahead. This is kind of the
+03:05 
+
+03:05 first project. I mean it's not a project
+03:08 
+
+03:08 per se but it's more like uh a small
+03:11 
+
+03:11 environment that we are starting with
+03:13 
+
+03:13 and then we'll slowly move ahead with
+03:15 
+
+03:15 creating more complex environments.
+03:17 
+
+03:17 So we already have a shared VPC. So
+03:20 
+
+03:20 let's assume we have a shared VPC that's
+03:22 
+
+03:22 been used by multiple teams. So you have
+03:24 
+
+03:24 your DevOps team, development team, QA
+03:26 
+
+03:26 team and so on. So this VPC already
+03:29 
+
+03:29 exist in AWS environment and it has two
+03:31 
+
+03:31 subnets. Subnet one, subnet 2. Now you
+03:34 
+
+03:34 need to provision new resources. You
+03:36 
+
+03:36 need to create two EC2 instances in
+03:38 
+
+03:38 subnet one and two EC2 instances in
+03:41 
+
+03:41 subnet 2. But you don't have to create
+03:45 
+
+03:45 new VPC or subnet. You have to use the
+03:47 
+
+03:47 existing VPC or subnet. Right? So you
+03:50 
+
+03:50 need to provide the reference of VPC and
+03:52 
+
+03:52 subnet inside this environment. The same
+03:55 
+
+03:55 way you need to use Amazon Linux AMI
+03:58 
+
+03:58 from the pre-existing Linux image,
+04:00 
+
+04:00 right? You don't have to hardcode it.
+04:03 
+
+04:03 Okay, because each of these EC2 instance
+04:06 
+
+04:06 will need a Linux image, AMI image. So
+04:09 
+
+04:09 you need to use the pre-existing image.
+04:11 
+
+04:11 So what do we do? Uh we'll use data
+04:14 
+
+04:14 source for the Linux image over here as
+04:17 
+
+04:17 well as for the VPC and subnet. We'll
+04:20 
+
+04:20 use the data source. So this is what
+04:22 
+
+04:22 we're going to do in this video. Okay.
+04:24 
+
+04:24 So let's start with our VS code over
+04:27 
+
+04:27 here. Currently I am in day 11 folder.
+04:31 
+
+04:31 Actually day 11 and day 12 has the same
+04:33 
+
+04:33 folder. So I'm over here. Now let's make
+04:37 
+
+04:37 a copy of this folder or let's take the
+04:40 
+
+04:40 copy of any folder. We just need the uh
+04:42 
+
+04:42 back end and provider all those files.
+04:45 
+
+04:45 Main.tf will write it. So day 13. Okay.
+04:49 
+
+04:49 And let's go inside day 13 now. Now day
+04:54 
+
+04:54 13 will have a main.tf over here.
+04:58 
+
+04:58 Okay. Uh what I need is an AWS instance.
+05:01 
+
+05:01 So instead of AMI, we'll use data
+05:03 
+
+05:03 source. So let me remove this. And then
+05:06 
+
+05:06 let's keep it simple. Uh I'm going to
+05:08 
+
+05:08 remove this line and use instance type
+05:11 
+
+05:11 as T2 micro.
+05:16 
+
+05:16 Okay. Now I don't need instance count.
+05:18 
+
+05:18 I'm just going to use single instance.
+05:21 
+
+05:21 And uh yeah, tags are good. Now
+05:25 
+
+05:25 let's remove these as well.
+05:29 
+
+05:29 Okay. I'm just going to create uh AWS
+05:32 
+
+05:32 instances. Okay. So for this demo I'm
+05:36 
+
+05:36 just going to create one and then you
+05:38 
+
+05:38 can replicate the same. You can create
+05:39 
+
+05:39 multiple counts. You can do for loop and
+05:42 
+
+05:42 make sure you complete the assignment
+05:44 
+
+05:44 given in the day 13 repository. Okay. So
+05:48 
+
+05:48 let's start with the first instance.
+05:50 
+
+05:50 Okay. First we need the AMI ID. Then we
+05:53 
+
+05:53 also need subnet ID. And we need um
+05:58 
+
+05:58 let's say a private IP. Okay.
+06:08 
+
+06:08 Okay. So let's say we need these many
+06:10 
+
+06:10 fields and most of these will come from
+06:11 
+
+06:11 the data source. So now you can create a
+06:14 
+
+06:14 separate file for data source or you can
+06:16 
+
+06:16 just start from here and then you move
+06:19 
+
+06:19 that to a separate file whatever is
+06:21 
+
+06:21 fine. So um I'll start with creating uh
+06:24 
+
+06:24 the data source for VPC first. Okay. So
+06:28 
+
+06:28 for VPC the way we do that is data.
+06:33 
+
+06:33 Okay. And
+06:35 
+
+06:35 again the resource name AWS VPC like how
+06:39 
+
+06:39 do we know that this is the resource
+06:40 
+
+06:40 name? Let's go over here and search for
+06:43 
+
+06:43 AWS VPC. Uh now when you do that earlier
+06:47 
+
+06:47 you were looking into resources. Okay.
+06:49 
+
+06:49 Now, as you can see, every resource has
+06:52 
+
+06:52 a resources section and a data source
+06:54 
+
+06:54 section. So, now we need to check the
+06:56 
+
+06:56 data source section.
+06:58 
+
+06:58 So, let's search for AWS VPC.
+07:03 
+
+07:03 I'm not sure why it did not filter all
+07:06 
+
+07:06 the things, but
+07:08 
+
+07:08 um let's see. Let me just put that in
+07:11 
+
+07:11 double quotes if it's make any
+07:13 
+
+07:13 difference.
+07:17 
+
+07:17 Okay. Yeah, better. Now we have some um
+07:22 
+
+07:22 filtered results
+07:24 
+
+07:24 and AWS VPC is over here. Uh this is
+07:28 
+
+07:28 list resources.
+07:32 
+
+07:32 Okay. And here is the data source AWS
+07:35 
+
+07:35 VPC. Okay. So how do we do that? Uh we
+07:39 
+
+07:39 start with data data keyword AWS VPC and
+07:43 
+
+07:43 then the name and then there is ID. Now
+07:47 
+
+07:47 it is taking variable VPC. That means
+07:50 
+
+07:50 use the one that is already present.
+07:52 
+
+07:52 Okay, that is already uh in which
+07:55 
+
+07:55 account we have logged in already. So uh
+07:58 
+
+07:58 let's do that over here.
+08:01 
+
+08:01 So let's start with variable AWS VPC
+08:06 
+
+08:06 and yeah let's keep it blank.
+08:09 
+
+08:09 Now over here is the data source AWS VPC
+08:12 
+
+08:12 and we need to give this a name as well.
+08:15 
+
+08:15 VPC name
+08:18 
+
+08:18 and let's provide the value inside that
+08:20 
+
+08:20 and uh if you can see over here we need
+08:23 
+
+08:23 to provide the like we need to access it
+08:26 
+
+08:26 by ID. So id is equal to v dot
+08:33 
+
+08:33 VPC. Now we have provided the value
+08:37 
+
+08:37 where dot VPC. Now the next is subnet
+08:41 
+
+08:41 over here uh what it is doing it is
+08:43 
+
+08:43 creating the C block from the VPC like
+08:47 
+
+08:47 you see C subnet that's another function
+08:50 
+
+08:50 that we are using and it is taking the
+08:51 
+
+08:51 value from data AWS VPC dot selected
+08:55 
+
+08:55 that means selected this is the name
+08:57 
+
+08:57 okay and dot C block like it has an ID
+09:01 
+
+09:01 field so it has an C block field as well
+09:04 
+
+09:04 and you can check it from here right
+09:06 
+
+09:06 from the argument reference
+09:09 
+
+09:09 And uh you can have more filters like uh
+09:12 
+
+09:12 filter and so on. So in fact let's use
+09:15 
+
+09:15 the filter
+09:19 
+
+09:19 um
+09:21 
+
+09:21 so we have provided data uh VPC VPC name
+09:27 
+
+09:27 instead of that let's use the filter
+09:30 
+
+09:30 over here. Inside filter we just let's
+09:33 
+
+09:33 say you have multiple VPCs in your AWS
+09:35 
+
+09:35 environment. Now you need to filter
+09:37 
+
+09:37 based on some value. Okay. So let's say
+09:39 
+
+09:39 name is equal to tag colon name. So we
+09:45 
+
+09:45 are basically filtering it based on the
+09:47 
+
+09:47 name. Now values equal to
+09:51 
+
+09:51 and you can check the value of your
+09:53 
+
+09:53 default VPC. Um let's go back. Let's do
+09:57 
+
+09:57 an AWS login.
+10:04 
+
+10:04 sign into your console and let's use the
+10:08 
+
+10:08 user.
+10:12 
+
+10:12 Okay. And
+10:15 
+
+10:15 go to EC2. And inside EC2, there will be
+10:19 
+
+10:19 VPC section on the left side. Oops,
+10:22 
+
+10:22 sorry, my bad. You just need to go to
+10:25 
+
+10:25 VPC.
+10:32 
+
+10:32 Okay. and click on VPC for this region
+10:36 
+
+10:36 VPC. Uh so there is this VPC
+10:40 
+
+10:40 and then there is this default VPC right
+10:43 
+
+10:43 default VPC does not have a name tag. So
+10:46 
+
+10:46 let's provide a name and let's call it
+10:49 
+
+10:49 default.
+10:51 
+
+10:51 Okay. And if we can see the tags name
+10:55 
+
+10:55 equal to default this is the value. Now
+10:59 
+
+10:59 let's go back
+11:01 
+
+11:01 and now you can put the value as
+11:04 
+
+11:04 default.
+11:06 
+
+11:06 Okay. So now what we are doing we are
+11:09 
+
+11:09 filtering the values from the existing
+11:12 
+
+11:12 resources in the AWS environment. Okay.
+11:16 
+
+11:16 So this will give us the default VPC
+11:18 
+
+11:18 details. Now inside our subnet, the next
+11:22 
+
+11:22 resource is subnet. So let's create a
+11:24 
+
+11:24 data source for subnet as well. AWS
+11:27 
+
+11:27 subnet and let's call it
+11:30 
+
+11:30 shared
+11:32 
+
+11:32 and inside that again let's use the
+11:35 
+
+11:35 filter
+11:37 
+
+11:37 filter and then name is equal to colon
+11:40 
+
+11:40 tag so let's use the name and let's put
+11:45 
+
+11:45 the values over here
+11:52 
+
+11:52 okay let's see the subnet inside this
+11:54 
+
+11:54 default VPC
+11:57 
+
+11:57 So uh this is the subnet. Uh you can
+11:60 
+
+11:60 take any of those. Let's
+12:04 
+
+12:04 go ahead in this subnet. Uh let's copy
+12:07 
+
+12:07 the name of the subnet
+12:10 
+
+12:10 or you can just go inside from here and
+12:15 
+
+12:15 with the default VPC this is the subnet
+12:19 
+
+12:19 and let's add a name over here as the
+12:22 
+
+12:22 tag. Okay. So let's call it
+12:25 
+
+12:25 subnet A.
+12:28 
+
+12:28 Okay. So this subnet A belongs to the
+12:31 
+
+12:31 default VPC.
+12:33 
+
+12:33 So I'm just going to need this subnet A.
+12:37 
+
+12:37 Let's go back in the filter add subnet A
+12:40 
+
+12:40 as the name. And over here
+12:44 
+
+12:44 you provide values. Oh, sorry. You
+12:46 
+
+12:46 provide VPC ID
+12:50 
+
+12:50 is equal to data. AWSVPC
+12:55 
+
+12:55 dot ID or VPC ID, right? And why did we
+13:01 
+
+13:01 add it over here? Uh so let's check the
+13:05 
+
+13:05 data source for this
+13:08 
+
+13:08 AWS subnet.
+13:12 
+
+13:12 Okay, this is source data source.
+13:16 
+
+13:16 Okay, so over here you see uh the this
+13:20 
+
+13:20 is the subnet ID. Um but
+13:24 
+
+13:24 over here uh this is we can use it
+13:27 
+
+13:27 filter like this. Um but
+13:31 
+
+13:31 we could also have a filter for the ID
+13:35 
+
+13:35 which is optional right VPC ID over here
+13:39 
+
+13:39 that desired subnet belongs to. This is
+13:41 
+
+13:41 an optional ID but you can put it if you
+13:43 
+
+13:43 want. Okay. So uh this is done. Now we
+13:47 
+
+13:47 have added a VPC variable and then using
+13:51 
+
+13:51 that variable we have not used it per se
+13:54 
+
+13:54 because we then move to filter. All
+13:57 
+
+13:57 right. So you can remove it if you want.
+14:01 
+
+14:01 So now it will um filter based on the
+14:05 
+
+14:05 name value which is the value is default
+14:07 
+
+14:07 and then AWS subnet the value is subnet
+14:10 
+
+14:10 A. We have added VPC ID. Now let's see
+14:15 
+
+14:15 what else we need. Oh yeah, we need the
+14:17 
+
+14:17 data source for AMI.
+14:20 
+
+14:20 So let's call it data
+14:22 
+
+14:22 AWS
+14:24 
+
+14:24 AMI
+14:27 
+
+14:27 and let's call it Linux 2.
+14:32 
+
+14:32 Inside that um you can add first owners
+14:37 
+
+14:37 again you can check the different fields
+14:40 
+
+14:40 from here.
+14:43 
+
+14:43 Okay. AWS AMI
+14:45 
+
+14:45 and
+14:47 
+
+14:47 data source. Where is the data source
+14:48 
+
+14:48 for AMI? PI gateway AMI. Okay. So over
+14:53 
+
+14:53 here um this is the resource. I'm
+14:57 
+
+14:57 checking the resource data source.
+14:60 
+
+14:60 Okay. It has most recent equal to true.
+15:03 
+
+15:03 This will make sure that it will always
+15:06 
+
+15:06 take the latest image. Then you can add
+15:10 
+
+15:10 uh regax name owner equal to self that
+15:13 
+
+15:13 is owned by us. Okay. Or owned by Amazon
+15:17 
+
+15:17 if you want uh to pull the Amazon
+15:20 
+
+15:20 images. And then you can add multiple
+15:23 
+
+15:23 filters if you want. So let's go ahead
+15:25 
+
+15:25 and let's search for Amazon Linux to AMI
+15:32 
+
+15:32 and
+15:34 
+
+15:34 let's go over here.
+15:37 
+
+15:37 Okay. And over here if you see
+15:41 
+
+15:41 there are different like these are the
+15:44 
+
+15:44 AMI ids but you can also use these
+15:48 
+
+15:48 different filters like whether you need
+15:52 
+
+15:52 um virtualization type you can specify
+15:55 
+
+15:55 virtualization type as HVM or you can
+15:59 
+
+15:59 also add the filter for name. You can
+16:03 
+
+16:03 also add let's see what else is there.
+16:07 
+
+16:07 You can add the filter for name with the
+16:09 
+
+16:09 regular expression. You can also add the
+16:11 
+
+16:11 filter root device type is EBS,
+16:13 
+
+16:13 virtualization type is HVM and so on.
+16:15 
+
+16:15 Right? So based on that um if we were to
+16:20 
+
+16:20 pick the AMI name, so that's Amazon
+16:24 
+
+16:24 Linux AMI. Uh and if we want to use
+16:26 
+
+16:26 Amazon Linux 2 AMIs, it's over here I
+16:30 
+
+16:30 believe.
+16:44 
+
+16:44 Okay, let's go back and let's find the
+16:47 
+
+16:47 release. Oh, no, that's just a article.
+17:07 
+
+17:07 Okay, I need to find it out. Uh,
+17:09 
+
+17:09 currently I'm not sure from where
+17:12 
+
+17:12 exactly we can get it. Um, but I have
+17:15 
+
+17:15 something handy. So, I'm going to use
+17:17 
+
+17:17 that. But you can find it out. It's just
+17:19 
+
+17:19 uh it should be there in some
+17:20 
+
+17:20 documentation that you can search for.
+17:23 
+
+17:23 So, I'm going to filter it
+17:27 
+
+17:27 [snorts] first. Let's start with the
+17:29 
+
+17:29 owners. So owners let's use the Amazon
+17:32 
+
+17:32 provided images. So Amazon if you have
+17:35 
+
+17:35 already created images you can use owner
+17:38 
+
+17:38 as self then most recent is equal to
+17:41 
+
+17:41 true. So that means it will take the
+17:43 
+
+17:43 latest version of image and then we can
+17:45 
+
+17:45 use multiple filters. So let's use a
+17:47 
+
+17:47 filter
+17:49 
+
+17:49 with the name equal to name. That means
+17:52 
+
+17:52 we are filtering based on the name and
+17:54 
+
+17:54 the values is
+17:60 
+
+17:60 okay. So over here we are using this
+18:02 
+
+18:02 image and then there's a star star in
+18:04 
+
+18:04 between star this could be the specific
+18:06 
+
+18:06 versions that it can use. So use
+18:09 
+
+18:09 anything which is latest version and we
+18:11 
+
+18:11 are just providing star over here and
+18:13 
+
+18:13 then you can add additional filters uh
+18:16 
+
+18:16 inside this.
+18:21 
+
+18:21 So let's add additional filter
+18:24 
+
+18:24 and let's call this filter as name is
+18:27 
+
+18:27 equal to virtualization type
+18:30 
+
+18:30 virtualization hyphen type
+18:34 
+
+18:34 values is equal to HVM
+18:38 
+
+18:38 right you can add more filter uh if you
+18:41 
+
+18:41 want and you can check the documentation
+18:43 
+
+18:43 for the require field now we have a data
+18:46 
+
+18:46 source for VPC we have data source for
+18:48 
+
+18:48 subnet we have data source for AWS AMI
+18:51 
+
+18:51 Now we need to use it over here. So now
+18:53 
+
+18:53 the AMI ID we can get it from the data
+18:56 
+
+18:56 source. So data dot AWS AMI. Linux2 dot
+19:02 
+
+19:02 and when you do dot it will show you the
+19:04 
+
+19:04 different uh arguments that you can use.
+19:08 
+
+19:08 So we need ID or image ID. So let's use
+19:11 
+
+19:11 ID. I think it's basically the same
+19:13 
+
+19:13 thing. Then the same way subnet ID is
+19:15 
+
+19:15 data dot
+19:17 
+
+19:17 um subnet share dot id.
+19:22 
+
+19:22 So here's the subnet ID and then you can
+19:25 
+
+19:25 provide private IP if you want or let's
+19:26 
+
+19:26 just remove it.
+19:29 
+
+19:29 Okay, let's hit save. And if I do TF in
+19:34 
+
+19:34 it,
+19:36 
+
+19:36 it will initialize the back end because
+19:37 
+
+19:37 we are running it for the first time.
+19:39 
+
+19:39 And if I do TF plan,
+19:42 
+
+19:42 okay, now it is throwing error. uh data
+19:44 
+
+19:44 source has not been declared in the root
+19:46 
+
+19:46 module. AWS VPC VPC ID.
+19:51 
+
+19:51 Okay, let's see AWS VPC. It's uh the
+19:54 
+
+19:54 name is VPC name over here. But
+19:59 
+
+19:59 uh where did we use the VPC ID?
+20:08 
+
+20:08 dot AWS uh VPC
+20:12 
+
+20:12 dot VPC name okay and dot id or VPC ID
+20:20 
+
+20:20 dot ID
+20:22 
+
+20:22 okay let's run the TF plan again
+20:26 
+
+20:26 okay now
+20:29 
+
+20:29 it is saying that one resource to be
+20:32 
+
+20:32 created AWS instance will be created and
+20:37 
+
+20:37 with this AMI ID. Okay, we filter it
+20:40 
+
+20:40 with the AMI name but this is the ID and
+20:44 
+
+20:44 T2 micro is what we have provided and it
+20:47 
+
+20:47 should show you the subnet. Let's verify
+20:49 
+
+20:49 the subnet 80 B4 A9 AF. Okay, so let's
+20:54 
+
+20:54 go back over here 80 B4 A9 AF. This is
+20:59 
+
+20:59 the same subnet that we have used. So
+21:01 
+
+21:01 that will show you that yeah subnet and
+21:03 
+
+21:03 VPC are also taking as correct. So we
+21:06 
+
+21:06 have not created the VPC. We have not
+21:09 
+
+21:09 created the subnet. Still it is
+21:11 
+
+21:11 referencing the existing resources.
+21:13 
+
+21:13 Okay. So this is what we have done and
+21:16 
+
+21:16 you can just apply to see the changes.
+21:18 
+
+21:18 But let's see uh if it throws any error.
+21:21 
+
+21:21 So TF apply auto approve.
+21:26 
+
+21:26 If it works then that's it. If it
+21:28 
+
+21:28 doesn't work then we'll troubleshoot it
+21:30 
+
+21:30 further.
+21:32 
+
+21:32 Okay. Uh it's working. creating the
+21:35 
+
+21:35 resource [snorts] and once the resource
+21:37 
+
+21:37 is created you will see it will be
+21:38 
+
+21:38 created in the same subnet as we have
+21:41 
+
+21:41 specified in the same VPC and it will
+21:43 
+
+21:43 use the same AMI ID that we have
+21:45 
+
+21:45 filtered. So yeah it will work otherwise
+21:48 
+
+21:48 it it would have thrown the error if uh
+21:50 
+
+21:50 there were any errors. So yeah I'll
+21:53 
+
+21:53 destroy the resource after it is
+21:55 
+
+21:55 created. So make sure you also destroy
+21:56 
+
+21:56 the resource once you're done with the
+21:58 
+
+21:58 demo in every video otherwise you will
+22:00 
+
+22:00 end up paying a lot of cost and you
+22:02 
+
+22:02 don't want to do that. Apply is
+22:04 
+
+22:04 completed. Resource has been created.
+22:06 
+
+22:06 And I hope by this point you have also
+22:10 
+
+22:10 tried it out. You have also completed
+22:12 
+
+22:12 this. Make sure you complete the
+22:14 
+
+22:14 assignment in given in the GitHub
+22:16 
+
+22:16 repository. So that's it for this video.
+22:18 
+
+22:18 I will see you tomorrow with day 14. In
+22:20 
+
+22:20 day 14, I believe we'll be doing a mini
+22:23 
+
+22:23 project. So yeah, let's stay tuned for
+22:25 
+
+22:25 that and uh let's catch up soon. Thank
+22:27 
+
+22:27 you so much for watching.

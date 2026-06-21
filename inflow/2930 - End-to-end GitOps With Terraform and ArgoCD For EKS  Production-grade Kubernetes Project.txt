@@ -1,0 +1,2896 @@
+00:01 All right, welcome back to day 29 in 30
+00:04 
+
+00:04 days of AWS Terraform. We are almost at
+00:06 
+
+00:06 the end of the series and I'm sure you
+00:08 
+
+00:08 have been enjoying and learning so far.
+00:11 
+
+00:11 So in this video we'll be implementing
+00:13 
+
+00:13 this project. It's an end toend GitHubs
+00:16 
+
+00:16 project using Terraform and in which
+00:19 
+
+00:19 we'll also be creating EKS cluster using
+00:22 
+
+00:22 Terraform public modules this time
+00:24 
+
+00:24 because we have already looked and
+00:27 
+
+00:27 learned about custom modules. So we'll
+00:30 
+
+00:30 be creating this particular project in
+00:32 
+
+00:32 which we have an EKS cluster and um this
+00:37 
+
+00:37 EKS cluster will have an application
+00:39 
+
+00:39 deployed again using Terraform. It will
+00:42 
+
+00:42 be tracked. The application will be
+00:44 
+
+00:44 tracked and monitored by Argo CCD so
+00:46 
+
+00:46 that any changes that is made to the EKS
+00:50 
+
+00:50 cluster will be reverted back by Argo CD
+00:53 
+
+00:53 so that only the single source of truth
+00:57 
+
+00:57 grit repo changes will be there. Okay.
+00:60 
+
+00:60 So it might sound sound confusing. So
+01:02 
+
+01:02 let me just break it down piece by
+01:04 
+
+01:04 piece. So I'm just going to go really
+01:06 
+
+01:06 slow. Okay. So your application code
+01:09 
+
+01:09 resides over here right in your git
+01:12 
+
+01:12 repository which is your single source
+01:14 
+
+01:14 of truth. I'll walk you through
+01:16 
+
+01:16 everything. So don't worry in this
+01:18 
+
+01:18 there'll be an application code. So
+01:20 
+
+01:20 there'll be front end, there'll be back
+01:21 
+
+01:21 end, there'll be database, uh there'll
+01:23 
+
+01:23 be YAML for namespace, secrets and all
+01:26 
+
+01:26 the you know Kubernetes specific
+01:27 
+
+01:27 manifest in which you'll have your
+01:30 
+
+01:30 application details, your application
+01:32 
+
+01:32 images, replicas and so on. So, Argo CD
+01:36 
+
+01:36 using Argo CD will be deploying this
+01:39 
+
+01:39 application on your EKS cluster. Before
+01:41 
+
+01:41 that, we'll be provisioning this EKS
+01:44 
+
+01:44 cluster using Terraform and there will
+01:46 
+
+01:46 be a separate repo with the Terraform
+01:49 
+
+01:49 code. Okay, so there are two GitHub
+01:51 
+
+01:51 repos over here. One with the Terapform
+01:53 
+
+01:53 code to provision this entire
+01:55 
+
+01:55 infrastructure. Another repo which has
+01:58 
+
+01:58 your application specific code, your
+01:60 
+
+01:60 front end, back end and database. Once
+02:02 
+
+02:02 the application is deployed on the EKS
+02:05 
+
+02:05 cluster, now if you go ahead and try to
+02:08 
+
+02:08 make any changes on the live application
+02:11 
+
+02:11 from AWS CLI or from the console or from
+02:14 
+
+02:14 anywhere, then this Argo CD because it's
+02:18 
+
+02:18 monitoring your application and as soon
+02:20 
+
+02:20 as it detects that there is some changes
+02:23 
+
+02:23 that have been made on the live
+02:25 
+
+02:25 application, it will revert back the
+02:27 
+
+02:27 change. Why it does that? Because this
+02:29 
+
+02:29 process is called drift detection,
+02:32 
+
+02:32 right? We have learned this multiple
+02:34 
+
+02:34 times right in this series itself I have
+02:37 
+
+02:37 explained around three to four times in
+02:38 
+
+02:38 different videos. So I'm just going to
+02:41 
+
+02:41 be brief about it.
+02:43 
+
+02:43 Drift detection what it is when there is
+02:46 
+
+02:46 so this particular G repo has the
+02:48 
+
+02:48 desired state of your infrastructure.
+02:50 
+
+02:50 Desired state of your application right
+02:53 
+
+02:53 desired state
+02:56 
+
+02:56 of your application.
+02:58 
+
+02:58 Similarly, this git repo has the desired
+03:02 
+
+03:02 state of your terraform code. That means
+03:05 
+
+03:05 if you are making any changes on this
+03:08 
+
+03:08 application, this will make changes to
+03:11 
+
+03:11 the actual state. Okay. So this
+03:14 
+
+03:14 particular infra and application is the
+03:17 
+
+03:17 actual state. So the process and the
+03:21 
+
+03:21 usefulness of terraformat is it keeps
+03:24 
+
+03:24 the desired state is equal to actual
+03:28 
+
+03:28 state right that's what it does it keeps
+03:31 
+
+03:31 it equal it makes sure that your desired
+03:33 
+
+03:33 state should be equal to actual state
+03:36 
+
+03:36 now because we are using githop's
+03:38 
+
+03:38 principles using argo cd it tracks that
+03:43 
+
+03:43 your desired state is equal to actual
+03:45 
+
+03:45 state or not and as soon as it finds out
+03:48 
+
+03:48 that Someone made the changes to the
+03:50 
+
+03:50 actual state. Now this actual state
+03:52 
+
+03:52 becomes something else like actual state
+03:54 
+
+03:54 plus one. It's just an example, right?
+03:56 
+
+03:56 There is no valid syntax for it. So now
+03:60 
+
+04:00 the desired state and actual state is
+04:03 
+
+04:03 not same, right? It's not equal. That
+04:05 
+
+04:05 means there is a drift in between the
+04:09 
+
+04:09 desired state and actual state. So a
+04:12 
+
+04:12 drift has been detected. So as soon as
+04:15 
+
+04:15 Argo CD detects the drift it will revert
+04:19 
+
+04:19 back the changes and it will make the
+04:22 
+
+04:22 desired state is equal to the actual
+04:24 
+
+04:24 state again. So for example let's say uh
+04:28 
+
+04:28 in this application there are two
+04:31 
+
+04:31 replicas of front end. Okay. So two
+04:34 
+
+04:34 replicas of front end as per the desired
+04:36 
+
+04:36 state or as per the git repo and because
+04:41 
+
+04:41 we have used terapform to deploy this
+04:43 
+
+04:43 particular infrastructure.
+04:45 
+
+04:45 So your actual state will also have two
+04:47 
+
+04:47 replicas of front end someone went ahead
+04:51 
+
+04:51 logged into the cluster and updated this
+04:54 
+
+04:54 deployment from two to three replicas.
+04:57 
+
+04:57 Okay earlier desired state was equal to
+04:60 
+
+04:60 actual state. Now desired state and
+05:02 
+
+05:02 actual state is not equal. So there is a
+05:04 
+
+05:04 drift between these two. As soon as
+05:07 
+
+05:07 there is a drift, Terraform works and
+05:09 
+
+05:09 terapform like make the changes. It
+05:12 
+
+05:12 reconciles the changes and make this
+05:14 
+
+05:14 again as two replicas. Right? So that's
+05:17 
+
+05:17 what it does. It will make sure that
+05:19 
+
+05:19 your desired state should be equal to
+05:20 
+
+05:20 the actual state. And that's the
+05:23 
+
+05:23 reconciling that it does to prevent the
+05:26 
+
+05:26 drift detection. Okay. So this is what
+05:29 
+
+05:29 we'll be doing. Here's our application
+05:32 
+
+05:32 uh deployed on the EKS cluster. Argo CD
+05:34 
+
+05:34 is also deployed on the same cluster in
+05:36 
+
+05:36 a different name space. And then uh
+05:39 
+
+05:39 everything will be done by Terraform
+05:41 
+
+05:41 with multiple git repos. And then
+05:44 
+
+05:44 there'll be load balancers with DNS. So
+05:46 
+
+05:46 your DevOps team and your users will be
+05:48 
+
+05:48 accessing the application through the
+05:50 
+
+05:50 load balancer DNS. And here's the
+05:52 
+
+05:52 application. This is the application
+05:54 
+
+05:54 that we have used earlier as well in one
+05:56 
+
+05:56 of the videos. So what it'll have uh I
+05:59 
+
+05:59 will show you like once we deployed the
+06:01 
+
+06:01 application I will show you what it has.
+06:02 
+
+06:02 I believe it's uh yeah so it will be
+06:05 
+
+06:05 straightforward don't worry about it. So
+06:07 
+
+06:07 it'll have front end back end and
+06:09 
+
+06:09 database right so your user will be
+06:11 
+
+06:11 accessing the application via ingress.
+06:14 
+
+06:14 Okay, the front end pod will be
+06:15 
+
+06:15 accessible via a service because it's
+06:18 
+
+06:18 part of the ingress and then there'll be
+06:21 
+
+06:21 backend port and for that uh the front
+06:24 
+
+06:24 end will have the endpoint as the
+06:25 
+
+06:25 service endpoint and the same way like
+06:27 
+
+06:27 these this is the way how these services
+06:30 
+
+06:30 communicate with each other with the
+06:32 
+
+06:32 help of endpoint. So these are uh
+06:34 
+
+06:34 internal services cluster IPs that we
+06:37 
+
+06:37 have used to communicate between the
+06:39 
+
+06:39 services and your database pod will have
+06:42 
+
+06:42 the PVC attached with it. That
+06:45 
+
+06:45 persistent volume claim is the is
+06:48 
+
+06:48 because you are storing some data in the
+06:51 
+
+06:51 database and that database will be an
+06:52 
+
+06:52 EBS volume or if you want to use any
+06:55 
+
+06:55 other but we are using a EBS volume for
+06:58 
+
+06:58 that to store the data. So we'll be
+07:01 
+
+07:01 using EBS driver as well for that. Okay.
+07:04 
+
+07:04 And uh yeah and this is the entire like
+07:08 
+
+07:08 this will be done in an entire name
+07:10 
+
+07:10 space called three tier web app dev and
+07:12 
+
+07:12 there'll be a separate name space for
+07:14 
+
+07:14 argo CD. It is better to keep it in the
+07:16 
+
+07:16 separate nameace. So this is what we'll
+07:18 
+
+07:18 be doing. So let's go ahead in the repo
+07:22 
+
+07:22 and let me walk you through that.
+07:26 
+
+07:26 Okay. So I have let me check. Yeah. So I
+07:30 
+
+07:30 have u pulled the g latest latest git
+07:33 
+
+07:33 repo. Okay. Oops.
+07:38 
+
+07:38 Okay. So here here are all my latest
+07:40 
+
+07:40 changes in the day 90 day 29 folder. It
+07:43 
+
+07:43 has two folders as you can see. One is
+07:45 
+
+07:45 terapform and another one is manifest
+07:47 
+
+07:47 folder. Terapform folder will have
+07:50 
+
+07:50 obviously the terapform code for
+07:51 
+
+07:51 infrastructure provisioning and manifest
+07:53 
+
+07:53 will have the code for argo CD and other
+07:56 
+
+07:56 manifest. So let's go ahead from here
+07:59 
+
+07:59 from the terraform repo. So in terapform
+08:03 
+
+08:03 uh we are using let's go ahead in
+08:05 
+
+08:05 teraphform.tf here we are initializing
+08:07 
+
+08:07 multiple providers. So we are using AWS
+08:10 
+
+08:10 provider kubernetes provider couptl
+08:14 
+
+08:14 ashiki corp http ashikorp null. So these
+08:17 
+
+08:17 like null provider we have seen earlier
+08:19 
+
+08:19 but these three providers are fairly new
+08:22 
+
+08:22 like we haven't covered that in this
+08:24 
+
+08:24 entire series I believe but we'll be
+08:26 
+
+08:26 seeing these provider in this video and
+08:29 
+
+08:29 how we can use that. Okay. Then we have
+08:32 
+
+08:32 main.tf.
+08:34 
+
+08:34 So it starts with an availability zone.
+08:37 
+
+08:37 So we are creating a data source for the
+08:39 
+
+08:39 availability zone. Right? And then uh we
+08:42 
+
+08:42 are setting some locals to set the
+08:44 
+
+08:44 values of availability zones. uh based
+08:47 
+
+08:47 on the region that we are in then we are
+08:50 
+
+08:50 using a public module. So if you
+08:52 
+
+08:52 remember when we covered the custom
+08:54 
+
+08:54 modules video we have given the source
+08:56 
+
+08:56 as the local folder in the same
+08:59 
+
+08:59 repository right but here we are giving
+09:03 
+
+09:03 terraform AWS module/vpc/ AWS. So this
+09:06 
+
+09:06 is the public terraform module of AWS.
+09:09 
+
+09:09 So if we search this particular thing
+09:12 
+
+09:12 over here. So over here you see
+09:14 
+
+09:14 terraform AWS VPC module. So this is a
+09:17 
+
+09:17 public module created by the community
+09:21 
+
+09:21 by and like it's hosted on uh Terraform
+09:25 
+
+09:25 AWS module public repository. Here's the
+09:27 
+
+09:27 source code for that and this module is
+09:29 
+
+09:29 managed by some community provider. Um
+09:33 
+
+09:33 here is how you can start using it
+09:35 
+
+09:35 right. You provide the source as this is
+09:38 
+
+09:38 what we have done and this is the latest
+09:41 
+
+09:41 version. Okay, public modules are good
+09:44 
+
+09:44 for learning purpose, for dev
+09:46 
+
+09:46 environment, for local environment, for
+09:47 
+
+09:47 PC's, but it's not really secure or
+09:50 
+
+09:50 compliant for an enterprise application,
+09:53 
+
+09:53 right? Because you need a lot of control
+09:55 
+
+09:55 of your application. You need to harden
+09:57 
+
+09:57 the security, you need to take control
+09:60 
+
+09:60 uh basically in of your infrastructure
+10:03 
+
+10:03 provisioning code and like everything
+10:06 
+
+10:06 that you do, right? So that's why custom
+10:08 
+
+10:08 modules are preferred. because we did
+10:10 
+
+10:10 not cover public modules in this series.
+10:12 
+
+10:12 So I thought it'll be a good time to
+10:14 
+
+10:14 cover it now. Okay. So here we are using
+10:17 
+
+10:17 uh this particular version and we are
+10:20 
+
+10:20 locking the version to anything greater
+10:22 
+
+10:22 than like anything 5 something. So it
+10:25 
+
+10:25 will change it will upgrade whenever 5
+10:28 
+
+10:28 something is available.
+10:31 
+
+10:31 Okay. Name is GitHubs VPC. That is what
+10:34 
+
+10:34 we are like we'll give we are giving
+10:36 
+
+10:36 this VPC resource as a local name.
+10:39 
+
+10:39 Here's from where we we are getting C
+10:42 
+
+10:42 range from the variables
+10:44 
+
+10:44 as we are getting from the local that we
+10:46 
+
+10:46 set earlier and here are the details of
+10:48 
+
+10:48 your subnets. Okay. Now there are some
+10:51 
+
+10:51 values whether we want to enable net
+10:54 
+
+10:54 gateway uh whether we need single net
+10:56 
+
+10:56 gateway enable DNS host name enable DNS
+10:59 
+
+10:59 support. So these two are important
+11:02 
+
+11:02 because this is how your nodes in the
+11:04 
+
+11:04 EKS cluster will communicate with each
+11:06 
+
+11:06 other otherwise they won't have any uh
+11:08 
+
+11:08 like uh they won't be able to
+11:10 
+
+11:10 communicate with each other. So this is
+11:12 
+
+11:12 important. Okay. Then um we are just
+11:16 
+
+11:16 adding some tags uh for like public
+11:20 
+
+11:20 subnet, private subnet.
+11:23 
+
+11:23 Then we have the EKS module. EKS module
+11:26 
+
+11:26 same thing like we are using a public
+11:27 
+
+11:27 EKS module with this version and we are
+11:31 
+
+11:31 using cluster version 1.30 30 then uh we
+11:34 
+
+11:34 are enabling the cluster endpoint public
+11:37 
+
+11:37 access uh like cluster endpoint like we
+11:40 
+
+11:40 are making it available on port 6443 I
+11:44 
+
+11:44 believe so that we can run cubectl
+11:46 
+
+11:46 commands uh publicly from any system
+11:49 
+
+11:49 right but again if you are working in an
+11:51 
+
+11:51 enterprise solution uh I'm not sure if
+11:53 
+
+11:53 eks provide the private cluster endpoint
+11:56 
+
+11:56 but there is a sock compliance there is
+11:59 
+
+11:59 a compliance requirement for some of the
+12:02 
+
+12:02 compliance policy which states that uh
+12:05 
+
+12:05 your cube API server should not be
+12:07 
+
+12:07 accessible publicly.
+12:09 
+
+12:09 So um yeah so but for this demo we are
+12:12 
+
+12:12 keeping it as public. Then we have VPC
+12:16 
+
+12:16 ID, subnet ID and control plane subnet
+12:18 
+
+12:18 ID. These all will be getting from the
+12:20 
+
+12:20 VPC module that we have created earlier.
+12:23 
+
+12:23 And here are the details of EKS managed
+12:25 
+
+12:25 node groups. So these node groups are
+12:28 
+
+12:28 your um are your worker nodes, right? So
+12:31 
+
+12:31 it'll be using instance of T3 medium.
+12:34 
+
+12:34 Minimum size is two. That means there'll
+12:36 
+
+12:36 be minimum of two worker nodes, maximum
+12:38 
+
+12:38 of three worker nodes in case of
+12:39 
+
+12:39 autoscaling kicks in. And desired status
+12:43 
+
+12:43 two. Okay. And here are the subnet ids
+12:46 
+
+12:46 on which your worker nodes will be
+12:48 
+
+12:48 provisioned. So as you can see your
+12:50 
+
+12:50 worker nodes will be provisioned in the
+12:52 
+
+12:52 private subnet because we are passing
+12:54 
+
+12:54 private subnet ID in the subnet ID
+12:56 
+
+12:56 field. Then there are some more details.
+12:59 
+
+12:59 enable cluster creator admission uh
+13:01 
+
+13:01 admin permissions uh some tags and so
+13:04 
+
+13:04 on. Okay. So here is the module for EBS
+13:09 
+
+13:09 CSI driver. So first we are creating the
+13:11 
+
+13:11 IM role for that because we are using
+13:14 
+
+13:14 EBS for the data storage of your
+13:17 
+
+13:17 database board right. So we need to
+13:19 
+
+13:19 create the EBS CSI driver to work
+13:23 
+
+13:23 Kubernetes to work EKS to combine or to
+13:26 
+
+13:26 join or to connect your EKS cluster with
+13:30 
+
+13:30 the EBS volume to store the data
+13:33 
+
+13:33 persistently. Okay. So we need these
+13:35 
+
+13:35 drivers. So this is to create the role.
+13:38 
+
+13:38 Okay. Role name prefix and attach is
+13:41 
+
+13:41 true and we are using OIDC provider.
+13:45 
+
+13:45 Next is CSI add-on u which is what will
+13:50 
+
+13:50 create the connection and basically
+13:52 
+
+13:52 it'll have few things like cluster name
+13:54 
+
+13:54 add-on name service role service role
+13:56 
+
+13:56 that we have created earlier and that's
+13:58 
+
+13:58 it okay here is how we are using the
+14:03 
+
+14:03 newly created providers right so I had
+14:05 
+
+14:05 told you like there are some providers
+14:07 
+
+14:07 that we are using for the first time
+14:09 
+
+14:09 okay so for that uh there is a resource
+14:14 
+
+14:14 cubect Ctl manifest there is this one
+14:17 
+
+14:17 there is HTTP data source and we also
+14:20 
+
+14:20 using Kubernetes namespace v1. So what
+14:23 
+
+14:23 this resource will do this will create a
+14:27 
+
+14:27 new name space for Argo CD because we
+14:30 
+
+14:30 have created the infrastructure till
+14:32 
+
+14:32 here. Right now we are also deploying
+14:35 
+
+14:35 the application through Terraform
+14:37 
+
+14:37 although it should be done uh with a
+14:39 
+
+14:39 CI/CD pipeline but for the sake of
+14:42 
+
+14:42 learning Terapform because this series
+14:44 
+
+14:44 is all about Terraform right so that is
+14:46 
+
+14:46 why we are doing everything with
+14:48 
+
+14:48 Terraform.
+14:50 
+
+14:50 So we are creating uh the name space
+14:54 
+
+14:54 using the Kubernetes namespace v1
+14:56 
+
+14:56 resource. Okay. And um name is Argo CD
+15:01 
+
+15:01 and it depends on the EKS module because
+15:03 
+
+15:03 it should be created once the your once
+15:06 
+
+15:06 your EKS cluster is up and running up
+15:08 
+
+15:08 and healthy.
+15:09 
+
+15:09 Now uh you install the Argo CD using
+15:13 
+
+15:13 cubectl provider. Again there is a
+15:16 
+
+15:16 cubectl manifest provider that we are
+15:19 
+
+15:19 using to provision Argo CD but for that
+15:22 
+
+15:22 we need to download a file uh like a
+15:26 
+
+15:26 GitHub file which has the Argo CD
+15:28 
+
+15:28 manifest right or else we can have it
+15:31 
+
+15:31 locally but then Argo CD is uh it's an
+15:34 
+
+15:34 open source project so it is separately
+15:37 
+
+15:37 managed if there is are any changes in
+15:39 
+
+15:39 that project we won't be having those
+15:41 
+
+15:41 changes locally so that is why it is
+15:43 
+
+15:43 good if we pull the latest data using a
+15:46 
+
+15:46 data source. Okay. So we have seen
+15:48 
+
+15:48 different data sources like in this
+15:50 
+
+15:50 video as well we have seen this data
+15:52 
+
+15:52 source how we are getting the values of
+15:54 
+
+15:54 availability zone of using a data
+15:57 
+
+15:57 source. The same way we can also
+15:60 
+
+15:60 download a file and its content using
+16:03 
+
+16:03 the data source. Now this file is
+16:05 
+
+16:05 downloaded over HTTP right. So that is
+16:08 
+
+16:08 why we are using HTTP data source or
+16:10 
+
+16:10 HTTP provider. I think it's it's a data
+16:14 
+
+16:14 source that we are using. So if we check
+16:17 
+
+16:17 over here, so HTTP
+16:21 
+
+16:21 is what we are using. It's it's
+16:23 
+
+16:23 maintained by Hashi Corp. Okay. So we
+16:26 
+
+16:26 can we can use that to download the
+16:28 
+
+16:28 file. And here is the URL. So if you go
+16:32 
+
+16:32 over here in this particular file, I'm
+16:35 
+
+16:35 just going to copy this and I'll open
+16:37 
+
+16:37 this in a new tab.
+16:40 
+
+16:40 So this is a raw file which will have
+16:43 
+
+16:43 Argo CD related resources. You know the
+16:46 
+
+16:46 CRDs and all the resources that will
+16:49 
+
+16:49 basically install Argo CD application on
+16:52 
+
+16:52 the cluster. So there'll be custom
+16:54 
+
+16:54 resource custom resource definition.
+16:56 
+
+16:56 There'll be I believe the deployment
+16:58 
+
+16:58 YAML as well. Let me check. Let me go
+17:01 
+
+17:01 back. There is network policy as well
+17:04 
+
+17:04 and multiple network policies actually
+17:08 
+
+17:08 a lot of them actually. And what else
+17:12 
+
+17:12 does it have?
+17:16 
+
+17:16 It's it's a big file, right? Uh it'll
+17:18 
+
+17:18 have a stateful set
+17:21 
+
+17:21 because it has a persistent storage,
+17:23 
+
+17:23 right? Argo CD uh will also attach a
+17:26 
+
+17:26 persistent storage for storing the logs,
+17:28 
+
+17:28 storing the data and the details. Uh
+17:31 
+
+17:31 there'll be a deployment as well for the
+17:33 
+
+17:33 Argo CD server,
+17:36 
+
+17:36 right? There are multiple resources and
+17:39 
+
+17:39 there'll be a radius deployment as well.
+17:41 
+
+17:41 Right? So all the resources, all the
+17:42 
+
+17:42 component of a Argo CD server. Now we
+17:48 
+
+17:48 have used the data source. Now we can
+17:50 
+
+17:50 get the values from the data source. Now
+17:52 
+
+17:52 that particular file has multiple
+17:54 
+
+17:54 different manifest in a single file
+17:57 
+
+17:57 right. So we can just use a for each
+17:59 
+
+17:59 loop to create a map. You see we are
+18:02 
+
+18:02 using this particular uh
+18:06 
+
+18:06 uh like the curly braces and when we use
+18:09 
+
+18:09 it for with for each or the for loop uh
+18:12 
+
+18:12 it will create the map of resources or
+18:15 
+
+18:15 the map of elements and what those
+18:18 
+
+18:18 elements are we are using for doc in
+18:20 
+
+18:20 split with these three dashes. Three
+18:23 
+
+18:23 dashes are the separator used when we
+18:26 
+
+18:26 have multiple manifest in a single file.
+18:29 
+
+18:29 Right? So this is how we are separating
+18:32 
+
+18:32 the resources. So if we go back over
+18:34 
+
+18:34 here and if you search for those three
+18:36 
+
+18:36 dashes. Okay, you see. So these are the
+18:41 
+
+18:41 uh manifest separators. So till here
+18:44 
+
+18:44 there was one manifest and from here
+18:46 
+
+18:46 there is the next manifest which is of
+18:48 
+
+18:48 type deployment. Okay. So that is what
+18:52 
+
+18:52 it is doing and it is separating that
+18:54 
+
+18:54 from the response that it is getting
+18:56 
+
+18:56 from the Argo CD manifest. Okay. And
+18:59 
+
+18:59 then it is uh basically doing that for
+19:02 
+
+19:02 for the unique SH 256 sum and if there
+19:06 
+
+19:06 is any blank spaces then it is ignoring
+19:09 
+
+19:09 it. Okay. Now
+19:12 
+
+19:12 it is putting those value in the YAML
+19:14 
+
+19:14 body. Okay. So it'll create separate
+19:18 
+
+19:18 temporary files or the variables
+19:21 
+
+19:21 actually it's a map. So it'll have
+19:23 
+
+19:23 different elements and the value of each
+19:26 
+
+19:26 element is a different manifest file
+19:29 
+
+19:29 that is part of the Argo CD manifest.
+19:32 
+
+19:32 Okay. And it will be using Argo CD
+19:35 
+
+19:35 namespace to deploy all those resources.
+19:38 
+
+19:38 Now we are also using a local execute
+19:42 
+
+19:42 local executor using a null resource.
+19:45 
+
+19:45 Okay. And this null resource what it
+19:47 
+
+19:47 will do it will patch the Argo CD server
+19:50 
+
+19:50 because we are making some changes
+19:51 
+
+19:51 locally to the manifest before deploying
+19:53 
+
+19:53 it. Actually after deploying it uh
+19:56 
+
+19:56 because we have deployed it already. So
+19:58 
+
+19:58 after deploying it what we are doing we
+19:60 
+
+19:60 are making sure that the service type of
+20:02 
+
+20:02 Argo CD server is load balancer so that
+20:04 
+
+20:04 we can access it as well on the HTTP or
+20:07 
+
+20:07 HTTPS board. Okay. So this is what we
+20:11 
+
+20:11 are running. We are running cubectl
+20:13 
+
+20:13 patch command on the service and making
+20:15 
+
+20:15 sure the type is load balancer. Okay.
+20:20 
+
+20:20 Now the next part is deploy application
+20:22 
+
+20:22 via arocd application crd. Okay. So to
+20:25 
+
+20:25 deploy the application what we are doing
+20:27 
+
+20:27 is uh we are checking the file like this
+20:33 
+
+20:33 is the local path inside that there was
+20:36 
+
+20:36 a manifest folder and inside manifest
+20:39 
+
+20:39 folder there is argo cd app.yamel yl and
+20:41 
+
+20:41 we are deploying that file using argo
+20:43 
+
+20:43 cd. So now time to look into the
+20:46 
+
+20:46 manifest folder and especially this file
+20:48 
+
+20:48 argo cd app.l.
+20:51 
+
+20:51 So what it does it will create a custom
+20:53 
+
+20:53 resource right of kind application with
+20:56 
+
+20:56 this version. This is how like syntax of
+20:58 
+
+20:58 an argo cd application how it will sync
+21:01 
+
+21:01 the server how it will make sure that
+21:03 
+
+21:03 your uh application is deployed by argo
+21:05 
+
+21:05 cd. So what it will do we provide the
+21:09 
+
+21:09 project detail and name space for Argo
+21:11 
+
+21:11 CD and then there is a name for the
+21:13 
+
+21:13 application and we provide the repo URL.
+21:17 
+
+21:17 So this repo is where your
+21:21 
+
+21:21 um application code is there. So I have
+21:23 
+
+21:23 created a separate repo for this over
+21:25 
+
+21:25 here. So this will have a folder three
+21:28 
+
+21:28 tier config and inside that there is
+21:30 
+
+21:30 front end back end customization all
+21:33 
+
+21:33 those things right. So this is the
+21:35 
+
+21:35 application code. So we are providing
+21:38 
+
+21:38 the repo URL over here. We are providing
+21:40 
+
+21:40 the branch details and the path. If the
+21:44 
+
+21:44 path is like at the root directory, then
+21:46 
+
+21:46 you can just keep it as dot for the root
+21:49 
+
+21:49 because we are inside a folder. So we
+21:52 
+
+21:52 provide the folder details over here.
+21:53 
+
+21:53 Three tier three tire config or three
+21:56 
+
+21:56 tier config. Let me see if it is same
+22:01 
+
+22:01 actually. Yeah, it's the same three
+22:03 
+
+22:03 tire. I'm not sure why I did that but
+22:05 
+
+22:05 yeah three tire config.
+22:08 
+
+22:08 So and the destination is
+22:12 
+
+22:12 this uh local kubernetes service okay
+22:17 
+
+22:17 inside this name space. So what we are
+22:19 
+
+22:19 saying is whatever application is there
+22:22 
+
+22:22 whatever manifest are there in this repo
+22:25 
+
+22:25 make sure it is in sync with application
+22:29 
+
+22:29 deployed in this name space. So that's
+22:32 
+
+22:32 how we are making sure that desired
+22:34 
+
+22:34 state will always be equal to the actual
+22:36 
+
+22:36 state. Okay. And it says automation
+22:40 
+
+22:40 prune true selfheal true. Okay. If the
+22:43 
+
+22:43 application if there is this is
+22:45 
+
+22:45 basically the sync policy. We are
+22:46 
+
+22:46 automating the sync so that it will keep
+22:50 
+
+22:50 checking it and whenever it finds a
+22:52 
+
+22:52 deviation it will reconcile the changes
+22:56 
+
+22:56 and if the if someone even deletes the
+22:58 
+
+22:58 name space it will create the name space
+23:00 
+
+23:00 again as well. So create namespace equal
+23:02 
+
+23:02 to true. Okay. So now this is the front
+23:05 
+
+23:05 end. Front end will have a config map.
+23:07 
+
+23:07 I'm not going to go into in depth in
+23:09 
+
+23:09 that. This is just a basic uh manifest
+23:12 
+
+23:12 with config config map deployment and I
+23:16 
+
+23:16 believe there'll be a service. Yeah. Uh
+23:19 
+
+23:19 which is of load balancer because it's
+23:20 
+
+23:20 front end. There is a back end for back
+23:23 
+
+23:23 end also there is a config map. There is
+23:26 
+
+23:26 a deployment
+23:28 
+
+23:28 and over here uh there is a service.
+23:31 
+
+23:31 This service is cluster IP on port 8080.
+23:35 
+
+23:35 Um and then there is posgress database.
+23:38 
+
+23:38 So we have PVC, we have a deployment for
+23:42 
+
+23:42 posgress
+23:44 
+
+23:44 and
+23:46 
+
+23:46 we have a service a cluster IP service
+23:49 
+
+23:49 for the postgra database. Now there is a
+23:52 
+
+23:52 namespace yl to create the namespace for
+23:54 
+
+23:54 the application
+23:56 
+
+23:56 and we have customization which manages
+24:00 
+
+24:00 this entire like customization we have
+24:02 
+
+24:02 covered it and like if you are new to
+24:05 
+
+24:05 customization or helm um like it's
+24:08 
+
+24:08 already covered in depth in the
+24:10 
+
+24:10 kubernetes series the ck series that I
+24:12 
+
+24:12 have on my channel you can go and watch
+24:14 
+
+24:14 that as well uh for here um like over
+24:19 
+
+24:19 here we are targeting this name space.
+24:23 
+
+24:23 All these files, all the files that are
+24:26 
+
+24:26 here. Okay. And the common annotation
+24:30 
+
+24:30 applied to all the resources. These are
+24:32 
+
+24:32 all the image details. Like for front
+24:35 
+
+24:35 end, there'll be huge such da is my
+24:37 
+
+24:37 public repo. This is a public image. You
+24:39 
+
+24:39 can also try it out. And then there'll
+24:41 
+
+24:41 be uh back end and then there will be
+24:45 
+
+24:45 one for Postgress. This is the public
+24:47 
+
+24:47 postgress repo that we are using. And
+24:49 
+
+24:49 these are the replicas that we have set.
+24:52 
+
+24:52 So now using this we'll try to deploy
+24:54 
+
+24:54 the resources. Okay. Um what we'll do is
+24:59 
+
+24:59 um we'll first try to provision the
+25:01 
+
+25:01 terraform infrastructure. So let's go
+25:04 
+
+25:04 ahead over here day 29 and inside that
+25:07 
+
+25:07 there'll be a terapform repo right. So
+25:12 
+
+25:12 let me just set the alias for terraform
+25:14 
+
+25:14 and let's run tf in it.
+25:18 
+
+25:18 Okay, it will initialize the back end.
+25:21 
+
+25:21 Uh yeah, there is Oh, I'm not sure if we
+25:23 
+
+25:23 have a backend.tf. Yeah, we don't have
+25:26 
+
+25:26 backend.tf. So maybe this is another
+25:29 
+
+25:29 task for you to add the backend.tf and
+25:31 
+
+25:31 make sure your state is remotely stored
+25:34 
+
+25:34 in S3 bucket and make sure you use the
+25:38 
+
+25:38 lock file feature of S3. You don't need
+25:40 
+
+25:40 to use the Dynamob anymore because the
+25:42 
+
+25:42 feature is now supported natively in S3
+25:45 
+
+25:45 bucket. Okay. Um
+25:48 
+
+25:48 okay so TF in it is done. Now let's do a
+25:51 
+
+25:51 TF plan to see how many resources it
+25:54 
+
+25:54 will be creating.
+25:57 
+
+25:57 Okay.
+26:02 
+
+26:02 Okay. So
+26:05 
+
+26:05 yeah these are just some of the
+26:07 
+
+26:07 instructions that we have given. So
+26:09 
+
+26:09 there will be 122 resources. It's a lot
+26:12 
+
+26:12 I know but that's all we need to
+26:14 
+
+26:14 provision an end to end application
+26:17 
+
+26:17 right so let's now apply the changes
+26:20 
+
+26:20 hyphen auto approve
+26:23 
+
+26:23 and it's going to take some time because
+26:26 
+
+26:26 we are creating a lot of resources uh
+26:29 
+
+26:29 especially EKS cluster and all those
+26:32 
+
+26:32 things will take some time and load
+26:34 
+
+26:34 balancers as well so I'm going to pause
+26:36 
+
+26:36 the recording and then we'll come back
+26:40 
+
+26:40 okay So looks like uh everything is done
+26:43 
+
+26:43 now. Environment should be ready. So
+26:46 
+
+26:46 let's configure the cubectl and let's
+26:49 
+
+26:49 try to log into the cluster now.
+26:52 
+
+26:52 Okay. Cubectl get nodes.
+26:58 
+
+26:58 Okay, we have two worker nodes ready.
+26:60 
+
+26:60 cubectl get pods.
+27:03 
+
+27:03 Nothing in the default name space. Let's
+27:06 
+
+27:06 check the name spaces. Get ns. So we
+27:08 
+
+27:08 have 3D webdev for the application. We
+27:11 
+
+27:11 have Argo CD and we have default. So
+27:14 
+
+27:14 this is good. Now we need to get the
+27:15 
+
+27:15 Argo CD password. So for that uh you can
+27:18 
+
+27:18 get the admin password. Uh what you can
+27:21 
+
+27:21 do is there'll be cubectl
+27:24 
+
+27:24 um get secret. There'll be a secret in
+27:27 
+
+27:27 the Argo CD name space.
+27:30 
+
+27:30 So let's check
+27:33 
+
+27:33 N Argo
+27:36 
+
+27:36 Argo.
+27:37 
+
+27:37 What was the name? Argo CD. Okay. Uh
+27:40 
+
+27:40 it's called admin initial password. So
+27:44 
+
+27:44 the secret name is this.
+27:47 
+
+27:47 And we need to get the JSON path of it.
+27:51 
+
+27:51 So - O YAML.
+27:55 
+
+27:55 Um here's the password. We need to
+27:57 
+
+27:57 convert this into B 64. So echo
+28:02 
+
+28:02 this. And then base 64. We need to
+28:06 
+
+28:06 decode this. Okay. So this is the
+28:10 
+
+28:10 password.
+28:12 
+
+28:12 Now we need to get the URL of the Argo
+28:17 
+
+28:17 CD server as well. Right. So cubectl get
+28:20 
+
+28:20 svc - n argo cd.
+28:25 
+
+28:25 Okay. And there will be an arg server
+28:28 
+
+28:28 which is over here. And here's the load
+28:30 
+
+28:30 balancer URL. So I'm just going to copy
+28:33 
+
+28:33 that. and let's open this.
+28:37 
+
+28:37 Okay, let's go back advance because we
+28:40 
+
+28:40 don't have this earth. So, it's HTTP
+28:42 
+
+28:42 that's why it was giving us the error.
+28:44 
+
+28:44 The username is admin and the password
+28:47 
+
+28:47 is what we've got from the secret which
+28:49 
+
+28:49 is this one over here. Let's go back and
+28:54 
+
+28:54 paste it. Sign in. Okay, we are in. It
+28:58 
+
+28:58 says our application is sync with this
+29:01 
+
+29:01 particular repository. And here are all
+29:04 
+
+29:04 the manifests. So we have uh config
+29:07 
+
+29:07 maps, we have name space, PVC, secret
+29:11 
+
+29:11 service for front end load balancer blah
+29:13 
+
+29:13 blah blah all those things, right? We
+29:14 
+
+29:14 have everything everything in sync and
+29:16 
+
+29:16 it is healthy. It was succeeded 10
+29:18 
+
+29:18 minutes ago. Okay. Now let's check the
+29:22 
+
+29:22 application as well. So I'm just going
+29:24 
+
+29:24 to go ahead and check the
+29:29 
+
+29:29 let me check the deployed application.
+29:34 
+
+29:34 Or do we have Oh yeah, we already have
+29:37 
+
+29:37 the deployed application. So
+29:41 
+
+29:41 let's check it. k get NS.
+29:45 
+
+29:45 Oops.
+29:47 
+
+29:47 Oops. Uh alias K is equal to cubectl k
+29:52 
+
+29:52 get ns and then k get svc on this name
+29:58 
+
+29:58 space
+29:59 
+
+29:59 hyphen n three tier web app dev. Okay,
+30:04 
+
+30:04 so here is the front end load balancer
+30:06 
+
+30:06 for the application.
+30:08 
+
+30:08 Let's go back over here.
+30:14 
+
+30:14 Is it still coming up? I'm not sure.
+30:32 
+
+30:32 Let's actually go ahead and check. So,
+30:34 
+
+30:34 I'm just going to log into my AWS
+30:36 
+
+30:36 console
+30:44 
+
+30:44 and we have our worker nodes which are
+30:48 
+
+30:48 over here. What we need is the load
+30:51 
+
+30:51 balancer. So, I'm going to go to
+30:55 
+
+30:55 load balancers
+30:59 
+
+30:59 and
+31:03 
+
+31:03 Come on, this is slow.
+31:08 
+
+31:08 Okay, over here. Now we need to check
+31:11 
+
+31:11 the external load balancer.
+31:14 
+
+31:14 Uh, doesn't have a name. How do we know
+31:17 
+
+31:17 which one is the external load balancer?
+31:23 
+
+31:23 Let's check.
+31:26 
+
+31:26 Um, that's internet facing. And if I
+31:30 
+
+31:30 check the next one that is also internet
+31:33 
+
+31:33 facing. Okay. So we have created two
+31:34 
+
+31:34 load balancers. Yes.
+31:37 
+
+31:37 Um
+31:39 
+
+31:39 and we have HTTPS listener as well.
+31:45 
+
+31:45 Okay. Let's go back. Okay. Let me check
+31:48 
+
+31:48 it over here. So we have front end and
+31:52 
+
+31:52 front end part. There is a deployment.
+31:56 
+
+31:56 Uh there is
+32:01 
+
+32:01 yeah
+32:04 
+
+32:04 okay so that's the ingress
+32:08 
+
+32:08 I believe that's is that or it's just uh
+32:12 
+
+32:12 project
+32:16 
+
+32:16 okay um
+32:20 
+
+32:20 all right so let's do one thing let's go
+32:24 
+
+32:24 back
+32:27 
+
+32:27 Why it is showing two load balancers?
+32:29 
+
+32:29 Over here we have one load balancer
+32:37 
+
+32:37 with the 10640
+32:40 
+
+32:40 something.
+32:44 
+
+32:44 Uh no the name is pretty weird over here
+32:52 
+
+32:52 actually. Let's check the DNS name.
+32:54 
+
+32:54 Okay. 0640. So this is the one. Let's
+32:58 
+
+32:58 check the other one. What what's that
+32:59 
+
+32:59 is?
+33:01 
+
+33:01 Okay, this is Argo CD. Okay, understood.
+33:04 
+
+33:04 Now, yeah, Argo CD is already there. Uh
+33:07 
+
+33:07 but this DNS it's not opening.
+33:13 
+
+33:13 Yeah, it's getting timed out, I believe.
+33:17 
+
+33:17 Let's check this. Y.
+33:21 
+
+33:21 [clears throat]
+33:25 
+
+33:25 So we have listener over here on
+33:31 
+
+33:31 and we need to check the instances. Both
+33:33 
+
+33:33 the instances are in service. They both
+33:36 
+
+33:36 are healthy and it should be
+33:41 
+
+33:41 working. Okay. Let me do one more. Okay.
+33:45 
+
+33:45 I think uh it has taken a lot of time
+33:48 
+
+33:48 already. Um so let me check one more
+33:50 
+
+33:50 thing over here. Let's go to listeners.
+33:54 
+
+33:54 Um
+33:55 
+
+33:55 and I yeah I think it should be
+33:58 
+
+33:58 available on port 3000. Okay. So let's
+34:01 
+
+34:01 put 3000 over here. Oh yes, there it is.
+34:05 
+
+34:05 Right. Because this application is
+34:07 
+
+34:07 listening on port uh 880 HTTP port, the
+34:10 
+
+34:10 default HTTP port. That's why it has a
+34:13 
+
+34:13 custom port 3000. Okay. So this is the
+34:16 
+
+34:16 app and this is version v1. So like
+34:19 
+
+34:19 let's say you can just enter your 2026
+34:24 
+
+34:24 goals over here and it'll be persistent.
+34:27 
+
+34:27 Right now let's do one more thing. Um we
+34:31 
+
+34:31 have
+34:33 
+
+34:33 we have not checked the githops flow
+34:35 
+
+34:35 yet. Right? So for that let's go back
+34:38 
+
+34:38 over here and let's try to make some
+34:40 
+
+34:40 changes in the customization yl. So
+34:42 
+
+34:42 there's a customization yl. we were
+34:45 
+
+34:45 using the front end v_sub_1 right so
+34:47 
+
+34:47 let's change it to v_sub_2 and let's
+34:49 
+
+34:49 apply the changes over here so uh I'm
+34:54 
+
+34:54 currently in terapform directory and I
+34:57 
+
+34:57 need to just go one directory back
+35:04 
+
+35:04 I yeah
+35:06 
+
+35:06 so customize
+35:26 
+
+35:26 Customize hyphen help customization
+35:32 
+
+35:32 actually customize is already it's been
+35:34 
+
+35:34 a long time that I've used customize uh
+35:37 
+
+35:37 I think it's part of cubectl right so
+35:39 
+
+35:39 cubectlen
+35:41 
+
+35:41 help
+35:44 
+
+35:44 and
+35:52 
+
+35:52 I think it was cubectl
+35:56 
+
+35:56 some things but let me just quickly do a
+35:58 
+
+35:58 Google search so customize command to
+36:02 
+
+36:02 apply changes
+36:06 
+
+36:06 okay custom oh yeah cubectl apply hyphen
+36:09 
+
+36:09 key yep
+36:13 
+
+36:13 So
+36:15 
+
+36:15 cubectl
+36:18 
+
+36:18 apply hyphen k and the manifest
+36:21 
+
+36:21 directory.
+36:23 
+
+36:23 Okay,
+36:26 
+
+36:26 now it says it has configured
+36:29 
+
+36:29 everything. Now let's see k get pods
+36:34 
+
+36:34 - a.
+36:36 
+
+36:36 Okay. Uh everything is running. This
+36:39 
+
+36:39 front end pod is terminating and it
+36:42 
+
+36:42 should create a new front end pod.
+36:50 
+
+36:50 Yep. Uh let's go back over here and
+36:54 
+
+36:54 let's set this
+37:03 
+
+37:03 Did it already reverted it?
+37:07 
+
+37:07 I don't see the V2 version yet. Um,
+37:11 
+
+37:11 let's check it over here.
+37:14 
+
+37:14 Oh, it it synced that instantly. Is that
+37:18 
+
+37:18 what happened? So, let's check the front
+37:20 
+
+37:20 end version.
+37:23 
+
+37:23 Um,
+37:28 
+
+37:28 no, it's still using, yeah, it's still
+37:30 
+
+37:30 using the V1 over here as you can see.
+37:34 
+
+37:34 And it created was created at 20 minutes
+37:37 
+
+37:37 back.
+37:39 
+
+37:39 So, our changes did not even get applied
+37:44 
+
+37:44 and it says sync around a minute back.
+37:54 
+
+37:54 Okay, let's do one more thing. cubectl
+37:57 
+
+37:57 get deploy
+37:59 
+
+37:59 a
+38:01 
+
+38:01 Okay, and let's try to edit this cubectl
+38:05 
+
+38:05 edit deploy
+38:08 
+
+38:08 uh front end
+38:13 
+
+38:13 and this. Okay, what I'm going to do,
+38:17 
+
+38:17 I'll be changing the front end
+38:21 
+
+38:21 image tag. Let's search for image.
+38:28 
+
+38:28 Yeah, from v_sub_1 to v2 over here.
+38:31 
+
+38:31 Let's save it quickly
+38:34 
+
+38:34 and let's see if the changes are
+38:36 
+
+38:36 applied. It's not even letting me apply
+38:39 
+
+38:39 the changes. I think
+38:43 
+
+38:43 it did not apply the changes.
+38:47 
+
+38:47 So if I hit refresh, it says succeeded a
+38:50 
+
+38:50 few seconds ago
+38:52 
+
+38:52 and it's terminating.
+39:02 
+
+39:02 Let me see where it is the image
+39:04 
+
+39:04 version.
+39:07 
+
+39:07 Okay.
+39:15 
+
+39:15 Yeah. V1. V1. It instantly I believe it
+39:19 
+
+39:19 instantly did the changes.
+39:24 
+
+39:24 Um,
+39:26 
+
+39:26 let's see. History and roll back.
+39:30 
+
+39:30 It says update front end.yamel
+39:34 
+
+39:34 and
+39:41 
+
+39:41 No, the these were the initial
+39:43 
+
+39:43 configuration
+39:46 
+
+39:46 and uh sync status. Yeah, it's um
+39:52 
+
+39:52 finished 1 minute ago. Automatic sync
+39:55 
+
+39:55 policy
+40:03 
+
+40:03 v1. Let me see if we can change the
+40:09 
+
+40:09 sync to something else.
+40:15 
+
+40:15 Application um
+40:21 
+
+40:21 sync status is successfully sync all
+40:24 
+
+40:24 task.
+40:26 
+
+40:26 And let's check the revisions.
+40:30 
+
+40:30 Nope,
+40:32 
+
+40:32 that was not it.
+40:40 
+
+40:40 I made the changes to the deployment.
+40:43 
+
+40:43 Okay,
+40:44 
+
+40:44 which is
+40:46 
+
+40:46 over here.
+40:50 
+
+40:50 Okay. And the changes that I did was
+40:55 
+
+40:55 with the image.
+41:04 
+
+41:04 Just please bear with me for a few
+41:06 
+
+41:06 minutes. Uh have some patience. I know.
+41:09 
+
+41:09 Um or if you know the answer then yeah
+41:11 
+
+41:11 you can stop the video. I'm just doing
+41:13 
+
+41:13 the live troubleshooting that I always
+41:14 
+
+41:14 do. So it's V1 over here. That's the
+41:18 
+
+41:18 live manifest. And here's the desired
+41:21 
+
+41:21 manifest. Desired manifest also. Let's
+41:24 
+
+41:24 see what does it have.
+41:28 
+
+41:28 Um,
+41:30 
+
+41:30 spec template image. It also has V1.
+41:35 
+
+41:35 It says created at 23 minutes ago. Let's
+41:38 
+
+41:38 see the events. Okay.
+41:41 
+
+41:41 So it says scaling to zero from one from
+41:47 
+
+41:47 one to zero. It did some changes. It did
+41:50 
+
+41:50 scale in scale out
+41:53 
+
+41:53 and there is nothing in logs.
+42:00 
+
+42:00 Uh def I don't see the diff because
+42:04 
+
+42:04 desired and live are same.
+42:18 
+
+42:18 Okay, we'll we'll keep a track on this
+42:20 
+
+42:20 now. So, I'm just going to
+42:47 
+
+42:47 I'm just going to do it side by side.
+42:51 
+
+42:51 Just give me a second.
+42:54 
+
+42:54 Um, left and right. Okay.
+43:05 
+
+43:05 Oh, come on. Anyways,
+43:09 
+
+43:09 why I'm not able to drag this further?
+43:12 
+
+43:12 This. Okay.
+43:17 
+
+43:17 All right. Now, let's do edit
+43:21 
+
+43:21 and let's make the changes again from
+43:25 
+
+43:25 V1.
+43:29 
+
+43:29 Oops. No.
+43:30 
+
+43:30 Okay. Yeah. Over here. V1 to V2.
+43:35 
+
+43:35 Save. And let me hit refresh over here
+43:38 
+
+43:38 quickly.
+43:41 
+
+43:41 Come on. Come on. Come on. Come on. Come
+43:42 
+
+43:42 on. No. Because it is making changes one
+43:46 
+
+43:46 by one. I believe that's the case. So,
+43:49 
+
+43:49 one pod is still serving the older
+43:50 
+
+43:50 traffic and one pod is still not making
+43:52 
+
+43:52 the changes. So, maybe that's why I'm
+43:55 
+
+43:55 not able to see the latest version. like
+43:58 
+
+43:58 I can see the latest version if I make
+44:00 
+
+44:00 the changes instantly. So if I do let's
+44:03 
+
+44:03 say over here this is my repo that it's
+44:06 
+
+44:06 tracking right. So front end and
+44:12 
+
+44:12 um edit
+44:14 
+
+44:14 let's go and make the changes. Oh,
+44:16 
+
+44:16 sorry. Not this one. Maybe the
+44:18 
+
+44:18 customization, right? Not this
+44:23 
+
+44:23 customization
+44:25 
+
+44:25 and edit.
+44:28 
+
+44:28 Let's make it V2.
+44:31 
+
+44:31 Commit the changes.
+44:33 
+
+44:33 And now let's track the app.
+44:37 
+
+44:37 Let's see if it is doing anything.
+44:40 
+
+44:40 Just hitting refresh. Not doing sync.
+44:42 
+
+44:42 But you see it said for a brief second
+44:45 
+
+44:45 it says out of sync and now it is doing
+44:47 
+
+44:47 the syncing. It says progressing and
+44:49 
+
+44:49 this app has something going on. It says
+44:54 
+
+44:54 waiting for the roll out to finish and
+44:56 
+
+44:56 it is making the changes. Now it would
+44:59 
+
+44:59 become V2 now because now our desired
+45:02 
+
+45:02 state has that you see it deleted the
+45:05 
+
+45:05 rep deleted the pod and it created new
+45:07 
+
+45:07 pods.
+45:10 
+
+45:10 Okay, let's go back and let's see what
+45:12 
+
+45:12 the app version is now.
+45:19 
+
+45:19 It's hard to read. This is too small.
+45:21 
+
+45:21 I'm sure it'll be small for you as well.
+45:25 
+
+45:25 Um let's see the image uh image over
+45:30 
+
+45:30 here. See v2. So if I hit refresh now.
+45:35 
+
+45:35 Okay. So let me keep it open in this tab
+45:37 
+
+45:37 and let me open a new tab so that you
+45:39 
+
+45:39 will see the difference.
+45:41 
+
+45:41 So this has a dark mode as well now you
+45:44 
+
+45:44 see and the app V_sub_1 did not have the
+45:48 
+
+45:48 dark mode. There is no button over here
+45:50 
+
+45:50 and this V2 has a toggle button for
+45:52 
+
+45:52 light mode and dark mode. So that's the
+45:54 
+
+45:54 difference between version V1 and V2. So
+45:56 
+
+45:56 now if I hit refresh it'll be also V2.
+45:60 
+
+45:60 So now the changes have been rolled out
+46:02 
+
+46:02 with GitHubs you know because Argo CD is
+46:05 
+
+46:05 tracking that repo. It is making sure
+46:07 
+
+46:07 that whatever there is is in the desired
+46:10 
+
+46:10 state should be equal to the actual
+46:12 
+
+46:12 state but it is not letting us make the
+46:16 
+
+46:16 changes directly on the environment. It
+46:18 
+
+46:18 is instantly reverting it back. So
+46:20 
+
+46:20 that's how it works. So I think we have
+46:23 
+
+46:23 implemented the project end to end. Try
+46:25 
+
+46:25 it out yourself or wait wait wait wait
+46:27 
+
+46:27 
+
+46:27 
+
+46:27 wait wait wait wait wait wait wait wait
+46:27 wait wait wait wait wait wait wait wait
+46:27 wait make sure you don't forget to
+46:31 
+
+46:31 destroy the infrastructure otherwise it
+46:33 
+
+46:33 will cost you a lot it has a lot of
+46:36 
+
+46:36 resources so I'm just going to run
+46:39 
+
+46:39 terraform destroy hyphen auto approve
+46:48 
+
+46:48 and
+46:50 
+
+46:50 yeah it it will do its work so yeah Uh
+46:55 
+
+46:55 that's it. That's it. Thank you so much
+46:57 
+
+46:57 for watching. Uh make sure you implement
+46:59 
+
+46:59 the project yourself. Make sure you
+47:01 
+
+47:01 understand the end to end flow. If you
+47:03 
+
+47:03 are new to Argo CD, install it, do the
+47:06 
+
+47:06 setup and whatever I have walked you
+47:08 
+
+47:08 through the video. Go through the each
+47:11 
+
+47:11 and every component of Argo CD from the
+47:13 
+
+47:13 UI. See what all components have been
+47:15 
+
+47:15 created. Play around. Break something,
+47:18 
+
+47:18 fix something, and you will understand a
+47:20 
+
+47:20 lot of things. I promise. Okay. So make
+47:23 
+
+47:23 sure you complete the assignment task.
+47:24 
+
+47:24 And there is one more thing in this
+47:26 
+
+47:26 video. I have not used an external
+47:30 
+
+47:30 secret store like I've not used secret
+47:32 
+
+47:32 manager because this is a task for you
+47:35 
+
+47:35 to complete. So make sure you use secret
+47:37 
+
+47:37 manager to store every single secret
+47:39 
+
+47:39 that we are using in this demo. Okay?
+47:43 
+
+47:43 And make sure you implement it again
+47:45 
+
+47:45 because we are using secret manager. So
+47:47 
+
+47:47 you would need uh a driver for that.
+47:50 
+
+47:50 Like for EBS, we have used a driver
+47:52 
+
+47:52 plug-in, right? For secret manager, we
+47:53 
+
+47:53 also need that. So you can go through
+47:56 
+
+47:56 the documentation, you can do some
+47:58 
+
+47:58 research and you can implement it. I'm
+47:60 
+
+47:60 sure you can do that. So thank you so
+48:02 
+
+48:02 much and I wish you have a good day.
+48:05 
+
+48:05 Happy learning. Thank you so much. I
+48:06 
+
+48:06 will see you soon with the day 30th
+48:08 
+
+48:08 video. I it's been recorded already. Um
+48:11 
+
+48:11 so I'll publish that in a couple of
+48:13 
+
+48:13 days. I'm just going to give you a
+48:15 
+
+48:15 couple of days for like this is a long
+48:18 
+
+48:18 video, right? So, uh, I'll make sure
+48:19 
+
+48:19 that you complete everything. After
+48:21 
+
+48:21 that, I'll publish the new video. So,
+48:23 
+
+48:23 yeah, thank you so much and I wish you
+48:26 
+
+48:26 have a good day.

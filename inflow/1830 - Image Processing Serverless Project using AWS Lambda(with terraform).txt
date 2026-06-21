@@ -1,0 +1,2638 @@
+00:00 Hello and welcome back to the course. My
+00:02 
+
+00:02 name is Push. This is day 18 in 30 days
+00:04 
+
+00:04 of AWS Terraform. And in this video,
+00:07 
+
+00:07 we'll be looking into an end toend
+00:09 
+
+00:09 project for AWS Lambda using Terraform
+00:14 
+
+00:14 obviously because this is a Terraform
+00:15 
+
+00:15 focus series. And I'm going to show you
+00:18 
+
+00:18 what the project is, how it will work,
+00:21 
+
+00:21 how it will trigger the Lambda function.
+00:23 
+
+00:23 Make sure you understand the basics of
+00:24 
+
+00:24 Lambda before watching this video
+00:26 
+
+00:26 because this is what I have mentioned in
+00:28 
+
+00:28 the beginning as well. like you still
+00:30 
+
+00:30 need to have some sort of AWS
+00:31 
+
+00:31 fundamental knowledge to start with this
+00:34 
+
+00:34 series. Okay. Um I'm going to explain
+00:36 
+
+00:36 you a little bit about Lambda and how
+00:38 
+
+00:38 does it work and I'll show you
+00:40 
+
+00:40 everything. I'll show you the demo. I'll
+00:41 
+
+00:41 walk you through everything and make
+00:43 
+
+00:43 sure you complete the video and after
+00:46 
+
+00:46 that you try to implement this project
+00:48 
+
+00:48 on your own. You can obviously clone the
+00:50 
+
+00:50 GitHub repo but make sure you understand
+00:52 
+
+00:52 the Terraform code behind it. Make sure
+00:54 
+
+00:54 you understand the logic behind it. only
+00:56 
+
+00:56 then you'll be able to grasp the full
+00:59 
+
+00:59 potential out of this video and you
+01:01 
+
+01:01 should be able to complete this without
+01:03 
+
+01:03 any issues and obviously if you face any
+01:05 
+
+01:05 issues then you have the access to our
+01:08 
+
+01:08 discord community you can surely ask
+01:10 
+
+01:10 your question over here provide the
+01:12 
+
+01:12 doubts provide uh your errors that you
+01:15 
+
+01:15 are facing and someone will help you out
+01:17 
+
+01:17 okay so uh without wasting any time
+01:20 
+
+01:20 let's start with the video but if you
+01:22 
+
+01:22 have not subscribed the channel please
+01:24 
+
+01:24 do so please share the video and the
+01:26 
+
+01:26 series with your friends, colleagues and
+01:28 
+
+01:28 whoever you think could take the
+01:30 
+
+01:30 advantage of this learning opportunity.
+01:32 
+
+01:32 Okay. So, uh let me show you my screen
+01:35 
+
+01:35 and let me walk you through what we'll
+01:36 
+
+01:36 be doing in this video. So, this is the
+01:39 
+
+01:39 project that we'll be implementing.
+01:41 
+
+01:41 Before that, let me give you a brief
+01:42 
+
+01:42 introduction about how lambda works.
+01:45 
+
+01:45 Okay. So, let's just start with that
+01:51 
+
+01:51 and what exactly is the lambda, right?
+01:54 
+
+01:54 So lambda is what? It's a serverless
+01:58 
+
+01:58 function.
+01:60 
+
+01:60 Okay. What do we mean by serverless over
+02:02 
+
+02:02 here? So you see two different things.
+02:04 
+
+02:04 So there is serverless. So there are
+02:07 
+
+02:07 servers and there is less. So servers
+02:10 
+
+02:10 such as uh EC2 instance any computing
+02:13 
+
+02:13 system, any computing service that you
+02:15 
+
+02:15 have in cloud or on premises or data
+02:18 
+
+02:18 center or your own home lab that is
+02:20 
+
+02:20 actually server. But what do we mean by
+02:22 
+
+02:22 serverless here? It doesn't mean that
+02:24 
+
+02:24 there'll be no servers. Yes, there'll be
+02:26 
+
+02:26 servers, but you will not be managing
+02:30 
+
+02:30 it. Who will be managing it? AWS will
+02:33 
+
+02:33 manage it for you. Okay? So, you don't
+02:36 
+
+02:36 have to worry about managing the
+02:38 
+
+02:38 servers. That's what we mean by a
+02:40 
+
+02:40 serverless function. Okay? As simple as
+02:42 
+
+02:42 that. Now, how does it work? Whenever
+02:47 
+
+02:47 you create an application, okay, so what
+02:50 
+
+02:50 what do we do? Basically you let's say
+02:55 
+
+02:55 you are over here okay uh you are a user
+02:58 
+
+02:58 whenever you have to create the
+02:60 
+
+02:60 application first you provision the
+03:02 
+
+03:02 infrastructure or what we can say you
+03:04 
+
+03:04 can you provision the servers okay so
+03:08 
+
+03:08 this is what you do you provision the
+03:10 
+
+03:10 server and then on this server you
+03:14 
+
+03:14 actually deploy your apps okay so that's
+03:19 
+
+03:19 the basic basic simple flow that you
+03:22 
+
+03:22 take. Okay, you provision the server
+03:25 
+
+03:25 manually or using Terapform or any other
+03:27 
+
+03:27 CLI API calls whatever method you use.
+03:30 
+
+03:30 You first provision the server and then
+03:32 
+
+03:32 you deploy your app on the server but
+03:34 
+
+03:34 then you have to manage your servers on
+03:36 
+
+03:36 your own and this server important point
+03:39 
+
+03:39 to remember over here is this server has
+03:42 
+
+03:42 to be running all the time. Okay,
+03:45 
+
+03:45 because this server is hosting your
+03:47 
+
+03:47 application. This server is hosting your
+03:50 
+
+03:50 web app and it has to be running all the
+03:53 
+
+03:53 time so that users can access at any
+03:55 
+
+03:55 time if it's a production server, if it
+03:57 
+
+03:57 has live application, right? It has to
+03:59 
+
+03:59 be running all the time. That's the
+04:01 
+
+04:01 important point to remember. But in case
+04:04 
+
+04:04 of server function, the server doesn't
+04:07 
+
+04:07 run all the time. How does it work? So
+04:09 
+
+04:09 let's take the same example and over
+04:12 
+
+04:12 here you don't provision the server you
+04:14 
+
+04:14 actually create the function
+04:17 
+
+04:17 okay you write your application code and
+04:22 
+
+04:22 then you upload your code to the server
+04:26 
+
+04:26 okay upload your code to the function
+04:28 
+
+04:28 not server you upload your code to the
+04:31 
+
+04:31 function
+04:33 
+
+04:33 now this function shouldn't be running
+04:35 
+
+04:35 all the time now this function will be
+04:38 
+
+04:38 triggered tri based on an event. Okay,
+04:41 
+
+04:41 important thing to remember is this
+04:44 
+
+04:44 function will be triggered based on an
+04:46 
+
+04:46 event. I'll explain it to you what
+04:49 
+
+04:49 exactly is an event is over here. So let
+04:53 
+
+04:53 me just add the details over here.
+04:55 
+
+04:55 Trigger. So there is a trigger. This
+04:57 
+
+04:57 trigger could be a time based trigger.
+04:59 
+
+04:59 That means execute this function on
+05:02 
+
+05:02 every Monday morning 7:00 a.m. or
+05:04 
+
+05:04 whenever a file is uploaded to an S3
+05:06 
+
+05:06 bucket or whenever let's say the server
+05:12 
+
+05:12 load is 80%. Yeah, based on an event
+05:15 
+
+05:15 that could be a scheduled event that
+05:17 
+
+05:17 could be a realtime event. Okay, so this
+05:21 
+
+05:21 event triggers this function and
+05:23 
+
+05:23 function executes it completes and then
+05:26 
+
+05:26 it stops. Okay. So this function doesn't
+05:29 
+
+05:29 have to be running all the time. Now the
+05:32 
+
+05:32 life cycle of an event like the typical
+05:34 
+
+05:34 life cycle event triggers the function.
+05:39 
+
+05:39 Okay.
+05:40 
+
+05:40 Event triggers the function function
+05:43 
+
+05:43 starts.
+05:45 
+
+05:45 Function does the code execution
+05:49 
+
+05:49 and then it stops. That's the typical
+05:53 
+
+05:53 life cycle of a serverless function in
+05:56 
+
+05:56 AWS. This serverless function is called
+05:59 
+
+05:59 lambda.
+06:01 
+
+06:01 Okay. So let me just
+06:06 
+
+06:06 Okay. Yeah. So event triggers this could
+06:09 
+
+06:09 be a time based trigger or this could be
+06:11 
+
+06:11 uh a real-time event. It triggers the
+06:14 
+
+06:14 function. Function starts it does the
+06:16 
+
+06:16 code execution. So this is the code that
+06:18 
+
+06:18 you write for the lambda function. Okay,
+06:21 
+
+06:21 there are multiple supporting languages.
+06:23 
+
+06:23 Python is one of those uh language which
+06:26 
+
+06:26 supports this lambda function and then
+06:29 
+
+06:29 it executes it and then it stops.
+06:31 
+
+06:31 Typically you use this function when
+06:34 
+
+06:34 there is a code execution need for few
+06:37 
+
+06:37 seconds to few minutes not more than
+06:39 
+
+06:39 that. I believe maximum is 15 minutes
+06:41 
+
+06:41 that is recommended. If your code
+06:43 
+
+06:43 execution takes more than 15 minutes
+06:45 
+
+06:45 then you should not be using a
+06:47 
+
+06:47 serverless function such as lambda. So
+06:49 
+
+06:49 an example of this type of serverless
+06:52 
+
+06:52 function is this that we'll be
+06:55 
+
+06:55 implementing. So what this will do we'll
+06:57 
+
+06:57 create a lambda function. This lambda
+06:59 
+
+06:59 function will do the image processing.
+07:01 
+
+07:01 Okay. What it will do? So there are two
+07:03 
+
+07:03 buckets two S3 buckets. One is a source
+07:06 
+
+07:06 bucket. One is a destination bucket. So
+07:08 
+
+07:08 we are uploading a file to this source
+07:11 
+
+07:11 bucket and as soon as the file is
+07:13 
+
+07:13 uploaded to this S3 bucket, it will
+07:16 
+
+07:16 create an S3 event. Okay, an event will
+07:19 
+
+07:19 be triggered that will trigger this
+07:22 
+
+07:22 lambda function and that lambda function
+07:25 
+
+07:25 will convert this single file into five
+07:28 
+
+07:28 separate files in different format and
+07:31 
+
+07:31 compression algorithm. So we'll be
+07:33 
+
+07:33 creating a JPEG file with 85%
+07:37 
+
+07:37 compression or 85% quality. Then another
+07:40 
+
+07:40 JPEG with 60% quality. Then a webp then
+07:44 
+
+07:44 a PNG and a thumbnail with this size 200
+07:47 
+
+07:47 by 200. And this all be done
+07:49 
+
+07:49 automatically. You just have to upload
+07:51 
+
+07:51 the file to the source bucket. This
+07:54 
+
+07:54 upload can be done by API call, by AWS
+07:57 
+
+07:57 CLI commands, by uh console, doesn't
+08:00 
+
+08:00 matter. The event will be based on the
+08:03 
+
+08:03 file that is uploaded to the source
+08:05 
+
+08:05 bucket and this bucket will trigger the
+08:08 
+
+08:08 lambda function. Now this bucket will
+08:11 
+
+08:11 have permission to trigger the lambda
+08:13 
+
+08:13 function and this lambda function will
+08:15 
+
+08:15 have the permission to get the event
+08:18 
+
+08:18 from the bucket also it has the
+08:20 
+
+08:20 permission to get the files from the
+08:23 
+
+08:23 bucket. So it should have the get object
+08:26 
+
+08:26 list get object and get object version
+08:28 
+
+08:28 from the source bucket and it also has a
+08:32 
+
+08:32 permission to upload the processed file
+08:34 
+
+08:34 all the five files to the destination
+08:37 
+
+08:37 bucket. So it should have the put object
+08:39 
+
+08:39 and put object uh version permissions
+08:42 
+
+08:42 for the destination bucket and this
+08:44 
+
+08:44 lambda function will also have the
+08:46 
+
+08:46 permission to generate logs. So it will
+08:48 
+
+08:48 create a separate log stream in which
+08:50 
+
+08:50 you can see the logs of the lambda
+08:53 
+
+08:53 trigger uh what processing has been done
+08:55 
+
+08:55 if there are any errors if there are any
+08:57 
+
+08:57 info messages all those will be uploaded
+08:60 
+
+08:60 to a log stream in cloudatch. So we'll
+09:03 
+
+09:03 be implementing all of this in this
+09:05 
+
+09:05 video. Okay, try to understand this
+09:08 
+
+09:08 first before you move into the demo part
+09:10 
+
+09:10 because it's it's important to
+09:12 
+
+09:12 understand the architecture what we'll
+09:14 
+
+09:14 be doing before we actually do the
+09:16 
+
+09:16 hands-on and this all will be done using
+09:19 
+
+09:19 Terraform. Okay, because this is
+09:21 
+
+09:21 obviously a Terraform series. So it has
+09:23 
+
+09:23 to be done using Terapform but you can
+09:25 
+
+09:25 try doing it manually as well if you
+09:26 
+
+09:26 want and then try implementing the
+09:30 
+
+09:30 automation using Terapform. Okay. So, um
+09:33 
+
+09:33 yeah, let's go ahead in the day 18
+09:36 
+
+09:36 repository. Um the same GitHub
+09:39 
+
+09:39 repository that you've been using for a
+09:41 
+
+09:41 while and it will have uh you know the
+09:44 
+
+09:44 Terraform files over here. It'll have
+09:46 
+
+09:46 some scripts so that you don't have to
+09:48 
+
+09:48 build the projects manually. I'll walk
+09:51 
+
+09:51 you through that as well. And here is
+09:54 
+
+09:54 the like what I have already shown you.
+09:58 
+
+09:58 Yeah. So, same thing. These are all the
+09:60 
+
+10:00 components. So you upload the file to S3
+10:03 
+
+10:03 bucket for the original image. Then
+10:06 
+
+10:06 destination bucket for the process S3
+10:08 
+
+10:08 file. There is a lambda function for
+10:10 
+
+10:10 image processor with pillow library.
+10:13 
+
+10:13 Pillow is what pillow is a Python image
+10:16 
+
+10:16 library for image processing that we'll
+10:18 
+
+10:18 be using in the lambda function. Then
+10:20 
+
+10:20 there's a lambda layer for image
+10:22 
+
+10:22 manipulation. And then there is S3 event
+10:25 
+
+10:25 trigger that automatically invokes
+10:27 
+
+10:27 lambda on upload. Right? So whenever the
+10:30 
+
+10:30 file is uploaded to the S3 bucket, it
+10:33 
+
+10:33 invokes the lambda function or it
+10:35 
+
+10:35 triggers the lambda function because for
+10:37 
+
+10:37 that lambda function any file uploaded
+10:39 
+
+10:39 to S3 bucket is the trigger. Remember
+10:42 
+
+10:42 when we talked about trigger over here
+10:44 
+
+10:44 so event triggers it could be a
+10:46 
+
+10:46 timebased trigger or it could be an
+10:48 
+
+10:48 event a real-time event a real-time
+10:49 
+
+10:49 event such as a file uploaded to S3
+10:52 
+
+10:52 bucket. So that's a type of event. Okay.
+10:56 
+
+10:56 Now you can do the deployment using uh
+10:59 
+
+10:59 deploy.sh or you can manually execute
+11:02 
+
+11:02 the commands. I will show you that and
+11:04 
+
+11:04 then you can upload a file. This could
+11:06 
+
+11:06 be any JPEG file, JPG file, doesn't
+11:08 
+
+11:08 matter. And upload the file to the S3
+11:11 
+
+11:11 bucket and then you can see it. Um so
+11:14 
+
+11:14 let's start with reviewing the code and
+11:18 
+
+11:18 let's start with executing it. So I have
+11:20 
+
+11:20 cloned the repo. The first step is to
+11:22 
+
+11:22 clone the repo. Okay? because uh if you
+11:25 
+
+11:25 have cloned it earlier it might not have
+11:28 
+
+11:28 the latest code okay and uh yeah so day
+11:32 
+
+11:32 18 have the latest code day in folder
+11:34 
+
+11:34 the same repo I have cloned it now there
+11:37 
+
+11:37 are different files okay so let's go
+11:39 
+
+11:39 ahead and first review the code of
+11:43 
+
+11:43 terraform and then we'll be looking into
+11:45 
+
+11:45 the python code for the lambda function
+11:48 
+
+11:48 okay
+11:50 
+
+11:50 so uh it starts with uh there is the
+11:54 
+
+11:54 main.tf file. So we'll be creating a
+11:57 
+
+11:57 random resource for creating the suffix
+11:60 
+
+12:00 for the bucket name because bucket has
+12:02 
+
+12:02 to be unique, right? So we'll be
+12:03 
+
+12:03 creating a random ID for the suffix. So
+12:06 
+
+12:06 a random ID resource. Then we'll be
+12:08 
+
+12:08 creating some locals to set the
+12:10 
+
+12:10 variables for bucket prefix, upload
+12:13 
+
+12:13 bucket name, process bucket name, and
+12:15 
+
+12:15 lambda function name. Okay. So these all
+12:18 
+
+12:18 will be created on runtime based on your
+12:20 
+
+12:20 project name, bucket prefix and
+12:22 
+
+12:22 environment, right? And based on the
+12:24 
+
+12:24 random ID as the suffix. So we are
+12:26 
+
+12:26 adding the random ID suffix over here at
+12:28 
+
+12:28 the end of the bucket names. Okay. So um
+12:32 
+
+12:32 this is something that we have done
+12:33 
+
+12:33 multiple times to I'm not going to get
+12:35 
+
+12:35 into how do we do string interpolation
+12:37 
+
+12:37 and how do we create locals. We have
+12:38 
+
+12:38 done it countless times now. Okay. So
+12:41 
+
+12:41 then we start creating S3 bucket. So
+12:43 
+
+12:43 resource is of type A as S3 bucket and
+12:46 
+
+12:46 here is the bucket name which we are
+12:47 
+
+12:47 getting from the local. Okay. So if we
+12:49 
+
+12:49 check local upload bucket name which is
+12:52 
+
+12:52 this one uh which will have a bucket
+12:54 
+
+12:54 prefix okay bucket prefix is this one
+12:58 
+
+12:58 which is project name environment and
+13:00 
+
+13:00 then uh upload and the random ID. So
+13:03 
+
+13:03 that's the bucket name. Source bucket
+13:05 
+
+13:05 will be created with this code. Okay.
+13:08 
+
+13:08 Now the next is bucket versioning. We
+13:11 
+
+13:11 are enabling bucket versioning. Uh
+13:13 
+
+13:13 simple um versioning configuration
+13:16 
+
+13:16 status is enabled. Then we are also
+13:18 
+
+13:18 enabling serverside encryption. Okay.
+13:21 
+
+13:21 Why? Because we need to improve the
+13:23 
+
+13:23 security. Uh so we are just creating a
+13:25 
+
+13:25 rule that says SSC algorithm AES 256 and
+13:29 
+
+13:29 implement this. Okay. Again this is
+13:31 
+
+13:31 something that we have done earlier and
+13:32 
+
+13:32 we are making the bucket as private.
+13:35 
+
+13:35 Right? It's a private project. It
+13:37 
+
+13:37 doesn't have to be public. If it's a
+13:40 
+
+13:40 public project, if it's a production uh
+13:42 
+
+13:42 environment that you have, then maybe uh
+13:45 
+
+13:45 you allow the public access or maybe you
+13:48 
+
+13:48 do it via some other route by placing
+13:51 
+
+13:51 some other application in front of S3
+13:53 
+
+13:53 bucket uh using the origin access
+13:55 
+
+13:55 control or whatever. But for this
+13:57 
+
+13:57 project, I'm keeping this bucket as
+13:59 
+
+13:59 private. So block ACL, block public
+14:02 
+
+14:02 policy, restrict public bucket,
+14:04 
+
+14:04 everything has to be true. Okay. Then
+14:07 
+
+14:07 the other bucket for the processed
+14:09 
+
+14:09 images which is the destination bucket.
+14:11 
+
+14:11 Doing the same we are creating the
+14:12 
+
+14:12 bucket. We are enabling bucket
+14:14 
+
+14:14 versioning and then we are enabling
+14:16 
+
+14:16 serverside encryption and we are making
+14:18 
+
+14:18 the bucket as private. Same thing. Okay.
+14:21 
+
+14:21 Now we need to create IM roles and
+14:24 
+
+14:24 policies. So first IM role for lambda
+14:26 
+
+14:26 function. What is this AWS IM role? So
+14:29 
+
+14:29 this has a policy. Okay. And this is
+14:32 
+
+14:32 also I have shown you earlier how do we
+14:34 
+
+14:34 create a policy document. So there is an
+14:36 
+
+14:36 AWS policy generator. Uh you can just
+14:40 
+
+14:40 search AWS policy generator. Okay. Go
+14:44 
+
+14:44 inside this. Okay. And you can easily
+14:46 
+
+14:46 create a policy. So you can select
+14:48 
+
+14:48 different drop-downs type of policy
+14:50 
+
+14:50 effect and then generate policy. Once
+14:52 
+
+14:52 you generate the policy, it will
+14:54 
+
+14:54 generate a JSON document something like
+14:56 
+
+14:56 this. Okay. And then you encapsulate
+14:59 
+
+14:59 that inside the JSON encode function and
+15:02 
+
+15:02 assign the value to assume role policy.
+15:04 
+
+15:04 So what we are doing we are assuming the
+15:07 
+
+15:07 role of AWS lambda for this lambda
+15:10 
+
+15:10 function. Now the policy which will have
+15:12 
+
+15:12 the permission to do certain actions.
+15:14 
+
+15:14 Okay. What certain actions? So remember
+15:17 
+
+15:17 when we discussed this diagram over
+15:20 
+
+15:20 here. Okay. It says it should have
+15:22 
+
+15:22 certain permissions, certain permissions
+15:24 
+
+15:24 uh to get the event from S3 bucket to
+15:27 
+
+15:27 get objects to put objects to the
+15:30 
+
+15:30 destination bucket and also to put the
+15:32 
+
+15:32 logs uh to the cloud watch matrix.
+15:35 
+
+15:35 Right? So for that we are creating this
+15:38 
+
+15:38 policy. So first action is allow on
+15:41 
+
+15:41 create log group log stream and put log
+15:43 
+
+15:43 events. Okay, for the logging then
+15:46 
+
+15:46 resource is uh like all the resources
+15:48 
+
+15:48 within your AWS region. Then similarly
+15:51 
+
+15:51 we are allowing S3 object get object and
+15:55 
+
+15:55 get object version on the source bucket.
+15:57 
+
+15:57 So S3 dotupload bucket and the same
+16:01 
+
+16:01 thing we are doing allow on put object
+16:04 
+
+16:04 and put object ACL on the processed
+16:06 
+
+16:06 bucket. Okay. So if you see the resource
+16:08 
+
+16:08 is different over here we are providing
+16:11 
+
+16:11 the permission at the very granular
+16:13 
+
+16:13 level uh to improve the security. We are
+16:15 
+
+16:15 not providing anything like S3 admin or
+16:18 
+
+16:18 S3 full access. Right? We are providing
+16:20 
+
+16:20 only the permission that we need. That's
+16:23 
+
+16:23 the principle of least privilege access.
+16:25 
+
+16:25 Okay. So upload bucket will have the
+16:28 
+
+16:28 permission to get object and get object
+16:30 
+
+16:30 version. Destination bucket will have
+16:33 
+
+16:33 the permission to put object and put
+16:34 
+
+16:34 object ACL. Okay. Now here's the lambda
+16:37 
+
+16:37 layer what we are doing. So lambda layer
+16:41 
+
+16:41 uh will have different parameters. Okay.
+16:45 
+
+16:45 So file name which will have the layered
+16:48 
+
+16:48 zip file. So this is like a compiled
+16:51 
+
+16:51 version of the binary you can say. It
+16:53 
+
+16:53 will have the pillow layer and all other
+16:56 
+
+16:56 dependencies and then you can just
+16:59 
+
+16:59 provide the layer name over here the
+17:01 
+
+17:01 compatible runtimes and the description.
+17:05 
+
+17:05 Okay. And here is the actual lambda
+17:07 
+
+17:07 function that will do the work. So first
+17:10 
+
+17:10 there is a data source for function. We
+17:12 
+
+17:12 are getting the source file and output
+17:14 
+
+17:14 file from here and type is zip. This is
+17:17 
+
+17:17 a data right data source for the archive
+17:19 
+
+17:19 file. Archive file because we have a zip
+17:22 
+
+17:22 file that we'll be creating. That zip
+17:24 
+
+17:24 file details will be taking from the
+17:29 
+
+17:29 data source. Okay. So data source you
+17:30 
+
+17:30 know we use it for getting the details
+17:34 
+
+17:34 of an existing resource right. So that
+17:36 
+
+17:36 resource could be in cloud environment
+17:38 
+
+17:38 or that resource could be a local file.
+17:40 
+
+17:40 So in this case we are using an archive
+17:42 
+
+17:42 file which is a zip file. We are getting
+17:44 
+
+17:44 that details from here. Okay. Now lambda
+17:48 
+
+17:48 function this is the lambda function.
+17:51 
+
+17:51 What it will do? It will have a file
+17:52 
+
+17:52 name. Okay. The function name role. Role
+17:56 
+
+17:56 is what we have created already. A
+17:58 
+
+17:58 handler and we have created a lambda
+18:01 
+
+18:01 handler as well. No lambda handler we
+18:03 
+
+18:03 have not created but it will take from
+18:05 
+
+18:05 the lambda function itself. So lambda
+18:07 
+
+18:07 function is
+18:12 
+
+18:12 okay. So this is the handler name that
+18:14 
+
+18:14 we are providing.
+18:16 
+
+18:16 Then source code hash we have to provide
+18:19 
+
+18:19 a hash which is a sh 256
+18:23 
+
+18:23 output of the zip file runtime and time
+18:27 
+
+18:27 out memory size. So we specify all the
+18:29 
+
+18:29 parameters over here and these details
+18:31 
+
+18:31 you can completely verify from the
+18:33 
+
+18:33 documentation as well if there is any
+18:35 
+
+18:35 change in that and then we provide the
+18:38 
+
+18:38 layers detail. Uh we we are using a
+18:40 
+
+18:40 pillow layer that we have created
+18:42 
+
+18:42 earlier right over here. So the layer
+18:46 
+
+18:46 detail we are getting from there. There
+18:48 
+
+18:48 could be multiple layers that is that is
+18:50 
+
+18:50 why it is a list and then there is some
+18:53 
+
+18:53 environment variable. So we are setting
+18:56 
+
+18:56 the process bucket ID and the log level.
+18:59 
+
+18:59 Okay, because the lambda function that
+19:00 
+
+19:00 we have created expect a process bucket
+19:04 
+
+19:04 ID. Oops.
+19:06 
+
+19:06 Right. And the log level. Now this is
+19:09 
+
+19:09 the detailed for cloudatch log group. Uh
+19:11 
+
+19:11 we create a log group name this and
+19:14 
+
+19:14 retention in days is 7 days. So after 7
+19:17 
+
+19:17 days the logs will be purged. You can
+19:19 
+
+19:19 set it to a higher number if you want.
+19:21 
+
+19:21 S3 event trigger. Now lambda function
+19:24 
+
+19:24 will be invoked by S3 right but that
+19:28 
+
+19:28 bucket should have the permission that
+19:30 
+
+19:30 function should be executed based on the
+19:33 
+
+19:33 event uploaded to S3. So this is that
+19:36 
+
+19:36 event trigger. So we provide statement
+19:38 
+
+19:38 ID we provide action action is what
+19:41 
+
+19:41 lambda invoke function. Okay function
+19:44 
+
+19:44 name. So this function will be invoking
+19:46 
+
+19:46 and the principle is S3. Now this is the
+19:49 
+
+19:49 source ARN on which the trigger will be
+19:52 
+
+19:52 applied. So this is permission for S3
+19:55 
+
+19:55 event trigger. Now once that is done uh
+19:58 
+
+19:58 you will be uploading
+20:01 
+
+20:01 the file to the destination bucket and
+20:04 
+
+20:04 then it will trigger a notification.
+20:06 
+
+20:06 Okay, that object has been created which
+20:08 
+
+20:08 is dependent on this. Okay, so this is
+20:11 
+
+20:11 the entire code. Make sure you
+20:13 
+
+20:13 understand each and every resource that
+20:15 
+
+20:15 we have created. uh there is nothing new
+20:17 
+
+20:17 that I have done with respect to like
+20:20 
+
+20:20 with the code we have seen it earlier we
+20:23 
+
+20:23 have seen this multiple time but make
+20:25 
+
+20:25 sure why we are creating any resource
+20:27 
+
+20:27 and uh what we are creating okay that's
+20:30 
+
+20:30 important to understand yeah so now you
+20:33 
+
+20:33 go ahead in the script folder and this
+20:36 
+
+20:36 is where you should start your execution
+20:38 
+
+20:38 so you can directly click on deploy and
+20:41 
+
+20:41 it will take care of all the
+20:42 
+
+20:42 dependencies and everything right so
+20:44 
+
+20:44 what it is doing or you can manually run
+20:46 
+
+20:46 and all the steps what it is doing it is
+20:48 
+
+20:48 setting some variables okay and it is
+20:50 
+
+20:50 checking if AWS CLI is installed or not
+20:54 
+
+20:54 and then it is building the lambda layer
+20:56 
+
+20:56 okay so it is calling build layersh
+20:60 
+
+20:60 which is over here what it is doing now
+21:02 
+
+21:02 it is creating some temporary
+21:04 
+
+21:04 directories with this format so this
+21:07 
+
+21:07 pillow layer expect the package to be
+21:09 
+
+21:09 inside this exact folder so uh it has to
+21:13 
+
+21:13 be the same right so That is why uh it
+21:17 
+
+21:17 is there and then it is installing
+21:19 
+
+21:19 pillow pip install on this particular
+21:21 
+
+21:21 layer. Then it will zip the file inside
+21:24 
+
+21:24 that directory and it will move that zip
+21:28 
+
+21:28 directory to the terapform directory.
+21:30 
+
+21:30 Okay. So that is what it is doing for
+21:32 
+
+21:32 the build layer. Let's go back to
+21:34 
+
+21:34 deploy.sh
+21:36 
+
+21:36 and in that what we are doing we are
+21:38 
+
+21:38 just building the layer. Okay. So we
+21:40 
+
+21:40 have built the layer already and then
+21:43 
+
+21:43 using that we can just initialize the
+21:45 
+
+21:45 terraform. We can plan and apply the
+21:48 
+
+21:48 terraform plan. So all the TF commands
+21:51 
+
+21:51 uh in the same order TF in it plan apply
+21:54 
+
+21:54 and so on. Now you will get some output
+21:57 
+
+21:57 over here uh about the bucket details
+21:60 
+
+21:60 and all of those. Right? So over here is
+22:03 
+
+22:03 terapform.tfr.
+22:04 
+
+22:04 Let's just rename it to currently it's
+22:07 
+
+22:07 terapform.tfr.ample.
+22:09 
+
+22:09 Let's remove dot example and we can make
+22:11 
+
+22:11 any changes in this file over here.
+22:13 
+
+22:13 Right? So AWS region uh environment
+22:18 
+
+22:18 project name Lambda timeout lambda
+22:20 
+
+22:20 memory size allowed origin is star for
+22:23 
+
+22:23 now. But if you have a production
+22:25 
+
+22:25 application you can allow origins by
+22:28 
+
+22:28 providing your domain details over here.
+22:29 
+
+22:29 Right? Now there are some variables for
+22:32 
+
+22:32 AWS region environment product name the
+22:34 
+
+22:34 same thing uh like for which we have set
+22:36 
+
+22:36 the values. Right? And in output we have
+22:39 
+
+22:39 the bucket names, the lambda function
+22:41 
+
+22:41 names and the upload command example so
+22:44 
+
+22:44 that you can run the AWS CLI commands
+22:47 
+
+22:47 from there. Right? So let's go ahead and
+22:50 
+
+22:50 let's trigger this. Uh
+22:54 
+
+22:54 okay, we have not uh discussed the
+22:56 
+
+22:56 lambda code over here. Uh but you can go
+22:60 
+
+22:60 through it if you want if you have uh
+23:02 
+
+23:02 knowledge on lambda or you can take help
+23:04 
+
+23:04 of any LLM to understand this code. Uh
+23:08 
+
+23:08 like you can just open GitHub copilot in
+23:12 
+
+23:12 the agent mode and ask you know explain
+23:14 
+
+23:14 this lambda function step by step and it
+23:16 
+
+23:16 will explain it to you what we are
+23:18 
+
+23:18 doing. Okay. So, for now, let me just
+23:21 
+
+23:21 remove it. And
+23:26 
+
+23:26 okay, let's just close this.
+23:30 
+
+23:30 And over here, let's go inside scripts
+23:35 
+
+23:35 and run deploy.sh.
+23:37 
+
+23:37 This deploy.sh will do everything for
+23:39 
+
+23:39 you. It will install the build layer. It
+23:42 
+
+23:42 will run the terraform commands. So here
+23:45 
+
+23:45 is all the like it it has installed the
+23:47 
+
+23:47 pillow layer. It has created the zip and
+23:50 
+
+23:50 it has uploaded the zip in the temporary
+23:52 
+
+23:52 directory. And then it will run
+23:55 
+
+23:55 terraform in it. It will run terraform
+23:57 
+
+23:57 plan and finally terapform apply. So
+23:60 
+
+23:60 this is the plan. Okay. And plan has 16
+24:04 
+
+24:04 resources to be created.
+24:06 
+
+24:06 And there are the output variables. Now
+24:08 
+
+24:08 it is applying the changes.
+24:10 
+
+24:10 Okay. So let me just pause the recording
+24:13 
+
+24:13 while it is doing its work. Okay, it has
+24:16 
+
+24:16 completed. Now it says uh deployment
+24:18 
+
+24:18 completed successfully. This is the
+24:20 
+
+24:20 upload bucket and this is the processed
+24:22 
+
+24:22 file bucket and this is the lambda
+24:25 
+
+24:25 function. This is the region. If you
+24:27 
+
+24:27 want you can upload an image using this
+24:31 
+
+24:31 AWS CLI command. So you can do it
+24:33 
+
+24:33 manually as well. So let's go ahead on
+24:35 
+
+24:35 our AWS console
+24:38 
+
+24:38 and let's see if it has been completed
+24:41 
+
+24:41 or not.
+24:47 
+
+24:47 Let's go to S3 bucket.
+24:53 
+
+24:53 Okay. And here you see there is uh image
+24:57 
+
+24:57 processor dev processed
+25:00 
+
+25:00 and image processor dev upload. Okay. So
+25:04 
+
+25:04 let's go inside dev upload. You don't
+25:06 
+
+25:06 see anything over here in the dev upload
+25:08 
+
+25:08 and in the dev processed as well. This
+25:10 
+
+25:10 is empty. Okay. So let me just duplicate
+25:13 
+
+25:13 this tab.
+25:16 
+
+25:16 And the processor is the oh sorry this
+25:19 
+
+25:19 one is the process bucket which is the
+25:21 
+
+25:21 destination. This is the source bucket.
+25:23 
+
+25:23 Let's open source bucket over here which
+25:25 
+
+25:25 is dev upload. Okay. So let's upload a
+25:28 
+
+25:28 file to dev upload and then we'll see if
+25:30 
+
+25:30 it triggers the lambda function or not.
+25:33 
+
+25:33 So add files
+25:36 
+
+25:36 and let's upload any file over here.
+25:38 
+
+25:38 Let's say this one. Okay. And hit
+25:41 
+
+25:41 upload. Now as soon as you upload, let's
+25:43 
+
+25:43 open a new tab. Duplicate this and open
+25:47 
+
+25:47 lambda. And there will be a cloudatch
+25:50 
+
+25:50 group created.
+25:53 
+
+25:53 There is this lambda function that we
+25:56 
+
+25:56 have over here. And if you click on that
+25:59 
+
+25:59 function
+26:01 
+
+26:01 uh you will see all the details about
+26:03 
+
+26:03 this function including a code like this
+26:06 
+
+26:06 the entire code of the lambda function.
+26:09 
+
+26:09 And
+26:11 
+
+26:11 uh here is the layer as well the pillow
+26:14 
+
+26:14 layer that we have created.
+26:16 
+
+26:16 And if you can test it if you want to
+26:19 
+
+26:19 test it manually you can uh simulate the
+26:22 
+
+26:22 event from here manually. Right.
+26:26 
+
+26:26 And then
+26:30 
+
+26:30 here is the cloudatch metrics dashboard
+26:33 
+
+26:33 that you have. Here are the cloudatch
+26:36 
+
+26:36 logs. It says recent invocation are
+26:38 
+
+26:38 none. It will take some time to trigger
+26:40 
+
+26:40 the function because for the first time
+26:43 
+
+26:43 uh lambda takes the cold start. So it
+26:45 
+
+26:45 will take some time but once that is
+26:47 
+
+26:47 done you will see the option over here.
+26:49 
+
+26:49 And so this is the dev upload. And let's
+26:53 
+
+26:53 go over here and see if it anything is
+26:55 
+
+26:55 here.
+26:58 
+
+26:58 So the file has not been created yet. So
+27:00 
+
+27:00 let's wait for some time.
+27:03 
+
+27:03 And let's go over here as well. Set
+27:06 
+
+27:06 refresh.
+27:16 
+
+27:16 Okay. You see some logs recent cloudatch
+27:19 
+
+27:19 execution.
+27:21 
+
+27:21 And if you expand this
+27:24 
+
+27:24 it will say it will provide you the
+27:26 
+
+27:26 details the metadata. Okay. And because
+27:29 
+
+27:29 this is the info message that we have
+27:31 
+
+27:31 logged only. So it will show you the
+27:34 
+
+27:34 info only and it will show you the
+27:37 
+
+27:37 duration in seconds like the function
+27:40 
+
+27:40 that it took to trigger the memory that
+27:42 
+
+27:42 it used and the build duration because
+27:46 
+
+27:46 the important thing again to know about
+27:48 
+
+27:48 lambda is you will be charged based on
+27:50 
+
+27:50 the time for which your code has
+27:52 
+
+27:52 executed right because that's how lambda
+27:55 
+
+27:55 works. Now let's go back and see
+28:01 
+
+28:01 the process bucket.
+28:04 
+
+28:04 Okay, the objects are still not here.
+28:07 
+
+28:07 Let's wait for some time.
+28:16 
+
+28:16 Okay, let's see if there are any more
+28:17 
+
+28:17 logs generated over here. Let me hit
+28:20 
+
+28:20 refresh.
+28:31 
+
+28:31 still have two log entries.
+28:35 
+
+28:35 And
+28:45 
+
+28:45 in the configuration uh this is the
+28:48 
+
+28:48 trigger which is anything uploaded on
+28:51 
+
+28:51 this dev upload. Okay, the event type is
+28:54 
+
+28:54 S3 object created and destination. I
+28:58 
+
+28:58 don't see the destination over here. So
+28:60 
+
+28:60 there might be some issues with the
+29:02 
+
+29:02 destination bucket.
+29:05 
+
+29:05 Uh right.
+29:07 
+
+29:07 So
+29:09 
+
+29:09 let's let's go ahead and check there is
+29:14 
+
+29:14 this environment variable which says
+29:16 
+
+29:16 process bucket is this.
+29:25 
+
+29:25 Okay let's go ahead and check uh why it
+29:29 
+
+29:29 is not taking it.
+29:32 
+
+29:32 You can uh check the logs as well. Is
+29:35 
+
+29:35 there any command for logs over here? Um
+29:40 
+
+29:40 I don't think so.
+29:44 
+
+29:44 Maybe the file format that I have used
+29:47 
+
+29:47 is not. Let's let's do one more thing.
+29:49 
+
+29:49 Uh let's upload another file because the
+29:52 
+
+29:52 file format has some spaces and special
+29:54 
+
+29:54 characters. So maybe there is some error
+29:56 
+
+29:56 handling that I haven't done for that.
+29:59 
+
+29:59 So let's upload one more file.
+30:03 
+
+30:03 Add files.
+30:06 
+
+30:06 Let's uh rename this file. Okay.
+30:18 
+
+30:18 Okay. It's already there. Let's see.
+30:22 
+
+30:22 Date to new. Okay.
+30:27 
+
+30:27 And upload. Okay. So, I'm just going to
+30:30 
+
+30:30 pause the recording and let it do the
+30:32 
+
+30:32 processing.
+30:34 
+
+30:34 So let's check the log. So I'm going to
+30:36 
+
+30:36 hit refresh over here and see if uh it
+30:39 
+
+30:39 triggers another function or not. So as
+30:43 
+
+30:43 you can see over here it shows some
+30:44 
+
+30:44 data. Now uh this these are the function
+30:47 
+
+30:47 executions that have been done and here
+30:50 
+
+30:50 are some latest logs over here. This is
+30:53 
+
+30:53 the log in which we have just provided
+30:56 
+
+30:56 the info and it will just provide you
+30:58 
+
+30:58 the metadata. Right? The important thing
+31:00 
+
+31:00 to get from here is log stream and log
+31:04 
+
+31:04 group. So over here will be the actual
+31:07 
+
+31:07 details of the logs. So let's duplicate
+31:11 
+
+31:11 this tab and let's open the cloudatch
+31:14 
+
+31:14 log stream to see the actual logs if we
+31:16 
+
+31:16 have any error or not. Okay. So let's go
+31:19 
+
+31:19 back to cloudatch
+31:26 
+
+31:26 and inside that go to logs
+31:30 
+
+31:30 log group
+31:32 
+
+31:32 and we have this uh image processor log
+31:35 
+
+31:35 group over here. Now inside log stream
+31:40 
+
+31:40 this is the log stream that we have and
+31:42 
+
+31:42 here are the logs. Okay, it says uh
+31:46 
+
+31:46 let's see the execution start.
+31:49 
+
+31:49 And here are some errors. It says
+31:53 
+
+31:53 unhandle exception likely an issue in
+31:56 
+
+31:56 the function code D. There could be
+31:58 
+
+31:58 issues with the runtime. It says and
+32:01 
+
+32:01 over here it says unable to import the
+32:03 
+
+32:03 module lambda function cannot import
+32:06 
+
+32:06 name imaging. So there is some issue
+32:09 
+
+32:09 with the lambda code for which we are
+32:12 
+
+32:12 getting this error. So it should be
+32:15 
+
+32:15 inside
+32:17 
+
+32:17 lambda function.
+32:21 
+
+32:21 Okay. Uh what we are importing is let's
+32:25 
+
+32:25 search over here. Oops.
+32:34 
+
+32:34 Imaging.
+32:37 
+
+32:37 Oh, there is no imaging. It might be
+32:39 
+
+32:39 coming from the uh pillow library that I
+32:42 
+
+32:42 have imported. Uh unable to import
+32:44 
+
+32:44 module lambda function.
+32:47 
+
+32:47 Okay. And it is coming from Yeah, it is
+32:49 
+
+32:49 coming from the pillow layer that I have
+32:52 
+
+32:52 installed. Right. So this is fine.
+32:56 
+
+32:56 Import pillow could not be resolved uh
+32:59 
+
+32:59 from pillow import image and then using
+33:02 
+
+33:02 that it has built a layer but it has
+33:04 
+
+33:04 cleaned up the layer already. So I
+33:06 
+
+33:06 cannot check that. Uh but here is the
+33:08 
+
+33:08 zip file for it and pillow layer.zip.
+33:12 
+
+33:12 So let me spend some more time on it and
+33:15 
+
+33:15 let me get back to this video. So I'm
+33:18 
+
+33:18 just going to pause the recording again.
+33:19 
+
+33:19 All right. So after spending a few
+33:21 
+
+33:21 hours, I was able to fix out the issue.
+33:24 
+
+33:24 So what the issue was uh it was the
+33:26 
+
+33:26 classic the classic issue that I have
+33:28 
+
+33:28 been teaching you guys for a long time.
+33:31 
+
+33:31 It works on my machine. Remember? So
+33:33 
+
+33:33 whenever I say this phrase it works on
+33:35 
+
+33:35 my machine it means that there is some
+33:39 
+
+33:39 dependency issue something that is
+33:40 
+
+33:40 working on the local machine but it
+33:42 
+
+33:42 breaks as soon as I move it to cloud
+33:44 
+
+33:44 environment or some other environment
+33:46 
+
+33:46 the same issue. So when I compiled the
+33:50 
+
+33:50 uh the code over here, I compiled it
+33:52 
+
+33:52 locally on my MacBook, right? But when
+33:56 
+
+33:56 lambda process it, when lambda uploads
+33:59 
+
+33:59 it, it uploads that dependency and
+34:02 
+
+34:02 everything on an AWS Linux machine. So
+34:05 
+
+34:05 there is the dependency issue. The
+34:07 
+
+34:07 package does not work over there. So
+34:10 
+
+34:10 that's why we needed the same solution
+34:12 
+
+34:12 for which we always say it works on my
+34:14 
+
+34:14 machine and the solution is docker. So
+34:16 
+
+34:16 what I did over here, so it says build
+34:19 
+
+34:19 the layer using docker. Now instead of
+34:21 
+
+34:21 running all these commands like pip
+34:23 
+
+34:23 install, creating the zip and manually
+34:26 
+
+34:26 copying the file to the directory, what
+34:29 
+
+34:29 we are doing now, we are doing
+34:31 
+
+34:31 everything in a docker container. So
+34:32 
+
+34:32 I've updated this uh build layer sh and
+34:36 
+
+34:36 everything is now running inside a
+34:38 
+
+34:38 docker container as you can see docker
+34:40 
+
+34:40 run and you know installing pillow and
+34:44 
+
+34:44 then updating the uh updating the
+34:47 
+
+34:47 repository doing the zip and uploading
+34:51 
+
+34:51 the zip to output directory everything
+34:53 
+
+34:53 will be done on the docker container so
+34:56 
+
+34:56 that we don't run into any compatibility
+34:58 
+
+34:58 issues right now um I have destroyed the
+35:02 
+
+35:02 in front and I have created it again. So
+35:04 
+
+35:04 there is a destroy.sh you run that and
+35:07 
+
+35:07 it will destroy everything or you can
+35:08 
+
+35:08 run terraform destroy commands manually.
+35:11 
+
+35:11 Basically this is doing the same. But
+35:13 
+
+35:13 make sure your buckets are empty before
+35:15 
+
+35:15 you try to uh do that right because if
+35:18 
+
+35:18 you know like uh buckets cannot be
+35:20 
+
+35:20 deleted if it has some files. So you
+35:22 
+
+35:22 need to empty the bucket and those
+35:25 
+
+35:25 objects were not created by Terraform.
+35:27 
+
+35:27 It was created manually. So manually
+35:29 
+
+35:29 clean it up and then run the destroy and
+35:31 
+
+35:31 then finally run this again. So after
+35:34 
+
+35:34 this um I see the bucket is uh there
+35:37 
+
+35:37 like there is a dev upload and dev
+35:39 
+
+35:39 process bucket. These are the new
+35:41 
+
+35:41 buckets that have been created. So
+35:42 
+
+35:42 inside dev upload I'll go and upload a
+35:45 
+
+35:45 file.
+35:47 
+
+35:47 Okay. And click on add files and let's
+35:50 
+
+35:50 use the same image. Click upload.
+35:54 
+
+35:54 In the other bucket which is dev
+35:57 
+
+35:57 processed there is no object right but
+35:59 
+
+35:59 if you wait for a few seconds that's it
+36:03 
+
+36:03 was so fast the application is not
+36:06 
+
+36:06 running but it's an event trigger so as
+36:08 
+
+36:08 soon as the lambda detects that there is
+36:11 
+
+36:11 event over here um it triggered the
+36:13 
+
+36:13 lambda function so there is an s3
+36:15 
+
+36:15 trigger triggered the lambda function
+36:17 
+
+36:17 and it created five files as per the
+36:19 
+
+36:19 logic written in the python code so
+36:22 
+
+36:22 there is this uh compressed JPEG then a
+36:27 
+
+36:27 lowquality JPEG then there is a PNG a
+36:30 
+
+36:30 thumbnail with 20x 20 so you can see the
+36:32 
+
+36:32 file size because it's it's a small size
+36:35 
+
+36:35 and then there is webp extension so all
+36:37 
+
+36:37 five files are created and this is what
+36:41 
+
+36:41 we uh were trying to do so you can check
+36:44 
+
+36:44 the logs inside the log group you can go
+36:46 
+
+36:46 inside the log group and here is the log
+36:50 
+
+36:50 group uh sorry yeah over here you can
+36:52 
+
+36:52 see the latest log stream which is 32
+36:55 
+
+36:55 this one. Okay, over here now you won't
+36:58 
+
+36:58 see any error. It says
+37:00 
+
+37:00 um started runtime Python version this
+37:04 
+
+37:04 AWS Lambda found credentials and then
+37:07 
+
+37:07 receive event. So this is the trigger
+37:09 
+
+37:09 right? It says receive event event was
+37:12 
+
+37:12 object created on the S3 bucket on this
+37:16 
+
+37:16 bucket which is the source bucket and
+37:19 
+
+37:19 this is the key that means this is the
+37:21 
+
+37:21 object name. Okay. And as soon as find
+37:24 
+
+37:24 it it it triggers the lambda function.
+37:26 
+
+37:26 It says processing image and it created
+37:29 
+
+37:29 multiple variants and it uploaded those
+37:32 
+
+37:32 variants to the destination bucket and
+37:34 
+
+37:34 then successfully processed and here it
+37:38 
+
+37:38 ends the lambda function which the end
+37:41 
+
+37:41 request ID and here are all the details
+37:44 
+
+37:44 like it says maximum memory used was 116
+37:47 
+
+37:47 MB. This is the memory used by the
+37:49 
+
+37:49 lambda function. This is build duration.
+37:52 
+
+37:52 That means you will be charged for 3
+37:54 
+
+37:54 seconds and the duration was 2.5 seconds
+37:57 
+
+37:57 something. Okay. So yeah u that's it.
+38:01 
+
+38:01 Now if you want to clean up make sure
+38:03 
+
+38:03 you empty the buckets. So if you go to
+38:06 
+
+38:06 the bucket the both the buckets dev
+38:09 
+
+38:09 processed empty. Why we need to do
+38:12 
+
+38:12 empty? Because uh it has multiple
+38:14 
+
+38:14 versions right? So you won't be able to
+38:16 
+
+38:16 delete it manually.
+38:18 
+
+38:18 And then empty. This is dev processed.
+38:21 
+
+38:21 And then you can check the dev upload
+38:24 
+
+38:24 bucket which is this one. Buckets dev
+38:28 
+
+38:28 upload empty permanently delete. Okay.
+38:32 
+
+38:32 And now you can go over here and run
+38:35 
+
+38:35 [clears throat] destroy.sh.
+38:37 
+
+38:37 Now this destroysh
+38:39 
+
+38:39 if you can check it has nothing but it
+38:43 
+
+38:43 will check if terraform is installed.
+38:45 
+
+38:45 Some basic pre-checks. it will get the
+38:47 
+
+38:47 bucket names for terraform states. It's
+38:50 
+
+38:50 reliable option and then it actually
+38:53 
+
+38:53 should empty the version S3 bucket but
+38:56 
+
+38:56 somehow it it's not doing that. Maybe
+38:58 
+
+38:58 some issues with the logic and then it
+39:01 
+
+39:01 deletes all the object markers and then
+39:04 
+
+39:04 it empty the bucket and then it finally
+39:06 
+
+39:06 run terapform destroy. So now that
+39:09 
+
+39:09 destroy has been completed 16 resources
+39:12 
+
+39:12 have been destroyed. All right. So
+39:14 
+
+39:14 that's it from this video. I hope you
+39:16 
+
+39:16 enjoyed it. I hope you found it
+39:17 
+
+39:17 valuable. Keep supporting, keep learning
+39:19 
+
+39:19 and keep doing practice. Make sure you
+39:21 
+
+39:21 complete the task given in the day 18
+39:23 
+
+39:23 folder. Uh there'll be task.md. Complete
+39:26 
+
+39:26 that and do the submission. I will see
+39:27 
+
+39:27 you tomorrow with the next video. Thank
+39:29 
+
+39:29 you so much for watching. Happy
+39:30 
+
+39:30 learning.
