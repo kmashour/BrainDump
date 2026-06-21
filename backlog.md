@@ -3,6 +3,26 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-22] - Ingestion: GitHub Actions Study Guide
+
+### Added
+- **Reference Notes:** Created the central index note [[Reference Notes/9-Index - GitHub Actions.md|9-Index - GitHub Actions.md]] and 3 detailed reference modules:
+  - [[Reference Notes/9-1_github_actions_architecture_and_workflows.md|9-1_github_actions_architecture_and_workflows.md]]
+  - [[Reference Notes/9-2_github_actions_advanced_execution.md|9-2_github_actions_advanced_execution.md]]
+  - [[Reference Notes/9-3_github_actions_administration_and_security.md|9-3_github_actions_administration_and_security.md]]
+- **Projects:** Created [[Projects/github-actions/Project - GitHub Actions CI-CD Pipelines.md|Project - GitHub Actions CI-CD Pipelines.md]] playbook.
+- **Main Notes:** Created [[Main Notes/github-actions.md|github-actions.md]] landing note, [[Main Notes/github-actions - Security and Secrets.md|github-actions - Security and Secrets.md]] deeper note, and [[Main Notes/github-actions - Runner Environments.md|github-actions - Runner Environments.md]] deeper note.
+- **Digital Garden:** Created [[Digital Garden/Pattern - Secure OIDC Cloud Authentication in CI-CD.md|Pattern - Secure OIDC Cloud Authentication in CI-CD.md]] pattern note.
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[Reference Notes/--Index--.md|--Index--.md]] and [[Main Notes/0-Index.md|0-Index.md]] to catalog the new Linux & OS and GitHub Actions study tracks.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `github-actions-study-guide.md`
+
+---
+
 ## [2026-06-22] - Ingestion: Linux & Systems Administration Guides
 
 ### Added

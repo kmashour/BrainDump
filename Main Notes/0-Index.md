@@ -62,6 +62,18 @@ Select a domain to view its active landing concepts, deeper dive notes, and arch
 *General scripting and automation syntax, virtual environments isolation, and Flask WSGI microservers.*
 - **Go to MOC:** [[Reference Notes/7-Index - Python|Python Programming MOC]]
 
+---
+
+### 🐧 [Linux and OS MOC](../Reference%20Notes/8-Index%20-%20Linux%20and%20OS.md)
+*Kernel configurations, filesystem partitions, Keepalived failovers, systemd services, and system diagnostics.*
+- **Go to MOC:** [[Reference Notes/8-Index - Linux and OS|Linux and OS MOC]]
+
+---
+
+### 🐙 [GitHub Actions MOC](../Reference%20Notes/9-Index%20-%20GitHub%20Actions.md)
+*Workflow definitions, job parallel strategies, runner configurations, dynamic token secrets, and OpenID Connect cloud trust.*
+- **Go to MOC:** [[Reference Notes/9-Index - GitHub Actions|GitHub Actions MOC]]
+
 ### 📦 Miscellaneous Projects & Tooling (MISC)
 *Self-hosted version control, automated runner deployment contexts, developer introspection clients, and system command-line utilities.*
 - **Version Control & GitOps:** [[gitea|Gitea Git Server Setup]]

@@ -61,6 +61,18 @@ Select a domain to view its reference modules, learning tracks, and hands-on ver
 *Python programming language syntax, objects and statements, Pyenv version manager, virtual environments, exception handling, and Flask APIs.*
 - **Go to MOC:** [[7-Index - Python|Python Reference MOC]]
 
+---
+
+### 🐧 [Linux and OS Reference MOC](8-Index%20-%20Linux%20and%20OS.md)
+*Kernel internals, virtual file system, process scheduling, user space initialization, Keepalived HA clustering, systemd unit dependencies, and diagnostics.*
+- **Go to MOC:** [[8-Index - Linux and OS|Linux and OS Reference MOC]]
+
+---
+
+### 🐙 [GitHub Actions Reference MOC](9-Index%20-%20GitHub%20Actions.md)
+*Event-driven workflow execution, parallel matrices, upload/download artifacts, package caching, dynamic GITHUB_TOKEN scopes, and passwordless OIDC trust.*
+- **Go to MOC:** [[9-Index - GitHub Actions|GitHub Actions Reference MOC]]
+
 ### 📦 Miscellaneous Projects (MISC)
 *Individual projects and chapters that combine multiple administrative domains (e.g. self-hosted git servers, Linux host storage configuration, and custom webserver reverse proxies) but do not belong to a standard study track.*
 - 🐙 **[Gitea GitOps Workflows on RHEL 8](gitea_installation_and_workflows.md)**: RHEL 8 security hardening, LVM logical volume zoning, Apache reverse proxy, and act_runner CI/CD automation.
