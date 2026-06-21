@@ -14,6 +14,16 @@ Execute this skill when:
 
 ---
 
+## 0.1 Inflow Scraping Protocol (Mandatory)
+Whenever the `@ingest` trigger is run or files containing documentation URLs are added:
+1. **Scrape Before Refinement:** You MUST execute the automatic document crawler and scraper:
+   `python3 "Reference Notes/scripts/scrape_docs.py" inflow/<filename>.md`
+   This script fetches the main URL and its relevant sub-links, converts HTML to structured markdown, and appends them under `## 🌐 Scraped Reference Content` at the end of the inflow file.
+2. **Include Citations:** The ResearchAgent MUST process this scraped section to construct reference notes, project notes, and main notes, ensuring all links are fully cited.
+3. **Audit Compliance:** The `review_vault.py` verification script will raise a hard failure if any documentation URLs present in the inflow notes are missing from the vault notes' references.
+
+---
+
 ## 1. Directory Structure & File Organization
 
 The knowledge base is stored in `/home/karim/Desktop/BrainDumo/`.

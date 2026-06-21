@@ -72,6 +72,39 @@ def parse_frontmatter(file_path):
                 
     return frontmatter, body
 
+def normalize_url(url):
+    url = url.lower()
+    url = re.sub(r'^https?://', '', url)
+    url = re.sub(r'^www\.', '', url)
+    url = url.split('#')[0]
+    url = url.split('?')[0]
+    url = url.rstrip('/')
+    return url
+
+def is_doc_url(url):
+    url_lower = url.lower()
+    # Exclude images, binary files, social media, shorteners, playgrounds, code repositories
+    exclude_patterns = [
+        "twitter.com", "facebook.com", "instagram.com", "youtube.com", "youtu.be",
+        "linkedin.com", "img-c.udemycdn.com", "bit.ly", "kode.wiki", "placeholder.example.com",
+        "image-checker-webhook", ".png", ".jpg", ".jpeg", ".gif", ".svg", 
+        "github.com/kubernetes/website/commit", "github.com/aws/secrets-store-csi-driver-provider-aws",
+        "github.com/kubernetes/autoscaler", "github.com/kubernetes-sigs", "github.com/aws/secrets-store-csi-driver",
+        "killercoda.com", "kodekloud.com", "labs.iximiuz.com", "minikube.sigs.k8s.io", "vaultproject.io",
+        "kubernetes.io/docs/reference/generated", "kubernetes.io/docs/reference/kubernetes-api"
+    ]
+    for pattern in exclude_patterns:
+        if pattern in url_lower:
+            return False
+            
+    # Include doc sites
+    doc_domains = ["kubernetes.io/docs", "secrets-store-csi-driver.sigs.k8s.io"]
+    for domain in doc_domains:
+        if domain in url_lower:
+            return True
+            
+    return False
+
 def check_inflow_coverage():
     """Checks and builds a Decision Matrix for files in inflow/ recursively."""
     log_info("Auditing inflow files coverage...")
@@ -112,6 +145,13 @@ def check_inflow_coverage():
                 with open(os.path.join(root, f), "r", encoding="utf-8") as mn:
                     main_notes_content += mn.read() + "\n"
 
+    # Extract and normalize all URLs from notes and backlog
+    all_notes_urls = set()
+    all_notes_text = ref_notes_content + "\n" + main_notes_content + "\n" + backlog_content
+    found_notes_urls = re.findall(r'https?://[^\s\)\>\]]+', all_notes_text)
+    for u in found_notes_urls:
+        all_notes_urls.add(normalize_url(u.rstrip('.,;:!?')))
+
     matrix = []
     covered_count = 0
     ignored_count = 0
@@ -127,6 +167,26 @@ def check_inflow_coverage():
         status = ""
         justification = ""
         
+        # Scan file content for HTTP/HTTPS URLs
+        urls = []
+        if os.path.exists(path) and size > 0:
+            try:
+                with open(path, "r", encoding="utf-8") as inf:
+                    text = inf.read()
+                    found_urls = re.findall(r'https?://[^\s\)\>\]]+', text)
+                    # Clean trailing punctuation from URLs and deduplicate
+                    urls = sorted(list(set([u.rstrip('.,;:!?') for u in found_urls])))
+            except Exception:
+                pass
+                
+        # Check if all doc URLs in this file are represented in the codebase
+        unresolved_urls = []
+        for url in urls:
+            if is_doc_url(url):
+                norm_url = normalize_url(url)
+                if norm_url not in all_notes_urls:
+                    unresolved_urls.append(url)
+
         # 1. Ignored / Useless
         if size == 0:
             status = "Ignored/Useless"
@@ -150,9 +210,14 @@ def check_inflow_coverage():
               base_name in main_notes_content or 
               file_name in backlog_content or
               file_path in backlog_content):
-            status = "Covered"
-            justification = "Successfully ingested into Reference/Main Notes."
-            covered_count += 1
+            if unresolved_urls:
+                status = "Missing"
+                justification = f"Contains unresolved/unscraped URLs: {', '.join(unresolved_urls)}"
+                missing_count += 1
+            else:
+                status = "Covered"
+                justification = "Successfully ingested into Reference/Main Notes."
+                covered_count += 1
         # 3. Missing
         else:
             status = "Missing"
@@ -341,7 +406,7 @@ def main():
         
     print("=" * 60)
     
-    if broken_md_links > 0:
+    if broken_md_links > 0 or missing_inflow > 0 or fm_failures > 0:
         sys.exit(1)
     else:
         sys.exit(0)

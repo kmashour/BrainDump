@@ -74,3 +74,8 @@ FROM "Main Notes"
 WHERE class = "deeper-dive" AND icontains(string(parent_concept), this.file.name)
 SORT file.name ASC
 ```
+
+---
+
+## 🌐 Official Reference
+*   [Secrets Store CSI Driver Concepts](https://secrets-store-csi-driver.sigs.k8s.io/concepts.html)

@@ -5,8 +5,10 @@ This skill details how to manage the end-to-end execution of the multi-agent ing
 ---
 
 ## 📋 Execution Steps
-1. **Analyze Input File:**
-   - Scan the target file in `inflow/`.
+1. **Analyze & Scrape Input File:**
+   - Scan the target file in `inflow/` for any external documentation URLs.
+   - Automatically execute the scraper: `python3 "Reference Notes/scripts/scrape_docs.py" inflow/<filename>.md` to fetch and scrape the target URLs and their sub-links.
+   - Confirm that the scraped content is successfully appended under `## 🌐 Scraped Reference Content` inside the inflow note before proceeding.
    - Identify the primary domains (e.g. `kubernetes`, `aws`, `networking`, `database`).
    - Identify if it belongs to an active study/exam track (e.g. CKA).
 2. **Execute Phase 1 (Refinement) & Phase 2 (Audit):**
