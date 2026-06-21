@@ -3,6 +3,17 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-21] - Ingestion: A Note on Secrets
+
+### Refactored / Upgraded
+- **Main Notes:** Integrated node-level distribution safety constraint (secrets are only sent to nodes running pods that require them) from `A Note on Secrets.md` into [[Main Notes/secret.md|secret.md]].
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `A Note on Secrets.md`
+
+---
+
 ## [2026-06-20] - Secrets Management Ingestion & Decoupling
 
 ### Added

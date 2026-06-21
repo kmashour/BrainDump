@@ -39,7 +39,7 @@ A **Secret** is an API object used to store and manage sensitive information, su
 
 ## 🏛️ Architectural Context (How it fits in the architecture)
 *   **API Server:** Validates and stores Secrets. It can encrypt secrets before writing them to etcd if encryption at rest is configured.
-*   **Kubelet:** Retrieves secrets from the API server and mounts them in the container runtime. Mounted secrets are stored in memory (`tmpfs`) to prevent sensitive data from leaking to the worker node's physical disk.
+*   **Kubelet:** Retrieves secrets from the API server only if a Pod scheduled on its node requires it, minimizing node-level exposure. Mounted secrets are stored in memory (`tmpfs`) to prevent sensitive data from leaking to the worker node's physical disk.
 *   **etcd:** Stores the final secret payloads. By default, etcd stores secrets in plaintext unless explicit encryption providers are configured.
 
 ---
