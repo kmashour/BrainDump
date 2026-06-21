@@ -217,7 +217,7 @@ To give vault knowledge maximum volume and diagnostic depth, the research and au
 3. **The Rationale (Why):** System-level architecture explanation (why Kubernetes works this way under the hood).
 4. **The Failure Loop (What if not):** The exact error message, kernel log event, pod CrashLoop state, or security warning if omitted/misconfigured.
 5. **Alternative Case (When to use 'if not'):** Real-world production cases when the opposing configuration is the desired design target.
-6. **Evolutionary Bridge (Historical vs Modern):** When covering legacy OS internals (e.g., traditional UNIX buffer caches, fork-exec, or process scheduler mechanics) or evolving cloud services (e.g., legacy AWS storage/consistency features), explicitly bridge the gap to modern implementations (e.g., modern Linux page caches, namespaces/cgroups, or updated strong consistency APIs) to detail *why* systems evolved.
+6. **Evolutionary Bridge (Historical vs Modern):** When the inflow source itself is explicitly legacy/old content (e.g., traditional UNIX buffer caches, fork-exec, or process scheduler mechanics, or legacy AWS features), or when a newly ingested inflow note introduces related historical context for a modern topic, explicitly bridge the gap to modern implementations (e.g., modern Linux page caches, namespaces/cgroups, or updated strong consistency APIs) to detail *why* systems evolved. Do NOT proactively inject legacy/historical history for modern topics if the inflow source is entirely modern.
 
 ---
 

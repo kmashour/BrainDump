@@ -15,6 +15,7 @@ Whenever raw material (such as transcripts or notes) inside `inflow/` is provide
 
 ## 🌉 Evolutionary Conceptual Bridging Rule
 Whenever you ingest, refine, or write notes regarding classical computing systems (e.g., UNIX kernel internals from classic books like Maurice Bach's *Design of the UNIX Operating System*) or evolving cloud infrastructures (e.g., AWS):
+*   **Historical Trigger Constraint:** Only mention historical context if the inflow source is explicitly legacy/old content, or if a previously created modern note needs to be updated because a newly ingested inflow note introduces related historical context. Do NOT proactively inject legacy history into modern topics if the inflow source is entirely modern.
 1. **Explain the Core Classic Concept:** Explain the fundamental concept, its original design parameters, and the technical intuition/insights behind it (e.g., UNIX inode tables, buffer cache, traditional fork-exec, or original eventual consistency models).
 2. **Bridge the Gap to Modern Systems:** Explicitly bridge the gap to modern implementations, highlighting how it works today (e.g., Linux page cache, CFS/EEVDF process schedulers, copy-on-write `clone()` namespaces, or modern S3 strong consistency).
 3. **Capture Evolutionary Constraints:** Document historical constraints and compare them with modern versions, capabilities, or replacements. This preserves the "why" behind the evolution of modern software architecture.
