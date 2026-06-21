@@ -3,6 +3,20 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-21] - Ingestion: Konnectivity Control Plane Egress Proxy
+
+### Added
+- **Main Notes:** Created [[Main Notes/Konnectivity.md|Konnectivity.md]] conceptual landing note detailing server-agent architecture, secure egress selectors, and operational deadlock scenarios.
+
+### Refactored / Upgraded
+- **Reference Notes:** Added Section 2.2 "Control Plane Egress Proxy (Konnectivity)" inside [[Reference Notes/0-2_cluster_architecture_and_components.md|0-2_cluster_architecture_and_components.md]] (Module 2) outlining the network split problem, tunnel flow topologies, API Server egress configuration, DaemonSet vs. Deployment deployment styles, and the validating admission webhook deadlock failure loop.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `Konnectivity reverse ssh tunnel Management.md`
+
+---
+
 ## [2026-06-21] - Ingestion: Secrets Encryption at Rest Reference and Labs
 
 ### Refactored / Upgraded

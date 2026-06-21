@@ -230,6 +230,74 @@ Worker nodes through their `kubelet` actively update the control plane with heal
 
 ---
 
+## 2.2 Control Plane Egress Proxy (Konnectivity)
+
+In standard cluster topologies, the Control Plane and Worker Nodes reside in different networks or subnetworks. Direct TCP routing from the control plane node to the worker node (specifically pod/service IPs) may be firewalled or unroutable. Historically, Kubernetes used SSH Tunnels (deprecated and removed in v1.22) to resolve this network split. The modern solution is **Konnectivity (apiserver-network-proxy)**.
+
+### A. Architectural Topology & Tunnel Flow
+
+Konnectivity uses a Server-Agent architecture to route egress traffic from the API server to the cluster.
+
+```mermaid
+flowchart LR
+    subgraph Control_Plane ["Control Plane (Private Subnet)"]
+        APIServer["Kube-APIServer"] -->|1. Dial localhost Unix Socket| ProxyServer["Konnectivity Server"]
+    end
+
+    subgraph Cluster_Network ["Cluster Network (Worker Nodes)"]
+        ProxyServer <-->|2. Bidirectional mTLS gRPC Tunnel (Port 8132)| AgentPod["Konnectivity Agent Pod"]
+        AgentPod -->|3. TCP Connection| Target["Target Resource (Pod / Webhook / Kubelet)"]
+    end
+
+    style ProxyServer fill:#f9f,stroke:#333,stroke-width:1px
+    style AgentPod fill:#bfb,stroke:#333,stroke-width:1px
+```
+
+1. **Konnectivity Server:** Runs in the control plane. It listens for agent registrations on port **`8132`** (mTLS/grpc) and exposes a UNIX domain socket or local port (`8055`) for the API server.
+2. **Konnectivity Agent:** Runs in the cluster as a Deployment or DaemonSet. Upon startup, it dials the Konnectivity Server (outbound request to port `8132` on the control plane load balancer). It establishes a long-lived, bidirectional mTLS gRPC connection.
+3. **The Dial Flow:**
+   * When a user runs an interactive command (e.g. `kubectl logs`, `kubectl port-forward`, or an admission webhook triggers in the cluster), the `kube-apiserver` looks up its **Egress Selector Configuration**.
+   * Instead of dialing the target pod/node IP directly, the API Server dials the local Unix domain socket connected to the Konnectivity Server.
+   * The Konnectivity Server multiplexes this TCP request over the active gRPC tunnel to the registered Agent Pod on the target node.
+   * The Agent Pod opens a standard TCP socket segment to the final target IP (e.g., Kubelet port `10250` or the Webhook service port) and forwards the full-duplex payload.
+
+### B. Egress Selector Configuration
+The `kube-apiserver` decides where to route egress traffic using `/etc/kubernetes/egress-selector-configuration.yaml`.
+```yaml
+apiVersion: apiserver.k8s.io/v1beta1
+kind: EgressSelectorConfiguration
+connectionServices:
+  - name: cluster
+    controlPlane:
+      # Route cluster-destined traffic through the local Konnectivity UNIX socket
+      egressSelection:
+        name: cluster
+      connection:
+        proxyProtocol: GRPC
+        transport:
+          uds:
+            udsName: /etc/kubernetes/konnectivity-server/konnectivity-server.socket
+```
+Configure the API Server flag: `--egress-selector-config-file=/etc/kubernetes/egress-selector-configuration.yaml`.
+
+### C. Scalability & Operational Challenges
+
+1. **DaemonSet vs. Deployment:**
+   * Running the agent as a **DaemonSet** guarantees node-local routing, but uses significant Pod IP space and host resources.
+   * Running as a **Deployment** saves Pod IP space and limits CPU/Memory footprint. However, it introduces an extra network hop (the Agent pod must route traffic across nodes to reach the target container IP).
+2. **The Admission Webhook Deadlock:**
+   * **The Trap:** An administrator configures a validating admission webhook (e.g., OPA Gatekeeper) matching all API resources (`*.*`) to run in the cluster. Later, the cluster restarts or the Konnectivity Agent pods are evicted.
+   * **The Deadlock:** The Kubelet tries to recreate the Konnectivity Agent pods. The API Server receives the pod creation request and must call the admission webhook to validate it. To call the webhook, the API Server tries to route traffic through the Konnectivity tunnel. But the tunnel is down because the Konnectivity Agent is not running. The pod creation fails, and the cluster is deadlocked.
+   * **Resolution:** Ensure the namespace or the webhook configuration excludes system pod paths or runs webhooks in the control plane network if possible, or bypasses validating pods in the `kube-system` namespace.
+3. **Outbound Firewall Restrictions:**
+   * If egress traffic on worker nodes is locked down by default, worker firewall rules **must** explicitly permit outbound traffic to the Control Plane Load Balancer/APIServer on Port **`8132`**.
+4. **Agent Scale Bottleneck:**
+   * The Konnectivity Server validates incoming Agent connections using the `TokenReview` API. Under massive node scaling (e.g., 100+ agents restarting simultaneously), the server can trigger client throttling on the token endpoint, queuing connections. Limit the active Agent replicas or increase API Server client throttling thresholds.
+5. **Version Skew:**
+   * Maintain version skew constraints. The `apiserver-network-proxy` client library compiled into `kube-apiserver` must match the API Server version, while the standalone Konnectivity Server and Agent binaries can vary by up to two minor versions.
+
+---
+
 ## 3. High Availability (HA) Architecture
 
 Running a single control plane node creates a Single Point of Failure (SPOF). HA clusters replicate the control plane (usually across 3 or 5 nodes) to achieve redundancy.
