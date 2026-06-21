@@ -3,6 +3,38 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-21] - Ingestion: Vertical Pod Autoscaler & In-Place Pod Resizing
+
+### Added
+- **Main Notes:** Created [[Main Notes/Vertical Pod Autoscaler.md|Vertical Pod Autoscaler.md]] landing note and [[Main Notes/Vertical Pod Autoscaler - In-Place Resizing.md|Vertical Pod Autoscaler - In-Place Resizing.md]] deeper-dive note detailing dynamic scaling, feature gates, and resize policies.
+- **Projects:** Created [[Projects/kubernetes/Project - Vertical Pod Autoscaler.md|Project - Vertical Pod Autoscaler.md]] containing playbooks for VPA installation, Auto mode validation, and manual in-place patching diagnostics.
+
+### Refactored / Upgraded
+- **Reference Notes:** Upgraded Section 12.5 "Workload Autoscaling (HPA & VPA)" in [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md|0-6_kubernetes_workloads_and_controllers.md]] to incorporate HPA vs VPA comparisons and manual in-place scaling workflows.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `VPA_mumshad.md`
+- `InPlace resizing.md`
+- `InPlace Resizing Docs.md`
+
+---
+
+## [2026-06-21] - Ingestion: Secrets Store CSI Driver & AWS Integration
+
+### Added
+- **Main Notes:** Created [[Main Notes/Secrets Store CSI Driver.md|Secrets Store CSI Driver.md]] conceptual landing note detailing dynamic mounting, ServiceAccount annotations, and failure modes.
+- **Projects:** Created [[Projects/kubernetes/Project - Secrets Store CSI Driver.md|Project - Secrets Store CSI Driver.md]] containing complete playbooks for Helm setup, IRSA trust policies, SecretProviderClass configuration, and auto-rotation verification.
+
+### Refactored / Upgraded
+- **Reference Notes:** Added Section 11.12 "Secrets Store CSI Driver Integration" in [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] (Module 7) describing the external secrets pattern, volume setup, IRSA tokens, and auto-rotation hooks.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `Secret Store CSI Driver Tutorial  Kubernetes Secrets  AWS Secrets Manager  KodeKloud.md`
+
+---
+
 ## [2026-06-21] - Ingestion: Konnectivity Control Plane Egress Proxy
 
 ### Added

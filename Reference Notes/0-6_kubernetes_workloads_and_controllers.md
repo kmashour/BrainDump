@@ -1305,9 +1305,90 @@ VPA dynamically adjusts container CPU and memory requests and limits to rightsiz
     2.  **Updater:** Monitors active Pods and evicts them (respecting PDBs) when their resource specs diverge significantly from recommendations.
     3.  **Admission Webhook:** Intercepts Pod creation requests and automatically injects the `Target` resource recommendation requests before the Pod is scheduled.
 *   **Update Modes (`spec.updatePolicy.updateMode`):**
-    *   `Off`: Only generates recommendations; does not alter Pods.
+    *   `Off`: Only generates recommendations; does not alter Pods. Useful for monitoring resource requirements before enforcing limits.
     *   `Initial`: Recommends and applies resources only at Pod creation time.
-    *   `Auto` / `Recreate`: Recommends resources and allows the Updater to evict active Pods to apply changes.
+    *   `Recreate`: Recommends resources and allows the Updater to evict active Pods to apply changes.
+    *   `Auto`: Updates existing pods to recommended values. Currently, this performs exactly like `Recreate` (evicting and recreating). In the future, once in-place resizing is fully stable, `Auto` mode will resize containers dynamically without restarting.
+*   **VPA YAML Spec Example:**
+    ```yaml
+    apiVersion: autoscaling.k8s.io/v1
+    kind: VerticalPodAutoscaler
+    metadata:
+      name: web-vpa
+      namespace: default
+    spec:
+      targetRef:
+        apiVersion: apps/v1
+        kind: Deployment
+        name: web-deploy
+      updatePolicy:
+        updateMode: Auto
+      resourcePolicy:
+        containerPolicies:
+          - containerName: '*'
+            minAllowed:
+              cpu: 100m
+              memory: 128Mi
+            maxAllowed:
+              cpu: 2
+              memory: 2Gi
+            controlledResources: ["cpu", "memory"]
+    ```
+
+#### 3. Horizontal vs. Vertical Autoscaling Comparison
+
+| Feature / Metric | Horizontal Pod Autoscaler (HPA) | Vertical Pod Autoscaler (VPA) |
+| :--- | :--- | :--- |
+| **Scaling Method** | Scales replica count (adds or removes Pods horizontally). | Scales compute boundaries (CPU/Memory requests & limits vertically). |
+| **Component Type** | Built-in controller in `kube-controller-manager`. | Custom CRD controllers (Recommender, Updater, Webhook). |
+| **Pod Runtime Behavior**| Non-disruptive. Keeps existing Pods active; spins up new Pods. | Disruptive. Evicts and restarts Pods to apply values (until in-place is stable). |
+| **Traffic Spike Suitability**| Excellent. Quickly scales out to handle sudden traffic peaks. | Poor. Delays caused by Pod evictions/recreation loops. |
+| **Best Workloads** | Stateless services, web servers, API gateways, message queues. | Stateful/heavy workloads (Databases, JVM apps, JVM memory spikes). |
+| **Cost Optimization** | Scales down replica count to save compute nodes during idle periods. | Prevents resource over-provisioning by rightsizing Pod requests. |
+
+#### 4. In-Place Pod Vertical Scaling (Manual In-Place Resizing)
+By default, altering resource requests or limits in a Pod's specification (e.g. inside a Deployment template) requires the API server to recreate the Pod. To allow dynamic resource scaling without Pod termination, Kubernetes provides the **In-Place Pod Vertical Scaling** mechanism.
+*   **Feature Gate Requirement:** The feature is controlled by the `InPlacePodVerticalScaling` gate (Alpha in v1.27, Beta in v1.33+).
+*   **Resize Policy Spec (`resizePolicy`):** You can define how the container runtime reacts to CPU and memory scaling actions individually:
+    *   `RestartNotRequired` (Default for CPU): The container runtime dynamically adjusts CPU cgroups shares on the fly without stopping the container.
+    *   `Restart` (Often used for memory): The container runtime restarts the target container to apply the new memory parameters.
+    *   **YAML Spec Example:**
+        ```yaml
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: in-place-pod
+        spec:
+          containers:
+          - name: app
+            image: nginx
+            resources:
+              limits:
+                cpu: "1"
+                memory: "512Mi"
+              requests:
+                cpu: "500m"
+                memory: "256Mi"
+            resizePolicy:
+            - resourceName: cpu
+              restartPolicy: RestartNotRequired
+            - resourceName: memory
+              restartPolicy: RestartNotRequired
+        ```
+*   **Manual Resize Patch Command:**
+    Once enabled, modify container resource requests or limits imperatively:
+    ```bash
+    kubectl patch pod in-place-pod --patch '{"spec":{"containers":[{"name":"app","resources":{"requests":{"cpu":"1"}}}]}}'
+    ```
+*   **Critical Resizing Limitations:**
+    *   **Resource Scope:** Resizing is restricted strictly to CPU and memory.
+    *   **QoS Class Immutability:** Changing requests/limits cannot switch the Pod's QoS Class (e.g., from `Guaranteed` to `Burstable`).
+    *   **Container Limitations:** Init containers and ephemeral containers are completely exempt and cannot be resized.
+    *   **Initial Setup Constraints:** If requests or limits were not declared at Pod creation time, they cannot be added dynamically.
+    *   **Memory Floor Constraints:** You cannot reduce a container's memory limit below its active physical usage. Doing so places the Pod in a `Proposed` state, and the resize status remains `InProgress` until memory usage drops or the limit is raised.
+    *   **OS Support:** Windows pods are not supported; in-place scaling is restricted to Linux container environments.
+
+*See complete playbooks and deployment manifests in [[Projects/kubernetes/Project - Vertical Pod Autoscaler.md|Project - Vertical Pod Autoscaler.md]].*
 
 ---
 

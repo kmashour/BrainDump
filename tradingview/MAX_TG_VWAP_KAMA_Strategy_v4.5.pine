@@ -1,0 +1,447 @@
+//@version=6
+strategy("MAX TG + VWAP + KAMA Strategy v4.5",
+     overlay                 = true,
+     default_qty_type        = strategy.fixed,
+     default_qty_value       = 1,
+     initial_capital         = 100000,
+     process_orders_on_close = true)
+
+// ============================================================
+// GROUPS
+// ============================================================
+g_exec   = "⚙️ Execution Settings"
+g_eng    = "🔧 MAX TG - Global Sensitivity Engine"
+g_short  = "📉 MAX TG - Short Cluster"
+g_medium = "📊 MAX TG - Medium Cluster"
+g_long   = "📈 MAX TG - Long Cluster"
+g_kama   = "〰️ KAMA Settings"
+g_vwap   = "🔵 VWAP Settings"
+g_risk   = "🛡️ Risk Management"
+g_cool   = "🧊 Re-entry Cooldown"
+g_table  = "📋 Status Table"
+
+// ============================================================
+// INPUTS — EXECUTION
+// ============================================================
+signal_tf   = input.timeframe("2",  "Signal Timeframe (Entry)",        group=g_exec)
+exit_tf     = input.timeframe("5",  "Exit Timeframe   (KAMA Exit)",    group=g_exec)
+swing_bars  = input.int(10, "Swing Lookback — Stop Loss (bars)", minval=3, maxval=50, group=g_exec)
+entry_delay = input.int(0,  "Entry Delay (bars after signal)",   minval=0, maxval=20, group=g_exec, tooltip="0 = دخول فوري | 1+ = انتظر N شمعة بعد الإشارة")
+
+// ============================================================
+// INPUTS — MAX TG SENSITIVITY
+// ============================================================
+atr_len             = input.int(14,     "ATR Length",                  group=g_eng)
+weak_mult           = input.float(0.10, "Weak Trend ATR Multiplier",   step=0.01, group=g_eng)
+strong_mult         = input.float(0.30, "Strong Trend ATR Multiplier", step=0.01, group=g_eng)
+long_slope_lookback = input.int(10,     "Long MA Slope Lookback",      group=g_eng)
+long_slope_smooth   = input.int(50,     "Long MA Slope Smoothing",     group=g_eng)
+long_neutral_mult   = input.float(0.10, "Long MA Neutral Zone Mult",   step=0.01, group=g_eng)
+
+// ============================================================
+// INPUTS — SHORT CLUSTER
+// ============================================================
+s_tf    = input.timeframe("",    "Short Timeframe",  group=g_short)
+s_type  = input.string("EMA",   "Short MA Type",    options=["EMA","SMA","T3"], group=g_short)
+s_vFact = input.float(0.7,      "T3 Volume Factor", step=0.1, group=g_short)
+s1_len  = input.int(10, "S1 Length", group=g_short)
+s2_len  = input.int(20, "S2 Length", group=g_short)
+s3_len  = input.int(30, "S3 Length", group=g_short)
+
+// ============================================================
+// INPUTS — MEDIUM CLUSTER
+// ============================================================
+m_tf    = input.timeframe("",    "Medium Timeframe", group=g_medium)
+m_type  = input.string("EMA",   "Medium MA Type",   options=["EMA","SMA","T3"], group=g_medium)
+m_vFact = input.float(0.7,      "T3 Volume Factor", step=0.1, group=g_medium)
+m1_len  = input.int(50, "M1 Length", group=g_medium)
+m2_len  = input.int(50, "M2 Length", group=g_medium)
+m3_len  = input.int(50, "M3 Length", group=g_medium)
+
+// ============================================================
+// INPUTS — LONG CLUSTER
+// ============================================================
+l_tf    = input.timeframe("",    "Long Timeframe",   group=g_long)
+l_type  = input.string("EMA",   "Long MA Type",     options=["EMA","SMA","T3"], group=g_long)
+l_vFact = input.float(0.7,      "T3 Volume Factor", step=0.1, group=g_long)
+l1_len  = input.int(100, "L1 Length", group=g_long)
+l2_len  = input.int(150, "L2 Length", group=g_long)
+l3_len  = input.int(200, "L3 Length", group=g_long)
+
+// ============================================================
+// INPUTS — CLUSTER VISIBILITY (Show/Hide)
+// ============================================================
+show_short  = input.bool(true, "Show Short Cluster (S1/S2/S3)",   group=g_short)
+show_medium = input.bool(true, "Show Medium Cluster (M1/M2/M3)",  group=g_medium)
+show_long   = input.bool(true, "Show Long Cluster (L1/L2/L3)",    group=g_long)
+
+// ============================================================
+// INPUTS — KAMA (Entry — مستقلة بالكامل)
+// ============================================================
+kama_entry_er_len   = input.int(10, "KAMA Entry — ER Length",   minval=1, group=g_kama)
+kama_entry_fast_len = input.int(2,  "KAMA Entry — Fast Length", minval=1, group=g_kama)
+kama_entry_slow_len = input.int(30, "KAMA Entry — Slow Length", minval=1, group=g_kama)
+
+// ============================================================
+// INPUTS — KAMA (Exit — مستقلة بالكامل)
+// ============================================================
+kama_exit_er_len    = input.int(10, "KAMA Exit — ER Length",    minval=1, group=g_kama)
+kama_exit_fast_len  = input.int(2,  "KAMA Exit — Fast Length",  minval=1, group=g_kama)
+kama_exit_slow_len  = input.int(30, "KAMA Exit — Slow Length",  minval=1, group=g_kama)
+kama_exit_col       = input.color(#311b92, "KAMA Exit TF — Color", group=g_kama)
+
+// ============================================================
+// INPUTS — VWAP
+// ============================================================
+vwap_band1 = input.float(1.0, "Band Multiplier #1", step=0.5, group=g_vwap)
+vwap_band2 = input.float(2.0, "Band Multiplier #2", step=0.5, group=g_vwap)
+show_bands = input.bool(false, "Show VWAP Bands",              group=g_vwap)
+
+// ============================================================
+// INPUTS — RISK
+// ============================================================
+use_sl       = input.bool(true, "Enable Stop Loss (Swing High/Low)", group=g_risk)
+show_signals = input.bool(true, "Show Entry Signals on Chart",       group=g_risk)
+
+// ============================================================
+// INPUTS — RE-ENTRY COOLDOWN
+// ============================================================
+use_cooldown    = input.bool(false, "Enable Re-entry Cooldown", group=g_cool)
+cooldown_bars   = input.int(5,      "Cooldown Bars (after any exit)", minval=1, maxval=100, group=g_cool)
+
+// ============================================================
+// INPUTS — STATUS TABLE
+// ============================================================
+show_status_table = input.bool(true, "Show Last Trade Status Table", group=g_table)
+table_position     = input.string("Top Right", "Table Position", options=["Top Right","Top Left","Bottom Right","Bottom Left"], group=g_table)
+
+// ============================================================
+// HELPER FUNCTIONS
+// ============================================================
+
+getMA(src, len, type, vf) =>
+    switch type
+        "SMA" => ta.sma(src, len)
+        "EMA" => ta.ema(src, len)
+        "T3"  =>
+            xe1 = ta.ema(src, len)
+            xe2 = ta.ema(xe1, len)
+            xe3 = ta.ema(xe2, len)
+            xe4 = ta.ema(xe3, len)
+            xe5 = ta.ema(xe4, len)
+            xe6 = ta.ema(xe5, len)
+            b  = vf
+            c1 = -(b*b*b)
+            c2 = 3*b*b + 3*b*b*b
+            c3 = -6*b*b - 3*b - 3*b*b*b
+            c4 = 1 + 3*b + b*b*b + 3*b*b
+            c1*xe6 + c2*xe5 + c3*xe4 + c4*xe3
+        => ta.ema(src, len)
+
+kamaValue(er_len, fast_len, slow_len) =>
+    fast_sc   = 2.0 / (fast_len + 1)
+    slow_sc   = 2.0 / (slow_len + 1)
+    direction = math.abs(close - close[er_len])
+    vol       = math.sum(math.abs(close - close[1]), er_len)
+    er        = vol != 0 ? direction / vol : 0.0
+    sc        = math.pow(er * (fast_sc - slow_sc) + slow_sc, 2)
+    var float k = na
+    k         := na(k[1]) ? close : k[1] + sc * (close - k[1])
+    k
+
+getTrendState(val, wT, sT) =>
+    slope = val - val[1]
+    slope > sT ? 2 : slope > wT ? 1 : slope < -sT ? -2 : slope < -wT ? -1 : 0
+
+getLongState(val, atr_sma) =>
+    lSlope    = ta.sma(val - val[long_slope_lookback], long_slope_smooth)
+    isNeutral = math.abs(lSlope) < atr_sma * long_neutral_mult
+    isNeutral ? 0 : (lSlope > 0 ? 2 : -2)
+
+// ============================================================
+// REQUEST.SECURITY — SHORT CLUSTER (TF مستقل)
+// ============================================================
+[atr_s, wT_s, sT_s, emaS1, emaS2, emaS3] = request.security(syminfo.tickerid, s_tf,
+     [ta.atr(atr_len),
+      ta.atr(atr_len) * weak_mult,
+      ta.atr(atr_len) * strong_mult,
+      getMA(close, s1_len, s_type, s_vFact),
+      getMA(close, s2_len, s_type, s_vFact),
+      getMA(close, s3_len, s_type, s_vFact)],
+     lookahead=barmerge.lookahead_on)
+
+// ============================================================
+// REQUEST.SECURITY — MEDIUM CLUSTER (TF مستقل)
+// ============================================================
+[atr_m, wT_m, sT_m, emaM1, emaM2, emaM3] = request.security(syminfo.tickerid, m_tf,
+     [ta.atr(atr_len),
+      ta.atr(atr_len) * weak_mult,
+      ta.atr(atr_len) * strong_mult,
+      getMA(hlcc4, m1_len, m_type, m_vFact),
+      getMA(high,  m2_len, m_type, m_vFact),
+      getMA(low,   m3_len, m_type, m_vFact)],
+     lookahead=barmerge.lookahead_on)
+
+// ============================================================
+// REQUEST.SECURITY — LONG CLUSTER (TF مستقل)
+// ============================================================
+[atr_l, emaL1, emaL2, emaL3] = request.security(syminfo.tickerid, l_tf,
+     [ta.atr(atr_len),
+      getMA(close, l1_len, l_type, l_vFact),
+      getMA(close, l2_len, l_type, l_vFact),
+      getMA(close, l3_len, l_type, l_vFact)],
+     lookahead=barmerge.lookahead_on)
+
+// ============================================================
+// REQUEST.SECURITY — SIGNAL TF (Entry: KAMA + VWAP + close)
+// ============================================================
+[kama_s, vwap_s, vwap_u1, vwap_l1, vwap_u2, vwap_l2, close_s] = request.security(syminfo.tickerid, signal_tf,
+     [kamaValue(kama_entry_er_len, kama_entry_fast_len, kama_entry_slow_len),
+      ta.vwap(hlc3),
+      ta.vwap(hlc3) + ta.stdev(hlc3, 20) * vwap_band1,
+      ta.vwap(hlc3) - ta.stdev(hlc3, 20) * vwap_band1,
+      ta.vwap(hlc3) + ta.stdev(hlc3, 20) * vwap_band2,
+      ta.vwap(hlc3) - ta.stdev(hlc3, 20) * vwap_band2,
+      close],
+     lookahead=barmerge.lookahead_on)
+
+// ============================================================
+// REQUEST.SECURITY — EXIT TF (Exit: KAMA + close)
+// ============================================================
+[kama_e, close_e] = request.security(syminfo.tickerid, exit_tf,
+     [kamaValue(kama_exit_er_len, kama_exit_fast_len, kama_exit_slow_len),
+      close],
+     lookahead=barmerge.lookahead_on)
+
+// ============================================================
+// STATE ENGINE — كل cluster على ATR بتاعه
+// ============================================================
+s1State = getTrendState(emaS1, wT_s, sT_s)
+m1State = getTrendState(emaM1, wT_m, sT_m)
+atrSMA_l = ta.sma(atr_l, long_slope_smooth)
+l1State = getLongState(emaL1, atrSMA_l)
+
+// KAMA State — نفس منطق S1 بالظبط (slope × ATR على نفس Signal TF)
+kamaState = getTrendState(kama_s, wT_s, sT_s)
+
+// ============================================================
+// ENTRY CONDITIONS — على Signal TF
+// ============================================================
+
+// LONG: close فوق VWAP + فوق KAMA + S1 State = Green(2) أو Lime(1) فقط
+long_cond = close_s > vwap_s and close_s > kama_s and (s1State == 2 or s1State == 1)
+
+// SHORT: close تحت VWAP + تحت KAMA + S1 State = Red(-2) أو Orange(-1) فقط
+short_cond = close_s < vwap_s and close_s < kama_s and (s1State == -2 or s1State == -1)
+
+// ============================================================
+// NO-REPEAT LOGIC — الإشارة مرة واحدة فقط لحد ما الشرط ينكسر
+// ============================================================
+
+var bool armed_long  = false  // false = استنى انكسار الشرط
+var bool armed_short = false
+
+// لو الشرط انكسر → ارجع للوضع الجاهز
+if not long_cond
+    armed_long  := false
+if not short_cond
+    armed_short := false
+
+// أول شمعة يتحقق فيها الشرط وهو مش armed → هي الـ trigger
+long_trigger  = long_cond  and not armed_long  and not long_cond[1]
+short_trigger = short_cond and not armed_short and not short_cond[1]
+
+// بعد الـ trigger → اقفل الإذن
+if long_trigger
+    armed_long  := true
+if short_trigger
+    armed_short := true
+
+// ============================================================
+// ENTRY DELAY
+// ============================================================
+
+var int long_bar  = -1
+var int short_bar = -1
+
+if long_trigger
+    long_bar  := bar_index
+if short_trigger
+    short_bar := bar_index
+
+// لو الشرط انكسر قبل انتهاء الـ delay → reset
+if not long_cond
+    long_bar  := -1
+if not short_cond
+    short_bar := -1
+
+// الدخول: بعد entry_delay شمعة بالظبط من الـ trigger
+long_entry_raw  = long_bar  >= 0 and (bar_index - long_bar  == entry_delay)
+short_entry_raw = short_bar >= 0 and (bar_index - short_bar == entry_delay)
+
+// ============================================================
+// RE-ENTRY COOLDOWN
+// ============================================================
+var int last_exit_bar = -100000
+
+cooldown_active = use_cooldown and (bar_index - last_exit_bar < cooldown_bars)
+
+long_entry  = long_entry_raw  and not cooldown_active
+short_entry = short_entry_raw and not cooldown_active
+
+// ============================================================
+// EXIT CONDITIONS — على Exit TF (KAMA فوري، زي V4 الأصلي)
+// ============================================================
+long_exit  = close_e < kama_e
+short_exit = close_e > kama_e
+
+// ============================================================
+// STOP LOSS
+// ============================================================
+swing_lo = ta.lowest(low,   swing_bars)
+swing_hi = ta.highest(high, swing_bars)
+
+// ============================================================
+// STRATEGY EXECUTION
+// ============================================================
+
+if long_entry and strategy.position_size == 0
+    strategy.entry("Long", strategy.long)
+    if use_sl
+        strategy.exit("Long SL", "Long", stop=swing_lo)
+
+if short_entry and strategy.position_size == 0
+    strategy.entry("Short", strategy.short)
+    if use_sl
+        strategy.exit("Short SL", "Short", stop=swing_hi)
+
+if long_exit and strategy.position_size > 0
+    strategy.close("Long",  comment="Exit")
+    last_exit_bar := bar_index
+
+if short_exit and strategy.position_size < 0
+    strategy.close("Short", comment="Exit")
+    last_exit_bar := bar_index
+
+// تسجيل الـ exit bar كمان لو الخروج كان عن طريق Stop Loss
+if strategy.position_size == 0 and strategy.position_size[1] != 0 and not (long_exit or short_exit)
+    last_exit_bar := bar_index
+
+// ============================================================
+// LAST TRADE TRACKING — للـ Status Table
+// ============================================================
+var float last_entry_price = na
+var string last_direction  = na
+var float last_close_price = na
+var bool  last_is_open     = false
+
+if long_entry and strategy.position_size == 0
+    last_entry_price := close
+    last_direction   := "Long"
+    last_is_open      := true
+
+if short_entry and strategy.position_size == 0
+    last_entry_price := close
+    last_direction   := "Short"
+    last_is_open      := true
+
+if (long_exit and strategy.position_size > 0) or (short_exit and strategy.position_size < 0)
+    last_close_price := close
+    last_is_open      := false
+
+// لو الخروج كان عن طريق SL، سجّل سعر الإقفال كمان
+if strategy.position_size == 0 and strategy.position_size[1] != 0 and not (long_exit or short_exit)
+    last_close_price := close
+    last_is_open      := false
+
+// ============================================================
+// PLOTTING
+// ============================================================
+
+// KAMA — لون ديناميكي 5 درجات (نفس منطق S1)
+kama_col = kamaState == 2 ? color.green : kamaState == 1 ? color.lime : kamaState == -2 ? color.red : kamaState == -1 ? color.orange : color.gray
+plot(kama_s, "KAMA — Signal TF", color=kama_col, linewidth=2)
+plot(kama_e, "KAMA — Exit TF",   color=color.new(kama_exit_col, 40), linewidth=1, style=plot.style_circles)
+
+// VWAP
+plot(vwap_s, "VWAP", color=color.new(#2962FF, 0), linewidth=2)
+p_u1 = plot(show_bands ? vwap_u1 : na, "VWAP Upper 1", color=color.new(color.green, 50))
+p_l1 = plot(show_bands ? vwap_l1 : na, "VWAP Lower 1", color=color.new(color.green, 50))
+fill(p_u1, p_l1, color=color.new(color.green, 90))
+p_u2 = plot(show_bands ? vwap_u2 : na, "VWAP Upper 2", color=color.new(color.teal, 60))
+p_l2 = plot(show_bands ? vwap_l2 : na, "VWAP Lower 2", color=color.new(color.teal, 60))
+fill(p_u2, p_l2, color=color.new(color.teal, 93))
+
+// MAX TG — Short Cluster
+s1_col = s1State == 2 ? color.green : s1State == 1 ? color.lime : s1State == -2 ? color.red : s1State == -1 ? color.orange : color.gray
+plot(show_short ? emaS1 : na, "S1", color=s1_col, linewidth=2)
+plot(show_short ? emaS2 : na, "S2", color=color.new(s1_col, 60))
+plot(show_short ? emaS3 : na, "S3", color=color.new(s1_col, 75))
+
+// MAX TG — Medium Cluster
+m1_col = m1State == 2 ? color.green : m1State == 1 ? color.lime : m1State == -2 ? color.red : m1State == -1 ? color.orange : color.black
+pM1 = plot(show_medium ? emaM1 : na, "M1",        color=m1_col, linewidth=2)
+pM2 = plot(show_medium ? emaM2 : na, "M2 (High)", color=color.new(m1_col, 60))
+pM3 = plot(show_medium ? emaM3 : na, "M3 (Low)",  color=color.new(m1_col, 75))
+fill(pM2, pM3, color = show_medium ? color.new(m1_col, 85) : na, title="Medium Band Fill")
+
+// MAX TG — Long Cluster
+l1_col = l1State == 2 ? color.green : l1State == -2 ? color.red : color.gray
+plot(show_long ? emaL1 : na, "L1", color=l1_col, linewidth=2)
+plot(show_long ? emaL2 : na, "L2", color=color.new(l1_col, 60))
+plot(show_long ? emaL3 : na, "L3", color=color.new(l1_col, 75))
+
+// إشارات الدخول
+plotshape(show_signals and long_entry,  title="Long Signal",  location=location.belowbar, style=shape.triangleup,   color=color.green, text="L", size=size.small)
+plotshape(show_signals and short_entry, title="Short Signal", location=location.abovebar, style=shape.triangledown, color=color.red,   text="S", size=size.small)
+
+// خلفية الصفقة المفتوحة
+bgcolor(strategy.position_size > 0 ? color.new(color.green, 92) : strategy.position_size < 0 ? color.new(color.red, 92) : na, title="Position Background")
+
+// ============================================================
+// ALERTS
+// ============================================================
+alertcondition(long_entry,  "LONG Entry",  "MAX TG+VWAP+KAMA: LONG Entry")
+alertcondition(short_entry, "SHORT Entry", "MAX TG+VWAP+KAMA: SHORT Entry")
+alertcondition(long_exit,   "LONG Exit",   "MAX TG+VWAP+KAMA: LONG Exit")
+alertcondition(short_exit,  "SHORT Exit",  "MAX TG+VWAP+KAMA: SHORT Exit")
+
+// ============================================================
+// STATUS TABLE — حالة آخر صفقة (تصميم محدّث)
+// ============================================================
+tablePos = table_position == "Top Right" ? position.top_right : table_position == "Top Left" ? position.top_left : table_position == "Bottom Right" ? position.bottom_right : position.bottom_left
+
+var table statusTable = table.new(tablePos, 2, 6, border_width=1)
+
+if show_status_table and barstate.islast
+    currentPrice = close
+    pts = na(last_entry_price) ? na : (last_direction == "Long" ? (last_is_open ? currentPrice - last_entry_price : last_close_price - last_entry_price) : (last_is_open ? last_entry_price - currentPrice : last_entry_price - last_close_price))
+    dollarVal = na(pts) ? na : pts * syminfo.pointvalue
+    pnlColor  = na(pts) ? color.gray : pts >= 0 ? color.new(color.green, 0) : color.new(color.red, 0)
+    headerBg  = color.new(color.gray, 85)
+    statusBg  = last_is_open ? color.new(color.green, 80) : color.new(color.gray, 80)
+    labelColor = color.gray
+
+    // Header — اسم الأداة + حالة الصفقة
+    table.cell(statusTable, 0, 0, "MNQ — Last trade", bgcolor=headerBg, text_color=color.white, text_size=size.normal, text_halign=text.align_left)
+    table.cell(statusTable, 1, 0, last_is_open ? "OPEN" : "CLOSED", bgcolor=statusBg, text_color=color.white, text_size=size.normal, text_halign=text.align_right)
+
+    // Direction
+    table.cell(statusTable, 0, 1, na(last_direction) ? "—" : last_direction, text_color = last_direction == "Long" ? color.green : color.red, text_size=size.normal, text_halign=text.align_left)
+    table.cell(statusTable, 1, 1, "Direction", text_color=labelColor, text_size=size.normal, text_halign=text.align_right)
+
+    // Entry
+    table.cell(statusTable, 0, 2, na(last_entry_price) ? "—" : str.tostring(last_entry_price, format.mintick), text_size=size.normal, text_halign=text.align_left)
+    table.cell(statusTable, 1, 2, "Entry", text_color=labelColor, text_size=size.normal, text_halign=text.align_right)
+
+    // Current / Close
+    table.cell(statusTable, 0, 3, na(last_entry_price) ? "—" : str.tostring(last_is_open ? currentPrice : last_close_price, format.mintick), text_size=size.normal, text_halign=text.align_left)
+    table.cell(statusTable, 1, 3, last_is_open ? "Current" : "Close", text_color=labelColor, text_size=size.normal, text_halign=text.align_right)
+
+    // Points
+    table.cell(statusTable, 0, 4, na(pts) ? "—" : str.tostring(pts, format.mintick), text_color=pnlColor, text_size=size.normal, text_halign=text.align_left)
+    table.cell(statusTable, 1, 4, "Points", text_color=labelColor, text_size=size.normal, text_halign=text.align_right)
+
+    // P/L ($)
+    table.cell(statusTable, 0, 5, na(dollarVal) ? "—" : ("$" + str.tostring(dollarVal, "#,###.##")), text_color=pnlColor, text_size=size.normal, text_halign=text.align_left)
+    table.cell(statusTable, 1, 5, "P/L", text_color=labelColor, text_size=size.normal, text_halign=text.align_right)

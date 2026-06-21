@@ -1504,6 +1504,18 @@ To store configurations in git, export the live settings as a clean template YAM
 kubectl get configmap app-config -o yaml > app-config.yaml
 ```
 
+### 11.12 Secrets Store CSI Driver Integration
+While native secrets (unencrypted Base64) or etcd encryption configurations (static keys stored locally) improve data safety, they do not resolve the problem of keeping credentials out of version control and managing them in a unified system. For production environments, the **Secrets Store CSI Driver** is recommended.
+
+#### 1. How the CSI Secrets Store Driver Works
+Rather than synchronizing external secrets (e.g. AWS Secrets Manager, HashiCorp Vault) into Kubernetes `Secret` API objects, the CSI driver pulls credentials at runtime and mounts them directly as files inside a volatile memory-backed `tmpfs` volume in the Pod container. This pattern completely bypasses etcd persistent storage, reducing the cluster attack surface.
+* **ServiceAccount IRSA Integration:** On cloud providers (like EKS), the Pod uses a specific ServiceAccount annotated with an IAM Role (AWS IAM Roles for Service Accounts - IRSA). This role authorizes the CSI driver to fetch specific secrets.
+* **SecretProviderClass CRD:** Configures the external provider (AWS, Vault, Azure, GCP) and lists the target secret key-value paths to map.
+* **CSI Volume Mount:** The Pod spec declares a volume targeting the `secrets-store.csi.k8s.io` driver and links it to the `SecretProviderClass`.
+* **Auto-rotation:** The CSI driver can poll the external Secret store periodically (e.g. every 2 minutes) to automatically update the mounted files.
+
+*See complete playbooks and deployment manifests in [[Projects/kubernetes/Project - Secrets Store CSI Driver.md|Project - Secrets Store CSI Driver.md]].*
+
 ---
 
 ## 12. Pod Security Admission (PSA) and Standards
