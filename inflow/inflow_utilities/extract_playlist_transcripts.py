@@ -4,6 +4,7 @@ import re
 import json
 import sys
 import urllib.request
+import time
 
 try:
     from youtube_transcript_api import YouTubeTranscriptApi
@@ -68,11 +69,11 @@ def format_transcript_with_timestamps(srt):
     """Formats raw transcript segments with bold timestamp prefixes."""
     lines = []
     for entry in srt:
-        start_seconds = entry['start']
+        start_seconds = entry.start
         minutes = int(start_seconds // 60)
         seconds = int(start_seconds % 60)
         time_str = f"**{minutes:02d}:{seconds:02d}**"
-        text = entry['text'].replace('\n', ' ')
+        text = entry.text.replace('\n', ' ')
         lines.append(f"{time_str} {text}")
     return "\n\n".join(lines)
 
@@ -86,20 +87,35 @@ def download_transcripts(playlist_url, output_dir="transcripts"):
 
     print(f"[INFO] Found {len(videos)} videos in playlist. Starting transcript extraction...")
     
+    api = YouTubeTranscriptApi()
+    
     for idx, video in enumerate(videos, 1):
         safe_title = sanitize_filename(video['title'])
         file_path = os.path.join(output_dir, f"{idx:02d} - {safe_title}.txt")
         
+        # Check if transcript is already downloaded to allow resuming
+        if os.path.exists(file_path):
+            print(f"[{idx}/{len(videos)}] Skipping (Already Downloaded): {video['title']}")
+            continue
+            
         print(f"[{idx}/{len(videos)}] Extracting: {video['title']} ({video['id']})")
         
         try:
-            # Fetch raw transcript, prioritize English, fallback to auto-translated/first available
+            # Fetch raw transcript: prioritize English, fallback to Arabic, then first available
             try:
-                srt = YouTubeTranscriptApi.get_transcript(video['id'], languages=['en'])
+                srt = api.fetch(video['id'], languages=['en'])
             except Exception:
-                # If English isn't direct, list available transcripts and fetch the first one
-                transcript_list = YouTubeTranscriptApi.list_transcripts(video['id'])
-                srt = transcript_list.find_transcript(['en']).fetch()
+                try:
+                    transcript_list = api.list(video['id'])
+                    # Try to fetch Arabic or English transcript specifically
+                    try:
+                        srt = transcript_list.find_transcript(['ar', 'en']).fetch()
+                    except Exception:
+                        # Grab whichever first transcript is available
+                        first_transcript = next(iter(transcript_list))
+                        srt = first_transcript.fetch()
+                except Exception as inner_e:
+                    raise inner_e
             
             # Format transcript with custom timestamps
             formatted_text = format_transcript_with_timestamps(srt)
@@ -110,8 +126,14 @@ def download_transcripts(playlist_url, output_dir="transcripts"):
                 f.write(formatted_text)
                 
             print(f"  └─> Saved to {file_path}")
+            
+            # Add a 3-second delay between successful requests to prevent IP block/rate limits
+            time.sleep(3)
+            
         except Exception as e:
             print(f"  └─> [FAILED] {e}")
+            # Even if it failed, add a short sleep before next request
+            time.sleep(2)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
