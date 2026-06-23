@@ -30,9 +30,11 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ### Refactored / Upgraded
 - **Reference Notes:** Updated Reference Notes 8-1 to 8-6 by appending cross-linking reference headers pointing to the new RHEL-specific commands in Module 8-9, and updated [[Reference Notes/0-10_maintenance_upgrades_and_etcd.md|0-10_maintenance_upgrades_and_etcd.md]] to incorporate the new `etcdutl` tool split commands for offline backups and snapshot restores.
 - **Reference Indexes:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog Module 8-9 and all 9 playbooks, updated [[Reference Notes/--Index--.md|--Index--.md]] to catalog the new CNCF References MOC, and updated [[Reference Notes/10-Index - Terraform on AWS.md|10-Index - Terraform on AWS.md]] to catalog the new 2-Tier project playbook.
+- **Main Notes:** Refactored [[Main Notes/etcd network ports.md|etcd network ports.md]] to integrate category breakdowns for etcd listener bindings (Listen, Advertise, Bootstrapping flags), client/peer network port configurations, port 2381 metrics monitoring, and CKA exam tips.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from `inflow/`:
+- `CKA-Exam Note on ETCD.md`
 - `Disaster Recovery for your Kubernetes Clusters I - Andy Goldstein & Steve Kriss, Heptio.md`
 - `ETCD BACKUP and REstore.md`
 - `Practical Notes on working with ETCDCTL- ETCDUTL.md`
