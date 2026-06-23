@@ -166,3 +166,9 @@ While namespaces handle **isolation**, cgroups handle **resource allocation, thr
 # Paths are usually managed automatically by systemd or containerd:
 /sys/fs/cgroup/system.slice/docker.service/memory.max
 ```
+
+---
+
+## 🔗 RHEL Practical Reference
+For practical examples and RHEL-specific shell configurations, history controls, and environments, refer to [Module 8-9: Red Hat Enterprise Linux (RHEL) Administration](8-9_redhat_enterprise_linux_administration.md#shell-environment-and-command-history).
+

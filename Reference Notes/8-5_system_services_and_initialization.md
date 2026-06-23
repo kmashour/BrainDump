@@ -121,3 +121,9 @@ When running standard applications (Node, Python, Java) directly as the containe
 ENTRYPOINT ["/usr/bin/tini", "--"]
 CMD ["python3", "app.py"]
 ```
+
+---
+
+## 🔗 RHEL Practical Reference
+For practical guides on RHEL system boot process tracking, modifying systemd targets, recovering from boot failures with `rd.break` root redirection, and custom unit creations, refer to [Module 8-9: Red Hat Enterprise Linux (RHEL) Administration](8-9_redhat_enterprise_linux_administration.md#boot-initialization-and-systemd).
+

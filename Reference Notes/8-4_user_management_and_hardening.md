@@ -144,3 +144,9 @@ Audit rules are configured in `/etc/audit/rules.d/audit.rules`:
 # View audit logs filtering by specific key
 ausearch -k identity_theft -i
 ```
+
+---
+
+## 🔗 RHEL Practical Reference
+For practical guides on RHEL user/group administration, special permissions, POSIX Access Control Lists (ACLs), GRUB bootloader password hardening, and basic SELinux type enforcement adjustments, refer to [Module 8-9: Red Hat Enterprise Linux (RHEL) Administration](8-9_redhat_enterprise_linux_administration.md#user-security-and-hardening).
+

@@ -131,3 +131,8 @@ groups:
           summary: "Disk space critical on host {{ $labels.instance }}"
           description: "Root partition free space has dropped below 10%."
 ```
+
+---
+
+## 🔗 RHEL Practical Reference
+For practical guides on RHEL system diagnostics, VIM editor command execution, log rotation configurations via `logrotate`, text searches (`find` and `grep`), and automated backups, refer to [Module 8-9: Red Hat Enterprise Linux (RHEL) Administration](8-9_redhat_enterprise_linux_administration.md#diagnostics-and-text-processing).

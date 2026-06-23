@@ -167,3 +167,9 @@ Mount flags in `/etc/fstab` heavily impact write performance and safety:
 *   **`noexec`:** Prevents execution of binaries on the mounted filesystem (important security hardening tool for `/tmp` or shared storage).
 *   **`nosuid`:** Ignores SUID/SGID execution bits.
 *   **`nodev`:** Prevents character or block special devices creation/interpretation.
+
+---
+
+## 🔗 RHEL Practical Reference
+For practical guides on RHEL partitioning, software RAID `mdadm` configurations, LVM volume setups, persistent `/etc/fstab` mounting, and user quotas, refer to [Module 8-9: Red Hat Enterprise Linux (RHEL) Administration](8-9_redhat_enterprise_linux_administration.md#storage-and-file-systems).
+

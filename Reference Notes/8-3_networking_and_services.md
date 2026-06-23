@@ -148,3 +148,9 @@ For large-scale routing, dynamic protocols calculate the best paths across compl
 *   **Peering Types:**
     *   **External BGP (eBGP):** Exchanging routes between routers in different Autonomous Systems.
     *   **Internal BGP (iBGP):** Exchanging external routes inside the same Autonomous System.
+
+---
+
+## 🔗 RHEL Practical Reference
+For practical guides on RHEL networking configuration using NMCLI, interface profile setups, NIC bonding/teaming, virtual bridge configurations, and deploying enterprise network services (like Apache HTTPD and BIND DNS), refer to [Module 8-9: Red Hat Enterprise Linux (RHEL) Administration](8-9_redhat_enterprise_linux_administration.md#networking-and-services).
+

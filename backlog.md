@@ -3,6 +3,94 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-23] - Ingestion: RHEL Administration Course Transcripts (Module 8-9)
+
+### Added
+- **Reference Notes:** Created the new high-density RHEL administration reference module:
+  - [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]
+- **Projects:** Created 9 detailed hands-on project playbooks under `Projects/Linux/`:
+  - [[Projects/Linux/Project - User Administration & POSIX-ACL Hardening.md|Project - User Administration & POSIX-ACL Hardening.md]]
+  - [[Projects/Linux/Project - GRUB Boot Security & Root Password Recovery.md|Project - GRUB Boot Security & Root Password Recovery.md]]
+  - [[Projects/Linux/Project - Disk Partitioning, Software RAID & LVM Volume Expansion.md|Project - Disk Partitioning, Software RAID & LVM Volume Expansion.md]]
+  - [[Projects/Linux/Project - Network Interface Profiles, Teaming & Bridging.md|Project - Network Interface Profiles, Teaming & Bridging.md]]
+  - [[Projects/Linux/Project - Log Rotation, Text Filtering & Automation Backup.md|Project - Log Rotation, Text Filtering & Automation Backup.md]]
+  - [[Projects/Linux/Project - NFS and FTP Secure Network File Shares.md|Project - NFS and FTP Secure Network File Shares.md]]
+  - [[Projects/Linux/Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security.md|Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security.md]]
+  - [[Projects/Linux/Project - BIND DNS Server Installation and Caching Name Server.md|Project - BIND DNS Server Installation and Caching Name Server.md]]
+  - [[Projects/Linux/Project - Central LDAP-FreeIPA Domain Authentication.md|Project - Central LDAP-FreeIPA Domain Authentication.md]]
+- **Main Notes:** Created 2 deeper-dive notes under `Main Notes/`:
+  - [[Main Notes/linux - Logical Volume Manager.md|linux - Logical Volume Manager.md]]
+  - [[Main Notes/linux - Boot Initialization and Systemd.md|linux - Boot Initialization and Systemd.md]]
+- **Digital Garden:** Created 1 architectural pattern note:
+  - [[Digital Garden/Pattern - Dynamic Volume Pooling and Online FileSystem Expansion.md|Pattern - Dynamic Volume Pooling and Online FileSystem Expansion.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Updated Reference Notes 8-1 to 8-6 by appending cross-linking reference headers pointing to the new RHEL-specific commands in Module 8-9.
+- **Reference Indexes:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog Module 8-9 and all 9 playbooks.
+
+### Ingested Inflow Sources
+Processed and integrated the following 59 files from `inflow/linux_administration/`:
+- `01 - 1-Day-1_Course-Intro.txt`
+- `02 - 2-Day-1_Course-Intro_Second_Group.txt`
+- `03 - 3-Day-2_Basic_Installation.txt`
+- `04 - 4-Day-2_Unix-Linux_History.txt`
+- `05 - 5-Day-2_Basic_Commands.txt`
+- `06 - 6-Day-3_Understanding_FHS.txt`
+- `07 - 7-Day-3_Navigating_The_FileSystem.txt`
+- `08 - 8-Day-4_FileSystem_Utilites.txt`
+- `09 - 9-Day-4_FileSystem_Utilites_Cont.txt`
+- `10 - 10-Day-5_Basic_User_Group_Administration.txt`
+- `11 - 11-Day-5_Basic_Permissions.txt`
+- `12 - 12-Day-6_Basic_Permissions_Cont.txt`
+- `13 - 13-Day-6_Redirection.txt`
+- `14 - 14-Day-6_Redirection_Cont-WH_Commands.txt`
+- `15 - 15-Day-7_Inodes-Understanding_FileSystems.txt`
+- `16 - 16-Day-8_Inodes_Cont.txt`
+- `17 - 17-Day-8_Disks_and_Partations_Naming_Conventions.txt`
+- `18 - 18-Day-9_Creating_and_Formatting_FileSystems.txt`
+- `19 - 19-Day-10_Mounting_FileSystems.txt`
+- `20 - 20-Day-10_Persistant_Mounting_Using_FSTAB.txt`
+- `21 - 21-Day-10_Compressing_Archiving_Files_And_Directories.txt`
+- `22 - 22-Day-11_Process_Management.txt`
+- `23 - 23-Day-12_Process_Management_Cont.txt`
+- `24 - 24-Day-12_Searching_And_Locating_Files_and_Dirs.txt`
+- `25 - 25-Day-12_Searching_and_Extracting_Text.txt`
+- `26 - 26-Day-13_VIM_Editor.txt`
+- `27 - 27-Day-13_VIM_Editor_Cont.txt`
+- `28 - 28-Day-13_Understanding_Boot_Process.txt`
+- `29 - 29-Day-14_Understanding_Systemd.txt`
+- `30 - 30-Day-14_Systemd_Targets.txt`
+- `31 - 31-Day-15_Grub_BootLoader.txt`
+- `32 - 32-Day-15_Resetting_Root_Password.txt`
+- `33 - 33-Day-16_Systemd_Cont-Network_Basics.txt`
+- `34 - 34-Day-16_Network_Basics_Cont.txt`
+- `35 - 35-Day-17_Network_Basic_Config.txt`
+- `36 - 36-Day-17_Network_Profiles.txt`
+- `37 - 37-Day-18_IPV6_Intro.txt`
+- `38 - 38-Day-18_IPV6_Cont.txt`
+- `39 - 39-Day-19_IPV6_Cont.txt`
+- `40 - 40-Day-19_IPV6_Config.txt`
+- `41 - 41-Day-20_Network_TSHOOT.txt`
+- `42 - 42-Day-20_Network_TSHOOT_Cont.txt`
+- `43 - 43-Day-21_NIC_Teaming.txt`
+- `44 - 44-Day-21_Network_Bridging.txt`
+- `45 - 45-Day-22_Interface_Naming.txt`
+- `46 - 46-Day-22_Setting_Grub_Password.txt`
+- `47 - 47-Day-23_Getting_Help_Man_Pages.txt`
+- `48 - 48-Day-23_Getting_Help_Cont.txt`
+- `49 - 49-Day-23_History.txt`
+- `50 - 49-Day-24_RAID.txt`
+- `51 - 51-Day-24_RAID_Cont_1.txt`
+- `52 - 52-Day-24_RAID_Cont_2.txt`
+- `53 - 53-Day-25_RAID_Cont_3.txt`
+- `54 - 54-Day-26_LVM_Basics.txt`
+- `55 - 55-Day-27_LVM_Cont.txt`
+- `56 - 56-Day-27_LVM_Cont_2.txt`
+- `57 - 57-Day-28_SWAP.txt`
+- `58 - 58-Day-28_Quota_Management.txt`
+- `72 - 72-Day-40_Apache_Server_Part_3.txt`
+
+
 ## [2026-06-22] - Ingestion: AWS CloudOps Study Guide & Projects
 
 ### Added
