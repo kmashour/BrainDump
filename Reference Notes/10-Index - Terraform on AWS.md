@@ -35,6 +35,8 @@ This index contains our Terraform Infrastructure as Code (IaC) on AWS study modu
 ## 🛠️ Verification Projects
 Hands-on playbooks and milestone projects:
 - 🚀 **[Project: HA 3-Tier Architecture on AWS](../Projects/terraform/Project%20-%20HA%203-Tier%20Architecture%20on%20AWS.md)**
+- 🚀 **[Project: 2-Tier Architecture Setup with RDS and Secret Manager](../Projects/terraform/Project%20-%202-Tier%20Architecture%20Setup%20with%20RDS%20and%20Secret%20Manager.md)**
 - 🚀 **[Project: EKS GitOps and ArgoCD](../Projects/terraform/Project%20-%20EKS%20GitOps%20and%20ArgoCD.md)**
 - 🚀 **[Project: Terraform Automation and Drift Remediation](../Projects/terraform/Project%20-%20Terraform%20Automation%20and%20Drift%20Remediation.md)**
+
 

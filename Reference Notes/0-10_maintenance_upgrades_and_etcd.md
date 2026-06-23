@@ -306,20 +306,23 @@ kubectl uncordon node-1
 
 ETCD is the distributed key-value datastore containing the state of the entire Kubernetes cluster. Securing backups of this component is critical before making any major configuration or version changes.
 
-### 4.1 ETCD API v2 vs. v3 Client Management
-The CLI tool `etcdctl` is used to interact with the database. The environment variable `ETCDCTL_API` determines which version of the API `etcdctl` uses. While older systems or default client installations may use API v2, modern Kubernetes clusters utilize API v3. 
+### 4.1 ETCDCTL & ETCDUTL Tool Split
+*   **`etcdctl`:** The primary command-line client used to interact with a live etcd cluster (e.g., writing/retrieving keys, checking endpoint health, and taking live database snapshots).
+*   **`etcdutl`:** A database utility client introduced in v3.5 to handle offline and management operations (e.g., offline file backups, database verification, and snapshot restorations) without needing the etcd cluster daemon active.
 
 #### Configuring the API Version:
-You can switch the active API version for `etcdctl` using one of two methods:
+You can switch the active API version for `etcdctl` and `etcdutl` using one of two methods:
 1.  **Prepend the Environment Variable:** Specify the variable on a per-command basis:
     ```bash
     ETCDCTL_API=3 etcdctl version
+    ETCDCTL_API=3 etcdutl version
     ```
 2.  **Export for the Shell Session:** Set the variable persistently for your current terminal session:
     ```bash
     export ETCDCTL_API=3
     etcdctl version
     ```
+
 
 #### CLI Command Comparison:
 | Operation | API v2 Command (`ETCDCTL_API=2`) | API v3 Command (`ETCDCTL_API=3`) | Notes |
@@ -347,8 +350,8 @@ Look for command arguments like:
 
 ---
 
-### 4.3 Snapshot Backup Procedure
-To create a backup snapshot, run the `etcdctl snapshot save` command. 
+### 4.3 Live Snapshot Backup using etcdctl
+To create a backup snapshot from a live, running etcd cluster, use the `etcdctl snapshot save` command:
 
 > [!TIP]
 > **CKA Exam Tip:** Always specify the `ETCDCTL_API=3` environment variable. The older v2 API is the default for etcdctl, but Kubernetes uses the v3 API.
@@ -363,13 +366,27 @@ ETCDCTL_API=3 etcdctl \
 ```
 
 #### Verification of Snapshot File:
+You can inspect the metadata (size, revision, hash, keys) of a snapshot file using either `etcdctl` or `etcdutl`:
 ```bash
 ETCDCTL_API=3 etcdctl --write-out=table snapshot status /opt/backup/etcd-snapshot.db
+# OR
+ETCDCTL_API=3 etcdutl snapshot status /opt/backup/etcd-snapshot.db --write-out=table
 ```
 
 ---
 
-### 4.3 Restore Playbook: Stacked ETCD Topology
+### 4.4 Offline File-Level Backup using etcdutl
+For offline, file-level backup of the etcd database directory (e.g., copying the raw database backend and write-ahead log files without needing the etcd daemon to be running):
+```bash
+ETCDCTL_API=3 etcdutl backup \
+  --data-dir /var/lib/etcd \
+  --backup-dir /opt/backup/etcd-backup
+```
+
+---
+
+
+### 4.5 Restore Playbook: Stacked ETCD Topology
 In a stacked topology, ETCD runs as a static pod on the control plane node. The restoration process requires stopping the local agent to prevent database writes and scheduling conflicts during restore.
 
 #### Step 1: Stop the Kubelet Service
@@ -378,12 +395,19 @@ Stop the local kubelet service to halt static pod container lifecycles (this sto
 sudo systemctl stop kubelet
 ```
 
-#### Step 2: Restore the Database Snapshot to a New Directory
-Restore the backup db to `/var/lib/etcd-restored`. Always restore to a new directory to prevent corrupting any existing active data:
-```bash
-sudo ETCDCTL_API=3 etcdctl snapshot restore /opt/backup/etcd-snapshot.db \
-  --data-dir=/var/lib/etcd-restored
-```
+#### Step 2: Restore the Database (Snapshot or File Backup)
+*   **Method A: Restore from a DB Snapshot (`.db`)**
+    Restore the backup snapshot database to a new directory `/var/lib/etcd-restored`. Always restore snapshots to a new directory to prevent data corruption:
+    ```bash
+    sudo ETCDCTL_API=3 etcdutl snapshot restore /opt/backup/etcd-snapshot.db \
+      --data-dir=/var/lib/etcd-restored
+    ```
+*   **Method B: Restore from a File-Level Backup**
+    If the backup was created using `etcdutl backup` offline directories replication, simply copy the backup data directory contents into `/var/lib/etcd-restored`:
+    ```bash
+    sudo cp -R /opt/backup/etcd-backup/. /var/lib/etcd-restored/
+    ```
+
 
 #### Step 3: Assign Proper Permissions/Ownership
 Ensure the restored directory has root permissions (the user under which the etcd static pod container processes run):
@@ -422,7 +446,7 @@ kubectl get pods -n kube-system
 
 ---
 
-### 4.4 Restore Playbook: External ETCD Topology
+### 4.6 Restore Playbook: External ETCD Topology
 In an external topology, ETCD is running on dedicated host VMs as a systemd service.
 
 #### Step 1: Transport and Stop Service
@@ -437,7 +461,7 @@ sudo systemctl stop etcd
 
 #### Step 2: Restore Snapshot to New Directory
 ```bash
-ETCDCTL_API=3 etcdctl snapshot restore /tmp/etcd-snapshot.db \
+ETCDCTL_API=3 etcdutl snapshot restore /tmp/etcd-snapshot.db \
   --data-dir /var/lib/etcd-data-new
 ```
 

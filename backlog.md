@@ -3,14 +3,14 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
-## [2026-06-23] - Ingestion: RHEL & CNCF Disaster Recovery Transcripts
+## [2026-06-23] - Ingestion: RHEL, CNCF DR, etcdutl, and 2-Tier AWS Terraform Transcripts
 
 ### Added
 - **Reference Notes:** Created the new high-density RHEL administration reference module and CNCF references module:
   - [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]
   - [[Reference Notes/12-Index - CNCF References.md|12-Index - CNCF References.md]]
   - [[Reference Notes/12-1_cncf_kubernetes_disaster_recovery.md|12-1_cncf_kubernetes_disaster_recovery.md]]
-- **Projects:** Created 9 detailed hands-on project playbooks under `Projects/Linux/`:
+- **Projects:** Created 9 detailed hands-on project playbooks under `Projects/Linux/`, and 1 Terraform playbook under `Projects/terraform/`:
   - [[Projects/Linux/Project - User Administration & POSIX-ACL Hardening.md|Project - User Administration & POSIX-ACL Hardening.md]]
   - [[Projects/Linux/Project - GRUB Boot Security & Root Password Recovery.md|Project - GRUB Boot Security & Root Password Recovery.md]]
   - [[Projects/Linux/Project - Disk Partitioning, Software RAID & LVM Volume Expansion.md|Project - Disk Partitioning, Software RAID & LVM Volume Expansion.md]]
@@ -20,6 +20,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
   - [[Projects/Linux/Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security.md|Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security.md]]
   - [[Projects/Linux/Project - BIND DNS Server Installation and Caching Name Server.md|Project - BIND DNS Server Installation and Caching Name Server.md]]
   - [[Projects/Linux/Project - Central LDAP-FreeIPA Domain Authentication.md|Project - Central LDAP-FreeIPA Domain Authentication.md]]
+  - [[Projects/terraform/Project - 2-Tier Architecture Setup with RDS and Secret Manager.md|Project - 2-Tier Architecture Setup with RDS and Secret Manager.md]]
 - **Main Notes:** Created 2 deeper-dive notes under `Main Notes/`:
   - [[Main Notes/linux - Logical Volume Manager.md|linux - Logical Volume Manager.md]]
   - [[Main Notes/linux - Boot Initialization and Systemd.md|linux - Boot Initialization and Systemd.md]]
@@ -27,12 +28,16 @@ This backlog tracks all updates, modifications, and restructuring activities per
   - [[Digital Garden/Pattern - Dynamic Volume Pooling and Online FileSystem Expansion.md|Pattern - Dynamic Volume Pooling and Online FileSystem Expansion.md]]
 
 ### Refactored / Upgraded
-- **Reference Notes:** Updated Reference Notes 8-1 to 8-6 by appending cross-linking reference headers pointing to the new RHEL-specific commands in Module 8-9.
-- **Reference Indexes:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog Module 8-9 and all 9 playbooks, and updated [[Reference Notes/--Index--.md|--Index--.md]] to catalog the new CNCF References MOC.
+- **Reference Notes:** Updated Reference Notes 8-1 to 8-6 by appending cross-linking reference headers pointing to the new RHEL-specific commands in Module 8-9, and updated [[Reference Notes/0-10_maintenance_upgrades_and_etcd.md|0-10_maintenance_upgrades_and_etcd.md]] to incorporate the new `etcdutl` tool split commands for offline backups and snapshot restores.
+- **Reference Indexes:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog Module 8-9 and all 9 playbooks, updated [[Reference Notes/--Index--.md|--Index--.md]] to catalog the new CNCF References MOC, and updated [[Reference Notes/10-Index - Terraform on AWS.md|10-Index - Terraform on AWS.md]] to catalog the new 2-Tier project playbook.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from `inflow/`:
 - `Disaster Recovery for your Kubernetes Clusters I - Andy Goldstein & Steve Kriss, Heptio.md`
+- `ETCD BACKUP and REstore.md`
+- `Practical Notes on working with ETCDCTL- ETCDUTL.md`
+- `Day 0—Learn AWS With Terraform in 30 Days (with real-time projects).txt`
+- `Day 2230 - 2-Tier Architecture Setup on AWS Using Terraform.txt`
 
 And from `inflow/linux_administration/`:
 - `01 - 1-Day-1_Course-Intro.txt`

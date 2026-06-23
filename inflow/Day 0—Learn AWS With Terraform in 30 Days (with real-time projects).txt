@@ -1,0 +1,2452 @@
+00:02 Hello everyone and welcome back to my
+00:04 
+
+00:04 channel. My name is Push and I'm
+00:06 
+
+00:06 thrilled to announce the starting of a
+00:09 
+
+00:09 new series which is 30 days of AWS
+00:11 
+
+00:11 Terraform. Yes, we'll be learning AWS
+00:13 
+
+00:13 with Terraform end to end with 30
+00:16 
+
+00:16 fulllength videos. No shortcuts, no
+00:19 
+
+00:19 gimmick, just pure knowledge, just pure
+00:22 
+
+00:22 hands-on so that you would not just
+00:24 
+
+00:24 learn Terraform but also make sure you
+00:26 
+
+00:26 are interview ready. Make sure that you
+00:28 
+
+00:28 apply all the learned skill in your
+00:30 
+
+00:30 day-to-day job or even if you are
+00:32 
+
+00:32 preparing for the interview. This is one
+00:35 
+
+00:35 of a kind the similar series that I did
+00:37 
+
+00:37 for Azure Terraform as well. And I make
+00:40 
+
+00:40 sure that in this series as well I'll
+00:42 
+
+00:42 provide a lot of value. So I will just
+00:46 
+
+00:46 walk you through uh the content of this
+00:48 
+
+00:48 video like why are we doing this day
+00:50 
+
+00:50 zero video and I'm going to share you
+00:53 
+
+00:53 each and every details about the series.
+00:55 
+
+00:55 So let's get into it. So this is what
+00:57 
+
+00:57 we're going to cover in this video.
+00:58 
+
+00:58 We'll cover the prerequisite of this
+01:00 
+
+01:00 playlist. What is covered in this
+01:02 
+
+01:02 playlist. Then we talk about 30 days of
+01:04 
+
+01:04 AWS Terraform challenge. What it is,
+01:07 
+
+01:07 what are the prizes, how to participate
+01:09 
+
+01:09 and there are some early prizes as well.
+01:11 
+
+01:11 Now what's going to be the schedule look
+01:13 
+
+01:13 like for video publishing and what if
+01:16 
+
+01:16 you are stuck somewhere and need help.
+01:18 
+
+01:18 So we'll discuss each and everything. So
+01:20 
+
+01:20 I would highly recommend watching this
+01:21 
+
+01:21 video till the end. Otherwise you will
+01:24 
+
+01:24 miss some important details like so if
+01:26 
+
+01:26 you are new here and we haven't met
+01:27 
+
+01:27 before. Hi my name is Push and this is
+01:30 
+
+01:30 what I do all day long. Cloud and
+01:32 
+
+01:32 DevOps. It is what I like what I love
+01:34 
+
+01:34 and what I love to teach to everyone. I
+01:37 
+
+01:37 have been doing this for past 4 years
+01:39 
+
+01:39 through my channel tech tutorials with
+01:41 
+
+01:41 Push in which you are watching this
+01:42 
+
+01:42 video and I have been in IT for past 13
+01:45 
+
+01:45 plus years and I work at Google as a
+01:47 
+
+01:47 technical solution developer and for the
+01:50 
+
+01:50 past 8 to 10 years I have been working
+01:53 
+
+01:53 with cloud and devops. It is important
+01:55 
+
+01:55 to know my credential because if you are
+01:58 
+
+01:58 following me for next 30 days, you
+02:00 
+
+02:00 should know who am I, what my
+02:02 
+
+02:02 credibility is and whether you should
+02:04 
+
+02:04 follow this series along or not. Right?
+02:07 
+
+02:07 Before opening a book, before opening a
+02:10 
+
+02:10 series or anything like you should be
+02:13 
+
+02:13 knowing who the author is, who the
+02:16 
+
+02:16 publisher is or who the creator is, what
+02:18 
+
+02:18 are their credentials, uh what have they
+02:20 
+
+02:20 done so far and what makes them
+02:22 
+
+02:22 qualified to teach you something, right?
+02:25 
+
+02:25 So if I have not worked with Terraform
+02:27 
+
+02:27 before or if I am something who has just
+02:29 
+
+02:29 uh gathered the knowledge through LLMs,
+02:31 
+
+02:31 Google search and so on and I'm just
+02:33 
+
+02:33 I've just started teaching out everyone.
+02:35 
+
+02:35 I don't think I'd be a credible resource
+02:37 
+
+02:37 for teaching this particular topic.
+02:39 
+
+02:39 Right? So uh that is why I thought it
+02:42 
+
+02:42 would be better if you just understand
+02:44 
+
+02:44 my credentials and how I got introduced
+02:47 
+
+02:47 to Terraform cloud and devops and so on.
+02:49 
+
+02:49 Maybe we'll not go in depth but uh a
+02:51 
+
+02:51 quick introduction. Uh as you can see
+02:53 
+
+02:53 over here this is my certification
+02:56 
+
+02:56 badges. So I have over 20 plus
+02:59 
+
+02:59 certification done so far in cloud and
+03:01 
+
+03:01 devops. Some of them are expired and
+03:03 
+
+03:03 many of them I have reertified as well
+03:05 
+
+03:05 if I found them credible and if I found
+03:07 
+
+03:07 them valuable. So it ranges from
+03:10 
+
+03:10 Kubernetes to AWS to Azure to GCP and
+03:13 
+
+03:13 many more. And Hashikop terapform as
+03:15 
+
+03:15 well the certificate as you can see it's
+03:17 
+
+03:17 over here. It was expired in 2023 and I
+03:20 
+
+03:20 got that in 2020. So five years back. So
+03:23 
+
+03:23 and I have been working with Terapform
+03:25 
+
+03:25 for quite a lot of time like way before
+03:28 
+
+03:28 I have I've acquired the certification
+03:30 
+
+03:30 and I also published the end to end
+03:32 
+
+03:32 series on Azure Terraform which is 28
+03:35 
+
+03:35 videos uh hit. So um and I am a Hashi
+03:39 
+
+03:39 Corp ambassador. Uh this is the badge.
+03:41 
+
+03:41 This is the recent badge from 2025. I
+03:44 
+
+03:44 got another badge in 2024. So I am Hashi
+03:47 
+
+03:47 Cororp ambassador since 2024 because
+03:49 
+
+03:49 this series is AWS plus uh Terraform. Um
+03:54 
+
+03:54 so I am Hashi Cororp ambassador since
+03:56 
+
+03:56 2024 and AWS community builder since
+03:59 
+
+03:59 2021. So it's been 5 years for that as
+04:01 
+
+04:01 well. And you got these badges and
+04:04 
+
+04:04 recognition when you publish uh quality
+04:07 
+
+04:07 content around their products, tools and
+04:09 
+
+04:09 services, right? So these communities
+04:11 
+
+04:11 recognize you as one of their
+04:12 
+
+04:12 ambassadors. So I hold these two badges
+04:14 
+
+04:14 as well and you know you can watch my
+04:17 
+
+04:17 YouTube channel. Uh I have 400 plus
+04:20 
+
+04:20 videos published so far. I have multiple
+04:23 
+
+04:23 end to end playlist whether it is Azure
+04:25 
+
+04:25 DevOps whether it's CKA series which is
+04:27 
+
+04:27 certified Kubernetes administrator
+04:29 
+
+04:29 whether it is Jenkins GCPA certification
+04:32 
+
+04:32 a 900. So I'm all over the place not
+04:34 
+
+04:34 just restricted myself to one cloud or
+04:37 
+
+04:37 tool. um you will find AWS plus Azure
+04:40 
+
+04:40 plus GCP everything in my channel and
+04:44 
+
+04:44 because this series I wanted it to be
+04:46 
+
+04:46 one of a kind that is why you won't see
+04:48 
+
+04:48 any content creator as of today who has
+04:50 
+
+04:50 published the Terraform series with
+04:52 
+
+04:52 multiple clouds so I already completed
+04:54 
+
+04:54 it with Azure Terraform which has
+04:57 
+
+04:57 gathered over 100k plus views so far and
+05:00 
+
+05:00 now I am publishing this AWS Terraform
+05:04 
+
+05:04 series as well with 30 fulllength videos
+05:06 
+
+05:06 and I'm going to explain the content as
+05:08 
+
+05:08 well. So let's go ahead and see the
+05:11 
+
+05:11 GitHub repository. This is the GitHub
+05:13 
+
+05:13 repository. I'll share the link in the
+05:15 
+
+05:15 description section as well. And yeah,
+05:16 
+
+05:16 before that I also publish my book. So I
+05:19 
+
+05:19 believe uh it'll be uh a good to add I'm
+05:23 
+
+05:23 not bragging anything, right? So I'm
+05:25 
+
+05:25 just sharing my credentials with you so
+05:26 
+
+05:26 that you would know whether um I'm
+05:29 
+
+05:29 qualified enough to teach this or not.
+05:30 
+
+05:30 Right? So I have recently published my
+05:32 
+
+05:32 book uh on Kubernetes certification
+05:34 
+
+05:34 exam. If you want to check that out, it
+05:37 
+
+05:37 is available on Amazon uh and many other
+05:41 
+
+05:41 uh book publishing websites like Oreli,
+05:44 
+
+05:44 Barnes & Noble if you are in UK,
+05:46 
+
+05:46 amazon.com.in.ca
+05:49 
+
+05:49 and many other websites. So go and check
+05:52 
+
+05:52 it out. If you find it interesting, you
+05:53 
+
+05:53 can order your copy. So coming back to
+05:56 
+
+05:56 our GitHub repo, as you can see, I have
+05:58 
+
+05:58 not published it. This is the first
+05:59 
+
+05:59 video and still got eight stars and 21
+06:02 
+
+06:02 folks. So thank you so much whoever is
+06:04 
+
+06:04 supporting uh the repository. So if you
+06:07 
+
+06:07 are new here and if you find this
+06:09 
+
+06:09 content helpful so I would highly
+06:11 
+
+06:11 recommend uh doing a star on this
+06:13 
+
+06:13 repository. If not that's okay. So let's
+06:16 
+
+06:16 start with the prerequisites. So here is
+06:18 
+
+06:18 the prerequisites. So you can just
+06:20 
+
+06:20 collapse this section and here are some
+06:22 
+
+06:22 prerequisites.
+06:23 
+
+06:23 As I've told you this series and most of
+06:25 
+
+06:25 the series that I publish on my channel
+06:28 
+
+06:28 it focused on beginners. Still you need
+06:30 
+
+06:30 to have some understanding. Still you
+06:33 
+
+06:33 cannot just start it right away. You
+06:35 
+
+06:35 should have some sort of visibility,
+06:37 
+
+06:37 right? So what you should have before
+06:39 
+
+06:39 starting the series, you should have an
+06:41 
+
+06:41 AWS free account. Okay, the trial
+06:43 
+
+06:43 account or the subscription, paid
+06:45 
+
+06:45 subscription, whatever you have, but you
+06:46 
+
+06:46 need to have it otherwise you won't be
+06:48 
+
+06:48 able to do the hands-on. Then you should
+06:51 
+
+06:51 have working knowledge of AWS. So AWS
+06:53 
+
+06:53 fundamentals, you should know how do we
+06:56 
+
+06:56 provision multiple services through AWS
+06:58 
+
+06:58 console. Not from Terraform. I'm just
+06:59 
+
+06:59 talking about the basic fundamental
+07:01 
+
+07:01 knowledge of AWS uh in multiple
+07:04 
+
+07:04 services. Then you should know how OSI
+07:06 
+
+07:06 model works. What are the different
+07:07 
+
+07:07 protocols and how does SSH, HTTP, HTTPS,
+07:11 
+
+07:11 all these protocol works. So the the
+07:12 
+
+07:12 basic fundamentals knowledge of
+07:14 
+
+07:14 networking. Then you should have ID
+07:17 
+
+07:17 installed either it could be Visual
+07:19 
+
+07:19 Studio Code or any preferred ID of your
+07:21 
+
+07:21 choice. get installed and working
+07:23 
+
+07:23 knowledge of git and github otherwise
+07:25 
+
+07:25 you won't be able to participate in the
+07:27 
+
+07:27 challenge because I will show you how do
+07:28 
+
+07:28 we participate and also uh yeah because
+07:32 
+
+07:32 whenever there is code involved in
+07:35 
+
+07:35 something because terapform files itself
+07:38 
+
+07:38 uh it's some sort of code it's written
+07:40 
+
+07:40 incl
+07:42 
+
+07:42 configuration language still a code and
+07:44 
+
+07:44 we have to maintain the code on a
+07:46 
+
+07:46 version control system such as github so
+07:49 
+
+07:49 that's why it is important to have git
+07:51 
+
+07:51 and github knowledge
+07:52 
+
+07:52 Then you should have a working system
+07:54 
+
+07:54 either Linux, Mac or WSL. Please don't
+07:58 
+
+07:58 ask me if you can practice all of these
+07:59 
+
+07:59 on your mobile phone or anything else.
+08:01 
+
+08:01 Uh like this is not possible I believe.
+08:05 
+
+08:05 So you should have uh even if you have
+08:07 
+
+08:07 Windows make sure you have WSL installed
+08:10 
+
+08:10 so that you can run all the um Linux
+08:13 
+
+08:13 compatible commands over there. And if
+08:15 
+
+08:15 you have Linux or Mac then it's fine.
+08:17 
+
+08:17 You don't need to do anything else but
+08:18 
+
+08:18 you should have the knowledge of Linux
+08:20 
+
+08:20 and shell scripting. Now follow any
+08:22 
+
+08:22 tutorials that you find uh from YouTube
+08:25 
+
+08:25 from your favorite content creator from
+08:27 
+
+08:27 free code camp or whoever you follow
+08:29 
+
+08:29 that's all right doesn't matter right
+08:31 
+
+08:31 you should have this knowledge now basic
+08:33 
+
+08:33 understanding of YAML and JSON because
+08:36 
+
+08:36 this Hashikop configuration language is
+08:38 
+
+08:38 similar to JSON um so it'll be a good to
+08:42 
+
+08:42 have knowledge of JSON otherwise we'll
+08:44 
+
+08:44 be looking into it then you should know
+08:46 
+
+08:46 the deployment strategies so here I have
+08:48 
+
+08:48 shared some link I will add more links
+08:50 
+
+08:50 over here as well but for now I have
+08:52 
+
+08:52 added some links so I have added one for
+08:54 
+
+08:54 this and then there are a couple of
+08:56 
+
+08:56 videos that I have added so deployment
+08:58 
+
+08:58 strategies blue green deployment canary
+09:01 
+
+09:01 deployment uh rolling update and so on
+09:04 
+
+09:04 right so make sure you understand that
+09:06 
+
+09:06 now this is AWS networking fundamental
+09:09 
+
+09:09 this is really important it covers the
+09:11 
+
+09:11 important concepts of VPC subnets
+09:14 
+
+09:14 gateways internet gateway route tables
+09:16 
+
+09:16 and so on so make sure you watch this
+09:18 
+
+09:18 video as well and IP addressing how do
+09:20 
+
+09:20 we calculate IP addresses in a VPC and
+09:23 
+
+09:23 then um how do we calculate the next C
+09:27 
+
+09:27 range? How do we divide a VPC into
+09:29 
+
+09:29 multiple subnets? What is subnet mask?
+09:31 
+
+09:31 What how do we do the calculation?
+09:33 
+
+09:33 Everything will be covered in this short
+09:34 
+
+09:34 video. So make sure you understand these
+09:37 
+
+09:37 prerequisites. Okay. So prerequisite is
+09:40 
+
+09:40 done. That's all you need. And that is
+09:42 
+
+09:42 why I'm giving you some time. That is
+09:44 
+
+09:44 why I'm not publishing day one video
+09:46 
+
+09:46 from tomorrow. I'm giving you a week of
+09:48 
+
+09:48 time. and uh we'll come back to the
+09:50 
+
+09:50 schedule from when I'll be publishing
+09:52 
+
+09:52 it. But let's start with the second one
+09:55 
+
+09:55 which is what is covered. So if you go
+09:57 
+
+09:57 back to the repo, this entire curriculum
+09:60 
+
+09:60 is divided into three core modules.
+10:04 
+
+10:04 Okay, if you are just preparing for uh
+10:06 
+
+10:06 Terapform certification, the first
+10:08 
+
+10:08 module should be enough. First module
+10:09 
+
+10:09 and maybe one or two concept from module
+10:11 
+
+10:11 two and three, I will walk you through
+10:13 
+
+10:13 that. But first module has around let's
+10:16 
+
+10:16 say um 13 I believe yeah 13 videos in
+10:20 
+
+10:20 the first module. So it should cover
+10:22 
+
+10:22 everything about uh Terraform
+10:24 
+
+10:24 certification exam and first module has
+10:27 
+
+10:27 all the Terraform core concepts right it
+10:30 
+
+10:30 starts with understanding what is
+10:31 
+
+10:31 Terraform and infrastructure as a code
+10:33 
+
+10:33 and then in the first video itself day
+10:35 
+
+10:35 one video we'll install Terraform
+10:37 
+
+10:37 understand it then Terraform provider
+10:40 
+
+10:40 all the different concepts related to
+10:42 
+
+10:42 providers then we'll start creating
+10:44 
+
+10:44 resources from day three onwards like
+10:47 
+
+10:47 we'll start with the bare minimum VPC
+10:49 
+
+10:49 and S3 bucket creation understand the
+10:52 
+
+10:52 dependencies
+10:53 
+
+10:53 then we'll implement remote backend
+10:56 
+
+10:56 state file management and we understand
+10:58 
+
+10:58 everything about state files and uh how
+11:01 
+
+11:01 do we manage remote back end using S3
+11:03 
+
+11:03 bucket then we'll look into variables uh
+11:07 
+
+11:07 input output local variables what are
+11:09 
+
+11:09 the precedence of variable what are the
+11:11 
+
+11:11 different ways through which we can use
+11:13 
+
+11:13 the variables then file structure like
+11:16 
+
+11:16 how do we organize the terraform project
+11:19 
+
+11:19 into multiple files what are the best
+11:20 
+
+11:20 practices is how does Terapform loads
+11:23 
+
+11:23 these file all those things will be
+11:25 
+
+11:25 covered in day four days sorry day six
+11:28 
+
+11:28 in day seven we'll understand type
+11:30 
+
+11:30 constraints right so different data
+11:32 
+
+11:32 types so if you are from programming
+11:34 
+
+11:34 background you would probably already be
+11:36 
+
+11:36 familiar with these concept but if you
+11:38 
+
+11:38 are not don't worry I've got you covered
+11:40 
+
+11:40 I've explained this from a basic very
+11:43 
+
+11:43 beginner point of view and after this
+11:45 
+
+11:45 you won't have any issues in
+11:47 
+
+11:47 understanding these type constraints or
+11:49 
+
+11:49 data types in terapform so string
+11:51 
+
+11:51 number, boolean, map, set, list, tpple
+11:53 
+
+11:53 objects, everything will be covered with
+11:54 
+
+11:54 the help of example and with the help of
+11:57 
+
+11:57 demos. Then meta argument uh count for
+12:00 
+
+12:00 each loop, for loop and everything will
+12:03 
+
+12:03 be covered with the help of practical
+12:05 
+
+12:05 examples. Then life cycle meta
+12:08 
+
+12:08 arguments. So there are some meta
+12:10 
+
+12:10 arguments. We'll be covering that in day
+12:12 
+
+12:12 9. In day 10, we'll talk about and not
+12:16 
+
+12:16 just talk about uh we'll do the hands-on
+12:18 
+
+12:18 demo of uh dynamic blocks and
+12:20 
+
+12:20 expressions. Conditional expressions
+12:22 
+
+12:22 like if else uh and then there are splat
+12:25 
+
+12:25 expression, there are dynamic blocks,
+12:27 
+
+12:27 right? So everything will be covered
+12:28 
+
+12:28 over here. And in day 11 and 12, this is
+12:32 
+
+12:32 divided into two videos because it was
+12:34 
+
+12:34 such a long topic. There are so many
+12:36 
+
+12:36 functions that I have covered. That's
+12:37 
+
+12:37 why this video 11 was maybe an hour long
+12:41 
+
+12:41 or more than that. And then uh video 12
+12:44 
+
+12:44 is under 30 minutes or so. So that's why
+12:46 
+
+12:46 I divided into two videos. So day 12 and
+12:49 
+
+12:49 13 and day 13 has data sources example.
+12:52 
+
+12:52 Okay. So that's your core Terraform
+12:55 
+
+12:55 concepts till day 13. Now in module 2 we
+12:59 
+
+12:59 have many projects. So uh day 14 we'll
+13:03 
+
+13:03 start with static website hosting on S3
+13:06 
+
+13:06 with CloudFront. Everything will be done
+13:07 
+
+13:07 by Terraform. Then uh day 15 we have VPC
+13:11 
+
+13:11 peering. Uh we'll create multiple VPCs.
+13:14 
+
+13:14 We'll establish peering connection with
+13:16 
+
+13:16 them. Everything will be done by
+13:17 
+
+13:17 Terraform. In day 16 we'll be creating
+13:20 
+
+13:20 multiple IM roles, multiple IM's users,
+13:24 
+
+13:24 groups and creating a dynamic
+13:26 
+
+13:26 association between those and so on. In
+13:29 
+
+13:29 day 17, we'll be creating AWS web
+13:32 
+
+13:32 application using elastic beantock and
+13:35 
+
+13:35 we'll be doing blue green deployment
+13:37 
+
+13:37 over here. So it's another important
+13:39 
+
+13:39 project. In day 18, uh there is a lambda
+13:42 
+
+13:42 function in which you'll upload the file
+13:44 
+
+13:44 to S3 bucket and based on that trigger,
+13:46 
+
+13:46 it will trigger a lambda function. That
+13:49 
+
+13:49 function will compress and download your
+13:51 
+
+13:51 file in a separate S3 bucket. So that's
+13:54 
+
+13:54 important use case. In day 19, we'll
+13:57 
+
+13:57 understand Terraform provisioners. It's
+13:60 
+
+13:60 sort of a mini project, but uh it's more
+14:03 
+
+14:03 of a concept, right? So it's important
+14:05 
+
+14:05 to understand. Then we have video 20.
+14:09 
+
+14:09 From here we'll start a realtime
+14:11 
+
+14:11 project. So first is EKS cluster
+14:13 
+
+14:13 creation with manage node group custom
+14:15 
+
+14:15 modules. So there are modules in uh
+14:19 
+
+14:19 Terraform that are created for us which
+14:22 
+
+14:22 are public modules and then we also
+14:24 
+
+14:24 create our own modules which is called
+14:26 
+
+14:26 custom modules. These are nothing but
+14:28 
+
+14:28 the templates. Right? So we create our
+14:31 
+
+14:31 own custom modules and using those
+14:33 
+
+14:33 modules uh we'll create multiple EKS
+14:37 
+
+14:37 related resources. Day 21 we have
+14:40 
+
+14:40 another mini project which is AWS policy
+14:43 
+
+14:43 and governance. In day 22 we have RDS
+14:47 
+
+14:47 database creation another mini project.
+14:49 
+
+14:49 Day 23 uh AWS monitoring project. Day 24
+14:53 
+
+14:53 the last mini project which is around
+14:56 
+
+14:56 creating a highly available scalable
+14:57 
+
+14:57 infrastructure. It will have multiple
+14:59 
+
+14:59 EC2 instances with autoscaling groups
+15:02 
+
+15:02 and load balancer, net gateways and so
+15:04 
+
+15:04 on. Right? So that's module two. Module
+15:08 
+
+15:08 3 will have advanced concepts like
+15:10 
+
+15:10 Terraform import. It's another real-time
+15:13 
+
+15:13 project. Then Terapform cloud and
+15:15 
+
+15:15 workspaces. So this is how the manage
+15:17 
+
+15:17 offering of Terraform comes into the
+15:19 
+
+15:19 picture and how do you create multiple
+15:21 
+
+15:21 workspaces and use that Terraform cloud.
+15:25 
+
+15:25 Then day 27 we have AWS DevOps with
+15:28 
+
+15:28 Teraphform. So we'll be provisioning
+15:29 
+
+15:29 CI/CD pipeline and using that pipeline
+15:32 
+
+15:32 we'll be executing Terapform the
+15:34 
+
+15:34 Terapform commands to provision the
+15:36 
+
+15:36 infrastructure for you. Day 28 really
+15:39 
+
+15:39 important three- tier architecture
+15:42 
+
+15:42 complete architecture which is highly
+15:44 
+
+15:44 available fault tolerant using web tier
+15:46 
+
+15:46 application tier database tier includes
+15:48 
+
+15:48 load balancing autocaling and everything
+15:52 
+
+15:52 built in. Okay. So that's important one.
+15:54 
+
+15:54 Day n 29 we'll be looking into githops
+15:57 
+
+15:57 with terraform. So we'll understand what
+15:59 
+
+15:59 is githops. We'll uh implement argo cd
+16:03 
+
+16:03 and based on that we'll perform the
+16:06 
+
+16:06 githop cicd pipeline. Now day 30, this
+16:09 
+
+16:09 is not day zero. This is day 30. That's
+16:11 
+
+16:11 a mistake. We'll be implementing
+16:13 
+
+16:13 terraform drift detection using
+16:15 
+
+16:15 terraform cloud. Okay. So whenever
+16:17 
+
+16:17 someone makes the changes directly from
+16:19 
+
+16:19 the infrastructure it won't let it or it
+16:21 
+
+16:21 will roll back the changes to make sure
+16:23 
+
+16:23 that whatever is there in GitHub
+16:25 
+
+16:25 whatever uh your configuration is that
+16:28 
+
+16:28 is the only source of truth. So that's
+16:31 
+
+16:31 called drift detection. So we'll be
+16:33 
+
+16:33 doing that using Terapform cloud. Yeah.
+16:35 
+
+16:35 So so that these are the all the topics
+16:38 
+
+16:38 that we'll be covering. So that is what
+16:39 
+
+16:39 is covered. Now important part what is
+16:42 
+
+16:42 30 days of AWS Terraform. So this is a
+16:44 
+
+16:44 challenge that we have hosted and in
+16:46 
+
+16:46 this challenge what you will do you will
+16:48 
+
+16:48 watch all the videos and then you will
+16:51 
+
+16:51 implement the task given in each of the
+16:53 
+
+16:53 folders. So if you go over here lessons
+16:55 
+
+16:55 folder and let's say you see every day
+16:59 
+
+16:59 has a dedicated folder. So let's say you
+17:01 
+
+17:01 go to any folder let's say day three.
+17:04 
+
+17:04 Okay in day three folder there'll be a
+17:07 
+
+17:07 readme file which will have notes and
+17:08 
+
+17:08 everything that we have covered through
+17:10 
+
+17:10 the video. Right? Everything will be
+17:12 
+
+17:12 there uh in this including the commands,
+17:15 
+
+17:15 code snippets, everything. And then
+17:17 
+
+17:17 it'll have a task.md file. This is what
+17:20 
+
+17:20 you need to implement to participate in
+17:22 
+
+17:22 the challenge. So watch the video and
+17:26 
+
+17:26 take notes. And this is the task. Create
+17:27 
+
+17:27 a terapform file to provision VPC and S3
+17:30 
+
+17:30 bucket. Create implicit dependency
+17:33 
+
+17:33 between them. And don't worry about the
+17:34 
+
+17:34 variables, files, etc. We will do that
+17:36 
+
+17:36 later on because by day three we have
+17:39 
+
+17:39 not covered those things as over here.
+17:41 
+
+17:41 Right? Then you need to write a short
+17:43 
+
+17:43 blog about what you have learned and
+17:46 
+
+17:46 include your own diagrams and code
+17:48 
+
+17:48 examples. Make sure you write your own
+17:50 
+
+17:50 terapform code otherwise you won't be
+17:52 
+
+17:52 learning as much. Then within the blog
+17:55 
+
+17:55 make sure you embed the video not just
+17:57 
+
+17:57 hyperlinking. Make sure you embed the
+17:59 
+
+17:59 video so that it helps us spread the
+18:02 
+
+18:02 visibility. Then share your blog on
+18:04 
+
+18:04 LinkedIn or Twitter with the hashtag 30
+18:08 
+
+18:08 days of AWS terraform. Tag me and the
+18:11 
+
+18:11 cloudups community. We have a Twitter
+18:13 
+
+18:13 handle as well as we have a LinkedIn
+18:15 
+
+18:15 page. So make sure you follow the page
+18:18 
+
+18:18 and tag both of us and then submit your
+18:21 
+
+18:21 work by creating an issue. Now there are
+18:24 
+
+18:24 some tips you can go over here. But then
+18:26 
+
+18:26 how would you uh do the submission over
+18:29 
+
+18:29 here? So you have written the blog, you
+18:31 
+
+18:31 have shared the blog on social media.
+18:32 
+
+18:32 But the next step is how do we get the
+18:35 
+
+18:35 blog submissions automated.
+18:37 
+
+18:37 So you go over here to the issues. Okay.
+18:40 
+
+18:40 So there is a second tab issues create a
+18:42 
+
+18:42 new issue. Then you will see some
+18:45 
+
+18:45 template over here. So there is this 30
+18:47 
+
+18:47 days of AWS terapform challenge
+18:49 
+
+18:49 submission. So click over there and then
+18:51 
+
+18:51 make sure you follow the template in the
+18:52 
+
+18:52 same format. So let's say uh you are
+18:55 
+
+18:55 following day three, right? So just
+18:57 
+
+18:57 replace this with day three and add your
+19:00 
+
+19:00 GitHub username over here. So for
+19:02 
+
+19:02 example, my username is this.
+19:05 
+
+19:05 Now which day of challenge? Let's say
+19:08 
+
+19:08 day number three. Challenge topic day
+19:11 
+
+19:11 three is S3 bucket and VPC creation.
+19:16 
+
+19:16 Now add your blog post over here. So
+19:18 
+
+19:18 let's say I'll just add something
+19:20 
+
+19:20 random.
+19:23 
+
+19:23 The cloud ops community.org og.
+19:27 
+
+19:27 Okay. And then add your social media
+19:29 
+
+19:29 post URL over here. Don't add dummy
+19:32 
+
+19:32 values. Only add the valid values
+19:34 
+
+19:34 otherwise your submission will be
+19:35 
+
+19:35 rejected.
+19:37 
+
+19:37 Right? Then your practice GitHub
+19:39 
+
+19:39 repository. So make sure you have your
+19:41 
+
+19:41 own GitHub repository. You can fork this
+19:43 
+
+19:43 repository and make your changes in your
+19:45 
+
+19:45 own GitHub repository and provide the
+19:47 
+
+19:47 repository URL over here. Okay. Again,
+19:50 
+
+19:50 no dummy value. Make sure you provide
+19:52 
+
+19:52 your own value. So you can just write a
+19:55 
+
+19:55 couple of lines over here. Today I have
+19:57 
+
+19:57 learned how to implement
+20:02 
+
+20:02 S3 bucket and VPC
+20:06 
+
+20:06 and created dependencies
+20:14 
+
+20:14 between multiple resources. Okay. And
+20:18 
+
+20:18 after that just verify all these things.
+20:21 
+
+20:21 This this is a checklist. Okay.
+20:23 
+
+20:23 completed today's task present in the
+20:25 
+
+20:25 GitHub repo? Yes. Published blog? Yes.
+20:28 
+
+20:28 Video embedded? Yes. Posted on social
+20:31 
+
+20:31 media? Yes. Push the code to GitHub
+20:33 
+
+20:33 repository? Yes. Once you have done that
+20:36 
+
+20:36 and you have done everything, now hit
+20:38 
+
+20:38 create. Okay. Over here.
+20:41 
+
+20:41 As soon as you create the issue, it will
+20:44 
+
+20:44 be assigned to someone in my team as
+20:46 
+
+20:46 well as there is a GitHub action. Okay.
+20:48 
+
+20:48 Or let's say I I'm going to assign it to
+20:50 
+
+20:50 myself as a maintainer of this repo or
+20:54 
+
+20:54 some other maintainer Baba or Surep it
+20:57 
+
+20:57 will be assigned to them and they will
+20:58 
+
+20:58 start reviewing it. Once they review
+21:02 
+
+21:02 they will add a tag over here. Okay. So
+21:04 
+
+21:04 I I I'm not really sure what the tag is
+21:06 
+
+21:06 but I believe that tag was
+21:10 
+
+21:10 verified. Okay, let me try this. So once
+21:13 
+
+21:13 we verify this so this we have added to
+21:16 
+
+21:16 make sure that we don't have the spam
+21:17 
+
+21:17 submissions right only valid submissions
+21:19 
+
+21:19 are accounted once we verify it and I
+21:24 
+
+21:24 think that will be it and then GitHub
+21:27 
+
+21:27 yeah you see it's already closed because
+21:30 
+
+21:30 we have the automation in place whenever
+21:33 
+
+21:33 it finds the verified tag it will review
+21:37 
+
+21:37 the submission and based on that it will
+21:40 
+
+21:40 complete the PR so Let's see over here.
+21:45 
+
+21:45 So it GitHub action triggered. Uh there
+21:47 
+
+21:47 is a pipeline that we have created and
+21:49 
+
+21:49 it says your day three submission has
+21:52 
+
+21:52 been processed and added to the progress
+21:54 
+
+21:54 file. Now there is your progress file.
+21:56 
+
+21:56 There is the leadership board. So if you
+21:58 
+
+21:58 open this progress file,
+22:01 
+
+22:01 it will have all your progress
+22:02 
+
+22:02 documented. So for example, currently I
+22:05 
+
+22:05 have completed day three, right? So day
+22:06 
+
+22:06 three is over here. All the details of
+22:08 
+
+22:08 day three like these are all the test
+22:09 
+
+22:09 submissions that I did. So day one is
+22:11 
+
+22:11 over here and here are the my repository
+22:14 
+
+22:14 details and everything.
+22:16 
+
+22:16 Now this will be inside the submissions.
+22:19 
+
+22:19 So let's go back. Let's go back to the
+22:22 
+
+22:22 repository.
+22:23 
+
+22:23 In repository you see this folder
+22:25 
+
+22:25 submissions. So for your username
+22:28 
+
+22:28 there'll be a file created inside the
+22:30 
+
+22:30 participants board. Right? So there are
+22:32 
+
+22:32 three files. We all three are
+22:34 
+
+22:34 maintainers and this is what we have
+22:36 
+
+22:36 tested. So no matter how many
+22:39 
+
+22:39 submissions I do, there'll be a single
+22:41 
+
+22:41 file with my name because it's tracked
+22:43 
+
+22:43 with my GitHub username. So if I go
+22:46 
+
+22:46 inside that, okay, this is the file that
+22:48 
+
+22:48 we have seen and because we are doing
+22:51 
+
+22:51 everything automatically uh otherwise uh
+22:54 
+
+22:54 it it is a lot of pain to verify in each
+22:58 
+
+22:58 and every entry. Uh and then so inside
+23:02 
+
+23:02 the submissions you have a leadership
+23:03 
+
+23:03 board. So if you click on that it will
+23:05 
+
+23:05 show you the leadership board. Okay. So
+23:07 
+
+23:07 at the end of the week we can just
+23:09 
+
+23:09 review the board and we can just verify
+23:11 
+
+23:11 the top contributors.
+23:14 
+
+23:14 Okay. Uh this is the participation.
+23:16 
+
+23:16 Here's the rank. Uh completed how many
+23:19 
+
+23:19 days? Because I have two submissions. So
+23:20 
+
+23:20 I have completed two days. Current
+23:22 
+
+23:22 streak is one day. Latest day is day
+23:24 
+
+23:24 three which is just added. This is the
+23:26 
+
+23:26 last submission status is active. And
+23:29 
+
+23:29 here are all the statistics like we have
+23:31 
+
+23:31 total participants, total submissions,
+23:33 
+
+23:33 blah blah blah and all the metadata
+23:34 
+
+23:34 around it. Right? So this leadership
+23:36 
+
+23:36 board will be visible to you and you can
+23:40 
+
+23:40 verify the submissions and everything.
+23:41 
+
+23:41 Right? So this is how we will be
+23:44 
+
+23:44 tracking this 30 days of AWS Terraform
+23:46 
+
+23:46 challenge. Okay. So this is what it is.
+23:50 
+
+23:50 Now about prizes. So uh there are a lot
+23:53 
+
+23:53 of prizes under discussion and what we
+23:55 
+
+23:55 have finalized so far is I'm just going
+23:57 
+
+23:57 to add it over here.
+23:60 
+
+23:60 So till now we have finalized um
+24:04 
+
+24:04 $20 AWS credits
+24:08 
+
+24:08 to
+24:10 
+
+24:10 50 participants
+24:13 
+
+24:13 or 50 winners. Let's let's call it 50
+24:16 
+
+24:16 winners, not just participants. You have
+24:18 
+
+24:18 to be a winner to get that. So that's
+24:21 
+
+24:21 the first prize. Now earlier we were
+24:23 
+
+24:23 planning or what we have done till now
+24:26 
+
+24:26 for other series is we have provided
+24:29 
+
+24:29 these prizes at the end of the series.
+24:31 
+
+24:31 But this time we are doing something
+24:33 
+
+24:33 different because there are many
+24:35 
+
+24:35 students who will be watching this uh
+24:37 
+
+24:37 series and following the challenge.
+24:39 
+
+24:39 There are many professionals who don't
+24:41 
+
+24:41 have let's say an AWS account and they
+24:43 
+
+24:43 need some sort of credit to help them
+24:45 
+
+24:45 with their learning journey. Right? So
+24:47 
+
+24:47 we have decided this time we'll be
+24:50 
+
+24:50 providing this $20 credit to 50 winners
+24:54 
+
+24:54 at the end of the first week. Okay, by
+24:58 
+
+24:58 end of seven videos or six videos
+25:02 
+
+25:02 whatever right so this is what will be
+25:04 
+
+25:04 so that you can use these credits to
+25:07 
+
+25:07 create multiple real-time projects going
+25:09 
+
+25:09 forward because some of them will need
+25:12 
+
+25:12 some amount to be invested right so
+25:14 
+
+25:14 here's a chance uh so now learning is
+25:16 
+
+25:16 not an excuse you cannot say I don't
+25:19 
+
+25:19 have credits and I I cannot provision
+25:21 
+
+25:21 the resources or do the hands-on here's
+25:23 
+
+25:23 the chance and it's not just for five or
+25:26 
+
+25:26 10 winners. This is for 50 winners and
+25:30 
+
+25:30 uh this is being provided by AWS
+25:32 
+
+25:32 community. So a huge shout out to AWS
+25:34 
+
+25:34 communities especially their community
+25:35 
+
+25:35 managers who help me with uh securing
+25:38 
+
+25:38 these credits. So thank you so much. The
+25:41 
+
+25:41 next prize is uh I'm giving away
+25:45 
+
+25:45 this is from my site uh 10 copies 10
+25:49 
+
+25:49 hard copies of my book. this one over
+25:52 
+
+25:52 here uh certified Kubernetes
+25:54 
+
+25:54 administrator I'm giving 10 copies of it
+25:57 
+
+25:57 to 10 winners but this will be at the
+25:59 
+
+25:59 end of the challenge okay so 10 copies
+26:02 
+
+26:02 of CK book that's the next prize the
+26:06 
+
+26:06 third prize is
+26:10 
+
+26:10 okay this is yet to be decided so I'm
+26:12 
+
+26:12 still working on it but uh I'm trying to
+26:16 
+
+26:16 get the details like I have contacted
+26:18 
+
+26:18 Hashikor community for this and if they
+26:20 
+
+26:20 are planning to support the challenge.
+26:23 
+
+26:23 So if they provide us some funds, we can
+26:26 
+
+26:26 have another uh prize over here.
+26:29 
+
+26:29 Otherwise, I'll try to see something
+26:30 
+
+26:30 that I can do from my pocket. That's all
+26:32 
+
+26:32 right. Okay. So these are the prizes.
+26:35 
+
+26:35 Participations. How to participate? We
+26:37 
+
+26:37 have already discussed early wins. This
+26:40 
+
+26:40 is the early win which is uh 20 AWS
+26:43 
+
+26:43 credits, right? So you can take benefit
+26:46 
+
+26:46 of it. Now the next part is what's the
+26:50 
+
+26:50 schedule be like? Okay. So as I've told
+26:53 
+
+26:53 you I'll be publishing one video each
+26:56 
+
+26:56 day, right? So why don't I do that while
+26:58 
+
+26:58 we are here together, right? So all the
+27:02 
+
+27:02 videos as you can see I have uploaded
+27:04 
+
+27:04 six videos already. So let me just
+27:06 
+
+27:06 schedule it. Um when do we start
+27:10 
+
+27:10 scheduling it from? Okay. So let's see.
+27:14 
+
+27:14 Let's click on schedule. Today is what?
+27:17 
+
+27:17 17th. Uh let's give everyone one week to
+27:20 
+
+27:20 complete the prerequisites and if
+27:22 
+
+27:22 someone is new to it and let's start
+27:25 
+
+27:25 publishing it from 24th which is Monday.
+27:29 
+
+27:29 Okay. So 24
+27:31 
+
+27:31 and I usually publish at 4:00 a.m. EST.
+27:34 
+
+27:34 This is the EST time. If you are in any
+27:36 
+
+27:36 other time zone um it'll be different
+27:38 
+
+27:38 for you. And I'm going to set it as
+27:40 
+
+27:40 premier.
+27:42 
+
+27:42 Okay. So here is the schedule. So first
+27:46 
+
+27:46 video is published it'll be 24th
+27:49 
+
+27:49 November mark the date. Now next video
+27:52 
+
+27:52 over here schedule next day 25th
+27:57 
+
+27:57 4:00 a.m.
+27:60 
+
+27:60 set as premier done. Now next video
+28:04 
+
+28:04 which is day three
+28:06 
+
+28:06 schedule
+28:08 
+
+28:08 26
+28:10 
+
+28:10 4:00 a.m.
+28:14 
+
+28:14 set as premier. Done. I'm setting it as
+28:16 
+
+28:16 premier so that you can also see and you
+28:18 
+
+28:18 can click on notify me as soon as it is
+28:20 
+
+28:20 uploaded. Right? So the next one is over
+28:25 
+
+28:25 here
+28:27 
+
+28:27 schedule and this is going to be 27
+28:33 
+
+28:33 4 a.m.
+28:35 
+
+28:35 set as premier. And the last one, oh no,
+28:39 
+
+28:39 not the last one. Now we have fifth one
+28:43 
+
+28:43 which is over here
+28:47 
+
+28:47 and this is 28th
+28:51 
+
+28:51 4:00 a.m.
+28:55 
+
+28:55 schedule
+28:58 
+
+28:58 and the last one for now is going to be
+29:04 
+
+29:04 29th.
+29:06 
+
+29:06 So yes, videos will be there from
+29:08 
+
+29:08 throughout the week, 7 days a week
+29:11 
+
+29:11 because I aim at completing this before
+29:13 
+
+29:13 the Christmas because as soon as the
+29:16 
+
+29:16 holiday starts, uh yeah, you should be
+29:20 
+
+29:20 having some time off because you have
+29:23 
+
+29:23 completed everything, right? So you can
+29:25 
+
+29:25 see the schedule over here from 25th to
+29:28 
+
+29:28 29th all the videos are published. 24th,
+29:31 
+
+29:31 5th, 6, 7, 8, 9. And after that onwards,
+29:35 
+
+29:35 you'll be seeing one video each day. No
+29:37 
+
+29:37 matter if it's a weekend or weekday,
+29:39 
+
+29:39 every day you'll be seeing the video.
+29:42 
+
+29:42 Make sure you complete the task. Make
+29:45 
+
+29:45 sure you complete all the prerequisites
+29:49 
+
+29:49 and make sure you participate in the
+29:51 
+
+29:51 challenge. Share it on your social
+29:52 
+
+29:52 media. Share the videos and resources
+29:55 
+
+29:55 with your friends and colleagues and so
+29:57 
+
+29:57 that they can also join you with this
+29:58 
+
+29:58 learning marathon. It's not a sprint.
+30:00 
+
+30:00 You don't have to run alone. you have to
+30:02 
+
+30:02 run together in a group, right? So, help
+30:06 
+
+30:06 each other, support each other and if
+30:08 
+
+30:08 you are still stuck and if you need
+30:10 
+
+30:10 help, then go over here the cloud ops
+30:13 
+
+30:13 community.org,
+30:15 
+
+30:15 click join us. It will redirect you to
+30:17 
+
+30:17 our discord server which is over here.
+30:20 
+
+30:20 Now, this is a wonderful place. We have
+30:23 
+
+30:23 5,300 plus active members. Why I say
+30:26 
+
+30:26 active members? Because we purge the
+30:27 
+
+30:27 inactive members from time to time.
+30:30 
+
+30:30 Okay? And if you scroll down and on the
+30:33 
+
+30:33 left side you'll see there is a category
+30:34 
+
+30:34 which says Terraform courses AWS plus
+30:37 
+
+30:37 Azure. There is a separate channel for
+30:39 
+
+30:39 Azure Terraform and I have created one
+30:42 
+
+30:42 separate channel for AWS Terraform which
+30:44 
+
+30:44 which is this course. If if you are
+30:46 
+
+30:46 facing any issue what you need to do is
+30:48 
+
+30:48 first go over here okay and then click
+30:52 
+
+30:52 on this post guidelines. Okay. Now copy
+30:57 
+
+30:57 this template. Okay. It basically says
+30:59 
+
+30:59 that provide as detailed as possible
+31:03 
+
+31:03 whenever you are asking for any
+31:05 
+
+31:05 assistance. Provide issue summary,
+31:07 
+
+31:07 provide step to reproduce, expected
+31:09 
+
+31:09 result, actual result and the error
+31:11 
+
+31:11 details. Okay. So more details you
+31:13 
+
+31:13 provide it will help others to help you
+31:16 
+
+31:16 with ease without asking a lot of
+31:18 
+
+31:18 questions back and forth and with
+31:20 
+
+31:20 knowing all the context. Right? So click
+31:22 
+
+31:22 on new post and ask your question. Let's
+31:25 
+
+31:25 say day one
+31:28 
+
+31:28 stuck with understanding what is right.
+31:33 
+
+31:33 Enter your message over here. So this is
+31:36 
+
+31:36 rendered in markdown. So you can just
+31:38 
+
+31:38 use the shortcuts. Let's say I've done
+31:40 
+
+31:40 the bold or you can add
+31:44 
+
+31:44 um other markdown formats such as double
+31:48 
+
+31:48 star for subheadings. Provide the issue
+31:50 
+
+31:50 summary. Provide actual results. You can
+31:53 
+
+31:53 provide error details over here. let's
+31:55 
+
+31:55 say
+31:57 
+
+31:57 error not found
+32:01 
+
+32:01 right something like that and click on
+32:02 
+
+32:02 post once you do that someone from the
+32:05 
+
+32:05 community will help you with that
+32:08 
+
+32:08 concept and it's not just the community
+32:11 
+
+32:11 like you can also view um the all the
+32:14 
+
+32:14 different post all the different threads
+32:16 
+
+32:16 inside that channel and if you think
+32:17 
+
+32:17 that you can help someone please do that
+32:20 
+
+32:20 because this is a community effort right
+32:22 
+
+32:22 everyone is helping each other without
+32:24 
+
+32:24 asking asking anything in return. So
+32:26 
+
+32:26 make sure you help others and you can
+32:28 
+
+32:28 also expect the same from everyone. I'll
+32:31 
+
+32:31 also try to help. We have wonderful
+32:33 
+
+32:33 maintainers. Uh we have web, we have all
+32:35 
+
+32:35 other maintainers who are there to help.
+32:37 
+
+32:37 We have Dave. So they will try to also
+32:40 
+
+32:40 help. But make sure you help each other.
+32:42 
+
+32:42 Make sure you take this as a learning
+32:45 
+
+32:45 challenge, as a learning marathon, not a
+32:48 
+
+32:48 sprint. You don't have to run alone.
+32:50 
+
+32:50 Let's do that in a group. And if you
+32:52 
+
+32:52 need a dedicated study group in the
+32:53 
+
+32:53 Discord community, take a team of five,
+32:56 
+
+32:56 okay? Make a group of five, share the
+32:59 
+
+32:59 details with me and I'll create a group
+33:01 
+
+33:01 for you. Okay? Make sure uh you help
+33:04 
+
+33:04 each other. That's it. That's the only
+33:06 
+
+33:06 ask. Make sure you do the hands-on all
+33:08 
+
+33:08 the hands-on. It is really important.
+33:10 
+
+33:10 Otherwise, you just watch the video and
+33:13 
+
+33:13 at the end of it or after a couple of
+33:15 
+
+33:15 days, you will lose the context. And
+33:17 
+
+33:17 without doing the hands-on you will not
+33:19 
+
+33:19 be able to explain in the interview when
+33:21 
+
+33:21 when someone asks you okay so you have
+33:23 
+
+33:23 created this this this project like what
+33:26 
+
+33:26 challenges did you face you won't be
+33:28 
+
+33:28 able to explain it to them but if you
+33:31 
+
+33:31 have implemented it yourself muscle
+33:33 
+
+33:33 memory will make you remember okay this
+33:36 
+
+33:36 is where I got stuck and this is how I
+33:38 
+
+33:38 resolved the issue so make sure you do
+33:40 
+
+33:40 that that's the only ask so I will see
+33:42 
+
+33:42 you on 24th with day one video make sure
+33:45 
+
+33:45 you follow along make sure you Subscribe
+33:46 
+
+33:46 the channel and make sure you share it
+33:48 
+
+33:48 with whoever you can. Thank you so much
+33:50 
+
+33:50 for watching. I wish you have a
+33:52 
+
+33:52 wonderful day. Thank you.
