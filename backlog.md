@@ -3,11 +3,13 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
-## [2026-06-23] - Ingestion: RHEL Administration Course Transcripts (Module 8-9)
+## [2026-06-23] - Ingestion: RHEL & CNCF Disaster Recovery Transcripts
 
 ### Added
-- **Reference Notes:** Created the new high-density RHEL administration reference module:
+- **Reference Notes:** Created the new high-density RHEL administration reference module and CNCF references module:
   - [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]
+  - [[Reference Notes/12-Index - CNCF References.md|12-Index - CNCF References.md]]
+  - [[Reference Notes/12-1_cncf_kubernetes_disaster_recovery.md|12-1_cncf_kubernetes_disaster_recovery.md]]
 - **Projects:** Created 9 detailed hands-on project playbooks under `Projects/Linux/`:
   - [[Projects/Linux/Project - User Administration & POSIX-ACL Hardening.md|Project - User Administration & POSIX-ACL Hardening.md]]
   - [[Projects/Linux/Project - GRUB Boot Security & Root Password Recovery.md|Project - GRUB Boot Security & Root Password Recovery.md]]
@@ -26,10 +28,13 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 ### Refactored / Upgraded
 - **Reference Notes:** Updated Reference Notes 8-1 to 8-6 by appending cross-linking reference headers pointing to the new RHEL-specific commands in Module 8-9.
-- **Reference Indexes:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog Module 8-9 and all 9 playbooks.
+- **Reference Indexes:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog Module 8-9 and all 9 playbooks, and updated [[Reference Notes/--Index--.md|--Index--.md]] to catalog the new CNCF References MOC.
 
 ### Ingested Inflow Sources
-Processed and integrated the following 59 files from `inflow/linux_administration/`:
+Processed and integrated the following files from `inflow/`:
+- `Disaster Recovery for your Kubernetes Clusters I - Andy Goldstein & Steve Kriss, Heptio.md`
+
+And from `inflow/linux_administration/`:
 - `01 - 1-Day-1_Course-Intro.txt`
 - `02 - 2-Day-1_Course-Intro_Second_Group.txt`
 - `03 - 3-Day-2_Basic_Installation.txt`

@@ -1,0 +1,27 @@
+---
+obsidianUIMode: preview
+class: index-note
+tier: reference-note
+tags:
+  - cncf/reference-index
+  - obsidian/moc
+---
+
+# 🌐 CNCF References MOC
+
+**Breadcrumbs:** [[--Index--|🏠 Index]] > **CNCF References MOC**
+
+---
+
+## 🏛️ Reference Modules & Frameworks
+
+This index contains reference summaries and technical digests of CNCF presentations, whitepapers, and guides mapping cloud-native cluster services, disaster recovery patterns, and platform architectures.
+
+- 🛡️ **[Module 12-1: CNCF Kubernetes Disaster Recovery](12-1_cncf_kubernetes_disaster_recovery.md)**
+  * Cluster state boundaries analysis, master/node failures, etcd backup mechanics, persistent volume snapshots, backup hooks (fsfreeze), and Heptio Ark (Velero) architecture.
+
+---
+
+## 🔗 Related Cross-Domain References
+*   **Kubernetes Cluster Maintenance:** [[0-10_maintenance_upgrades_and_etcd|Module 0-10: CKA etcd Maintenance & Upgrades]]
+*   **Linux Storage & System Operations:** [[8-9_redhat_enterprise_linux_administration|Module 8-9: Red Hat Enterprise Linux (RHEL) Administration]]
