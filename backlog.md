@@ -3,6 +3,23 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-24] - Ingestion: AWS EC2 Compute Architecture
+
+### Added
+- **Main Notes:** Created 4 atomic conceptual deeper-dive notes:
+  - [[Main Notes/aws - EC2 Instance.md|aws - EC2 Instance.md]]
+  - [[Main Notes/aws - AMI.md|aws - AMI.md]]
+  - [[Main Notes/aws - Placement Group.md|aws - Placement Group.md]]
+  - [[Main Notes/aws - IMDS.md|aws - IMDS.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Refactored [[Reference Notes/3-4_aws_ec2_compute.md|3-4_aws_ec2_compute.md]] to merge detailed EC2 transcript context, remove fluff, add Mermaid diagrams of Placement Group topologies, and compile IMDSv2 and Spot Fleet AARF breakdowns.
+- **Main Notes:** Updated [[Main Notes/aws - EC2 and Elastic Load Balancing.md|aws - EC2 and Elastic Load Balancing.md]] with updated breadcrumbs, child references, and a dynamic Dataview query to catalog sub-concepts.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-4_aws_ec2_compute.txt`
+
 ## [2026-06-24] - Ingestion: AWS Identity & Access Management (IAM)
 
 ### Added
