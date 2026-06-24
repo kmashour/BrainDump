@@ -7,6 +7,7 @@ domains:
   - "aws"
 related_concepts:
   - "[[virtual-machine]]"
+  - "[[Amazon S3]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:

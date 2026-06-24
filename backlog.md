@@ -4,6 +4,26 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: AWS S3 Storage
+
+### Added
+- **Main Notes:** Created 1 landing note and 4 atomic deeper-dive notes:
+  - [[Main Notes/Amazon S3.md|Amazon S3.md]] (landing-note MOC)
+  - [[Main Notes/S3 Storage Classes.md|S3 Storage Classes.md]] (deeper-dive)
+  - [[Main Notes/S3 Lifecycle Rules.md|S3 Lifecycle Rules.md]] (deeper-dive)
+  - [[Main Notes/S3 Encryption.md|S3 Encryption.md]] (deeper-dive)
+  - [[Main Notes/S3 Object Lock.md|S3 Object Lock.md]] (deeper-dive)
+
+### Refactored / Upgraded
+- **Reference Notes:** Overwrote and consolidated [[Reference Notes/3-6_aws_s3_storage.md|3-6_aws_s3_storage.md]] (Module 3-6) integrating S3 key structure, versioning, CRR/SRR, all storage classes (including Intelligent-Tiering and Express One Zone), transition/expiration lifecycle policies, event notifications, baseline performance limits, multipart upload, transfer acceleration, byte-range fetches, all encryption methods (SSE-S3/KMS/C and DSSE-KMS), CORS, MFA Delete, Access Logs, Pre-signed URLs, object/vault lock, and Object Lambda. Inserted a Mermaid transition diagram.
+- **Main Notes:** Updated [[Main Notes/aws.md|aws.md]] to link to `[[Amazon S3]]` under its related concepts. Removed the redundant `aws - Simple Storage Service.md` note.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-6_aws_s3_storage.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: AWS Storage Extras (Snow Family, FSx, Storage Gateway, Transfer Family, DataSync)
 
 ### Added
