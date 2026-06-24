@@ -26,8 +26,10 @@ This core concept covers Amazon EC2 compute instances, configuration images (AMI
 *   **Virtual Machine Blueprints:** Creating pre-configured templates for deployment: [[aws - AMI]]
 *   **Placement Topologies:** Influencing location on hardware racks: [[aws - Placement Group]]
 *   **Instance Metadata:** Querying configuration details securely: [[aws - IMDS]]
+*   **Load Balancing:** Distributing application and network traffic: [[aws - Elastic Load Balancer]]
+*   **Elastic Fleet Scaling:** Automatically scaling compute groups: [[aws - Auto Scaling Group]]
 
-*Read more in [[Reference Notes/3-4_aws_ec2_compute.md|Module 3-4: AWS EC2 Compute]] and [[Reference Notes/3-10_aws_elb_load_balancing.md|Module 3-10: AWS Elastic Load Balancing]]*
+*Read more in [[Reference Notes/3-4_aws_ec2_compute.md|Module 3-4: AWS EC2 Compute]], [[Reference Notes/3-10_aws_elb_load_balancing.md|Module 3-10: AWS Elastic Load Balancing]], and [[Reference Notes/3-11_aws_asg_auto_scaling.md|Module 3-11: AWS Auto Scaling Groups]]*
 
 ---
 

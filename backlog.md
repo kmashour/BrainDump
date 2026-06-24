@@ -4,6 +4,29 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: AWS ELB & ASG
+
+### Added
+- **Main Notes:** Created 5 landing notes:
+  - [[Main Notes/aws - Elastic Load Balancer.md|aws - Elastic Load Balancer.md]]
+  - [[Main Notes/aws - Application Load Balancer.md|aws - Application Load Balancer.md]]
+  - [[Main Notes/aws - Network Load Balancer.md|aws - Network Load Balancer.md]]
+  - [[Main Notes/aws - Gateway Load Balancer.md|aws - Gateway Load Balancer.md]]
+  - [[Main Notes/aws - Auto Scaling Group.md|aws - Auto Scaling Group.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Refactored [[Reference Notes/3-10_aws_elb_load_balancing.md|3-10_aws_elb_load_balancing.md]] to merge detailed transcript context on ELB, ALB, NLB, and GWLB routing, sticky sessions, cross-zone load balancing, certificates/SNI, and connection draining. Inserted a Mermaid diagram of ELB/ALB/NLB/GWLB architectures.
+  - Refactored [[Reference Notes/3-11_aws_asg_auto_scaling.md|3-11_aws_asg_auto_scaling.md]] to integrate ASG launch templates vs configurations, scaling policy types (manual, scheduled, dynamic, and predictive scaling), and inserted a Mermaid diagram depicting the ASG instance lifecycle hook flow.
+- **Main Notes:**
+  - Updated [[Main Notes/aws - EC2 and Elastic Load Balancing.md|aws - EC2 and Elastic Load Balancing.md]] to link to the new Elastic Load Balancer and Auto Scaling Group landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-10_3-11_aws_elb_asg.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: AWS S3 Storage
 
 ### Added

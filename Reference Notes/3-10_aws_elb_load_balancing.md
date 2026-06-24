@@ -26,25 +26,54 @@ It deals with the private IP address given too the ENI-ELB.
 ![Pasted image 20221206024324](https://user-images.githubusercontent.com/109697567/206048344-82b16614-2089-4f7c-8fd8-e6b82c587080.png)
 
 ### Load Balancer Types
+
+```mermaid
+flowchart TD
+    subgraph ALB_Flow ["Application Load Balancer (ALB) - Layer 7 HTTP/HTTPS/WebSockets"]
+        C1["Client Request (HTTP/HTTPS)"] --> ALB_L["ALB Listener (Ports 80/443)"]
+        ALB_L --> ALB_R{"Routing Rules (Host/Path/Header)"}
+        ALB_R -->|"/users"| TG_Users["Target Group: Users (EC2/ECS)"]
+        ALB_R -->|"/search"| TG_Search["Target Group: Search (IP/Lambda)"]
+    end
+
+    subgraph NLB_Flow ["Network Load Balancer (NLB) - Layer 4 TCP/UDP/TLS"]
+        C2["Client Connection (TCP/UDP/TLS)"] --> NLB_L["NLB Listener (Ports 1-65535)"]
+        NLB_L --> NLB_TG["Target Group (EC2/IP/ALB)"]
+    end
+
+    subgraph GWLB_Flow ["Gateway Load Balancer (GWLB) - Layer 3 IP Packets"]
+        C3["Internet / Ingress Traffic"] --> IGW["Internet Gateway / Route Table"]
+        IGW --> GWLBE["GWLB Endpoint (VPC Endpoint)"]
+        GWLBE --> GWLB["Gateway Load Balancer"]
+        GWLB -->|GENEVE Port 6081| VA_TG["Virtual Appliance TG (IDS/IPS/Firewall)"]
+        VA_TG -->|Inspect and Return| GWLB
+        GWLB --> GWLBE
+        GWLBE --> App["App EC2 Instance"]
+    end
+```
+
 ##### 1- Classic Load Balancer (CLB)
 - Backend EC2 Instances
-- Applicable on all layers, but old & not recommended by AWS anymore
+- Applicable on all layers, but old and deprecated (not recommended by AWS anymore)
 ##### 2- Application Load Balancer (ALB)
-- Applicable upon Layer 7 "Applications layer" 
-- Targets can be EC2 Instances, IP addresses, Lambda Function
+- Applicable upon Layer 7 "Applications layer" (HTTP, HTTPS, and WebSockets)
+- Targets can be EC2 Instances, IP addresses, Lambda functions, or ECS tasks
 ##### 3- Network Load Balancer (NLB)
-- Applicable upon Layer 4 "Network layer" 
-- Targets can be EC2 Instances, IP addresses, Lambda Function
-- Highest Performance for load balancers "only for layer 4".
-*Note:*  Load balancers applicable on IP Addresses allow the ability to apply load balancing for on-premises sites as well, by using their IP address.
+- Applicable upon Layer 4 "Network layer" (TCP, UDP, and TLS)
+- Targets can be EC2 Instances, IP addresses, or Application Load Balancers (ALBs)
+- Highest Performance for load balancers with ultra-low latency and static IP support
+##### 4- Gateway Load Balancer (GWLB)
+- Applicable upon Layer 3 "Network layer" (IP packets)
+- Targets can be third-party virtual security/firewall appliances (registered by Instance ID or private IP)
 
 ### Target Groups
 ![[Pasted image 20250529151249.png]]
-It's a logical grouping of targets, targets can be EC2 Instances, IP addresses, or ECS microservice.
-- A target is an endpoint registered with the ***ALB/NLB*** as part of a target group.
-- IP addresses can be used to add targets that are instances in a peered VPC, on- premises servers, and AWS resources that can be addressed by IP and port. 
+It's a logical grouping of targets. Depending on the load balancer type, targets can be EC2 Instances, IP addresses, ECS tasks, Lambda functions, or other load balancers.
+- A target is an endpoint registered with the ***ALB/NLB/GWLB*** as part of a target group.
+- IP addresses used as targets must be private IPs (supporting peered VPCs, on-premises servers, and other internal resources).
 - ALB/NLB can route traffic to multiple target groups.
 - A target can be registered with a target group multiple times using different ports.
+- **NLB Target Routing:** NLB can target ALBs directly, enabling a setup where static/Elastic IPs provided by the NLB serve as the entry point, while the ALB handles complex Layer 7 routing rules.
 
 ### ELB Listeners
 A listener is the process that checks for connection requests to the ELB nodes, Multiple listeners can be configured on the ELB.
@@ -79,22 +108,23 @@ A rule can be given to each listener to specify a specific job "*ex:* specific P
 
 ## Cross-Zone Load Balancing
 Applying the traffic equally upon instance level, instead of node level.
-*ie:* Applies distribution of traffic among different AZs instead of among EC2 instances in the same EZ only.
-- Ensures higher availability & fault tolerance.
-- Enabled by default in CLB.
-- Enabled by default in ALB.
-- Disabled by default & Chargeable in NLB.
+*ie:* Applies distribution of traffic among all registered targets across different AZs, rather than just the targets within the same AZ as the active load balancer node.
+- Ensures higher availability and fault tolerance by preventing uneven load distribution.
+- **ALB:** Enabled by default. No charges apply for inter-AZ data transfer. Can be forced on/off/inherited at the target group level.
+- **NLB & GWLB:** Disabled by default. If enabled, inter-AZ data transfer is chargeable.
+- **CLB:** Disabled by default. If enabled, no charges apply for inter-AZ data transfer.
 ![Pasted image 20221207153739](https://user-images.githubusercontent.com/109697567/220480136-fb69acfa-8240-4dfd-b39c-882e06f426f5.png)
 
 ---
 
-## Connection Draining
-Suppose some EC2 instances is required to be deregistered from the ELB for troubleshooting, what happens to the sessions on these instances.
-When a backend instance or a target from a target group attached to an ELB is deregistered from the ELB:
-- ELB stops sending any further traffic to this instance/target.
-- ELB waits for a deregistration (or connection draining) delay, during which in-flight sessions through that instance/ELB are given time to finish.
-- Deregistration delay is 300 seconds by default.
-- If the deregistration delay is met & the instance still didn't end current sessions, Traffic/Sessions will be dropped.
+## Connection Draining (Deregistration Delay)
+Allows in-flight requests to complete when an instance is deregistered or marked unhealthy.
+- **Naming Conventions:** Named **Connection Draining** in Classic Load Balancer (CLB), and **Deregistration Delay** in Application Load Balancer (ALB) and Network Load Balancer (NLB).
+- **Behavior:** Once an instance begins draining, the ELB stops sending new requests to it. It remains in a draining state until active connections finish or the configured delay timeout is reached, after which remaining sessions are dropped.
+- **Configuration:** Can be configured from 1 to 3,600 seconds (1 hour). The default is 300 seconds. Setting the delay to 0 disables it completely.
+- **Tuning Trade-offs:**
+  - *Short Delay (e.g., 30s):* Ideal for short-lived requests (less than 1s) to allow rapid instance decommissioning, scaling-in, and auto-replacement.
+  - *Long Delay:* Necessary for applications with long-lived active sessions (e.g., file uploads, streaming, websockets), but delays the decommission and auto-scaling cycle.
 
 ---
 
@@ -163,10 +193,10 @@ TCP Passthrough is when the backend is responsible for termination of TLS/HTTPS 
 
 #### Server Name Indication "SNI"
 SNI or Server Name Indication is an extension to TLS.
-- Clients that support SNI can indicate which domain they are trying to connect to during the handshake.
-- Servers supporting SNI can read this HTTP header and respond with the correct domain certificate.
-- It's not a DNS service, it only provides the correct certificate from multiple certificate.
-- Supported by ALB, NLB "as they can hold multiple certificates".
+- **Mechanism:** Requires the client to indicate the hostname they are attempting to reach in the initial SSL handshake. The load balancer reads this hostname and responds with the matching certificate.
+- **Multiple Certificates:** Allows hosting multiple websites, each with its own SSL/TLS certificate, behind a single load balancer endpoint.
+- **Support Matrix:** Supported by ALB, NLB, and CloudFront. It is NOT supported by CLB (CLB supports only one certificate, requiring multiple CLBs for multiple domains).
+- **Configuration:** When setting up an HTTPS listener on ALB/NLB, you must specify a default certificate, then add optional certificates to the SNI list to support additional domains.
 ![Pasted image 20221207174224](https://user-images.githubusercontent.com/109697567/220480351-83371145-e99f-4824-8b54-cdbf71821f78.png)
 
 ---
@@ -202,12 +232,15 @@ Monitoring ELB in AWS can be achieved by:
 
 ## Session Affinity (Sticky Sessions)
 ![[Pasted image 20250626145343.png]]
-Session stickiness refers to a configuration whereby the ELB will bind a client to a specific backend instance/target.
-- This is supported by all ELBs. 
-- Session stickiness is not fault tolerant. 
-- Used with stateful applications, or applications that can not maintain session state.
-- Applied on the target group not the ELB.
-*Note:* Stateful applications are applications that stores cache & cookies on the instant, so faulting of the instance means losing of data access.
+Session stickiness binds a client session to a specific backend instance, ensuring all consecutive requests from that client route to the same target.
+- **Support & Scope:** Configured at the target group level (not the load balancer level). Supported by CLB, ALB, and NLB.
+- **Drawbacks:** Can lead to load imbalances if certain client sessions generate highly disproportionate traffic or are very long-lived. It is not fault-tolerant (if the target instance fails, session data is lost unless replicated).
+- **Cookie Types:**
+  - **Application-Based Cookies:**
+    - *Custom Cookie:* Generated by the target application itself with custom attributes. The cookie name must be defined individually for each target group. The names `AWSALB`, `AWSALBAPP`, and `AWSALBTG` are reserved and cannot be used.
+    - *Application Cookie:* Generated by the load balancer itself (ALB name: `AWSALBAPP`).
+  - **Duration-Based Cookies:**
+    - Generated by the load balancer itself (ALB name: `AWSALB`, CLB name: `AWSELB`). Session affinity expires after a specific duration generated by the load balancer.
 
 ---
 
@@ -269,12 +302,21 @@ By default, a registered target starts receiving its full share of requests as s
 - It's advised to enable cross-zone load balancing on the NLB to ensure each NLB node can route to all EC2 instances, but it's chargeable.
 ![Pasted image 20221207220244](https://user-images.githubusercontent.com/109697567/220480562-f13bed65-3e13-4fcb-ab44-3336f64c8118.png)
 
-### Gateway Load Balancer
-It is a service that makes it easy and cost-effective to deploy, scale and manage the availability of third-party virtual applications such as Firewalls, Intrusion detection and prevention systems, and deep packet inspection systems in the cloud.
-- Internet traffic goes from the IGW to the Gateway Load Balancer, & the Gateway Load Balancer redirects it to a NLB attached to a target group with the third-party virtual appliances, then after the application ends its work, the Gateway Load Balancer gets the traffic back & sends it to the original destination EC2 Instances.
-- Traffic from the instance to internet "response" works the same way.
-This is done via routing tables of the subnets.
-- Subnet level service & has its own subnet.
+### Gateway Load Balancer (GWLB)
+Used to deploy, scale, and manage a fleet of third-party network virtual appliances (firewalls, intrusion detection/prevention systems (IDS/IPS), deep packet inspection) in a high-availability configuration.
+- **Layer of Operation:** Operates at Layer 3 (Network Layer) processing raw IP packets.
+- **Key Functions:**
+  - **Transparent Network Gateway:** Serves as a single entry and exit point for all VPC traffic.
+  - **Load Balancer:** Distributes IP traffic across the virtual appliances.
+- **Protocol & Port:** Employs the **GENEVE protocol** on **port 6081** to encapsulate the original IP packets before forwarding them to the virtual appliances.
+- **Target Groups:** Supports third-party virtual appliances registered as targets by Instance ID or private IP addresses (for on-premises appliances).
+- **Traffic Routing Flow:**
+  1. Traffic enters the VPC through the Internet Gateway (IGW) or Transit Gateway.
+  2. Route tables direct traffic to a **Gateway Load Balancer Endpoint (GWLBE)** (a specialized interface VPC endpoint).
+  3. GWLBE forwards traffic to the GWLB.
+  4. GWLB encapsulates the traffic in GENEVE packets and load balances it to the virtual appliances in its target group.
+  5. The virtual appliances inspect/filter the traffic. If allowed, they return it to the GWLB.
+  6. GWLB decapsulates the packets and returns them to the GWLBE, which forwards it to the application servers (entirely transparently).
 ![Pasted image 20221207221721](https://user-images.githubusercontent.com/109697567/220480598-c441e1c6-99f9-4134-b7d0-bb840062db54.png)
 
 ---
