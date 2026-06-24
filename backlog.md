@@ -3,7 +3,28 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-24] - Ingestion: AWS Identity & Access Management (IAM)
+
+### Added
+- **Main Notes:** Created 6 atomic conceptual deeper-dive notes:
+  - [[Main Notes/aws - IAM User.md|aws - IAM User.md]]
+  - [[Main Notes/aws - IAM Group.md|aws - IAM Group.md]]
+  - [[Main Notes/aws - IAM Policy.md|aws - IAM Policy.md]]
+  - [[Main Notes/aws - IAM Role.md|aws - IAM Role.md]]
+  - [[Main Notes/aws - AWS STS.md|aws - AWS STS.md]]
+  - [[Main Notes/aws - AWS CLI.md|aws - AWS CLI.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Refactored [[Reference Notes/3-2_aws_iam.md|3-2_aws_iam.md]] by removing conversational fluff and duplicate headers, integrating comprehensive details on Users, Groups, Policies, MFA, Access Keys, AWS CLI, SDK, CloudShell, Roles, STS, security tools, and budgets. Added Mermaid diagrams mapping the IAM authentication flow and policy evaluation logic.
+- **Main Notes:** Updated [[Main Notes/aws - Identity and Access Management.md|aws - Identity and Access Management.md]] with breadcrumbs and a dynamic Dataview query to catalog sub-concepts.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-2_aws_iam.txt`
+
+
 ## [2026-06-24] - Ingestion: AWS Global Infrastructure & Network Architecture
+
 
 ### Added
 - **Main Notes:** Created 2 atomic conceptual deeper-dive notes:
