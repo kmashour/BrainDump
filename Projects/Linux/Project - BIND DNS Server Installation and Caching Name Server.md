@@ -172,3 +172,44 @@ dig google.com +short
 ---
 > [!TIP]
 > Use `named-checkconf -z` to check all zone files configured in named config.
+
+---
+
+## 🤝 DNS Replication (Master/Slave Setup)
+To configure high availability and automatic replication, we can add a secondary/slave DNS server (`192.168.12.11`).
+
+### Step 1: Configure BIND Master DNS (`192.168.12.10`)
+Update `/etc/named.conf` to authorize zone transfers and trigger notifications to the slave:
+```named
+zone "corp.local" IN {
+    type master;
+    file "corp.local.db";
+    allow-transfer { 192.168.12.11; };   # Slave IP
+    also-notify { 192.168.12.11; };      # Notify Slave on updates
+};
+```
+Increment the serial number in `/var/named/corp.local.db` (e.g. to `2026062401`) and run `rndc reload` to apply.
+
+### Step 2: Configure BIND Slave DNS (`192.168.12.11`)
+1. On the Slave host, install BIND:
+   `yum install -y bind bind-utils`
+2. Configure `/etc/named.conf` options to listen on `192.168.12.11` and allow queries.
+3. Add the slave zone block in `/etc/named.conf`:
+   ```named
+   zone "corp.local" IN {
+       type slave;
+       file "slaves/corp.local.db";      # Must be written to slaves/ subdirectory
+       masters { 192.168.12.10; };       # Master IP
+   };
+   ```
+4. Start BIND on the Slave:
+   `systemctl enable --now named`
+
+### Step 3: Verify Replication
+1. Inspect system logs on the Slave server:
+   `tail -n 50 /var/log/messages`
+   (Verify: `transfer of 'corp.local/IN' from 192.168.12.10#53: Transfer completed`)
+2. Verify that `/var/named/slaves/corp.local.db` was written automatically by the named process.
+3. Query the Slave directly from a client:
+   `dig @192.168.12.11 web.corp.local +short`
+

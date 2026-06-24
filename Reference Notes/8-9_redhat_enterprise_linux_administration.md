@@ -16,8 +16,8 @@ tags:
 
 > [!NOTE]
 > **Source Citation & Translation Notice**
-> This reference module integrates, translates, and synthesizes 59 transcripts of the Red Hat Enterprise Linux (RHEL 7) Administration course by engineer **Mostafa Hamouda** (Arab Linux Community). Arabic system explanations, CLI interactions, and concept briefs are translated here into high-quality technical English.
-> *   **Source Playlist:** [YouTube - Red Hat Enterprise Linux Course](https://www.youtube.com/playlist?list=PL3a3w9-o-9_qfMmVVwZLKk)
+> This reference module integrates, translates, and synthesizes 65 transcripts of the Red Hat Enterprise Linux (RHEL 7) Administration course by engineer **Mostafa Hamouda** (Arab Linux Community). Arabic system explanations, CLI interactions, and concept briefs are translated here into high-quality technical English.
+> *   **Source Playlist:** [YouTube - Red Hat Enterprise Linux Course (PLy1Fx2HfcmWBpD_PI4AQpjeDK5-5q6TG7)](https://www.youtube.com/playlist?list=PLy1Fx2HfcmWBpD_PI4AQpjeDK5-5q6TG7)
 
 ---
 
@@ -64,6 +64,9 @@ The shell history tracks executed commands for reuse.
 *   **Init Arrays:** Use `mdadm` to combine multiple physical drives or partitions into a single logical array.
 *   **Command Set:**
     ```bash
+    # Wipe partition signatures before building
+    dd if=/dev/zero of=/dev/sdb bs=1M count=10
+
     # Create a RAID 5 array with 3 active disks and 1 hot spare
     mdadm --create /dev/md0 --level=5 --raid-devices=3 /dev/sdb1 /dev/sdc1 /dev/sdd1 --spare-devices=1 /dev/sde1
 
@@ -71,9 +74,9 @@ The shell history tracks executed commands for reuse.
     cat /proc/mdstat
     mdadm --detail /dev/md0
 
-    # Stop and assemble arrays
+    # Stop and clean up arrays
     mdadm --stop /dev/md0
-    mdadm --assemble --scan
+    mdadm --zero-superblock /dev/sdb1 /dev/sdc1 /dev/sdd1 /dev/sde1  # Wipe RAID metadata
     ```
 
 ### Logical Volume Manager (LVM) Architecture
@@ -123,6 +126,11 @@ LVM provides an evolutionary abstraction layer over raw physical disk blocks, en
     resize2fs /dev/vg_data/lv_files
     # For XFS:
     xfs_growfs /mnt/files
+
+    # 6. Decommissioning LVM Cleanly
+    lvremove /dev/vg_data/lv_files   # Remove Logical Volume
+    vgremove vg_data                 # Remove Volume Group
+    pvremove /dev/sdb1 /dev/sdc1     # Remove Physical Volumes
     ```
 
 ### Persistent Mounting (`/etc/fstab`)
@@ -132,6 +140,10 @@ For filesystems to survive reboots, they must be registered in `/etc/fstab`.
     `UUID=a1b2c3d4-e5f6-7a8b-9c0d-e1f2a3b4c5d6 /data xfs defaults,noatime,nodev 0 2`
 *   **Validation Command:**
     `mount -a` (Mounts all entry items from `/etc/fstab`. MUST be run after any edit to verify no syntax errors prevent booting).
+*   **Mount Cache Troubleshooting:**
+    If you manually modify `/etc/fstab` and subsequent manual mount commands fail due to resource conflicts or systemd maintaining cache, flush systemd's cache:
+    `systemctl daemon-reload`
+
 
 ### SWAP & Quotas
 *   **SWAP Space Creation:**
@@ -147,6 +159,55 @@ For filesystems to survive reboots, they must be registered in `/etc/fstab`.
     *   Configure fstab option flags: `usrquota,grpquota`
     *   Enable quotas: `quotacheck -cugm /mountpoint`, `quotaon /mountpoint`
     *   Edit limits: `edquota username`
+
+---
+
+## Package Management (YUM and DNF)
+
+Package managers automate software distribution and local dependency resolution (resolving "dependency hell") by querying remote or local repository database metadata (`repodata` XML files).
+
+### YUM Command Set
+*   **Core Commands:**
+    ```bash
+    yum search vim                    # Query packages matching string
+    yum info httpd                    # Display metadata, description, and source repo
+    yum install httpd                 # Install package and resolve dependencies
+    yum remove httpd                  # Uninstall package (does not strip shared deps)
+    yum update                        # Perform system-wide package upgrades
+    yum update tzdata                 # Update a single package
+    yum provides /etc/mime.types      # Identify which package provides a specific file
+    ```
+*   **Group Package Management:**
+    ```bash
+    yum groups list                   # List available group packages
+    yum groups install "Web Server"   # Install an entire group stack in one command
+    ```
+
+### Cache Configuration & Cleaning
+By default, YUM deletes downloaded RPM binaries after installation. To change this behavior, edit `/etc/yum.conf`:
+```ini
+[main]
+keepcache=1                           # Retain RPM cache in /var/cache/yum/
+```
+*   **Cache Commands:**
+    ```bash
+    yum clean all                     # Clear all cached package databases and files
+    yum clean packages                # Delete cached RPM files
+    yum clean metadata                # Clear cached XML repository index files
+    ```
+
+### Auditing and Rollback (YUM History)
+YUM tracks all package transactions in a database, allowing administrators to audit modifications and revert installation states.
+*   **Command Set:**
+    ```bash
+    yum history                       # List transaction IDs, dates, and actions
+    yum history info 11               # View details of transaction ID 11
+    yum history undo 11               # Roll back transaction ID 11 (purges all installed files)
+    yum history redo 11               # Re-apply transaction ID 11
+    ```
+
+### DNF (Dandified YUM)
+DNF is the modern successor to YUM (the default package manager starting in RHEL 8). DNF implements a cleaner codebase, faster dependency resolution, and remains fully backward-compatible with YUM command syntax.
 
 ---
 
@@ -224,18 +285,118 @@ NetworkManager CLI (`nmcli`) manages interface states and persistent configurati
 *   **Configuration File:** `/etc/named.conf`
     *   Set listening interfaces: `listen-on port 53 { any; };`
     *   Set query permissions: `allow-query { any; };`
-*   **Zone Configurations:** Configure forwarding and reverse lookups in `/var/named/`:
+
+#### DNS Replication (Master/Slave Zone Transfers)
+Deploying a secondary nameserver distributes traffic load and provides failover redundancy.
+*   **Triggers & SOA Parameters:**
+    Replication updates are determined by the Start of Authority (SOA) parameters:
     ```
     $TTL 86400
     @   IN  SOA  ns1.example.com. root.example.com. (
-                  2026062301 ; Serial
-                  3600       ; Refresh
-                  1800       ; Retry
-                  604800     ; Expire
-                  86400 )    ; Minimum
-        IN  NS   ns1.example.com.
-    ns1 IN  A    192.168.1.10
-    www IN  A    192.168.1.20
+                  2026062401 ; Serial (Format: YYYYMMDDNN. Must increment on Master updates)
+                  3600       ; Refresh (Time in seconds Slave waits before polling Master)
+                  1800       ; Retry (Time Slave waits after a failed refresh poll)
+                  604800     ; Expire (Max time Slave keeps cached zone without Master connection)
+                  86400 )    ; Minimum / Negative TTL (Caching time for failed lookups)
+    ```
+
+*   **Master Server Zone Block (`/etc/named.conf`):**
+    ```named
+    zone "example.com" IN {
+        type master;
+        file "example.com.db";
+        allow-transfer { 192.168.200.130; };   # Secondary DNS Server IP
+        also-notify { 192.168.200.130; };      # Push updates automatically
+    };
+    ```
+
+*   **Slave Server Zone Block (`/etc/named.conf`):**
+    *   *Note:* The zone database file must reside in the `slaves/` subdirectory (`/var/named/slaves/`) because the `named` system account only has write permissions to this directory.
+    ```named
+    zone "example.com" IN {
+        type slave;
+        file "slaves/example.com.db";
+        masters { 192.168.200.128; };          # Primary DNS Server IP
+    };
+    ```
+
+*   **Verification:**
+    Check the system logs on the Slave server to verify that the zone transfer succeeded:
+    `tail -n 50 /var/log/messages` (Verify completion: `transfer of 'example.com/IN' from 192.168.200.128#53: Transfer completed`).
+
+
+---
+
+## Centralized Authentication and Identity Management
+
+### FreeIPA Client & Server Enrollment
+FreeIPA (Identity, Policy, Audit) is an integrated centralized directory service that combines LDAP (directory), Kerberos (authentication), NTP (time synchronization), and DNS.
+
+*   **Sizing Prerequisite:** FreeIPA servers run Java/Tomcat and require at least **2GB RAM** to prevent service crashes.
+*   **Host Prep & DNS Configuration:**
+    Ensure both servers have persistent static IPs and resolve each other locally.
+    ```bash
+    # On Server
+    hostnamectl set-hostname server.example.com
+    nmcli connection modify eth0 ipv4.addresses 192.168.153.150/24 ipv4.gateway 192.168.153.2 ipv4.dns 8.8.8.8 ipv4.method manual
+    nmcli connection up eth0
+
+    # On Client
+    hostnamectl set-hostname client1.example.com
+    nmcli connection modify eth0 ipv4.addresses 192.168.153.151/24 ipv4.gateway 192.168.153.2 ipv4.dns 8.8.8.8 ipv4.method manual
+    nmcli connection up eth0
+    ```
+    Add host entries to `/etc/hosts`:
+    ```
+    192.168.153.150 server.example.com server
+    192.168.153.151 client1.example.com client1
+    ```
+*   **Server Installation:**
+    ```bash
+    yum install ipa-server
+    ipa-server-install  # Choose integrated DNS: no | realm: EXAMPLE.COM
+    ```
+*   **Kerberos Auditing & User Provisioning:**
+    ```bash
+    kinit admin                    # Authenticate as administrator
+    klist                          # View active ticket expiration
+    ipactl status                  # Check state of IPA daemons
+    ipa user-add                   # Provision new user (e.g. login: developer)
+    ipa passwd developer           # Assign initial password
+    ```
+*   **Client Enrollment:**
+    ```bash
+    yum install ipa-client
+    ipa-client-install             # Server: server.example.com | Domain: example.com
+    authconfig --enablemkhomedir --update   # Enable automatic home dir creation on login
+    ```
+
+### Microsoft Active Directory Integration (realmd)
+The `realmd` daemon simplifies joining Linux clients to an existing Active Directory domain, coordinating SSSD, Samba, Kerberos, and PAM configurations under a single tool.
+
+*   **Setup Prerequisites:** Set the DNS server of the Linux client to point directly to the AD Domain Controller (e.g. `192.168.153.148`):
+    ```bash
+    nmcli connection modify eth0 ipv4.dns 192.168.153.148
+    nmcli connection up eth0
+    hostnamectl set-hostname client1.example.com
+    ```
+*   **Discovery and Enrollment:**
+    ```bash
+    # Discover AD domain
+    realm discover example.com
+
+    # Install required integration packages
+    yum install sssd adcli samba-common-tools oddjob oddjob-mkhomedir openldap-clients
+
+    # Join the AD Domain
+    realm join example.com -U Administrator  # Prompts for Domain Admin credentials
+
+    # Confirm domain registration
+    realm list
+    ```
+*   **Authentication Check:**
+    ```bash
+    su - developer@example.com   # Log in on Linux with AD credentials
     ```
 
 ---
@@ -258,7 +419,22 @@ NetworkManager CLI (`nmcli`) manages interface states and persistent configurati
     `chmod +t /path/to/directory`
 
 ### POSIX Access Control Lists (ACLs)
-Standard permissions only support one user and group. ACLs allow fine-grained access mapping for multiple users.
+Standard Linux UGO (User-Group-Others) permissions only support assigning one owner and one group. Granting write access to non-owners via "Others" compromises the principle of least privilege. ACLs allow fine-grained access mapping for multiple users and groups.
+
+#### Compatibility & Mounting
+*   **Kernel Check:** Verify that the running kernel supports ACLs:
+    `grep -i acl /boot/config-$(uname -r)` (Ensure `CONFIG_EXT4_FS_POSIX_ACL=y` and `CONFIG_XFS_FS_POSIX_ACL=y` are present).
+*   **Superblock defaults:** Modern filesystems (like XFS and ext4 on RHEL 7) compile ACL support by default. Verify using:
+    `dumpe2fs /dev/sdb1 | grep "Default mount options"` (Look for `acl`).
+*   **Manual Mount Flags:** For older filesystems lacking superblock defaults, enable ACL support at mount:
+    ```bash
+    mount -o acl /dev/sdb1 /srv
+    mount -o remount,acl /srv
+    # Persistent mount (/etc/fstab):
+    /dev/sdb1 /srv ext4 defaults,acl 0 0
+    ```
+
+#### ACL Management CLI
 *   **Command Sequences:**
     ```bash
     # Check current ACL rules on a file
@@ -270,12 +446,22 @@ Standard permissions only support one user and group. ACLs allow fine-grained ac
     # Grant group 'sysadmins' read permission to directory
     setfacl -m g:sysadmins:rx /data/reports/
 
-    # Set default ACL on directory for all newly created files
+    # Set default ACL on directory for all newly created files (Inheritance)
     setfacl -d -m u:developer:rw /data/reports/
 
-    # Purge all custom ACL permissions from file
+    # Recursively apply ACLs to existing files and directories
+    setfacl -R -m u:developer:rw /data/reports/
+
+    # Combine recursive and default rules for inheritance
+    setfacl -R -d -m u:developer:rw /data/reports/
+
+    # Remove specific ACL entry for user 'developer'
+    setfacl -x u:developer /data/reports.txt
+
+    # Purge all custom ACL permissions from file (restores UGO permissions)
     setfacl -b /data/reports.txt
     ```
+
 
 ### Boot Security & SELinux Core Tuning
 *   **GRUB Menu Lock:** Secure bootloaders from unauthorized parameters manipulation.
@@ -308,6 +494,12 @@ Standard permissions only support one user and group. ACLs allow fine-grained ac
 
     # Switch target immediately
     systemctl isolate graphical.target
+
+    # Prevent a service from starting (manually or automatically)
+    systemctl mask httpd          # Symlinks unit file to /dev/null
+
+    # Restore service enablement control
+    systemctl unmask httpd
     ```
 
 ### Boot Failure Troubleshooting (`rd.break`)

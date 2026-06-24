@@ -3,6 +3,33 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-24] - Ingestion: RHEL Central Authentication, Package Management, ACLs, LVM/RAID Review, and BIND DNS Replication Transcripts
+
+### Added
+- **Reference Notes:** Added new comprehensive sections to [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]:
+  - **Package Management (YUM and DNF):** Outlining RPM system mechanics, caching rules, provides query methods, and transaction log management via `yum history` rollbacks.
+  - **Centralized Authentication and Identity Management:** Explaining identity management strategies using FreeIPA servers/clients and Active Directory integration via `realmd`/SSSD.
+
+### Refactored / Upgraded
+- **Reference Notes:** Updated and expanded existing storage, security, DNS, and boot systems modules in [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]:
+  - Expanded LVM architecture commands to detail volume decommissioning CLI operations.
+  - Expanded Software RAID configurations to show superblock wiping methods.
+  - Added `systemctl daemon-reload` mount cache flushing troubleshooting to persistent storage mounting setup.
+  - Added BIND replication configuration specifying Master-Slave zone transfer options (`allow-transfer`, `also-notify`), SOA parameter rules, and slave write path directory guidelines under `/var/named/slaves/`.
+  - Added systemd service masking/unmasking targets control.
+  - Refactored POSIX ACLs section to address security limitations of UGO permissions, kernel compatibility options, explicit mount flags verification, recursive/default rules, and specific rule entries purging.
+- **Projects:** Updated the [[Projects/Linux/Project - BIND DNS Server Installation and Caching Name Server.md|Project - BIND DNS Server Installation and Caching Name Server.md]] playbook to add a complete step-by-step master/slave DNS replication and zone transfer setup guide.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript files from `inflow/linux_administration/`:
+- `59 - 59-Day-29_Reviewing_LVM&RAID.txt`
+- `60 - 60-Day-29_Central_Authentication_IPA.txt`
+- `61 - 61-Day-30_Central_Authentication_MS_AD.txt`
+- `62 - 62-Day-31_Access_Control_Lists.txt`
+- `63 - 63-Day-32_Package_Mnagament-YUM.txt`
+- `83 - 84-Day-48_BIND_Cont-4.txt`
+
+
 ## [2026-06-23] - Ingestion: RHEL, CNCF DR, etcdutl, and 2-Tier AWS Terraform Transcripts
 
 ### Added
