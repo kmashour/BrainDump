@@ -1,0 +1,651 @@
+--- AWS Cloud Overview - Regions & AZ ---
+
+1
+Now let's look at the history
+2
+of the AWS Cloud.
+3
+It was launched in 2002 internally at amazon.com
+4
+because they realized that the IT departments
+5
+could be externalized.
+6
+Their Amazon infrastructure was one of their core strengths
+7
+and they said, you know what?
+8
+"Maybe we can do IT for someone else, for other people."
+9
+So they launched their first offering publicly,
+10
+which was SQS in 2004.
+11
+In 2006, they expanded their offering
+12
+and they relaunched with the availability of SQS S3 and EC2.
+13
+Don't worry, we'll see all these services in this course.
+14
+Then they expanded and said, you know what?
+15
+"We don't have to be just in America.
+16
+We could be in Europe."
+17
+And then fast forward to today, we have so many applications
+18
+that used to run, or are still running on AWS,
+19
+such as Dropbox, Netflix, Airbnb, or even the NASA.
+20
+Now let's look at where AWS is today.
+21
+If you look at the Magic Quadrant from Gartner,
+22
+you can see that AWS is a leader,
+23
+and it has been the case for many, many years.
+24
+AWS now has $90 billion in revenue as of 2023,
+25
+and it accounts for about 31% of the market in Q1 2024,
+26
+with Microsoft being second with 25%.
+27
+It's been a pioneer and a leader of the market
+28
+for 13th consecutive years,
+29
+and it has over 1 million active users.
+30
+So, learning AWS really sets you up
+31
+for success in the cloud world.
+32
+What can you build on AWS?
+33
+Well, pretty much everything.
+34
+AWS will enable you to build sophisticated
+35
+and scalable applications,
+36
+and they are applicable to a diverse set of industries.
+37
+Every company has a use case for the cloud.
+38
+Netflix, McDonald's, 21st Century Fox, Activision,
+39
+they're all using the cloud.
+40
+And use cases can include
+41
+just transferring your enterprise IT,
+42
+or using the cloud as a backup and storage,
+43
+or doing some big data analytics.
+44
+You can also host a website,
+45
+or create a backend for your mobile
+46
+and your social applications,
+47
+or you can have your entire gaming servers
+48
+running on the cloud.
+49
+The applications are endless.
+50
+Now, AWS is global,
+51
+and this is where we are going to learn a bit more specifics
+52
+about how it works.
+53
+We have AWS regions, we have availability zones,
+54
+data centers, edge locations, and points of presence.
+55
+And all of these can be represented on the map right here.
+56
+Let's go on this website to have a quick look at it.
+57
+This is a cool map,
+58
+because on this website we can see how AWS is global.
+59
+If I click on it, I can scroll the world
+60
+and see what is happening.
+61
+We can see that AWS has multiple regions,
+62
+and they're in orange and they're all around the world.
+63
+For example, Paris, in Spain, in Ohio, in Sao Paulo,
+64
+Cape Town, Mumbai, and everywhere else.
+65
+AWS truly is a global service.
+66
+On top of it, each region are going to be connected
+67
+through the network.
+68
+These are the network reconnecting the regions,
+69
+and this is a private network of AWS.
+70
+And then within each region, for example,
+71
+if I really scroll into the Cape Town region,
+72
+we can see that we have blue dots,
+73
+and each blue dots will be availability zones
+74
+that will be describing in the next slide.
+75
+As we can see, what I want to get you out of this
+76
+is that AWS truly is global,
+77
+and we can leverage the infrastructure of a cloud provider
+78
+to make ourselves, or application global.
+79
+The first important concept in AWS are regions.
+80
+Regions are all around the world, and we saw it on the map
+81
+from before the regions have a name.
+82
+It could be US-east-1, EU-West-3,
+83
+and we can see the mapping of the name of the region
+84
+to their code on the console that we'll see in a minute.
+85
+Now, a region, what is in its truly...
+86
+Well, it's going to be a cluster of data centers.
+87
+Many different data centers look at it in near,
+88
+for example, Ohio, or Singapore, or Sydney, or Tokyo.
+89
+When we use AWS services,
+90
+most services are going to be linked in scope
+91
+to a specific region.
+92
+That means that if we use a service in one region
+93
+and we try to use it in another region,
+94
+it will be like a new time of using the service.
+95
+Now, a question that may come up in the exam
+96
+is how do you choose an AWS region?
+97
+Say you're launching a new application,
+98
+where should you do it?
+99
+Should you do it in America, in Europe,
+100
+in South America, or in Australia?
+101
+Well, the answer is of course, it depends.
+102
+But let's look at some factors that may impact your choice
+103
+of an AWS region.
+104
+The first one is compliance.
+105
+Sometimes governments want the data to be local
+106
+to the country you're deploying the application in.
+107
+For example, France,
+108
+data in France may have to stay in France,
+109
+and therefore you should launch your application
+110
+in the French region.
+111
+Then there is also a concept of latency.
+112
+If most of your users are going to be in America,
+113
+it makes a lot of sense to deploy your application
+114
+in America close to your users,
+115
+because they will have a reduced latency.
+116
+If you deploy your application in Australia,
+117
+and your users are in America,
+118
+they will have a lot of lag using your application.
+119
+Then also, not all regions have all services, okay?
+120
+Some regions do not have services,
+121
+and so obviously if you're leveraging a service
+122
+with your application, you need to make sure
+123
+that the region you're deploying into is available,
+124
+and does have that service.
+125
+And finally, pricing.
+126
+Pricing does vary from region to region,
+127
+and you need to consult the appli...
+128
+The services pricing pages to see
+129
+what the differences are between the regions.
+130
+But this could be obviously a factor
+131
+that could impact your deployment
+132
+of an application into a specific region.
+133
+Now, availability zones are
+134
+what actually are going into the region.
+135
+Each region will have many availability zones,
+136
+usually three, the minimum is three, and the max is six,
+137
+but really the usual is three.
+138
+So let's take the Sydney region as an example.
+139
+The Sydney region code is ap-southeast-2.
+140
+We have two have three availability zones in Sydney,
+141
+ap-southeast-2A, ap-southeast-2B,
+142
+and ap-southeast-2C.
+143
+Now, each of these availability zones are going to be one
+144
+or more discrete data centers
+145
+that will have redundant power networking and connectivity.
+146
+That means that in southeast-2A,
+147
+I can have two data centers maybe as well,
+148
+2 and 2B, and 2 and 2C.
+149
+But it could be one, it could be three, it could be four.
+150
+We don't really know, it always doesn't tell us that.
+151
+But what we know is that these availability zones
+152
+are separate from each other
+153
+so that they will be isolated from disasters.
+154
+If something happens to ap-southeast-2A,
+155
+we know that it is designed not to cascade
+156
+into ap-southeast-2B, or ap-southeast-2C.
+157
+They're really isolated from disasters.
+158
+And then these data centers, these availability zones,
+159
+they are connected with high bandwidth,
+160
+ultra-low latency networking, and therefore,
+161
+altogether being linked together,
+162
+it will form a region.
+163
+Okay, next, the only thing we need to know about AWS
+164
+for the global infrastructure
+165
+is the points of presence or edge locations.
+166
+We will see them in details in the global section
+167
+of this course, but you should know
+168
+that AWS has more than 400 points of presence in 90 cities,
+169
+across 40 countries.
+170
+And this will be very helpful when we deliver content
+171
+to the end users with the lowest latency possible.
+172
+And this is what you see on this map.
+173
+Now, again, I'm going quickly over this
+174
+because we'll see this at the...
+175
+About the middle of this course.
+176
+Now how about we just play around
+177
+and do a tour of the consult?
+178
+We'll see that AWS has global services such as IAM,
+179
+Route 53, CloudFront and WAF,
+180
+but we'll see that also, most AWS services
+181
+are going to be region scoped, such as Amazon EC2,
+182
+Elastic Beanstalk, Lambda, and Rekognition.
+183
+Finally, to know if a service is available in your region,
+184
+there is a region table you should check out right here.
+
+
+=== High Availability and Scalability: ELB & ASG ===
+
+
+--- [Important] AWS Console UI Update ---
+
+1
+Hi, so just before we get started
+2
+on this course, just a note about the UI change in AWS.
+3
+So you may see the console like this, a big, bright white,
+4
+and then some rounded buttons in bright blue.
+5
+So this is the new UI of AWS,
+6
+and the old UI used to look a little bit more gray,
+7
+the blue, a little more pale.
+8
+The buttons were square and not round.
+9
+And this is a new UI with more roundness, more modernness.
+10
+On a visual level, it may look a little bit different, okay?
+11
+But on the usability perspective,
+12
+the UI should be exactly the same.
+13
+So if you see my videos recorded with this kind of UI,
+14
+just rest assured that the new UI
+15
+should look exactly the same from a usability perspective,
+16
+not just from a visually perspective.
+17
+If things change too much
+18
+and there is buttons moving places and so on,
+19
+please let me know and I will do my best
+20
+to update some videos.
+21
+But in the meantime, I will leave my videos
+22
+because they have so many of them running
+23
+on the quote, unquote older UI,
+24
+and the new UI is just for you to figure out.
+25
+But it's exactly the same,
+26
+just new colors and new shapes for buttons, okay?
+27
+So thank you so much,
+28
+and I will see you in the next lecture.
+
+
+=== AWS Fundamentals: RDS + Aurora + ElastiCache ===
+
+
+--- Tour of the AWS Console & Services in AWS ---
+
+1
+So welcome to the AWS Console Home.
+2
+And in this page, you can do a lot of things.
+3
+So first of all, let's have a look
+4
+at the top right corner of your screen,
+5
+right now, this is what's called the regions selector,
+6
+and right now I am in Northern Virginia,
+7
+US east one.
+8
+But it is advised for this course to
+9
+choose a region that is geographically close to you.
+10
+So because I'm in Europe, I'm actually close to Ireland.
+11
+So I can choose EU west one.
+12
+But if you are in other regions of the world, for example
+13
+if you're in Africa and you're close to Capetown
+14
+then choose this.
+15
+Of course you don't have to physically be
+16
+in that region to use that region, okay?
+17
+You can for example
+18
+choose whatever region makes sense for you.
+19
+So choose whatever is closest
+20
+and this will give you the lowest amount of latency.
+21
+Next in the console console, you will see a list
+22
+of recently visited services
+23
+and it should be empty for you.
+24
+And I just tried that one
+25
+so it's showing one right here for me.
+26
+On the bottom you get some information about AWS.
+27
+You get the health issues, if need be
+28
+and cost and usage info for your accounts
+29
+as well as tutorials to build a solution and so on.
+30
+So this webpage is actually changing a lot over timeless
+31
+changed a lot for the past two years.
+32
+And so it may not look exactly the same as you
+33
+and in case it looks very, very, very different.
+34
+I will rerecord this lecture.
+35
+Okay, so once we have this
+36
+we need to look at services of AWS.
+37
+And for this two options,
+38
+the first one is to go on the top left click on services
+39
+and you can either look at services
+40
+by alphabetical order, as you can see
+41
+there are a lot of services on AWS,
+42
+or by category for example, for compute
+43
+you will have all these services and so on.
+44
+But don't worry over time,
+45
+we will learn these services
+46
+and we don't have to navigate that page.
+47
+Another thing I really like is the search bar.
+48
+So you can actually type a service for example, route 53
+49
+and then it gives you search results.
+50
+So it gives you four services that match this query, okay?
+51
+And then within these services,
+52
+we can also have a look at features
+53
+and 13 features match them.
+54
+So we can directly jump into the domain names
+55
+of the route 53 service and it's a good thing.
+56
+We can also look at blogs, knowledge articles
+57
+documentations and so on.
+58
+So this is quite cool.
+59
+Let's go into route 53 now to have a look at this console.
+60
+So this one is very special because
+61
+on the top right hand side, it says global.
+62
+That means that this console
+63
+does not require a region selection.
+64
+And that is more of the exception than the rule,
+65
+but some services in AWS are where
+66
+it's called global services and no matter where you are
+67
+you're going to get the same view.
+68
+But if you switch services and you go, for example
+69
+to the EC two service,
+70
+this time on the top right hand side,
+71
+as you can see it says Ireland
+72
+because I chose the Ireland region.
+73
+And so based if I run this console in Ireland
+74
+or say in another region, for example, in Canada,
+75
+well my view is going to be different
+76
+in terms of the resources that I will see.
+77
+So that's why it's important for you to remain
+78
+within the same region for the entire duration
+79
+of this tutorial and this course.
+80
+The other thing you can look at
+81
+is called the AWS global infrastructure
+82
+that you can find on Google.
+83
+And this gives you a lot
+84
+of information around your services.
+85
+And one thing that is very important to look at
+86
+is the AWS regional services.
+87
+And it gives you the services list by region.
+88
+And so this is table,
+89
+and so for example, if in the course,
+90
+I talk about a service and do a hands on,
+91
+but it doesn't seem to be in your region,
+92
+you can check here and find the availability of services.
+93
+So for example, we can check a look,
+94
+have a look for Cape town
+95
+and see the services that are available in this region.
+96
+And if you don't see a service
+97
+maybe you need to switch a region
+98
+in of course the console,
+99
+to have access to it
+100
+because not all the services from AWS are in every region.
+101
+So that's it for this lecture,
+102
+I hope you liked it
+103
+and I will see you in the next lecture.
+
+
+=== Route 53 ===
+
+

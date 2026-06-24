@@ -1,0 +1,1744 @@
+--- AWS Snow Family Overview ---
+
+1
+Okay, so now let's talk about AWS Snowball.
+2
+So it's a highly secure and portable device
+3
+that allows you to collect and process data
+4
+at the edge and migrate data in and out of AWS.
+5
+So if you have a migration of say, petabytes of data,
+6
+Snowball may be a good use case.
+7
+So we have two kind of Snowball edge devices.
+8
+One is called the Edge Storage Optimized,
+9
+and the other one is called the Edge Compute Optimized.
+10
+And the difference lies in their storage.
+11
+As you can see, one has 210 terabytes
+12
+and the other one has 28 terabytes.
+13
+So obviously one is for storage
+14
+and the other one is only used for computer.
+15
+So let me tell you about data migrations.
+16
+So it takes a lot of time to transfer some data
+17
+over a specific bandwidth speed.
+18
+For example, if you want to transfer a hundred terabytes
+19
+over one gigabytes per second connection,
+20
+it would take you 12 days.
+21
+So when you have a slow connection,
+22
+you may have limited connectivity, limited bandwidth,
+23
+very high network cost, and you have to share the bandwidth,
+24
+for example, with some other applications,
+25
+the connection may not be stable.
+26
+So whenever you have these kind of challenges,
+27
+or if it takes you, for example, over a week
+28
+to transfer data over the network,
+29
+the recommendation is to use a Snowball device.
+30
+So the idea is that if you upload directly to Amazon S3,
+31
+it's simple, but it may use all your bandwidth.
+32
+And if you use Snowball,
+33
+well, you're going to receive a physical Snowball device,
+34
+you, yourself in your own infrastructure.
+35
+So it's a physical machine,
+36
+and then you load it with the data you need,
+37
+and then finally you ship it back to AWS.
+38
+And then you will be having an export process
+39
+within AWS to take your data from the Snowball onto,
+40
+for example, an Amazon S3 bucket.
+41
+So this is the main use case of a Snowball device.
+42
+The other one is a edge computing use case.
+43
+So the idea is that you wanna process data
+44
+while it's being created on an edge location.
+45
+For example, it's a truck on the road or a ship on the sea,
+46
+or a mining station on the ground.
+47
+And these locations may have no internet access
+48
+or limited access to internet or compute power.
+49
+So here again, we order one of these
+50
+big Snowball edge devices and we do edge computing.
+51
+And so that means that we have the Compute Optimized,
+52
+this is dedicated for that use case
+53
+for the search optimized devices.
+54
+And then because they have computing capability,
+55
+we can actually run EC2 instances
+56
+or Lambda functions directly on these devices.
+57
+The idea is that once the data is created
+58
+and processed, we can send it back again to AWS,
+59
+but by using an edge computing device,
+60
+we can pre-process the data
+61
+or we can do machine learning at the edge
+62
+or directly transcode media at the edge.
+63
+And that's the use case for edge computing.
+64
+So hopefully that makes sense.
+65
+The Snowball service is really just something that is used
+66
+for data migrations and edge computing.
+67
+Alright, that's it, I hope you liked it
+68
+and I will see you in the next lecture.
+
+--- AWS Snow Family Hands On ---
+
+1
+So let's have a look at the AWS Snow family.
+2
+So we're going to order a Snow family device,
+3
+or at least go through the process of ordering one
+4
+to see what are the options.
+5
+So first we have a job name.
+6
+So this is my import job, and then you choose a job title.
+7
+So do you want to import into Amazon S3.
+8
+It's going to be a very good use case.
+9
+So Amazon will ship a Snowball device to you
+10
+and then you send it back to AWS.
+11
+Or do you want to export,
+12
+in which case you export data from Amazon S3
+13
+and it gets loaded into the Snowball device
+14
+and then you receive it.
+15
+Or if you want to just do edge computing,
+16
+you do local compute and storage only.
+17
+So let's do import from Amazon S3.
+18
+And then we have Snow devices, so we can choose two of them.
+19
+We can choose this one, the Snowball Edge Storage
+20
+optimized with 210 terabytes,
+21
+or the compute optimized device.
+22
+Obviously over time, some of these devices may change,
+23
+but don't worry.
+24
+I just wanna show the idea behind Snow family,
+25
+so don't worry.
+26
+As you can see,
+27
+a lot of devices previously have been discontinued.
+28
+So these are the two options I have right now,
+29
+but from an exam perspective,
+30
+this should be more than enough for you to know.
+31
+Alright, so next, you choose the pricing option.
+32
+So on-demand per day pricing,
+33
+the storage transfer, so S3 data transfer,
+34
+and then the buckets
+35
+that you want to transfer data back into,
+36
+for example, this one.
+37
+And then no features and options, and then security.
+38
+So how do you encrypt your data?
+39
+How do you access service types?
+40
+So you need to choose a service role.
+41
+And this service role will have access to Amazon S3
+42
+to allow to create this ServiceLink role
+43
+and make sure that our Snow device
+44
+has the right to write to our S3 buckets.
+45
+And then the shipping address,
+46
+so where you want the snow device to be shipped to,
+47
+because you're going to receive it,
+48
+and then the shipping speed
+49
+is a one-day shipping or two day shipping,
+50
+and then notifications to see your job status.
+51
+And then when you're done,
+52
+you have the job summary, and that's it.
+53
+You will receive a Snowball Edge device
+54
+and you have to load your data onto it
+55
+and then send it back to AWS
+56
+thanks to the shipping label that's included.
+57
+And that's it.
+58
+You've seen how the Snow family works.
+59
+Obviously we're not going to order one,
+60
+because that would be way too complicated,
+61
+but I hope you liked it,
+62
+and I will see you in the next lecture.
+
+--- Architecture: Snowball into Glacier ---
+
+1
+So just a very short lecture
+2
+around a scenario that can come up in the exam.
+3
+And the idea is that you want to have Snowball
+4
+import data directly into Glacier,
+5
+but Snowball cannot import data directly into Glacier.
+6
+The solution for you is to use Amazon S3 first,
+7
+and then you would create a lifecycle policy
+8
+to transition these objects into Amazon Glacier.
+9
+So once you know, it is very simple.
+10
+Snowball imports the data into Amazon S3
+11
+and thanks to an S3 lifecycle policy,
+12
+the data is transitioned into Amazon Glacier.
+13
+That is something to remember for the exam.
+14
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon FSx ---
+
+1
+So now let's talk about Amazon FSx.
+2
+So Amazon FSx allows you
+3
+to launch third-party high-performance file systems
+4
+on AWS as a fully managed service.
+5
+So the idea is that you want, for example, for RDS,
+6
+you wanted to launch MySQL or PostgreSQL on AWS.
+7
+Well, for FSx, it is the same as RDS, but for file systems.
+8
+So for example, you can launch Lustre on FSx
+9
+or you can launch a Windows File Server on FSx
+10
+or you can launch NetApp ONTAP on FSx
+11
+or OpenZFS on FSx.
+12
+And there may be more
+13
+at the time of you seeing this lecture,
+14
+and I will update this lecture only if I find
+15
+that some significant file systems
+16
+are making their appearance at the exam, okay?
+17
+But you need to know the four you have in front of you.
+18
+So let's have a look at them one by one.
+19
+So first, let's have a look at Amazon FSx
+20
+for Windows File Server.
+21
+So it's a fully managed Windows File Server share drive.
+22
+And because it's Windows, it supports the SMB protocol,
+23
+as well as Windows NTFS.
+24
+Also, because it's Windows, it supports integration
+25
+with Microsoft Active Directory to get security
+26
+for your users.
+27
+It use also ACLs, access control list, and user quotas.
+28
+And there is a specificity, though, of Amazon FSx
+29
+for Windows File Server,
+30
+is that even though it seems like it's dedicated
+31
+for Windows, you can also mount them on Linux EC2 instances.
+32
+And it's something you have to remember.
+33
+And if you have an existing Windows File Server somewhere,
+34
+for example, on premises,
+35
+then you can use the Microsoft Distributed File System,
+36
+DFS feature, to group your file systems together
+37
+and therefore join your FSx for Windows File Server
+38
+to your on-premises Windows File Server.
+39
+Okay, now, in terms of performance,
+40
+this scales up to tens of gigabytes per second,
+41
+millions of IOPS, and hundreds of petabytes of data.
+42
+The storage option for FSx for Windows File Server are SSD
+43
+to get very low latency sensitive workloads,
+44
+for example, databases, media processing, data analytics.
+45
+Or if you wanted to have a broad spectrum of workloads,
+46
+you can use HDD is cheaper,
+47
+for example, home directory or CMS.
+48
+Now you can access your FSx for Windows File Server
+49
+from your on-premises infrastructure
+50
+with a private connection,
+51
+and you can also configure your FSx for Windows File Server
+52
+to be Multi-AZ for high availability.
+53
+Finally, all your data is backed-up daily to Amazon S3
+54
+for disaster recovery purposes.
+55
+Now let's talk about the second kind of Amazon FSx,
+56
+which is Amazon FSx for Lustre.
+57
+And Lustre is used to do a distributed file system
+58
+that is going to be used for large-scale computing.
+59
+So once I explained you the word Lustre,
+60
+it's going to make sense.
+61
+So Lustre is derived from Linux and cluster.
+62
+It is used for machine learning
+63
+and high-performance computing, or HPC.
+64
+And this is a keyword you need to look for
+65
+to know that you need FSx for Lustre.
+66
+So you can have applications such as video processing,
+67
+financial modeling, electronic design automation.
+68
+You have massive scale,
+69
+so you can scale up to hundreds of gigabytes
+70
+of data per second, millions of IOPS,
+71
+and sub-milliseconds latency.
+72
+And for storage, two options,
+73
+either you want an SSD for very low latency,
+74
+IOPS intensive workload,
+75
+as well as small and random file operations,
+76
+or HDD if you want throughput-intensive workload
+77
+for large and sequential file operations.
+78
+And SSD is going to be more expensive than HDD.
+79
+You have seamless integration with Amazon S3.
+80
+That means that you can read S3
+81
+as a file system through FSx,
+82
+and you can write the output of the computations from FSx
+83
+back to Amazon S3.
+84
+And that is something that the exam may ask you about.
+85
+Finally, Amazon FSx for Lustre can be used
+86
+from on-premises servers through VPN or direct connect.
+87
+For FSx, you also need to know
+88
+the file system deployment options.
+89
+And there's two you need to know.
+90
+There is scratch file system and persistent file system.
+91
+So scratch file system is going to be temporary storage,
+92
+and the data will not be replicated.
+93
+That means that you have a file,
+94
+and you will lose it if the underlying server fails.
+95
+But thanks to this optimization, we get really high bursts.
+96
+So we get six times the performance
+97
+of a persistent file system,
+98
+and you get, for example, 200 megabytes per second
+99
+per terabytes of throughput.
+100
+So it's actually really, really big.
+101
+So the use case of a scratch file system is going
+102
+to do short-term processing of data,
+103
+and you want to optimize your cost
+104
+by not having data being replicated.
+105
+So that means that you have FSx,
+106
+your compute instances are going to connect on AZ1 and AZ2,
+107
+and then the FSx for Lustre scratch file system
+108
+only has one copy of your data
+109
+as it is shown on this diagram right here.
+110
+Just one copy, okay?
+111
+Finally, you can also have optional S3 buckets underlying
+112
+for the data repository.
+113
+For persistent file system,
+114
+it's going to be for long-term storage.
+115
+The data is going to be replicated
+116
+within the same availability zone, okay,
+117
+so not across AZ but within the same AZ.
+118
+But that means that if you have a failure
+119
+of a underlying server,
+120
+then the files will be replaced
+121
+transparently within minutes.
+122
+So the use case for a persistent file system is,
+123
+as its name indicates, long-term processing
+124
+and storage of sensitive data.
+125
+So the idea is exactly the same
+126
+in terms of the architecture.
+127
+Remember, FSx only lives for Lustre
+128
+only within one single AZ.
+129
+And the FSx for Lustre file system
+130
+in persistent mode will have two copies of the data,
+131
+so you can see there is some replication right now
+132
+from one data volume to the next data volume.
+133
+Next, we have Amazon FSx for NetApp ONTAP.
+134
+So it's a managed NetApp ONTAP file system on AWS.
+135
+And this file system is compatible
+136
+with the NFS, SMB, and iSCSI protocol.
+137
+So the idea is that you would use the FSx
+138
+for NetApp ONTAP file system to move workloads
+139
+that are already running on ONTAP
+140
+or running on a NAS on your on-premises system into AWS.
+141
+So it has broad compatibility
+142
+with different operating systems.
+143
+So it work with Linux, Windows, and macOS,
+144
+as well as VMware Cloud on AWS,
+145
+WorkSpaces, AppStream, EC2, ECS, and EKS,
+146
+which are services you may have not seen yet
+147
+in this course, okay?
+148
+But the idea is that it has
+149
+very, very, very broad compatibility.
+150
+On top of it,
+151
+these storage will automatically shrink or grow.
+152
+So there's auto-scaling for this, which is cool.
+153
+Then you have replication, you have snapshots,
+154
+replication features available.
+155
+It's low cost, you can do data compression.
+156
+And also, you can do data de-duplication.
+157
+So you can find duplicates of files on NetApp ONTAP.
+158
+And finally, very helpful,
+159
+you can do point-in-time instantaneous cloning,
+160
+which is very helpful for testing new workloads
+161
+and in ones you want to test.
+162
+You wanna take your file system,
+163
+you clone it very quickly,
+164
+and then you have a staging file system, for example.
+165
+So these are some of the benefits you need to look out for
+166
+in the exam when it's hinted at you
+167
+that you should be using NetApp ONTAP.
+168
+Finally, we have Amazon FSx for OpenZFS.
+169
+So it's a managed OpenZFS file system on AWS,
+170
+which is compatible only with the NFS protocol
+171
+on multiple versions.
+172
+And the main use case is to move workloads
+173
+that are already running on ZFS internally to AWS.
+174
+It has also has broad compatibility
+175
+with Linux, Mac, Windows, and so on.
+176
+And this one is really good performance.
+177
+You can scale up to 1 million IOPS
+178
+with less than 0.5 millisecond latency,
+179
+support snapshots, compression, and low cost,
+180
+but not data de-duplication.
+181
+And just like NetApp ONTAP,
+182
+it has support for point-in-time instantaneous cloning,
+183
+which is very helpful again to test new workloads.
+184
+So all this information should be enough
+185
+for you to answer the question at the exam,
+186
+to pick the right file system for the right use case.
+187
+Okay, that's it.
+188
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon FSx - Hands On ---
+
+1
+So let's have a quick look at Amazon FSx,
+2
+and Amazon FSx is where to get manage file systems
+3
+on AWS.
+4
+So, we can go ahead and create a file system,
+5
+and you have to choose between multiple options,
+6
+and the one you need to know for sure
+7
+for the exam are going to be these four ones.
+8
+If more are added over time,
+9
+unless they appear on the exam,
+10
+I will not update this lecture,
+11
+just to keep it super simple.
+12
+So here we have FSx for Lustre, and that's
+13
+to provide a Lustre file system for your workload,
+14
+and you can just enter the file system details.
+15
+You can get a deployment and storage type,
+16
+which has, gives you better overage performance.
+17
+You can choose your throughput, and so on,
+18
+and then the place within your VPC,
+19
+and choose any level of encryption.
+20
+So we don't need to know that many details
+21
+about each file system, okay?
+22
+Just that there's Persistent
+23
+and Scratch file systems options for Lustre.
+24
+Next, if I go back to Amazon FSx for Windows File Server,
+25
+this is the way to get a Windows File Server on AWS,
+26
+and it's accessible using the Server Message Block,
+27
+SMB protocol.
+28
+So if we look quickly at the option,
+29
+we can do Multi AZ or Single AZ, which is good for Dev.
+30
+The Multi AZ is good as well.
+31
+The storage type, SSD or HDD, the full gift capacity depends
+32
+on the storage capacity, so if you put,
+33
+for example, one 10,000 gigabytes,
+34
+then we're going to get some options for gift capacity.
+35
+We can deposit into a specific VPC.
+36
+We can enable Windows authentication
+37
+with Active Directory integration,
+38
+either through a host, active host directory on AWS,
+39
+or a Self-managed Microsoft Active Directory.
+40
+And we get encryption, and then we can get more options,
+41
+such as auditing, access, main,
+42
+backup and maintenance, and so on.
+43
+Now for Amazon FSx for NetApp ONTAP is
+44
+to get the NetApp ONTAP popular file system onto AWS,
+45
+and the main feature is that it's compatible
+46
+with Linux, Windows, and macOS, okay,
+47
+and then, you also get access to a really good performance.
+48
+So in that case, we can have a look
+49
+at the file system options, where we again,
+50
+we have Multi AZ or Single AZ,
+51
+we specify a storage type capacity
+52
+and whether or not we want storage efficiency,
+53
+such as features, such as deduplication,
+54
+compression, and compaction, okay?
+55
+So this is where we quick create,
+56
+and standard create, it gives you more option,
+57
+but then again, you just need to know this file system
+58
+at the high level.
+59
+And finally, Amazon FSx for OpenZFS,
+60
+and this is to have a ZFS file system on AWS,
+61
+which is compatible with Linux, Windows, and macOS as well,
+62
+and again, I would invite you to explore the options.
+63
+But at a high level, from an exam perspective,
+64
+you need to know the differences
+65
+between these four options, okay, and all the details
+66
+to choose which one is right was in the previous lecture.
+67
+So that's it for this lecture.
+68
+I hoped you liked it, and I will see you
+69
+in the next lecture.
+
+--- Storage Gateway Overview ---
+
+1
+So AWS is starting to push for hybrid cloud,
+2
+and what is hybrid cloud?
+3
+That means that part of your infrastructure
+4
+is going to be on the cloud of AWS,
+5
+and part of your infrastructure
+6
+is going to stay on-premises,
+7
+and this can be due to multiple reasons.
+8
+Maybe you have a long cloud migration,
+9
+maybe you have security requirements
+10
+or compliance requirements, maybe it's part of your strategy
+11
+to only leverage a cloud for elastic workloads,
+12
+but to keep a lot of stuff on-premises.
+13
+So we have some services that we really like in AWS,
+14
+such as Amazon S3,
+15
+which is a proprietary storage technology,
+16
+which is unlike EFS, which is an NFS compliance file system,
+17
+so how would you expose, for example,
+18
+the S3 data on-premises?
+19
+And the bridge between this S3
+20
+and your on-premises infrastructure
+21
+is going to be AWS Storage Gateway.
+22
+So if we look at the storage cloud-native options on AWS,
+23
+we have block storage, which is Amazon EBS,
+24
+or the EC2 instance store.
+25
+We have file systems, such as Amazon EFS or Amazon FSX,
+26
+and we have object-level storage,
+27
+such as Amazon S3 or Amazon Glacier.
+28
+So now, let's talk about the AWS Storage Gateway.
+29
+So very simply, it is a bridge between your on-premises data
+30
+and your cloud data, so you have data on-premises,
+31
+and you're going to bridge it using the Storage Gateway
+32
+to the cloud.
+33
+Now, that looks simple,
+34
+but we have different use cases for this.
+35
+The first one is to do disaster recovery,
+36
+so to back up your on-premise data into the cloud,
+37
+or you can also do backup and restore,
+38
+so to do a cloud migration or to extend your storage
+39
+from on-premises to the cloud, and for example,
+40
+your cloud has colder data,
+41
+and your on-premises data has more warmer,
+42
+more frequently used data.
+43
+Also, you can, for example, instead prefer
+44
+to have the majority of your data stored on AWS
+45
+and use the Storage Gateway as an on-premises cache
+46
+for low-latency file access.
+47
+So there are different kind of use cases,
+48
+and therefore, there are different kinds of Storage Gateway,
+49
+and there are a few of them,
+50
+so the first one is the S3 File Gateway,
+51
+the Volume Gateway, and the Tape Gateway.
+52
+I will be explaining all of those in this lecture.
+53
+So first, we have the Amazon S3 File Gateway.
+54
+So we have an S3 bucket,
+55
+and we can use whatever storage class we want,
+56
+for example, S3 Standard, S3 Standard-IA, S3 One Zone-IA,
+57
+or S3 Intelligent-Tiering, but not Glacier,
+58
+and we want to connect this S3 bucket
+59
+to an on-premises application server,
+60
+but we want to use a standard network file system.
+61
+So for this, we're going to create an S3 File Gateway,
+62
+which is going to allow our application server
+63
+to use the NFS or the SMB protocol,
+64
+and by using these protocols, behind the scene,
+65
+the S3 File Gateway is going to translate those requests
+66
+into HTTPS requests for your Amazon S3 buckets.
+67
+So from an application server perspective,
+68
+it looks like it's accessing a normal file share,
+69
+but in fact, behind the scenes,
+70
+it is using an Amazon S3 buckets,
+71
+and this is how you expose S3 objects
+72
+onto on-premises application servers.
+73
+Then if you wanted to archive some of these objects,
+74
+you could create a lifecycle policy for your S3 bucket
+75
+to transition objects after a while to S3 Glacier
+76
+in order to have them archived.
+77
+So whatever buckets you configure with your S3 File Gateway
+78
+are going to be accessible using the NFS and SMB protocol,
+79
+and on top of it, the most recently used data
+80
+is cached in the File Gateway for rapid access,
+81
+so not your entire S3 bucket is on the File Gateway,
+82
+but your most recently files
+83
+that are most recently used files.
+84
+So as I said, it supports different storage classes
+85
+for your S3 buckets,
+86
+and you can transition to S3 Glacier
+87
+using a lifecycle policy.
+88
+Now, to access your bucket, you need to create IAM roles
+89
+for each File Gateway,
+90
+and then if you were to use the SMB protocol,
+91
+because it is more native for Windows file systems,
+92
+you have integration with Active Directory
+93
+for user authentication,
+94
+so that means that your users can be authentified
+95
+with your S3 File Gateway before accessing it,
+96
+and then therefore accessing your S3 buckets.
+97
+So that's the Amazon S3 File Gateway.
+98
+Next. we have the Volume Gateway,
+99
+and this is block storage using the iSCSI protocol
+100
+backed by Amazon S3,
+101
+and the idea is that you will have your volumes
+102
+being backed up by EBS snapshots,
+103
+which can, in turn, help you restore on-premises volumes
+104
+in case you need to.
+105
+So you have two types of Volume Gateway.
+106
+You have the cached volumes to get low-latency access
+107
+to the most recent volume data,
+108
+or stored volume, where the entire dataset is on-premises,
+109
+and there is a scheduled backup to Amazon S3.
+110
+So here, our application server needs to be backed up,
+111
+and so using this protocol,
+112
+we're going to get a Volume Gateway,
+113
+and the Volume Gateway will create Amazon EBS snapshots
+114
+backed by Amazon S3.
+115
+So the same logic here,
+116
+but here, the goal of the Volume Gateway really
+117
+is to back up your volumes of your on on-premises servers.
+118
+Tape Gateway is that if you have some companies that have,
+119
+for example, a tape backup system using physical tapes,
+120
+then with the Tape Gateway, you do the same process,
+121
+but the tapes are going to be backed up in the cloud,
+122
+and so this virtual tape library, or VTL,
+123
+is going to be backed by Amazon S3 and Glacier.
+124
+You're going to back up existing data
+125
+using tape-based process and using the iSCSI interface,
+126
+and then this is going to work
+127
+with leading backup software vendors.
+128
+So diagram you can expect,
+129
+the corporate data center has a backup server,
+130
+which is tape-based.
+131
+The Tape Gateway will do the interface into the cloud
+132
+by storing the tapes into Amazon S3 or in Amazon Glacier.
+133
+Finally, as you can see in all these diagrams from before,
+134
+the gateway has to be installed
+135
+on your corporate data center.
+136
+It has to run within your corporate data center,
+137
+but sometimes, you do not have virtual servers
+138
+to run this additional gateway.
+139
+So let's try to summarize the Storage Gateway service.
+140
+So we have on-premises,
+141
+where we deploy a Storage Gateway VM,
+142
+and then we have the Storage Gateway service,
+143
+and then we have the cloud of AWS.
+144
+So if we want to have a File Gateway with a local cache,
+145
+this is the use case, where we have a user group file share,
+146
+and we want to access it over the NFS or the SMB protocol.
+147
+Option number one, we connect this
+148
+into directly an S3 File Gateway,
+149
+so therefore, your data is going to be backed by Amazon S3,
+150
+and that includes many storage tiers
+151
+except Glacier and Glacier Deep Archive.
+152
+but we can create a lifecycle policy
+153
+to send this into any storage class on Amazon S3,
+154
+including S3 Glacier.
+155
+Now, the other use case for a Volume Gateway
+156
+is to have application servers mount volumes
+157
+over the iSCSI protocol.
+158
+So what we do is that this Volume Gateway
+159
+is going to be linked through Storage Gateway to Amazon S3,
+160
+so this is where the data of your volume is going to be,
+161
+and then Amazon S3 data can be transformed
+162
+into AWS EBS volumes for really being restored on AWS.
+163
+Next, we have your backup applications,
+164
+connecting over the iSCSI VTL protocol to a Tape Gateway,
+165
+and the Tape Gateway is connected to Amazon S3
+166
+as a tape library, and then we can transition these tapes
+167
+into the Glacier and Glacier Deep Archive tier
+168
+to create an archive of your tapes.
+169
+So hopefully, that summarizes everything we've seen
+170
+in this lecture and you understand it.
+171
+I hope you liked it, and I will see you in the next lecture.
+
+--- Storage Gateway Hands On ---
+
+1
+So let's go into Storage Gateway
+2
+and we'll have a look at just how to create a gateway.
+3
+So here we have a gateway name.
+4
+So I'll call this one Demo Gateway,
+5
+and let's look at the options.
+6
+So we have the Amazon S3 file gateway,
+7
+which is to access files in Amazon S3 directly through NFS
+8
+or SMB file protocol and has local caching.
+9
+We have FSX, but this is grayed out
+10
+because this is going away, so forget about it.
+11
+Then, we have tape gateway and volume gateway.
+12
+So I just wanna show you the quick options of all of these.
+13
+So for Amazon S3 file gateway,
+14
+we can host it in several different ways.
+15
+We can host it on VMware, on Microsoft Hyper-V,
+16
+on Linux KVM, or on Amazon EC2.
+17
+And if you launch on Amazon EC2,
+18
+that means that your caching and your gateway
+19
+is going to be within your accounts of AWS,
+20
+which may or may not be desirable.
+21
+But if you use any of these, for example, VMware,
+22
+Microsoft Hyper-V, or Linux KVM,
+23
+that means that you can set up
+24
+the storage gateway directly on premises
+25
+in your data center.
+26
+And so therefore, the Amazon S3 data
+27
+is going to live closer to your servers.
+28
+So this may be more desirable or less based
+29
+on your use case.
+30
+For the other options, we have tape gateway.
+31
+Again, we have different platform options,
+32
+and this is to confirm to have
+33
+a tape archive using ISCI-VTL,
+34
+and to store these tapes in Amazon S3 Glacier.
+35
+And finally, volume gateway to have block storage volume,
+36
+but backed by Amazon S3.
+37
+So here we can see the two options that we like.
+38
+We have cached volume and stored volume.
+39
+So cache volume is your primary data is stored in Amazon S3,
+40
+and your frequently accessed data is retained locally
+41
+in the cache for low-latency access.
+42
+And stored volume, where your entire dataset
+43
+is stored locally, and then it's synced asynchronously
+44
+to Amazon S3.
+45
+So you have to choose, and for these,
+46
+you have different options, like waffle platforms.
+47
+But that's it, all the options
+48
+I wanted to show you for Storage Gateway.
+49
+I hope you liked it, and I will see you in the next lecture.
+
+--- AWS Transfer Family ---
+
+1
+Now let's talk about the AWS transfer family.
+2
+So the idea is that you want to send data in and out
+3
+of Amazon S3 or EFS
+4
+but you don't want to use the S3 APIs.
+5
+You don't want to use the EFS network file system.
+6
+You just want to use the FTP protocol.
+7
+In this case,
+8
+you need to use the transfer family service from AWS.
+9
+So it supports three kinds of protocols.
+10
+It supports AWS transfer for FTP.
+11
+So the file transfer protocol, FTP.
+12
+FTPS, which is the file transfer protocol over SSL,
+13
+so encrypted form.
+14
+Or SFTP, which is a secure file transfer protocol.
+15
+Now you don't want you to be an expert on those.
+16
+Just know that FTP is unencrypted
+17
+whereas FTPS and SFTP are encrypted in flight.
+18
+Now, the idea is that using the FTP protocol,
+19
+you can upload to S3 or EFS.
+20
+The transfer family is fully managed infrastructure.
+21
+It's scalable, reliable, and highly available.
+22
+So you manage at all that capability.
+23
+And in terms of pricing, you're going to pay
+24
+per provision end points per hour, plus a fee per gigabytes
+25
+of data transferred in and out of the transfer family.
+26
+You can store and manage a user's credentials
+27
+for that service within the service.
+28
+Or you can also integrate
+29
+with existing authentication system,
+30
+such as Microsoft Active Directory, LDAP,
+31
+Okta, Amazon Cognito or any custom source.
+32
+The usage of this is obviously to have an FTP interface
+33
+into Amazon S3 or EFS.
+34
+So as to share files, to share public datasets,
+35
+to do CRM, ERP, et cetera, et cetera.
+36
+So just the diagram for you to understand.
+37
+The transfer family has three flavors
+38
+and the users can access directly using the end points
+39
+of the FTP or optional, you can use a GNS called route 53
+40
+to provide your own the host name into the FTP service.
+41
+And then the FTP service thus so the transfer
+42
+for FTP service will have an IAM role
+43
+that will be assumed to send or read through the files from
+44
+Amazon S3 or Amazon EFS.
+45
+And this is done transparently.
+46
+You don't have to set any many things up.
+47
+And finally,
+48
+if you wanted to secure the transfer family services
+49
+then you could authenticate your users
+50
+using an external authentication system
+51
+such as Active Directory, LDAP
+52
+or all the things I've just said in the previous slide.
+53
+Okay.
+54
+So let's say, just that you know,
+55
+this feature as a high level, I hope you liked it.
+56
+and I will see you in the next lecture.
+
+--- DataSync - Overview ---
+
+1
+So now let's talk about AWS DataSync.
+2
+And DataSync is a service that is appearing
+3
+now quite a lot at the exam.
+4
+It's a very simple one,
+5
+but you need to know what it does at its core.
+6
+So the idea, as the name indicates, is to synchronize data.
+7
+Therefore, move large amount of data to and from places.
+8
+And these places can be, for example,
+9
+on-premises or other cloud locations into AWS.
+10
+So you would connect to your server using the NFS,
+11
+the SMB, the HDFS, or other protocols.
+12
+And it needs an agent to run on-premises
+13
+or on the other cloud to do that connection.
+14
+And you can, for example, do other types of migrations.
+15
+For example, you can move data from one
+16
+AWS service to another AWS service.
+17
+And this requires no agent.
+18
+I will show you what it means.
+19
+So the idea is that you can synchronize data to Amazon S3,
+20
+including any storage classes,
+21
+even Glacier, Amazon EFS to store
+22
+into your network file system,
+23
+or Amazon FSx, and it supports all of them.
+24
+Now, the replication tasks are not continuous.
+25
+They are scheduled.
+26
+So you can make DataSync run hourly, daily, or weekly.
+27
+So there's a lag, okay,
+28
+but the data is going to be synchronized on a schedule.
+29
+On top of it,
+30
+DataSync has the ability to keep
+31
+the file permissions and the metadata.
+32
+That means the security and so on.
+33
+So that means that it's compliant with the NFS
+34
+POSIX file system and the SMB permissions.
+35
+This is very important because at the exam,
+36
+this will be the unique option that will
+37
+preserve the metadata of your file
+38
+when moving them from one location to another.
+39
+One DataSync agent can be quite powerful.
+40
+It can run one task,
+41
+can use up to 10 gigabits of data per second.
+42
+Although if you don't want to max out your network,
+43
+you can set up a bandwidth limit.
+44
+So let's have a look at what it means in a diagram.
+45
+So here is the use case of synchronizing
+46
+your on-premises files using the SMB
+47
+or NFS protocol into AWS,
+48
+and that could be S3, EFS, or FSx.
+49
+So you have your on-premises and then
+50
+your AWS region where DataSync is running.
+51
+So here is your NFS or SMB server.
+52
+And what you have to do is to
+53
+install on-premises the AWS DataSync agent.
+54
+And you will tell it to connect to your NFS or SMB server.
+55
+And then the DataSync agent will establish a connection
+56
+and also connect in an encrypted
+57
+fashion into the DataSync service.
+58
+From there, you can tell it to go wherever you want.
+59
+That could be any storage class for your Amazon S3 buckets,
+60
+or it could be AWS EFS, or it could be Amazon FSx.
+61
+And the synchronization can happen one way
+62
+from on-premises to AWS,
+63
+but you can also synchronize from
+64
+AWS back into on-premises.
+65
+This is why it's called DataSync.
+66
+It can work any way.
+67
+So that is to show the architecture
+68
+of synchronization from on-premises to AWS,
+69
+or it could be, for example,
+70
+another cloud to AWS using the DataSync agent.
+71
+But you can also use DataSync to just
+72
+synchronize between different AWS storage services.
+73
+For example, you wanna synchronize between Amazon S3
+74
+or Amazon EFS or Amazon FSx
+75
+back into Amazon S3, Amazon EFS, or Amazon FSx.
+76
+And for this, again, we will use the AWS DataSync service.
+77
+And it will copy the data, of course,
+78
+but also the metadata will be kept
+79
+between the different AWS storage services,
+80
+which is very important.
+81
+And again, something that can come up in the exam.
+82
+So to remind you,
+83
+DataSync can pretty much synchronize between anything,
+84
+but it is not continuous.
+85
+It is scheduled tasks that can be happening hourly,
+86
+daily, weekly.
+87
+And also, it will preserve metadata
+88
+and your file permissions.
+89
+And finally, you need to run the DataSync agent
+90
+if you are connecting to an NFS or SMB server.
+91
+Okay, that's it for this lecture.
+92
+I hope you liked it.
+93
+And I will see you in the next lecture.
+
+--- All AWS Storage Options Compared ---
+
+1
+So there are lots of storage options on the AWS,
+2
+all with their different use cases.
+3
+And I wanted to give you a short lecture
+4
+to just summarize what we've seen
+5
+and then understand what are the differences.
+6
+So we've seen Amazon S3.
+7
+It is for Object Storage
+8
+And we've seen it's a very specific API, okay?
+9
+But it's great for anything related to AWS.
+10
+And then should we want to archive these objects,
+11
+we can use the S3 Glacier service.
+12
+Now, if we want to attach storage to one EC2 instance
+13
+at a time, we could use EBS volumes.
+14
+And we saw EBS volumes have a little feature
+15
+called multitask for the IO1 and IO2 volumes.
+16
+And within EBS,
+17
+we saw that they were different kinds of volumes.
+18
+We had the GP3 volumes,
+19
+we had the IO2 volumes,
+20
+and so on.
+21
+If we wanted to get super high performance,
+22
+physical storage for your EC2 instance with very high IOPS.
+23
+But if this is not a network storage,
+24
+if this is the physical storage,
+25
+then we need to use the EC2 Instance Storage.
+26
+Now, if we wanted to get a Network File System
+27
+for Linux instances,
+28
+that could be mounted across multiple availability zones
+29
+with the POSIX filesystem,
+30
+then we should use the Amazon EFS service.
+31
+Now, if you wanted to have a Windows server file system
+32
+we need to use the Amazon FSx for Windows service.
+33
+If you wanted to get
+34
+very High Performance Computing Linux file system
+35
+that's compatible with a Lustre client,
+36
+then we need to use FSx for Lustre.
+37
+If you wanted to get
+38
+super High Operating System Compatibility
+39
+for a network file system,
+40
+we could use the FSx NetApp ONTAP file system.
+41
+And you want to get a managed ZFS file system,
+42
+we could use FSx for OpenZFS.
+43
+So we've seen all the flavors.
+44
+Now we have other ways to bridge storage
+45
+between on premises and AWS,
+46
+we have the Storage Gateway.
+47
+So we sell the different types of storage gateway.
+48
+We have the S3 and the FSx File Gateway
+49
+to synchronize files between on premises
+50
+and Amazon S3 or Amazon FSx.
+51
+We have the Volume Gateway to mount volumes
+52
+onto your on premises servers
+53
+but have them backed up in the cloud.
+54
+And we have the Tape Gateway to just do backups
+55
+in the tape form.
+56
+If you wanted to have a FTP, FTPS, or SFTP interface
+57
+on top of Amazon S3 or Amazon EFS,
+58
+then you would use the AWS Transfer Family.
+59
+And if you wanted to synchronize data on the schedule
+60
+from on premises to AWS, or AWS to AWS,
+61
+you would use the DataSync service.
+62
+And finally,
+63
+if you don't have the network capacity to move data,
+64
+but you want to move large amount of data physically,
+65
+then you would order a Snowcone, a Snowball,
+66
+or a Snowmobile type of device
+67
+into on premises and then move it to the cloud.
+68
+With the particularity that Snowcone comes
+69
+with a data sync agent bundled in it already.
+70
+And also I would not pass Databases
+71
+so you can store it on Databases
+72
+but there are sort of very specific workloads
+73
+usually need indexing and querying
+74
+and we'll have a whole section dedicated
+75
+to understanding the right Database.
+76
+So hopefully when you see these storage,
+77
+you understand their differences
+78
+and you'll be able to understand
+79
+which one is the right one at the exam.
+80
+I know this is a lot,
+81
+but this is part of your role
+82
+as a Solutions Architect on AWS
+83
+to understand the differences between all the storage
+84
+and choose the right one for the right architecture.
+85
+Okay. That's it.
+86
+I hope you liked it.
+87
+And I will see you in the next lecture.
+

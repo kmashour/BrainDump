@@ -3,6 +3,20 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+## [2026-06-24] - Ingestion: AWS Global Infrastructure & Network Architecture
+
+### Added
+- **Main Notes:** Created 2 atomic conceptual deeper-dive notes:
+  - [[Main Notes/aws - AWS Region.md|aws - AWS Region.md]]
+  - [[Main Notes/aws - Availability Zone.md|aws - Availability Zone.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Refactored [[Reference Notes/3-1_aws_global_infrastructure.md|3-1_aws_global_infrastructure.md]] by removing conversational fluff and redundant slide dumps, integrating AWS launch history (SQS in 2004, S3/EC2 in 2006), cloud economic benefits (CAPEX to OPEX, elasticity), region selection criteria (governance, latency, cost, availability), and a Mermaid diagram mapping the regions and Availability Zones hierarchy.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-1_aws_global_infrastructure.txt`
+
 ## [2026-06-24] - Ingestion: RHEL Central Authentication, Package Management, ACLs, LVM/RAID Review, BIND DNS Replication, and Custom Core Services Playbooks
 
 ### Added

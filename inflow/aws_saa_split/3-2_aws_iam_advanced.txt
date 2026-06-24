@@ -1,0 +1,2420 @@
+--- Organizations - Overview ---
+
+1
+So now let's talk about AWS Organizations.
+2
+So it's a global service
+3
+and it allows you to manage multiple AWS accounts
+4
+at the same time.
+5
+So you create an organization
+6
+and the main account in your organization
+7
+is called the management account,
+8
+while the other accounts that join the organization
+9
+or that are created from the organizations
+10
+are called member accounts.
+11
+And remember, accounts can only be part of one organization.
+12
+The cool thing about organization
+13
+is that the billing is consolidated
+14
+across all the accounts.
+15
+So you have a single payment method
+16
+on the management account
+17
+and then it will be paying for all the organization's cost.
+18
+But because you have an organization
+19
+and it's all part of one big family,
+20
+then you get pricing benefits from aggregated usage.
+21
+So if you use a lot EC2 or if you use a lot Amazon S3
+22
+across all your accounts,
+23
+then you will get big discounts,
+24
+because it will summarize and sum up
+25
+all the usage across all the accounts.
+26
+You can also share reserved instances
+27
+and saving plans discounts across accounts.
+28
+So if a reserved instance is unused in one account,
+29
+another account can benefit from it
+30
+and therefor the discounts apply
+31
+across the entire organization,
+32
+which is really good for cost savings.
+33
+Now, there's also an API
+34
+to automate the account creation
+35
+from within the organization.
+36
+So you can create accounts very easily
+37
+using an organization.
+38
+So how does that work?
+39
+So we have what's called a root organizational unit, or OU,
+40
+and this is the outermost OU of your accounts
+41
+and then within it sits the management account.
+42
+Then you can create sub-OUs,
+43
+so you can create for example an OU for the dev accounts
+44
+and then you can create member accounts within the dev OU
+45
+or you can create OU for a prod account
+46
+and also add member accounts there,
+47
+but you can be as free as you want.
+48
+You can create within the prod OU,
+49
+an OU for your HR member accounts
+50
+and an OU for your finance member accounts.
+51
+So you can organize it the way you want.
+52
+So you have different examples for your OUs.
+53
+So you can organize by business units,
+54
+so you have for example,
+55
+the management account and then the sales,
+56
+retail and finance OU
+57
+and then different accounts within each OU.
+58
+Or you can have an OU by environment,
+59
+so for example, one OU for prod,
+60
+one OU for test, one OU for dev
+61
+and within each OU, some accounts.
+62
+Or project-based, so you can have an OU per project
+63
+within an account, within each project.
+64
+And you can mix and match.
+65
+You're really free to do whatever you want.
+66
+So what are the advantages of using organizations?
+67
+Well, thanks to having multiple accounts,
+68
+you can have better security
+69
+versus having one account with multiple VPC,
+70
+because accounts are more separated than VPCs.
+71
+You can also enforce tagging standards
+72
+for billing purposes
+73
+and you can in one go, enable CloudTrail
+74
+for all your accounts
+75
+and send all the logs into a central S3 account,
+76
+or we can also send CloudWatch logs
+77
+to a central logging account
+78
+and we can establish cross account roles
+79
+for admin purposes automatically.
+80
+So we can administer all the other accounts
+81
+from the management account.
+82
+So these are big advantages.
+83
+Also, there's a big security advantage.
+84
+We can define service control policies, or SCP,
+85
+and it's an IAM policy applied to specific OUs or accounts
+86
+and this allows you to restrict
+87
+what the users and roles all of them can do
+88
+within the accounts.
+89
+The SCPs apply to everything
+90
+but to the management account,
+91
+which will forever have full admin power,
+92
+otherwise you could do a mistake
+93
+and never come back from it.
+94
+So the SCP have the specificity
+95
+that if you need to compute what is happening
+96
+on this specific account,
+97
+you need to make sure that each OU, including the root,
+98
+has an explicit allow along the way
+99
+to allow a specific action.
+100
+This will be very clear in this example.
+101
+So let's take for example, a root OU
+102
+and we apply full AWS access underneath.
+103
+So the management account is under the root OU
+104
+and then we have more OU,
+105
+the Sandbox, the workload, test and prod,
+106
+with accounts within the OUs.
+107
+So if we apply an SCP,
+108
+which is deny Athena on the management account,
+109
+what is happening to the management account?
+110
+Well, the management account can do anything,
+111
+because there's a role that says that no SCP
+112
+ever apply to the management account.
+113
+This is a safety, because of course,
+114
+if you lock yourself out of your management account,
+115
+this would be terrible.
+116
+So remember, the management account
+117
+can do anything, no matter what.
+118
+But let's say for example,
+119
+we apply on the Sandbox OU
+120
+a full AWS access plus deny S3.
+121
+So as you can see, here we still need
+122
+to apply full AWS access
+123
+to give allow to everything explicitly,
+124
+because if we didn't have full AWS access,
+125
+then nothing would be allowed within that OU.
+126
+So explicit allows are needed every single way.
+127
+And on account A, say, we will also do
+128
+apply full AWS access and deny EC2,
+129
+then account A can do anything,
+130
+because it has full AWS access on the root OU
+131
+and on the Sandbox OU and on the account itself,
+132
+but because we have two explicit denies,
+133
+we have one deny S3 from the Sandbox
+134
+and one deny EC2 from the account itself,
+135
+then it cannot access Amazon S3 or Amazon EC2.
+136
+For accounts B and C,
+137
+because it don't have a specific SCP attached to them,
+138
+then they can do anything except accessing Amazon S3,
+139
+because you have an explicit deny
+140
+coming from the Sandbox OU.
+141
+Next, if we apply full AWS access to the workloads OU
+142
+and we also apply an allow EC2 SCP to the test OU
+143
+then account D can only access EC2
+144
+and if we look at the prod OU
+145
+and accounts E and F within it, well, we must first apply
+146
+the full AWS access SCP to the prod OU
+147
+and then accounts E and F can do anything.
+148
+So here are some examples for SCPs.
+149
+This is the first one is a blocking of a specific service.
+150
+So first, we allow all actions
+151
+and then we deny DynamoDB or on the allow list,
+152
+here, we allow EC2 and CloudWatch,
+153
+but we don't allow anything else.
+154
+So those are some examples of SCPs.
+155
+So that's it for this lecture, I hope you liked it
+156
+and I will see you in the next lecture.
+
+--- Organizations - Hands On ---
+
+1
+Okay. So we're going to practice
+2
+using the organizations.
+3
+For this I'm just going to go into the organization service
+4
+and get started.
+5
+So as we can see in this example
+6
+Organizations is a global service
+7
+because it has to do with accounts
+8
+and regrouping them together, okay?
+9
+The other thing I did is that I created
+10
+my own new account for this.
+11
+So I created AWS course master account
+12
+and on the other window I have AWS course child account
+13
+because I don't wanna use my main accounts for this
+14
+and I wanted to do a demo with two separate accounts.
+15
+So if you wanna follow along
+16
+I would suggest creating two new accounts.
+17
+Call them as you want so that you can have one master
+18
+and one child account within your organization.
+19
+So from the master account
+20
+I'm going to go ahead and create an organization.
+21
+Now within the organization
+22
+we have to define the accounts within it.
+23
+So as we can see right now,
+24
+this is very quick, the organization is created
+25
+and we have the root organizational units.
+26
+And within it, we have the AWS course master account
+27
+which is the master account
+28
+or also called the management account, okay?
+29
+So we're going to do that.
+30
+And the organization is created.
+31
+Now we want to add a second
+32
+AWS as account into this organization.
+33
+And to do so I'm going to add an account.
+34
+And we have two options,
+35
+either we want to create an account
+36
+and you specify the account name,
+37
+the email address of the account owner
+38
+as well as an IAM role that will be created
+39
+in the target account
+40
+to be allowed to be managed by the organization.
+41
+Or you can invite an existing AWS account,
+42
+in which case you need to provide the email address
+43
+associated with that account
+44
+or the account ID of the account to invite.
+45
+And for this, I will just do the name of my account.
+46
+So I would just add the email which is
+47
+aws-child-account@stephanemaarek.com.
+48
+And this is good to go.
+49
+We can include the message if you wanted to
+50
+and add some tags but I will just go ahead
+51
+and send my invitation.
+52
+So now my invitation has been sent to my other account
+53
+and we can view all pending invitations through this UI
+54
+and it hasn't expired yet,
+55
+so if in two weeks
+56
+it doesn't get accepted, then this will expire.
+57
+So what I can do next is go
+58
+to my organization on my child account.
+59
+And on the left hand side, there is Invitations.
+60
+So I click on Invitations.
+61
+I'm going to refresh this page.
+62
+And now we see my invitation from the master account.
+63
+So as we can see in this organization right now
+64
+we'll get full control as this organization
+65
+has full features enabled
+66
+and can assume full control of your account.
+67
+So as soon as you're part of an organization,
+68
+you accept to be controlled
+69
+by whoever is the master of that organization.
+70
+So we'll accept the invitation.
+71
+And here we go.
+72
+Now my account, the child account is enrolled into
+73
+my AWS organization and we can only see the organization ID
+74
+as well as the feature set.
+75
+And an account may have
+76
+the ability to leave the organization.
+77
+So back into my AWS organization.
+78
+Now, if I go to my accounts, I click on AWS accounts.
+79
+As we can see now within my organization
+80
+we have roots and within roots, we have two accounts now,
+81
+the master and the child accounts.
+82
+So we can do is now organize our accounts
+83
+using organizational units or OUs.
+84
+So for this, we'll just do action
+85
+and we can create a new OU.
+86
+So to do so we'll go on the roots, okay?
+87
+And action creates new OU and I can have one,
+88
+for example, for my Dev accounts.
+89
+And I create the OU.
+90
+I can also go again in here and create the OU,
+91
+And this time I will say tests and maybe less time
+92
+we'll have a product, so I'll just do a prod OU.
+93
+And maybe within the prod OU we have different departments.
+94
+So I can again create OUs within OUs.
+95
+So I can have HR, if we have an HR department
+96
+that has production applications,
+97
+or maybe we have a finance department
+98
+that has analytics applications within it.
+99
+So as you can see here
+100
+you can create as many nested OUs as you want.
+101
+And if you go all the way to your organization
+102
+and then you look at the OU,
+103
+now we can see we have roots, dev,
+104
+and right now, no accounts within dev,
+105
+prod and we have finance and HR within prod
+106
+and then we have test.
+107
+So as we can see, we can start organizing the accounts
+108
+and we have many accounts in organization
+109
+within specific OUs.
+110
+And the reason we do so is to have service control policies.
+111
+So what we're going to do is first take our child account
+112
+and we want to move it in to,
+113
+for example, the finance department within prod.
+114
+So I take this account and I can say move
+115
+and then I can have it into my finance department
+116
+within my prod OU.
+117
+So I move the account there.
+118
+And now if we have a look we can see
+119
+that the finance department contains the course child.
+120
+It's best practice as well to leave the management account
+121
+under the root OU but you could move it if you wanted to.
+122
+Okay. So now we want to enable service control policies
+123
+to restrict what my course child account can do.
+124
+So to do so we go into Policies and as we can see
+125
+we have four different kinds of policies available
+126
+to us right now, and they're currently disabled.
+127
+So what we can do is take the important policy types
+128
+that we want and enable them.
+129
+So one we definitely want to enable is the
+130
+service control policy, because this will allow you to
+131
+restrict what our children account can do.
+132
+So this is enabled and I go back to Policies.
+133
+We have other ones that could be of interest,
+134
+for example, backup policy allows you to
+135
+deploy organization-wide backup plans, to ensure
+136
+that all your accounts are compliant
+137
+and have backups enabled
+138
+or tag policies also to help standardize how you use tags
+139
+within all the different accounts in your organization.
+140
+But for the sake of this hands-on
+141
+and from an exam perspective
+142
+I believe only service control policies will be used,
+143
+but still good to know
+144
+that you can apply a backup policy across all the accounts
+145
+and a tag policy across all the accounts as well.
+146
+Okay. So service control policies are enabled.
+147
+And so now what we'd like to do
+148
+is to have service control policy defined.
+149
+So I'm going to click on service control policy
+150
+and this is the documentation, excuse me.
+151
+And here we have one service control policy
+152
+that has been created so far, which is the full AWS access.
+153
+Okay? And the full AWS access allows all the
+154
+accounts to access all the services.
+155
+But we can create a new policy and attach it.
+156
+So we can created a policy called oops-
+157
+We can create a policy called DenyAccess to S3
+158
+and this will deny access to the S3 service
+159
+to whichever OU or account this is attached to.
+160
+So in terms of the policy, we could find a statement.
+161
+For example, we can find the S3 service in here
+162
+and within S3, we can say all actions
+163
+and the resource is going to be star as well.
+164
+So I'm going to have a star in here.
+165
+So we're denied anything on this (murmurs),
+166
+a very simple policy
+167
+and I'll call it deny S3 as an Sid.
+168
+And then I will click on Create policy.
+169
+So this, when attached to my accounts,
+170
+should deny access to S3.
+171
+So we can have a look.
+172
+So let's go into our accounts.
+173
+Okay. So if we look at the root to you and click on root,
+174
+as we can see, there is enabled policy types
+175
+which is service control policies.
+176
+And if I click on Policies
+177
+there is one applied policies that is attached directly
+178
+to the root OU, which is the full access to AWS,
+179
+which allows everything on root
+180
+and all its children to access all the services within AWS.
+181
+So if you look at the children
+182
+of the root OU, we have, for example, the prod OU.
+183
+And if we look at the prod OU, in terms of policies
+184
+there are two policies, one that is attached directly
+185
+which is the full AWS access,
+186
+but also one that is inherited from root,
+187
+which is the full AWS access.
+188
+So it has duplicated this one for some reason.
+189
+And then if I go into children in a go into finance
+190
+and click on policies, we have three attached policies.
+191
+So one inherited from prod, one inherited from root
+192
+and one attached directly.
+193
+And this is probably because I've enabled
+194
+service control policies after creating the OUs.
+195
+So this full AWS access was attached
+196
+to every single element within my account.
+197
+And if we look at the children of the course
+198
+of the finance OU within the prod OU,
+199
+and you click on the course itself, the account itself
+200
+and go to policies, now we have four.
+201
+So we have full AWS access four times.
+202
+So you understand at least the concept of inheritance,
+203
+which makes sense.
+204
+And you can just inherit things from Root that are clear.
+205
+You inherit things from the topmost layer,
+206
+but what we can do is if we go back one up.
+207
+So if we go to my prod and finance OU, for example,
+208
+we can attach a new policy.
+209
+So I'm going to attach a new policy
+210
+and this one will be the DenyAccessS3.
+211
+I will attach it
+212
+and now that means that anything within my finance OU
+213
+should also have this inherited.
+214
+So if I click on my course child and then policies,
+215
+as we can see the DenyAccessS3 has been inherited
+216
+from finance.
+217
+So how do we make sure that this is working?
+218
+Well, if I go to my account
+219
+now my child account, and open the S3 console in a new tab.
+220
+We are in S3 and the buckets are being loaded
+221
+but as we can see, we don't have permission
+222
+to list buckets and therefore we can not use Amazon S3.
+223
+And this was due to the policy we have attached to the OU.
+224
+So it's quite powerful because we are able to
+225
+restrict what an account can do overall,
+226
+even though I am logged in right now
+227
+with my root user, okay, with my root user of my account,
+228
+I still don't have the access to Amazon S3.
+229
+So this is very powerful and this is how STPs work.
+230
+And hopefully that makes sense for you.
+231
+So that's it for this hands-on.
+232
+I hope you liked it.
+233
+And I will see you in the next lecture.
+
+--- Organizations - Tag Policies ---
+
+1
+So now let's talk about
+2
+another kind of policy
+3
+you can have on your organization, called a tag policy.
+4
+So it looks like this and the idea
+5
+is to standardize the tags across the resources
+6
+in a specific AWS organization.
+7
+So it is used to ensure consistent tagging,
+8
+to audit tagged resources,
+9
+to maintain proper resources categorization, and so on.
+10
+So you define the tag keys and their allowed values,
+11
+and then you're going to be able to ascend them directly
+12
+to resources or have restrictions on how they're assigned
+13
+to resources across all your accounts.
+14
+So really to maintain consistency.
+15
+Of course, when you want to do cost allocation tags
+16
+and attributes-based access control,
+17
+this is a great combination
+18
+because you restrict what the accounts can do
+19
+and so you maintain your consistency across your account,
+20
+and so therefore, you can do cost accounting
+21
+based on tags and also access control based on tags.
+22
+You can also prevent any non-compliant tagging operations
+23
+on specified services and resources,
+24
+but it doesn't have an effect on resources without tags.
+25
+And you can generate a list and a report
+26
+that lists all the tagged and non-tagged
+27
+or non-compliant resources.
+28
+In case you also want to look for non-compliant tags,
+29
+you can use EventBridge, okay?
+30
+so if you get a question at the exam
+31
+around how to maintain tags consistent across accounts,
+32
+think about tag policies in AWS organizations.
+33
+All right, that's it.
+34
+I hope you liked it and I will see you in the next lecture.
+
+--- IAM - Advanced Policies ---
+
+1
+So, now, let's talk about IAM conditions
+2
+and what they can imply for your policies.
+3
+So, just so you know, they apply to policies within IAM.
+4
+So that could be for policies for users,
+5
+that could be policies for your resource policies,
+6
+for example, for your S3 buckets,
+7
+or that could be endpoint policies, and so on.
+8
+So, really, anything.
+9
+So the first one is aws:SourceIP.
+10
+And this is used to restrict the client IP
+11
+from which the API calls are being made.
+12
+So if we look at this one right here,
+13
+it has a Deny star on everything
+14
+if it's not an IP address.
+15
+And then we have a list of two CIDRs,
+16
+of two IP address ranges.
+17
+So that means that unless the client makes an API call
+18
+from within these IP addresses,
+19
+then the API call is being denied.
+20
+And this can be used, for example,
+21
+to restrict usage on AWS only to, for example,
+22
+your company network and, therefore, guaranteeing
+23
+that only your company can access your own AWS environment.
+24
+So that's one of these conditions.
+25
+Then we have aws:RequestedRegion.
+26
+So this is, again, something global
+27
+because it started at the AWS,
+28
+and it's restricting the region the API calls are made to.
+29
+So in this one we deny anything on EC2, RDS, and DynamoDB
+30
+if we are in the region eu-central-1 or eu-west-1.
+31
+Okay, so here we deny access to these services
+32
+in the specific regions.
+33
+And this can be applied more globally
+34
+on their organization SCP to deny or to allow
+35
+only access to a specific region.
+36
+Next, we have ec2:ResourceTag.
+37
+So, as you can see now, the prefix of this tag is EC2,
+38
+therefore, this applies to the tags on your EC2 instance.
+39
+And, so, here we allow to start and to stop instances, okay,
+40
+for any instance if the ResourceTag/Project
+41
+is equal to DataAnalytics.
+42
+So that means that if the EC2 instance has the correct tags,
+43
+being Project and DataAnalytics, then we're good.
+44
+But then, as you can see, there is the aws:PrincipalTag,
+45
+and this applies to your user tag, okay.
+46
+So it's not an EC2 instance tag, this is a user tag.
+47
+And, so, your user must also be part
+48
+of the department data to perform these actions.
+49
+We have aws:MultiFactorAuthPresent
+50
+to force multifactor authentication.
+51
+So you can have a look at it.
+52
+But the user can do anything on EC2,
+53
+but they can only stop and terminate instances
+54
+if they have MultiFactorAuthenticationPresent,
+55
+so this is a deny on the false.
+56
+Now let's have a look at an IAM policy for your S3 buckets.
+57
+So this is a bucket policy, and we have two statements.
+58
+And the first one is a ListBucket,
+59
+and this applies to this arn right here, so s3:::test.
+60
+Because it's a bucket level permission
+61
+and, therefore, we have to specify the bucket itself.
+62
+But if we have a look at GetObject, PutObject,
+63
+and DeleteObject, this applies to objects within a bucket
+64
+and, therefore, your arn is going to be different,
+65
+and you're going to have /* to represent
+66
+all the objects within your buckets.
+67
+And this is why you have a different arn here
+68
+because this is an object level permission.
+69
+And, again, this is something that can come up in the exam.
+70
+Now let's have a look at the resource policies
+71
+and the aws:PrincipalOrgID.
+72
+So this condition right here, the aws:PrincipalOrgID,
+73
+can be used to restrict resource policies
+74
+to only accounts that are a member of an AWS organization.
+75
+So we have an organization with multiple accounts,
+76
+and say we have S3 buckets with this policy on it.
+77
+And it's saying that you can do a PutObject or a GetObject
+78
+only if the API call is made from an account
+79
+that has the PrincipalOrgID of whatever.
+80
+And, therefore, it's only going to allow member accounts
+81
+from your organization to access the S3 bucket,
+82
+but any user outside the organization will be denied
+83
+because of this S3 bucket policy.
+84
+Okay, so you've seen a lot of different conditions
+85
+in now your IAM policies, but hopefully that makes sense,
+86
+and it can really start to drill down your use case
+87
+and make really advanced use cases in terms of security.
+88
+So that's it.
+89
+I hope you liked it, and I will see you in the next lecture.
+
+--- IAM - Resource-based Policies vs IAM Roles ---
+
+1
+So let's have a look now
+2
+at the fundamental differences
+3
+between IAM roles and resource-based policies.
+4
+So for cross accounts,
+5
+especially when you want to perform an API call
+6
+on an S3 bucket cross account,
+7
+you have two options.
+8
+You can attach a resource-based policy to a resource,
+9
+for example, an S3 bucket policy on an S3 bucket,
+10
+or you can decide to use a role
+11
+that can actually access the resource.
+12
+So let's take an example of these two options.
+13
+So this is the example
+14
+where the user in Account A can assume a role in Account B,
+15
+and that role has the permissions
+16
+to access your Amazon S3 buckets.
+17
+Or similarly, the user in Account A,
+18
+through a bucket policy placed on the Amazon S3 bucket
+19
+in Account B,
+20
+can access the S3 buckets.
+21
+So both these two situations are valid,
+22
+but there is a little bit of difference, okay?
+23
+The first one is an IAM role
+24
+that has access to the S3 bucket.
+25
+The second one is the S3 bucket policy that allows the user.
+26
+So what's the difference?
+27
+When you actually assume a role, okay,
+28
+you actually give up all your original permissions,
+29
+and you take all the permissions assigned to the role.
+30
+So this is very important.
+31
+That means that we, for example, assume a role,
+32
+and this role can do whatever.
+33
+We can now do anything that the role does,
+34
+but we cannot use our original permissions.
+35
+And so when you use a resource-based policy,
+36
+instead, the principal does not assume a role,
+37
+and therefore, he does not have to give up his permissions.
+38
+So if you take an example of user in Account A,
+39
+they need to scan a DynamoDB table in Account A,
+40
+and then dump it in an S3 bucket in Account B.
+41
+What they can do is we should use a resource-based policy
+42
+because this way, we don't have to assume a role,
+43
+and we can both scan the DynamoDB table
+44
+and write to an S3 bucket in another account.
+45
+So resource-based policies are supported
+46
+by more and more AWS services and resources over time.
+47
+So we have the Amazon S3 buckets, the SNS topics,
+48
+the SQS queues, the Lambda functions, and so on.
+49
+And the big difference of when this comes into play
+50
+is when you use Amazon EventBridge.
+51
+So when an EventBridge rule runs,
+52
+it's going to need permissions on the targets.
+53
+And if your target supports resource-based policies,
+54
+for example, Lambda functions, SNS topics,
+55
+SQS queues, S3 buckets, or API Gateway,
+56
+then it's possible that EventBridge
+57
+will just add a resource-based policy on the target
+58
+to allow the invocation from the EventBridge rule.
+59
+That's one case.
+60
+On the other hand,
+61
+if the resource doesn't necessarily support
+62
+a resource policy,
+63
+then EventBridge will use an IAM role
+64
+to invoke the target service,
+65
+for example, for Kinesis Stream, EC2 Auto Scaling,
+66
+System Manager Run Command, ECS task, and so on.
+67
+And for example, for Kinesis Data Streams,
+68
+as a note, it supports resource-based policies,
+69
+but still, EventBridge is going to use an IAM role.
+70
+So how do you know which one is going to be used in which?
+71
+Well, you need to look at the configuration
+72
+of the EventBridge role itself
+73
+to see how this is going to work,
+74
+and then you will know, okay?
+75
+But as a matter of fact, Lambda, SNS, SQS,
+76
+S3 buckets are using resource-based policies.
+77
+And Kinesis Data Streams, EC2 Auto Scaling,
+78
+and so on are using IAM roles.
+79
+Even though it's possible
+80
+for you to use a resource-based policy
+81
+with Kinesis Data Stream,
+82
+that's not yet supported by EventBridge.
+83
+So all the information you need to know
+84
+for the exam is on this slide,
+85
+and I know that'll be enough for you at the exam.
+86
+All right, that's it.
+87
+I hope you liked it,
+88
+and I will see you in the next lecture.
+
+--- IAM - Policy Evaluation Logic ---
+
+1
+Let's get into IAM Permission Boundaries.
+2
+And so these permission boundaries
+3
+are supported for users and roles
+4
+and they're not available for groups, so remember this.
+5
+And they're an advanced feature
+6
+that allow you to define the maximum amount of permissions
+7
+an IAM entity can get.
+8
+So let's have an example.
+9
+We have this IAM permission boundaries.
+10
+It looks just like an IAM policy.
+11
+So we're saying, allow everything on S3 CloudWatch and EC2.
+12
+So we attach this, for example, to an IAM user
+13
+and that's its permission boundaries.
+14
+That means that it can only do things
+15
+within S3 CloudWatch and EC2.
+16
+And then you need to specify on top of things
+17
+an IAM permission through policy.
+18
+And so here, say we attach to the very same user,
+19
+allow iam:CreateUser, resource *.
+20
+So there is a boundary
+21
+and there is an IAM policy with permissions.
+22
+What is going to be the results permission in this case?
+23
+Well, nothing, no permissions
+24
+because the IAM policy
+25
+is outside the IAM permission boundary.
+26
+Therefore, our user is not allowed to create other IAM users
+27
+because that is not in its IAM permission boundary.
+28
+So I want to show you
+29
+where IAM permission boundaries are created.
+30
+So let's go create a user.
+31
+I'm going to call the user John,
+32
+and then I'm going to give him programmatic access.
+33
+Next permissions.
+34
+I will not set anything,
+35
+and next Tags.
+36
+Review, and Create user.
+37
+So we have created John
+38
+and we're going to set permission boundaries for John.
+39
+So imagine John is a developer in our company
+40
+and he needs to have certain permissions
+41
+but we want to make sure that he has a permission boundary.
+42
+So for this, we could assign a policy,
+43
+for example, for John,
+44
+so if I add permission and I say, "Hey, John,
+45
+I'm going to attach to you AdministratorAccess."
+46
+It seems like John can do everything right now.
+47
+So John is a super user.
+48
+But I'm also going to set a permission boundary on John.
+49
+And I'm going say, okay, here is your boundary
+50
+and this is an advanced feature.
+51
+And I'm gonna say the only thing you can do, actually,
+52
+John, is to have AmazonS3FullAccess.
+53
+And so here, what I've been setting
+54
+is a permission boundary for John.
+55
+And so through this AWS S3 full access managed policy,
+56
+even though John has an administrator access,
+57
+when John logs in, the only thing he can do is to access S3
+58
+because S3 is its boundary.
+59
+So here we've seen that,
+60
+even though there is a policy attached to John
+61
+that gives him an administrator access,
+62
+the boundary is actually going to be more restrictive.
+63
+So IAM permission boundaries can be used
+64
+in combinations of AWS Organizations SCP.
+65
+So if look at this diagram,
+66
+we have the effective permissions
+67
+to be in the middle of your identity-based policy,
+68
+so whatever is attached to your user or your group.
+69
+The permission boundary, which by the way,
+70
+only applies to a user or a role and not a group.
+71
+And your organization SCP,
+72
+which applies to every single IAM entity in your account.
+73
+So in the middle lies what the users can do.
+74
+So we can use permission boundaries for a few use cases.
+75
+For example, to delegate responsibilities
+76
+to non-administrators within their permission boundaries,
+77
+for example to create new IAM users.
+78
+Or to allow developers to self assign
+79
+and manage their own permissions,
+80
+while making sure they can't escalate their privileges,
+81
+that means making themselves administrators.
+82
+Or for example, restrict one very specific user
+83
+inside yours organization
+84
+instead of applying an entire SCP to your account
+85
+and restricting everyone in your whole account.
+86
+So let's have a look at the IAM Policy Evaluation Logic.
+87
+Because this diagram basically explains to you
+88
+how you are authorized, or not, to do actions within AWS.
+89
+And you don't need to know by heart,
+90
+but it should make sense to you.
+91
+So we can see there's a whole flow,
+92
+but at every step, there is an evaluation.
+93
+And so we're going to look at Deny evaluation,
+94
+we're going to look at Organizations SCP,
+95
+Resource-based policy,
+96
+Identity-based policy,
+97
+IAM permission boundaries,
+98
+and then finally, Session policies
+99
+to allow or deny a specific IAM action.
+100
+So let's have a look in details to see how that works.
+101
+So we're going to look at all the possible policies in here.
+102
+And if there is an explicit deny,
+103
+then we know that it's going to be denied automatically.
+104
+Then we look at the organizations SCP,
+105
+and is there an allow?
+106
+If yes, then go to next step.
+107
+If not, then it's a deny because it's an implicit deny.
+108
+Then we look at resource-based policy,
+109
+for example, that can be applied to S3 buckets.
+110
+They can be applied to SQS and so on.
+111
+And again, we have a look,
+112
+is there a resource-based policy?
+113
+If so, is there an allow?
+114
+Yes or no?
+115
+Then we have identity-based policy.
+116
+So we look, again, as whether or not
+117
+there's an identity-based policy,
+118
+whether or not there's an allow,
+119
+and then we deny implicitly or go onto the next step.
+120
+Then we look at IAM permission boundaries that we just saw.
+121
+And then finally, we look at session policies
+122
+that won't go over them, this is more related to SDS.
+123
+But what I want you to remember is
+124
+that all these things are evaluated
+125
+when making a specific IAM action.
+126
+And so, only if all these things are allowing
+127
+and working together, or not denying specifically,
+128
+then you will have a final decision allow,
+129
+and you'll be able to do your action.
+130
+So it's just to give you a bit more overview
+131
+but hopefully you understand better
+132
+how security works in AWS.
+133
+So let's have a look at this policy
+134
+and see what it can do to make it a bit more concrete.
+135
+So we have sqs:*, Deny on resource *,
+136
+and we have action, sqs:DeleteQueue, Allow on resource *.
+137
+So first question is,
+138
+can you perform sqs:CreateQueue?
+139
+The answer is no, you cannot
+140
+because there is a Deny star on SQS,
+141
+and CreateQueue belongs to that block
+142
+and there's a deny on it,
+143
+so it's definitely going to be denied.
+144
+Now, can you perform an sqs:DeleteQueue?
+145
+So there's a deny on the top part
+146
+and there's an allow on the bottom part
+147
+and they conflict.
+148
+There's a deny and allow.
+149
+But what did I just tell you?
+150
+I told you that as soon as you have an explicit deny,
+151
+then the decision is going to be denied.
+152
+So because there is an explicit deny on sqs:*,
+153
+and sqs:DeleteQueue is within that sqs:*,
+154
+then no matter what, even there's an allow here,
+155
+this is going to be denied this action.
+156
+So you cannot perform sqs:DeleteQueue,
+157
+even though you have allowed it explicitly
+158
+in the second block.
+159
+So very important to know.
+160
+And finally, can you perform ec2:DescribeInstances?
+161
+So as we can see, there's nothing on EC2 in this thing.
+162
+And this is an IAM policy.
+163
+And so, because there is no explicit deny
+164
+but also there's no explicit allow,
+165
+then you cannot perform ec2:DescribeInstances
+166
+with this IAM policy.
+167
+All right, hope that makes sense.
+168
+So that's it for this lecture.
+169
+Hopefully you understand IAM better.
+170
+And I will see you in the next lecture.
+
+--- AWS IAM Identity Center ---
+
+1
+So now let's talk
+2
+about the AWS IAM Identity Center.
+3
+And this service is the successor
+4
+to something that you used to know probably,
+5
+which is called the AWS Single Sign-On Service.
+6
+So the idea is that it's the same service,
+7
+just been renamed and it gives you one login,
+8
+therefore it's called single sign-on,
+9
+for all your AWS accounts in the AWS Organizations,
+10
+but also your business cloud applications.
+11
+So you can connect to Salesforce to Box to Microsoft 365
+12
+and so on, or any application you want,
+13
+as long as you have a SAML2.0 integration.
+14
+And finally, it gives you also a single login
+15
+into your EC2 Windows Instances.
+16
+So one login, access to everything,
+17
+which is really, really good.
+18
+And the exam most likely will ask you about one login
+19
+into multiple AWS accounts.
+20
+Now, the identity provider, so where your users are stored
+21
+for this login, can be twofold.
+22
+It could be a built-in identity store
+23
+in the IAM Identity Center, or you can connect
+24
+to a third-party identity provider.
+25
+It could be Active Directory, AD,
+26
+or OneLogin or Okta and so on.
+27
+So just to make it very visible
+28
+and visual for you, we have the login flow, such as this.
+29
+You go onto the login page, you enter your username
+30
+and your password, and then you go directly
+31
+into the AWS IAM Identity Center.
+32
+And this is actually a screenshot
+33
+from my own Identity Center page.
+34
+And as you can see from there,
+35
+I have enabled it for my AWS accounts.
+36
+And so I can click on the account I want
+37
+and connect directly, for example,
+38
+in the management console.
+39
+And then if I do this,
+40
+then I'm taken directly from this into the home page
+41
+of your console.
+42
+But I'm logged in in that specific console.
+43
+So the idea is that I don't need to know
+44
+how to log in into that specific console.
+45
+I can just log in into my IAM Identity Center portal.
+46
+And from there I have SSO.
+47
+So no need to enter your password once,
+48
+it's single sign on,
+49
+have SSO access to accounts,
+50
+business applications, and so on.
+51
+So if in the real world you have multiple AWS accounts,
+52
+I would recommend 100% to use this service.
+53
+Okay, so now let's talk about how this works.
+54
+So the browser interface is going to connect
+55
+to the login page of your AWS IAM Identity Center.
+56
+And then you have to integrate it, as I said,
+57
+with different user stores.
+58
+So it could be an Active Directory,
+59
+it could be on the cloud or on premises.
+60
+And this is where you would use Active Directory
+61
+to manage your users and your groups.
+62
+Or you can use the IAM Identity Center.
+63
+This is the built-in identity store.
+64
+And this is where, for example, you would define your users
+65
+and your groups as you're used to in IAM.
+66
+Then you integrate Identity Center with SSO
+67
+for your organization
+68
+or your Windows EC2 instances,
+69
+your business cloud applications
+70
+or your custom SAML2.0-enabled applications.
+71
+Again, the cool thing is that you have one login for all
+72
+of this, and that simplifies a lot your flow.
+73
+Now, of course, when you log in,
+74
+you don't have access to everything.
+75
+You define something called permission sets
+76
+in the Identity Center to define
+77
+which users have access to what.
+78
+So how does everything relate in IAM Identity Center
+79
+for permissions and users and groups?
+80
+So we have an organization
+81
+and we set up IAM Identity Center
+82
+in the management account.
+83
+We have two OUs, a development and a production OU,
+84
+each with their own accounts.
+85
+Now we have two developers in our company.
+86
+We have Bob and Alice.
+87
+So first of all, we're going to do, just like we do in IAM,
+88
+we're going to create a group of developers
+89
+for Bob and Alice.
+90
+Now we want to make sure that Bob and Alice both have access
+91
+to full access of the OU for development.
+92
+So we're going to create what's called the permission sets,
+93
+and we're going to allow admin access on it.
+94
+And then you have to assign this permission set directly
+95
+into specific accounts, for example,
+96
+your development accounts,
+97
+and then you assign this permission set either to your users
+98
+or to a group of users, for example, your developers.
+99
+So this would allow Bob and Alice to assume a role
+100
+with full access on the development account B right now.
+101
+You can also have a permission set, for example,
+102
+for read-only access
+103
+and assign this permission set directly
+104
+into your production account,
+105
+so account A and account B.
+106
+And then you assign this permission set again to Bob
+107
+and Alice, which would allow them
+108
+to have a read-only access to these accounts.
+109
+So now let's talk
+110
+about the fine-grained permissions and assignments.
+111
+And the first one is multi-account permissions.
+112
+So, of course, using the service,
+113
+you can manage access across multiple accounts
+114
+in your organization.
+115
+And using permission sets, you define one
+116
+or more IAM policies that you assign to users
+117
+and to groups to define what they can access in AWS.
+118
+So here is the IAM Identity Center,
+119
+and it's integrated with your organization
+120
+and you define a permission set for database admins.
+121
+So it's a collection of IAM policies.
+122
+And you say, for example, that you have access to RDS
+123
+and Aurora in your dev account,
+124
+as well as RDS and Aurora in the prod account.
+125
+And this will automatically create a corresponding IAM role
+126
+for your users.
+127
+And therefore, when you have your database admins,
+128
+it can be a group, for example,
+129
+and your users are in this group,
+130
+you will assign it the permission sets of database admins.
+131
+And whenever users log in through the IAM Identity Center
+132
+and access the console of your dev accounts
+133
+or your prod accounts,
+134
+they will be automatically assuming an IAM role
+135
+in that specific account
+136
+that will give them the permissions they're supposed
+137
+to get, which is pretty good.
+138
+So it works the same way.
+139
+So you have application assignments
+140
+and you can define which users
+141
+or groups can access which applications.
+142
+And it gives them the required URLs,
+143
+the certificates and metadata.
+144
+So all of this is supported out of the box.
+145
+And something that enables
+146
+is called attribute-based access control.
+147
+So the idea is that you're going
+148
+to have fine-grained permissions
+149
+based on the users' attributes stored
+150
+in the IAM Identity Center store.
+151
+So that means that you can have tags and so on.
+152
+And using this, you can, for example, assign a user
+153
+to a cost center or give them a title,
+154
+so like junior, senior or a locale, whatever,
+155
+so they only have access to a specific region.
+156
+And the use case of this
+157
+is that you actually define the IAM permission sets once
+158
+and they leverage these attributes,
+159
+and you only modify the access to AWS of your users
+160
+or your groups by just changing these underlying attributes.
+161
+So this is a use case that is advanced,
+162
+but that is enabled by using the AWS IAM Identity Center.
+163
+So that's it for this lecture.
+164
+I hope you liked it, and I will see you in the next lecture.
+
+--- AWS Directory Services ---
+
+1
+Hey, so now let's talk
+2
+about Microsoft Active Directory and AWS Directory Services.
+3
+So in case you don't know what Microsoft AD is,
+4
+it is a software that is found on
+5
+any Windows Server with AD Domain Services.
+6
+And it's a database of objects,
+7
+and the objects can be user accounts, computers, printers,
+8
+file shares, security groups.
+9
+So all your users manage
+10
+within your entire Microsoft ecosystem on premise
+11
+is going to be managed by Microsoft Active Directory.
+12
+And there's going to be a centralized security management.
+13
+You can create account, assign permissions, and so on.
+14
+And all the objects will be organized into a tree.
+15
+And a group of tree is called a forest.
+16
+That's just for some terminology.
+17
+So let's take an example, we have a domain controller
+18
+and we're going to create an account on it.
+19
+We're create an account username is John,
+20
+and the password is Password.
+21
+And the idea is that
+22
+all the other Windows machines we have within our network
+23
+are going to be connected to the domain controller.
+24
+So that's if we're using the John password
+25
+on the first machine,
+26
+it's going to look it up in the controller and say,
+27
+yes, we have that login.
+28
+And then, allow you to log in from that machine.
+29
+So all these machines are going to be connected
+30
+to your domain controller and that allows you
+31
+to have the users accessible on any single machine.
+32
+So that's the whole idea behind Active Directory
+33
+in a very, very high level.
+34
+Now we have AWS Directory Services,
+35
+which is to provide you
+36
+a way to create an Active Directory on AWS.
+37
+And we have three flavors on it.
+38
+We don't have to do a deep dive on them,
+39
+but you have to understand the differences
+40
+between these three flavors.
+41
+The first one is AWS Manage Microsoft AD
+42
+to create your own Active Directory in AWS.
+43
+And you can manage users locally
+44
+and it supports multi-factor authentication.
+45
+The idea is that with this standalone Active Directory,
+46
+you can also create a trust connection
+47
+with your on-premise AD
+48
+where you have your own users there as well.
+49
+And what that means is that your AD in here, for example,
+50
+can be trusted with the on-premise AD.
+51
+So AWS trust the on-premise AD
+52
+and on-premise AD trust AWS.
+53
+And so that means that if your users
+54
+authenticated to the right,
+55
+and used an account that is not managed by AWS,
+56
+it can go and look up the accounts
+57
+into the on-premise Active Directory.
+58
+And similarly, if an on-premise directory user goes
+59
+and authentic to your on-premise AD using the AWS accounts,
+60
+it can be trusted to go and look it up.
+61
+So here our users are going to be shared
+62
+between our on-premise Active Directory and AWS, okay?
+63
+A little bit complicated, I know if you're new to this,
+64
+but hopefully it makes sense.
+65
+The AD Connector is a little bit different.
+66
+This is a direct gateway proxy to redirect to on-premise AD
+67
+and it supports MFA if you need multi-factor authentication
+68
+and the users are solely managed into the on-premise AD.
+69
+So here is the example.
+70
+In this example, our AD Connector is just acting as a proxy.
+71
+So if the users try to authenticate with our AD Connector
+72
+it's going to proxy the request
+73
+back to our on-premise AD and look it up.
+74
+So the idea here is that
+75
+in the first case with Microsoft Managed Microsoft AD,
+76
+we have users sitting in AWS Managed AD
+77
+and users sitting in on-premise AD.
+78
+Whereas with Ad Connector, as the name indicates,
+79
+it connects, it proxies
+80
+the queries, the connection requests
+81
+back to our on-premise Active Directory.
+82
+And the only place where we can manage users
+83
+is going to be on the on-premise AD.
+84
+Finally, you have Simple AD.
+85
+And it's an AD-compatible managed directory on AWS.
+86
+It doesn't use Microsoft Directory.
+87
+And it cannot be joined with a non-premise Active Directory.
+88
+So the idea is that if you don't have an on-premise AD
+89
+and you need an Active Directory for your AWS Cloud,
+90
+then you can have just a Simple AD as a standalone thing.
+91
+And the idea here is that using Active Directory
+92
+you can create EC2 instances
+93
+that are going to be running Windows.
+94
+And these Windows instances can join the domain controllers
+95
+for your network
+96
+and share all the logins, and the credentials, and so on.
+97
+So this is why we want to have a directory in AWS
+98
+to have a directory closer
+99
+to your EC2 instances running Windows.
+100
+And hopefully that makes sense.
+101
+Now, the exam should has queue
+102
+some very, very high level question,
+103
+saying we want to proxy our users to on-premise
+104
+and therefore you need AD Connector,
+105
+or we want to manage our users
+106
+on the cloud in AWS and have MFA
+107
+and therefore you need AWS Managed AD,
+108
+or we just want a Simple AD
+109
+and we don't have any on-premise stuff.
+110
+In this case, you want a Simple AD.
+111
+So now something that you know
+112
+is how to integrate the IAM Identity Center
+113
+with Active Directory.
+114
+So if you connect to an Active Directory
+115
+that is managed on your AWS using the directory service
+116
+then the integration is out of the box.
+117
+You just tell IAM Identity Center
+118
+to integrate and connect to your AWS Managed Microsoft AD.
+119
+Very simple.
+120
+But what if you don't manage
+121
+your Active Directory users on the cloud?
+122
+What if you have a self-managed directory
+123
+for example, on premises?
+124
+In that case, you have two ways of connecting
+125
+to your self-managed directory.
+126
+The first one is what we should call
+127
+a two-way trust relationship
+128
+using the AWS Managed Microsoft AD.
+129
+So you would create a Managed Microsoft AD
+130
+from the directory service,
+131
+and then you would set up a two-way trust relationship
+132
+between your Active Directory,
+133
+for example on premises and your Managed AD.
+134
+And then you would use the out of the box integration
+135
+coming from the IAM Identity Center for single sign-up.
+136
+The other option would be to use an AD Connector.
+137
+So an AD Connector here would have the role
+138
+to of course integrate with IAM Identity Center.
+139
+And then you would connect to it
+140
+and then it would automatically proxy any kind of request
+141
+onto your self-managed directory.
+142
+So if you had to choose one or the other,
+143
+it will depends on
+144
+if you want to also be able to manage users
+145
+from within the cloud on Active Directory in the cloud.
+146
+And then the first solution may better.
+147
+But if you just wanted to proxy API calls
+148
+then the second solution could be a fit,
+149
+although with a bit more latency.
+150
+So that's it for this lecture.
+151
+I hope you liked it and I will see you in the next lecture.
+
+--- AWS Directory Services - Hands On ---
+
+1
+So, if you go to the console
+2
+and type directory service,
+3
+we can see the different options offered to us.
+4
+I'll just go through them at a high level
+5
+because they can be complicated to set up individually.
+6
+But so we have four options
+7
+and actually the fourth one is Amazon Cognito User Pool,
+8
+which is redirecting you to the Cognito service.
+9
+So, don't count this into directory services.
+10
+So we have AWS managed Microsoft ID
+11
+where we can have an active directory
+12
+that's going to be integrated with AWS Cloud
+13
+and can have a trust relationship
+14
+with your on-premise directory.
+15
+And to set it up, you can see it's two additions.
+16
+The Standard Edition up to 30,000 objects
+17
+or the Enterprise Edition up to 500,000 objects.
+18
+So, a lot more.
+19
+And then you need to set it up and I won't go over the setup
+20
+because this is more AD specific
+21
+and you don't need to know this for the exam.
+22
+This next one is Simple AD
+23
+which is going to be a standalone managed directory
+24
+that has a active directory compatible API
+25
+but it cannot be connected
+26
+to your on-premise active directory.
+27
+Or AD Connector which is a proxy
+28
+for redirecting directory request
+29
+to your existing Microsoft Active Directory on-premise.
+30
+And it's designed for, you have two levels.
+31
+You have a connector for up to 500 users
+32
+or you have a connector for up to 5,000 users, okay?
+33
+So remember the first one supports MFA.
+34
+The second one is just standalone
+35
+and AD Connector is a proxy.
+36
+All right, that's it for this lecture.
+37
+I will see you in the next lecture.
+
+--- AWS Control Tower ---
+
+1
+So now let's talk
+2
+about the AWS Control Tower service.
+3
+So it's a very easy way for you to set up and govern
+4
+a secure and compliant multi-account AWS environment
+5
+based on best practices.
+6
+So actually to create these accounts,
+7
+well, the Control Tower service
+8
+is going to use the AWS Organization service
+9
+and then the accounts are automatically being created
+10
+and we'll see in the next slide
+11
+how to make them secure and compliant.
+12
+And so the benefits of using a Control Tower
+13
+is that you automate the set up
+14
+of your environments in a few clicks
+15
+and you have all your configs you want in advance.
+16
+Then you can automate
+17
+ongoing policy management using guardrails.
+18
+I will show you this in the next slide.
+19
+You can detect policy violations
+20
+and remediate them automatically,
+21
+and you can monitor the overall compliance
+22
+of all your accounts through an interactive dashboard.
+23
+So it's yet another service on top of organizations.
+24
+So what are these guardrails?
+25
+So say you set up multiple accounts on AWS,
+26
+but you want to restrict all of them at once
+27
+for certain kind of things,
+28
+or you want to monitor the compliance
+29
+for certain kind of things.
+30
+So using these guardrails,
+31
+you're going to get ongoing governance for all your accounts
+32
+within your Control Tower environments.
+33
+So you have two kinds of guardrails.
+34
+The first one is called a preventive guardrail.
+35
+And so it's to prevent accounts from doing something
+36
+and therefore they're restrictive.
+37
+And so we're going to use SCP, so Service Control Policies,
+38
+from the AWS Organization service
+39
+to apply them to all our accounts.
+40
+For example, we could create a preventive guardrail
+41
+to restrict regions across all your accounts to say,
+42
+hey, you should only operate in the us-east-1
+43
+in the eu-west-2 regions.
+44
+And so therefore behind the scenes,
+45
+Control Tower is going to tell organizations to use SCPs.
+46
+The second kind of guardrail we have
+47
+is a detective guardrail.
+48
+So this time, we want to just detect non-compliance.
+49
+And because I talk to you about compliance,
+50
+of course, it's using the AWS Config service.
+51
+For example, we want to identify untagged resources
+52
+in our accounts.
+53
+So we have Control Tower
+54
+and we set up a detective guardrail.
+55
+And so it's going to use Config
+56
+and Config is going to be deployed
+57
+on all your member accounts
+58
+and is going through the rules,
+59
+monitor any untagged resources.
+60
+In case anything is non-compliant,
+61
+it's going to trigger an SNS topic.
+62
+So we could be notified as an administrator
+63
+or the SNS topic can also invoke a Lambda function.
+64
+And the Lambda function
+65
+can automatically remediate the action
+66
+and add tags to your untagged resources.
+67
+So we've seen Control Tower,
+68
+we've seen how it can generate new accounts
+69
+and how we can have guardrails,
+70
+either preventive or detective, to control the security
+71
+and the compliance of our environments.
+72
+So I hope you like this lecture
+73
+and I will see you in the next lecture.
+

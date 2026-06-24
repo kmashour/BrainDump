@@ -162,7 +162,7 @@ sequenceDiagram
 
 ## 2. Kubernetes Volume Primitives: `emptyDir` & `hostPath`
 
-In Kubernetes, Pods are transient. If a container crashes, its local filesystem changes are preserved by the runtime container restart logic; however, if a Pod is rescheduled or deleted, all data inside it is lost. To persist or share data, you must configure a `volume`.
+In Kubernetes, Pods are transient. **If a container crashes, its local filesystem changes are preserved by the runtime container restart logic;** however, if a Pod is rescheduled or deleted, all data inside it is lost. To persist or share data, you must configure a `volume`.
 
 ---
 
@@ -212,16 +212,16 @@ spec:
 A `hostPath` volume mounts a file or directory from the host node's filesystem directly into your Pod.
 
 #### 1. Type Options
-| Type | Behavior / Requirements |
-|:---|:---|
-| `""` (Empty String) | Default. Backward-compatible fallback. No host checks are performed. |
+| Type                | Behavior / Requirements                                                                       |
+| :------------------ | :-------------------------------------------------------------------------------------------- |
+| `""` (Empty String) | Default. Backward-compatible fallback. No host checks are performed.                          |
 | `DirectoryOrCreate` | If nothing exists at the path, an empty directory is created (mode `0755`, owned by Kubelet). |
-| `Directory` | The directory at the specified path must exist on the host node. |
-| `FileOrCreate` | If nothing exists at the path, an empty file is created (mode `0644`, owned by Kubelet). |
-| `File` | The file at the specified path must exist on the host node. |
-| `Socket` | A Unix domain socket at the specified path must exist on the host node. |
-| `CharDevice` | A character device at the specified path must exist on the host node. |
-| `BlockDevice` | A block device at the specified path must exist on the host node. |
+| `Directory`         | The directory at the specified path must exist on the host node.                              |
+| `FileOrCreate`      | If nothing exists at the path, an empty file is created (mode `0644`, owned by Kubelet).      |
+| `File`              | The file at the specified path must exist on the host node.                                   |
+| `Socket`            | A Unix domain socket at the specified path must exist on the host node.                       |
+| `CharDevice`        | A character device at the specified path must exist on the host node.                         |
+| `BlockDevice`       | A block device at the specified path must exist on the host node.                             |
 
 #### 2. Host Directory Traversal & Security Risks
 > [!CAUTION]
@@ -251,7 +251,7 @@ spec:
     volumeMounts:
     - name: host-log-dir
       mountPath: /host/syslogs
-      readOnly: true
+      **readOnly: true**
   volumes:
   - name: host-log-dir
     hostPath:

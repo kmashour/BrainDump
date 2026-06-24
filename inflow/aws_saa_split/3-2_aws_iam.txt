@@ -1,0 +1,3212 @@
+--- IAM Introduction: Users, Groups, Policies ---
+
+- [Stephane] Welcome
+to the first deep dive
+on an iterator service.
+The first one is called IAM.
+So IAM stands for identity
+and access management.
+It is a global service because in IAM,
+we are going to create our
+users and assign them to group.
+So we've already used IAM without knowing,
+when we created an account,
+we created a root accounts,
+and has been created by default.
+This is the root user of our accounts.
+And the only things you
+should use it for is
+to set up your account
+as we'll do it right now.
+But then you shouldn't
+use that account anymore,
+or even share it.
+What you should be doing
+instead, is create users.
+So you will create users in IAM,
+and one user represents one
+person within your organization.
+And the users can be grouped
+together if it makes sense.
+So let's take an example
+we have an organization
+with six people.
+You have Alice, Bob,
+Charles, David, Edward
+and Fred so all these people
+are in your organization.
+Now Alice, Bob, and
+Charles they work together.
+They're all developers.
+So we're going to create a group called
+the group developers who regrouping Alice,
+Bob and Charles.
+And it turns out that David
+and Edward also work together.
+So we're going to create
+an operations group.
+Now we have two groups within IAM.
+Now groups can only contain
+users, not other groups.
+So this is something very
+important to understand.
+Groups only contain users.
+Now, some users don't
+have to belong to a group.
+For example, Fred right here is alone,
+he does not correspond to any group.
+That is not best practice.
+But it is something you can do in AWS.
+And also, a user can
+belong to multiple groups.
+That means that for example,
+if you know that Charles
+and David worked together,
+and they're part of your audit team,
+you can create a third group
+with Charles and David.
+And as you can see, now, in this example,
+Charles and David are part
+of two different groups.
+So this is the possible
+configurations for IAM.
+So why do we create users
+and why do we create groups?
+Well, because we want to allow
+them to use our AWS accounts
+and to allow them to do so,
+we have to give them permissions.
+So users or groups can be assigned
+what's called a JSON document.
+I'll show you right now what
+it means called a policy,
+an IAM policy.
+So it looks just like this.
+So you don't have to be a programmer.
+This is not programming.
+This is just describing
+in, I think plain English,
+what a user is allowed
+to do or what a group
+and all the users within
+that group are allowed to do.
+So in this example, we can
+see that we allow people
+to use the EC2 to service
+and do describe on it,
+to use the elastic load balancing service
+and to describe on it
+and to use CloudWatch.
+Now we'll see what EC2
+elastic load balancing
+and CloudWatch mean, but
+through this JSON document
+that looks just like this.
+We are allowing our users
+to use some services in AWS.
+So these policies will
+help us define permissions
+of our users.
+And so in AWS, you don't allow
+everyone to do everything
+that would be catastrophic,
+because a new user could
+basically launch so many services
+and they will cost you a lot of money
+or would be valid for security.
+So in AWS, you apply a principle called
+the least privilege principle.
+So you don't give more
+permissions than a user needs.
+Okay, so if a user just needs
+access to three services,
+just create a permission for that user.
+So now we have seen an overview IAM.
+Let's go in the next lecture
+to practice creating users and groups.
+
+
+=== Classic Solutions Architecture Discussions ===
+
+
+--- IAM Users & Groups Hands On ---
+
+1
+So let's go ahead
+2
+and practice using the IAM service to create users in AWS.
+3
+So in the search bar,
+4
+I just type IAM and I go into the IAM console.
+5
+So upon arriving on the IAM Dashboard,
+6
+we have some security recommendations
+7
+that we can for now not care about.
+8
+And what I want to draw your attention to
+9
+is that on the left hand side, we go to users.
+10
+So this is where we're creating to create users for IAM,
+11
+but first, let's notice something.
+12
+If you go to the top right corner and click on Global,
+13
+you can see that the region selection is not active.
+14
+That means that IAM as an entire service is a global service
+15
+and therefore there is no region to be selected.
+16
+When you create a user in IAM,
+17
+it will be available everywhere,
+18
+but some other consoles we'll see in this course
+19
+will be region-specific.
+20
+So just something to notice.
+21
+Okay, so now we have users, and why do we create users?
+22
+Well, we create users,
+23
+because right now, we are using what's called the root user.
+24
+So if you click on this,
+25
+you see there's just the account ID available to you.
+26
+So when you have it,
+27
+that means you're using the root account
+28
+and it's not best practice to use the root account.
+29
+So therefore, we want to create users such as admin users
+30
+that will allow us to use our accounts more safely.
+31
+So for this, let's go ahead and create a user,
+32
+and I will provide a username, for example, Stephane.
+33
+So of course I want to provide myself access
+34
+to the management console,
+35
+so I'm going to do this,
+36
+and we have the option to use identity center,
+37
+which is recommended,
+38
+or to create an IAM user.
+39
+I will choose the second option because it is more simple,
+40
+and from an exam perspective,
+41
+this is the one you need to know about.
+42
+But don't worry,
+43
+this does not affect how your course is going to go.
+44
+Okay, so we create an IAM user,
+45
+and now we have to set the password.
+46
+So if this was a user that was not me,
+47
+I would leave it as auto-generated password,
+48
+and I would leave this
+49
+so that the user must change this password
+50
+at the next sign-in,
+51
+but because it is me,
+52
+I'm just going to enter a custom password
+53
+and I'm going to untick this
+54
+because I don't need to change my password
+55
+at the next login.
+56
+So let's click on next.
+57
+Next, we have to add permissions to this user,
+58
+so we can add it directly or we can get started with groups.
+59
+So let's create a group, and we're going to create a group.
+60
+The group name is going to be admin
+61
+and the policy name is going to be administrator access.
+62
+So now that this is done,
+63
+we can add the user into the admin group.
+64
+So let's click on next,
+65
+and we can review everything right now.
+66
+So we have the username, the permissions on the group,
+67
+and we have tags, and tags are everywhere in AWS.
+68
+They're optional, but they allow you to give metadata
+69
+to many of your resources.
+70
+For example, I could say
+71
+that the department of Stephane is engineering.
+72
+This is not something I'm going to do everywhere
+73
+on the course,
+74
+but I want show you once how
+75
+you can add tags to resources in AWS.
+76
+Okay, so now the user is created successfully.
+77
+So now we can email signing instructions or download
+78
+CSV files and then we can log in with this user.
+79
+But first, let's return to the user list
+80
+and have a look at everything.
+81
+So here is my user lists, here is me
+82
+and we also have groups.
+83
+So if I go to the left hand side, user groups,
+84
+we have admins.
+85
+So let's observe admins.
+86
+So admins has one user in it named Stephane.
+87
+And if you look at permissions of admins
+88
+you see that there is administrator access attached
+89
+to the admin group.
+90
+Now if I go to my user, Stephane in here,
+91
+we can look at permission policies
+92
+and see it also has administrative access
+93
+but this one has not been attached directly.
+94
+It has been attached via the group admin.
+95
+So that means that Stephane inherited any permissions
+96
+of the group admin it is in.
+97
+And this is why we put users in groups.
+98
+It is a bit more simple to manage permissions this way.
+99
+So now let's go back to our dashboard
+100
+and we want to sign in with our user, Stephane.
+101
+So first what we can do is look at our AWS accounts
+102
+and it has an account ID and a Sign-in URL.
+103
+Now you can customize this Sign-in URL very easily
+104
+by creating what's called an account alias.
+105
+So it could be aws-stephane-v3 and then Create alias
+106
+so whatever alias until someone hasn't created it,
+107
+so it has to be unique.
+108
+For example, v5 is available.
+109
+So now using this alias can simplify my signing URL.
+110
+Now to sign in using my Stephane accounts
+111
+we could use the same browser
+112
+or we could create a new browser window in private mode.
+113
+And the benefit of doing this is
+114
+that we can have two windows side by side using AWS.
+115
+So if you don't do this, that's fine, but if you log
+116
+in using the Stephane account on the right hand side window
+117
+then you will be disconnected on the left hand side,
+118
+this is the only difference.
+119
+So to use two accounts at the same time,
+120
+the route on the left and my account on the right
+121
+what I'm doing as a trick is that I'm using a private window
+122
+on my web browser, and Chrome has this feature,
+123
+Firefox as this feature, Safari as this feature, and so on.
+124
+So by pasting the signing URL, as you can see,
+125
+I get the sign in and as an IAM user
+126
+and to get to this page, we can go back to one.
+127
+And as you can see, when you do a sign in on AWS,
+128
+you have the root user sign in or the IAM user sign in.
+129
+So to get back to this, we go to IAM user.
+130
+We enter either the account ID or the account alias
+131
+that I can copy in here, and then we are taken to this page.
+132
+So the IAM user name is going to be Stephane
+133
+and the password is going to be whatever you have set
+134
+from before, then you sign in.
+135
+So now the cool thing is that if I look
+136
+at the top right hand side, IAM logged in using my IAM user.
+137
+So it says the account ID and the IAM user.
+138
+But if I look on the top right hand side of here
+139
+it just says the account id
+140
+which shows me it's the root accounts.
+141
+So here we are, we have the root accounts logged
+142
+in on the left hand side through a normal window
+143
+and we have the IAM user logged in on the right hand side
+144
+through a private window.
+145
+Please make sure not to lose your root account
+146
+logins and your admin login.
+147
+Otherwise, you will be in deep trouble with your
+148
+account and you'll have to contact AWS for support.
+149
+And currently I cannot help you with this.
+150
+Now from a course perspective,
+151
+I recommend you use your IAM user and not your root user
+152
+but this is just a normal recommendation.
+153
+Sometimes you'll see me using root
+154
+sometimes I'm using IAM user.
+155
+But when you have to use roots or when you have
+156
+to use an IAM user, I will let you know in the course.
+157
+Don't worry about that.
+158
+Now for the rest of this section,
+159
+please keep these two windows open and I will
+160
+see you in the next lecture.
+
+
+=== Amazon S3 Introduction ===
+
+
+--- AWS Console Simultaneous Sign-in ---
+
+1
+So let me show you something cool now
+2
+called the multi-session support.
+3
+So you click on it to turn it on,
+4
+and the idea now is that now I can have in this browser
+5
+a specific role or account
+6
+and then I can add a session,
+7
+and sign into any of your identities using the same browser.
+8
+So here I'm going to click on it
+9
+and I'm going to add a session.
+10
+And now you can login again using any account ID or route.
+11
+And then you go to go.
+12
+So let's go and let me just signing into one of my accounts.
+13
+And after being signed in, as you can see here,
+14
+I have one specific account ID
+15
+and here I have a different account ID.
+16
+And the cool thing is that, for example,
+17
+let's say I'm going to the EC2 console here,
+18
+and then I'm going to go into volumes
+19
+and then I'm going to, for example,
+20
+create an EBS volume of one gigabyte
+21
+just to do something very quickly.
+22
+So let's create this volume.
+23
+Okay, as you can see, my volume has been created,
+24
+so it's just showing you
+25
+how to do something very quickly on this window.
+26
+You don't have to know about EBS and so on.
+27
+But now if I go into EBS on this other browser,
+28
+so I go under EC2,
+29
+and then I go under EBS.
+30
+As you can see here, I don't see any volumes,
+31
+because I'm using a different account window,
+32
+and this other one is using the other account window.
+33
+So that means I can have two accounts
+34
+under the same browser.
+35
+This was not possible before, which is very helpful,
+36
+and something you should know about
+37
+if you want to use AWS at scale.
+38
+So a nice welcome edition.
+39
+You don't need to go ahead and create an EBS volume.
+40
+I just want to show you the fact
+41
+that you could have two different accounts
+42
+on two different browser windows.
+43
+And for me, that's been using AWS for over 10 years,
+44
+this is a little revolution.
+45
+All right, so that's it, you can go back to the course.
+46
+I hope you liked it,
+47
+and I will see you in the next lecture.
+
+
+=== Advanced Amazon S3 ===
+
+
+--- IAM Policies ---
+
+1
+Okay, so now let's discuss, IAM policies in depth.
+2
+So let's imagine we have a group of developers,
+3
+Alice, Bob and Charles, and we,
+4
+attach a policy at the group level.
+5
+In that case, the policy will get applied
+6
+to every single member of the group
+7
+so both Alice, Bob, and Charles
+8
+they will all get access and inherit this policy.
+9
+Now, if you have a second group with operations
+10
+with a different policy,
+11
+David and Edward will have a different policy
+12
+than the group of developers.
+13
+If Fred is a user,
+14
+it has the possibility not to belong to a group.
+15
+And we have the possibility to create what's called
+16
+an inline policy which has a policy
+17
+that's only attached to a user.
+18
+So that user could or could not belong to a group
+19
+you can have inline policies for whatever user you want.
+20
+And finally, if Charles and David both belong
+21
+to the audit team and you attach a policy to the audit team
+22
+as well, Charles and David will also inherit
+23
+that policy from the audit team.
+24
+So in this case, Charles has a policy from developers
+25
+and a policy from audit team.
+26
+And David has a policy from audit team
+27
+and a policy from the operations team.
+28
+That should make a lot of sense
+29
+when we get into the hands-on.
+30
+Now, in terms of the policy structure,
+31
+you just need to know at a high level how it works,
+32
+as well as how it is named.
+33
+So this is something you will see quite a lot in AWS,
+34
+so get familiar with this structure
+35
+this is adjacent documents.
+36
+And so an IAM policy structure, consists of a
+37
+version number, so usually it's 2012-10-17,
+38
+this is the policy language version.
+39
+And ID which is how to identify that policy,
+40
+this is optional.
+41
+And then more statements,
+42
+and statements can be one or multiple ones,
+43
+and a statement has some very important parts.
+44
+So the Sid is a statement ID, which is an identifier
+45
+for the statement, which is optional as well,
+46
+so on the right hand side is the number one.
+47
+The effect of the policy itself, so it is whether or not
+48
+the statement allows or denies access to certain API,
+49
+so in the right hand side, this says allow,
+50
+but you can see deny as well.
+51
+The principle consists of which accounts, user or role
+52
+which, to which this policy will be applied to.
+53
+So in this example, it's applied to the root accounts
+54
+of your AWS accounts.
+55
+Action is the list of API calls that will be
+56
+either denied or allowed based on the effect.
+57
+And the resource is a list of resources,
+58
+to which the actions will be applied to.
+59
+So in this example, it is a bucket,
+60
+but it could be many different things.
+61
+And finally in, not represented here
+62
+but there's a condition to which when
+63
+this statement should be applied or not,
+64
+and this is not representative here because it is optional.
+65
+So going into the exam, you need to make sure
+66
+that you really understand the effect, the principle,
+67
+the action and resource, but don't worry,
+68
+you will see those along the way in the course
+69
+so you should be confident with them
+70
+by the end of the course.
+71
+That's it for this lecture, I hope you liked it.
+72
+And I will see you in the next lecture.
+
+
+=== Amazon S3 Security ===
+
+
+--- IAM Policies Hands On ---
+
+1
+So now let's have a look
+2
+at IAM policies in depth.
+3
+So first of all, let's go into users.
+4
+And as you can see, the user Stephane
+5
+is part of the admin group,
+6
+and therefore, has administrator access permissions to AWS.
+7
+That means that if I use my user Stephane
+8
+to go into the IAM console, so now I'm using my user,
+9
+and then I go to the left-hand side and click on users,
+10
+as you can see, I can see my user Stephane,
+11
+which is right here.
+12
+So my user Stephane has permission to do anything
+13
+because it's an administrator.
+14
+But what I'm going to do is that I'm going to the groups
+15
+of admins and then I'm going to remove my user Stephane
+16
+from that group.
+17
+So by removing the user, which I've done right now,
+18
+then Stephane loses its permissions on the right-hand side.
+19
+How do we make sure of this?
+20
+Well, let's refresh this page.
+21
+And as you can see, now I see zero users
+22
+and I get an access denied and it said
+23
+that I don't have the permission to do iamListUsers.
+24
+And so therefore, because I removed my Stephane user
+25
+from the admin group, then I've lost permissions to look
+26
+at users on the right-hand side.
+27
+So let's try to fix this.
+28
+So let's go into IAM
+29
+and we're gonna go under users, find Stephane in here.
+30
+And right now, as you can see,
+31
+Stephane has zero permission policies
+32
+but let's add permissions.
+33
+So we can add permissions directly
+34
+or create an inline policy.
+35
+So let's add permissions, and this is going to be easier.
+36
+And so again, we could add the user back to a group.
+37
+That's not what we want.
+38
+Or we could attach policies directly to my user.
+39
+And so the policy I'm going to attach is going
+40
+to be IAMReadOnlyAccess.
+41
+So this will allow my user Stephane
+42
+to read anything on IAM, which is what we want.
+43
+So let's add this permission
+44
+and now this policy has been added.
+45
+So back in here, let's refresh this page.
+46
+And as you can see now, I can finally do my API call again
+47
+and look at the Stephane user in my users category.
+48
+So I can view users, I can view user groups, such as admin
+49
+but can I create a group?
+50
+Let's try to create the developer group
+51
+and then create this group.
+52
+And as you can see, I cannot create it
+53
+because I'm not allowed to actually create a group.
+54
+I'm only given the read-only access on IAM.
+55
+And so therefore, because I have read-only access,
+56
+I cannot create groups.
+57
+So this shows you that you can only permission users
+58
+for what they're supposed to do.
+59
+And of course, if I wanted to give access to create groups
+60
+on the right-hand side,
+61
+I will need to attach a bigger permission sets,
+62
+such as the IAM full access.
+63
+So next, let's do something.
+64
+So next, I'm going to go into the left-hand side
+65
+under user groups, and I'm going to create a group.
+66
+So this group is going to be called developers.
+67
+And then I'm going to add the user Stephane in this group
+68
+and I'm going to attach whatever policy I can find,
+69
+for example, AlexaForBusiness
+70
+but it doesn't really matter.
+71
+Just attach the first policy you can
+72
+and let's create this group.
+73
+Okay, so this has been added.
+74
+And finally, let's go into the admin group.
+75
+And again, we're going to add users
+76
+and re-add Stephane into this group.
+77
+So now if we go back to the Stephane user, so let's go
+78
+into IAM and look at the users and look at Stephane,
+79
+I'm going to shut down this message on right-hand side.
+80
+So if we look at Stephane as the user, as we can see,
+81
+we have three permission policies attached to my user.
+82
+We have the administrator access that has been inherited
+83
+from the group admin.
+84
+We have this AlexaForBusiness managed policy
+85
+that has been attached via the group developers.
+86
+And finally, IAMReadOnlyAccess
+87
+that has been attached directly.
+88
+And so as you can see,
+89
+I inherited different permissions based
+90
+on how it's been attached.
+91
+So now let's look at policies in detail.
+92
+So on the left-hand side, let's look at policies.
+93
+And first, let's have a look
+94
+at this AdministratorAccess policy.
+95
+So if we look at it, it's the permission
+96
+that gave us administrator access to everything.
+97
+And if you look at the permissions defined
+98
+in this policy as a summary, as you can see,
+99
+this allows all the services in AWS.
+100
+And this number can change over time.
+101
+It doesn't matter.
+102
+The course will be up to date.
+103
+So all these services, for example, App Mesh
+104
+or Alexa for Business or Amplify, they all have full access.
+105
+So how is this permission defined?
+106
+Well, if you click on JSON,
+107
+this is the JSON form of this policy, and we can see
+108
+that here we have allow Action, star and resource, star.
+109
+So star in AWS means anything.
+110
+So it means we allow any action on any resource.
+111
+And of course, allowing any action
+112
+on any resource is exactly the same thing
+113
+as giving administrator access to someone.
+114
+So this is how it's been defined.
+115
+If we have a look at another policy, for example,
+116
+the IAMReadOnlyAccess that we saw from before.
+117
+So if we look at it, we see
+118
+that IAM is authorized with Full: List and Limited: Read.
+119
+And if I click on it, you can actually have a look
+120
+at all the API calls that has been allowed
+121
+as part of this policy, which is very handy.
+122
+But if we look at how this has been actually defined,
+123
+let's click on JSON.
+124
+And here we have the JSON document that shows
+125
+how this has been defined.
+126
+So the effect is allow, and then we list out the API calls
+127
+that are being allowed.
+128
+So we have this one, this one, and then we have Get*.
+129
+So when you have Get*, it says that anything that starts
+130
+with Get and then has something after is authorized.
+131
+For example, get users or get groups.
+132
+Same for list.
+133
+So we have a List*.
+134
+So list users or list groups.
+135
+So by using a star,
+136
+we encompass and group many API calls together.
+137
+So all this is allowed on Resource*.
+138
+And so therefore, that summarizes
+139
+what the read-only IAM access policy is made of.
+140
+So this is very handy.
+141
+You can also create your own policy.
+142
+So let's create a policy
+143
+and we have a visual editor or a JSON editor.
+144
+So if you have JSON, you can just very simply edit this
+145
+and create your JSON document with this builder,
+146
+which is very handy.
+147
+Or you can use the visual editor.
+148
+And for example, let's say IAM,
+149
+we wanna create stuff for IAM.
+150
+And what action do we wanna authorize?
+151
+Well, we want to authorize ListUsers.
+152
+So we're going to take this and GetUser.
+153
+So just two API calls.
+154
+And as we can see, we have selected one out of 38 in list
+155
+and one out of 32 in read.
+156
+And then what do we want to authorize this on?
+157
+So on all resources or only specific resources?
+158
+So this is a very simple one
+159
+but as you can see, this builder is very handy.
+160
+And when you click on next,
+161
+you can have a look and say MyIAMPermissions.
+162
+And then we create this policy.
+163
+And if we have a look at the policy we created,
+164
+we can have a look at the corresponding JSON
+165
+and see that indeed through the visual editor,
+166
+we allowed iam:ListUsers and iam:getUser on Resource*.
+167
+And then this policy, we can attach to groups
+168
+or to users and so on.
+169
+So this is how you manage permissions in AWS.
+170
+So now to just wrap up this hands-on,
+171
+let's go to user groups
+172
+and we're going to delete the developers group
+173
+because we don't need it.
+174
+And then I'm going to go into my Stephane user
+175
+and I'm going to just remove this IAMReadOnlyAccess
+176
+that had attached directly.
+177
+So now Stephane only belongs to the group admin
+178
+and it has administrator access.
+179
+So of course, if I go back
+180
+to my IAM console in here and I just look at users,
+181
+as you can see, yes, everything is showing fine.
+182
+So it is working correctly.
+183
+Okay, so that's it for this lecture.
+184
+I hope you liked it and I will see you in the next lecture.
+
+
+=== CloudFront & AWS Global Accelerator ===
+
+
+--- IAM MFA Overview ---
+
+1
+Now that we have created users in groups,
+2
+it is time for us to protect these users
+3
+in groups from being compromised.
+4
+So for this, we have two defense mechanisms.
+5
+The first one is to define
+6
+what's called a password policy.
+7
+Why?
+8
+Well, because the stronger the password you use,
+9
+the more security for your accounts.
+10
+So in AWS you can set up a password policy
+11
+with different options.
+12
+The first one is you can set a minimum
+13
+password length and you can
+14
+require specific character types.
+15
+For example, you may want
+16
+to have an uppercase letter, lowercase letter,
+17
+number, non alphanumeric characters,
+18
+for example, a question mark and so on.
+19
+Then you can allow or not IAM users
+20
+to change their own passwords,
+21
+or you can require users to change their password
+22
+after some time to make your password expired,
+23
+for example, to say every 90 days,
+24
+users have to change their passwords.
+25
+Finally, you can also prevent password reuse
+26
+so that users, when they change their passwords,
+27
+don't change it to the one
+28
+that they already have or change it
+29
+to the one they had before.
+30
+So this is great.
+31
+A password policy really is helpful
+32
+against brute force attacks on your account.
+33
+But there's a second defense mechanism
+34
+that you need to know going into the exam.
+35
+And this is the Multi-Factor Authentication or MFA.
+36
+It is possible, you already used it
+37
+on some websites, but on AWS it's a must
+38
+and it's very recommended to use it.
+39
+So users have access to your account
+40
+and they can possibly do a lot of things,
+41
+especially if they're administrators.
+42
+They can change configuration,
+43
+delete resources and other things.
+44
+So you absolutely want to protect
+45
+at least your root account and hopefully,
+46
+all your IAM users.
+47
+So how do we protect them on top of the password?
+48
+Well, you use an MFA device.
+49
+So what is MFA?
+50
+MFA is using the combination of a password
+51
+that you know and a security device that you own.
+52
+And these two things together
+53
+have a much greater security
+54
+than just a password.
+55
+So for example, let's take Alice.
+56
+Alice knows her password,
+57
+but she also has an MFA generating token.
+58
+And by using these things together
+59
+while logging in, she's going to be able
+60
+to do a successful login on MFA.
+61
+So the benefit of MFA is that even if Alice
+62
+has lost her password
+63
+because it's stolen or it's hacked,
+64
+the account will not be compromised
+65
+because the hacker will need to also get a hold
+66
+of the physical device of Alice,
+67
+that could be her phone, for example,
+68
+to do a login.
+69
+Obviously that is much less likely.
+70
+So what are the MFA devices option in AWS?
+71
+And you need to know them going into the exam,
+72
+but don't worry, they're quite simple.
+73
+The first one is a virtual MFA device.
+74
+This is what we'll be using in the hands-on.
+75
+And so you can use Google Authenticator,
+76
+which is just working on one phone at a time,
+77
+or using Authy.
+78
+So for Authy, you have support
+79
+for multiple tokens on a single device.
+80
+So that means that with the virtual MFA device,
+81
+you can have your root account,
+82
+your IAM user, another account, another IAM user.
+83
+It's up to you.
+84
+You can have as many users and accounts
+85
+as you want on your virtual MFA device,
+86
+which make it a very easy solution to use.
+87
+Now we have another thing
+88
+called a Universal 2nd Factor
+89
+or U2F Security Key,
+90
+and that is a physical device.
+91
+For example, a YubiKey by Yubico
+92
+and Yubico is a third party to AWS.
+93
+This is not AWS that provides it.
+94
+This is a third party.
+95
+And we use a physical device
+96
+because maybe it's super easy,
+97
+you put it on your key fobs
+98
+and you're good to go.
+99
+So this YubiKey supports multiple root
+100
+and IAM users using a single security key.
+101
+So you don't need as many keys as users,
+102
+otherwise there will be a nightmare.
+103
+Then you have other options.
+104
+You have a hardware key fob MFA device,
+105
+for example, this one provided by Gemalto,
+106
+which is also a third party to AWS.
+107
+And finally, if you are using the cloud
+108
+of the government in the US, the AWS GovCloud,
+109
+then you have a special key fob
+110
+that looks like this
+111
+that is provided by SurePassID,
+112
+which is also a third party.
+113
+So that's it.
+114
+We've seen the theory
+115
+on how to protect your account,
+116
+but let's go in the next lecture
+117
+to implement that.
+118
+So I will see you in the next lecture.
+
+
+=== AWS Storage Extras ===
+
+
+--- IAM MFA Hands On ---
+
+1
+So we are going to first,
+2
+define a password policy.
+3
+For this, click on account settings on the left-hand side.
+4
+You will find password policy and you can edit it.
+5
+So here, we can use the IAM default password policy,
+6
+which composes of these kind of requirements,
+7
+or we can customize the password policy
+8
+and force a password minimum length.
+9
+We can also require uppercase letter, lowercase letter,
+10
+a number, a non-alphanumeric character.
+11
+We can also turn on password expiration to turn on,
+12
+for example, expire after 90 days,
+13
+or that a password expiration
+14
+requires administrative resets, or we can allow the users
+15
+to change their own password
+16
+or we can prevent password reuse.
+17
+So this password process can be edited directly
+18
+from the IAM console, and that's the first part of security.
+19
+The second part
+20
+is around setting multi-factor authentication
+21
+for your root account.
+22
+So if you click on the account name
+23
+and then click on security credentials, if you are logged in
+24
+with the root user,
+25
+you will see my security credentials root user.
+26
+Now, there is a way for you
+27
+to actually protect your root user,
+28
+which is the most important account in your AWS account,
+29
+and you can protect it by using multi-factor authentication.
+30
+Now, just so you know, I'm going to do it
+31
+and demonstrate how it works in front of you,
+32
+but I've had students who locked themselves out
+33
+of their accounts because they lost access
+34
+to their multi-factor authentication device.
+35
+As such, if you think you are running the risk
+36
+of losing your iPhone or whatever, do not do this, okay?
+37
+Just keep your phone with you, just watch my video.
+38
+It will be good enough if you want to practice along
+39
+with me, you can as well.
+40
+And you can also delete the MFA device after activating it.
+41
+Okay, but let's go ahead and assign an MFA device.
+42
+So I will call this one my iPhone
+43
+because this is what I have, but you can name it
+44
+whatever you want.
+45
+Then you can select the type of MFA device.
+46
+So it could be an authenticator app,
+47
+which is something I'm going to use,
+48
+but also it can be a security key or a hardware TOTP token.
+49
+So I'm going to use an authenticator app
+50
+because it will be virtual.
+51
+And now we go into the setup of the app.
+52
+So there's a list of compatible applications right here.
+53
+You can find here for Android
+54
+and for iOS that we know work well with AWS.
+55
+And as such, I'm going to use the Twilio
+56
+of the Authenticator, which is an app I like.
+57
+So what I have to do then is actually launch the app
+58
+on my phone and then you click on show QR code.
+59
+So when you should a QR code, you need
+60
+to scan this QR code directly on your phone.
+61
+So for this, you add an account,
+62
+you scan the QR code right here,
+63
+and once scanned, it will add the account
+64
+and start naming it.
+65
+So we'll just save this, this looks good.
+66
+And then we get access to MFA code.
+67
+So there is first, the first MFA code, so 301935.
+68
+So this is a code generated by my iPhone in real-time.
+69
+And this code is going to change over time.
+70
+And the reason why these two codes are asked by AWS
+71
+is that it wants to make sure that the MFA device
+72
+is set up correctly and that the codes are accurate.
+73
+So the second code is 792843.
+74
+And, of course, there will be difference for your device.
+75
+And once these two codes are entered, you click on add MFA.
+76
+And as you can see, we can reach there up
+77
+to eight MFA devices currently, and you can scroll down
+78
+and see them right here on the list.
+79
+So the multi-factor authentication, MFA, one,
+80
+it's called my iPhone that's been created right now.
+81
+So if you wanted to remove it, you can remove it and so on.
+82
+But so how do we use MFA?
+83
+Well now, if I log out of AWS
+84
+and I log back in, so I'm going
+85
+to use my router account and my password.
+86
+Now after doing a successful login,
+87
+I have the MFA code to enter.
+88
+And so I open my app
+89
+and enter the code that I see and press submit.
+90
+And this way IAM logged in.
+91
+And this is perfect because well, we had an extra level
+92
+of security on our account.
+93
+So that's it for this lecture.
+94
+I hope you liked it, and I will see you in the next lecture.
+
+
+=== Decoupling applications: SQS, SNS, Kinesis, Active MQ ===
+
+
+--- AWS Access Keys, CLI and SDK ---
+
+1
+So we have seen how to access AWS
+2
+using the Management console,
+3
+which is the Web interface that we've done
+4
+so far in this course, but there are, actually,
+5
+three different options to access AWS.
+6
+So the first one is a Management console,
+7
+as we've seen, and is protected by your username,
+8
+password, maybe multifactor authentication.
+9
+Then there is the CLI, Command Line Interface,
+10
+and this is something we will set up on our computer,
+11
+and this is protected by access keys,
+12
+and access keys our credentials we're going to download
+13
+in a few seconds that will allow us
+14
+to access AWS from our terminal.
+15
+Then, finally, there is the SDK,
+16
+the AWS Software Development Kit,
+17
+which is used whenever you want to call APIs from AWS
+18
+from within your application code.
+19
+And again, these will be protected
+20
+by the exact same access keys.
+21
+So how do we generate access keys?
+22
+Well we will do this through the Management console,
+23
+and users are responsible for their own access keys,
+24
+and access keys, from the user perspective,
+25
+there are secret, just like a password,
+26
+so if you generate your own access keys
+27
+do not share them with your colleagues,
+28
+because they can generate their own access keys as well.
+29
+So really make sure that you treat your access key ID
+30
+just like your username,
+31
+and your secret access key just like your password,
+32
+you do not share them with other people.
+33
+So when you go into the Management console,
+34
+you get access key as there's a button
+35
+to create access keys, and then it gives you the right
+36
+to download it in the very second.
+37
+And so, for example, here's a fake access key ID
+38
+and a fake secret access key,
+39
+and these, when loaded into my Command Line Interface,
+40
+would allow me to access the AWS API,
+41
+and we'll do this in the hands-on in a second.
+42
+So again, remember, I want to make sure
+43
+that you don't have any security issues
+44
+while doing this course or at work,
+45
+do not share your access keys, they are private to you.
+46
+So if you're new to the Cloud, and programming and so on,
+47
+or IT, then you might not know what's a CLI.
+48
+So CLI stands for Command Line Interface,
+49
+and the AWS CLI is a tool that allows you to interact
+50
+with the AWS services using commands
+51
+from your command-line shell.
+52
+So whenever you see some code where you type a command line,
+53
+and then it returns a result, for example,
+54
+aws, s3, cp, and so on, this is what we call the CLI.
+55
+And we are using the AWS CLI
+56
+because we start every command by the word AWS.
+57
+Now with this CLI, you get direct access
+58
+to the public APIs of your AWS services
+59
+which is going to be very helpful in this course.
+60
+And, then, using the CLI you can develop scripts
+61
+to manage your resources and automate some of your tasks.
+62
+The CLI is open-source,
+63
+you can find all the source code on GitHub,
+64
+and it is an alternative to using
+65
+the AWS Management console.
+66
+I know that some people, actually,
+67
+do not even use the Management console,
+68
+they only use the CLI, for example.
+69
+So what's the SDK now?
+70
+SDK stands for Software Development Kit,
+71
+and this is a set of library,
+72
+this is going to be language specific,
+73
+so you're going to have an SDK
+74
+for different programming languages,
+75
+and similarly, it will allow you to access and manage
+76
+your AWS services and APIs programmatically,
+77
+but this time the SDK is not something that you use
+78
+within your terminal, it is something that you embed
+79
+within your application that you have to code.
+80
+So your application will have the AWS SDK
+81
+from within them.
+82
+It supports many different programming languages,
+83
+such as JavaScript, Python, PHP.NET,
+84
+Ruby, Java, Go, Node.js, C++,
+85
+all of that's our programming languages.
+86
+There's also the mobile SDK,
+87
+if you're using Android or iOS,
+88
+and the IoT, so Internet of Things device SDK
+89
+in case you're using some thermal sensors
+90
+or backlogs that are connected, all these kinds of things.
+91
+So to give you an example of what you can build
+92
+with the SDK, well the AWS CLI that we're going to be using
+93
+in this course is actually built
+94
+on the AWS SDK for Python named Boto.
+95
+So that's it for this lecture.
+96
+Now in then the next lecture, we're going to practice
+97
+setting up the CLI and dealing with access keys,
+98
+so I will see you in the next lecture.
+
+
+=== Containers on AWS: ECS, Fargate, ECR & EKS ===
+
+
+--- AWS CLI Setup on Windows ---
+
+1
+Okay so we are going to install
+2
+the aws command line on Windows.
+3
+So for this we do aws CLI install windows on Google.
+4
+And this will give us the list link
+5
+and we want to install the aws-cli version 2 on Windows.
+6
+Okay this is the latest and so we'll up to dates.
+7
+It doesn't change much versus version 1,
+8
+it is just some improved performance and capability,
+9
+but the API's exactly the same
+10
+and there's also an improved installer.
+11
+So I'm going to scroll down,
+12
+in here and to Install on Windows
+13
+where you can just simply
+14
+install it using the MSI installer,
+15
+so I just click on this link to download the MSI installer.
+16
+then I'm going to run the installer
+17
+so it should very very simple.
+18
+Now the installer is starting,
+19
+I click on Next.
+20
+I accept the terms of the license,
+21
+click on Next,
+22
+Install and then we wait for the installer to be done.
+23
+Yes, I want to allow whatever this is doing.
+24
+Okay so the installer is now complete.
+25
+I click on Finish
+26
+and now I can go ahead and open a command line,
+27
+so I'll do command line,
+28
+Command Prompt here we go on Windows,
+29
+and to be sure that it's fully installed
+30
+I just type aws--version
+31
+and press enter,
+32
+and if you get a result like this:
+33
+aws-cli, a version that starts with a 2,
+34
+then Python, Windows,
+35
+that means that your aws-cli
+36
+is now properly installed on Windows
+37
+and you're good to go.
+38
+Finally just note that if you want to upgrade your aws-cli
+39
+then you just need to re-download that MSI installer
+40
+and just re-run the install
+41
+and it will be automatically upgraded.
+42
+But as soon as you have this output you're good to go
+43
+and you can follow me in the next lecture.
+44
+So see you in the next lecture.
+
+
+=== Serverless Overviews from a Solution Architect Perspective ===
+
+
+--- AWS CLI Setup on Mac OS X ---
+
+1
+So let's install the AWS CLI on mac
+2
+and for this we're just going to go on Google
+3
+and make sure to choose a link
+4
+installing the AWS CLI version 2 on macOS.
+5
+And then we're just going to follow the process,
+6
+so we'll scroll down
+7
+and see what they say.
+8
+And here is how to install it.
+9
+So we can just download a pkg file
+10
+and this will be a graphical installer.
+11
+So you download the pkg file.
+12
+Then you click on continue, continue, continue
+13
+and you agree.
+14
+Then you say, "Okay, install for all the users
+15
+"on this computer."
+16
+Click on continue
+17
+and then click on install,
+18
+and this goes ahead and installs the CLI on mac.
+19
+So we wait for everything to be done,
+20
+the files are being written.
+21
+Okay, the installation is now successful
+22
+and we'll move the installer to trash.
+23
+And now to fill this out,
+24
+you open a terminal on mac.
+25
+So you just go ahead and type, for example, "terminal",
+26
+and this will give you a terminal app.
+27
+Mine is called iterm on mac,
+28
+which is a free terminal that you can use.
+29
+And then you just type aws -- version
+30
+and if everything is going well,
+31
+then it should give you back the version
+32
+of the AWS executable.
+33
+So let's wait for a little bit.
+34
+And we get the answer,
+35
+AWS CLI 2.0.10,
+36
+so that means that everything has been installed correctly.
+37
+So that's it for this lecture.
+38
+In case of issues,
+39
+please have a look at this guide.
+40
+It will have the answer for you.
+41
+And that's it for me.
+42
+I will see you in the next lecture.
+
+
+=== Serverless Solution Architecture Discussions ===
+
+
+--- AWS CLI Setup on Linux ---
+
+1
+Okay, so let's proceed
+2
+with installing the AWS CLI on Linux.
+3
+So for this I just google it, and I will choose installing
+4
+the AWS CLI Version 2 on Linux because
+5
+this is the latest one,
+6
+and I'm going to scroll down.
+7
+And to install the CLI it goes installing.
+8
+We just have to run these three commands.
+9
+So the first one is to get a Zip file.
+10
+So I copy this, go into a terminal,
+11
+and then I will paste it.
+12
+And here we go.
+13
+So this has been pasted, and it is downloading currently
+14
+the installer.
+15
+The next thing we have to do is to unzip it.
+16
+So I copy this command and paste it,
+17
+and this will unzip my installer.
+18
+Great.
+19
+And the last thing is to run the installer as root,
+20
+so I'll do sudo and then install.
+21
+This should prompt me for my password,
+22
+which I enter right now,
+23
+and then the installation proceed.
+24
+Now it says you can run,
+25
+"user/local/bin/AWS minus minus version,"
+26
+or very simply, "AWS minus minus version"
+27
+if your user local bin is in your path,
+28
+and there we go.
+29
+The AWS CLI has been installed as you can see.
+30
+It says AWS CLI/2.
+31
+and then you are getting a different version based on
+32
+when you do this.
+33
+And then you get Python and Linux and Botocore,
+34
+so you are good to go.
+35
+When this works we can run any command on the AWS CLI
+36
+and you can go ahead, with the rest of the lectures.
+37
+If you got ant issues please read this
+38
+and it will tell you what's going on and that it,
+39
+I will see you in the next lecture.
+
+
+=== Databases in AWS ===
+
+
+--- AWS CLI Hands On ---
+
+1
+Let me show you how to create access keys.
+2
+So I'm gonna click on my username, Stephane,
+3
+and I'm gonna go under Security credentials.
+4
+I will scroll down and I will create an access key.
+5
+As you can see,
+6
+there are some selection you need to do,
+7
+and based on the selection I'm doing,
+8
+for example, I want access key for the CLI,
+9
+AWS is going to have an alternative recommended.
+10
+For example, for the CLI,
+11
+it's better to use CloudShell
+12
+which I will show you in the next lecture,
+13
+so don't worry about it.
+14
+Or to use the CLI V2 and an authentication
+15
+through the IAM Identity Center,
+16
+which I will not show you
+17
+because it's a bit more complicated.
+18
+So based on what you wanna do,
+19
+if it's local code application running outside of AWS
+20
+or in AWS and so on,
+21
+you will have some recommendation in the bottom.
+22
+For now, we're going to use the CLI
+23
+and we'll use these access keys
+24
+and we'll click here to say
+25
+"I understand the above recommendation,"
+26
+and I still want to create an access key
+27
+because it is important for you to understand
+28
+how they are, how they work, what they are, and so on.
+29
+So let's create this access key.
+30
+And now, this is the only time
+31
+you'll be able to have access to the access key
+32
+and the secret access key.
+33
+So I will go back now
+34
+to a previous version of that lecture
+35
+where you see the old UI,
+36
+but don't worry nothing changes from that point on.
+37
+The first thing I have to do is to configure my AWS CLI.
+38
+So I'm going to type: aws configure.
+39
+And then I am greeted with entering my access key id.
+40
+Very nice, I can just enter this one, and press Enter.
+41
+And then I'm greeted with entering my secret access key,
+42
+which I will enter right here as well.
+43
+The default region name,
+44
+so this is a region that is close to you.
+45
+I will choose eu-west-1
+46
+because I will be doing all my tutorials eu-west-1,
+47
+but you will choose your own region
+48
+and you can enter your own region name.
+49
+The region name, by the way, you can get directly
+50
+from this drop down right here.
+51
+It shows you the name of the region
+52
+as well as the region code.
+53
+So for me, I'm going to use my eu-west-1.
+54
+I'll press Enter, and in the default output format,
+55
+I'll just press Enter as well.
+56
+So now my AWS CLI is configured,
+57
+and so we can have a look at how it works.
+58
+We can do: aws iam list-users,
+59
+and press Enter.
+60
+And this will list all the users in my account.
+61
+And as we can see,
+62
+the user I have right now is called Stephane,
+63
+here is the UserId, here is the ARN,
+64
+when it was created,
+65
+and when the password was last used.
+66
+Which is very similar to what I would get
+67
+if I were to go into this UI right here.
+68
+So the Management Console and the CLI
+69
+do provide similar kind of information.
+70
+Next, I want to show you what happens
+71
+if we remove permissions from our users.
+72
+So I'm gonna go to admins
+73
+and I'm going to remove the Stephane user
+74
+from the group admin.
+75
+And so again, if I go back to my user, Stephane,
+76
+it doesn't have any permissions.
+77
+And I did this, obviously, with my root account,
+78
+not the other accounts.
+79
+So now if I go into my UI
+80
+and obviously refresh this page,
+81
+I'm going to get an error saying that, yes,
+82
+I do not have the permissions to do this.
+83
+But let's try to do the same thing with the CLI.
+84
+So we're going to do an "iam list-user" call,
+85
+and we get no response because actually it was being denied.
+86
+So, the CLI permissions
+87
+are obviously going to be the exact same
+88
+as the permissions you get from the IAM console.
+89
+So, the takeaway from this lecture
+90
+is that you can access AWS using the Management Console
+91
+or using access key and secret access key
+92
+that you can configure, and then use into the CLI.
+93
+So hope you liked it,
+94
+and I will see you in the next lecture.
+95
+And obviously, do not forget
+96
+to add your user back into the group,
+97
+otherwise that would be horrible.
+98
+So I'm gonna go into Groups, admins,
+99
+and I'm going to add my Stephane user back into my group,
+100
+and now I am an administrator again.
+101
+So that's it, I will see you in the next lecture.
+
+
+=== Data & Analytics ===
+
+
+--- AWS CloudShell: Region Availability ---
+
+[No transcript available for this lecture]
+
+
+=== Machine Learning ===
+
+
+--- AWS CloudShell ---
+
+1
+Okay.
+2
+So I would like to talk to you about an alternative
+3
+to using the terminal to issue commands against AWS.
+4
+And this is using cloud shell.
+5
+So cloud shell is this icon right here on the top
+6
+right corner of your screen.
+7
+And if you don't see it, just make sure you check
+8
+out the clutch shell availability regions
+9
+because it's not available everywhere.
+10
+And so if you go to the clash of FAC, you can see
+11
+that there are some regions that's not available.
+12
+So let's have a look right now with the regions.
+13
+Here we go. Question three.
+14
+Right now that's, I'm recording.
+15
+It's only available in one of these regions.
+16
+So by the way, I would recommend if you want to follow
+17
+along to just use one of these regions, then
+18
+so we can use cloud shell, but if you don't use cloud shell
+19
+in this hands-on, that is completely fine.
+20
+If the terminal was working for you, do not worry.
+21
+You're good to go.
+22
+Okay. So we have cloud shell in here and within cloud shell
+23
+you could take a minute maybe to launch your environment.
+24
+You can issue commands.
+25
+For example, you can issue the AWS commands.
+26
+So as you can see is installed, if I do
+27
+either of us management is version, as we can see
+28
+I'm on version two.one right now using cloud shell.
+29
+So cloud shell is basically a terminal in the cloud of AWS.
+30
+That's free to use.
+31
+Okay. So the cool thing about cloud shell is
+32
+that whenever you are using the CLI, so for example
+33
+it was am list users.
+34
+This is going to return for you an API call
+35
+as if the credentials being used, where the credentials
+36
+of the accounts of you using the cloud right now
+37
+which is why the API calls are working.
+38
+And by default, you can specify any kind
+39
+of region you want to do.
+40
+The API call using the management is region arguments, but
+41
+in cloud shell, the default region is going to
+42
+be the region you're currently in
+43
+logged in right now in cloud shell.
+44
+So this is another thing that's good to know.
+45
+Okay. Other things that you should know
+46
+about cloud shell is that you have a full repository.
+47
+So for example, right now, as we can see
+48
+we have zero files within cloud shell.
+49
+But if you just do
+50
+echo
+51
+tests
+52
+into demo dot TXT, this is going to create a text
+53
+file that contains the word texts tests.
+54
+And so it turns out that
+55
+if you happen to restart your cloud shell
+56
+then this file will stick.
+57
+So all the files you are creating
+58
+within your cultural environment, for example
+59
+this demo that's TXT are going to stay.
+60
+And the other cool thing you can do
+61
+about cloud shell is that you can configure it.
+62
+So you can say what font size you want, smallest
+63
+medium and large.
+64
+And so on the tech, the theme you want, so light or dark
+65
+if he wants safe based or nuts.
+66
+So resist like a bigger cloud shell for me right now.
+67
+And also you have the possibility to download
+68
+and upload files.
+69
+So for example, if I want you to get the full path
+70
+to my file, so did this demo let's six.
+71
+I can just copy it right now.
+72
+Action and download foul, and then do demo dot TXT.
+73
+And this will go ahead and download the file for me.
+74
+And alternatively, you could upload your own files
+75
+into your cultural environments.
+76
+So I want to show you these handy options
+77
+because for me, they are lifesavers.
+78
+Okay.
+79
+And finally, if you wanted more tabs into this environment
+80
+you could have a new tab.
+81
+You can split into column example, and there you go.
+82
+You have two terminals
+83
+into cloud shell connected at the same time.
+84
+So really that once show you the power
+85
+of cloud shell in this hands-on again, you're doing it.
+86
+You know, all the commands that data just wants to show you.
+87
+If you're a power user, then you can do these commands
+88
+and how they would work with cloud shell.
+89
+So the bottom line for this lecture again, is number one
+90
+cloud shell is only available in some regions.
+91
+So maybe try to choose one
+92
+of the regions where cloud shell is available.
+93
+If you want to use it, if you don't want to use cloud shell
+94
+or cloud shell is not working for you.
+95
+This is completely fine.
+96
+As long as you use the terminal, the way we configured it
+97
+from before, this will work just fine.
+98
+And you'll be fine in the course to either use cloud shell
+99
+or your terminal to perform the commands
+100
+with the CLA against AWS.
+101
+Okay. And also remember that I really like the upload
+102
+and download feature of cloud shell
+103
+choose to upload files and download files from it.
+104
+Okay. So that's it for this lecture.
+105
+I hope you liked it.
+106
+And I will see you in the next lecture.
+
+
+=== AWS Monitoring & Audit: CloudWatch, CloudTrail & Config ===
+
+
+--- IAM Roles for AWS Services ---
+
+1
+So we have to talk about
+2
+the last component of IAM,
+3
+which is called IAM Roles.
+4
+So some AWS services that we'll be launching
+5
+throughout this course will need to perform actions
+6
+on our behalf, on our account, okay?
+7
+And for this to do these actions,
+8
+they're just like users,
+9
+they will need some kind of permissions.
+10
+So we need to assign permissions to AWS services
+11
+and to do so,
+12
+we're going to create what's called an IAM Role.
+13
+So these IAM role will be just like a user,
+14
+but they are intended to be used not by physical people,
+15
+but instead they will be used by AWS services.
+16
+So what does that mean?
+17
+It's a bit confusing.
+18
+So for example,
+19
+we are going to create throughout this course,
+20
+an EC2 Instance.
+21
+An EC2 Instance is just like a virtual server,
+22
+and we'll see this in the next section.
+23
+But so this EC2 Instance may want to
+24
+perform some actions on AWS and to do so,
+25
+we need to give permissions to our EC2 Instance.
+26
+To do so, we're going to create an IAM Role and together
+27
+they're going to make one entity.
+28
+And together, once the EC2 Instance is trying
+29
+to access some information from AWS,
+30
+then it will use the IAM Role.
+31
+And if the permission assigned to the IAM Role is correct,
+32
+then we're going to get access to the call
+33
+we're trying to make.
+34
+So some common roles include
+35
+what I just showed you, EC2 Instance roles,
+36
+but also other things that perform actions against AWS
+37
+we'll see in this course.
+38
+For example, Lambda Function Roles or CloudFormation.
+39
+So I know this is a high level of review.
+40
+In the next lecture we'll be creating a role,
+41
+but we won't be using it yet until the next section,
+42
+but let's go ahead and create a role.
+43
+I will see you in the next lecture.
+
+
+=== Identity and Access Management (IAM) - Advanced ===
+
+
+--- IAM Roles Hands On ---
+
+1
+So let's practice using roles.
+2
+So on the left hand side, you click on roles,
+3
+and you can see that some roles may have already
+4
+been created for your accounts.
+5
+Could be two, could be more. It doesn't matter.
+6
+But what we're going to do is that we're going to
+7
+create our own role in here.
+8
+So a role is a way to give AWS entities permissions
+9
+to do stuff on AWS.
+10
+As you can see, you have different kind of roles.
+11
+You can create actually five of them right now.
+12
+But the one that you need to know about for this hands-on
+13
+and for the exam is going to be a role for an AWS service.
+14
+So let's choose this one, and then we need to choose
+15
+for which service we want this role to apply to.
+16
+So as you can see, if you click on it,
+17
+you have commonly used services, such as EC2 and Lambda,
+18
+or a role for pretty much every service on AWS.
+19
+So it's a very common thing to know in AWS,
+20
+and that's why we learn about it.
+21
+So we are going to create a role for an EC2 instance
+22
+when we get to the EC2 section.
+23
+And so we choose EC2, and the use case is just EC2.
+24
+We disregard any of these.
+25
+So click on next, and now that we create a role
+26
+for an EC2 instance, we need to attach a policy.
+27
+So I'm going to attach the IAM read only access
+28
+to allow my EC2 instance to read whatever is in IAM.
+29
+Let's click on next.
+30
+Next do meet to enter a demo, a role name,
+31
+so DemoRoleForEC2 is going to be my role name,
+32
+and then we select the trusted entities.
+33
+So this is saying, hey, this role can be assumed
+34
+by the EC2 service, and this is what defines it
+35
+as a role for Amazon EC2.
+36
+We are verifying the permissions,
+37
+yes, it has IAM read only access,
+38
+and we create this role.
+39
+So now my role is created.
+40
+As you can see, it appears in my role lists.
+41
+And we can verify that the permissions
+42
+are correct for this role.
+43
+Now, we cannot use this role just yet
+44
+because we need to get to the EC2 section,
+45
+but we will use it when we get to it.
+46
+In the meantime, you've seen how to create a role
+47
+for Amazon EC2 and how to attach correct permissions to it.
+48
+So that's it for this lecture.
+49
+I hope you liked it, and I will see you in the next lecture.
+
+
+=== AWS Security & Encryption: KMS, SSM Parameter Store, Shield, WAF ===
+
+
+--- IAM Security Tools ---
+
+1
+We are nearing the end of the section,
+2
+but first let's talk about the kind of security tools
+3
+we have in IAM.
+4
+So we can create an IAM Credentials Report
+5
+and this is at your account-level.
+6
+This report will contain all your accounts users
+7
+and the status of their various credentials.
+8
+We'll be actually generating it right now
+9
+and having a look at it.
+10
+The second security tool we're gonna use in IAM
+11
+is called IAM Access Advisor.
+12
+This one is at the user-level
+13
+and the Access Advisor is going to show
+14
+the service permissions granted to a user
+15
+and when those services were last accessed.
+16
+This will be very helpful because we are talking already
+17
+about the principle of least privilege,
+18
+and so using this tool, we're able to see which permissions
+19
+are not used and reduce the permission a user can get
+20
+to be inline with the principle of least privilege.
+21
+So I will see you in the next lecture
+22
+to show you how to use the security tools.
+
+
+=== Networking - VPC ===
+
+
+--- IAM Security Tools Hands On ---
+
+1
+So let's generate a credentials report.
+2
+For this, on the left hand side,
+3
+I just click on Credential report
+4
+and then Download credential report
+5
+which is going to create a CSV file.
+6
+Now this CSV, because I'm using a training account,
+7
+is not fascinating,
+8
+but as we can see we have two rows in it.
+9
+We have my root account and my account name, stephane.
+10
+We can see when the user was created,
+11
+if the password was enabled,
+12
+when the password was last used and last changed,
+13
+when is the next rotation to be expected
+14
+if we do enable password rotation?
+15
+Is MFA active?
+16
+So we can see it's active from my root accounts
+17
+but it is not active for my Stefane accounts.
+18
+Then access keys, are they generated or not?
+19
+Yes, they're created for my Stefane account,
+20
+but not for my root account,
+21
+and when they were last rotated, last used and so on,
+22
+you can get more information about other access keys
+23
+and certificates and so on.
+24
+So this report is extremely helpful
+25
+if you want to look at some users
+26
+that haven't been changing the password,
+27
+or using it, or their account,
+28
+it could be giving you a great way to find which users
+29
+that deserve your attention from a security standpoint.
+30
+Now let's have a look at IAM Access Advisor.
+31
+For this, I'm gonna go to my user, stephane,
+32
+and then on the right hand side, I click on Access Advisor.
+33
+And Access Advisor is going to show me
+34
+which services were accessed by my user and when.
+35
+So as you can see, organizations, health,
+36
+identity and access managers with IAM Service,
+37
+EC2, Resource Explorer, were all accessed by my user.
+38
+So I use my user to access these things
+39
+by clicking in the UI, but some services were not accessed,
+40
+for example, Alexa for Business
+41
+or AWS App2Container and so on.
+42
+So using Access and Advisor, you can actually have a look
+43
+at whether or not the user has the correct permissions.
+44
+And it turns out that maybe based on this access,
+45
+have 37 pages of this,
+46
+maybe the user needs access only to a few services
+47
+but not all of them.
+48
+And this UI allows you to drill down.
+49
+On top of it, if a user accesses a specific service
+50
+for example Amazon EC2, we are told
+51
+that this is the administrator access
+52
+that granted access to this service.
+53
+So to summarize, Access Advisor becomes very helpful
+54
+when you need to do granular user access permissions on AWS.
+55
+So that's it for this lecture.
+56
+I hope you liked it and I will see you in the next lecture.
+
+
+=== Disaster Recovery & Migrations ===
+
+
+--- IAM Best Practices ---
+
+1
+So here are some general guidelines
+2
+on IAM and best practices, 'cause I don't want you
+3
+if you go to use AWS to make some mistakes.
+4
+So do not use a root account
+5
+except when you set up your AWS account.
+6
+So by now you should have two accounts, a root account
+7
+and your own personal accounts.
+8
+And remember, one AWS user is equal to one physical user.
+9
+So if a friend of yours wants to use AWS,
+10
+do not give them your credentials,
+11
+instead, create another user for them.
+12
+You can assign user to groups
+13
+and assign permission to groups to make sure
+14
+that security is managed at the group level
+15
+and should create a strong password policy.
+16
+Also, if you can use and enforce the use
+17
+of multi-factor authentication or MFA to really guarantee
+18
+that your account is going to be safe or safer from hackers.
+19
+Then you should create and use roles whenever
+20
+you're giving permissions to AWS services,
+21
+and that includes easy two instances
+22
+which are virtual servers.
+23
+If you were to use AWS programmatically or using the CLI,
+24
+so the CLI or some SDK, you must generate access keys,
+25
+and these access keys are just like passwords,
+26
+they're very secret.
+27
+So just keep them for yourself.
+28
+To edit the permissions of your account,
+29
+you can use the IAM credentials reports
+30
+or the IAM Access advisor feature.
+31
+Finally, never, ever, ever share your IAM users
+32
+and access keys, I am very serious about it.
+33
+So that's it,
+34
+we are nearing the end of this section.
+35
+You know everything about IAM.
+36
+I will see you in the next lecture.
+
+
+=== More Solution Architectures ===
+
+
+--- IAM Summary ---
+
+1
+So here is a summary for IAM.
+2
+We've seen IAM users and they should be mapped
+3
+to an actual physical user within your company.
+4
+And this user will have a password for the AWS console.
+5
+Now we can group these users into groups
+6
+and therefore users only.
+7
+We can attach policies
+8
+or share JSON documents that outline the permission
+9
+for users or groups.
+10
+And we can also create roles
+11
+and these roles will be identities, but this time
+12
+for maybe EC2 instances or other AWS services.
+13
+We assume that for security
+14
+we can enable multi-factor authentication so MFA
+15
+and also set a password policy for our users.
+16
+We can use the CLI to manage your services
+17
+using the command line
+18
+or the SDK to manage your AWS services,
+19
+using a programming language.
+20
+Finally, we can create access keys to access AWS
+21
+using the CLI or the SDK.
+22
+And finally, we can audit our IAM usage
+23
+by creating an IAM credentials report
+24
+and also using the IAM access advisor service.
+25
+So that's it for this lecture.
+26
+I hope you liked it.
+27
+And I will see you in the next lecture.
+
+
+=== Other Services ===
+
+
+--- AWS Budget Setup ---
+
+1
+So, we are going to make sure
+2
+to set up a budget and an alarm for that budget
+3
+for this course in order for us
+4
+not to spend any money or too much money.
+5
+So, therefore we need to go into the billing console.
+6
+So, you can click on the top right of your screen
+7
+and then click on Billing and Cost Management.
+8
+So, as you can see here, I get a lot of access denied.
+9
+This is because I'm logged in as an IAM user, Stephane,
+10
+from my accounts.
+11
+And I had administrative access,
+12
+but even though I have administrative access,
+13
+I cannot access my billing data.
+14
+So to fix this, you can go into your root account.
+15
+So here, I'm in my root account as you can see.
+16
+It just says the name of my account.
+17
+It doesn't say IAM user.
+18
+And then, you click on it and you go to Accounts.
+19
+So from Accounts, you're going to scroll down.
+20
+And then scrolling down, you will find the IAM user
+21
+and role access to billing information.
+22
+As you can see right now it is deactivated.
+23
+So, we need to just activate IAM access
+24
+and this will allow IAM users to access
+25
+the billing information if they are administrators.
+26
+So back into my billing console now,
+27
+and I refresh this page.
+28
+And I refresh again and it can take a bit of time.
+29
+As you can see now, I see my data.
+30
+So, except this for the forecast
+31
+because there is a data unavailable exception,
+32
+so insufficient amount of historical data.
+33
+Except for this, we can see all my cost information in here.
+34
+So, now let me show you what a billing page looks like
+35
+for an account that I'm actually using and have some costs.
+36
+So as we can see, we get some information
+37
+around the month-to-date's cost.
+38
+We get the total forecasted cost
+39
+for the current month and so on,
+40
+and last month's total cost.
+41
+So, from this we can get a few information
+42
+such as the cost breakdown by month.
+43
+So, this is when you start seeing some cost.
+44
+And then we can have a look at bills.
+45
+So if you look at bills,
+46
+say you have any cost for this tutorial.
+47
+For this course, let's go into December, 2023.
+48
+So you will find at the bottom of it, charges by service.
+49
+And so you'll see the number of active services.
+50
+Right now I have 28.
+51
+And for example,
+52
+if I look at the Elastic Compute Cloud, so EC2,
+53
+I see I have $43 of cost in EU Ireland.
+54
+And it turns out that here is the breakdown of my cost.
+55
+So, there is some Amazon Elastic Compute NatGateway,
+56
+which is costing me $35.
+57
+And there is some EBS cost,
+58
+there is some Elastic IP cost, and so on.
+59
+And so you can get a lot of information
+60
+out of just this bill.
+61
+So, in case you see any kind of cost for your accounts,
+62
+remember to go into bills,
+63
+go to the month you're interested into,
+64
+and then scroll down to get charged by service
+65
+where you're going to get a lot of information
+66
+around how every service is being used,
+67
+and how you are billed for service,
+68
+which will allow you to break down your bill very easily.
+69
+Next, you can go into free tier on the left hand side.
+70
+So, AWs does have a free tier.
+71
+And you're going to be able to see the current usage
+72
+and the forecasted usage,
+73
+as well as again, what the free tier is.
+74
+And then you will see whether or not
+75
+you're going to pass the free tier usage.
+76
+So if you do pass it as a forecast, it goes into the red,
+77
+then you are going to be billed,
+78
+so make sure you turn off anything that is turned on
+79
+and potentially costing you money.
+80
+So, this is a very, very helpful dashboard.
+81
+Okay, so now let's go ahead and set up a budget.
+82
+So, on the left hand side you click on Budgets.
+83
+And here you can create a budget that will alert you
+84
+whenever you reach your thresholds.
+85
+So, let's create a budget.
+86
+And we're going to use a template simplified.
+87
+And the first one is going to be a zero spend budget.
+88
+So as soon as we reach 1 cent, we're going to get an alert.
+89
+So this is very helpful.
+90
+So, the budget name is My Zero Spend Budget.
+91
+Here you add your email.
+92
+So, I put here stephane@example.com
+93
+and then create the budget.
+94
+So whenever I will spend 1 cent,
+95
+I will have this budget send me an email.
+96
+You can also use another template for a monthly cost budget.
+97
+And here we're saying, "Okay, we want to have
+98
+a monthly cost budget of, for example, $10."
+99
+And saying, "Hey, I want to spend
+100
+no more than $10 per month on this course."
+101
+And then, the email recipients
+102
+are going to be again, stephane@example.com.
+103
+And by the way, if you follow this course closely,
+104
+you should not spend any dollars as you,
+105
+when things can cost you money.
+106
+But if you're careful, you should not spend any money.
+107
+Regardless, it's still good to set up a budget
+108
+just to make sure in case you do mistakes
+109
+that you don't have a big bill coming to your way.
+110
+So now for this $10 budget,
+111
+I'm actually going to reach an email
+112
+when my actual spend reaches 85% and my,
+113
+when my actual spend is going to reach 100%.
+114
+And if my forecasted spend is expected to also reach 100%.
+115
+So, very helpful.
+116
+I can have three emails I can receive from this.
+117
+And I'm going to create this budget.
+118
+So as you can see,
+119
+while my zero spend budget has already been exceeded,
+120
+because while I've spent some money this month,
+121
+so I'm getting an email right away at this address.
+122
+So, with these budgets and access to the free tier
+123
+on the left hand side to explore,
+124
+as well as accessing your bills breakdown
+125
+on the left hand side,
+126
+you should be able to debug any kind of costing issue
+127
+and billing issue you have on this course.
+128
+And this is a skill that is going to be necessary
+129
+for you when using AWS.
+130
+All right, so that's it for this lecture.
+131
+I hope you liked it.
+132
+And I will see you in the next lecture.
+
+
+=== WhitePapers and Architectures - AWS Certified Solutions Architect Associate ===
+
+

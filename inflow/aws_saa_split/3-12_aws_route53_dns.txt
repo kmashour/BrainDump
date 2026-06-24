@@ -1,0 +1,4286 @@
+--- What is a DNS ? ---
+
+1
+Okay, so before we talk about Route 53
+2
+we have to talk about what is a DNS?
+3
+So, this is a basic level lecture,
+4
+but at least it will help you understand how DNS works.
+5
+And this is something you've been using
+6
+behind the scenes every day
+7
+but you don't know about it exactly.
+8
+So, let's have a look.
+9
+So, a DNS is a domain name system, and what it will do
+10
+is that it will translate human friendly hostnames
+11
+into the target server IP addresses.
+12
+For example, when you type in your web browser,
+13
+www.google.com, it will in the end
+14
+give you back an IP address and this is IP address
+15
+that your web browser will be able to access
+16
+behind the scenes and get some data back from Google.
+17
+So, the DNS is the backbone of the internet.
+18
+It is a way for you to understand
+19
+how to translate these URLs, these hostnames into IPs.
+20
+So, there is a hierarchical naming structure for DNS
+21
+and the idea is that at the root
+22
+of www.google.com for example, there is the .com,
+23
+but then there is example.com which is a bit more precise.
+24
+Then, www.example.com or api.example.com.
+25
+So, all of these are going to be the hierarchy
+26
+of your domain names.
+27
+Next, we need to define a little bit
+28
+of terminology regarding your DNS.
+29
+So, there is a domain registrar.
+30
+This is where you're going to register your domain names
+31
+and it could be Amazon Route 53, or it could be GoDaddy
+32
+or any other domain registrar you can find online.
+33
+Then you have DNS Records and they have different types
+34
+and we'll have a look at them in detail in this section.
+35
+So it could be A, AAAA, CNAME, NS, et cetera, et cetera.
+36
+Don't worry, we'll see those in detail in this section.
+37
+A zone file which contains all the DNS records.
+38
+So, this is how to match these hostnames
+39
+to IPs or addresses.
+40
+Name servers is servers
+41
+that will actually resolve the DNS queries.
+42
+And we'll have a look at them as well in this section.
+43
+Top level domains which is .com, .us, .in, .gov, .org,
+44
+et cetera, et cetera.
+45
+Second level domain which is amazon.com and google.com.
+46
+So you can see there are two words in between a dot.
+47
+And so if we take a look for example
+48
+at this FQDN, so fully qualified domain name,
+49
+we have http://api.www.example.com.
+50
+Okay?
+51
+So, the last dot the end is called the root
+52
+and it is the root of all the domain names.
+53
+Then the .com,
+54
+so .com is your TLD, so that's your top level domain.
+55
+The example.com is going to be your second level domain.
+56
+Then we have www.example.com.
+57
+That's your subdomain.
+58
+api.www.example.com is your FQDN,
+59
+your fully qualified domain name.
+60
+HTTP is going to be your protocol
+61
+and all these things together is going to be your URL.
+62
+So, now that we know a little bit of terminology,
+63
+let's have a look at how DNS works.
+64
+So we have a web server, and let's say for example
+65
+that we have an IP, it's a public IP,
+66
+could be an EC2 instance, for example.
+67
+And the public IP is 9.10.11.12
+68
+and we want to be able to access this
+69
+using the example.com domain name.
+70
+So, we're going to register this example.com domain name
+71
+on one of our servers for the DNS.
+72
+But let's see how the computer, your web browser,
+73
+can access it and can get that response.
+74
+So, your web browser is going to want to access example.com.
+75
+And to do so, it's going to ask its local DNS server.
+76
+"Hey, do you know what example.com is?"
+77
+Now, this local DNS server is usually assigned
+78
+and managed by your company or assigned
+79
+by your internet service provider dynamically.
+80
+And if the local DNS server has never seen this query before
+81
+what it's going to do is first ask the root DNS server
+82
+managed by the I-C-A-N-N, the ICANN organization
+83
+and is going to say, "Hey, do you know what's example.com?"
+84
+Which is the first server that's going to be asked.
+85
+And the Root DNS Server is going to say,
+86
+"I've never seen it, but I know .com."
+87
+So, .com is NS, so it's an NS Record Name server
+88
+and go see 1234 this public IP.
+89
+So, this is saying to local DNS,
+90
+"Hey, I don't have this answer
+91
+but I'm getting you a little bit closer to your answer
+92
+because I know the .com domain,
+93
+and the .com domain name server has this IP, 1234."
+94
+So the local DNS server saying, "Okay, good.
+95
+Now I'm going to ask the top level domain."
+96
+So the .com domain server at 1234.
+97
+"I'm going to ask for the answer of my query."
+98
+So, this is another domain managed by I-A-N-A, the IANA
+99
+and the example.com, okay, is going to be asked again
+100
+to this DNS server.
+101
+So, do you know about example.com?
+102
+And the DNS server is gonna say,
+103
+"Hey, I do know about example.com.
+104
+I don't have the answer to your query right away.
+105
+I don't know which record it is,
+106
+but there is a server called example.com that I know about
+107
+which is at 5.6.7.8, that's a public IP
+108
+that you should ask the answer to your question.
+109
+So, local DNS server is then going go to our final server
+110
+which is the second-level domain DNS server
+111
+and this is a server that is going to be managed
+112
+by your domain registrar.
+113
+So it could be, for example, Amazon Route 53 and so on.
+114
+So the DNS server is gonna say,
+115
+"Hey, do you know about example.com?"
+116
+And the DNS server will have an entry for example.com.
+117
+And so it will say,
+118
+"Hey, yes, of course I know example.com."
+119
+And it turns out that example.com,
+120
+I know that it's an A record
+121
+and that the result of it is the IP 9.10.11.12.
+122
+So, the DNS server now knows the answer
+123
+by recursively asking DNS servers
+124
+and finding the most specific one.
+125
+And then it says, "Okay, hey, yes.
+126
+I'm going to cache that answer right away
+127
+because I want to be able to,
+128
+if someone is asking me again for example.com
+129
+I want to get it right away, give them the answer."
+130
+So, it's going to send back the answer into your browser
+131
+and your web browser now has the answer
+132
+and using this IP address
+133
+then is going to be able to access your web server.
+134
+So, this is how DNS works.
+135
+So, you've been using DNS behind the scenes
+136
+all along all your life.
+137
+For example, when you access www.google.com
+138
+you're using DNS or any website.
+139
+But now we see how the DNS queries work.
+140
+So, this is just some background knowledge
+141
+because now we're going to go into Route 53
+142
+and learn how to manage a DNS server on our own.
+143
+So I hope you liked it
+144
+and I will see you in the next lecture.
+
+--- Route 53 Overview ---
+
+1
+So now that we know what is a DNS,
+2
+let's have a look at Amazon Route 53.
+3
+So this is a highly available, scalable,
+4
+and fully managed and authoritative DNS.
+5
+What does authoritative means?
+6
+That means that the customer you can update the DNS records,
+7
+so you have full control over this DNS.
+8
+So the idea is that you have your clients
+9
+and they want to access your EC2 Instance @example.com
+10
+but right now your EC2 Instance only has a public IP.
+11
+Therefore what's going to happen
+12
+is that we're going to write some DNS records
+13
+into Amazon Route 53, into a hosted zone,
+14
+and when the client is asking for example.com,
+15
+then the Route 53 service will be able to say,
+16
+"Hey, you're looking for this IP 54.22.33.44,"
+17
+and then the clients will be able to connect directly
+18
+into our EC2 Instance.
+19
+So Route 53 is also a domain registrar,
+20
+so it will be able to register our own domain names there
+21
+such as example.com, and we'll be doing this
+22
+in the hands-on to allow us to get started
+23
+with this service.
+24
+So we have the ability to check also the health
+25
+of the resources within Route 53,
+26
+we'll see this in the section.
+27
+And this is the only service in AWS
+28
+that will provide 100% availability SLA.
+29
+Finally, why is it called Route 53?
+30
+Well, 53 is a reference to the traditional DNS port
+31
+used by DNS services, hence the name.
+32
+So in Route 53 you're going to define a bunch of DNS records
+33
+and the records define how you want to route traffic
+34
+to a specific domain.
+35
+So each record is going to contain a lot of information
+36
+such as the domain or the subdomain names
+37
+such as example.com.
+38
+The record type, and we'll see what types of record
+39
+we have available to us, for example it could be A or AAAA.
+40
+Then the value, so the value of the record,
+41
+for example, 12.34.56.78
+42
+The routing policy,
+43
+which is how a Route 53 will respond to queries.
+44
+The TTL, which is the amount of time
+45
+the record is going to be cached at the DNS resolvers,
+46
+also called time to live.
+47
+And then we have a lot of different supported
+48
+DNS report types in Route 53.
+49
+So we have, the ones you must know is A, quadruple A,
+50
+CNAME, and NS, so we'll have a look at those
+51
+in the hands-on.
+52
+And the advanced records that you can set,
+53
+but we don't need to know from an exam perspective,
+54
+are all the ones I just wrote right here.
+55
+So let's learn about the important record types
+56
+we need to know from an exam perspective.
+57
+So the A record is very simple,
+58
+it's to map a host name into an IPv4 IP.
+59
+So this is when you have, for example, example.com
+60
+that will be directed into 1.2.3.4.
+61
+Okay, great.
+62
+Then we have quadruple A.
+63
+So this is the same idea as A,
+64
+but this time we're going to match our host name
+65
+into an IPv6 address.
+66
+Then we have a CNAME, which is used to map a host name
+67
+into another host name.
+68
+And then the target host name of course may be an A
+69
+or a quadruple A record.
+70
+You can not create CNAMES in Route 53
+71
+for the top nodes of a DNS namespace or the Zone Apex,
+72
+and we'll see this in a future lecture as well
+73
+to understand how that works.
+74
+For example, you can not create a CNAME for example.com,
+75
+but you can create a CNAME record for www.example.com.
+76
+So we'll see how we can deal with this in a future lecture.
+77
+And then finally, NS is for name servers of the hosted zone.
+78
+They are the DNS names or IP addresses of the servers
+79
+that can respond to the DNS queries for your hosted zone,
+80
+and this will control how traffic is routed to a domain.
+81
+So let's have a look at what are hosted zones.
+82
+So hosted zones are a container of records,
+83
+and they will define how to route traffic
+84
+to a domain and its subdomain.
+85
+So we have two types of hosted zone,
+86
+we have the public of zones and the private hosted zones.
+87
+So whenever you buy a public domain name,
+88
+for example mypublicdomain.com, this is a public domain name
+89
+and therefore we can create a public hosted zone
+90
+and these public zone can answer the query,
+91
+"Hey, what's is the IP, underlying IP of the domain name
+92
+application1.mypublicdomainname.com?"
+93
+But we also have private hosted zones.
+94
+And these are for domain names that you,
+95
+they are not publicly available, they're privates,
+96
+and only you within your own virtual private cloud or VPC
+97
+can resolve this URL.
+98
+For example, application1.company.internal.
+99
+You may have seen this if you're working
+100
+for a private company, they sometimes have URLs
+101
+that you can only access from within your corporate network,
+102
+that's because this is a private URL, this is a private
+103
+and behind the scenes there is a private DNS record.
+104
+So for any hosted zones you're going to create an AWS
+105
+you're going to pay 50 cents per month,
+106
+so this is not free to use Route 53.
+107
+And if you are to register a domain name,
+108
+just like I will in the hands-on,
+109
+this will cost you a minimum of a $12 per year.
+110
+So just so you know, this section is not free.
+111
+So public versus private hosted zones, just to understand.
+112
+So public hosted zone can be answered,
+113
+can answer queries from public clients.
+114
+So when you web browser, for example, and say,
+115
+"Hey, give me example.com," and then it returns an IP.
+116
+And on the other end we have the private hosted zone.
+117
+So this is from within your VPC they live.
+118
+And so they allow you to identify private resources
+119
+with private domain names.
+120
+So for example, we have one EC2 Instance
+121
+that we want to identify with webapp.example.internal,
+122
+we have another EC2 Instance that we want to identify
+123
+with api.example.internal, and then we have a database
+124
+we want to identify with database.example.internal.
+125
+In which case we're going to register a private hosted zone,
+126
+and then in case the first EC2 Instance
+127
+is requesting for api.example.internal,
+128
+then the private hosted zone has an answer for it,
+129
+which is the private IP 10.0.0.10.
+130
+Then the EC2 Instance will connect
+131
+to the second EC2 Instance,
+132
+which may need to connect to database.
+133
+So it will say, "Hey, what's database.example.internal?"
+134
+And the private hosted zone will say,
+135
+"Well, this is this private IP."
+136
+And then the EC2 Instance can connect directly
+137
+into the database.
+138
+So the public hosted zone and the private hosted zone
+139
+work the exact same way, but just the public hosted zone
+140
+allows anyone from the internet to query your records,
+141
+so this is for your public records,
+142
+whereas a private hosted zone is only queried
+143
+from within your private resources, for example your VPC.
+144
+So that's it for the theory,
+145
+now let's go into the next lecture to register a domain
+146
+and then create some records.
+147
+So I will see you in the next lecture.
+
+--- Route 53 - Registering a domain ---
+
+1
+Okay, so we are in Route 53
+2
+and we're going to be registering domains.
+3
+So as you can see, I have one hosted zone and one domain.
+4
+You should have none right now.
+5
+It's just because I've been using my accounts before.
+6
+But let's go and register a domain.
+7
+So on the left hand side,
+8
+click on register domains
+9
+and you have a new console experience.
+10
+If you don't have it, you can click
+11
+on somewhere to use the new console and I will use this
+12
+because this is what's going to happen moving forward.
+13
+So here we have a domain name.
+14
+This is stephanetheteacher.com.
+15
+It's something I have registered a while ago
+16
+and you will have nothing.
+17
+So what we need to do to get started
+18
+with Group 53 is to actually register our own domain.
+19
+So this is going to cost you money
+20
+and if you don't want to pay
+21
+say $12 a year to have a domain name,
+22
+just don't do this and watch this section entirely.
+23
+So I'm going to follow the step you would follow.
+24
+So register domain, and here you just enter a domain name.
+25
+So something that no one else has chosen before
+26
+whatever you want.
+27
+Okay? The idea is that you choose a domain name.
+28
+So hopefully no one has registered domain name.
+29
+Okay, perfect.
+30
+So I can buy this one for US $13 a year.
+31
+So I will select it and it's in my basket.
+32
+So I'm going to proceed to checkout.
+33
+So here is my domain name.
+34
+I can choose Duration, for example, one year
+35
+and I can autorenew or not autorenew.
+36
+So if you intend on keeping a domain,
+37
+please leave autorenew on.
+38
+If you don't want it at the end of the year,
+39
+click it so that it's off.
+40
+But of course, if you use the domain,
+41
+it's much better to keep autorenew on.
+42
+Otherwise someone will be able to buy the domain
+43
+when you lose it.
+44
+And this is not good, so up to you to keep it on or off.
+45
+But if you just intended to have it
+46
+for the course, then leave it off.
+47
+Okay, click on Next.
+48
+Then we have contact information.
+49
+So this is the information that you have part
+50
+of the account that has been pre-populated.
+51
+And so you can enter your own information if you wanted to.
+52
+And so the admin contact
+53
+and the tech contact can be the same
+54
+as the registrant contact.
+55
+And finally, you should enable privacy protection
+56
+so that you don't receive spam.
+57
+And so that the real contact information,
+58
+your own personal address, phone number, et cetera
+59
+is hidden from the internet.
+60
+You click on Next and then you have the review page.
+61
+So make sure everything is correct
+62
+and you check the terms and condition.
+63
+And if you submit, just so you know, you will pay these $13.
+64
+So please don't do this
+65
+if you don't want to pay that amount of money.
+66
+Then your domain is going to be registered
+67
+after a little bit of time.
+68
+It can take a few minutes or a few hours
+69
+but you'll be good to go.
+70
+And to confirm everything, just go on the left hand side
+71
+to hosted zones and then you click on stefanetheteacher.com
+72
+or whatever domain name you have registered.
+73
+And you will have a few records
+74
+and you should have two records.
+75
+I have four because I've been using this before.
+76
+But you should have the NS record and the SOA record.
+77
+And the NS record is simply saying
+78
+that you should use the AWS DNS
+79
+to insert DNS queries.
+80
+And this is Route 53.
+81
+So what this means that now that we have a hosted zone,
+82
+anytime we will insert DNS records such
+83
+as this one or that one
+84
+and I will teach you in the next lecture is how to do it.
+85
+Then the source of truth
+86
+for these DNS records will be Route 53 itself.
+87
+So what we're configuring in here, so that's perfect.
+88
+We're good to go.
+89
+We have a domain name
+90
+and we can get started with the hands-on.
+91
+I hope you liked it and I will see you in the next lecture.
+
+--- Route 53 - Creating our first records ---
+
+1
+So now let's go ahead
+2
+and create our first records in Route 53.
+3
+So I'm going to go into my hosted zone,
+4
+and in there I'm going to create some simple records.
+5
+So let's have a look.
+6
+We're going to create a record by clicking on here.
+7
+And in here, I can just have a record name.
+8
+So we want it to be test.stephanetheteacher.com.
+9
+But you can enter anything you want here.
+10
+This is how you would create your domain names.
+11
+Now you have to specify the record type.
+12
+So you can see there's a lot of record types in here,
+13
+but for now we'll keep it simple.
+14
+We'll keep it as an A record.
+15
+And which is to route an IPv4 address
+16
+into a domain name, to an IPv4 address.
+17
+So the answer is going to be
+18
+value is 1, 1, dot, 2, 2, dot, 3, 3, dot, four four.
+19
+Which is just a value we want to have,
+20
+and this is not a domain, an IP we own right now,
+21
+but just to show you just a random value.
+22
+Later on, we'll be routing to a real institute instance.
+23
+Okay.
+24
+TTL is time to live.
+25
+We'll leave it as 300 seconds right now.
+26
+And the routing policy will
+27
+routing policy will have a look at it later on as well.
+28
+We'll leave everything as simple routing. Okay.
+29
+So let's go ahead and create this record.
+30
+And now my record has been successfully created.
+31
+So the idea is that if I go to test.stephanetheteacher.com,
+32
+it is going to ask my host zone.
+33
+What is the value of that? And those isn't going to say,
+34
+well, the value of it is 1, 1, dot, 2, 2, dot,
+35
+3, 3, dot, 4, 4.
+36
+So if you try it to do it with a web browser,
+37
+so if you take your browser and you open it
+38
+and you press enter,
+39
+and it's not going to show you many things,
+40
+because right now we don't have 11.22.33.44,
+41
+there's probably no server that exists with that IP as well.
+42
+And if I try to just access this URL,
+43
+it doesn't work. Okay.
+44
+So what we know is what is going on behind the scenes.
+45
+And so for this, we're going to type some command lines.
+46
+Now you can be using your command line
+47
+on your windows laptop, or your Mac,
+48
+but because I want everyone to follow the same way as me,
+49
+I'm going to show you how to do it using
+50
+the CloudTrail environments in AWS.
+51
+So let me open the management console,
+52
+and then I'm going to click here to open cloud shell and
+53
+cloud shell is going to allow me to do some commands using
+54
+a standard Linux command line interface. Okay.
+55
+But this is fine,
+56
+if you want to just do it with your own terminal on windows
+57
+or on Mac.
+58
+Okay. So my terminal is not ready.
+59
+And if you're on windows,
+60
+the NS lookup command is going to work. If you're on Mac,
+61
+the dig command is going to work as well.
+62
+But as you can see, these commands are not found
+63
+on my cloud shell.
+64
+So I need you to install them.
+65
+So I do sudo yum, and then install
+66
+minus Y and then bind
+67
+minus utils.
+68
+And it's going to install both VNS lookup
+69
+and the dig commands on my cloud shell.
+70
+So lets clear the screen.
+71
+And now let's try to do NS lookup,
+72
+test.stephanietheteacher.com.
+73
+And as you can see, I get an answer,
+74
+which is at test.stephanietheteacher.com,
+75
+is going to 11.22.33.44,
+76
+which is corresponding to what is happening right here,
+77
+which is cool.
+78
+And I presented like the dig command a little bit more
+79
+because I'm more familiar with it,
+80
+but if you type dig and then the URL that you have,
+81
+okay.
+82
+And press enter,
+83
+you're going to see that and have the wrong commands.
+84
+So stefantheteacher.com,
+85
+so let's clear this screen and then retype the comments.
+86
+Okay.
+87
+Well here, we're going to see
+88
+is that we have the answer section
+89
+and says, test.stephanetheteacher.com is an a record,
+90
+and this is the value of the record. So I like it better,
+91
+better, because it shows you the TTL, as we'll see later on,
+92
+and also shows you the a record,
+93
+the fact that isn't a record. Okay.
+94
+So we have created our first route 53 record,
+95
+and we have been able to query it using a terminal,
+96
+which is cool.
+97
+Obviously loading it from a webpage doesn't work right now,
+98
+but we'll see how we can do it later on
+99
+when we have a real server.
+100
+So I hope you liked this lecture
+101
+and I will see you in the next lecture.
+
+--- Route 53 - EC2 Setup ---
+
+1
+So let's get started.
+2
+And before we use Route 53,
+3
+I want to go ahead and create three EC2 instances
+4
+in different regions, as well as one ALB.
+5
+So in one of these regions I'm going to go
+6
+into instances and then launch an instance.
+7
+And very simply, I will choose Amazon Linux2
+8
+on this architecture, a T2 micro type of instance.
+9
+I don't need a key pair, because I will use,
+10
+if I need to, I will use EC2 instance connect.
+11
+And then for network settings,
+12
+I'm going to create a security group.
+13
+I will allow SSH as well as HTTP from anywhere.
+14
+Then I will just, in advanced details,
+15
+specify a bootstrap user data script.
+16
+So, to do so, just go into your Route 53
+17
+user script and you copy this entire script.
+18
+And you paste it here.
+19
+So what's going to do is it's going to say
+20
+hello world from the instance, just as before.
+21
+But now we're going to add the AZ
+22
+the instance was launched in,
+23
+using this environment verbal called EC2,
+24
+availability, zone that I created from before.
+25
+So it's going to give us a little bit
+26
+more info about EC2 instance.
+27
+So I'm going to go ahead and launch this instance.
+28
+So this has been launched and it is right here.
+29
+Okay, that's good.
+30
+Next I'm going to go into another region.
+31
+For example, Northern Virginia, so US East one.
+32
+And then I will launch an instance.
+33
+And same settings.
+34
+So again, no key pair required.
+35
+So proceed without a key pair.
+36
+I will allow HTTP as well.
+37
+And for advanced details, I will provide
+38
+the exact same EC2 user data script.
+39
+Then we click on launch instance and we're good to go.
+40
+And finally I'm going to go into
+41
+one last region, for example Singapore.
+42
+And in Singapore I'm going to launch an instance.
+43
+And then we'll leave it as t2 micro,
+44
+we will choose no key pair.
+45
+We'll allow HTTP from anywhere.
+46
+And then, under advanced details,
+47
+I'm going to paste in the data and launch this instance.
+48
+Okay, so we have three instances
+49
+now being started in three different regions.
+50
+So we have one in Frankfurt,
+51
+one in Northern Virginia, and one in Singapore.
+52
+So this is good.
+53
+Lastly, what I'm going to do is that
+54
+I'm going to launch a load balancer
+55
+in Frankfurt, for example.
+56
+So here I'm going to create a load balancer
+57
+and choose an application load balancer.
+58
+Create.
+59
+And then the unique name will be DemoRoute53ALB.
+60
+This is fine, it's going to be internet facing, on IPv4.
+61
+I will choose for mapping, one, two, and three subnets.
+62
+And for security group I can choose up to five.
+63
+So I'm going to choose the one that I've created
+64
+just from before, which was the launch user two,
+65
+which had AWS and HTTP enabled.
+66
+This way we're sure that HTTP is enabled.
+67
+And the protocol is on 80, you're going
+68
+to forward to a new target group,
+69
+that we're going to have to create, based on instances.
+70
+And I'll call it this one demo tg route 53.
+71
+And, what I want to do is next
+72
+and register my one instance right now
+73
+that I just created from before.
+74
+So you do include as pending below.
+75
+Then on the review targets, you have one target.
+76
+And then create the target group.
+77
+So the target group is not created.
+78
+So back into model balancers.
+79
+I can refresh this and select the demo tg group route 53.
+80
+And everything looks good.
+81
+Let's create our load balancer,
+82
+and then click on view the balancer.
+83
+And here we go.
+84
+So now to summarize, let's see
+85
+if everything has been working properly.
+86
+So, we have one EC2 instance right here.
+87
+And let's take the public IP, so I'll just copy
+88
+the IP itself, make sure using the IP via http.
+89
+And it says hello world from blah, blah, blah.
+90
+So this is good, so what I'm going to do
+91
+is that I'm going to, under a text file,
+92
+just to have a mark of a trace of everything,
+93
+I'm going to put the IP address
+94
+as well as the region I'm in.
+95
+So EU central one.
+96
+As you can see, it says hello from AZ EU central one B.
+97
+Okay, so this instance is working.
+98
+I'm just testing whereas everything's working.
+99
+So I'm going to also take this public IP right here,
+100
+paste it in, and it says yes hello from US East one A.
+101
+So this is perfect, so this is US East one.
+102
+And the last instance right now it's here.
+103
+And then I'm going to copy this IPv4 address,
+104
+paste it in, and it says hello from AP Southeast one b.
+105
+So this one's working as well.
+106
+So let's go here, AP southeast one.
+107
+And finally, if I go under my ALB
+108
+and take the DNS name right here,
+109
+let's see if it has been provisioned.
+110
+So let's refresh this.
+111
+So it is provisioned as we can tell.
+112
+So this can take a bit of time.
+113
+So for you, it may not work, for me it worked.
+114
+And so because it is pointing to one EC2 instance,
+115
+it's a hello world from AZ EU Central one B.
+116
+So now we have properly set up
+117
+all our instances, as well our GNS.
+118
+So we're good to go.
+119
+And keep this information handy,
+120
+and I will see you in the next lecture.
+
+--- Route 53 - TTL ---
+
+1
+Okay, so let's have a look at TTLs.
+2
+So a record TTL is a Time To Live.
+3
+And let's take this example where a client is accessing
+4
+our DNS Route 53 and a web server.
+5
+So we do a DNS request for myapp.example.com,
+6
+and we get an answer from the DNS,
+7
+which is saying, hey, please, this is an A record.
+8
+Here is the IP, and there is a TTL,
+9
+maybe a TTL of 300 seconds.
+10
+So TTL is saying, hey clients, please cache this result
+11
+for the duration of the TTL.
+12
+So for 300 seconds,
+13
+the client is going to cache the results.
+14
+That means that if the client is requesting again
+15
+or accessing the same host name,
+16
+what's going to happen is that
+17
+the client will not issue a query to the DNS system,
+18
+because it already knows the answer,
+19
+because the answer has been cached,
+20
+and we're still within the cache period, so the cache TTL.
+21
+The idea behind this
+22
+is that we don't want to query the DNS too often,
+23
+because we don't expect records to change a lot,
+24
+and so, therefore, using the response it has,
+25
+the client can access our web server
+26
+and do HTTP request and responses.
+27
+So we have, you know, two extreme cases.
+28
+For example, if you set a high TTL of, say, 24 hours,
+29
+then this is going to do a lot less traffic on Route 53,
+30
+because less clients are doing requests,
+31
+because the result are cached for 24 hours,
+32
+and, possibly, while the client will have outdated records.
+33
+If somehow you want to change the record,
+34
+you will need to wait 24 hours
+35
+to make sure that all your clients
+36
+will have the new records in their cache.
+37
+If you said set a low TTL,
+38
+for example, 60 seconds, at the opposite,
+39
+then it's going to do a lot more traffic on your DNS,
+40
+so a lot more dollar you're going to spend,
+41
+because you get price per how many request
+42
+do reach Route 53.
+43
+But the records will be outdated for less time,
+44
+so it's quicker for you to do a record change,
+45
+and it's easier to change records overall.
+46
+So it's up to you, really,
+47
+to see what a good TTL or low TTL is.
+48
+If you plan on changing a record,
+49
+the idea is that sometimes
+50
+you will decrease the TTL for, say, 24 hours,
+51
+and then when you know that all the clients
+52
+have a new TTL that is low,
+53
+then you change the record value
+54
+which gets updated for everyone,
+55
+and then you increase the TTL.
+56
+This is a strategy.
+57
+So the TTL is mandatory for every record
+58
+except the Alias record that we'll see in the next lecture.
+59
+So let's have a look how TTL works in the console.
+60
+So let's have a look at how Time To Live works.
+61
+So let's create a new record,
+62
+and this one is going to be called
+63
+demo.stephanetheteacher.com,
+64
+and the value of it is going to be
+65
+one of the EC2 instances we know.
+66
+So let's take the one in eu-central-1.
+67
+So I'm gonna take this EC2 instance
+68
+and paste the value of it.
+69
+And then for the TTL, we're going to set two minutes.
+70
+So to do so I'm going to click twice on this minute button.
+71
+So the TTL is now 120 seconds.
+72
+So let me create this record.
+73
+And now my record has been created.
+74
+So it is an A record pointing to a specific IP
+75
+at demo.stephanetheteacher.com.
+76
+Now, I want to show you that the record is working,
+77
+but Firefox is not very nice with me.
+78
+So if I try to open this in Firefox
+79
+it's going to give me a problem.
+80
+So this is not something I can fix easily,
+81
+so I'm going to use Google Chrome on the right-hand side
+82
+to show you this.
+83
+So if I do demo.stephanetheteacher.com on Google,
+84
+then automatically it should direct me to, yes,
+85
+my eu-central-1 instance.
+86
+So that means that this record, this A record,
+87
+is fully functioning.
+88
+And I can also make sure of that,
+89
+for example, if I'm using CloudShell.
+90
+So if I clear this and do an nslookup
+91
+on demo.stephanetheteacher.com,
+92
+as you can see, the address is correct.
+93
+And if I do a dig command on this, then we get an answer.
+94
+And there's a cool number that we're showing here,
+95
+so the answer section, there's 115.
+96
+So the idea here, that's because I did do a DNS query.
+97
+Then the record get cached for 120 seconds.
+98
+And if I retype again this dig command right here,
+99
+as you can see the number got down to 98.
+100
+So that means that for 98 seconds,
+101
+actually, I will get the same response,
+102
+because, no matter what,
+103
+this is what's cached on my computer.
+104
+So if I'm very quick
+105
+and I go to this record right here and I edit it,
+106
+so instead of this IP, I want to go to ap-southeast-1,
+107
+so we'll use the first IP in my list and save this.
+108
+So even though this record was being updated, okay,
+109
+if I go into CloudShell and, again, do this dig command,
+110
+as you can see, the insert is still the same as before.
+111
+That's because for 66 more seconds
+112
+this is going to be cached.
+113
+And if I go to Chrome, I think I was fast enough,
+114
+I go to Chrome and refresh this page,
+115
+as you can see, I still have the answer from eu-central-1.
+116
+And this is because, again,
+117
+my record got cached for two minutes.
+118
+So when the cache is expiring, then only then
+119
+my command line interface or my Chrome web browser
+120
+will ask again Route 53 for the value of this record.
+121
+And then, again, will I get the answer
+122
+and will be redirected to this new IP.
+123
+So the best way to check it is just to wait.
+124
+So I'm going to wait maybe one more minute
+125
+and then get back to you.
+126
+Okay, so it's been a minute
+127
+and now if I refresh my web browser,
+128
+as you can see now, I get a different Hello World
+129
+and this time it's from ap-southeast-1b.
+130
+And if I go into my CloudShell and do the same dig command,
+131
+then, as you can see, there's a new TTL, so 120 seconds,
+132
+and there is a new IP right here
+133
+which is the IPO menu server.
+134
+So this was a cool demo of the TTL.
+135
+I hope you liked it, and I will see you in the next lecture.
+
+--- Route 53 CNAME vs Alias ---
+
+1
+So now let's have a look at the differences
+2
+between CNAME and Aliases.
+3
+So when you have an AWS Resource,
+4
+for example, a Load Balancer or CloudFront,
+5
+it will expose a hostname.
+6
+And what you want is to maybe map that hostname
+7
+to a domain you own.
+8
+For example, you want to map this Load Balancer
+9
+into myapp.mydomain.com.
+10
+So we have two options.
+11
+The first one is to use a CNAME record.
+12
+So we've seen A records,
+13
+but now let's look at CNAME records.
+14
+So CNAME allows you to point a hostname
+15
+to any other hostname.
+16
+For example, you can say app.mydomain.com
+17
+is pointing to blabla.anything.com.
+18
+And this only works if you have a non root domain name,
+19
+so if you have something.mydomain.com.
+20
+It does not work for just mydomain.com,
+21
+as we'll see in the hands-on.
+22
+On the other hand, you have alias records,
+23
+and these are specific to Route 53,
+24
+but they allow you to point a hostname
+25
+to a specific AWS Resource.
+26
+So app.mydomain.com is pointing to blabla.amazonaws.com.
+27
+And these resources we'll see in a second where they are.
+28
+But these alias records work
+29
+for both root domains and non root domains.
+30
+So you can have mydomain.com pointing
+31
+to, as an alias, to an alias resource
+32
+which is very, very good.
+33
+So this is something that the exam may test you on,
+34
+and we'll see this in the hands-on.
+35
+So on top of it, alias is very good
+36
+because they're free of charge,
+37
+and they have a native health check capability within them.
+38
+Okay, so if we look at these alias records in details,
+39
+they are only mapped to resources in AWS.
+40
+So you would say, "Okay, here is Route 53.
+41
+I want to have example.com as an alias record of type A,
+42
+and the value is the DNS name of the load balancer you have.
+43
+Now, this is an extension to DNS functionalities.
+44
+That's something that's across all DNS
+45
+that exist out there.
+46
+And in case the underlying ALB have IP changes,
+47
+then automatically the alias record will recognize them.
+48
+So it said unlike CNAME, alias records can be used for top,
+49
+for the top node of the DNS namespace called the Zone Apex,
+50
+so you can use a alias record for example.com.
+51
+Now, the alias record is always of type A or AAAA
+52
+which is for resources, so either IPv4 or IPv6.
+53
+When you have an alias record, you cannot set the TTL.
+54
+It is set automatically by Route 53.
+55
+So what are the targets for alias records?
+56
+Well, it could be Elastic Load Balancers.
+57
+It could be CloudFront Distributions.
+58
+And some of these you'll see,
+59
+you'll have seen in this course,
+60
+some of these you will not have seen in this course,
+61
+but this is fine.
+62
+It's just for you to get an idea of what they can be.
+63
+So ELBs, CloudFront Distributions, API Gateway,
+64
+Elastic Beanstalk environments, S3 Websites,
+65
+so not S3 Buckets but S3 Websites
+66
+when these buckets are enabled as websites,
+67
+VPC Interface Endpoints, Global Accelerator accelerator,
+68
+and Route 53 records in the same hosted zone.
+69
+One thing that is not there
+70
+is that you cannot set an alias for an EC2 DNS name.
+71
+This is something you need to remember.
+72
+So EC2 DNS names are not something you can have a target,
+73
+that can be the target of an alias record, okay?
+74
+Just, and also to let you to know.
+75
+So now let's have a look in the console
+76
+to see how CNAMEs and alias records work.
+77
+So let's go ahead and create a record,
+78
+and this one will be of type CNAME.
+79
+So I will call this one myapp.stephanetheteacher.com.
+80
+And the record type now is not A, it's not AAAA. It's CNAME.
+81
+And then the value must be a domain name.
+82
+And very easy, I already have a domain name available.
+83
+That's my ALB.
+84
+So what I'm going to do
+85
+is I'm going to copy those name of my ALB
+86
+and paste it in here.
+87
+The idea is that now
+88
+instead of accessing my ALB through this URL,
+89
+I want to be access the ALB
+90
+through myapp.stephanetheteacher.com.
+91
+Okay, so I will just create this record,
+92
+and now myapp.stephanetheteacher.com has been created.
+93
+And so if I go into my Chrome web browser
+94
+on the right-hand side and open this URL,
+95
+now you see that the answer is Hello World
+96
+from my IP blah, blah, blah in AZ eu-central-1c.
+97
+So this domain name is in fact covered by the ALB,
+98
+and the ALB is directing the traffic into one EC2 instance,
+99
+and so therefore I receive back this Hello World.
+100
+So this is good, but this is not AWS native, okay?
+101
+This is something that will work for many domain names,
+102
+but we can do something better.
+103
+Because we are redirecting into an ALB,
+104
+what we can do is create an alias record.
+105
+So I can create a record,
+106
+and this time it's going to be
+107
+myalias.stephanetheteacher.com,
+108
+and the record type is A
+109
+because my ALB is currently having only IPv4 traffic.
+110
+And the value of it,
+111
+so we have to say, we have to take the alias right here,
+112
+and we're going to route traffic to,
+113
+and then we have a list of options, okay?
+114
+So we can see a lot of different options,
+115
+but right now it's going to be
+116
+an Alias to an Application and Classic Load Balancer.
+117
+We need to choose a region, so it is in eu-central-1 for me.
+118
+And then we need to choose the load balancer,
+119
+so I will choose this load balancer right here.
+120
+Then automatically we can evaluate
+121
+the target health as well with a Yes
+122
+because this is an alias record.
+123
+So we'll click on Create this record,
+124
+and now I have a new record right here
+125
+called myalias.stephanetheteacher.com.
+126
+And the cool thing is that this record
+127
+is free to query, okay?
+128
+So I'm not going to pay any money
+129
+because this is an alias record.
+130
+So if I click on myalias.stephanetheteacher.com,
+131
+it's going to perform a few DNS queries,
+132
+and now, again, I get the same response.
+133
+Okay, nothing has changed, but it is working.
+134
+Okay, so that's perfect.
+135
+But now what if you consider the domain apex,
+136
+so if you want to have just stephanetheteacher.com
+137
+to redirect to this page?
+138
+So what we're going to do is create a record,
+139
+and let's go ahead.
+140
+So we're going to just have nothing in here, okay?
+141
+And we're going to have a CNAME record
+142
+pointing to the domain name of my ALB
+143
+which is copied from here and pasted in here.
+144
+Okay, so we want to say, "Hey, stephanetheteacher.com
+145
+is going to be a CNAME for this value."
+146
+Now, this is not going to work. Let's try it.
+147
+It's saying, "Hey, bad request.
+148
+The CNAME is not permitted at apex of this zone."
+149
+So this zone is stephanetheteacher.com,
+150
+and the apex of the zone is stephanetheteacher.com,
+151
+and therefore we cannot set up a CNAME at the apex.
+152
+So the only way we can deal with this issue
+153
+is instead to create an alias
+154
+and the record is going to be of type A,
+155
+and the alias is going to point again to an ALB or CLB
+156
+in the eu-central-1 region,
+157
+and the load balancer is going to be the one from before.
+158
+Now, this is going to be accepted
+159
+because this is an alias record,
+160
+and this is what the exam may test you on, okay?
+161
+And so now we can see
+162
+that stephanetheteacher.com is accessible.
+163
+And so if I go back into my web browser in here,
+164
+open a new tab and enter stephanetheteacher.com
+165
+and press Enter,
+166
+here I get back the Hello World from my load balancer,
+167
+so everything is working great, so that's it.
+168
+We've shown how CNAMEs and alias records work in AWS.
+169
+I hope you liked it, and I will see you in the next lecture.
+
+--- Routing Policy - Simple ---
+
+1
+So now let's talk about routing policies
+2
+for Route 53.
+3
+So a routing policy is helping Route 53
+4
+respond to DNS queries,
+5
+and we shouldn't be confused about the word routing.
+6
+This is not like when you have a load balancer and the
+7
+actual load balancer will route traffic
+8
+to the backend EC2 instances.
+9
+No, no, no.
+10
+This routing is from a DNS perspective.
+11
+So the DNS does not respond, does not route any traffic.
+12
+So the traffic doesn't go through the DNS.
+13
+The DNS only will respond to the DNS queries
+14
+and then the clients will know to which way
+15
+they should be doing these HTTP queries, for example.
+16
+So the DNS just helps translate host names
+17
+into actual endpoints that the clients can use.
+18
+So Route 53 will support the following routing policy.
+19
+There's simple, weighted, failover, latency based,
+20
+geolocation, multi-value answer, and geoproximity.
+21
+And we're going to have a look at all of them
+22
+in this section.
+23
+So the first one is going to be the simple routing policy.
+24
+And the idea is that with this,
+25
+that we've actually been using before,
+26
+we're going to route traffic to a single resource typically.
+27
+So here's an example.
+28
+The clients that will say, hey,
+29
+I want to go to foo.example.com,
+30
+and Routes 53 will say, hey,
+31
+go to this IP address.
+32
+And this is an A record.
+33
+So it is possible for us to specify multiple values
+34
+in the same record.
+35
+And if so, if multiple values are returned by the DNS,
+36
+then a random one will be chosen by the clients
+37
+or client side.
+38
+So in this example,
+39
+we have the client's asking again for foo.example.com,
+40
+and Amazon Route 53 will just reply with three IP addresses
+41
+that occur embedded into the A record.
+42
+And then the clients will pick one of them randomly
+43
+and apply it for the routing.
+44
+So if you have enabled an alias record alongside
+45
+the simple policy,
+46
+then you can only specify on AWS resource as a target.
+47
+And finally, it's called simple because it's very simple.
+48
+And therefore you can not associate this with health checks
+49
+and we'll see health checks later on in this section
+50
+and how they work.
+51
+So let's go in the console to see how a routing policy
+52
+of step simple can be created.
+53
+So let's create a record, and the record name is going to be
+54
+simple.stephanetheteacher.com.
+55
+It's an A record, and the value of which is going to be,
+56
+for example, my instance in ap-southeast-1.
+57
+Now for TTL, it will say something very low,
+58
+like 20 seconds.
+59
+And the routing policy is going to be here.
+60
+So as you can see, we have different possibilities,
+61
+six of them, and then one other that is
+62
+somewhere else in the UI.
+63
+So we have a TTL 20 seconds as simple writing policy,
+64
+and let's just create this record.
+65
+So we've been doing this before.
+66
+We know how this works.
+67
+So now if we go to simple.stephanetheteacher.com.
+68
+And go to this URL, we get
+69
+Hello World from my instance in ap-southeast-1b,
+70
+which is awesome.
+71
+And if we do a dig command and have a look,
+72
+so we need to reinstall dig.
+73
+So sudo yum install bind-utils.
+74
+So this is because I restarted my machine here.
+75
+Okay, we're going to redo the dig command.
+76
+So we do the dig command on this.
+77
+As we can see, we have an A record of a TTL of 20 seconds
+78
+pointing to this IP.
+79
+But we can change this record now.
+80
+We're going to edit the record.
+81
+So I will just simply click on it and edit the record.
+82
+And for the value, now, I can enter multiple IPs.
+83
+So I can insert my one in ap-southeast-1
+84
+or one in us-east-1, for example.
+85
+So when I do so and save this,
+86
+what's going to happen is that once the TTL expires
+87
+from before, we're going to get two records back.
+88
+So let's use CloudShell to verify this.
+89
+So I'm going to do a dig command.
+90
+And as you can see,
+91
+now we have in the intersection, we have two responses.
+92
+We have one in this IP and one in this IP.
+93
+So it's a client side choice.
+94
+So that means that if I go to this website and refresh,
+95
+I have one chance out of two to go into us-east-1.
+96
+And I didn't.
+97
+So I was back into ap-southeast-1b,
+98
+but let me pause for 20 seconds and I'll get back to you.
+99
+And I'm refreshing.
+100
+And I get back the Hello World from us-east-1a.
+101
+So this worked.
+102
+This absolutely shows how simple records work.
+103
+I hope you liked it, and I will see you in the next lecture.
+
+--- Routing Policy - Weighted ---
+
+1
+So now let's talk about
+2
+the weighted routing policy.
+3
+The idea is that you can have a percentage of requests
+4
+you can control to go to a specific resource
+5
+thanks to weights.
+6
+So, put it simply in the diagram,
+7
+we have Amazon route 53,
+8
+and then we have three EC2 instance
+9
+that have been assigned different weights,
+10
+so 70, 20, and 10.
+11
+In my example, these weights sum up to 100,
+12
+but you don't have to in the real life, okay?
+13
+But what this means that 70%
+14
+of the DNS responses from Amazon as on route 53
+15
+are going to be redirecting to the first EC2 instance,
+16
+then 20% to the second and 10% to the third.
+17
+So what we have to do in our weight is to assign each record
+18
+a relative weights.
+19
+And then the traffic percentage is going to be sent
+20
+to each record, as just the weight of the record
+21
+divided by the sum of all the weights of all the records
+22
+which is like a percentage of all the weights, okay?
+23
+The weights don't need to sum up to 100,
+24
+they're just indicative of how much
+25
+we want to send to this instance,
+26
+compared to all the other records in your DNS name.
+27
+So to make this work,
+28
+the DNS records must have the same name and type,
+29
+and you can associate them with health checks,
+30
+although we haven't seen with health checks are again yet,
+31
+but we'll have a look at them very, very soon.
+32
+Now the use cases for a weighted routing policy
+33
+is pretty obvious, is to do for example, load balancing,
+34
+maybe across different regions, or to test a new application
+35
+version by sending a small amount of traffic to it,
+36
+and so on.
+37
+And then if you're sending to sort of a weight of zero,
+38
+then you're going to stop sending traffic
+39
+to a specific resource, so you can shift weight over time.
+40
+And if all the resource records will have a weight of zero,
+41
+then all the records will be returned with equal weights.
+42
+So let's have a look in the console
+43
+to see how that works.
+44
+So let's create a new record,
+45
+and this one is going to be called
+46
+weighted.stephanethetaccher.com.
+47
+It's an A record, and the routing policy
+48
+is going to be weighted.
+49
+So first for the first value, let's enter the one
+50
+from the ap-southeast-1,
+51
+and the weights I'm going to assign to it
+52
+this time is going to be 10, okay?
+53
+So it's very, very small weights.
+54
+For the TTL, I'm going to set it to something really low,
+55
+three seconds to just show you the impact of weighted.
+56
+But obviously, this is not a TTL
+57
+you would use in real life.
+58
+So as we can see,
+59
+we can associate a health check with it,
+60
+but for now we won't.
+61
+And we have a record ID that we can set.
+62
+And this is to identify this specific record
+63
+within the weighted record sets.
+64
+So for this one, I got this instance from the southeast,
+65
+I'm just going to write southeast.
+66
+Okay, and then we can add another record.
+67
+And again, we're going to use the same
+68
+weighted.stephanetheteache.com, okay?
+69
+And the routing policy is going to be weighted.
+70
+And the value of which is going to be
+71
+the one from us-east-1.
+72
+So I'm going to copy this IP and paste it here.
+73
+The weight is going to be on this time 70.
+74
+So we're going to send 70% of the traffic to us-east-1,
+75
+and then the record ID is US East.
+76
+Great, and the TTL again, three seconds.
+77
+And one last record we're going to add, so again, weighted,
+78
+and then the value of which is going to be
+79
+eu-central-1, in here.
+80
+And I'm going to send it as a weighted record.
+81
+I'm going to send 20 as weights, and the record ID
+82
+is going to be EU okay.
+83
+And the TTL three seconds.
+84
+So now let's go ahead and create these records.
+85
+And as we can see, we now have three records
+86
+in this table, okay?
+87
+So this is why it's different from, for example,
+88
+a simple record has two values,
+89
+here, we have three records and each record
+90
+has one value as an answer,
+91
+but we have a weight of 10, 20 and 70.
+92
+So if I go to the URL now,
+93
+if I go to weighted.stephanetheteacher.com and press Enter,
+94
+I'm getting a first response from the us-east-1a
+95
+which makes sense because, well,
+96
+this is where 70% of the traffic is supposed to be going
+97
+okay, to this region.
+98
+But if I refresh and I need to refresh
+99
+maybe every three seconds, at some points,
+100
+I should be getting a response from another region.
+101
+And this is just based on weight,
+102
+so this is the (indistinct) behind the weighted resources.
+103
+So as you can see, this one is not changing a lot,
+104
+so let's do a dig command just to show you
+105
+the output of what it is,
+106
+so dig weighted.stephanetheteacher.com.
+107
+and here we get a TTL of three and the answer is,
+108
+I think still the one from the us-east-1,
+109
+But so let's try to issue one more,
+110
+and see if we get any luckier.
+111
+So the weight of 70 definitely is a big weight.
+112
+Okay, but here as we can see, we just got an answer,
+113
+and this one is a different IP, 3.70.14,
+114
+which is corresponding to the weight of 20.
+115
+So as we can see, weighted does exactly
+116
+what it's supposed to do, it's redirecting
+117
+most of the queries into the one that has the most weight,
+118
+but from time to time, you will get other answers, okay?
+119
+And so on.
+120
+So this is something you can practice in your web browser
+121
+as well as we can see, cool.
+122
+I just get redacted into eu-central-1c.
+123
+So that's it for this lecture,
+124
+and hopefully it shows you the power of weighted records.
+125
+I hope you liked it, and I will see you in the next lecture.
+
+--- Routing Policy - Latency ---
+
+1
+So let's talk about a routing policy
+2
+that's super easy to understand,
+3
+which is the latency-based routing policy.
+4
+Okay.
+5
+So now let's talk about latency-based routing policies.
+6
+And the idea is that you want to redirect the resource
+7
+that is going to have the lowest latency.
+8
+So the closest to us,
+9
+which is super helpful when latency is your main concern
+10
+for your websites or applications.
+11
+Now latency is going to be measured
+12
+based on how quick it is for users to connect
+13
+to the closest, identified AWS region for that record.
+14
+So for example,
+15
+if user in Germany and you have the lowest latency
+16
+to a resource in the US,
+17
+then this is where you will be redirected.
+18
+And this can be combined with health checks that we'll see
+19
+in the very next lecture.
+20
+So let's have a look at the map of the world
+21
+to understand it.
+22
+Say we deploy our applications
+23
+in two different parts of the world,
+24
+one in us-east-1 and one in ap-southeast-1.
+25
+Then the users are all around the world
+26
+and the latency is going to be evaluated by Route 53.
+27
+And so the users closest and with the lowest latency
+28
+to the ALB, us-east-1, will be redirected there.
+29
+Whereas, the other users will be redirected
+30
+to ap-southeast-1.
+31
+Now let's put this into practice in the console.
+32
+So let's create new records.
+33
+And the Record name is going to be,
+34
+latency.stephanetheteacher.com.
+35
+And the first Value is going to be the one
+36
+in ap-southeast-1.
+37
+So I'm good to paste the value in here.
+38
+And then the Routing policy is going to be Latency.
+39
+So when we do this thing,
+40
+because we just put an IP address in here,
+41
+we need to specify the region of our record.
+42
+So this one is going to be corresponding
+43
+to ap-southeast-1, which is at Singapore.
+44
+Okay.
+45
+And the reason is that Alias is not smart enough,
+46
+at least in this stage,
+47
+to take this IP and know that it comes from an EC2 instance
+48
+that I have in Singapore,
+49
+because this could be any IP in the world actually.
+50
+So it's for us to specify,
+51
+this IP corresponds to the region, Asia Pacific, Singapore.
+52
+And then we can associate a Health check and a Record ID.
+53
+So I'll call this one, ap-southeast-1.
+54
+And it's just a name that I give it.
+55
+Now we can add another record.
+56
+Again, the Record name is going to be Latency
+57
+and the value of which this one is going to be
+58
+for us-east-1.
+59
+So I'll have the Value here,
+60
+and it's going to be Weighted.
+61
+No, Latency. Excuse me, of course.
+62
+And then it's us-east-1.
+63
+And again, I will just have it as a us-east-1
+64
+for my Record ID.
+65
+And then one last record is going to be for eu-central-1.
+66
+So I will copy this IP.
+67
+And the Record name is this,
+68
+the Value is here,
+69
+the Routing policy is Latency
+70
+and the Region is eu-central-1, so will be the Name.
+71
+Okay.
+72
+So as we can see, we have three records being created,
+73
+successfully created, and this is it right here.
+74
+And so now let's try them out.
+75
+So right now I'm in Europe.
+76
+And so if I open this,
+77
+I'm expecting it to go to my instance in Europe.
+78
+So I go to this URL,
+79
+and I get a response, Hello World,
+80
+from this IP in eu-central-1c.
+81
+If I use CloudShell to try it out
+82
+and we do a dig command on this.
+83
+As we can see, we get an error code back of just one value.
+84
+Okay.
+85
+So just one value of the same IP address as this one.
+86
+So this is my instance in eu-central-1c.
+87
+And if I keep on refreshing,
+88
+because my latency hasn't changed to eu-central-1,
+89
+I'm going to get, always the same answer.
+90
+Okay.
+91
+But, so how do we test whether or not
+92
+that latency record is working?
+93
+Well, for this I can use a VPN.
+94
+And so let's go to Canada, for example.
+95
+And in Canada, it turns out that my latency
+96
+is going to be the closest to the U.S.
+97
+So if I refresh this page now,
+98
+I get the Hello World from the U.S.
+99
+and when I did change my location, thanks to the VPN,
+100
+it cleared all the TTL that I had for my DNS cache,
+101
+locally on my laptop.
+102
+And so this is why automatically by refreshing it,
+103
+I was able to get the newest value for us-east-1a.
+104
+But again, if I use dig because this hasn't changed, okay,
+105
+my CloudShell is still in Europe, okay.
+106
+If I use the dig command
+107
+and use the exact same command as here,
+108
+I'm still going to get the exact same value as before, okay,
+109
+because, this computer right here,
+110
+this CloudShell sits in eu-central-1.
+111
+And so this is still the closest location
+112
+to eu-central-1.
+113
+And how do we test the one for AP Southeast?
+114
+Let's go into Hong Kong.
+115
+Okay. So I'm close to Singapore now.
+116
+And I will refresh this.
+117
+And the answer is, Hello World, from ap-southeast-1b.
+118
+So the latencies record are working
+119
+and they're really, really good
+120
+and very common to use online.
+121
+I hope you liked it,
+122
+and I will see you in the next lecture.
+
+--- Route 53 - Health Checks ---
+
+1
+So let's talk about Health Checks
+2
+in Route 53.
+3
+So health checks are a way for you to check
+4
+the health of mainly public resources,
+5
+although there's a way for us to do it
+6
+for private resources as well, as we'll see in this lecture.
+7
+So the idea is that, for example,
+8
+we have two Load balancers in different regions
+9
+and they're public load balancers, okay?
+10
+And behind the scenes,
+11
+we have our application running in both of them.
+12
+So we're running into a multi-region setup
+13
+because we want high availability, and so on,
+14
+at the region level.
+15
+Then we're going to use Route 53 to create DNS records.
+16
+So that's when users access our URL, for example,
+17
+mydomain.com, then they get redirected to, for example,
+18
+the closest load balancer they have.
+19
+So this would be the case with a latency type of record.
+20
+But we want to make sure that, if one region is down,
+21
+then we don't send our users to that region,
+22
+obviously, right?
+23
+So to do so,
+24
+we're going to create health checks from Route 53.
+25
+So we'll create health checks on the one in us-east-1,
+26
+and we will create a health check on our instance
+27
+in eu-west-1.
+28
+Well, with these two health checks,
+29
+we're going to be able to associate them
+30
+with our Route 53 records.
+31
+And the reason we do so is to get automated DNS failover.
+32
+So we have three health checks that are possible.
+33
+The ones I just showed you, which are the health check
+34
+that monitor an endpoint, which is a public endpoint.
+35
+So it could be an application, a server,
+36
+or another AWS resource.
+37
+It could be a health check
+38
+that monitors other health checks,
+39
+also called a calculated health check,
+40
+or it could be a health check
+41
+that monitors a CloudWatch Alarm,
+42
+which gives you more control and is helpful for private
+43
+resources as we'll see in this lecture.
+44
+Finally, these health checks have their own metric
+45
+and you can view them in CloudWatch metrics as well.
+46
+So let's look at how health checks work
+47
+with a specific endpoint.
+48
+So if we have a health check for eu-west-1, for an ALB,
+49
+then the health checkers of AWS
+50
+are coming from all around the world.
+51
+So it's not just one health checker.
+52
+It's about 15 health checkers from all around the world.
+53
+And they're all going to send requests
+54
+into our public endpoint to wherever routes we set.
+55
+And then if it gets 200 OK code back or the code we defined,
+56
+then the resource is deemed healthy.
+57
+So about 15 global health checkers
+58
+will check the endpoint health,
+59
+and then you can set a threshold for healthy or unhealthy.
+60
+You can set an interval,
+61
+so we have two options.
+62
+It could be either 30 seconds for regular health checks
+63
+or every 10 seconds, which is a higher cost,
+64
+which is what's called a fast health check.
+65
+It supports many protocols, so HTTP, and HTTPS, and TCP.
+66
+And the rule is that if over 18% of the health checkers
+67
+say that the endpoint is healthy,
+68
+then Route 53 will consider it healthy,
+69
+otherwise it's deemed unhealthy.
+70
+And you have the ability to choose
+71
+which locations you want to use for the health checks.
+72
+Now the health checks will only pass if you have the status
+73
+2xx or 3xx status code back from the load balancer
+74
+and the health check has a cool capability.
+75
+So if it is a text-based response,
+76
+then the health checkers can check the first 5,120 bytes
+77
+of the response to look for some specific texts
+78
+in the response itself.
+79
+Finally, very important from a network perspective,
+80
+if you want for it to work, obviously,
+81
+the health checkers must be able to access your
+82
+Application Balancer or whatever endpoints you have.
+83
+And so therefore you must allow incoming requests
+84
+coming from the Route 53 health checkers' IP address range.
+85
+And you can find this address range at the URL
+86
+in the bottom right of the screen.
+87
+Now the second type of health checks we have
+88
+are calculated health checks.
+89
+And so this is to combine the results
+90
+of multiple health checks into a single health check.
+91
+And so if you look at Route 53,
+92
+with three EC2 instance,
+93
+we can create three health checks.
+94
+They're all going to be children health check,
+95
+and they can all monitor each EC2 instance one by one.
+96
+And then we can define a parent health check,
+97
+which is going to be defined
+98
+on all these child health checks.
+99
+And so the conditions to combine all these health checks
+100
+could be an OR, an AND, or a NOT.
+101
+You can monitor up to 256 child health checks,
+102
+and you can specify how many of the health checks
+103
+need to pass to make the parent pass.
+104
+So the use case for this,
+105
+for example, if you want to have
+106
+a parent health check to perform maintenance
+107
+on your website without causing
+108
+all the health checks to fail.
+109
+And so how do we monitor the health of a private resource?
+110
+So in case you want to monitor something private,
+111
+it's going to be difficult because
+112
+while all the Route 53 health checkers
+113
+live on the public web, they're outside of your VPC,
+114
+so they cannot access private endpoints.
+115
+So if it's a private VPC or an on-premises resource.
+116
+And so the way we can do it, though,
+117
+is to create a CloudWatch Metric
+118
+and assign a CloudWatch Alarm on it.
+119
+And then you can assign the CloudWatch Alarm
+120
+into the health checker.
+121
+So the idea is that we're going to monitor
+122
+the health of our EC2 instance in a private subnet
+123
+with a CloudWatch Metric.
+124
+And then if the metric is breached,
+125
+we're going to create a CloudWatch Alarm on it.
+126
+And when the alarm goes into the alarm state,
+127
+then the health checker is going to be
+128
+automatically unhealthy
+129
+and therefore will have created exactly what we want,
+130
+which is a health check on a private resource,
+131
+which is the most common use case on how to do it.
+132
+So that's it for this lecture.
+133
+I hope you liked it and I will see you in the next lecture.
+
+--- Route 53 - Health Checks Hands On ---
+
+1
+So let's go ahead and
+2
+create some health checks.
+3
+So on the left hand side,
+4
+I'm going to go into the health checks, and we're going to
+5
+create health checks for all our EC2 instances.
+6
+So we're going to check three health checks.
+7
+So the first one is going to be from an
+8
+instance in US east one, and is going to be an end point.
+9
+And then you'd just specify either an IP address or a
+10
+domain name.
+11
+So we'll keep it as an IP address.
+12
+And my instance in US east one is right here.
+13
+So we'll paste that in. We have to specify a port,
+14
+so we'll keep it as 80, because this is the HTTP port.
+15
+And for path,
+16
+we're just going to be keeping the path as slash because
+17
+while this is the same as the IP slash,
+18
+which is the root of our website,
+19
+if we had a real application,
+20
+sometimes it is very common to have a path slash health,
+21
+for example,
+22
+which responds with the health of the endpoint itself.
+23
+Okay, so we have this ready,
+24
+so I'll just remove the slash health.
+25
+And then we can look at some advanced configuration.
+26
+So we can have either have a standard
+27
+every thirty seconds or a
+28
+fast every ten seconds health check.
+29
+We'll keep it as standard because this is
+30
+otherwise more expensive.
+31
+How many times does it need to fail
+32
+before being considered as a failure?
+33
+Do you want to do string matching so do you want to look for
+34
+a string in the first 5,120 bytes? Yes or no?
+35
+Do we want a latency graph,
+36
+to see how latency evolves over time?
+37
+Do we want to invert the health check status.
+38
+Do we want to be healthy and vise-versa.
+39
+Or disable it.
+40
+And then do you want to customize the regions of
+41
+the health checkers?
+42
+Or do you want to use the recommended and we'll just keep it
+43
+as is with using recommended?
+44
+So every option is pretty much as default.
+45
+And do we want to be notified whenever this health check
+46
+fails? Yes or no by creating alarm?
+47
+I will just say no for now.
+48
+So we have created our first health check.
+49
+Now let's create our second health check and it's going to
+50
+be for AP Southeast one. So AP Southeast one,
+51
+and then IP address right here,
+52
+not host name. And then next and create.
+53
+And the last health check is for EU central one.
+54
+So let's create this health check and I will name it
+55
+EU central one.
+56
+And then here is the IP address and click on next and
+57
+create health check.
+58
+Okay. So our health checks are created.
+59
+And what I'm going to do is I'm going to go to one of my
+60
+instances, for example,
+61
+the one in Singapore and for the security group,
+62
+I'm going to start blocking the port 80, removing this rule.
+63
+And the idea is that I want to get a failing health check.
+64
+So I'm going to go into the security group right here.
+65
+I will do action and end it's the inbound rules,
+66
+and it will delete my HTTP based rules.
+67
+And what this will do is that's the one health check
+68
+for AP Southeast one should give me a unhealthy status.
+69
+So let me wait a little bit for the health checkers to do
+70
+their thing, and then we'll get back to you.
+71
+Okay. So as we can see, we have three health checkers,
+72
+and one of them is unhealthy,
+73
+obviously because I locked at the security group and the
+74
+other two healthy because I don't see any
+75
+security group event.
+76
+So we can have a look at the health checkers and to give you
+77
+some information around when it was last checked and so on.
+78
+And for the unhealthy one, we can view the error status.
+79
+So if we look at view last failed check,
+80
+we can see that there was a connection timeout,
+81
+and maybe the requests are being blocked by my firewall and
+82
+firewall is your security group. So that makes sense.
+83
+So at least it gives us some information and they are
+84
+working just as expected.
+85
+And one last thing and you can create is a calculated
+86
+health check.
+87
+And this one is going to be a calculated health check,
+88
+Cal-cu-lated. Here we go.
+89
+And this going to check for the status of
+90
+other health checks.
+91
+And now we can specify which health checks
+92
+we want to monitor.
+93
+And okay,
+94
+we're saying maybe you want to report healthy when one of
+95
+the three health checks are healthy or when 2,
+96
+or when all of them are healthy.
+97
+So this is an AND or one or more health checks are healthy.
+98
+So this is,
+99
+so we can definitely create as complicated rule.
+100
+So I would just keep it as this should be healthy when all
+101
+of my health checks are healthy and then
+102
+click on next, next.
+103
+And we have created a calculated health check and the last
+104
+kind of a health check we can create is to monitor the
+105
+state of a CloudWatch alarm.
+106
+In which case we need to specify the region
+107
+the alarm is going to be in,
+108
+and then this alarm could be monitoring.
+109
+Obviously the state have a private EC2 instance
+110
+for example.
+111
+And this is how we would link the health check,
+112
+the health of a private resource
+113
+into a route 53 health check. Okay.
+114
+But I can't create it right now because I don't have
+115
+an alarm available for us. Okay.
+116
+Okay.
+117
+So my calculated health check is now reported unhealthy
+118
+because well, one of the health checks,
+119
+I'm trying to monitor is unhealthy,
+120
+and this is how we define it.
+121
+So that really shows you the power of health checks.
+122
+And in the next lecture, we'll be using them of course,
+123
+alongside records in route 53.
+124
+So I hope you liked this lecture and I will see you in the
+125
+next lecture.
+
+--- Routing Policy - Failover ---
+
+1
+Okay, so now let's talk about routing policies
+2
+and this one is going to be for the failover.
+3
+So the idea is that we have route 53 in the middle
+4
+and we have EC2 instances,
+5
+one is going to be our primary EC2 instance,
+6
+and the second one is going to be a secondary,
+7
+or disaster recovery, EC2 instance.
+8
+In this case, what's going to happen is that we're going
+9
+to associate our primary record with a health check,
+10
+and this is mandatory.
+11
+And if the health check it becomes unhealthy,
+12
+then route 53 is going to automatically failover
+13
+to the second EC2 instance,
+14
+and start sending that result back instead.
+15
+And of course the secondary EC2 can also be
+16
+associated with the health check as well, if we want it to.
+17
+But there can only be one primary and one secondary.
+18
+Now the client, when it makes DNS requests,
+19
+will automatically get the resource that is deemed healthy.
+20
+So if our primary is healthy,
+21
+then route 53 will answer with a primary record.
+22
+But if the health check is unhealthy, automatically,
+23
+we will get the response of the second record,
+24
+which really helps us do (indistinct) a failover.
+25
+So that's it, let's go in the hands-on
+26
+to see how we can practice this.
+27
+Okay, so now let's leverage these health checks
+28
+and create a failover record.
+29
+So in my hosted zone, I'm going to create a record,
+30
+and this one's going to be called
+31
+failover.stephanetheteacher.com,
+32
+and it's the A record,
+33
+and the first value is going to be
+34
+for my EU-central-1 instance, so the one close to me,
+35
+and the routing policy is going to be a failover.
+36
+So the TTL will set it something really low,
+37
+like 60 seconds.
+38
+And the failover record type has two options.
+39
+It could be either primary or secondary, just these two.
+40
+So this is my primary record, and I will associate it
+41
+with a health check, I have to.
+42
+So it will associate with my health check
+43
+named EU-central-1,
+44
+and the record ID is going to be E.
+45
+So what this is saying is that this record
+46
+should be my primary one,
+47
+but this is going to be associated with a health check,
+48
+which means that you can failover to a second record.
+49
+So let's add a new record, and I will keep the record name
+50
+as failover.stephanetheteacher.com,
+51
+and the value of which is going to be my instance
+52
+in US-east-1.
+53
+Okay, we're still going to have to do a failover,
+54
+the TTL is 60 seconds,
+55
+and the failover record type is going to be secondary.
+56
+Now we can optionally associate your health check with it,
+57
+okay, of US-East-1, but you don't have to.
+58
+And the record ID is going to be US.
+59
+Now let's create this record,
+60
+and notice it was successfully created.
+61
+And so let's go back into our health checks.
+62
+And currently these two health checks
+63
+I've associated with my records are healthy.
+64
+So if I go into the URL,
+65
+so if I go to failover.stephanetheteacher.com,
+66
+right now, I get an answer from EU-central-1c,
+67
+That's perfect.
+68
+But what I'm going to do is trigger a failure.
+69
+So let's go into the EU-central-1 region,
+70
+and I'm going to find my instances, here,
+71
+and I'm going to find the security group,
+72
+and I'm going to, again, stop some security group roles.
+73
+So let's refresh this page.
+74
+It does exist, that's perfect.
+75
+And for the inbound rule, I'm going to edit it,
+76
+and it will remove the rule on port A.
+77
+So that will make my instance completely unreachable
+78
+from the health checkers.
+79
+So what I have to do now is to wait for this health check
+80
+to become unhealthy,
+81
+and then we'll be able to test the failover.
+82
+So let's refresh, and as we can see now,
+83
+my EU-central-1 health check is deemed unhealthy,
+84
+and we can look into the monitoring tab and see
+85
+really when it got a unhealthy, so this is quite cool.
+86
+So the health checker was positive,
+87
+and then it went to zero,
+88
+and then we can see how many percentage
+89
+of the health checkers did report healthy,
+90
+and again, this went one down to zero.
+91
+So what this means,
+92
+is that now that this health check is unhealthy
+93
+because of the way we set up the failover
+94
+that was linked to this health check.
+95
+Then next time I refresh this,
+96
+I should not be in Eu-central-1c,
+97
+I should be in US-east-1.
+98
+So let's refresh this (indistinct) page,
+99
+and yes, the answer is that we are in US-east-1.
+100
+And so the failover did work seamlessly behind the scenes.
+101
+And while to fix it, you just go back
+102
+into your security group, you would edit the inbound rule,
+103
+and then you would add back the HTTP rule,
+104
+and then automatically the health check
+105
+is going to pass again, and therefore we are going to
+106
+failover back to our primary location, okay.
+107
+So that's it for this lecture, I hope you liked it,
+108
+and I will see you in the next lecture.
+
+--- Routing Policy - Geolocation ---
+
+1
+So now let's talk about the Routing Policy-Geolocation,
+2
+which is very different from Latency-based.
+3
+So, this is based on where the user is actually located.
+4
+So, for example, you can say,
+5
+if a user comes from a specific continent,
+6
+or a country, or even more precise, on the U.S. states,
+7
+and, the most precise location is going to be selected
+8
+at first, then routed to this IP.
+9
+So, you should create a default record,
+10
+in case there's going to be no match on location,
+11
+and the use case for this is going to be
+12
+for website localization,
+13
+to restrict content distribution,
+14
+do load balancing, and so on.
+15
+And these type of records can be associated
+16
+with health checks.
+17
+So the idea is that, if we have a map of Europe,
+18
+with multiple countries, we can define a geolocation record
+19
+for Germany, to see the German users should go to this IP,
+20
+which contains my German version of my app.
+21
+And if I go to France, then go to this IP,
+22
+which contains a French version of my app.
+23
+But for anywhere else, go to the default IP here,
+24
+which contains maybe the English version of my app.
+25
+So, this is how you would use a geolocation.
+26
+Now, let's go practice in the console.
+27
+Okay, so, let's go ahead, and create our first geo record.
+28
+So, I'm going to create a record, and I'm gonna make geo,
+29
+and, the record type would be A, the value of it is,
+30
+let's link it first to the ap-southeast-1.
+31
+And, what we're going to do here is going to say,
+32
+the routing policy is going to be geolocation.
+33
+And we're saying, okay, all of Asia,
+34
+so, any user located in Asia,
+35
+should go to my ap-southeast-1 EC2 instance.
+36
+We could associate a health check with it if we wanted to,
+37
+we need to give a record ID, so, here we go.
+38
+Now, let's add another two records.
+39
+So what I'm going to do is that, I'm going to say that's,
+40
+for
+41
+us-east-1.
+42
+I want to send any user from,
+43
+and, we can say geolocation yet again.
+44
+And let's say, for example, just a country,
+45
+so we can say, United States.
+46
+And, we could say lastly, so this is record ID, U.S.,
+47
+and so, as you can see here, I specified a country,
+48
+and here's specified a whole continent, it doesn't matter.
+49
+And then lastly, we'll add one more record,
+50
+here's the record name,
+51
+and the value of which, is going to be eu-central-1.
+52
+And, this one is going to be my defaults,
+53
+so, I'm going to say, geolocation,
+54
+and the location is default,
+55
+that means that anything that doesn't match Asia
+56
+or United States, is going to go to my default location,
+57
+and this one is going to be called, Default EU.
+58
+Now, it's create these records,
+59
+and they've been successfully created.
+60
+So, what I can do now is that I can test it, right?
+61
+So, currently, I am not in the U.S., and I'm not in Asia.
+62
+So, if I open this URL, I will get the eu-central-1 region,
+63
+so, this is good, that means that
+64
+this is the default record,
+65
+that is pure, that is working properly.
+66
+So now, let's change geographic location, and to do so,
+67
+I'm going to use my VPN, and now let's go to an,
+68
+a country in Asia, so let's go to India.
+69
+So, I'm now connected into India.
+70
+And, when I refresh this page now,
+71
+what I expect is to get a Hello World,
+72
+from my ap-southeast-1 instance.
+73
+Oh, as you can see, there's a, a long load,
+74
+so, I know what's happening, so, this is a timeout,
+75
+and so, whenever you see a timeout in AWS,
+76
+usually you have to think about security groups.
+77
+So, if I go to my security group,
+78
+yes, I'm in the right region, so in the Singapore region,
+79
+and look at the Inbound rules, and edit them.
+80
+If you remember, I had removed that the HTTP rule
+81
+to make the health check fail,
+82
+so, we need to add back that HTTP rule,
+83
+so, let's add it back, and it's a good edit on your screen.
+84
+So, the HTTP rule has been added back,
+85
+and so now, if I go back into this page,
+86
+as we can see, now, we get the Hello World from
+87
+ap-southeast-1b, so, the Asia thing is working.
+88
+Now, if I go to a country in the U.S.,
+89
+if I go to the United States, overall,
+90
+and, I'm in the U.S.,
+91
+and refresh, I'm going to get Hello World from us-east-1a,
+92
+so, this is perfect.
+93
+And, if I go to something right next to the U.S.,
+94
+but not in the U.S., for example, if I go to Mexico.
+95
+And refresh, as you can see, I get my eu-central-1c,
+96
+because this is my default record,
+97
+and, the Mexico was not specified as a rule
+98
+in the geolocation Route 53 record.
+99
+Okay, so this is it, this is working perfectly.
+100
+I hope you like this lecture,
+101
+and I will see you in the next lecture.
+
+--- Routing Policy - Geoproximity ---
+
+1
+So now, let's talk about another feature
+2
+which is called Geoproximity Routing.
+3
+And it can be a little bit confusing
+4
+but I will try to explain with diagrams
+5
+in the very next slide to make it clear.
+6
+So this allows you to route traffic to your resources based
+7
+on the geographic location of your users and resources.
+8
+So the idea is that with this policy,
+9
+you're able using a number called the bias
+10
+to shift more traffic to resources
+11
+based on specific locations.
+12
+And it will show you this in a diagram
+13
+in the very next slide.
+14
+So the idea is that to change the size
+15
+of a geographic location, you need to specify a bias value.
+16
+If you want more traffic to go to a specific resource,
+17
+you expand the bias value by increasing it.
+18
+And if you want less traffic to go to your resource,
+19
+you shrink it, you decrease the bias values
+20
+to a negative number.
+21
+So the resources can be resources from AWS,
+22
+in which case you specify the region they're in
+23
+and automatically a list will compute the correct routing.
+24
+Or if there are none, AWS resources exercise
+25
+such as your on premises data center.
+26
+Then, you will just need to specify the latitude
+27
+and longitude, so the AWS knows where they are right now.
+28
+And then it chooses feature,
+29
+you need to use the advanced Route 53 Traffic
+30
+flow to be able to leverage the bias.
+31
+So the diagram should make everything more simple.
+32
+And to me, this is what you should remember.
+33
+So let's take an example of a resource in us-west-1,
+34
+and one resource in us-east-1.
+35
+And the bias is set to zero in both regions.
+36
+So that means that if you have users all around the US
+37
+trying to access these resources,
+38
+there's going to be a line dividing the US is too into two,
+39
+and users left of that line will go to us-west-1,
+40
+and user rights of that line will go to us-east-1.
+41
+Now, this is simple, this is when there is no bias, okay?
+42
+And this looks like going to the closest resource region
+43
+based on the user location.
+44
+But thanks to the bias, we can have the same setup
+45
+but a different way to have the users routed
+46
+to different regions.
+47
+So let's take an example.
+48
+We have us-west-1 and us-east-1,
+49
+and the bias is set to zero in us-west-1,
+50
+but we're going to have a positive bias of 50 in us-east-1.
+51
+And we've seen that the bias make more users
+52
+and more traffic to that resource.
+53
+Why?
+54
+Well, because of the bias now the quote in quote,
+55
+dividing line between the first.
+56
+The two resources is going to be a little bit more
+57
+to the left because of the higher bias of us-east-1.
+58
+And so that means is that's the user left
+59
+of that line can go to us-west-1,
+60
+but the users right or that one will go to us-east-1.
+61
+So what we do this?
+62
+Well, for example, you would set your resources
+63
+all around the world and say you needed to shift
+64
+more traffic to a specific region.
+65
+What you would do is that you will use
+66
+a Geoproximity Routing Policy to increase the bias
+67
+in that specific region.
+68
+And therefore, have more users dragged
+69
+and more users have traffic attracted to that region.
+70
+So what you to remember going into an exam is
+71
+that the Geoproximity Routing is really helpful
+72
+when you need to shift traffic
+73
+from one region to another, by increasing the bias.
+74
+Okay?
+75
+So hopefully the diagrams helped you make more sense
+76
+of the Geoproximity Routing Policy.
+77
+I hope you liked this lecture,
+78
+and I will see you in the next lecture.
+
+--- Routing Policy - IP-based ---
+
+1
+So now let's talk
+2
+about another routing policy
+3
+called the IP-based Routing
+4
+which is very intuitive to think about
+5
+because you're going to define the routing based
+6
+on the client IP addresses.
+7
+In Route 53, you're going to define a list of CIDRs,
+8
+they are IP ranges for your clients,
+9
+and you're going to say, based on the CIDR
+10
+which location the traffic should be sent to.
+11
+So the use cases will be to optimize performance
+12
+because you know the IP ahead of time
+13
+or to reduce network costs
+14
+because you know where the IPs are coming from.
+15
+So an example is that if you know
+16
+that you have a specific internet provider
+17
+and they are using a specific CIDR of IP addresses
+18
+you can route them
+19
+to a specific endpoint thanks to this strategy.
+20
+So let's go for an example.
+21
+In Route 53, I'm going to define two locations
+22
+with two different CIDR blocks.
+23
+As you can see, one start with 203
+24
+and the other one start with 200 and the defined IP ranges.
+25
+Now we are going to link these locations
+26
+to a specific record.
+27
+So for example.com we're going to have location one.
+28
+So the first CIDR block to send
+29
+to the value 1.2.3.4,
+30
+and the second location, the CIDR block number two,
+31
+to send it to 5.6.7.8.
+32
+And these represents the public IP of two EC2 instances.
+33
+Now, as you would expect, if a user comes in
+34
+with a specific IP that is part
+35
+of the location one CIDR block, they will be directed
+36
+to the first EC2 instance of IP 1.2.3.4,
+37
+and the user B, with a second IP address
+38
+that belongs to the location two,
+39
+will be redirected and will have a DNS query response
+40
+to the EC2 instance of IP 5.6.7.8.
+41
+And that's it for IP based routing.
+42
+It's very simple and I hope you liked it.
+43
+I will see you in the next lecture.
+
+--- Routing Policy - Multi Value ---
+
+1
+Let's talk about the last routing policy,
+2
+which is Multi-Value,
+3
+which is going to be used when you want to route traffic
+4
+to multiple resources.
+5
+And Route 53 will therefore
+6
+return multiple values or resources.
+7
+Now, you can associate them with Health Checks,
+8
+and so therefore the only resources returned
+9
+via the Multi-Value policy are going to be the ones
+10
+that are associated with a healthy Health Check.
+11
+So up to eight healthy records are going to be returned
+12
+for each Multi-Value query.
+13
+And although it looks like an ELB,
+14
+it's not a substitute for having an ELB.
+15
+The idea is that it's the client-side load balancing.
+16
+So let's look at an example.
+17
+We are going to set up multiple A Records
+18
+for our example.com,
+19
+and we associate them with Health Checks.
+20
+So when a Multi-Value query is done by our clients,
+21
+it's going to receive up to eight records back,
+22
+and then the clients will choose one of them.
+23
+But at least by combining this with Health Checks,
+24
+we know that one of the eight records being returned,
+25
+or up to eight, are going to be healthy.
+26
+And therefore the client
+27
+can have very safe queries into them.
+28
+This is going to be different, for example,
+29
+when you have a simple routing with multiple values in it,
+30
+because as you know, the simple routing policy
+31
+does not allow for Health Checks,
+32
+and therefore it's possible
+33
+that one of the resources returned in the query
+34
+of a simple routing policy will be unhealthy.
+35
+This is why Multi-Value are a little bit more powerful
+36
+as types of records.
+37
+So let's have a look in the UI at how we can test them.
+38
+So let's practice the Multi-Value record.
+39
+So let's go and create a multi-record,
+40
+so a multi dot blah blah blah.
+41
+And then the value of it
+42
+is going to be linked to us-east-1.
+43
+So I will add this value here,
+44
+and then the Routing policy is going to be Multivalue.
+45
+The Health check is going to be us-east-1.
+46
+And the Record is going to be US.
+47
+And TTL is going to be 60 seconds.
+48
+Let's add another Record.
+49
+So, multi, and again,
+50
+we're going to route to a different region,
+51
+so this one is ap-southeast-1.
+52
+So the answer is Multivalue answer.
+53
+The Health check is ap-southeast-1.
+54
+And the Record ID is going to be Asia.
+55
+And then the record TTL is one minute.
+56
+And then finally, the last one,
+57
+so again, one more Record name.
+58
+The Value is going to be linked to eu-central-1 right here.
+59
+The TTL is one minute.
+60
+And the Routing policy is Multivalue answer.
+61
+And for the Health checks,
+62
+we're going to use the one from eu-central-1.
+63
+And the Record ID is EU.
+64
+Okay, so let's create these records.
+65
+And the records are successfully created.
+66
+Now let's test it out.
+67
+So for this, we're going to use our CloudShell in here.
+68
+So let's reconnect to CloudShell.
+69
+And what I want to do is to test this record.
+70
+So I will copy the record in here,
+71
+and then I will clear my screen.
+72
+And so if I test a dig on this,
+73
+then I get three answers.
+74
+So the three IPs are returned,
+75
+and the reason is, well,
+76
+the three health checks are fully working.
+77
+So as you can see, they're all healthy.
+78
+But if I take one of them, for example,
+79
+I remove the eu-central-1,
+80
+so I'm gonna make this one unhealthy,
+81
+and I'm just going to trick it
+82
+by editing and do an Invert health status.
+83
+So this is going to make the healthy unhealthy,
+84
+and vice versa.
+85
+It's just a quick way for me
+86
+to create an unhealthy health check.
+87
+So let me pause right now.
+88
+Okay, so now my eu-central-1 health check is Unhealthy.
+89
+And so if I reissue a dig command right here,
+90
+I should expect to see only two values, yes, as a result.
+91
+So the Multivalue answer has worked,
+92
+and it worked really well.
+93
+So just to revert this, edit this health check,
+94
+and let's untick this Invert health check status,
+95
+and we're good to go.
+96
+Okay, so that's it for this lecture.
+97
+I hope you liked it.
+98
+And I will see you in the next lecture.
+
+--- 3rd Party Domains & Route 53 ---
+
+1
+So we need to make the distinction
+2
+between a domain registrar and a DNS service.
+3
+So actually you can buy your domain name
+4
+with any kind of domain registrar you want,
+5
+and you're going to pay annual charges.
+6
+So the way we did it so far in this course
+7
+was to use the Amazon Registrar,
+8
+through the Route 53 console,
+9
+but it's possible for you to use any domain name registrar.
+10
+So for example, you can use GoDaddy,
+11
+you can just Google Domains, and so on.
+12
+And usually whenever you register a domain
+13
+with a domain registrar,
+14
+they will provide you as well with a DNS service
+15
+to manage your DNS records.
+16
+So when we created a,
+17
+when registered a DNS name with a host name with Amazon,
+18
+we had a Route 53 hosted zone to manage our DNS records.
+19
+But it's possible for you to choose not to use, for example,
+20
+AWS Route 53 as your DNS records,
+21
+when you have registered your domain with Amazon Registrar.
+22
+Or vice versa, you can, for example,
+23
+register your domain with GoDaddy.
+24
+So you're going to purchase example.com,
+25
+yet you're going to use Amazon Route 53
+26
+to manage your DNS records.
+27
+It's a perfectly acceptable combination.
+28
+So how do we do this?
+29
+Well, on GoDaddy you're going to register your domain,
+30
+and then you're going to have the name servers option,
+31
+and you can specify custom name servers.
+32
+So what do we put in there?
+33
+Well, first we're going to go to Amazon Route 53,
+34
+and we're going to create a public hosted zone,
+35
+for any domain we want.
+36
+And then in the hosted zone details,
+37
+we're going to find name servers on the right-hand side.
+38
+So these four name servers are the ones
+39
+we're are going to have to change on the GoDaddy websites.
+40
+So that's when GoDaddy answers a query,
+41
+"Hey, which name server should I use?"
+42
+the name servers are going to be pointing to
+43
+Amazon Route 53 name servers,
+44
+and therefore we can use Amazon Route 53
+45
+to manage all the EDNS records
+46
+that are cleaved from that console.
+47
+So to summarize,
+48
+if you buy your domain on a third-party registrar,
+49
+you can still use Route 53 as your DNS service provider.
+50
+For this, you will create a public hosted zone in Route 53,
+51
+and then you will update the NS, or name server's records,
+52
+on the third-party website, where you bought your domain.
+53
+And then you're going to point them
+54
+to the Routes 53 name servers.
+55
+So, just so you know, a domain registrar looks like,
+56
+but is different from a DNS service,
+57
+even though every domain registrar
+58
+usually comes with some DNS features.
+59
+So that's it for this lecture.
+60
+I hope you liked it.
+61
+And I will see you in the next lecture.
+
+--- Route 53 Resolvers & Hybrid DNS ---
+
+1
+Okay, so let's have a little talk
+2
+about the Route 53 Resolver.
+3
+So the idea is that by default,
+4
+when you have a Route 53 Resolver,
+5
+which is the basic thing you create in Route 53
+6
+when you start using it,
+7
+it will answer DNS queries
+8
+for the local domain names for your EC2 instances
+9
+for the records in your private hosted zones,
+10
+as well as for the records in your public name server.
+11
+So everything you create under Route 53
+12
+is going to be answered within your account.
+13
+But you may want to have a situation
+14
+where you want a hybrid DNS.
+15
+That means that you want this resolver to resolve
+16
+as well the DNS of your own network and vice versa.
+17
+So you want to establish connectivity
+18
+between your AWS Cloud DNS
+19
+and the DNS of your on-premises network.
+20
+And so how do we do this?
+21
+For this, we're going to use what's called
+22
+a Resolver endpoint.
+23
+So this is just a simplified version,
+24
+but the idea is that we're going
+25
+to create an inbound endpoint
+26
+that will allow the DNS resolvers of on-premises resources
+27
+to resolve domain names of AWS resources.
+28
+So how does that work?
+29
+Say we have established
+30
+our own Route 53 Resolver in our cloud
+31
+and we have an EC2 instance, a private hosted zone,
+32
+and we have our on-premises data center.
+33
+A server on it is going to be, first of all,
+34
+we need to establish of course,
+35
+connectivity between our data center and AWS
+36
+using a VPN or a direct connect connection.
+37
+And then this server is going to do a DNS query,
+38
+for example, to look for a domain name
+39
+that belongs to our private hosted zone,
+40
+is going to be passed to the closest DNS resolver,
+41
+so the on-premises resolver,
+42
+and these resolver are going to be set up to talk
+43
+to a resolver inbound endpoint,
+44
+and to pass on this DNS query into our AWS Cloud.
+45
+And this resolver knows how to talk
+46
+to the Route 53 Resolver.
+47
+So this is how you have the full chain
+48
+of lookups from your on-premises data center
+49
+to your cloud using an inbound endpoint.
+50
+And of course you can do it the other way
+51
+with an outbound endpoint in which your Route 53 Resolver
+52
+will forward DNS queries to your resolver on-premises.
+53
+So again, if we have a look,
+54
+we have the two infrastructures that are connected,
+55
+and then we're going to have a resolver outbound endpoint.
+56
+And this time whenever you EC2 instance queries
+57
+for a DNS query that is resolved on-premises,
+58
+for example, web.onpremise.private,
+59
+is going to be passed through the resolver outbound endpoint
+60
+to the DNS resolvers of the on-premises data center,
+61
+and we'll be good to go.
+62
+So that's it.
+63
+The idea behind this, I think, a bit complicated lecture
+64
+is that if you want to connect
+65
+your on-premises data center and AWS
+66
+and make sure the DNS queries are resolved both ways,
+67
+you must use the resolver inbound and outbound endpoint.
+68
+And that's about it. All you should know.
+69
+All right, that's it for this lecture.
+70
+I hope you liked it, and I will see you in the next lecture.
+
+--- Route 53 - Section Cleanup ---
+
+1
+Okay, so let's clean up
+2
+what we've done in the Route 53
+3
+if you wanted to avoid some costs.
+4
+So the domain name you've bought,
+5
+of course stays in your accounts,
+6
+and it will cost you $12 a year
+7
+if you wanted to renew it
+8
+or more if you've bought a more pricey domain name
+9
+And the domain name itself, so the hosted zone,
+10
+if you're not using it,
+11
+you can delete this hosted zone
+12
+by first emptying all the records.
+13
+Otherwise it will cost you 50 cents per month
+14
+to keep this hosting zone alive, okay.
+15
+Within it, it doesn't matter if you have many records,
+16
+you can just leave them as is.
+17
+This is fine.
+18
+The other thing we have to delete is all our EC2 instances
+19
+in our different regions, as well as our ALB.
+20
+So we had EC2 instances in three different regions.
+21
+So what I'm going to do is just delete them one by one.
+22
+So there was one from me in Frankfurt,
+23
+and I believe that the load balancer I had created
+24
+is also here.
+25
+So let me delete this load balancer as well.
+26
+And we can also delete the associated target group
+27
+with that load balancer, okay.
+28
+This is good.
+29
+And we have to perform the same kind of cleanup
+30
+in other regions.
+31
+So for me was us-east-1 where I'm going to go ahead
+32
+and delete another, terminate another EC2 instance,
+33
+and finally do the exact same thing in ap-southeast-1.
+34
+Okay.
+35
+After this, you should not incur any costs
+36
+out of this lectures.
+37
+Okay, so I really hope you liked this section
+38
+and I will see you
+39
+in the next lecture.
+

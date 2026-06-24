@@ -1,0 +1,3886 @@
+--- AWS Monitoring - Section Introduction ---
+
+0
+OK so we have our application it's in the cloud.
+1
+It's running.
+2
+And your manager calls you at 2:00 a.m. and say it's not running anymore.
+3
+What happened?
+4
+Well we've deployed her application but we forgot to turn on monitoring.
+5
+Monitoring is so important and it will make sure that your applications are running the right way.
+6
+Such as you can see what's happening with the logs with the metrics with tracing and audits who made what's
+7
+in your AWS infrastructure.
+8
+This section is so important because as a developer.
+9
+I never deployed an application in AWS without enabling some kind of monitoring.
+10
+I know you're excited to learn about monitoring!
+11
+Let's go.
+
+--- CloudWatch Metrics ---
+
+1
+So now, let's talk about Amazon CloudWatch.
+2
+And the first service I wanna talk about
+3
+within CloudWatch is CloudWatch Metrics.
+4
+So CloudWatch provides metrics
+5
+for every service out there in AWS,
+6
+and so, therefore, you can monitor everything
+7
+that's happening in your accounts.
+8
+And a metric is just a variable you wanna monitor.
+9
+For example, for an EC2 instance,
+10
+it could be the CPUUtilization, the NetworkIn, and so on.
+11
+For Amazon S3, it could be your bucket size and so on.
+12
+So metrics belong to namespaces, and, therefore,
+13
+they are bucketed in two different namespaces.
+14
+You have one namespace per service, basically.
+15
+So you have dimensions,
+16
+and they are attributes of a metric.
+17
+For example, a metric about CPUUtilization
+18
+can be related to a specific instance id,
+19
+or a specific environment, and so on.
+20
+And you have up to 30 dimensions per metric.
+21
+So the metrics are time-based,
+22
+so, therefore, they must have a timestamp.
+23
+And then once you have a lot of metrics,
+24
+you can create a CloudWatch dashboard of metrics
+25
+so that you can see them all at once in a specific manner.
+26
+Also, you can create CloudWatch Custom Metrics.
+27
+So instead of relying on the metrics
+28
+that are provided by every services in AWS,
+29
+you can create your own custom metric.
+30
+For example, to extract the memory usage
+31
+out of an EC2 instance.
+32
+That is a classic use case
+33
+of using a CloudWatch Custom Metric.
+34
+The other thing you can do with your CloudWatch Metrics
+35
+is to stream them outside of CloudWatch.
+36
+So the idea is that you want to continuously stream
+37
+CloudWatch Metrics to a destination of your choice.
+38
+You're gonna get near real-time delivery and low latency.
+39
+And that destination is Amazon Kinesis Data Firehose,
+40
+and from there, you can send it to anywhere you want.
+41
+Or you can also send your CloudWatch Metrics
+42
+directly into a third-party service provider,
+43
+such as Datadog, Dynatrace, New Relic,
+44
+Splunk, Sumo Logic, and so on.
+45
+So how does that work?
+46
+Well, your CloudWatch Metrics are going to be streamed
+47
+near real-time into Kinesis Data Firehose,
+48
+and you obviously have to set that up for it to work.
+49
+And from Kinesis Data Firehose you can, for example,
+50
+send them into an Amazon S3 bucket from which you can use
+51
+Amazon Athena to analyze your data in Amazon S3,
+52
+or you can use Amazon Redshift
+53
+to have a data warehousing for your metrics,
+54
+or Amazon OpenSearch to build dashboards
+55
+from Amazon OpenSearch, or do analytics there.
+56
+And you can have the choice to stream
+57
+all your metrics for all your namespaces
+58
+or to only filter a few namespaces in
+59
+so that you only have a subset of your metrics
+60
+filtered and sent to Kinesis Data Firehose.
+61
+Now let's go have a look in the console.
+62
+So when you are in the CloudWatch dashboard
+63
+on the left-hand side, there is Metrics,
+64
+and you can find all the metrics.
+65
+Now, as you can see, we see all the namespaces
+66
+in here for our metrics.
+67
+If you have a look, we have, based on services, for example,
+68
+ELB, Auto Scaling, EBS, EC2, EFS, and so on.
+69
+So a lot of information given to you here.
+70
+So we can click on EC2,
+71
+and we can have a per instance metric
+72
+just to see one metric.
+73
+And I'm going to type credit
+74
+to see the CPUCreditBalance, for example.
+75
+I will take this instance,
+76
+which was created a long time ago,
+77
+and then what I'm going to do
+78
+is I'm going to choose a custom range,
+79
+which is going to be one month, to find some data in here.
+80
+Okay, so we have the data here.
+81
+And so, the cool thing with CloudWatch Metrics
+82
+is that you can just click
+83
+and select the time span you want.
+84
+And here we go, we're getting some information
+85
+around our metrics.
+86
+So, as you can see, we get metrics every five minutes here.
+87
+So every data point is every five minutes
+88
+because detailed monitoring was not enabled
+89
+for this instance, okay,
+90
+but if I did enable detail monitoring,
+91
+I would get data every one minute.
+92
+So this is just the basics of CloudWatch Metrics.
+93
+Nothing too, too fancy,
+94
+but we can definitely filter by time.
+95
+We can view it as a different line,
+96
+so Stacked area, or Line, or Number, or Pie chart.
+97
+You can add it to a dashboard.
+98
+You can download it to a .csv. You can share it, okay.
+99
+So CloudWatch Metric is very very handy,
+100
+and you can have a look at all the metrics, you know,
+101
+based on the region you want,
+102
+based on the dimension you want, the resource id you want,
+103
+so you can filter everything.
+104
+So that's it for CloudWatch Metrics.
+105
+I hope you liked it,
+106
+and I will see you in the next lecture.
+
+--- CloudWatch Logs ---
+
+1
+So, now let's talk about CloudWatch Logs.
+2
+So CloudWatch Logs is the perfect place
+3
+to store your application logs in AWS.
+4
+And to do so, you must first define log groups.
+5
+They're whatever names you want,
+6
+but usually they are representing one of your applications.
+7
+Then within a log group, you will have multiple log streams,
+8
+and they represent log instances within an application
+9
+or specific log files or specific containers that you have
+10
+as part of a cluster.
+11
+Then you define your log expiration policy.
+12
+So you can have the logs re being retained indefinitely
+13
+to never expire, or you can choose to expire them
+14
+from anywhere between one day to 10 years.
+15
+It's also possible to send your CloudWatch Logs
+16
+into various destinations.
+17
+For example, to export them in batch into Amazon S3
+18
+or to stream them into Kinesis Data Streams,
+19
+Kinesis Data Firehose, AWS Lambda, Amazon OpenSearch.
+20
+All the logs are encrypted by default,
+21
+and you can set up your own KMS-based encryption
+22
+with your own keys if you wanted to.
+23
+So, now what kind of logs data goes into CloudWatch Logs?
+24
+Now, what types of logs can go into CloudWatch Logs?
+25
+Well, we can send the logs using the SDK
+26
+or the CloudWatch Logs Agent
+27
+or the CloudWatch Unified Agent.
+28
+Now, the CloudWatch Unified Agents send logs to CloudWatch
+29
+and so the CloudWatch Log Agent is now sort of deprecated.
+30
+You have Elastic Beanstalk, which is used to collect logs
+31
+from the application directly into CloudWatch.
+32
+ECS will send the logs directly from the containers
+33
+into CloudWatch.
+34
+Lambda will send logs from the functions themselves.
+35
+VPC Flow Logs will send logs specific
+36
+to your VPC metadata network traffic.
+37
+API Gateway will send all the requests made
+38
+to the API Gateway into CloudWatch Logs.
+39
+CloudTrail, you can send the logs directly
+40
+based on the filter.
+41
+And Route53 will log all the DNS queries made
+42
+to its service.
+43
+So, what if you wanted to query the logs in CloudWatch Logs?
+44
+For this, you can use CloudWatch Logs Insights.
+45
+So, it's a querying capability within CloudWatch Logs
+46
+which allows you to write your query.
+47
+You specify the timeframe you want to apply your query to
+48
+and then automatically you're going to get a result
+49
+as a visualization.
+50
+And also, you can view the specific log lines
+51
+that's made this visualization.
+52
+This visualization can also be exported either
+53
+as a result or added to a dashboard
+54
+for being able to rerun it whenever you want.
+55
+So this is very handy,
+56
+and this will allow you to search and analyze log data
+57
+within CloudWatch Logs.
+58
+So there are lots of simple queries provided
+59
+as part of the console for CloudWatch Logs Insights.
+60
+For example, you can find the most 25 most recent events,
+61
+or you can have a look
+62
+at how many events had exceptions or errors in your logs,
+63
+or you can look for a specific IP and so on.
+64
+So, it provides a purpose-built query language.
+65
+All the fields to allow you to build your queries
+66
+are automatically detected from CloudWatch Logs,
+67
+and then you can filter based on conditions.
+68
+You can calculate aggregate statistics,
+69
+you can sort events, limit the number of events, and so on.
+70
+So as I said, you can save the queries
+71
+and also add them to CloudWatch Dashboards.
+72
+And you have the capability to query multiple log groups
+73
+at a time, even if they are in different accounts.
+74
+So remember, CloudWatch Logs Insights is a query engine,
+75
+not a real-time engine.
+76
+And so as such,
+77
+it will only query historical data when you run the query.
+78
+So as mentioned,
+79
+CloudWatch Logs can be exported into several destinations.
+80
+The first one is Amazon S3.
+81
+So this is for a batch export to send all your logs
+82
+into Amazon S3,
+83
+and this export can take up to 12 hours to be completed.
+84
+The API call to initiate this export is called
+85
+CreateExportTask.
+86
+So because this is a batch export,
+87
+this is not real-time or near real-time.
+88
+Instead, you must use the CloudWatch Logs subscription.
+89
+So these allow you to get a real-time stream
+90
+of these log events, and you can do processing and analysis.
+91
+So, you can send this data into multiple places
+92
+such as Kinesis Data Streams, Kinesis Data Firehose,
+93
+or Lambda.
+94
+And you can specify a subscription filter to say which kind
+95
+of log events you want to be delivered to your destination.
+96
+So, the subscription filter can send data
+97
+into Kinesis Data Streams.
+98
+This would be a great choice
+99
+if you wanted to use, for example,
+100
+the integration with Kinesis Data Firehose,
+101
+Kinesis Data Analytics, or Amazon EC2, or Lambda.
+102
+You can also directly send it into Kinesis Data Firehose.
+103
+From there, you can send it in near real-time fashion
+104
+into Amazon S3, or for example,
+105
+the OpenSearch Service, or you have Lambda.
+106
+So you can write your own custom Lambda function,
+107
+or you can use a managed Lambda function that is
+108
+sending data in real-time into the OpenSearch Service.
+109
+On top of it, thanks to these subscription filters,
+110
+it is possible for you to aggregate data
+111
+from different CloudWatch Logs into different accounts
+112
+and different regions into a common destination
+113
+such as the Kinesis Data Stream in one specific accounts.
+114
+And then Kinesis Data Firehose.
+115
+And then in near real-time into Amazon S3.
+116
+So that is very possible,
+117
+and that is a way for you to perform log aggregation.
+118
+So the nitty gritty of how this works is
+119
+that you must use what's called destinations.
+120
+So, let's say you have a sender account
+121
+and the recipient accounts.
+122
+So you create a CloudWatch Log subscription filter,
+123
+and then this gets sent into a subscription destination,
+124
+which is a virtual representant
+125
+of the Kinesis Data Stream in the recipient accounts.
+126
+Then you attach a destination access policy
+127
+to allow the first account to actually send data
+128
+into this destination.
+129
+Then you create an IAM role in the recipient account,
+130
+which has the permission to send records
+131
+into your Kinesis Data Stream,
+132
+and you make sure that this role can be assumed
+133
+by the first account.
+134
+And when you have all these things in place,
+135
+then it is possible
+136
+for you to send data from CloudWatch Logs
+137
+in one account into a destination in another account.
+138
+So that's it for this lecture.
+139
+I hope you liked it, and I will see you in the next lecture.
+
+--- CloudWatch Logs - Hands On ---
+
+1
+Okay, so I am in the CloudWatch console,
+2
+and I'm gonna go on the left hand side for logs,
+3
+and on the log management I will find all my log groups.
+4
+So this is the logs that get created within AWS,
+5
+and when it's a service creating a log,
+6
+you will see an AWS glue or a /Kinesis /Lambda,
+7
+which indicates it's a service log.
+8
+But if you wanted to, you could also create
+9
+your own log groups by clicking on create log group,
+10
+and you could enter whatever name you want.
+11
+For example, demo logs.
+12
+You could set up a retention policy
+13
+for this log standard in terms of storage class,
+14
+standard, or infrequent access,
+15
+a KMS key if you wanted to encrypt things,
+16
+as well as deviation protection if you wanted to prevent
+17
+against accidental or unintended deletes,
+18
+and then you would create your log group,
+19
+and here you would find your log group as well.
+20
+So then your application,
+21
+we need to send directly logs into your log group.
+22
+So different options, but we have logs also created by AWS,
+23
+and you may have different ones,
+24
+of course based on how you've been using this course.
+25
+So here we have, for example,
+26
+a function named HelloWorld,
+27
+and so this function, HelloWorld, is a Lambda function
+28
+and that's what's going to actually populate logs in it.
+29
+So I have a HelloWorld function.
+30
+If you don't have it, don't stress.
+31
+You can just create a function, use a blueprint,
+32
+and then you use the HelloWorld blueprint for Python.
+33
+You name your function HelloWorld and you're good to go,
+34
+and you would be good to go.
+35
+Okay, but I already have my function so here it is.
+36
+So the idea is that this function, when it runs,
+37
+it creates outputs, and this output gets sent
+38
+directly into CloudWatch logs, and it's the best way for us
+39
+to visualize how CloudWatch logs is working.
+40
+So we scroll down and we have a look at log streams,
+41
+and log streams will be created over time.
+42
+It represents the different invocations
+43
+of your Lambda instances in this instance,
+44
+but log streams can be whatever you want
+45
+and whatever the service wanted to be.
+46
+So you'll have different log streams
+47
+and each log stream will just have logs inside.
+48
+So this is the logs from this first log stream,
+49
+and then this will be the log from the second log stream.
+50
+So you can see within each log stream,
+51
+we have a timestamp of when the data was created,
+52
+as well as the message which is corresponding
+53
+to the log line value.
+54
+So everything that gets sent
+55
+from Lambda into CloudWatch logs is available here.
+56
+So you can have a look, and this would be a very nice way
+57
+for you to debug your applications
+58
+if you want to have this kind of capability
+59
+when you have an error.
+60
+So what can we do with these logs?
+61
+Well, you can explore them of course,
+62
+but you can also create what's called a metric filter.
+63
+So a metric filter will allow us
+64
+to have a look at specific occurrences
+65
+of certain texts or patterns in our log lines,
+66
+and we create a metric out of it.
+67
+This is great for alarms.
+68
+So here we can enter a filter
+69
+and the filter can be quite complicated.
+70
+You have a specific syntax that you don't have to learn,
+71
+but just to mix in things very simple,
+72
+I will just enter info here and let's see if that works,
+73
+and we have our custom log data that's available here
+74
+that is provided by AWS.
+75
+You test the pattern and it says, well, for the word info,
+76
+I found two log lines, and so this was created metrics
+77
+for these two log lines.
+78
+Of course you could also choose a log stream.
+79
+For example, this log stream,
+80
+which is the log from our function,
+81
+and then we could choose, for example, the start keyword
+82
+and then test it,
+83
+and we can see that we have different starts.
+84
+And so it's interesting because maybe we'll say
+85
+that anytime there's a start and then the request ID,
+86
+we have a start of our Lambda function.
+87
+Of course this is a metric already available to us
+88
+in our Lambda function directly,
+89
+but we can recreate it using a metric filter.
+90
+So as you can see in its start
+91
+is going to trigger a false positive so it's up to you
+92
+to really edit your filter pattern
+93
+and maybe add better things
+94
+so that you only have start request ID,
+95
+and we're good to go.
+96
+All right, so this is for you to build.
+97
+This is just an interesting thing to do.
+98
+So I call this one demo filter Lambda.
+99
+I scroll down and then we have to enter a namespace.
+100
+This is where your metric is going to be stored.
+101
+So demo namespace.
+102
+Metric name again, Countstart Lambda.
+103
+Metric value.
+104
+So what happens when an occurrence is found?
+105
+So we'll just have one to have account of one
+106
+anytime we have a match, and then we can also add dimensions
+107
+in case you have multiple accounts, multiple regions,
+108
+or you're an organization, this is very helpful
+109
+to have this kind of dimensions within your metrics.
+110
+Click on next, we create this metric filter.
+111
+So it has been created, and now this filter right here
+112
+if I click on it, it's available to me here
+113
+and so I can just now directly click on this,
+114
+and it's gonna give me a link directly into my metric.
+115
+So as you can see, my CloudWatch graph is empty
+116
+because this metric is only going to get populated
+117
+for the new values and not the historical values.
+118
+So what I need to do to just demo you how this works
+119
+is that I go into my function, I click on test,
+120
+and I just click on test.
+121
+I'll do it once or twice.
+122
+Okay, I've done it four times,
+123
+and now I just need to wait a little bit
+124
+for CloudWatch to populate this metric.
+125
+And so here in my metric, I had to select it
+126
+and go back to count metric.
+127
+Here in my graph I see there's one data point
+128
+for my metric Countstart Lambda.
+129
+So it's not very fascinating as you can see,
+130
+but we can see that this metric filter
+131
+get populated from the logs,
+132
+and what you can do on top of this now
+133
+is that once you have a metric like this one,
+134
+so you would go back into your CloudWatch log management.
+135
+Let's take again our HelloWorld and then our metric filter.
+136
+You can take this metric
+137
+and then you would create an alarm on top of it,
+138
+and this is cool because now you can get alerting
+139
+based on the value of this metric so now it's a seven.
+140
+You can get an alarm based on this metric,
+141
+and so you can say for example,
+142
+well, whenever you have greater than 10,
+143
+then you've started Lambda too many times in five minutes
+144
+so I want an alarm on this.
+145
+And this is very helpful because this is an alarm
+146
+created on top of CloudWatch logs through a metric.
+147
+So there are other things you can do in CloudWatch logs.
+148
+For example, we can click on action here
+149
+and we can edit the retention settings
+150
+to say after how long the log will expire.
+151
+We can also export the data to Amazon S3 directly
+152
+to have a data dump into Amazon S3,
+153
+and we could also start tailing the logs.
+154
+That means you can see the logs as they happen in real time.
+155
+We also have the option to have subscription filters.
+156
+This is a way for you to stream the logs
+157
+into a different service.
+158
+Here we have the option to use Amazon open search service.
+159
+Kinesis, Amazon Data Firehose, or Lambda.
+160
+These are the four destinations available right now.
+161
+If there's more, this is fine. (chuckles)
+162
+And then the last thing we can do
+163
+is to have a look at CloudWatch logs insights.
+164
+So if I have a look at CloudWatch logs insights,
+165
+here we have the option to query our logs
+166
+using a query language, and it's called Logs Insight QL.
+167
+So you would enter a query, scroll down,
+168
+and then you would click on run query.
+169
+And this is going to run the query, and as you can see,
+170
+we get the results of this query right here,
+171
+and we have 70 lines of logs.
+172
+We can get a graph of how the log is over time,
+173
+and we can get the results of this query.
+174
+Now, this is just an example,
+175
+but this can be very complicated
+176
+in terms of the types of query you make of course.
+177
+For example, you can get some magic ideas
+178
+by using these facets and fields,
+179
+and this is based from your log or look up tables.
+180
+But if you want to have pre-made queries as well,
+181
+you could click on this little folder,
+182
+and it shows you the saved queries.
+183
+This is also accessible from the top
+184
+and you could have common queries, for example,
+185
+the 25 most recently added log events,
+186
+but also the number of exceptions logged every five minutes,
+187
+or for example, for some specific services,
+188
+the latency statistics for five minute intervals,
+189
+and you can just learn, you know, there's max, mins,
+190
+average, binning every five minutes.
+191
+So lots of different things you can do
+192
+with CloudWatch logs inside.
+193
+Again, just for you to know, for real world practice.
+194
+Not necessarily for the exam.
+195
+You want to know how to read this or type it.
+196
+So that's it for CloudWatch logs.
+197
+I hope you liked it and I will see you in the next lecture.
+
+--- CloudWatch Logs - Live Tail - Hands On ---
+
+1
+So I want to show you
+2
+a really cool CloudWatch logs feature called Live Tail.
+3
+So first let's create a log group
+4
+and I'll call this one demo log group
+5
+and then create it.
+6
+We click on it and then we're going
+7
+to create a log stream called DemoLogStream.
+8
+Let's create it and click on it
+9
+and then we are in it.
+10
+So we can start tailing.
+11
+Here's the button start tailing and what this means,
+12
+and I will just keep the other one open in the back page.
+13
+So we have access to here our log stream,
+14
+and here we clicked on Live Tail
+15
+and we are in the Live Tail setting.
+16
+So here this is a Live Tail UI
+17
+and we have filtered on a specific demo log group
+18
+and then demo log stream as a log stream.
+19
+This is optional.
+20
+You can choose to specify or not a log stream.
+21
+Then you apply your filter
+22
+and this is going to wait for log events
+23
+that match your filter.
+24
+So that means that as events are being posted
+25
+into Cloudwatch logs,
+26
+they are going to appear here in our Live Tail,
+27
+which could be very helpful for your debugging needs.
+28
+So let's do an example.
+29
+So we're going to go into our
+30
+demo log stream again, in here,
+31
+and under actions we're going to create a log event
+32
+and we'll have hello world
+33
+so we can create a log event and post it.
+34
+So now hello world has been posted
+35
+and if you go into your Live Tail,
+36
+as you can see it has appeared.
+37
+So this is quite a nice way
+38
+because if you have log streaming very fast,
+39
+it can all appear here.
+40
+And then from this we can get more information
+41
+around when this happened, the group and so on.
+42
+And then we can click here
+43
+to get a link into the direct log stream it happened into.
+44
+So it's just a very cool,
+45
+very easy feature to debug your CloudWatch logs.
+46
+And from a pricing perspective,
+47
+you only get a few hours a day,
+48
+so maybe one hour a day of free usage of Live Tail.
+49
+So please make sure to cancel
+50
+and close your lifestyle session
+51
+so that you don't have any cost,
+52
+but you have one hour of free every day.
+53
+So this is quite nice.
+54
+Alright, so that's it for this lecture.
+55
+I hope you liked it
+56
+and I will see you in the next lecture.
+
+--- CloudWatch Agent & CloudWatch Logs Agent ---
+
+1
+Now let's talk about how we can use something
+2
+called the CloudWatch Agents to take logs
+3
+from EC2 instances, as well as metrics
+4
+and have them onto CloudWatch.
+5
+So by default, no logs are going
+6
+from your EC2 instance from CloudWatch.
+7
+For this, you need to create and start an agent
+8
+which is a small program on your EC2 instances
+9
+that will push the log files that you want.
+10
+So the idea, is that your easy EC2 instances
+11
+will have the CloudWatch Log Agents,
+12
+for example running sending the logs into
+13
+CloudWatch Logs for it to work.
+14
+Your EC2 instance must have an IAM role
+15
+that allows it to send the log
+16
+to CloudWatch Logs, that make sense?
+17
+And good to notice that this CloudWatch
+18
+log agents can also be setup
+19
+on-premises servers.
+20
+So it's possible for you to have your services,
+21
+virtual servers like VM-ware on premises
+22
+and you install the exact same agent,
+23
+which is a small Linux Program
+24
+and your logs will end up in CloudWatch Logs as well.
+25
+Now, there are two different agents
+26
+you can find in CloudWatch.
+27
+You have the CloudWatch Logs Agent,
+28
+which is the older one
+29
+and the CloudWatch Unified Agent,
+30
+which is the newer one.
+31
+So they're both for virtual servers
+32
+EC2 instances on premises servers, et cetera.
+33
+The CloudWatch Logs Agents is the old version
+34
+and can only send logs to CloudWatch Logs.
+35
+Whereas the Unified Agents,
+36
+will collect additional system level metrics
+37
+which has RAM, processes.
+38
+I'll show you this in the very next slide,
+39
+and also send the logs into CloudWatch Logs.
+40
+Now it's unified.
+41
+It's better because it can do both metrics and logs.
+42
+Hence, the name Unified Agent.
+43
+But also you can configure that agents very easily
+44
+using the SSM Parameter Store,
+45
+which is a feature that the previous agent did not have.
+46
+So you can do centralized configuration,
+47
+for all your Unified Agents.
+48
+So the CloudWatch Unified Agent can send,
+49
+logs to CloudWatch Logs.
+50
+But let's have a look at the metrics.
+51
+So if you install it,
+52
+on your Institute instances or your Linux servers
+53
+you can collect metrics, and what are they?
+54
+Well, we can collect the CPU metrics
+55
+but at a way more granular levels,
+56
+for example: active, guest, idle, system, user, steal.
+57
+You don't need to know them at all.
+58
+I'm just giving you the granularity of all these metrics.
+59
+Disc metrics of free use total.
+60
+Disc IO in terms of number of writes, reads, bytes, iops.
+61
+RAM so free, inactive, used, total, cached.
+62
+Netstats with number of TCP and UDP connections,
+63
+net packets, bytes to get some information
+64
+around the processes.
+65
+So in total number of process,
+66
+I mean your dead, bloqued, idle,
+67
+running, sleep.
+68
+And Swap Space, which is a memory spilling on disc.
+69
+So how much is free use and use percentage?
+70
+So why don't you remember is just take a
+71
+a mental screenshot of these things.
+72
+The bottom line is the CloudWatch Unified Agent allows it.
+73
+You get a lot more metrics at a lot more granular details
+74
+than the normal monitoring for EC2 instances.
+75
+As a reminder out of the box for EC2,
+76
+you get some information on disk, CPU,
+77
+and network not memory
+78
+not swap, but all of this at a high level, okay?
+79
+If you want more granularity
+80
+think CloudWatch Unified Agents, okay?
+81
+So that's it for me.
+82
+I hope you liked it.
+83
+And I will see you in the next lecture.
+
+--- CloudWatch Alarms ---
+
+1
+Now let's discuss CloudWatch Alarms.
+2
+So alarms, as we know, they're used
+3
+to trigger notifications from any metric.
+4
+And you can define complex alarms
+5
+and on various options such as sampling or doing percentage
+6
+or maximum, and so on.
+7
+Alarm has three states,
+8
+OK, it means that it's not triggered,
+9
+INSUFFICIENT_DATA means that there's not enough data
+10
+for the alarm to determine a state
+11
+and ALARM, which is that your threshold has been breached
+12
+and therefore a notification will be sent.
+13
+The period is how long you want the alarm
+14
+to evaluate for on the metric.
+15
+And so it could be very, very short, very, very long.
+16
+And it can apply also to high resolution customer metrics.
+17
+For example, 10 seconds, 30 seconds,
+18
+or multiple of 60 seconds.
+19
+Now, alarms have three main targets.
+20
+The first one is actions on EC2 instances
+21
+such as stopping it, terminating it, rebooting it,
+22
+or recovering any instance.
+23
+The second one is to trigger an auto-scaling action.
+24
+For example, a scale out or a scale in.
+25
+And the last one is to send a notification
+26
+to the SNS service, for example,
+27
+and from the SNS service, we can hook it
+28
+to a Lambda function
+29
+and have the Lambda function do pretty much anything we want
+30
+based on an alarm being breached.
+31
+So now let's talk about Composite Alarms,
+32
+because we know that CloudWatch Alarms
+33
+are on a single metric,
+34
+but then if you wanted to have multiple metrics,
+35
+you would need to use Composite Alarms.
+36
+So because composite alarms are actually monitoring
+37
+the states of multiple other alarms,
+38
+and these alarms can be each relying
+39
+on one different metric.
+40
+So the Composite Alarm is the action
+41
+of combining all these other alarms together,
+42
+and you can use AND or OR conditions
+43
+to be able to be very flexible in terms
+44
+of the condition you're checking for.
+45
+So it's very helpful to reduce alarm noise
+46
+because you can create complex Composite Alarms
+47
+and saying, for example, if the CPU is high
+48
+and the network is high, then don't alert me
+49
+because I only wanna know when the CPU is high
+50
+and the network is a low, these kind of things.
+51
+So let's take an example, we have an EC2 instance,
+52
+and we're going to create a composite alarm on top of it.
+53
+So therefore we create a first
+54
+underlying alarm called the Alarm A,
+55
+which is going to monitor the CPU of the EC2 instance.
+56
+Then you create Alarm B, which is going to monitor the IOPS
+57
+of the EC2 instance,
+58
+and then the composite alarm is defined as the junction
+59
+of Alarm A and Alarm B.
+60
+And therefore, if Alarm A is in alarm
+61
+and Alarm B is in alarm,
+62
+and this is something we have to define ourselves,
+63
+then the Composite Alarm itself will be an alarm
+64
+and can trigger, for example, an SNS notification.
+65
+So as you can see, you can get quite creative
+66
+with the Composite Alarms.
+67
+So let's talk about EC2 instance recovery.
+68
+So we have the status checks
+69
+and we have the instance status check,
+70
+which is going to check the EC2 virtual machine.
+71
+And we have the system status check,
+72
+which is going to check the underlying layer hardware
+73
+of our EC2 instance.
+74
+And finally, the attached EBS status check,
+75
+which is going to check any attached EBS volumes health.
+76
+And you can define a CloudWatch Alarm on these checks, okay?
+77
+So you'll monitor a specific EC2 instance,
+78
+and in case the alarm is being breach,
+79
+then you can start an EC2 instance recovery
+80
+to make sure, for example, that you move
+81
+your EC2 instance from one host to another.
+82
+When you do a recovery, you get the same private,
+83
+public, and elastic IP, the same metadata
+84
+and the same placement group for your instance.
+85
+And you can also send an alert to your SNS topic
+86
+to get alerted that the EC2 instance was being recovered.
+87
+Now, the cloud alarm has some good stuff.
+88
+To know that, first of all is that as we've seen,
+89
+we can create an alarm on top
+90
+of a CloudWatch logs metric filter.
+91
+So remember, the CloudWatch logs are having a metric filter,
+92
+which is hooked to CloudWatch Alarm.
+93
+And then when we receive too many instances
+94
+of a specific word, for example, the word error,
+95
+then do an alert and send a message into Amazon SNS.
+96
+And so if you wanted to test alarm
+97
+and notifications, you can use a CLI call
+98
+called set alarm states.
+99
+And this is helpful when you want to trigger an alarm,
+100
+even though it didn't reach a specific threshold
+101
+because you wanted to see whether
+102
+or not the alarm being triggered results in the correct
+103
+action for your infrastructure.
+104
+So that's it for alarms, I hope you liked it,
+105
+and I will see you in the next lecture for some practice.
+
+--- CloudWatch Alarms Hands On ---
+
+1
+Okay, so we are in CloudWatch Alarms,
+2
+so let's go and create an alarm.
+3
+So first of all, I'm going to create an EC2 instance
+4
+very quickly, and we're going to create
+5
+an alarm on top of the CPU utilization.
+6
+So we're going ahead and create an EC2 instance of t2 micro.
+7
+I will go quickly to preview and launch and then say,
+8
+yes, I have this.
+9
+So we don't need to keep it or anything like this,
+10
+we just want the instance to be launched.
+11
+And the idea is that we want to create an alarm that
+12
+will terminate the instance, if the CPU goes to 100%,
+13
+so let's create this alarm.
+14
+So we need to select a metric.
+15
+And so for this, we need to choose a metric.
+16
+So we need to go and find our EC2 instance.
+17
+So this is our instance ID, right here, and search for it.
+18
+And I'm maybe a little bit too quick, okay.
+19
+So let's wait for the instance to be launched.
+20
+I will go into EC2 per instance metric,
+21
+and then I will wait for it to be populating.
+22
+So it took about five minutes for some metrics to appear
+23
+in that cloud dashboard for my instance.
+24
+So now I can probably refresh this page and I will get the
+25
+chance to find the metrics I'm looking for.
+26
+So let me select a metric and then paste the instance
+27
+in perfect, I have it,
+28
+and I will go and find the CPU utilization of my instance.
+29
+So this is this metric right here.
+30
+Okay, well, select this metric.
+31
+As you can see, we have
+32
+the eight here and then we can choose a way to
+33
+compute this metric, so average, sum, maximum, and so on.
+34
+The period we want to evaluate this alarm on.
+35
+So five minutes is good because this metric gets populated
+36
+every five minutes, if we don't enable detailed monitoring.
+37
+Now we get some conditions in terms of the threshold.
+38
+So is it Static or is it an Anomaly detection?
+39
+Is it a greater than, equal than, and so on.
+40
+So I will say for example,
+41
+if you're a greater than 95%
+42
+for a long time, so for,
+43
+and here you can say, three out of three.
+44
+So that means that for 15 minutes, you're stuck at 95%,
+45
+then probably something is up with this machine.
+46
+And so in that case, I could choose a notification.
+47
+I could choose a Auto Scaling action.
+48
+I could choose an EC2 action, or in a systems manager
+49
+action, but I'm going to choose an EC2 action.
+50
+Okay, and it will say, hey, if you are in alarm, okay,
+51
+then just terminate this instance because maybe I know that
+52
+my application sometimes has a huge failure and the CPU
+53
+installation will be at a 95% or a 100%
+54
+for a very long time, And the only way to resolve this
+55
+is to just terminate the instance.
+56
+So I will choose this, and then click on next,
+57
+and say terminate,
+58
+EC2 on high CPU.
+59
+Click on next to verify everything, and we're good to go.
+60
+So now this alarm obviously does have insufficient data,
+61
+so we need to wait 15 minutes for it to be okay,
+62
+and it's not going to be triggered unless we make it so.
+63
+So, we could go into the EC2 instance and launch a way
+64
+to get the CPU very high for 15 minutes,
+65
+but this would be a very, very long,
+66
+or we can use the API call name,
+67
+Set alarm state, to really see what would happen if this
+68
+alarm went into the breach phase.
+69
+So let's have a look.
+70
+This is the history of the alarm, okay.
+71
+And what I'm going to do is that I'm going to set the alarm
+72
+to say, so I type AWS CloudWatch, set alarm states,
+73
+and we'll look at the API reference.
+74
+And so we need to do set alarm state the alarm name and the
+75
+state value and the state reason.
+76
+So we'll do, in here.
+77
+So AWS CloudWatch set alarm states,
+78
+and then we need to set multiple parameters.
+79
+So the alarm name is going to be this one,
+80
+then the alarm,
+81
+so the states value
+82
+is going to be alarm.
+83
+And the state reason, is going to be testing.
+84
+We press enter, and now this alarm,
+85
+if we refer to this page is now in the alarm state,
+86
+as you can see, it says in alarm.
+87
+And so the action is, when in alarm terminate the instance.
+88
+And so if you look at the history,
+89
+it says that the alarm updated from OK, to in alarm and
+90
+then an action was made and it's, successfully
+91
+executed the action to terminate my EC2 instance.
+92
+So if I go into my EC2 instances here, and I refresh,
+93
+as we can see is shutting down and is being terminated
+94
+because while there was an alarm that was triggered on top
+95
+of this EC2 instance,
+96
+and we did set up the alarm to do this specific action.
+97
+So that's it, I hope you liked it.
+98
+I hope this makes sense to you.
+99
+And I will see you in the next lecture.
+
+--- CloudWatch Network Synthetic Monitor ---
+
+1
+So now let's talk
+2
+about CloudWatch Network Synthetic Monitor.
+3
+So the idea is that you have connected your cloud
+4
+to your on-premises corporate data center
+5
+through Direct Connect or a VPN connection,
+6
+and you want to detect network issues
+7
+between your data center and AWS.
+8
+That is precisely what this Network Synthetic Monitor
+9
+is doing.
+10
+So you're going to identify
+11
+any type of network performance degradation,
+12
+such as packet loss, latency, or jitter.
+13
+You don't need to install any agents.
+14
+It will test ICMP or TCP traffic
+15
+on IPv4 on-premises traffic
+16
+through your Direct Connect
+17
+or your site-to-site VPN connection.
+18
+So all the metrics and the results are going to be published
+19
+to CloudWatch Metrics so you can take proper action.
+20
+The idea is that it's a way for you to ensure
+21
+that the connection you established
+22
+between your data center and AWS is working as expected
+23
+and you get that information in real time.
+24
+So that's it. I hope you liked it.
+25
+And I will see you in the next lecture.
+
+--- EventBridge Overview (formerly CloudWatch Events) ---
+
+1
+So now let's talk about Amazon EventBridge,
+2
+and Amazon EventBridge used to be formally known
+3
+as CloudWatch Events so you will see EventBridge
+4
+in the exam, but just so you know,
+5
+if you come from old AWS experience,
+6
+then it used to be named the CloudWatch Events.
+7
+So with EventBridge, you can do a lot of things.
+8
+For example, we can schedule cron jobs in the Cloud,
+9
+so we can schedule scripts.
+10
+For example, we say, "Hey, every hour please trigger
+11
+a Lambda function,"
+12
+and that Lambda function will run a script.
+13
+So the events are generated every hour,
+14
+hence the name Amazon EventBridge,
+15
+but not just a schedule like every hour,
+16
+it can also react to an event pattern.
+17
+So there are event rules that can react
+18
+to a service doing something.
+19
+For example, you can react to the event
+20
+of IAM root user sign in in the console.
+21
+So when that happens, maybe you want to send a message
+22
+into an SNS topic and receive an email notification,
+23
+so that if anyone is using the root account,
+24
+then you will receive an email,
+25
+which may be a good security feature for your accounts.
+26
+Also, for example, you have different destinations,
+27
+you can trigger Lambda functions,
+28
+send SNS and SQS messages, and so on,
+29
+I will show you this all in a second.
+30
+So EventBridge sits in the middle
+31
+and we have all the sources that can send events
+32
+into Amazon EventBridge.
+33
+So for example, EC2 instances when they start,
+34
+when they're stop, when they're terminated, and so on.
+35
+Code Build, for example,
+36
+if you have a build that fails
+37
+or S3, whenever there's an event, for example,
+38
+when an object is uploaded,
+39
+or Trusted Advisor when you have a new finding
+40
+of security in your accounts
+41
+or as a good combo, you can combine EventBridge
+42
+and CloudTrail and actually intercept any API call made
+43
+within your AWS accounts, which is huge.
+44
+Also, as I said, you can have a schedule or a cron,
+45
+so you can say every four hours or every Monday at 8:00 am,
+46
+the first Monday of the month,
+47
+this is something you can do as well.
+48
+Then these events get sent into Amazon EventBridge
+49
+and you can set up a filter.
+50
+For example, you say, "Hey, I only want these events
+51
+for a specific bucket," for Amazon is free, for example.
+52
+Then EventBridge is going to generate adjacent document
+53
+that represents the details about your events.
+54
+So which instance, for example, gets started,
+55
+whether its ID, and so on.
+56
+A lot of information, the time, the IP, and so on.
+57
+So once this is done, then this JSON document, this event,
+58
+can be sent into so many kind of different destinations,
+59
+allowing you to do really awesome integrations.
+60
+For example, you can schedule and trigger a Lambda function,
+61
+you can schedule a batch in AWS Batch,
+62
+you can launch an ECS task for Amazon ECS,
+63
+you can send a message to SQS, to SNS,
+64
+or even to a Kinesis Data Stream,
+65
+you can, for example, start a Step Function,
+66
+you can start a CI/CD Pipeline with CodePipeline
+67
+or a build with CodeBuild so you don't actually know
+68
+all these things, of course,
+69
+these are different AWS services,
+70
+but I'm just giving you an overview what you can do
+71
+and you can also, for example, start an SSM automation
+72
+or a specific EC2 action, such as starting or stopping
+73
+or restarting an EC2 instance.
+74
+So you can see the possibilities are endless
+75
+and it really depends on what is your use case.
+76
+So Amazon EventBridge is what we call
+77
+the default event bus, which is what we just saw,
+78
+which represents services from AWS
+79
+that send their events into the default event bus,
+80
+but Amazon EventBridge has more capability.
+81
+There is something called the partner event bus
+82
+and this is AWS that has integrated with partners,
+83
+most likely they are going to be software
+84
+as a service partners and they are going
+85
+to send their events directly into your partner event bus.
+86
+So if you're using, for example, Zendesk, Datadog, Auth0,
+87
+or others, you need to check the partner list.
+88
+Then there's a chance
+89
+that they can send their events directly
+90
+into a specified partner event bus
+91
+and so you can react to changes happening outside
+92
+of AWS directly in your accounts.
+93
+Okay, and finally, there is a custom event bus
+94
+so you can create your own event buses
+95
+and then your own applications can send their own events
+96
+into a custom event bus and therefore, you have
+97
+the same capability of sending these events
+98
+to different destinations thanks to the EventBridge rules.
+99
+Also, you can access event buses, cross accounts,
+100
+using resource based policies as we'll see very soon.
+101
+You can also archive events so all of them
+102
+or just a subset event to a filter
+103
+and by archiving the events,
+104
+you can set it to be either indefinite retention
+105
+or a set period for retention, okay?
+106
+What you can do with these is that you can replay
+107
+these archived events.
+108
+For example, say there is a bug in your Lambda function
+109
+and you want to fix it, so you fixed it
+110
+and then you want to retest the event, replay it,
+111
+then you can replay these archived events,
+112
+which is super handy for debugging,
+113
+super handy for troubleshooting,
+114
+and for fixing production as well.
+115
+Now, EventBridge receives a lot of events
+116
+from different places and so therefore,
+117
+you need to understand what the events are going
+118
+to look like and remember, these events are
+119
+in this adjacent format we just saw.
+120
+So therefore, there is a Schema Registry
+121
+and the capability is that EventBridge is going
+122
+to analyze the events in your bus
+123
+and then it's going to infer the schema
+124
+and the schema out of the Schema Registry is going
+125
+to allow you to generate code for your application
+126
+that will know in advance how the data is structured
+127
+in the event bus.
+128
+For example, this is an example here
+129
+for a specific CodePipeline in action.
+130
+There's a schema and you can download
+131
+the code directly using the Orange button
+132
+and this will know directly how to infer the schema
+133
+and structure the data out of your event bus.
+134
+Also, the schemas can be versioned
+135
+so you can over time iterates between the schemas
+136
+of your application, of course.
+137
+Now, we have resource based policies for EventBridge,
+138
+what does that mean?
+139
+That means that you can manage permissions
+140
+for a specific event bus.
+141
+For example, you can say
+142
+that a specific event bus can be allowed
+143
+or denied other events from other regions or accounts
+144
+and the use case for it, for example, would be
+145
+to have a central events bus
+146
+within your AWS organization,
+147
+so a set of accounts and then all these events are going
+148
+to be aggregated, so how does that work?
+149
+Well, we have a central event bus with a specific account
+150
+and we're going to add a specific resource based policy,
+151
+allowing other accounts to send events to it
+152
+and therefore, this other account, for example,
+153
+will be able to do a put events
+154
+and send events directly into the central event bus.
+155
+So that's it, we've seen EventBridge left to right,
+156
+you know everything about it.
+157
+So remember, you can react to events happening
+158
+within your accounts, thanks to the default event bus,
+159
+but also partner events and also your own events
+160
+with custom buses,
+161
+you have the Schema Registry capability,
+162
+and then you have resource based policies,
+163
+which allow you to have a cross accounts, for example,
+164
+capability for event buses.
+165
+Okay, that's it, I hope you liked it
+166
+and I will see you in the next lecture.
+
+--- Amazon EventBridge - Hands On ---
+
+1
+So let's have a look at Amazon EventBridge.
+2
+So you have several options.
+3
+You can create a rule with an event pattern.
+4
+We're gonna do this right now.
+5
+Then you can have a schedule rule,
+6
+which is the old way of doing schedule.
+7
+So there is now something called EventBridge schedule.
+8
+We're also going to have a look at it.
+9
+Pipe is to send data from an event source to target
+10
+with optional filtering and enrichment.
+11
+And schema registry is to look
+12
+at the schemas of all these events.
+13
+So just to get started, we're going to do the first option,
+14
+EventBridge rule with event pattern.
+15
+So we need to create a rule,
+16
+and what we want to do is to react to any event
+17
+where an instance is going to be terminated or shut down.
+18
+So you click here on Service Events,
+19
+and here you have a list at all the events
+20
+that can happen within your accounts by service.
+21
+So it's a lot.
+22
+For example, if you take any of these,
+23
+for example, if you take Lambda,
+24
+you can have a look at all these things.
+25
+Console actions or EC2,
+26
+you can have a look at all these things.
+27
+So it's a lot more type
+28
+of things you can choose from for events.
+29
+So the one we're going to look
+30
+at is one of the most popular.
+31
+It's called EC2 instance State-change Notification.
+32
+So that means that anytime
+33
+an EC2 instance state will change,
+34
+we're going to get a notification.
+35
+So if we look at it at this event,
+36
+we can have a look at the schema of the event
+37
+and then a sample event.
+38
+Like what it can look like.
+39
+So the schema defines how the sample event will look like.
+40
+And now we want to be able to filter this event
+41
+and on the state value.
+42
+So the state is a string and we have to exit the value.
+43
+So we can say Equal, for example,
+44
+and we are going to have several values.
+45
+So the first one is shutting down
+46
+and the second one is going to be terminated.
+47
+How do I know this? Well, it's from the schema itself.
+48
+If you have a look at the event pattern on the bottom line,
+49
+on the bottom page, sorry,
+50
+you can have a look at Sample events 1, 2, 3.
+51
+And if you look at number 5,
+52
+it says "state": "shutting-down".
+53
+And number 6, it says "state": "terminated".
+54
+So these are the events we want to be catching.
+55
+So now our event pattern filter is defined right here
+56
+on the right-hand side.
+57
+So now we have all the events.
+58
+And now for the target, again, we have several options.
+59
+So we can have a look at all the options right here,
+60
+such as API gateway, batch jobs.
+61
+We can also reboot an EC2 instance, terminate one.
+62
+We have SNS topic, SQS queues, I mean so many.
+63
+But what we want to do right now is to receive an alert,
+64
+so we choose SNS Topic
+65
+and then we want it to be our demo topic.
+66
+So create it if you don't have a topic.
+67
+You can just create an SNS topic very easily.
+68
+Then we'll need to have an exception role to be able
+69
+to send a message into this topic.
+70
+So a role is going to be automatically created for us.
+71
+and then we get some more information
+72
+around the retry policy and the dead-letter queue.
+73
+So we're good to go. Let's click on Create.
+74
+I'll call this one
+75
+NotifyEC2InstanceShutdownOrTerminated,
+76
+and we'll click on Create.
+77
+And so now that this role has been created,
+78
+anytime we shut down
+79
+or terminate an EC2 instance,
+80
+we will receive a notification.
+81
+The other option is to use Schedule.
+82
+So on the left-hand side you have schedules,
+83
+and then you can create a schedule.
+84
+And this one is going called InvokeLambdaEveryHour.
+85
+And several options.
+86
+Either it's a one-time schedule,
+87
+so we do something once and then done, or recurring.
+88
+And we have either a Cron-based schedule or a rate schedule.
+89
+We'll use 1 hour
+90
+and no flexible time window.
+91
+And Next.
+92
+And here we have the option to invoke several things.
+93
+So what do we wanna do every hour?
+94
+Well, we have all these options such as, for example,
+95
+running a task on Amazon ECS
+96
+or putting a records in Kinesis Data Firehose
+97
+or invoking a Lambda function.
+98
+So you can say, for example,
+99
+in the Invoke Lambda function,
+100
+and if you have a Lambda function,
+101
+you can select it from here.
+102
+So you get the idea.
+103
+Once you've done this,
+104
+you have a schedule in Amazon EventBridge.
+105
+Other things that you need to be looking at is event buses.
+106
+So right now we have the default event bus.
+107
+And the default events bus is anything
+108
+that will be AWS-generated type of events.
+109
+But you can create your own event bus,
+110
+and this is going to be a custom event bus.
+111
+And here you have the ability yourself
+112
+to send your own events into this event bus
+113
+and so therefore you can develop custom applications
+114
+that are based on Amazon EventBridge,
+115
+which can be very helpful.
+116
+You have the option to archive your events.
+117
+When they happen on the event bus,
+118
+then you have an archive you can look into.
+119
+And you can also replay events if you wanted
+120
+to replay a past event from an archive.
+121
+Okay, other things need you look at
+122
+is partner event sources.
+123
+So it's possible for you
+124
+to actually get data from third-party partners directly
+125
+into your AWS accounts.
+126
+So if you use, for example, Auth0,
+127
+then the events of Auth0 will be put
+128
+and inserted into Amazon EventBridge.
+129
+And then you can, for example, use a Lambda function
+130
+or do something after someone has done the login in of zero.
+131
+But you can see you have so many different kinds
+132
+of partners right here.
+133
+And API destinations.
+134
+That means that, for example, if you wanted
+135
+to have an event within EventBridge,
+136
+but then to connect to an external HTP destination,
+137
+you can also define one here.
+138
+And this allows you to connect EventBridge
+139
+to an outside source, for example,
+140
+to have integration with your own infrastructure.
+141
+So it's quite a lot of different things.
+142
+And finally, for schemas, this is all the schemas
+143
+of all the AWS events that you have.
+144
+Or you can have your own custom registry
+145
+for your own events.
+146
+But this allows you to understand the shape
+147
+and form the events will have in Amazon EventBridge.
+148
+And that's it. So I hope you liked it.
+149
+You can go here in the rules
+150
+and also disable them if you wanted to.
+151
+But I hope you liked this lecture
+152
+and I will see you in the next lecture.
+
+--- CloudWatch Insights and Operational Visibility ---
+
+1
+So now, let's talk about the insights type
+2
+of CloudWatch products.
+3
+And we have, the first one we have
+4
+is the CloudWatch container insights.
+5
+So this is as the name indicates, the way to collect,
+6
+aggregate, and summarize metrics and logs
+7
+from your containers.
+8
+And it's available for containers that you run
+9
+on Amazon ECS, on Amazon EKS,
+10
+on Kubernetes platform directly on EC2
+11
+or on Fargate, both for ECS and EKS.
+12
+So the idea is that thanks
+13
+to the CloudWatch container insights,
+14
+we can very easily extract the metrics and the logs
+15
+out of our containers into a very detailed
+16
+and granular dashboard from within CloudWatch.
+17
+The other thing you need to know
+18
+is that if you are using CloudWatch container insights
+19
+on Kubernetes, would it be for Amazon EKS
+20
+or Kubernetes running on EC2?
+21
+The way CloudWatch insights work is that it's using
+22
+a containerized version of the CloudWatch agents
+23
+to discover containers.
+24
+So that's the first thing you need to remember is this one.
+25
+The second one is Lambda insights.
+26
+So you're guessing what it would be about.
+27
+It is about monitoring and troubleshooting solution
+28
+for your serverless applications running on AWS Lambda.
+29
+So again, it's going to collect, aggregate,
+30
+and summarize system level metric,
+31
+including CPU time, memory, disk, and network,
+32
+and also information around your cold starts,
+33
+and your Lambda worker shutdowns.
+34
+And it's provided for your Lambda function
+35
+as a Lambda layer.
+36
+You don't really know this.
+37
+But the idea is that it runs next to your Lambda.
+38
+And it's going to create, again, a specified dashboard
+39
+called Lambda insights to monitor
+40
+the performance of your Lambda functions.
+41
+And this is to be used when you need
+42
+really, really detailed monitoring
+43
+into your serverless applications running on AWS Lambda.
+44
+Then, we have contributor insights.
+45
+So this one is to analyze logs and create time series
+46
+that display contributed data.
+47
+So for example, you wanna see the top end contributor
+48
+or the total number of unique contributors and their usage.
+49
+So we'll go quickly into an example
+50
+so you understand what this means.
+51
+So this helps you find, for example, top talkers
+52
+on your network and understand
+53
+who is impacting system performance.
+54
+So you can run it on any logs generated by AWS.
+55
+For example, VPC logs, or DNS logs, and so on.
+56
+And let's take an example.
+57
+You can identify bad hosts.
+58
+So we are going to look at the network logs, the VPC logs.
+59
+And we're going to find the heaviest network users
+60
+or we can find, for example, if you look at DNS,
+61
+the URLs that generate the most errors.
+62
+So let's have a look at how to identify
+63
+the heaviest network users.
+64
+So we look at the VPC flow log, which is the log
+65
+of all the network request made within your VPC,
+66
+which is then passed to CloudWatch logs,
+67
+and then analyzed by the CloudWatch contributor insights.
+68
+And out of it, we can find the top 10 IP addresses
+69
+that are generating traffic on RVPC
+70
+and understand if they are good actors or bad actors.
+71
+So anytime, you see a top 10 contributors or whatever,
+72
+this is the CloudWatch contributor insight.
+73
+So you can look through logs and find
+74
+who are the top whatever.
+75
+So you can build rules from scratch
+76
+or you can also leverage simple rules that AWS has created.
+77
+And behind the scene, again, it leverages CloudWatch logs.
+78
+And to finish, there are also built in rules
+79
+that you can use to analyze metrics
+80
+coming from other AWS services.
+81
+Finally, we have CloudWatch application insights,
+82
+which is to provide an automated dashboard
+83
+that will show potential problems
+84
+with monitored applications to help isolate ongoing issues.
+85
+So your applications can be running on Amazon EC2.
+86
+We select technologies only, for example, Java, or.net,
+87
+or Microsoft IIS web server, or specific databases.
+88
+And then, it will be linked to other AWS resources
+89
+such as EBS, RDS, ELB, ASG, Lambda, SQS, DynamoDB,
+90
+S3 buckets, maybe your ECS cluster, your EKS cluster,
+91
+SNS topics, or your API gateway.
+92
+And so in case there is an issue with your application,
+93
+automatically, CloudWatch applications insights
+94
+is going to put together an automated dashboard
+95
+that shows you the potential issue with some services.
+96
+And to do this, automated dashboard is going to use
+97
+a SageMaker machine learning service internally.
+98
+So it's really going to give you enhanced visibility
+99
+into your application health for you to reduce the time
+100
+it takes you to troubleshoot and repair your application.
+101
+So this is really cool because, well, if your application
+102
+is using other services or other resources of AWS,
+103
+automatically, if it's a problem originating
+104
+from one of them, it will surface
+105
+in the applications insights dashboard.
+106
+And all the alerts and findings will be sent
+107
+to Amazon EventBridge and SSM OpsCenter
+108
+so that you can be alerted in case there is an issue
+109
+detected with your application.
+110
+So to summarize, you only need to know these services
+111
+at a high level.
+112
+So CloudWatch container insights is for your metrics
+113
+and logs coming from ECS, EKS,
+114
+Kubernetes on EC2, and Fargate.
+115
+And in case you are using Kubernetes,
+116
+you need an agent to run.
+117
+For CloudWatch Lambda insights, this is detailed metrics
+118
+to troubleshoot your serverless applications
+119
+running on AWS Lambda.
+120
+For CloudWatch contributors insights,
+121
+this is to find the top end contributors
+122
+through your CloudWatch logs.
+123
+For CloudWatch application insights,
+124
+this is to create automatic dashboards
+125
+to troubleshoot your applications
+126
+and the related AWS services that your application is using.
+127
+So that's it for this lecture,
+128
+you should be good for the exam.
+129
+I hope you liked it.
+130
+And I will see you in the next lecture.
+
+--- CloudTrail Overview ---
+
+1
+Now let's talk about CloudTrail.
+2
+So CloudTrail is a way to get governance
+3
+compliance and audit for your AWS Accounts.
+4
+And CloudTrail is enabled by default.
+5
+This will allow you to get a history of all the events
+6
+and API Calls made within your AWS Accounts, by the console
+7
+by the SDK, the CLI other services on AWS
+8
+and all these logs will be appearing in CloudTrail.
+9
+Now, what you can do is that you can also put these logs
+10
+from CloudTrail into CloudWatch Logs or Amazon S3.
+11
+And you can create a trail to be applied
+12
+to all regions or a single region,
+13
+if you wanted to accumulate all these history
+14
+of events accumulated across all regions
+15
+into one specific, for example, S3 buckets.
+16
+And when we use CloudTrail, for example,
+17
+we'll say someone went ahead and deleted something in AWS.
+18
+For example, say that an EC2 instance
+19
+was being terminated
+20
+and you wanna figure out who did it?
+21
+Well, the answer is to look into CloudTrail
+22
+because CloudTrail will have that API Call
+23
+in it and will be able to get
+24
+to the bottom of it and understand who did what and when.
+25
+So to summarize CloudTrail is in the middle
+26
+and the actions of the SDK, the CLI, or the console
+27
+or even IAM Users and IAM Roles
+28
+or other services will be in the CloudTrail console.
+29
+We can look in it to inspect and audit what happened.
+30
+And if you want to have all the events for more
+31
+than 90 days, then we can send them into CloudWatch Logs
+32
+or we can send them into an S3 buckets.
+33
+So let me dive a little bit deeper for CloudTrail.
+34
+So we have three kinds
+35
+of events that you can see in CloudTrail.
+36
+The first one is called the Management Events
+37
+and these represents operations that are performed
+38
+on resources in your AWS Accounts.
+39
+For example, whenever someone configures security,
+40
+they will use the API Call called IAM AttachRolePolicy.
+41
+And this will appear in CloudTrail.
+42
+If you create a subnet, this will appear as well.
+43
+If you set up logging, this will appear by default.
+44
+Anything that modifies your resources
+45
+or your iOS accounts will appear in CloudTrail.
+46
+And by default,
+47
+trails are configured to log Management Events
+48
+no matter what.
+49
+You can separate two kind of Management Events.
+50
+You have the Read Events that don't modify resources.
+51
+For example, someone is listing all the users
+52
+in IAM or listing all the EC2 instances in EC2,
+53
+these kind of things.
+54
+You can separate them
+55
+from Write Events that may modify resources.
+56
+For example, someone deletes
+57
+or tries to delete a DynamoDB table.
+58
+And obviously the Write Events have probably
+59
+a lot more importance
+60
+because they can wreck damages into your AWS infrastructure.
+61
+Whereas the Read Events is just to get information
+62
+which are still very important, but maybe less destructive.
+63
+Then you have Data Events.
+64
+So they're separate and by default Data Events
+65
+as are not logged because they're high volume operations.
+66
+So what are Data Events?
+67
+Well, you have Amazon S3 object level activity
+68
+for example, GetObject, DeleteObject, PutObject.
+69
+And as you can see,
+70
+these can be happening a lot on an S3 bucket.
+71
+And so this is why they're not logged by default
+72
+and you have the option to separate again
+73
+Read and Write Events.
+74
+So a Read Event will be a GetObject
+75
+whereas a Right Event would be a DeleteObject
+76
+or a PutObject.
+77
+Another kind of event you can have
+78
+in a CloudTrail are AWS Lambda function
+79
+execution activities.
+80
+So whenever someone uses the Invoke API
+81
+so you can get insights
+82
+about how many times your Lambda functions are being evoked.
+83
+And again, this could be really high volumes,
+84
+if your Lambda functions are executed a lot.
+85
+And the third kind of events
+86
+in CloudTrail are called CloudTrail Insights Events.
+87
+And so I will talk to you about CloudTrail Insights
+88
+in a bit more details in the next slide.
+89
+So now let's talk about CloudTrail Insights.
+90
+So when we have so many Management Events across all types
+91
+of services and so many APIs happening very quickly
+92
+in your accounts,
+93
+it can be quite difficult to understand what looks odd,
+94
+what looks unusual and what doesn't.
+95
+And so this is where CloudTrail Insights comes in.
+96
+So with CloudTrail Insights and you have to enable it
+97
+and you have to pay for it, it will analyze your events
+98
+and try to detect unusual activity in your accounts.
+99
+For example, in accurate resource provisioning,
+100
+hitting service limits, burst of AWS IAM actions,
+101
+gaps in periodic maintenance activity.
+102
+So the way it works is that CloudTrail will analyze
+103
+what normal management
+104
+activities look like to create the baseline
+105
+and then it will continuously analyze anything
+106
+that is the right type of event.
+107
+So whenever something is changed
+108
+or try to be changed to detect unusual patterns.
+109
+So very simply the Management Events are going
+110
+to be continuously analyzed by CloudTrail Insights
+111
+which will generate Insights Event
+112
+in case something is detected.
+113
+And so these anomalies, so these Insight Events will appear
+114
+in the CloudTrail console.
+115
+They will also be sent to Amazon industry if you want to,
+116
+and an EventBridge Event.
+117
+So in CloudWatch event is going to be generated
+118
+in case you need to automate on top
+119
+of these CloudTrail Insights, for example, to send an email.
+120
+So this is the idea behind CloudTrail Insights.
+121
+Finally, let's talk about CloudTrail Event Retention.
+122
+So events by default are stored for 90 days in CloudTrail
+123
+and then afterwards they're deleted,
+124
+but sometimes you may want to have events for longer
+125
+in case you want to go back to something that happened
+126
+maybe a year ago for audited purposes.
+127
+And so to keep events beyond this period,
+128
+what you have to do is that you have to log them to S3.
+129
+So send them to S3, and then you would use Athena
+130
+to analyze them.
+131
+So very simply all your Management Events, your Data Events
+132
+and your Insights Events are going to go into CloudTrail
+133
+for 90 days, retention period.
+134
+And then you would log those into your S3 buckets
+135
+for long-term retention.
+136
+And when you're ready to analyze them,
+137
+you would use the Athena service, which is a serverless
+138
+service to query data in S3 to find the events
+139
+Okay
+140
+I hope you like this lecture, and I will see you in the next lecture.
+
+--- CloudTrail Hands On ---
+
+1
+So let's have a look at CloudTrail.
+2
+And CloudTrail is a service to intercept any API calls
+3
+or user activity within your accounts.
+4
+And so here on here on the left hand side panel,
+5
+we can have a look at the event history
+6
+and this is the event history
+7
+for the last 90 days of management events.
+8
+So you can see all the API calls that are being made
+9
+over time in this account.
+10
+So it doesn't have to be very interesting, okay,
+11
+but all of them will be here.
+12
+So what I wanna do for example, is that I want
+13
+to look in my EC2 console, and I created a demo instance.
+14
+And what I'm going to do is that I'm going
+15
+to terminate this instance.
+16
+So I do right click, terminate,
+17
+and now the instance is being terminated.
+18
+And what I'm going to do is I'm going to check whether
+19
+or not this event happens and appears within CloudTrail.
+20
+So I'm going to wait about five minutes and get back to you.
+21
+And so I just refreshed my pages, and as you can see,
+22
+I ran the terminate instances, API call.
+23
+And we can see what's the event source.
+24
+So it's EC2 from where it was done,
+25
+the access key that was used,
+26
+the region that was used, and so on.
+27
+And we can get the whole event right here.
+28
+So that's the full power of CloudTrail is
+29
+that we can see all the events really happening
+30
+from within CloudTrail directly in this UI.
+31
+And this is a short introduction at the practitioner level,
+32
+but this is enough for you to get started
+33
+and to answer questions at the exam.
+34
+So that's it.
+35
+I hope you liked it.
+36
+And I will see you in the next lecture.
+
+--- CloudTrail - EventBridge Integration ---
+
+1
+A very important cultural integration
+2
+you need to know about is the one with Amazon EventBridge
+3
+to intercept any API calls.
+4
+So let's say you wanted to receive an SNS notification,
+5
+anytime a user would delete a table
+6
+in DynamoDB by using the DeleteTable API Call.
+7
+So what happens that whenever we do an API call in AWS,
+8
+as you know, the API call itself is going
+9
+to be logged in CloudTrail.
+10
+That's for any API call.
+11
+But then all these API calls will end up as events
+12
+as well in Amazon EventBridge.
+13
+And so we can look
+14
+for that very specific delete table API call,
+15
+and create a rule out of it.
+16
+And this rule will have a destination
+17
+the destination being Amazon SNS
+18
+and therefore, we can create alerts.
+19
+So let me give you a few more examples
+20
+on how you can integrate Amazon Eventbridge and CloudTrail.
+21
+For example, say, you wanted to be notified
+22
+whenever a user was assuming a role in your accounts.
+23
+So the AssumeRole is an API in the IAM service
+24
+and therefore, is going to be logged by CloudTrail.
+25
+And then using EventBridge integration,
+26
+we can trigger a message into an SNS topic.
+27
+Similarly, we can also intercept API calls that,
+28
+for example, change the Security Group inbound rules.
+29
+So the Security Group call
+30
+is called AuthorizeSecurityGroupIngress,
+31
+and it's an EC2 API call.
+32
+So these are going to be logged again by CloudTrail
+33
+and then they will appear in EventBridge
+34
+and then we can trigger a notification in SNS.
+35
+So as you can see, the possibilities are endless,
+36
+but now you have a few ideas
+37
+of how the integration can be leveraged.
+38
+So I hope you liked it,
+39
+and I will see you in the next lecture.
+
+--- AWS Config - Overview ---
+
+1
+Okay, let's have a look at AWS Config.
+2
+So Config is a service that allows you to get auditing
+3
+and record compliance of your resources in AWS,
+4
+based on some rules that you're going to set,
+5
+you can also record Configuration
+6
+and their changes over time
+7
+to quickly be able to roll back and to figure out
+8
+what happened in your infrastructure if you need to.
+9
+So some questions that can be solved by Config are,
+10
+is there an unrestricted SSH access to my security groups?
+11
+Or do my buckets have anybody public access?
+12
+Or is there an ALB configuration that has changed over time?
+13
+Then based on these rules being compliant or not,
+14
+you can receive alerts or SNS notifications for any changes.
+15
+Config is a per region service,
+16
+so you need to configure it for all the regions
+17
+if you need to,
+18
+and you can aggregate the data across regions and accounts
+19
+to centralize it into one place,
+20
+you can also can store the configuration
+21
+of all your resources into Amazon history
+22
+to be later analyzed,
+23
+for example, by serverless query engine, such as Athena.
+24
+So what types of rules go into Config?
+25
+Well, you can have AWS managed config rules,
+26
+and there are over 75 rules that you can use,
+27
+or you can create your own config rules.
+28
+In this case, you need to define that rule yourself.
+29
+We're using a Lambda function.
+30
+For example, you can evaluate if each EBS disk
+31
+is going to be of type gp2
+32
+or if each two instance in your development accounts
+33
+is of type t2.micro.
+34
+Some rules can be evaluated or triggered
+35
+whenever a configuration is going to change.
+36
+So whenever, for example,
+37
+you have a new configuration of your EBS disc,
+38
+please evaluate the type of your EBS disk,
+39
+or you can also have the rule to be evaluated
+40
+at regular time intervals.
+41
+For example, every two hours,
+42
+please make sure that all my EBS discs are of type gp2.
+43
+Now, Config Rules are just for compliance.
+44
+They do not prevent actions from happening.
+45
+This is not a denied action on anything.
+46
+It doesn't replace security mechanisms such as IAM.
+47
+Okay, but what it does give you is a overview of your
+48
+configuration and the compliance of your resources.
+49
+Now there's no future for config.
+50
+It can be quite expensive very quickly.
+51
+You're going to pay 0.003 cents per configuration,
+52
+item recorded per region and 0.001 cents per config rule
+53
+evaluation per region.
+54
+Now for the company resource,
+55
+you're going to be able to view the compliance
+56
+of a resource over time.
+57
+For example, the security group has been non-compliance.
+58
+Then you can view the config resource configuration
+59
+over time, okay?
+60
+You can see when the change and who changed it and so on,
+61
+and you can link it to CloudTrail to view the API calls
+62
+made for that resource.
+63
+So you can get a full picture
+64
+of everything that's happening.
+65
+Now, although you cannot deny any action from happening
+66
+from within the config,
+67
+you can do remediations of your non-compliant resources
+68
+using an SSM Automation Documents.
+69
+So the idea is, for example,
+70
+you are monitoring whether or not
+71
+your IAM access keys have expired.
+72
+For example, they are older than 90 days.
+73
+In which case you want to mark them as non-compliant.
+74
+So this will not prevent them from not being compliant,
+75
+but you can trigger whenever a resource is not compliant,
+76
+a remediation action.
+77
+For example, there's an SSM document
+78
+named RevokeUnusedIAMUserCredentials, okay.
+79
+Maybe you want to use this one
+80
+and then is going to be applied
+81
+to whatever resource you have, okay?
+82
+And in this instance,
+83
+it's going to deactivate your IAM access keys.
+84
+So the idea is that's either using either using
+85
+AWS-Managed Documents
+86
+or creating your own automation documents,
+87
+you can have remediations
+88
+of your non-compliant resources, okay?
+89
+And if you want it to and go all the way through
+90
+with the scripting,
+91
+you could create a document
+92
+that will invoke a Lambda function
+93
+and you're free to do whatever you want there.
+94
+Finally, your remediation may have retries.
+95
+So in case the resource is still non-compliance
+96
+after an auto remediation, it may retry for example,
+97
+up to five times.
+98
+So lastly, what about notifications?
+99
+Well, we can use if EventBridge to trigger notifications,
+100
+whenever our resources are not compliant.
+101
+So, for example,
+102
+we monitor our security group, it becomes not compliance.
+103
+Then we can trigger an event in EventBridge,
+104
+and then pass it on to whatever resource you wants.
+105
+Or you can also pass on all the changes
+106
+and all the compliance that notifications
+107
+of your resources to SNS from Config.
+108
+So one configuration item,
+109
+and then if you want it to just filter
+110
+for only for some events,
+111
+you could use an SNS filtering to have a filtered SNS topic,
+112
+and then you can send it these notifications, for example,
+113
+to an admin email or to a slack channel and so on
+114
+to get all these notifications in one place.
+115
+So that's it for a Config.
+116
+I hope you liked it,
+117
+and it will see you in the next lecture for some hands-on.
+
+--- AWS Config - Hands On ---
+
+1
+So let's go into the config service
+2
+and start to configure it.
+3
+So we are in it and I'm going to click on get started
+4
+to start recording some settings.
+5
+So we're going to record
+6
+all the resources supported in this region,
+7
+but if you wanted to,
+8
+you can record only specific resource types.
+9
+In which case you can find resource categories
+10
+and then resource types on the right hand side.
+11
+But because I want to show you
+12
+all the resources I can record,
+13
+I'm going to click on this.
+14
+And on top of it, you can include global resources,
+15
+such as IAM users, group roles
+16
+and customer managed policies.
+17
+Just be aware that again,
+18
+config is not a part of the feature here,
+19
+so the more resources you record,
+20
+the more money you going to pay.
+21
+And so I'm doing this to show you everything to you,
+22
+but if you don't want to pay any money from this course,
+23
+please do not follow on with this hands-on.
+24
+Okay, so we're going to record our resources.
+25
+We're going to include global resources
+26
+and then to record all the resource configuration,
+27
+we need to create a config service linked role.
+28
+So we're going to click on that.
+29
+Then all this information is going to be delivered
+30
+into an Amazon S3 bucket.
+31
+So once you create a bucket,
+32
+and the bucket name is already entered for me,
+33
+so that's perfect.
+34
+And then we can have a prefix if you wanted to.
+35
+And then finally,
+36
+this is where the data is going to be stored.
+37
+And in terms of notification,
+38
+we can stream all the configuration changes
+39
+and notifications into an Amazon SNS topic if we wanted to,
+40
+and again, remember this is for everything into one topic.
+41
+But I don't wanna do this, so I will leave this unticked.
+42
+I click on next and next we find some AWS Managed Rules.
+43
+So we have a lot, as you can see,
+44
+and I want to define them later,
+45
+so I'm going to skip that part,
+46
+but you can have a look at them if you wanted to.
+47
+So click on next, and we can review the configuration.
+48
+So yes, we want to record all resources,
+49
+including global resources.
+50
+And we're going to deliver this into an S3 bucket
+51
+and currently we haven't defined any role.
+52
+So let's click on confirm.
+53
+Now the role is being created, the bucket is created
+54
+and then config is going to be started.
+55
+Now it's going to take a bit of time
+56
+for config to have a look at everything within your account
+57
+and look at the configuration.
+58
+So I'm going to post the video until this is done.
+59
+Okay, so my resources are still being discovered,
+60
+but I can go on the left hand side to resources,
+61
+and actually we will see
+62
+that some resources have already been discovered
+63
+in my account as you can see.
+64
+Some route tables, sub-net, VPC and so on,
+65
+have been discovered.
+66
+So what I can do is that I can look at resource type
+67
+and I can look for example, for EC2 security groups
+68
+and find that yes, my security groups are here.
+69
+And currently, they do not have a compliance status
+70
+because we haven't defined any kind of rule on top of them.
+71
+So let's have a look for example,
+72
+at one of these EC2 security group.
+73
+And from within the group,
+74
+we can have a look at the rules applied, so currently none.
+75
+And we could look at the configuration
+76
+of the security group itself, okay?
+77
+We can also look at the resource timeline.
+78
+And the resource timeline will give you
+79
+all the events related to that resource.
+80
+So there's a configuration change,
+81
+which is the initial right here.
+82
+There's some CloudTrail events also
+83
+that were related to the security group.
+84
+For example, authorizeSecurityGroupingress rules,
+85
+CreateLaunchConfiguration and CreateSecurityGroup,
+86
+this kinda thing.
+87
+And we can go to CloudTrail to find these events.
+88
+So what I want to do is to figure out
+89
+whether or not my security groups are compliant or not.
+90
+And so for this, we're gonna go into rules.
+91
+And rules is going to be able to give us the option
+92
+to add a rule,
+93
+and we can either add an AWS managed rule
+94
+or create our own custom rule with a lambda function.
+95
+So to keep it simple, I'm going to add an AWS managed rule
+96
+and let's have a look at rules that are accessible to us.
+97
+So one that I like is for example, approved-amis-by-id.
+98
+So this is to check whether running instances
+99
+are in your account using the specified AMIs.
+100
+So if I click on it, for example,
+101
+and click on next, which is not related to security groups,
+102
+but I just wanna show you one rule.
+103
+So this one will check
+104
+whether or not your EC2 running instances,
+105
+will be using the specified AMIs.
+106
+And so you can trigger this
+107
+based on whenever a resource that's changed.
+108
+And then you can also specify all the EC2 instances in here,
+109
+and we have to specify a parameter for that rule,
+110
+which is the list of all the AMI IDs are approved
+111
+within their account and this is going to be used
+112
+by the rules and inputs to figure out
+113
+whether or not EC2 instance is compliant.
+114
+Because we do not have many EC2 instances yet,
+115
+we're not going to use that rule.
+116
+So instead we're going to use a managed rule,
+117
+but this time for SSH.
+118
+And this is going to be applied to our security groups.
+119
+So we want to make sure
+120
+that we're not allowing any incoming SSH traffic
+121
+from anywhere.
+122
+So we click on next, this is called the restricted SSH
+123
+and the trigger is going to be on our resource
+124
+whenever the configuration changes, okay?
+125
+But as we can see, if we define a different kind of rule,
+126
+we could have it to be run periodically as well.
+127
+So, okay, we're once.
+128
+Whenever our security group resource will change,
+129
+please evaluate that rule.
+130
+This is applying only to AWS EC2 security groups,
+131
+and we have no parameters for that row.
+132
+Click on next and click on add rule.
+133
+And now we have defined this first rule,
+134
+so let's have a look.
+135
+So currently it's not evaluated
+136
+and we don't have any remediation.
+137
+So let's wait a little bit until this is done.
+138
+So I just refreshed my page and as you can see,
+139
+an evaluation was done automatically.
+140
+And if we look at this rule,
+141
+we have seven security groups,
+142
+no six security groups right here,
+143
+which are not compliant.
+144
+So if we go into our resources on the left hand side,
+145
+and we're going to filter again by EC2 security group
+146
+and have a look at all our resources.
+147
+As we can see, some of them are compliant
+148
+and some of them are not compliant.
+149
+So if we look at the compliant and the non compliant one
+150
+let's see the difference.
+151
+So this one is compliant, okay?
+152
+And a rule was applied to it as we can see
+153
+it says compliant.
+154
+So if I go and manage a resource
+155
+and look at the inbound rules right here,
+156
+as we can see, we only have one inbound rule,
+157
+which doesn't have a port, so there's no port 22 in here.
+158
+So this is why this is working.
+159
+But if I look at a non-compliant resource,
+160
+for example, this launch-wizard-3
+161
+I believe it was not compliant, okay?
+162
+And you click on manage resource,
+163
+we are taken again straight
+164
+into the console for security groups.
+165
+And if you look at the inbound rule,
+166
+as we can see, port 22 on IPv4 from anywhere is being open.
+167
+So this is a big problem.
+168
+So what I can do instead is delete this rule right here.
+169
+And if I delete this rule,
+170
+this will retrigger an evaluation of my resource,
+171
+which should make it compliant again.
+172
+So let's delete it and save my rules.
+173
+So then security group has been modified,
+174
+and so let me close this.
+175
+So this is my non-compliant security group,
+176
+and I can go into resource timeline to have a look.
+177
+And so within the resource timeline,
+178
+as we can see the configuration change happens,
+179
+and then the rule was run and it was not compliant.
+180
+Now I did change yet again, the configuration,
+181
+so we're going to have to wait a little bit of time
+182
+for the configuration change to happen right here,
+183
+which should trigger a rule compliance
+184
+and then hopefully now a resource will be compliant.
+185
+So let me pause a little bit and get back to you.
+186
+So I have just refreshed my page,
+187
+and as we can see in here on July 12th,
+188
+we have after the rule compliance,
+189
+a CloudTrail event that happened
+190
+because I did revoke a security group ingress rule
+191
+because I deleted an ingress rule, that's true.
+192
+Then it recorded as well, a configuration change
+193
+saying hey, this rule that had the port 22 in it
+194
+got deleted so from and to is empty because it got deleted.
+195
+And then config, they run my rule again,
+196
+named restricted SSH.
+197
+And now my resource is compliant.
+198
+And so that means that yes,
+199
+I have fixed the compliance of my resource.
+200
+So I can go back into here
+201
+and we can have a look at another security group,
+202
+for example, this one.
+203
+And under the rule here,
+204
+you can do action and then manage remediation.
+205
+So this is to remediate this for this rule,
+206
+so if you look at this rule,
+207
+we have manage remediation
+208
+and we can have manual remediation or automatic remediation.
+209
+In which case, you can specify your number of retries
+210
+and a number of seconds for the retries to happen, okay?
+211
+So we can select a manual remediation for example,
+212
+and then you need to choose a remediation action.
+213
+So these are SSM automation documents that we can select.
+214
+So these are defined by AWS, but we can also create our own.
+215
+And for example, well, we could delete a snapshot
+216
+or delete an image if it's not compliant
+217
+to whatever we wanted.
+218
+So it's really up to you to define the action you want.
+219
+So for example, you could say, hey attach EBS volume
+220
+and here's the right limit
+221
+based on the non compliant resources.
+222
+The resource ID parameters,
+223
+if you need them to be given to the remediation and so on.
+224
+Now this doesn't make any sense,
+225
+this remediation action, right?
+226
+We need to define a remediation action
+227
+that makes sense for our rule,
+228
+but as you can see, we can set up automatic
+229
+or manual remediation and configure it and so on,
+230
+and also best in some parameters around the document itself.
+231
+So that's it for config, I hope you liked it.
+232
+And then aggregators is to integrate
+233
+across multiple accounts, okay?
+234
+And then under settings,
+235
+you can have a look at the settings we defined from before,
+236
+including, for example, sending all the data
+237
+into an SNS topic.
+238
+Or you can set up Amazon CloudWatch Event rules, okay?
+239
+From the CloudWatch consoles
+240
+or from the Events rules console
+241
+to intercept only specific non-compliant events
+242
+for some specific rules.
+243
+So that's it for this section, I hope you liked it,
+244
+And I will see you in the next lecture.
+
+--- CloudTrail vs CloudWatch vs Config ---
+
+1
+So one very popular exam question
+2
+is to make the distinction
+3
+between CloudWatch, CloudTrail, and Config.
+4
+Now thankfully, thanks to the hands-on,
+5
+hopefully you know exactly what are the differences are.
+6
+It's pretty obvious in my opinion,
+7
+but it's never too bad
+8
+to go through an example and see them.
+9
+So CloudWatch is for performance metrics,
+10
+metrics, CPU, network, and to create dashboards.
+11
+You can also get events and alerts,
+12
+and finally, we have a log aggregation and analysis tool
+13
+if we wanted to.
+14
+So CloudWatch, I think we're all pretty familiar with it,
+15
+this already.
+16
+Now, CloudTrail could be new to you,
+17
+but basically it's to record API calls
+18
+made within your account by everyone and everything,
+19
+and you can define some trails for specific resources,
+20
+so you can get more information on EC2 only,
+21
+and it's a global service.
+22
+Now finally, Config is to record configuration changes
+23
+and to evaluate resources configuration
+24
+against compliance rules.
+25
+Finally, you're going to get a timeline
+26
+of changes and compliance with its nice UI.
+27
+So, I think they're a very distinctive service
+28
+I don't think there's any confusion,
+29
+but let's go through an Elastic Load Balancer
+30
+to see how each of these service
+31
+can help you understand what is happening to your ELB.
+32
+So CloudWatch can monitor
+33
+the number of incoming connections,
+34
+can visualize number of error codes
+35
+as a percentage over time,
+36
+and maybe we can have a dashboard
+37
+to get an idea of the load balancer performance,
+38
+maybe we can have a,
+39
+even make it a global dashboard
+40
+if you have multiple load balancers
+41
+for a global application.
+42
+Now, Config, why would we use Config on the ELB?
+43
+Well, maybe you wanna track
+44
+the security group rules for the load balancer,
+45
+making sure no-one does anything fishy or changes anything,
+46
+maybe you want to change also a track
+47
+that configuration changes for the load balancer itself,
+48
+to see if anyone modifies the SSL certificate,
+49
+or et cetera, et cetera.
+50
+We also maybe have a rule to say,
+51
+oh there's always should be an SSL certificate
+52
+assigned to the load balancer,
+53
+and maybe we should never allow
+54
+non-encrypted traffic into the load balancer,
+55
+that could be two different compliance rules
+56
+that you put into Config.
+57
+Finally, CloudTrail will be to track who made any changes
+58
+to the load balancer with API calls.
+59
+So, in case someone changes the security group rules
+60
+or someone changes the SSL certificate,
+61
+or removes it, or whatever,
+62
+then CloudTrail will be how we know who made these changes.
+63
+So all these tools are complementary when you think about it
+64
+and when you understand that,
+65
+how they're used for a load balancer,
+66
+which I think is a great example,
+67
+then you are going to rock any questions
+68
+asked for you at the exam.
+69
+So I hope that makes sense,
+70
+and I will see you in the next lecture.
+

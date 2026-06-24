@@ -1,0 +1,6214 @@
+--- EC2 Basics ---
+
+1
+And on EC2,
+2
+in which we will create our first website on AWS.
+3
+So what is Amazon EC2?
+4
+Well, EC2 is one of the most popular of AWS offering.
+5
+It is definitely used everywhere.
+6
+And what is it?
+7
+Well, it stands for Elastic Compute Cloud,
+8
+and this is the way to do Infrastructure as a Service
+9
+on AWS.
+10
+So EC2 is not just one service.
+11
+It's composed of many things at a high level.
+12
+So you can rent virtual machines on EC2.
+13
+They're called EC2 instances.
+14
+You can store data on virtual drives or EBS volumes.
+15
+You can distribute load across machines,
+16
+elastic load balancer.
+17
+You can scale services using an auto-scaling group or ASG.
+18
+And all these things, do not worry,
+19
+we will see in depth during this course.
+20
+Knowing how to use EC2 in AWS
+21
+is fundamental to understand how the cloud works,
+22
+because as I said from before,
+23
+the cloud is to be able to rent those compute
+24
+whenever you need, on demand.
+25
+And EC2 is just that.
+26
+So EC2, what can we choose for our instances,
+27
+so our virtual servers that we rent from AWS?
+28
+So what operating system can we choose
+29
+for our EC2 instances?
+30
+Three options,
+31
+Linux, and is going to be the most popular,
+32
+Windows, or even macOS.
+33
+How much compute power and cores you want
+34
+on this virtual machine,
+35
+so how much CPU.
+36
+Then you need to choose how much random access memory,
+37
+or RAM, you want,
+38
+and how much storage space.
+39
+So, for example,
+40
+do you want storage that's going to be attached
+41
+through the network,
+42
+and we'll see about it with EBS or EFS.
+43
+Or do you want it to be hardware attached?
+44
+In this case, it will be an EC2 instance store.
+45
+And we have a whole section on storage,
+46
+so don't worry about it.
+47
+And then finally, the type of network you want attached
+48
+to your EC2 instance.
+49
+So do you want a network card that's going to be fast?
+50
+What kind of public IP do you want?
+51
+And finally, we need to handle the firewall rules
+52
+of our EC2 instance,
+53
+and that is the security group.
+54
+And I lied,
+55
+finally, finally, there's the bootstrap script
+56
+to configure the instance at first launch,
+57
+which is called the EC2 User Data.
+58
+So we have lots and lots of options,
+59
+and as you'll see in the hands-on,
+60
+even more options at other certification levels
+61
+that you need to know in EC2 instances.
+62
+But at a core of it, what you need to remember
+63
+is that you can choose pretty much
+64
+how you want your visual machine to be,
+65
+and you can rent it from AWS,
+66
+and that is the power of the cloud.
+67
+You can do this by just in the blink of an eye, really.
+68
+So it is possible to bootstrap our instances
+69
+using the EC2 User Data script.
+70
+So what does bootstrapping mean?
+71
+Well, bootstrapping means launching commands
+72
+when the machine starts.
+73
+So that script is only run once,
+74
+and when it first starts,
+75
+and then we'll never be run again.
+76
+So the EC2 User Data has a very specific purpose.
+77
+It is to automate boot tasks,
+78
+hence the name bootstrapping.
+79
+So what tasks do you wanna automate
+80
+usually when you boot your instance?
+81
+Well, you want to install updates, install software,
+82
+download common files from the internet,
+83
+or anything you can think of, really,
+84
+anything you can think of.
+85
+So it could be whatever you want,
+86
+but just know that the more you add
+87
+into your User Data Script,
+88
+the more your instance has to do at boot time.
+89
+Simple, right?
+90
+By the way, the EC2 User Data Scripts
+91
+runs with the root user,
+92
+so any command you have will have the sudo rights, okay?
+93
+So this was a short introduction to EC2.
+94
+Don't worry, it's gonna get very, very practical very soon.
+95
+I will see you in the next lecture.
+
+
+=== Preparing for the Exam + Practice Exam - AWS Certified Solutions Architect Assoc ===
+
+
+--- Create an EC2 Instance with EC2 User Data to have a Website Hands On ---
+
+1
+Welcome.
+2
+So in this lecture we are going
+3
+to launch our first EC2 instance running Amazon Linux.
+4
+So for this we'll be launching our first EC2 instance,
+5
+which is well a visual server
+6
+and we'll use the console for this.
+7
+We'll get a high level approach
+8
+to all the various parameters you have
+9
+when launching an EC2 instance,
+10
+and you'll see there are many,
+11
+but we'll learn the most important ones.
+12
+And then we will launch a web server directly
+13
+on the EC2 instance using a piece of code we will pass
+14
+to the EC2 instance that is called the user data.
+15
+Finally, we'll learn how to start, stop
+16
+and terminate our instance.
+17
+So let's get started and launch our first EC2 instance.
+18
+For this, I'm gonna go
+19
+into the EC2 Console, then I will click on Instances
+20
+and then click on Launch Instances.
+21
+So in there I'm able to launch my first EC2 instance
+22
+and to do so I need to add a name and tags.
+23
+So the name is going to be My First Instance
+24
+and that is an app that is the name tag.
+25
+And if you wanted to add additional tags
+26
+to tag your instance differently,
+27
+then you could click there, but you don't need
+28
+to click on this using just name
+29
+as My First Instance is good enough.
+30
+Next, you need to choose a base image for your EC2 instance.
+31
+This is the operating system of your instance.
+32
+As you can see, there's a full catalog that you can search
+33
+from, but we're going to use the ones
+34
+from the quick start that are very, very helpful.
+35
+And the one we'll be using is the Amazon Linux,
+36
+which is provided by AWS.
+37
+So in it I will choose the Amazon Linux 2 AMI.
+38
+And as you can see that one is free tier eligible.
+39
+So we'll just leave it as is.
+40
+So this gives me Amazon Linux 2
+41
+and the architecture I will choose is 64-bits x86.
+42
+So everything left pretty much as a default
+43
+and we'll see in this section and more
+44
+and the other ones, you can create your own AMIs
+45
+and you can found them in here, okay?
+46
+But currently we're just going to use the ones provided
+47
+by AWS as quick starts.
+48
+Next, we need to choose an instance type.
+49
+And so instance types are going to differ based
+50
+on the number of CPUs they have, the amount
+51
+of memory they have and how much they cost.
+52
+As you can see right now I have a t2.micro selected.
+53
+This one is free tier eligible, so it will be free
+54
+to launch one of them during an entire month
+55
+if we leave it running.
+56
+So this is what we'll be using.
+57
+But in here you could scroll down
+58
+and look at other types of instances.
+59
+For example, t1.micro is also free tier eligible,
+60
+but that's older generation.
+61
+And as you can see, you have a bunch
+62
+of instances right here available to you.
+63
+Some of them are going
+64
+to be free tier eligible, some of them will not.
+65
+And by default, the one
+66
+that's gonna be free tier eligible is a t2.micro.
+67
+So we'll be using that one a lot.
+68
+If you wanted
+69
+to compare the instance types, you would just click on
+70
+that link and it shows you all the type of instances in here
+71
+as well as how much memory they have and so on.
+72
+So right now we'll be using a t2.micro.
+73
+Okay next, a key pair to log into your instance.
+74
+So this is necessary if we use the SSH utility
+75
+to access our instance and we will be using the SSH utility
+76
+in this course.
+77
+Therefore, it is required for us to create a key pair.
+78
+So as we can see right now there is no key pair
+79
+and we could proceed without a key pair,
+80
+but for now we won't do this.
+81
+So let's go ahead and create a new key pair
+82
+and the name is going to be EC2 Tutorial.
+83
+Then you need to choose a key pair type.
+84
+So we'll be using the RSA encrypted, okay, this is good.
+85
+And then the key pair format.
+86
+So if you have Mac or Linux
+87
+or Windows 10, then you can use the .pem format.
+88
+If you have Windows less than version 10,
+89
+for example Windows 7
+90
+or Windows 8, then you can do our shortcut
+91
+and directly use a ppk, which is going to be used for PuTTY
+92
+and PuTTY is how you do SSH on windows 7
+93
+and Windows 8.
+94
+So remember anything else but Windows 7
+95
+and Windows 8, choose .ppm else use ppk.
+96
+Okay, I should be clear enough, I'm going
+97
+to create this key pair and it is downloaded
+98
+for me directly.
+99
+So now it is selected automatically here.
+100
+Next we have to go into network settings.
+101
+So for now, I will not touch anything.
+102
+My instance is going to get a public IP
+103
+and then we need to connect to our instance.
+104
+And so for this, there's going
+105
+to be a security group attached
+106
+to our instance, which is going to control the traffic from
+107
+and to our instance, and therefore we can add rules.
+108
+And the first security group created will be called
+109
+launch-wizard-1.
+110
+So created by the console directly
+111
+and we can define multiple rules.
+112
+So the first rule we want to have is
+113
+to allow SSH traffic from anywhere.
+114
+So we leave it as this and this will create a rule
+115
+in our security group to allow SSH traffic,
+116
+but we also want to allow HTTP traffic from the internet.
+117
+So we'll tick that box and this is
+118
+because we're going to launch a web server
+119
+on our EC2 instance, so we need it as well.
+120
+As we're now going to use HTTPS
+121
+for now, we don't need to tick the second box.
+122
+Let's configure the storage
+123
+so then we can configure the storage.
+124
+And as we can see we have eight gigabits gp2 root volume
+125
+that will leave it as is, okay?
+126
+Because in the free tier we can get up to 30 gigabytes
+127
+of EBS general purpose SSD storage.
+128
+So this is good. And we only have one volume necessary.
+129
+If you go into advanced, you could configure them
+130
+and see a little bit more information, okay?
+131
+And the one important thing
+132
+to note in here is the delete on termination.
+133
+By default, it is unable to yes, I just did advanced
+134
+to show you that one detail, okay?
+135
+That means that once we terminate our EC2 instance, then
+136
+that volume is also going to be deleted.
+137
+Okay, so we leave everything as is
+138
+and we'll be get back into the simple mode.
+139
+Okay?
+140
+Next, for advanced details,
+141
+this is where it gets interesting.
+142
+So I will skip spot, I will skip IAM instance profile.
+143
+Don't worry, I will go
+144
+over them once we need to explore them.
+145
+I will skip all of that. So let's scroll down.
+146
+Let's scroll down, let's scroll down all the way
+147
+to the bottom.
+148
+And at the bottom there is user data.
+149
+User data is when we pass a script.
+150
+So some comments to our EC2 instance
+151
+to execute on the first launch of our EC2 instance
+152
+and only the first launch.
+153
+And therefore on the first launch, we want
+154
+to be able to pass these command right here.
+155
+So for this, you go into your code, you go
+156
+to the EC2 fundamentals,
+157
+and then the EC2 user data set file, you copy entirely this,
+158
+so all of it.
+159
+And then you paste it here. So you paste everything.
+160
+And that means that this script is going
+161
+to be executed when the instance is first started
+162
+and only once, okay?
+163
+In the whole lifecycle of the instance.
+164
+And what it's going to do is that it's going
+165
+to update a few things, then install the HTTPD web server
+166
+on the machine and then write a file, an HTML file.
+167
+That will be our web server.
+168
+And so you don't need to know code or know these commands.
+169
+Okay?
+170
+This is provided to you to illustrate a few things
+171
+on this lecture.
+172
+So finally for summary, we want to start one instance.
+173
+This is great and we can review everything we have here.
+174
+It all looks good. We are very happy.
+175
+And as you can see in the free tier, we get a first year
+176
+of 750 hours of 2.micro, which is running it for one month.
+177
+So that's every month.
+178
+And if you don't have a t.2micro
+179
+in your region, then it's going to be a t3.micro, okay?
+180
+And then also we get 30 gigabytes of EBS storage and so on.
+181
+So let's launch this instance and the instance is going
+182
+to be launched.
+183
+Let's go to View all Instances, Refresh.
+184
+And now my instance is in pending state.
+185
+So it's gonna take about 10, 15 seconds
+186
+for the instance to come up.
+187
+And this is the whole power of the cloud.
+188
+Thanks to the cloud, I am able to create an instance or 100
+189
+of them very quickly in less than 10 seconds
+190
+without me owning any single server.
+191
+So that is extremely powerful
+192
+and we just scratched the surface of the power of the cloud,
+193
+obviously because the course is just getting started,
+194
+but you can get a feeling of the advances
+195
+and the speed we can have on the cloud thanks to this.
+196
+So as you can see now my instance is running
+197
+and right now I wanna show you a few things, okay?
+198
+The first one is
+199
+that the instance name is My First Instance,
+200
+and there's an instance ID which is just
+201
+a unique identifier for my instance.
+202
+There is a public IPv4 address.
+203
+This is what we're going to use to access our EC2 instance.
+204
+Or there is a private IPv4 address, which is how
+205
+to access that instance internally
+206
+on the AWS network, which is private.
+207
+The instance site is running and we get some information
+208
+around host name, private DNS, which instance that we have.
+209
+So t2.micro as well as if you scroll
+210
+down the AMI we're using, which is Amazon Linux 2,
+211
+and the key pair we're using, which is EC2 tutorial, okay?
+212
+So you can have a look at a few details in here.
+213
+You have more information.
+214
+For example, on security, we get some information
+215
+on the security group, which was created called
+216
+launch-wizard-1 with these inbound rules.
+217
+So port 22 accessible from everywhere
+218
+and port 80 accessible from everywhere.
+219
+So you should have something similar, okay?
+220
+If you don't start over because you probably missed a step.
+221
+And the rule allowing all communication
+222
+outwards, which allows the instance to access the internet.
+223
+For storage we saw that, yes, we created one volume
+224
+of eight gigabytes, so we're good to go.
+225
+So now let's have a look
+226
+at the web server running on my instance.
+227
+And for this you go on public IPv4 address, you copy this
+228
+or you click on Open Address.
+229
+And as you can see, it doesn't work.
+230
+Or if you click on it, copy
+231
+and then paste it, you press Enter, it's going to work.
+232
+So it depends on the web browsers you have and so on. Okay?
+233
+But the reason it doesn't work here is that
+234
+in the URL you need to make sure
+235
+that you're using the HTTP protocol,
+236
+so http:// and then the IP.
+237
+Because if you use HTTPS, this is not going to work.
+238
+It's going to give you an infinite loading screen
+239
+which was happening right here.
+240
+So please make sure to use http:// and then the IP address.
+241
+And you're going to get this screen.
+242
+And in programming, when you do something
+243
+for the first time, you usually say Hello World.
+244
+So this web server is saying,
+245
+Hello World from and this IP right here,
+246
+which is not the public IP, this IP right here,
+247
+172-31-33-135 actually corresponds
+248
+to the private IPv4 address.
+249
+So this is something that I program myself.
+250
+So we use the public IP address to access it,
+251
+but we have the private IP address in here
+252
+and we have the hello world.
+253
+And if you go too fast, you're going to get no messages.
+254
+So if you go too fast, just wait five minutes, get back
+255
+to it, refresh this page and you'll see it.
+256
+Okay, so cool, we have a web server running, this is great.
+257
+Now let's explore a few options.
+258
+So we have an EC2 instance and it's running,
+259
+but if we don't need it, we can go to instance states
+260
+and then click on Stop Instance.
+261
+And in the cloud you can start
+262
+and stop instances just as you wish.
+263
+And why would you stop an instance?
+264
+Well, the longer you leave it running, the more you're going
+265
+to pay of course.
+266
+But if you decide
+267
+to stop an instance, then AWS will not bill you for it.
+268
+The instance state is kept
+269
+because you have a volume attached to it,
+270
+but at least you're not paying for it.
+271
+So we can see right now, well the instance is
+272
+in a stopping state, and if we try
+273
+to refresh this page, it's going to,
+274
+of course it's not going to work
+275
+because well you don't have the server running anymore.
+276
+So you can see it gets
+277
+to some like infinite loading experience.
+278
+Okay?
+279
+So my instance is now stopped and if I wanted
+280
+to actually I could get rid of it.
+281
+And in the cloud it's very common
+282
+to start instances and then get rid of them.
+283
+We're very quickly just to try it out
+284
+because this is the cloud and we can do whatever we want.
+285
+So we can do in instance state and then terminate instance.
+286
+If we do so, we're going to get a warning message
+287
+and don't click on Terminate
+288
+because I want to keep this instance with me, okay?
+289
+But this is how we would get rid of it.
+290
+So I cancel this, but what I'm going to do now is I'm going
+291
+to start my instance again.
+292
+So I go to Instance State and then Start Instance.
+293
+And now as you can see, the state is pending,
+294
+so it is getting started and I just wait for it
+295
+to be started in the green state
+296
+and I will show you something very interesting.
+297
+Okay, so my instance is now running, and if I go here
+298
+and stop the refresh and try again to refresh,
+299
+as you can see, it still goes into an infinite loop.
+300
+Well, you may say while the server is running, Stefan.
+301
+So why is it not displaying the message now?
+302
+It is displaying here,
+303
+but like from the old one, of course.
+304
+So here the IP start with 54, right?
+305
+But here, if you click on here, now the public IP start
+306
+with 3.250.
+307
+So the public IP actually has changed.
+308
+So if you stop an instance and then you start it later
+309
+on, then AWS will maybe change its public IPv4.
+310
+So therefore you need
+311
+to copy the new IPv4, make sure to use HTP.
+312
+And voila, we have access back to our EC2 instance.
+313
+But one thing that has not changed is the private IPv4,
+314
+the private IP will always stay the same,
+315
+but the public IPv4 may change.
+316
+Okay? So well, so that's it for this hands-on.
+317
+We have seen quite a lot of things.
+318
+We've launched our first EC2 instance,
+319
+which is very exciting.
+320
+Our first web server in the cloud.
+321
+We've had to look at some of the power of the cloud.
+322
+You're just using some API calls
+323
+to stop an instance, start instance, and so on.
+324
+So I hope you liked it and I will see you
+325
+in the next lecture.
+
+
+=== Congratulations - AWS Certified Solutions Architect Associate ===
+
+
+--- EC2 Instance Types Basics ---
+
+1
+Okay, so now let's talk
+2
+about EC2 instance types.
+3
+So there are different types of EC2 instances
+4
+that you can use for different use cases,
+5
+and they have different types of optimization.
+6
+And let's go check out this link,
+7
+and we'll see we have for now seven different types
+8
+of EC2 instances.
+9
+So this website on the AWS website
+10
+is what we're interested into.
+11
+And as we can see,
+12
+we have different types of instances.
+13
+We have general purpose,
+14
+computer optimized, memory optimized and so on.
+15
+And so for each type of instance,
+16
+we have different families.
+17
+And so, as we can see,
+18
+this website is going to be the reference for us
+19
+to look at EC2 instance types
+20
+and know their costs and other specificity.
+21
+What I'm going to do though
+22
+is just walk you through a high level overview
+23
+of how they work in AWS.
+24
+AWS will have the following naming convention.
+25
+For example, we'll be talking about a m5.2xlarge.instance.
+26
+What does that mean?
+27
+Well, M is going to be called the instance class, okay?
+28
+And this is going to be, for example,
+29
+in this case a general purpose type of instance.
+30
+Five is generation of the instance.
+31
+So as it improves the hardware over time,
+32
+it will release a new generation of hardware.
+33
+And so after m5,
+34
+if they improve the m type of instance class,
+35
+then it will go to m6.
+36
+And then finally, the 2xlarge
+37
+represent the size within the instance class.
+38
+So it starts as small and then large,
+39
+and then 2xlarge, 4xlarge and so on.
+40
+So it represents the size of the instance.
+41
+And the more the size,
+42
+the more the memory,
+43
+the more the CPU you're going to have on your instance.
+44
+So from an exam perspective,
+45
+what do you need to know?
+46
+Well, we'll talk
+47
+about a few different type of instance types.
+48
+So you have general purpose,
+49
+and these are great for diversity of workloads,
+50
+such as web servers or code repositories.
+51
+They will have a good balance
+52
+between compute, memory, networking.
+53
+And so in this course,
+54
+we'll be using general purpose instances.
+55
+We'll be using the t2.micro,
+56
+which is the free tier general purpose type of instance.
+57
+On the website that I just showed you,
+58
+you will see all the different types of instance
+59
+that are general purpose,
+60
+and this is gonna evolve over time
+61
+so I won't update this slide,
+62
+but you can always refer back to the AWS website
+63
+to check what the instances are
+64
+in the general purpose type of family.
+65
+Then we have compute optimized,
+66
+and these are instances that are great
+67
+and optimized for compute intensive tasks.
+68
+So what requires a high level of processor?
+69
+Well, for example,
+70
+it could be if you're batch processing some data,
+71
+if you're doing media transcoding,
+72
+if you need high performance web servers.
+73
+If you're doing high performance computing,
+74
+it's called HPC,
+75
+if you're doing machine learning,
+76
+or if you have a dedicated gaming server.
+77
+So all these things are tasks that require a very good CPU,
+78
+a very good compute side.
+79
+And so EC2 instances do have this kind of particularity.
+80
+And for now, all the compute optimized instances in EC2
+81
+are of the C name,
+82
+so C5, C6 and so on.
+83
+Next, we have some EC2 instances that are memory optimized,
+84
+and they're going to have a really fast performance
+85
+for the type of workloads
+86
+that will process large data sets in memory.
+87
+So memory means RAM.
+88
+And so the use cases are,
+89
+this is going to be high performance
+90
+for relational or non-relational databases
+91
+that are mostly going to be in memory databases.
+92
+Distributed web scale cache store.
+93
+So for ElastiCache, for example.
+94
+In memory databases
+95
+that are optimized for business intelligence or BI.
+96
+And applications performing realtime processing
+97
+of big unstructured data.
+98
+So in terms of the names for the memory optimized instances,
+99
+that's going to be the R series because R stands for RAM.
+100
+But there's also going to be X1, High Memory and Z1.
+101
+Again, you don't need to remember the name of the instances,
+102
+but good to know at a high level.
+103
+Okay, and finally we'll have storage optimized instances.
+104
+They're great when you are accessing a lot of data sets
+105
+on the local storage.
+106
+And so the use cases for storage optimized instances
+107
+are going to be high frequency
+108
+online transaction processing,
+109
+so OLTP systems,
+110
+relational and NoSQL databases,
+111
+and we'll see those in detail
+112
+when we get to the database sections.
+113
+Cache for in-memory databases,
+114
+for example, Redis.
+115
+Data warehousing application,
+116
+distributed file systems,
+117
+and the storage optimized instances in AWS.
+118
+We'll start with a I or D or H1, okay?
+119
+But again, don't have to remember this.
+120
+I'm just giving you examples.
+121
+So what does it mean?
+122
+Let's compare a few instance types.
+123
+So for example, for t2.micro,
+124
+we have one vCPU and one memory,
+125
+one gigabytes of memory.
+126
+And if you look for example at the r5.16xlarge,
+127
+we have 16 vCPU and 512 gigabytes of memory.
+128
+So we can see there's a lot of more emphasis on the memory.
+129
+If we compare it for example to a c5.d.4xlarge,
+130
+we can see we have 16 vCPU and 32 gigabytes of memory.
+131
+So less memory, more CPU and so on,
+132
+different network performance,
+133
+different EBS bandwidth and so on.
+134
+So just to give you a point of comparison.
+135
+And if you wanted a website
+136
+to compare all the instances together,
+137
+there's one that I really like.
+138
+It's called ec2instances.info,
+139
+and I'll show it to you right now.
+140
+So I am on the ec2instances.info website,
+141
+and as we can see,
+142
+we have a list of all the instances available in AWS.
+143
+So really a lot.
+144
+We also get some information
+145
+around the Linux On Demand cost,
+146
+the Linux Reserved cost and so on.
+147
+So some cost information.
+148
+We get information around the memory,
+149
+the number of vCPU.
+150
+We can order by name, we can search it.
+151
+So it's quite handy,
+152
+and I really like this website.
+153
+And if you go and use AWS,
+154
+you probably will use this website as well.
+155
+So that's it for this lecture.
+156
+I hope you liked it,
+157
+and I will see you in the next lecture.
+
+--- Security Groups & Classic Ports Overview ---
+
+1
+Let's talk about these firewalls
+2
+around our EC2 instances.
+3
+So we briefly configured one in the previous lecture,
+4
+but security groups, yet again,
+5
+are going to be fundamental into doing network security
+6
+in the AWS cloud.
+7
+They will control how the traffic is allowed into
+8
+and out of your EC2 instances.
+9
+Security groups are going to be very easy.
+10
+They only contain allow rules.
+11
+So we can say what is allowed to go in and to go out.
+12
+And security groups can have rules that reference
+13
+either by IP addresses, so where your computer is from,
+14
+or by other security groups.
+15
+So as we'll see, security groups can reference each other.
+16
+So here, let's take an example.
+17
+We are on our computer, so we are on the public internet,
+18
+and we're trying to access our EC2 instance
+19
+from our computer.
+20
+We are going to create a security group
+21
+around our EC2 instance,
+22
+that is the firewall that is around it.
+23
+And then this security group is going to have rules.
+24
+And these rules are going to say
+25
+whether or not some inbound traffic,
+26
+so from the outside into the EC2 instance is allowed.
+27
+And also if the EC2 instance
+28
+can perform some outbound traffic,
+29
+so to talk from where it is into the internet.
+30
+Now let's do a deeper dive, right?
+31
+Security groups are a firewall on our EC2 instances,
+32
+and they're going to really get
+33
+and regulate access to ports.
+34
+They're going to see the authorized IP ranges.
+35
+Would it be on IPv4 or IPv6?
+36
+These are the two kinds of IP on the internet.
+37
+This is going to control the inbound network,
+38
+so from the outside to the instance,
+39
+and the outbound network from the instance to the outside.
+40
+And when we look at security group rules,
+41
+they will look just like this.
+42
+So there will be the type, the protocol,
+43
+so TCP, the port allowing it,
+44
+so where the traffic can go through on the instance,
+45
+and the source, which represents an IP address range.
+46
+And 0.0.0.0/0 means everything.
+47
+And this here means just one IP.
+48
+Now let's look at a diagram, right?
+49
+So we have our EC2 instance,
+50
+and it has one security group attached to it
+51
+that has inbound rules and outbound rules,
+52
+so I've separated them onto this diagram.
+53
+So our computer is going to be authorized on, say, port 22,
+54
+so the traffic can go through from our computer
+55
+to the EC2 instance.
+56
+But someone else's computer that's not using my IP address
+57
+because they don't live where I live,
+58
+then if they try to access our EC2 instance,
+59
+they will not get through it
+60
+because the firewall is going to block it,
+61
+and it will be a timeout.
+62
+Then for the outbound rules, by default,
+63
+our EC2 instance for any security group
+64
+is going to be by default allowing any traffic out of it.
+65
+So our EC2 instance,
+66
+if it tries to access a website and initiate a connection,
+67
+it is going to be allowed by the security group.
+68
+So this is the basics of how the firewall works.
+69
+Now, good to know,
+70
+what do you need to know with security groups?
+71
+Well, they can be attached to multiple instances, OK?
+72
+There's not a one-to-one relationship
+73
+between security group and instances,
+74
+and actually an instance
+75
+can have multiple security groups too.
+76
+Security groups are locked down
+77
+to your region/VPC combination, OK?
+78
+So if you switch to another region,
+79
+you have to create a new security group,
+80
+or if you create another VPC,
+81
+and we'll see what VPCs are in the later lecture,
+82
+well, you have to recreate the security groups.
+83
+The security groups live outside the EC2.
+84
+So as I said, if the traffic is blocked,
+85
+the EC2 instance won't even see it, OK?
+86
+It's not like an application running on EC2.
+87
+It's really a firewall outside your EC2 instance.
+88
+To be honest, and that's just an advice to you
+89
+from developer to developer,
+90
+but it's good to maintain one separate security group
+91
+just for SSH access.
+92
+Usually SSH access is the most complicated thing,
+93
+and you really want to make sure that one is done correctly.
+94
+So I usually separate my security group
+95
+for SSH access separately.
+96
+If your application is not accessible, so timeout,
+97
+so we saw this in the last lecture,
+98
+then it is a security group issue, OK?
+99
+So if you try to connect to any port
+100
+and your computer just hangs and waits and waits,
+101
+that's probably a security group issue.
+102
+But if you receive a connection refused error,
+103
+you actually get a response saying connection refused,
+104
+then the security group actually worked,
+105
+the traffic went through, and the application was errored
+106
+or it wasn't launched or something like this.
+107
+So this is what you would get
+108
+if you get a connection refused.
+109
+By default, all inbound traffic is blocked
+110
+and all outbound traffic is authorized, OK?
+111
+Now there is a small advanced feature
+112
+that I really, really like,
+113
+and I think it's perfect if you start using load balancers,
+114
+and we'll see this in the next lecture as well,
+115
+which is how to reference security groups
+116
+from other security groups.
+117
+So let me explain things.
+118
+So we have an EC2 instance, and it has a security group,
+119
+what I call group number one.
+120
+And the inbound rules is basically saying,
+121
+I'm authorizing security group number one inbound
+122
+and security group number two.
+123
+So why would we even do this?
+124
+Well, if we launch another EC2 instance
+125
+and it has security group two attached to it,
+126
+well, by using the security group run rule
+127
+that we just set up, we basically allow our EC2 instance
+128
+to go connect straight through on the port we decided
+129
+onto our first EC2 instance.
+130
+Similarly, if we have another EC2 instance
+131
+with a security group one attached,
+132
+well, we've also authorized this one to communicate
+133
+straight back to our instances.
+134
+And so regardless of the IP of our EC2 instances,
+135
+because they have the right security group attached to them,
+136
+they're able to communicate straight through
+137
+to other instances.
+138
+And that's awesome because it doesn't make you think
+139
+about IPs all the time.
+140
+And if you have another EC2 instance,
+141
+maybe with security group number three attached to it,
+142
+well, because group number three wasn't authorized
+143
+in the inbound rules of security group number one,
+144
+then it's being denied and things don't work.
+145
+So that's a bit of an advanced feature,
+146
+but we'll see it when we'll deal with load balancers
+147
+'cause it's quite a common pattern.
+148
+I just want you to know about it.
+149
+Again, just remember this diagram.
+150
+And by now you should be really, really good
+151
+at security groups and understand them correctly.
+152
+Now, going into the exam, what ports do you need to know?
+153
+Well, we need to know something called SSH or secure shell.
+154
+And we're going to see this in the very next lectures.
+155
+This is the port 22.
+156
+And this allows you to log into
+157
+an EC2 instance on Linux.
+158
+You have port 21 for FTP or file transfer protocol,
+159
+which is used to upload files into a file share.
+160
+And you have SFTP, which is also using port 22.
+161
+Why?
+162
+Well, because we're going to upload files,
+163
+but this time using SSH,
+164
+because it's going to be a secure file transfer protocol.
+165
+Then we have port 80 for HTTP.
+166
+And we've been using it in the previous lecture.
+167
+This is to access unsecured websites.
+168
+And you've seen this whenever you go on the internet
+169
+and you enter HTTP colon slash slash,
+170
+and then the address of the website.
+171
+And you've seen most likely a lot more like this.
+172
+You've seen HTTPS, which is to access secured websites,
+173
+which are the standard nowadays.
+174
+And for HTTPS, it is port 443.
+175
+Finally, the last port you need to remember is 3389
+176
+for RDP or the remote desktop protocol,
+177
+which is the port that's used
+178
+to log into a Windows instance.
+179
+OK, so 22 is SSH for Linux instance,
+180
+but 3389 is RDP for a Windows instance.
+181
+Now, this is all the theory about security groups.
+182
+I will see you in the next lecture for some practice.
+
+--- Security Groups Hands On ---
+
+1
+So we've launched our EC2 instance
+2
+and now let's have a look at security groups.
+3
+So we have a short idea of security groups
+4
+by just clicking on security in here.
+5
+And we get some overview
+6
+of the security groups attached to our instance
+7
+as well as the inbound rules and the outbound rules.
+8
+But what I will do is
+9
+that I will just access the more complete page
+10
+of security groups from the left hand side menu.
+11
+So under networking and security,
+12
+you click on security group.
+13
+And we can see so far
+14
+that we have two security groups
+15
+in our console so far.
+16
+So the default security group that is created by default
+17
+as well as the launch wizard one
+18
+which is the first security group
+19
+that was created when we created our EC2 instance.
+20
+And so a security group has an ID.
+21
+So an identifier, just like an EC2 instance has an ID.
+22
+And then we can check the inbound rules.
+23
+So the inbound rules are the rules that allows connectivity
+24
+from the outside into the EC2 instance.
+25
+And as we can see, we have two inbound rules in here.
+26
+And the first one is of type SSH,
+27
+which allows port 22 in our instance.
+28
+And let me just click on edit inbound rules to see better.
+29
+So set first one as SSH on port 22 from anywhere.
+30
+So 000/0 is anywhere.
+31
+And the second one is HTTP
+32
+from port 80, again, anywhere.
+33
+So this rule right here is what allowed us
+34
+to access our web servers.
+35
+So if you go back to the EC2 console,
+36
+go to our instance
+37
+and
+38
+we were doing this IPv4 address.
+39
+Okay, so we were opening it as an HTTP website.
+40
+This worked thanks to this rule, port 80.
+41
+Let's verify this.
+42
+So if we delete this rule on port 80 and save the rules,
+43
+as we can see now we only have port 22.
+44
+So if I go back to this and refresh my page,
+45
+now as we can see,
+46
+there is an infinite loading screen right here
+47
+on the top of my screen,
+48
+which shows that well,
+49
+indeed I don't have access to my EC2 instance.
+50
+So here is a very important tip for you.
+51
+Any time you see a timeout,
+52
+okay, this is a timeout
+53
+because it keeps on trying to connect
+54
+but it doesn't succeed
+55
+and then it will eventually fail, called a timeout.
+56
+So if you see a timeout when trying to establish any kind
+57
+of connection into your EC2 instances,
+58
+for example, if you try to SSH into it,
+59
+but there's a timeout,
+60
+or if you try to do an HTTP query,
+61
+but there's a timeout,
+62
+or if you try to do anything with it
+63
+and there is a timeout,
+64
+this is 100% the cause
+65
+of an EC2 security group.
+66
+Okay, so in that case,
+67
+go to your security group rules
+68
+and make sure that they are correct,
+69
+because if they're not correct,
+70
+then you will get a timeout.
+71
+So to fix this, we can add back a rule.
+72
+We will do
+73
+HTTP,
+74
+which allows to get port 80
+75
+in here automatically.
+76
+And then from anywhere IPv6, IPv4, excuse me, right here,
+77
+which allows this block right here.
+78
+We save the rule.
+79
+Now the rule is done.
+80
+If I go back to my page and refresh
+81
+as you can see, now it is fully working.
+82
+So this inbound rule really did the trick.
+83
+But we could add any sort of inbound rule.
+84
+So we could define the port or the port range
+85
+that we want to.
+86
+So we could say, for example, any port we want,
+87
+for example 443, which is HTTPS
+88
+or choose directly from a dropdown here
+89
+as a little shortcut the type of protocol you want.
+90
+For example, HTTPS is 443 automatically.
+91
+And then you can define where you want to allow from.
+92
+So you have different CIDR blocks
+93
+and we don't need them right now,
+94
+or security groups or prefix list,
+95
+but we'll get to see them later on,
+96
+okay, in this course.
+97
+For now, just know that you could have
+98
+either a custom CIDR anywhere which adds this blog
+99
+or if you want to, can select my IP
+100
+to only allow access to your IP.
+101
+But just be aware that if your IP changes,
+102
+then you will get a timeout
+103
+and will not be able to access your EC2 instance.
+104
+Finally, one last bit of information.
+105
+So we can have a look at outbound rules.
+106
+So we allow all traffic on IPv4 to anywhere.
+107
+So this allows our EC2 instance
+108
+to get full internet connectivity anywhere.
+109
+And something you should know,
+110
+so we have two security groups right here
+111
+default and launch wizard,
+112
+and an EC2 instance
+113
+can have many security groups attached to it.
+114
+So it can attach one but two or three
+115
+if you want maybe five security groups
+116
+and the rules will just add on to each other.
+117
+And also this security group we have created from default
+118
+so for example, this launch wizard one can be attached
+119
+to other EC2 instances.
+120
+Okay, so you can attach
+121
+as many security groups as you want
+122
+as well as as many EC2 instances you want
+123
+to one security group.
+124
+That's it for this lecture.
+125
+I hope you liked it.
+126
+And I will see you in the next lecture.
+
+--- SSH Overview ---
+
+1
+You're getting to one of the trickier bits
+2
+of running in the Cloud, which is how do you connect
+3
+inside of your servers
+4
+to perform some maintenance or action.
+5
+So for this, for Linux servers,
+6
+we can use SSH to do a secure shell into our servers.
+7
+So based on the operating system you have on your computer,
+8
+you have different ways of achieving it.
+9
+So I have separated Mac, Linux,
+10
+Windows before version 10 and Windows after version 10.
+11
+So the SSH is a command line interface utility
+12
+that can be used on Mac or Linux
+13
+as well as Windows over version 10.
+14
+Then if you have Windows less than version 10,
+15
+you can use something called putty.
+16
+Putty will exceed the exact same thing as SSH.
+17
+So when I say you should SSH, if you're on Windows,
+18
+you can use putty.
+19
+And putty is valid for any version of Windows.
+20
+They do the exact same thing, they allow you to
+21
+use the SSH protocol to connect into your EC2 instances.
+22
+And then finally, there's something new
+23
+called the EC2 Instance Connect,
+24
+which is going to use your web browser.
+25
+So not a terminal nut putty your web browser
+26
+to connect to your EC2 instance.
+27
+And I like it a lot because it is valid
+28
+for Mac, Linux, Windows, all versions.
+29
+The cool thing about EC2 Instance Connect is that it works,
+30
+but it only works for now with Amazon NX2
+31
+And this is why I've been using
+32
+Amazon NX2 in this tutorial.
+33
+So now what should you do?
+34
+If you are on Mac or Linux,
+35
+then please watch the SSH lecture on Mac/Linux.
+36
+If you're on Windows,
+37
+then you can either watch the Putty Lecture
+38
+or if you have Windows 10, then I have created an SSH
+39
+on Windows 10 lecture as well.
+40
+Regardless, I am going to personally use
+41
+in the future lectures, EC2 Instance Connect.
+42
+So if you wanna have a look and play with it,
+43
+I find it really simple.
+44
+You don't need to install anything
+45
+or use the command line interface
+46
+if you're not familiar with it.
+47
+So this could be very handy for all of you.
+48
+Nonetheless, SSH is in my experience
+49
+and I've taught hundreds of thousands of students
+50
+what caused the most troubles in this course.
+51
+So if you get a problem with SSH
+52
+we can re-watch the lecture, you may have missed something,
+53
+maybe a security group rule, maybe you command,
+54
+maybe a typo, I don't know you.
+55
+There's also a troubleshooting guide
+56
+that I've put together after these lectures so have a look.
+57
+I would recommend your try, EC2 Instance Connect
+58
+as well as sometimes fixes all problems.
+59
+And if none of these method works, sorry
+60
+if one method works, then you're good to go.
+61
+You don't need to have them all working.
+62
+If one works, you're good to go.
+63
+And if no method works, that's completely okay.
+64
+This course is just introductory
+65
+and he won't use SSH much and you'll be fine.
+66
+So that's it that just for the introduction.
+67
+Now find your right lecture and it will see you
+68
+in the next lecture.
+
+--- How to SSH using Linux or Mac ---
+
+1
+All right.
+2
+So now we're going to add SSH into our EC2 Instance
+3
+using our Linux or our Mac computer.
+4
+And you may say, what the hell is SSH?
+5
+What are you talking about Stephane?
+6
+Well, SSH is one of the most important function
+7
+when you deal with Amazon Cloud.
+8
+It basically allows you
+9
+to control a remote machine or server,
+10
+all using your terminal or your command line.
+11
+So how does that look like with the diagram?
+12
+Well, we have our EC2 machine,
+13
+and we launched Amazon Linux 2 on it
+14
+and our machine has a public IP.
+15
+Now we want to access that machine.
+16
+And so for this, I don't know if you remember
+17
+but we have a security group
+18
+and on it we allowed the Port 22 of SSH.
+19
+So what's going to happen is at our computer,
+20
+so my laptop for you, for me, or whatever for you,
+21
+then we'll access over the web.
+22
+Through that Port 22,
+23
+it will access the EC2 machine.
+24
+Basically, our command line interface is going to be
+25
+just as if we were inside that machine.
+26
+So let's get started.
+27
+Okay.
+28
+So we are going to SSH into our instance.
+29
+So remember that PEM file you've downloaded
+30
+called EC2 Tutorial.pem?
+31
+Please make sure to remove the space in it
+32
+if you have a space, even if you have a PPK file.
+33
+Please rename it and remove the space from it.
+34
+So EC2Tutorial.pem is removed for me.
+35
+And then, you go ahead and place it in a directory you like.
+36
+So for me, I took my file and I pasted it,
+37
+and I placed it in a folder called aws-course. Okay?
+38
+So this is the first step to making sure you are ready.
+39
+So next, what I'm going to do is that I am going to go
+40
+in my EC2 instance overview page
+41
+and find my first instance.
+42
+So here we have my first instance
+43
+and we're going to SSH into it.
+44
+So we're going to open a remote terminal into it.
+45
+And for this, I need to get the public IPv4 address,
+46
+so I can copy this, and I will use it later.
+47
+The other thing I need to do
+48
+is to look at the security of my instance.
+49
+So again, if you did everything with me,
+50
+then your security groups have this rule in it
+51
+called Port 22 which is the SSH port
+52
+from anywhere by 0.0.0.0/0. Okay?
+53
+So if you have that rule, then you're good to go.
+54
+If not, please click on the security group
+55
+and add the missing rule.
+56
+Next, I need to try to do an SSH.
+57
+So first of all, ssh ec2-user@
+58
+and then the IP you have.
+59
+So the reason we do ssh ec2-user
+60
+is because the Amazon Linux 2 AMI
+61
+has one user already set up for us
+62
+and that user is named ec2-user.
+63
+Then we have at,
+64
+to say that we want to access that user
+65
+on the specific server.
+66
+And then, we have the IP right here.
+67
+This is the public IP of our EC2 instance.
+68
+So we try this.
+69
+So we do SSH and then we're going to get
+70
+a too many authentication failure.
+71
+So that means that we don't authenticate
+72
+into our EC2 instances.
+73
+Well, that makes sense
+74
+because we haven't specified the key
+75
+that we downloaded from before yet. Okay?
+76
+You may get another kind of error
+77
+but right now this is the one I get.
+78
+So for this,
+79
+we need to reference the file we just downloaded
+80
+called EC2Tutorial.pem into our command.
+81
+So make sure again, there is no space.
+82
+And then, you need to make sure your terminal
+83
+is exactly where your file is.
+84
+So if I do ls right here to list the files in my folder
+85
+and I'm sorry if this is too advanced for you
+86
+but I have to cover the grounds for everyone.
+87
+So if I do ls, as you see right now,
+88
+it says EC2Tutorial.pem
+89
+that's because I placed my command line
+90
+in the correct directory on my computer.
+91
+Okay.
+92
+So for this, if you were not in the correct directory,
+93
+for example if I was line level up, so I do cd ..,
+94
+which puts me one level up,
+95
+then I do ls.
+96
+Of course, I don't see my EC2Tutorial.pem.
+97
+Okay?
+98
+So to do so, what you can do is just check where you are.
+99
+So pwd is where you are.
+100
+So, I'm in user stephanemaarek
+101
+and I know that I placed my folder aws-course
+102
+within my home.
+103
+So right under user stephanemareek, there is aws-course.
+104
+So for this, then I know that I can do ls or ll
+105
+just to confirm that my folder exists.
+106
+As you can see right here is my aws-course folder,
+107
+so this is good.
+108
+So what I do is I will do cd and then aws-course
+109
+which now puts me in the directory of my aws-course.
+110
+So if I do pwd, I am in the correct directory.
+111
+And if I do ls, I can see my EC2Tutorial.pem file.
+112
+The reason we have to do this is that
+113
+because now in the next command.
+114
+So the SSH command,
+115
+you do ssh -i then you specify the EC2Tutorial.pem file
+116
+and that will not work
+117
+if you're not in the correct directory.
+118
+So please make sure to get there
+119
+and if you're missing the bit of the Linux here,
+120
+please try to go online,
+121
+but I should be good with what I showed you.
+122
+And then, ec2-user@
+123
+and we reference the public IP of our instance.
+124
+So this one right here, we reference it.
+125
+Press enter,
+126
+and now we get another kind of error
+127
+which is saying that we have an unprotected key file
+128
+and we need to change the permissions for it.
+129
+So for that reason, we'll have to enter another command
+130
+and that command is chmod.
+131
+So chmod 0400, and then we pass in the file itself
+132
+so EC2Tutorial.pem.
+133
+So I clear my screen
+134
+and then I'm going to try the exact same command as before.
+135
+So I press enter and I am logged into my machine.
+136
+So you may have seen a screen
+137
+where they prompt you for yes/no
+138
+to trust the instance as well,
+139
+just enter yes if you do get that screen.
+140
+So as you can see,
+141
+now I have done the SSH into my instance
+142
+and now it says ec2-use at this IP,
+143
+which means that now all the commands are issued
+144
+are going to be issued directly
+145
+from the Amazon Linux 2 AMI EC2 instance
+146
+that I've just launched from before.
+147
+So let's try a few commands.
+148
+For example, if you do whoami
+149
+then it says ec2-user
+150
+or I can ping google.com
+151
+and we see the google.com is responding to our pings.
+152
+So we can launch some commands directly
+153
+from the Amazon Linux 2 AMI,
+154
+and I did control C to stop that command,
+155
+Now to exit the instance itself, you can either type exit
+156
+and I think this should work,
+157
+or you do control G and then you will close the connection
+158
+into the EC2 instance.
+159
+And if you ever want to get back into it
+160
+remember this command,
+161
+ssh -I EC2Tutorial.pem
+162
+if you are in the correct directory.
+163
+Please make sure to do so.
+164
+As well as ec2-user@
+165
+and then the public IP of your instance.
+166
+Remember that if you stop and then start your instance
+167
+then the public IP can change.
+168
+So make sure to change that part as well.
+169
+All right.
+170
+So that's it for this lecture.
+171
+I hope you liked it, and I will see you in the next lecture.
+
+--- How to SSH using Windows ---
+
+1
+Okay.
+2
+So we are going to learn how
+3
+to SSH into our EC2 Instance using Windows.
+4
+And for this, we used to say, what is SSH?
+5
+Well, SSH to me is one of the most important function,
+6
+especially when you deal with Amazon cloud.
+7
+It will basically allow you to control a machine remotely
+8
+all using the command line.
+9
+Okay.
+10
+And so what does it look like?
+11
+Well, basically we have our EC2 machine,
+12
+and it's running Amazon Linux 2, and it has a public IP.
+13
+And I don't know if you remember,
+14
+but we had an SSH security group on it.
+15
+And basically we allowed SSH on port 22 to any IP,
+16
+which basically allows our Windows machine to connect
+17
+over the internet directly into the machine
+18
+and control it using the command line.
+19
+So we'll see how to do the requirements for parameterizing
+20
+basically our Windows.
+21
+And so we'll use PuTTY to do SSH.
+22
+So this is a free tool available online.
+23
+And as you can see,
+24
+it's a little bit tricky to use the first time,
+25
+but we'll get used to it,
+26
+and we'll learn how to SSH into Windows,
+27
+into Linux using PuTTY.
+28
+So let's get started.
+29
+Okay.
+30
+So we are going to SSH
+31
+into our EC2 Instance and I'm running on Windows.
+32
+And for this, I assume that you have Windows 7,
+33
+or Windows 8, or an older version Window.
+34
+If you have Windows 10,
+35
+there is an alternative in the next lecture, both work.
+36
+Okay.
+37
+So let's try for, even if you're on Windows 10
+38
+you can do this technique.
+39
+So for this, you would go and download PuTTY.
+40
+So PuTTY is a free SSH client for Windows.
+41
+So download PuTTY.
+42
+And then I will choose, for example,
+43
+the 64 bits installer, the first one.
+44
+Then I go ahead.
+45
+I perform the install of PuTTY.
+46
+So next, next, yes.
+47
+And yes, I want to install PuTTY.
+48
+Perfect.
+49
+So PuTTY is installed.
+50
+And I have to install PuTTY.
+51
+So, we have two things here on PuTTY.
+52
+We have the PuTTY app, as well as PuTTYgen.
+53
+So let's first open PuTTYgen.
+54
+And in case you did not download your file
+55
+in the PPK format, you can actually generate the PPK format
+56
+directly from here.
+57
+So let me show you how it's done.
+58
+So, I need to go ahead and load my file.
+59
+So I click on load, and then find where my file is.
+60
+So for me, it's on my desktop.
+61
+And you can see, I see nothing,
+62
+but if I go to the bottom right, and show all files
+63
+I will find my EC2 tutorial in the PEM format.
+64
+So I can select it.
+65
+It says, okay, you have successfully imported this.
+66
+And then you can save it as a private key.
+67
+So click on save private key.
+68
+And said you wanna have a pathways, you say,
+69
+if you don't wanna have path, you say yes.
+70
+And then you save it on your desktop.
+71
+So EC2tutorial.PPK
+72
+Now your file is saved
+73
+and you have converted successfully
+74
+a PEM file into the PPK format.
+75
+If you have done this already, then you're good to go.
+76
+Next, we need to set up PuTTY
+77
+to access our EC2 Instance.
+78
+So, this time you open the PuTTY app,
+79
+and here we have to enter a host name
+80
+or an IP address of where we are trying to connect.
+81
+So this we know it's My First Instance.
+82
+You copy the public IPv4 address.
+83
+You paste it.
+84
+And it's SSH.
+85
+You're going to save this under EC2 Instance.
+86
+And then you click on save, but we're not done just yet.
+87
+Okay.
+88
+We need to specify the key itself.
+89
+So let's specify the key in here.
+90
+So, you have it saved under EC2 Instance.
+91
+I double clicked.
+92
+So as you can see, I have to accept this.
+93
+So if we accept because we trust the host,
+94
+we say, yes, accept.
+95
+But we still have the login as prompt and it will not work.
+96
+So if I do, for example, EC2 user, it says okay,
+97
+I cannot authenticate right now.
+98
+So for this, we go back into PuTTY,
+99
+and we're going to fix things.
+100
+So click on EC2 Instance and load this profile.
+101
+The first thing I'm going to add is in the host name.
+102
+I have EC2 minus user at the IP.
+103
+So the IP is where we access our server,
+104
+and the EC2 user is a user already created for us
+105
+on Amazon Linux 2.
+106
+So I can click on save again.
+107
+So we're done in here.
+108
+This will be saved.
+109
+And then for the key, we need to go into the SSH.
+110
+You click the plus, you have the Auth,
+111
+you click the plus, excuse me, no need to click the plus.
+112
+So you just click on Auth,
+113
+and then you need to find a private key file
+114
+for authentication.
+115
+Click on browse, go to your desktop.
+116
+And then you find the EC2 tutorial, that PPK file,
+117
+you have just generated using Puttygen.
+118
+Or, if you had downloaded it already
+119
+from the AWS console, that works as well.
+120
+So this file is good.
+121
+Don't click on open just yet, go back to session,
+122
+and then click on save, to save this profile.
+123
+This way you don't have to redo all these steps
+124
+all at once, over again.
+125
+So click on open.
+126
+And now it says, okay, you're authenticating
+127
+using the EC2 user.
+128
+And we have this file we just opened.
+129
+And so now we are into our Amazon Linux 2 AMI.
+130
+So we have successfully performed the SSH using PuTTY.
+131
+Okay.
+132
+So if in the course I refer to SSH, just for you,
+133
+just that means you should PuTTY into the Instance,
+134
+at least once.
+135
+And now what I can do, who am I?
+136
+And you find that I am EC2 user.
+137
+Or ping google.com and start running some commands.
+138
+So to stop this,
+139
+just do control C, and it will stop the command.
+140
+And then if you want to just exit this,
+141
+you can just close this, exit this session,
+142
+and you're good to go.
+143
+And let's check if you go back into PuTTY.
+144
+So click back on PuTTY, and you load the EC2 Instance.
+145
+Hopefully all you're seeing there is save.
+146
+So as you can see, the top settings are saved,
+147
+and my SSH Auth also has saved.
+148
+And therefore, if I click on open, then yes,
+149
+I have access directly into my EC2 Instance.
+150
+So we've successfully performed SSH
+151
+on this Windows 7 or Windows 8, through PuTTY.
+152
+And I will see you in the next lecture
+153
+in case you have Windows 10,
+154
+to show you how to SSH using Windows.
+
+--- How to SSH using Windows 10 ---
+
+1
+So on Windows 10,
+2
+we can use the SSH command,
+3
+so I opened Windows PowerShell
+4
+and I typed SSH and if you see this,
+5
+that means that it's available.
+6
+Otherwise, you can also use the command prompt
+7
+and do SSH and if you see this,
+8
+that means the command is available.
+9
+If you don't see the SSH command on your Windows,
+10
+that means that you don't have it and therefore,
+11
+you must use the patching method I
+12
+just showed in the previous lecture.
+13
+In my instance, I'm just going to use PowerShell
+14
+to do these exercises, okay?
+15
+So, next what I have to do
+16
+is to actually run this SSH command.
+17
+So the first thing I have to do is to be
+18
+in the directory of where my pem file is.
+19
+So right now, I'm in C:\users\stephanemaarek and I do ls,
+20
+and as you can see, well, I don't have my pem file
+21
+because it's under, for me, under desktop.
+22
+So I do cd.\Desktop to just change directory,
+23
+I clear my screen then I do ls again
+24
+and I can see my EC2Tutorial.pem file
+25
+which is the one I downloaded,
+26
+as well as the ppk file but this is not relevant,
+27
+if you don't have it, it is fine,
+28
+this is only if you want to use PuTTY.
+29
+The only file that is of relevance for us
+30
+is the EC2 tutorial.pem file.
+31
+Okay, so we need to make sure that
+32
+on the security group of course we have
+33
+the port 22 open for SSH, which we do
+34
+and next we need to enter our SSH command.
+35
+So for this, it is very similar
+36
+to the one we have on Mac, so we do SSH minus I
+37
+then you pass in the name of the tutorial file.
+38
+So I did to get this, I did EC2 and then I press tab
+39
+and I get auto suggested the EC2Tutorial.pem file.
+40
+I press tab again, I can switch between ppk and pem.
+41
+Okay so, by pressing tab, I get the autocomplete of this,
+42
+so I do SSH minus I or you can just type this,
+43
+EC2Tutorial.pem and then when to type EC2 minus user at
+44
+and at, well, the public IP of my EC2 instance
+45
+which is right here, so I copy and paste it.
+46
+So now this command is saying,
+47
+please enter this IP using this user,
+48
+the EC2 user which is the one we have
+49
+because we use Amazon next to using
+50
+this key right here, so let's press enter.
+51
+And it says, well, the authenticity
+52
+of the host cannot be trusted,
+53
+do you want to continue?
+54
+You say, yes and we are in the machine.
+55
+So sometimes you will get permission issues.
+56
+So sometimes the permissions will not be happy
+57
+and I will show you how to fix them.
+58
+So first let's exit this and clear the screen.
+59
+So in case you get a permission issue
+60
+when running this command,
+61
+what you have to do is to find your keys,
+62
+so for me, it's in my desktop.
+63
+You right click on your pem file,
+64
+you do properties, you go to the security tab
+65
+and this is where we're going to change permissions.
+66
+To do so, we're going to do advanced
+67
+and the first thing you need to make sure of
+68
+is that the owner of this file is yourself.
+69
+So it's working for me, but you can just click on change
+70
+and then for object types, you can find yourself,
+71
+locations make sure it's on your computer
+72
+and then type the object name.
+73
+So it would be for me, Stefan
+74
+but I'm already an owner so just type your name
+75
+and then you can be an owner of this file.
+76
+The owner is also indicated in here,
+77
+in your app permission entries.
+78
+The second thing you have to do
+79
+is just remove these entities,
+80
+so system and administrator don't need to have access to it
+81
+and we need to disable inheritance.
+82
+So first let's disable inheritance, for this,
+83
+we're going to remove all inherited permissions
+84
+from this object.
+85
+And then in here, I just select the principal
+86
+so myself, I just go enter Stephan Maarek.
+87
+So as we can see, I did Stephan Maarek in here,
+88
+check names and this entered my principal name
+89
+and we are going to give myself full control over this,
+90
+press okay.
+91
+So now the owner is myself and the principal
+92
+that owns that file is myself as well.
+93
+We do okay and okay,
+94
+so if I right click again on this file
+95
+and do properties under security now,
+96
+I only see myself, Stefan Maarek with full permission.
+97
+And then if you have that
+98
+and you do this command again
+99
+for sure you will not have any permission issues
+100
+and you will not be prompted with a yes,
+101
+no question ever again.
+102
+And if you wanted to, you could try this command,
+103
+so let's exit this and we can, for example,
+104
+open the command prompt, go to my desktop.
+105
+Again, if you don't go to desktop, it will not work
+106
+and then paste in this command and it will work,
+107
+as well you can do an SSH from the command prompt.
+108
+So we've successfully seen how to SSH
+109
+onto our EC2 instance directly from Windows to exit,
+110
+you can just type exit or do Control + D
+111
+and we're good to go.
+112
+And now we can get started with this course,
+113
+I hope you liked it.
+114
+And I will see you in the next lecture.
+
+--- SSH Troubleshooting ---
+
+[No transcript available for this lecture]
+
+--- EC2 Instance Connect ---
+
+1
+I want to show you an alternative to SSH
+2
+that I found a lot easier
+3
+which is the EC2 Instance Connect.
+4
+So for this, you click on My First Instance
+5
+and then you click on the top, it says connect.
+6
+You have multiple options including
+7
+the SSH client we saw from before.
+8
+But one option I wanna show you is the EC2 Instance Connect.
+9
+So this allows us to do a browser based SSH session
+10
+into our EC2 Instance.
+11
+For this we verified the public IP address, which is good.
+12
+The username is provided by default,
+13
+which is EC2 user because it get guessed
+14
+by AWS that we are using Amazon and X2
+15
+and therefore EC2 User is the right username,
+16
+but if you wanted to, you could override it,
+17
+but it doesn't work unless you enter EC2 users.
+18
+So we'll leave it as is for now,
+19
+and then, as you see there's no SSH key option,
+20
+because, well, when we do connect to it,
+21
+it's going to upload for us a temporary SSH key
+22
+and establish a connection this way.
+23
+So with this methodology,
+24
+we don't even need to manage SSH keys which I found lovely.
+25
+So you click on Connect and it's going to open a new tab.
+26
+And very quickly you are into your Amazon Linux 2 AMI
+27
+and you can start running some commands
+28
+such as whoami or ping google.com.
+29
+And as you can see, everything is working.
+30
+So the cool thing about it is that,
+31
+well, your session is in the browser
+32
+instead of using a different command line interface
+33
+such as terminal and so on.
+34
+And so you do ping google.com or do
+35
+any kind of commands you want really on it
+36
+without using the SSH utility beforehand.
+37
+But in this course, if I say use SSH,
+38
+you have either the option to use your own terminal mssh
+39
+or to use for example, party, or to use the SSH command
+40
+on windows or to use, regardless of you here
+41
+on windows, Linux, or Mac, the EC2 Instance Connect.
+42
+Now this is relying on the SSH behind the scenes.
+43
+So if I go, for example, to my Instance
+44
+look at the security group and I want to edit the rules.
+45
+So I click on my security group in here,
+46
+the inbound rules I'm going to edit them
+47
+and I'm going to remove the SSH inbound rules.
+48
+So I delete it and save the rules
+49
+and then go back to my EC2 Instances,
+50
+and I close this one and I'll try to establish
+51
+a new EC2 Instance Connect.
+52
+So let's connect, as you can see, this is not working
+53
+because while there's a problem connected to your Instance.
+54
+The first thing is that you need to open the port 22.
+55
+So back into my launch wizard, I can fix this.
+56
+I will edit the inbound rule, add the SSH rule
+57
+from anywhere IPV4, save the rule.
+58
+Let's go back in here and just in case,
+59
+if it doesn't work for you,
+60
+sometimes it's because you're using IPV6, excuse me.
+61
+So therefore you need to do from anywhere IPV6 as well.
+62
+So you need to add these two entries
+63
+for your EC2 Instance Connect
+64
+to work sometimes, depends on your setup.
+65
+So we're good to go.
+66
+And now if we try to connect to the Instance itself,
+67
+so let's try to connect in here.
+68
+Voila, we are into the Instance.
+69
+Okay.
+70
+So there was a quick demo of EC2 Instance Connect.
+71
+I will use it a lot in this course.
+72
+I hope you liked it, and I will see you in the next lecture.
+
+--- EC2 Instance Roles Demo ---
+
+1
+Okay. So let's practice using IAM roles
+2
+for our EC2 Instance.
+3
+So at first, I'm going to connect to my EC2 Instance.
+4
+You can SSH, or you can use EC2 Instance Connect
+5
+if you wanted to.
+6
+I will use EC2 Instance Connect
+7
+because it's just going to be in my web browser
+8
+and a little bit simpler.
+9
+So back into my instance
+10
+with EC2 Instance Connect right here.
+11
+And we are in our Instance.
+12
+So as we can see,
+13
+we are ec2-user@ and the private IP.
+14
+So regardless if you're using EC2 Instance Connects
+15
+or SSH through your terminal, or whatever,
+16
+through PuTTY.
+17
+Then if you see this, we are at the same stage, okay?
+18
+So now you can just do some Linux commands.
+19
+For example, ping Google,
+20
+and you can get some information out of Google.
+21
+And I will do Control + C to go out of it
+22
+or issue any kind of Linux commands you want.
+23
+Okay, you don't need to know the next command
+24
+going into the exam,
+25
+but this is just a Linux terminal available
+26
+to you right now in the cloud.
+27
+So we'll type clear to clear the screen
+28
+and next we have to run some IAM commands.
+29
+So the cool thing is that's the Amazon Linux AMI
+30
+we're using right now comes with the aid of a CLI.
+31
+And so, as you can see, it is installed.
+32
+So what we can do is start using some commands.
+33
+For example, aws iam list users.
+34
+And if we do so, it says unable to look at credentials.
+35
+You can configure credentials by using aws configure.
+36
+So we could indeed run aws configure
+37
+to configure the credentials and specify an Access ID
+38
+a Secret Access key, and a region name.
+39
+But this is a really, really, really bad idea.
+40
+And the reason is that if we run aws configure
+41
+and enter our personal details onto this EC2 Instance,
+42
+then anyone else in our accounts
+43
+could again connect to our EC2 Instance.
+44
+For example, using EC2 Instance Connect
+45
+and retrieve the value of these credentials in our instance,
+46
+which is not what we want.
+47
+This is something that's really, really bad.
+48
+And so as a rule of thumb, never, ever, ever
+49
+enter your IAM APA key.
+50
+So the Access Key ID and the Secret Access key
+51
+into an EC2 Instance.
+52
+This is horrible and if you see someone doing it,
+53
+please show them this video.
+54
+Instead, what we have to do is use IAM rules.
+55
+So if you remember,
+56
+when we were in the management console and we were in IAM,
+57
+we had created an IAM role.
+58
+So let's go back into the Roles.
+59
+We had this demo role for EC2
+60
+that had one policy attached called IAMReadOnlyAccess.
+61
+So we are going to attach this role
+62
+onto our EC2 Instance to provide it with credentials.
+63
+Okay, so how do we do this?
+64
+For this, we can go into Security.
+65
+And as you can see,
+66
+there is no IAM Role right now onto our instance.
+67
+So what we can do is go back to our Instances,
+68
+Action, Security, and then Modify IAM role.
+69
+Here we have to choose an IAM role.
+70
+So we have DemoRoleForEC2 and click on Save
+71
+to attach this IAM role into our Instance.
+72
+So if you go back to Security,
+73
+now the IAM role attached to Instance
+74
+DemoRoleForEC2.
+75
+So the effect of this is that now
+76
+if we do aws iam list users and press Enter,
+77
+where we are getting a response around the users from IAM.
+78
+So as we can see, we did not run the command aws configure.
+79
+We just attached an IAM role and ran this command.
+80
+And it works.
+81
+And as a proof, if we go into this role
+82
+and detach this permission, so now it's gone,
+83
+and run the command again, we're getting an access denied.
+84
+So the role is really linked now to the EC2 Instance.
+85
+And this is how we provide AWS credentials
+86
+to our EC2 Instances only,
+87
+only through IAM roles, okay?
+88
+So if we go back to IAM
+89
+and we attach a policy to this role
+90
+and go back to IAMReadOnlyAccess,
+91
+attach this policy and then rerun the command,
+92
+we get an access denied
+93
+because sometimes it can take a little bit of time
+94
+to propagate the changes from IAM into AWS.
+95
+But if we run it one more time,
+96
+we're getting the output we expect,
+97
+which is what we want.
+98
+So this is very important
+99
+for you to understand this,
+100
+use IAM roles for your EC2 Instances.
+101
+So this is hopefully good for you.
+102
+I hope you like this hands-on
+103
+and I will see you in the next lecture.
+
+--- EC2 Instance Purchasing Options ---
+
+1
+Hi, and welcome to this lecture
+2
+on EC2 Instances Purchasing Options.
+3
+So we've been using so far, on-demand EC2 instances.
+4
+They allow us to run instances on demands,
+5
+that means they're good for short workloads,
+6
+we get predictable pricing,
+7
+and we're going to pay by the second.
+8
+But if you have different kind of workloads,
+9
+you can optimize your discounts and your pricing
+10
+by specifying it to AWS.
+11
+For example, you can use reserved instances
+12
+and you have one year or three years term,
+13
+and they're meant for long workloads.
+14
+So if you know you're going to run a database
+15
+for a long time, then a reserved instance is great.
+16
+And if you want to have a flexible instance type,
+17
+so for example, you want to change
+18
+the instance type over time,
+19
+then convertible reserved instances are for you.
+20
+And by the way, don't worry,
+21
+I'm going to do a deep dive in all of those over time.
+22
+Okay, next we have savings plan
+23
+and savings plan are one and three years term,
+24
+and they're more modern
+25
+because instead of committing to a specific instance type,
+26
+you commit to a specific amount of usage in dollars,
+27
+and there again, for long workloads.
+28
+Spot instances instead are meant
+29
+for very short workloads,
+30
+they're very, very cheap,
+31
+but at any time you can lose these instances
+32
+and that makes them less reliable.
+33
+Dedicated host allows you to book an entire physical server
+34
+and control instance placements.
+35
+And dedicated instances means that
+36
+no other customers will share your hardware.
+37
+Finally, capacity reservations allow you to reserve capacity
+38
+in a specific AZ for any duration.
+39
+Now let's look at EC2 on-demand.
+40
+So you're going to pay for what you use.
+41
+So that means that if you're using Linux or Windows,
+42
+you're going to be getting a billing per second
+43
+after the first minute,
+44
+or for all the other operating systems,
+45
+you're going to get a billing per hour.
+46
+It has the highest cost but no upfront payments
+47
+and no long-term commitments.
+48
+That means it's definitely recommended for a short-term
+49
+and uninterrupted workload
+50
+where you cannot predict how the application will behave.
+51
+Now for reserved instances,
+52
+and by the way, the numbers I show you can change over time,
+53
+so I will not update this video every time,
+54
+but it gives you an idea of what the numbers can be.
+55
+So the reserved instances give you a 72% discounts
+56
+compared to on-demand.
+57
+And you reserve a specific instance attributes.
+58
+For example, the instance type, the region,
+59
+the tenancy, and the OS.
+60
+You specify a reservation period one year or three years,
+61
+to get even more discounts,
+62
+and whether or not you wanna pay upfront,
+63
+partially upfront, or not upfront.
+64
+And all upfront of course gives you
+65
+the maximum amount of discounts.
+66
+In terms of the scope,
+67
+do you want the scope to be
+68
+into a specific region or a zone?
+69
+That means reserve capacity in a specific AZ.
+70
+And so you would use reserved instances
+71
+for the steady-state usage applications,
+72
+think for example, for a database.
+73
+And you can buy or sell your reserved instances
+74
+in a marketplace if you don't need them anymore.
+75
+And there is a specific kind of reserved instances
+76
+called the convertible reserved instance,
+77
+which is allowing you to change the instance type,
+78
+the instance family, the operating system,
+79
+the scope and the tenancy.
+80
+And because you have more flexibility,
+81
+well you get a bit less discounts
+82
+you get up to 66% discounts.
+83
+So that's for reserved instances.
+84
+And now you have the EC2 savings plans
+85
+which is to allow you to get a discount
+86
+based on long-term usage,
+87
+which is the same 70% as reserved instances.
+88
+But instead, you're going to say,
+89
+"I want to spend $10 per hour for the next 1, 2, 3 years."
+90
+And any usage beyond the savings plan
+91
+is going to be billed at the on-demand price.
+92
+So with savings plans,
+93
+you're locked to a specific instance family and region.
+94
+For example, you say,
+95
+"I want to have M5 type of instance family in us-east-1."
+96
+But you're flexible across the instance size.
+97
+So you can have m5.xlarge, m5.2xlarge and so on.
+98
+The OS, so you can switch
+99
+between Linux and Windows and so on.
+100
+And the tenancy, you can switch
+101
+between host, dedicated and default.
+102
+Now, for spot instances,
+103
+they have the most aggressive discounts,
+104
+so up to 90% discounts compared to on-demand,
+105
+but they are instances you can lose at any point of time
+106
+because you define a max price
+107
+you're willing to pay for your spot instances.
+108
+And if the spot price goes over it,
+109
+then you're going to lose it.
+110
+So they're the most cost-efficient instances in AWS
+111
+and they're going to be very helpful
+112
+if you have a workload that is resilient to failure.
+113
+So what could they be?
+114
+Well, it could be batch jobs, data analysis,
+115
+image processing, any kind of distributed workloads,
+116
+or workloads that have a flexible start and end time.
+117
+They are not suited for critical jobs or databases
+118
+and the exam will test you on that.
+119
+Next we have dedicated hosts.
+120
+So you get an actual physical server
+121
+with EC2 instances capacity
+122
+fully dedicated to your use case.
+123
+And you want to have dedicated hosts
+124
+in the use case of, you have compliance requirements
+125
+or you need to use your existing
+126
+server-bound software licenses that has billing
+127
+based on a per-socket, per-core, per VM software licenses.
+128
+This is in these kind of use cases
+129
+that you need to access the physical server
+130
+and get a dedicated host.
+131
+So for dedicated hosts, you get on-demand,
+132
+and you're gonna pay per second,
+133
+or you can reserve them for one or three years.
+134
+They're the most expensive option of AWS
+135
+because you actually reserve a physical server.
+136
+And so again, a use case is when you have
+137
+a software that comes with a licensing model
+138
+that is bring your own license.
+139
+Or if you have a company that has strong regulatory
+140
+or compliance needs.
+141
+We also have dedicated instances,
+142
+and there are instances that runs on hardware
+143
+that's dedicated to you,
+144
+which is different from the physical server.
+145
+But you may share the hardware with other instances
+146
+in the same accounts
+147
+and you have no control over instance placements.
+148
+So there's a difference between dedicated instances
+149
+and hosts, that is here.
+150
+At the exam, honestly, it doesn't trick you
+151
+into one or the other,
+152
+but remember that dedicated instances
+153
+mean that you have your own instance on your own hardware,
+154
+whereas dedicated host,
+155
+you get access to the physical server itself
+156
+and it gives you visibility into the lower level hardware.
+157
+Next, we have capacity reservations for EC2.
+158
+So you can reserve on-demand instances
+159
+in a specific AZ for any duration.
+160
+And then you get access to that capacity
+161
+whenever you need it.
+162
+You have no time commitment so you can reserve capacity
+163
+or cancel your reservation at any time.
+164
+And no billing discounts.
+165
+The only purpose is to reserve capacity.
+166
+So if you want to get billing discounts,
+167
+you need to combine it with regional reserved instances
+168
+or your savings plan.
+169
+And you're charged at the on-demand rates,
+170
+whether or not you run instances.
+171
+So that means that your reserved capacity,
+172
+you're going to be billed for it,
+173
+and you know for sure that if you want to launch instances
+174
+they're going to be available,
+175
+but if you don't launch them,
+176
+you're still going to get charged.
+177
+So they're very suitable
+178
+for short-term uninterrupted workloads
+179
+that need to be in a specific AZ.
+180
+So it gets difficult to understand
+181
+which purchasing option is right for me,
+182
+especially if you are a beginner.
+183
+But let me give you a summary.
+184
+The first one is on-demand.
+185
+So we'll take a resort as an analogy.
+186
+And with on-demand,
+187
+you have a resort and you come in whenever you like
+188
+and whenever you like, you pay the full price.
+189
+For reserved, well, you like to plan ahead
+190
+and you know you're going to stay a very long time
+191
+in your resort, one, two, three years,
+192
+and then you're going to get a good discount
+193
+because we know you're going to stay long time.
+194
+Savings plan is saying,
+195
+"Hey, I know for sure that in my resort
+196
+I'm going to spend a specific amount.
+197
+So I'm going to spend maybe $300 per month
+198
+every month for the next 12 months."
+199
+And therefore, you may wanna change the room type over time.
+200
+So king, suite, sea view, and so on.
+201
+But the savings plan is saying,
+202
+"Hey, you're to commit
+203
+to a specific spending in your hotel."
+204
+Spot instances are whenever
+205
+the hotel runs very last-minute discounts
+206
+because they have empty rooms and they wanna attract people.
+207
+So they get empty rooms
+208
+and people bid on getting this empty room.
+209
+And so you get very, very discounts.
+210
+But in this specific resort,
+211
+well, you can get kicked out of at any time
+212
+if someone is willing to pay more
+213
+for your room than what you did.
+214
+But I don't wanna stay in such a resort.
+215
+Dedicated host is saying,
+216
+"Hey, I want to book the entire building of the resort."
+217
+So you get your own hardware, your own resort.
+218
+And then capacity reservation is saying,
+219
+"I'm going to book a room,
+220
+I'm not even sure if I don't stay in,
+221
+but I know that if I want to stay in, I will have it."
+222
+And you will pay full price
+223
+for booking that room nonetheless.
+224
+In terms of price comparison,
+225
+I've just put together this table to give you
+226
+one example at one point of time.
+227
+So I took an m4.large in us-east-1,
+228
+and the on-demand price is 10 cents,
+229
+but then the spot price is going to be up to,
+230
+for example, 61% off in my example.
+231
+Then if you want to reserve your instance,
+232
+as you can see, you have different pricing.
+233
+If you wanted to have for one year, for three years,
+234
+and pay no upfront or all upfront.
+235
+Same for the EC2 savings plan
+236
+we see that it is the same as a reserved instance discounts.
+237
+We also get reserved convertible instances
+238
+and we have dedicated host,
+239
+which is at the on-demand price.
+240
+The dedicated host reservation which is up to 70% off
+241
+because you reserve your host.
+242
+And capacity reservation again at the on-demand price.
+243
+So the exam will ask you to just know
+244
+which type of instance is the right one
+245
+based on your workloads.
+246
+And by now, you should have some good hints,
+247
+and don't worry, we will practice this over time.
+248
+All right, that's it for this lecture,
+249
+I hope you liked it.
+250
+And I will see you in the next lecture.
+
+--- Spot Instances & Spot Fleet ---
+
+1
+So now let's talk
+2
+about Amazon EC2 Spot Instances.
+3
+So we know that with Spot Instances,
+4
+we can get a discount of up to 90%
+5
+compared to On-demand instances.
+6
+How does it work to get a Spot Instance?
+7
+Well, you're going to define
+8
+a max spot price you're willing to pay
+9
+and you will get the EC2 Instance, the Spot Instance,
+10
+as long as the current spot price
+11
+is below the max you are willing to spend.
+12
+So this hourly spot price will vary
+13
+based on offer and capacity.
+14
+And then, we'll show you this in the next slide.
+15
+And so, if the current spot price goes over your max price,
+16
+then you can choose to either stop
+17
+or terminate your instance
+18
+and you have a two minutes grace period.
+19
+So based on your workload and your application,
+20
+as soon as you have notification
+21
+that you're about to be stopped or terminated,
+22
+you need to do some shut down,
+23
+some saving of some documents,
+24
+saving of data to stop serving traffic as well
+25
+to make sure that you can gracefully shut down
+26
+and that your workload is adapted
+27
+to this kind of situations.
+28
+So Spot Instances are best used for batch jobs,
+29
+data analysis, or workloads that are, of course,
+30
+are resilient to failures
+31
+because you will get stopping
+32
+and termination of your instances.
+33
+It's definitely not great for critical jobs or databases.
+34
+Now, let's have a look at the Spot Instance Pricing.
+35
+So this is a graph that I obtained
+36
+directly from the AWS console.
+37
+And as we can see here, this gives us the price
+38
+for a m4.large instance
+39
+over three months in the spot zone.
+40
+So as you can see,
+41
+you have six lines for us-east-1a.
+42
+One, sorry, the region.
+43
+And you have six availability zones.
+44
+So, six prices.
+45
+So, as you can see,
+46
+the spot price does vary
+47
+based on the AZ you're considering.
+48
+And so as we can see, over three months,
+49
+it has varied quite a bit.
+50
+For example, if you look at that yellow line,
+51
+it has varied between 0.4 to 0.45
+52
+all the way down to almost 0.35,
+53
+let's say, and so on.
+54
+And so let's assume that we are defining
+55
+a user-defined max price
+56
+to be this black horizontal bar dotted line, okay?
+57
+And so what we'd see is that if the yellow line
+58
+is above the dotted line,
+59
+then the current spot price
+60
+is going to be more than the max price we have defined.
+61
+And so in this instance, right here,
+62
+we're going to lose our Spot Instance.
+63
+So we have to terminate it or stop it.
+64
+But if the price goes down,
+65
+so if the yellow line goes down our dotted line,
+66
+that means that we are willing to pay that price.
+67
+And so, we are gaining that Spot Instance in this meantime.
+68
+So this is how we can optimize the cost
+69
+of our workload very easily.
+70
+And so as you can see,
+71
+the On-demand price is $0.10 per hour.
+72
+So that's really, really cheap.
+73
+And then, the Spot Instance price is even cheaper.
+74
+It's around 0.4, I would say.
+75
+So it's a 60% saving in that instance
+76
+for the Spot Instance Pricing.
+77
+So, lots of savings.
+78
+And obviously, if you were to define
+79
+your user-defined max price
+80
+to be something like $0.05 per hour,
+81
+then no Spot Instances will be reclaimed
+82
+because you're always willing to pay more
+83
+than the actual Spot Instance price.
+84
+So no one can predict how the price goes over time.
+85
+But as you can see, it can be rather stable,
+86
+it can fluctuate a little bit.
+87
+But overall, it still provides you huge savings
+88
+compared to On-demand, okay?
+89
+Okay, next, how do you terminate a Spot Instance?
+90
+So we have to first understand how a spot request works.
+91
+And so for this, let's consider a spot request.
+92
+So with a spot request, you are defining
+93
+how many instances you want,
+94
+your maximum price you're going to pay,
+95
+the launch specification,
+96
+so the AMI and so on.
+97
+And when your request is valid from and until,
+98
+but it could be infinite.
+99
+And then, the request type,
+100
+and that's very important to understand.
+101
+There's two types of requests.
+102
+You can do one-time request for Spot Instances
+103
+or a persistent request for persistent instances.
+104
+So let's have a look at the difference.
+105
+So if it's a one-time request,
+106
+as soon as your spot request is fulfilled,
+107
+your instances are going to be launched.
+108
+And then, your spot request will go away
+109
+because it was a one-time request type.
+110
+So in this case,
+111
+your spot request is going to go away and you're fine.
+112
+But if it's as persistent request type,
+113
+that means that we want
+114
+this number of instances to be valid
+115
+as long as the spot request is valid from to valid until.
+116
+And so that means that if, somehow,
+117
+your instances do get stopped, okay?
+118
+Or interrupted based on the spot price,
+119
+then your spot request will go back into action,
+120
+and when things can be validated,
+121
+will restart Spot Instances for you.
+122
+So if somehow you stop a Spot Instance in persistent mode
+123
+and your spot request is still active,
+124
+your spot request automatically will be smart enough
+125
+to restart a launch and instance for you.
+126
+And this is something you can also see in this diagram
+127
+that I won't spend too much time on it.
+128
+So what you understand out of it
+129
+is that if you want to cancel a spot request,
+130
+it needs to be in the open state,
+131
+the active state or the disabled state.
+132
+That means that basically it's not failed,
+133
+it's not canceled or it's not closed, okay?
+134
+And when you want to cancel a spot request,
+135
+so if you take the spot request
+136
+on the left hand side and you cancel it,
+137
+it's not going to terminate any instances
+138
+that you have launched from before.
+139
+So it is still your responsibility
+140
+to terminate these instances
+141
+and not the responsibility of AWS.
+142
+So as such, if you want to terminate
+143
+Spot Instances for good and not have them relaunched,
+144
+you need to first cancel the spot request.
+145
+And then, you terminate the associated Spot Instances.
+146
+Because if you were to terminate the Spot Instances first,
+147
+remember it goes back into the spot request
+148
+and the spot request says:
+149
+okay, you wanted six instances,
+150
+but I can see you have zero right now.
+151
+I'm going to launch six instances for you.
+152
+So, again, the right order to cancel
+153
+and to terminate Spot Instances
+154
+is to first cancel the spot request
+155
+to make sure that no new instances will be launched by AWS.
+156
+And then, you terminate the associated Spot Instances.
+157
+And I'm spending a bit of time on this
+158
+because this is something that can come up in the exam.
+159
+Okay, next: Spot Fleets.
+160
+So this is the ultimate way to save money.
+161
+So Spot Fleets is going to be a way to define
+162
+for you to get a set of Spot Instances
+163
+and optionally On-demand instances.
+164
+That's why it's called a fleet.
+165
+And the Spot Fleet will try its best
+166
+to meet the target capacity
+167
+with the price constraints you defined.
+168
+So it will launch from possible launch pools.
+169
+So it can have different instance types, different OS,
+170
+and availability zones.
+171
+And so you're going to define multiple launch pools.
+172
+So multiple instance, multiple everything.
+173
+And then, the fleet will choose the best
+174
+and most appropriate launch pool for you.
+175
+And when your Spot Fleet either reaches your budget
+176
+or reaches the capacity you wanted,
+177
+then it will stop launching instances.
+178
+And so, you define a strategy
+179
+to allocate Spot Instances in your Spot Fleet,
+180
+and that's something to remember.
+181
+The first one is lowestPrice,
+182
+and that's gonna be some the most popular one
+183
+going into the exam,
+184
+which is that the Spot Fleet will launch instances
+185
+from the pool that has the lowest price
+186
+and that gives you a lot of cost optimization.
+187
+And this is a great option
+188
+if you have a very short workload.
+189
+You can also have a diversified way
+190
+to launch your Spot Instances,
+191
+in which case, the launch,
+192
+the Spot Instances will be distributed
+193
+across all the pools that you have defined from before,
+194
+which is great for availability and long workloads.
+195
+Because if one pool goes away,
+196
+then your other pools are still active.
+197
+Then, you have capacityOptimized.
+198
+So you have a pool with the optimal capacity
+199
+for the number of instances you want.
+200
+And then, you have priceCapacityOptimized,
+201
+which is first choosing the pool
+202
+with the highest capacity available.
+203
+And then, select within that
+204
+the one that has the lowest price,
+205
+which is the best choice for most workloads.
+206
+So the idea is that Spot Fleets can be complicated,
+207
+but what you have to remember is that using the Spot Fleet,
+208
+you're able to define multiple launch pools,
+209
+multiple instance types
+210
+until you're just interesting in raw power.
+211
+And then if you use the lowest price discounts
+212
+at the lowest price price strategy for Spot Fleets,
+213
+then the Spot Fleets will automatically request
+214
+the spot instances with the lowest price for us.
+215
+And so, Spot Fleet gives us an extra saving
+216
+based on Spot Instances because it's smart enough
+217
+to choose the right Spot Instance pool
+218
+to allow us to get the maximum amount of savings.
+219
+And this is the benefits of Spot Fleets.
+220
+And, again, you need to understand the difference here
+221
+of doing a very simple Spot Instance request
+222
+where you know exactly the type of instance you want
+223
+and the AZ you want to using a Spot Fleet and saying,
+224
+okay, you can choose all these instance types
+225
+in all these AZ, and what I need from you
+226
+is to give me the lowest price, for example, okay?
+227
+So that's hopefully is giving you
+228
+a lot of insights into how Spot Fleets
+229
+and Spot Instances are different.
+230
+I hope you like this lecture
+231
+and I will see you in the next lecture.
+
+--- EC2 Instances Launch Types Hands On ---
+
+1
+So let's have a look
+2
+at all the ways we can launch our EC2 instances,
+3
+and the first one is using a spot request.
+4
+On the left hand side, I click on Spot Request
+5
+and we can have a look at first the pricing history
+6
+for our EC2 instances.
+7
+So if we look, for example, at a c3 or a c4.large,
+8
+for example, you're running Linux/Unix
+9
+and I'm going to look at three months range,
+10
+we can see how the price has evolved over time
+11
+based on April, May, June,
+12
+and we have the on-demand price as a black bar right here,
+13
+and then we have, based on the different AZ, the price.
+14
+And as we can see,
+15
+well the price has been quite low and quite stable.
+16
+And based on the different range you're looking at,
+17
+you're looking at savings of around 69 to 70%
+18
+for this type of instance.
+19
+So huge savings if you're using a spot instance
+20
+of type c4.large.
+21
+So how do we request a spot instance?
+22
+Well, we click on Request Spot Instances.
+23
+So I am in my spot fleet request screen,
+24
+and there's a lot of parameters that I can see,
+25
+but I want to go quickly over them
+26
+just so to get an idea of how spot fleet request works.
+27
+So you can either use your launch templates
+28
+or manually configure launch parameters,
+29
+and you can specify Amazon Linux 2,
+30
+the key pair you want to use,
+31
+as well as some additional launch parameters
+32
+you would specify if you were to create an EC2 instance.
+33
+So this defines how your EC2 instances are created
+34
+and this makes sense.
+35
+Next, we have request details,
+36
+so we have more settings in here.
+37
+We can say what's the max price you wanna have,
+38
+when is the request valid from and valid until,
+39
+do we want to terminate the instances
+40
+when the request expires or not,
+41
+and are we linking these EC2 instances
+42
+to one or more classic load balancer or a target group
+43
+to have it, for example, for an application balancer.
+44
+So we'll use the defaults for this.
+45
+Then for target capacity,
+46
+how many instances do we want to have
+47
+as part of our spot fleets.
+48
+So we can say, for example, 10 instances, okay.
+49
+We could also specify it in terms of vCPUs
+50
+if your unit of compute was more important,
+51
+or megabytes of memory if RAM was more of your target.
+52
+So we can say, for example, we want 10 vCPUs,
+53
+we want to maintain the target capacity
+54
+and then what happens?
+55
+Well, in case of interruption,
+56
+please terminate my instances,
+57
+but you can also stop them or hibernate them, okay?
+58
+And you can also rebalance the capacity if need be.
+59
+So this is just some tweaking around the target capacity.
+60
+Then for networking settings,
+61
+so where do you wanna launch them,
+62
+in specific AZs or not, in a specific VPC or not.
+63
+Then for the instance type,
+64
+do we want to have some restrictions,
+65
+so you can manually select the EC2 instances
+66
+that are matching some specific criteria
+67
+for your spot fleet request,
+68
+for example, c3.large, c4.large, and so on,
+69
+or you could specify just instance attributes
+70
+and this can say, hey, how many vCPUs you want, min and max,
+71
+how much memory you want, min and max,
+72
+and then other attributes if you wanted to.
+73
+And then based on what you specify right here
+74
+is going to give you the matching instance types.
+75
+And we see the more restrictive you have
+76
+you are around these parameters,
+77
+the less instant type matches you're going to have.
+78
+But the idea is that you want to just launch
+79
+whatever AWS has in store for you
+80
+so that you maximize the savings
+81
+while having some compliance with the restrictions
+82
+you said before.
+83
+Then the allocation strategy,
+84
+so do you want to optimize for capacity
+85
+so to make sure that you have the right capacity
+86
+all the time,
+87
+or do you want to have the lowest price
+88
+and you're going to get the strongest savings based to that.
+89
+And then if you had chosen
+90
+the manually selected instance types here,
+91
+for example, one, two, three, four,
+92
+then you could select this option right here
+93
+to maintain a diverse pool of instances
+94
+across all the instance types you selected right here.
+95
+So once you've done it,
+96
+you get some summary of your fleet request,
+97
+and whether it's a strong fleet,
+98
+how many instances match and so on in which AZ.
+99
+And then it gives you the estimated hourly price
+100
+for this fleet,
+101
+so 0.156 per hour at target capacity,
+102
+which is going to give me a 73% savings
+103
+compared to on-demand.
+104
+So no need to know exactly how these work, okay,
+105
+but just you can see all the parameters you can have
+106
+to do a spot fleet request.
+107
+If you want to launch a spot instance directly,
+108
+just go to Instances and then Launch an instance,
+109
+and in there, you can scroll down
+110
+and you will find under the Advanced details,
+111
+the option to request a spot instance.
+112
+So should you do so, then you are requesting spot instances
+113
+and by default, the request of the spot price
+114
+is capped at the on-demand price,
+115
+which is quite good, but you can customize this.
+116
+So you can, for example, enter your own maximum price
+117
+if you wanted to, per instance, per hour,
+118
+then you can choose the type of request you want.
+119
+So by default, it is a one-time request.
+120
+That means that whenever you request a spot instance
+121
+in case it gets reclaimed,
+122
+it will automatically be terminated,
+123
+this is the only correct interruption behavior,
+124
+or you can choose a persistent type of request.
+125
+In that case, then the spot instance
+126
+will keep on coming back
+127
+when the price requirements are set.
+128
+In that case, you have to set a validity of your request.
+129
+You say, okay, this request is persistent
+130
+until a date or just no expiry,
+131
+as well as what happens in case the price goes over
+132
+the maximum price you have.
+133
+In that case, you have an interruption behavior
+134
+of either hibernate or stop.
+135
+And finally you see here, block duration.
+136
+This is going away on December 22nd,
+137
+on December 31st of 2022,
+138
+so I'm not describing it to you right now.
+139
+This is a outdated feature
+140
+that you may not even see on your account right now.
+141
+Next, let's have a look
+142
+at all the other options available to us.
+143
+So we have reserved instances
+144
+and reserved instances allows us to purchase
+145
+a specific reserve instance of a specific type.
+146
+For example, we can look for a c5.large
+147
+and we can do a search of all the offerings.
+148
+And as we can see,
+149
+we have different offerings available to us.
+150
+For example, we have a 12-months or a 13-months term
+151
+and it could be a standard
+152
+or a convertible type of instance,
+153
+and this is all upfront,
+154
+but we scroll down,
+155
+we can get so all upfront,
+156
+we can get no upfront,
+157
+we can get partial upfront.
+158
+We say how many you want,
+159
+for example, we want two of these,
+160
+so I'll just have the number two in here.
+161
+And then on the right hand side,
+162
+you can just click on Add to carts
+163
+to add this reserved instance to your carts.
+164
+If you click on View carts,
+165
+you can have a look
+166
+at what type of reserved instance do you want
+167
+and then we can order all.
+168
+But if you click on that, you will pay a lot of money,
+169
+so I would suggest not to do this.
+170
+As we can see, reserved instances,
+171
+I think, will soon go away
+172
+because now the AWS Savings Plans,
+173
+maybe something that's easier to use,
+174
+and so this is why it's recommended to use the savings plan.
+175
+So the Savings Plan is available here on the left hand side,
+176
+which is allow you to dedicate
+177
+a specific amount of dollar per hour you spend
+178
+on a one, two, three-year term
+179
+and gives you flexibility
+180
+of how you want to launch your instance.
+181
+It gives you flexibility in terms of instance type,
+182
+AZs, and so on.
+183
+So we'll go now, go over it, but it gives you the option.
+184
+Next, we have dedicated hosts.
+185
+So dedicated host is for you to launch a host
+186
+that you get access to a lower level kind of hardware,
+187
+which gives you better licensing pricing,
+188
+which is why if you click on this,
+189
+it will direct you to a license manager,
+190
+which is a way to think in terms of licenses
+191
+and not think in terms of host,
+192
+and in which case, it's going to simplify the management
+193
+of your dedicated host.
+194
+But if you wanted to launch a dedicated host directly
+195
+from this UI,
+196
+you click on Allocate Dedicated Host,
+197
+then you would name it,
+198
+you would specify the instance family, for example, c5,
+199
+you would specify an AZ.
+200
+So on this dedicated host of the c5,
+201
+we can launch multiple instance types
+202
+and then a bunch of settings as you go,
+203
+and then you click on Allocates
+204
+and you will have a dedicated host.
+205
+But again, I will not do this
+206
+because this will cost you a lot of money.
+207
+Finally, for capacity reservations,
+208
+this is when you want to ensure that capacity is available
+209
+within your EC2 instance launch.
+210
+So for example, we're saying,
+211
+"Hey, I want to make sure that I have enough m5.2xlarge
+212
+available to me,"
+213
+so I want them to be in eu-central-1,
+214
+and I want them to have four EC2 instance type
+215
+m5.2xlarge available to me no matter what, okay?
+216
+And then you can say, when the reservation ends,
+217
+is it manually on a specific time,
+218
+and then this will guarantee
+219
+that the instances will be available to you,
+220
+but you will have to pay for this reservation regardless
+221
+whether or not you are launching your instances in it.
+222
+Okay?
+223
+So that's it for this lecture.
+224
+We've seen all the ways to launch your EC2 instance types.
+225
+I hope you liked it,
+226
+and I will see you in the next lecture.
+
+--- Private vs Public vs Elastic IP ---
+
+1
+Okay, so we're getting into
+2
+the very interesting concept of Private and Public IP.
+3
+That may be too basic for you, I'm sorry that is,
+4
+but some people need help with this
+5
+so I rather help everyone.
+6
+So networking is to sort of have IP, there is IPv4 and IPv6.
+7
+IPv4 is what is most common probably, you know already
+8
+it's basically four numbers separated by three dots.
+9
+IPv6 is a bit less common, it has this very long,
+10
+strange string of exotic symbol numbers, and letters
+11
+and basically, in this course, we'll be using just IPv4,
+12
+but know that AWS has support for IPv6 as well.
+13
+IPv4 right now is still the most common format used online
+14
+IPv6 is more for IoT or the Internet of Things
+15
+and basically, it solves a lot of problems but not for us
+16
+we don't have any problems with IPv4 so far.
+17
+IPv4 allows for 3.7 billion different addresses
+18
+in a public space and that's almost running out
+19
+of IP addresses, and basically, each number can vary
+20
+between zero and 255 each, where the dots
+21
+so if you do the math,
+22
+you get 3.7 billion different addresses.
+23
+Now, let's have an example of what that means
+24
+if you have a web server and it's public,
+25
+that could be our EC2 instance or have a public IP
+26
+and we can have another server with another public IP
+27
+and using the public IP, these servers
+28
+can talk to one another, which is great.
+29
+Now, when we have a company, for example, my company
+30
+and it has a private network, the private network, basically
+31
+has a private IP range, and private IPs
+32
+have this very specific way of being defined
+33
+but basically, that means that all the computers
+34
+within that private network
+35
+can talk to one another using the private IP.
+36
+Whereas, when you touch an internet gateway,
+37
+which is a public gateway, well, these instances
+38
+also will get access to other servers, and so on
+39
+and so that's a common pattern in AWS.
+40
+Now, basically, if you have another company
+41
+it will also have a private network
+42
+and within the private network,
+43
+every computer can talk to one another
+44
+and maybe also have an internet gateway with an IP
+45
+and basically can connect all over the internet
+46
+and talk to other servers, okay.
+47
+So basically, the difference I wanna show you is that
+48
+when you have a public IP, you're accessible
+49
+over the internet and when you have a private IP
+50
+you only accessible within your private network.
+51
+So some differences, public IP, as I said,
+52
+means that the machine can be identified
+53
+on the internets, and the public IP must be unique
+54
+across the whole web, so not two machines
+55
+can have the same public IP, and I think that makes sense.
+56
+And an IP usually gives you an IP, you can just Google it
+57
+and you can find a geolocation.
+58
+Whereas a private IP, it means that
+59
+the machine can only be identified
+60
+on the private network only and the IP
+61
+must be unique only across the private network
+62
+but two different private networks
+63
+so two different companies can have the same private IP
+64
+that is absolutely not problem.
+65
+And machines, when they're on the private network
+66
+they will connect to the Internet through a NAT device
+67
+and an internet gateway that will act as a proxy.
+68
+And finally, only a specified range of IPs
+69
+can be used as private IPs.
+70
+Finally, for Elastic IPs, basically when you start
+71
+and you stop an EC2 instance, it will change its public IP
+72
+and we'll see this in the hands on.
+73
+And if you have a fixed public IP for whatever reason
+74
+for your instance, what you are going to need
+75
+is something called an Elastic IP.
+76
+So the Elastic IP is what, it's a public IPv4
+77
+and you own it, as long as you don't delete it.
+78
+Basically, you can attach it to one instance
+79
+at a time only obviously, and basically,
+80
+when you have an IP address and it's elastic,
+81
+you can basically use it to mask the failure
+82
+of an instance or software, by basically quickly moving it
+83
+from one instance to another, but it's quite
+84
+an uncommon pattern, because you can only
+85
+have five Elastic IP in your accounts.
+86
+Now, you can ask to AWS to increase that
+87
+but it's quite rare to use them.
+88
+Overall, I would recommend to try avoiding using Elastic IP,
+89
+they're often referred very poor architectural decisions
+90
+and instead, you should use a random public IP
+91
+and assign a DNS name to it.
+92
+Now DNS, we'll see them route 53 and is something
+93
+that's gonna be much more in control for us
+94
+and much more scalable, or later, as we'll see,
+95
+we can also use a Load Balancer and not using public IP
+96
+at all, which is the best pattern you can have for AWS.
+97
+Now, let's go ahead and do a quick Hands On,
+98
+so we can get a good feeling for all these things.
+99
+By default, our EC2 machine will come with a private IP
+100
+for the internal AWS Network,
+101
+a public IP, for the WWW, so the World Wide Web
+102
+and then when we're doing SSH into our EC2 machines
+103
+we cannot use a private IP because we're not
+104
+on the same network, unless you have a VPN.
+105
+We can only use the public IP if you don't have a VPN
+106
+and if your machine is stopped and started,
+107
+the public IP can change.
+108
+So now let's go and observe all these behaviors.
+
+--- Private vs Public vs Elastic IP Hands On ---
+
+1
+Okay, so let's have a look
+2
+at the behaviors of IP in areas.
+3
+So we have a public IPv4 for our instance,
+4
+and this is the IPv4 we can use
+5
+to SSH into our machine and it works great, okay?
+6
+So once we're logged in, remember,
+7
+we see that there is a private IP attached
+8
+as a host name of my instance.
+9
+So once we are in, we can start using the private IP.
+10
+But if we disconnect from our instance
+11
+and we try to do the SSH command,
+12
+but this time using the private IPv4 address,
+13
+as we can see, it will not work well.
+14
+Well let's have a look. So I'm going to press Enter.
+15
+As you can see, this does not work. And why?
+16
+Well, private IPv4s belong to a private network,
+17
+but right now I'm not connected
+18
+to the private network of AWS.
+19
+I can only connect to AWS with the Internet.
+20
+And this is why private IPs do not work.
+21
+And this is why you have to use a public IP
+22
+because the public IP allows you to access AWS
+23
+from a public network,
+24
+and therefore the public network being the Internet.
+25
+Okay, so now let's have a look at the behavior
+26
+of our instance just to observe it once.
+27
+When we start it, stop it and restart it.
+28
+So we're going to stop our instance
+29
+and the instance is not stopping.
+30
+And let's just save the IPv4 address right here
+31
+just to have it on my screen.
+32
+So we're going to stop our instance.
+33
+So my instance is now stopped
+34
+and I'm going to start my instance,
+35
+which is different, by the way, from rebooting an instance.
+36
+So you need to stop and start the instance
+37
+to observe the behavior of the public IPv4 changing.
+38
+So now that I've stopped it and started it,
+39
+in a few seconds,
+40
+we're going to obtain a new public IPv4.
+41
+So here we go.
+42
+This one right here, I'm going to copy it and paste it here.
+43
+And so as we can see, yes indeed, in this console,
+44
+the two IPs are different.
+45
+So if I use the previous IP to SSH,
+46
+this is not going to go anywhere
+47
+because my instance has changed its IPv4.
+48
+But if I use the new IP to do my SSH command,
+49
+then I can SSH again in my instance.
+50
+But the private IP has not changed
+51
+because it doesn't need to.
+52
+Okay, so how do we solve this problem?
+53
+Because maybe we want to stop and start our instance,
+54
+but we don't want the public IPv4 to change.
+55
+In this case, what we have to use is an elastic IP.
+56
+So right now you see elastic IP address here is zero.
+57
+So on the left hand side you can find elastic IPs.
+58
+I'm going to open this in a new tab.
+59
+And we're going to allocate a new IP address
+60
+from Amazon's pool of IPv4 address.
+61
+And what this will do
+62
+is that it will create an IPv4 address
+63
+that we own now at least for the time we rent it.
+64
+And this can be allocated to a specific EC2 instance
+65
+and they will keep the elastic IP as long as it's attached.
+66
+So now just a quick note about pricing of IPv4 addresses.
+67
+So now in AWS, if you use a public IPv4,
+68
+or if you don't use a public IPv4,
+69
+whereas it is a public IPv4 or an elastic IP,
+70
+you have an hourly charge of about $0.005 per hour, okay?
+71
+Which represents about $3.50 every month for a public IPv4
+72
+if you use it or if you don't use it.
+73
+So bottom line is you need to terminate your instances
+74
+and your elastic IPs if you don't use them
+75
+so that you don't pay that charge.
+76
+So in your account, if you started with me,
+77
+then you have 750 hours per month
+78
+of free public IPv4 addresses.
+79
+So that means that if you go ahead and create EC2 instances,
+80
+please make sure to terminate them,
+81
+so that you don't go over the 750 hours per month
+82
+of IPv4 and you'll be good to go.
+83
+We can right click, we can do action,
+84
+and associate elastic IP address.
+85
+So if we do so,
+86
+then we need to say what we want to attach it to.
+87
+So is it an instance or a network interface?
+88
+So it's going to be an instance.
+89
+And I'm going to choose the instance that is running
+90
+and then the private IP
+91
+to which to associate the elastic IP address.
+92
+So there's only one private IP for my instance.
+93
+So we're good to go.
+94
+Okay, so we associate it.
+95
+And now let's have a look at what happens.
+96
+So if we go back to our EC2 instance,
+97
+I'm going to refresh this window and close these.
+98
+So as you can see now,
+99
+the public IPv4 address is now equal to the value
+100
+of the elastic IP address.
+101
+And if I scroll down and refresh this fully,
+102
+as we can see now, the elastic IP addresses field
+103
+also has an elastic IP address right here,
+104
+which is a public address.
+105
+And now we can click on this elastic IP
+106
+and this takes us directly into the elastic IP console
+107
+from EC2,
+108
+where we can get more information around this elastic IP.
+109
+So this is good.
+110
+So now let's have a look and see if that works.
+111
+So we're going to copy the address right here,
+112
+and I'm going to run the SSH command
+113
+and this one will not work, so we have to use the new one.
+114
+And yes, indeed we can do an SSH.
+115
+But now in case we stop the instance.
+116
+So let's stop this instance and see what happens.
+117
+So as we can see now, the instance is in stop state,
+118
+but it still has a public IPv4
+119
+because the elastic IP is still attached to it.
+120
+So that means that if we start our instance again,
+121
+then our instance is back in the running state
+122
+and the elastic IP address is still attached
+123
+and the public IPv4 has not changed.
+124
+So we can also check this
+125
+by doing one more time the SSH command.
+126
+And yes, it works using the same command as before.
+127
+So to finish this, we can go into this elastic IP
+128
+and we can disassociate it to remove it from our instance.
+129
+And then to not leave it running,
+130
+please make sure to release this elastic IP address,
+131
+to not be billed for it.
+132
+And then back into our EC2 instance.
+133
+If we refresh it, it has obtained a new public IPv4 address
+134
+because it has been released from the elastic IP.
+135
+And to finish this hands-on,
+136
+I can just terminate my instance and be good to go.
+137
+So that's it for this lecture.
+138
+I hope you liked it, and I will see you in the next lecture.
+
+--- EC2 Placement Groups ---
+
+1
+So now, let's talk about placement groups.
+2
+Placement groups are a little bit more advanced,
+3
+and we wanna use them once,
+4
+we want to have control over how our EC2 instances
+5
+are going to be placed within the AWS infrastructure.
+6
+So that strategy can be defined
+7
+using these placement groups.
+8
+So we don't get direct interaction with the hardware of AWS,
+9
+but we let AWS know how we would like our EC2 instance
+10
+to be placed compared to one another.
+11
+So when you create a placement group,
+12
+you have three strategies available for you.
+13
+You have the cluster placement group in which your instances
+14
+will be grouped together in a low-latency hardware setup
+15
+within a single availability zone.
+16
+This is going to give you high performance but high risk.
+17
+We'll see this in details in a second.
+18
+Spread means that your instances
+19
+are going to be spread across different hardware,
+20
+and there is a restriction on this.
+21
+That means you can only have seven EC2 instance
+22
+per placement group that spread per AZ.
+23
+So you would use a spread placement group
+24
+when you have critical applications.
+25
+Finally, the last one is a new kind
+26
+of placement group that is really helpful.
+27
+It's called partition.
+28
+It's similar to the spread,
+29
+meaning that you want to spread your instances,
+30
+but here, they're spread across many different partitions.
+31
+And these partitions rely on different sets of racks
+32
+of hardware within an AZ.
+33
+What does that mean is that they're still spread,
+34
+but they're not isolated one from another failure,
+35
+but a partition should be isolated
+36
+from another partition of failure.
+37
+The idea with this is that you can scale to hundreds
+38
+of EC2 instances per group, and that allows you
+39
+to run applications such as Hadoop,
+40
+Cassandra, or Kafka.
+41
+Now, let's have a look into each
+42
+of these placement groups in details.
+43
+So next, we have the cluster placement group,
+44
+and all your EC2 instances are going to be
+45
+in the same availability zone.
+46
+So why do we do this?
+47
+Well, this particular placement group
+48
+gives you great networking.
+49
+So you have around 10 gigabits per second
+50
+of bandwidth between all these instances
+51
+that will have enhanced networking enabled.
+52
+And so you get low latency, high throughput network.
+53
+And the idea is that out of this,
+54
+you can get great performance
+55
+for any kind of computational job.
+56
+So a drawback of using this architecture
+57
+is that if your availability zone fails,
+58
+then all the instances will fail at the same time.
+59
+But usually, for use case, this is fine.
+60
+So the use cases for this kind of placement group
+61
+are big data jobs that need to complete very fast
+62
+with very high networking
+63
+or applications that need extremely low latency
+64
+and high throughput network
+65
+between each instance of your application.
+66
+Now, spread is the complete opposite.
+67
+In spread, we want to minimize the failure risk.
+68
+And so in this case, when we ask for spread placement group,
+69
+all the EC2 instances are going to be located
+70
+on different hardware.
+71
+So as you can see here, we have three AZ,
+72
+and we have six EC2, and each EC2 instance
+73
+is on a different hardware.
+74
+So what does that mean?
+75
+Well, what we get is that we can span across multiple AZ,
+76
+and there is a reduced risk of simultaneous failure.
+77
+Why?
+78
+Well, because if my hardware one fails,
+79
+I'm pretty sure my hardware two will not fail.
+80
+And so we've separated the risk
+81
+of my two instances in the Us-east-1a
+82
+to fail at the same time.
+83
+And so that's the benefit from it.
+84
+The con is that from this configuration,
+85
+we're limited to seven instances per AZ per placement group.
+86
+So there is a limit to how big your placement group can be.
+87
+And so you need to have application
+88
+that's gonna be of good size but not too big.
+89
+The use case would be an application that needs to maximize
+90
+high availability and reduce the risk.
+91
+And in general, for critical applications
+92
+where your instance failures must be isolated
+93
+from one another.
+94
+Remember, here, we have a limitation
+95
+of seven instances per AZ per placement group.
+96
+Now, for the partition placement group,
+97
+we can have instances spread across partitions
+98
+in multiple available T-zones.
+99
+So we can have up to seven partitions per AZ.
+100
+So in this example, we have partition one
+101
+and partition two in us-east-1a
+102
+and partition three in us-east-1b.
+103
+And on each partition, you can have many EC2 instances.
+104
+So in the first one have four,
+105
+and the second one have four,
+106
+and the third one have four as well.
+107
+So why do we use a partition placement group?
+108
+Well, each partition represents a rack in AWS.
+109
+And so by having many partitions, you're making sure
+110
+that your instances are distributed
+111
+across many hardware racks, and so therefore,
+112
+they're safe from a rack failure from one another.
+113
+So you can have up to seven partitions per AZ,
+114
+and these partitions can span
+115
+across multiple availability zones in the same region.
+116
+You can get up to hundreds of EC2 instances with the setup.
+117
+So this is a difference
+118
+versus the spread type of placement group.
+119
+And as I said, the instances in the partition
+120
+do not share the same hardware physical rack
+121
+with the instances in the other partitions,
+122
+and therefore, each partition is isolated from failure.
+123
+So that means that, yes, if one goes down,
+124
+if partition goes down, the partition number two,
+125
+then partition number one should be fine.
+126
+And to know which partition these EC2 instances are on,
+127
+there is an option to access this information
+128
+with using the metadata service.
+129
+So when would you use a partition placement group?
+130
+Well, when you have an application
+131
+that it can be partition aware to distribute the data
+132
+and your servers across partitions.
+133
+And usually, the use cases
+134
+are going to be big data applications
+135
+which are partition aware, such as using HDFS,
+136
+HBase, Cassandra, and Apache Kafka.
+137
+So that's it for this lecture.
+138
+I hope you liked it, and I will see you in the next lecture.
+
+--- EC2 Placement Groups - Hands On ---
+
+1
+So let's go ahead
+2
+and practice placement groups.
+3
+To this, on the left hand side,
+4
+I'm going to scroll down
+5
+and find under network and security,
+6
+the placement groups option.
+7
+And I will go ahead and create a placement group.
+8
+So the first one is going to be my-high-performance-group.
+9
+And as you can guess, the placement strategy
+10
+for this one is going to be cluster,
+11
+because we want instances
+12
+to be very close to each other
+13
+so that they have maximum network capability.
+14
+The second thing is going to be my-critical-group.
+15
+And for this one,
+16
+the placement strategy is going to be spread,
+17
+because we want instances
+18
+to be distributed as much as possible.
+19
+And you can set the spread level to rack,
+20
+which is a default,
+21
+or host, which is outpost only,
+22
+but we don't use outpost.
+23
+So for now we'll just use rack,
+24
+which is what we should know about.
+25
+Okay. So this critical group has been done
+26
+And finally, we have my-distributed-group.
+27
+And this one, as you can guess,
+28
+is going to be for the partition type.
+29
+And here we have the choice
+30
+between one, two, seven partitions.
+31
+For example, I can set four, and create this group.
+32
+So the three groups have been created.
+33
+And now, to just launch an instance in a group,
+34
+you click on launch instances.
+35
+And now, when you scroll down, at the very bottom,
+36
+under the advanced details, you can have a setting
+37
+for right here, the placement group name,
+38
+and you can select between my-critical-group,
+39
+my-distributor-group,
+40
+or my-high-performance-group
+41
+based on your placement group strategy.
+42
+So that's it. It's a very short lecture,
+43
+but now you know where the options are.
+44
+I hope you liked it.
+45
+And I will see you in the next lecture.
+
+--- Elastic Network Interfaces (ENI) - Overview ---
+
+1
+Okay now lets talk about
+2
+Elastic Network Interfaces or ENI.
+3
+So if you hear me say ENI I mean
+4
+Elastic Network Interfaces.
+5
+They're a logical component in a VPC
+6
+and they represent a virtual network card.
+7
+So they're what gives EC2 Instances access to the network,
+8
+but they're used outside EC2 Instances as well
+9
+as we'll see later in this course.
+10
+So for example we have an availability zone
+11
+and we have one EC2 Instance
+12
+and to it is attached on eth0, your primary ENI
+13
+and this will provide your EC2 Instance network connectivity
+14
+and for example, a private IP.
+15
+So each ENI can have the following attributes.
+16
+Number one it can have a Primary private IPv4
+17
+and one or more secondary IPv4. Okay.
+18
+So in this example, I have one of zero but
+19
+you are more than welcomed to add a secondary ENI to EC2
+20
+and that will be eth1
+21
+and this will give you another private IPv4 as well, okay. `
+22
+Each ENI can also have an elastic IPv4 per private IPv4
+23
+or one or more public IPv4,
+24
+so it gives you a private and a public IP
+25
+as will see in the hands-on.
+26
+You can have one or more security groups attached
+27
+to your ENI.
+28
+You can have a Mac address attached to it
+29
+and other things but I've just give you
+30
+the most important bits right now in this lecture.
+31
+And you can create ENI's independently from
+32
+your EC2 instances
+33
+and attach them on the fly
+34
+or move them from EC2 instances for failover.
+35
+So, let's have a look at what it looks like.
+36
+And by the way, they're bounded
+37
+to a specific availability zone or AZ.
+38
+So that means that if you create a ENI in the specific AZ,
+39
+you can only have it bound to that specific AZ.
+40
+So here's another issue to instance
+41
+and it has another ENI attached to it.
+42
+And for example, we can do is we can move eth1
+43
+from the first EC2 instance into the second EC2 Instance
+44
+to move that private IP.
+45
+And what it means is that that private IP will change
+46
+from the first issue to instance
+47
+and will be attached to the second EC2 Instance.
+48
+And it's very very helpful for failovers.
+49
+For example, if you're easy to instance is accessed
+50
+by a private static IP,
+51
+then you can move the IP around between
+52
+these two instances for failover purposes, okay.
+53
+So let's have a look in the hands-on
+54
+to see what it looks like.
+
+--- Elastic Network Interfaces (ENI) - Hands On ---
+
+1
+So let's practice
+2
+elastic technical interfaces,
+3
+and to do so let's go ahead and launch two instances.
+4
+So I can just scroll down,
+5
+Amazon Linux 2, t.2.micro.
+6
+I'll just choose whatever key pair, doesn't matter.
+7
+For network settings,
+8
+I will just use an existing security group
+9
+which is my launch wizard one.
+10
+This is great.
+11
+And then I will launch two instances in here,
+12
+and then click on launch instances.
+13
+So what I wanna show you is that from these instances
+14
+we're going to get these two, and under networking,
+15
+if we scroll down,
+16
+we're going to look at the network interfaces.
+17
+So each of these instances
+18
+is going to have one network interface,
+19
+and we have an interface ID.
+20
+So there's an ENI and an ID right here.
+21
+And each interface contains a public IPv4,
+22
+a private IPv4 and a private IPv4 DNS.
+23
+So as we can see,
+24
+if we go on the left hand side,
+25
+so on the two instances,
+26
+we're gonna have two different network interfaces.
+27
+And if you go on the left hand side,
+28
+under network and security,
+29
+we're also going to have the network interfaces.
+30
+So here we can find the two ENIs,
+31
+one of each is going to be attached
+32
+to our EC2 instances,
+33
+and we can know it by going to the right hand side,
+34
+and the status is in-use,
+35
+and we can see that they are linked
+36
+to different instance IDs.
+37
+The one thing we can do
+38
+is that we can create a new network interface.
+39
+So in this instance, we can give our description.
+40
+So demo ENI.
+41
+We can to select a subnet for our ENI to be in.
+42
+So it is linked to a specific AZ,
+43
+and I will choose the AZ
+44
+my EC2 instances are in,
+45
+so us-east-2a.
+46
+So let's choose, not this one, this one.
+47
+Then we want to auto assign a private IPv4,
+48
+but we could also customize and say,
+49
+which IPv4 we want within the subnets,
+50
+so we'll use auto assign.
+51
+And then we can attach a security group to our ENI.
+52
+So here we go and then create this network interface.
+53
+So now we have created a new network interface
+54
+and it is right here, the demo ENI, and it is available.
+55
+So as we can see right now, we have created basically
+56
+a secondary private IPv4.
+57
+And what we can do is that we can attach this
+58
+to our instance so we can do action,
+59
+attach and choose an instance to attach it to.
+60
+So I'll choose this one and attach it.
+61
+And now if we go to our instance and refresh,
+62
+let's go back to our instances and refresh.
+63
+So we'll go into networking and scroll down.
+64
+So this one, I got lucky.
+65
+This one has two network interfaces.
+66
+And one of them was the primary one,
+67
+which gives us a public IPv4 and a private IPv4.
+68
+And this demo ENI gives us a secondary, private IPv4.
+69
+So why would you do this?
+70
+Well, this ENI we have control over,
+71
+so we could take it,
+72
+and we could actually move it
+73
+from one EC2 instance to another,
+74
+imagining that the two EC2 instances
+75
+are running the same application
+76
+and we want to access them using the private IPv4.
+77
+Then we can move the ENI over.
+78
+And the reason for doing so
+79
+is that we can do a very quick and easy network failover
+80
+between the two instances by moving an ENI,
+81
+because we can attach an IPv4 from one instance to another.
+82
+So let's do a demo of that. So I'm going to take this ENI.
+83
+I'm going to detach it.
+84
+Yes, detach.
+85
+And then once it's going to be detached in a few seconds
+86
+we can reattach it to the other instance,
+87
+and to do so, by the way,
+88
+maybe it's going to be an issue to detach it like this.
+89
+So what I can do is just click on it,
+90
+and to action detach with a force detach.
+91
+So here we go.
+92
+So after refresh, all the error messages are gone.
+93
+We can do action, attach,
+94
+and then we can choose the other instance to attach it to,
+95
+so then make sure yes, that's the other one.
+96
+So I'm going to attach it to the other instance
+97
+and now it's being attached.
+98
+And so, as we can see now, if I refresh this,
+99
+from two network interfaces, there's going to be only one.
+100
+And the other instance now has two network interfaces.
+101
+And this demo ENI I has moved to my other instance,
+102
+so we can see how we could do some failover
+103
+between the instances with the ENI,
+104
+which I think is really, really cool,
+105
+but it is advanced, okay.
+106
+And that's something you have to practice on your own.
+107
+So finally, if we go ahead and terminate these instances,
+108
+so let's terminate them and see what happens.
+109
+So they're shutting down,
+110
+and now from the ENIs, what do you think is going to happen?
+111
+So we have three ENI right now,
+112
+two were created alongside my EC2 instances,
+113
+and one was created manually.
+114
+Well, maybe you guess right?
+115
+So what's going to happen is
+116
+that my ENI that was created manually is going to stay.
+117
+Whereas the two ENIs
+118
+that were created alongside the instances
+119
+are going to be automatically deleted.
+120
+So by creating your own ENIs,
+121
+you have more control over your private IPv4s,
+122
+and more control over your networking.
+123
+And that could be a helpful
+124
+in some type of advanced use cases.
+125
+So we can see when ENI is gone
+126
+and the other one should be gone very soon.
+127
+So that's it for this hands-on.
+128
+You can leave the ENI on if you want,
+129
+or you can can delete it. It will not cost you any money.
+130
+So that's it for this hands-on.
+131
+I hope you liked it.
+132
+And I will see you in the next lecture.
+
+--- ENI - Extra Reading ---
+
+[No transcript available for this lecture]
+
+--- EC2 Hibernate ---
+
+1
+So let's talk about a lesser-known feature
+2
+called EC2 Hibernate.
+3
+So we know that we can stop and terminate instances,
+4
+and when we do so, when we stop it,
+5
+the data on disk, on your EBS disk,
+6
+is going to be kept intact until the next start.
+7
+That makes sense.
+8
+And if we terminate it, well,
+9
+if you set up the root volume
+10
+to be destroyed with your instance,
+11
+it's going to be destroyed,
+12
+but any volume that is not set up to be destroyed
+13
+when your instance is terminated will be kept.
+14
+And then when you start an instance,
+15
+well, the OS, the operating system will boot
+16
+and then the EC2 User Data that was going to be run,
+17
+the script, and then the OS will boot up.
+18
+And then your application starts, your caches get warmed,
+19
+and that can take time,
+20
+because you are booting your machine, right?
+21
+But the idea is that with Hibernate,
+22
+we want to achieve a new state.
+23
+So when we hibernate an instance, whatever was in RAM,
+24
+the in-memory state is going to be preserved.
+25
+What does that mean?
+26
+That means that your instance boot is going
+27
+to be much faster,
+28
+because the operating system is not stopped or restarted,
+29
+the operating system is actually just frozen,
+30
+it's hibernated.
+31
+And under the hood, well,
+32
+whatever was in the RAM state is going to be written
+33
+into a file in the root EBS volume.
+34
+So that means that the root EBS volume must be encrypted
+35
+and that it must have enough space to contain the RAM.
+36
+So let me show you what happens.
+37
+So we take an EC2 instance,
+38
+and it's running and there is data in RAM,
+39
+and then we start a hibernation process.
+40
+So what happens that the instance will go
+41
+in the stopping state,
+42
+and the RAM is going to be dumped into your EBS volume.
+43
+Then the instance is shut down and the RAM disappears,
+44
+because as soon as you stop an instance the RAM goes away,
+45
+but the EBS volume still contains the dump of the RAM.
+46
+And then when your instance is started,
+47
+then the RAM is going to be loaded from disk
+48
+onto the EC2 instance memory.
+49
+And that means that it is just as is
+50
+your EC2 instance never got stopped.
+51
+And we'll have a look at this in the hands-on.
+52
+So the use cases for hibernation is
+53
+if you want to have long-running processes
+54
+and never actually stop them,
+55
+or if you want to save the RAM state,
+56
+or if you just want to reboot, like boot up fast,
+57
+and you have services that take time to initialize.
+58
+So you actually don't want them to initialize,
+59
+you want them to stay up and running
+60
+even if you hibernate your instance.
+61
+So, some good things to know about EC2 Hibernate is that
+62
+it supports a lot of different families.
+63
+The instance RAM size must be less than 150 gigabytes.
+64
+Now, that can change,
+65
+and again, you're not tested on limits at the exam,
+66
+but I'm just putting this as an indication for you
+67
+to get an idea of how that works.
+68
+It doesn't work for bare metal instances.
+69
+It works for many different operating systems,
+70
+including Linux and Windows.
+71
+It works for the root volume,
+72
+so the root volume must be an EBS volume,
+73
+it must be encrypted, okay?
+74
+And it must be large to contain the RAM
+75
+that you dump onto it.
+76
+It's available for all kind of instances,
+77
+such as on-demand, reserved, and spot instances.
+78
+And hibernation is meant to be no more than 60 days.
+79
+Again, this can change,
+80
+but right now this is the actual limits.
+81
+Okay, so that's it for this lecture, I hope you liked it,
+82
+and I will see you in the next lecture for a hands-on.
+
+--- EC2 Hibernate - Hands On ---
+
+1
+So let's practice using
+2
+the EC2 hibernate feature.
+3
+So let's go and launch an instance.
+4
+I'll choose Amazon Linux 2.
+5
+I'll go t2.micro, I'll select a key pair.
+6
+And then for network security
+7
+I will just use an existing security group
+8
+namely launch-wizard-1 and for storage,
+9
+for now we're good.
+10
+I'll show you a few things we have to set
+11
+but I will scroll down and then stop hibernate behavior.
+12
+We can enable it.
+13
+And this will allow us to enable hibernation
+14
+on our EC2 instance.
+15
+And there's a warning message.
+16
+You cannot really read it here
+17
+but it says that if you do enable hibernation
+18
+then you need to make sure that the root volume
+19
+has enough storage to fit the RAM of our EC2 instance.
+20
+And on top of it, the EBS volume,
+21
+the root EBS volume must be encrypted.
+22
+So first regarding the storage,
+23
+I will go to advanced, choose my EBS volume
+24
+and I will, yes I will encrypt it
+25
+and I will choose the default AWS/EBS key to encrypt it.
+26
+So now our EBS volume is correctly set up
+27
+and then we have an eight gigabytes volume.
+28
+And that is enough of storage
+29
+because if we look at this t2.micro,
+30
+here it says there's one gigabyte of memory of RAM.
+31
+So all the RAM fits onto the disk and that is good for us.
+32
+So we have set up everything
+33
+we need to enable hibernation.
+34
+And now what I'll do, is I will just launch my instances.
+35
+So our instance is now created
+36
+and we have enabled hibernation as a specific star behavior.
+37
+So how do we prove that hibernation works?
+38
+So let's connect to our instance
+39
+using the EC2 Instance Connect
+40
+and I'm going to connect right now.
+41
+I will go back into my instance and here we go.
+42
+So we are connected to our instance
+43
+using EC2 Instance Connect.
+44
+And there is one command called uptime that is quite special
+45
+because uptime allows you to know
+46
+for how long the instance has been turned on.
+47
+So if you do uptime,
+48
+it says that right now it's been up for zero minutes.
+49
+So we just need to wait maybe a little bit to do uptime
+50
+for it to become one minute.
+51
+But the idea is that the uptime is telling you
+52
+how long has the instance been on since its last restart.
+53
+So as we can see now, we do uptime
+54
+and we are getting one minute of uptime.
+55
+So that means that the instance has been up for one minute.
+56
+Okay, great.
+57
+So let's disconnect from our instance
+58
+and what we're going to do now is
+59
+that we're going to hibernate the instance.
+60
+So to do so we do instant state
+61
+and then hibernate instance,
+62
+and this is going to make sure that all the data
+63
+on the RAM is stored onto our EBS volume.
+64
+So we are hibernating the instance
+65
+and so we need to wait for it to be stopped.
+66
+So our instance is now stopped
+67
+and I'm going to start it again.
+68
+Now, if we do it a little mental exercise,
+69
+if we did not have hibernation
+70
+and then we stopped the instance,
+71
+and then we start it again,
+72
+we expect the uptime command to return again zero minutes
+73
+and then one minute, because we have effectively stopped
+74
+and started the instance.
+75
+But we have hibernated the instance and then started it.
+76
+And so if that's the case
+77
+then we should be able to have the uptime start not at zero,
+78
+but start at maybe three or four minutes.
+79
+So let's connect to the instance and do uptime.
+80
+And yes, we get up for two minutes
+81
+because I was really quick.
+82
+So the idea is that even though we have stopped,
+83
+quote unquote stopped the instance by hibernating it,
+84
+and restarted it from an operating system perspective,
+85
+the instance was never stopped.
+86
+It was hibernated.
+87
+And therefore the uptime command gives you two
+88
+or three minutes because it has never quote unquote
+89
+been stopped from an operating system perspective
+90
+which is the whole idea behind hibernation.
+91
+So that's it.
+92
+It's a really cool demo, I think.
+93
+And to finish this hands on,
+94
+just take your instance and terminate it.
+95
+That's it, I will see you in the next lecture.
+

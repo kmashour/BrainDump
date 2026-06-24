@@ -1,0 +1,1619 @@
+--- CloudFront Overview ---
+
+1
+Now let's talk about CloudFront.
+2
+CloudFront is a content delivery network or CDN.
+3
+So anytime you see CDN in the exam, think CloudFront.
+4
+It improves the read performance by caching the content
+5
+of your website at the different edge locations.
+6
+And because your content is cached all around the world,
+7
+then your users all around the world
+8
+will have a lower latency
+9
+and this will improve the user experience.
+10
+CloudFront is made of hundreds of
+11
+points of presence globally and that includes
+12
+edge locations and caches across the world.
+13
+On top of it, by having the content distributed globally,
+14
+we are getting DDoS protection.
+15
+So DDoS is a sort of attack where all your servers
+16
+around the world are getting attacked at the same time.
+17
+We'll see this later on in this course,
+18
+and the idea is that CloudFront,
+19
+because your application is worldwide,
+20
+then you're protected against these attacks
+21
+also using something called Shield
+22
+and Web Application Firewall
+23
+that we will be seeing in the security section.
+24
+So if you wanna look at a map of the world,
+25
+these are the map and we see some edge locations
+26
+as well as edge caches.
+27
+And so say we had created an S3 bucket
+28
+and a website on our S3 bucket in Australia,
+29
+but we had a user maybe in America.
+30
+Then what the user will do is that
+31
+it will request the content
+32
+from an American edge location using CloudFront
+33
+and CloudFront will be able to fetch
+34
+the content from Australia.
+35
+Now, if another user in the US
+36
+will be requesting the same content,
+37
+then it will be served directly from the edge
+38
+and it will not go all the way to Australia
+39
+to serve that content.
+40
+Same if a user is in China, then it'll be talking
+41
+to a Chinese point of presence
+42
+and then redirected to the S3 buckets,
+43
+and then the content will be cached at the edge.
+44
+CloudFront has several origins, which are basically backends
+45
+that you want CloudFront to connect to.
+46
+For example, we have an Amazon S3 bucket.
+47
+So this is used for distributing files
+48
+and caching them at the edge.
+49
+Or to upload files directly into Amazon S3
+50
+through Amazon CloudFront.
+51
+And the access between CloudFront and Amazon S3
+52
+is secured using something called
+53
+origin access control or OAC.
+54
+You can also connect CloudFront to anything within your VPC.
+55
+So it's called a VPC origin,
+56
+and it's for applications that are hosted
+57
+within your network on Amazon, within the private subnets.
+58
+So it could be a private application balancer,
+59
+it could be a private network load balancer,
+60
+or even private EC2 instances.
+61
+You can also connect to a custom origin
+62
+over the HTTP protocol,
+63
+and it could be, for example, on the S3 website,
+64
+you first must enable the bucket as a static S3 website,
+65
+or it could be any public HTTP backend you want.
+66
+For example, if you have a public load balancer,
+67
+you can connect it directly into CloudFront.
+68
+So at a high level, how does CloudFront work?
+69
+We have the edge location all around the world, okay?
+70
+And then it will be connecting to your origin.
+71
+So would it be an S3 bucket or an HTTP server.
+72
+And when the client connects
+73
+and does an HTTP request into your edge location,
+74
+then the edge location will see if it has it in the cache.
+75
+If it doesn't have it in the cache,
+76
+then it will go to the origin to get the request results.
+77
+And then once it retrieves the results,
+78
+it will be caching it into a local cache
+79
+so that if another client requests the same content
+80
+from the same edge location, then the edge location
+81
+does not need to go to the origin.
+82
+So if we have S3 as an origin, then if we look at the cloud,
+83
+your S3 bucket is your origin in some region,
+84
+and then you have edge locations all around the world,
+85
+for example, at Los Angeles,
+86
+and your users accessing the edge location in Los Angeles
+87
+will get their content directly served
+88
+through the edge location.
+89
+But first, the edge location will get it
+90
+from the origin S3 bucket through the private network.
+91
+And the S3 bucket will be secured
+92
+using an origin access control
+93
+and by modifying the S3 bucket policy on the S3 bucket.
+94
+So this is the same when we have a user in Sao Paulo,
+95
+for example, in Brazil.
+96
+Again, this will be another edge location,
+97
+which will be serving users close to Brazil,
+98
+and then it will be a private connection
+99
+between your edge location and your S3 bucket and so on.
+100
+So using CloudFront and the edge locations,
+101
+we can see that the content of our S3 bucket in one region
+102
+can be distributed all around the world
+103
+through the edge locations or points of presence.
+104
+So one question that's common is what is the difference
+105
+between CloudFront and something like S3 replication?
+106
+Well, if you have CloudFront,
+107
+you're using the Global Edge network.
+108
+So this is about 216 points of presence.
+109
+And the files are going to be cached
+110
+in each edge location maybe for a day.
+111
+So this is amazing if you have static content
+112
+that must be able to be available
+113
+everywhere around the world.
+114
+S3 cross region replication is different.
+115
+It must be set up for each region
+116
+you want replication to happen.
+117
+So this is not for every region in the world.
+118
+And then files are going to be updated in near real time
+119
+so there's no caching that happens.
+120
+And it is only for read only.
+121
+And so this is great if you have dynamic content
+122
+that needs to change all the time
+123
+and be available at low latency in a few regions.
+124
+So these are very different purposes.
+125
+CloudFront is a CDN, which is to cache content
+126
+all around the world, whereas S3 cross region replication
+127
+is to really replicate an entire bucket into another region.
+128
+So hopefully that makes sense about CloudFront.
+129
+In the next lecture we'll have a play
+130
+and see how we can set up a CloudFront distribution
+131
+on the CloudFront and S3 buckets.
+132
+So we'll see you in the next lecture.
+
+--- CloudFront with S3 - Hands On ---
+
+1
+So let's go and practice using CloudFront,
+2
+but first we have to create an S3 bucket
+3
+to hold our files for our distribution.
+4
+So let's create a bucket,
+5
+and I'll call this one demo-CloudFront-Stephan-v4,
+6
+and it will scroll down, leave everything as the default
+7
+and click on Create Bucket.
+8
+Okay, so my bucket is now created
+9
+and I'm going to upload some files in it.
+10
+So let me add files
+11
+and I will choose my three files,
+12
+beach, coffee and index.html.
+13
+So let's upload them.
+14
+And now that they've been uploaded,
+15
+so if I go in my bucket, we can see all of them.
+16
+And as a reminder, if I go on index.html,
+17
+I have two ways of open it.
+18
+The first one is to use the object URL.
+19
+But if I try it,
+20
+I get an access denied because my object is not public.
+21
+And if I go and click on open here,
+22
+this generates a pre-sign.
+23
+So let's allow popups.
+24
+This generates a pre-signed URL for my S3 objects,
+25
+which allows me to access the object.
+26
+So you see "I love coffee" and "hello world"
+27
+but I still don't see the image
+28
+because the image itself is not public.
+29
+So let's see how we can instead use CloudFront
+30
+to make these files accessible without making them public.
+31
+So let's open up the CloudFront console.
+32
+And I first have this popup about pricing,
+33
+so I'm going to click on don't show it again
+34
+and then close it.
+35
+So let's go ahead and create a CloudFront distribution.
+36
+So first we have to do is to select a plan.
+37
+So now there are several plans for CloudFront,
+38
+and as you can see, they have different features.
+39
+But if we have a look,
+40
+the free plan is going to be enough for us.
+41
+So we have enough requests and allowance per month,
+42
+we're going to get always on DNS protection,
+43
+we're going to get geographic traffic blocking
+44
+and global CDN, DNS, free TL certificates.
+45
+So all of this is enough for us
+46
+for what we need for CloudFront.
+47
+But if you needed something such as, for example,
+48
+edge key-value store or advanced DDoS protection
+49
+or uptime SLA,
+50
+or protection for WordPress, these kind of things,
+51
+then one of these plans will be better for you.
+52
+And finally, you have the pay as you go option,
+53
+which is to pay for based on the traffic you use.
+54
+And then you're going to have
+55
+to pay extra for some features.
+56
+But to keep things simple, let's keep as a free
+57
+because this is going to be enough for our use case.
+58
+So this one is going to be called demo new CloudFront.
+59
+And here we have only the option
+60
+to use a single site or app.
+61
+We don't need to have a domain, but we could add a domain
+62
+and provision a TLS certificate for us.
+63
+Let's click on next.
+64
+And now we have to say, what is the origin type?
+65
+So as you can see right now, we have Amazon S3,
+66
+elastic load balancer, API gateway,
+67
+elemental media package or other.
+68
+And the VPC origin,
+69
+if you want to connect directly to a private EC2 instance
+70
+or an application of balancer that are deployed privately,
+71
+this is only available in the business plan.
+72
+But still an option of what CloudFront can do.
+73
+So we'll use Amazon S3.
+74
+And then we have to browse Amazon S3.
+75
+And we'll use a demo CloudFront stephane v4.
+76
+Okay.
+77
+Next we're going to allow private S3 bucket access
+78
+to CloudFront.
+79
+Yes, and we'll use the recommended origin settings
+80
+and we'll use the recommended cache settings
+81
+to serve S3 content.
+82
+So now the setup is quite simple.
+83
+If we want to have security,
+84
+we can enable the web application firewall,
+85
+but this is not something we need right now.
+86
+And if you want to have protection against layer 7, again,
+87
+this is available with the business plan.
+88
+So right now, I don't want anything.
+89
+I'll click on-
+90
+Make sure we have the free plan.
+91
+Yes, that's good.
+92
+The UI is just a little bit counterintuitive in this case,
+93
+but let's get back into this.
+94
+So web application firewall, we don't need anything.
+95
+We click on next and we can review everything.
+96
+So yes, we are on the free plan
+97
+and we're going to create our distribution.
+98
+Okay, so my distribution is now created.
+99
+Now if I go into S3 and look at the permissions
+100
+and I look at my bucket policy,
+101
+I can see that now in my bucket policy,
+102
+I have a bucket policy allowing access
+103
+to my bucket from our CloudFront distribution.
+104
+These are two because I had two,
+105
+one is a test and one is the one I just created for you.
+106
+As we can see, this allows our CloudFront distribution
+107
+to privately access our S3 buckets.
+108
+And so this was entered as a bucket policy
+109
+by the platform service as it was being deployed.
+110
+So my distribution is now ready
+111
+and I can click on the domain name,
+112
+open a new tab, and press enter.
+113
+Now I'm gonna get an access denied, but this is fine.
+114
+It's because I need to enter one specific path.
+115
+So /coffee.jpg.
+116
+As you can see, my coffee image is now loading.
+117
+Or /beach.jpeg.
+118
+And again, my beach image is loading.
+119
+And now if I go to index.html,
+120
+I have my full image
+121
+with "I love coffee" and "hello world" and this image.
+122
+So even though all my bucket objects are private,
+123
+now because we have this bucket policy
+124
+allowing access from CloudFront,
+125
+I'm able through CloudFront, to see all that I need to see.
+126
+But now the added benefit is that if I go back
+127
+to beach.jpeg, the image is cached
+128
+so loading is almost instantaneous.
+129
+So back to here.
+130
+Again, very, very fast loading.
+131
+And that is the benefit of CloudFront.
+132
+So that's it.
+133
+We've created a CloudFront distribution within
+134
+the free plan, and we set up S3 as an origin
+135
+and we saw the bucket policy.
+136
+So I hope you liked it,
+137
+and I will see you in the next lecture.
+
+--- CloudFront - ALB/EC2 as an Origin ---
+
+1
+So how can we connect CloudFront
+2
+to an application load balancer
+3
+or an EC2 instance as an origin?
+4
+So we have two ways, and this is the better way
+5
+and the newer way.
+6
+It's called using VPC origins.
+7
+And it allows you to deliver content directly from
+8
+applications that are hosted
+9
+in your private subnets in your VPC.
+10
+And everything can remain private.
+11
+You don't need to expose any of this to the internet.
+12
+So that means we can deliver traffic
+13
+to private application balancers,
+14
+network load balancers, and EC2 instances.
+15
+So how does that work?
+16
+Well, we're going to create a CloudFront distribution,
+17
+which has a bunch of edge locations, and our users are going
+18
+to access CloudFront this way.
+19
+But then from CloudFront, we're going to create a VPC origin
+20
+and connect this VPC origin to our backend.
+21
+So it could be, again, an ALB, an NLB or an EC2 instance.
+22
+And then CloudFront will do the link through the VPC origin
+23
+to direct traffic to your private subnets and applications.
+24
+And from a network perspective, this is one
+25
+of the most secure way of doing your setup
+26
+because, well, your applications are still hosted privately,
+27
+internally, and then you choose what to expose
+28
+through CloudFront, which is very handy.
+29
+If you wanted to use a public network,
+30
+this was the previous method
+31
+before the VPC origin feature existed.
+32
+And I still wanna show it to you
+33
+because it's good to understand what was done before.
+34
+You had to have an EC2 instance that was public.
+35
+And so therefore you had a list of edge locations
+36
+with their public IPs.
+37
+And you use this link to find the list
+38
+of all the CloudFront IPs
+39
+and you would make sure to change the security group
+40
+to allow all these public IPs
+41
+of the edge location into your EC2 instance.
+42
+So it would be public,
+43
+but only restricted to the edge locations.
+44
+And the same goes for
+45
+if you had an application load balancer,
+46
+again, it should have been public,
+47
+but your EC2 instances could have been private.
+48
+And then just have private network between your ALB
+49
+and your EC2 instances through the use of security group.
+50
+And again, you must make sure that your
+51
+ALB has a security group
+52
+that allows all the public IPs coming from CloudFront.
+53
+So it's a bit more tedious
+54
+because number one, you need to find these public IPs
+55
+and change the security group.
+56
+And on top of it, well, there is a risk
+57
+that if someone changes the security group of your ALB
+58
+or your EC2 instance, then your instance is public
+59
+to more than just your CloudFront distribution.
+60
+But this was the old way.
+61
+Now the new better way is to use, of course, VPC origins.
+62
+All right, so that's it in this lecture.
+63
+I hope you liked it and I will see you in the next lecture.
+
+--- CloudFront - Geo Restriction ---
+
+1
+Just a short lecture
+2
+around CloudFront geo restriction.
+3
+So you can restrict who can access your distribution
+4
+based on the country where they
+5
+try to access the distribution from.
+6
+So you can set up an allow list to define a list
+7
+of approved countries,
+8
+or you can set up a block list to set up a list
+9
+of banned countries.
+10
+Now the country is determined
+11
+by using a third party geo IP database to match the IP
+12
+of the user to the country it belongs to.
+13
+So the use case for using geo restriction would be copyright
+14
+laws to control access to content.
+15
+So in order to use the geographic protection,
+16
+somehow I need to change my plan.
+17
+So if you look at this plan, the manage free plan
+18
+and change this plan, as you can see within the list
+19
+right now, as it says,
+20
+it says that there is geographic traffic blocking,
+21
+but this option is not available to me
+22
+and I need to change to something called
+23
+the Pay as You Go option,
+24
+but it's not available to me either here.
+25
+So it was is a little bit slow
+26
+and I'm trying to edit my course.
+27
+But so what I've done is
+28
+that I've created another distribution, this one,
+29
+which is Pay as You Go type of billing.
+30
+And now under security I have the CloudFront geographic
+31
+restrictions that I can edit and I can have an allow list
+32
+or block list and then select the countries
+33
+that I need to block.
+34
+For example, I wanna block these two countries
+35
+and then save my changes.
+36
+I expect over time
+37
+that CloudFront will have the correct options
+38
+under security, under the free plan.
+39
+But let's see.
+40
+Anyways, now you know how to do it at least.
+41
+Either you select a paid plan or pay as you go
+42
+and you'll have access to play with the security options.
+43
+Alright, that's it for this lecture.
+44
+I hope you liked it and I will see you in the next lecture.
+
+--- CloudFront - Cache Invalidation ---
+
+1
+So now, let's talk about cache invalidations
+2
+in CloudFront.
+3
+So, CloudFront has a backend origin,
+4
+of course.
+5
+And if you do happen to update the backend origin,
+6
+CloudFront edge locations will not know about it
+7
+and will only get the refreshed content
+8
+from your backend origin, the update you want,
+9
+once the TTL of the cache has expired.
+10
+But that is maybe an undesirable behavior for you
+11
+because you want the new content to be served
+12
+as soon as possible.
+13
+And therefore, what you can do is you can force an entire
+14
+or a partial cache refresh.
+15
+And therefore, you eliminate all the TTL happened,
+16
+present in your cache.
+17
+And to this, you too,
+18
+perform what's called a CloudFront invalidation.
+19
+So, you need to pass in some file path.
+20
+So, you can either invalidate all the files with a star
+21
+or invalidate a special path,
+22
+for example, /images/*.
+23
+Okay, so how does that work?
+24
+Well, say we have a CloudFront distribution,
+25
+two edge locations.
+26
+Each edge location has its own cache,
+27
+which contains the index.html and the images directly
+28
+from your origin, which is an S3 bucket.
+29
+And it does happen that, for example,
+30
+the TTL for these files are set to one day.
+31
+So, that means that in one day,
+32
+the edge locations will re-fetch these files for the cache.
+33
+Now, you as a user,
+34
+you're an admin, you're going to update the files
+35
+in the S3 bucket.
+36
+You're going to add or change some images.
+37
+And also, change the index.html file.
+38
+And you want these updates to be reflected
+39
+as soon as possible to your users in CloudFront.
+40
+Therefore, what you can do is
+41
+that you're going to invalidate two path.
+42
+First is going to be the /index.html
+43
+to invalidate a specific file.
+44
+And then you're going to invalidate /images/*
+45
+to remove all the images from the cache
+46
+in your edge locations.
+47
+So, then CloudFront is going to tell the edge locations
+48
+to invalidate these files from the cache
+49
+and they're going to be simply removed from the cache.
+50
+Now, next time a user is going to ask for,
+51
+for example, the index.html,
+52
+CloudFront is going to forward the request
+53
+to a specific edge location, which will realize
+54
+that the file is not in its cache anymore.
+55
+Therefore, the edge location will do a request
+56
+on your origin and get the updated and newer index.html.
+57
+Hence, you've seen the value of cache invalidations.
+58
+So, that's it.
+59
+I hope you liked it and I will see you in the next lecture.
+
+--- AWS Global Accelerator - Overview ---
+
+1
+Okay, so in this lecture, we are going to talk about
+2
+a newer kind of service for AWS called
+3
+the AWS Global Accelerator.
+4
+But before we do so,
+5
+I want to introduce the problem to you
+6
+that we're trying to solve and how we're going to solve it.
+7
+So, say you have deployed and application,
+8
+and it's global and you've global users
+9
+who want to access it directly.
+10
+But our application is only deployed in one region.
+11
+So, for example here in India,
+12
+I have deployed a public application advancer.
+13
+But my users are all over the world.
+14
+They're in America, in Europe, in Australia.
+15
+And so as they access the application,
+16
+they want to go over the public internet.
+17
+And that can add a lot of latency
+18
+due to many hops through the routers. Okay?
+19
+So, I'm obviously overplaying this,
+20
+so you can see that in America,
+21
+there's five hops of routers or servers
+22
+before we get to the public ALB in India.
+23
+And that's because it goes over the public internet.
+24
+Same for Australia, many hops.
+25
+And same for Europe, many hops.
+26
+So you can see these hops I introduce a bit of risk
+27
+connection can get lost,
+28
+they also add a little bit of latency,
+29
+and they're not as direct as possible
+30
+into our amazon infrastructure.
+31
+So what we want to do is to wish to go as fast as possible
+32
+through as soon as possible the AWS US network
+33
+to minimize latency. And so before we do so
+34
+and use the global accelerator for this,
+35
+I want to introduce to you another concept
+36
+which is Unicast and Anycast IP.
+37
+So first, Unicast IP is what we know.
+38
+One server holds one IP address.
+39
+So our clients when they talk to two server
+40
+one has starting IP address is the left hand side
+41
+number 12 and the other one is 98.
+42
+Then if you refer to the IP address that begin with 12
+43
+we will be sent to the server on the left hand side.
+44
+And for the other one if you use the other IP
+45
+then we will go to the server on the right hand side.
+46
+This we know it makes a lot sense.
+47
+But for Anycast IP, is a little different.
+48
+All servers will hold the same IP address
+49
+and the client will be routed to the nearest one.
+50
+So this is contra-intuitive but this is how it works.
+51
+So our client has two servers
+52
+and these two servers as you can see in the bottom,
+53
+they have the same IP.
+54
+But our client when it tries to connect to this Anycast IP
+55
+will be sent to the server that is the closest to itself.
+56
+And as surprising as this is, this is how it works.
+57
+So Global Accelerator uses that Anycast IP concept to work.
+58
+So how does it work?
+59
+We're able to leverage the AWS internal global network
+60
+to route to our application.
+61
+So we have the same idea,
+62
+we want to route to India
+63
+and we have users all around the globe.
+64
+And is going to happen is that instead of sending it
+65
+through the public internet in America,
+66
+it's going to come to the closest edge location.
+67
+And from edge location,
+68
+it's going to go all the way straight to our ALB
+69
+through the internal AWS network.
+70
+Same for Australia, so it goes to closest edge location
+71
+near to Australia
+72
+and then it goes over the private AWS network
+73
+to get to the ALB and same for Europe.
+74
+So the idea with this is that,
+75
+we're going to use an Anycast IP
+76
+and there's actually going to be two of those
+77
+that are going to be created for your application
+78
+and they're global.
+79
+And the Anycast IP will send the traffic directly
+80
+to the closest edge location of your users.
+81
+And this is the power of Anycast IP.
+82
+So the edge location will then send the traffic
+83
+to you application, (mumbles)
+84
+For example,
+85
+through the private AWS network which is much more stable,
+86
+has less latency and so on.
+87
+So the Global Accelerator is absolutely unique
+88
+because it really allows to give two static IP addresses
+89
+all around the globe for the users
+90
+for whatever application you may have.
+91
+And right now I'm showing one ALB in one region
+92
+but it could be global as well
+93
+it could be multiple ALBs in multiple regions.
+94
+So it's a game changer to me.
+95
+So, what does it work with?
+96
+It works with Elastic IP, EC2 instances,
+97
+Application Load Balancer, Network Load Balancer
+98
+and they can either be public or private.
+99
+There is consistent performance
+100
+because we go over the network
+101
+so we have intelligent routing
+102
+to the lowest latency edge location
+103
+and we'll have fast regional failover
+104
+in case anything goes wrong.
+105
+There's no issue with client cache
+106
+because the client doesn't cache anything
+107
+the IP, the two Anycast IP we're using don't change.
+108
+It's internal AWS network to go after the edge location
+109
+so it's perfect.
+110
+And then we have health checks.
+111
+So the Global Accelerator will perform a health check
+112
+on your application and then make sure
+113
+that the application is global
+114
+and if health check fails for one ALB and one region
+115
+then there is automated failover in less than one minute
+116
+to a healthy end port.
+117
+So this is really, really great.
+118
+And it's amazing for disaster recovery,
+119
+thanks, to the health checks.
+120
+Now for security,
+121
+it's appropriately secured
+122
+because we only have two external IP
+123
+that needs to be whitelisted by your clients.
+124
+And you get DDoS protection automatically
+125
+through the Global Accelerator,
+126
+thanks to something called
+127
+AWS Shield that we'll see in the security session.
+128
+So this is great.
+129
+So you're really asking me what is the difference
+130
+between Global Accelerator and CloudFront?
+131
+And hopefully you already see the difference,
+132
+otherwise I failed but I want to outline these differences
+133
+very, very clearly.
+134
+So, Global Accelerator and CloudFront
+135
+they both use the same global network
+136
+and they will both use edge locations all around the globe
+137
+that AWS has created.
+138
+They both integrate with Shield for DDoS protection
+139
+so they both receive the same thing
+140
+but now their difference.
+141
+CloudFront is going to improve the performance
+142
+for both cacheable content such as images and video,
+143
+and also dynamic content such as,
+144
+API acceleration and dynamic site delivery.
+145
+And the content is going to be served
+146
+from the edge locations.
+147
+So once in a while the edge locations
+148
+are going to fetch the content from the origin
+149
+but most of the time hopefully CloudFront
+150
+will deliver cache content from the edges.
+151
+So here the users are getting content from the edges.
+152
+Whereas, for Global Accelerator,
+153
+it improves the performance of the wide range of application
+154
+over TCP or UDP.
+155
+But the packets are being proxyeed from the edge locations
+156
+to the applications running in two one or more AWS regions.
+157
+So in that case, all the request still make it
+158
+to our application end.
+159
+There is no caching available.
+160
+So it's a really good fit if you have a non-HTTP uses cases,
+161
+such as gaming, IoT or Voice over IP
+162
+or it's also really good if you have and HTTP use case
+163
+that require a static IP addresses globally.
+164
+Okay?
+165
+Or in case you need to have deterministic
+166
+and fast regional failover.
+167
+So, Global Accelerator is a newer kind of service
+168
+and it will appear in your exam.
+169
+I hope you like this lecture.
+170
+I will see you in the next lecture for some hands on.
+
+--- AWS Global Accelerator - Hands On ---
+
+1
+All right, so let's go ahead
+2
+and practice using Global Accelerator.
+3
+So, for this, we're gonna have to create an infrastructure
+4
+in two regions to make the Global Accelerator useful.
+5
+But let's go ahead and create it
+6
+and see what the options are.
+7
+So, first of all, we need to enter an accelerator name,
+8
+so Demo, and then an accelerator type.
+9
+It's going to be Standard.
+10
+Then, the routing we want is going to be IPv4
+11
+because right now we use IPv4 addresses.
+12
+Let's click on Next.
+13
+And now we have listeners,
+14
+so what do we want our accelerator to listen on?
+15
+So the protocol is gonna be TCP,
+16
+and the port is going to be 80
+17
+because we're going to send HTTP traffic to our instances.
+18
+Client affinity allows you to handle
+19
+whether or not you want the same client
+20
+to go to the same backend instance.
+21
+So you can have none or have it by source IP,
+22
+but for now we'll leave it as none.
+23
+Let's go Next, and now we have listeners.
+24
+So this is where you create endpoint groups
+25
+for multiple listeners.
+26
+So we can configure regions,
+27
+and then we can configure instances behind the scenes.
+28
+So, for example, here we are going to choose
+29
+US-East-1, very nice.
+30
+And then we add a second endpoint group,
+31
+which is going to be EU-West-1,
+32
+which is the region that I want to use right now.
+33
+As you can see, for Global Accelerator,
+34
+because it's a global service,
+35
+on the top-hand side it says "Global".
+36
+So that means you cannot choose any region,
+37
+it's just a global service.
+38
+So, here we say, "Hey, we want to send
+39
+some traffic to US-East-1 and some traffic to US-West-1."
+40
+You could configure port overrides and health checks,
+41
+but no need to right now.
+42
+Let's click on Next.
+43
+And now we need to have endpoints in these regions.
+44
+So right now we don't have any endpoints,
+45
+so we cannot finish the configuration
+46
+but let's create this accelerator.
+47
+And while it's created,
+48
+we're going to add endpoints afterward.
+49
+So now endpoints are going to be,
+50
+for example, EC2 instances or load balancers and so on.
+51
+So, I'm going to open EC2 instances
+52
+and first I'm going to choose US-East-1,
+53
+which is what I want to have one of my endpoint groups in.
+54
+And I will add an instance, and I will launch the instance.
+55
+We're gonna go through it very quickly,
+56
+so I'll call this one Demo Accelerator.
+57
+We'll use the latest Amazon Linux, this is fine.
+58
+T3 Micro, this is fine.
+59
+We don't need a key pair.
+60
+We can select a security group.
+61
+Yes, we're going to create one,
+62
+and we're going to allow HTTP traffic from the internet.
+63
+This is going to allow our HTTP instance to be exposed.
+64
+And then under Advanced Details
+65
+I'm going to, at the very bottom, select my user data,
+66
+and I'm going to choose what we had before, so this,
+67
+but we're going to paste it in
+68
+and we're gonna say, "Hello World
+69
+from hostname (indistinct) in US-East-1."
+70
+This way we know which region
+71
+and which instance belongs to which region.
+72
+So this is good, I'm going to just launch the instance
+73
+and copy this again.
+74
+So now our instance is being launched.
+75
+Ao I'm going to do the exact same thing,
+76
+so let's go to the instance, refresh this,
+77
+and we're going to copy this
+78
+IPv4 address in here and enter it.
+79
+Right now, it's not going to work, of course,
+80
+because it's too early,
+81
+but at least we have the IP address ready.
+82
+And we're going to do the exact same thing,
+83
+but in EU-West-1, so I click on EU-West-1.
+84
+I'm going to launch an instance
+85
+and then call it one Demoinstance.
+86
+Then, the same setup as before, no key pair required.
+87
+We'll allow HTTP traffic from the internet.
+88
+Scroll down, and we're going to paste the user data
+89
+but this time, for the user data, which is right here,
+90
+I'm going to have it as EU-West-1.
+91
+All right, so now we'll have two instances.
+92
+I'm going to launch this one as well.
+93
+So we have two instances now that have been launched,
+94
+one in each region, and we have two IPs
+95
+so I'm going to open this IP address in here as well.
+96
+So let's see for this instance if it's ready or not.
+97
+So let's switch regions again to get back the IP
+98
+because I lost it.
+99
+So here's my instance.
+100
+And, as you can see, it says, "Hello World
+101
+from my EC2 instance in US-East-1."
+102
+So this one has been working correctly,
+103
+and this one is probably just a matter of time.
+104
+Here we go, here it's, "Hello World from EU-West-1."
+105
+So now our two instances are ready.
+106
+And in Global Accelerator, in our accelerator,
+107
+we're going to now configure these instances.
+108
+So let's click on this listener,
+109
+and we have two endpoint groups,
+110
+one for US-East-1 and one for US-West...
+111
+And actually, I did US-West-1 and not EU-West-1,
+112
+so let's configure one for EU-West-1,
+113
+which is what I wanted to.
+114
+And now we're going to add endpoints for this EU-West-1
+115
+and, as you can see in here, we have several options.
+116
+So we have Application Load Balancer, Network Load Balancer,
+117
+EC2 instance, and Elastic IP address.
+118
+Right now, we've configured an EC2 instance,
+119
+and we can find this instance right here.
+120
+And the weight allows you to
+121
+see how you want to distribute traffic
+122
+if you had multiple endpoints.
+123
+But this is good, we have one, we'll save it.
+124
+Now, for this one right here, US-West-1,
+125
+we actually don't need it so I'm going to remove it.
+126
+This was an oversight from me.
+127
+And for US-East-1, I'm going to click on it, add endpoints.
+128
+And here, again, we can add our EC2 instance.
+129
+Here we go, and click on Save.
+130
+So now we're having issues
+131
+with the health check setup for our EC2 instances,
+132
+so let's go into the configuration of US-East-1.
+133
+We're going to configure the health checks,
+134
+and here we'll say, "Okay, check the protocol HTTP.
+135
+The path is /, the port is 80,
+136
+and you can have a 10-second health check interval,
+137
+and we'll have it as two threshold count to make it faster."
+138
+So perfect for this one.
+139
+And we're going to configure
+140
+the second endpoint group as well, the one for EU-West-1,
+141
+and we'll apply the exact same thing.
+142
+So we're going to do health checks on HTTP,
+143
+the health check being 10 seconds,
+144
+and the threshold being two.
+145
+So that means we need to wait about 20 seconds
+146
+to make sure that our endpoints are going to be healthy,
+147
+so let's wait and I'll get back to you.
+148
+All right, so I'm back in my Global Accelerator,
+149
+you can get back here,
+150
+and I had to wait for the provisioning status to be deployed
+151
+for my health checks to pass.
+152
+So this is why the health checks were unhealthy.
+153
+But now that it's been provisioned
+154
+and my health checks are passing,
+155
+we can see that we have two static IP addresses
+156
+available for our Global Accelerator.
+157
+We have this one and that one.
+158
+And so what I can do now
+159
+is just try to use the Global Accelerator.
+160
+So I'm going to open a URL,
+161
+and, as you can see, by opening this IP address
+162
+I'm redirected to my instance in EU-West-1.
+163
+And I keep on refreshing
+164
+and I keep on being redirected to the same instance.
+165
+An dif I go to this other IP address,
+166
+I also have only EU-West-1.
+167
+So the reason is because I'm redirected
+168
+to the one that's closest to me,
+169
+but I have a VPN just to show you.
+170
+So I can connect into the United States
+171
+to be closer to the US itself,
+172
+and then go here and refresh
+173
+and now I'm connected to US-East-1.
+174
+So, here, both of them are US-East-1.
+175
+So this shows you that the Global Accelerator
+176
+is working as intended.
+177
+For this part of the demo you would need to have a VPN,
+178
+but, again, if you don't have one
+179
+that's completely fine, just see as I do.
+180
+And as you can see, again, if I refresh now
+181
+we're back in EU-West-1.
+182
+So this is pretty cool.
+183
+And now to ensure you don't have any costs,
+184
+please remove the accelerator, so delete it.
+185
+You need to disable it,
+186
+and once it's disabled you can delete it.
+187
+And then remember that you have instances in two regions,
+188
+so terminate it.
+189
+Terminate one and then terminate two.
+190
+So they're both being deleted, that's perfect.
+191
+My accelerator is now disabled so I can just delete it,
+192
+and we're good to go.
+193
+So, that's it for this lecture.
+194
+I hope you liked it, and I will see you in the next lecture.
+

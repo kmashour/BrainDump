@@ -7,13 +7,9 @@ tags:
   - aws/infrastructure
 ---
 
-# Module 3-1: AWS Global Infrastructure
-
 # Module 3-1: AWS Global Infrastructure & Network Architecture
 
 This module details the physical footprint of Amazon Web Services (AWS), core cloud computing paradigms, structural design patterns of the **AWS Well-Architected Framework**, logical networking through **Virtual Private Cloud (VPC)**, and hybrid cloud connectivity.
-
----
 
 ---
 
@@ -23,428 +19,92 @@ Virtualization abstractions partition physical host resources into isolated logi
 *   **Physical Host:** Underlying bare-metal computing hardware.
 *   **Hypervisor (Hardware Abstraction Layer - HAL):** Hypervisors split physical compute, memory, and network resources.
 *   **Virtual Machine (VM):** The guest operating system running on simulated hardware, exposed in AWS as an **Amazon EC2 instance**.
+    *   *AWS Responsibility:* Power, hardware maintenance, hypervisor patching, and physical security are fully managed by AWS. Once a virtual machine is terminated, you only pay for the exact compute time consumed.
 
----
-title: Cloud-Benefits
-tags: 
-Date: 
-DeeperDive:
----
-Traditional computing model (CAPEX)
-- **There are many problems with the traditional IT approach**
-    - Covering the costs of data center rental.
-    - Covering expenses for power supply, cooling, and maintenance.
-    - Time required for hardware additions and replacements.
-    - Cannot scale as flexibly as you would like…
-    - Employing a 24/7 team for infrastructure monitoring.
-    - Addressing disaster preparedness concerns such as earthquakes, power shutdowns, and fires.
-    - Overall, inflexible and inconvenient for our rapidly changing world.
- ![[Pasted image 20250508105636.png]]
+### B. AWS Historical Evolution
+*   **2002:** Launched internally at Amazon.com to address resource sharing bottlenecks and realize the value of externalizing IT departments.
+*   **2004:** First public service launched: **Simple Queue Service (SQS)**.
+*   **2006:** Expanded and relaunched public cloud offerings with the availability of **SQS**, **Simple Storage Service (S3)**, and **Elastic Compute Cloud (EC2)**.
+*   **Global Footprint:** Expanded beyond North America to Europe (commencing with Ireland) and subsequently globally.
+*   **Market Leadership:** Recognized as a pioneer and industry leader (Leader in Gartner Magic Quadrant for 13+ consecutive years; generated $90B revenue in 2023 with 31% cloud market share in Q1 2024).
+*   **Customer Base:** Powering millions of active customers, including Dropbox, Netflix, Airbnb, and NASA.
 
-Infrastructure as hardware
-•  capital expenditure (Capital expenditure      (CAPEX)
-• Have a long hardware procurement cycle
-• Require you to provision capacity by
-  guessing theoretical maximum peaks
-
-Cloud computing model
-• Infrastructure as software
-• Software solutions:
-	• Are flexible
-	• Can change more quickly, easily, and
-	  cost-effectively than hardware
-	  solutions
-	• Eliminate the undifferentiated heavy-
-	  lifting tasks
-
-Cloud Benefits 
-- CAPEX & OPEX
-
-- Benefits from massive economics of sale
-
-- Stop guessing capacity !! --> One of the revolutionary benefits of cloud computing the hell of super (OVER) provisioning and under provisioning, because it was impossible to satisfy traffic demands because its not predictable it may be fine but there are some days with very high traffic so we design on that case which waste the resources provisioned only to survive the anomaly of high traffic event !! in cloud Resources are elastic it can expand and shrink on demand in addition to auto-scaling capabilities if I want it 
-
-- Increased speed and agility --> fast deployment of infrastructure just few clicks daddy !!  
-
-- Stop spending money running and maintaining data centers --> this is huge in disaster recovery scenarios so fail over can done very easily globally
-
-- Go Global in minutes --> in trading sites for example we need very low latency so data centers  sites must be available in all of the globe and AWS is literally all over the globe so we can initiate our infrastructure in a near region if my application is latency dependent ....
-
-
-### B. Cloud Deployment Models
+### C. Cloud Deployment Models
 *   **Public Cloud:** Computing resources owned and operated by a third-party Cloud Service Provider (CSP) (e.g., AWS, GCP, Azure) and delivered over the public internet.
-*   **Private Cloud:** On-premises virtualization environments (e.g., OpenStack, VMware Cloud Foundation) managed internally.
+*   **Private Cloud:** On-premises virtualization environments (e.g., OpenStack, VMware Cloud Foundation) managed internally. This deployment operates under a CAPEX model but offers automation and orchestration similar to public clouds.
 *   **Hybrid Cloud:** Integrating on-premises infrastructure and public cloud environments via secure tunnels (VPN/Direct Connect) so they present as a single logical network.
 *   **Multi-Cloud:** Combining multiple distinct public cloud vendors (AWS + GCP + Azure) to leverage best-of-breed services or avoid vendor lock-in.
 
----
-title: Virtualization
-tags: 
-Date: 
-DeeperDive:
----
-physical machine 
-hypervisor  (hardware abstraction layer)
-virtual machine 
-
-why virtualization in the first place ? 
-
-In AWS when we create create an EC2 instance its the same as using a VM but the but now its on the cloud (AWS hardware is the host of our EC2) , a few clicks and minutes away 
-
- AWS 
-- managed
-- Power Up 
-- maintenance 
-- patching 
-all are AWS responsibility 
-
-After finishing I could terminate the EC2 instance and pay only for what i used 
-
----
-title: Cloud-Deployment-Models-1
-tags: 
-Date: 
-DeeperDive:
----
-Public cloud 
-AWS GCP AZURE 
-**Infrastructure is 100% on cloud** 
-
-**Public Cloud = cloud resources owned and operated by a third-party cloud service provider, accessible over the Internet.**
-- Six Advantages of Cloud Computing: scalability, flexibility, cost-effectiveness, reliability, security, and global accessibility.
-
-
-private cloud 
-- (Open-stack) self service  كله منه فيه
-  **Infrastructure is 100% on premise** but not like traditional legacy services it has services same as in public cloud but managed internally by cloud engineers..Billing is internal affairs and budgeting  depending on Infrastructure available 
-
-Hybrid cloud
-- Integrating on premise and cloud through VPN(virtual private network) AWS network becomes a part of your network
-- Infrastructure **is a mix** between on Premise and cloud 
-
-### C. Cloud Provisioning Models (Shared Responsibility Boundary)
+### D. Cloud Provisioning Models (Shared Responsibility Boundary)
 *   **Infrastructure as a Service (IaaS):** AWS handles physical hardware and virtualization. The customer manages OS patching, runtimes, and application layers (e.g., EC2, EBS).
-*   **Platform as a Service (PaaS):** AWS manages the OS, runtime, and infrastructure. The customer only manages code deployments and config (e.g., Elastic Beanstalk, RDS).
-*   **Software as a Service (SaaS):** AWS manages the complete application stack. The customer only consumes the software interface (e.g., AWS Artifact).
-
----
+*   **Platform as a Service (PaaS):** AWS manages the OS, runtime, database engines, and infrastructure. The customer only manages code deployments and config (e.g., Elastic Beanstalk, RDS).
+*   **Software as a Service (SaaS):** AWS manages the complete application stack. The customer only consumes the software interface over the web (e.g., AWS Artifact, Microsoft 365, Salesforce).
 
 ---
 
 ## 2. Six Advantages of Cloud Computing & Economics
-*   **Trade Capital Expense (CAPEX) for Variable Expense (OPEX):** Avoid massive upfront investments in data centers; pay only for consumed resources.
-*   **Benefit from Massive Economies of Scale:** AWS's massive size allows them to procure hardware cheaper and pass savings to customers.
-*   **Stop Guessing Capacity:** Avoid over-provisioning (paying for idle hardware) or under-provisioning (crashing during peak traffic) through cloud elasticity.
-*   **Increase Speed & Agility:** Deploy resources in minutes with a few clicks.
-*   **Stop Spending Money Running & Maintaining Data Centers:** Eliminate undifferentiated heavy lifting (cooling, security, hardware maintenance).
-*   **Go Global in Minutes:** Deploy applications worldwide with ultra-low latency.
+*   **Trade Capital Expense (CAPEX) for Variable Expense (OPEX):** Avoid massive upfront capital investments in physical data centers; pay only for consumed capacity (pay-as-you-go).
+*   **Benefit from Massive Economies of Scale:** AWS aggregates resource consumption across millions of active users, allowing them to purchase hardware at lower costs and pass savings to customers.
+*   **Stop Guessing Capacity:** Avoid over-provisioning (idle resource waste) or under-provisioning (crashes during traffic peaks) by using elasticity to expand and shrink resources on demand.
+*   **Increase Speed & Agility:** Provision and configure infrastructure globally in minutes with a few clicks or API calls, reducing procurement cycles from months to seconds.
+*   **Stop Spending Money Running & Maintaining Data Centers:** Eliminate the undifferentiated heavy lifting of rack installation, cooling, real estate, and physical site security.
+*   **Go Global in Minutes:** Deploy workloads globally across multiple geographic locations with ultra-low latency and robust disaster recovery capabilities.
 
 ---
-title: AWS-Design-Principles-of-cloud-architecture
-tags: 
-Date: 
-DeeperDive:
----
-AWS Expects 
-- operational Excellence through 
-	- use automation whenever possible --> 
-	  speed , less human intervention = less human errors
 
-	- Monitor and track everything --> track running metrics (CPU,NETWORK,BOTTLENECK,IO)
-	
-	- Continuous improvement
-
-- Security 
-	- Use "least-privilege" access --> each service/user has the least needed privileges to operate (المعرفه علي قدر الاحتياج)
-	
-	- Use Multifactor Authentication
-	
-	- Use IAM (Identity and Access Management) --> AWS expects us to use this service to set policies for users 
-	
-	- Protect data in-transit and at rest --> AWS expects us encrypt data in both states 
-	
-	- Monitor and Audit continuously
-	  Audit : event logs for actions that happens on the system
-
-- Reliability  موثوقيه 
-	- Implement Disaster Recovery techniques --> 
-	  Design for failure
-	
-	- Make use of Autoscaling 
-	
-	- Test and validate regulary --> Try fail over scenario in disaster recovery  
-
-- Performance Efficiency 
-	- choose the right tool for the job 
-	  Lets we used EBS storage services for storage only while it is designed to able to work with EC2 instances so it was more appropriate to use S3 bucket, using EBS is money waste we didn't fully utilize its function
-	
-	- Optimize resource utilization and implement scaling --> start with average needed resources and scale when in demand, Cost effective approach.
-	
-	- user performance benchmarks --> Test the application on different traffic scenarios to have a sense of accurate Resource requirement according to demand and traffic on my app for better performance efficiency (creating a benchmark)
-
-- Cost Optimization 
-	- use the right instance type
-	
-	- use AWS cost saving plans(Reserved Instance , Spot instances)
-	
-	- monitor and track costs 
-
-- Sustainability   استدامه 
-	- Use environment friendly resources 
-	- terminate any unused (idle) resources
-
-bill of material !!!  
-Waiting 5-6 month
-racking and stacking 
-tagging labeling 
-virtualization 
-add 3 month of waiting till we finish racking 
-total of 9 month of waiting 
-![[Pasted image 20250719123526.png]]
-
-### Introduction to cloud computing (Slide-1)
- 
- - Definition 
-	 Cloud computing is the **on-demand** delivery of **compute power**,**database**,
-	 **storage**,**applications**, and other IT resources **via** the **internet with pay-as-you go**
-	 
-	 🗣️ Cloud computing = on-demand delivery of compute power, database storage, applications, and other IT resources.
-
-	- Pay as you go pricing
-	- Provision computing resources precisely tailored to your needs.
-	- Access virtually unlimited resources promptly.
-	- Convenient access to servers, storage, databases, and various application services.
- - Advantages of cloud computing [[../2-Reference-Notes/AWS-Practitioner-2025-4-15|AWS-Practitioner-2025-4-15]] 
- - Cloud service models (IaaS) (PaaS)(SaaS)
-	 - ![[iaas-paas-saas-comparison.jpg.optimal.jpg]]
-	 
-	 
-
-	1️⃣ Infrastructure as a Service (IaaS)
-	 - Offers virtualized computing resources over the internet.
-	 - Allows flexible provisioning and management of infrastructure.
-	 - Eliminates the need for physical hardware ownership.
-	 - Examples include **Amazon EC2, Azure Virtual Machines, and Google Compute Engine.**
-
-	2️⃣ Platform as a Service (PaaS)
-	
-	 - Cloud platform for developing, deploying, and managing applications.
-	 - Simplifies application development and deployment - no need for you to manage deployment or underlying infrastructure.
-	 - Examples include **AWS Elastic Beanstalk, Azure App Service, and Google App Engine**
-
-    3️⃣ Software as a Service (SaaS)
-	 - Cloud-based product that is run and managed by the service provider.
-	 - Applications accessed over the internet.
-	 - Examples include **Google Workspace, Microsoft Office 365, and Salesforce**.
- 
- - Cloud Computing deployment models 
-	 - Cloud, Hybrid, Private cloud  
-	 - [[../2-Reference-Notes/AWS-Practitioner-2025-4-15-2|AWS-Practitioner-2025-4-15-2]]
-
-
-  • Introduction to Amazon Web Services (AWS)
-  
-   - A web service is any piece of software that makes itself available over the internet and uses a standardized format (JSON,XML)
-  
-   - AWS is a secure cloud platform that offers a broad set of global cloud-based products.
-
-   - AWS services work together like building blocks.
-
-   - Example on categories of services compute database storage networking and content delivery 
-    ![[Pasted image 20250718152014.png]]  
-
-
-- How to Interact with AWS 
-  - AWS management console 
-  - aws CLI 
-  - SDK
-
-• AWS Cloud Adoption Framework (AWS CAF)
- - fast run through the slides 
- - ![[Pasted image 20250718154655.png]]
-
-
-
-After completing this module, you should be able to: (Questions)
-
-• Define different types of cloud computing models ? 
-• Describe six advantages of cloud computing ?
-• Recognize the main AWS service categories and core services ? 
-• Review the AWS Cloud Adoption Framework (AWS CAF) ?
-
-
----------------------- 
-
-### Introduction to cloud computing (Slide-2)
-
-#### Fundamentals of pricing AWS Pricing Models
-
-Three fundamental drivers of cost with AWS
-![[Pasted image 20250718180933.png]]
-1. **Pay as you go**
-    - Pay **only for the resources you actually use**, without the need for significant upfront investments in hardware or infrastructure.
-2. **Save when you reserve**
-    - Minimizing risks, predictably managing budgets, and complying with long-term requirements by **providing cost savings and capacity reservation for extended periods.**
-        - Reservations are available for EC2 Reserved Instances, DynamoDB Reserved Capacity, ElastiCache Reserved Nodes, RDS Reserved Instance, Redshift Reserved
-3. **Pay less by using more**
-    - Offering **lower prices for higher volumes of resource consumption or data transfer.**
-4. **Pay less AWS grows**
-    - As AWS's **scale and efficiency grow,** customers can benefit from reduced costs and improved services, allowing them to **pay less for the same or even enhanced cloud resources and capabilities.**
-
-![[Pasted image 20250718181014.png]]
-
-#### Total Cost of Ownership (TCO) 
-Total Cost of Ownership (TCO) is the financial
-estimate to help identify direct and indirect
-costs of a system.
-Why use TCO?
-• To compare the costs of running an entire
-infrastructure environment or specific
-workload on-premises versus on AWS
-• To budget and build the business case for
-moving to the cloud
-
-Slides 
-#### Pricing Calculator
-
-AWS Pricing Calculator = a free web-based planning tool that you can use to **create cost estimates for using AWS services.**
-
-- **Model your solutions before building them**
-- Explore AWS service price points
-- Review the calculations behind your estimates
-- **Plan your AWS spend**
-- Find cost saving opportunities
-
-#### Organizations 
-
-
-IAM attached to the account 
-
-![[Pasted image 20250719122004.png]]
-
-![[Pasted image 20250719122036.png]]
-
-All the account are under the same organization 
-
-![[Pasted image 20250719122120.png]]
-
-![[Pasted image 20250719122134.png]]
-
-![[Pasted image 20250719122229.png]]
-
-![[Pasted image 20250719122341.png]]
-
-![[Pasted image 20250719122425.png]]
-
-#### AWS Billing and cost management 
-![[Pasted image 20250719134517.png]]
-
-![[Pasted image 20250719134737.png]]
-
-![[Pasted image 20250719135030.png]]
-
-
-![[Pasted image 20250719135003.png]]
-
-
-
-
-
-
-#### Support Plans
-
-![[Pasted image 20250719134035.png]]
-Trusted advisor consultant that gives reviews over my aws architecture if it follows the best practice 
-
-![[Pasted image 20250719134054.png]]
-
-
-![[Pasted image 20250719134107.png]]
-
-![[Pasted image 20250719134204.png]]
-
-![[Pasted image 20250719134240.png]]
-
-
-
-
-
-
-
-
----
-
----
-
-## 3. AWS Physical footprint & Edge Caching
-AWS operates a global infrastructure designed to achieve maximum resilience and lowest latency:
-*   **AWS Regions:** Isolated geographic locations containing multiple physically separated **Availability Zones (AZs)**. Choosing regions depends on data compliance, latency, cost, and service availability.
-*   **Availability Zones (AZs):** One or more data centers with redundant power, cooling, and physical security.
-*   **Edge Locations:** Points of Presence (PoPs) used by **Amazon CloudFront** to cache content close to end users.
+## 3. AWS Physical Footprint & Edge Caching
+AWS operates a highly resilient global infrastructure designed for high availability, fault tolerance, and minimal user latency.
+
+### A. Infrastructure Hierarchy & Topology
+*   **AWS Regions:** Isolated geographic areas containing multiple physically separated **Availability Zones (AZs)**.
+    *   *Private Network Backbone:* Regions are interconnected via AWS's private, high-speed, dedicated fiber-optic network backbone.
+*   **Availability Zones (AZs):** One or more discrete data centers with redundant power, cooling, and network connectivity.
+    *   *Design:* Each region has a minimum of 3 (up to 6) AZs (e.g., Sydney region `ap-southeast-2` consists of `ap-southeast-2a`, `ap-southeast-2b`, and `ap-southeast-2c`).
+    *   *Disaster Isolation:* AZs are isolated from geographic disasters (designed to prevent cascading failures) while staying physically close enough to connect via ultra-low-latency, high-bandwidth private networks.
+*   **Edge Locations (Points of Presence - PoPs):** Edge nodes used to cache content closer to end-users (e.g., via **Amazon CloudFront** CDN) and route DNS (via **Amazon Route 53**).
+    *   *Scale:* Over 400 Points of Presence in 90 cities across 40 countries.
     *   *CloudFront Invalidation:* A process to purge cached assets from edge locations before their Time-To-Live (TTL) expires.
 
-![[Pasted image 20250721180655.png]]
+```mermaid
+graph TD
+    subgraph AWSGlobal["AWS Global Infrastructure"]
+        subgraph Region["AWS Region (e.g., ap-southeast-2)"]
+            subgraph AZ1["Availability Zone A (ap-southeast-2a)"]
+                DC1["Data Center 1"]
+                DC2["Data Center 2"]
+            end
+            subgraph AZ2["Availability Zone B (ap-southeast-2b)"]
+                DC3["Data Center 3"]
+            end
+            subgraph AZ3["Availability Zone C (ap-southeast-2c)"]
+                DC4["Data Center 4"]
+            end
+            
+            AZ1 <-->|Ultra-Low Latency Links| AZ2
+            AZ2 <-->|Ultra-Low Latency Links| AZ3
+            AZ3 <-->|Ultra-Low Latency Links| AZ1
+        end
 
-![[Pasted image 20250721180831.png]]
+        subgraph POPs["Points of Presence (Edge Network)"]
+            EL1["Edge Location (Edge Caching)"]
+            EL2["Edge Location (Route 53 / CDN)"]
+        end
 
-![[Pasted image 20250721180939.png]]
+        Region <-->|Private Network Backbone| POPs
+    end
+```
 
-![[Pasted image 20250721181005.png]]
+### B. AWS Region Selection Criteria
+When deploying resources, choosing the optimal AWS region depends on four primary factors:
+1. **Compliance and Data Governance:** Legal or regulatory requirements mandating that data remain within specific geographic boundaries (e.g., France requiring local storage, thus choosing `eu-west-3` Paris).
+2. **User Latency:** Deploying workloads in the region closest to the user base to minimize network latency (e.g., users in Europe should target `eu-west-1` Ireland).
+3. **Service Availability:** Not all AWS services or features are available in every region. Services availability must be audited on the AWS Regional Services Table.
+4. **Pricing and Cost:** Service rates vary between regions based on local power tariffs, real estate costs, and taxation.
 
-![[Pasted image 20250721181014.png]]
+### C. Resource Scope: Global vs. Regional Services
+*   **Global Services:** Shared across the entire AWS platform; do not require region selection. Examples: **IAM**, **Route 53**, **CloudFront**, and **WAF**.
+*   **Regional Services:** Scoped and isolated within a single AWS region. Resources in one region are invisible to others unless explicitly configured. Examples: **EC2**, **Lambda**, **Elastic Beanstalk**, **RDS**, and **Rekognition**.
 
-
-![[Pasted image 20250721181045.png]]
-
-![[Pasted image 20250721181052.png]]
-
-![[Pasted image 20250721181132.png]]
-
-![[Pasted image 20250721181229.png]]
-
-![[Pasted image 20250721181246.png]]
-
-![[Pasted image 20250721181256.png]]
-
-
-![[Pasted image 20250721181410.png]]
-
-![[Pasted image 20250721181418.png]]
-
-![[Pasted image 20250721181523.png]]
-
-![[Pasted image 20250721181805.png]]
-
-----------------
-
-![[Pasted image 20250721184607.png]]
-
-
-![[Pasted image 20250721182400.png]]
-
-
-
-
-
------------
-
-![[Pasted image 20250721181838.png]]
-
-![[Pasted image 20250721181850.png]]
-
-![[Pasted image 20250721181910.png]]
-
-![[Pasted image 20250721181922.png]]
-
-![[Pasted image 20250721182013.png]]
-
-
-CloudFront invalidation is ==a process that removes cached content from Amazon CloudFront's edge locations before the content's Time-To-Live (TTL) expires==. This ensures that users accessing the content will receive the most up-to-date version, even if the cached copy hasn't expired yet.
-
-
-![[Pasted image 20250721182023.png]]
-
----------
 
 
 EC2 SLIDES

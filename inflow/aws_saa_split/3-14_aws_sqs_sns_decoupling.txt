@@ -1,0 +1,4098 @@
+--- Introduction to Messaging ---
+
+1
+Welcome to the section
+2
+on AWS integration and messaging.
+3
+So this section is kinda cool because we're going
+4
+to see how we can orchestrate stuff
+5
+between our different services using middleware.
+6
+And so in this section basically,
+7
+when we start to deploy multiple applications,
+8
+they will inevitably have to communicate with one another.
+9
+Okay, your services need to share information, share data.
+10
+And so there will be two patterns
+11
+of application communication out there.
+12
+There's going to be a synchronous communication
+13
+so your application will be directly connecting
+14
+to another application of yours.
+15
+And so for example we have, you know,
+16
+we sell something online, and we have a buying service,
+17
+and when something is bought, we need
+18
+to talk to the shipping service
+19
+to send that item that was just bought.
+20
+As you can see here,
+21
+my buying service and my shipping service,
+22
+they're directly connected to one another,
+23
+so there is some synchronous communication happening.
+24
+My buying service says, hey something happened,
+25
+shipping service, do it, okay?
+26
+The other type of integration and pattern
+27
+is going to be asynchronous or event based.
+28
+And so there will be a middleware called
+29
+a queue or called something else,
+30
+basically that will connect your applications.
+31
+So this time the buying service says,
+32
+hey, someone bought something,
+33
+and so I'm gonna put that into a queue, and that's it.
+34
+And the shipping service says, hey queue,
+35
+is there something that got bought recently?
+36
+And the queue will return that element
+37
+and the shipping service can do whatever it wants.
+38
+So as you can see here, the buying service
+39
+and the shipping service are not directly connected.
+40
+There is a queue in between.
+41
+And so because they don't directly talk
+42
+to one another, this is asynchronous.
+43
+Now, synchronous between applications can be
+44
+a little bit problematic sometimes,
+45
+because if one service overwhelms the other
+46
+because there is a sudden spike of purchases or whatever,
+47
+it could be a big problem right.
+48
+So if you need to encode, for example
+49
+we have a video encoding service,
+50
+and we need to encode 1,000 videos but usually it's 10.
+51
+Well, our encoding service is going to be overwhelmed
+52
+and we're going to have outages.
+53
+So, when you have these sudden spikes of traffic
+54
+or you can't predict anything,
+55
+then it's usually better to decouple your application
+56
+and have the decoupling layer scale for you.
+57
+So in that case that could be SQS for a queue model,
+58
+that could be SNS for a pub/sub model,
+59
+and that could be Kinesis, if you do real time streaming
+60
+and you have like big data.
+61
+So we'll learn all about those in this section.
+62
+And what we'll learn is that now,
+63
+using these three things, our services
+64
+can scale independently from SQS, SNS, and Kinesis.
+65
+And these three things scale as well really, really, well.
+66
+So that's the whole paradigm.
+67
+And so we're gonna get started with learning
+68
+these three technologies in this lecture.
+69
+So, see you in the next lecture.
+
+--- Amazon SQS - Standard Queues Overview ---
+
+1
+So let's talk about SQS.
+2
+And at the core of SQS is a queue
+3
+because SQS is a simple queuing service.
+4
+So we have an SQS queue
+5
+and it's going to contain messages
+6
+and to contain messages
+7
+while something needs to send messages into our SQS queue
+8
+and whatever sends a message
+9
+into our SQS queue is called a producer.
+10
+So it's possible for us to have one producer,
+11
+but also have more.
+12
+You can have multiple producers sending many messages
+13
+into an SQS queue,
+14
+and the message could be whatever you want.
+15
+For example, it could be process this order
+16
+or process this video.
+17
+Whatever message you create goes into the queue.
+18
+Then something needs to process the messages from the queue
+19
+and receive them.
+20
+And it's called consumers.
+21
+So consumers will pull the messages from the queue.
+22
+So that means that they will ask the queue,
+23
+do you have any message for me?
+24
+And the queue says, yes, here it is.
+25
+And the consumer will pull these messages
+26
+and get some information.
+27
+And then with that message, it will process it
+28
+and then delete it back from the queue.
+29
+And you may have multiple consumers consuming messages
+30
+from an SQS queue.
+31
+So queuing service is here to be a buffer to decouple
+32
+between your producers and your consumers.
+33
+Now, SQS is a complicated service
+34
+and we'll see it in depth,
+35
+but the very first offering is called Amazon SQS
+36
+for standard queues.
+37
+And SQS, historically on AWS, it is the oldest offering.
+38
+It was one of the first services on AWS.
+39
+It's over 10 years old,
+40
+so it's quite, quite set in stone about how it works.
+41
+It's a fully managed service
+42
+and it will be used to decouple applications.
+43
+So anytime you see application decoupling in your exam,
+44
+think about Amazon SQS.
+45
+Now, why is SQS so special?
+46
+Well, we get an unlimited throughput.
+47
+That means you can send as many messages per second
+48
+as you want,
+49
+and the queue can have as many messages as you want as well.
+50
+So there's no limit on throughput
+51
+and no limit in the number of messages in the queue.
+52
+Now each message is short-lived.
+53
+What does that mean?
+54
+That means that by default,
+55
+the message will stay in the queue for four days.
+56
+And the maximum amount of time
+57
+that the message can be in a queue is 14 days.
+58
+That means that as soon as you send a message to a queue,
+59
+it has to be read by a consumer
+60
+and deleted from the queue after being processed
+61
+within that retention period.
+62
+Otherwise it will be lost.
+63
+Then we have low latency.
+64
+So SQS means that that means that
+65
+whenever you send a message or read a message from SQS,
+66
+you will get a response very quickly,
+67
+less than 10 milliseconds on publish and receive.
+68
+And the messages in SQS, they have to be small,
+69
+they have to be less than 1,024 kilobytes
+70
+per message is sent.
+71
+Now, SQS is a queuing service, as you can see,
+72
+high throughput, high volume and so on.
+73
+And so it is possible to have duplicates messages.
+74
+That means that, for example,
+75
+sometimes a message will be delivered twice.
+76
+And so this is why it's called at least once delivery.
+77
+And if you go ahead with writing an application,
+78
+you need to take that into account.
+79
+It can also have out of the order messages,
+80
+which means it's best effort ordering.
+81
+And we'll see there is another type of offering from SQS
+82
+that can deal with that limitation.
+83
+But we'll see this later on in this section.
+84
+So let's go back to our message producers.
+85
+So messages are sent into SQS by producers.
+86
+And how do they, how does it happen?
+87
+Well, the producers will send the messages to SQS
+88
+using an SDK, software development kits,
+89
+and the API to send a message to SQS
+90
+is called SendMessage, very simple.
+91
+Now, the message, it will be written,
+92
+it will be persisted into the SQS queue
+93
+until a consumer reads that message and deletes it,
+94
+which signifies that the message has been processed.
+95
+We know the retention.
+96
+And so what's the use case for producing messages?
+97
+For example, you want to process an order, for example,
+98
+packet and then ship it to the sender.
+99
+And so you wanna do this in your own time.
+100
+So you will send a message into the SQS queue
+101
+with maybe some information such as the order id,
+102
+the customer id, and any attributes you may want,
+103
+for example, the address and so on.
+104
+And then your consumer, that is an application you write,
+105
+will have to deal with that message itself.
+106
+So again, to confirm,
+107
+SQS standard held has unlimited throughputs.
+108
+So we've seen about producers, very simple.
+109
+Now let's look about consumers.
+110
+So consumers, they are applications
+111
+that you have to write with some code.
+112
+And these applications can be running on EC2 instances,
+113
+so your virtual servers on AWS,
+114
+but also they can be running
+115
+on your own on-premises servers if you wanted to,
+116
+or we haven't seen it yet.
+117
+But they can also be running on Lambda functions
+118
+on AWS Lambda.
+119
+We'll see in this course
+120
+it is a serverless compute type of service.
+121
+Well, this means that you can just read messages
+122
+directly from Lambda as well.
+123
+We'll see this later on this course.
+124
+Do not worry.
+125
+So going back to our simple use case about EC2 instances,
+126
+our queue has a consumer
+127
+and the consumer pulls for SQS for messages.
+128
+And that means that the consumer will ask the queue,
+129
+do you have messages from me?
+130
+And the consumer may receive up to 10 messages at a time.
+131
+So if there are messages in the SQS queue,
+132
+it will receive a valid response saying,
+133
+here are the messages that are waiting for you.
+134
+Then the consumer, it's your code,
+135
+has a responsibility to process these messages.
+136
+For example, insert some orders into an RDS database.
+137
+So you will go ahead and for each order,
+138
+you will insert it into your RDS database,
+139
+something that you have to write obviously with your code.
+140
+And then because these messages have been processed,
+141
+because they have been received
+142
+and inserted into an Amazon RDS database,
+143
+your consumer will go ahead and delete these messages
+144
+from the queue using the delete message API.
+145
+And this will guarantee that no other consumer
+146
+will be able to see these messages,
+147
+and therefore the message processing is complete.
+148
+So now we can scale this up.
+149
+We can have multiple consumers at a time.
+150
+So SQS queue can have multiple consumers
+151
+that will receive and process these messages in parallel.
+152
+So here we are three on EC2 instances.
+153
+And so each consumer will receive a different set
+154
+of messages by calling the poll function.
+155
+And so if somehow a message is not processed fast enough
+156
+by consumer, it will be received by other consumers.
+157
+And so this is why we have at least once delivery,
+158
+and this is also why we have best effort message ordering.
+159
+Now, as I said, when the consumers are done
+160
+with the messages, they will have to delete them,
+161
+otherwise other consumers will see these messages.
+162
+And so what that means is that with SQS gueues,
+163
+if we need to increase the throughputs
+164
+because we have more messages,
+165
+then we can add consumers and do horizontal scaling
+166
+to improve the throughput of processing.
+167
+And so if you remember what we said,
+168
+this is a perfect use case for using SQS
+169
+with your auto scaling groups or ASG.
+170
+So what does that mean?
+171
+Well, that means that your consumers will be running
+172
+on EC2 instances inside of an auto scaling group,
+173
+and they will be pulling for messages from the SQS queue.
+174
+But now your auto scaling group has to be scaling
+175
+on some kind of metric.
+176
+And a metric that is available to us is the queue length.
+177
+It's called approximate number of messages.
+178
+It is a CloudWatch metric
+179
+that's available on any SQS queue.
+180
+And we could set up an alarm such as whenever
+181
+the queue length go over a certain level,
+182
+then please set up a CloudWatch alarm.
+183
+And this alarm should increase the capacity
+184
+of my auto scaling group by X amount.
+185
+And this will guarantee that the more messages
+186
+you have in your SQS queue,
+187
+maybe because there's a surge of orders on your websites,
+188
+the more easy two instances will be provided
+189
+by your auto scaling group
+190
+and you will accordingly process these messages
+191
+at a higher throughput.
+192
+So this is a very common integration
+193
+that you will see in the exam.
+194
+Now, SQS, again,
+195
+the use case is to decouple between applications.
+196
+So application tiers.
+197
+So for example, let's take an example of an application
+198
+that processes videos.
+199
+We could have just one big application that call
+200
+that's called the front end that will take the request
+201
+and whenever a video needs to be processed,
+202
+it will do the processing
+203
+and then insert that into an S3 buckets.
+204
+But the problem is that processing may be very,
+205
+very long to do and it may just slow down your websites
+206
+if you do this in the front end tier.
+207
+So instead, you can decouple your application tier
+208
+and say, wait a minute,
+209
+the request of processing a file
+210
+and the actual processing of a file
+211
+can happen in two different applications.
+212
+And therefore whenever you take a request to process a file,
+213
+you will send a message into an SQS queue.
+214
+Now when you do the request to process
+215
+that file will be in the SQS queue,
+216
+and you can create a second processing tier
+217
+called the backend processing application
+218
+that will be in its own auto scaling group
+219
+to receive these messages, process these videos,
+220
+and insert them into industry buckets.
+221
+So as we can see here with this architecture,
+222
+we can scale the front end accordingly
+223
+and we can scale the backend accordingly as well,
+224
+but independently.
+225
+And because the SQS queue has unlimited throughput
+226
+and it has unlimited number of messages
+227
+in terms of the queue, then you are really safe.
+228
+And this is a robust and scalable type of architecture.
+229
+And also for your front end,
+230
+you can use the optimal type of EC2 instances
+231
+or architecture for your front end and for the backend,
+232
+maybe if you're doing some video processing,
+233
+you can use some EC2 instances that have a GPU,
+234
+a graphical processing unit because you know
+235
+that these type of instances will be optimal
+236
+for doing this kind of workload.
+237
+So this is the kind of architecture
+238
+that will come up in the exam
+239
+and that you're expected to know.
+240
+And this is an amazing
+241
+and tremendous use case for SQS queues.
+242
+Finally, SQS security.
+243
+So we have encryption in flight by sending
+244
+and producing messages using the HTTPS API.
+245
+We could add at-rest encryption using KMS keys.
+246
+And if we wanted to, we can do client side encryption,
+247
+but that means that the client has to perform
+248
+the encryption and the decryption itself.
+249
+It's not something that's supported by SQS out of the box.
+250
+For access controls,
+251
+IAM policies are going to be able to regulate access
+252
+to the SQS API, but we also have SQS access policies,
+253
+which are similar to S3 bucket policies,
+254
+and they're very helpful when you want
+255
+to do cross account access to SQS queue
+256
+or when you want to allow other services such as SNS
+257
+that we'll see very soon,
+258
+or Amazon S3 to write to an SQS queue,
+259
+for example, with S3 events.
+260
+So that's it for SQS for an overview.
+261
+I hope you liked it,
+262
+and I will see you in the next lecture for some practice.
+
+--- SQS - Standard Queue Hands On ---
+
+1
+So, let's practice Amazon SQS.
+2
+So we are going to go into the SQS console
+3
+and then create a queue.
+4
+Now as we can see, we have two types of queue
+5
+we can set up in SQS.
+6
+We have the standard queue and the FIFO queue.
+7
+And I'm going to use standard
+8
+and the name is going to be Demo Queue.
+9
+We'll see FIFO later on.
+10
+For configuration, all these things we're going to see
+11
+in future lectures
+12
+so visibility timeout, delivery delay, the wait time,
+13
+the retention period, we're going to use four days
+14
+and the max message size is going to be 256 kilobytes
+15
+which is a max allowed in SQS.
+16
+For encryption, we have several encryption options
+17
+so we can disable encryption for our queue altogether
+18
+but by default we enable it with an Amazon SQS key.
+19
+It's called SSE-SQS type of encryption
+20
+which is similar to what we have in Amazon S3 with SSE-S3.
+21
+So that's one option for server side encryption.
+22
+The other one is to use KMS.
+23
+And this is where we have to choose the customer master key.
+24
+So we can choose the default CMK of AWS
+25
+called the alias/AWS/SQS
+26
+and then we can define a data key reuse period
+27
+that could be five minutes, for example.
+28
+This is to limit the number of API calls made in two KMS.
+29
+But this is not very important
+30
+so let's keep the encryption as Amazon SQS key,
+31
+SSE-SQS.
+32
+All right.
+33
+Next we have an access policy.
+34
+And this access policy can be defined
+35
+using these prompts right here.
+36
+So we can say, 'Hey, who can access this queue well?'
+37
+Only the queue owner can send messages
+38
+or maybe I wanna specify a list of accounts,
+39
+users and roles and then who can receive, again.
+40
+Is it just me, the queue owner
+41
+or specified accounts, users and roles?
+42
+And this will generate a json document out of it
+43
+and this json document, as you can see,
+44
+looks very similar to what we had in Amazon S3
+45
+with Amazon S3 Bucket policy.
+46
+So this is a resource policy for SQS
+47
+and it works very very similarly.
+48
+Now for the redrive and the dead-letter queue,
+49
+we'll see this later on so right now, we're good.
+50
+Let's go ahead and create our queue.
+51
+And now the queue is successfully created
+52
+so we can go ahead and send and receive messages from it.
+53
+So we get a lot of different panels in this UI
+54
+but what we want to be doing is
+55
+to go to the top right-hand side
+56
+and click on send and receive messages.
+57
+So here is a facility for us to send messages
+58
+and then at the bottom, to receive them.
+59
+So as we can see right now in the queue,
+60
+we have zero messages available.
+61
+But if I enter 'hello world!' in the message body
+62
+and then send the message.
+63
+As you can see, the message is sent
+64
+and is ready to be received.
+65
+Now we have a messages available one,
+66
+and so in here, as soon as I click on pull for messages,
+67
+the messages will appear.
+68
+So let's have a look.
+69
+I click on pull for messages
+70
+and yes, we did receive that message right here.
+71
+As we can see, we have a message id.
+72
+And if you want to look at the content of the message,
+73
+I click on the message details
+74
+and I can have some information.
+75
+So there's a lot of metadata around that message.
+76
+For example, the hash of the message, who sent it,
+77
+how many times were received so just one time right now
+78
+because this is the first time we process this message,
+79
+the size in bytes.
+80
+And if we go and want to receive the body itself,
+81
+we can see that whatever has sent before 'hello world!'
+82
+has in it up right here in the message that has just read.
+83
+If we created attributes for the message,
+84
+there was a message attributes panel that we didn't look at,
+85
+we could create key values and read them from here as well.
+86
+So very simple, what you would expect
+87
+when you send a message and then read it,
+88
+you get the exact same message.
+89
+But we have decoupled
+90
+because a producer has sent some information
+91
+and a consumer has received that information.
+92
+Now we can see that the message has been received twice
+93
+because we didn't process it in enough time.
+94
+So after 30 seconds, the message went back into the queue
+95
+and we received it again.
+96
+So if I pull for messages,
+97
+now the message receive count is three.
+98
+So it has been read yet again another time.
+99
+So to be done with this message,
+100
+because say we've processed this 'hello world!' Message,
+101
+I'm going to click on it
+102
+and then I'm going to click on delete.
+103
+And by deleting the message from the queue,
+104
+we have signaled to the SQS queue
+105
+that the message has been successfully processed
+106
+and therefore we have zero messages available in the queue.
+107
+And if we pull again,
+108
+we will not receive the same message again
+109
+because we have deleted it.
+110
+So you start seeing the power of queues.
+111
+We could go ahead and send many times different messages,
+112
+hello world and so on, and you can just play with it
+113
+and this is how you would set message attributes
+114
+but this is out of scope for the exam.
+115
+And here you would receive these messages
+116
+and you can receive many messages at time.
+117
+So if we send 'hello world', we'll send that message again
+118
+and 'hello world 2' for example and send that message
+119
+and 'hello world 3',
+120
+whatever you want really in that message.
+121
+As we can see, as soon as I refresh this window,
+122
+we can see that the number of messages available is three.
+123
+And so if I pull for messages,
+124
+I will get three messages available in here to be processed.
+125
+And again, you can take them all
+126
+and delete them to signal to SQS
+127
+that they have been processed.
+128
+So fairly easy.
+129
+But you've seen the power of producers and consumers.
+130
+Now, back in the queue,
+131
+just a few options as well we can see out.
+132
+So we can edit this queue to edit all the configurations
+133
+that we've seen from before or you can purge the queue.
+134
+This will delete all the messages in the queue.
+135
+And so to delete all the messages,
+136
+you just need to type purge,
+137
+and it will go ahead and remove everything
+138
+which is very helpful when you do developments.
+139
+But I don't think you should do this in production.
+140
+And then you get some information around monitoring
+141
+for example here, which gives you some information around
+142
+how many messages are in the queue,
+143
+what's the approximate age of the oldest message,
+144
+which could be another way to scale your SQS Queue
+145
+if you have an auto-scaling group reading from it,
+146
+and so on.
+147
+And finally, access policy,
+148
+which is who can access the queue and how;
+149
+encryption, which is the service side encryption we defined
+150
+for our SQS queue.
+151
+So for example, we're using SSE-SQS right now
+152
+as our encryption scheme, but we can edit it.
+153
+And finally, the dead-letter redrive status
+154
+which is relevant if you set up a dead letter queue.
+155
+So that's it for this lecture.
+156
+I hope you liked it, and I will see you in the next lecture.
+
+--- SQS - Message Visibility Timeout ---
+
+1
+So now let's talk about an important concept,
+2
+which is called the message visibility timeout.
+3
+So when a message is polled by a consumer,
+4
+it becomes invisible to other consumers.
+5
+So let's take an example.
+6
+We have the time going from left to right,
+7
+and we have a consumer doing a ReceiveMessage request,
+8
+and therefore, a message will be returned from the queue.
+9
+Now the visibility timeout begins.
+10
+And by default, that message visibility timeout
+11
+is 30 seconds.
+12
+That means that during these 30 seconds,
+13
+the message has to be processed, okay?
+14
+And if you do so,
+15
+that means that if the same or other consumers
+16
+do a message request API call,
+17
+then the message will not be returned.
+18
+And again another one during the timeout window,
+19
+the message will not be returned.
+20
+So effectively, during the visibility timeout,
+21
+that message is invisible to other consumers.
+22
+But after the visibility timeout is elapsed
+23
+and if the message has not been deleted,
+24
+then the message will be
+25
+quote unquote put back into the queue
+26
+and therefore, another consumer or the same consumer
+27
+doing a receive message API call
+28
+will receive the message again, the same message as before.
+29
+So, this is something that's really important to understand.
+30
+As you can see, while we receive a message,
+31
+it becomes invisible during the visibility timeout period.
+32
+Now, if we take a look at the same diagram,
+33
+what we notice is that
+34
+if we don't process a message
+35
+within the visibility timeout window,
+36
+then it will be processed twice potentially, right?
+37
+Because it will be received by two different consumers,
+38
+or twice by the same consumer.
+39
+And so, if a consumer is actively processing a message
+40
+but knows that it needs a bit more time
+41
+to process the message because otherwise,
+42
+it will go out of the visibility timeout window,
+43
+there is an API called ChangeMessageVisibility.
+44
+And so if a consumer knows
+45
+that a message needs a bit more time to be processed
+46
+and you don't want to process that message twice,
+47
+then the consumer should call
+48
+the ChangeMessageVisibility API to tell SQS,
+49
+hey, do not make that message visible for now, okay?
+50
+I just need a bit more time to process this message.
+51
+And so, how do you set this message visibility timeout?
+52
+Well, if you set it to
+53
+a really, really high value by default, say, hours,
+54
+and the consumer crashes,
+55
+then it will take hours until this message reappears,
+56
+re-becomes visible in your SQS queue,
+57
+and that will take a lot of time.
+58
+If you set it to something really, really low,
+59
+like a few seconds,
+60
+what happens that if the consumer
+61
+doesn't end up having enough time to process that message
+62
+for whatever reason,
+63
+then it will be read many times by different consumers
+64
+and you may get duplicate processing.
+65
+So the idea is that the visibility timeout
+66
+should be set to something reasonable for your application
+67
+and your consumer should be programmed
+68
+that if they know they need a bit more time,
+69
+then they should call the ChangeMessageVisibility API
+70
+to get more time and increase the timeout
+71
+of that visibility window.
+72
+But understanding this concept
+73
+is very important from an exam perspective
+74
+because there will be scenarios on that.
+75
+So, let's go in the console
+76
+to see how that works in practice.
+77
+So I'm going to open
+78
+two windows of send and receive messages
+79
+just to show you how that works, so.
+80
+In the first window, I'm going to enter a hello world
+81
+and it's going to be sent into the queue.
+82
+And if you remember,
+83
+the queue has a default timeout of 30 seconds.
+84
+So what's going to happen is that I have two consumers,
+85
+I have the first window and the second window consumer,
+86
+and so I'm going to read the messages from the first window.
+87
+So let's poll for messages.
+88
+Now my message has appeared right here,
+89
+it has been received.
+90
+And if I go into my second consumer and poll for messages,
+91
+as you can see, the message does not appear in here.
+92
+And the reason it doesn't appear is that we are still within
+93
+the visibility window timeout of that message
+94
+and therefore, during these 30 seconds
+95
+this message is trying to be processed by this consumer,
+96
+this consumer right here will not see it.
+97
+But let's assume that we stop polling, okay?
+98
+So we don't delete the message
+99
+and we know this message will timeout at some point.
+100
+What will happen is that yes, I'm already here,
+101
+in the second window, in the second consumer,
+102
+this is the second consumer,
+103
+then the message has been received
+104
+because it was being put back into the queue.
+105
+And now let's assume we do something correctly,
+106
+we delete that message,
+107
+then we have fully processed that message.
+108
+But remember, that message was received twice.
+109
+It said received count was two.
+110
+So it's important for you to understand
+111
+how this visibility window works,
+112
+and this was a good demonstration of it.
+113
+Now, if you wanted to change this setting by default,
+114
+what you could be doing is go into Edit,
+115
+and then for visibility timeout,
+116
+you could set the default value
+117
+between zero seconds, which is definitely not recommended,
+118
+up to 12 hours.
+119
+I think 30 seconds is fine, but again, remember,
+120
+if a consumer needs more time to process a message,
+121
+you should just call the ChangeMessageVisibility API
+122
+to edit the visibility of that one message
+123
+and increase the value
+124
+so that another consumer will not see that message
+125
+and the first consumer will get enough time
+126
+to process that message accordingly.
+127
+So, that's it.
+128
+I hope you liked it, and I will see you in the next lecture.
+
+--- SQS - Long Polling ---
+
+1
+So let's go ahead
+2
+and discuss long polling in Amazon SQS.
+3
+So the idea that your consumer,
+4
+that is requesting messages from the queue,
+5
+and it can wait for the messages to arrive,
+6
+if, when you do a request,
+7
+there are no messages for now in the queue.
+8
+This is called long polling.
+9
+So you have a queue
+10
+and then your consumer is going to poll the queue,
+11
+but the consumer can wait for a message to arrive.
+12
+So a message is going to arrive.
+13
+And then when, as soon as the message arrives,
+14
+it's going to be sent to the consumer.
+15
+So the idea is that with the long polling,
+16
+your consumer is going to decrease the number of API calls,
+17
+because they are long API calls.
+18
+Your consumer is asking SQS Queue maybe
+19
+for 10 seconds for a message.
+20
+And also, while you have less API calls,
+21
+you're going to also reduce the latency of your application.
+22
+Why?
+23
+Well, because as soon as a message is received by SQS,
+24
+it is going to be sent to the consumer.
+25
+And so therefore your consumer will receive your messages
+26
+with the least amount of lag.
+27
+So the long polling can be set anywhere between one second
+28
+to 20 seconds, and obviously, the longer you wait,
+29
+the more efficient you're going to do
+30
+and the less API calls you're going to do to SQS.
+31
+So, a wait time of 20 seconds may be preferable.
+32
+So overall you should prefer long polling to short polling,
+33
+and you can enable this at the queue level
+34
+or at the API level using the WaitTimeSeconds parameters.
+35
+Okay, so that's it for this lecture, I hope you liked it.
+36
+And I will see you in the next lecture.
+
+--- SQS - FIFO Queues ---
+
+1
+So now let's talk
+2
+about Amazon's SQS FIFO queues.
+3
+So FIFO means first in, first out,
+4
+and it corresponds to the ordering of messages in the queue.
+5
+That means that when you have a producer
+6
+that send messages in a specific order,
+7
+then one, two, three, four,
+8
+then the consumer's polling messages
+9
+from your SQS FIFO queue
+10
+is going to read these messages in the same order.
+11
+So this is a guarantee of the FIFO queue
+12
+but this is not true for just a regular SQS queue.
+13
+Messages can be received out of order.
+14
+So because you have this ordering guarantee,
+15
+you have limits on throughput,
+16
+about 300 messages per second without batching,
+17
+and 3,000 messages per second with batching.
+18
+FIFO queue also have the ability
+19
+to do something called exactly-once send.
+20
+That means that any duplicates can be removed directly
+21
+at the queue level.
+22
+For this, you're just going to provide
+23
+on every message you send a deduplication ID.
+24
+And if this ID is seen twice
+25
+in the time range of five minutes,
+26
+then duplicates are going to be removed.
+27
+So this is a very handy thing
+28
+if you want to make sure you have no duplicates
+29
+within five minutes.
+30
+The messages are going to be processed in order
+31
+by the consumer and the ordering guarantee
+32
+is at the message group ID level.
+33
+So you need to send a message group ID
+34
+every time you send a message to Amazon SQS FIFO queue,
+35
+and then all the messages are going to be in order
+36
+for that specific group ID.
+37
+So that's it.
+38
+Now let's go in the console to see
+39
+how the FIFO queue work.
+40
+So let's go and create a queue,
+41
+and I will create a FIFO queue.
+42
+So as you can see, it's first-in-first-out delivery
+43
+and the message ordering is preserved.
+44
+Okay, so I will name it DemoQueue.fifo.
+45
+And you have to end it with .fifo,
+46
+otherwise you will not have the ability
+47
+to create this queue.
+48
+It has to end with .fifo.
+49
+Now, if we look at the configuration,
+50
+it looks very similar to before,
+51
+but we have one more setting
+52
+called content-based deduplication.
+53
+This is to deduplicate the messages
+54
+if the same is sent twice
+55
+in a very small five-minute window.
+56
+Access policy will be left the same,
+57
+encryption and so on will be left the same.
+58
+So I'll create this queue.
+59
+And now if I go to send and receive messages,
+60
+we can have a look at the message body.
+61
+We can say Hello World 1,
+62
+and then I will have to specify a message group ID.
+63
+I'll call this one demo,
+64
+and we'll use the same message group ID all along this demo.
+65
+So demo is sent and a deduplication ID, excuse me,
+66
+I will say it's my message number one.
+67
+So I'll say ID one, send this message.
+68
+I'll do Hellow World 2, the same message group ID,
+69
+and I will say deduplication ID two.
+70
+And then message the third one.
+71
+And I will say three in here, and finally the fourth one,
+72
+and I will say four.
+73
+Okay.
+74
+So now the messages have been sent
+75
+and they're ready to be received.
+76
+And so we have four messages available,
+77
+and if I pull four messages, we look at all the messages,
+78
+and if I look at this one, it's actually in the wrong order.
+79
+So if I look at the bottom one, which is the first one,
+80
+it says Hello World 1.
+81
+Then if I look at the second message,
+82
+I have Hello World 2.
+83
+The third message, I have Hello World 3,
+84
+and the fourth message, I will have Hello World 4.
+85
+So this is a guarantee that you get thanks to FIFO queues.
+86
+Then you go ahead and delete these messages and you're done.
+87
+So that's it, I hope that was helpful
+88
+and I will see you in the next lecture.
+
+--- SQS + Auto Scaling Group ---
+
+1
+So I've told you that we can use the SQS Q
+2
+with the autoscaling groups.
+3
+But I want to show you how and the patterns
+4
+that it opens up.
+5
+So we have a SQS queue and an autoscaling group.
+6
+And the EC-2 instances within the ASG
+7
+are going to poll for messages from the SQS queue.
+8
+Now the idea is to scale the auto scaling groups
+9
+automatically based on the queue size.
+10
+And so therefore, we can look at the CloudWatch metric
+11
+called queue length, called approximate number of messages,
+12
+which basically represents how many messages
+13
+are left in the queue.
+14
+And you can set an alarm and say, well, if this metric
+15
+is over, say, for example, 1,000,
+16
+that means there are 1,000 messages in the queue
+17
+waiting to be processed, that means that we are lagging
+18
+on the processing.
+19
+And therefore, we're going create an alarm saying,
+20
+hey, over 1,000 is going to be an alarm.
+21
+And this alarm is going to trigger a scaling action
+22
+in your auto scaling group.
+23
+Because, well, we don't have enough EC2 instances.
+24
+And therefore, more EC2 instances are going to be added
+25
+into your auto scaling group, which will scale.
+26
+And therefore, the message will be processed faster.
+27
+The SQS queue size will decrease.
+28
+And you will have scaled for it.
+29
+And it works in both ways.
+30
+You can scale up or scale down.
+31
+And this is the main idea of using an auto scaling group
+32
+and an SQS queue.
+33
+Now, what patterns as it open up?
+34
+Well, say, for example, that you are running a very big sell
+35
+and this is the biggest marketing campaign you've done
+36
+in your life.
+37
+And all your customers are going to place orders.
+38
+And these orders can be stored
+39
+in different types of databases.
+40
+They could be stored in Amazon RDS or Amazon Aurora
+41
+if you wanted to have some OLTP type of databases
+42
+or Amazon DynamoDB, if you want to have
+43
+no SQL type of database.
+44
+And so these transactions may be written very, very fast
+45
+into RDS or very suddenly.
+46
+And so if your application handles them,
+47
+they can handle requests.
+48
+But then on uncertain transactions,
+49
+there may be some errors, if the databases are overloaded.
+50
+And you will lose some customer transactions,
+51
+which is bad for your business.
+52
+So how do we solve this?
+53
+Well, we can solve this by using SQS as a buffer
+54
+to the database writes.
+55
+And this is a very common exam pattern.
+56
+So the same databases are here.
+57
+And the same fronting application is here.
+58
+But instead of writing directly into the database,
+59
+the applications are going to write
+60
+the transaction request or transactions into your SQS queue.
+61
+Which, by definition, from AWS is infinitely scalable,
+62
+doesn't experience any kind of throughput issue.
+63
+So your request goes into your application,
+64
+which will enqueue messages.
+65
+That means that all the transactions, all the request
+66
+will be sent as a message into your SQS queue.
+67
+And so that means that we will not lose
+68
+any single one of them.
+69
+They will be durably stored into your SQS queue.
+70
+Now, we can create another auto scaling group.
+71
+This one to dequeue messages.
+72
+And the sole role of this auto scaling group
+73
+is to receive the messages and then insert them
+74
+into the databases.
+75
+And only when a message is known to be inserted
+76
+in a database, then we will delete the message
+77
+from the original SQS queue.
+78
+And therefore, we used SQS as a buffer.
+79
+And we guarantee that every single transaction
+80
+is going to be written into your database.
+81
+Now, this pattern works only if the client does not need
+82
+to have the confirmation that the write has been happening
+83
+into the database.
+84
+But this is fine because if the write has been done
+85
+into an SQS queue, we sort of have the guarantee
+86
+that it will be written eventually to the database.
+87
+So we're good.
+88
+So this works for decoupling between database writes,
+89
+but also between application tiers.
+90
+So imagine an application that is getting a request
+91
+performing some processing and then sending back a response.
+92
+Instead, we can decouple it.
+93
+So we can have all the requests come
+94
+into a front end web application.
+95
+Send the request into an SQS queue.
+96
+And then, the backend processing job
+97
+will just receive these messages and deal with them
+98
+in their own time.
+99
+And we can scale this accordingly.
+100
+So SQS is going to be a very, very common way of dealing
+101
+at questions at the exam.
+102
+It is more common than usual now.
+103
+And so anytime you see decoupling, or sudden spike load,
+104
+or timeouts, or whatever, and you need to just make sure
+105
+you can scale a lot very fast, you may want to look
+106
+into an SQS queue.
+107
+All right, that's it for this lecture.
+108
+I hope you liked it.
+109
+And I will see you in the next lecture.
+
+--- Amazon Simple Notification Service (AWS SNS) ---
+
+1
+Now let's talk about Amazon SNS.
+2
+So what if this time you want to send one message
+3
+and have many, many different receivers?
+4
+So you could have a direct integration where for example
+5
+a buying service application could send an email
+6
+notification, then send a message to a fraud service
+7
+send a message to a shipping service and maybe
+8
+even send a message into an SQS Queue.
+9
+This is cumbersome because every time
+10
+you have to add a new receiving service.
+11
+You need to create and write that integration.
+12
+Instead, what you may want to do
+13
+is called a Pub/Sub or Publish-subscribe.
+14
+The idea is that the buying service
+15
+will send a message into an SNS topic
+16
+which is publishing a message into a topic.
+17
+And that topic will have many subscribers.
+18
+And each of the subscriber will be able to
+19
+receive that message from the SNS topic
+20
+and have it for their own.
+21
+And so this is another type of pattern
+22
+called the Pub/Sub pattern.
+23
+So in Amazon SNS,
+24
+the event producer only sends messages
+25
+to one specific SNS topic.
+26
+And the event receivers or the subscriptions,
+27
+they want to listen to the SNS topic notifications.
+28
+And so therefore each subscriber in your SNS topic
+29
+will get all the messages sent to the topic
+30
+except if you're using a feature to
+31
+filter messages and it is possible as well.
+32
+So how many subscribers can you get per topic?
+33
+Well you can have up to 12,000,000 plus subscriptions
+34
+per topic, so quite a lot.
+35
+And the number can change over time.
+36
+It will not update this slide.
+37
+It's just to give you a overview
+38
+of how many subscribers you can get.
+39
+And in your account, you can get up to 100,000 topics
+40
+and you can increase that limit as well.
+41
+And this can change, but again,
+42
+just to give you an idea of what the limit may be,
+43
+but you're never tested on limits themselves for SNS.
+44
+So for SNS, you're going to publish your subscribers
+45
+and what can they be?
+46
+Well you can directly send emails from SNS.
+47
+You can send SMS and mobile notifications.
+48
+You can also send data directly into specified HTTP
+49
+or HTTP(S) endpoints,
+50
+but SNS also has integrations with specific AWS services,
+51
+such as SQS,
+52
+to send your message directly into a Queue, to Lambda,
+53
+to have a function do some code
+54
+after the message is received,
+55
+or to Kinesis Data Firehose to send data into,
+56
+for example, as Amazons free or Redshift.
+57
+On top of it, SNS receives data
+58
+from a lot of AWS services.
+59
+So they directly send it into SNS,
+60
+so it could be CloudWatch Alarms,
+61
+Auto Scaling Group notifications,
+62
+CloudFormation state changes, Budgets
+63
+S3 buckets, DMS, Lambda, DynamoDB,
+64
+RDS events, and so on.
+65
+So you don't have to remember them.
+66
+But as soon as there is some sort
+67
+of notification that happens within AWS,
+68
+services will send a notification
+69
+into a specified SNS topic.
+70
+Now, SNS, how does that work?
+71
+to publish a message into SNS,
+72
+you use the topic, publish SDK.
+73
+And so you create a topic.
+74
+Then you create subscriptions or many
+75
+one or many subscriptions you publish
+76
+to the SNS topic and that's it.
+77
+All the subscribers will automatically
+78
+retrieve that message.
+79
+Or there is something called direct publish
+80
+for mobile apps, SDK,
+81
+and you need to create a platform application,
+82
+a platform endpoint
+83
+and you publish into the platform endpoint,
+84
+and it works in terms of subscribers for Google GCM,
+85
+Apple APNS, or Amazon ADM, which are different ways
+86
+for your mobile application to receive notifications.
+87
+In terms of security,
+88
+Amazon SNS has the same kind of security as SQS,
+89
+so it has In-flight encryption by defaults
+90
+At-rest encryption using KMS keys,
+91
+and Client-side encryption
+92
+if your client wants to send some encrypted message
+93
+into SNS, but again,
+94
+it's up to your client responsibility to do the encryption
+95
+and the decryption.
+96
+In terms of of access controls,
+97
+IAM policies are going to be at the center
+98
+of security because all the SNS APIs will be regulated
+99
+by IAM policies.
+100
+And you can define SNS access policies
+101
+which are very similar to S3 bucket policies,
+102
+and they're very helpful when you want to have
+103
+cross account access to SNS topics
+104
+or to allow other services
+105
+such as your S3 events
+106
+to write into your SNS topics.
+107
+So that's it, I hope you liked it
+108
+and I will see you in the next lecture.
+
+--- SNS and SQS -  Fan Out Pattern ---
+
+1
+Now let's talk about
+2
+the SNS plus SQS fan-out pattern.
+3
+The idea is that you want a message
+4
+to be sent to multiple SQS queues,
+5
+but if you send them individually to every SQS queue,
+6
+there can be problems associated with it.
+7
+For example, if your application crashes in between,
+8
+if there are delivery failures,
+9
+or if you add more SQS queues down the road.
+10
+Therefore we want to use the fan-out pattern.
+11
+The idea is that you're going to push once an SNS topic
+12
+and then you're going to subscribe as many SQS queues
+13
+as you want to the SNS topic.
+14
+These queues are subscribers
+15
+and they will all receive the messages sent into SNS.
+16
+So for example, we have a buying service
+17
+that wants to send messages to two SQS queues.
+18
+What it will do instead,
+19
+it will send one message into an SNS topic,
+20
+and the queues are subscribers of that SNS topic
+21
+so that the fraud service and the shipping service
+22
+can read all messages from their own SQS queues.
+23
+The idea with this as well
+24
+is that it's a fully decoupled model
+25
+and there is no data loss.
+26
+SQS will give you data persistence, delayed processing,
+27
+as well as retries of work.
+28
+And with this pattern, we can add more SQS queues
+29
+as a subscriber of the SNS topic over time.
+30
+For this, we need to make sure
+31
+that your SQS queue access policy,
+32
+as we've seen from before,
+33
+allows your SNS topic to write to your SQS queue.
+34
+So again, yet another use case
+35
+for using queue access policies,
+36
+and we have cross-region delivery.
+37
+So it's definitely possible for an SNS topic
+38
+in one region to send messages
+39
+to SQS queues in other regions if the security allows it.
+40
+Next, so how do we use this pattern for other purposes?
+41
+For example, S3 events into multiple queues.
+42
+So there is a limitation of S3 event rules
+43
+is that for a combination of event type, for example,
+44
+an object is being created
+45
+and a prefix, for example,
+46
+images/, you can only have one S3 event rule.
+47
+But what if you want to send the same S3 event notification
+48
+to multiple SQS queues?
+49
+In that case, you would use the fan-out pattern.
+50
+So for example, we have S3 object created
+51
+as an event appearing in your S3 bucket,
+52
+and we will send this event into an SNS topic,
+53
+and we will subscribe many SQS queues
+54
+to the SNS topic as a final pattern.
+55
+But we could also subscribe other type of application,
+56
+email, Lambda functions, et cetera, et cetera.
+57
+And then what we get from this is that the message
+58
+of the event happening in Amazon S3
+59
+is going to go to many different destinations
+60
+thanks to this fan-out pattern.
+61
+Another architecture is that you can send data
+62
+directly from SNS to Amazon S3
+63
+through Kinesis Data Firehose.
+64
+So because SNS has a direct integration with KDF,
+65
+then your buying service can send data into an SNS topic.
+66
+Then Kinesis Data Firehose, KDF,
+67
+will receive that information.
+68
+And then from Kinesis Data Firehose,
+69
+you can send it into your Amazon S3 bucket,
+70
+or for that matter,
+71
+any supported KDF specific destination,
+72
+which allows you to be really extensible in the way
+73
+you want to maybe persist your messages from your SNS topic.
+74
+So we can apply the fan-out pattern to FIFO topics as well.
+75
+So Amazon SNS has a FIFO or FIFO capability,
+76
+which is first in first out,
+77
+which gives ordering of messages in the topic.
+78
+So the producer send the messages.
+79
+One, two, three, four.
+80
+And the subscribers can only be an SQS FIFO queue for now,
+81
+which is receiving messages,
+82
+one, two, three, four, in order.
+83
+So the idea is that with SNS FIFO,
+84
+we get the same features as SQS FIFO,
+85
+we get ordering by message group ID.
+86
+We get deduplication using a deduplication ID
+87
+or content-based deduplication.
+88
+And both SQS standard and FIFO queues can be subscribers.
+89
+In terms of throughput, you're limited.
+90
+You get the same throughput as the SQS FIFO queue.
+91
+So why do we need this?
+92
+Well, in case you wanna do a fan out using SQS FIFO.
+93
+So you need fan out, ordering and deduplication.
+94
+So the buying service will send the data
+95
+into an SNS FIFO topic,
+96
+and then it will fan out to two SQS FIFO queue,
+97
+which can have the fraud service
+98
+and the shipping service read from FIFO queues as well.
+99
+One last feature of SNS that can be really handy
+100
+regarding the fan-out pattern
+101
+is that you can do message filtering in SNS.
+102
+So what is message filtering?
+103
+Well, it's a JSON policy that is used
+104
+to filter messages sent to the SNS topics subscription.
+105
+So if a subscription doesn't have a filter policy,
+106
+it will receive every message,
+107
+and that's a default behavior.
+108
+But let's take an example of what happens
+109
+when we set up a message filtering policy.
+110
+So we have a buying service
+111
+and it sends transactions into an SNS topic.
+112
+For example, the transaction looked like
+113
+there's an order number,
+114
+there's a product, for example, a pencil,
+115
+the quantity for, and the state which is placed.
+116
+Now we want to create an SQS queue just for placed orders,
+117
+not all the orders, but just for placed orders.
+118
+So for this, we will subscribe the SQS queue
+119
+into the SNS topic, and we'll apply a filter policy in JSON,
+120
+and we will specify in a policy
+121
+that we want to have State equals Placed.
+122
+And so only the messages matching the policy
+123
+will go into the SQS queue,
+124
+but then we could have an SQS queue for canceled orders.
+125
+And so we can create our own filter policy for canceled
+126
+orders and have those coming from the same SNS topic
+127
+into the SQS queue.
+128
+And so the placed orders
+129
+and the canceled orders SQS queue
+130
+will not have the same messages.
+131
+We can also use the same filter policy, the canceled one,
+132
+to create an email subscription for canceled orders.
+133
+We could have a filter policy for declined orders,
+134
+for example, and as another SQS queue,
+135
+or we can create an SQS queue without a filter policy
+136
+to have all messages from that SNS topic.
+137
+So using all these fan-out patterns and message filtering,
+138
+FIFO queues and FIFO topics,
+139
+we get lots of different possibilities
+140
+and the exam will try to test you on all of those.
+141
+So that's it for this lecture.
+142
+I hope you liked it,
+143
+and I will see you in the next lecture.
+
+--- SNS - Hands On ---
+
+1
+So, let's practice using SNS.
+2
+So, we're going to go into the Simple Notification Service
+3
+and create our first topic.
+4
+So I'll just call this MyFirstTopic,
+5
+and then click on Next step.
+6
+So we have two options for creating a topic.
+7
+It can either be a standard topic,
+8
+and this what we'll be creating,
+9
+which is best-effort message ordering,
+10
+at least once message delivery,
+11
+highest throughput in terms of publishes per second,
+12
+and SQS, Lambda, HTTPS, SMS, email,
+13
+and mobile application endpoints can read
+14
+from this SNS topic.
+15
+Or we've seen that we could create an SNS FIFO topic.
+16
+And this is to get strictly preserved message ordering,
+17
+exactly once message delivery,
+18
+high throughput up to 300 publishes per second,
+19
+and the only thing that can subscribe
+20
+to a FIFO SNS topic is an SQS queue.
+21
+In this case, if we have FIFO, we can see
+22
+that the name of topic has to end with .fifo.
+23
+So we'll just go with standard,
+24
+and then we'll use MyFirstTopic as the name.
+25
+We can encrypt the messages in our topic.
+26
+We can set up an access policy.
+27
+And the access policy is going
+28
+to define who and what can write to the SNS topic.
+29
+So this is similar to an S3 bucket policy,
+30
+and this is similar to also an SQS access queue policy.
+31
+Okay?
+32
+The idea is that with this access policy, for example,
+33
+we could set up an S3 bucket
+34
+to write events into an SNS topic,
+35
+and then the SNS topic could send data to SQS, and so on.
+36
+So the access policy will be needed
+37
+to allow the S3 bucket to write to our SNS topic.
+38
+So for now, I'll just use basic,
+39
+because we don't need to do anything fancy,
+40
+and then we are not going to set up any of these.
+41
+And then we'll just click on Create topic.
+42
+So MyFirstTopic is created,
+43
+and as we can see right now, we have zero subscriptions.
+44
+So we need to create our first subscription.
+45
+So I'm going to create one,
+46
+and we need to choose the protocol.
+47
+So it could be Kinesis Data Firehose, SQS Lambda, Email,
+48
+Email-JSON, HTTP, HTTPS, and SMS, okay?
+49
+And you have to remember those going into the exam.
+50
+But to make it very simple, we're first going to use Email,
+51
+and actually only going to use Email in this hands-on.
+52
+Now we need to use an endpoint on the email address.
+53
+I will use stephanetheteacher@mailinator.com,
+54
+and this is just a service for me to get a temporary email.
+55
+So if I type stephanetheteacher, and press on GO,
+56
+then I'm getting a public inbox,
+57
+and they will receive emails from this address, okay?
+58
+So we're going to create this.
+59
+As we can see right here,
+60
+we could set up a subscription filter policy.
+61
+This is optional, but with this policy,
+62
+we could filter the messages
+63
+that will be sent to the subscription,
+64
+which can be really helpful if you have many subscribers
+65
+that just need to get only subsets
+66
+of the messages sent into your SNS topic.
+67
+But we will not set it up right now.
+68
+So we'll create the subscription,
+69
+and now we need to validate the subscription.
+70
+So as you can see right now, it is pending confirmation.
+71
+And so to confirm it, I'm going to go into my Mailinator,
+72
+and I've received an email.
+73
+And by clicking on this Confirmed subscription,
+74
+I'm going to confirm my subscription, so here we go.
+75
+And now if I refresh this page, what I should be seeing is
+76
+that my subscription right here is confirmed.
+77
+So this is perfect.
+78
+So again, if I click on my subscription,
+79
+I can look at it, see that is going
+80
+to send an email to this endpoint.
+81
+And if I wanted to do it,
+82
+I could have a subscription filter policy.
+83
+But right now we don't have any,
+84
+because we want all messages sent to my SNS topic
+85
+to go directly into the subscription.
+86
+So now, let's do a test.
+87
+We're going to publish a message,
+88
+and I'm going to just enter a message structure.
+89
+I'll say hello world, which is very common
+90
+when we test some services, and then publish the message.
+91
+So the message has been published into MyFirstTopic.
+92
+And so what I should be seeing is
+93
+that if I go back to my emails and go to my public messages,
+94
+so back to my inbox, I should be seeing, yes,
+95
+an AWS notification message coming straight from SNS
+96
+saying hello world.
+97
+So very easy, very cool,
+98
+and we just shows that SNS is working for us.
+99
+So this is perfect. We're good to go.
+100
+If we wanted to implement the SQS fanout pattern,
+101
+we will need to choose SQS
+102
+and set up many, many different queues as the receivers
+103
+of the subscription for our SNS topic.
+104
+So yeah, that's it for SNS.
+105
+When you're done, delete the subscription
+106
+and then go back to the topic on the left hand side,
+107
+and then click on Delete to delete the topic
+108
+by typing, delete me.
+109
+And off you go. That's it for SNS.
+110
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon Kinesis Data Streams ---
+
+1
+So, now, let's talk
+2
+about Kinesis Data Streams.
+3
+So, it's a service used to collect
+4
+and store streaming data in real-time.
+5
+So, the keyword you have to look out for
+6
+at the exam is really real-time.
+7
+So, here is a diagram to explain better.
+8
+So, we have real-time data.
+9
+What is real-time data?
+10
+Well, it's data that is created and used on the spot.
+11
+For example, whenever users click on a website,
+12
+it's called a click stream,
+13
+or when you have a device that's connected to the internet,
+14
+for example, a connected bicycle,
+15
+or when you have metrics and logs on a server
+16
+and you want to use them directly.
+17
+So, you want to send those into Amazon Kinesis Data Streams.
+18
+And to do so, we must use what's called producers.
+19
+So, producers can be either applications
+20
+and this is actually code you have to write
+21
+to take data from your website or from your devices
+22
+and send it into Kinesis Data Streams,
+23
+or for example, for metrics and logs,
+24
+you can install
+25
+what's called the Kinesis Agent on your servers
+26
+and it will act as a producer
+27
+to Kinesis Data Streams as well.
+28
+So, then, your data is going to be sent in real-time,
+29
+so, as it happens into Kinesis Data Streams.
+30
+And the reason why we do so is that we want
+31
+to have consumer applications consuming this data
+32
+in real-time and leveraging it.
+33
+So, we have our application.
+34
+And again, you should write some code
+35
+to read from Kinesis Data Streams,
+36
+or you can have Lambda functions,
+37
+I can read from it as well.
+38
+You have something called Amazon Data Firehose,
+39
+that we'll see in a future lecture.
+40
+And as well as, for example, services
+41
+to do analytics on top of your streams,
+42
+such as the Managed Service for Apache Flink.
+43
+So, some features of Kinesis Data Streams.
+44
+So, your data can be retained
+45
+on the stream for up to 365 days.
+46
+And because the data is persisted,
+47
+you are able to reprocess to replay data by your consumers.
+48
+That means also that once you send data
+49
+into Kinesis Data Streams,
+50
+you cannot delete it.
+51
+You have to wait for it to expire from a time perspective
+52
+for it to get deleted.
+53
+Now, data up to 10 megabytes can be sent
+54
+into Kinesis Data Streams.
+55
+But the real case, the real typical use case,
+56
+is to have a lot of small real-time data.
+57
+Your data is going to be in order
+58
+if you send two data points with the same partition ID.
+59
+So, it's a way for you to say
+60
+that these two data points are related in time
+61
+by sharing the same partition ID.
+62
+And you have security features,
+63
+such as at-rest KMS encryption
+64
+and in-flight HTTPS encryption.
+65
+So, if you want to write
+66
+what I call an optimized producer application
+67
+that is meant for high throughput,
+68
+you should be using the Kinesis Producer Library, KPL.
+69
+And to write an optimized consumer application,
+70
+you should use the Kinesis Client Library or KCL.
+71
+Okay, now, your Kinesis Data Streams has two capacity mode.
+72
+The first one is provision mode
+73
+in which you choose the number of shards on your stream.
+74
+So, what is a shard?
+75
+A shard is basically how big your stream is.
+76
+So, you can have one shard,
+77
+but you can have a thousand shards if you wanted to.
+78
+The more shard you have,
+79
+the more throughput you're going to have inbound.
+80
+So, that means you get one megabyte per second,
+81
+or a thousand records per second for each shard
+82
+in terms of capacity.
+83
+And each shard in terms of read capacity now,
+84
+in terms of out-traffic is two megabytes per second.
+85
+So, if you want
+86
+to send, for example, 10,000 records per second,
+87
+or 10 megabytes per second,
+88
+then you will need to scale to 10 shards.
+89
+Now, if you wanted to adjust the number of shards over time,
+90
+you can scale manually
+91
+to increase or decrease the number of shards.
+92
+And of course, you need
+93
+to be able to monitor your throughput
+94
+to know how many shards you must have at any point of time.
+95
+You're going to pay for each shard provisioned per hour.
+96
+The other mode is on-demand mode.
+97
+So, here, you don't need to provision,
+98
+or manage the capacity of your Kinesis Data Streams.
+99
+You have a default capacity provision,
+100
+which is about 4,000 records per second,
+101
+or four megabytes in.
+102
+And then, automatically,
+103
+Kinesis Data Streams is going to scale based
+104
+on the observed throughput during the past 30 days.
+105
+So, instead, here, you're going to pay per stream per hour
+106
+and you're going to be billed per the amount of data
+107
+that goes in and out of your Kinesis Data Streams.
+108
+All right, that's it, I hope you liked it.
+109
+And I will see you in the next lecture.
+
+--- Amazon Kinesis Data Streams - Hands On ---
+
+1
+So let's go ahead and get some practice
+2
+for Kinesis Data Streams.
+3
+So I'm going to open the Kinesis service,
+4
+and create our first Kinesis Data Streams.
+5
+As we can see, we have three options here.
+6
+We can use Data Streams, Data Firehose, or Data Analytics,
+7
+but we only know about Data Streams so far,
+8
+so let's go ahead.
+9
+We get some information around the pricing,
+10
+which is at per shard, we pay $0.05 per hour.
+11
+Okay.
+12
+And then there's a cost for making PUTs or for sending data
+13
+into Kinesis Data Streams.
+14
+So we'll create a Data Stream,
+15
+let's name our stream, DemoStream,
+16
+and then we have to define the data stream capacity.
+17
+So as you can see, we have two modes,
+18
+we have the On-demand mode and the Provision mode.
+19
+And in the On-demand mode,
+20
+you don't have to think about the capacity,
+21
+it's automatically going to scale for you,
+22
+so there's a maximum throughput of 200 megabytes per second,
+23
+and 200,000 records per second,
+24
+and the maximum read capacity of 400 megabytes per second,
+25
+per consumer, if you're using the enhanced Fan-Out option.
+26
+So the on demand as a pay-per throughput pricing model,
+27
+but there is no free tier. Okay.
+28
+And the Provision mode also doesn't have a free tier.
+29
+And in the provision mode, you need to provision shards.
+30
+And so there's a Shard estimator tool,
+31
+if you wanted to understand how many shards you needed,
+32
+based on like how many records you send per second,
+33
+and what is the size of your record,
+34
+and how many consumers you have. Okay.
+35
+But in a example, we're going to just set up one shard.
+36
+One shard gives us one megabyte per second for write
+37
+and two megabytes per second for read.
+38
+And obviously, if you put 10 shards,
+39
+then everything is multiplied by 10. Okay,
+40
+And so one shard is enough for us to do the demo.
+41
+It's also the cheapest option we can get.
+42
+If you do not want to pay any money in this course,
+43
+then do not do this hands on,
+44
+because you will pay some money for your shard,
+45
+although we will deal with it,
+46
+and then delete it fast enough.
+47
+So when you're ready, you just click on Create data stream,
+48
+and you wait for the data stream to be created.
+49
+And our stream is now successfully created.
+50
+So in terms of applications, we can see,
+51
+we have producers, and we are recommended three options.
+52
+The Kinesis Agents, the SDK,
+53
+or the Kinesis Producer Library.
+54
+So they're all available on GitHub, for you to check it out.
+55
+This is a way to stream data from application servers
+56
+into Kinesis Data Streams.
+57
+The SDK is for you to develop producers at a very low level.
+58
+And the KPL is for you to develop producers
+59
+at a very high level, with a better API.
+60
+And in terms of consumers,
+61
+we get Kinesis Data Analytics, Kinesis Data Firehose,
+62
+or the Kinesis Client Library, or Lambda, as well,
+63
+that is not shown as an option right here.
+64
+Okay. We get some monitoring information
+65
+about our Kinesis Data Streams.
+66
+So how many records we are sending into it?
+67
+We could look at the configuration.
+68
+So if you wanted to scale the stream,
+69
+we can say how many shards we want.
+70
+We can go from one, to say, five,
+71
+and scale our Kinesis Data Stream.
+72
+We could add some tags,
+73
+and then we could use enhanced Fan-Out, and configure it,
+74
+if we wanted to have some consumer applications
+75
+leveraging the enhanced Fan-Out capability.
+76
+But for now, let's keep it simple.
+77
+We just want to write and read from our stream,
+78
+and so therefore,
+79
+we're going to use the SDK for producing and for consuming.
+80
+So to do so, we want to open a CLI,
+81
+and let's use CloudShell because it's fun.
+82
+So I'm going to click on CloudShell right here,
+83
+which is the icon, next to the bell icon.
+84
+And this is going to open, for me,.
+85
+a command line interface in AWS.
+86
+As an alternative, you could be using your own terminal
+87
+or CLI if it's preconfigured,
+88
+but I like to switch things up,
+89
+and this one, I really like,
+90
+because there's less configuration involved at least.
+91
+Creating the environment, the first time,
+92
+can take a bit of time, and the CloudShell is free on AWS,
+93
+so no worries here.
+94
+In the meantime, on Kinesis,
+95
+open the kinesis-data-streams.sh file,
+96
+and we're going to use that overall.
+97
+So there are two types of commands
+98
+to write to Kinesis Data Stream based on your CLI version
+99
+for the AWS CLI.
+100
+So usually, you have version two installed
+101
+but it is possible for you to somehow,
+102
+have version one installed.
+103
+And so you get the version,
+104
+you just type aws --version, and paste,
+105
+and then, you will get some information
+106
+around the version of AWS CLI.
+107
+So in CloudShell,
+108
+the CLI version that's going to be installed is version two,
+109
+as you can see here, it was CLI version 2.1.16,
+110
+so we're going to use the CLI commands version two.
+111
+But if you wanted to have the version one,
+112
+then you would use these comments.
+113
+Okay. So now we're good to go.
+114
+The first we want to do is send a record
+115
+into our Kinesis Data Stream.
+116
+And to do so, there is an API called put-record.
+117
+And put-record, we need to specify a stream name.
+118
+So in this example, I didn't name my stream test,
+119
+I named it DemoStream,
+120
+so we'll have to change this in the CLI command,
+121
+but you get the idea.
+122
+Then you specify a partition key for the data settings.
+123
+So user one, and remember the data
+124
+that shares the same partition key
+125
+will go to the same shard, but we only have one shard,
+126
+so that doesn't matter in this case.
+127
+Then the data itself, so users signup.
+128
+And finally, because we are writing some text data,
+129
+we need to say this option cli-binary-format
+130
+raw-in-base64-out.
+131
+Okay. So let it paste this command, so copy and paste,
+132
+but let me just edit the stream name,
+133
+to make sure that it is DemoStream.
+134
+And the cloud channel is automatically configured
+135
+with your own IM credentials,
+136
+so it will inherit whatever you have for IM credentials,
+137
+and also, we'll use the region by default,
+138
+in which it was launched.
+139
+So us-east-1.
+140
+I press Enter.
+141
+And now, we get a successful message.
+142
+So the message was sent shardId-0000000000000.
+143
+So our first shard, and the sequence number
+144
+of the message is here.
+145
+If I do it again, then I'm going to get a second message
+146
+with a successful, so we can do user signup.
+147
+We can mix up the message,
+148
+then user login, and then, maybe user logout.
+149
+So we're just, we're just setting a few messages
+150
+into our Kinesis Data Stream.
+151
+Perfect. So I'm going to clear this,
+152
+and if you waited a little bit,
+153
+and went into monitoring, and look at the stream metrics,
+154
+I will have it on one hour,
+155
+you would see a put record right here,
+156
+but it takes a bit of time for CloudWatch metrics
+157
+to be updated, but you would see it here. Okay.
+158
+So next we want to be able to consume
+159
+from Kinesis Data Stream.
+160
+So to do so, we're going to first describe the stream,
+161
+to get some information around what this stream is made of,
+162
+because we need to be able to consume from a specific shard.
+163
+So it's DemoStream, I'll press Enter,
+164
+and as you can see here, we have this StreamDescription.
+165
+We have one shard called shardId-0000000000000,
+166
+and so we need to keep this in our mind. Okay.
+167
+To be able to read from this stream.
+168
+And so when you use the CLI,
+169
+the SDK at a very, very low level,
+170
+you need to specify from which shard you are reading from.
+171
+But if you are using Kinesis Client Library,
+172
+all of this is handled for you by the library itself.
+173
+But we are using the CLI,
+174
+so we have to specify the shard ID.
+175
+So I press Q to quit this,
+176
+and I'm going to consume some data.
+177
+So I'm going to run this command, right here,
+178
+and let me clear this.
+179
+And there's two things to note,
+180
+so number one, I need to change the name of the stream
+181
+I'm consuming from.
+182
+So DemoStream is a stream,
+183
+and then the shard-iterator-type is TRIM-HORIZON.
+184
+And this means that you're going to read
+185
+from the very beginning of the stream,
+186
+so it will read all the records
+187
+that were sent for from the beginning.
+188
+The other option, just make sure to only receive the records
+189
+from that very moment onwards when from a new launched
+190
+to CLI command.
+191
+Anyway, so I'm going to press Enter.
+192
+And this is going to give me a ShardIterator.
+193
+And this ShardIterator can be reused to consume records,
+194
+so the next API comment
+195
+is kinesis get-records --shard-iterator.
+196
+And then, we just specify this entire string, right here.
+197
+So this consumption mode I'm doing right now,
+198
+by using the low level API,
+199
+describing the stream, getting a ShardIterator,
+200
+and getting records is using the shared consumption mode.
+201
+This is not using enhanced Fan-Out,
+202
+which in my opinion,
+203
+should be using the Kinesis Client Library,
+204
+Consumer Library for you to really leverage,
+205
+and have a nice API to do so.
+206
+But this is low level.
+207
+So let's click, and let's press Enter
+208
+on the Kinesis get-records,
+209
+and we get a batch of records out of it.
+210
+So we used to have record one right here,
+211
+which is PartitionKey user1.
+212
+And we have some data right here, but it's base64-encoded.
+213
+We have, again, another data, base64-encoded.
+214
+We get some time stamp information,
+215
+another data, base64-encoded.
+216
+And then if I press Enter,
+217
+it's going to go a little bit down.
+218
+Some more data that is base64-encoded.
+219
+So to just make sure we can read the data,
+220
+I can go to websites, base 64 decode online,
+221
+and I'm going to paste this data right here,
+222
+into base 64 decode, and click on DECODE,
+223
+and this gives us user signup.
+224
+And if I paste the second type of data, this one,
+225
+copy and paste it in here, is going to give us user login.
+226
+So we which is that we sent.
+227
+So that's perfect.
+228
+Everything is working.
+229
+And then, as you can see,
+230
+there's a NextShardIterator argument right here.
+231
+So the next time we consume,
+232
+we need to specify this NextShardIterator argument
+233
+to consume from where we stop consuming from.
+234
+So this is something you have to iterate from in your code.
+235
+But at a low level,
+236
+we've produced data to Kinesis Data Stream,
+237
+and consume data from Kinesis Data Stream, which is awesome.
+238
+And we've also used CloudShell in the meantime,
+239
+which I think is very handy.
+240
+So that's it for this demo,
+241
+just keep this stream open as we will be using it
+242
+for Kinesis Data Firehose in a second.
+243
+And I will see you in the next lecture.
+
+--- Amazon Data Firehose ---
+
+1
+So now let's talk about Amazon Data Firehose.
+2
+So Amazon Data Firehose is a service
+3
+to send data from sources into target destinations.
+4
+So to get data into Amazon Data Firehose,
+5
+you may have producers that could be your applications,
+6
+your clients, or things you write,
+7
+and you use the SDK to send data into Firehose
+8
+or the Kinesis agents,
+9
+as well as Firehose has the capability
+10
+to pull directly from some services
+11
+such as, for example, a Kinesis Data Streams
+12
+or an Amazon CloudWatch logs and events,
+13
+or for example, AWS IoT.
+14
+And so all these services are either going
+15
+to be pushing into Amazon Data Firehose
+16
+or Firehose are going to be pulling from,
+17
+for example, a Kinesis data stream
+18
+and it is going to receive the records.
+19
+Now these records are going to be received,
+20
+and then they can optionally be transformed
+21
+using a Lambda function, if you wanted
+22
+to do some data conversion format, for example.
+23
+And they're going to be accumulated into a buffer
+24
+and the buffer is going to be flushed once in a while
+25
+to do batch writing into a lot of destinations.
+26
+So the first destinations are going
+27
+to be AWS specific destinations,
+28
+such as sending data into Amazon S3
+29
+or into Amazon Redshift to perform analytics,
+30
+or into Amazon OpenSearch as well.
+31
+You also have the option to send from Data Firehose
+32
+directly into third-party partner destinations
+33
+such as Datadog, Splunk, New Relic, and MongoDB.
+34
+And finally, if your destination is not supported,
+35
+you can simply use the HTTP endpoint integration
+36
+to send it anywhere you want.
+37
+Now, Firehose will write this data,
+38
+but you also have the option to write all
+39
+or just the failed data that has been sent
+40
+into an S3 bucket for a backup.
+41
+So Amazon Data Firehose
+42
+used to be called Kinesis Data Firehose
+43
+for the longest time,
+44
+but now it's called Amazon Data Firehose
+45
+because it does way more than just Kinesis.
+46
+It's a fully managed service,
+47
+and again, it supports Redshift, S3,
+48
+and Amazon OpenSearch service,
+49
+third party destinations such as Splunk
+50
+and a custom HTTP endpoint
+51
+if you wanted to write your own integration.
+52
+You also have automatic scaling.
+53
+It's fully serverless,
+54
+and you only pay for what you use from within the service.
+55
+It's called a near real-time service
+56
+and this is something you have to look for in the exam.
+57
+Near real-time usually points
+58
+to Amazon Data Firehose, and why?
+59
+Well, because you have a buffer inside of Firehose,
+60
+and the buffer can be optionally disabled,
+61
+but usually it's used
+62
+and it has a capability based on size or time.
+63
+So it's going to accumulate, accumulate,
+64
+and then after a while,
+65
+it's going to be flushed into your destination.
+66
+And therefore, because that takes a little bit of time,
+67
+it's a near real-time service.
+68
+In terms of what type of incoming data it supports,
+69
+it supports CSV, JSON, Parquet, Avro, text, or binary data.
+70
+And from within Firehose, you can convert your data
+71
+to Parquet or ORC as data formats
+72
+or even do compressions with gzip or snappy.
+73
+But if you wanted to do a custom conversion
+74
+or data transformation,
+75
+for example, you could use AWS Lambda.
+76
+For example, if you wanted to change your data
+77
+from CSV to JSON format before sending it to Amazon S3.
+78
+So it's usually helpful to compare Kinesis data streams
+79
+and Amazon Data Firehose, so here it is.
+80
+So Kinesis Data Stream
+81
+is a streaming data collection service.
+82
+You're going to usually have
+83
+to write your own producer and consumer code.
+84
+It's going to be real-time.
+85
+And there are two modes, provision and on-demand mode.
+86
+Data can be stored up to one year
+87
+and you have a replay capability.
+88
+For Amazon Data Firehose,
+89
+it's a way to load streaming data into target destinations
+90
+such as Amazon S3, Redshift, OpenSearch and so on.
+91
+It's fully managed, it's near real-time,
+92
+it has automatic scaling, no data storage,
+93
+and no replay capability.
+94
+All right, that's it for this lecture.
+95
+I hope you liked it,
+96
+and I will see you in the next lecture.
+
+--- Amazon Data Firehose - Hands On ---
+
+1
+Okay, so let's practice
+2
+using Kinesis Data Firehose,
+3
+using delivery streams.
+4
+So I click on delivery streams.
+5
+And in here,
+6
+I'm able to create a delivery stream.
+7
+And we have a detailed diagram
+8
+of how Kinesis Data Firehose works.
+9
+So we ingest data from producers,
+10
+and these producers can be either
+11
+a Kinesis Data Stream.
+12
+So this is our use case,
+13
+or they can be Direct PUTs
+14
+done through the Kinesis Data Agents,
+15
+the Kinesis Agents,
+16
+some other AWS services,
+17
+such as CloudWatch, IoT Core,
+18
+EventBridge, et cetera,
+19
+et cetera, and also your own apps using the SDK
+20
+that can send data directly into Kinesis Data Firehose.
+21
+So once we ingest the data,
+22
+we can outright transform it using a Lambda function.
+23
+And this can also be used to do many things,
+24
+such as converting the record format, and so on.
+25
+And then, we load the data into target stores.
+26
+So we have Amazon S3, Amazon OpenSearch Service,
+27
+which is ElasticSearch being renamed,
+28
+and Amazon Redshift,
+29
+and various HTTP endpoint destinations.
+30
+So in this example,
+31
+our source is going to be a Kinesis Data Stream,
+32
+and the destination is going to be Amazon S3.
+33
+But it's very important for you to notice
+34
+that we have OpenSearch service.
+35
+So ElasticSearch, RedShift, S3,
+36
+you need to remember these three for sure.
+37
+Then we have some,
+38
+a lot of third-party services,
+39
+so you don't need to remember them all or at all.
+40
+But just remember that they are third party services.
+41
+Or any custom HTTP Endpoint that you can choose as well.
+42
+So we'll choose Amazon S3.
+43
+Now for the source,
+44
+we need to browse and choose our stream.
+45
+So we have the ARN Demostream entered right here.
+46
+So this is good.
+47
+Then, the delivery stream name is automatically generated,
+48
+so this is perfect.
+49
+Now, we go into the Transform and convert records part.
+50
+So this is optional.
+51
+But we want to transform source records using Lambda.
+52
+So here we can transform, filter,
+53
+un-compress, convert,
+54
+process source records.
+55
+So these Lambda functions are just pieces of code
+56
+you can run into AWS,
+57
+and they can do whatever you want
+58
+on this data before being delivered
+59
+by Kinesis Data Firehose.
+60
+So this could be quite handy.
+61
+And if you do enable it,
+62
+then you need to choose a Lambda function.
+63
+Okay.
+64
+Next, the Convert record format option.
+65
+So based on where you are sending your data to,
+66
+it can be useful to transform these records
+67
+into Parquet or ORC based on some advanced options.
+68
+So this is not in scope,
+69
+but just remember that you can transform the record format
+70
+using Kinesis Data Firehose.
+71
+Now, this is more detailed
+72
+into the data and analytics certification of AWS.
+73
+Right now, just know at a high level
+74
+that you can convert record formats.
+75
+Next, we need to choose a destination.
+76
+So we can just choose an S3 bucket
+77
+that we've created from before or create one.
+78
+So for me,
+79
+I've already created an S3 bucket.
+80
+So I'll use this one.
+81
+So demo-firehose-stephane-V3.
+82
+I will choose this one,
+83
+but feel free to create a bucket
+84
+or choose an existing one as well.
+85
+Do you want to have dynamic partitioning?
+86
+So right now, we will say no.
+87
+S3 bucket prefix,
+88
+so do we want to prefix our data?
+89
+And for now,
+90
+we don't need to.
+91
+And also, a bucket error output prefix if we needed to,
+92
+if you wanted to,
+93
+you have for example, error.
+94
+But again, we don't want to this right now.
+95
+We'll keep it very, very simple.
+96
+And now, more importantly,
+97
+around the buffer hints,
+98
+compression and encryption.
+99
+So the buffer is a way
+100
+for Kinesis Data Firehose to accumulate records
+101
+before delivering them into the targets.
+102
+And so by default,
+103
+Kinesis will write five megabytes of data into the buffer
+104
+before delivering it into the target,
+105
+so Amazon S3.
+106
+Now, you can make the buffer more efficient,
+107
+for example more than 128 megabytes,
+108
+if you wanted to get a bigger buffer size
+109
+and more efficiency,
+110
+or a small buffer size,
+111
+if you wanted to deliver the data as fast as possible.
+112
+So we'll have it as 1.
+113
+And then, the buffer interval,
+114
+so this is how fast,
+115
+if the buffer size doesn't fill up.
+116
+How fast should it be flushed into the target?
+117
+And so, if you choose 300 seconds,
+118
+you're going to wait five minutes to fill the buffer size.
+119
+But if the buffer size is not filled after five minutes,
+120
+then it's going to be flushed nonetheless.
+121
+So if we set a lower buffer interval,
+122
+such as 60 seconds,
+123
+we have the guarantee that at maximum,
+124
+every 60 seconds,
+125
+the buffer is going to be flushed into Amazon S3.
+126
+If we set a really long buffer size,
+127
+such as 900 seconds,
+128
+then we need to wait,
+129
+I think, 15 minutes before the buffer
+130
+is flushed into Amazon S3,
+131
+so a lot longer.
+132
+So for the purpose of this demo,
+133
+we don't want to be efficient.
+134
+We want to be fast.
+135
+So we'll choose 60 seconds,
+136
+which is the minimum.
+137
+Next, we want to enable compression and encryption,
+138
+so we can compress the records in the target,
+139
+such as with GZIP, Snappy,
+140
+Zip or Hadoop-Compatible Snappy.
+141
+And the idea is that you're going to save some space,
+142
+because we are compressing the data
+143
+before storing into Amazon S3.
+144
+So save some cost.
+145
+And also, do you want you to encrypt your records?
+146
+Yes or no.
+147
+There's some advanced settings.
+148
+But the one that's very important for you to see
+149
+is this permission right here.
+150
+So this is going to create automatically
+151
+an IAM role named this.
+152
+And this IAM role
+153
+is going to have all the permissions required
+154
+to write into Amazon S3.
+155
+So this is how Kinesis Data Firehose is able to write
+156
+to the target buckets
+157
+and to read as well from the Kinesis Data Stream.
+158
+So let's create this delivery stream.
+159
+And it is active.
+160
+So we can have a look at some metrics.
+161
+So the more data will go through Kinesis Data Firehose,
+162
+the more these metrics will be populated,
+163
+which is very helpful in production.
+164
+You can look at the configuration,
+165
+but we've already done that.
+166
+And then, we can look at the destination for the error logs.
+167
+And right now,
+168
+this is CloudWatch Logs.
+169
+Okay, so what we have here
+170
+is a Kinesis Data Firehose of source Kinesis Data Streams,
+171
+and we need to test with some data flowing through it.
+172
+So you could use the test data right here
+173
+to test it going into Amazon S3,
+174
+but we don't want to use this.
+175
+Actually, because we have Amazon Kinesis Data Stream,
+176
+let's just use that one as well.
+177
+So my Kinesis Data Stream right here is named DemoStream,
+178
+and we're going to send more data to it.
+179
+Because even though we have created
+180
+the Firehose Delivery Stream,
+181
+even if some data was sent in the past
+182
+to the Kinesis Data Stream,
+183
+you actually need to send new data
+184
+after setting up Firehose for Firehose to be active.
+185
+So let's just use CloudShell,
+186
+and we're going to use the commands right here.
+187
+So we're going to have to modify this,
+188
+and make sure that you have the right stream name.
+189
+So DemoStream is the one that I have today,
+190
+and user signup.
+191
+This is good.
+192
+And then, paste this command.
+193
+Let's press enter.
+194
+The data has been sent.
+195
+So we have user signup.
+196
+Then, we have user login.
+197
+And then, we'll have user logout.
+198
+Okay, so three records have been sent.
+199
+And what I can do now is go into Amazon S3
+200
+and see if they have appeared in Amazon S3.
+201
+So let's go into the S3 console.
+202
+I'm going to type firehose.
+203
+I found my bucket.
+204
+As you can see,
+205
+currently, there are zero objects in my bucket.
+206
+That's because the Kinesis Data Firehose
+207
+has a buffer of 60 seconds.
+208
+So we need to wait 60 seconds
+209
+until the data makes it into Amazon S3.
+210
+So let's just wait.
+211
+I'll pause the video.
+212
+Okay, so it's been more than 60 seconds.
+213
+So I'm going to refresh.
+214
+And as you can see,
+215
+updates have appeared into my Amazon S3 bucket.
+216
+So I can click, click,
+217
+click, and it says partitioned by date and so on.
+218
+And here, I have the record,
+219
+so I can click on it.
+220
+Click open,
+221
+and then open this with my text editor.
+222
+And as you can see,
+223
+not very fascinating,
+224
+but we have user signup, user login,
+225
+and user logout in one text file.
+226
+So Kinesis Data Firehose is working
+227
+and working great.
+228
+So that's it for this lecture.
+229
+I hope you liked it.
+230
+And just to clean it up,
+231
+please make sure to delete first that delivery stream.
+232
+So you need to type in the name
+233
+and you have it.
+234
+And then most importantly,
+235
+delete the DemoStream itself.
+236
+Because if you let it run,
+237
+then it's going to cost you money every hour, okay?
+238
+So that's it for this lecture.
+239
+I hope you liked it.
+240
+And I will see you in the next lecture.
+
+--- SQS vs SNS vs Kinesis ---
+
+1
+Okay.
+2
+So it's very important that you understand
+3
+the difference between SQS, SNS and Kinesis.
+4
+So SQS has a model where consumers pull data
+5
+by requesting messages from the SQSQ.
+6
+And once the data is processed
+7
+then the consumer has to delete it from the queue
+8
+so that's no other consumers can read it ever again.
+9
+You can have as many workers as you want.
+10
+So as many consumers as you want
+11
+and they all work together to consume
+12
+and delete all the messages from the queue.
+13
+You don't need to provision throughput in advance
+14
+because it is a managed service
+15
+and it can scale to hundreds of thousands
+16
+of messages very quickly.
+17
+The ordering guarantees are only available
+18
+if you enable FIFO queues.
+19
+So first it in first out type of queues.
+20
+And you also have individual message delay capability
+21
+if you want a message to appear to a consumer in the queue
+22
+after a certain amount of time, for example, 30 seconds.
+23
+When you look at SNS, this is a different model.
+24
+This is a pup sub model.
+25
+So you push data to many subscribers
+26
+and they will all receive a copy
+27
+of the message you're sending.
+28
+You can get up to 12,500,000 subscribers per SNS topic.
+29
+And once the data is sent to SNS, it is not persistent.
+30
+That means that if it is not delivered
+31
+you have a chance of losing it.
+32
+So it's a pub, as I said
+33
+and you can scale to hundreds of thousands of topics.
+34
+You don't need to provision throughput as well.
+35
+And if you want to combine it with SQS, you can.
+36
+So using the fan out architecture pattern
+37
+you can combine SNS with SQS
+38
+or you can combine SNS FIFO topics with SQS FIFO queues.
+39
+Okay.
+40
+Now finally, Kinesis has two modes of consumption.
+41
+You have the standard mode
+42
+where consumers pull data from Kinesis.
+43
+In which case you get two megabytes per second, per shard
+44
+or if you have enhanced fan out type
+45
+of consumption mechanism, you have Kinesis, sorry,
+46
+that pushes data into your consumers.
+47
+In which case you get two megabytes per second, per shard
+48
+per consumer, which gives you a much higher throughput
+49
+and the ability to have much more applications reading
+50
+from your Kinesis stream.
+51
+You have the possibility to reply data
+52
+because the data is persisted with new Kinesis data stream.
+53
+And so Kinesis is going to be used for real time big data,
+54
+analytics and ETL.
+55
+You will get ordering at the shard level
+56
+and you have to specify how many shards you want
+57
+per Kinesis data stream in advance.
+58
+So you need to scale the shard yourself
+59
+and the data will expire after X days.
+60
+And at the time of recording
+61
+this is between one and 365 days of data retention.
+62
+In terms of capacity mode,
+63
+we have two modes, the provision mode
+64
+in which we specify in advance the amount of shards we want
+65
+for Kinesis streams or the on-demand capacity mode,
+66
+where the number of shard is adjusted
+67
+by Kinesis streams directly for us.
+68
+Okay.
+69
+So that's it for this summer lecture.
+70
+I hope you liked it.
+71
+And I will see you in the next lecture.
+
+--- Amazon MQ ---
+
+1
+So now let's talk about Amazon MQ.
+2
+So we know about SQS and SNS
+3
+and they're cloud-native services
+4
+because they are proprietary protocols from AWS.
+5
+They use their own sets of APIs.
+6
+But if you are running traditional application on-premises,
+7
+you may use open protocols
+8
+such as MQTT, AMQP, STOMP, Openwire, WSS.
+9
+And when you're migrating your application to the cloud,
+10
+you may not want to re-engineer your application
+11
+to use the SQS and the SNS protocols or APIs.
+12
+So instead, you wanna use the traditional protocols
+13
+you used to, such as MQTT, AMQP, and so on.
+14
+So for this, we can use Amazon MQ.
+15
+So Amazon MQ is very simple.
+16
+It's a managed message broker service for two technologies,
+17
+for RabbitMQ and for ActiveMQ.
+18
+So RabbitMQ and ActiveMQ are, for example,
+19
+on-premises technologies that provide you access
+20
+to the open protocols I just mentioned.
+21
+So then we can get a managed version of these brokers
+22
+onto the cloud thanks to Amazon MQ.
+23
+So as such, you can understand the implications.
+24
+First of all, Amazon MQ doesn't scale as much as SQS or SNS,
+25
+which have sort of like infinite scaling.
+26
+And because Amazon MQ runs on servers,
+27
+you may have server issues.
+28
+And so you can run multi-AZ setup
+29
+with a failover if you want to be highly available.
+30
+Also, Amazon MQ comes with both a queue feature,
+31
+so it looks like SQS,
+32
+and topic features, it looks like SNS
+33
+as part of a single broker.
+34
+Now, how does the high availability work for Amazon MQ?
+35
+Well, for example, let's say we have a region us-east-1
+36
+and we have two availability zones,
+37
+us-east-1a and us-east-1b.
+38
+One zone is going to be active
+39
+and the other one is going to be a standby.
+40
+So we're going to have an Amazon MQ broker in both AZ, okay,
+41
+where one is active and one is standby.
+42
+And so for the failover to work,
+43
+you need to define Amazon EFS as your backend storage.
+44
+And we've seen that EFS is a network file system
+45
+which can be mounted onto multiple availability zones.
+46
+So what happens is that whenever
+47
+you have failover happening,
+48
+well, the standby is going to be also mounted
+49
+onto Amazon EFS, and therefore will have the same data
+50
+as your first active queue
+51
+and therefore the failover can happen correctly.
+52
+So if your client talks to the Amazon MQ broker, okay,
+53
+and there is a failover happening,
+54
+then the data will be kept safe thanks to Amazon EFS.
+55
+And that's it.
+56
+That's all you need to remember for going to the exam.
+57
+I hope you liked it and I will see you in the next lecture.
+

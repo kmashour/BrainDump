@@ -1,0 +1,4862 @@
+--- Choosing the right database ---
+
+1
+Hello, and welcome to this section on databases.
+2
+So I'm doing a quick intro because at the exam
+3
+you will have to choose the right database
+4
+for your workload, and there are a lot of managed databases
+5
+on AWS to choose from.
+6
+So it's mainly based on the architecture
+7
+of the question is asking, and so, is it write-heavy,
+8
+is it read-heavy, is it balanced workload?
+9
+What does it need?
+10
+Is it going to change or fluctuate during the day?
+11
+How much data is going to be stored and for how long?
+12
+Will it grow? What's the average object size?
+13
+How often are there access and how are the text?
+14
+What about data durability?
+15
+What is the source or truth for your data?
+16
+Do you have any latency requirements?
+17
+Any concurrent user requirements?
+18
+What is the data model?
+19
+How are you going to query the data, joins?
+20
+Is it structured? Is it semi-structure?
+21
+Do you need a strong schema or do you need more flexibility?
+22
+Do you want to include reporting
+23
+on top of your database or not?
+24
+Do you want search?
+25
+Do you want a relational database or NoSQL?
+26
+Are there any license cost?
+27
+Do you wanna switch to Cloud Native databases
+28
+such as Aurora and so on.
+29
+So, of course, based on the question
+30
+you have a different answer,
+31
+but just to give you the kind of dimensions
+32
+and the kind of avenues the questions can be geared towards
+33
+for helping you choose the right database.
+34
+But don't worry, we will see all the different databases
+35
+in this section and summarize them.
+36
+So first we have the RDBMS databases.
+37
+That means you're using SQL
+38
+or you wanna do online transaction processing.
+39
+So you have RDS and Aurora, and these databases are great
+40
+if you wanna do joins.
+41
+Don't worry, by the way, we'll go into a deep dive
+42
+in all these databases
+43
+so you don't have to remember everything.
+44
+Then we have the category of the NoSQL databases.
+45
+So NoSQL is going to be more flexible, usually,
+46
+but you don't have joint capabilities
+47
+and you don't have the SQL query language in general.
+48
+Okay, there can be exceptions.
+49
+And again, they will be discussed one by one.
+50
+So we have DynamoDB, we have ElastiCache,
+51
+we have Neptune, DocumentDB and Keyspaces,
+52
+and there may be new names for you, but don't worry,
+53
+we will learn about them in this section.
+54
+Then we have object store, so this is a kind of database,
+55
+yes, Amazon is free to store big objects
+56
+or Glacier to store backups and archives.
+57
+Then we have data warehousing
+58
+for SQL doing analytics with SQL
+59
+or business intelligence, BI.
+60
+So we have Redshift which is OLAP type of database,
+61
+and Athena and EMR.
+62
+We have the search type of databases.
+63
+So we have the OpenSearch type of database
+64
+to include some free text and do unstructured searches
+65
+on your data.
+66
+Graph databases, so to display relationships
+67
+between your datasets, this is Amazon Neptune.
+68
+We have ledger databases to have a list
+69
+and a ledger of transactions,
+70
+so we have the Amazon QLDB, so Quantum Ledger Database.
+71
+We have the time series types of database
+72
+for Amazon Timestream, and that's it.
+73
+We may have more database types and more databases
+74
+that it will include in section if need be, okay?
+75
+So don't worry if some of these databases
+76
+are not discussed in this section,
+77
+they will be discussed at depth in the following section
+78
+which is the data and analytics section.
+79
+Okay. So that's it for an overview.
+80
+Don't worry, you don't have to remember anything
+81
+from what I said.
+82
+It's just to give you where we're coming from.
+83
+And I will see you in the next lectures
+84
+to start discussing the databases one by one.
+
+--- RDS ---
+
+1
+Let's do a summary of
+2
+what we learned in the Amazon RDS section.
+3
+And if you need to go back into any of these points,
+4
+I suggest you go back to the old lectures.
+5
+This is a summary to summarize what you should know
+6
+out of Amazon RDS.
+7
+So this is a managed PostgreSQL, MySQL
+8
+or Oracle, SQL Server, DB2, MariaDB,
+9
+or you have the custom version of RDS.
+10
+In Amazon RDS,
+11
+you need to provision an RDS instance size,
+12
+as well as an EBS volume type and size.
+13
+So everything is provisioned,
+14
+although you have auto-scaling capability
+15
+for the storage layer.
+16
+Amazon RDS supports read replicas
+17
+to scale read capabilities.
+18
+So if you have applications that need to run analytics
+19
+against a production database, it is much better
+20
+to create a read replica.
+21
+And for high availability purposes,
+22
+you can use the Multi-AZ to have a standby database,
+23
+although that database is just here for
+24
+in case a disaster strikes.
+25
+You cannot use it
+26
+to perform queries against it.
+27
+Security for your RDS database is done through IAM,
+28
+so you can use, for example,
+29
+username and password to connect to your database,
+30
+but also you can use IAM authentication,
+31
+for some of them.
+32
+You have security groups
+33
+for network security on your Amazon RDS database,
+34
+KMS for at risk encryption,
+35
+and you can have intrinsic encryption using SSL and TLS.
+36
+Now, if you wanted to do backups,
+37
+you have the automated backup option,
+38
+which is up to 35 days, and if you use that,
+39
+you can do point in time restore to any point
+40
+of time in these 35 days,
+41
+and this will create a new database out of it,
+42
+or if you want to retain backups for longer term recovery,
+43
+then you would use a manual database snapshots.
+44
+There is a managed
+45
+and schedule maintenance,
+46
+which will bring downtime into your database.
+47
+So this is due to the fact that you have to provision it
+48
+and that you have to update.
+49
+I mean, AWS has to update at some point database engine
+50
+or the underlying EC2 instance
+51
+for patches of security and so on.
+52
+There is support for IAM authentication on RDS,
+53
+and you can enforce it through the RDS proxy,
+54
+and it has integration with Secrets Manager
+55
+to manage the database credentials.
+56
+If you wanted to have access to the underlying instance
+57
+and customize it, then you can reuse the RDS custom option
+58
+and this is available for the Oracle
+59
+and SQL Server type of databases.
+60
+So the use cases of Amazon RDS is
+61
+to store relational databases.
+62
+For example, using the RDBMS
+63
+or have an online transaction processing database, so OLTP.
+64
+If you wanted to perform SQL queries on top of it
+65
+and transactions.
+66
+Okay, so hopefully nothing is new for you here.
+67
+I hope you liked it and I will see you in the next lecture.
+
+--- Aurora ---
+
+1
+So now let's do a summary of Amazon Aurora.
+2
+So Aurora is a compatible API for two database engines,
+3
+which are PostgreSQL and MySQL.
+4
+And Aurora is a very special service
+5
+because storage and compute are separate.
+6
+So about storage,
+7
+while the data is stored in six replicas
+8
+across three Availability Zones by default,
+9
+and you cannot change this,
+10
+therefore Aurora is highly available.
+11
+On top of it, in case there is any issue with the storage,
+12
+there's going to be a self-healing process
+13
+behind the scenes happening.
+14
+And if you wanted to increase the storage, no problem.
+15
+There is auto-scaling out of the box.
+16
+Now, for the compute side,
+17
+this is the actual database instances,
+18
+they are clustered,
+19
+and they can be across multiple Availability Zones
+20
+if you wanted to.
+21
+And then if you had read replicas,
+22
+you could auto-scale them as well
+23
+to increase the capacity in case the load increases.
+24
+Now, because you have a cluster of database instances,
+25
+then you need custom endpoints
+26
+to know where to write and read,
+27
+and therefore you have a writer endpoint
+28
+and a reader endpoint.
+29
+You have the same security, monitoring,
+30
+and maintenance features as RDS
+31
+because, end of the day, they use kind of the same engine.
+32
+And you need to know the backup
+33
+and restore options for Aurora,
+34
+which cannot summarized here,
+35
+but I suggest you go back to that lecture
+36
+if you ever need to.
+37
+Now, some extra features you need to know about Aurora.
+38
+The first one is Aurora Serverless.
+39
+This is when you have unpredictable
+40
+and intermittent workloads,
+41
+but you don't need to do any capacity planning,
+42
+so it is quite helpful in that use case.
+43
+If you wanted to have a global database,
+44
+you could use Aurora Global,
+45
+and that gives you up to 16 database read instances
+46
+in each region where your database is replicated.
+47
+And the storage replication happens
+48
+in less than one seconds usually across regions,
+49
+which is something you have to look out for at the exam.
+50
+And in case you have a problem in your primary region,
+51
+you can promote a secondary region
+52
+to become your new primary.
+53
+If you wanted to perform machine learning on top of Aurora,
+54
+you could use the Aurora Machine Learning module
+55
+to use SageMaker and Comprehend.
+56
+If you wanted to use a testing database
+57
+or a staging database
+58
+out of your production database, for example,
+59
+you could use the Aurora Database Cloning feature
+60
+to create a new Aurora cluster out of the existing one,
+61
+and it is much faster
+62
+than doing a snapshot and restoring it.
+63
+So the use cases for Aurora are the same as RDS,
+64
+but you have less maintenance, more flexibility,
+65
+more performance, and more features out of the box,
+66
+which makes Aurora a great choice.
+67
+Okay, that's it.
+68
+I hope you liked it,
+69
+and I will see you in the next lecture.
+
+--- ElastiCache ---
+
+1
+So we've learned about
+2
+Amazon ElastiCache beforehand,
+3
+so let's just do a quick summary.
+4
+So ElastiCache is a managed Redis or Memcached for Amazon
+5
+so it's a similar offering as RDS,
+6
+but this time for caches technology.
+7
+So what is a cache?
+8
+Well it's an in-memory data store
+9
+which gives you sub-millisecond latency
+10
+when you want to read data.
+11
+So for this, you must provision
+12
+an ElastiCache instance type for your cache,
+13
+and then you are good to go.
+14
+So if you are using Redis, you can have support
+15
+for Clustering, Multi AZ, and Read Replicas for sharding,
+16
+and you have security provision through IAM.
+17
+You can use security groups.
+18
+You have KMS at-rest encryption,
+19
+and for Redis you have Redis Authentication.
+20
+You have the same kind of features as RDS
+21
+for backups, snapshots, and point-in-time restore.
+22
+You have managed and scheduled maintenance.
+23
+And the most important thing
+24
+need to remember for the exam
+25
+is that if you decide to use Amazon ElastiCache
+26
+to perform some caching on top
+27
+or combine with an RDS database,
+28
+is that to use ElastiCache,
+29
+you need to modify your application code
+30
+to leverage ElastiCache.
+31
+And so if the exam is asking you for a caching solution
+32
+that does not require a code change,
+33
+then ElastiCache is not a good choice.
+34
+Okay?
+35
+So the use cases for ElastiCache
+36
+are going to be Key/Value store,
+37
+when you do frequent read-on-top of your database,
+38
+it's good to cache database queries.
+39
+Also, if you have session data that needs to be stored
+40
+for your users on your website,
+41
+ElastiCache is also a very good use case.
+42
+And just so you know, you cannot use SQL on ElastiCache.
+43
+Okay, that's it for this lecture.
+44
+I hope you liked it.
+45
+And I will see you in the next lecture.
+
+--- DynamoDB ---
+
+1
+So now let's do a summary of Amazon DynamoDB
+2
+which appears quite a bit at the exam.
+3
+So DynamoDB is a proprietary technology from AWS.
+4
+It's a managed serverless
+5
+and no SQL database that provides you
+6
+out of the box millisecond latency.
+7
+You have two capacity modes you need to choose from.
+8
+So one of them is the provision capacity
+9
+with optional auto scaling, which is great
+10
+when you have a smooth type of workload
+11
+that increases gradually
+12
+over time or decreases gradually over time.
+13
+Or you have the on demand capacity mode
+14
+where you don't have to provision capacity,
+15
+but it scales automatically for you,
+16
+which is great if you have very unpredictable workloads
+17
+or if you have sudden steep spikes of demand
+18
+on your database.
+19
+So DynamoDB can replace ElasticCache as a key value store
+20
+and it's a great way to, for example, store session data
+21
+for your website, combined with a TTL feature
+22
+to expire a row after a specific amount of time.
+23
+So DynamoDB is highly available.
+24
+It is across multiple availability zones by default.
+25
+The reads and the writes are fully decoupled
+26
+and it's possible for you to have transactions
+27
+on top of the DynamoDB tables.
+28
+It is possible for you to create a read cache
+29
+out of the box that is fully compatible with DynamoDB
+30
+which is a DAX cluster, DynamoDB accelerator,
+31
+and the particularity of it is
+32
+that you get then microsecond read latency.
+33
+So look for that in the exam.
+34
+In terms of security authentication and authorization,
+35
+everything is done through IAM.
+36
+You have event processing capability on top of DynamoDB,
+37
+so you can enable DynamoDB streams
+38
+to stream all the changes happening into your database
+39
+and you can have an integration to invoke Lambda
+40
+from the DynamoDB stream.
+41
+Therefore, Lambda can be invoked
+42
+for every single change in your DynamoDB table.
+43
+The other option is instead
+44
+of standing the data to DynamoDB streams,
+45
+you can send the data to Kinesis data streams.
+46
+The advantage is that on top of it,
+47
+you can use the Kinesis Data Firehose feature,
+48
+or you can use any type of integration
+49
+that leverages Kinesis data stream.
+50
+For example, you could have longer term retention
+51
+up to one year on Kinesis data streams.
+52
+You have a global table feature on top of the DynamoDB,
+53
+which allows you to do active-active replication
+54
+across multiple regions.
+55
+So anyone can read and write from any region;
+56
+this is why it's called active-active.
+57
+Now you have two backup options.
+58
+The first one is an automated backup.
+59
+You need to enable point in time recovery for that
+60
+and you can restore your table to a new dynamicDB table
+61
+for any point of time up to 35 days.
+62
+Or if you want to have longer term retention of backups,
+63
+you can enable on-demand backups,
+64
+which will also restore to a new table.
+65
+Now, you can export your DynamoDB table
+66
+to Amazon S3 without using any of the read capacity units
+67
+within the Pointing Time recovery windows,
+68
+So within 35 days using the export to S3 feature.
+69
+And you can also import from S3
+70
+without using any right capacity units into a new table.
+71
+So DynamoDB, from an exam perspective
+72
+anytime you see that you need to rapidly evolve schema
+73
+which have a flexible type of database schema
+74
+is going to be a great choice.
+75
+So the use cases for DynamoDB is when you want a database
+76
+and do serverless application development
+77
+and your data are small documents, for example,
+78
+in the hundreds of kilobytes of size maximum
+79
+or when you want a distributed serverless cache.
+80
+Okay, so that's it for DynamoDB.
+81
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 ---
+
+1
+So now let's do a summary
+2
+of Amazon S3 from a database perspective.
+3
+So S3 is a key-value store for objects,
+4
+and it's great when you want to store big objects.
+5
+It's not great to store many small objects.
+6
+So Amazon S3 is serverless. You have infinite scaling.
+7
+The maximum object size is 50 terabytes
+8
+and you can version objects over time.
+9
+You have different storage tiers.
+10
+So you have S3 Standard, Infrequent Access, Intelligent,
+11
+and you have Glacier,
+12
+and if you want to transition between the tiers,
+13
+you can use lifecycle policies.
+14
+Some important features need to know about are versioning,
+15
+encryption, replication, multifactor authentication deletes,
+16
+MFA deletes, and access logs.
+17
+In terms of security, you have IAM security,
+18
+but you can also have bucket policies
+19
+on top of your S3 buckets,
+20
+you have ACL, you have access points for Amazon S3,
+21
+then you have S3 Object Lambdas
+22
+to modify objects before they are sent to the applications,
+23
+you have cores, and you have the concept
+24
+of object lock or vault lock for Glacier,
+25
+which you need to know about in depth.
+26
+In terms of encryption mechanisms, we have different ones.
+27
+We have SSE-S3, SSE-KMS
+28
+where you can bring your own KMS key,
+29
+you have SSE-C, you can do client-site encryption,
+30
+you have TLS encryption in transit,
+31
+and you can set a default encryption scheme
+32
+for your S3 buckets.
+33
+And if you wanted to operate on all the files
+34
+in Amazon S3 buckets at a time,
+35
+you can use S3 Batch to do batch operations.
+36
+And this is very helpful, for example,
+37
+when you want to encrypt unencrypted objects
+38
+on an existing Amazon S3 bucket
+39
+or when you want to copy existing files
+40
+from one bucket to another
+41
+before enabling S3 replication.
+42
+And to create this list of files,
+43
+you can use S3 inventory, for example.
+44
+In terms of performance improvements on Amazon S3,
+45
+you can use a multi-part upload to upload files
+46
+in the parallel way,
+47
+you can have S3 Transfer Acceleration
+48
+to transfer S3 files faster
+49
+from one region to another region,
+50
+and S3 Select to only retrieve the data you need
+51
+out of Amazon S3.
+52
+For automation, you can use S3 Event Notifications.
+53
+That has interfaces with SNS, SQS, Lambda, and EventBridge.
+54
+And this allows you to, for example, react to events
+55
+where new objects are created on your Amazon S3 buckets.
+56
+So the use cases for Amazon S3 are around static files.
+57
+It's going to be a key-value store for huge files
+58
+or website hosting.
+59
+So hopefully I'm not teaching you anything new here.
+60
+And if you have any doubts on any of these features,
+61
+and they can all appear at the exam,
+62
+then I would suggest you go back to the Amazon S3 section.
+63
+Okay, that's it, I hope you liked it,
+64
+and I will see you in the next lecture.
+
+--- DocumentDB ---
+
+1
+Now let's talk about DocumentDB.
+2
+So the same way we had Aurora as the way for AWS
+3
+to implement a sort of big cloud native version
+4
+of PostgreSQL and MySQL,
+5
+we have DocumentDB, which is an Aurora version for MongoDB.
+6
+So MongoDB, if you don't know,
+7
+that's the logo on the top right corner of your screen,
+8
+it is another no SQL database
+9
+and you need to remember this for the exam.
+10
+So DocumentDB is a no SQL database
+11
+and it's based on top of the MongoDB technology.
+12
+So it's compatible with MongoDB.
+13
+So MongoDB is used to store query and index JSON data,
+14
+and you have the same similar deployment concept
+15
+as Aurora with DocumentDB.
+16
+So that means it's a fully managed database,
+17
+it's highly available.
+18
+Data is replicated across three availability zones
+19
+and DocumentDB storage automatically will grow
+20
+in increments of 10 gigabytes,
+21
+and DocumentDB has been engineered
+22
+so it can scale to workloads
+23
+with millions of requests per second.
+24
+So at the exam, if you see anything related to MongoDB,
+25
+think DocumentDB, or if you see anything related
+26
+to no SQL databases, think DocumentDB and also DynamoDB.
+27
+That's it for this lecture.
+28
+I hope you liked it,
+29
+and I will see you in the next lecture.
+
+--- Neptune ---
+
+1
+Now let's talk about Amazon Neptune.
+2
+Neptune is a fully managed graph database.
+3
+So an example of what a graph dataset would be
+4
+would be, for example, something we all know,
+5
+which is a social network.
+6
+So if we look at a social network, people are friends,
+7
+they like, they connect, they read, they comment, and so on.
+8
+So users have friends, posts will have comments,
+9
+comments have likes from users, users share and like posts.
+10
+And so all these things are interconnected,
+11
+and so they create a graph.
+12
+And so this is why Neptune is a great choice of database
+13
+when it comes to graph datasets.
+14
+So Neptune has replication across 3 AZ,
+15
+up to 15 read replicas.
+16
+It's used to build and run applications that are gonna be
+17
+with highly connected datasets, so like a social network,
+18
+and because Neptune is optimized to run queries
+19
+that are complex and hard on top of these graph datasets.
+20
+You can store up to billions of relations on the database
+21
+and query the graph with milliseconds latency.
+22
+It's highly available with application
+23
+across multiple availability zones,
+24
+and it's also great for storing knowledge graphs.
+25
+For example, the Wikipedia database is a knowledge graph
+26
+because all the Wikipedia articles are interconnected
+27
+with each other.
+28
+Fraud detection, recommendations engine,
+29
+and social networking.
+30
+So coming from an exam perspective,
+31
+any time you see anything related to graph databases,
+32
+think no more than Neptune.
+33
+Now Amazon Neptune also has a feature
+34
+called Neptune Streams.
+35
+So streams in Amazon Neptune are going
+36
+to be a real time ordered sequence of data for every change
+37
+that happens within your graph data
+38
+in your Neptune database.
+39
+So that means that whenever an application is writing
+40
+to Amazon Neptune,
+41
+then the changes will be available immediately
+42
+after writing into that Neptune streams.
+43
+So in that stream, you have no duplicates
+44
+and a strict ordering of changes happening
+45
+within your Neptune cluster.
+46
+So in a graph, we have rights,
+47
+and these rights are written, of course,
+48
+to your Neptune cluster, but also to a Neptune stream.
+49
+Now this stream data is accessible using an HTTP REST API.
+50
+That means that your applications, for example,
+51
+that want to read your Neptune Stream,
+52
+can use this API to get all the changes in real time.
+53
+So the use cases for enabling Neptune streams are,
+54
+for example, to send notifications
+55
+whenever some changes are made within your graph data,
+56
+or to maintain your data synchronized
+57
+into another data store.
+58
+For example, you want to replicate the changes happening
+59
+within your Neptune cluster into Amazon S3 or OpenSearch
+60
+or ElastiCache or more.
+61
+Or if you want to replicate data across multiple regions
+62
+for your Neptune cluster by looking at all the changes
+63
+in the stream and rewriting those
+64
+into a target Neptune cluster.
+65
+Okay, so that's it for this lecture.
+66
+I hope you liked it, and I will see you in the next lecture.
+
+--- Keyspaces (for Apache Cassandra) ---
+
+1
+So now let's talk about Amazon Keyspaces,
+2
+and Keyspaces is a managed Apache Cassandra on AWS.
+3
+So Cassandra is an open-source NoSQL distributed database,
+4
+and so, with Keyspaces,
+5
+you get Cassandra directly managed on the cloud by AWS.
+6
+So it's going to be a serverless type of service,
+7
+it's scalable, it's highly available,
+8
+and fully managed by AWS,
+9
+and it will automatically scale tables up and down based
+10
+on the application's traffic.
+11
+The tables' data is going to be replicated three times
+12
+across multiple AZ,
+13
+and to perform your queries on top of Keyspaces,
+14
+you are going to use the Cassandra Query Language or CQL.
+15
+So thanks to this,
+16
+you're going to get single-digit millisecond latency
+17
+at any scale,
+18
+and you can do thousands of requests per second.
+19
+Two capacity modes to note, this is just like DynamoDB,
+20
+you have the on-demand mode
+21
+and then you have the provisioned mode with auto-scaling,
+22
+and these are the same things as DynamoDB really.
+23
+You get encryption features, backup,
+24
+Point-In-Time Recovery up to 35 days,
+25
+and so, the use cases is going to be
+26
+to store IoT device information, time-series data,
+27
+and generally, from an exam perspective,
+28
+anytime you see Apache Cassandra,
+29
+you just think about Amazon Keyspaces, and you're done.
+30
+Okay, that's it for this short lecture,
+31
+I hope you liked it, and I will see you in the next lecture.
+
+--- Timestream ---
+
+1
+So now let's talk about Amazon Timestream
+2
+and the name indicates
+3
+that it's actually a time series database.
+4
+So it's fully managed, it's fast, it's scalable
+5
+and it's serverless.
+6
+So what is a time series?
+7
+Well, it's a bunch of points that have a time
+8
+included in them.
+9
+So for example, here's a graph by year.
+10
+So this is a time series.
+11
+Now with Timestream you can automatically
+12
+adjust the database up and down to scale capacity
+13
+and you can store and analyze trillions of events per day.
+14
+The idea is that if you have a time series database
+15
+it's going to be much faster and much cheaper
+16
+than using relational databases for time series data.
+17
+Hence the specificity of having a time series database.
+18
+You can do schedule queries.
+19
+You can have records with multiple measures
+20
+and there is full SQL compatibility.
+21
+The recent data will be kept in memory.
+22
+And then the historical data is kept
+23
+in a cost-optimized storage tier.
+24
+As well as, you have time series analytics function
+25
+to help you analyze your data and find patterns
+26
+in near real time.
+27
+This database just like every database on AWS
+28
+supports encryption in transit and at rest.
+29
+So the use cases for Timestream would be
+30
+to have an IoT application,
+31
+operational applications, real-time analytics
+32
+but everything related to a time series database.
+33
+Now in terms of architecture, Timestream is here
+34
+and it can receive data from AWS IoT, so internet of things.
+35
+Kinesis Data Streams through Lambda can receive data
+36
+as well.
+37
+Prometheus, Telegraf, there are integrations for that.
+38
+Kinesis Data Streams as well through
+39
+Kinesis Data Analytics for Apache Flink
+40
+can receive data into Amazon Timestream
+41
+and Amazon MSK as well through the same process.
+42
+And in terms of what can connect to Timestream,
+43
+where we can build dashboards using Amazon QuickSight.
+44
+We can do machine learning using Amazon SageMaker.
+45
+We can do Grafana or because there is a standard
+46
+JDBC connection into your database,
+47
+any application that is compatible with JDBC
+48
+and SQL can leverage Amazon Timestream.
+49
+So that's it.
+50
+I think for the exam you just need to remember
+51
+what Timestream is at a high level
+52
+but I want to give you a bit more details as well.
+53
+So that's it for this lecture.
+54
+I hope you liked it
+55
+and I will see you in the next lecture.
+
+--- Athena ---
+
+1
+So now, let's talk about Amazon Athena.
+2
+So Athena is a serverless query service
+3
+to help you analyze the data stored in Amazon S3 buckets.
+4
+And to analyze this data,
+5
+you're going to use the standard SQL language
+6
+to query the files.
+7
+Behind the scenes,
+8
+Athena is built on the Presto engine,
+9
+which uses the SQL language.
+10
+So the idea is that users are going to load data
+11
+into your S3 bucket,
+12
+or you are going to load data into your S3 bucket,
+13
+and then you would use the Athena service
+14
+to query and analyze this data in Amazon S3
+15
+without moving it.
+16
+So Athena is serverless,
+17
+and it analyzes directly your data living in your S3 bucket.
+18
+So it supports different formats,
+19
+such as CSV, JSON, ORC,
+20
+Avro, and Parquet, and possibly others.
+21
+And the pricing is very simple.
+22
+You're just going to pay a fixed amount
+23
+per terabytes of data scanned.
+24
+You don't need to provision any database again,
+25
+because the whole service is serverless.
+26
+So Athena is commonly used with another tool,
+27
+called Amazon QuickSight to create reports and dashboards.
+28
+So we'll see Quicksight later in depth,
+29
+but Amazon Quicksight connects to Athena,
+30
+which connects to your S3 buckets.
+31
+Now, the use cases for Amazon Athena
+32
+are to do ad hoc queries,
+33
+business intelligence, analytics, reporting,
+34
+and to analyze and query
+35
+any kind of logs that originates from your AWS services.
+36
+So it could be your VPC flow logs,
+37
+your load balancer logs, your CloudTrail trails, and so on.
+38
+So as an exam tip,
+39
+anytime you need to analyze data in Amazon S3
+40
+using a serverless SQL engine,
+41
+you can think about Athena.
+42
+Now, I've talked about performance improvements,
+43
+and you can actually improve Athena performance,
+44
+and in this exam,
+45
+we'll test you on this as well.
+46
+So first of all, because you pay for the amount
+47
+of data scanned per terabyte,
+48
+you need to use a type of data
+49
+where you're going to scan less data.
+50
+And for this, you can use a columnar data type
+51
+for cost-savings,
+52
+because you only scan the columns you need.
+53
+So therefore, the recommended formats for Amazon Athena,
+54
+are going to be Apache Parquet and ORC,
+55
+and it's going to give you a huge performance improvement.
+56
+And to get your files into the Apache Parquet or ORC format,
+57
+you must use a service
+58
+that we'll see as well in this section,
+59
+for example, Glue.
+60
+Glue can be very helpful
+61
+to convert your data as an ETL job,
+62
+between, for example, CSV and Parquet.
+63
+Now, also because we want to scan less data,
+64
+we need to compress data for smaller retrievals.
+65
+So there are different compression mechanisms you can use
+66
+that have listed it right here.
+67
+Next, if you know you're going to query all the time
+68
+on some specific columns,
+69
+you can partition your datasets,
+70
+and partition datasets means that in your S3 bucket,
+71
+you're going to have the full path with slashes,
+72
+and each slash will be a different column name
+73
+with a specific value.
+74
+And so you're organizing,
+75
+you're partitioning your data in Amazon S3,
+76
+so that when you query it,
+77
+you can know exactly in which folder
+78
+at which path Amazon S3,
+79
+you need to scan for data.
+80
+So here's an example of data partitions.
+81
+So we have flight data in Parquet formats,
+82
+and then we do /year=1991.
+83
+So we partition by year,
+84
+and we'll have one folder for each year.
+85
+Then within each year we'll have month,
+86
+so month equals one,
+87
+and within each month we'll have days,
+88
+this equals one.
+89
+And so when I do a query on Athena,
+90
+and I filter for a specific year,
+91
+a specific month, and a specific day,
+92
+then we'll know exactly
+93
+to which folder in Amazon S3
+94
+to get the data from,
+95
+and therefore we'll only recover a subset of the data.
+96
+Therefore, we'll have really, really good partitioning.
+97
+Finally, the last performance improvement you need to do,
+98
+is to use bigger files,
+99
+it's to minimize your overheads.
+100
+So if you have many, many, many small files in Amazon S3,
+101
+Athena is not going to be as performance,
+102
+as if you had larger files,
+103
+for example, 128 megabytes, and over,
+104
+because larger files are easier to scan,
+105
+and easier to retrieve.
+106
+Another feature of Amazon Athena is the Federated Query.
+107
+So you know that Athena can query data in S3,
+108
+but actually you can query data anywhere,
+109
+for example, in relational or non-relational databases,
+110
+you can query objects and custom data sources,
+111
+would it be on AWS or on-premises.
+112
+How? Well, you use what's called a Data Source Connector.
+113
+It's a Lambda function,
+114
+and that Lambda function is going to run
+115
+the Federated Queries in other services.
+116
+So that could be, for example, CloudWatch Logs,
+117
+DynamoDB, RDS, and so on.
+118
+So it's very powerful.
+119
+For example, we have Athena here,
+120
+and we have a Lambda function,
+121
+and you'll have one Lambda function
+122
+per Data Source Connector.
+123
+And then through Amazon Athena,
+124
+you can run the query across ElastiCache,
+125
+Document DB, DynamoDB, Redshift, Aurora,
+126
+SQL Server, MySQL, HBase on the EMR service,
+127
+or any on-premises database.
+128
+They're clear from Athena,
+129
+as well as, of course, Amazon S3,
+130
+and you can do your drawings,
+131
+and you can do your competitions, and so on.
+132
+That's why it's called a Federated Query.
+133
+And then the results of this query
+134
+can be stored into your Amazon S3 buckets
+135
+for later analysis.
+136
+So that's it for Amazon Athena.
+137
+As you can see, it's a very powerful service.
+138
+I hope you liked it,
+139
+and I will see you in the next lecture.
+
+--- Athena Hands On ---
+
+1
+So let's use the Athena service
+2
+to query data from an S3 buckets.
+3
+So I'm going to launch the query editor,
+4
+and here we have access to our UI,
+5
+and before we run our first query,
+6
+we need to set up a query result location in Amazon S3.
+7
+So let's edit the setting.
+8
+In here you must enter an S3 bucket where you're going
+9
+to put your query results.
+10
+So I'm going to go into the S3 console
+11
+and I'm going to create a bucket.
+12
+So I'll call this one, AWS Athena
+13
+Stephane, I am in EU Central One, V two.
+14
+Alright, so this should be a unique bucket name.
+15
+I'm going to just create this bucket.
+16
+Okay, so my bucket is now created, click on view details
+17
+and I'm going to just copy this right here
+18
+and paste it here, so S3.
+19
+And you can make sure that you can browse S3? Yes.
+20
+And we can also type, for example, Athena here.
+21
+And we'll take this one.
+22
+Same method, same result,
+23
+but this is a bit safer to not make any typo.
+24
+Alright, so I'm going to save this
+25
+and this is where my query results are going to be saved.
+26
+Now in our editor, we're going to first run our queries
+27
+and we're going to run our queries on the specific bucket,
+28
+which is our access log.
+29
+So I'm going to have my S3 access logs
+30
+that I have bucket here and I want to query
+31
+all my objects in this bucket,
+32
+so as you can see, they're here.
+33
+So what I need to do is that I need to go
+34
+into my code editor right here
+35
+and then we first create a database.
+36
+So we here under S3 advanced Athena S3 Access Log
+37
+that's SQL.
+38
+We have created a database S3 access logs DB.
+39
+So this is going to create a database here.
+40
+And so, as you can see, on the left hand side now,
+41
+I have the default database
+42
+and now I have my S3 access logs DB.
+43
+So this is the one I want to select
+44
+and we have created it from within Athena.
+45
+Next we run a query and this is a query to create
+46
+a table in Athena to represent our access logs.
+47
+And so here it is.
+48
+And so I'm going to first remove the first line.
+49
+Okay, so this query, I got it from the Amazon S3
+50
+and Athena documentation, which gives you this entire query.
+51
+And the only thing you have to modify is
+52
+to actually change the location.
+53
+So we need to have the target bucket name
+54
+and the prefix in there.
+55
+So actually if you go in here and you go to properties,
+56
+we have the bucket name right here.
+57
+So I'm just going to paste this in, like this.
+58
+And for the prefix, we actually don't need anything right
+59
+now because it seems that in my bucket,
+60
+all my objects are at the top level.
+61
+But if you had a folder, you need to add the prefix as well
+62
+by adding a slash and then the name of the prefix.
+63
+But for now I'm good.
+64
+So I'm going to run this query
+65
+and we need to have a trailing slash at the end.
+66
+So let's add a trailing slash and run this query again.
+67
+Okay, so my table has now been created
+68
+and you can see on the left hand side that we do have access
+69
+to our table as well as all the fields we have created.
+70
+So what I can do now is click on these three dots
+71
+and then just click on preview table.
+72
+And this is going to query 10 rows from my data.
+73
+And so if I scroll down, you can see here
+74
+that I have 10 results
+75
+and we can see the bucket owner, the bucket,
+76
+the request date time, the IP,
+77
+the requester, request ID, and so on.
+78
+So this is very handy because
+79
+while we get a lot of information directly coming
+80
+from our data in Amazon S3.
+81
+Admittedly it is way easier to use this than to look
+82
+within all these files individually.
+83
+So Athena makes it super easy for us.
+84
+But so we can do more advanced queries.
+85
+For example, I'm going to just create
+86
+a new query sheet right here.
+87
+You can do some aggregations.
+88
+So here we're going to count all the requests by HTP status
+89
+and by request URI operation.
+90
+So this is this kind of analytics
+91
+and statistics you may want to run on your table.
+92
+So we're going to run this query
+93
+and it takes a bit more time because
+94
+it looks at all your data.
+95
+And so it scans about 30 megabytes of data
+96
+and as we can see, we see that we get 404 to B142,
+97
+head 200 to B101.
+98
+We have empty about 300,000 empty rows
+99
+or 200,000 empty rows and so on.
+100
+So we get just the results of what we're interested into.
+101
+So if we're looking at, for example, not found errors,
+102
+we say, hey, we're not supposed to have any,
+103
+not found errors, but we see 142, maybe there's a problem.
+104
+This is the kind of analysis you would do
+105
+by running these queries.
+106
+You can also have a look at unauthorized query for two.
+107
+For example, to see if someone is trying
+108
+to get unauthorized access to to your bucket.
+109
+So I'm running this one because 403
+110
+is the unauthorized thing,
+111
+and I'm looking at all these rows
+112
+and look like, okay, indeed,
+113
+a lot of these rows represent unauthorized access
+114
+and I can look into them and see if that was made
+115
+on purpose or what that means.
+116
+So hopefully, that is all very interesting to you.
+117
+The idea here is that I just used the Athena service
+118
+to query my data in Amazon S3, very easily,
+119
+without setting up any kind of server.
+120
+It's all done serverless.
+121
+And all we had to do is to create our database first
+122
+and then create our table within a database.
+123
+And we were good to go to use SQL language to query
+124
+our data directly from within Athena.
+125
+So it's one of the easiest and greatest service of AWS.
+126
+I hope you liked it and I will see you in the next lecture.
+
+--- Redshift ---
+
+1
+Okay, so now let's talk about Redshift.
+2
+So Redshift is a database that's based on PostgreSQL,
+3
+but it's not used for online transaction processing.
+4
+Instead it's OLAP. So it's online analytical processing.
+5
+So it's used for analytics and data warehousing.
+6
+So any type of computations on your data,
+7
+Redshift is a good place to do it.
+8
+So it gives you 10 times better performance
+9
+than other data warehouses, and it has big scale.
+10
+You can scale to petabytes of data.
+11
+The data is going to be stored as a column instead of a row.
+12
+And so that's what makes it so good at analytics
+13
+because it's able to quickly add all the data
+14
+in a specific column.
+15
+And on top of it, it has a parallel query engine
+16
+to speed up any queries you may have.
+17
+You have two modes of starting a Redshift cluster.
+18
+You can do a provision cluster or a serverless cluster.
+19
+You also use a SQL interface for performing the queries.
+20
+And you have BI tools such as Amazon Quicksight
+21
+or Tableau that have direct integration with it.
+22
+So if you were to compare Redshift versus Athena, well,
+23
+Redshift has faster queries, faster joins
+24
+and aggregations thanks to indexes,
+25
+but you need to of course provision a whole cluster,
+26
+whereas Athena is serverless only
+27
+and all your data lives in S3.
+28
+So talking about this Redshift cluster,
+29
+so you have the concept of a leader node and a compute node.
+30
+So the leader node is for query planning
+31
+and results aggregation,
+32
+whereas the compute nodes in the Redshift cluster is going
+33
+to be to perform actually the queries
+34
+and to send the results to the leader.
+35
+When you are in provision mode, you have access
+36
+to choosing the instant types in advance,
+37
+and you can reserve instances if you wanted
+38
+to do cost savings.
+39
+But if you are in serverless mode,
+40
+you just leave everything in the hands of AWS
+41
+and you don't manage any type of cluster or node.
+42
+So list or summarize it, the leader node has access
+43
+to the compute nodes
+44
+and it makes it a whole Redshift cluster.
+45
+And so when you send a query, for example,
+46
+select count from My_TABLE GROUP BY by na na na.
+47
+The leader node is going to plan the query, send it
+48
+to the compute nodes, you're going to execute the query
+49
+and then send back the results to the leader node.
+50
+And that's the architecture of Redshift.
+51
+So let's talk about Snapshots and DR.
+52
+So Redshift is single AZ for most clusters,
+53
+but now there's a multi AZ mode for some cluster types.
+54
+And so if you have multi AZ, then you're good
+55
+for disaster recovery.
+56
+But if you have single AZ, then to do disaster recovery,
+57
+you need to use snapshots.
+58
+So snapshots are point in time backups of a cluster,
+59
+and they will be stored internally in Amazon S3,
+60
+and they are incremental only
+61
+where that has changed will be saved,
+62
+and that will save you a lot of space, obviously.
+63
+You can restore a snapshot into a new Redshift cluster,
+64
+and you have two modes for snapshots.
+65
+You can take them manually
+66
+or you can take them in an automated way.
+67
+So if you automate it, every eight hours is going
+68
+to be a snapshot or every five gigabytes on the schedule.
+69
+And then you can set the retention
+70
+for your automated snapshots,
+71
+or you wanna do a manual snapshot.
+72
+The snapshot is going to be retained
+73
+until you delete it manually.
+74
+And then a really, really cool feature of Redshift is
+75
+that you can configure Redshift
+76
+to automatically copy snapshots, whether they're automated
+77
+or manual of the cluster into another AWS region,
+78
+hence giving you a disaster recovery strategy.
+79
+So let's take this Redshift cluster, your original cluster,
+80
+and then we have another region.
+81
+So we're going to take snapshots.
+82
+They're going to be automatically copied
+83
+into your new region,
+84
+and from there you can restore a new Redshift cluster
+85
+from that copied snapshots.
+86
+Now let's talk about how we ingest data into Redshift.
+87
+So we have three ways I'm going to describe to you.
+88
+The first one is to use Amazon Kinesis Data Firehose.
+89
+So we have Firehose that will be receiving data
+90
+from different sources,
+91
+and then it will send it into Redshift.
+92
+And to do so, it will first write the data
+93
+into an Amazon S3 bucket, and then Kinesis Data Firehose
+94
+will issue automatically an S3 copy command
+95
+to load the data into Redshift.
+96
+Now, how does this copy come in work?
+97
+We can also use it manually.
+98
+So you would load data into S3,
+99
+and then you would issue a copy command directly
+100
+from Redshift to copy data
+101
+from an S3 bucket using an IAM role
+102
+into your Amazon Redshift cluster.
+103
+And as we've seen, there are two ways of doing so.
+104
+You might go through the internet
+105
+because your S3 buckets are public through the internet.
+106
+I mean, they're not public,
+107
+but they're connected to the internet.
+108
+And so therefore, you're going to have your data flow
+109
+through the internet back into your Redshift cluster.
+110
+And this is without enhanced VPC routing.
+111
+But if you wanted all your network
+112
+to remain private into your virtual private cloud,
+113
+then you can enable enhance VPC routing
+114
+to have all the data flow through the VPC entirely.
+115
+And finally, if you wanted
+116
+to insert data using the JDBC driver
+117
+into the Redshift cluster, you could do so as well.
+118
+So for example, if you have an application, an easy
+119
+to instance that needs to write data
+120
+into your Redshift cluster,
+121
+you would need to use this method.
+122
+And in that case, it is much better to write large batches
+123
+of data into Amazon Redshift instead of one row at a time,
+124
+which would be truly inefficient for this type of database.
+125
+So a cool feature of Redshift is Redshift Spectrum.
+126
+The ideas that you would have data in Amazon S3
+127
+and you want to analyze it using Redshift,
+128
+but you don't want to load it into Redshift first.
+129
+And on top of it, you want
+130
+to use a lot more processing power.
+131
+So you use Redshift Spectrum
+132
+and you must have a Redshift cluster already available
+133
+to start the query.
+134
+And then once you start the query,
+135
+the query will then be submitted to thousand
+136
+of Redshift Spectrum nodes
+137
+that will perform the query onto your data in S3.
+138
+So let's go for an example.
+139
+You have your Redshift cluster with a leader node
+140
+and a bunch of compute nodes as we've seen,
+141
+and the data you want to analyze is in Amazon S3.
+142
+So in this case, we're going to run a query
+143
+onto our cluster, as we can see.
+144
+What we want to do is that the table we want
+145
+to query is living in S3.
+146
+So we have from S3 dot and whatever you want.
+147
+In that case, Spectrum will launch automatically.
+148
+And so the query is going to be submitted to thousands
+149
+of Redshift Spectrum nodes who are going
+150
+to read the data from Amazon S3
+151
+and perform some aggregations.
+152
+And when they're done, they're going
+153
+to send back the results
+154
+into your own Amazon Redshift cluster,
+155
+and then you will get back into whoever initiated the query.
+156
+But with this feature,
+157
+we can leverage a lot more processing power
+158
+from a shift than the one we have provisioned
+159
+into our cluster in the first place,
+160
+loading the data from Amazon S3 into Redshift.
+161
+So that's it for Amazon Redshift.
+162
+I hope you liked it, and I will see you in the next lecture.
+
+--- OpenSearch (ex: ElasticSearch) ---
+
+1
+So now, let's talk about the Amazon OpenSearch Service.
+2
+An Amazon OpenSearch is a successor
+3
+to something you may have heard before called,
+4
+Amazon ElasticSearch.
+5
+So the name change was due to some licensing issues.
+6
+So in DynamoDB, just to do a comparison,
+7
+you can only query the data by primary key
+8
+or if you have indexes on your database.
+9
+But with OpenSearch, you can actually,
+10
+as the name indicates, search any fields,
+11
+even for partial matches.
+12
+So it's very common to use OpenSearch to provide search
+13
+to your application.
+14
+And so you would use OpenSearch
+15
+as a compliment to another database.
+16
+So OpenSearch can be used for search,
+17
+but also as the name doesn't indicate,
+18
+you can also do analytic queries on top of OpenSearch.
+19
+So you have two modes to provision an OpenSearch Cluster.
+20
+Either you use the managed cluster option
+21
+and then actual physical instances will be provisioned
+22
+for you and you will see them.
+23
+Or you can go the serverless route
+24
+and have a serverless cluster,
+25
+where everything from scaling to operations
+26
+is handled by AWS.
+27
+And OpenSearch has its own query language,
+28
+it does not natively support SQL,
+29
+but you can enable SQL compatibility via a plugin.
+30
+So you can ingest data from different places,
+31
+such as Kinesis Data Firehose, IoT, CloudWatch Logs,
+32
+or any of your custom-built application.
+33
+You have security provided
+34
+through integration with Cognito, IAM,
+35
+you get at rest encryption and in-flight encryption.
+36
+And as I said, you can do analytics
+37
+on top of the OpenSearch Service,
+38
+so you can use something called OpenSearch Dashboards
+39
+to create visualizations on top of your OpenSearch Data.
+40
+So here are some common patterns to use OpenSearch.
+41
+So you would have DynamoDB and it will contain your data.
+42
+This is where your users will insert
+43
+and delete and update data.
+44
+And then you send all the streams in a DynamoDB Stream,
+45
+which is then picked up by a Lambda Function.
+46
+And that Lambda Function will insert the data
+47
+into Amazon OpenSearch in real time.
+48
+And through this process,
+49
+what happens that your application
+50
+now has the ability to search for a specific item.
+51
+For example, to do a partial search with the item name
+52
+and then find the item ID out of it.
+53
+And then once the item ID is obtained,
+54
+then it will call DynamoDB to actually retrieve
+55
+the full item from your DynamoDB Table.
+56
+So that's a common pattern in which OpenSearch
+57
+provides the search capability,
+58
+whereas your main source of data still remains
+59
+your DynamoDB Table.
+60
+There's also other ways you can ingest CloudWatch Logs
+61
+into OpenSearch.
+62
+So the first one is to use what's called
+63
+a CloudWatch Log Subscription Filter,
+64
+sending data in real time to a Lambda Function
+65
+that is managed by AWS.
+66
+And then the Lambda Function in real time
+67
+sends all the data into Amazon OpenSearch.
+68
+Or you can also use a CloudWatch Logs
+69
+and then Subscription Filter.
+70
+But this time Kinesis Data Firehose
+71
+can read it from the Subscription Filter.
+72
+And then near real time,
+73
+because this is Data Firehose,
+74
+data will be inserted in Amazon OpenSearch.
+75
+Other patterns are on Kinesis,
+76
+so to send Kinesis Data Streams into Amazon OpenSearch,
+77
+you have two strategies.
+78
+The first one is to use Kinesis Data Firehose.
+79
+This is a near real time again type of service.
+80
+You can optionally do some data transformation,
+81
+using a Lambda Function and then send data
+82
+into Amazon OpenSearch.
+83
+Or you can use Kinesis Data Streams again,
+84
+but this time, you would create a Lambda Function
+85
+that would read the data stream in real time.
+86
+And then you would write custom code
+87
+to have the Lambda Function write to Amazon OpenSearch
+88
+in real time.
+89
+So all these patterns are valid,
+90
+and now you know pretty much all the possible architectures
+91
+for using Amazon OpenSearch.
+92
+So that's it for this lecture.
+93
+I hope you liked it, and I will see you in the next lecture.
+
+--- EMR ---
+
+1
+Now let's talk about Amazon EMR.
+2
+So EMR stands for Elastic MapReduce
+3
+and EMR helps you create Hadoop clusters
+4
+for doing big data on AWS.
+5
+This allows you to analyze
+6
+and process vast amount of data.
+7
+Anytime you would see anything related
+8
+to big data clusters with Hadoop clusters,
+9
+then think Amazon EMR.
+10
+These clusters have to be provisioned
+11
+and they can be made of hundreds of EC2 instances.
+12
+Why would you use EMR?
+13
+EMR comes bundled with a lot of tools
+14
+that big data specialist use.
+15
+For example, Apache Spark, or HBase,
+16
+or Presto, or Apache Flink.
+17
+They're very difficult to set up,
+18
+so Amazon EMR will take care of all the provisioning
+19
+and the configuration of these services for you.
+20
+You can also auto-scale your entire cluster
+21
+and it's integrated with spot instances
+22
+for you to benefit from price reductions.
+23
+So the use cases of Amazon EMR
+24
+from an exam perspective are going to be
+25
+around data processing,
+26
+doing machine learning, web indexing and big data
+27
+but all of them using big data related technologies
+28
+such as Hadoop, Spark, HBase Preso Flink, and so on.
+29
+Amazon EMR is made of clusters of EC2 instances
+30
+and you have different kind of nodes.
+31
+You have the Master Node.
+32
+The Master Node manages the cluster,
+33
+it will coordinate and manage the health
+34
+of all your other nodes, and it must be long running.
+35
+Then you have the Core Node, they're here to run tasks
+36
+and also store data, and they must be long running as well.
+37
+Then you have this Task Node
+38
+which is there just to run tasks.
+39
+Usually you can take spot instances for it
+40
+and using task node is optional.
+41
+The purchasing options really depends.
+42
+If you have the on-demand EC2 instance type
+43
+then you're going to get reliable
+44
+predictable type of workloads
+45
+and then will never be terminated.
+46
+If you use reserved instances,
+47
+and remember it's minimum one year of usage,
+48
+then you're going to get big cost savings
+49
+and EMR will automatically
+50
+use your reserved instances if possible.
+51
+Therefore, good candidates for reserved instances
+52
+are going to be the Master Node
+53
+because it must be long running, and also the Core Nodes.
+54
+Regarding spot instances, because they can be terminated
+55
+they're less reliable but they're cheaper.
+56
+A good way for you to leverage spot instances
+57
+would be on Task Nodes.
+58
+Finally, for EMR, in terms of deployment
+59
+you can have either long running clusters
+60
+which would make sense than using reserved instances,
+61
+or you can use transient temporary clusters to
+62
+just do something and then tear it down
+63
+once the analysis is done.
+64
+Okay, you know all you need to know
+65
+for Amazon EMR, the exam.
+66
+I hope you liked it, and I will see you in the next lecture.
+
+--- QuickSight ---
+
+1
+Now let's talk about Amazon QuickSight.
+2
+So Amazon QuickSight is a serverless machine powered
+3
+business intelligence service,
+4
+and so when you hear business intelligence,
+5
+that means that you're going to create
+6
+interactive dashboards.
+7
+So this is what QuickSight looks like,
+8
+you can create dashboards
+9
+and these dashboards are connected
+10
+to data sources that you own,
+11
+and therefore you can create these nice visuals.
+12
+So it's fast, it's automatically scalable,
+13
+you can embed it in website,
+14
+and you get a per-session pricing.
+15
+The use cases for QuickSight are going to be
+16
+around business analytics, building visualization,
+17
+performing ad-hoc analysis in the visual fashion,
+18
+to get business insights using data.
+19
+And so you can connect to many data sources
+20
+as we'll see in the next slide,
+21
+such as RDS, Aurora, Athena, Redshift, S3, and so on.
+22
+Now there is something called the SPICE engine,
+23
+you need to remember it,
+24
+it's an in-memory computation engine
+25
+and it only works if you actually import data
+26
+directly into Amazon QuickSight.
+27
+It doesn't work if Amazon QuickSight
+28
+is connected to another database.
+29
+And finally,
+30
+QuickSight has some very nice user level features,
+31
+and so it's possible
+32
+in the Enterprise edition of Amazon QuickSight
+33
+to set up column-level security, CLS,
+34
+to prevent some columns from being displayed for some users
+35
+if they don't have enough access rights.
+36
+So what does QuickSight integrate with?
+37
+Well, you can integrate it with many data sources from AWS,
+38
+for example, your RDS database, or Aurora,
+39
+or Redshift, which is a great data warehousing service,
+40
+or Athena to do ad-hoc queries on Amazon S3,
+41
+or Amazon S3 to actually import data, or OpenSearch,
+42
+or Timestream to visualize your time stream data
+43
+in an optimized fashion.
+44
+You can also integrate with third party data sources
+45
+that are software as a service and supported by QuickSight,
+46
+and the full list is on the QuickSight website,
+47
+but some of them include Salesforce, and also Jira.
+48
+You can also integrate with third party databases
+49
+such as Teradata, or for example,
+50
+an on-premises database that is using
+51
+the JDBC protocol internally.
+52
+And as I said, you can import data sources
+53
+directly into QuickSight,
+54
+such as your Excel files, your CSV file,
+55
+JSON documents, TSV, or the EFS CLF format for log formats.
+56
+And if these data sources are imported
+57
+into Amazon QuickSight,
+58
+then you can leverage the SPICE engine
+59
+to perform in memory computation in a very, very fast way.
+60
+So that's for the integrations,
+61
+and you will very commonly see at the exam
+62
+using QuickSight with Athena
+63
+or QuickSight with Redshift,
+64
+but any of these is possible to be seen.
+65
+Now you have two things in QuickSight,
+66
+you have dashboards and analysis.
+67
+So in QuickSight, you actually have users,
+68
+which is available in the Standard version,
+69
+and groups of users,
+70
+only available in the Enterprise version,
+71
+and these users and groups,
+72
+they only exist within the QuickSight service,
+73
+so they're not equivalent to IAM users.
+74
+IAM users are only used for administration.
+75
+And so you define these users and these groups
+76
+from within QuickSight,
+77
+and then you create a dashboard.
+78
+And a dashboard is a read-only snapshot
+79
+of an analysis so they can share,
+80
+and it will preserve the configuration of the analysis,
+81
+so whatever filters, parameters,
+82
+controls, and sorting options you set on your analysis,
+83
+is going to be preserved and is going to be a dashboard.
+84
+And so an analysis is more complete,
+85
+but you can share either the analysis or the dashboard
+86
+with specific users or groups,
+87
+and to do so, you must first publish,
+88
+for example, your dashboards.
+89
+And then if users have access to the dashboards,
+90
+they can also see the underlying data.
+91
+So in QuickSight,
+92
+you would create you analysis or dashboards,
+93
+and then you would share it with specified users and groups.
+94
+And that's it, you know everything there is to know
+95
+about QuickSight for the exam.
+96
+I hope you liked it,
+97
+and I will see you in the next lecture.
+
+--- Glue ---
+
+1
+So now let's talk about AWS Glue.
+2
+So Glue is a managed extract, transform and load service,
+3
+also called commonly ETL service.
+4
+It's very useful
+5
+to prepare and transform data for analytics.
+6
+So this is a fully serverless service
+7
+and you're just going to submit whatever you want
+8
+and it will achieve it, for example, say you had data
+9
+in an S3 bucket or an Amazon RDS database and you wanted
+10
+to load this into a Redshift data warehouse.
+11
+So you could extract it using Glue,
+12
+then you would transform it if need be to maybe
+13
+filter some data or add some columns and so on,
+14
+whatever you want, and then you would load
+15
+the final output data into a Redshift data warehouse.
+16
+So all of this happened from within the Glue ETL service.
+17
+You just have to write some code,
+18
+launch your ETL job, and off you go.
+19
+So that's one example.
+20
+Another example that's gonna come up in the exam
+21
+is how to convert data into the Parquet format.
+22
+So why would we do this?
+23
+Because, well, the Parquet format is a columnar data format
+24
+and therefore it is much better when in use,
+25
+for example, with services like Athena.
+26
+So say for example that you are doing
+27
+inserts into your S3 buckets
+28
+and then these files are in the CSV formats.
+29
+Then you would use the Glue ETL service to import the CSV
+30
+and convert it into a Parquet format
+31
+from within the Glue service.
+32
+Then you would send it into an output S3 bucket.
+33
+And when in Parquet format, then Amazon Athena
+34
+is going to analyze this file in a much better fashion.
+35
+So the other thing you can do to automate
+36
+this entire process is that anytime a file
+37
+is inserted into the S3 bucket, then you can send
+38
+events notifications to a Lambda function,
+39
+which will then trigger a Glue ETL job.
+40
+But you could replace the Lambda function
+41
+with EventBridge as well.
+42
+This would work as an alternative.
+43
+Okay, so there's another feature of Glue
+44
+called the Glue Data Catalog, which is to catalog data sets.
+45
+So the Glue Data Catalog will run Glue data crawlers
+46
+and they will be connected to various data sources
+47
+such as Amazon S3, Amazon RDS, Amazon DynamoDB,
+48
+or a compatible JDBC database
+49
+that you own on premises, for example.
+50
+So the Glue Data Catalog is going to crawl these databases
+51
+and is going to write all the metadata of your tables,
+52
+of your columns, of your data types and so on,
+53
+into the Glue Data Catalog.
+54
+And so it will have all the databases, the tables,
+55
+and the metadata, and that will be leveraged
+56
+by the Glue jobs to perform ETF.
+57
+Now also, when you use Amazon Athena behind the scenes
+58
+to do the data discovery and the schema discovery,
+59
+Amazon Athena is going to be leveraging
+60
+the AWS Glue Data Catalog.
+61
+So will Amazon Retro Spectrum and so will Amazon EMRs.
+62
+So as you can see, the Glue Data Catalog service
+63
+is central to many other AWS services.
+64
+So other features that can appear at the exam on Glue
+65
+and that you should know at a high level.
+66
+The first one is Glue Job Bookmarks.
+67
+And so this is to prevent you from reprocessing all data
+68
+in case you run a new ETL job.
+69
+So this is very important and it can come up in the exam.
+70
+You have Glue Data Brew, which is used
+71
+to clean and normalize data using pre-built transformation.
+72
+You have Glue Studio, which is a GUI
+73
+to create, run, and monitor ETL jobs in Glue.
+74
+And then you have Glue Streaming ETL, and it's actually
+75
+built on top of Apache Spark Structured Streaming,
+76
+and instead of running ETL jobs, as you know, batch jobs
+77
+you can run them as streaming jobs.
+78
+And so therefore you can read data
+79
+using Glue Streaming ETL from Kinesis Data Streams
+80
+or Kafka or MSK as we'll see, which is managed Kafka on AWS.
+81
+Okay, so that's it for this lecture.
+82
+I hope you liked it and I will see you in the next lecture.
+
+--- Lake Formation ---
+
+1
+So now let's talk about AWS Lake Formation.
+2
+So AWS Lake Formation helps you create data lakes
+3
+but what is a data lake?
+4
+Well, a data lake is a central place
+5
+to have all of your data
+6
+in one place so that you can do analytics on top of it.
+7
+So, Lake Formation is a fully managed service
+8
+that makes it super easy to set up a data lake,
+9
+and usually that can take months
+10
+but thanks to Lake Formation
+11
+it takes just a few days to get started with a data lake.
+12
+So Lake Formation will help you discover, cleanse,
+13
+transform, and ingest data into your data lake.
+14
+And it automates many complex manual steps
+15
+such as the collecting, cleansing, moving, cataloging data,
+16
+and also any kind of de-duplication,
+17
+for this it uses machine learning transforms.
+18
+So in this data lake, you can combine structured
+19
+and unstructured data sources, and it has blueprints.
+20
+So, blueprints come out of the box
+21
+and they help you migrate data
+22
+from one place to this central data lake.
+23
+So it has blueprints for Amazon S3, Amazon RDS,
+24
+or your relational databases that you run
+25
+on-premises or your NoSQL databases and so on.
+26
+And why do you set up Lake Formation?
+27
+Well, you have everything in one place, but on top of it
+28
+you can have Fine-grained access controls
+29
+for your applications at the row and the column-level.
+30
+That means that any application that is connecting
+31
+to the AWS Lake Formation
+32
+will have Fine-grain access control,
+33
+and this is a huge plus
+34
+and we'll have a look at it in a few slides.
+35
+So how does Lake Formation work?
+36
+Well, it's actually a layer on top of AWS Glue
+37
+but you don't actually interact with Glue directly.
+38
+So as I said, Lake Formation allows you to
+39
+create a data lake that is stored in Amazon S3.
+40
+And the data sources are, could be Amazon S3, RDS, Aurora,
+41
+your on-premises database, such as SQL or NoSQL, anyways,
+42
+and thanks to the blueprints available on Lake Formation
+43
+you will ingest the data.
+44
+So Lake Formation comes with Source Crawlers,
+45
+it comes with ETL and data preparation tools
+46
+and data cataloging tool,
+47
+and all of this comes from the underlying Glue service.
+48
+Then we have security settings and access controls to
+49
+make sure that your data is protected on your data lake.
+50
+And in services that can leverage Lake Formation can be
+51
+Athena, Redshift, EMR, or other analytics tools,
+52
+such as for example, the Apache Spark framework,
+53
+and so you as users, you are connecting to these services
+54
+which are in turn connecting to Lake Formation
+55
+and your data lake.
+56
+So why do we wanna use Lake Formation?
+57
+Well, one central, key aspect that is definitely mentioned
+58
+at the exam is around the centralized permissions.
+59
+So say for example, that your company is using Athena
+60
+and Quicksights to analyze data and your users must only
+61
+view the data they need and they should have
+62
+permissions to see, and your data sources include
+63
+Amazon S3, RDS, Aurora, and so on.
+64
+So you could try to set up security in Athena
+65
+or you could try to set up security
+66
+in QuickSight or at the user level, or you can set up
+67
+security with S3 bucket policies or with users
+68
+and so on in RDS, or in Aurora.
+69
+And so you have multiple places where
+70
+you can manage security and it becomes a mess.
+71
+What is the right thing, right?
+72
+So Lake Formation solves this problem
+73
+because you have access control
+74
+and you get column and role level security.
+75
+So with Lake Formation, again, you ingest all this data,
+76
+it sits in a central S3 bucket
+77
+but from within Lake Formation
+78
+you actually manage all the access control
+79
+for row and column-level security
+80
+so that any service that then connects
+81
+to Lake Formation only will have the right
+82
+to see whatever has the right to see.
+83
+So if you use Athena, if you use Quicksights,
+84
+if you use whatever other tools
+85
+and you connect to Lake Formation, you manage the security
+86
+in one place, and that is Lake Formation
+87
+and that is a big advantage
+88
+and that you will see at the exam.
+89
+Okay, so that's it for Lake Formation,
+90
+I hope you liked it and I will see you in the next lecture.
+
+--- Amazon Managed Service for Apache Flink ---
+
+1
+Now let's talk
+2
+about the Amazon Managed Service for Apache Flink.
+3
+It used to be called Kinesis Data Analytics
+4
+for Apache Flink, but since then it has been renamed
+5
+to just Managed Service for Apache Flink.
+6
+So Flink, what is Flink?
+7
+Well, it's a framework, and usually use the Java, SQL,
+8
+or Scala languages.
+9
+So it's a framework used for processing data streams
+10
+in real time.
+11
+So you have Amazon Managed Service for Apache Flink
+12
+on the right hand side,
+13
+and then you can read data from Kinesis Data Streams,
+14
+or even Amazon MSK, which is Apache Kafka,
+15
+which is also a service for real-time data streams.
+16
+But it's not an AWS service, it's a managed service
+17
+for something called Apache Kafka.
+18
+All right, so you can,
+19
+thanks to the Amazon Managed Service for Apache Flink,
+20
+you can run any Apache Flink application
+21
+on the managed cluster on AWS.
+22
+That means that AWS is going to provision for you
+23
+the compute resources,
+24
+is going to give you access to parallel computation
+25
+and automatic scaling.
+26
+On top of it,
+27
+AWS is going to manage your application backups,
+28
+which are going to be implemented
+29
+as checkpoints and snapshots.
+30
+And then you can use any sort
+31
+of Apache Flink supported programming features
+32
+to transform your data.
+33
+So you're really free around the type
+34
+of transformations you want to do on your streams.
+35
+And as you should know, Flink can read from, yes,
+36
+Kinesis Data Streams,
+37
+but it cannot read from Amazon Data Firehose,
+38
+and that could be an exam trick.
+39
+All right, so that's all you should know
+40
+for Amazon Managed Service for Apache Flink.
+41
+Remember, it's only used for processing data streams.
+42
+And that's it for this lecture.
+43
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon Managed Service for Apache Flink - Hands On ---
+
+1
+So here I am in the Amazon Kinesis service.
+2
+And I wanna show you just the options
+3
+for Kinesis data analytics.
+4
+So here it is.
+5
+So we have two different kinds of things.
+6
+You can either create a streaming application
+7
+or go into the studio.
+8
+The streaming application is actually just
+9
+all leveraging app Apache Flink.
+10
+This is the case analytics for Apache Flink.
+11
+You choose a runtime version
+12
+for Apache Flink that's supported
+13
+and then you can have the application name.
+14
+And then, at some point,
+15
+you need to enter your production information.
+16
+And this would create a streaming application
+17
+that you can use on AWS.
+18
+And so you would need to actually upload then
+19
+your application here.
+20
+As we see when we get there
+21
+and we don't have any Apache Flink application available
+22
+to us, because this is quite complex, right?
+23
+Then you can run and you can even monitor it
+24
+using the Apache Flink dashboard.
+25
+So this service is to create Apache Flink applications.
+26
+And actually, if you wanted to just do one of analysis
+27
+you can open a studio notebook
+28
+and this will just quickly create a notebook
+29
+where you can start running your streaming applications
+30
+again, leveraging Apache Flink.
+31
+Okay. So this I will not do.
+32
+And then where is the Apache,
+33
+where is the Amazon Kinesis data analytics
+34
+for SQL applications?
+35
+Well, it's on the left hand side
+36
+and this is where it would be.
+37
+So you would find it under the SQL applications legacy
+38
+and now they recommend that you use all the time
+39
+Kinesis data analytics studio and Apache Flink?
+40
+But if you wanted to, for example, read from
+41
+Kinesis Data Firehose, you would create a SQL applications
+42
+in the legacy form and you would enter actually
+43
+the application name and it did create one.
+44
+And then once you've define your application name,
+45
+you can actually go to realtime analytics
+46
+and write the kind of SQL you want to do
+47
+for this application, okay?
+48
+So it's just an overview.
+49
+You don't need to know anything
+50
+about Kinesis data analytics for this exam
+51
+but I wanna show you the options,
+52
+give you a quick introduction.
+53
+And so you could visualize it as well on the console.
+54
+So that's it for this lecture.
+55
+I hope you liked it.
+56
+And I will see you in the next lecture.
+
+--- MSK - Managed Streaming for Apache Kafka ---
+
+1
+Another analytics service you will see
+2
+is Amazon Managed Streaming for Apache Kafka,
+3
+also called Amazon MSK.
+4
+And what is Kafka?
+5
+Well, Kafka is an alternative to Amazon Kinesis.
+6
+Kafka and Kinesis both allow you to stream data.
+7
+So, MSK is the ability to get
+8
+a fully-managed Kafka cluster on AWS.
+9
+And it allows you to create, update
+10
+and delete clusters on the fly.
+11
+And MSK is going to create and manage Kafka broker nodes
+12
+and Zookeeper broker nodes in your cluster for you
+13
+and you deploy the cluster in your VPC, across multiple AZ,
+14
+up to three for high availability.
+15
+You also have automatic recovery from common Kafka failures
+16
+and the data is stored on EBS volumes
+17
+for as long as you want.
+18
+So, from personal experience,
+19
+I know it's very difficult to set up Apache Kafka
+20
+and the fact you can just do one click
+21
+and then deploy Kafka on AWS is great
+22
+and this is the Amazon MSK service.
+23
+So on top of it, you have the option to use MSK Serverless.
+24
+And this is that you run Apache Kafka on MSK,
+25
+but this time you don't provision servers,
+26
+you don't manage capacity,
+27
+automatically MSK will provision resources
+28
+and scale, compute and storage for you.
+29
+So what is Apache Kafka then?
+30
+Apache Kafka is a way for you to stream data
+31
+and a Kafka cluster is made of multiple brokers
+32
+and then you will have producers that will produce data
+33
+and so they will have to ingest data from places,
+34
+such as Kinesis, IoT RDS, et cetera, et cetera,
+35
+and they will send the data directly
+36
+into a Kafka topic that is going to be fully replicated
+37
+into other brokers.
+38
+Now, this Kafka topic is having real-time streaming
+39
+of data and consumers will pull from the topic
+40
+to consume the data itself
+41
+and then your consumer can do whatever he wants,
+42
+process it or send it to various destinations,
+43
+such as EMR, S3, SageMaker, Kinesis and RDS.
+44
+So the idea is that Kafka is quite similar to Kinesis,
+45
+but there are differences to look out for.
+46
+So what are the differences between Kinesis Data Streams
+47
+and Amazon MSK?
+48
+Well, in Kinesis Data Streams,
+49
+you have one megabyte message limit,
+50
+which is the default in Amazon MSK,
+51
+but you can configure it for a higher message retention.
+52
+For example, 10 megabytes.
+53
+You can have Data Streams with Shards
+54
+in Kinesis Data Streams or in MSK,
+55
+it's called Kafka Topics with Partitions,
+56
+but the concept are sort of similar.
+57
+To scale Kinesis Data Stream,
+58
+you need to do Shard Splitting and to scale it down Merging.
+59
+But in Amazon MSK to scale a topic,
+60
+you can only add partitions.
+61
+You cannot remove partitions.
+62
+You have in-flight encryption for Kinesis data streams
+63
+and then you have either plain text
+64
+or TLS in-flight encryption for MSK.
+65
+You get at-risk encryption for both of these clusters
+66
+and, in the exam level, this is enough.
+67
+Just so you know, a few differences.
+68
+And also for Amazon MSK, you can keep data
+69
+for as long as you want, you can go over one year,
+70
+as long as you pay for the underlying EBS storage,
+71
+you're good to go.
+72
+So to produce to MSK you need to create a Kafka Producer
+73
+and then to consume from MSK, you have multiple options.
+74
+The first one is to use Kinesis Data Analytics
+75
+for Apache Flink.
+76
+So you want a Flink Application
+77
+and you make it read it directly from the MSK cluster.
+78
+You can use Glue as well to do streaming ETL jobs
+79
+and they're powered by, the time, Apache Spark Streaming.
+80
+You can use Lambda functions to directly have Amazon MSK
+81
+as an event source or you can write your own Kafka consumer
+82
+and you can make it run on whatever platform you want,
+83
+for example, your Amazon EC2 instances,
+84
+or an ECS cluster or an EKS cluster.
+85
+And once you know this,
+86
+you know pretty much everything there is to know
+87
+for Amazon MSK at the exam.
+88
+So I hope you liked it
+89
+and I will see you in the next lecture.
+
+--- Big Data Ingestion Pipeline ---
+
+1
+Okay, so, now let's talk
+2
+about another architecture for Big Data Ingestion Pipeline.
+3
+So, ideally, we want the application ingestion pipeline
+4
+to be fully serverless, fully managed by AWS,
+5
+and we want to collect data in real time,
+6
+we want to transform the data,
+7
+we want to query the transformed data using SQL,
+8
+and the reports we create using these queries,
+9
+maybe they should be stored in S3,
+10
+and then we want to load that data into a data warehouse
+11
+and create dashboards on it.
+12
+So, overall, you know,
+13
+the usual big data problems of ingestion,
+14
+collection, transformations, querying, and analysis.
+15
+Okay, so how do we do this?
+16
+And there's some technologies,
+17
+we may not have seen them directly in this course,
+18
+but that's okay,
+19
+I'll just introduce them to you in this pipeline
+20
+because they really help.
+21
+So, IoT devices,
+22
+so let's assume that the producers are data are IoT devices?
+23
+And so there is this really cool services
+24
+in Amazon Cloud services and it's called IoT Core.
+25
+And IoT Core helps you manage these IoT devices.
+26
+So remember this, if you go into the exam.
+27
+Now, these devices can send data in real time to IoT Core
+28
+and IoT Core directly into a Kinesis data stream.
+29
+So data stream for Kinesis, remember it allows us
+30
+to basically pipe big data in real time,
+31
+very fast into this Kinesis service.
+32
+Now, Kinesis can be talking to Kinesis data Firehose,
+33
+and Firehose allows us to, for example, every one minute
+34
+put and offload our data into an Amazon S3 bucket
+35
+and that will be an ingestion bucket.
+36
+So here, what we've done here is
+37
+that we've just had a whole pipeline to get a lot
+38
+of data from a lot of devices in real time
+39
+and put it every one minute into an S3 bucket.
+40
+On top of it,
+41
+it's possible for us to cleanse
+42
+or really quickly transform the data
+43
+using an AWS Lambda function that is directly linked
+44
+to Kenesis Data Firehose.
+45
+Okay, so now we have that ingestion bucket,
+46
+what can we do with it?
+47
+Well, for example,
+48
+we can trigger an SQS topic,
+49
+an SQS Queue, sorry, and it's optional.
+50
+And maybe the SQS Queue can trigger AWS Lambda function.
+51
+I say optional because Lambda can be directly triggered
+52
+by our S3 bucket,
+53
+but I just wanted to show you the possibility
+54
+of invoking SQS through that slide.
+55
+Okay, so Lambda, what we'll do, well Lambda will trigger
+56
+an Amazon Athena SQL query.
+57
+And this Athena query will pull data
+58
+from the ingestion bucket
+59
+and we'll do an SQL query that's all serverless.
+60
+And the outputs
+61
+of this serverless query will go into a reporting bucket,
+62
+maybe again in Amazon S3 B is different bucket.
+63
+Okay, so from this we have the data it's being reported on,
+64
+it's being cleansed and analyzed.
+65
+We can either directly visualize it using QuickSight.
+66
+So QuickSight is a way for us
+67
+to visualize our data into an Amazon S3 bucket,
+68
+or we can load the data into a proper data warehouse
+69
+for analytics, such as Amazon Redshift.
+70
+And so this Redshift data warehouse can also serve
+71
+as an endpoint for QuickSight.
+72
+But this shows you overall
+73
+what you can expect in data ingestion pipeline
+74
+at a high level,
+75
+including real-time ingestion, transformation,
+76
+serverless Lambda, and some data warehousing using Redshift
+77
+and visualization using QuickSight.
+78
+So let's discuss about the pipeline.
+79
+IoT Core allows you
+80
+to harvest many data from many IoT devices.
+81
+Kinesis is great for real-time data connection,
+82
+and Firehose helps you with data delivery
+83
+to S3 in near real time.
+84
+So one minute is the lowest frequency you can choose.
+85
+Lambda can help Firehose with data transformation,
+86
+and then Amazon S3 can trigger notifications
+87
+to SQS, SNS or Lambda.
+88
+Lambda can subscribe to SQS,
+89
+but we could have, as I said, connected S3 to Lambda.
+90
+And Athena is a serverless SQL service
+91
+and we can store the results
+92
+of Athena directly back into S3.
+93
+And the reporting buckets contain analyzed data
+94
+and we can use reporting tools such as QuickSight
+95
+for visualization or Redshift
+96
+if you want to do more analytics on it.
+97
+So that's it for a big data ingestion pipeline,
+98
+but at a high level
+99
+from a solution architecture perspective.
+100
+It's really good to know how all these things work.
+101
+I hope you like this and I will see you in the next lecture.
+
+--- Rekognition Overview ---
+
+1
+So now let's talk about Amazon Rekognition.
+2
+And Rekognition is a service used to find objects, people,
+3
+texts, scenes in images and videos using machine learning.
+4
+So it can do facial analysis
+5
+and facial search to do user verification
+6
+and count how many people there are
+7
+in an image, for example.
+8
+Or you can create your own database of familiar faces
+9
+or you can compare against a database
+10
+of celebrities to find people in your images as well.
+11
+So the use cases for Rekognition is to take your image
+12
+and do labeling images and video
+13
+and to labeling, content moderation, text detection,
+14
+face detection and analysis,
+15
+for example, find the gender, the age range
+16
+and the emotions that are associated with these faces,
+17
+do a face search and verification,
+18
+do celebrity recognition,
+19
+as well as pathing.
+20
+So for example, if you're doing a sports game analysis
+21
+of a video, so that's a high level.
+22
+Remember Rekognition is about images and videos.
+23
+So on the Rekognition website
+24
+we can see we can automate our image and video analysis
+25
+with machine learning.
+26
+And I really like this website
+27
+because it shows you how it works.
+28
+So for example,
+29
+for this image we can identify the elements of this image.
+30
+For example, a person, a rock, a mountain bike,
+31
+a crest and outdoors.
+32
+We can label, for example, what we see in images,
+33
+for example, golden retrievers or dogs.
+34
+Then I can look at content moderation
+35
+to make sure that it's appropriate for all ages.
+36
+I can detect text, for example, for a run.
+37
+We want to see the numbers of each runner in the run.
+38
+We can do face detection analysis,
+39
+for example, this person looks happy.
+40
+She's smiling,
+41
+her eyes are open and she's a female.
+42
+Face search and verification,
+43
+maybe if you have a security application.
+44
+Finally, if you want to recognize a celebrity,
+45
+you can take a picture of them.
+46
+And this is the CTO of AWS.
+47
+And then finally, pathing,
+48
+for example, if you're monitoring a soccer game,
+49
+you could see where everyone is going to do
+50
+maybe some real time analytics.
+51
+And there's one feature you need to know about
+52
+going into the exam.
+53
+It's around content moderation.
+54
+So this is used to detect content that is inappropriate,
+55
+unwanted, or offensive in images and videos.
+56
+So this will be used, for example,
+57
+if you have a social network or if you broadcast media
+58
+or if you do advertising or if you're doing e-commerce
+59
+and you need to create a safe user experience
+60
+and make sure the image is displayed,
+61
+don't show any kind of content that would be
+62
+deemed offensive by some people.
+63
+For example, racist content
+64
+or pornography or other kind of things like this.
+65
+So how does that work?
+66
+Well, the image will be analyzed by Amazon Rekognition
+67
+and then you set a Minimum Confidence Threshold
+68
+for items that will be flagged.
+69
+So you set it to whatever percentage you want.
+70
+And obviously the lower you set this percentage
+71
+the more matches you're going to get.
+72
+And this confidence percentage represents how
+73
+confident Amazon Rekognition is
+74
+that this flagged image represents indeed
+75
+some inappropriate or offensive character.
+76
+And then once you have done this
+77
+and you flagged some images,
+78
+you may want to do a human manual review.
+79
+And so to do so,
+80
+you can use something called Amazon Augmented AI
+81
+called A2I
+82
+and you do optional manual review
+83
+directly in Amazon A2I.
+84
+And all of this process right here allows you to
+85
+automatically flag images that can be sensitive
+86
+and then use a final manual review
+87
+to know whether or not you want to keep them or delete them.
+88
+And this can help you with comply
+89
+with regulations in case you must detect
+90
+these kind of content
+91
+before they're posted to your applications.
+92
+So that's it for this lecture.
+93
+I hope you liked it
+94
+and I will see you in the next lecture.
+
+--- Transcribe Overview ---
+
+1
+So now let's talk about Amazon Transcribe.
+2
+So as the name indicates,
+3
+it allows you to automatically convert speech into text.
+4
+So you pass in some audio
+5
+and automatically is going to be transcribed into text,
+6
+so you could say, hey, hello,
+7
+my name is Stephane and I hope you're enjoying the course.
+8
+Now, how does it do it?
+9
+Well, it uses a deep learning process called the ASR,
+10
+the Automatic Speech Recognition,
+11
+to convert speech to text very quickly and accurately
+12
+and there are a few features you need to know about.
+13
+The first one is that you can automatically remove any PII,
+14
+so personally identifiable information, using reduction.
+15
+So that means, for example,
+16
+if you have someone's age or name or Social Security Number,
+17
+this can be automatically removed
+18
+and also you can have access
+19
+to automatic language identification for multilingual audio.
+20
+So if you have some French and some English,
+21
+some Spanish, Transcribe is smart enough
+22
+to recognize all of those.
+23
+So the use cases for Amazon Transcribe
+24
+is to transcribe customer service calls,
+25
+to automate closed captioning and subtitling,
+26
+and also to generate metadata
+27
+for media assets to create a fully searchable archive.
+28
+So let's have a look at Amazon Transcribe.
+29
+So I can create a transcript and I can see
+30
+that the specific language right now is set to English US,
+31
+so now if I click on start streaming,
+32
+hello, I really like this course.
+33
+As you can see, the outcome of the audio
+34
+get directly transcribed into some text,
+35
+so that's pretty cool, right?
+36
+Also, you can have the setting to remove some content
+37
+and you can remove PII identification.
+38
+So I could say, hey,
+39
+you can identify and redact it to remove it
+40
+and these are the kind of things that can be removed.
+41
+So for example, let's have an example
+42
+and try it out, so I won't show this all again.
+43
+Hello, my name is Stephane, I am 31 years old
+44
+and my phone number is 910-747-280
+45
+and as you can see now, the things got hidden.
+46
+So my name is hidden and my phone is hidden.
+47
+Obviously this was not my real phone number.
+48
+You cannot try it.
+49
+Okay and last thing I want to show you
+50
+is that you can actually stream into multiple languages.
+51
+So you have automatic language identification.
+52
+So I would choose English and French
+53
+and then let's start again.
+54
+Hello, this is some recognition happening in English.
+55
+(speaking in French)
+56
+Pretty awesome, right?
+57
+Well, that's it for Amazon Transcribe.
+58
+If you wanted to play some more,
+59
+you can have a look at all the options in the bottom,
+60
+but that's it for this lecture.
+61
+I hope you liked it and I will see you in the next lecture.
+
+--- Polly Overview ---
+
+1
+[Narrator] - Polly is the opposite of Transcribe.
+2
+You turn text into speech using deep learning.
+3
+This allows you to create applications that will talk.
+4
+For example, it says,
+5
+"Hello, my name is Stephane
+6
+and this is a demo of Amazon Polly."
+7
+And then with Polly, it would generate an audio,
+8
+which I can play right here.
+9
+Hi.
+10
+My name is Stephane and this is a demo of Amazon Polly.
+11
+I think I'm better at speaking than that
+12
+but (chuckles) this gives you a good demo, right?
+13
+And you can play with it on the console.
+14
+So Amazon Polly can do more.
+15
+It can use Lexicon &amp; SSML
+16
+so the first one is to customize the pronunciation
+17
+of words with Pronunciation lexicons.
+18
+For example, if there is a stylized word such as Stephane
+19
+but the E is a 3 and the A is a 4
+20
+the Amazon Polly image might say "S-T-3-P-H-4-N-E,"
+21
+which is not how it should be pronounced;
+22
+it should be pronounced Stephane.
+23
+And so, therefore, you can create a lexicon for this.
+24
+Or for example, for acronyms, for example, any time
+25
+it sees AWS, instead of saying "A-W-S"
+26
+it should say the full "Amazon Web Services."
+27
+So then you upload the lexicons
+28
+and you use them in the SynthesizeSpeech operation.
+29
+The second feature you need to know about
+30
+is the SSML feature,
+31
+which is called Speech Synthesis Markup Language.
+32
+And this enables more customization to how speech is made.
+33
+So you can, for example,
+34
+emphasize on specific words or phrases,
+35
+or you use phonetic pronunciation,
+36
+or you want to include breathing sounds or whispering,
+37
+or you want to use the Newscaster speaking style.
+38
+So all of it can be used using this Markup Language,
+39
+and so instead of generating the speech from plain text
+40
+you can include a whisper and it will start whispering,
+41
+and so on, okay?
+42
+So, remember, for pronunciation of stylized words
+43
+or acronyms, use Pronunciation lexicons.
+44
+And for more customization
+45
+on how words are being pronounced, for example,
+46
+whispering or phonetic pronunciation, and so on,
+47
+then use the SSML Markup Language.
+48
+So if I go into the Amazon Polly service,
+49
+this is where I can turn text into lifelike speech.
+50
+So we can try it.
+51
+So we can use, for example, the neural network, okay.
+52
+And this is the most natural and human-like speech possible
+53
+and we can choose the voice we want.
+54
+So, here's the text.
+55
+So I will say, "Hey, my name is Stephane
+56
+and I love AWS."
+57
+Let's see what happens.
+58
+So if we listen to this, it will say:
+59
+Hi, my name is Stephane and I love AWS.
+60
+So that's pretty cool, right?
+61
+And here with SSML, and so, for example, let's add a break,
+62
+so I will say, "Hey, my name is Joanna,"
+63
+and then I open a break.
+64
+I say, "Break time equals,"
+65
+and this is part of the SSML Language,
+66
+and then slash
+67
+and this.
+68
+So I say, "Hey, break this for three seconds."
+69
+So it would say:
+70
+Hi, my name is Joanna.
+71
+Now there's a break.
+72
+I will read any text you type here.
+73
+And this is how you control the speech itself
+74
+using the SSML Markup Language.
+75
+And lastly, if we want to say,
+76
+"Hey, I love
+77
+AWS" right here, so we say, "I love AWS,"
+78
+and we'll just have one second of break.
+79
+Let's listen to this.
+80
+Hi, my name is Joanna.
+81
+I love AWS.
+82
+Okay, what if you want to say, not AWS,
+83
+but Amazon Web Services, in which case you would need to go
+84
+into additional settings and then customize pronunciation.
+85
+And here you would need to apply lexicon
+86
+and upload lexicon to convert AWS into Amazon Web Services.
+87
+So, trust me, you just need to create a file,
+88
+and then upload it, create a lexicon,
+89
+and then automatically whatever you set as, for example,
+90
+whenever it will find AWS,
+91
+it will just say Amazon Web Services.
+92
+And that's it for Amazon Polly.
+93
+You should know everything there is to know for the exam.
+94
+I hope you liked it
+95
+and I will see you in the next lecture.
+
+--- Translate Overview ---
+
+1
+Now let's talk about Amazon Translate.
+2
+So Translate, as the name indicate,
+3
+is a natural and accurate language translation.
+4
+Translate allows you to localize content,
+5
+for example, your websites and your application,
+6
+for your international users
+7
+and easily translates large volume of text efficiently.
+8
+So for example, say in English, I say,
+9
+"Hi, my name is Stephen,"
+10
+In French, it would be. (speaking in foreign language)
+11
+In Portuguese, it would be. (speaking in foreign language)
+12
+And in Hindi, it would be. (speaking in foreign language)
+13
+Okay, I just showed off.
+14
+So that was it, super easy service.
+15
+I hope you liked it.
+16
+And I will see you in the next lecture.
+
+--- Lex + Connect Overview ---
+
+1
+So now let's discuss Amazon Lex and Connect.
+2
+So Amazon Lex is the same technology that powers
+3
+the Alexa devices by Amazon.
+4
+And if you don't know Alexa, Alexa is like a little device
+5
+that you have in your home and you say,
+6
+"Alexa, what's the weather like tomorrow?"
+7
+And it will reply, "The weather is good,
+8
+it'll be 24 degrees and it'll be sunny."
+9
+So, the idea is that with Amazon Lex,
+10
+you get automatic speech recognition, so ASR,
+11
+that allows you to convert speech,
+12
+so spoken words, into text.
+13
+There's also a very good thing
+14
+because Lex understands the intent of text, callers
+15
+by doing natural language understanding,
+16
+so it understands sentences.
+17
+And Amazon Lex is a technology
+18
+that will help you build chatbots or call center bots.
+19
+And talking about call centers,
+20
+how do we build a call center?
+21
+We have Amazon Connect.
+22
+So Amazon Connect is a visual contact center
+23
+that allows you to receive calls, create contact flows,
+24
+and it's all cloud-based.
+25
+And it can integrate with other customer
+26
+relationship system, management systems, so CRMs
+27
+or AWS services.
+28
+And the cool thing about Amazon Connect versus traditional
+29
+offering is that there is no upfront payment.
+30
+It's about 80% cheaper
+31
+than traditional contact center solutions.
+32
+So the whole flow of building a smart contact center is
+33
+that you will have, for example,
+34
+a phone call to schedule an appointment that is made
+35
+into a number that is defined by Amazon Connect.
+36
+So they call Amazon Connect.
+37
+Lex is streaming all the information from this call
+38
+and understand the intent of the phone call,
+39
+and therefore, it will invoke the right lender function.
+40
+And that lender function, for example,
+41
+can be very smart and say, "Hey, someone has said
+42
+to schedule a meeting tomorrow with Tom at 3:00 PM."
+43
+Okay, I will go into my CRM and schedule that meeting
+44
+by writing some code.
+45
+So this is the whole idea behind Lex and Connect.
+46
+So remember Lex is for ASR
+47
+and Connect is for contact centers.
+48
+So that's it.
+49
+I hope you liked it and I will see you in the next lecture.
+
+--- Comprehend Overview ---
+
+1
+Now, Amazon Comprehend
+2
+is a very simple service from an exam perspective.
+3
+All you need to know is that Comprehend is
+4
+to comprehend stuff,
+5
+so it is for Natural Language Processing, or NLP.
+6
+So anytime you will see NLP on the exam,
+7
+you would think Amazon Comprehend.
+8
+Now what it is, it is a fully managed and serverless service
+9
+and it will use machine learning to find insights
+10
+and relationships in your text.
+11
+For example, it can understand what is the language
+12
+of the text, it can extract key phrases,
+13
+places, people, brands, or events from that text.
+14
+It can understand, do a sentiment analysis to understand
+15
+how positive or negative the text you're analyzing is.
+16
+It can also analyze a text using tokenization
+17
+and parts of speech.
+18
+It also has audio.
+19
+And finally, it can organize a collection
+20
+of text files by topic, and find topics itself.
+21
+So, Comprehend is really about getting a lot of data in
+22
+and then Comprehend will do the rest
+23
+to try to understand the meaning of that data.
+24
+So it's about taking text or unstructured data
+25
+and structuring it around these features.
+26
+So some sample use cases of Natural Language Processing,
+27
+or NLP, are for example, to analyze customer interaction.
+28
+So say you have a bunch of customers sending you emails
+29
+and you want to understand overall based
+30
+on your support service what leads to a positive
+31
+or negative experience from your customers.
+32
+So we use Comprehend to extract these features
+33
+and then you will have the business insight
+34
+and then you can improve your business,
+35
+thanks to that analysis.
+36
+You can also, for example, create
+37
+and group articles by topics that Comprehend will uncover.
+38
+So imagine you have a lot of articles
+39
+and you want to group them together instead
+40
+of going to them one by one, you would feed them
+41
+into Comprehend and then it would output you
+42
+the topics you need to group them by.
+43
+So that's it.
+44
+So again, a bit more information than what you need,
+45
+but Comprehend from an exam perspective is
+46
+for Natural Language Processing.
+47
+So hope you liked it,
+48
+and I will see you in the next lecture.
+
+--- Comprehend Medical Overview ---
+
+1
+So now let's talk about
+2
+Amazon Comprehend Medical.
+3
+So Comprehend Medical detects and returns
+4
+useful information in unstructured clinical text.
+5
+For example, if your doctor is taking notes,
+6
+or if you have discharge summaries,
+7
+or test results, or case notes, then it will use NLP.
+8
+So it will use natural language processing to detect
+9
+all the protected health information
+10
+within the document itself as well with a DetectPHI API.
+11
+So from an architecture perspective
+12
+you would store whatever documents you have in Amazon S3,
+13
+and then you would invoke the Comprehend Medical API.
+14
+Or you could have Kinesis Data Firehose,
+15
+and then analyze that in real time.
+16
+Or you can use Amazon Transcribe
+17
+to first transcribe the voice into text.
+18
+Okay, as we understand from before.
+19
+And then once it's in text form
+20
+we can pass it to the Amazon Comprehend Medical service.
+21
+So let's have a look into the consult to see how that works.
+22
+So I am in the Amazon Comprehend Medical service,
+23
+and let's launch a real time analysis.
+24
+So here it's Input text.
+25
+And so imagine that this is doctor's note and he wrote
+26
+or she wrote all these things, right?
+27
+So the doctor, okay, wrote all this.
+28
+Now let's analyze it.
+29
+And from this, we can have entities.
+30
+And so you can find an age, and an high school teacher,
+31
+and then you can find some overlap between some things
+32
+such as there was a procedure name and the time
+33
+to the procedure name and the date and so on.
+34
+And as you can see all this data become quite organized.
+35
+And so you have like some generic name of a molecule
+36
+and its strength and dosage and route modes
+37
+and frequency and so on.
+38
+And this allows you to really start structuring
+39
+all your health data from unstructured text
+40
+using machine learning.
+41
+So you can explore this, okay,
+42
+but I'm not gonna go into the details of this.
+43
+This is a medical field that I'm not very confident with,
+44
+but at least you know that thanks to
+45
+Amazon Comprehend Medical you can take information
+46
+in text form and then get insights out of it.
+47
+So I hope you liked it.
+48
+And I will see you in the next lecture.
+
+--- SageMaker AI Overview ---
+
+1
+Okay, so now let's talk about Amazon SageMaker.
+2
+So SageMaker is a fully managed service
+3
+for developers and data scientists
+4
+to build machine learning model.
+5
+So all of the services so far we've seen
+6
+in this section that are all
+7
+managed machine learning service with
+8
+a very specific purpose,
+9
+for example translates some text,
+10
+transcribes some audio,
+11
+or convert text into audio
+12
+or analyze parts of a text,
+13
+but SageMaker is a higher level
+14
+machine learning service where you have
+15
+your actual developers or your data scientists
+16
+within your organization create
+17
+and build machine learning model.
+18
+So it is a lot more involved
+19
+and a lot more difficult to use.
+20
+Now, when you want to do this kind of processes
+21
+to build a machine learning model,
+22
+you have to do a bunch of steps that I will show
+23
+you in a second,
+24
+and all these are quite difficult to do
+25
+in one place,
+26
+plus you need to provision some servers
+27
+to perform these competitions to create these models,
+28
+and that can be cumbersome as well.
+29
+So this is where SageMaker comes in.
+30
+So SageMaker will try to help you all along the way
+31
+for the process.
+32
+So I will show you what machine learning actually is,
+33
+and this is a simplified version,
+34
+if you are a machine learning expert
+35
+don't get mad at me please,
+36
+but let's say you wanted to build a model,
+37
+or let's say I wanted to build a model
+38
+to predict what score you're going to get
+39
+at your certified CLAP practitioner exam.
+40
+So how will I do it?
+41
+Say for example that I am a developer
+42
+or a data scientist,
+43
+so I'm going to gather all your data from
+44
+the actual performance of my students.
+45
+So I will ask maybe 10,000 students
+46
+to give me information about how many years of experience
+47
+in IT they had,
+48
+how many years of experience with AWS they had,
+49
+how much time they spent on the course,
+50
+how many practice exams they did, etc. etc,
+51
+so I'll try to gather as much data as possible,
+52
+and then I'm going to label the data.
+53
+So that means you need to say which columns
+54
+corresponds to what,
+55
+and also you need to give some kind of score,
+56
+and the score is the actual score for me
+57
+at the exam that someone obtains.
+58
+For example someone did not pass,
+59
+670, maybe he didn't do the course completely,
+60
+that would be the reason.
+61
+Maybe someone passed with high grade,
+62
+so 990 or maybe someone with an even higher grade 934,
+63
+so, each student will get a specific score,
+64
+and my guess is that based on the data that I've collected
+65
+I can predict what the score will be.
+66
+So I've first done the labeling,
+67
+and that labeling process can be quite complicated to do
+68
+in practice.
+69
+Then I need to build a machine learning model,
+70
+which is how can I predict these scores
+71
+from the historical data.
+72
+So, then you build that machine learning model
+73
+and then you have to train it
+74
+and tune it.
+75
+So this is another part that's actually quite difficult
+76
+to do, which is how to refine my model over time
+77
+to better fit my data and my outputs.
+78
+Okay, so now SageMaker and all of this will help
+79
+you with the labeling,
+80
+the building, the training
+81
+and tuning, but not only.
+82
+Now we have a machine learning model
+83
+and it is created,
+84
+it's fully working.
+85
+So now I need to use it.
+86
+So this is called deploying machine learning models.
+87
+So, we're going to get new data coming in.
+88
+For example you are the new student,
+89
+and I'm going to survey you,
+90
+and I'm going to say okay,
+91
+how many years of experience do you have in IT,
+92
+with AWS, how much time have you spent on this course,
+93
+and then I will apply based on this data
+94
+you just given me,
+95
+I will apply the machine learning model that I have created
+96
+from before.
+97
+And then the machine learning model will say,
+98
+for example, hey it sends based on the data you have
+99
+I'm going to predict that this student
+100
+will pass with a score of 906.
+101
+And this whole process,
+102
+of labeling, building the model,
+103
+training it, tuning it,
+104
+applying it can be all done within SageMaker.
+105
+So, that's it for a quick introduction,
+106
+but I hope you liked it,
+107
+and I will see you in the next lecture.
+
+--- Kendra Overview ---
+
+1
+Another machine learning service on AWS
+2
+is called Amazon Kendra.
+3
+So this one is a fully-managed document search service
+4
+that is powered by machine learning
+5
+and it allows you to extract answers from within a document.
+6
+That document could be text, PDF, HTML
+7
+PowerPoints, Microsoft Word, FAQs, et cetera, et cetera.
+8
+So you have a lot of data sources
+9
+where these documents may be
+10
+and you see some of them right now in the screen
+11
+and they're going to be indexed by Amazon Kendra
+12
+which is going to build internally
+13
+a knowledge index powered by machine learning.
+14
+And how does it help from an end-user perspective?
+15
+Well, we get natural language search capabilities
+16
+just like you go on Google.
+17
+So for example, if a user says,
+18
+Hey, where is the IT support desk into Amazon Kendra?
+19
+Kendra can reply, 1st floor.
+20
+And this could be due to the fact that Kendra knows
+21
+from all the resources that it took
+22
+that the IT support desk was on the 1st floor,
+23
+which is quite awesome.
+24
+And also, you can just do a normal search
+25
+and it will learn from the user interaction and feedback
+26
+to promote preferred search results
+27
+which is called incremental learning.
+28
+Finally, you can fine tune the search results, for example,
+29
+based on the important data, importance of data,
+30
+the freshness, or whatever custom filters you have, okay?
+31
+So from an exam perspective,
+32
+whenever you see a document search service,
+33
+think Amazon Kendra.
+34
+That's it, I will see you in the next lecture.
+
+--- Personalize Overview ---
+
+1
+Next, we have Amazon Personalize,
+2
+which is a fully machine learning service to build apps
+3
+with real-time personalized recommendations.
+4
+So what could be a recommendation?
+5
+For example, a personalized product recommendation,
+6
+or re-ranking, or customized direct marketing.
+7
+For example, a user has bought a lot of gardening tools,
+8
+and you want to provide recommendations
+9
+on the next one to buy based on a personalized service.
+10
+So this is the same technology used by Amazon.com.
+11
+So when you go and shop on Amazon.com
+12
+and after buying a few products, what you will see
+13
+is that Amazon.com start recommending products
+14
+in the same category or in completely different categories
+15
+based on how you've been searching
+16
+and how you've been buying
+17
+and user interest and that kind of things.
+18
+So Personalize is how you access this from within AWS.
+19
+So, you read your input data from Amazon S3.
+20
+For example, it could be user interactions,
+21
+those kind of things.
+22
+Also, you can use the Amazon Personalize API
+23
+to have real-time data integration
+24
+into the Amazon Personalize service.
+25
+And then this will expose a customized personalized API
+26
+for your websites and applications,
+27
+your mobile applications.
+28
+Also, you can send SMS or emails
+29
+for personalization as well.
+30
+So you have all these integrations.
+31
+It takes days, not months, to build this model.
+32
+So you don't need to build, train, and deploy ML solutions.
+33
+You can just use this bundled as is.
+34
+And so the use cases is going to be retail stores,
+35
+and media, and entertainment.
+36
+So from an exam perspective,
+37
+anytime you see a machine learning service
+38
+to build recommendations and personalized recommendations,
+39
+think Amazon Personalize, that's it.
+40
+I will see you in the next lecture.
+
+--- Textract Overview ---
+
+1
+So now let's talk about Amazon Textracts.
+2
+And Amazon Textract is used to extract texts,
+3
+so, hence the name.
+4
+So you extract text, handwriting,
+5
+or data from any scanned document
+6
+and behind the scenes, of course,
+7
+uses AI or machine learning.
+8
+So we have, for example, a driver license,
+9
+and then we upload it into Amazon Textract,
+10
+and then, automatically, will be analyzed,
+11
+and the results will be given to you as a data file,
+12
+and so you'll be able to, for example,
+13
+extract the date of birth, document ID, and so on.
+14
+So you can extract any data, even from forms and tables,
+15
+and you can read PDFs, images, and so on.
+16
+So the use cases for extracting texts are multiple,
+17
+but you could be for financial services
+18
+to process invoices or financial reports,
+19
+could be for healthcare,
+20
+for medical records, and insurance claims,
+21
+or for the public sector, for example, for tax forms,
+22
+ID documents, and passports.
+23
+So that's it for this lecture,
+24
+I hope you liked it,
+25
+and I will see you in the next lecture.
+
+--- Machine Learning Summary ---
+
+1
+Now let's talk
+2
+about the machine learning services on AWS,
+3
+and you have to remember them all going into the exam.
+4
+So Rekognition is a way for you to do face detections,
+5
+to do labeling, and celebrity recognition.
+6
+Transcribe is for you to get a way to get subtitles,
+7
+for example, to convert your audio into text,
+8
+whereas Polly is the opposite.
+9
+It allows you to get to use your text
+10
+and create audio out of it.
+11
+Translate is for you to get translations.
+12
+Lex is to build conversational bots or chatbots,
+13
+and if you bundle it with Connect,
+14
+then you can create a cloud contact center.
+15
+Comprehend is a way
+16
+for you to do natural language processing.
+17
+SageMaker is a fully featured machine learning service
+18
+that is accessible to developer and data scientist.
+19
+Kendra is going to be an ML-powered document search engine.
+20
+Personalize is used
+21
+for real-time personalized recommendations
+22
+for your customers,
+23
+and Textract is used to detect text
+24
+and data and extract them from various documents.
+25
+So hopefully, you can remember this whole list.
+26
+This will get you a few points at the exam.
+27
+I hope you liked this lecture,
+28
+and I will see you in the next lecture.
+

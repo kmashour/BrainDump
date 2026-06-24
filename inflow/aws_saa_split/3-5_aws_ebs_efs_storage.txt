@@ -1,0 +1,2648 @@
+--- EBS Overview ---
+
+Welcome to this section where we will look at the different storage options for EC2 instances.
+So first the most important ones are going to be EBS volumes.
+So let's define what they are.
+And EBS volume stands for Elastic Block Store.
+It's a network drive that you can attach to your instances while they run.
+And we've been using them without even knowing.
+So we this EBS volumes allow us to persist data even after the instance is terminated.
+And so that's the whole purpose.
+We can recreate an instance and mount the same EBS volume from before, and we will get back our data.
+That is very helpful.
+So these EBS volumes at the CCP level can only be mounted to one instance at a time.
+Okay.
+And when you create an EBS volume it is bound to a specific availability zone.
+That means that you cannot have an EBS volume in created in, for example, US East one attached to
+an instance in US east one b.
+We'll see this in the diagram in a second.
+So how do you think of EBS volumes.
+Well you can think of them as network USB sticks.
+So it's a USB stick that you can take from a computer and put it in another computer, but you actually
+don't physically put it in a computer.
+It's attached through the network.
+Now let's look at it.
+So EBS volumes are network drive.
+As I said it's not a physical drive okay.
+So to communicate between the instance and the EBS volume it will be using the network.
+And because the network is used there may be a bit of latency from one computer to reach to another
+server.
+Now EBS volumes, because they are a network drive, they can be detached from an EC2 instance and attached
+to another one very quickly.
+And that makes it super handy when you want to do failovers.
+For example, EBS volumes are locked to a specific availability zones.
+That means that, as I said, if it's created in Us-east-1, it cannot be attached to Us-east-1.
+But we will see in this section that if we do a snapshot, then we are able to move a volume across
+from different availability zones.
+And finally it's a volume.
+So you have to provision capacity in advance.
+So you need to say how many gigabytes you want in advance.
+And the IOPs which is I o operations per second.
+And you're basically defining how you want your EBS volume to perform.
+You're going to get billed for that provisioned capacity.
+And you can increase the capacity over time if you want to have better performance or more size.
+So as a diagram, what does it look like?
+Well we have usd1 a we have one EC2 instance.
+And we can attach for example one EBS volume to that EC2 instance.
+If we create another EC2 instance, as I said, an EBS volume cannot be attached to two instances at
+a time at the certified cloud practitioner level.
+And therefore, what I want to say is that this EC2 instance needs to have its own EBS volume attached
+to it, but it is very possible for us to have two EBS volumes attached to one instance.
+Think of it as two network USB sticks into one machine.
+That makes a lot of sense.
+Now EBS volumes are linked to an availability zone.
+So as you can see, all this diagram has been so far using US East one.
+So if you wanted to have other EBS volumes in another AZ, then you would need to create this separately
+in the other availability zone.
+So just the same way that your EC2 instances are bound to an AZ, so are the EBS volumes.
+Finally, it is possible for us to create EBS volumes and leave them unattached.
+They don't need to be necessarily attached to an EC2 instance.
+They can be attached on demand and that makes it very, very powerful.
+Finally, when we go ahead and create EBS volumes, uh, through EC2 instances, there is this thing
+called a delete on termination attribute.
+And this can come up in the exam.
+So if you look at this when we create an EBS volume in the console, when we create an EC2 instance,
+there is the second to last column called delete on termination.
+And by default it is ticked for the root volume and not ticked for a new EBS volume.
+So this controls the EBS behavior when an EC2 instance is being terminated.
+So by default, as you can see, the EBS volume is deleted alongside the instance being terminated.
+So it's enabled.
+And by default any other attached EBS volume is not deleted because it's disabled by default.
+But obviously, as we can see in this UI, we can control if you want to enable or disable delete on
+termination.
+And so use case for.
+It would be for example that if you want to preserve the root volume when an instance is terminated,
+for example to save some data, then you can disable delete on termination for the root volume and you'll
+be good to go.
+And that could be an exam scenario at the exam.
+So I hope you liked it and I will see you in the next lecture.
+
+--- EBS Hands On ---
+
+1
+So let's have a look
+2
+at the EBS volumes attached to our instance.
+3
+So if you click on instance
+4
+and then you go to the storage tab in here,
+5
+you find that there is a root device
+6
+and there's a block device on it.
+7
+As you can see, we got one volume
+8
+of eight gigabytes currently attached
+9
+into our EC2 instance.
+10
+So what I can do is I can click on this volume
+11
+and it will take me into the volumes interface of AWS.
+12
+And we can see that, yes, indeed,
+13
+our volume exists and it's there.
+14
+It's in use as shown here
+15
+and it's attached to an instance right here.
+16
+So we have a different kind of console here
+17
+and to access it, you can just go on the left hand side
+18
+and click on volumes.
+19
+So as we can see, now we have one EBS of eight gigabytes
+20
+and what I can do is I can create a second volume.
+21
+So let me create a volume
+22
+and I will have many options to choose from,
+23
+GP2, GP3 and so on
+24
+but I will just use GP2 of type of size two gigabytes.
+25
+And then for availability zone,
+26
+I can choose the same one where my EC2 instance is.
+27
+So for this, I'm gonna go into my EC2 instance, in here
+28
+and I will find which availability zone it is on.
+29
+So I scroll down,
+30
+and it is going to be in the networking one.
+31
+So I scroll down in the networking
+32
+and here, availability zone, it says eu-west-1b.
+33
+Therefore, the volume I will create
+34
+is going to be in eu-west-1b
+35
+because the EBS volumes are bound by specific AZ.
+36
+So that's good.
+37
+I will have it done and create this volume.
+38
+And now my volume is created.
+39
+And what I can do is if I can click on it,
+40
+this one is currently not attached.
+41
+Okay, so it's been creating
+42
+so let me refresh this to see if it's created.
+43
+Okay, it's available and it's not attached yet.
+44
+So therefore, because it's available,
+45
+what I can do is action
+46
+and then I can attach the volume
+47
+and we need to find an instance.
+48
+So we have one running right here.
+49
+And so we're going to attach this volume to my instance,
+50
+click on attach volume and voila,
+51
+our instance now has two EBS volumes attached to it.
+52
+How do we know?
+53
+Well, I can refresh this page,
+54
+go to storage on my EC2 console, scroll down.
+55
+As you can see now for block devices,
+56
+I have two block devices.
+57
+I have the one of eight gigabytes
+58
+and the one of two gigabytes.
+59
+To actually use this new block device,
+60
+it's a bit more complicated
+61
+and out of scope for this course,
+62
+but you can go to format EBS volume attach EC2,
+63
+and you should find something like, yes,
+64
+make an Amazon EBS volume available to use on Linux
+65
+and this gives you instructions on how to do it
+66
+but again, this is out of scope for this.
+67
+So now if I go into my volumes and I create a volume,
+68
+I can create a volume of two gigabytes of GP2
+69
+but this time the AZ is going to be eu-west-1a
+70
+and not eu-west-1b.
+71
+So it's gonna be a different AZ
+72
+than the one of my EC2 instance.
+73
+And the reason I do so is to show you
+74
+that right now, we have three GP2 volumes.
+75
+So let me refresh this.
+76
+So the last one is available and it's a different AZ,
+77
+so eu-west-1a.
+78
+And if I do actions and then attach volume,
+79
+as you can see, I cannot attach it to my EC2 instance
+80
+because my EC2 instance is in eu-west-1b.
+81
+And so therefore, we can see that the EBS volumes
+82
+indeed are bound by a specific availability zone.
+83
+Lastly, what I can do is that I can take this volume,
+84
+do action, delete volume, and it's gone.
+85
+And that really shows you the power of the cloud.
+86
+I can just request volumes, delete volumes
+87
+right on the go in the matters of seconds.
+88
+Okay, so we have our two EBS volumes in here
+89
+and what I wanna show you now is a cool behavior.
+90
+So what happens if I terminate my instance?
+91
+Well remember, and I will show you again,
+92
+this one root volume of eight gigabytes
+93
+has the delete on termination attribute.
+94
+So how do we know?
+95
+Well, if I go into my storage
+96
+and then go to my block devices, into this table right here,
+97
+and scroll all the way right,
+98
+you see the first one has delete on termination yes
+99
+and the second one no.
+100
+So why this one is yes?
+101
+Well, I don't know if you remember,
+102
+but when you go through the process
+103
+of launching an instance, okay?
+104
+And then you scroll down to the storage,
+105
+in here, if you click on advanced,
+106
+you can see the fact
+107
+that it is your roots of eight gigabytes
+108
+and by default, this delete on termination attribute is yes,
+109
+which makes sense, but you could set it to no
+110
+if you wanted to keep the root
+111
+after terminating your instance.
+112
+So this explains why we see from before,
+113
+the yes in this table.
+114
+And so therefore, if I go ahead and terminate my instance
+115
+which I will, so it says successfully terminated
+116
+so it's going to really remove it from here.
+117
+I can go back into my EBS volumes.
+118
+I can refresh them.
+119
+And what's going to happen is that this one
+120
+soon is going to be available
+121
+so because it's going to be detached from my EC2 instance
+122
+and then it's going to be terminated.
+123
+So I'm going to pause until this is done.
+124
+And here we go.
+125
+So my eight gigabyte volume has now disappeared.
+126
+Only my two gigabyte volume is left
+127
+and if I go to my EC2 console,
+128
+well, it says that my first instance has been terminated.
+129
+So that's it for this lecture.
+130
+I hope you liked it
+131
+and I will see you in the next lecture.
+
+--- EBS Snapshots ---
+
+1
+So now let's talk about EBS Snapshots.
+2
+So, an EBS Snapshot is a backup
+3
+at any point in time of your EBS volume.
+4
+And for this, it's not necessary to detach your EBS volume
+5
+from your EC2 instance but it's recommended.
+6
+You can copy these EBS Snapshots
+7
+across different Availability Zones
+8
+or even across different Region.
+9
+So, for example,
+10
+let's take EC2 instance that has an EBS volume in US-EAST-1A
+11
+and an EC2 instance in US-EAST-1B.
+12
+So we can take a snapshot of the EBS volume.
+13
+Okay, and thanks for that snapshot
+14
+we can actually restore it in another AZ.
+15
+So this is how you would transfer an EBS volume
+16
+from one AZ to another.
+17
+Next, you need to know about a few EBS Snapshots feature.
+18
+So the first one is called the EBS Snapshot Archive.
+19
+It's the ability for you to move the snapshot
+20
+to an "archive tier" that is going to be up to 75% cheaper.
+21
+So, if you do move this snapshot to an "archive tier"
+22
+then it will take you from within 24 to 72 hours
+23
+for restoring the archive.
+24
+So it's not immediate.
+25
+The other thing is to have a Recycle Bin for EBS Snapshots.
+26
+So in case you do delete your EBS Snapshots
+27
+instead of being permanently deleted
+28
+then instead they're going to land in Recycle Bin.
+29
+And so the idea with this
+30
+is that you can recover them from an accidental deletion.
+31
+And the retention for your Recycle Bin can be set
+32
+from anywhere between one day to one year.
+33
+The last feature you need to know about
+34
+for your EBS Snapshots is called the Fast Snapshot Restored.
+35
+So this forces a full initialization
+36
+of your snapshot to have no latency on the first use.
+37
+This is particularly helpful
+38
+if your snapshot is big, very big
+39
+and need to initialize an EBS volume
+40
+or needs to instance out of it very quickly,
+41
+but this feature costs a lot of money,
+42
+so be careful when using it.
+43
+Okay, that's it for this lecture.
+44
+I hope you liked it.
+45
+And I will see you in the next lecture.
+
+--- EBS Snapshots - Hands On ---
+
+1
+So we have this two gigabyte,
+2
+GP2 EBS Volume available to us,
+3
+and we can take a snapshot from it.
+4
+So if we do Actions, we can Create a snapshot.
+5
+So we can add a Description, for example, DemoSnapshots,
+6
+and then click on Create snapshots.
+7
+So then on the left hand side menu,
+8
+instead of Volumes, you can click on Snapshots.
+9
+And Snapshots shows you a list
+10
+of all the snapshots you have.
+11
+And as you can see, we have one right here.
+12
+It is Completed.
+13
+It is 100% Available.
+14
+And we get some information around the snapshot itself.
+15
+For first of all, what we can do is that we can Copy
+16
+this snapshot into other region.
+17
+So if you right click and do Copy Snapshots,
+18
+then as you can see, you can copy the snapshot
+19
+into any destination region that you want.
+20
+And this can come in very handy,
+21
+in case you want for example,
+22
+to have a Disaster Recovery Strategy,
+23
+to make sure data is backed up in another region of AWS.
+24
+So I won't do that, I won't do so, but you get the idea.
+25
+Another thing I can do is take the Snapshot,
+26
+and I can recreate a Volume from it.
+27
+So Action, Create volume from snapshots.
+28
+And we choose a two gigabytes GP2 Volume.
+29
+And then the target AZ doesn't have to remain eu-west-1a,
+30
+it can be, for example, eu-west-1b.
+31
+And we can also encrypt these volumes if you wanted to
+32
+and add some Tags.
+33
+And so as we can see, when we click on Create volume,
+34
+what's going to happen is that if we go back
+35
+into our Volumes,
+36
+well, now we have two Volumes, as you can see.
+37
+And one of them,
+38
+this one was restored through a Snapshots, okay?
+39
+And it is an eu-west-1b.
+40
+So the idea is that thanks to Snapshots,
+41
+we can quote unquote copy EBS volumes
+42
+across different Availability Zones.
+43
+And that's very handy.
+44
+If we look again at Snapshots, we can have a look
+45
+at what's called the Recycle Bin.
+46
+So the Recycle Bin is a way for you to protect
+47
+your EBS Snapshots from accidental deletion,
+48
+as well as your Amazon Machine Images.
+49
+So we can Create a Retention Rule and name it
+50
+DemoRetentionRule.
+51
+I will select EBS Snapshots.
+52
+I will Apply to all resources and retain them
+53
+during one day.
+54
+And for Rule Lock Setting, I will leave this unlocked,
+55
+so that I can delete this rule whenever I want to.
+56
+And then click on Create Retention Rule.
+57
+And now on the Resources, we can see if we have Resources
+58
+in the Recycle Bin.
+59
+So let's go back into our Snapshots in the EC2 Console.
+60
+So I'm going to go into EC2.
+61
+Here we go, Snapshots.
+62
+Little shortcuts.
+63
+And what I'm going to do is take the Snapshots,
+64
+and first, before I delete it,
+65
+I wanna show you the Storage Tiers.
+66
+So right now it is a Standard Storage Tier, okay?
+67
+But you can move the Storage Tier,
+68
+by Archiving a snapshots,
+69
+and so I need to move the Storage Tier
+70
+into another Pricing Level.
+71
+But if you want to restore it,
+72
+of course, you will have to wait 24 to 72 hours.
+73
+So just to show you.
+74
+But anyway, let's go ahead and delete the snapshot.
+75
+So we'll delete the Snapshots.
+76
+As you can see, it's gone.
+77
+And before, it used to completely delete the snapshots,
+78
+and you couldn't recover it, okay?
+79
+As you can see, it's gone.
+80
+But now thanks to the Recycle Bin,
+81
+well, if I refresh here my Resources,
+82
+I can now see that my Snapshot has appeared here.
+83
+And what I can do is click on it and Recover it.
+84
+Yes, Recover Resources, and voila, it's back
+85
+into my Snapshots on my EC2 console.
+86
+Okay, that was pretty awesome, right?
+87
+Okay, that's it for EBS Snapshots.
+88
+I hope you liked it, and I will see you in the next lecture.
+
+--- AMI Overview ---
+
+1
+Now let's talk about
+2
+what powers our EC2 instances which is an AMI,
+3
+so AMI stands for Amazon machine image
+4
+and they represent a customization of an EC2 instance.
+5
+So you can use AMIs you created by AWS
+6
+or you can customize it into your own and what is in an AMI?
+7
+Well we have our own software configuration,
+8
+we can define and set up the operating system,
+9
+we can set up any monitoring tool
+10
+and if we create our own AMI
+11
+we're going to get a faster boot time and configuration time
+12
+because all the software that we want to install
+13
+onto our EC2 instance
+14
+is going to be prepackaged through the AMI.
+15
+So we have to build our own AMIs
+16
+and they can be built for a specific region
+17
+and then they can be copied across region
+18
+if we wanted to use it
+19
+and leverage the AWS global infrastructure.
+20
+So we can launch EC2 instances from different kind of AMIs.
+21
+What we've been doing so far in this course
+22
+is to use a public AMI and these are provided by AWS.
+23
+So the Amazon Linux 2 AMI is a very popular AMI for AWS
+24
+and it was provided by AWS themselves
+25
+but we can create our own AMI
+26
+then therefore you have to make and maintain them yourself
+27
+there are tools obviously to automate this
+28
+but this is a task that you have to do as a cloud user
+29
+or finally you can launch an EC2 instance
+30
+from an AWS Marketplace AMI
+31
+which is an AMI that has been made by someone else
+32
+and potentially sold by someone else
+33
+so it is quite common to have vendors on AWS
+34
+to create their own AMIs or their own software
+35
+with a nice configuration and so on
+36
+and then they will sell it through the marketplace AMI
+37
+for you to buy it and to save some time.
+38
+And even you as a user you could create a business
+39
+of selling AMIs on the AWS marketplace,
+40
+this is something that some businesses do.
+41
+Okay so the AMI process from an EC2 instance,
+42
+how does it work?
+43
+Well we'll start an EC2 instance and we'll customize it.
+44
+Then we will stop the instance
+45
+to make sure the data integrity is correct,
+46
+then we can build an AMI from it
+47
+so this will also create EBS snapshots behind the scenes
+48
+and then finally we can launch instances from other AMIs
+49
+so this is what we'll be doing
+50
+in the demo and the next lecture.
+51
+So we have US-EAST-1A,
+52
+and we can create the same instance as US-EAST-1B,
+53
+so the process is we launch the instance in US-EAST-1A,
+54
+we're going to customize it
+55
+then we're going to create an AMI from it
+56
+this will be our custom AMI.
+57
+And then in US-EAST-1B
+58
+we will be able to launch from that AMI
+59
+and we'll effectively create a copy of our EC2 instance.
+60
+So I hope you're excited
+61
+and I will see you in the next lecture.
+
+--- AMI Hands On ---
+
+1
+So let's go ahead and practice using AMX.
+2
+For this, I'm going to launch an instance,
+3
+and I'm going to go into this new experience.
+4
+So I will scroll down.
+5
+We'll choose Amazon Linux 2.
+6
+I will scroll down again.
+7
+We'll use the G2 micro.
+8
+I will select the easy to draw as my key pair
+9
+but it doesn't really matter.
+10
+Then I will scroll down.
+11
+I would edit the network settings
+12
+and I will select an existing security group
+13
+being my launch wizard one from before.
+14
+Then we'll have the same storage and for advanced details,
+15
+I will scroll down and I will go for user data,
+16
+but this time you're going to copy everything,
+17
+but the last line.
+18
+So, in the first four lines, we actually install HTTPD
+19
+which is the Apache web server.
+20
+In the last line, we create an index file
+21
+but right now we don't want to create an index file
+22
+want to do everything but that to create an AMI out of it.
+23
+So we just copy everything.
+24
+Remember, the last line is the system CTL command.
+25
+And then we launch our instance.
+26
+So our instance is launched and what's going to happen is
+27
+that the instance is going to launch that's right here.
+28
+And then it's going to run
+29
+through the EC two, using the script
+30
+and it's going to install the Apache web server.
+31
+So if I'm too quick
+32
+and I try to open right now, this public IPV four
+33
+and try to enter into it, as you can see, it doesn't work.
+34
+I'll get a connection, error, refused and so on.
+35
+I need to make sure I'm also using the HTTP protocol,
+36
+of course, but it, it just won't work, right?
+37
+Because you need to give it a bit of time.
+38
+Even if it says 'running', you need to give it time
+39
+for the EC two user data script to run for the first time.
+40
+So this might take a minute.
+41
+This might take two minutes.
+42
+Okay. But don't be in a rush, just wait for it to be done.
+43
+And then at some point when you refresh
+44
+you will see the screen.
+45
+So let me pause the video.
+46
+And it took about two minutes, but now I have my test page
+47
+and this is the basic page from the Apache web server.
+48
+And therefore we are good to go.
+49
+So what we're going to do out of it is we're going to
+50
+create an AMI because we want to just save the state
+51
+of our EC two instance and reuse that.
+52
+So I right click and I will do image and templates
+53
+and then I will create an image.
+54
+So we'll call this one 'demo image'
+55
+and we're going to create our own AMI.
+56
+And then we have these settings right here.
+57
+We'll just leave it as is.
+58
+Go here and click on create image.
+59
+So now what's going to happen is that
+60
+an AMI is going to be created.
+61
+So if I go to the left-hand side and click on AMI's,
+62
+as we can see here, my demo AMI is registered.
+63
+And right now the status is pending
+64
+because it is being created.
+65
+So what I need to do is to be a little bit patient and
+66
+for it to go into the created state.
+67
+So my Amazon AMI is now created.
+68
+And what I can do now is I can launch instances
+69
+from this AMI by clicking here.
+70
+Or if you are in the instance creation page,
+71
+we can launch instances.
+72
+And this one is called 'From AMI'.
+73
+And in here in the quick start
+74
+we get access to the ones we know
+75
+but you can also go into the 'my AMI's tab'.
+76
+Okay. And you have the ones owned by me
+77
+and you can choose the demo image that you just created
+78
+from before.
+79
+So in that case, you scroll down, you select
+80
+to key pair or not, just up to you.
+81
+Network settings, again,
+82
+we edit them and we just select the existing launchers
+83
+in one security group.
+84
+And what I'm going to do is that in the advanced,
+85
+at the very bottom, I'm going to enter some user data.
+86
+So I copy the first three lines, okay.
+87
+Which are starting with the hash.
+88
+And then the last line, which is the echo on the new line.
+89
+And so what we do is that we only just write a new file.
+90
+So we don't need to reinstall HTTPD
+91
+because this AMI already contains HTTPD
+92
+which is why we will speed up in the boot up time.
+93
+This is why you would create an AMI.
+94
+So we launch an instance and now the instance is launched.
+95
+So I can just click on it.
+96
+This is the one from the AMI.
+97
+I need to wait for it to be fully created.
+98
+My instance from my AMI is now running.
+99
+I take the public IP address
+100
+and then I see the 'Hello World' from this.
+101
+And as you can see, this was much quicker
+102
+because we didn't have to install HTTPD again.
+103
+So this is the whole power of AMI's.
+104
+And you can imagine, well, it could be just more than that.
+105
+It could be security software,
+106
+a lot of prerequisite software, and so on,
+107
+you install it, it maybe it takes two,
+108
+three minutes to do it.
+109
+Then you package it as an AMI,
+110
+and then you just start from the AMI,
+111
+maybe do some end customization at the end
+112
+but you have a much faster boot-up.
+113
+And you're good to go.
+114
+So that's it for this demo.
+115
+Now to get back from this
+116
+what you do is that you take your two instances
+117
+and you can terminate them.
+118
+And that's it.
+119
+I will see you in the next lecture.
+
+--- EC2 Instance Store ---
+
+1
+So we've seen a way to attach a network drive
+2
+onto our EC2 Instances
+3
+but they have limited performance
+4
+and I said with cause because it's a really good performance
+5
+but sometimes you want something even higher performance
+6
+and that is going to be a hardware disk
+7
+attached onto you EC2 Instance.
+8
+So the EC2 Instance is a virtual machine
+9
+but it is obviously attached to a real hardware server.
+10
+And some of these servers do have disk space
+11
+that is attached directly you know,
+12
+with a physical connection onto the server.
+13
+And so a special type of EC2 Instance can leverage
+14
+something called an EC2 Instance Store,
+15
+which is the name of the hardware,
+16
+the hard drive attached to the physical server.
+17
+So what we do with EC2 Instance Store,
+18
+we use them for better I/O performance.
+19
+We also make sure that they have good through put
+20
+and so on, so they're a great choice
+21
+when you want to have extremely high disk performance.
+22
+But the caveat is that if you stop
+23
+or you terminate your EC2 Instance,
+24
+that has an Instance Store,
+25
+then the storage will be lost.
+26
+And therefore it's called an ephemeral storage
+27
+so that means that the EC2 Instance Store
+28
+can not be used as a durable long term place
+29
+to store your data.
+30
+So what is a good use case for it then?
+31
+Well if you have a buffer, a cache,
+32
+you want to have scratch data or temporary content,
+33
+this would be a great place to do these things
+34
+but not for long term storage.
+35
+For long term storage, EBS for example
+36
+is a great use case.
+37
+Finally, in case the on the line server
+38
+of the EC2 Instance does fail,
+39
+then you'll risk to have a dear loss
+40
+because the hardware attached to the EC2 Instance
+41
+will fail as well.
+42
+So if you do decide to use an EC2 Instance Store,
+43
+then it is your entire responsibility
+44
+to make sure that you back it up
+45
+and that you replicate it correctly based on your needs.
+46
+So what I mean by better performance,
+47
+this is just an example to illustrate it,
+48
+don't need to know it.
+49
+But if you look at for example,
+50
+the Instance size of I3 dot something,
+51
+there is an Instance Store attached
+52
+to these kinds of instances
+53
+and if you look at the Read IOPS
+54
+and the Write IOPS
+55
+which correspond to how many I/O operations
+56
+we can do per second.
+57
+Then you can see at some of these random Read IOPS
+58
+and Write IOPS can reach 3.3 million or 1.4 million,
+59
+for the most performant one.
+60
+And to put this in comparison
+61
+with an EBS volume of type BP2 for example,
+62
+you can reach thirty two thousand IOPS.
+63
+So this is a lot more.
+64
+But again, it's just to illustrate my point
+65
+from an exam perspective anytime you see very
+66
+high performance hardware attached volume
+67
+for your EC2 Instances, think local EC2 Instance Store.
+68
+That's it.
+69
+I will see you in the next lecture.
+
+--- EBS Volume Types ---
+
+1
+So, now, let's talk about EBS volumes
+2
+and their different volume types.
+3
+They come in six different types today,
+4
+and we can group them in several categories.
+5
+The first one is gp2, gp3,
+6
+which is a general purpose SSD volume
+7
+that will balance price and performance
+8
+for a wide variety of workloads, and this is something
+9
+we've been using so far in this course.
+10
+Then we have io1 and io2 Block Express.
+11
+They're highest-performance SSD volumes
+12
+that will be used for mission-critical low-latency
+13
+and high-throughput workloads.
+14
+Then we have st1 volumes,
+15
+and they're low cost HDD volume
+16
+designed for frequently accessed
+17
+throughput intensive workloads.
+18
+We have sc1 volume, which are going to be
+19
+the lowest cost HDD volume, and it will be designed
+20
+for less frequently accessed workloads.
+21
+Now, how do you define an EBS volume?
+22
+Well, you can have several factors, for example, size,
+23
+throughput, and IOPS, which means I/O operations per second,
+24
+and, obviously, when in doubt,
+25
+always consult the documentation.
+26
+Now, for your EC2 instances,
+27
+only gp2 and gp3 and io1 and io2
+28
+can be used as boot volumes.
+29
+That means where the root OS is going to be running.
+30
+So, now, let's go do a deeper dive
+31
+onto gp2, gp3, io1 io2, and the other ones,
+32
+but gp2, the general purpose and the provisioned IOPS
+33
+are going to be the most important for your exam.
+34
+So gp2 is cost effective storage with low-latency,
+35
+and you can use it for system boot volumes,
+36
+virtual desktops, development and test environments.
+37
+The size can vary between one gigabytes to 16 terabytes,
+38
+and so we have differences between gp2 and gp3.
+39
+Gp3 is the newer generation of volumes.
+40
+So gp3 gives you a baseline of 3000 IOPS
+41
+and a throughput of 125 megabytes per second,
+42
+and then we can increase IOPS up to 16,000
+43
+and throughput up to 1,000 megabytes
+44
+per second independently, okay, so they're not linked.
+45
+For gp2, this is the older version,
+46
+there're small gp2 volumes that can burst up to 3,000 IOPS,
+47
+and then the size of the volume and the IOPS are linked.
+48
+That means that if you increase the IOPS,
+49
+if you increase the number of gigabytes on your volume,
+50
+then you're going to get three more IOPS
+51
+up to 16,000 IOPS,
+52
+and so that means that if you have 5,334 gigabytes,
+53
+then you will have 16,000 IOPS, and you'll maxed it out.
+54
+So what do you remember from this slide?
+55
+You remember that in gp2, gp3,
+56
+this is for cost-effective storage latency,
+57
+and then gp3, you can independently set the IOPS
+58
+and the throughput, whereas for gp2,
+59
+they're linked together.
+60
+So, now, let's talk about provisioned IOPS volumes.
+61
+So they're used for critical business applications
+62
+that need to sustain IOPS performance
+63
+or applications that need a lot of IOPS,
+64
+for example, more than 16,000.
+65
+So from an exam perspective,
+66
+whenever you see, for example, a database workload
+67
+that is very sensitive to storage performance
+68
+and consistency, then the provisioned volumes
+69
+are going to be great.
+70
+So we have the io1 type of volume
+71
+between four and 16 terabytes,
+72
+and the max IOPS you can provision, so the max PIOPS,
+73
+is going to be around 64,000 for natural EC2 instances
+74
+and 32,000 for the other kind of instances,
+75
+and because we have an io1 type of volume,
+76
+we can increase the provisioned IOPS
+77
+independently from the storage size.
+78
+If we consider the io2 block express type of volume,
+79
+you can go up to 64 terabytes of data.
+80
+You get sub-millisecond latency,
+81
+and you get a lot of max IOPS, such as 256,000
+82
+with an IOPS to gigabyte ratio of 1,000 per one.
+83
+So this is definitely
+84
+a very high performance I/O type of volume,
+85
+and on top of this, the provisioned IOPS volumes
+86
+that we'll see in the next lectures
+87
+support the EBS multi-attach feature.
+88
+So, now, let's quickly touch upon st1 and sc1.
+89
+So they cannot be a boot volumes.
+90
+This is only for the previous types of volumes.
+91
+You can get the size up to 16 terabytes,
+92
+and we get two kinds of volumes here.
+93
+We have the throughput optimized HDD, so st1,
+94
+which is great for big data,
+95
+data warehousing, and log processing,
+96
+which gives you a max throughput of 500 megabytes per second
+97
+and a max IOPS of 500,
+98
+and then for cold HDD, so sc1, this is for archive data,
+99
+so data that is infrequently accessed,
+100
+and this is when you would use it
+101
+when you need to have the lowest possible cost.
+102
+Here, the max throughput is 250 megabytes per second,
+103
+and the max IOPS is 250 as well.
+104
+Now, you don't have to remember
+105
+all these details going into the exam.
+106
+You just need to understand the differences
+107
+at a high level of all these volumes.
+108
+So the general purpose SSD versus the provisioned IOPS SSD,
+109
+in case you need a database, versus some st1 and sc1,
+110
+in case you need to have high throughput and lowest cost,
+111
+and so you can find a summary of all I said
+112
+in this link right here, okay,
+113
+which is a screenshot I just took you.
+114
+So don't need to remember the details again,
+115
+but, remember, that if you want to get, also,
+116
+over 32,000 IOPS, you need EC2 Nitro with io1 or io2,
+117
+and that will be it for this lecture.
+118
+So I hope you liked it,
+119
+and I will see you in the next lecture.
+
+--- EBS Multi-Attach ---
+
+1
+So now let's talk about
+2
+the Multi-Attach feature of the EBS volumes.
+3
+So as the name indicates,
+4
+the Multi-Attach feature allows you to attach
+5
+the same EBS volume to multiple EC2 instances
+6
+in the same availability zone.
+7
+So what does that mean?
+8
+That means that, well,
+9
+we have multiple EC2 instances,
+10
+and we have an io2 volume
+11
+with the Multi-Attach feature enabled.
+12
+Then this volume can be attached
+13
+to multiple EC2 instances at a time,
+14
+which is something that is only available
+15
+for the io1 and the io2 family of EBS volumes.
+16
+Now, each instance will have
+17
+full read and write permissions
+18
+to the high-performance volume.
+19
+And so that means that they can all
+20
+write and read at the same time.
+21
+So the use case for this is
+22
+you have higher application availability
+23
+in case of a clustered Linux application,
+24
+for example, using Teradata,
+25
+or if your application must manage
+26
+concurrent rights operation.
+27
+So just so you know,
+28
+this Multi-Attach feature is only available
+29
+from within a specified availability zone, of course.
+30
+It doesn't allow you to attach an EBS volume
+31
+from one AZ to another AZ.
+32
+Another limitation of Multi-Attach is
+33
+that it is up to 16 EC2 instances at a time
+34
+that can be attaching the same volume.
+35
+And this is something you have to know for the exam,
+36
+so be careful to that 16 number.
+37
+Finally, for it to work,
+38
+you must use a file system
+39
+that is going to be cluster-aware.
+40
+So it's a different file system than XFS or EX4.
+41
+And this is just a little bit more details,
+42
+but in case you wanted to use this feature, now you know.
+43
+Okay, that's it for this lecture, I hope you liked it.
+44
+And then we'll see you in the next lecture.
+
+--- EBS Encryption ---
+
+1
+All right, finally, let's talk about
+2
+the last operation,
+3
+which is how do you encrypt an EBS volume?
+4
+So, when you created and encrypted EBS volume,
+5
+right away you get the following, you get data
+6
+at rest being encrypted inside your volume,
+7
+all the data in flight between the instance
+8
+and the volume is encrypted,
+9
+all the snapshots will be encrypted, and all the volumes
+10
+created from the snapshots are encrypted.
+11
+So, there's encryption all around the place,
+12
+and the all encryption and decryption mechanism
+13
+is handled transparently for you.
+14
+So, you have nothing to do.
+15
+It's all handled by EC2 and EBS behind the scenes.
+16
+So, encryption overall, something you should use
+17
+because it has a very, very minimal impact on latency,
+18
+almost nothing, and it leverages keys from KMS,
+19
+so AES-256, that's something that you should know.
+20
+And so, when you copy an unencrypted snapshot,
+21
+then you enable encryption.
+22
+So, let's talk about a very important thing,
+23
+which is how do you encrypt an unencrypted EBS volumes.
+24
+So, to encrypt an unencrypted EBS volumes,
+25
+which is a very tough thing to say,
+26
+you create an EBS snapshot of the volume.
+27
+Then you encrypt the EBS snapshot using the copy function.
+28
+Then we create a new EBS volume from the snapshots
+29
+and that volume will also be encrypted,
+30
+and now we can attach the encrypted volume
+31
+to the original instance.
+32
+So, let's go have a look at how we do this in the console.
+33
+Okay, so let's explore the different options
+34
+with EBS volumes and encryption.
+35
+So, let's create a one gigabytes EBS volume,
+36
+and this one will not be encrypted.
+37
+So, I will leave this setting unchecked,
+38
+and, therefore, when I create my volume
+39
+and have a look at it, if we look at the state
+40
+of encryption, it says not encrypted.
+41
+Okay, so what's happening is that if we do take to create
+42
+a snapshot from this volume, as we can see
+43
+the encryption setting will be set to not encrypted.
+44
+So, any snapshots encrypted from a non-encrypted EBS volume,
+45
+will be not encrypted.
+46
+So, let's go ahead and create this snapshots,
+47
+and let's go ahead to the snapshots page.
+48
+And so, this snapshot, as we observe is not encrypted.
+49
+And so, to create an encrypted snapshot,
+50
+now, what you have to do is to do action
+51
+and then create copy snapshot, excuse me,
+52
+and when you copy the snapshots,
+53
+you have the option right here to enable encryption
+54
+into the same destination region.
+55
+So, now, this snapshot is going to be encrypted
+56
+and you can select the KMS key, right here.
+57
+So, we'll copy this snapshots and we're good.
+58
+Next, what I have to do is from this encrypted snapshots
+59
+that is now completed I can create a volume.
+60
+And if I do action, create volume from snapshots,
+61
+as we can see, we can create a one gigabyte EBS volume.
+62
+And here encryption is enabled for this volume
+63
+because my underlying snapshot is encrypted.
+64
+And, therefore, if I click on create volume,
+65
+and have a look at my volumes on the left hand side,
+66
+this one who was created from a snapshots
+67
+is now available and it says encryption, encrypted.
+68
+So, that's good.
+69
+We saw how we can encrypt one EBS volume this way,
+70
+by going through a snapshot copying and so on.
+71
+There's a shortcut.
+72
+So, if you take your unencrypted snapshot,
+73
+so this one is not encrypted,
+74
+so if you take this snapshot and then you do action,
+75
+create volumes from snapshot, zero shortcuts,
+76
+you can actually on the fly enable encryption
+77
+for the EBS volume directly from here, select an EBS key,
+78
+and you would create an encrypted EBS volume this way
+79
+through a unencrypted snapshots.
+80
+Okay, so let's say you've seen all the options.
+81
+Just to be finished make sure to delete your snapshots
+82
+by typing deletes and then you would do
+83
+the exact same thing on your volumes.
+84
+Just delete these EBS volumes.
+85
+Okay, that's it.
+86
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon EFS ---
+
+1
+Hi, and welcome to this lecture on Amazon EFS,
+2
+Elastic File System.
+3
+So EFS is a managed NFS, which is a network file system.
+4
+And because it's a network file system,
+5
+it can be mounted on many EC2 instances,
+6
+and these EC2 instances can also be
+7
+in different availability zones,
+8
+that's the whole power of EFS.
+9
+So it's highly available,
+10
+it's very scalable, it's expensive.
+11
+It's about three times the cost of a GP2 EBS volume,
+12
+and you pay per use
+13
+so you don't have to provision capacity in advance.
+14
+Let me explain.
+15
+So you have your EFS file system
+16
+and you surround it with a security group.
+17
+And then you can have EC2 instances, many of them
+18
+in the US east-1A availability zone for example,
+19
+or EC2 instances in the US east-1B availability zone
+20
+or US east-1C availability zones for your EC2 instances.
+21
+And they can all connect at the same time
+22
+to the same network file system through through EFS.
+23
+So the use cases of EFS are content management,
+24
+web serving, data sharing, WordPress.
+25
+It uses internally the NFS protocol,
+26
+and to control access to your EFS,
+27
+you need to set up a security group.
+28
+Now EFS, it's very important to note
+29
+that it's only compatible with Linux-based AMI
+30
+and not Windows.
+31
+You can enable encryption at rest in your EFS drive
+32
+using KMS, and it's a standard file system on Linux,
+33
+so uses the POSIX system, and it has a standard file API.
+34
+And the cool thing about EFS
+35
+is that you don't need to plan the capacity in advance.
+36
+The file system will scale automatically,
+37
+and it's pay-per-use
+38
+for each gigabyte of data you use in EFS.
+39
+Then we have different performance and storage classes.
+40
+So first, the scale about EFS.
+41
+You get thousands of concurrent NFS clients
+42
+and 10 gigabytes plus of throughput,
+43
+and you can grow to a petabyte scale
+44
+network file system automatically, which is really nice.
+45
+You can also set the performance mode
+46
+at the EFS network file system creation time,
+47
+and you have several options.
+48
+The first one is general purpose, which is the default.
+49
+It's used for latency sensitive use cases
+50
+such as a web server, a CMS, et cetera.
+51
+But if you wanted to maximize throughput, you have max I/O,
+52
+which is a high latency kind of network file system,
+53
+but higher throughput and it's highly parallel.
+54
+So it's great if you have big data applications
+55
+or media processing needs.
+56
+Now, throughput mode, you have different options.
+57
+The first one is bursting.
+58
+So you have one terabyte,
+59
+means that it's 50 megabytes per second
+60
+plus burst of to 100 megabytes per second,
+61
+so that's the kind of bursting you get.
+62
+You don't have to remember the numbers,
+63
+but just to give you an idea.
+64
+Provisioned is when you want to set your throughput
+65
+regardless of your storage size.
+66
+So the previous one was growing in throughput
+67
+as we have more storage, but with provisions
+68
+you can have one gigabyte per second
+69
+for one terabyte of storage.
+70
+That is fine because you have decorrelated
+71
+your throughput from your storage.
+72
+And finally, to make things a little bit simpler,
+73
+you have elastic to automatically scale the throughput
+74
+up and down based on your workload.
+75
+So for example,
+76
+you can get up to three gigabytes per second for reads
+77
+and one gigabyte per second for writes
+78
+based on your workload,
+79
+and this is going to be a great fit
+80
+when you have unpredictable workloads.
+81
+Now for storage classes we have several options.
+82
+We have storage tiers,
+83
+which is a lifecycle management feature
+84
+to allow you to move files to different storage tiers
+85
+after a certain number of days.
+86
+So you have the standard tier
+87
+which is used for frequently accessed files,
+88
+and then you have the EFS-IA tier for infrequent access,
+89
+which gives you a cost to retrieve files
+90
+but a lower price to store these files.
+91
+And then you have the archive storage tier.
+92
+This is for rarely accessed data, so you only access,
+93
+for example, data a few times a year,
+94
+which is going to be a lot cheaper
+95
+to store the data on that tier.
+96
+To move your files automatically between your storage tiers,
+97
+you can implement lifecycle policies,
+98
+which will allow you define after how many days
+99
+a file should be moved to which tier.
+100
+So here's an example in which we have files in EFS standard,
+101
+and one of these files hasn't been accessed for 60 days.
+102
+Then by setting up the right lifecycle policy,
+103
+we can move it to a new storage tier such as EFS-IA.
+104
+Now, in terms of availability and durability,
+105
+standard is going to be great
+106
+when you have a multi-AZ setup,
+107
+so your EFS across multiple availability zones,
+108
+which is great for your production workloads
+109
+so that you're resistant to disasters.
+110
+But if you just want to do development
+111
+and want to have cheaper options, then you choose one zone,
+112
+which is going to give you only one availability zone,
+113
+and you will still have backups on it,
+114
+and it's also compatible with the IA type of storage tier.
+115
+So you have the EFS one zone-IA type of option.
+116
+Overall, by using the right EFS storage classes,
+117
+you can do up to 90% in cost savings,
+118
+so this is very helpful.
+119
+So that's it for this lecture, I hope you liked it,
+120
+and I will see you in the next lecture.
+
+--- Amazon EFS - Hands On ---
+
+1
+So let's go ahead and practice using
+2
+the Amazon Elastic File System Service.
+3
+So let's create our file system
+4
+and here we can give it an optional name,
+5
+but I'll leave it empty and we have
+6
+to choose a VPC where we want to connect to our file system.
+7
+So we'll leave it as the default VPC as well,
+8
+and we could just click on create and be done.
+9
+But I wanna show you the options.
+10
+So let's click on Customize.
+11
+So here again, we'll leave the name empty and optional.
+12
+Next, we need to choose a file system type.
+13
+So we have two options.
+14
+We have regional, which gives you a file system
+15
+within the region across multiple availability zones,
+16
+which gives you very high availability
+17
+and durability of the data.
+18
+But if you need to reduce costs, you could use
+19
+the one zone option, in which case you have
+20
+to choose one specific availability zone.
+21
+And this is going to be good for development environments
+22
+but not good for production environment
+23
+because if that availability zone becomes unavailable,
+24
+then your data will be unaccessible.
+25
+So definitely, you want to use regional
+26
+in production settings and we'll use regional right now
+27
+for this hands-on.
+28
+Next we can enable or disabled automatic backups,
+29
+but it's recommended to keep it enabled.
+30
+Next we have lifecycle management.
+31
+So this is to move data
+32
+across different storage tiers to save costs.
+33
+So it turns out that you can transition
+34
+into infrequent access or archive and then back to standard.
+35
+So we're saying that hey, if a file hasn't been accessed
+36
+for 30 days, but you can obviously customize this,
+37
+if a file hasn't been accessed to 30 days, then move it
+38
+to the infrequent access storage tier
+39
+and it's going to be cheaper
+40
+for you except when you access the file.
+41
+But the likelihood is that
+42
+after 30 days, you're rarely accessing the file.
+43
+And then if the file was not accessed, for example,
+44
+in 90 days since the last access, then moving
+45
+into the archive, which is going to be even cheaper
+46
+as a storage class.
+47
+And then for example, you say
+48
+that here when the file is accessed the first time,
+49
+so on first access, transition back into standard
+50
+because for example, we assume that it's going
+51
+to be reused a lot more.
+52
+So this is called a lifecycle management.
+53
+So we can keep this on as is encryption.
+54
+We leave it enable, that's perfect.
+55
+And then we have performance settings.
+56
+So for performance settings we have throughput mode
+57
+and you should have three options.
+58
+So, enhanced is just a category
+59
+to regroup, elastic and provisions.
+60
+But so you have elastic throughput mode,
+61
+you have provisioned throughput mode as well
+62
+as bursting throughput mode.
+63
+So let's start with bursting.
+64
+So bursting is a way for you to have the throughput scale
+65
+with the amount of storage you're actually using
+66
+and going a little bit over,
+67
+that's why it's called bursting.
+68
+So if you have one gigabytes,
+69
+you get a throughput based on one gigabyte.
+70
+If you have one terabyte, you get higher throughput
+71
+because you use more storage.
+72
+Then there was enhanced mode.
+73
+And now elastic is recommended, which is saying,
+74
+Hey, regardless of the size of your EFS file system,
+75
+we're going to give you all the I/O you need
+76
+and we'll scale automatically
+77
+and you're going to only pay for what you use.
+78
+So this is best when you have a workload
+79
+with unpredictable I/O where for example, you can scale
+80
+from zero megabytes per second
+81
+to a hundred megabytes per second in no time.
+82
+This is why it is the recommended mode
+83
+because it doesn't require for you
+84
+to think about any settings.
+85
+And then the last one, so we have bursting elastic,
+86
+and the last one is provisioned.
+87
+This is when you know
+88
+in advance the throughput you're going to be needing.
+89
+So this is the provision mode.
+90
+So you say,
+91
+Hey, I will need 100 megabytes per second for sure.
+92
+And then you also have a bursting limit
+93
+of 300 megabytes per second.
+94
+And because you provision throughput
+95
+in advance, you're going to pay for it in advance.
+96
+So elastic is the recommended setting.
+97
+And then if you look at the additional settings,
+98
+so we have general purpose and max I/O.
+99
+So in the case of elastic, you get the I/O you need based
+100
+on the performance you need.
+101
+So general purpose is the only option for performance mode,
+102
+but if you use bursting or if you use provisions,
+103
+then you have the option between two settings.
+104
+So general purpose, which is giving you high performance
+105
+and latency sensitive applications.
+106
+So that means the latency is very low,
+107
+but if you want to get a maximum amount
+108
+of I/O mode, then this is for highly paralyzed workloads
+109
+and you can tolerate higher latency.
+110
+So at the expense of a higher latency, you
+111
+also get more I/O.
+112
+This is good in a big data type of setting,
+113
+but the best recommended setting now for AWS is
+114
+to use enhanced with general purpose and elastic.
+115
+Okay? So that's it for the options.
+116
+Hopefully it's not too confusing.
+117
+I don't love the fact that under enhanced there is elastic
+118
+and provision, it's really just three options we have.
+119
+We have bursting, elastic and provision,
+120
+and that's what you should remember for the exam.
+121
+Okay, let's click on Next now.
+122
+Next we have the network access settings
+123
+and they're very important, we have to choose a VPC.
+124
+I'll choose the default VPC and then the mount targets.
+125
+And because we've chosen a regional type
+126
+of EFS file system, we have free AZ available to us.
+127
+So each AZ is going to be assigned to a subnet.
+128
+I'll leave it as is, which is the default subnets.
+129
+The IP is automatic and we need to assign a security group.
+130
+And so we need to go ahead
+131
+and create a specific security group for my EFS file system.
+132
+So I'll go into the EC2 console and then I will go
+133
+into Security Groups.
+134
+I will create a security group
+135
+and I will call it sg-efs-demo.
+136
+And I will call this one EFS Demo SG.
+137
+For now, we will not have any inbound rules.
+138
+I'll click on Create Security Group and we cannot have this.
+139
+So EFS demo is good enough.
+140
+Okay, so my EFS demo is created successfully
+141
+and to have it appear here, what I need
+142
+to do is to refresh the page.
+143
+So we'll start all over,
+144
+but the settings are the basic ones,
+145
+the default ones that we come next.
+146
+And now I can remove these security groups
+147
+and choose the EFS demo security group
+148
+that I have created from before.
+149
+Okay, we're good.
+150
+So now we have done all the network access configuration.
+151
+I will click on Next.
+152
+We have a file system policy that is optional
+153
+and we will not touch it right now.
+154
+This is pretty advanced and we don't need it right now.
+155
+So I will click on Next.
+156
+And here we can review
+157
+and create all the file system settings.
+158
+So we're happy with that.
+159
+And when we're done, we just click on Create.
+160
+Now my file system is creating and I will get back
+161
+to you when it is created.
+162
+My file system is now available and I can go in it
+163
+and see that the fact that there is six kilobytes of size
+164
+that is being used right now.
+165
+And when you have a EFS file system, you only pay
+166
+for the storage you use, so right now my cost are zero.
+167
+So this is good, this is created.
+168
+And now we want to mount this onto EC2 instances.
+169
+Therefore, you know the next step we're going
+170
+to create EC2 instances.
+171
+So let's launch some instance.
+172
+And I will name this one Instance A,
+173
+because we will launch it in subnet of AZA.
+174
+So we are going to run Amazon Linux version 2.
+175
+We're good to go, we'll use the t2.micro
+176
+because it's free tier eligible.
+177
+We will disable the key pair.
+178
+We'll just do EC2 instance connect to connect
+179
+to our EC2 instance.
+180
+For network settings, I will leave it as is
+181
+and there will be a new security group created
+182
+with these rules right here.
+183
+So allow SSH access from anywhere, which is good.
+184
+Then we have eight gigabytes of GP2 storage.
+185
+But now because we want to configure the storage
+186
+of the EC2 instance
+187
+into Amazon EFS, we can actually now do it
+188
+from within the EC2 console, which is very exciting.
+189
+So let me show you how to do it.
+190
+Before we had to run some commands.
+191
+So there are 0 x file systems and you do edit
+192
+and it says that you cannot add a file system
+193
+before you choose to select a subnet.
+194
+So we scroll back up, we go to Network Settings, we Edit it,
+195
+and in subnet I'm going to choose eu-west-1a.
+196
+So now that my subnet is created, I can go back
+197
+into file systems.
+198
+And as you can see, I can add an EFS or an FSx file system.
+199
+So we'll add an EFS file system,
+200
+then we'll click on Add Shared File System.
+201
+It's going to be linked to my EFS right here.
+202
+The mount point is /mnt/efs/fs1. This is good enough for us.
+203
+This is going to automatically create
+204
+and attach security groups for us, which is amazing.
+205
+And then it's automatically going
+206
+to mount shared file system
+207
+by attaching the required user data scripts.
+208
+So these in the past we had
+209
+to run ourselves onto the EC2 instance manually
+210
+or create our own user data script.
+211
+But now this is done for us
+212
+by the EC2 console, which is really nice.
+213
+Okay, let's create one instance and launch it.
+214
+Okay, so this instance is launched.
+215
+I can go view all instances
+216
+and I'm going to launch a new one.
+217
+Okay, I will call this one Instance B.
+218
+We'll have Amazon Linux 2, again to make it quick, I'm going
+219
+to proceed without a key pair, I will go into eu-west-1b.
+220
+I can just select the security group of launch-wizard-2
+221
+that was created just from before.
+222
+And then again, we need to edit this
+223
+and add a file system of type EFS
+224
+and we'll use the same file system as before
+225
+and the same mount points
+226
+and we'll leave these options on as well.
+227
+So we're good. Let's launch that instance.
+228
+And now let's have a look
+229
+at the interesting stuff that has happened.
+230
+So I'm going to just do instant state equals running
+231
+and refresh this until I see both of my instances.
+232
+So now they're both running.
+233
+And the interesting thing is
+234
+that if we go into the EFS console
+235
+and go to the network tab, as we can see now,
+236
+each availability zone now has multiple security groups.
+237
+So we have the EFS demo we created from before,
+238
+but also the efs-sg-1 and efs-sg-2, which were auto created
+239
+by the EC2 console for us and attached
+240
+into our EFS file system.
+241
+So if I go into my EC2 instances
+242
+and then security group right here, I can look at
+243
+for example, this efs-sg-2, look at the inbound rules.
+244
+And as you see, it allows the protocol NFS on port 2049
+245
+and the source of it, if we have a look
+246
+at the inbound rules himself, the source
+247
+of this is this security group
+248
+and that security group is the one
+249
+that is attached into my EC2 instance, instance B.
+250
+So this allows my instance B to access the EFS file system
+251
+because that security group right here called efs-sg-2
+252
+is attached into my EFS file system.
+253
+So all the setup is done by AWS for us, which is truly nice.
+254
+So now if I go into one of these instance, we're going
+255
+to connect using EC2 instance connect
+256
+on this tab, and then I will also do the exact same thing
+257
+by connecting to instance B over EC2 instance connect.
+258
+So now I can, for example, verify the fact that yes,
+259
+in ls /mnt/efs/fs1/ there is an EFS file system
+260
+and now we need to create files in it.
+261
+So to make it simple, I will elevate my right
+262
+and type sudo SU
+263
+and then I can do echo "hello world"
+264
+into the /mnt/efs/fs1/hello.txt.
+265
+So we've created that file named hello.txt.
+266
+And if I do cat and then this entire file name right here,
+267
+as you can see it says hello world.
+268
+So this file has been created into my EFS file system
+269
+from this EC2 instance, which is an eu-west-1a.
+270
+But now if I go into my second EC2 instance and do LS
+271
+and then the same file system, so I look for files in it,
+272
+as you can see, we also see this hello.txt file in it.
+273
+And if I do cat and then cat the file, hello.txt,
+274
+it says hello world as well.
+275
+So as you can see, the EFS file system is indeed mounted
+276
+as a network drive onto both my EC2 instances
+277
+and they are in different AZs
+278
+and they share it the same EFS.
+279
+So that's amazing and that's a different kind of storage
+280
+that you had the demo of it right now.
+281
+So that's it for the EFS demo. That was pretty complete.
+282
+Now to just clean it up, what you can do
+283
+is you can terminate these two EC2 instances.
+284
+So you go here and you terminate them.
+285
+And something else you can do is you can go
+286
+into the EFS file system, you can delete it
+287
+by entering the file system ID,
+288
+and then when everything is deleted, you can go ahead
+289
+into your security groups
+290
+and delete the extra security groups
+291
+that have been created during this demo.
+292
+Okay, that's it for this lecture.
+293
+I hope you liked it and I will see you in the next lecture.
+
+--- EFS vs EBS ---
+
+1
+So now let's talk about the differences
+2
+of EBS volumes and EFS file systems.
+3
+So the EBS volumes, they're attached to one instance
+4
+at a time, except in the edge case
+5
+of using the multi attached feature
+6
+of the io1 and io2 types of volume,
+7
+but that is for very specific use cases.
+8
+EBS volumes are also locked at the AZ level,
+9
+so here is an example.
+10
+We have one EC2 in AZ 1
+11
+and we have one EBS volume attached to it
+12
+and it cannot be attached to an EC2 instance in AZ 2.
+13
+For the gp2 type of volume,
+14
+the IO will increase if the disc size increases,
+15
+and for the gp3 and IO1 type of volumes,
+16
+you can increase the IO independently from your disc size.
+17
+To migrate an EBS volume across AZ,
+18
+we need to take a snapshot,
+19
+so it will go into the EBS snapshots,
+20
+and then we can restore the snapshot into another AZ.
+21
+This is how we move from one AZ to the next.
+22
+Now, the EBS volumes backups, they will use IO,
+23
+and so you shouldn't run them while your application
+24
+is handling a lot of traffic
+25
+because that may impact the performance.
+26
+For your EC2 instances, the route EBS volumes
+27
+of your instances will get terminated by default
+28
+if the EC2 instance gets terminated,
+29
+but you can disable that behavior.
+30
+Now for EFS, it's a bit different.
+31
+So it's a network file system,
+32
+and the goal is really to attach it
+33
+to hundreds of instances across availability zone,
+34
+so we really see the distinction here.
+35
+So one with one EFS file system,
+36
+we can have different mount targets in different AZs,
+37
+and then multiple instances can share
+38
+that one file system together, .
+39
+So it's very helpful, for example, when you have WordPress
+40
+and it's only for Linux instances
+41
+because it is using the POSIX system.
+42
+The EFS has a higher price point than EBS,
+43
+but you can leverage storage tiers for cost savings.
+44
+So hopefully you understand now the difference between EFS
+45
+and EBS and for the instance store,
+46
+well it is physically attached to the EC2 instance,
+47
+and so therefore if you, you lose your EC2 instance,
+48
+you will lose the storage as well.
+49
+All right, that's it, I hope you liked it,
+50
+and I will see you in the next lecture.
+
+--- EBS & EFS - Section Cleanup ---
+
+1
+Okay, so let's just clean up
+2
+this entire section.
+3
+So for this I'm gonna go to Action on my file system
+4
+and delete it, and for this I have to enter
+5
+the file system ID, so I'll just copy and paste this.
+6
+And so okay, we're gonna get rid of our file system.
+7
+Perfect!
+8
+Now into our EC2 instances, make sure to terminate
+9
+any running EC2 instance, so that's good.
+10
+Then in terms of volumes, we're going to have to
+11
+clear up volumes as well, so any volumes that is available
+12
+you have to terminate it, so I'll right-click
+13
+and delete all these volumes.
+14
+Okay.
+15
+Now for snapshots, you've made a few snapshots,
+16
+so let's just go back and delete every snapshot you have.
+17
+Just so that you can get rid
+18
+and not pay for any storage for snapshots.
+19
+Okay.
+20
+And then finally, security groups.
+21
+If you want to, because it's going to get a lot of
+22
+security groups right here,
+23
+you can basically delete so many of these security groups
+24
+except the one for default, so just don't delete that one.
+25
+So you can go ahead and delete these security groups.
+26
+And they will only be deleted once you have, basically,
+27
+deleted all your EC2 instances associated with those.
+28
+So maybe these won't be deleted right away
+29
+but you can just keep on trying until it works.
+30
+So I'll delete this security group now.
+31
+Yes this one works.
+32
+I'll delete the load balancer for the security group.
+33
+Yes that worked, and this EC2 for EFS,
+34
+it's still used by my instances
+35
+so I have to wait for my instances
+36
+to be shutting down properly before I can go ahead
+37
+and delete that last security group.
+38
+So I'll have to wait a little bit, but that's it.
+39
+Once you've cleared up everything
+40
+you're ready to go for the next section.
+

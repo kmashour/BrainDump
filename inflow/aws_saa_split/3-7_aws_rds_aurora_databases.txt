@@ -1,0 +1,3499 @@
+--- Amazon RDS Overview ---
+
+1
+So let's get started
+2
+with an overview of AWS RDS.
+3
+RDS stands for Relational Database Service,
+4
+and what it means is that
+5
+it's a managed database service for database
+6
+that use SQL as a query language.
+7
+So SQL is a structured language to a query database.
+8
+It's very well-adapted and it's running on many engines.
+9
+So it allows you to create databases,
+10
+the RDS service in the cloud,
+11
+and these databases will be managed by AWS
+12
+and you get a lot of benefits from it.
+13
+So what types of database engine are managed by AWS?
+14
+Well, the first one is PostgreSQL.
+15
+Then we have MySQL, MariaDB, Oracle,
+16
+Microsoft SQL Server, IBM DB2,
+17
+and Aurora, which is a proprietary database from AWS
+18
+that we'll study in depth.
+19
+So you have to remember the types of engines
+20
+that are supported by Amazon RDS.
+21
+So why would we use RDS
+22
+versus deploying our own database service
+23
+on top of, say, an EC2 instance?
+24
+Because this is possible.
+25
+Well, RDS is a managed service
+26
+and as such, AWS provides a lot of services
+27
+on top of just giving us a database.
+28
+For example, the provisioning
+29
+of the database is fully automated,
+30
+and so is the underlying operating system patching.
+31
+There is continuous backups being made
+32
+and you are able to restore to a specific timestamp.
+33
+It's called Point in Time Restore.
+34
+You can also have monitoring dashboards
+35
+to view the performance of your database.
+36
+You can have read replicas,
+37
+and we have a dedicated lecture
+38
+on read replicas in this course.
+39
+To improve read performance, you can set up a multi AZ,
+40
+and so we do have also sections on multi AZ
+41
+that will be helpful for disaster recovery.
+42
+You have maintenance windows for the upgrades,
+43
+and you have scaling public capabilities,
+44
+both vertical, by increasing the instance-type type,
+45
+and horizontal by adding read replicas.
+46
+Filing the storage is backed by EBS,
+47
+so this is something we already know,
+48
+but the only thing we do not have
+49
+is we cannot SSH into the instances, the RDS instances.
+50
+So because this is a managed service,
+51
+AWS provides us a service,
+52
+and we don't have access to the underlying EC2 instance.
+53
+But this is not too bad,
+54
+because we get all these things
+55
+that we would have to set up on our own
+56
+if we wanted to deploy our own database engine on EC2.
+57
+So here is one feature that can come up in the exam,
+58
+and is around RDS Storage Auto Scaling.
+59
+So the idea is that when you create an RDS database,
+60
+you need to say how much storage you want,
+61
+for example, you want 20 gigabytes of storage,
+62
+but say you are using your database a lot,
+63
+and you're about to run out of free space,
+64
+then with this feature enabled,
+65
+the RDS Storage Auto Scaling,
+66
+RDS will detect that
+67
+and will scale automatically the storage for you,
+68
+so you don't have to do any kind of operations,
+69
+such as taking down database to increase the storage.
+70
+So the idea is that your application
+71
+does a lot of read and writes to your RDS database,
+72
+and then automatically
+73
+with some threshold we'll see in a second.
+74
+Then the storage can autoscale,
+75
+and that is a feature of RDS.
+76
+That is a very, very nice feature.
+77
+So, this always meant to make you avoid
+78
+the operation of scaling manually your database storage.
+79
+For this, you need to set a maximum storage threshold,
+80
+so maximum limits for how much you want the storage to grow,
+81
+'cause you don't want it to grow infinitely maybe.
+82
+And you can automatically modify storage
+83
+if the free storage is less than 10%
+84
+of what has been allocated
+85
+and the low-storage has been lasting
+86
+for more than five minutes
+87
+and six hours have passed since the last modification.
+88
+If that's the case,
+89
+then the storage will auto increase when you enable it.
+90
+This is very helpful for applications
+91
+that have an unpredictable workload
+92
+and this supports all database engines for RDS.
+93
+So that's it for this lecture, I hope you liked it,
+94
+and I will see you in the next lecture.
+
+--- RDS Read Replicas vs Multi AZ ---
+
+1
+Going into the exam
+2
+is going to be extremely important
+3
+to understand the difference between RDS Read Replicas
+4
+and Multi AZ and understand exactly the use cases for those.
+5
+So this lecture is really dedicated
+6
+to understanding Read Replicas and Multi AZ.
+7
+So let's get started with the Read Replicas.
+8
+Read Replicas as the name indicates
+9
+help you to scale your reads.
+10
+So let's have an example.
+11
+Here, we have our application
+12
+and we have an RDS database instance
+13
+and our application performs reads and writes
+14
+to our database instance,
+15
+but say we want to scale the reads
+16
+because that's, main database instance can not scale enough.
+17
+It receives too many requests.
+18
+Well, we can create up to 15 Read Replicas
+19
+and they can be within the same availability zone,
+20
+cross availability zone, or cross region.
+21
+So three different options
+22
+and they're very important to remember.
+23
+So say we have another RDS instance Read Replica
+24
+and another one and what will happen
+25
+is that they will be an asynchronous replication
+26
+between the main RDS database instance
+27
+and the two Read Replicas.
+28
+Asynchronous, that means that the reads
+29
+are eventually consistent.
+30
+What that means is that,
+31
+for example, if your application reads from the Read Replica
+32
+before they had the chance to replicate the data
+33
+then you may get all data.
+34
+And this is why it's called
+35
+eventually consistent asynchronous replication.
+36
+And these replicas, they can be awesome
+37
+for reading for scaling reads
+38
+but they can also be promoted to their own database.
+39
+So you can take one of these replicas
+40
+and say, okay I want it to be its own database now
+41
+and take rights.
+42
+And so you promote it to its own database.
+43
+It's completely out of the replication mechanism after that
+44
+but it's lives and has its own life cycle afterwards.
+45
+So in case you wanna use Read Replicas,
+46
+the main application in orange in the top of the screen
+47
+must update the connection string
+48
+to leverage the list of all the Read Replicas
+49
+you have in your RDS cluster.
+50
+Okay, very nice.
+51
+So let's talk about a classic use case
+52
+for you to Read Replica.
+53
+So in this example, we have a production database
+54
+and it is taking on normal load.
+55
+So here we go.
+56
+Our production database is having read and writes
+57
+to our main RDS database instance.
+58
+And the new team comes in and say,
+59
+we want to run some reporting
+60
+and some analytics on top of your data.
+61
+And so if you plug in that reporting application
+62
+onto the main RDS database instance
+63
+then it's going to overload it
+64
+and possibly slow down the production application
+65
+and you don't want that.
+66
+So instead what you do as a solutions architect
+67
+is you create a Read Replica to run the new workload there.
+68
+So you create a Read Replica.
+69
+There is some asynchronous, a replication
+70
+that happens between your main RDS DB database instance
+71
+and your Read Replica
+72
+and then your reporting application can just do reads
+73
+from your Read Replica and run the analytics there.
+74
+The production application is completely unaffected
+75
+in this case and that's perfect.
+76
+So remember, if you have a Read Replica
+77
+you need to ensure
+78
+that it is only for SELECT type of statements
+79
+and SELECT is a SQL keyword.
+80
+SELECT means read.
+81
+And so you can not use keywords
+82
+such as INSERT, UPDATE or DELETE,
+83
+which change database itself.
+84
+Okay, Read Replicas is only for reads.
+85
+So, let's talk about the networking cost
+86
+associated with RDS Read Replica.
+87
+So in AWS, you should know that's normally there is a cost
+88
+when the data goes from one availability zone to another
+89
+but there are exceptions
+90
+and these exceptions are usually for managed services.
+91
+So for RDS Read Replica, this is a managed service.
+92
+If your Read Replica is within the same region, okay?
+93
+Different AZ, but same region, you're not paying that fee.
+94
+So what this means that if you have a RDS DB instance
+95
+in us-east-1a and then a Read Replica in us-east-1b,
+96
+and there is asynchronous replication
+97
+because this is a Read Replica,
+98
+even though the traffic goes from one AZ to a different AZ
+99
+that replication traffic is going to be free
+100
+because RDS is a managed service
+101
+and they give you that traffic for free.
+102
+But if you are using a cross region replica,
+103
+so you are in one region, us-east-1
+104
+and you go to another region, eu-west-1, for example
+105
+then your RDS DB instance and your Read Replica
+106
+will have replication that will go across regions
+107
+and this will incur a replication fee for your network.
+108
+Finally, let's talk about RDS Multi AZ
+109
+and Multi AZ is mainly used for Disaster Recovery.
+110
+So we have our application
+111
+and it performs the reads and writes
+112
+to our Master database instance
+113
+which is in availability zone A
+114
+and what we thinks you have is a synchronous replication
+115
+to a standby instance in AZ B,
+116
+and they will replicate every single change
+117
+in the Master synchronously.
+118
+So that means that when your application writes
+119
+to the Master, that change needs to also be replicated
+120
+to the standby to be accepted.
+121
+And so what we get out of it is one DNS name.
+122
+So your application talks to one DNS name
+123
+and in case there is a problem with the Master,
+124
+there will be an automatic failover to the standby database.
+125
+Thanks to that one DNS name.
+126
+So thanks to this, we increase the availability.
+127
+This is why it's called Multi AZ and they will be failover
+128
+in case we lose an entire AZ or we lose the network
+129
+or there is an instance or storage failure
+130
+for the Master database.
+131
+In which case, obviously the standby database
+132
+will become the new Master.
+133
+He don't need to do any manual intervention in your apps
+134
+as long as it tries to keep on connecting
+135
+to your database automatically at some point,
+136
+it will fail over to the standby
+137
+that will be promoted as the Master, and you'll be good
+138
+and it's not used for scaling.
+139
+So as you can see here,
+140
+the standby database is just for standby.
+141
+No one can read to it.
+142
+No one can write to it, it's just here as a failover
+143
+in case anything goes on with your Master database.
+144
+So, quick question is, is there a possibility
+145
+to have the Read Replicas being set up as Multi AZ
+146
+for Disaster Recovery?
+147
+And the answer is yes, you can set up your Read Replica
+148
+as a Multi AZ if you want it to.
+149
+And that is a common exam question, okay?
+150
+So that's it for the difference between Read Replicates
+151
+and Multi AZ, but you need to absolutely understand this
+152
+going into the exam
+153
+because a lot of questions will go and be about it.
+154
+So a question that can come up in the exam
+155
+is around how do we make an RDS database
+156
+go from Single AZ to Multi AZ?
+157
+So what you should know
+158
+is that it is a zero downtime operation.
+159
+That means you do not need to stop the database
+160
+to go from Single AZ to Multi AZ.
+161
+The only thing you need to do
+162
+is to click on modify for the database
+163
+and enable Multi AZ.
+164
+That means that your RDS database instance
+165
+is going to go to have a Master,
+166
+to have a standby DB with synchronous replication
+167
+without you doing anything except modifying that setting
+168
+and the database will not stop.
+169
+Now, this is what the exam will ask you
+170
+but I wanna show you what will happen behind the scenes
+171
+for it to work.
+172
+So, the following will happen internally.
+173
+There will be a snapshot taken by RDS automatically
+174
+of your main database
+175
+and that this snapshot will be restored
+176
+into a new standby database, okay?
+177
+And then once the standby database is restored,
+178
+there will be synchronization established
+179
+between the two database
+180
+and so therefore the standby database
+181
+will catch up to the main RDS database and there you go,
+182
+you will be in a Multi AZ setup.
+183
+So that's it for this lecture.
+184
+I hope you liked it,
+185
+and I will see you in the next lecture.
+
+--- Amazon RDS Hands On ---
+
+1
+So let's go ahead and create a database.
+2
+So I'm in the Aurora and RDS console.
+3
+On the left-hand side, I click on Databases,
+4
+and then I click on Create database.
+5
+And as we can see here, we have different options.
+6
+So it can be a full configuration or an easy create.
+7
+Because we want to see the different options,
+8
+we're going to go over full configuration.
+9
+Here you can select the engine options.
+10
+So you have Aurora, either MySQL or PostgreSQL-compatible.
+11
+Then you have MySQL, PostgreSQL,
+12
+and other types of engines.
+13
+For this hands-on,
+14
+we're going to select MySQL to keep it simple.
+15
+Then you scroll down, and then for engine version,
+16
+just choose whatever default there is right here.
+17
+Next, for templates, we can have Production,
+18
+which gives us access to more settings,
+19
+or Dev/Test, or Free tier.
+20
+So Free tier is going to be what we're gonna be choosing.
+21
+But if you take the Production setting,
+22
+what's going to happen is that you have the option
+23
+to have Multi-AZ DB instance deployment with two instances,
+24
+or even Multi-AZ DB cluster deployment
+25
+with three instances.
+26
+So these are production.
+27
+We don't need this right now,
+28
+but it gives you an idea of the kind of setup you can have
+29
+across multiple availability zones.
+30
+But we're going to use Free tier.
+31
+And as you can see, the only thing we can use right now
+32
+is Single-AZ database instance deployment, one instance.
+33
+Alright, perfect.
+34
+Let's scroll down.
+35
+We keep everything as default for database identifier.
+36
+Master username, yes.
+37
+And then credentials management.
+38
+So here we have the option to either create our password
+39
+and then have RDS manage the password,
+40
+or we can also have the password managed directly
+41
+by AWS Secrets Manager.
+42
+So this is the most secure,
+43
+but there is a cost to using AWS Secrets Manager.
+44
+So we won't use this; we'll use self-managed,
+45
+but you should know that it's an option anyway.
+46
+So for the master password, I will just enter password,
+47
+and I will confirm the master password.
+48
+It's very weak, I know.
+49
+Then we'll just enable only password authentication.
+50
+But as you can see, you have the option to also have IAM
+51
+to authenticate to the database.
+52
+Then you scroll down, and for instance configuration,
+53
+we have information around, well, what's free.
+54
+So we'll use the db.t4g.micro,
+55
+maybe you have a db.t3.micro,
+56
+maybe you have something else.
+57
+It doesn't matter.
+58
+Just choose whatever the default is right now.
+59
+For storage type, we'll have 20 gigabytes.
+60
+But then as you can see,
+61
+under additional storage configuration,
+62
+there is the option to enable storage autoscaling.
+63
+And that means that if you use all the storage,
+64
+you can autoscale up to, for example,
+65
+1000 gigabytes of storage.
+66
+For connectivity,
+67
+we'll select Don't connect to an EC2 compute resource.
+68
+We'll select the default VPC,
+69
+and we don't change anything.
+70
+For subnet group, no, we don't.
+71
+We keep it as default.
+72
+And for public access, we'll say yes,
+73
+because we want to be able
+74
+to publicly access our RDS database with a public IP.
+75
+For the VPC security group, we will choose Create new,
+76
+and I'll call this one demo-rds.
+77
+And then we don't have any preference for the AZ.
+78
+We don't want an RDS proxy.
+79
+And for additional configuration, we're good to go.
+80
+We'll use port 3306.
+81
+That is the port that we're going to connect
+82
+to on our MySQL database.
+83
+Let's scroll down.
+84
+We choose standard insights from monitoring.
+85
+As you can see, we can enable enhanced monitoring
+86
+and also export the logs if we wanted to.
+87
+And then for the additional configuration
+88
+under database initial name, enter mydb.
+89
+For estimated monthly cost,
+90
+it gives you information around the RDS Free Tier,
+91
+and this is available for 12 months
+92
+for these instance types.
+93
+So we're good to go.
+94
+Now let's click on Create database.
+95
+So while my database is being created,
+96
+let's go ahead and download SQL Electron.
+97
+And this is a SQL client that we're going to use
+98
+to connect to our database.
+99
+So very simple.
+100
+You're going to click on Download GUI,
+101
+and then click on it.
+102
+Take the latest version for whatever platform you have.
+103
+So you have latest Windows,
+104
+and then for Mac, it's going to be a DMG.
+105
+So I'm gonna do this one, then open it and install it.
+106
+Okay, so my database is now created.
+107
+It took a little bit of time,
+108
+and now, as you can see, it is available.
+109
+And so what I'm going to show you are a few options.
+110
+So first of all, we have the endpoint right here
+111
+and the port 3306.
+112
+And it's linked to this security group.
+113
+And this security group,
+114
+if you click on it and look at the inbound rules,
+115
+we can see that we have an inbound rule here
+116
+on TCP port 3306.
+117
+So that's great, okay?
+118
+Coming from just my IP address.
+119
+Okay, so you should of course modify this security group
+120
+if you have problems connecting to your database instance
+121
+to maybe allow it from anywhere (IPv4).
+122
+Okay.
+123
+So now let's take this endpoint
+124
+and we're going to connect to it using SQL Electron.
+125
+So using SQL Electron, I'm going to add a new database.
+126
+I'll call it RDSDemo.
+127
+It's a database of type MySQL.
+128
+And then for the server address, I'm going to enter
+129
+what I have right here on port 3306.
+130
+The user is admin, and the password for me was password.
+131
+And then the initial database is myDB
+132
+as I entered it from before.
+133
+Let's click on Test, and the connection is successful.
+134
+If it's not successful, please have a look
+135
+whether or not your database was set
+136
+to be a public database, number one,
+137
+and number two, have a look at your security group settings
+138
+to make sure that your IP is allowed in.
+139
+So let's save this and connect to our database.
+140
+And now I'm connected into my database,
+141
+directly into myDB,
+142
+which was the database that was created.
+143
+And in here, I could go ahead
+144
+and enter some CREATE TABLE statements.
+145
+So CREATE TABLE mytable,
+146
+and then just a name of VARCHAR(20),
+147
+and a first_name of VARCHAR(20).
+148
+So it's just a very quick statement
+149
+just to show you how SQL works,
+150
+but this is definitely out of scope for the exam.
+151
+Execute this.
+152
+So now we have my_table that has been created,
+153
+and then we don't have any content in it, okay?
+154
+But you could have an INSERT statement
+155
+to insert some data into your table.
+156
+So you would say, for example,
+157
+enter the value ('marrek'),
+158
+and then the value here ('Stephane').
+159
+Execute this.
+160
+And then if you click on Select rows,
+161
+then you see that my_table has my name and my first name
+162
+to be marrek and Stephane.
+163
+So this is how we would use an RDS database with MySQL.
+164
+But again, out of scope of the exam,
+165
+I just want to show you the full picture
+166
+of using SQL Electron.
+167
+So back in here, my RDS database is fully managed,
+168
+so this is great.
+169
+We can use it.
+170
+This is amazing.
+171
+Other things we can do that are worthy are
+172
+to create a read replica directly from this database.
+173
+So we can create a read replica,
+174
+and then this read replica would allow us
+175
+to have more read capacity for our database,
+176
+which would be very, very helpful.
+177
+And do we want whether or not that database to be Multi-AZ
+178
+for recovery purposes?
+179
+So I'll keep it as no and cancel it.
+180
+Next, we can have a look at monitoring.
+181
+And monitoring, for example, has the CPU Utilization.
+182
+And as we can see,
+183
+while the CPU Utilization is monitored by my database,
+184
+and we can monitor this, for example,
+185
+for scaling our database
+186
+if in case we have too many connections into it.
+187
+We can have a look at the database connection count as well
+188
+to see how many clients are connected into our database.
+189
+And a lot of metrics overall, okay?
+190
+Other things you can do with RDS
+191
+is around creating snapshots.
+192
+So you can take a snapshot,
+193
+and this will snapshot your database,
+194
+and you can restore it wherever you want.
+195
+You can restore it to a point in time for your database,
+196
+or you can even migrate a snapshot
+197
+if you wanted to migrate it into a different region,
+198
+for example.
+199
+So all these are a bunch of options that we can use.
+200
+But as we can see, the whole power of RDS is
+201
+to manage databases for us.
+202
+To have replicas, Multi-AZ,
+203
+you know, we can increase the instance type
+204
+as we go along, and so on.
+205
+And that all comes very handy
+206
+from a managed service perspective.
+207
+So you've seen all you need to know
+208
+for your RDS database.
+209
+I hope you liked it.
+210
+And just to finish yourself,
+211
+please make sure to delete the database.
+212
+So to delete it,
+213
+first you need to remove the termination protection.
+214
+So you go to Modify,
+215
+and then at the very bottom, you will scroll down
+216
+and find the delete protection setting.
+217
+So here it is.
+218
+We'll disable it, press Continue,
+219
+and then Apply immediately.
+220
+And then once the delete protection is done,
+221
+you can go ahead and delete this database.
+222
+You can remove creating a final snapshot
+223
+and then say delete me,
+224
+and acknowledge the fact that upon deletion,
+225
+everything will be lost.
+226
+Click on Delete, and you're good to go.
+227
+So that's it for this lecture.
+228
+I hope you liked it,
+229
+and I will see you in the next lecture.
+
+--- RDS Custom for Oracle and Microsoft SQL Server ---
+
+1
+So now let's do a short lecture
+2
+on RDS Custom.
+3
+So, we know that with RDS we don't have access
+4
+to any underlying operating system, or customization,
+5
+but with RDS Custom we actually do.
+6
+And RDS Custom is for two database types,
+7
+it's for Oracle and Microsoft SQL Server.
+8
+In which, thanks to RDS Custom, we have access to the OS,
+9
+and database customization.
+10
+So with RDS, we still get all the benefits
+11
+of automated setup, operations,
+12
+and scaling of the database in AWS.
+13
+But with the RDS Custom option,
+14
+the custom part of RDS Custom,
+15
+we actually have access to the underlying database
+16
+and operating system.
+17
+So we can actually configure internal settings,
+18
+install patches, enable native features,
+19
+and we can actually access the underlying EC2 instance
+20
+behind RDS, using SSH or SSM Session Manager.
+21
+So here is my EC2 instance, and as a user,
+22
+we can now, if it's using Amazon RDS Custom,
+23
+apply customizations and SSH into it.
+24
+To perform any customization it is recommended
+25
+to deactivate the automation mode,
+26
+so that RDS does not perform any automation,
+27
+or maintenance, or scaling, or whatever you want,
+28
+while you perform your customization.
+29
+And also because you may actually break things,
+30
+because now you have access to the underlying EC2 instance,
+31
+it is much better to take a database snapshot,
+32
+otherwise you will not be able to recover from your actions.
+33
+So to summarize, RDS versus RDS Custom.
+34
+RDS will manage your entire database,
+35
+and your operating system.
+36
+Everything is managed by AWS, you don't have to do anything,
+37
+and RDS Custom, it's for Oracle
+38
+and Microsoft SQL Server only,
+39
+and you have actually full admin access
+40
+to the underlying operating system and the database.
+41
+So that's it for this lecture, I hope you liked it,
+42
+and I will see you in the next lecture.
+
+--- Amazon Aurora ---
+
+1
+So let's talk about Amazon Aurora
+2
+because the exam is starting to ask you
+3
+a lot of question about it.
+4
+Now, you don't need deep knowledge on it,
+5
+but you need enough high-level overview
+6
+to understand exactly how it works,
+7
+so this is what I'm going to give you in this lecture.
+8
+Aurora is going to be a proprietary technology from AWS.
+9
+It's not open-sourced.
+10
+But they made it so it's going to be compatible
+11
+with PostgreSQL and MySQL.
+12
+And basically, your Aurora database
+13
+will have compatible drivers.
+14
+That means that if you connect
+15
+as if you were connecting to your PostgreSQL
+16
+or a MySQL database, then it will work.
+17
+Aurora is very special,
+18
+and I won't go too deep into the internals,
+19
+but they made it cloud-optimized.
+20
+And by doing a lot of optimization and smart stuff,
+21
+basically they get 5x performance improvements
+22
+over MySQL on the RDS,
+23
+or 3x extra performance of PostgreSQL on RDS.
+24
+Not just that, but in many different ways,
+25
+they also get more performance improvements.
+26
+To me, I watch it, it's really, really smart,
+27
+but I won't go into the details of it.
+28
+Now, Aurora storage automatically grows,
+29
+and I think this is one of the main features
+30
+that is quite awesome.
+31
+You start at 10 gigabytes,
+32
+but as you put more data into your database,
+33
+it grows automatically up to 256 terabytes.
+34
+Again, this has to do with how to design it,
+35
+but the awesome thing is that now as a DBA or a SysOps,
+36
+you don't need to worry about monitoring your disk,
+37
+you just know it will grow automatically with time.
+38
+Or I can have up to 15 read replicas,
+39
+and the replication process
+40
+is going to be faster than MySQL.
+41
+You will see sub-10-millisecond replica lag, typically.
+42
+Now, if you do failover in Aurora,
+43
+it was going to be instantaneous.
+44
+So it's going to be much faster than a failover
+45
+from Multi-AZ on MySQL or RDS.
+46
+And because it's cloud-native,
+47
+by default, you get high availability.
+48
+Now, although the cost is a little bit more than RDS,
+49
+about 20% more, it is so much more efficient
+50
+that at scale, it makes a lot more sense for savings.
+51
+So let's talk about the aspect that are super important,
+52
+which is high availability and read scaling.
+53
+So Aurora is special because it's going to store
+54
+six copies of your data anytime you write anything
+55
+across three AZ.
+56
+And so, Aurora is made such as it's available,
+57
+so it only needs four copies out of six for writes.
+58
+So that means that if one AZ is down, you're fine.
+59
+And it only needs you have three copies
+60
+out of six needed for reads.
+61
+So, again, that means that it's highly available for reads.
+62
+There is some kind of self-healing process that happens,
+63
+which is quite cool, which is that if some data
+64
+is corrupted or or bad, then it does self-healing
+65
+with peer-to-peer replication in the backend,
+66
+and it's quite cool.
+67
+And you don't rely on just one volume,
+68
+you rely on hundreds of volumes.
+69
+Again, not something for you to manage,
+70
+it happens in the backend,
+71
+but that means that you just reduce the risk by so much.
+72
+So if you look at it from the diagram perspective,
+73
+you have three AZ and you have a shared storage volume,
+74
+but it's a logical volume,
+75
+and it does replication, self-healing,
+76
+and auto-expanding, which is a lot of features.
+77
+So if you were to write some data, maybe blue data,
+78
+you'll see the six copies of it in three different AZ.
+79
+Then if you write some orange data,
+80
+again, six copies of it in different AZ.
+81
+And then as you write more and more data,
+82
+it's basically going to go, again, six copies of it
+83
+in three different AZ.
+84
+The cool thing is that it goes on different volumes
+85
+and it's striped and it works really, really well.
+86
+Now we need to know about storage and that's it.
+87
+But you don't actually interface with the storage,
+88
+it's just a design that Amazon made,
+89
+and I want to give it to you as well,
+90
+so you understand what Aurora takes.
+91
+Now, Aurora is like Multi-AZ for RDS.
+92
+Basically there's only one instance that takes writes,
+93
+so there is a master in Aurora,
+94
+and that's where we'll take writes.
+95
+And then if the master doesn't work,
+96
+the failover will happen in less than 30 seconds on average.
+97
+So it's really, really quick failover.
+98
+And on top of the master,
+99
+you can have up to 15 read replicas,
+100
+all serving reads.
+101
+So you can have a lot of them,
+102
+and this is how you scale your read workload.
+103
+And so any of these read replicas can become the master
+104
+in case the master fails,
+105
+so it's quite different from how RDS works.
+106
+But by default, you only have one master.
+107
+The cool thing about these read replicas
+108
+is that it supports cross-region replication.
+109
+So if you look at Aurora
+110
+on the right-hand side of the diagram,
+111
+this is what you should remember:
+112
+One master, multiple replicas,
+113
+and the storage is going to be replicated, self-healing,
+114
+auto-expanding, little blocks by little blocks.
+115
+Now, let's have a look at how Aurora is as a cluster.
+116
+So this is more around how Aurora works
+117
+when you have clients, how do you interface
+118
+with all these instances?
+119
+So as we said, we have a shared storage volume
+120
+that is auto-expanding.
+121
+Your master is the only thing that will write
+122
+to your storage.
+123
+And because the master can change and failover,
+124
+what Aurora provides you is what's called a writer endpoint.
+125
+So it's a DNS name, a writer endpoint,
+126
+and it's always pointing to the master.
+127
+So even if the master fails over,
+128
+your client still talks to the writer endpoint
+129
+and is automatically redirected to the right instance.
+130
+Now, as I said before,
+131
+you also have a lot of read replicas.
+132
+What I didn't say is that they can have
+133
+auto-scaling on top of these read replicas.
+134
+So you can have one up to 15 read replicas
+135
+and you can set up auto-scaling,
+136
+such as you always have the right number of read replicas.
+137
+Now, because you have auto-scaling,
+138
+it can be really, really hard for your applications
+139
+to keep track of where are your read replicas,
+140
+what's the URL, how do I connect to them.
+141
+So for it, you have to remember this
+142
+absolutely for going for the exam:
+143
+There is something called a reader endpoint.
+144
+And a reader endpoint has the exact same feature
+145
+as a writer endpoint.
+146
+It helps with connection load balancing,
+147
+and it connects automatically to all the read replicas.
+148
+So anytime the client connects to the reader endpoint,
+149
+it will get connected to one of the read replicas,
+150
+and they will be load balancing done this way.
+151
+Just notice that the load balancing
+152
+happens at the connection level,
+153
+not the statement level.
+154
+So this is how it works for Aurora.
+155
+Remember writer endpoint, reader endpoint.
+156
+Remember auto-scaling.
+157
+Remember shared storage volume that auto-expands.
+158
+Remember this diagram because once you get it,
+159
+you'll understand how Aurora works.
+160
+Now, if we go deep into the feature,
+161
+you get a lot of things I already told you,
+162
+automatic failover, backup and recovery,
+163
+isolation and security, industry compliance,
+164
+push-button scaling by auto-scaling.
+165
+Automated patching with zero downtime,
+166
+so it's kind of cool the magic they do in the backend.
+167
+Advanced monitoring, routine maintenance.
+168
+So all these things are handled for you.
+169
+And you also get this feature called backtrack,
+170
+which is giving you the ability to restore data
+171
+at any point of time,
+172
+and actually doesn't rely on backups,
+173
+it relies on something different.
+174
+But you can always say,
+175
+"I want to go back to yesterday at 4:00 PM."
+176
+And you say, "Oh, no, actually I wanted to do
+177
+yesterday at 5:00 PM."
+178
+And it will work as well, which is super, super neat.
+179
+So that's it for Aurora,
+180
+and I will see you in the next lecture.
+
+--- Amazon Aurora - Hands On ---
+
+1
+So let's go ahead and create
+2
+an Amazon Aurora database.
+3
+Now, just so you know, if you follow along with me
+4
+with this hands-on, it's going to cost you a bit of money.
+5
+The most important thing for you is to just
+6
+follow the instructions and to see what the options are.
+7
+But you don't need to actually go ahead
+8
+and create the database
+9
+if you don't have some money to spare for it.
+10
+So we're going to choose a standard create.
+11
+And as you can see we have two different options for Aurora,
+12
+we have the MySQL-compatible option
+13
+and the PostgresSQL-compatible option.
+14
+For this hands-on, I'm going to use MySQL.
+15
+I will scroll down and here you have to choose a version.
+16
+So you have a version selector right here.
+17
+And you can have filters, for example,
+18
+to only show the version that supports
+19
+the global database feature,
+20
+or the ones that support the parallel query feature
+21
+or the ones that support Serverless v2 feature.
+22
+So what I'm going to do is I'm going to keep
+23
+the default version as proposed by the Aurora console,
+24
+which is 3.04.1.
+25
+But this may be a different version for you.
+26
+Next, I will choose a template
+27
+and basically choosing production
+28
+allows me to configure everything.
+29
+So this is what we want to do.
+30
+We'll choose production.
+31
+For the DB cluster identifier in RDS,
+32
+we'll choose database two.
+33
+We have the master username being admin,
+34
+and then you can enter a password,
+35
+which I will right now.
+36
+Okay, then for cluster storage configuration,
+37
+you have two options.
+38
+You can have Aurora standard or IO optimized.
+39
+So if you have high input and output operations,
+40
+read and write operations on your Aurora database
+41
+you may want the IO optimized.
+42
+But for cost-effective workloads
+43
+that don't use Aurora too much,
+44
+then you may want to use Aurora standard.
+45
+Now for instance configuration,
+46
+you have the possibility of choosing
+47
+the class of instance you want for your database.
+48
+So you can see you have different ones
+49
+that can be memory optimized.
+50
+You have the burstable classes and you can choose
+51
+to include the previous generation classes,
+52
+it works sometimes.
+53
+But for now I'll just use db.t3 medium.
+54
+And also if you use a version
+55
+that is compatible with serverless,
+56
+you will see the Serverless v2 two option here.
+57
+And in here you don't select the instance type,
+58
+you just select what's called an Aurora capacity unit,
+59
+ACU, and you say, well, there is a minimum ACU you want
+60
+and the maximum ACU you want
+61
+and this will allow your database to scale
+62
+between these two capacity units automatically.
+63
+So for now, I'm going to use burstable classes
+64
+of db.t3 medium.
+65
+Now for availability and durability,
+66
+we have the option to have Aurora replicas.
+67
+So here we create an Aurora replica
+68
+and a reader node in a different AZ,
+69
+which is going to give us availability,
+70
+enhanced availability, as well as better reads
+71
+across AZ and fast failovers.
+72
+So this will cost more money,
+73
+but at least I can show you the full power of Aurora.
+74
+Next, for compute resource, we are not going to connect
+75
+to an EC2 resource.
+76
+We're going to choose a network type of IPv4,
+77
+this is going to be enough for our needs,
+78
+but if you have IPv6 as well in your VPC,
+79
+you can use dual stack mode.
+80
+Then you are going to be in the VPC.
+81
+That is the default VPC with the default submit group.
+82
+I will yes, allow public access to allow access
+83
+to the Aurora database from a public IP.
+84
+And for VPC security group, I'm going to create a new one
+85
+and I will call it demo database Aurora,
+86
+which will allow us to connect to our Aurora database.
+87
+Next, for additional configuration,
+88
+we can see that the database port is 3306,
+89
+which is the MySQL port.
+90
+If you selected MySQL before.
+91
+So we have the option to also have local write forwarding
+92
+in case the rights are applied to the read replica.
+93
+Then they will be forwarded automatically
+94
+to the write instance.
+95
+This is allowing you to have
+96
+an easier connection management.
+97
+Now, we can also have database authentication,
+98
+to use IAM based database application
+99
+or Kerberos based to basically authenticate a user
+100
+using an external mechanism.
+101
+We have enhanced monitoring.
+102
+I can disable it because we don't need it.
+103
+And we have additional options for your database.
+104
+For example, the initial database name is going to be my DB,
+105
+and then backup retention is going to be one day.
+106
+This is great.
+107
+We can have encryption for our database.
+108
+We have several options around backtracking
+109
+to rewind our database,
+110
+and log exports, but I will not go over them.
+111
+We have deletion protection
+112
+to protect the database from being accidentally deleted,
+113
+but everything looks fine now.
+114
+And as you can see, we have some monthly costs.
+115
+So make sure that you are aware of this
+116
+by creating this Aurora database.
+117
+So let's go ahead and create this database.
+118
+So my Aurora database is created.
+119
+And as we can see, we have a regional cluster
+120
+with a writer instance and a reader instance.
+121
+So here, the important fact is that
+122
+we have different instance to write and to read from,
+123
+and there are in different AZ.
+124
+So this is the whole power of Aurora.
+125
+So if you click on database two, as we can see
+126
+to connect, we have two endpoints.
+127
+We have a reader endpoints and a writer endpoints.
+128
+So these endpoints are very handy
+129
+because they represent an endpoint
+130
+that will always lead to the right writer instance.
+131
+And this endpoint will always lead
+132
+to the right reader instance.
+133
+So these endpoints is what your application
+134
+should be using to connect to Aurora.
+135
+But if you were to click directly
+136
+on this specific instance right here,
+137
+this instance would have also a dedicated endpoint.
+138
+And that instance over here would also have
+139
+a dedicated endpoint once it is being created.
+140
+So it's still being in the creating space.
+141
+Okay, so we have these feature that are cool.
+142
+Then, we have other features,
+143
+so we can add more readers into our reader cluster
+144
+to add on with scaling capacity.
+145
+And we can also create a cross-region read replica
+146
+if you want to have a replica in another region.
+147
+We can restore in point in time.
+148
+And another one is that we could add replica auto-scaling.
+149
+So this one is very important
+150
+because well, we can create a policy.
+151
+And this policy would say, Hey,
+152
+based on the average utilization of your Aurora replica
+153
+or the average number of connections to your Aurora replica,
+154
+then scale your read replica.
+155
+So say read replica scaling policy.
+156
+And say, okay, I want to make sure that my read replica
+157
+stay at the target value of 60%.
+158
+And if I go over, please create more read replica.
+159
+We could also define a scaling period
+160
+for the scaling policy, which makes sense.
+161
+And what's the min and the max capacity.
+162
+So one replica up to 15 Aurora replicas.
+163
+And this is very handy to have a Read replica
+164
+Auto-scaling as a database.
+165
+So I cancel it, we don't need it right now.
+166
+And now I've made sure that both my points,
+167
+my database and endpoints are available.
+168
+So we're good to go.
+169
+So one last thing I can do
+170
+to show you the whole power of Aurora
+171
+is to do action and add AWS region.
+172
+And this is only possible if you chose a version of Aurora
+173
+that was enabled with the global database feature.
+174
+But here we can add the database region to other regions,
+175
+and this will allow you to get a global Aurora.
+176
+Now, as you can see, this is not possible with this cluster
+177
+because we need to have an instance
+178
+with a compatible size to do this first.
+179
+So we need to change the instance, for example,
+180
+to a large type of instance,
+181
+and then we would be able to add other regions
+182
+to the database cluster.
+183
+But anyway, I wanted to show you the feature right here.
+184
+Okay, so that's it for Aurora.
+185
+This is pretty much what you get,
+186
+which is an amazing database with amazing performance,
+187
+great, great scaling capacity, global and so on serverless.
+188
+So really, really complete database.
+189
+I really like this offering from AWS.
+190
+Now to be done with this hands-on, just take this database
+191
+and you want to delete it,
+192
+but as you can see, it's not available.
+193
+So what you need to do first
+194
+is to delete the reader instance.
+195
+So type delete me.
+196
+Then you need to delete the writer instance.
+197
+So again, action, delete, and then you type delete me.
+198
+And then once both these things are deleted,
+199
+you are going to be able to delete your whole cluster.
+200
+So I will wait when it's done.
+201
+That's it.
+202
+My database is now deleted,
+203
+and I will see you in the next lecture.
+
+--- Amazon Aurora - Advanced Concepts ---
+
+1
+So now let's discuss advanced concepts
+2
+of Aurora that you need to know going into the exam.
+3
+So let's talk about replica auto-scaling.
+4
+So let's say we have a client
+5
+and we have three Aurora instances right now.
+6
+So one will be writing through the writer endpoint
+7
+and the other two would be reading
+8
+through the reader endpoint, okay?
+9
+Now let's say that we are having many, many requests,
+10
+read requests on the reader endpoint,
+11
+and so therefore, the Amazon Aurora databases
+12
+have an increased CPU usage.
+13
+In that case, we can set up replica auto-scaling.
+14
+And what this will do is that it will add
+15
+obviously Amazon Aurora replicas,
+16
+and then what will happen is that automatically,
+17
+the reader endpoint is going to be extended
+18
+to cover these new replicas.
+19
+And therefore, these new replicas
+20
+will start receiving some traffic
+21
+and the reads will be happening
+22
+in a more distributed fashion,
+23
+hopefully bringing down the overall CPU usage.
+24
+So this is replica auto-scaling.
+25
+The second thing is custom endpoints.
+26
+So let's say we have the same setup,
+27
+but this time, we have two different kinds of replicas.
+28
+As you can see, we have some db.r3.large
+29
+and some db.r5.2xlarge.
+30
+So some read replicas are bigger than others.
+31
+And the reason you would do this
+32
+is that you wanna define a subset of your Aurora instances
+33
+as a custom endpoint.
+34
+So let's say we define a custom endpoint
+35
+on these two bigger Aurora instances.
+36
+The reason we would do so is, for example, that we know
+37
+that these instances are more powerful
+38
+and therefore they're going to be better
+39
+to run analytical queries on these specific replicas.
+40
+So when you do so,
+41
+you have a custom endpoint that's defined.
+42
+And when you have a custom endpoint,
+43
+generally the reader endpoint itself
+44
+is not used after defining custom endpoints.
+45
+So it would not disappear, but you would not use it anymore.
+46
+And what you would do, like practically speaking,
+47
+is set up many custom endpoints
+48
+for many different kind of workloads,
+49
+therefore allowing you to query
+50
+only a subsets of your Aurora replicas.
+51
+Next, we have serverless.
+52
+So this is going to give you
+53
+automated database instantiation
+54
+and auto-scaling based on actual usage,
+55
+which is great when you have infrequent, intermittent,
+56
+or unpredictable workloads.
+57
+And therefore, you don't need to do any capacity planning.
+58
+You're going to pay per the second of each Aurora instance
+59
+that is being spun up,
+60
+and this can be a lot more cost-effective.
+61
+So how does that work?
+62
+Well, the client is going to talk
+63
+to a proxy fleet that is managed by Aurora.
+64
+And in the backend, many Aurora instances will be created
+65
+based on your workload in a serverless fashion,
+66
+so you don't have to provision capacity at all in advance.
+67
+Finally, we have Global Aurora.
+68
+So in case we have Aurora Cross Region Read Replica,
+69
+it's going to be very helpful for disaster recovery.
+70
+Very simple to put in place,
+71
+but you can also set up the Aurora Global Database,
+72
+which is the recommended way of doing things today.
+73
+In this case, you have one primary region
+74
+where all the reads and writes happen.
+75
+You can set up up to 10 secondary read-only regions
+76
+where the replication lag should be less than one second
+77
+and up to 16 read replicas per secondary region.
+78
+And this will help you decrease latency
+79
+for the read workloads all over the world,
+80
+but also in case you have a database outage in one region.
+81
+Promoting another region for disaster recovery purposes
+82
+has an RTO, so recovery time objective,
+83
+of less than one minute,
+84
+so it takes less than one minute
+85
+to recover into another region.
+86
+And here is a sentence you should look out for
+87
+from an exam perspective,
+88
+it takes on average less than one second
+89
+to replicate data across region
+90
+for your Aurora Global Database.
+91
+So this is something that if you see in the exam,
+92
+it's a hint to use a Global Aurora.
+93
+So let's have a look.
+94
+We have us-east-1 as our primary region,
+95
+which is where the applications do the read and writes,
+96
+and then we'll set up a secondary region in eu-west-1
+97
+or some replication happening
+98
+with a global database of Aurora.
+99
+And the applications there can do read-only from that setup.
+100
+But in case us-east-1 fails,
+101
+then we can failover to eu-west-1
+102
+by promoting it as a read-write Aurora cluster.
+103
+Aurora also has an integration
+104
+with machine learning services within AWS.
+105
+So the idea with Aurora Machine Learning
+106
+is that you can have ML-based predictions
+107
+to your applications via the SQL interface.
+108
+It's a simple, optimized, and secure integration
+109
+between Aurora and different AWS machine learning services.
+110
+So two supported services are SageMaker,
+111
+which allows you to use
+112
+any kind of machine learning model in the backend,
+113
+or Amazon Comprehend, if you want to do sentiment analysis.
+114
+Now, you don't need to be an expert
+115
+in SageMaker or Comprehend.
+116
+You just need to know that
+117
+Aurora has an integration with those.
+118
+So in order to use Aurora Machine Learning,
+119
+you don't need to have a machine learning experience.
+120
+And the use cases for this would be to have fraud detection,
+121
+ads targeting, sentiment analysis,
+122
+or product recommendation all within Aurora.
+123
+So to give you the architecture idea,
+124
+Aurora is going to be connected
+125
+to the machine learning services in AWS.
+126
+And your application can just run a very simple SQL query.
+127
+For example, what are the recommended products?
+128
+Aurora will send some data
+129
+into the machine learning services,
+130
+such as, for example, the user's profile,
+131
+the shopping history, et cetera, et cetera.
+132
+And then the machine learning service
+133
+will return a prediction directly to Aurora.
+134
+For example, the user should buy a red shirt and blue pants,
+135
+and then Aurora can just return the query results
+136
+to the application,
+137
+all through as a result of the SQL query,
+138
+which is very handy.
+139
+So let's talk about Babelfish for Aurora PostgreSQL.
+140
+So this is a feature that allows Amazon Aurora PostgreSQL
+141
+to understand commands
+142
+that are targeted for Microsoft SQL Server
+143
+using the language T-SQL.
+144
+So let me explain so it's clearer.
+145
+If you have an application in your company today
+146
+that's using Microsoft SQL Server as a database,
+147
+then your applications are going to be written
+148
+and they're going to use a driver
+149
+called the SQL Server Client Driver,
+150
+which is going to send the commands
+151
+to your Microsoft SQL Server using T-SQL.
+152
+But tomorrow, you want to migrate to the cloud.
+153
+And so you migrate to Aurora PostgreSQL,
+154
+which is a scalable database in the cloud that you like,
+155
+but the engine is PostgreSQL.
+156
+So that means that your applications must be converted
+157
+to using the PostgreSQL driver.
+158
+And the SQL language is a little bit different.
+159
+It's using the PL/pgSQL language.
+160
+So it's just a different language.
+161
+You don't need to remember the name of it.
+162
+So the idea is that how do we make sure
+163
+that our SQL Server application does not have to be migrated
+164
+to be rewritten?
+165
+For this, we use Babelfish
+166
+and Babelfish is going to be enabled on Aurora PostgreSQL,
+167
+and this allows your application
+168
+to just communicate to Aurora PostgreSQL
+169
+using the T-SQL language through Babelfish.
+170
+And so there's almost nothing to change.
+171
+So that means that your SQL Server applications
+172
+can now work on Aurora PostgreSQL
+173
+with little to no code changes using the same driver.
+174
+And so this is very handy
+175
+because well, migrations are super easy.
+176
+Now to do the migration, you use something called,
+177
+and we'll see this later on this course,
+178
+something called AWS SCT and DMS to migrate from,
+179
+for example, SQL Server to Aurora PostgreSQL.
+180
+But Babelfish is here to do the translation of T-SQL queries
+181
+into Aurora PostgreSQL.
+
+--- RDS & Aurora - Backup and Monitoring ---
+
+1
+So now let's talk about RDS Backup.
+2
+So first of all, you have automated backups
+3
+and what it means that this service, RDS service,
+4
+will automatically do a daily full backup of the database
+5
+during your database backup window.
+6
+But on top of it, every five minutes
+7
+there's going to be the transactions log being backed-up.
+8
+That means that the earliest backup you have
+9
+is five minutes before now.
+10
+That means that from these automated backups
+11
+you can restore to any point of time
+12
+up until five minutes ago.
+13
+And for the automated backup retention,
+14
+you can say between one to 35 days of retention.
+15
+And if you wanted to disable this feature
+16
+you would set zero to disable automated backups.
+17
+The second option is to do manual DB Snapshots,
+18
+manual database snapshots.
+19
+And these, as the name indicates,
+20
+are manually triggered by the user.
+21
+But the benefit of it
+22
+is that this backup, that you do manually,
+23
+you can retain it for as long as you want.
+24
+So automated backups expire,
+25
+whereas DB Snapshots that are manual
+26
+can be retained for as long as you want.
+27
+So here is a trick.
+28
+When would you use backups, obviously, to back up your data,
+29
+but also if you want to save some costs.
+30
+So say for example, you have an RDS database
+31
+and you know that you're going to use it only
+32
+two hours per month.
+33
+Instead of stopping the database in which, for example,
+34
+you will still have to pay for the storage
+35
+even though your database is stopped.
+36
+What you can do is that after using it for two hours
+37
+you do a snapshot and then you delete the original database.
+38
+The snapshot is costing you way less
+39
+than the actual storage of the RDS database.
+40
+And when you're ready to use again the database
+41
+you would restore the snapshot and use that.
+42
+So it's a little trick and it can come up in the exam.
+43
+Now for Aurora backups, it is actually quite similar.
+44
+You have automated backups from one to 35 days
+45
+but they cannot be disabled.
+46
+So on RDS, they could be disabled, but not on Aurora.
+47
+And you have a point-in-time recovery
+48
+at any point of time in that timeframe,
+49
+so you can recover to whatever you want.
+50
+Now for manual DB Snapshots,
+51
+they can also be manually triggered by the user
+52
+and you retain them for as long as you want.
+53
+So you can see Aurora and RDS Backups are quite similar.
+54
+Now what about the restore options?
+55
+The first thing is that you can restore an RDS or
+56
+Aurora backup or snapshots, they're the same thing,
+57
+into a new database.
+58
+So anytime you restore an automated backup
+59
+or a manual snapshot, then it will create a new database.
+60
+The other option is that you can restore
+61
+a MySQL RDS database from S3.
+62
+And S3, we haven't seen it yet,
+63
+it's a way to store objects in the cloud on AWS,
+64
+it's a very popular service,
+65
+And the idea is that you will create a backup
+66
+of your on-premises database,
+67
+and then you will place it onto Amazon S3,
+68
+which is some object storage.
+69
+And finally, there is the option in RDS
+70
+to restore the backup file from Amazon S3
+71
+onto a new RDS instance running MySQL.
+72
+And if you wanted to, instead,
+73
+restore to MySQL Aurora cluster,
+74
+what you can do is that you take a backup again
+75
+of your on-premises database, so externally,
+76
+and then you used to use a software
+77
+called Percona XtraBackup.
+78
+It only works with this for now.
+79
+Then the backup file of Percona XtraBackup
+80
+goes onto Amazon S3.
+81
+And from this you can restore the backup file
+82
+onto a new Aurora cluster running MySQL.
+83
+So the difference here is that for restoring into RDS MySQL
+84
+you just need a backup of your database
+85
+for restoring into Aurora MySQL.
+86
+What you need to do is to do a backup using
+87
+Percona Xtrabackup, and then from S3
+88
+into your Aurora DB cluster.
+89
+Okay, so those are restore options
+90
+for either the snapshots or the database dumps
+91
+onto Amazon S3.
+92
+And finally, there's a last feature you need to know about
+93
+called Aurora Database Cloning.
+94
+So this allows you to create a new Aurora database cluster
+95
+from an existing one.
+96
+So say you have a production database in Aurora
+97
+and you want to actually run test on it
+98
+but you want to copy the data
+99
+because your test application must be
+100
+in a staging environment.
+101
+Well, for this
+102
+you're just going to clone your production Aurora database.
+103
+It's going to give you a new database,
+104
+and you can call it, for example,
+105
+the Staging Aurora database.
+106
+And it's going to be very quick.
+107
+It's faster than doing a snapshot and restore.
+108
+So why, while cloning uses the copy-on-write protocol,
+109
+how does that work?
+110
+Well, initially, when you create a database clone
+111
+it's going to be using the same data volume
+112
+as the original database cluster,
+113
+which is going to be fast and efficient
+114
+because you don't have any copying of data.
+115
+And then as the updates are being made
+116
+to the production Aurora database,
+117
+or to the Staging Aurora database,
+118
+then new additional storage is going to be allocated
+119
+and data is going to be copied and separated.
+120
+So that means you have the best of both worlds.
+121
+So doing a database cloning is very fast and cost effective,
+122
+and it's extremely useful to have a staging database
+123
+from a production database
+124
+without impacting the production database
+125
+and without going through snapshot and restore features.
+126
+Okay, that's it.
+127
+We've seen all the options for backup and restore
+128
+as well as cloning.
+129
+I hope you liked it.
+130
+And I will see you in the next lecture.
+
+--- RDS  Security ---
+
+1
+Now, here is a quick lecture
+2
+around RDS and Aurora Security.
+3
+So you can encrypt the data at-rest
+4
+on your RDS and Aurora database.
+5
+That means that the data is encrypted on the volumes.
+6
+For this, you will be having the master
+7
+and any replica encrypted using KMS.
+8
+And this is defined at launch time
+9
+during the first launch of your database.
+10
+If somehow you haven't encrypted the master database,
+11
+the main database,
+12
+then the read replicas cannot be encrypted.
+13
+Also, if you wanted to encrypt
+14
+an already existing unencrypted database,
+15
+what you would have to do is to take a database snapshot
+16
+from that un-encrypted database,
+17
+and then you restore that database snapshot
+18
+as an encrypted database. Okay?
+19
+So you have to go through a snapshot and restore operation.
+20
+So this is for at-rest encryption.
+21
+Then you have in-flight encryption.
+22
+So between your clients and your database.
+23
+So each database on RDS and Aurora
+24
+is ready to have in-flight encryption by default.
+25
+And so therefore, your clients must
+26
+use the TLS root certificates from AWS.
+27
+They're provided on the AWS website.
+28
+In terms of database authentication.
+29
+Because this is RDS and Aurora,
+30
+you can use the classic combo of username and password.
+31
+But because it says AWS,
+32
+you can also use IAM roles to connect to your database.
+33
+That means that's, for example,
+34
+if you're EC2 instances had IAM roles,
+35
+they can authenticate to your database directly using that
+36
+and not a username and a password,
+37
+which can help you manage all the security
+38
+within AWS and IAM.
+39
+You can also control network access to your database
+40
+using security groups.
+41
+So you can allow or block specific ports,
+42
+specific IP, specific security groups.
+43
+And then finally RDS and Aurora do not have SSH access,
+44
+of course, because they're managed services,
+45
+except if you use the RDS custom service from AWS.
+46
+And if you wanted Audit Logs.
+47
+So to know what queries are being made
+48
+on RDS and Aurora over time
+49
+and what's happening on databases,
+50
+you can enable Audit Logs.
+51
+And then they will be lost after a bit of time.
+52
+Therefore, if you wanted to keep them
+53
+for a long period of time,
+54
+what you need to do is to send them into a dedicated service
+55
+called the CloudWatch Logs service on AWS.
+56
+So that's it for the short lecture
+57
+on the summary options for security, for RDS and Aurora.
+58
+I hope you liked it.
+59
+And I will see you in the next lecture.
+
+--- RDS Proxy ---
+
+1
+So now, let's talk Amazon RDS Proxy.
+2
+So we know we can deploy our RDS database within our VPC,
+3
+but now we can also deploy
+4
+a fully managed database proxy for RDS.
+5
+So you may say,
+6
+"Okay, we can access our RDS database directly.
+7
+Why do we need a proxy to access our database?"
+8
+Well, if you use an As an RDS Proxy,
+9
+this will allow you, your application,
+10
+to pool and share the database connections
+11
+established with the database.
+12
+So instead of having every single application
+13
+connect to your RDS database instance,
+14
+they will be instead connecting to the proxy,
+15
+and the proxy will pool these connections together
+16
+into less connections to the RDS database instance.
+17
+So why may you do this?
+18
+Well, this makes a lot of sense
+19
+if you have a lot of connections
+20
+into your RDS database instance,
+21
+and it's going to improve your database efficiency
+22
+by reducing the stress on database resources,
+23
+for example, CPU and RAM,
+24
+and also minimize the open connections
+25
+and the timeouts into your database.
+26
+So that's one thing you need to look out for
+27
+from the exam perspective.
+28
+Now, as I said, the RDS Proxy is fully serverless.
+29
+It's auto scaling, so you don't need to manage its capacity.
+30
+And it's highly available.
+31
+It's across multiple AZ.
+32
+And therefore, in case, for example,
+33
+there is a failover that happens
+34
+on your RDS database instance.
+35
+For example, it goes from the primary instance
+36
+to the standby instance,
+37
+then it will, thanks to the RDS Proxy,
+38
+reduce the failover time by up to 66%.
+39
+So this is true for RDS and Aurora.
+40
+So again, instead of having all your applications
+41
+connect to the main RDS database instance
+42
+and then handle the feller themselves,
+43
+they will just connect to the RDS Proxy,
+44
+which does not know any failover.
+45
+And the RDS Proxy will, itself,
+46
+handle the failover of the RDS database instance,
+47
+therefore improving your failover time.
+48
+So something else you need to look for
+49
+from an exam perspective.
+50
+So the RDS Proxy supports MySQL, PostgreSQL, MariaDB,
+51
+Microsoft SQL Server,
+52
+as well as Aurora for MySQL and PostgreSQL.
+53
+It doesn't require you
+54
+to do any code change in your application.
+55
+Just instead of connecting to your RDS database instance
+56
+or your Aurora database,
+57
+you'd now just connect to your RDS Proxy and you are done.
+58
+On top of it,
+59
+there's a third advantage to using an RDS Proxy.
+60
+It is to enforce IAM authentication for your database.
+61
+So to make sure that people
+62
+can only connect to your RDS database instance using IAM.
+63
+And then these credentials
+64
+can be securely stored in another service
+65
+called the AWS Secrets Manager.
+66
+So again, if you need to see a way
+67
+to enforce IAM authentication for your database,
+68
+think RDS Proxy.
+69
+And finally, the RDS Proxy is never publicly accessible.
+70
+So it's only accessible from within your VPC.
+71
+So you cannot connect over the internet to your RDS Proxy,
+72
+which is enhanced security.
+73
+And so one service we haven't seen
+74
+that is going for sure to be very helped by the RDS Proxy
+75
+is called the Lambda functions.
+76
+And the Lambda functions, they will execute pieces of code.
+77
+We'll see them later on in this course.
+78
+Okay, you don't need to know them right now,
+79
+but we have to tackle them right now
+80
+because of the RDS Proxy feature.
+81
+And so the Lambda functions, they can multiply,
+82
+multiply many, many times.
+83
+And they will appear and disappear very, very fast.
+84
+And therefore, imagine you have 100
+85
+or 1,000 Lambda functions appearing and disappearing
+86
+just like that, and opening up connections
+87
+into your RDS database instance, they will be a big problem
+88
+because it will leave open connections and timeouts,
+89
+and it will be a mess.
+90
+And therefore what you do is that you use the RDS Proxy
+91
+to pool connections for your Lambda functions,
+92
+and then the Lambda functions will overload the RDS Proxy,
+93
+but it's meant to be overload.
+94
+And the RDS Proxy will pool these connections
+95
+into less connections to the RDS database instance,
+96
+thus, solving your problems, okay?
+97
+So that's it for this lecture. I hope you liked it.
+98
+And don't worry, we'll review the proxy once again
+99
+once we go into the Lambda lectures.
+100
+But again, RDS Proxy is used to minimize
+101
+and pool connections on your RDS database instance.
+102
+It's also used to minimize failover time
+103
+and reduce it by up to 66%.
+104
+And also, it's used to enforce IAM authentication
+105
+for your database and to securely store its credentials
+106
+in the Secrets Manager service.
+107
+All right, that's it. I hope you liked it.
+108
+And I will see you in the next lecture.
+
+--- ElastiCache Overview ---
+
+1
+Let's talk about Amazon ElastiCache.
+2
+So the same way you get RDS
+3
+to have managed relational databases,
+4
+ElastiCache is going to help you get managed Redis
+5
+or Memcached, which are cache technologies.
+6
+So what are caches?
+7
+Well, they are in-memory databases
+8
+with really high performance and low latency.
+9
+And what the cache will help you with is to help
+10
+reduce the load off of databases
+11
+for read-intensive workloads.
+12
+The idea is that the common queries are going to be cached,
+13
+and therefore, your database will not be queried every time.
+14
+Just your cache can be used
+15
+to retrieve the results of these queries.
+16
+What this also helps you do is
+17
+make your application stateless
+18
+by putting the state of your application
+19
+into Amazon ElastiCache.
+20
+And because we have the same benefits for RDS,
+21
+AWS will take the same maintenance of the operating system,
+22
+the patching, the optimization,
+23
+the setup, configuration, monitoring,
+24
+failure recovery, and backups.
+25
+Now, if you use Amazon ElastiCache,
+26
+just so you know that it will require you
+27
+to do some heavy application code changes
+28
+for your application.
+29
+This is not something you just enable,
+30
+and off you go, you have a cache.
+31
+You need to change your application to query the cache
+32
+before or after querying the database
+33
+and we'll see the strategies in a minute.
+34
+So now let's talk about the architecture
+35
+for using ElastiCache.
+36
+And there can be many, but I'm just giving you an example.
+37
+So, let's say we have Amazon ElastiCache and RDS database
+38
+and your application.
+39
+The application will query ElastiCache
+40
+to see if the query are already being made.
+41
+And if this has already been made
+42
+and it is stored in ElastiCache,
+43
+then it's called a cache hit,
+44
+and then it just gets the answer
+45
+straight from Amazon ElastiCache
+46
+and we're saving a trip to the database to do the query.
+47
+Now, in case of a cache miss,
+48
+then we need to fetch the data from the database.
+49
+We're going to read it from the database.
+50
+And then for other application or other instances
+51
+where the same query will be made,
+52
+we can write the data back into the cache
+53
+so that such as the same query next time will result
+54
+in a cache hit.
+55
+The idea is that it will help to relieve load
+56
+from your RDS database.
+57
+And because you're storing data in the cache,
+58
+there must be a cache invalidation strategy to make sure
+59
+that only the most current data is used in there.
+60
+And this is the whole difficulty
+61
+around using caching technologies.
+62
+Another architecture is around storing the user session
+63
+to make your application stateless.
+64
+So the idea is that your user will do login
+65
+into any kind of your applications,
+66
+and then the application will write the session data
+67
+into Amazon ElastiCache.
+68
+Now, if your user is redirected
+69
+to another instance of your application,
+70
+then your application can retrieve the session case,
+71
+the session directly from the Amazon ElastiCache,
+72
+and therefore your user is still logged in
+73
+and it doesn't need to log in one more time.
+74
+And so the idea is that
+75
+now you made your application stateless
+76
+by writing the session data of your user
+77
+into Amazon ElastiCache.
+78
+So if we compare Redis and Memcached,
+79
+so for Redis we have multi-availability zone
+80
+with auto-failover as a feature,
+81
+and you can create read replicas to scale the reads
+82
+and have high availability.
+83
+You also get data durability using AOF persistence,
+84
+and you have a backup and restore features
+85
+on the open source version of Redis.
+86
+It also supports sets and sorted sets,
+87
+which are a very nice way to create leaderboards
+88
+and provide you with some very nice features in a cache.
+89
+So the way I like to think of Redis is
+90
+a Redis node being replicated into another one
+91
+to give you an idea of how it works.
+92
+Of course, Redis is evolving fast
+93
+and this may not be general, but this is a simplification.
+94
+And for memcached, the idea is that
+95
+you have a multiple nodes set up
+96
+and they're partitioning your data.
+97
+That means it's called charting
+98
+so you have multiple nodes together.
+99
+And there's no high availability, there's no replication.
+100
+Again, not everything may be true, for example,
+101
+for the serverless version of of memcached,
+102
+but I'm just trying to draw a simple image here.
+103
+It's not personal data.
+104
+So if you have an issue with memcached,
+105
+you may lose your entire cache and you have backup
+106
+and restore features only for the serverless version
+107
+of memcached, not the self-managed version
+108
+of memcached on ElastiCache.
+109
+You also have a multi-thread architecture,
+110
+which may be good for performance.
+111
+So the way I like to think of memcached is they're sharding
+112
+so you have multiple nodes next to each other,
+113
+which are partitioning, which are sharing the data, okay?
+114
+So the exam may not ask you many questions
+115
+or any question about choosing Redis versus Memcached
+116
+but it's good for you to know as a reference point
+117
+based on the use case if that appears at the exam.
+118
+Alright, that's it, I hope you liked it
+119
+and I will see you in the next lecture.
+
+--- ElastiCache Hands On ---
+
+1
+Okay, so let's practice
+2
+using Amazon ElastiCache.
+3
+So we're going to get started.
+4
+Here we have several engine recommendations.
+5
+We have Valkey, which is a replacement for Redis,
+6
+Memcached or Redis OSS.
+7
+So you can use Valkey.
+8
+It's the recommended way.
+9
+We can use Redis, we're gonna use Redis.
+10
+It's the exact same options.
+11
+And then for deployment option,
+12
+we have the serverless option
+13
+and we have the node-based cluster,
+14
+but for us to understand exactly how things work,
+15
+we're going to select the node-based cluster.
+16
+So we can restore from a backup,
+17
+or we have easy create
+18
+to use recommended best practices configuration.
+19
+So for example, we have production type of configuration
+20
+or dev test or demo.
+21
+And it depends on your needs, of course,
+22
+or if you wanted to, you can configure everything
+23
+by having the cluster cache mode.
+24
+So here we're going to want to configure everything
+25
+just to view all the options.
+26
+So the cluster mode is going to be disabled,
+27
+where we have only a single shard with one primary node
+28
+and up to five read replica.
+29
+But if you want to have multiple shards
+30
+across multiple servers, then you would use cluster mode.
+31
+All right, so we'll use it at disabled.
+32
+Then this one is going to be called DemoCluster.
+33
+The location is going to be on AWS Cloud,
+34
+but you have the option to also run ElastiCache on premises
+35
+using something called AWS Outpost.
+36
+Now, do we want multi-AZ or not?
+37
+This is very helpful for high availability and failover
+38
+in case of a primary node failover,
+39
+but for now we disable it
+40
+because this will just incur more cost if we did.
+41
+Do we want auto-failover, yes or no?
+42
+We'll leave it as enabled.
+43
+Now for cluster setting, you can specify the engine version,
+44
+the port, the parameter groups,
+45
+and for node type, we're going
+46
+to use a micro type of instance.
+47
+And so we have t2 micro, t3 micro,
+48
+and t4g micro in this example,
+49
+and I think t2 and t3 are in the free tier
+50
+so use one of these.
+51
+All right, so we have a t2 micro,
+52
+and then we can have replicas,
+53
+which is very helpful when you have this kind of scaling
+54
+for, as we said, the cluster mode.
+55
+So we are going to just have it as zero right now
+56
+just for cost purposes,
+57
+and this is of course, when you have multi-AZ,
+58
+you should have more replicas.
+59
+So this makes sense.
+60
+So let's keep it as zero just for cost purposes.
+61
+Now I'm going to create a subnet group,
+62
+so my-first-subnet-group,
+63
+and this is going to indicate in ElastiCache,
+64
+which subnets we can run the cache in.
+65
+So we can choose the VPC,
+66
+and then automatically subnets are auto selected,
+67
+but we can specify them as well if you wanted to.
+68
+Now for AZ placements,
+69
+we can specify which replicas can go to each AZ,
+70
+but again, we're not running into multi-AZ mode right now,
+71
+so it doesn't really matter.
+72
+Now for next, do we want encryption at rest, yes or no?
+73
+In case you want encryption at rest,
+74
+you need to specify a key.
+75
+And do you want encryption in transit to encrypt the data
+76
+between the client and the server?
+77
+If you do enable encryption in transit,
+78
+then you get access control feature.
+79
+So to choose who can access your cache.
+80
+So we have Redis AUTH in which we specify a password,
+81
+an AUTH token to connect to our Redis cluster,
+82
+or we can use an user group access control list.
+83
+And then you can create a user group right here
+84
+from the ElastiCache console.
+85
+So I'm going to disable encryption in transit.
+86
+And then you can also have security groups
+87
+to manage which applications have access
+88
+to your cluster from a network perspective.
+89
+So in terms of backup, do we want backup, yes or no?
+90
+And then for maintenance, do we want maintenance windows
+91
+to actually perform minor versions upgrades?
+92
+Do we want to have logs such as slow logs
+93
+or engine logs that we can send into CloudWatch logs?
+94
+And finally, do we want to have tags?
+95
+So a lot of different options.
+96
+This is similar to RDS,
+97
+that's why I'm going a bit quicker over this.
+98
+But we've seen the different options to create our cache.
+99
+So then we can review everything
+100
+and then click on create to actually create our cache.
+101
+My ElastiCache database is now created
+102
+and I can click on it.
+103
+And if I had an application that I wrote with some code,
+104
+I could actually use the primary endpoints
+105
+or if it was a read replica, a reader endpoint,
+106
+to allow to read from my cache, okay?
+107
+Now, there is no easy way for me to show you how
+108
+to connect to an Redis cache because it's not that easy
+109
+and you need to actually write some code
+110
+and it would be too complicated.
+111
+But from an AWS perspective, from this console,
+112
+you can see all the details as well as nodes, metrics,
+113
+logs, network security, and so on.
+114
+And it looks just like RDS
+115
+because yes, it is very similar service to RDS,
+116
+but it's intended for Redis and Memcached.
+117
+So the last thing you have to do is take this Redis cluster,
+118
+action and then delete.
+119
+And then do you wanna back up?
+120
+No.
+121
+You just type the name of the cluster, delete,
+122
+and you're done with this hands on.
+123
+Okay, that's it.
+124
+I hope you liked it and I will see you in the next lecture.
+
+--- ElastiCache for Solution Architects ---
+
+1
+Now, let's talk about ElastiCache Security.
+2
+So ElastiCache supports IAM authentication for Redis only
+3
+and for the rest you just use a username and password.
+4
+If you define IAM policies on ElastiCache,
+5
+they're only used for AWS API-level security.
+6
+Then you have security within Redis called Redis AUTH,
+7
+where you can set a password and a token
+8
+when you create a Redis cluster,
+9
+which gives you an extra level of security
+10
+for your cache on top of your security groups.
+11
+It also supports SSL in flight encryption.
+12
+Next we have Memcached.
+13
+So Memcached supports SASL-based authentication
+14
+which is quite an advanced mechanism.
+15
+Just remember, just a name.
+16
+So to summarize, when we have an EC2 instance in a client,
+17
+for example, we could use Redis AUTH to connect
+18
+to Redis Cluster that's protected by Redis Security Group
+19
+and we can have in-flight encryption.
+20
+Or alternatively, we could, for example,
+21
+leverage IAM authentication for Redis.
+22
+Now, there are three kinds of patterns
+23
+for loading data into ElastiCache.
+24
+The number one is Lazy Loading,
+25
+where all the read data is cached
+26
+and data can become stale in the cache,
+27
+Write Through, which is to add or update data in the cache
+28
+whenever it is written to a database
+29
+where there's no stale data,
+30
+and using ElastiCache as a session store that we saw before
+31
+and then we can expire a session
+32
+using the time to live features.
+33
+Now, caching is very hard and there's this very famous quote
+34
+in computer science that "There are only two hard things
+35
+in computer science: caching invalidation
+36
+and naming things."
+37
+So caching is a very complicated topic
+38
+and give you a very high-level overview,
+39
+but let's illustrate the lazy loading strategy here.
+40
+So your application, if it has a cache hit
+41
+in ElastiCache data from the cache,
+42
+otherwise there's a cache miss, therefore,
+43
+you read from the database and you write to the cache.
+44
+This is something we've seen from before
+45
+and it is called lazy loading
+46
+because only when you don't have a cache hit,
+47
+then you load the data into Amazon ElastiCache.
+48
+So now let's talk about the use cases for Redis
+49
+and there's one you need to know going to the exam.
+50
+It is around creating a gaming leaderboard.
+51
+So it is very complex.
+52
+The idea is that you wanna say
+53
+who is number one, who is number two,
+54
+who's number three at any moment in time for your game.
+55
+And so there is a feature in Redis called Sorted Sets
+56
+which guarantees both uniqueness and element ordering.
+57
+And each time an element is added it's going to be ranked
+58
+in real time and then added in the correct order.
+59
+The idea is that if you have a Redis cluster,
+60
+you can create a realtime leaderboard with a number one,
+61
+number two, and number three player in realtime
+62
+and all the Redis cache will have
+63
+at the same leaderboard available.
+64
+That means that your clients,
+65
+when talking to your Amazon ElastiCache using Redis,
+66
+they can have access to this realtime leaderboard
+67
+and we don't need to program that feature application side.
+68
+We can just leverage Redis
+69
+with the sorted sets to get access
+70
+to your realtime leaderboard.
+71
+And this is yet again something
+72
+that can come up in the exam, okay?
+73
+So that's it for this lecture.
+74
+I hope you liked it and I will see you in the next lecture.
+
+--- List of Ports to be familiar with ---
+
+[No transcript available for this lecture]
+

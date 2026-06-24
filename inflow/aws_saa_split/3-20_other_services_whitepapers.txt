@@ -1,0 +1,4429 @@
+--- Other Services Section Introduction ---
+
+0
+Welcome to one of the final sections of this course this section is a little bit special because
+1
+I'm going to mention other technologies that may be coming up at the exam for one or two questions but there
+2
+are going to be very basic questions.
+3
+So this lecture will not be a deep dive into all of these topics it's just going to be an overview of
+4
+a few services. Overall as exam evolves and changes
+5
+I will make sure to add the appropriate lectures in this section. But everything you need to know today is already
+6
+here.
+7
+I guarantee you this.
+8
+So let's get started and learn about the few other services.
+
+--- CloudFormation Intro ---
+
+1
+Welcome to this section
+2
+on Deploying and Managing Infrastructure at Scale.
+3
+In this section, we'll see different ways
+4
+to deploy your workloads onto AWS.
+5
+And the first technology I wanna talk about
+6
+is CloudFormation.
+7
+So CloudFormation is such an important technology in the AWS
+8
+because it is a declarative way
+9
+of outlining your AWS infrastructure, for any resources,
+10
+and most of them are supported.
+11
+So to give you a concrete example,
+12
+in CloudFormation, you would say,
+13
+I want a security group.
+14
+I want two EC2 instances
+15
+that will be using that security group.
+16
+I also want an S3 bucket,
+17
+and I want a load balancer in front of all these machines.
+18
+Then CloudFormation automatically creates
+19
+all these things for you, in the right order,
+20
+with the exact configuration that you specify.
+21
+So the benefits of using CloudFormation are multiple,
+22
+but the first one
+23
+is that all your infrastructure is as code.
+24
+That means that
+25
+you will never, ever create resources manually
+26
+like we've done in this course,
+27
+which is excellent for control.
+28
+And that means that anytime you do changes
+29
+to how your AWS cloud is doing,
+30
+then it needs to be reviewed through code review,
+31
+which is a great way to operate in a cloud.
+32
+On top of things, there is a cost advantage
+33
+because each resource within the stack
+34
+is going to get a tag that is going to be similar
+35
+to all the other resources creating within the stack.
+36
+And you can also easily estimate the cost of your resources
+37
+using the CloudFormation templates.
+38
+And finally, thanks to CloudFormation,
+39
+you can have a saving strategy.
+40
+For example, you can say that in some environment
+41
+you could automate the deletion of all the templates
+42
+at 5:00 PM,
+43
+which will delete all the associated resources
+44
+with that template,
+45
+and then recreate it at 9:00 AM or 8:00 AM safely.
+46
+And so therefore, you have cost savings
+47
+because you don't have any resources
+48
+between 5:00 PM and 8:00 AM.
+49
+With CloudFormation,
+50
+it's super easy to create and delete resources,
+51
+which is one of the biggest cloud principle.
+52
+Then for productivity.
+53
+So as I said, you're able to destroy
+54
+and recreate infrastructure on the fly.
+55
+It's also generating diagrams for your templates
+56
+as we'll see very quickly.
+57
+And there's declarative programming,
+58
+so you don't need to figure out
+59
+if you need to create a DynamoDB table first,
+60
+or an EC2 instance, or all these things together.
+61
+The CloudFormation template is smart enough
+62
+to figure out how to do things.
+63
+Finally, with CloudFormation,
+64
+we don't reinvent the wheel.
+65
+So that means that we can leverage existing templates
+66
+on the web,
+67
+we can leverage documentation,
+68
+and CloudFormation supports almost all AWS resources.
+69
+That means that everything we'll see in this course
+70
+is supported by CloudFormation.
+71
+And in case it isn't,
+72
+you can use something called a custom resource
+73
+for resources that are not supported.
+74
+So CloudFormation really
+75
+is the base of infrastructure as code on AWS.
+76
+So as I said,
+77
+you can visualize a CloudFormation template
+78
+using the Infrastructure Composer service
+79
+and to (indistinct)
+80
+to visualize a WordPress CloudFormation stack.
+81
+And as you can see,
+82
+we can see all the resources
+83
+of our CloudFormation templates.
+84
+So we can see the ALB Listener,
+85
+the database security group,
+86
+the SQL database,
+87
+different security groups,
+88
+launch configuration,
+89
+application balancers, and so on.
+90
+But on top of it,
+91
+we can see the relations between all of these components
+92
+and how they're linked together,
+93
+which is very handy
+94
+when you want to understand your architecture diagrams.
+95
+So from an exam perspective,
+96
+CloudFormation is going to be used
+97
+when we have infrastructure as code,
+98
+when we need to repeat an architecture
+99
+in different environments, different regions,
+100
+or even different AWS accounts.
+101
+So that's it for me.
+102
+I will see you in the next lecture
+103
+for a short practice on CloudFormation.
+
+--- CloudFormation - Hands On ---
+
+1
+Okay, so I'm going to give you
+2
+a quick introduction to CloudFormation
+3
+and give you an overview that really allows you
+4
+to understand how it works.
+5
+So let's create a stack
+6
+and let's make sure first of all that we are in the US East,
+7
+Northern Virginia, US East 1 region,
+8
+because the template I've created for you
+9
+only works in that region.
+10
+And I will tell you why when we see the template.
+11
+So please make sure to switch the region to this one.
+12
+Next we create a stack and we have to prepare templates.
+13
+So multiple options.
+14
+We can choose an existing one,
+15
+use a sample template and some samples are provided
+16
+or build from Application Composer.
+17
+But we're going to choose an existing template.
+18
+We're going to upload a template file
+19
+and let me show you what the file looks like.
+20
+So in your course code under CloudFormation,
+21
+you have 0-just-EC2.yaml.
+22
+And this is a very simple file right now
+23
+which has a resource blog and it creates
+24
+an instance called My instance.
+25
+The type is EC2 instance,
+26
+and then you have a few properties.
+27
+The first one is the availability zone,
+28
+which is US East 1a
+29
+and this is why you have to choose US East 1
+30
+as your region in CloudFormation service right now.
+31
+And the image ID is this AMI ID.
+32
+And as you should know,
+33
+AMI IDs are scoped within the region.
+34
+So for these two reasons, you must be in US East 1
+35
+for this hands-on.
+36
+The instance type is T2 micro.
+37
+And so as you can see we define how to launch
+38
+an EC2 instance through this YAML file.
+39
+So let's go ahead and actually upload this file.
+40
+So select it and then you can actually view it
+41
+in Application Composer.
+42
+So open this in a new tab.
+43
+So here is my template.
+44
+So as you can see, Application Composer gives us
+45
+a visual understanding of our templates.
+46
+So if we look within templates,
+47
+we get back the code that we just uploaded right here
+48
+and we can switch it to YAML and JSON if we wanted to.
+49
+But in the canvas we see that we have
+50
+one standard component,
+51
+which is an EC2 instance in my instance.
+52
+You could double click on it
+53
+and view it the fact that it's an EC2 instance as well.
+54
+So Application Composer is a nice way
+55
+of getting a visual feedback of your templates.
+56
+Anyway, back into our stack.
+57
+Let's click on next.
+58
+We have to provide a demo stack name.
+59
+So I'll call this one demo CloudFormation
+60
+and then some parameters.
+61
+But because we don't define any parameters
+62
+in our templates so far, we don't do anything here.
+63
+Let's click on next here we have tags.
+64
+So I'm just going to show you tag being CFDemo
+65
+just to show you how tags work in CloudFormation.
+66
+We scroll down, no permissions to set.
+67
+We don't touch these options and neither of these options.
+68
+So let's click on next and we review and create.
+69
+And when we're good to go, let's click on submit.
+70
+So as you can see now this template I uploaded
+71
+is going to generate some events and that was very quick.
+72
+So the events are done
+73
+and this actually created a resource right here,
+74
+which is an EC2 instance.
+75
+So the code got a resource out of it,
+76
+and this is why it's called Infrastructure as Code.
+77
+So you can click on this EC2 instance.
+78
+As you can see right now in the EC2 console,
+79
+my instance is running
+80
+and you can check the fact that indeed it is a T2 micro
+81
+type of instance.
+82
+And you can also check the fact
+83
+that the AMI ID we have selected is the one
+84
+that was entered in our template.
+85
+So this is all very convenient.
+86
+On top of it, we notice that if you go to our EC2 instance
+87
+and we look at the tags,
+88
+we can see that some tags were applied by CloudFormation,
+89
+which are the name of the CloudFormation,
+90
+the name of the logical ID and the stack ID,
+91
+but also the name we have specified.
+92
+So the tag we specified has name CFDemo
+93
+has also been applied to this EC2 instance,
+94
+and therefore it's named correctly.
+95
+Okay, so now that we have an instance,
+96
+let's go ahead and update this stack.
+97
+So we click on update
+98
+and we replace the existing template.
+99
+And this time we're going to choose this
+100
+1-ec2-with-sg-eip file.
+101
+And if you have a look at it, this file is right here.
+102
+So we have a more complete file now.
+103
+We have a parameter section
+104
+to set the security group description.
+105
+We have the EC2 instance section,
+106
+which is a bit more complete
+107
+because now it has security groups and it has two of those.
+108
+We have an Elastic IP here that is attached to my instance.
+109
+And we have one security group here defined for SSH rules.
+110
+So port 22 is going to be open
+111
+and we have the server security group,
+112
+which is going to be open on port 80 from everyone
+113
+and port 22 from a very specific IP.
+114
+So this is a more complete CloudFormation template.
+115
+Now let's go back to CloudFormation
+116
+and we're going to apply these template.
+117
+So here we are prompted with a parameter.
+118
+So what is the security group description?
+119
+So let's enter demo description.
+120
+And as you can see now we are entering some texts,
+121
+which is going to make everything vary.
+122
+We don't touch the tags, we don't touch anything.
+123
+Let's click on next.
+124
+And now because we are applying an update,
+125
+as you can see, we have a change set.
+126
+And so we can preview the change sets,
+127
+which is what is going to change
+128
+in our CloudFormation stack.
+129
+So as you can see, a few things are added.
+130
+There is an Elastic IP, there is an SSH security group
+131
+and a server security group.
+132
+And it's add, so it's new.
+133
+And my instance is going to change,
+134
+it's going to be modified, and there is a column here
+135
+says replacement true.
+136
+That means that this EC2 instance is going to be replaced,
+137
+that means that the previous one is going to be deleted
+138
+and a new one is going to be created.
+139
+So it's good to know in case you had some data
+140
+on your EC2 instance.
+141
+So now let's submit this update and see what happens.
+142
+So CloudFormation is a very smart service
+143
+because well, from just this code right here
+144
+it's able to figure out exactly what to do
+145
+thanks to the change sets,
+146
+so it knows exactly what to create first.
+147
+So as you can see, the server security group
+148
+and the SSH security group already are created.
+149
+And only then will it update the EC2 instance.
+150
+So now the my instance is an update in progress,
+151
+and as you can see, it says requested updates requires
+152
+the creation of a new physical resource, hence creating one.
+153
+So if you go into the EC2 console
+154
+and we remove this filter,
+155
+now we see that we have two EC2 instances.
+156
+This one was created before and this one is the new one
+157
+and it was pending and now it is running.
+158
+So a new instance got created
+159
+and once it's created, again, it's going to be updated here,
+160
+the update is complete.
+161
+And now we have MyEIP.
+162
+So now the Elastic IP is going to be created
+163
+and then attached to my EC2 instance.
+164
+So if we're quick and we go on the left hand side
+165
+to Elastic IP, even though we may not have seen what it is
+166
+here is Elastic IP that is properly created,
+167
+properly tagged, and it is attached already
+168
+to our EC2 instance.
+169
+So now if I click on this one
+170
+and then I click on networking at the bottom,
+171
+you see Elastic IP address here was attached.
+172
+So everything was done by CloudFormation and was done well.
+173
+And if you look at CloudFormation now in the events,
+174
+as you can see, the Elastic IP was created
+175
+and then there was a cleanup in progress due in progress.
+176
+So that means that the previous EC2 instance right here,
+177
+this one got terminated,
+178
+which is very handy because CloudFormation
+179
+takes care of everything.
+180
+So you can go into the resources tab
+181
+and see everything that was created through CloudFormation.
+182
+On top of it, if you go to the template
+183
+and you click on view in Application Composer,
+184
+you're able to see now your new architecture.
+185
+So we have an EC2 instance connected to an Elastic IP
+186
+and connected to two security groups.
+187
+So this is very handy
+188
+because it gets a visual representation
+189
+again of our templates.
+190
+So finally, of course, confirmation.
+191
+You could go ahead and delete things manually.
+192
+You could delete this Elastic IP and so on,
+193
+and the EC2 instances manually.
+194
+But this is actually not recommended.
+195
+You don't wanna touch anything manually
+196
+when using CloudFormation.
+197
+Instead, you want to either update the templates,
+198
+or if you wanted to delete everything, just click on delete.
+199
+And CloudFormation will delete all the stack resources.
+200
+And the stack resources are also going to be deleted
+201
+in the right orders.
+202
+So CloudFormation will figure out what to delete first
+203
+and so on to clean up everything.
+204
+So CloudFormation is a really powerful service
+205
+to do infrastructure as code because it's declarative.
+206
+You just say what you want and CloudFormation
+207
+figures it out, and all the code will control
+208
+your infrastructure, which is very, very handy.
+209
+So learning how to use it
+210
+and write it can be a very good skill in AWS.
+211
+So I hope you liked it
+212
+and I will see you in the next lecture.
+
+--- CloudFormation - Service Role ---
+
+1
+So here is one thing you need
+2
+to know about CloudFormation and security.
+3
+So CloudFormation can use service roles.
+4
+What are they?
+5
+Well, they are iam roles that you create
+6
+and they're dedicated to CloudFormation
+7
+and they allow CloudFormation
+8
+to actually create update
+9
+and delete stack resources on your behalf.
+10
+So if you want to give the ability to users
+11
+to actually create, update
+12
+and delete stack resources,
+13
+but they don't have the permissions
+14
+to directly work with the resources,
+15
+what you would do is use a service role.
+16
+So for example, we define a template
+17
+and our own iam permissions as a user is
+18
+to do actions on the CloudFormation.
+19
+And we have iam PassRole.
+20
+We also create a service role that we're going
+21
+to be dedicating to CloudFormation.
+22
+And this service role has the S3 star buckets,
+23
+permissions, for example,
+24
+to create, update and delete a bucket.
+25
+So here CloudFormation will be able
+26
+to create this S3 bucket thanks
+27
+to its service role because the user was able
+28
+to pass that role to CloudFormation.
+29
+So the use cases for security is if you want
+30
+to achieve the least privileged principle
+31
+and you don't want to give the users
+32
+all the permissions
+33
+to create the stack resources,
+34
+only the permissions
+35
+to invoke a service role on CloudFormation.
+36
+For this to work, remember the user
+37
+must have the permission named iam PassRole,
+38
+which is a necessary permission
+39
+to give a role to a specific service in AWS.
+40
+So let me show you an example
+41
+of iam roles with CloudFormation.
+42
+So if you go to iam and then you go
+43
+to the roles section in iam,
+44
+we're going to create a role
+45
+and it's for an AWS service,
+46
+the service being CloudFormation.
+47
+And next for permission policies,
+48
+I'm going to give S3 full access
+49
+just to have dedicated role for Amazon S3,
+50
+just as an example.
+51
+Click on next and I'll call
+52
+it DemoRole for CFN with S3 capabilities.
+53
+And so this role allows CloudFormation
+54
+to do anything with Amazon S3.
+55
+So this role has been created.
+56
+Now if I go to CloudFormation
+57
+and create a stack, I will just use one
+58
+of my existing templates.
+59
+I don't need to have anything very fancy.
+60
+We will not go all the way with it.
+61
+So I call this one DemoRole.
+62
+Click on next.
+63
+And as you can see here,
+64
+within permissions there is an iam role.
+65
+This is optional.
+66
+So if I don't specify, then iam role is going
+67
+to use my own personal permissions.
+68
+But if I want to specify an iam role,
+69
+I can look at this DemoRole
+70
+for CFN with S3 capabilities.
+71
+And this role is going to be used
+72
+for all stack operations.
+73
+So that means that the role now
+74
+will not use my own personal permissions,
+75
+but this one, and because this one
+76
+is just powered with Amazon S3 permissions,
+77
+then actually my stack will fail
+78
+because my stack is actually
+79
+creating an EC2 instance.
+80
+But this is where actually the permissions
+81
+are defined if you want
+82
+to use an iam role for CloudFormation.
+83
+And that's it.
+84
+So I hope you liked it and I will see you
+85
+in the next lecture.
+
+--- Amazon SES ---
+
+1
+So here is a quick lecture about Amazon SES,
+2
+also called Simple Email Service.
+3
+So to fully managed service,
+4
+as the name indicates,
+5
+they will allow you to send email securely,
+6
+globally, and at scale.
+7
+So the idea is that your application
+8
+will use the SES API or SMTP server
+9
+and Amazon SES will then send bulk emails to users.
+10
+So this allows for outbound and inbound emails
+11
+so you can receive replies,
+12
+and it gives you a reputation dashboard,
+13
+if your emails are open or not,
+14
+performance insights,
+15
+as well as anti-spam feedback,
+16
+so if people rates your emails as spam or not.
+17
+It provides email statistics
+18
+such as deliveries, bounces, feedback loop results,
+19
+and whether or not the email was open,
+20
+and it supports the standard security
+21
+for email sending of today,
+22
+so you have DKIM and you have SPF.
+23
+There is a flexible deployment
+24
+so you can use a shared IP,
+25
+a dedicated IP,
+26
+or your own customer-owned IP.
+27
+This is to send emails from a specific IP address,
+28
+and then the APIs are accessible from the console,
+29
+specific AWS APIs, or the SSTP protocol.
+30
+So the use cases for Amazon SES
+31
+will be transactional emails,
+32
+marketing email,
+33
+and bulk emails communications.
+34
+So that's it for this lecture.
+35
+I hope you liked it,
+36
+and I will see you in the next lecture.
+
+--- Amazon Pinpoint ---
+
+1
+So now, let's talk about Amazon Pinpoint.
+2
+And Amazon Pinpoint is scalable two ways,
+3
+so inbound and outbound marketing communication service.
+4
+The idea is that you want to send email,
+5
+SMS, push notifications, voice,
+6
+and in-app messaging through Pinpoint.
+7
+And one of the main use cases is SMS.
+8
+So the customers will receive an SMS
+9
+that you send from Amazon Pinpoint.
+10
+And you have the ability to segment
+11
+and personalize the messages
+12
+with the right content to customers.
+13
+So you can create groups and segments and so on.
+14
+You also have the possibility to,
+15
+of course, receive replies.
+16
+And this scales to billions of messages per day.
+17
+So the use cases for Pinpoint is to run campaigns
+18
+by sending marketing email in bulk,
+19
+or sending transactional SMS messages.
+20
+And should someone reply or should it be successful,
+21
+then all the events such as text success,
+22
+text delivered replies, and so on,
+23
+will be delivered to Amazon SNS,
+24
+Kinesis Data Firehose, and CloudWatch Logs.
+25
+So you can build any kind of automation
+26
+easily on top of Amazon Pinpoint.
+27
+And so you may be wondering,
+28
+well, what is the difference between Pinpoint
+29
+and Amazon SNS or Amazon SES?
+30
+Because there is obviously some overlap.
+31
+So the idea is that in SNS or SES,
+32
+you have to manage each message's audience,
+33
+content, and delivery schedule.
+34
+And this is the responsibility of your application.
+35
+And that may be a lot of work,
+36
+and that may be not very scalable.
+37
+So in Amazon Pinpoint, instead, you're going to create
+38
+message templates, delivery schedules,
+39
+highly targeted segments, and full campaigns.
+40
+And all of this is managed by the Pinpoint service.
+41
+So see Pinpoint as the next evolution of SNS and SES,
+42
+in case you wanna do full-blown
+43
+marketing communications service.
+44
+So that's it for this lecture.
+45
+I hope you liked it, and I will see you in the next lecture.
+
+--- SSM Session Manager ---
+
+1
+Okay. So now, let's discuss
+2
+the SSM Session Manager feature of Systems Manager.
+3
+So this allows you to start a secure shell
+4
+on your EC2 instances and on-premises servers
+5
+without having SSH access or the need for bastion host
+6
+or any SSH keys.
+7
+That means that the port 22 on your EC2 instances
+8
+is going to be closed because there is going to be
+9
+no need to do SSH to establish a secure shell
+10
+onto your EC2 instance.
+11
+That means better security.
+12
+So how does that work?
+13
+Well, the EC2 instance that we're going to show you
+14
+in a second has an SSM Agent
+15
+and that agent is connected to the Session Manager service.
+16
+So that means that our users can access
+17
+through the Session Manager service
+18
+these two instance and execute some commands on it.
+19
+This has support for Linux, macOS and Windows
+20
+and we can send log data to Amazon S3 or CloudWatch Logs
+21
+to make it super secure.
+22
+I think it'll make a lot more sense
+23
+when we do the hands-on so let's do it.
+24
+So let's have a look at the SSM Session Manager service,
+25
+but first, we need to launch an EC2 instance.
+26
+So let's launch an instance right now
+27
+and I will scroll down.
+28
+We will choose Amazon Linux 2 AMI, t2.micro.
+29
+We will not use any key pair.
+30
+And then I will disable SSH traffic.
+31
+So as you can see, my EC2 instance will have
+32
+a security group that allows nothing.
+33
+No HTTP, no HTTPS, no SSH.
+34
+Yet, we will be able to use an SSM Session Manager shell.
+35
+So what I need to do actually is
+36
+to attach an IAM instance profile to my instance
+37
+to allow it to talk to the SSM service.
+38
+So I have a few right here,
+39
+but I'm going to create a new one just to show the process.
+40
+So click on create a new IAM role profile.
+41
+Then let's create a role.
+42
+For a service on AWS, it will be Amazon EC2.
+43
+Click on next. Then, for permissions,
+44
+we're going to filter for SSM
+45
+and we will choose the Amazon SSM managed instance core.
+46
+So let's select this and click on next.
+47
+And then I will call it demo EC2 role for SSM,
+48
+which allows the EC2 instance to use this policy
+49
+to talk to the SSM service.
+50
+So this is necessary for my instance
+51
+to be managed by the SSM service
+52
+and so we can use the SSM Session Manager feature.
+53
+So now that this role is created,
+54
+we're going to refresh here and we're going to look
+55
+for this demo EC2 role for SSM.
+56
+Perfect. So let's go ahead
+57
+and now, create and launch our instance,
+58
+which is now launched
+59
+and it's going to boot.
+60
+And so the thing I have to check now is the SSM service.
+61
+So let's go into Systems Manager.
+62
+And on the left hand side,
+63
+you're going to look for Fleet Manager
+64
+and Fleet Manager is a service where all the EC2 instances
+65
+that are registered with SSM will appear here.
+66
+So they're called managed nodes.
+67
+And as you can see right now,
+68
+we don't have any managed nodes,
+69
+but we need to wait for the EC2 instance to boot up
+70
+and then it will appear right here.
+71
+Okay. So I just refreshed and as you can see,
+72
+there's one instance. It's running.
+73
+We can see the SSM Agent is online.
+74
+We can see the platform, the operating system,
+75
+Amazon Linux 2, the SSM Agent version
+76
+and then links to the EC2 instance if we wanted to.
+77
+Okay. So as soon as our instance is under Fleet Manager,
+78
+that means that we're ready
+79
+to run a secure shell against it.
+80
+So to do so, I will scroll down
+81
+and I will look for Session Manager.
+82
+Now, Session Manager is a way for us
+83
+to access our Linux instances and Windows instances.
+84
+So let's start a session.
+85
+And as you can see here, okay,
+86
+my EC2 instance under the security group
+87
+does not have any inbound rule.
+88
+Okay. So zero inbound rules in here.
+89
+So let's start a session on this EC2 instance and start it.
+90
+And the idea is that we're going to get a secure shell,
+91
+as you'll see in a second.
+92
+Here we go, we have a secure shell
+93
+and I didn't need to have SSH access
+94
+so I can do ping google.com
+95
+and this command is going to work, obviously.
+96
+And if I do host to get the host name, so host name,
+97
+we can see that this is IP 172-31-1-148,
+98
+which is exactly corresponding to,
+99
+and if you go into networking,
+100
+the private IP address of my instance.
+101
+So that means that using the SSM secure shell,
+102
+we're able to have indeed a secure shell directly
+103
+from AWS without having SSH security keys and SSH access.
+104
+So to summarize, we have three ways
+105
+of accessing our EC2 instance.
+106
+Number one is to open the port 22 and then use SSH keys
+107
+and with a terminal to do the SSH command.
+108
+Number two is to use EC2 Instance Connect
+109
+and that didn't require to get SSH keys
+110
+because they will be temporarily uploaded
+111
+onto the Amazon EC2 instance if we need to.
+112
+So that was number two, but this required still
+113
+the port 22 to be opened on our EC2 instance
+114
+to have access with using EC2 Instance Connect.
+115
+And then we've explored the third option
+116
+which is Session Manager.
+117
+So we need to make sure that we had an EC2 instance
+118
+with Amazon Linux 2 and make sure
+119
+that this EC2 instance had an IAM role
+120
+and this IAM role, okay, as you can see under security,
+121
+had an IAM role and this IAM role allowed access
+122
+from the EC2 instance to Systems Manager
+123
+and this is what allowed us to get the secure shell running.
+124
+So that's it for this lecture.
+125
+We can terminate this session and the cool thing is
+126
+that the session history will be saved in terms of logs.
+127
+So we can see the session history right here.
+128
+So this is awesome.
+129
+And to finish, just take your instance and terminate it.
+130
+That's it.
+131
+I hope you like this lecture
+132
+and I will see you in the next lecture.
+
+--- SSM Other Services ---
+
+1
+So let's talk about some other services
+2
+within the Systems Manager service that can come up
+3
+at one question at the exam maybe.
+4
+So if you don't understand everything,
+5
+just remember the general idea out of these.
+6
+So the first one is run command
+7
+and it's used to execute a document,
+8
+therefore a script or just one command.
+9
+And these commands are run on multiple instances
+10
+using resource groups.
+11
+And these instances are EC2 instances or on-premises servers
+12
+that are registered with the Systems Manager service
+13
+because, well, the agent is running on them.
+14
+So for this, when we run the command, no need for SSH.
+15
+This is using the same mechanism
+16
+as we saw for Session Manager.
+17
+It just runs them through the agents.
+18
+And then any output of the command through the run command
+19
+can be sent to S3 or to CloudWatch Logs.
+20
+And then in case you have any kind of failures,
+21
+then they will be sent into SNS.
+22
+So you can have in-progress, success, failed and so on.
+23
+All these updates can be sent into SNS.
+24
+You have full integration with IAM for security
+25
+and CloudTrail to see who run what commands.
+26
+And then, of course, there is some automation out of it.
+27
+So EventBridge can directly run a run command.
+28
+So we have EC2 instances or on-premises servers
+29
+and they're managed with the SSM Agent.
+30
+And then very simply, we're going to run a command on them
+31
+using the run command feature of Sessions Manager.
+32
+The output can be sent to Amazon S3 or to CloudWatch Logs.
+33
+Any kind of status notifications is sent to Amazon SNS.
+34
+And it can be triggered either by us, the user,
+35
+or automatically using EventBridge.
+36
+Another one is called Patch Manager.
+37
+So as the name indicates, it's very simple.
+38
+It's used to automate the process
+39
+of patching managed instances.
+40
+So this is being used to apply operating system updates,
+41
+application updates, security updates.
+42
+It supports, of course, your EC2 instances
+43
+and on-premises servers.
+44
+And it supports Linux, Mac, and Windows.
+45
+So you can patch either on-demand, so right away,
+46
+or you can have a schedule of patches
+47
+using what's called a maintenance window
+48
+where your instances are ready to be patched.
+49
+Now also within Patch Manager, you can scan your instances
+50
+and you can generate a patch compliance report
+51
+to find if all your instances are patched correctly
+52
+and find if anyone or anything is missing a patch.
+53
+So again, from either the console, the SDK,
+54
+or a maintenance window,
+55
+we're going to invoke the Patch Manager.
+56
+And for this, it's called
+57
+the AWS-RunPatchBaseline run command.
+58
+And it's going to patch all of my EC2 instances
+59
+and then we can find a report within Patch Manager.
+60
+So I mentioned maintenance windows,
+61
+but let's just do a deep dive on them.
+62
+So it's used to define a schedule
+63
+of when to perform actions on your instances.
+64
+So for example, you want to define a maintenance window
+65
+to do OS patching or updating drivers
+66
+or installing software or whatever you want.
+67
+And when you define a maintenance window,
+68
+you contain a schedule.
+69
+So when is it going to be triggered?
+70
+A duration, so for how long?
+71
+What instances is this maintenance window applying to?
+72
+That makes sense.
+73
+And finally, what tasks will be run
+74
+during this maintenance window?
+75
+And so therefore, the maintenance window, for example,
+76
+can be triggered every 24 hour to run the command
+77
+to update or to patch my EC2 instances,
+78
+but you can be very creative with it as well.
+79
+Next we have Automation.
+80
+So Automation is used to simplify the common maintenance
+81
+and deployment task on EC2 instances or other AWS resources.
+82
+For example, you would use an automation
+83
+to restart many instances at a time
+84
+or to create an AMI or to create EBS snapshots and so on.
+85
+So you would have an Automation Runbook.
+86
+They represent SSM documents and they are predefined actions
+87
+on your EC2 instances or your resources on AWS.
+88
+So these runbooks will be used by the SSM Automation
+89
+to execute some actions on EC2 instances,
+90
+for example, restart them all,
+91
+or to execute actions on your resources on AWS,
+92
+for example, take snapshots of all my RDS databases.
+93
+So this can be triggered using the console, the SDK,
+94
+or the CLI, Amazon EventBridge,
+95
+or the Maintenance Windows or as well AWS Config.
+96
+So there's an integration such as
+97
+if Config finds that a resource is non-compliant,
+98
+then we can have a remediation automatically
+99
+to run an SSM Automation
+100
+and try to remediate this non-compliant resource.
+101
+So that's it for this lecture, I hope you liked it
+102
+and I will see you in the next lecture.
+
+--- AWS Cost Explorer ---
+
+1
+So a small service that can come up
+2
+in the exam is a billing service called Cost Explorer,
+3
+which is used to visualize, understand,
+4
+and manage your AWS cost and usage over time.
+5
+It allows you to create custom reports
+6
+that analyze your cost and usage data.
+7
+And so with this, you get dashboards,
+8
+and diagrams, and so on.
+9
+And so you can analyze your data at a high level,
+10
+for example, total cost and usage across all accounts,
+11
+but you can also go down to get it monthly, hourly,
+12
+or at the resource level granularity.
+13
+And then thanks to Cost Explorer,
+14
+you can do some cost savings
+15
+because it allows you to choose an optimal savings plan
+16
+to lower the prices on your bill.
+17
+You can forecast usage as well
+18
+up to 18 months based on previous usage,
+19
+which can be helpful for cost planning.
+20
+So if we look at Cost Explorer, here's an example.
+21
+We get monthly cost by AWS service.
+22
+In this example, we can see, for example,
+23
+that some instances based on instance type
+24
+can be more expensive than others,
+25
+and so we can start optimizing our costs,
+26
+asking ourselves the question,
+27
+"Are these instances correctly used?
+28
+Are they maximally used?
+29
+Are they the right size?"
+30
+These kind of things.
+31
+Then we can get also hourly and resource level.
+32
+So in this example, we get to, again,
+33
+some EC2 instance resource level information,
+34
+and we get the cost over time, so we can see what happens
+35
+every single hour to get a better breakdown
+36
+and understanding of our bill.
+37
+This is also to find, as I said, a savings plan.
+38
+So savings plan is an alternative to reserved instances,
+39
+we have seen this.
+40
+And so thanks to Cost Explorer,
+41
+we get this little popup that will come up
+42
+and it will tell us what kind of savings plan
+43
+we can have based on our usage,
+44
+and it will give us some recommendation,
+45
+and give us some estimated monthly spend, and so on.
+46
+So this is quite handy.
+47
+Finally, we can forecast usage.
+48
+So based on previous costs that we had in the past,
+49
+we can get some forecasts and some confidence
+50
+of the forecast around how much we're expected to pay
+51
+for our bill based on our previous usage,
+52
+and that could be quite helpful.
+53
+So these kind of use cases can come up in the exam,
+54
+and this is probably the only billing service
+55
+that AWS will ask you in the exam.
+56
+So that's it, I will see you in the next lecture.
+
+--- AWS Cost Anomaly Detection ---
+
+1
+So here is a quick lecture
+2
+on the service named AWS Cost Anomaly Detection.
+3
+And the name is quite explicit this time.
+4
+So this continuously monitors your cost and usage data,
+5
+and it will use machine learning to detect unusual spends.
+6
+So it's going to learn from you.
+7
+It's going to learn your unique historical patterns,
+8
+and then it will detect one-time cost spikes
+9
+and/or continuous cost increases.
+10
+And you don't have to define anything,
+11
+you don't have to define thresholds.
+12
+It just knows on its own what looks a little bit weird.
+13
+So it's going to monitor for your AWS services,
+14
+your member accounts, your cost allocation tags,
+15
+and your cost categories.
+16
+And it will send you an anomaly detection report
+17
+with the root cause analysis
+18
+of what is happening in your account.
+19
+You can get notified by either using individual alerts
+20
+or a daily or weekly summary that leverages SNS.
+21
+So to summarize, using machine learning,
+22
+you can have a look at your cost,
+23
+you can get alerted and quickly analyze the root cause,
+24
+all of using the AWS cost anomaly detection service.
+25
+Okay, that's it.
+26
+I hope you liked it,
+27
+and I will see you in the next lecture.
+
+--- AWS Outposts ---
+
+1
+Okay, so now let's talk about
+2
+an exciting development which is called AWS Outposts.
+3
+What is hybrid cloud?
+4
+Businesses that keep an on-premise infrastructure
+5
+alongside a cloud infrastructure
+6
+are called hybrid cloud.
+7
+And when we have that,
+8
+we have two ways of dealing with IT systems.
+9
+We have one for the cloud of AWS, for example
+10
+using the console of AWS, the CLI
+11
+and the APIs from AWS,
+12
+but also we have another one
+13
+that is dedicated to on-premises infrastructure.
+14
+And so, that means two different types of skillsets,
+15
+two different types of API,
+16
+and that may be complicated.
+17
+So it was said, "Okay, we do recognize
+18
+that some companies will run a hybrid cloud
+19
+therefore, let's create Outpost."
+20
+And Outpost our server racks
+21
+that offer the same AWS infrastructure,
+22
+services, API and tools
+23
+to build your own application on-premises
+24
+just like in the cloud.
+25
+So what this means is that
+26
+they will come and set up
+27
+and manage Outpost racks which are servers
+28
+within your on premises infrastructure.
+29
+And then these servers come preloaded
+30
+with the (indistinct) services
+31
+but you can benefit them from on-premises.
+32
+So as we can see now on your corporate data center
+33
+you will have your Outpost racks directly set up by AWS.
+34
+And this allows you to extend
+35
+the (indistinct) services directly
+36
+onto your on-premises data centers
+37
+which is I think revolutionary.
+38
+But a difference between an EC2 instance
+39
+running on the cloud
+40
+and an EC2 instance running in your own data center
+41
+is that now you are responsible for their security,
+42
+the physical security of the rack itself
+43
+because that rack is within your own data center.
+44
+The benefits from using Outposts are many,
+45
+first of all, you get low latency access
+46
+to on-premise the system,
+47
+you get local data processing
+48
+so the data may actually never leave your on-premise system
+49
+and never go to the cloud,
+50
+data residency, so again, it lives
+51
+within your own data centers.
+52
+It's easy for example, to start the migration
+53
+from on-premise is to Outpost
+54
+and then when you're ready from Outpost to the cloud.
+55
+It's a fully managed service.
+56
+So AWS will manage the service for you.
+57
+And with Outpost for now,
+58
+you can launch a lot of services
+59
+such as Amazon EC2, Amazon EBS, Amazon S3
+60
+Amazon EKS, Amazon ECS, Amazon RDS, and Amazon EMR.
+61
+So it's really a cool way to extend the cloud directly
+62
+onto your own our infrastructure on-premises system,
+63
+and this is revolutionary.
+64
+So this may come up in the exam.
+65
+I hope you liked it.
+66
+And I will see you in the next lecture.
+
+--- AWS Batch ---
+
+1
+So now let's talk about a service
+2
+that is named after what it does.
+3
+It is AWS Batch.
+4
+So Batch is a fully managed Batch processing service
+5
+that can allow you to do Batch processing at any scale.
+6
+And with the Batch service,
+7
+you can efficiently run hundreds
+8
+of thousands of computing Batch jobs
+9
+on AWS very easily.
+10
+So what is a Batch job?
+11
+Well, a Batch job is a job that has a start and an end.
+12
+And that is opposed to,
+13
+say, a continuous or a streaming job
+14
+that really doesn't ever end.
+15
+It's always running.
+16
+But a Batch job, say for example,
+17
+starts at 1:00 a.m. and finishes at 3:00 a.m.
+18
+So a Batch job has a point of time when it happens.
+19
+And so the Batch service
+20
+will dynamically launch EC2 instances
+21
+or Spot instances to accommodate with the load
+22
+that you have to run these Batch jobs.
+23
+So Batch will provision the right amount of compute
+24
+and memory for you to deal with your Batch queue,
+25
+and you just submit
+26
+or schedule Batch jobs into that Batch queue
+27
+and the Batch service does the rest.
+28
+Now, you define a Batch job using a Docker image,
+29
+and then you can run it on either ECS, EKS,
+30
+or the Fargate service.
+31
+And this is going to be very helpful to use Batch
+32
+to run these Batch jobs.
+33
+And because it automatically scales the right number
+34
+of EC2 instances
+35
+or Spot instances to do these jobs,
+36
+then you get lots of cost optimizations
+37
+and you focus a lot less on the infrastructure.
+38
+You just focus on your Batch jobs.
+39
+So this should be more than enough for going to the exam.
+40
+But I just wanna show you a small diagram that I made.
+41
+So for example, say we wanted to process images submitted
+42
+by users into Amazon S3 in a Batch way.
+43
+So image will be put into Amazon S3,
+44
+and this would trigger a Batch job.
+45
+And so Batch would automatically have an ECS cluster made
+46
+of EC2 instances or Spot instances.
+47
+And Batch would make sure that you have the right amount
+48
+of instances to accommodate with a load
+49
+of Batch jobs you have in the Batch queue.
+50
+And then these instances will be running your Docker images
+51
+that will be doing your job,
+52
+and then maybe that job will be
+53
+to insert the processed object.
+54
+Maybe it's a filter on top
+55
+of the image into another Amazon S3 buckets.
+56
+So the question you may have is what is the difference
+57
+between Batch and Lambda because it looks similar?
+58
+So Lambda has a time limit,
+59
+it's 15 minutes and you only get access
+60
+to a few programming languages on top of it.
+61
+You have limited temporary dis space if you want
+62
+to run your jobs,
+63
+and it's going to be serverless,
+64
+whereas Batch is very different.
+65
+So Batch has no time limit
+66
+because it relies on EC2 instances.
+67
+It's any runtime that you want as long as you package it
+68
+as a Docker image.
+69
+And for storage, you rely on the storage that comes
+70
+with an EC2 instance.
+71
+So it could be an EBS volume
+72
+or an EC2 instance store for desk space,
+73
+which can be a lot more than for Lambda functions.
+74
+And then finally, Batch is not a serverless service,
+75
+it's a managed service, but it relies on actual EC2
+76
+instances being created.
+77
+But these EC2 instances are managed by AWS,
+78
+so we don't need
+79
+to worry about the auto-scaling and so on.
+80
+So I hope that was helpful
+81
+and I will see you in the next lecture.
+
+--- Amazon AppFlow ---
+
+1
+So, now let's talk about Amazon AppFlow.
+2
+So, AppFlow is a fully managed integration service
+3
+that enables you to transfer data
+4
+between Software-as-a-Service applications and AWS.
+5
+So, these integrations are quite difficult to write,
+6
+and with AppFlow they're very easy.
+7
+So, sources of data could be for example,
+8
+Salesforce, SAP, Zendesk, Slack, ServiceNow
+9
+and Salesforce is something that can come up in the exam.
+10
+And the destinations you can send this data to
+11
+can be Amazon S3, Amazon Redshift
+12
+or even non-AWS targets such as SnowFlake and Salesforce.
+13
+You can define the integration to run on a schedule
+14
+or in response to specific events or on demand.
+15
+You get, from within AppFlow,
+16
+data transformation capabilities
+17
+such as filtering and validation.
+18
+And the data is encrypted over the public internet
+19
+or you can transfer it privately using PrivateLink.
+20
+The idea is that with AppFlow,
+21
+you don't spend some time writing the integration,
+22
+you just leverage these APIs immediately
+23
+and you enjoy the data within your own accounts.
+24
+So, in the AppFlow interface, you will have a source
+25
+and you can select many different sources,
+26
+but some of the important ones you need to remember
+27
+are the ones I said from before, including Salesforce.
+28
+And then using AppFlow,
+29
+you can send this data into various destinations
+30
+as you can see, Redshift, S3, and so on.
+31
+So, that's it for AppFlow, just an introduction.
+32
+I hope you liked it.
+33
+And I will see in the next lecture.
+
+--- AWS Amplify ---
+
+1
+So now let's talk about AWS Amplify
+2
+and it's a complicated service,
+3
+but at its core I want you to think of it
+4
+as a web and mobile application development tool.
+5
+So this Amplify will basically allow you to integrate a lot
+6
+of the stack of AWS into one place
+7
+to build your web and mobile applications.
+8
+So you're a developer,
+9
+and you know you wanna do a lot of things.
+10
+You wanna first create backends.
+11
+So you're going to use the Amplify CLI
+12
+to create an Amplify Backend.
+13
+And this backend is going to internally use a lot
+14
+of resources from AWS that we know.
+15
+Amazon S3 for data storage,
+16
+Amazon Cognito for identity,
+17
+AppSync for APIs,
+18
+API Gateway for APIs as well,
+19
+StageMaker for machine learning,
+20
+Lex for text detection,
+21
+Lambda for functions data service,
+22
+DynamoDB for data and so on.
+23
+And so the idea is that thanks to Amplify,
+24
+we have one place to configure authentication, storage,
+25
+API will be REST API or GraphQL API,
+26
+CI/CD, PubSub, Analytics,
+27
+AI/ML predictions, monitoring, and so on.
+28
+Then you connect your code.
+29
+It could be from anywhere from GitHub,
+30
+from CodeCommit on AWS or Bitbucket, GitLab,
+31
+or you can upload your code directly.
+32
+And so you would go ahead
+33
+you integrate all these backend services directly
+34
+from within Amplify.
+35
+Then you add the Amplify Frontend Libraries
+36
+to connect to your Amplify Backend.
+37
+And so you have Frontend Libraries for web applications,
+38
+mobile applications, as well as many, many frameworks.
+39
+And finally, when you're ready,
+40
+you're going to deploy using the Amplify Console
+41
+to Amplify itself and Amazon CloudFront
+42
+for your web or mobile application to be available.
+43
+Now they may seem like a lot
+44
+but I want you to think as Amplify
+45
+as the Elastic Beanstalk for web and mobile applications.
+46
+It's just a high level overview, but you need to see
+47
+that it allows you to integrate all these things of AWS
+48
+into one place, to have a one stop shop for developers
+49
+to create web and mobile applications.
+50
+All right, that's it for this overview,
+51
+I hope you liked it
+52
+and I will see you in the next lecture.
+
+--- Instance Scheduler on AWS ---
+
+1
+So now let's talk about
+2
+Instance Scheduler on AWS.
+3
+So it's a bit of a weird one.
+4
+It's not a service, it's an AWS solution
+5
+that's deployed through CloudFormation.
+6
+And here is the architecture.
+7
+It's quite complete and quite complicated,
+8
+but the idea is that you deploy this using CloudFormation
+9
+and this provides you a capability in your account
+10
+to automatically start and stop your AWS services
+11
+in order to reduce costs, maybe up to 70%.
+12
+For example, if you have a use case
+13
+where you want to stop the company's
+14
+EC2 instances outside business hours,
+15
+then you may want to use
+16
+the Instance Scheduler solution on AWS.
+17
+So this has support for EC2 instances,
+18
+EC2 Auto Scaling Groups and RDS instances.
+19
+Now, all the schedules are managed in a DynamoDB table
+20
+and the idea behind how this service works is that
+21
+there's a Lambda function that will look up the schedule
+22
+in DynamoDB and then it will trigger other lambdas
+23
+that will automatically stop or start the required instances
+24
+in the required services.
+25
+So this is a complete solution.
+26
+It supports cross-account and cross region resources
+27
+and is production ready.
+28
+If you are interested, this is the link
+29
+and the exam may ask you
+30
+about the idea behind this solution.
+31
+So again, this allows you to just stop and start resources
+32
+to save on costs.
+33
+Now I just wanna show you how this gets deployed.
+34
+We're not going to use it, but I want
+35
+for you to see it in action for the deployment part.
+36
+So let's type Instance Scheduler AWS,
+37
+and then we click on the solution
+38
+and we arrive on this webpage.
+39
+So this is to stop and start Amazon EC2 and RDS instances
+40
+to manage cost.
+41
+So we get the benefits,
+42
+we get some information around the version, the release,
+43
+we can look at the implementation guide
+44
+and you can download it, it's very helpful.
+45
+The source code is there,
+46
+this is the CloudFormation template and so on.
+47
+And then we have a developer guide and an operator guide.
+48
+So it's quite a complete solution and one of the most,
+49
+I would say complete one on AWS and this is architecture
+50
+and it shows you what is step 1, step 2, step 3,
+51
+step 4, step 5, step 6 and step 7.
+52
+Obviously, using it is out of the scope of this course,
+53
+but we're just going to do the quick start
+54
+to see how we can get started.
+55
+So the way to actually launch the stack is
+56
+to use the management console
+57
+and you click on launch solution here
+58
+and this takes you directly into CloudFormation.
+59
+And then automatically is going to pre-fill
+60
+the instance at this template and the Amazon S3 URL
+61
+and then we click on next.
+62
+So this is going to deploy the solution
+63
+as a CloudFormation template
+64
+so I'll call this one Instance Scheduler
+65
+and you don't have to do it,
+66
+I just wanna show you how it's done.
+67
+And here we get some information
+68
+around the different parameters.
+69
+So we have...
+70
+And I need to have no space, okay.
+71
+So we have here the tech key is Schedule.
+72
+This is every five minutes that we're going to look at
+73
+if we can shut down things.
+74
+What's the default time zone?
+75
+If you want to enable yes or no scheduling,
+76
+so no if you want to disable it
+77
+or yes, if you want to enable the solution.
+78
+Then we have services.
+79
+So do we want to allow it
+80
+to enable EC2 scheduling, yes;
+81
+RDS, RDS cluster
+82
+as well as Neptune, DocumentDB and auto-scaling
+83
+so it's possible that over time
+84
+more services are added to this,
+85
+but the main ones to remember are EC2 instances
+86
+and RDS instances and cluster.
+87
+And then you have tagging.
+88
+So this is what happens when an instance is started
+89
+or stopped.
+90
+A tag is going to be added automatically describing
+91
+how instant scheduler actually did an action on this date,
+92
+on this time zone.
+93
+And then, more service specific things
+94
+that we don't need to really look at.
+95
+Do we want to have RDS instances snapshot on stop?
+96
+What do we want to look at for ASG and so on?
+97
+So it's quite a very complete,
+98
+I would say solution monitoring and then other things.
+99
+But for now, we're good.
+100
+Let's click on next
+101
+and then let's click on yes and click on next.
+102
+And so this is going to create
+103
+based on all these parameters,
+104
+a stack on CloudFormation with all the solution.
+105
+So now I'm just going to wait for it to be created.
+106
+Okay, so the stack is now created
+107
+and what's important to see is the resources.
+108
+As you can see, there's a lot of resources
+109
+that have been created
+110
+and so we can tree view or a flat view.
+111
+And what I wanna show you though is a DynamoDB table.
+112
+So if a type dynamo,
+113
+okay, we have three tables, we have the config tables,
+114
+and that's the most important table here.
+115
+So, in this table that you would set your schedules.
+116
+So let's explore the table item and here we go.
+117
+So we have here the types of things that happen.
+118
+So we have the name, the begin time, the description,
+119
+the end time, and so on.
+120
+So this is just an example,
+121
+but it tells you like for example,
+122
+how to have office hours or days in the week or working days
+123
+or every first Monday of each quarter.
+124
+So this is where you would actually schedule
+125
+and set up everything.
+126
+And then for the rest,
+127
+then if you go into the Lambda console over here,
+128
+it's just a bunch of Lambda functions.
+129
+You can see I have a lot of them right here.
+130
+This bunch of Lambda functions are going to do
+131
+all the scheduling.
+132
+Of course, getting into the details
+133
+of the architecture is not what's necessary,
+134
+but for you to understand the idea behind it.
+135
+Okay, so that's it.
+136
+I went a little bit too deep into it probably,
+137
+but it's good for you to see it.
+138
+And I'm just going to go ahead
+139
+and delete my stack and we'll be done.
+140
+Alright, that's it.
+141
+I hope you liked it and I will see you in the next lecture.
+
+--- WhitePaper Section Introduction ---
+
+1
+Okay, so this section
+2
+is about studying the white papers
+3
+and a few architecture documents that we can have,
+4
+and these are actually not strongly required for the exam,
+5
+but you absolutely need to know a little bit
+6
+about the Well-Architected Framework
+7
+and Disaster Recovery and a few other things.
+8
+So this section is going to cover just that.
+9
+So we'll see the Well-Architecture Framework whitepaper,
+10
+and I'll be honest, I'll try to make this
+11
+as less boring as I can,
+12
+but it's not very fascinating for some,
+13
+the Well-Architected Tool, which I think is awesome,
+14
+AWS Trusted Advisor,
+15
+some reference architecture resources,
+16
+and these are super-cool so don't miss that.
+17
+It's for the real world,
+18
+so these are to be links that we will need to use
+19
+as a real solutions architect,
+20
+and then finally, Disaster Recovery on AWS Whitepaper.
+21
+This one is a bit boring,
+22
+but it is super important going into the exam,
+23
+so we'll have to look at it,
+24
+and actually, you'll find this pretty interesting, I'm sure,
+25
+by the end of it.
+26
+All right, so let's get started.
+
+--- AWS Well-Architected Framework & Well-Architected Tool ---
+
+1
+So there is a framework
+2
+called the AWS Well-Architected Framework.
+3
+And I'm going to describe it to you.
+4
+This is a tool as well as a framework
+5
+that allows you to do good applications on AWS.
+6
+So it's quite a long read
+7
+and so I try to summarize it for you in a few slides.
+8
+So the idea is that with the well-architected framework
+9
+once you implement the best practices,
+10
+then you go to outcomes,
+11
+and I'll give you the main guidelines of it.
+12
+The first one is that to stop guessing your capacity need
+13
+instead use auto scaling groups and so on.
+14
+Test systems at production scale.
+15
+So with AWS, you can very quickly perform big test
+16
+big infrastructure, and then shut them down an hour later.
+17
+So there's no reason for you not to test
+18
+at production scale.
+19
+Also automate that allows you to make
+20
+architectural experimentation easier.
+21
+If you have a Cloud formation template
+22
+you can easily deploy it
+23
+in multiple environments to experiments.
+24
+You can also allow for evolutionary architectures.
+25
+So your architecture can show over time it can start with
+26
+for example, EC2 instances and a load bouncer
+27
+and evolve towards a more serverless architecture such as
+28
+API Gateway and Lambda.
+29
+So design based on these changing requirements and so on.
+30
+Also drive architecture using data.
+31
+So data is very important.
+32
+You have to move it around storage and so on.
+33
+And finally, improve through game days.
+34
+The idea is that you must try out your architecture
+35
+good production, give it a go and see how you can improve.
+36
+So you need to submit your application, for example
+37
+for flash sale days that put a lot of pressure
+38
+on your architecture.
+39
+So the architecture framework is six pillars.
+40
+The first one is operational excellence.
+41
+The second one is security.
+42
+The third one is reliability.
+43
+Fourth one, performance efficiency.
+44
+Fifth one, cost optimization.
+45
+And six one, sustainability.
+46
+So you have to know them all,
+47
+I mean, just the names, okay?
+48
+Not what they represent,
+49
+but the names are pretty explicit
+50
+and you can go on the website to learn more about them
+51
+but this is not the focus of this course.
+52
+And so these pillars are not something to balance
+53
+or trade off, they're actually a synergy.
+54
+For example, if you improve your operational excellence
+55
+you most likely will improve as well your cost optimization.
+56
+And if you are or more sustainable,
+57
+most likely you'll also be having
+58
+a higher performance efficiency and so on.
+59
+So to help you guide you through this framework
+60
+there is something called the AWS Well-Architected tool.
+61
+And it's a framework tool to review your architectures
+62
+against the six pillars I just defined.
+63
+And then you adapt architectural best practices.
+64
+So this is whether your looks like
+65
+and we'll see this in a second.
+66
+So how does it work?
+67
+Well, you select your workload
+68
+and then you answer questions.
+69
+You review your answers
+70
+against the six pillars that I just defined.
+71
+And then you obtain advice.
+72
+You get videos, documentation reports
+73
+and you see results in a dashboard.
+74
+So let's have a look to see how this tool works.
+75
+So here I am in the well-architected tool UI
+76
+and I'm going to define a workload.
+77
+So you can, for example, define a demo workload
+78
+and say this is your production application.
+79
+You can say, this is my prod application.
+80
+Okay, the review owner will be John@example.com.
+81
+We are in production and we are functioning
+82
+in two either of this regions that I will choose.
+83
+So this one and then US-West-2, perfect.
+84
+We can specify non-AWS regions, account IDs and so on.
+85
+And you can just specify a lot of information
+86
+around your infrastructure and architecture.
+87
+So next I'm going to apply lenses.
+88
+And these lenses are the kind of questions you apply
+89
+to your architecture.
+90
+So we'll apply the well-architected framework lens.
+91
+But you have the FTR lens, the serverless lens,
+92
+the SaaS lens and you can even create your custom lenses
+93
+if you wanted to.
+94
+But for now, we'll keep it simple
+95
+and just answer questions regarding
+96
+the well-architected framework.
+97
+So let's define the workload.
+98
+And once you have that, you need to start reviewing.
+99
+So we'll start reviewing and then we'll review
+100
+for the lens of the AWS Well-Architected Framework.
+101
+So in here I get some resources on the right hand side
+102
+that I can close.
+103
+And the idea is that
+104
+you're going to have a lot of questions on the six pillars,
+105
+for example, 11 questions on operational excellence
+106
+and then 10 questions on security, six on sustainability
+107
+and things can change over time, of course
+108
+but the idea is that you answer questions
+109
+and then you're gonna get recommendations.
+110
+So for example, how do you determine that
+111
+what your priorities are?
+112
+And we'll say, okay, we evaluate governance requirements
+113
+external customer needs and trade offs.
+114
+And then next, so answer one question.
+115
+And then how do you structure your organization?
+116
+Maybe I just have this answer and then next.
+117
+And so you can answer questions in the various pillars
+118
+and you should answer them all for all pillars,
+119
+but let's answer one as well
+120
+in performance efficiency, randomly and next.
+121
+So once you answer maybe three questions of course
+122
+they're a lot more, then you save and continue.
+123
+And then here, as you can see, we have three high risks.
+124
+So you can click on this lens right here
+125
+and then you're going to get the overview of this lens
+126
+as well as the risks.
+127
+So you can click on the risk itself
+128
+by going to improvement plan.
+129
+We see we have three high risk and zero medium risk
+130
+and so this one was a high risk
+131
+and here are the recommendations regarding this risk.
+132
+So I need to evaluate internal customer needs
+133
+evaluate threat landscape and so on.
+134
+And then if I click on it, I get the section
+135
+in the framework itself that tells me exactly
+136
+what I need to do.
+137
+So it's very important.
+138
+And then I will go back to answering more questions
+139
+and making sure that this is addressed.
+140
+And so this tool just gives you feedback.
+141
+And over time you can define milestones.
+142
+You can look at your improvement plans and so on.
+143
+And the idea is that once you are very confident
+144
+that this framework works for you
+145
+then your application is production ready
+146
+and your workload is compliant and well architected, okay?
+147
+So that's it for this tool.
+148
+I hope you liked it
+149
+and I will see you in the next lecture.
+
+--- AWS Trusted Advisor Overview + Hands-On ---
+
+1
+So now, let's talk about AWS Trusted Advisor.
+2
+So you don't need to install anything.
+3
+It's a service that gives you a high level
+4
+account assessment on your account.
+5
+It's going to check for a few things
+6
+and advise you on them.
+7
+So the checks can be, for example,
+8
+do you have EBS Public Snapshots?
+9
+Or do you have RDS Public Snapshots?
+10
+Or are you using the root accounts for your accounts?
+11
+So all these things are checked by Trusted Advisor
+12
+and they are grouped in six categories.
+13
+We have cost optimization, performance,
+14
+security, fault tolerance,
+15
+service limits, and operational excellence.
+16
+So you have what's called the three sets of checks,
+17
+the core sets of checks,
+18
+and then you have the full set of checks.
+19
+And to have access to the full set of checks,
+20
+you need to have a business
+21
+or an enterprise support plan.
+22
+On top of it, if you do switch
+23
+on the business and enterprise support plan,
+24
+then you get programmatic access
+25
+to Trusted Advisor through the AWS Support API.
+26
+So I think it's best for you to see what Trusted
+27
+Advisor is made of to really understand it.
+28
+So here, I am in Trusted Advisor.
+29
+And as you can see, you have recommendations.
+30
+So zero actions are recommended,
+31
+but two investigations are recommended for me,
+32
+and then there are some checks on excluded items or not.
+33
+But as we can see, we have two
+34
+on security that must be looked at.
+35
+So it turns out that one of my bucket
+36
+is actually allowing a global access.
+37
+So I need to verify it and make sure it's correct.
+38
+And as you can see, 29 of my 60 security group rules
+39
+allow unrestricted access to a specific port.
+40
+So again, this is something I should look at.
+41
+Maybe that's my intention, maybe that's a problem.
+42
+But you can see right away,
+43
+I get prompted to upgrade my support plan
+44
+to get all Trusted Advisor checks.
+45
+So let me show you what I mean.
+46
+On the left-hand side,
+47
+we have the Recommendation categories.
+48
+And if I click on Cost optimization,
+49
+as you can see, I get none of the checks available
+50
+because I need to update my support plan.
+51
+So all these things are actually not available for me
+52
+and I need to pay for the service
+53
+to actually make some cost optimizations.
+54
+Same for performance, I get access to nothing.
+55
+If I go to Fault tolerance,
+56
+again, I get access to nothing.
+57
+Operational excellence, again, access to nothing.
+58
+The only two things I have access to is security.
+59
+So here, we get some checks, the core checks.
+60
+And in here, I have my Bucket Permissions,
+61
+my Security Group ports, my EBS Public Snapshot,
+62
+RDS Public Snapshot, and so on.
+63
+But as soon as I go in here
+64
+to the more advanced security checks,
+65
+then, again, I need to update my support plan.
+66
+Finally, you can have a look
+67
+at Service limits directly in Trusted Advisor.
+68
+That's one way of doing it.
+69
+So you can have a look at your Auto Scaling Groups,
+70
+your CloudFormation Stacks, your DynamoDB Read
+71
+and Write Capacity and so on.
+72
+So Trusted Advisor is not a very interesting service
+73
+to look at when you don't pay for the support plan,
+74
+but at least this should give you an idea
+75
+of how Trusted Advisor is used in AWS,
+76
+and therefore answer your exam questions on it.
+77
+All right, so that's it.
+78
+I hope you liked it
+79
+and I will see you in the next lecture.
+
+--- Examples of Architecture - AWS Certified Solutions Architect Associate ---
+
+1
+So in this course, I really try
+2
+to make it a huge differentiator for you
+3
+to actually see very important architectural patterns.
+4
+To me, you can't do a solutions architect course
+5
+without seeing solution architecture.
+6
+So we've explored architectures around classic, you know,
+7
+for example, EC2, ELB, RDS, ElastiCache, et cetera.
+8
+And also, we've explored in-depth serverless,
+9
+more cloud native serverless architectures using S3, Lambda,
+10
+DynamoDB, CloudFront, API Gateway, et cetera, et cetera.
+11
+But you may be hungry for more architectures.
+12
+And so if you wanna see more architectures,
+13
+there's two links on the AWS website,
+14
+which I think are really awesome
+15
+and not many people know about it.
+16
+So hopefully, I raise awareness on these links
+17
+through this course.
+18
+The first one is this link, and the second one is this link.
+19
+So you know what?
+20
+We're going to visualize these links together
+21
+just to show you what they're about.
+22
+So here I am on the AWS Architecture Center,
+23
+and this is where you're going
+24
+to find reference architecture examples and diagrams.
+25
+So if you scroll down, you get access
+26
+to different links, such as, for example, a link
+27
+to the Well-Architected Framework.
+28
+But let's scroll down even more.
+29
+In here, we can browse the contents
+30
+with all the architecture diagrams.
+31
+So as you can see, we have over 2,000 of those.
+32
+So this is huge.
+33
+And therefore, on the left-hand side, you have some filters
+34
+to select whatever you want.
+35
+So for example, here, if I automate your DR solution
+36
+for relational databases, I click on it
+37
+and I get access to this in PDF form or HTML form.
+38
+So let's access it in PDF form,
+39
+and you get access to a lot of information.
+40
+And within that information,
+41
+you will find some architecture diagrams
+42
+and everything is explained,
+43
+which I think is tremendously good resources
+44
+as a solution architect.
+45
+So it's very detailed.
+46
+As you can see, we have CloudFormation templates
+47
+that functions, I mean, everything is there.
+48
+You also have, for example, WordPress architecture.
+49
+So if you type WordPress, you have best practices
+50
+of WordPress on AWS.
+51
+Again, let's open the PDF version and scroll down.
+52
+And here we go again.
+53
+We have some architecture diagrams
+54
+and we have an even bigger architecture diagram.
+55
+So everything is quite thorough
+56
+and there's a lot of text that really helps you to step up
+57
+as a solution architect.
+58
+The other one I really liked is the AWS Solutions Library.
+59
+So this is vetted solutions and guidance for businesses
+60
+and technical use cases.
+61
+And I really like it
+62
+because it provides you not only architecture diagrams,
+63
+but also CloudFormation templates
+64
+to actually implement things.
+65
+So here, let's look at this AWS solution
+66
+called Live Streaming on AWS.
+67
+And here, this is how to build
+68
+a highly available architecture
+69
+that delivers reliable, real-time viewing experience.
+70
+Okay, perfect, let's scroll down,
+71
+and we get some information
+72
+around the type of solution we have.
+73
+So we have one on S3 and one on AWS,
+74
+which use different kind of services,
+75
+where they support, what they don't support and so on.
+76
+And then the technical details.
+77
+So we have the first architecture, the second architecture,
+78
+so they're both here.
+79
+And we can actually get implementation guides
+80
+and we can actually launch it in the console.
+81
+So there is a CloudFormation template,
+82
+the source being here,
+83
+and the source code is also on GitHub, as you can see.
+84
+And these CloudFormation template allow you
+85
+to actually develop and deploy these kind of architectures.
+86
+So this is awesome
+87
+because you really do a huge steps forward
+88
+as a solution architect into deploying some
+89
+of these solutions.
+90
+So if you scroll down on the solutions library,
+91
+you will find that you can browse by industry based
+92
+on what industry it is or cross industry solutions
+93
+or by technology or by organization type.
+94
+And finally, again, you have a lot
+95
+of filters on the on the left-hand side.
+96
+So if I type, for example, serverless in here,
+97
+I can find the Serverless Image Handler, which shows me
+98
+how to handle some images, such as smart cropping,
+99
+constant moderation, na, na, na, and so on.
+100
+And this is the architecture.
+101
+Again, there's a CloudFormation template.
+102
+You have an implementation guide and so on.
+103
+So everything is super well described,
+104
+and I really like these two resources
+105
+because they really propel you into the real world
+106
+of solution architecture.
+107
+So I hope you liked it,
+108
+and I will see you in the next lecture.
+
+--- Exam Preparation - Section Introduction ---
+
+0
+Welcome to the end of this course we've learned all the technical stuff we need to learn.
+1
+And I hope that by now you've learned so many AWS services that you feel very confident about them.
+2
+This section is going to be dedicated to help you pass the exam.
+3
+I'm going to give you a few practical tips.
+4
+Walk you through how the exam works.
+5
+And at the end of the section you're going to have a whole practice exam to assess where you are.
+6
+I wish you good luck with the exam.
+7
+Let's get started.
+
+--- State of Learning Checkpoint - AWS Certified Solutions Architect Associate ---
+
+1
+Okay, so let's see how far we've learned
+2
+in this course,
+3
+and we're going to check the exam certification page
+4
+to have a look at the exam guide.
+5
+So here I am
+6
+on the AWS Certified Solutions Architect Associate page.
+7
+And if you scroll down,
+8
+you can have a look at the exam guide
+9
+as well as the sample question.
+10
+So let's go over the exam guide.
+11
+So this is a long document at 17 pages
+12
+and it represents what you should be knowing
+13
+going into the exam.
+14
+So we're going to skim through this document
+15
+and verify that we know a lot,
+16
+and then I will do a few precisions,
+17
+especially when we go into this right here,
+18
+which is the services covered
+19
+which are at the very bottom, the appendix.
+20
+And this is concept that might be covered on the exam, okay?
+21
+So all these services here
+22
+will not necessarily be at the exam
+23
+and I've created the course in a way that's what I teach
+24
+I know is at the exam, okay?
+25
+So if you see something here
+26
+but I don't teach it in the course,
+27
+do not freak out.
+28
+If I hear from students that it is indeed at the exam,
+29
+then I will include lecture on it, okay?
+30
+This is just technology that might be covered at the exam.
+31
+Okay, so let's go back up.
+32
+So you're going to have one year of hands-on experience
+33
+to do the exam,
+34
+but after doing this course
+35
+you will have enough experience.
+36
+So the exam will be of two types of question.
+37
+You have the multi-choice
+38
+where one correct responses and three incorrect responses,
+39
+and multi response
+40
+when you have two or more correct responses out of five.
+41
+And you must answer a question.
+42
+So there's no penalty for guessing.
+43
+You must answer every question,
+44
+because if you answer incorrect or if you don't answer,
+45
+you will not get points removed from your score, okay?
+46
+So answer all the questions.
+47
+There are 15 unscored questions that you do not know about
+48
+and they do not affect your score.
+49
+This is so that AWS can test new questions over time
+50
+and make sure they're good
+51
+and make sure people answer them correctly or not,
+52
+but you don't know about them, okay?
+53
+So you're actually scored on 50 questions out of 65,
+54
+but 15 of them you don't know about.
+55
+Okay.
+56
+So your exam score is between 100 and 1000,
+57
+and the minimum passing score is 720.
+58
+Next you should have the content outlines.
+59
+So this is the domains at the exam.
+60
+So you have four domains you're being tested on.
+61
+And when you receive the final results,
+62
+it will tell you on each domain
+63
+if you were passing or not passing.
+64
+And it doesn't tell you your score per domain.
+65
+It will never tell you
+66
+if you're right or wrong on the question,
+67
+it will just tell you your total score,
+68
+as well as your domain level pass or not pass.
+69
+So 30% of the exam is on designing secure architecture.
+70
+So security is a big thing.
+71
+26% is resilient architecture.
+72
+So making sure we know about high availability and so on.
+73
+24% is high performance.
+74
+So how do we leverage the best service for the best use case
+75
+with the best features and the best options?
+76
+And finally cost-optimized architecture is at 20%.
+77
+How do we save on cost in the cloud?
+78
+Okay.
+79
+So here you can really have a look at each domain
+80
+and each knowledge of.
+81
+So I'm not going to read everything out to you,
+82
+that would be extremely boring, okay?
+83
+But I've designed this course in reading all the domains
+84
+and all the tasks and all the skills.
+85
+So really you should be good to go.
+86
+If there is something that you don't know
+87
+or don't feel confident about,
+88
+try to go back to the course,
+89
+or even better,
+90
+now you should know enough
+91
+to start looking into the AWS documentation
+92
+and really get the right information you need
+93
+to understand some services, okay?
+94
+So you have the four domains.
+95
+I invite you to read them in your own time,
+96
+otherwise that would be a very horrible video.
+97
+And then the appendix of services
+98
+that you can consider can appear at the exam
+99
+or might appear at the exam,
+100
+but you can hopefully rely on me
+101
+and say that, "I know what goes at the exam.
+102
+I've passed it."
+103
+People have passed it
+104
+and I receive feedback all the time.
+105
+And so what I cover in the course should be enough.
+106
+And if I don't,
+107
+if you have something that is not covered in the course,
+108
+just please let me know and I will edit the course
+109
+as soon as possible.
+110
+But it's usually one question out of 65.
+111
+So it doesn't impact your ability to pass the exam.
+112
+I want you to have a very high score.
+113
+Okay.
+114
+So that's it for this lecture.
+115
+I hope you liked it,
+116
+and I will see you in the next lecture.
+
+--- Exam Tips - AWS Certified Solutions Architect Associate ---
+
+1
+All right, so just a few exam tips,
+2
+just to make sure that you have the maximum chances
+3
+to pass your exam.
+4
+Number one, practice makes perfect.
+5
+So if you're new to AWS, maybe you're overwhelmed
+6
+by this course, so take a bit of AWS practice
+7
+thanks to this course.
+8
+And don't rush to go to the exam.
+9
+Take your time, okay?
+10
+This is not a race, this is a challenge to you
+11
+to know that you know AWS, okay?
+12
+This exam recommends that you have one or more years
+13
+of hands-on experience on the AWS.
+14
+You can't fake that.
+15
+Now, you should be able to answer all the exam questions,
+16
+but hands-on experience is really how I learned AWS,
+17
+and this is how you should learn AWS, too.
+18
+Practice makes perfect, so give it a go.
+19
+Now, if you feel overwhelmed by this course
+20
+because you learned a lot of knowledge right now,
+21
+go through it one more time.
+22
+It is fine to take your time, okay?
+23
+There is so much new knowledge, even me,
+24
+I need to go back to it sometimes, so take your time.
+25
+Now when you do have questions, proceed by elimination.
+26
+So most questions are going to be scenario based,
+27
+they're going to be a bit long,
+28
+giving you hints and stuff.
+29
+And so for all the questions, first rule out answers
+30
+that you know for sure are going to be wrong.
+31
+This is really good way for you to maybe come back to
+32
+one or two answers, and then just know which
+33
+one is right, right away, okay?
+34
+So understand which one makes the most sense, okay?
+35
+Sometimes they are not that complicated,
+36
+so there is very few trick questions.
+37
+Maybe in the scenario they will try to lead you
+38
+into thinking something else because there will be
+39
+EBS, ASG, SSM, all these kind of technologies.
+40
+But there are very few trick questions,
+41
+and don't overthink your answers, okay?
+42
+If an answer seems feasible, but it's too complicated,
+43
+it's probably wrong.
+44
+So think about it, think about it real hard.
+45
+And if you don't know the answer of a question right away,
+46
+answer it, and then you can flag it for review later
+47
+using your little flag feature in the exam.
+48
+And so you can come back to it later,
+49
+and maybe you'll have the response then
+50
+because you have time to think about it.
+51
+I also recommend that you skim through
+52
+some AWS white papers.
+53
+And so you can read them, there's three of them
+54
+that I recommend.
+55
+Architecting for the Cloud: AWS Best Practices,
+56
+AWS Well-Architected Framework, and then finally,
+57
+AWS Disaster Recovery, and here's the link
+58
+because this one may be tough to find.
+59
+So overall I think we've explored the most important
+60
+concept in this course, but if you are interested
+61
+into these white papers, then it's never bad to look at them
+62
+or read them.
+63
+Maybe it will help you reinforce your learnings on AWS
+64
+and make you understand the course a little bit better.
+65
+Also, if you don't know a service very well,
+66
+or you have doubts, look at the service FAQ.
+67
+This is where most of the questions on the exam will be.
+68
+FAQ stands for frequently asked questions.
+69
+For example, if you look at VPC, this will be the URL,
+70
+amazon.com/vpc/faqs.
+71
+FAQs, as I said, cover a lot of questions that are going
+72
+to be asked on the exam, and it's really helpful
+73
+to look at it just to make sure that you understand
+74
+a service really, really well.
+75
+And finally, I think if you are really serious about AWS,
+76
+you need to get into the AWS community.
+77
+So do participate in this course,
+78
+answer other peoples' Q and A, help other.
+79
+Review questions that are asked by other people
+80
+just to make that you may be having the same questions,
+81
+and maybe you have the same doubts.
+82
+Maybe the answers will help you clear out your doubts.
+83
+And then do the practice test in this section.
+84
+You have to do it just to make sure you're ready.
+85
+Finally, there's some forums online, there's online blogs,
+86
+and there's even local meetups in pretty much every city
+87
+in the world to discuss with other AWS engineers.
+88
+And then if you're really into AWS,
+89
+you can also watch the re-invent videos.
+90
+This is Amazon's conference on YouTube,
+91
+and they're really, really great to get started.
+92
+So that's it for my tips.
+93
+I hope you're excited to pass the exam,
+94
+and I will see you in the next lecture.
+
+--- Links to Whitepapers ---
+
+[No transcript available for this lecture]
+
+--- Exam Walkthrough and Signup ---
+
+1
+So now is the time to sign
+2
+into your AWS Certification accounts.
+3
+For this, you go to this URL, aws.training/certification,
+4
+and then you click on Sign In.
+5
+From there, you're going to have to create
+6
+an AWS Builder ID, which is a specific account
+7
+for AWS certifications.
+8
+So you click on it, you go through the process,
+9
+and then you'll be good to go.
+10
+After you sign in, click on Go to Your Account,
+11
+and this is going to take you into the certification portal.
+12
+And in here you have several options.
+13
+So in this video I'm going to show you
+14
+how to schedule an exam, but I strongly recommend
+15
+as well that you watch the next two videos.
+16
+One is around exam accommodations to get extra time
+17
+if you're not a native English speaker,
+18
+which can really help you during your exam.
+19
+And also, I will show you certification benefits
+20
+on how to sometimes get 50% on your next AWS exam.
+21
+So please make sure to watch these videos next.
+22
+But right now, lemme show you the exam registration.
+23
+So you click on Exam Registration and schedule an exam.
+24
+And in here, we have at the bottom, the exams we can pass.
+25
+So some of them are going to be authorized,
+26
+some of them are going to be click to authorize to schedule.
+27
+So you click on Authorize and it will just do something,
+28
+and then schedule is available.
+29
+So I'm not sure why you have to authorize things,
+30
+but here it is.
+31
+Okay, so now let's say for example,
+32
+that we want to schedule the
+33
+AWS Certified Developer Associate Exam.
+34
+So click on Schedule, and this is going to take you
+35
+into the Pearson VUE portal, which is going to be
+36
+the exam schedule partner of AWS.
+37
+So in here, we have several options.
+38
+We can specify to want to take the exam
+39
+in person at a test center or online with OnVUE.
+40
+So this is when you want to actually go somewhere
+41
+and take it in a specific room,
+42
+because for example, you don't wanna take it from home.
+43
+So in that case, you need to bring your photo ID,
+44
+you need to make sure that you understand how it works,
+45
+and what you can and cannot bring during the test.
+46
+You would click on Next.
+47
+And in the following pages, you are able to select
+48
+the language you want to take your exam in.
+49
+So different options based on where you're from.
+50
+And finally, you can also select where you want to take it.
+51
+And so for this, you're going to have to agree
+52
+to these conditions, first of all, and then find a place.
+53
+So you would just enter an address,
+54
+and then you would look at different addresses
+55
+where you can actually take your exam.
+56
+So the alternative is to do online with OnVUE,
+57
+and I like it because you're at home,
+58
+it's very easy to take it.
+59
+So you need your computer with a webcam
+60
+and a good internet connection.
+61
+And here it says Run system test.
+62
+And I strongly, strongly, strongly recommend you
+63
+to run the system test way before your exam
+64
+so you make sure everything is good.
+65
+Your testing space must be clear of everything.
+66
+So you'll need put nothing on your desk, remove everything,
+67
+and make sure that the person controlling that
+68
+will be asking you to show your desk and so on.
+69
+So there are some examples here.
+70
+Bring an ID, and then you need to check in
+71
+about 30 minutes before your appointment time
+72
+just to make sure that you are
+73
+going to be attending your exam on time.
+74
+Then you click on Next.
+75
+You choose your language again.
+76
+Then you agree to all the things
+77
+that you need to agree about, making sure
+78
+you are taking this space, this exam from your home.
+79
+Then you agree, then you choose the language you want
+80
+the person who is going to check your desk,
+81
+and so on, to speak, so you have these options,
+82
+but this is different from your exam version.
+83
+This is just to check you in.
+84
+Then, what is your time zone.
+85
+Finally, selecting a date, selecting a time,
+86
+and then booking, and finally, completing the payments.
+87
+And adding a voucher, if you have a discount voucher,
+88
+which I will show you how to do it in the next lecture.
+89
+So that's it.
+90
+Now, once the exam is scheduled, to actually take it,
+91
+maybe it'll appear upon a coming exam,
+92
+but the way I like to do it is to go on Home, Dashboard.
+93
+And when you're ready, before your exam,
+94
+you click on Manage my Pearson VUE account,
+95
+which is going to take you, again,
+96
+to the homepage of Pearson VUE.
+97
+And from there, you will be seeing a launch exam button,
+98
+which is very easy to access.
+99
+So you'll have here, the exam appearing,
+100
+and you just click on Launch, and you're good to go.
+101
+All right, so that's it for this lecture.
+102
+I hope you liked it.
+103
+And I will see you in the next lecture.
+
+--- Save 50% on your AWS Exam Cost! ---
+
+1
+So I want to show you a trick
+2
+in which you can actually get 50% off your AWS exam
+3
+if you have taken one before.
+4
+So as soon as you pass an AWS exam successfully,
+5
+you're going to get tokens, which are going
+6
+to give you 50% on your next exam.
+7
+And the ones that are unclaimed will be as unclaimed.
+8
+So these two are unclaimed right here,
+9
+and there's an expiry date.
+10
+And then to get the actual exam,
+11
+you would click on Claim Benefits.
+12
+Once you have claimed a benefit,
+13
+they will appear as claimed.
+14
+And here you get a voucher code.
+15
+So this code right here, you would copy it,
+16
+and this will give you 50%.
+17
+So how to apply it, well, when you go into your cart
+18
+and you are about to pay,
+19
+so you click on Proceed to Checkout.
+20
+So then you have to enter the payment.
+21
+And here you can add a voucher promo code
+22
+in this box right here.
+23
+And this is the code that you would obtain right here.
+24
+So you would get the code and then apply it.
+25
+And now you see that I have a discount on my total cost.
+26
+So this is great.
+27
+So I hope this trick will save you a lot of money.
+28
+I hope you liked this lecture,
+29
+and I will see you in the next lecture.
+
+--- Get an Extra 30 Minutes on your AWS Exam - Non Native English Speakers only ---
+
+1
+So if you're not an English speaker,
+2
+one thing you can do is actually request for more time
+3
+and request accommodation.
+4
+So on the left hand side, under exam registration,
+5
+click on exam accommodation
+6
+and you can request an extra 30 minutes
+7
+for non-native English speaker.
+8
+So click on this and then select the ESL +30 minutes
+9
+and then you could add documentation if you needed to,
+10
+and then request the accommodation.
+11
+Once it's done, it's approved and it doesn't expire.
+12
+And now you can go ahead and schedule your exam
+13
+so if you had exam schedule before, you need to cancel them.
+14
+And now select schedule exam again.
+15
+And this time the 30 minutes accommodation will be taken
+16
+into account and you will have more time for your exam.
+17
+If you need any other accommodation,
+18
+then you can directly request it from Pearson View exam on
+19
+their websites, but that's the one
+20
+that people use the most usually as
+21
+a non-native English speaker like me because I'm French.
+22
+Okay, so that's it for this lecture. I hope you liked it.
+23
+I wish you the best of luck for your exam
+24
+and I will see you in the next lecture.
+
+--- How does the exam work? ---
+
+1
+So a common question I get
+2
+is how will the exam work?
+3
+So first you register online, as I showed you.
+4
+Then you pay $150 to sign up for the exam.
+5
+Then you provide one identity document on the day.
+6
+So it could be your ID, your passport,
+7
+and all the details are in the email
+8
+that will be sent to you after you register for the exam.
+9
+You cannot take any notes.
+10
+You cannot use a pen.
+11
+You cannot speak.
+12
+And if you're at home, you will have to scan your room
+13
+to make sure it's fully empty.
+14
+Then we have 65 questions that will be asked in 130 minutes.
+15
+And in case you're not sure about a specific question,
+16
+you can use the flag feature
+17
+to optionally mark the question with the flag.
+18
+And at the end
+19
+when you can review all the questions and answer,
+20
+you can directly go back to the ones where you put a flag
+21
+to maybe answer it in a better way or verify your answer.
+22
+Once you submit the exam,
+23
+you cannot change any of your responses.
+24
+And to pass,
+25
+you will need a score of at least 720 out of 1000
+26
+and you will know within five days
+27
+if you passed or failed your exam.
+28
+Most of the time, it's going to be less than five days
+29
+but it's not immediate.
+30
+You will know the overall score as well, a few days later.
+31
+So you'll receive an email notification
+32
+telling you your score
+33
+to be downloaded on the certification website.
+34
+You will never know which answers were right or wrong.
+35
+This is so that people don't cheat.
+36
+And if you fail, you can take the exam again 14 days later.
+37
+So that's it, I wish you good luck for your exam
+38
+but I know you've prepared very hard.
+39
+Make sure to practice, practice, practice,
+40
+and revisit the lectures in this course
+41
+where you have some doubts.
+42
+That's it, I will see you in the next lecture.
+
+--- AWS Certification Paths ---
+
+1
+So, congratulations,
+2
+you are about to attempt an AWS certification,
+3
+but there is so much more on your journey.
+4
+So AWS is made of foundational certifications,
+5
+associate level certifications,
+6
+professional level certifications,
+7
+as well as specialty level certifications.
+8
+And based on the type of role you want to have,
+9
+they recommend different paths.
+10
+So all these paths can be found in a document on the URL
+11
+that have linked below in the bottom-right corner.
+12
+So we have the architecture path.
+13
+So if you wanna become a solutions architect,
+14
+for example, to design, develop,
+15
+and manage cloud infrastructure and assets,
+16
+you need to do these certifications.
+17
+So if you already know about the cloud and in IT,
+18
+no need to do Cloud Practitioner,
+19
+but I still think it's a good one.
+20
+And then if you want to leverage AI, they recommend
+21
+the AI Practitioner Foundational Certification.
+22
+Then you move on to Solution Architecture Associate,
+23
+Solutions Architect Professional.
+24
+And if you want to dive deep,
+25
+the Security Specialty would be really recommended.
+26
+If you're more into application architecture,
+27
+so this is around the user interface, the middleware,
+28
+the infrastructure, and so on,
+29
+then they recommend to have the same as before,
+30
+but you add the Developer Associates
+31
+and then you go into DevOps Engineer Professional.
+32
+And then if you wanted to dive deep,
+33
+the Solutions Architect Professional certification.
+34
+So if you're into operations,
+35
+you can be a systems administrator
+36
+and your role is to install, upgrade,
+37
+and maintain computer components and software
+38
+and to integrate automation processes.
+39
+In which case, Cloud Practitioner
+40
+followed by SysOps Administrator Associate is a good one.
+41
+And to do a deeper dive, DevOps Engineer Professional.
+42
+If you're a cloud engineer and your role is to implement
+43
+and operate an organization network computing infrastructure
+44
+and implement security systems to maintain data safety,
+45
+then you have Cloud Practitioner Foundational,
+46
+SysOps Administrator Associate, Security Specialty,
+47
+and for a deep dive, DevOps Engineer Professional
+48
+and Advanced Networking Specialty.
+49
+If you're into DevOps,
+50
+for example, you can be a test engineer,
+51
+your role is to embed testing and quality best practices
+52
+for software development from design to release
+53
+throughout the product lifecycle.
+54
+In which case, we have Cloud Practitioner, then Developer,
+55
+and then DevOps Engineer.
+56
+If you're a cloud DevOps engineer,
+57
+then your role is to design, deploy,
+58
+and operate large-scale global hybrid
+59
+cloud computing environments
+60
+and to advocate for end-to-end automated CI/CD pipelines.
+61
+So in that case, you would go
+62
+from Cloud Practitioner Foundational to Developer Associate
+63
+and then optionally, do SysOps Administrator.
+64
+And then if you are into machine learning,
+65
+then doing the Machine Learning Engineer Associate
+66
+could be a very good one.
+67
+And finally, for a deep dive,
+68
+the DevOps Engineer Professional Certification.
+69
+If you're a DevSecOps engineer,
+70
+so your role is to accelerate enterprise cloud adoption
+71
+while enabling rapid
+72
+and stable delivery capabilities using CI/CD principles,
+73
+methodology, and technology.
+74
+Then it is recommended for you to start
+75
+with Cloud Practitioner,
+76
+then SysOps Administrator Associates,
+77
+Machine Learning Associate
+78
+if you are working with AI and ML projects,
+79
+DevOps engineer, and finally, Security Specialty.
+80
+If you are into the security space,
+81
+you can be a cloud security engineer
+82
+and your role is to design computer security architecture
+83
+and develop detailed cyber security designs.
+84
+Then you develop, execute a new track performance
+85
+of your security systems to protect information.
+86
+So Cloud Practitioner Foundational
+87
+is a good one to start with.
+88
+If you're working with AI and ML systems,
+89
+AI Practitioner Foundational is also a very good one.
+90
+Then we have SysOps Administrator,
+91
+and finally, Security Specialty.
+92
+And for a deeper dive, DevOps Engineer Professional
+93
+and Advanced Networking Specialty is a good idea as well.
+94
+If you're a cloud security architect,
+95
+then your role is to design
+96
+and implement enterprise cloud solutions,
+97
+applying governance to identify, communicate,
+98
+and minimize business and technical risks.
+99
+In that case, you have Cloud Practitioner,
+100
+then AI Practitioner Foundational,
+101
+then Solution Architect Associate,
+102
+and then Security Specialty.
+103
+And you can do a deeper dive
+104
+on Solution Architect Professional.
+105
+If you're into development and networking.
+106
+So for development, you go
+107
+and you as a software development engineer,
+108
+you develop and you will maintain software
+109
+across platforms and devices,
+110
+so Cloud Practitioner, AI Practitioner Foundational,
+111
+Developer Associate and then DevOps Engineer.
+112
+And if you're just into networking,
+113
+then as a network engineer,
+114
+you need to design your LANs and your WANs,
+115
+so you have the Cloud Practitioner Foundational,
+116
+Solutions Architect Associate,
+117
+Advanced Networking Specialty,
+118
+and for a deeper dive, Security Specialty.
+119
+If you are in the data analytics space,
+120
+you can be a cloud data engineer
+121
+to do the automation of collection
+122
+and processing of structure or semi-structured data,
+123
+and you can monitor the data pipeline performance,
+124
+in which case, Cloud Practitioner,
+125
+then Solutions Architect Associate,
+126
+then Data Engineer is your way to go.
+127
+And for a deeper dive, you can do Security Specialty.
+128
+And if you're working on AI and ML project,
+129
+Machine Learning Engineer Associates.
+130
+If you are in AI or in machine learning,
+131
+you can be a machine learning engineer
+132
+and your role is to research, build,
+133
+and design artificial intelligence systems
+134
+that will automate predictive models
+135
+and design machine learning systems, models, and schemes.
+136
+So here, you can do Cloud Practitioner
+137
+and then AI Practitioner Foundational, Solution Associate,
+138
+and then Machine Learning Engineer Associate.
+139
+And then for deeper dive,
+140
+Data Engineer Associate and Machine Learning Specialty.
+141
+Then if you're a prompt engineer,
+142
+your goal is to design, test, and refine text prompts
+143
+to optimize the performance of an AI language model.
+144
+So here, we're talking about Cloud Practitioner
+145
+and very important AI Practitioner Foundational.
+146
+Then we have Machine Learning Engineer Associate.
+147
+And then finally,
+148
+Machine Learning Specialty for a deep dive.
+149
+If you're a machine learning ops engineer,
+150
+you're more on the operation side,
+151
+so this is where you maintain
+152
+the platform and infrastructure.
+153
+So you're going to be around Cloud Practitioner,
+154
+AI Practitioner of course,
+155
+and then Solutions Architect Associate
+156
+and Machine Learning Associate,
+157
+and for a deeper dive, Data Engineer and DevOps Engineer.
+158
+And if you are a data scientist, your role is to develop
+159
+and maintain AI and machine learning models
+160
+to solve business problems.
+161
+And you train and fine tune these models
+162
+to evaluate their performance.
+163
+And so therefore,
+164
+you should do Cloud Practitioner Foundational,
+165
+AI Practitioner Foundational,
+166
+then Solution Architect Associates,
+167
+Machine Learning Engineer Associates,
+168
+and then Machine Learning Specialty.
+169
+And you'll be good to go.
+170
+So that's it for your learning journey
+171
+on AWS certifications.
+172
+I hope you liked it and I will see you in the next lecture.
+
+--- Congratulations ---
+
+1
+Hi, this is Stephane Maarek
+2
+and I wanna say congratulations for finishing the course.
+3
+I really hope you liked it,
+4
+and I hope you will pass the exam without a hitch.
+5
+If you haven't done so, I would love a review from you.
+6
+Review help future students make the right decision,
+7
+and they help me get my course a little bit more visibility.
+8
+So if you liked it, I would love a nice comment from you.
+9
+This would really help me.
+10
+If you don't know how to leave a review, it's super simple.
+11
+A popup will show up at the end of this course
+12
+and will ask you for a star rating,
+13
+five being the highest rating.
+14
+You can optionally leave a comment
+15
+and then you can optionally answer a few questions.
+16
+And when you're ready, just save and exit.
+17
+If you don't see the popup appearing next,
+18
+you can click on the top right corner
+19
+of the course dashboard on udemy.com to add, edit,
+20
+or delete a rating, and you'll have the same prompt.
+21
+When you're ready, just save and exit.
+22
+Also, if you've passed the exam,
+23
+I'll be more than happy to know.
+24
+So post about it in the Q and A to motivate other students
+25
+or post about it on LinkedIn with your certificate
+26
+and tag me and I will do my best to quickly comment
+27
+and congratulate you as well,
+28
+because this is quite an achievement.
+29
+Overall, I hope you get a lot out of this course,
+30
+and I hope that your understanding
+31
+of AWS has vastly improved.
+32
+To me, that is the most important thing.
+33
+And if you want to practice some more in the next lecture,
+34
+called the bonus lecture,
+35
+you will find links to my extra practice exams as well
+36
+as my other courses with discount links included.
+37
+That's it.
+38
+So I hope you like my course,
+39
+and I will see you in the next course.
+
+--- Bonus Lecture ---
+
+[No transcript available for this lecture]

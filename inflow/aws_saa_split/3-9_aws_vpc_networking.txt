@@ -1,0 +1,8126 @@
+--- Section Introduction ---
+
+1
+Okay, so now we are going to learn VPC,
+2
+which is the backbone of what we've
+3
+been doing so far in this course,
+4
+but now we're going to formalize it.
+5
+So if you, in thinking of VPC,
+6
+have a look at this diagram,
+7
+and if this makes sense to you,
+8
+if you'd say, oh, I understand everything in this diagram,
+9
+then you're good to go.
+10
+You can skip the section, right?
+11
+But if you don't know this diagram
+12
+and I would expect you not to obviously,
+13
+don't be afraid.
+14
+We're going to go step by step.
+15
+We're going to learn all these concepts.
+16
+We're going to build a VPC from the ground up.
+17
+Now, just note that in this section,
+18
+we're going to create a few things
+19
+that may cost you some money,
+20
+for example, a NAT gateway,
+21
+for example, other things.
+22
+And so I would suggest that you do the section all at once,
+23
+follow along with the hands-on,
+24
+but then do it once in one go,
+25
+or maybe in two days so that you
+26
+don't spend too much money, okay?
+27
+This way you can delete all the resources afterwards.
+28
+And finally, do not be afraid.
+29
+This is a lot I know but we're going to go step-by-step.
+30
+It took me a while to understand the VPC and to master it,
+31
+I've started, I think the best way possible.
+32
+So hopefully I will get up you to speed
+33
+on networking and VPC.
+34
+Don't worry it's going to be all fine,
+35
+and I hope you're super excited.
+36
+Now, let's get started and learn about the VPC's in depth.
+
+--- CIDR, Private vs Public IP ---
+
+1
+Okay, so now let's talk about CIDR or CIDRs
+2
+or Classless Inter-Domain Routing,
+3
+which I will call CIDR for the rest of this course.
+4
+So, it's a method for allocating IP addresses
+5
+and we've seen them before in this course,
+6
+because when we look at security group rules for example
+7
+and networking in AWS, we saw something like this.
+8
+So, these are my security group rules
+9
+and if we look at the source column,
+10
+here we remember we had an IP address / and then a number
+11
+and this was our first touch with CIDRs.
+12
+So, CIDRs help define IP ranges
+13
+that we've seen some very, very simple one.
+14
+So, when we have an IP address /32,
+15
+this actually represents only one IP.
+16
+And when we saw 0.0.0.0/0
+17
+then this is represented all IPs,
+18
+but there are a lot of different possibilities.
+19
+For example,
+20
+if we define 192.168.0.0/26
+21
+then this represents a range of 64 IP addresses
+22
+as you see in this slide.
+23
+So, how does CIDR work?
+24
+Well, CIDR has two components.
+25
+There's the base IP and this is an IP that is contained
+26
+in the range.
+27
+Usually it is the beginning of the range,
+28
+but it could be that it's contained in the range.
+29
+And then, so this is example, so 10.0.0.0 or 192.168.0.0.
+30
+And then the other thing is the subnet mask
+31
+and the subnet mask will define how many bits
+32
+can change in the IP.
+33
+So, we have the /0, /24 all the way to /32
+34
+and this can take two different forms.
+35
+So, if we have /8 this is equivalent
+36
+to subnet mask of 255.0.0.0
+37
+and /16 is 255.255.0.0
+38
+and so on, okay.
+39
+But the most common form we see in this course and in AWS
+40
+is the / form, okay?
+41
+So, for the rest of this course
+42
+we'll be using /8, /16 and so on.
+43
+Now, let's have a detailed look at subnet masks.
+44
+So, this is how we can define
+45
+which values can change from the base IP.
+46
+So, if we have an IP address /32,
+47
+this allows for one IP, 2 to the power of 0
+48
+and this is the IP that we have on the left hand side.
+49
+Now, if we have an IP /31,
+50
+then we allow for two different IPs.
+51
+And so we'll allow for 192.168.0.0 and then .0.1.
+52
+If we have the same IP /30,
+53
+now this goes exponentially as you can see,
+54
+we allow for 4 IPs.
+55
+So, we'll have a bigger range from .0 to .3,
+56
+then /29 allows for 8 IPs so .0 to .7.
+57
+/28 allow for 16 IPs, so .0 to .15,
+58
+then we can look at the table, okay.
+59
+So, it goes from 4, 8, 16, 32, 64, 128, 256 IPs to change.
+60
+So, the /24 is 256 IPs, which is 2 to the power of 8
+61
+and this is from .0 to .255.
+62
+Then if we go one step deeper,
+63
+so we go to /16, so I skipped some in the middle.
+64
+Then we allow for 2 to the power of 16 IP to change,
+65
+so 65,536.
+66
+So, as we can see the last two parts of the IPs have changed
+67
+and then /0 allows for all IPs,
+68
+so from the very beginning to the very end.
+69
+So, how do we know?
+70
+As a quick memo we know an IP is made of 4 Octets,
+71
+so the first part, the second part,
+72
+the third part and the fourth part.
+73
+And /32 means no octets can change,
+74
+/24 means the last octet can change,
+75
+/16 means the last 2 octets can change
+76
+and take different values.
+77
+/8 is the last three octets can change
+78
+and /0 is all octets can change.
+79
+So, hopefully they started making a little bit more sense
+80
+into how CIDRs work.
+81
+So, now here comes a little exercise,
+82
+feel free to pause the video if you need to answer.
+83
+So, what is 192.168.0.0/24?
+84
+So, /24 so that means the last octet can change
+85
+and so therefore we have 256 IPs,
+86
+because the last number it can go from the number 0
+87
+to the number 255 included.
+88
+Now, what is 192.168.0.0/16?
+89
+Well, this is /16,
+90
+so the last two octets can change,
+91
+so we have a 65,536 IPs.
+92
+And what is 134.56.78.123/32?
+93
+Well, /32 so it's only one IP, so just one IP.
+94
+And then 0.0.0.0/0 we know this one,
+95
+it is all IPv4 space, okay?
+96
+When in doubt, there is this little website
+97
+that I can show you that is very, very handy.
+98
+So, on this website we have two options,
+99
+we can have a CIDR to an IP range
+100
+or an IP range to a CIDR, so let's try both.
+101
+So, if you have 10.0.0.0/ let's say a 16,
+102
+we calculate it as you can see we see the first IP
+103
+and the last IP in here.
+104
+How many IPs are including to the range and so on?
+105
+Okay.
+106
+If we do /17, which is a little bit less obvious.
+107
+In this one, we have 32,000 or so IPs.
+108
+We can have a look at the first bit so
+109
+this is the first IP and this is the last IP,
+110
+so it's quite handy and again you can play.
+111
+And reversely if you wanted to for example,
+112
+take an IP range, so this IP range and figure out
+113
+what CIDR this corresponds to, then click on calculate
+114
+and this will give us a result of 10.0.0.0/17.
+115
+So it's quite handy, if you start doing some networking
+116
+to use a website like this to help you out.
+117
+So, why are we talking about all these things?
+118
+Well, because we want to discuss public versus private IP
+119
+in the IPv4 space.
+120
+So, there is the Internet Assigned Numbers Authority
+121
+the IANA that established certain blocks of IPv4 addresses
+122
+that will be used only for private LAN networks,
+123
+so local network or public internet addresses.
+124
+So, the private IPs can only allow for certain values.
+125
+So we have this range for 10.0.0.0/8
+126
+which represents, you know a huge amount of IPs.
+127
+So, this is a private IP range you can use
+128
+and this is your least something you use in big networks,
+129
+because it allows for lot of different values.
+130
+Then we have the 172.16.0.0/12,
+131
+which is another sets of private IP addresses.
+132
+And when you create an account
+133
+it will provide you with a default VPC
+134
+and it turns out the default VPC
+135
+will be included in that networking space.
+136
+And then finally,
+137
+another one you may have seen before is 192.168.0.0/16,
+138
+which represents your home network.
+139
+So, this is very common when you have an internet router
+140
+to have your own devices,
+141
+have an IP that starts with 192, okay?
+142
+So, all the other IP addresses out there in the world
+143
+are going to be on the internet
+144
+and they're going to be public IP addresses.
+145
+So, that's it for these basics of IPv4s and CIDRs,
+146
+I hope you liked it and I will see you in the next lecture.
+
+--- Default VPC Overview ---
+
+1
+So, now let's do a quick walkthrough
+2
+of the VPC that is created with your account
+3
+called the default VPC.
+4
+So, now all new AWS accounts will have a default VPC
+5
+and this is so that you can start,
+6
+you know, using it this right away.
+7
+So, new EC2 instances that are launched
+8
+into the default VPC if you don't specify any subnets.
+9
+And obviously when you start in your accounts,
+10
+you only have one VPC anyway.
+11
+So, the default VPC
+12
+will by default have internet connectivity,
+13
+so this is why our instance are being able
+14
+to access the internet and each EC2 instance within it
+15
+will get a public IPv4 address
+16
+and this is why we've been able to connect
+17
+to our EC2 instances right away when we created them.
+18
+We will also get a public and a private IPv4 DNS name
+19
+for our EC2 instances.
+20
+So, let's go in to the console
+21
+to have a look at this default VPC.
+22
+So, I'm in the console and we're going to have a look
+23
+at the VPC service.
+24
+So, the reason why we have a default VPC
+25
+is that if we didn't have one,
+26
+it will be very, very complicated for newcomers in the cloud
+27
+to start using AWS, okay?
+28
+But it is best practice if you know a bit
+29
+it was a networking that you create your own VPCs
+30
+in your production accounts
+31
+instead of using the default VPC.
+32
+So, this is the dashboard and on the left hand side,
+33
+there is your VPCs.
+34
+Now, as we can see one VPC is created,
+35
+there is no name, but it's called the default VPC,
+36
+because it's created by default, okay?
+37
+And as you can see there's an IPv4 CIDR block here
+38
+that is defined.
+39
+And what I can do is go to my website
+40
+and then calculate this range.
+41
+And as we can see, we can see where the first IP
+42
+of my range is.
+43
+Where is the last IP sets a /16 that means
+44
+that the last two octets of my IP can change.
+45
+So, the last two can change so all the way to .255.255
+46
+and we have 65,536 IPs possible in that range.
+47
+Okay, very handy.
+48
+And if we have a look at CIDRs, so again,
+49
+only one IP for CIDR has been created
+50
+and associated with that VPC.
+51
+No IPv6 CIDRs, flow logs are not enabled
+52
+and there are no tags, okay?
+53
+So, this is pretty good.
+54
+Now, if you look at all the options,
+55
+we have a look at main route table,
+56
+main network ACLs and so on,
+57
+so we'll have a look in the course
+58
+into what these are at one at the time, okay.
+59
+But let's just explore the menu for now.
+60
+So, we have three subnets already
+61
+and these subnets are linked to the VPC
+62
+that is the default VPC.
+63
+Now, each of these subnets by default
+64
+has its own IPv4 CIDR, okay.
+65
+And so if you have a look at on the right hand side
+66
+the availability zones as we can see
+67
+each subnet is in a different AZ.
+68
+And the reason is well, by default
+69
+we got three subnets across three AZ
+70
+to have a highly available architecture if we needed to.
+71
+So, these subnets turns out have these IPv4 CIDRs.
+72
+So, let's have a look at one of these for example, this one
+73
+and then I will calculate this new CIDR.
+74
+And so here's the first IP and here is the last IP.
+75
+And the total number of hosts is 4,096,
+76
+but it turns out that if you go back
+77
+into the subnets console,
+78
+the number of available IPv4 addresses is 4,091.
+79
+So, we'll have a look at why this is the case
+80
+and obviously it would be a lesser number
+81
+if you are already using this subnets, okay?
+82
+So, we'll try to understand why this is the case,
+83
+but there are five IPs are missing and we'll learn about it
+84
+in this course.
+85
+So, looking all the way to the right,
+86
+each subnet has a route table and a network ACL.
+87
+And as you can see there is a default subnet
+88
+and we have the setting auto-assign public IPv4 enable
+89
+that means that any EC2 instance created
+90
+into these default subnets will have a public IPv4, okay?
+91
+So, let's have a look at now the settings,
+92
+so the flow logs are not enabled for the subnets.
+93
+The route table is available,
+94
+so there is this route table that exists
+95
+and we'll have a look at it in the second.
+96
+And then there is network ACL and this is again,
+97
+we'll see in details where this is in this section, okay.
+98
+But it turns out that's all traffic on all protocols
+99
+from everywhere is allowed for inbound and for outbound.
+100
+So, that means that anything launched
+101
+into these subnets, okay.
+102
+Will be having network connectivity, which is good.
+103
+Now, for CIDR reservations,
+104
+there are none of them sharing,
+105
+so this subnet is not shared and there are no tags.
+106
+So, let's have a look at the route table.
+107
+So, the route table is helping your traffic
+108
+being routed through your VPC.
+109
+So, this is called a default route table,
+110
+a main route table and it turns out
+111
+that there are two rules,
+112
+will have a look at what this means later on.
+113
+But this one right here,
+114
+this one is pointing to all traffic, okay.
+115
+Outside of this CIDR, all traffic goes to
+116
+this internet gateway.
+117
+So, if we click on this internet gateway
+118
+and go here, so it's on the left hand side.
+119
+This internet gateway is attached to my VPC
+120
+and whether it does that it gives internet access
+121
+to my EC2 instances within my VPC.
+122
+So again, this is why are our EC2 instances
+123
+did gets internet access.
+124
+Now, we'll have a look at it again
+125
+in the later stage in details.
+126
+And if you look at the subnet association,
+127
+this route table is not explicitly associated
+128
+with any subnets, but it is implicitly associated,
+129
+because these subnets do not have a route table
+130
+assigned to it.
+131
+So, the main route table is by default going to be assigned
+132
+to them implicitly, okay?
+133
+And then we're good to go.
+134
+So, we've seen VPCs subnets, route tables, internet gateway
+135
+at a very high level, but hopefully
+136
+it gives you a little bit on understanding
+137
+as to why we were able to launch EC2 instances,
+138
+why they were getting specific kind of IPs and so on.
+139
+Now in this section,
+140
+we're gonna spend a lot of time having a look at
+141
+all these options and recreate our own VPC.
+142
+So, we'll understand exactly what VPC, subnet,
+143
+route table, internet gateway
+144
+and everything else here actually are made of.
+145
+So, I hope you're excited
+146
+and I will see you in the next lecture.
+
+--- VPC Overview ---
+
+1
+So let's go ahead with creating
+2
+our first VPC in AWS.
+3
+So VPC stands for Virtual Private Cloud.
+4
+And you can have multiple VPC within a single AWS region.
+5
+You could have a maximum of five per region,
+6
+but this is a soft limit, so you can increase it.
+7
+And the number of CIDRs assigned per VPC is five.
+8
+Now for each CIDR, the minimum size is /28,
+9
+so that means at least 16 IP addresses.
+10
+The maximum size is /16, which is at max
+11
+65,536 IP addresses.
+12
+And because VPC is a private resource,
+13
+only Private IPv4 ranges are allowed.
+14
+So again, as a reminder, we have this range,
+15
+that range, and that range.
+16
+Now how do we choose the range for our VPC
+17
+in terms of what types of VP are we going to assign to it?
+18
+Well, the general rule is that you can assign
+19
+whatever you want, but you should make sure
+20
+that your VPC CIDR does not overlap
+21
+with your other VPCs or other networks
+22
+or corporate networks, and the reason we do so
+23
+is that if you want to connect them together,
+24
+we want to make sure the IP addresses
+25
+of one VPC or one CIDR do not overlap
+26
+with the range of IP addresses of other networks.
+27
+So at the end of this hands-on,
+28
+we're just going to have within a region a simple VPC.
+29
+So let's get started.
+
+--- VPC Hands On ---
+
+1
+So let's go ahead and create our first VPC.
+2
+Now we could launch the VPC Wizard,
+3
+but that would defeat the point of learning.
+4
+So what we'll have to do is create everything one-by-one.
+5
+So let's go into VPC.
+6
+I have one VPC available,
+7
+but I'm going to create a new VPC.
+8
+And the name tag is going to be DemoVPC.
+9
+Here we need to choose an iPv4 CIDR block.
+10
+So I will choose 10.0.0.0/16, which is allowed.
+11
+So, if we look at the CIDR here and calculate it,
+12
+that means that my First IP is this one,
+13
+and my Last IP is this one.
+14
+We have 65,000, or so, IPs in this range.
+15
+So, if I did /15, this would not work
+16
+because this would be a too big of a network, okay?
+17
+/16 is the limit for your CIDR site.
+18
+So for now we are not going to assign any iPv6 CIDR block.
+19
+We'll see this later on in the section.
+20
+In terms of tenancy,
+21
+we have Default or Dedicated.
+22
+And this is to define how EC2 instances launch
+23
+within this VPC.
+24
+We'll have either dedicated hardware or shared hardware.
+25
+Now, dedicated hardware is very expensive.
+26
+So we are going to have shared hardware by default.
+27
+So tenancy is Default.
+28
+So Tags is named DemoVPC. This is good.
+29
+Now we'll create this VPC.
+30
+And my VPC is created.
+31
+So if we look at this VPC,
+32
+as we can see we have one iPv4 CIDR, zero iPv6 CIDR, okay?
+33
+We have already a main route table
+34
+and a main network ACL associated with it.
+35
+So some stuff was created behind the scenes,
+36
+when we created the VPC.
+37
+And something we should notice is
+38
+that we are able to add other iPv4 CIDRs.
+39
+So in the creates dialogue, we could only specify one,
+40
+But if I do Action and then Edit CIDRs,
+41
+and then here, I could add a new IPv4 CIDR.
+42
+So I could have 10.0.0, sorry, .1.0/, excuse me,
+43
+10.1.0.0/16, which is the next CIDR after this one.
+44
+And then click on Save.
+45
+So we could have two different CIDRs in here.
+46
+And you could also add different IPv6 CIDRs.
+47
+Now to keep it very simple,
+48
+I'm not going to have two IPv4 CIDRs.
+49
+I'm just going to have one.
+50
+But I'm going to show you that you can have
+51
+up to five IPv4 CIDRs within your VPC, which is quite handy.
+52
+Okay, so we have this DemoVPC being created.
+53
+This is our first step to our demo.
+54
+I hope you liked it.
+55
+And I will see you in the next lecture.
+
+--- Subnet Overview ---
+
+1
+Okay, so the next step is
+2
+to add subnets into our VPC.
+3
+So we're going to create two subnets.
+4
+One will be a public subnet,
+5
+and one will be a private subnet.
+6
+Now this is going to be within the one availability zone,
+7
+and we'll see what makes a subnet public
+8
+or a subnet private.
+9
+So let's have a look just first at what subnets are.
+10
+So a subnet is going to be, again,
+11
+a sub-range of IPv4 addresses within your VPC.
+12
+And it turns out that's in this range,
+13
+AWS will reserved the five IP addresses in it.
+14
+So, the first four IP addresses and the last one is reserved
+15
+in each subnet.
+16
+These IP addresses are not available for use,
+17
+and they cannot be assigned as an IP to an EC2 instance.
+18
+So for example,
+19
+if you have a CIDR block 10.0.0.0/24,
+20
+then you're going to have a few reserved IP addresses.
+21
+Such as, well, the first one,
+22
+which is network address,
+23
+the second one,
+24
+so .1, which is reserved AWS for the VPC router,
+25
+the .2, which is reserved by AWS for mapping
+26
+to Amazon provided DNS,
+27
+and this is very important,
+28
+.3, which is not used yet,
+29
+but is reserved for future use.
+30
+And we have .255, which is a network broadcast address.
+31
+But because AWS does not support broadcast in a VPC,
+32
+this address is reserved and cannot be used, okay?
+33
+So as an Exam Tip,
+34
+if you need 29 IG IP addresses in a sub-net
+35
+for EC2 instances,
+36
+then you can not choose a subnet of /27
+37
+because this is 32 IP addresses, right, in this /27.
+38
+But if you remove the five that are reserved IP addresses,
+39
+you're going to get 27 addresses,
+40
+which are less than the number 29 that we need.
+41
+So we need to choose a subnet size of /26
+42
+because this gives us 64 IP addresses in that subnet.
+43
+And then if you remove the five reserved IP addresses
+44
+with sub-59 IP addresses,
+45
+which is greater than the 29 we needed, okay?
+46
+So, I will see you in the next lecture
+47
+to create our first subnets.
+
+--- Subnet Hands On ---
+
+1
+So let's go ahead and create our subnets.
+2
+So on the left hand side, I will go to Subnets,
+3
+and as we can see, there are three subnets
+4
+and they belong to the previous VPC.
+5
+So what I can do is I can filter my views by a specific VPC.
+6
+So I need to refresh this page first,
+7
+so it will click on Select a VPC,
+8
+and I will choose the DemoVPC
+9
+just to filter all my views by VPC
+10
+and not have any noise in my UI.
+11
+Okay, so now, as you can see,
+12
+we have zero subnets associated with that specific VPC.
+13
+So we'll create a subnet, and then we just select a VPC,
+14
+so this DemoVPC subnet.
+15
+And then, we need to specify the subnet settings.
+16
+So, the subnet name.
+17
+The first one is going to be PublicSubnetA,
+18
+and this is because we put a subnet in AZ A.
+19
+So, we'll specify a specific AZ,
+20
+so eu-central-1a, so AZ number A.
+21
+And then, we need to select an IPv4 CIDR block.
+22
+So to get started, let's go with 10.0.0.0/24.
+23
+This is because, in a public subnet,
+24
+you wanna choose not too many IP addresses.
+25
+Usually, this is reserved for your load balancers
+26
+or your front-facing infrastructure.
+27
+So, a smaller subnet size is good.
+28
+And again, if you wanna check what this is,
+29
+this is 256 addresses.
+30
+And because we have a slash 24,
+31
+only the last octet can change.
+32
+And so therefore, it goes from .0 all the way to .255.
+33
+Okay, so we have this name tag, PublicSubnetA.
+34
+And here, we can actually add a second subnet, okay?
+35
+So it could be PublicSubnetB,
+36
+and this one is going to be an AZ eu-central-1b.
+37
+And, so we need to choose an IPv4 CIDR block.
+38
+Now, the last IP address that we had in here was .0.255,
+39
+so what I would choose is 10.0.1.0/24, okay?
+40
+And this is the next range
+41
+after the one we've defined right here, okay?
+42
+So again, you can check out what this range means
+43
+in this website.
+44
+And as you can see, the first IP is 10.0.0.1.0,
+45
+and the second is 10.0.1.255.
+46
+Perfect, so we have defined two public subnets
+47
+and now we're going to have some private subnets.
+48
+So PrivateSubnetA,
+49
+and we need to choose an IPv4 CIDR block.
+50
+Now, let's choose something
+51
+like 10.0.16.0/20,
+52
+and this is a bigger subnet size, okay?
+53
+And if you have a look at the range about what this is,
+54
+so we have 4,096 IP addresses in it.
+55
+So, it starts at 10.0.16.0,
+56
+and then it ends at 10.0.31.255.
+57
+Okay, so this is good.
+58
+And now, let's add one last subnet, so PrivateSubnetB,
+59
+and the AZ is going to be an eu-central-1b.
+60
+No, I didn't set up the AZ here,
+61
+so let's make sure we do.
+62
+Okay, perfect.
+63
+And, the IPv4 CIDR block
+64
+is going to be the next logical one,
+65
+so .32.0/20.
+66
+Okay, so we have four subnets being created.
+67
+I will create them four.
+68
+And because there's no overlapping IP addresses,
+69
+as we can see, the creation was successful.
+70
+So now, if we have a look on the right hand side,
+71
+we can see that there are different amount
+72
+of IP addresses available.
+73
+So, this one is 251, and this one is 4,091.
+74
+So again, there are five IP addresses, remember,
+75
+that were reserved by your subnets.
+76
+And this is something that you remember.
+77
+So what you're going to get
+78
+is the size of the CIDR minus five,
+79
+so this explains these numbers right here.
+80
+Also, we did define these segments across two AZ,
+81
+so eu-central-1a and 1b,
+82
+and the reason we do so is you get high availability
+83
+if we were to put resources in it.
+84
+But we haven't done anything yet
+85
+to define what makes subnets public,
+86
+or what makes a subnet private.
+87
+Right now, they all look the same,
+88
+so we'll see how to do this in the future lectures.
+89
+For now, we're good to go in this setup.
+90
+So I hope you liked this lecture,
+91
+and I will see you in the next lecture.
+
+--- Internet Gateways & Route Tables ---
+
+1
+Okay so now we're going to see how we can get
+2
+internet access into our subnets
+3
+because right now we don't know what a Public Subnet is
+4
+and what a Private Subnet is, and currently,
+5
+both our subnets do not have internet access.
+6
+So an Internet Gateway will allow resources
+7
+in a VPC to connect to the internet,
+8
+and it could be EC2 instances allowing the functions
+9
+and so on.
+10
+It will scale horizontally
+11
+and it's highly available and redundant.
+12
+So it's a really nice managed resource
+13
+and it must be created separately from a VPC.
+14
+Now one VPC can only be attached to one Internet Gateway
+15
+and vice versa and Internet Gateways on their own
+16
+do not allow internet access.
+17
+We must also edit the Route Tables to make it work.
+18
+So we'll see this in a second.
+19
+So currently we have a VPC.
+20
+We have two subnets in one EC,
+21
+so I didn't represent the other two subnets
+22
+to make this diagram as simple as possible.
+23
+We're going to create an Internet Gateway in this VPC,
+24
+and this enough will not give internet access
+25
+to our subnets.
+26
+What we need to do is to also edit the Route Tables.
+27
+So we'll create a Public EC2 Instance in our Public Subnet
+28
+and then we will have to edit a Route Table so that
+29
+the EC2 Instance can connect to the Router,
+30
+then connect to the Internet Gateway,
+31
+and then from the Internet Gateway connect to the internet.
+32
+So let's have a look at how we can do this
+33
+in the next lecture.
+
+--- Internet Gateways & Route Tables Hands On ---
+
+1
+So first let's be certain
+2
+that our EC2 instances in these subnets
+3
+do not have access to the internet.
+4
+So to do so, let's go into the EC2 console
+5
+and we're going to be launching an instance
+6
+into these subnets.
+7
+To do so, I'm clicking on launch instances.
+8
+And in here I scroll down Amazon Linux 2.
+9
+T2.micro, this is good.
+10
+I will not select the key pair.
+11
+And for network settings, I will edit them.
+12
+In here, I will choose the VPC address created
+13
+named DemoVPC.
+14
+And from there, I'm able to choose whatever subnet I want.
+15
+For example, I can use public subnet A.
+16
+We have 251 IP addresses in there
+17
+so I can launch my instances here.
+18
+And as you can see,
+19
+the setting auto assigned public IP is currently disabled.
+20
+This is because we need to,
+21
+if we wanted to get a public IPv4 address
+22
+to enable this, of course.
+23
+But why is it disabled by default?
+24
+Whereas when I go and select a subnet from before,
+25
+it is actually enabled by default, if you try it.
+26
+So the idea is that if you go into your subnet settings,
+27
+you're going to see that
+28
+and let's go in here, the public subnet A right here.
+29
+If I do action and then edit subnet settings.
+30
+In here I'm able to enable
+31
+the auto-assigned public IPv4 address
+32
+which is something we do want for our public subnets.
+33
+So I have to enable it for the public subnet A,
+34
+and then also I need to enable it
+35
+for the public subnet B.
+36
+So action and then edit subnet settings and then save.
+37
+And so what's going to happen
+38
+is that if I now refresh this page entirely
+39
+to create a new instance again,
+40
+but this time I go into the network settings
+41
+and say, edit.
+42
+I will go to DemoVPC.
+43
+I will choose public subnet A.
+44
+And as you can see now, by default,
+45
+the auto-assigned public IP setting is set to enable.
+46
+So we modified the default in our subnets
+47
+and it got reflected into the EC2 instance launch console.
+48
+This is good.
+49
+So we get to create a new security group
+50
+and we add the SSH rule on port 22,
+51
+because we will SSH into our EC2 instance.
+52
+The rest looks good so let's go ahead
+53
+and launch this instance,
+54
+and we're good to go.
+55
+And now my instance is running.
+56
+As we can see it has been assigned a public IPv4 address.
+57
+So it turns out that it has a public IPv4 address
+58
+but does not have internet connectivity.
+59
+How do we make sure?
+60
+Well, for example, let's try to connect
+61
+to this instance using EC2 Instance Connect
+62
+and then click on connect.
+63
+So remember we did open the SSH rule on our instance
+64
+yet there was a problem connecting to our instance.
+65
+It turns out that's maybe the instance network settings
+66
+are not correctly configured.
+67
+So this is where the internet gateway comes in.
+68
+So let's go ahead and add an internet gateway.
+69
+So this is my VPC.
+70
+And as you can see, there's no matching internet gateway.
+71
+By the way, if I remove the filter,
+72
+we can see there's already internet gateway
+73
+attached to my default VPC.
+74
+So let's create an internet gateway
+75
+and I'll call this one DemoIGW,
+76
+so internet gateway's IGW
+77
+and click on create internet gateway.
+78
+So very, very simple.
+79
+It's been created and it's in detached states.
+80
+So what we need to do is to attach it to a VPC
+81
+and obviously the VPC we're going to attach it to
+82
+is our DemoVPC.
+83
+So now my internet gateway is attached into a VPC
+84
+which provides internet access into our VPC.
+85
+So if we try again, the EC2 Instance Connect,
+86
+is this going to work?
+87
+So let's try to connect again.
+88
+And as we can see, yet again,
+89
+there is a problem connecting to your instance.
+90
+So what is happening?
+91
+Well, even though we have an internet gateway,
+92
+we need to give it a route.
+93
+And so we need to edit the route table.
+94
+So if we have a look at this route table right here,
+95
+this is a default route table.
+96
+And the default route table
+97
+is going to be associated with subnets
+98
+that don't have an explicit route-table association.
+99
+So currently this default route table,
+100
+main route table, is associated with four subnets,
+101
+but I don't like it.
+102
+I think there's much better
+103
+to have explicit subnet associations.
+104
+So what I'm going to do
+105
+and I'm going to create two route tables.
+106
+So I'll call it PublicRouteTable
+107
+and then we'll assign it to this VPC.
+108
+This is going to be assigned to my public subnets.
+109
+And then I'm going to create a second route table
+110
+called the PrivateRouteTable.
+111
+And again, assigned to my DemoVPC.
+112
+And the reason we do so is that I want to assign my subnets
+113
+to the right route table.
+114
+So the public route table should have subnet associations.
+115
+We're going to edit then.
+116
+And we're going to add all the public subnets
+117
+into my public route table.
+118
+So I click on save.
+119
+And then my PrivateRouteTable,
+120
+again, I will edit the subnet associations
+121
+and I will assign them the private subnets, A and B.
+122
+So let's save these associations.
+123
+Okay, we're good.
+124
+So as we can see my public and my private route tables
+125
+both have two subnets associated with them.
+126
+And it turns out that my main route table,
+127
+this one, does not have any subnet association
+128
+because all subnets have been assigned.
+129
+So this is better.
+130
+We've solved some problem.
+131
+Now let's go into our public route table.
+132
+Remember our EC2 instance was launched
+133
+into this public subnet.
+134
+So it's associated with the public route table.
+135
+And so what we want to do is to edit the routes
+136
+in our public route table.
+137
+So if you have a look at the route right now
+138
+in our route table, it turns out that we have a traffic rule
+139
+for 10.0.0.0/16 to go to local.
+140
+That means that any IP within our VPC,
+141
+so this is the VPC CIDR,
+142
+already corresponds to the VPC.
+143
+So it should be routed from within the VPC
+144
+hence the target is local.
+145
+But we can edit the routes and saying,
+146
+hey, I want to have a second route
+147
+and I'll take the first one.
+148
+So any IP, so this represents any IP.
+149
+So any IP that does not match this rule,
+150
+the target should be going to,
+151
+and as you can see there are a lot of different options
+152
+but for now it's an internet gateway
+153
+and we'll choose the internet gateway we just created.
+154
+So we're saying, hey, if this is a local IP in our CIDR,
+155
+just please make sure you route locally.
+156
+But if this is anything else,
+157
+including obviously public IPs,
+158
+then target is going to be the internet gateway.
+159
+So send traffic to the internet gateway.
+160
+We'll save these changes.
+161
+And now that we've done that, we should have given access
+162
+to the internet to our EC2 instance.
+163
+So let's retry.
+164
+So I'm going to take my EC2 instance,
+165
+click on EC2 Instance Connect and then connect.
+166
+And as we can see, now I am in my EC2 instance
+167
+and it is connected to the internet.
+168
+For example, I can do ping google.com.
+169
+And as you can see, we get some data back from Google.
+170
+So we are connected to the internet.
+171
+Everything is working great.
+172
+And currently what we've been doing
+173
+is giving internet access into our public subnets
+174
+with the public route table.
+175
+We don't know yet how to give internet access
+176
+into the private EC2 instances,
+177
+and we'll see how to do this in the next lectures.
+
+--- Bastion Hosts ---
+
+1
+So now let's talk about bastion hosts
+2
+and the idea is that our users
+3
+want to access an EC2 instance that is
+4
+in a private subnet, but we as users,
+5
+we are on our computer on the public internet.
+6
+So obviously because our EC2 instance
+7
+is in a private subnet
+8
+we don't have direct internet access to it.
+9
+So the trick, or one trick at least,
+10
+is to use a bastion host.
+11
+The bastion host is an EC2 instance,
+12
+that's named bastion host, okay?
+13
+And that EC2 instance is special
+14
+because it is in a public subnet.
+15
+It has its own security group called
+16
+the bastion host security group,
+17
+then we also have a security group, of course,
+18
+for our EC2 instance in the private subnet.
+19
+Now, the idea is that the EC2 instance
+20
+in the public subnet, our bastion host,
+21
+does have access to the EC2 instance in our private subnet,
+22
+well, because everything is in our VPC.
+23
+So now to access our EC2 instance in the private subnet,
+24
+what we do is that we first connect
+25
+through SSH to the bastion host
+26
+and then connect from the bastion host,
+27
+again with SSH, to the EC2 instance in the private subnet.
+28
+And it could be one
+29
+but it could be as well, many EC2 instances.
+30
+So to summarize a bastion host is a way for us
+31
+to SSH into our private EC2 instances.
+32
+And we must put the bastion host in the public subnet.
+33
+So in terms of security group rules,
+34
+this is something that can come up with the exam,
+35
+we need to understand what we can define.
+36
+So for a bastion host perspective,
+37
+the security group must allow access
+38
+from the internet, okay?
+39
+But instead of allowing everywhere
+40
+from the internet access,
+41
+because that could be a security risk,
+42
+we can only restrict, for example,
+43
+access from the public CIDR of your corporation
+44
+or your internet access and so on.
+45
+So that we have to restrict the EC2 security group
+46
+of the bastion host as much as possible to guarantee
+47
+that only a few select IPs can access it,
+48
+because if somehow a random attacker has access
+49
+to our EC2 instance as the bastion host,
+50
+it could be a security risk for our infrastructure.
+51
+Now, in terms of the security group
+52
+of the EC2 instances in the private subnets,
+53
+well, they must allow the SSH access,
+54
+so on the port 22 again, from this time the private IP
+55
+of the bastion host
+56
+or the security group of the bastion host,
+57
+this is equivalent.
+58
+And this is because the traffic
+59
+these EC2 instances are seeing are originating
+60
+from this bastion host.
+61
+So that's it for this lecture,
+62
+I hope you liked it
+63
+and I will see you in the next lecture.
+
+--- Bastion Hosts Hands On ---
+
+1
+So it turns out that this EC2 instance we've created
+2
+in our public subnet could have a name and the name
+3
+could be Bashian host.
+4
+This is because we are able to SSH
+5
+into this fashion host and
+6
+from it, we'll be able to connect to an EC two instance
+7
+in a private subnet.
+8
+So to do so well, let's go ahead and create an EC two
+9
+instance in a private subnet, but first, if you don't
+10
+have a key pair, yet sometimes I reuse accounts
+11
+or create new ones or transfusions.
+12
+So I don't necessarily have key pairs.
+13
+You can just enter a key pair.
+14
+So I'll have a, a demo key pair right here, and then
+15
+in the PM format.
+16
+And then I will create my key pair.
+17
+So I will save this file and this is going to be very handy
+18
+for us to SSH into the EC two instance in my private subnet.
+19
+So let's have a look at how we can do it.
+20
+So now let's go into EC two instances
+21
+And I'm going to launch an EC two instance.
+22
+I will scroll down Amazon Linux 2, two micro.
+23
+We will use the key pair named demo key pair we
+24
+just created.
+25
+And then for network settings, we will make sure to
+26
+launch this into our demo VPC.
+27
+And so far as subnet association.
+28
+So we want to be into a private subnet, for example
+29
+the private subnet a, and we're going to create
+30
+a security group.
+31
+I'm going to name it private SG because it is
+32
+a private security group and we are going to allow SSH
+33
+but actually not from anywhere from custom
+34
+and this time it will choose a security group we
+35
+have created from before, which is called a launch
+36
+wizard one, which is not a great name.
+37
+I'm going to rename it very, very soon
+38
+but what it means that we allow SSH from the Bashian host.
+39
+And this is how through a hub,
+40
+through the Basian host, we're going to be able to SSH
+41
+into this private instance.
+42
+Okay, so this looks good.
+43
+Now let's go ahead and actually launch that instance,
+44
+and we are good to go.
+45
+So here we have our private instance and because it is
+46
+in a private sublet, as you know,
+47
+we cannot use the EC two instance connect
+48
+into it because that will not work.
+49
+Okay. We will need to edit the root tables at
+50
+the internet gateway, but that would make the subnet public.
+51
+So what we have to do is to SSH
+52
+through the Bashian host.
+53
+Okay. So let's go ahead and see how we can do it.
+54
+So we're going to connect into our Bashian host.
+55
+So I will click on connect and then EC two instance connect.
+56
+So effectively what we're doing is that we're
+57
+doing SSH into our Bashian host.
+58
+So you could use either EC two instance connect, or
+59
+you know, your SSH command line through your terminal.
+60
+And from this fashion host
+61
+we wanna connect into our private instance.
+62
+Now our private instance
+63
+as we can see has a private IP four address.
+64
+So this is what we need to do.
+65
+So we need to do SSH easy two user at, and then
+66
+the private IP, and then we need to specify a key pair.
+67
+Okay. So yes, and this is not going to work
+68
+because we haven't specified a key pair.
+69
+So we need to actually create that key pair
+70
+and then have it on my EC two instance.
+71
+So what I'm doing is I'm going to have a VI or nano
+72
+and then I'll call it demo key pair.pm
+73
+and then I will have to paste the content
+74
+of the key pair I just downloaded.
+75
+So I open my file that PM with a text editor
+76
+and then I paste exactly what I have in here,
+77
+and I wanna make sure this is going to be good.
+78
+So I think it's missing a new line right here.
+79
+Okay. This looks good, actually.
+80
+Let's see.
+81
+And then exit and then save.
+82
+Okay. So let's clear the screen.
+83
+Let's just make sure that this has been properly saved.
+84
+So this hopefully looks good.
+85
+Let's see.
+86
+I'm not too...I'm not a bit confused
+87
+by the formatting, but let's see.
+88
+And we need to make sure we change the permission.
+89
+So I will change the permissions on this demo key profile.
+90
+Okay. And now let's do this SSH command
+91
+and minus I demo key pair.pm, and there's a pass rise
+92
+and this is definitely an issue
+93
+with the formatting of my files.
+94
+So what I'm going to do is
+95
+that I'm going to remove demo key pair.
+96
+Yes. Please remove it.
+97
+And I will use another text editor to see if that works.
+98
+So VI demo, key pair that PM.
+99
+And I'm gonna keep this on video
+100
+because this is a super important to see what can go wrong.
+101
+And in case you have these issues, then at least, you know
+102
+so this looks a lot better.
+103
+And then I will save this file.
+104
+Okay. So now if we run the SSH command again, okay.
+105
+This is unprotected so
+106
+that we are needing to running the shma command.
+107
+So here we go.
+108
+And then with such again, and here we go.
+109
+This has worked.
+110
+So now we are SSH'd into my Amazon index
+111
+two AMI in my private subnet.
+112
+So this is really good.
+113
+We went from the Bashian host into the private instance
+114
+and this works, and this is quite cool.
+115
+But now if we try to ping Google account
+116
+as you can see, well, this doesn't work.
+117
+The private EC two instance does not
+118
+have internet access outgoing.
+119
+And so we're going to see how to resolve this
+120
+in the next lecture.
+121
+But so far we've seen how to use Bashian host.
+122
+So awesome.
+123
+And I will see you in the next lecture.
+
+--- NAT Instances ---
+
+1
+So now let's talk about NAT instances,
+2
+which are definitely outdated.
+3
+There is a better solution called NAT gateway
+4
+in the next lecture, but they still can appear at the exam.
+5
+So let's go and have a look at them.
+6
+So NAT means Network Address Translation,
+7
+and these NAT instances allow EC2 instances
+8
+in private subnets to connect to the internet.
+9
+To do so, the NAT instance must be launched
+10
+in a public subnet and then will connect the public subnet
+11
+and the private subnets.
+12
+There's also a setting we'll have to disable,
+13
+and we'll see this in the hands-on,
+14
+called the source/destination check,
+15
+and I'll show you this right now why.
+16
+Also, your NAT instance must
+17
+have a fixed Elastic IP attached to it.
+18
+So let's have a look.
+19
+So we have a server,
+20
+and it's a public server with a public IP, 50.60.4.10,
+21
+and we want to access it from our private subnets, okay.
+22
+So how do we establish connectivity from the private subnets
+23
+to the server?
+24
+Well, to do so, we're going to launch a NAT instance
+25
+with its own security group in a public subnet,
+26
+then what we're going to do is attach an Elastic IP
+27
+to this NAT instance,
+28
+and then we're going to edit the route tables
+29
+from the private subnet to the public subnet
+30
+to be allowed to send traffic from the EC2 instances
+31
+between the two subnets to the NAT instance.
+32
+So then the IP at the instance wants to access the server,
+33
+the public server,
+34
+but it has to go through the NAT instance.
+35
+So the request is seeing that the source IP is 10.0.0.20,
+36
+which is true, which is a private IP,
+37
+and the destination is 50.60.4.10 which the NAT instance
+38
+is smart enough to say, hey, I know you're trying
+39
+to send traffic to something else,
+40
+so let me send the traffic over to that server.
+41
+But that server has something different.
+42
+So the destination is still this IP,
+43
+but now the source IP is 12.34.56.78,
+44
+which is corresponding to the public IP of the NAT instance.
+45
+So as you can see, this network packet gets rewritten
+46
+by the NAT instance, this is what NATs do,
+47
+they rewrite network packets,
+48
+and the source IP has changed.
+49
+The server now says, hey, I know how to reply to you
+50
+because the source is me and the destination
+51
+is the public IP of your NAT instance,
+52
+and then the NAT instance will reply back the traffic
+53
+to the EC2 instance, it's smart enough to know which one
+54
+to go to, and say, hey, the source is the public server
+55
+and the destination is your private IP.
+56
+And this is why,
+57
+because there's some IPs are being rewritten,
+58
+this is why the source and destination check
+59
+must be disabled on the EC2 instance for your NAT instance.
+60
+So this is how NAT instances work at a high level.
+61
+So again, we're going to create a NAT instance
+62
+within a public subnet, and next I attach an Elastic IP
+63
+to it, and then we're going to have a route table
+64
+which allows the private instances to talk
+65
+to the NAT instance all the way
+66
+to the internet gateway and so on.
+67
+So some comment about NAT instances.
+68
+So we have a pre-configured Amazon Linux AMI available
+69
+to us, and although it's available there,
+70
+it reached its end of standard support
+71
+on December 31st, 2020.
+72
+So NAT gateways are now recommended,
+73
+and NAT instances are not highly available.
+74
+They're not resilient with out of the box setup,
+75
+so we need to create multiple ones and multiple AZs,
+76
+and maybe have an ASG, have a resilient user-data script.
+77
+It's quite complicated.
+78
+And then if you select a small instances,
+79
+then you're going to get less bandwidth
+80
+than a bigger instance.
+81
+You also must manage Security Groups and rules
+82
+on your instance.
+83
+So inbound, you must allow whatever HTTP HTTPS traffic
+84
+from the private subnets,
+85
+allow maybe SSH from your home network,
+86
+and outbound, you need to also allow some traffic outbound.
+87
+So NAT instances, they work.
+88
+This is good to see how NATs work at a high level,
+89
+and this is what this lecture is about.
+90
+We're going to set up a NAT instance in the next lecture,
+91
+but remember, they're going away and the exam will ask you
+92
+to choose between NAT instance
+93
+that we've just seen right now and NAT gateways
+94
+that we'll see in the next lecture.
+95
+So I will see you in the next lecture.
+
+--- NAT Instances Hands On ---
+
+1
+So let's go
+2
+and create a NAT instance to give internet access
+3
+to our private subnets.
+4
+So I click on Launch instance
+5
+and I'm going to type NAT instance,
+6
+and now we need to find
+7
+the Amazon image that is for NAT instance.
+8
+So to do so I'm going to browse more AMI's right here
+9
+and then I need to enter a search term
+10
+such as NAT, N-A-T,
+11
+and then press enter.
+12
+And as we can see
+13
+there are 40 some results in the community AMI.
+14
+So I click on community AMI
+15
+and now I can see that we have some NAT instances from AWS.
+16
+So you can find one of these as long as it says, X 86 64.
+17
+And you can look at the published date to try to
+18
+find a newer kind of instance.
+19
+So I can find this one published date of 2022,
+20
+as long as it says Amazon AMI VPC NAT 2018,
+21
+something like this
+22
+then you're good to go.
+23
+Of Architecture X 86 64.
+24
+Okay, so let's choose this one.
+25
+Looks recent enough.
+26
+But you know, whatever you choose really is good enough
+27
+NAT instances are somewhat deprecated.
+28
+We'll see by what's next.
+29
+So don't worry too much about this, but here we go.
+30
+I'm using my community AMI from AWS to deploy a
+31
+NAT instance.
+32
+I use a T2 micro.
+33
+For Key pair I will just use a demo key pair.
+34
+And then for network settings, we're going to add, edit this
+35
+and we're going to create a new security group.
+36
+So rules wise, we're going to create a few things.
+37
+So SSH from anywhere, yes.
+38
+Then we have to add more rules.
+39
+So HTTP,
+40
+and then the source is a CIDR
+41
+and the CIDR block is the same as our VPC.
+42
+So 10 0 0 0 slash 16.
+43
+And then we're going to do the same, but for HTTPS
+44
+so to allow HTTPS traffic out as well
+45
+from the same CIDR block.
+46
+And then the last thing to do is to, of course
+47
+edit the VPC setting to be in my demo VPC.
+48
+And we deploy this NAT instance in the public subnet
+49
+for example, public subnet A.
+50
+So we have to redo this.
+51
+So NAT instance, SG is the name of the security group.
+52
+And actually my roles are kept.
+53
+So make sure to name it, NAT instance SG.
+54
+Okay, so we are good to go.
+55
+Now let's go ahead and launch that instance.
+56
+And we're done.
+57
+And what we want to do is to have the private instance
+58
+send internet traffic out through the NAT instance.
+59
+Okay, so now that my NAT instance is created
+60
+what I need to do is to edit a networking setting
+61
+called the source destination check.
+62
+So I need to stop this, okay.
+63
+And this is because if this is NAT instance
+64
+you must stop the source destination checking
+65
+because the NAT instance must be able to receive
+66
+and send traffic when the source
+67
+or destination is not itself.
+68
+So this is very important.
+69
+We click on save and somehow it was somewhat knew
+70
+that we're gonna use this for NAT instances.
+71
+So this is really good.
+72
+And next, what we have to do is to send some traffic
+73
+to the NAT instance.
+74
+So first let's verify right now.
+75
+So I'm going to re SSH into my private instance
+76
+so to do so I have to go through the Bastion Host.
+77
+So I will use EC 2 instance connect.
+78
+Great. I'm connected into Bastion Host
+79
+and then I will use the SSH command.
+80
+So EC2 user @, and then I need to have the private IP
+81
+of my private instance in here.
+82
+So I will copy this and I will paste it
+83
+minus I demo keypair.PEM.
+84
+Okay, so I am in my private instance.
+85
+And again, remember if we did PING Google.com
+86
+we're not getting any reply.
+87
+So this doesn't have internet access.
+88
+Now let's give internet access to the private subnets.
+89
+And to do so in my private route table, on the routes
+90
+we need to edit the route.
+91
+So let's edit them.
+92
+And currently we have this one for local rules
+93
+but we're going to have one that says, if you want to talk
+94
+out to the internet, then please go through your instance.
+95
+And the instance has to be the NAT instance, save.
+96
+And what we've done effectively is saying, 'Hey
+97
+for any EC 2 instance within this subnets
+98
+because it's associated with this route table
+99
+if you send traffic to the internet
+100
+so anywhere then go through my EC 2 instance
+101
+which is exactly what a NAT instance is for.'
+102
+So now if we try again
+103
+to PING Google.com, this is not working.
+104
+And I know why
+105
+because we need to also enable one specific port
+106
+on the NAT instance.
+107
+So let's go to security and the security group rules
+108
+and we need to enable a specific port for PING.
+109
+So let's edit the inbound rule
+110
+and I will add a rule for PING.
+111
+So it's ICMP.
+112
+So all ICMP, IPV4, from this subnets
+113
+from the CIDR that we have right here.
+114
+Okay, and then click on save.
+115
+Now, if we try again, the PING command.
+116
+So let's clear the screen and PING again.
+117
+Now we are getting some result back.
+118
+So this is working and if we wanted to choose, for example
+119
+curl google.com, as we can see, we get some result back.
+120
+So this is the HTML page
+121
+from Google.com or more, clearly.
+122
+If I did curl example.com
+123
+this would be a easier page to look at.
+124
+Okay, so everything is working.
+125
+We have PING working, we have curl working
+126
+we have HTTP access, HTTPS access.
+127
+We have ICMP.
+128
+So this is for PING and so on.
+129
+So what we've done effectively is
+130
+that we've given internet access to the instances
+131
+in my private subnet without exposing them to the internet.
+132
+As we can see my private subnet instance still
+133
+doesn't have a public IP.
+134
+We need to use the, the Bastion okay?
+135
+So that's it for this lecture really, really good.
+136
+But in the next lecture, we're going to use NAT's gateways
+137
+and it's going to be much better.
+138
+So what I'm going to do now is go back into my instances.
+139
+We don't need that NAT instance anymore
+140
+and I'm going to stop it.
+141
+Okay, or you can terminate as well.
+142
+We will not be using it anyway.
+143
+So to say for this lecture, I hope you liked it.
+144
+And I will see you in the next lecture.
+
+--- NAT Gateways ---
+
+1
+So now that we've talked about NAT instances,
+2
+let's look at NAT Gateways.
+3
+So NAT Gateways are much better.
+4
+There either is managed in that instances of asleep and they
+5
+have a higher bandwidth.
+6
+There is high availability you can do into it,
+7
+and there is no administration.
+8
+So you're going to pay per hour of usage and bandwidth for
+9
+the night gateway and the nugget weight.
+10
+It will be created in a specific AZ and it will inherit
+11
+an Elastic IP.
+12
+Now it cannot be used with an Institute instance within the
+13
+same sub-net okay.
+14
+So the nugget weight can only be helpful if accessed from
+15
+another sub-net.
+16
+So we're going to create a nugget way in a public subnets
+17
+and connect it to instances in the private subnets.
+18
+Now, the routes,
+19
+how it works is that it goes from the private subnets to the
+20
+nugget way to the internet gateway. Okay.
+21
+So net gateway can not work without an internet gateway.
+22
+Now the bandwidth is five gigabits per second,
+23
+automatically scaling up to 100 gigabits per second,
+24
+and you don't need to manage any security groups
+25
+it's not required.
+26
+So that means that we don't need to think about which
+27
+ports you enable to make the connectivity work.
+28
+So the way it works that right now we have this setup, okay.
+29
+We have a private instance and a private subnets,
+30
+and it can not access the internet.
+31
+So we're going to create the next gateway in the public
+32
+subnets and the nugget weight, because it is,
+33
+will be deployed into public subnets.
+34
+And the public center is already connected to the internet
+35
+gateway. Then,
+36
+then that gateway will have internet connectivity.
+37
+And then we can,
+38
+we're going to edit the roots of the private subnets.
+39
+And by editing them,
+40
+we are going to be able to connect our
+41
+Institute instance into our nuts gateway.
+42
+So now let's talk about high availability
+43
+and not gateways.
+44
+So the nugget weight is resilience only
+45
+within a single availability zone.
+46
+So it's going to be redundant within a single AZ,
+47
+but in case an AZ go down,
+48
+you need to have multiple net gateways
+49
+in multiple AZ to have fault tolerance.
+50
+So the way it works is like this.
+51
+So currently we have one gateway
+52
+and it's in one specific AZ,
+53
+we're going to create a second
+54
+net gateway in the second AZ so this was,
+55
+you can see each network traffic is confined into an AZ.
+56
+And so that if there is an AZ that goes down, okay,
+57
+this whole AZ happens to be going down.
+58
+Then we'll still have the ACB working
+59
+because a NAT gateway in ACB or X as well exists.
+60
+And there's no need to connect the atheist together through
+61
+the route tables, because well,
+62
+if an AZ goes down, then all the Eastern instances
+63
+in that are also currently unassailable.
+64
+So now let's just talk about the difference
+65
+between net gateway and other instances,
+66
+but there should be quite obvious.
+67
+So the net gateway is highly available within a specific AZ.
+68
+And if you want to get high voltage across AZ,
+69
+you need to create another one in another AZ resonant
+70
+instance, You wouldn't,
+71
+have a script to manage fail-over between that instances
+72
+and manage them overall.
+73
+The bandwidth is up to 100 gigabits per second,
+74
+per not gateway.
+75
+And that for in that instance, well,
+76
+it depends on the instance type that you have,
+77
+but the higher instance type,
+78
+the more throughput you're going to have,
+79
+the maintenance is obviously a managed
+80
+service when they get way.
+81
+Whereas it's measured by you.
+82
+For instance,
+83
+we need to make sure you have the software
+84
+or the U S patches and so on.
+85
+The cost is a per hour cost plus amount of data transfer for
+86
+the night gateway. Whereas for instance,
+87
+it's per hour for these two incidents,
+88
+which is going to be a dependent,
+89
+obviously on the easy two instance type and size.
+90
+And also you're going to pay for network dollar that goes
+91
+through the ECC instance out to the internet.
+92
+Okay.
+93
+Now the negative way has a public IP
+94
+for enterprise IP for us so this is good.
+95
+The same, for instance,
+96
+now security groups are not used for net gateway,
+97
+which seriously a good thing because, well, you don't,
+98
+you manage one more thing. Whereas from that instance,
+99
+you need to set up your secrets, your groups,
+100
+and make sure they're tight and working for the right ports.
+101
+And the nugget way can not be used as a bastion host.
+102
+Whereas in that instance could be used as a bastion host if
+103
+we want it to,
+104
+there's a lot more differences between these two things.
+105
+And there's a link right here,
+106
+but from an exempt perspective,
+107
+there should be enough to insert any questions into choosing
+108
+a NAT gateway versus in that instance.
+109
+So that's it for this lecture I hope you liked it.
+110
+And I will see you in the next lecture.
+
+--- NAT Gateways Hands On ---
+
+1
+Okay. So now that may not instances stopped or terminated,
+2
+we do not have access to the internet.
+3
+So if I do curls.com ah, is not going to work. Okay.
+4
+So let's fix this and go ahead with NAT Gateway.
+5
+So first let me refresh this private route table.
+6
+And as we can see now,
+7
+this destination
+8
+targeting this ENI is a black hole and
+9
+black hole means that this rule is not active anymore.
+10
+Why? Because where we have stopped our net instance and
+11
+therefore I will see this fruit does not lead to anything.
+12
+So this is why also it's really good to use managed services
+13
+and not, NAT instances.
+14
+So we are going to create a NATs Gateway
+15
+and I call it 'DemoNATGW'.
+16
+Now, when you choose a subnet for the NAT Gateway
+17
+which should be in so
+18
+for high availability,
+19
+we need to use multiple subnets.
+20
+But right now we'll start with one PublicSubnetA
+21
+and the connectivity type is going to be public.
+22
+And then we need to allocate an elastic IP
+23
+to this NAT gateway. So let's allocate one.
+24
+Okay. These us to get IP has been allocated,
+25
+and then we'll just click on create NAT gateway.
+26
+So this is NAT gateway has been created.
+27
+So while then that gateway is being created.
+28
+What I can do is edit my route table.
+29
+So I will go back into my route table,
+30
+look at my private route table,
+31
+and then I will edit them.
+32
+So let's edit the routes in it.
+33
+And this route that was a black hole obviously
+34
+will not, we don't need anymore.
+35
+So instead we want to send internet traffic out
+36
+to a NAT Gateway
+37
+and we'll use the 'DemoNATGW'
+38
+we've created from before.
+39
+So let's save this.
+40
+So now we don't have black holes.
+41
+We have two active rules
+42
+and one of them is sending it to
+43
+our NAT Gateway.
+44
+Now we can take a little bit of time for a NAT Gateway
+45
+to be active, as you can see,
+46
+the state is still pending.
+47
+So what I'm going to do is pause the videos
+48
+and get back to you when this is done.
+49
+And here we go, it is active.
+50
+And so let's go back into our Institute instance. This one,
+51
+yes, I'm still connected.
+52
+This is perfect. So if I do curl a google.com,
+53
+then it's working and ping, google.com, is working as well.
+54
+So the NAT Gateway is active and are EC2 instance
+55
+is sending traffic into it.
+56
+And we didn't have to specify any security group rules.
+57
+We didn't have to specify many things
+58
+just to create this Nat Gateway,
+59
+but send it into a subnet and then
+60
+edit the route table.
+61
+And here we go.
+62
+My instance in this...
+63
+private subnets can get access to the
+64
+internet. That means that's.
+65
+For example, we can do sudo yum, and then updates,
+66
+for example, our operating system,
+67
+without making this instance public,
+68
+which is really good.
+69
+So just to finish,
+70
+we have created one NAT Gateway
+71
+in one specific...
+72
+abilities zone,
+73
+but we could create a second yet NAT Gateway
+74
+that in another abilities zones,
+75
+and then edit the route tables to make it
+76
+highly available.
+77
+Now, this is not something we're going to do
+78
+in this lecture,
+79
+but remember the architecture diagram from before. Again,
+80
+if you want it to make it a highly available setup,
+81
+you would need to set up multiple, NAT Gateways
+82
+for be able to resist a disaster affecting an entire AC.
+83
+So that's it for this lecture. I hope you liked it.
+84
+And I will see you in the next lecture.
+
+--- Regional NAT Gateway ---
+
+1
+So now let's have a quick chat
+2
+about regional NAT gateways or RNATs.
+3
+So it's a new type of NAT gateway that is highly available
+4
+and associated directly with your VPC.
+5
+So before, the NAT gateway had to be created
+6
+within each public subnets,
+7
+but now you just create it at the VPC level,
+8
+and then you link it to the Internet gateway.
+9
+How?
+10
+With the route table.
+11
+So you create the NAT gateway, it's in your VPC,
+12
+and you tell it that anything that goes to the Internet
+13
+should go to your Internet gateway.
+14
+The added benefit is
+15
+that now you don't need to deploy a NAT gateway per AZ,
+16
+automatically, this is shared across all the AZs.
+17
+You also don't need to maintain public subnets in your VPC
+18
+to host the regional NAT gateway.
+19
+So no risk for anyone to create resources
+20
+in the public subnet
+21
+that you didn't want to use in the first place.
+22
+Then, you link your private subnet directly
+23
+into your NAT gateway using a route table,
+24
+and you're good to go.
+25
+Your private subnet instances will have access
+26
+to the Internet through this NAT gateway.
+27
+And automatically, if you add another AZ,
+28
+another private subnet in another AZ,
+29
+then it will be detected
+30
+and the NAT gateway will scale for you.
+31
+So this simplifies solution architecture
+32
+by having one central NAT gateway per VPC
+33
+instead of creating a NAT gateway instance per AZ.
+34
+I hope you liked it and I will see you in the next lecture.
+
+--- NACL & Security Groups ---
+
+1
+Okay, so let's go for a very long lecture
+2
+on Security Groups and Network ACLs or NACLs.
+3
+So let's take an example of a subnet
+4
+and we know when you have an EC2 instance
+5
+that we attach a security group to it.
+6
+But there is an extra level of protection on the subnet
+7
+that we haven't seen yet,
+8
+which is your network ACL or NACL.
+9
+And let's take an example
+10
+to really understand the role of a NACL
+11
+in an incoming request.
+12
+So a request goes to your EC2 instance,
+13
+now what is happening from a network perspective?
+14
+Well, first the request is going to make it to the NACL
+15
+before going into the subnets.
+16
+And so there are going to be some inbound rules
+17
+on the NACL that are going to be defined.
+18
+And if the request is not allowed,
+19
+then the request doesn't go in.
+20
+And if it is allowed, then it will go in, right?
+21
+So the NACL is stateless.
+22
+So we'll see what that means in a second.
+23
+So the first request goes through the NACL
+24
+and then it reaches inside the subnets
+25
+and it goes through the security group
+26
+inbound rules, okay.
+27
+So we know how this works.
+28
+So again, if the request is not allowed explicitly
+29
+then it is denied.
+30
+Now something about security group
+31
+is that they are stateful.
+32
+So remember NACLs are stateless
+33
+and security groups are stateful.
+34
+So what does that mean?
+35
+That means that if the request makes it through
+36
+the inbound rules of the security group
+37
+and makes it to the EC2 instance,
+38
+the EC2 instance will then reply
+39
+with whatever reply there is to do
+40
+for the application perspective.
+41
+And then the outbound is automatically going to be accepted
+42
+at the security group level.
+43
+This is because the security group is stateful.
+44
+That means whatever is accepted in can go also out.
+45
+So here, there is no rules being evaluated.
+46
+And the security group outbound rules
+47
+are not mattering in this example.
+48
+So now that we know
+49
+that the outbound at the security group level
+50
+is always allowed because it's stateful,
+51
+what happens still?
+52
+Well the NACL is not stateful, it is stateless,
+53
+and therefore, because it is stateless
+54
+then the NACL outbound rules are going to be evaluated.
+55
+And again, if they are not passing,
+56
+then the request will not make it through.
+57
+So this is for an incoming request.
+58
+Now let's go through the same scenario,
+59
+but for an outgoing request,
+60
+and you can try doing this on your own
+61
+by pausing the video,
+62
+just to see if you understand the difference
+63
+between stateful and stateless.
+64
+Okay. Did you try?
+65
+Okay, let's go.
+66
+So the security group this time,
+67
+so the EC2 instance is making an outbound request.
+68
+So it's doing a request to the outside.
+69
+And so the EC2 instance will first maybe use,
+70
+for example, connect to www.google.com,
+71
+and so therefore the first rules
+72
+that are going to be evaluated
+73
+are the security group outbound rules.
+74
+So is the traffic allowed out
+75
+from the EC2 instance to the web?
+76
+Then if the rules are good and the request is allowed,
+77
+then the request goes through the NACL
+78
+outbound rules as well.
+79
+So they're evaluated.
+80
+Then the request reaches www.google.com,
+81
+it comes back to Amazon web services,
+82
+and obviously the NACL is stateless and therefore
+83
+the NACL inbound rules are going to be evaluated.
+84
+And finally, while the inbound within the subnet
+85
+at the security level is also going to be allowed
+86
+no matter what, because of the statefulness
+87
+of your security group rules.
+88
+So here the inbound rules of your security group
+89
+do not make a difference
+90
+because the admin roles was already accepted
+91
+and your security group is stateful.
+92
+So hopefully that is a very clear explanation
+93
+between stateful and stateless.
+94
+So what are Network Access Control List, NACLs?
+95
+Well they're like a firewall that control the traffic
+96
+to and from the subnet level,
+97
+and you have one NACL per subnet,
+98
+and each new subnet will be assigned the default NACL.
+99
+We'll have a look at the default NACL in the next slide.
+100
+So you define NACL rules and rules have a number
+101
+from one to 32,000 and so.
+102
+And there's a higher precedence with a lower number,
+103
+so one is the highest priority
+104
+and the latest is 32,000 and so on.
+105
+And the first rule match will drive the decision, okay.
+106
+So for example, if you define allow on this CIDR
+107
+and deny on the same CIDR, so a specific IP,
+108
+but the allow is 100 and the deny is 200,
+109
+the IP address will be allowed
+110
+because 100 as a higher precedence over 200.
+111
+In that case,
+112
+the first rule match will drive the decision.
+113
+The less rule is an asterisk and will deny any request
+114
+in case of no rules match.
+115
+Now, AWS recommends adding rules by increments of 100.
+116
+And the reason is that if you want to add rules
+117
+in between then, you are fine.
+118
+Okay, so newly created NACLs will deny everything
+119
+by default.
+120
+And NACLs have a very, very good use case.
+121
+They're great for blocking a specific IP address
+122
+at the subnet level.
+123
+So NACLs in this diagram, where are they?
+124
+So we have this diagram we know about,
+125
+but NACLs again are at the subnet level.
+126
+And so we can have NACLs at the public subnet,
+127
+private subnet level and so on.
+128
+So the default NACL is super important because
+129
+it can come up in the exam.
+130
+And the default NACL has this one specificity
+131
+that it accepts everything inbound and outbound
+132
+with the subnets it's associated with.
+133
+So this is what the default NACL looks like
+134
+for the IPv4.
+135
+It allows everything out and everything in.
+136
+And that makes sense, right?
+137
+Because if the NACL was not allowing
+138
+everything in and everything out
+139
+then we would have do some serious debugging to do
+140
+when we get started with AWS.
+141
+But the default NACL is very open.
+142
+Now my recommendation is to not modify the default NACL.
+143
+Instead, if you want to have some custom
+144
+Network ACLs, then create a custom one.
+145
+Okay, but if the exam mentions to you,
+146
+that there is a default NACL,
+147
+just know that by default this NACL will
+148
+disassociate it with subnets.
+149
+If this NACL is associated with subnets, sorry,
+150
+then it will allow everything in and everything out.
+151
+Okay, so now let's go into the important concept
+152
+of Ephemeral Ports.
+153
+So when you have a client and a server connecting together,
+154
+they must use port.
+155
+So we have IP address and ports,
+156
+and the clients connect to the server
+157
+on the defined port.
+158
+So we know for example,
+159
+that the HTTP port is 80,
+160
+the HTTPS port is four, four, three,
+161
+the SSH port is 22 and so on.
+162
+So when we have a server that exposes a service,
+163
+then the client connects to a defined ports,
+164
+except though that the clients
+165
+needs a reply back from the server.
+166
+So the server also needs to connect to the clients
+167
+to send a response.
+168
+And the client does not have any open port by default.
+169
+So what it does that when the client
+170
+is connecting to a server,
+171
+the client will open a specific ports on itself.
+172
+And this port is ephemeral
+173
+because it's just a port that will be
+174
+as long lived as the connection is
+175
+between the clients and the server.
+176
+And so what is that ephemeral ports?
+177
+Well, based on the OS you have,
+178
+the operating system you have,
+179
+you have different port ranges, for example,
+180
+if you're using Windows 10, for example,
+181
+then you get to 49,152
+182
+all the way through 65,535,
+183
+the port ranges that will be chosen
+184
+for a random ephemeral ports.
+185
+If you use Linux, then a good range
+186
+will be 32,768
+187
+to 60,999, okay.
+188
+So based on the different OS,
+189
+you have different port ranges.
+190
+So let's go through concrete example
+191
+to understand how that works.
+192
+So the clients connects to a web server,
+193
+the web server has a fixed IP and a fixed ports.
+194
+So the client is saying, hey, here's my IP,
+195
+and I will open for this one request
+196
+or this one connection,
+197
+an ephemeral port of five, zero, one, zero, five.
+198
+So the request sent from the client to the server is,
+199
+Hey, here is the destination IP,
+200
+here is the destination port of the server
+201
+that you connect to,
+202
+here's the payload of my request, so what I'm requesting,
+203
+and here is my source IP, by the way, for the reply,
+204
+and here is my source ephemeral ports
+205
+for the replay as well,
+206
+which is five, zero, one, zero, five.
+207
+And then the web server,
+208
+when connecting back to the client
+209
+to send back of the response,
+210
+will send the response and say, Hey,
+211
+so here's the source IP, here's a source port.
+212
+So, the server port, and then the destination IP
+213
+is 11.22.33.44,
+214
+here is the response payload.
+215
+And finally, where we'll also need a port
+216
+it will reuse the ephemeral port
+217
+that the client has sent.
+218
+And this is why it's called ephemeral port
+219
+it's because it's a random port that is assigned
+220
+just for the connection life.
+221
+So now, why do I mention ephemeral ports?
+222
+Well, because they're very important
+223
+in terms of NACLs.
+224
+So if you consider a client's connecting
+225
+to a database
+226
+and we have a private subnet and a public subnet,
+227
+we have one NACL associated with each subnet.
+228
+So a web NACL and a DB NACL.
+229
+Now, when the client initiates a connection
+230
+to the database instance,
+231
+what are the rules that need to be allowed
+232
+when you think about it, right?
+233
+Well, if you consider the first NACL
+234
+we need to allow outbound TCP
+235
+on port three, three, zero six
+236
+to the database subnet CIDR, that makes sense.
+237
+Otherwise, the request will not leave the subnets.
+238
+And then from a database perspective,
+239
+then the DB NACL says,
+240
+Hey, I need to allow inbound TCP
+241
+on port three, three, zero, six
+242
+from the web submit CIDR.
+243
+All this makes sense, right?
+244
+Now, here's the tricky part.
+245
+When the database sends back the request
+246
+to the clients, what do you think needs to happen?
+247
+Well, the client has an ephemeral port, right?
+248
+And so as such, they will be a random ports
+249
+being assigned for this request.
+250
+And so therefore,
+251
+the DB NACL must allow outbound TCP
+252
+on ports and, on ephemeral port,
+253
+so, maybe from 1024
+254
+to 65,535
+255
+to web subnet CIDR,
+256
+and then the web NACL also needs to allow inbound TCP
+257
+on this range of ephemeral ports
+258
+from the DB subnet CIDR.
+259
+And this is why ephemeral ports
+260
+are super important to configure well.
+261
+So if you want to learn more,
+262
+there's a link to the documentation.
+263
+Another thing about NACLs you need to know
+264
+is that if you have multiple NACLs and multiple subnets,
+265
+then each NACL combination
+266
+needs to be allowed within the NACL,
+267
+because you're using CIDRs
+268
+and each subnet will have its own CIDR.
+269
+So it's super important for you to realize that,
+270
+if you add subnets into a NACL,
+271
+you need to also update all the NACL rules
+272
+to make sure that the combination of connections
+273
+is possible.
+274
+So to summarize, what is the difference between
+275
+a security group and a NACL?
+276
+Well the security group operates at the instance level,
+277
+whereas the NACL is at the subnet level.
+278
+The security group supports allow rules only,
+279
+whereas NACL supports allow and deny rules,
+280
+this is why you can deny a specific IP address in a NACL.
+281
+Security groups are stateful,
+282
+so automatically return traffic is allowed
+283
+regardless of the rules,
+284
+whereas NACL is stateless, that means that every time
+285
+the inbound and outbound rules will be evaluated
+286
+and think of ephemeral ports as a reminder.
+287
+Now for security group, all rules are going to be evaluated
+288
+to decide whether or not to allow traffic,
+289
+whereas for a NACL, the ones that will be having
+290
+the highest priority will be evaluated first,
+291
+and the first match wins.
+292
+Security group applies to an EC2 instance
+293
+when specified by someone,
+294
+whereas NACL applies to all EC2 instances
+295
+in a subnet that it's associated with.
+296
+So that sits for this lecture.
+297
+Hopefully that makes sense
+298
+and I will see you in the next lecture for some practice.
+
+--- NACL & Security Groups Hands On ---
+
+1
+Okay.
+2
+So, let's have a look at our network ACL's.
+3
+To do so, I will go on the left hand side
+4
+and there's network ACL's.
+5
+And for our sub for VPC,
+6
+we have a network ACL here.
+7
+This is the default, NACL.
+8
+So, it's very important to notice this.
+9
+And currently it's default.
+10
+So, it's associated with four subnets.
+11
+So, we have inbound rules and outbound rules.
+12
+And then if we look at the inbound rules,
+13
+we allow all traffic on all parts everywhere.
+14
+And then there's the last row which was denied,
+15
+but it doesn't ever get to effect
+16
+because this one goes into effect before.
+17
+And then for the outbound rules the same.
+18
+So, remember the default, NACL,
+19
+always has all traffic,
+20
+inbound and outbound authorized,
+21
+and the default is going to be associated
+22
+with any subnets you're going to create,
+23
+hence the name default NACL.
+24
+So, now let's go ahead
+25
+and have a place or to do so,
+26
+I'm going to go into my EC2 instances,
+27
+my NAT instance.
+28
+Sorry, my Bastion host.
+29
+And I'm going to start a HTTP server on it to connect to it.
+30
+So, to do so let's connect into our instance,
+31
+let's connect,
+32
+and I'm going to install HTTPD.
+33
+So sudo, yum, install, minus Y, HTTPD.
+34
+Then we're going to start the web server.
+35
+So I will do,
+36
+system,
+37
+CTL,
+38
+sudo,
+39
+system CTL,
+40
+enable HTTPD,
+41
+and then sudo, system CTL, start HTTPD.
+42
+Let's clear the screen.
+43
+And then we're going to echo "hello world" into our
+44
+var/www/html/index.html
+45
+and we'll have sudo for this command.
+46
+So let's do sudo,
+47
+su,
+48
+echo,
+49
+hello world into again, this file.
+50
+So, this should work right now, so let's try it.
+51
+Okay.
+52
+So, now the other thing we have to do
+53
+is we need to make sure that the Bastion host
+54
+has this public instance has HTTP enabled
+55
+for the security group.
+56
+So, right now we only have 4 22.
+57
+So, therefore in the security group rules,
+58
+I'm going to edit the inbound rules
+59
+and I'm going to add a rule for HTTP
+60
+and then from anywhere,
+61
+save this rule.
+62
+Perfect.
+63
+So back into our instance, this is our bastion host,
+64
+and I can just click on this IP address right here.
+65
+Copy it, open it in a new tab
+66
+and I get, "hello world."
+67
+So, this is good.
+68
+We are able to connect into our server
+69
+and it replies "hello world" to us.
+70
+So, let's have a look at network ACL's now.
+71
+So, if I look into this default NACL,
+72
+and look at the inbound rules,
+73
+what I'm going to do is I'm going to edit these rules.
+74
+And currently we allow all traffic from anywhere, okay,
+75
+but we're going to add a new rule.
+76
+And the rule number is going to be rule 80
+77
+and the type is going to be HTTP,
+78
+and it's going to come from anywhere
+79
+and we are going to deny it.
+80
+So, let's save these changes
+81
+and we can sort them by rule number.
+82
+So, as you can see,
+83
+this rule has precedence over that rule.
+84
+So, what do you think is going to happen?
+85
+Well, now that we have enabled this inbound rule,
+86
+that blocks HTTP traffic.
+87
+If I go back to my EC2 instance and refresh this page,
+88
+I'm getting, you see, an infinite loading.
+89
+So, that means that yes,
+90
+there's a timeout
+91
+and the NACL acted as a firewall
+92
+and blocked my request.
+93
+But if I edit my inbound rules
+94
+and now the rule number is 140.
+95
+Okay, and save this again.
+96
+And look again at the inbound rules,
+97
+as you can see now,
+98
+rule 140 happens after rule 100
+99
+and there's a denial.
+100
+So, what do think is going to happen?
+101
+Well, if I go back and refresh,
+102
+I'm accessing my EC2 instance.
+103
+So, what's happening is that even though
+104
+there was an explicit deny rule,
+105
+happening here,
+106
+because the rule number 100 had higher precedence
+107
+and allowed that specific traffic in,
+108
+then it works.
+109
+Okay. So, as we can see,
+110
+this shows the very important aspects
+111
+around the rule numbers. Okay.
+112
+And similarly,
+113
+I want to show the statelessness of the NACL.
+114
+So, if I go into outbound rules
+115
+and there's this rule right here,
+116
+that allows everything right now,
+117
+if I edit it and instead do deny,
+118
+well, what is going to happen?
+119
+The inbound rule is going to allow my traffic,
+120
+but the outbound rule shouldn't.
+121
+So, let's go back into my instance, refresh this,
+122
+and you can see I'm getting this infinite loading,
+123
+because well, my NACL does not allow return traffic,
+124
+because it was not explicitly specified in my NACL,
+125
+that return traffic was allowed.
+126
+So, what's really important to notice is that this is true,
+127
+regardless of if the security group of my EC2 instance
+128
+did, in fact, allow port 80 in, okay.
+129
+So, NACL's and security groups work hand-in-hand together.
+130
+And if the security group rules look fine,
+131
+that doesn't mean that the network ACL's are fine.
+132
+So, this is something else to check
+133
+in case of network issues.
+134
+So, let me revert this to allow
+135
+and do another demo.
+136
+Okay, so I'm back into my instance.
+137
+This is working now.
+138
+And so if we look at the security group rules here,
+139
+as we can see, port 80 is allowed on everywhere.
+140
+And for outbound rules,
+141
+it says allow from everywhere as well,
+142
+but let's edit this security group.
+143
+So, for the inbound rules, I will not change them.
+144
+So, I will keep HTTP on,
+145
+but for the outbound rules,
+146
+I'm going to edit this rule
+147
+and I'm going to just remove it.
+148
+And as you can see, now,
+149
+we don't allow any outbound from the security group,
+150
+but the security group is stateful.
+151
+That means that if the traffic is initiated from the outside
+152
+and is allowed inbound,
+153
+then the return traffic will be authorized as well.
+154
+So, let's prove it,
+155
+even though there is no outbound rule.
+156
+If I refresh this page,
+157
+as you can see, this is working,
+158
+I can access my EC2 instance.
+159
+But if my EC2 instance
+160
+was trying to initiate a connection,
+161
+for example, not here.
+162
+If my EC2 instance was trying to initiate
+163
+a connection to Google account, for example,
+164
+it would be denied because,
+165
+well, there's no outbound rule that specifically allows it.
+166
+But if it did allow it,
+167
+then the return traffic would be allowed because again,
+168
+security groups are stateful,
+169
+whereas NACL's are stateless.
+170
+So, to make things, everything work again.
+171
+And once you have all HTTP from anywhere allowed,
+172
+and this is going to restore
+173
+these outbound rules on my EC2 instance, okay.
+174
+So, it's very important for you to notice
+175
+the difference between EC2 security groups
+176
+and network ACL's.
+177
+But hopefully this was a good demo.
+178
+I hope you liked it.
+179
+And I will see you in the next lecture.
+
+--- VPC Peering ---
+
+1
+So now let's talk about VPC Peering.
+2
+So the idea is that we can create VPCs
+3
+and in different regions, different accounts
+4
+and we want to connect them together using the AWS network.
+5
+Why we do this?
+6
+Well, we wanna make them behave
+7
+as if they were in the same network, okay?
+8
+So it could be very specific.
+9
+Maybe you could have VPC in other regions
+10
+in other accounts, or even within your same accounts
+11
+and you want to connect them.
+12
+So in order for them not to connect, remember, I said,
+13
+the VPC network CIDRs must be distant from each other
+14
+because when we connect them together,
+15
+if they have overlapping CIDRs,
+16
+they will not be able to communicate.
+17
+So, VPC peerings can happen between two VPCs
+18
+and they're not transitive.
+19
+That means that each VPC
+20
+that wants to communicate with one another
+21
+must have VPC peering enabled.
+22
+So if you have a look at three VPCs right now, A, B, and C,
+23
+then we can create a peering connection between A and B.
+24
+And this is allowing you to connect them together.
+25
+And we can create another peering connection
+26
+between VPC B and C,
+27
+and again, they can communicate together.
+28
+But even though A and B, and B and C, are connected,
+29
+you still need to enable a VPC peering connection
+30
+between A and C, to have them communicate.
+31
+This is very, very, very, very important.
+32
+Finally, even though your VPC are peered with each other,
+33
+you must also make sure that you update all the route tables
+34
+in each VPC's subnets, to ensure that these two instances
+35
+in different VPC, can communicate with each other.
+36
+And we'll see this in the hands-on.
+37
+So some good things to know about VPC peering.
+38
+They can happen within your own accounts,
+39
+but they can happen across accounts.
+40
+So if you want to connect a VPC from one account A,
+41
+to account B, you could, and also across regions.
+42
+So this is very, very powerful.
+43
+And you remember, in security groups,
+44
+we can reference other security groups in it.
+45
+While it's possible to also reference a security group
+46
+from a peered VPC across accounts in the same region.
+47
+And this is very powerful
+48
+because we don't need to have the source
+49
+as a CIDR on IP, we can also reference a security group.
+50
+Extremely powerful.
+51
+So back into our networking diagram.
+52
+We're here and now we're going to add
+53
+a VPC peering connection
+54
+to connect our VPC to other VPCs.
+55
+So that's it. I will see you in the next lecture.
+
+--- VPC Peering Hands On ---
+
+1
+Okay, so let's have a play with peering VPCs.
+2
+So what we wanna do is to peer our 2 VPCs together.
+3
+So the demo VPC and this one I will call it the default VPC
+4
+which was the VPC that was created with my accounts.
+5
+So we want to peer them together, okay?
+6
+This is good.
+7
+And to do so, I'm going to prove first
+8
+that's the VPCs are not connected.
+9
+And so to do so I'm going to go
+10
+into my EC2 management console
+11
+under instances I'm going to launch an instance
+12
+and then I will scroll down.
+13
+I will scroll down.
+14
+Key pair will choose demo key pair, but will not need it.
+15
+And then we'll do network settings will launch this one
+16
+in a default VPC and we'll create a security group
+17
+launch-wizard-2 that has the SSH rule added in.
+18
+So that's good.
+19
+Let's launch that instance and we are good to go.
+20
+Okay.
+21
+So now we have our BastionHost.
+22
+Remember that has this website available
+23
+and then we have this instance
+24
+I'll call it default VPC instance, okay?
+25
+And what I want to do is to connect
+26
+and make sure this default instance VPC can connect
+27
+to the instance in my BastionHost.
+28
+Now, if I have a look at the IPS, okay?
+29
+We can see that the private ipv4 is more interesting.
+30
+So we can have a look at probably not here.
+31
+So, if we look at the private ipv4 address
+32
+this one is 172.31.36.159.
+33
+And this one before was 10.0.0/72.
+34
+We can tell there they're in different VPC
+35
+because the IP addresses that are private
+36
+are very different.
+37
+So let's connect to this one, using EC2 instance connect.
+38
+Okay, we're connected.
+39
+And let's also connect into my BastionHost.
+40
+So my instance in my other public subjects.
+41
+Okay.
+42
+So if we do a curl and then we do 10.0.0.0.72:80,
+43
+which is my IP.
+44
+So we get a hello world.
+45
+So this is working fine, okay?
+46
+But if we do the exact same curl command
+47
+so we go here and we do curl on this IP, okay?
+48
+So this is from the 172.31 type of instance.
+49
+So, we're going to curl this instance right here
+50
+and press enter.
+51
+Well, this is not working.
+52
+We get a time out.
+53
+Well, because there is no way
+54
+for our EC2 instance right now
+55
+in this VPC to connect to the two instance in another VPC.
+56
+That's why it's called virtual private Cloud IaaS
+57
+because they're isolated from a network perspective.
+58
+So we're going to connect them.
+59
+And to do so,
+60
+well we need to go and create a peering connection.
+61
+So on the lifeline side, there is peering connections.
+62
+I'm going to create a peering connection
+63
+and I'll call it demo peering connection,
+64
+and we need to select a local VPC to peer with.
+65
+So we're going to say that the requester is my demo VPC,
+66
+and then we're going to select another VPC to
+67
+connect to.
+68
+So it's in my accounts, but it could have another account
+69
+and it's in this region, but it could be another region.
+70
+And the acceptor of VPC is going to be the default VPC
+71
+with this CIDR.
+72
+So as we can see, this CIDR and that CIDR do not overlap
+73
+and therefore this VPC peering connection is
+74
+possible to create, okay.
+75
+So let's create this peering connection
+76
+and it's pending acceptance.
+77
+So this is not working until we have accepted it now
+78
+because both the VPCs are in our accounts.
+79
+We can accept this request ourselves, so we can accept it.
+80
+But if it wasn't of other accounts
+81
+obviously we could deny it.
+82
+So the requester owner ID
+83
+and the acceptor or ID are the same in this example.
+84
+So let's accept this request.
+85
+And now it says to send and receive traffic across
+86
+this VPC peering connection
+87
+you must adder route to the VPC period
+88
+in one or more of your VPC, route tables.
+89
+So again, this is very important, even though there's VPC
+90
+peering connections we need to still modify the route table.
+91
+So again, if I try to do a curl, not from this one
+92
+but a curl from this instance, still not working, okay?
+93
+So let's go ahead and fix this.
+94
+So we go and modify my route tables now.
+95
+And so we have one public route table,
+96
+and here we have I will find the right one.
+97
+So this is this one right here.
+98
+This is my default VPC default main route table,
+99
+main route table.
+100
+Okay, now we know where we are.
+101
+Okay, so we want to connect this and that's.
+102
+So let's start with a public route table
+103
+and I will go to routes and then edit routes
+104
+and I will have a destination.
+105
+So in this one, we need to select a CIDR, which corresponds
+106
+to the CIRD of my VPC that was created the default VPC.
+107
+So to do so let's go into your VPCs,
+108
+find the default VPC
+109
+and the IP four CIRD is right here.
+110
+So I'm copying it, I'm pasting it.
+111
+And we're saying, Hey, any traffic that is going
+112
+into this range of IP addresses
+113
+should be sent to a peering connection
+114
+called the demo peering connection.
+115
+And click on safe changes,
+116
+and what we've done effectively is
+117
+that we've created a route
+118
+from my creative VPC into the default VPC.
+119
+So if we try again though
+120
+and do a curl, still not working, and the reason is,
+121
+well we need to also modify the other route table
+122
+for it to work.
+123
+And so let's do it.
+124
+Let's modify the other route table.
+125
+So to do so, I'm going to go into the VPC main route table
+126
+and I will edit this route and I will add a route.
+127
+And this time it's for 10.0.0.0.0.0/16
+128
+which is now the CIRD
+129
+of the VPC we've created alongside this course.
+130
+And again, the peering connection.
+131
+And then we'll say step changes.
+132
+So now we have routes going both ways.
+133
+And so if I curl again and press enter, here we go.
+134
+We'll get a hello world.
+135
+That mean that the VPC peering connection is working
+136
+and it was established.
+137
+Okay?
+138
+So that's it, I hope you liked it.
+139
+And I will see you in the next lecture.
+
+--- VPC Endpoints ---
+
+1
+So now let's talk about VPC endpoints.
+2
+The idea is that you have services on AWS, for example,
+3
+such as DynamoDB and they are accessible publicly.
+4
+So that means that your whole infrastructure
+5
+through your NAT gateway and then your internet gateway
+6
+or just directly
+7
+through your internet gateway does access DynamoDB.
+8
+But all this traffic goes through the public internet
+9
+and you may have other services such as CloudWatch
+10
+and Amazon S3 that you also wanna access
+11
+without going through the internet.
+12
+You wanna access them privately.
+13
+So the idea is that you're going to use VPC endpoints
+14
+so that your instances don't have to go
+15
+through the public internet,
+16
+they can just go directly
+17
+through the private AWS network to these services.
+18
+So let's consider this architecture that we know already,
+19
+so we have public subnets with a NAT gateway
+20
+and it's EC2 instance, a private subnet,
+21
+and then we're going to have an internet gateway
+22
+so that we know we can access the Amazon SNS service
+23
+for example, through different ways.
+24
+So if we look at the private subnet
+25
+and the EC2 instance in it,
+26
+to access the Amazon SNS service,
+27
+the EC2 instance can go through the NAT gateway
+28
+which then goes to the internet gateway
+29
+and then accesses publicly the Amazon SNS service
+30
+and this is the same
+31
+for the EC2 instance in the public subnet,
+32
+it goes directly through the internet gateway
+33
+to the Amazon SNS service.
+34
+And this option is fine
+35
+but it costs just a lot of money because, well,
+36
+we have to go through NAT gateway, which has a cost,
+37
+and then we have to go through the internet gateway
+38
+which doesn't have a cost
+39
+but still there is obviously many hops
+40
+and it's not very efficient.
+41
+So instead, I'm just representing
+42
+the same Amazon SNS service,
+43
+but somewhere else on the diagram,
+44
+we can use a VPC endpoint.
+45
+And the idea is that the VPC endpoint is deployed
+46
+within your VPC and by doing some networking,
+47
+we can actually make the EC2 instance
+48
+in the private subnet go through the VPC endpoint
+49
+directly into the Amazon SNS service
+50
+and the network has never left AWS, which is really good.
+51
+So, every AWS service is publicly exposed,
+52
+it has public a URL,
+53
+and if you use VPC endpoints, they are powered
+54
+by something called AWS PrivateLink because you
+55
+access these services privately.
+56
+Then you can connect to any of these services
+57
+by AWS using a private network
+58
+instead of going over the public internet.
+59
+These VPC endpoints are redundant and they scale
+60
+horizontally, and they're going to remove the need
+61
+for an internet gateway or a NAT gateway
+62
+to access AWS services,
+63
+thus simplifying your network infrastructure by a lot.
+64
+So in case of issues, you need to check the DNS
+65
+settings resolution in your VPC and your route tables.
+66
+So this is the general idea behind the VPC endpoints now,
+67
+we have two types of VPC endpoints.
+68
+We have the Interface Endpoints
+69
+and these are powered by PrivateLink
+70
+and we have the Gateway Endpoints.
+71
+So the Interface Endpoints provision an ENI,
+72
+so it's a private IP address in your VPC
+73
+and this ENI is an entry point to your private AWS service.
+74
+And so for this, we must attach a security group
+75
+because there is an ENI and it supports most AWS services
+76
+if not all, and there's a cost to it, it's a cost
+77
+per hour and it's a cost per gigabyte of data processed.
+78
+So here we go, we have an EC2 instance
+79
+and a private subnet and thanks to a PrivateLink
+80
+VPC endpoint of type interface
+81
+then we can access through the ENI to the service.
+82
+And this works for every single service out there.
+83
+Now we have the Gateway Endpoint and they're special.
+84
+They provision what's called a gateway
+85
+and this has to be used as a target in a route table.
+86
+So this does not leverage IP addresses,
+87
+this is not a leverage security groups,
+88
+it's just a target in a route table
+89
+and you need to remember that.
+90
+And there are only two targets for a Gateway Endpoint,
+91
+it is Amazon S3 and DynamoDB, but the advantage
+92
+that this is free and this scales automatically
+93
+because it's only a route table access.
+94
+So, it's only for Amazon S3 and DynamoDB, remember this.
+95
+And in this instance,
+96
+we provide a VPC endpoint of type gateway
+97
+and we have access to Amazon S3 or DynamoDB.
+98
+So the question you may ask me is, hey,
+99
+if the Interface Endpoint supports everything
+100
+and the Gateway Endpoint supports Amazon S3 and DynamoDB,
+101
+should I use the Gateway
+102
+or the Interface Endpoint for Amazon S3 or DynamoDB?
+103
+Well, we have indeed two ways
+104
+of accessing Amazon S3, right?
+105
+Either with the Gateway Endpoint
+106
+or with an Interface Endpoint.
+107
+And at the exam, the Gateway is most likely going to
+108
+be the preferred solution at the exam, why?
+109
+Well, because we just have to modify a route table.
+110
+So, and your apps can access Amazon S3 free of charge,
+111
+so the cost is free for a Gateway, it scales more,
+112
+and for the Interface Endpoint,
+113
+you have a cost associated with it.
+114
+The only time where an Interface Endpoint may be preferable
+115
+over a Gateway Endpoint is
+116
+if you require access from on-premises, for example
+117
+you want private access from your on-premise data center
+118
+and we haven't seen it yet, but we can connect it
+119
+through something called site to site VPN or direct connect
+120
+or it's maybe preferable if you want to connect
+121
+from another VPC through this Interface Endpoint.
+122
+So these are advanced use cases, right?
+123
+And this is what is represented on this graph.
+124
+But most of the time
+125
+the Gateway Endpoint is going to be preferred
+126
+for Amazon S3.
+127
+Okay, that's it for this lecture,
+128
+I hope you liked it and I will see you in the next lecture.
+
+--- VPC Endpoints Hands On ---
+
+1
+So let's go ahead,
+2
+and practice using VPC endpoints.
+3
+First what I wanna show you is that,
+4
+and I'm going to stop this default VPCs instance,
+5
+'cause we don't really need it.
+6
+So I'm going to terminate that instance, and yes, be done.
+7
+So if we go into our bastion host,
+8
+which is also a public instance,
+9
+we're going to connect to it.
+10
+And then from this EC2 instance,
+11
+I'm going to connect into my private EC2 instance,
+12
+so again, this is the IP of my private EC2 instance,
+13
+that we have here, so what we can do,
+14
+is do the SSH command from within,
+15
+so EC2 user at the IP, minus i demoKeyPair.pm.
+16
+Okay, let's clear this.
+17
+So now we want to access the S3, okay?
+18
+So to access S3, what we need to do,
+19
+is to create a role for this instance.
+20
+Okay, so we're going to go under security,
+21
+there's no IM role attached right now.
+22
+So what I have to do is to right click,
+23
+and then I will go into security,
+24
+and then modify the IM role.
+25
+We need to create a new role,
+26
+and I will just create a quick role for EC2 instances,
+27
+so, let's create a role.
+28
+And this is for EC2 instances, next, permissions.
+29
+And then for the policy that we have,
+30
+we'll use the Amazon S3 read only access, okay?
+31
+Tags, review, and then I'll call it
+32
+DemoRoleEC2-S3ReadOnly, okay.
+33
+Create role, and it has been created.
+34
+So now back in it, I can refresh this page,
+35
+and look at this demo role EC2 S3 read only, and save it.
+36
+So invalid instance, I am providing, so here we go,
+37
+it was just a little lag that we needed to wait for.
+38
+Okay, so my private instance now as an IM role
+39
+attached to it, so if I go back into here,
+40
+and do AWS S3 LS.
+41
+As we can see, we get the answer of our four buckets,
+42
+of our accounts.
+43
+So our instance is connected to the internet,
+44
+and again, we can do curl google.com.
+45
+And again, we get an answer, okay?
+46
+So this is working, but now what I'm going to do,
+47
+is under the route table of my private subnets,
+48
+I'm going to edit the routes,
+49
+and this one that was connecting to the internet
+50
+through the NAT gateway, I'm going to remove it.
+51
+So effectively what I'm going to do,
+52
+what I'm doing right now,
+53
+is that I'm preventing this instance right here,
+54
+to access the internet.
+55
+So if we do S3 LS, this is not working,
+56
+and if we do curl google.com, this is not working either,
+57
+so we've removed internet access from this EC2 instance,
+58
+because we want to connect to Amazon S3 privately,
+59
+through a VPC endpoint.
+60
+So let's go ahead and create a VPC endpoint,
+61
+so I will click on endpoints, not endpoint services,
+62
+and then click on create endpoint.
+63
+And here I can choose the type of endpoint I want.
+64
+So I want an end point for an AWS service,
+65
+and then we have a list of all the services,
+66
+and the type of VPC endpoint we have.
+67
+So we have either an interface type of endpoint,
+68
+or if I type, for example, dynamodb in here,
+69
+it is a gateway type of endpoint.
+70
+So if we take a interface type of endpoint,
+71
+I'll just take the first one I see.
+72
+What I have to do is select a VPC
+73
+in which this endpoint will be deployed.
+74
+Then we need to make sure that DNS name is enabled,
+75
+and for this we need to modify some VPC settings
+76
+regarding DNS, but we have done that from before.
+77
+And then we specify in which AZ will this endpoint
+78
+be deployed, this interface endpoint be deployed.
+79
+So you can say in these two subnets,
+80
+because we're not with the third subnet,
+81
+because we didn't create a subnet for this, for the last AZ.
+82
+But anyway, you choose the end points you want,
+83
+you choose the associated subnet ID with it,
+84
+for example, it is going to be in private subnet A,
+85
+and then private subnet B, of IPv4.
+86
+And then you select a security group
+87
+to attach to this endpoint,
+88
+and this will define the security of how this endpoint
+89
+is accessed from your other type of instances, okay?
+90
+So the other option, instead of creating
+91
+an interface endpoint, is to create a gateway endpoint.
+92
+And for this we'll use Amazon S3.
+93
+So as we can see, we have different kinds of endpoints,
+94
+we have a gateway and interface,
+95
+but to go through this example,
+96
+the most common is going to be a gateway endpoint
+97
+into Amazon S3.
+98
+In which case we have to choose a VPC,
+99
+the demo VPC, we have to choose then to update route table.
+100
+And so therefore we're going to update
+101
+the private route table, so that any request
+102
+made within my private subnet in this route table,
+103
+is going to be routed to this gateway endpoint.
+104
+So we'll use full access for this gateway endpoint,
+105
+and then click on create endpoint.
+106
+So the endpoint has been created,
+107
+and if you look at route tables,
+108
+we can see that it is associated
+109
+with my private route table.
+110
+So we can verify that by going into the route tables,
+111
+in my private route table,
+112
+look at the routes and then edit them.
+113
+As we can see we have this route right here
+114
+that get added directly, and that means that some traffic
+115
+is going to go directly into my VPC endpoint.
+116
+So we're good to go, and we cannot delete it,
+117
+because it's actually linked to the endpoint itself.
+118
+And so now this is done,
+119
+let's have a look at our bastion instance,
+120
+and see if things work.
+121
+So if I do curl and right now this is not working,
+122
+I got disconnected, so let's go back into it,
+123
+by going through the bastion host.
+124
+then we SSH again, so we use the demo key pair,
+125
+and then we add in the IP of our private instance,
+126
+which is right here.
+127
+Okay, now if you do curl google.com,
+128
+as we can see, it still does not work,
+129
+because we still have a route out to the internet.
+130
+And if you do AWS S3 LS, it doesn't work either.
+131
+And you may say, but we have a gateway endpoint,
+132
+so it should work.
+133
+Yes, actually this is because of a CLI problem.
+134
+So what you have to do is that by default,
+135
+the region of the CLI will be US East one,
+136
+and so we need to edit it,
+137
+and for this, we're gonna do AWS S3 LS,
+138
+and then region is EU central one,
+139
+or whatever region you are in when you do this hands on.
+140
+Press center, and as you can see now,
+141
+this traffic is redirected to the VPC endpoint of my region,
+142
+and therefore I have the list of all the buckets
+143
+on Amazon S3, even though my instance
+144
+does not have internet access.
+145
+So this is the whole power of VPC endpoints,
+146
+I hope you liked it, and I will see you in the next lecture.
+
+--- VPC Flow Logs ---
+
+1
+So now, let's talk about VPC Flow Logs.
+2
+VPP flow logs allow you
+3
+to capture information from IP traffic going
+4
+into your interfaces.
+5
+So that could be at the VPC level, the subnet level,
+6
+or the elastic network interface, ENI level.
+7
+So we have three kinds of flow logs.
+8
+They're very helpful to monitor
+9
+and troubleshoot connectivity issues
+10
+happening within your VPC.
+11
+So these flow logs can be sent to Amazon S3,
+12
+CloudWatch Logs, and Kinesis Data Firehose,
+13
+and they will capture information
+14
+for also AWS managed interfaces such as ELB, RDS,
+15
+ElasticCache, Redshift, Workspaces, your net gateway,
+16
+your transit gateway, and so on.
+17
+So this is what a VPC flow log looks like.
+18
+So there is a format associated with it,
+19
+but there is a version, account ID, interface ID,
+20
+source address, destination address,
+21
+source port, destination port, protocol packets by start
+22
+and action and log status.
+23
+So this is metadata about the network packets
+24
+going into your VPC.
+25
+And you don't need to remember this at a high-level, right?
+26
+But let's have a look at
+27
+what information we can get out of these flow logs.
+28
+So the source address and the destination address
+29
+help identify problematic IP.
+30
+This is where you see if an IP is repeatedly being denied,
+31
+maybe there is something wrong with that IP,
+32
+or maybe you're being attacked by a specific IP, source port
+33
+and destination port helps you identify the probiotic ports.
+34
+Action is going to be either accept or reject.
+35
+And so it's going to say whether or not it's a success
+36
+or failure at the SG or NACL level.
+37
+And we'll see this in the very next slide.
+38
+And so this can be used the VPC logs
+39
+to do analytics on usage patterns
+40
+or detect manage behavior, port scans, and so on.
+41
+Now, to query these flow logs,
+42
+you have two ways of doing it.
+43
+The best way is to do Athena on S3,
+44
+or if you wanted to do a streaming analysis,
+45
+you could use CloudWatch logs insights.
+46
+So here are some examples
+47
+that you can have a look on your own time for flow logs.
+48
+So how do we use flow logs to troubleshoot security group
+49
+and NACL issues?
+50
+Well, we look at the action field.
+51
+So let's have a look at the typical incoming request
+52
+for your NACL and your subnet.
+53
+So remember, your NACL are stateless
+54
+and your security groups are stateful.
+55
+So what happens?
+56
+Well, if we get an inbound reject,
+57
+so we see that the inbound request from from the outside
+58
+to our EC2 instance is rejected.
+59
+That can means that either from this graph,
+60
+the NACL is refusing the request
+61
+or the security group is refusing the request.
+62
+And this makes sense, right?
+63
+But if we have a inbound accept
+64
+and an outbound reject, it can only mean a NACL issue.
+65
+Why?
+66
+Or because your security group is stateful.
+67
+And if the inbound is allowed
+68
+because of the accept, automatically the outbound
+69
+will be allowed thanks to the statefulness
+70
+of your security group.
+71
+So for outgoing request, similar analysis, right?
+72
+This is the diagram we know already.
+73
+And so if you get an outbound reject,
+74
+then you have a NACL or a security group issue.
+75
+But if you get an outbound accept and inbound reject,
+76
+then it must mean a NACL issue.
+77
+So let's have a look at a few architectures
+78
+for your VPC flow logs
+79
+so they can flow into CloudWatch logs as we know.
+80
+And then we can use something
+81
+called CloudWatch contributor insights,
+82
+for example, to find the top 10 IP addresses
+83
+that contribute to the most amount of network on your VPC
+84
+or on ENI or whatever you want.
+85
+You can also use VPC flow logs
+86
+to send them again into CloudWatch logs.
+87
+Here, we can set up a metric filter to look for example
+88
+for the SSH or the RTP protocols.
+89
+And if we realize that there's a lot more SSH
+90
+or RDP than usual, then trigger a CloudWatch alarm
+91
+and send an alert into an Amazon SNS topic
+92
+because something fishy may be happening on your network.
+93
+Or we can use a VPC flow log.
+94
+And then we send everything into an S3 bucket for storage,
+95
+and we use Amazon Athena
+96
+to analyze the VPC flow logs with SQL.
+97
+And we can even visualize that with Amazon QuickSight.
+98
+Now a little bit of security, so you need permissions
+99
+for VPC flow logs to work.
+100
+So there is an IAM service role associated
+101
+with the VPC flow logs service,
+102
+and it must have the required permissions
+103
+to publish logs to CloudWatch Logs.
+104
+So to do so, it needs the logs, create log group,
+105
+logs create log stream or logs put log events permissions,
+106
+and then these permissions together will allow the VPC
+107
+for log service through its IAM role
+108
+to send logs into CloudWatch logs without any errors.
+109
+All right, that's it for this lecture.
+110
+I hope you liked it and I will see you in the next lecture.
+
+--- VPC Flow Logs Hands On + Athena ---
+
+1
+Okay, so now we're going to practice
+2
+VPC flow logs.
+3
+And to do so well, we'll go into our demo VPC
+4
+under Flow Logs and we can create a flow log.
+5
+So we have a few types of flow logs.
+6
+So I'll call this one DemoS3FlowLog.
+7
+And we have a filter, do we want the accept type,
+8
+reject type or all kind of traffic?
+9
+So if you're trying to debug why some traffic
+10
+is not going through, maybe reject is more relevant.
+11
+Otherwise, all or accept are good as well.
+12
+The maximum aggregation interval.
+13
+So how long you need to wait to aggregate.
+14
+And you can look at the info.
+15
+So you can optionally specify a one minute aggregation,
+16
+but if you do so
+17
+then there's gonna be more records being created,
+18
+because it's possible that you have lots of records
+19
+getting created over time
+20
+and obviously every one minute written to
+21
+S3 or CloudWatch Logs can be very expensive.
+22
+So let's just do one minute
+23
+just for the sake of the demo to go quicker.
+24
+But 10 minutes is usually a better option
+25
+if you're looking at it, especially
+26
+after a little bit of time.
+27
+So a few options.
+28
+We can send the destination to CloudWatch Logs
+29
+And we need to specify a log group,
+30
+we need to we can also send it to an Amazon S3 bucket.
+31
+We need to specify the S3 bucket ARN
+32
+or we can send it to Kinesis Data Firehose
+33
+in the same account or in a different account.
+34
+But we'll use Amazon S3.
+35
+So to do so,
+36
+I'm going to go into the S3 service in here
+37
+and I will create a bucket and create
+38
+demo-stephane-vpc-flow-logs-v2, okay?
+39
+In the same region where my VPC is obviously.
+40
+And then I will create this bucket.
+41
+Now view the details of the bucket
+42
+and now we need to get the bucket ARN.
+43
+So to do so, here it is
+44
+I can just copy it from the Properties.
+45
+So let's paste this in.
+46
+And as we can see, a resource-based policy
+47
+will be created for you and attached to the target bucket.
+48
+So bucket policy will be created for us automatically
+49
+so that the VPC service can send data into our S3 buckets.
+50
+Now the format looks like this.
+51
+This is the default format of AWS.
+52
+And next I will click on Create Flow Log.
+53
+Okay, so this first flow log has been created, perfect.
+54
+And I will go ahead and create a second flow log now.
+55
+So I'll create flow log.
+56
+And this one is going to be DemoFlowLog CloudWatch Logs
+57
+all kind of traffic,
+58
+one minute interval,
+59
+to CloudWatch logs.
+60
+And we need to create a log group and an IAM role.
+61
+Okay, so let's do both of these things.
+62
+So to do so when you click on Set Up Permissions
+63
+so let's create a role.
+64
+So we are going to create a role
+65
+this is a custom trust policy.
+66
+And in here for principle, just go to the new line.
+67
+You're going to enter Service in between quotes, then colon
+68
+and then Service
+69
+is vpc-flow-logs.amazonaws.com.
+70
+So make sure you have this in between quotes as well.
+71
+So this is going to say
+72
+that this role can be assumed by VPC flow logs.
+73
+Click on Next.
+74
+Now for permissions policy
+75
+we need CloudWatch Logs full access.
+76
+So we're going to have this one CloudWatch Log full access
+77
+which is enough.
+78
+Then click on Next.
+79
+And this role name is going to be flowlogsrole.
+80
+Then create this role.
+81
+And now this role is created.
+82
+So if I refresh this
+83
+and look for flow log roles, here we go.
+84
+It is created.
+85
+And now we need a log group.
+86
+So let's go into the CloudWatch Logs console.
+87
+So let's click on it here.
+88
+And under Logs, Log Groups, I'm going to create a log group.
+89
+I'll call it VPCFlowLogs.
+90
+And I will set the retention to one day
+91
+and click on Create, click on this log group here.
+92
+Now refresh this and the VPCFlowLogs is appearing.
+93
+So we're good to go.
+94
+Now let's create this flow log.
+95
+And yet again, so now we have two flow logs.
+96
+One flowing into Amazon S3
+97
+and one flowing into CloudWatch Logs.
+98
+So into Amazon S3 under my Objects, I can refresh this
+99
+and as we can see some AWSLogs have already been created.
+100
+I can click on it,
+101
+look at the VPC flow logs for eu-central-1.
+102
+And then we have a timestamp,
+103
+and we have here the VPC flow logs available to us.
+104
+So now let's go into the CloudWatch Logs
+105
+and refresh this and have two log streams.
+106
+And these log streams correspond
+107
+to the enis within my accounts.
+108
+So if we ever a look at the eni of my BastionHost, this one,
+109
+and we have a look at the eni number.
+110
+So we go under Networking, and what I'm going to do
+111
+is put this up a little bit and look for the eni id.
+112
+So the eni id is 0835.
+113
+So let's go into here and look for 0835, this one, perfect.
+114
+So this is showing us the kind of traffic that is happening
+115
+onto my EC2 instance.
+116
+And if you look at it, well, it seems that some people
+117
+are trying to access my EC2 instance,
+118
+but it's getting rejected.
+119
+So this is the version, this is like all these fields,
+120
+okay the eni id and this IP address,
+121
+which is the public IP address
+122
+is trying to access my EC2 instance.
+123
+And this is really like this kind of attackers
+124
+were attacking your instance and just scanning the web
+125
+for holes and so on.
+126
+So you're gonna have a lot of this kind of traffic.
+127
+And if I wanted to get some defense,
+128
+I could for example, if this IP address
+129
+was annoying me too much,
+130
+I could block it at the that code level, for example
+131
+and not have this traffic.
+132
+But as we can see, a lot of traffic is appearing in here
+133
+and it's all Reject.
+134
+But if I were to do some activity on my S3 instance
+135
+and connect to Google for example,
+136
+we would see some traffic with Accept as well.
+137
+And the same kind of data is going to appear on Amazon S3.
+138
+So if I go here, you will have a lot of data, okay?
+139
+So you use CloudWatch Logs, if you want to have
+140
+some kind of metrics filter
+141
+to do some real-time analysis in case you're being attacked
+142
+and a lot of traffic is being rejected and so on.
+143
+So this is very helpful and you'll use Amazon S3
+144
+if you wanted to do some more bigger analysis
+145
+for example, using Athena.
+146
+So let's go ahead and practice using Athena
+147
+to query this data into my S3 bucket.
+148
+So in Athena, what I'm going to do is to first set up
+149
+a query result location in Amazon S3.
+150
+So I'm going to click on New Settings, Manage
+151
+and then I need to specify an S3 bucket
+152
+where I'm going to store my results.
+153
+So back into Amazon S3
+154
+what I'm going to do is just quickly create an S3 bucket,
+155
+because this wasn't set up for this account.
+156
+So I call this one demo-athena-stephane-v2,
+157
+and this should work.
+158
+Now let's click on Create these buckets, View Details,
+159
+and I can just use this S3 bucket,
+160
+so Properties, I will copy the ARN,
+161
+back into Athena and then click on Save.
+162
+So I need to just do slash and then Athena.
+163
+And then something like, ah, S3://, here we go.
+164
+Okay, this is good.
+165
+So let's click on Save.
+166
+And now we have this query location being saved
+167
+and I need to go ahead
+168
+and start creating a database and then create some data.
+169
+So what I need to do is to go in here
+170
+and I will type AWS VPC flow logs Athena
+171
+and this is going to take me
+172
+into a tutorial on how to do it.
+173
+So to do so, we need to create a table.
+174
+And this whole statement right here shows you how.
+175
+So let's go ahead and paste this in my Athena UI.
+176
+So here we go.
+177
+And we need to specify where the data is.
+178
+So the log bucket, the prefixed logs
+179
+and then account id VBC flow logs and region code.
+180
+So let's find it.
+181
+So let's go back in here.
+182
+This is my Athena bucket.
+183
+No, this is my VPC flow logs bucket.
+184
+Here we go.
+185
+So let's go to the top of it.
+186
+Just to go back.
+187
+So logs, account id, VPC flow logs, region.
+188
+Okay, we got it.
+189
+Now we're going to copy this S3 URI directly
+190
+back into Athena and I'm going to paste this in.
+191
+Okay, perfect.
+192
+And let's run this statement.
+193
+So this completed, and now we have a VPC flow log
+194
+table in here.
+195
+Okay, and it is partitioned.
+196
+So we can see we have all the information in here.
+197
+Now the second thing we need to do
+198
+is to run another statement.
+199
+So let's go here and find this alter table,
+200
+to create partitions to read this data.
+201
+So let's copy this, paste this in.
+202
+And again, we need to specify a date
+203
+and as well as the entire replacement
+204
+for month, year, and day.
+205
+Okay, so let's go ahead and do this.
+206
+So back into Amazon S3, into my Objects
+207
+I will click, click and click, go back to Properties
+208
+and paste this, copy and paste this in.
+209
+So we're good to go.
+210
+And then we need to add a partition.
+211
+So 2021-10-06.
+212
+And this is quite manual,
+213
+but Glue can help with automating this.
+214
+Now let's run this statement.
+215
+And the statement was successfully completed.
+216
+So now we have added one partition into our table.
+217
+And then finally we can query the flow logs
+218
+just by doing a select.
+219
+So let's do this to find all the reject traffic
+220
+and then click on Run.
+221
+And this is worked.
+222
+And now we have 46 results and we can have a look.
+223
+So day, date, interface id, source address,
+224
+action reject, protocol 6.
+225
+So we can get a lot of information from Athena
+226
+and we can start doing some complex queries
+227
+to try to group for example, by IP addresses,
+228
+see who is attacking us the most
+229
+where we're attacked the most, and so on.
+230
+So this could be quite helpful
+231
+for doing some batch analysis, okay?
+232
+But that's it, we've seen how to set VPC flow logs.
+233
+We send to CloudWatch Logs.
+234
+And to Amazon S3, we've used Athena to query these logs
+235
+in Amazon S3.
+236
+So very complete demo.
+237
+And what I'm going to do now is just disable all these logs.
+238
+I'm going to delete them, just not to run any ongoing cost.
+239
+Okay, so that's it.
+240
+I hope you liked it, and I will see you in the next lecture.
+
+--- Site to Site VPN, Virtual Private Gateway & Customer Gateway ---
+
+1
+Okay, so now let's talk
+2
+about site-to-site VPN.
+3
+So the idea is that, now we have a VPC
+4
+but we may have also a structure
+5
+within the corporate data center,
+6
+and we wanna connect AWS to our corporate data center
+7
+using a private connection.
+8
+So for this, we'll have a customer gateway
+9
+on the corporation side,
+10
+and a VPN gateway on the VPC side.
+11
+And we're going to establish,
+12
+through the public internet,
+13
+a private site-to-site VPN connection.
+14
+So it's a VPN connection, so it's encrypted.
+15
+It goes over the public internet, though.
+16
+And using this, we have linked effectively
+17
+the network of our VBC
+18
+to the network of our corporate data center.
+19
+So, as such, the VPNs need two things.
+20
+First, they need a virtual private gateway, VGW.
+21
+It's a VPN concentrator on the AWS side
+22
+of the VPN connection,
+23
+and the VGW is created and attached to the VPC
+24
+from which you want to create
+25
+the site-to-site VPN connection.
+26
+It's possible for you to customize the ASN number,
+27
+if you know what that means.
+28
+The customer gateway is a CGW,
+29
+and it's an actual software
+30
+or a physical device on your side,
+31
+so on the data center side of the VPN connection,
+32
+And there's a bunch of these
+33
+that will have been tested by AWS,
+34
+so we can have a look at the list here.
+35
+So, to do a connection, it's very simple.
+36
+We have a corporate data center with a customer gateway,
+37
+and then we have our VPC with our virtual private gateway.
+38
+So, how do we set up the customer gateway device
+39
+that is on premises?
+40
+Which IP address should we use?
+41
+Well, if your customer gateway is public,
+42
+there is a public internet-routable IP address
+43
+for your customer gateway device.
+44
+Then you would use this one,
+45
+and you would establish the connectivity
+46
+between your VGW and your CGW
+47
+using the public IP of the customer gateway.
+48
+But it's possible for your customer gateway
+49
+to also be private and have a private IP.
+50
+In which case, then it is very common for it
+51
+to be behind a NAT device that has NAT-T enabled.
+52
+And then, that NAT device has a public IP, in which case,
+53
+the IP address you should use for the CGW
+54
+is the public IP of the NAT device.
+55
+And then, the site-to-site VPN connection
+56
+can be established.
+57
+I'm saying this because this can come into the exam.
+58
+And then, the second question that can come up
+59
+to the exam is that,
+60
+even though this is set up,
+61
+this site-to-site VPN connection will not work
+62
+until you enable route propagation in your VPC
+63
+within your subnets.
+64
+And then, when this is done,
+65
+then the connectivity will work.
+66
+Finally, another exam question that can come up
+67
+regarding site-to-site VPN.
+68
+If you need to ping your EC2 instances
+69
+from on-premises to AWS,
+70
+then make sure that the ICMP protocol on the inbound
+71
+of the security group is enabled.
+72
+Otherwise, I would say the connection will not work.
+73
+This is just a security group question, obviously.
+74
+But they mix it up with the site-to-site VPN
+75
+and that can be confusing, so here is some help.
+76
+Now, there's one last thing to know
+77
+about a site-to-site VPN.
+78
+It's called AWS VPN CloudHub.
+79
+So the idea is that you have your VPC with your VGW
+80
+and you have multiple customer networks,
+81
+multiple data centers, each with their own customer gateway.
+82
+So CloudHub is to provide secure communication
+83
+in between all these sites, using multiple VPN connections.
+84
+It's a low-cost hub-and-spoke model
+85
+for primary or secondary network connectivity
+86
+between different locations,
+87
+but only using the VPN.
+88
+So you would establish a site-to-site VPN
+89
+between the CGW and the one single VGW within your VPC.
+90
+And then, thanks to this connection,
+91
+then your customer networks can now communicate
+92
+with one another through that VPN connection.
+93
+Now, because it's a VPN connection,
+94
+all the traffic goes over the public internet.
+95
+So they're not connected through a private network.
+96
+They're connected through public network
+97
+but the VPN connection is encrypted, obviously.
+98
+And to set it up, super simple,
+99
+you set up multiple site-to-site VPN connection
+100
+on the same virtual private gateway,
+101
+and then you enable dynamic routing
+102
+and you configure your route tables, and you're good to go.
+103
+So that's it.
+104
+That's all you need to know for site-to-site VPN.
+105
+I hope you liked it, and I will see you in the next lecture.
+
+--- Site to Site VPN, Virtual Private Gateway & Customer Gateway Hands On ---
+
+1
+So let's have a look at how you can
+2
+create a site to site VPN connection in AWS.
+3
+So scroll down and under VPN,
+4
+you go and click on "Customer Gateways."
+5
+So the first step to having a site-to-site VPN connection
+6
+is to have a customer gateway that you host on-premises.
+7
+So you create it on-premises.
+8
+You can name this AWS. Okay?
+9
+And then you can specify a BGP ASN
+10
+for your gateway device.
+11
+This is advanced. You don't need to know it. Okay?
+12
+You need to specify the IP address
+13
+of your customer gateway device external interface.
+14
+So how it can be reached from AWS
+15
+into your on-premises infrastructure.
+16
+And then you would specify a Certificate ARN
+17
+which allows AWS to connect into your VPN device
+18
+on-premises and establish a secure connection.
+19
+So this is to create a customer gateway
+20
+but I won't do this because I don't have
+21
+an on-premises infrastructure to show you.
+22
+Next, we have a Virtual Private Gateway.
+23
+So you would create a Virtual Private Gateway.
+24
+And then you would use a ASN number
+25
+and it will be created on the side of AWS.
+26
+Okay? So this is now the site of AWS.
+27
+And then we need to connect these two things
+28
+and therefore we need to create
+29
+a site-to-site VPN connection.
+30
+To do so we click on "Create VPN Connection."
+31
+It is of type "Virtual private gateway."
+32
+Then you specify the virtual private gateway
+33
+that you would have created from before.
+34
+You specify the customer gateway
+35
+you would have created from before.
+36
+Then you specify a lot of options
+37
+that you don't need to know about
+38
+regarding routing, regarding IPV4,
+39
+regarding tunneling and so on.
+40
+And then you would create that VPN connection.
+41
+All this is out of scope in terms of hands-on.
+42
+For the exam, all you need to know is that
+43
+to establish a site-to-site VPN connection
+44
+between on-premises and AWS, you need to first
+45
+create a customer gateway,
+46
+then a virtual private gateway on AWS,
+47
+and then connect the two using
+48
+a site-to-site VPN connection.
+49
+Okay? So that's it. I hope you liked it.
+50
+And I will see you in the next lecture.
+
+--- Direct Connect & Direct Connect Gateway ---
+
+1
+Now let's talk about Direct Connect.
+2
+And you may also see it as DX in the exam.
+3
+So it provides a dedicated private connection
+4
+from a remote network into your VPC.
+5
+So you need to set up that dedicated connection
+6
+and it is using an AWS Direct Connect location.
+7
+You also need to set up a virtual private gateway
+8
+on your VPC side to make the connectivity
+9
+between your on-premises data center and AWS.
+10
+The idea is that on the same connection,
+11
+you can access both public resources such as Amazon S3
+12
+and private resources such as EC2 instances
+13
+using the public VIF and the private VIF.
+14
+So what are the use cases for Direct Connect?
+15
+Well, you get increased bandwidth throughput.
+16
+That means that if you're working with large data sets,
+17
+it's going to be faster because it doesn't go
+18
+over the public internet.
+19
+And also you're going to have lower cost
+20
+because you're using a private connection.
+21
+Also, if you have connectivity issues
+22
+using the public internet,
+23
+while using Direct Connect,
+24
+you get a more consistent network experience again,
+25
+because it is private.
+26
+So this is especially helpful if you have applications
+27
+using real time data feeds.
+28
+Finally, it supports hybrid environments
+29
+because you have connectivity
+30
+between your on-premises data center and the cloud.
+31
+It supports both IPv4 and IPv6.
+32
+So let's look at a diagram of Direct Connect.
+33
+So we have a region,
+34
+and we want to connect it into our corporate data center.
+35
+So for this we're going to commission
+36
+an AWS Direct Connect location.
+37
+There are physical locations that you have to find,
+38
+but it's all obviously on the website of AWS,
+39
+and there's going to be a Direct Connect endpoint,
+40
+and there's going to be a customer
+41
+or partner router that you have
+42
+to rent from a customer or partner cage.
+43
+So you have two cages in this Direct Connect location.
+44
+And then on your on-premises data center,
+45
+you're going to set up a customer router with a firewall.
+46
+Now you're going to set up a private virtual interface,
+47
+so private VIF,
+48
+first to access your private resources into your VPC.
+49
+So to do so, you set up the private VIF
+50
+in between all these locations
+51
+into a virtual private gateway.
+52
+And this virtual private gateway is attached to your VPC.
+53
+And through the private VIF,
+54
+you are able to access your private subnet
+55
+with your EC2 instances.
+56
+And as you can see, all these things happen privately.
+57
+So you need to set up that connection manually.
+58
+It can take a month to set up,
+59
+but none of this goes over the public internet.
+60
+It is all a private connectivity.
+61
+The alternative is to connect to public services within AWS,
+62
+such as Amazon Glacier or Amazon S3.
+63
+And for this, you're going to set up
+64
+a public virtual interface or public VIF.
+65
+And so it goes through the same path,
+66
+but it doesn't connect into a virtual private gateway.
+67
+It connects directly into AWS.
+68
+So what if you want to connect
+69
+to one or more VPCs in different regions?
+70
+For this, you must use a Direct Connect gateway.
+71
+So we have an example where we have two regions
+72
+and they have two different VPC with two different CIDRs,
+73
+and we want to connect our on-premises data center
+74
+into both VPC.
+75
+So we're going to establish a Direct Connect connection.
+76
+Then using the private VIF, you're going to connect it
+77
+to a Direct Connect gateway.
+78
+And this gateway will have a private virtual interface
+79
+into a virtual private gateway in the first region
+80
+and another one in the second region.
+81
+So using the setup, we can start connecting to multiple VPCs
+82
+and multiple regions.
+83
+Okay, now let's discuss the connection types
+84
+for Direct Connects.
+85
+We have the option of dedicated connections
+86
+that range from one gigabits per second
+87
+up to different options, up to 400 gigabits per second.
+88
+You get a physical ethernet port
+89
+that's dedicated to a customer,
+90
+and the request is made to AWS first,
+91
+and then it's completed by an AWS Direct partner.
+92
+And then we have a hosted connection
+93
+from 50 megabits per second, 25 gigabits per second.
+94
+Here we make the connection request directly
+95
+via the AWS Direct Connect partners as well,
+96
+and the capacity can then be added or removed on demand.
+97
+Oftentime, to build these connections,
+98
+it takes over a month.
+99
+So you need to be mindful of this.
+100
+So in the exam, they will ask you questions around,
+101
+"Hey, we want to transfer some data within a week,
+102
+and we want it to be fast."
+103
+So an answer cannot be Direct Connect
+104
+because Direct Connect takes often
+105
+more than one month to establish.
+106
+So you need to look into the question
+107
+whether or not there is already a Direct Connect established
+108
+and whether or not the time to transfer the data
+109
+is less or greater than one month.
+110
+Now when you have a Direct Connect, there is no encryption.
+111
+So data in transit is not encrypted.
+112
+But it is private because it is a private connection.
+113
+And so if you wanted encryption on top of it,
+114
+you can set up Direct Connect to be alongside a VPN
+115
+to provide IPsec encrypted private connection.
+116
+So it's good to get an extra level of security,
+117
+but it's slightly more complex to put in place.
+118
+So the setup is to get the send Direct Connect location,
+119
+but then on the connection,
+120
+you're going to set up a VPN connection on top of it
+121
+to have encryption for your Direct Connect,
+122
+and therefore all the traffic
+123
+between your corporate data center to AWS
+124
+is going to be encrypted.
+125
+Now, one last thing that can come up in the exam
+126
+is around resiliency for Direct Connects.
+127
+So we have two modes of resiliency and architectures,
+128
+and you need to know them both
+129
+because they will be coming up at the exam.
+130
+You have high resiliency for critical workloads
+131
+where we set up multiple Direct Connects.
+132
+So we have two corporate data centers.
+133
+And we have two different Direct Connect location.
+134
+And this gives us some redundancy.
+135
+So in the first case, we have a private VIF here
+136
+and we have a private VIF here.
+137
+And so here we get one connection at multiple locations.
+138
+And so if one of the Direct Connect location goes down,
+139
+then at least we have some backup
+140
+Direct Connect location somewhere else.
+141
+And so this gives us high resiliency,
+142
+and this is good for critical workloads.
+143
+But if you want to get maximum resiliency
+144
+for critical workloads,
+145
+and I emphasize the word maximum
+146
+because it can come up in the exam,
+147
+then you're going to have to set up,
+148
+again, two Direct Connect locations.
+149
+But this time each Direct Connect location
+150
+will have two connections independent
+151
+to give you maximum resiliency.
+152
+So in this use case, we have four Direct Connect locations,
+153
+four connections across two locations, sorry,
+154
+going into AWS.
+155
+And so maximum resilience is achieved
+156
+by using separate connections
+157
+terminating on separate devices in more than one location.
+158
+So that's for Direct Connect,
+159
+I hope you like this lecture
+160
+and I will see you in the next lecture.
+
+--- Direct Connect + Site to Site VPN ---
+
+1
+Hi, so a very short lecture
+2
+on an architecture that can come up in the exam.
+3
+So the idea is that you have your corporate data center
+4
+and it's connected to your VPC using Direct Connect.
+5
+And that's your primary connection
+6
+and it's expensive, but maybe sometimes
+7
+you will have an issue with your Direct Connect connection,
+8
+and of course, you do not want to have
+9
+no internet connection into your VPC.
+10
+Therefore, you can use a Direct Connect
+11
+as a secondary connection,
+12
+but that would be quite expensive.
+13
+Or you can set up a site to site VPN connection
+14
+as a backup connection
+15
+and set it up so that if the primary connection fails,
+16
+then it kicks in, and now you are connected
+17
+through the public internet using site to site VPN,
+18
+which can be a bit more reliable
+19
+because the internet, public internet,
+20
+may always be accessible, okay?
+21
+So this is an architecture that can come up in the exam
+22
+and I just wanted to show it to you once,
+23
+so that you know what to expect.
+24
+Okay, that's it, I hope you liked it,
+25
+and I will see you in the next lecture.
+
+--- Transit Gateway ---
+
+1
+Okay, so if we look at
+2
+common network topologies in AWS
+3
+it can become quite complicated.
+4
+For example, you have many VPC
+5
+and you want to peer them together,
+6
+then you want to establish some VPN connections
+7
+and direct connect,
+8
+and then you have a direct connect gateway to connect
+9
+to multiple VPC at a time, and this can become
+10
+very, very complicated in terms of network topology.
+11
+So, AWS came up with the transit gateway
+12
+to solve that problem, and you're going to have
+13
+a transitive peering connection between thousands of VPC,
+14
+your on-premises data center, your site-to-site VPN,
+15
+direct connects in a hub-and-spoke star connection.
+16
+So let's have a diagram.
+17
+We have transit gateway in the center
+18
+and you can connect multiple VPCs through
+19
+the transit gateway.
+20
+So in this example, we don't need to peer the VPCs together,
+21
+they are connected transitively through the transit gateway.
+22
+So in this example, all the VPCs can talk to each other.
+23
+But also, you can connect a direct connect gateway
+24
+to the transit gateway,
+25
+so it shows you have a direct connect connection
+26
+directly in to many different VPC.
+27
+Or if you are preferring site-to-site VPN
+28
+and VPN connections, you can connect your customer gateway
+29
+and your VPN connection into your transit gateway.
+30
+Again, one more time, giving you access to all these VPC
+31
+as part of the transit gateway.
+32
+So this really solves some network problems.
+33
+It's a regional resource and it can work cross-region,
+34
+and you can share your transit gateway across accounts
+35
+by using the resource access manager.
+36
+You can also peer transit gateways across region.
+37
+So, how do you define who can talk to what?
+38
+Well, you need to create route tables
+39
+for your transit gateway to limit which VPC
+40
+can talk to another, which connection have access
+41
+to each other and so on.
+42
+So, you get full control over the routing of all the traffic
+43
+within the transit gateway to give you network security.
+44
+So, as I said, it works with direct connect gateway
+45
+and VPN connections, and it is the only service in AWS
+46
+that supports IP multicast, so if you see IP multicast
+47
+at the exam, just know that it is transit gateway
+48
+you have to use.
+49
+So, another use case for transit gateway is to increase
+50
+the bandwidth of your site-to-site VPN connection
+51
+using ECMP.
+52
+So, it's quite technical but the question can come up
+53
+in the exam.
+54
+So, ECMP means equal-cost multi-path routing.
+55
+It's a routing strategy to allow to forward a packet
+56
+over multiple best path.
+57
+And the use case, as I said, is to create
+58
+multiple site-to-site VPN connections
+59
+to increase the bandwidth of your connection
+60
+to AWS using a site-to-site VPN.
+61
+So, let's take this example where we have a transit gateway
+62
+and we have four VPCs attached to our transit gateway,
+63
+and we have a corporate data center that is connected
+64
+using site-to-site VPN to a transit gateway.
+65
+So when you establish a site-to-site VPN connection
+66
+there are actually two tunnels, one going forward
+67
+and one going back.
+68
+When you are connecting such a VPN into a VPC directly,
+69
+both of these tunnels are used as part of one connections,
+70
+but when using the transit gateway
+71
+two tunnels can be used at a time,
+72
+so this is why you see two lines in this diagram.
+73
+But with transit gateway,
+74
+you can have multiple site-to-site VPN
+75
+so you can create a second site-to-site VPN attachment
+76
+and into your transit gateway,
+77
+so this creates four tunnels.
+78
+And so, when you have four tunnels of site-to-site VPN,
+79
+you are increasing the throughput of your connection
+80
+which is something you cannot do if you were to connect
+81
+your corporate data center directly into a VPC.
+82
+So, if you do a VPN to a virtual private gateway,
+83
+you get one tunnel, in fact one connection into one VPC,
+84
+and this connection gives you 1.25 Gbps
+85
+as the maximum throughput, and you are limited.
+86
+And in this case, a VPN connection is made of two tunnels.
+87
+But if you are using a VPN into a transit gateway,
+88
+you get one site-to-site VPN into many VPC
+89
+because they're all connected transitively
+90
+to the same transit gateway.
+91
+And also, one site-to-site VPN connection
+92
+gives you 2.5 Gbps thanks to ECMP,
+93
+because the two tunnels are going to be used
+94
+through that strategy.
+95
+But also, you can add more site-to-site VPN connections
+96
+into transit gateway, for example two or three,
+97
+to double or triple your throughputs
+98
+through ECMP.
+99
+So this is an exam question you need to know.
+100
+Obviously when you do the setup,
+101
+you're going to have to pay for each GB of data
+102
+going through the transit gateway,
+103
+so there's an added cost to this performance optimization.
+104
+Finally, you can share your direct connect connection
+105
+between multiple accounts, again, using the transit gateway.
+106
+How do we do this?
+107
+Well, we're going to establish a direct connect connection
+108
+between your corporate data center
+109
+and a direct connect location,
+110
+and then we're going to set up a transit gateway
+111
+into both VPCs in two different accounts, okay?
+112
+So this is something we can do with the transit gateway.
+113
+And then, we connect the direct connect location
+114
+into direct connect gateway and connect that gateway
+115
+into the transit gateway.
+116
+And what this just allowed us to do is to share
+117
+a direct connect connection between multiple accounts
+118
+and multiple VPC, which is very handy
+119
+thanks to the transit gateway.
+120
+Okay?
+121
+So all these sort of architectures can come up in the exam
+122
+so make sure you're familiar with understanding
+123
+how they work, and that's it for me,
+124
+I will see you in the next lecture.
+
+--- VPC Traffic Mirroring ---
+
+1
+So here is a very cool security feature
+2
+called the VPC, Traffic Mirroring.
+3
+The idea is that we want to capture
+4
+and inspect network traffic in our VPC,
+5
+but to do it in a non-intrusive manner.
+6
+So to do so, we want to route the traffic
+7
+to security appliances that we manage.
+8
+And to do so, we're going to capture the traffic,
+9
+so we're going to define
+10
+which are the source ENIs
+11
+we want to capture the traffic from.
+12
+And then the targets,
+13
+so where do we want to send that traffic to,
+14
+our own ENIs or maybe a Network Load Balancer.
+15
+So to do an example.
+16
+So we have an EC2 instance
+17
+and we have an Elastic Network Interface,
+18
+so an ENI attached to it
+19
+and works really well.
+20
+Our EC2 instance is accessing the internet
+21
+and is being accessed.
+22
+And so we get a lot of inbound and outbound traffic
+23
+on the ENI to the EC2 instance.
+24
+But we wanted to analyze our traffic.
+25
+So to do so we're going to set up a Load Balancer
+26
+and behind this Network Load Balancer,
+27
+we're going to have an auto scaling group of EC2 instances
+28
+that will have some security software on it.
+29
+Now we want to be able to capture
+30
+all the traffic from Source A
+31
+without disrupting the functioning of Source A.
+32
+So to do so, we're going to set up a VPC traffic mirroring,
+33
+and optionally, we can have a filter,
+34
+if you want you to get just some information,
+35
+not everything.
+36
+And with this traffic mirroring feature,
+37
+all the traffic sent to the ENI or Source A
+38
+is also going to be sent to our Network Load Balancer.
+39
+So our Source A,
+40
+our EC2 instance is still working fine.
+41
+It still doesn't know what's happening,
+42
+but on top of it,
+43
+the traffic is being mirrored.
+44
+So hence the name, Traffic Mirroring,
+45
+into our Network Load Balancer.
+46
+And from there, we can analyze the traffic itself.
+47
+And this applies not just to one source,
+48
+but to multiple sources.
+49
+So if you had a second EC2 instance with another ENI,
+50
+yet again, we can mirror the traffic
+51
+into our Network Load Balancer.
+52
+So how does that work?
+53
+We need to have the source
+54
+and the targets to be in the same VPC,
+55
+or it could be across different VPC,
+56
+and if we have enabled VPC Peering.
+57
+So the use cases for VPC traffic mirroring
+58
+is going to be around content inspection,
+59
+threat monitoring, or troubleshooting
+60
+from a networking perspective, okay.
+61
+It's very hard to demonstrate this in a demo,
+62
+but this diagram should be enough.
+63
+So hope you liked it.
+64
+And I will see you in the next lecture.
+
+--- IPv6 for VPC ---
+
+1
+So we've talked a lot
+2
+about IPv4 in this course,
+3
+but now let's talk about IPv6.
+4
+So why?
+5
+Well, because IPv4 was designed
+6
+to provide 4.3 billion addresses at the time of creation.
+7
+And engineers who invented this protocol never thought
+8
+that they would be all used,
+9
+but it turns out that very, very soon,
+10
+they will all be exhausted.
+11
+And so therefore, there needs to be a new scheme of IPs,
+12
+and this is IPv6, which is a successor of IPv4.
+13
+So IPv6 is designed to provide, and wait for it,
+14
+3.4 times 10 at the power of 38 unique IP addresses.
+15
+So this is a lot of IP addresses.
+16
+And every IPv6 address in AWS is going to be public
+17
+and internet-routable.
+18
+So the format is x.x.x.x, eight times,
+19
+where x is hexadecimal,
+20
+where the range can be from 0000 to ffff.
+21
+So you don't need to know exactly how an IPv6 is formed,
+22
+okay, but these are some examples of IPv6.
+23
+I'm not going to linger on it.
+24
+Okay, you can have a look,
+25
+but what's important for you is to just see one
+26
+and say, "Oh, okay, this looks like an IPv6."
+27
+And IPv6 can take multiple forms.
+28
+Okay, so why am I talking about IPv6?
+29
+Well, because we can enable IPv6 support in our VPC.
+30
+So IPv4 can never be disabled
+31
+for your VPC and subnets, okay?
+32
+But you can enable IPv6 that are public IP addresses
+33
+to operate in dual-stack mode.
+34
+That means that your EC2 instances
+35
+when launched in your VPC will get
+36
+at least a private internal IPv4 and a public IPv6,
+37
+and they can communicate using either IPv4 or IPv6
+38
+to the internet through an internet gateway.
+39
+So let's take an example.
+40
+Our EC2 instance has a private IP as an IPv6,
+41
+which is by default public.
+42
+And then if he wants to access the internet,
+43
+it can do so through internet gateway.
+44
+So internet gateway do provide connectivities
+45
+for IPv4 and IPv6.
+46
+And then my EC2 instance will be publicly accessible
+47
+in this case because it has a public IPv6 address,
+48
+and the internet gateway
+49
+would provide internet connectivity.
+50
+So here is an exam scenario for you,
+51
+so around IPv6 troubleshooting.
+52
+So as you know, IPv4 cannot be disabled
+53
+for your VPC and subnets.
+54
+And so if you have an IPv6-enabled VPC,
+55
+and you cannot launch an EC2 instance in your subnets,
+56
+then it's not because the instance cannot acquire an IPv6
+57
+because the space is actually very, very large,
+58
+and there will be enough IPv6s for your EC2 instances.
+59
+It's because there are no available IPv4 left
+60
+in your subnets.
+61
+And the solution for this is to create an IPv4 CIDR
+62
+in your subnet.
+63
+So let's take collect this VPC,
+64
+It has an IPv4 space and so also an IPv6 space.
+65
+So we keep on launching EC2 instances
+66
+that will get private IPv4 and public IPv6.
+67
+So we launch them, we launch them, we launch them,
+68
+and then once we have exhausted the space of IPv4,
+69
+if a user tries to create a new EC2 instance,
+70
+it will get an error, not because the IPv6 ran out,
+71
+but because the IPv4 space within our subnets
+72
+or our VPC ran out,
+73
+in which case, well, what we do is that we add a new CIDR
+74
+within our VPC and our subnets,
+75
+and therefore, we can start launching new EC2 instances
+76
+that will get a different IPv4 address range for the IP.
+77
+But we'll keep to work around this issue like this, okay?
+78
+So that's it for the theory on IPv6 in AWS.
+79
+I will see you in the next lecture
+80
+for just a little practice.
+
+--- IPv6 for VPC - Hands On ---
+
+1
+So we're just going to practice with IPv6.
+2
+And so we have our VPC here and we have our demo VPC.
+3
+And so to enable IPv6 report,
+4
+we need to add an IPv6 CIDR range.
+5
+So let's go right click on this.
+6
+And then we edit the CIDRs.
+7
+And then I'm going to add a new IPv6 CIDR range.
+8
+So now we can either use an Amazon-provided CIDR block
+9
+or a CIDR provided by me.
+10
+So I will use one generated by AWS
+11
+and then we'll have one that is advertised
+12
+as a group of eu-central-1.
+13
+So let's select the CIDR and here we go,
+14
+it is associated and here is my IPv6 CIDR.
+15
+So next, let me go to my subnets
+16
+and I will take my public subnet A, action,
+17
+and then I will edit the IPv6 CIDRs.
+18
+So as you can see,
+19
+I need to assign an IPv6 CIDR with my subnet.
+20
+So I will just use 00 just to be easy and click on save.
+21
+So here is an IPv6 CIDR with my subnets.
+22
+And then I can edit these subnet settings
+23
+to allow auto assign IPv6 address.
+24
+So I'll just do for one subnet
+25
+and I'll do it for all of them obviously,
+26
+but you can assign IPv6 addresses
+27
+for any of these subnets.
+28
+So next, if I go to my EC2 instances,
+29
+I can right click on this one, go to networking
+30
+and then manage IP addresses.
+31
+So currently the interface eth0
+32
+does not have an IPv6 address
+33
+but we can assign a new IPv6 address
+34
+which is going to be auto assigned.
+35
+And then I click on save, confirm.
+36
+And if you look at my BastionHost now,
+37
+it has an IPv6 address.
+38
+And so if we had an IPv6 address on our machine
+39
+and we edited the security group of this instance
+40
+to allow not just 0.0.0/0 which is the IPv4 range
+41
+but also we add the IPv6 range CIDR.
+42
+So if we go into the security group right here
+43
+and then edit the inbound rules, and then we add SSH
+44
+but this time from anywhere IPv6.
+45
+Then we can do an SSH into our BastionHost
+46
+directly using the IPv6 address
+47
+provided at our own computer, of course has an IPv6 address.
+48
+And IPv6 addresses are not necessarily
+49
+like common for your internet providers.
+50
+So there is a website called Test-IPv6
+51
+and it will run some tests.
+52
+And then it turns out that's if you have an IPv6,
+53
+it will appear right here.
+54
+And so you have IPv6 address
+55
+and you can access the EC2 instance.
+56
+But if you don't have an IPv6,
+57
+then don't worry, you cannot do anything about it.
+58
+You just need to wait for your internet provider
+59
+to be upgraded to the IPv6 scheme.
+60
+So this is cool because now I have one.
+61
+And so if I wanted to, I could connect EC2 instance
+62
+using IPv6. So the one last thing I want to show you
+63
+is around the route tables.
+64
+So if we have a look at the public route table, for example,
+65
+and look at the routes,
+66
+as you can see, there has been a rule added
+67
+into my route table which is saying that anything
+68
+that is using this CIDR of IPv6 should be local.
+69
+So that means that my EC2 instances,
+70
+if they have IPv6 addresses can communicate with each other
+71
+using their IPv6 address.
+72
+And if in the CIDR,
+73
+then all the traffic is going to remain local.
+74
+It's not gonna go through the public internet.
+75
+So that's it for IPv6.
+76
+I hope you liked it.
+77
+And also one last thing to notice, excuse me,
+78
+is that in your subnet, as we can see,
+79
+there are 248 IPv4 addresses left.
+80
+So even though I have many, many IPv6
+81
+available in my subnet,
+82
+if I go and use all the IPv4 addresses in my subnet,
+83
+then I would need to assign a new CIDR block to my subnet
+84
+to be able to keep on creating EC2 instances within it
+85
+because each EC2 instance
+86
+will no matter what have an IPv4 address.
+87
+So now that's it.
+88
+I hope you liked it.
+89
+And I will see you in the next lecture.
+
+--- Egress Only Internet Gateway ---
+
+1
+And now let's talk about
+2
+egress-only internet gateways.
+3
+So they're used only for IPv6 traffic,
+4
+and they're similar to a NAT gateway,
+5
+but for IPv6.
+6
+So NAT gateway is IPv4,
+7
+but egress-only internet gateway is for IPv6.
+8
+So what do they do?
+9
+Well, they allow instances in your VPC outbound connections
+10
+over IPv6 while preventing the internet
+11
+to initiate an IPv6 connection to your instances.
+12
+And to do so, you must update your route tables.
+13
+So let's have an example.
+14
+We have the internet,
+15
+our VPC with a public subnet or private subnet.
+16
+And so this EC2 instance can access
+17
+the internet through the internet gateway
+18
+and can also have the internet initiate a connection
+19
+to the instance using IPv6,
+20
+because it's connected to the internet gateway
+21
+and it's in the public subnet.
+22
+Now we don't want that.
+23
+What we want is just outbound connections.
+24
+So let's consider an EC2 instance in a private subnet,
+25
+so it doesn't have an internet gateway,
+26
+that makes the subnet private.
+27
+And we're going to create an egress-only internet gateway.
+28
+So what's going to happen is that now
+29
+the EC2 instance in the private subnet
+30
+will be able to access the internet over IPv6
+31
+through the egress-only internet gateway,
+32
+but the internet will not be able to initiate
+33
+a connection from the internet to the EC2 instance.
+34
+So to summarize, here is a diagram
+35
+of how IPv6 routing works.
+36
+So let's consider a VPC with IPv6.
+37
+We have a public subnet, we have a private subnet,
+38
+so they both have IPv4 and IPv6 obviously in them.
+39
+And so again, if we consider a web server
+40
+accessing the internet,
+41
+it can do it over IPv4 and IPv6 through an internet gateway.
+42
+And so the route table for your public subnet
+43
+is going to have the first line to be local
+44
+for the local IPv4 and the local IPv6 traffic.
+45
+Okay, these are within the CIDRs of your subnets
+46
+or your VPC,
+47
+and then anything else,
+48
+so 0.0.0/0, this is the everything IPv4,
+49
+and the ::/0 is the everything IPv6,
+50
+go through the internet gateway,
+51
+which allows your web server to access the internet.
+52
+So this should make sense.
+53
+And this is how we enable IPv6 and IPv4 both ways
+54
+in a public subnet.
+55
+But if you consider a private subnet,
+56
+your server again has a private IPv4 and also an IPv6.
+57
+And so how do we make sure that this server
+58
+can access the internet, but not be accessed?
+59
+Well, you know already that for IPv4
+60
+we need to use a NAT gateway.
+61
+So the server connects to the NAT gateway, okay,
+62
+and the NAT gateway then connects to the internet gateway
+63
+and then accesses the internet over IPv4.
+64
+And for IPv6, we know we need to use
+65
+an egress-only internet gateway.
+66
+So IPv6, the server connects
+67
+to the egress-only internet gateway
+68
+to the internet over IPv6.
+69
+Now your route table looks a little bit different.
+70
+Again, the first two lines are the same,
+71
+but then your NAT gateway ID is a target for 0.0.0.0/0.
+72
+So this is all IPs' IPv4.
+73
+And then the fourth line is ::/0,
+74
+which represents a target
+75
+to the egress-only internet gateway,
+76
+because this is a target for the IPv6 type of traffic, okay?
+77
+So this should make sense.
+78
+And then if you have this in mind,
+79
+then you understand exactly the difference
+80
+between an internet gateway, a NAT gateway,
+81
+and an egress-only internet gateway.
+82
+So that's it.
+83
+I hope you liked it.
+84
+And I will see you in the next lecture.
+
+--- Egress Only Internet Gateway Hands On ---
+
+1
+So I am in my VPC
+2
+and on the left-hand side of Egress Only Internet Gateways.
+3
+Now I can create one,
+4
+and I'll call it DemoEIGW.
+5
+And then we need to attach it to your VPC.
+6
+So my DemoVPC.
+7
+And then create this egress only internet gateway.
+8
+So it's created and attached already.
+9
+So this is good.
+10
+But now just to make it work,
+11
+well, we need to go ahead and edit a route table.
+12
+So let's go in here.
+13
+It needs to be for the private sub-net, okay?
+14
+It doesn't make sense for the public subnets.
+15
+So for the private subnets.
+16
+Let's go and edit the route table for the private subnets,
+17
+and edit these routes.
+18
+And we're going to say that's..
+19
+Yeah, You know what?
+20
+Anything that is going to be ::/0.
+21
+So any IPv6,
+22
+please be redirected to the egress only internet gateway.
+23
+Save the changes.
+24
+And now, all good.
+25
+My easy two instances in my private subnets can access
+26
+the internet over IPv6 but are not reachable.
+27
+Super easy demo,
+28
+but I hope you liked it.
+29
+And I will see you in the next lecture.
+
+--- Section Cleanup ---
+
+1
+Done a lot in this section.
+2
+And we created a lot of things that can cost us
+3
+a lot of money if we leave them running.
+4
+So, first of all,
+5
+for the easy two instances,
+6
+make sure to terminate them or to stop them.
+7
+I will stop them because I may need to get back to them for
+8
+more demos, obviously, but you,
+9
+I would recommend on terminating everything.
+10
+Okay.
+11
+Other things that can cost you money are going to be around
+12
+your VBC. So let's have a look at what is created.
+13
+So we cannot do the PC right away.
+14
+We would need to delete the subnets and delete the first
+15
+route table. There's an internet gateway.
+16
+We need to detach and deletes the egress only internet
+17
+gateway. Again, we can delete it and detach it.
+18
+Elastic IPS is a very, very, very important.
+19
+So we did create an elastic IP that was attached.
+20
+Remember to our net gateway. Okay.
+21
+That gateway ID. So it's attached to it.
+22
+So once you delete the nugget way ID,
+23
+please make sure to also remove the elastic IP.
+24
+We did create some VPC endpoints.
+25
+So remember to delete these end points because they can cost
+26
+you money over time. They're definitely,
+27
+there's a per hour fee.
+28
+We didn't create any infant services in the end nugget way.
+29
+Again, we can delete it and then release the elastic IP,
+30
+and then any peering connection, you can delete it as well.
+31
+Before you can remove that VBC altogether network is yells
+32
+again, make sure you remove the knuckles if need be,
+33
+but they won't cost you any money.
+34
+And the rest is good.
+35
+So please make sure to delete and clean everything up.
+36
+Otherwise you may have a funky surprising in the end of the
+37
+month. And again,
+38
+the best way for you to really look at your bill in AWS is
+39
+to go to your billing dashboard, look at the bill.
+40
+So as you can see how there's some bill from me over the
+41
+virtual private cloud. Okay.
+42
+And so to just address that bill,
+43
+when they need to do is go to bills, go to my month.
+44
+And then in here I'm able to see, Hey,
+45
+there is elastic compute cloud has been working and cost me
+46
+one point 25.
+47
+So the net gateway is actually going to cost me,
+48
+cost me $1 and 25 already.
+49
+So it's good to know.
+50
+And then if I scroll down a route with you,
+51
+three did cost me 70. Of course.
+52
+So again, I forgot,
+53
+but going to route with the three and delete that hosted
+54
+zone. This is costing you 50 cents per month.
+55
+Do you have the hosted zone?
+56
+And then for your VPC, let's have a look at what costs.
+57
+So the VPC reach ability analyzer did cost me some money as
+58
+well. Okay.
+59
+So that's it for this lecture. I hope you liked it.
+60
+And I will see you in the next lecture.
+
+--- VPC Section Summary ---
+
+1
+So this has been quite a long
+2
+and interesting section, I hope,
+3
+and hopefully, you understand it.
+4
+If you need to revise some content, watch it twice.
+5
+Maybe it makes more sense after a week of watching again.
+6
+I know VPC was so difficult for me to learn.
+7
+It's networking, it's new, lots of new acronyms,
+8
+lots of new concepts
+9
+so take your time and don't be afraid
+10
+if you didn't understand all of it, just get back to it.
+11
+But let's summarize what we learned.
+12
+So a CIDR is an IP range.
+13
+A VPC is a Virtual Private Cloud,
+14
+which is working for IPv4 and IPv6.
+15
+Subnets are tied to an AZ in which we define CIDRs
+16
+and we have public and private subnets.
+17
+So how do we have a public subnets?
+18
+Well, we attach an internet gateway
+19
+and then we create a route
+20
+from the public subnet to the Internet Gateway.
+21
+And this provides IPv4 and IPv6 internet access if enabled.
+22
+Now, route tables, they would be edited
+23
+to have route to the Internet Gateway,
+24
+the VPC peering connections, the VPC endpoints and so on.
+25
+And they're key to make sure
+26
+that the network flows within our VPC.
+27
+The bastion host was a public EC2 instance
+28
+that we were able to SSH into.
+29
+And then this instance had SSH connectivity
+30
+to other EC2 instances in private subnets.
+31
+That's what it's called the bastion host.
+32
+NAT instances was an EC2 instance deployed
+33
+in a public subnets to give internet access
+34
+to EC2 instances in private subnets.
+35
+It is old, it is getting deprecated
+36
+and you need to disable the source destination check flag
+37
+for it to work and also edit your security group rules.
+38
+So we have the NAT Gateway instead, which is much better.
+39
+It's managed by AWS.
+40
+It provides scalable internet access
+41
+to private EC2 instances
+42
+when the target of your request is an IPv4 address.
+43
+Next, NACL.
+44
+So they were network SELs
+45
+and they were firewall rules
+46
+to define inbound and outbound access at the subnet level.
+47
+And don't forget about ephemeral ports in its...
+48
+NACL are stateless,
+49
+so inbound and outbound rules are always evaluated.
+50
+Whereas security group rules are stateful.
+51
+That means that if the inbound is allowed,
+52
+the outbound is automatically allowed and vice versa.
+53
+And security group rules are applied
+54
+at the EC2 instance level.
+55
+VPC peering was very helpful to connect two VPCs together
+56
+and only if they have non-overlapping CIDRs.
+57
+And VPC peering connections are non-transitive
+58
+so if you need to connect three VPCs together,
+59
+you need to have three VPC peering connections.
+60
+VPC endpoints are allowing us to get private access
+61
+to AWS services such as Amazon S3, DynamoDB,
+62
+CloudFormation, SSM, whatever you want within the VPC.
+63
+We saw they were gateway endpoints
+64
+for Amazon S3 and DynamoDB,
+65
+and all the rest was interface endpoints.
+66
+VPC Flow Logs was the way for us to get some log level
+67
+of metadata around all the packets within our VPC,
+68
+and we had some information
+69
+around the accept and the reject traffic.
+70
+Now, VPC Flow Logs can be created at the VPC subnet
+71
+or ENI level,
+72
+and they can be analyzed and sent to Amazon S3
+73
+and then analyze using Athena,
+74
+or they can be sent to CloudWatch logs
+75
+and then analyze using CloudWatch Log Insights, for example.
+76
+Now, to connect your VPC to your data center,
+77
+you have two options.
+78
+The first one is a site-to-site VPN.
+79
+And so to do a site-to-site VPN is a VPN connection
+80
+over the public internet
+81
+in which we have to create a virtual private gateway on AWS
+82
+and a customer gateway on your data center.
+83
+And then you establish the VPN connection.
+84
+And then we saw that
+85
+if we establish multiple VPN connections
+86
+using the same virtual private gateway,
+87
+then we could use VPN CloudHub
+88
+to have a hub and spoke VPN model to connect our sites.
+89
+The second way to connect
+90
+to our data center was to use Direct Connect.
+91
+So this time the connection is completely private,
+92
+it does not go over the public internet,
+93
+but it's takes time to establish.
+94
+You need to hook your own data center
+95
+to a Direct Connect location for it to work.
+96
+So it's more involved, but it's more secure
+97
+and has a more stability onto the connection.
+98
+Now, Direct Connect Gateway was to set up a Direct Connect
+99
+to many VPCs in different AWS regions.
+100
+We saw PrivateLink
+101
+or VPC endpoint services, which is to connect privately
+102
+to services within your VPC that you have created yourselves
+103
+to customer VPC.
+104
+And the cool thing about it
+105
+is that it doesn't require VPC peering,
+106
+or the public internet, or NAT Gateway or round tables.
+107
+It's only used or mostly used
+108
+with a Network Load Balancer and an ENI.
+109
+And this allows us to expose a service
+110
+within our VPC to hundreds or thousands of customer VPCs
+111
+without exposing your network.
+112
+ClassicLink is to connect EC2-Classic instances privately
+113
+to your VPC, but it's going to be deprecated very soon too.
+114
+Transit Gateway is a transitive peering connection
+115
+for your VPC, VPN and Direct Connect,
+116
+and it has this fact that everything can flow through it,
+117
+which is quite nice.
+118
+Traffic Mirroring is to copy network traffic
+119
+from your ENIs elsewhere for further analysis.
+120
+And then we looked at IPv6 in your VPC.
+121
+We saw how to enable it,
+122
+and we saw that there was the existence
+123
+of the egress-only Internet Gateway,
+124
+which is just like a NAT Gateway,
+125
+but for IPv6 traffic out to the internets.
+126
+So that's it.
+127
+It was a very long summary lecture of course,
+128
+but hopefully you learned a lot.
+129
+And hopefully all the things I've said make sense
+130
+or ring a bell.
+131
+If they don't, watch again this section
+132
+and you'll be good to go.
+133
+So that's it from me.
+134
+I hope you liked it,
+135
+and I will see you in the next lecture.
+
+--- Networking Costs in AWS ---
+
+1
+So now let's talk about networking cost
+2
+in AWS per gigabyte.
+3
+And this is a simplified version
+4
+to make things as easy as possible
+5
+and to explain to you a few important concepts.
+6
+Now, networking costs enables can get very complicated,
+7
+but here is a high-level overview
+8
+and that should helps you going into the exam.
+9
+So we have a region
+10
+and I've drawn two availability zones in this region.
+11
+Let's assume we have an EC2 instance in the first AZ.
+12
+And so the first thing you should know
+13
+is that any traffic going into your EC2 instances
+14
+is going to be free.
+15
+So any incoming traffic onto EC2 is free.
+16
+Now let's assume we have a second EC2 instance
+17
+and it is in the same availability zone, then in that case,
+18
+because an availability zone represents
+19
+a set of multiple data centers
+20
+that are geographically located within one another,
+21
+then any traffic between your two EC2 instances
+22
+will be free assuming that there are using
+23
+their private IP to communicate,
+24
+by using the private IP they will go over the network
+25
+that they are connected with.
+26
+So this is great. So far everything is free.
+27
+But now that's include an EC2 instance in another AZ.
+28
+And this time we want you have these two EC2 instances
+29
+across two different AZ within the same region
+30
+to communicate with one another.
+31
+One approach would be to use a public IP
+32
+or an elastic IP.
+33
+And if we do so, we're going to pay 2 cents per gigabytes
+34
+if using a public IP or elastic IP.
+35
+Why?
+36
+Well, because the traffic has to leave via AWS network
+37
+and go back in for our two instances to communicate
+38
+and so AWS will charge us for that.
+39
+Instead, if we are using a private IP,
+40
+then we're going to be charge half as less,
+41
+because we're now using the internal AWS network
+42
+to link between these two availability zones.
+43
+So a takeaway here is that if you want
+44
+to make your instances communicate one, faster
+45
+and two, at a lesser price,
+46
+then use as much as possible the private IP
+47
+versus using the public IP.
+48
+Next, let's consider another region
+49
+with another availability zone.
+50
+In which case the traffic to go from one region to another
+51
+is going to be $0.02 on the gigabytes.
+52
+So that means that the entire region traffic
+53
+can be quite expensive.
+54
+So what do we get as a takeaway
+55
+from this very simplified slide?
+56
+The first thing is that you should use a private IP
+57
+instead of a public IP,
+58
+if you want to have good savings, okay,
+59
+and better network performance,
+60
+because you will automatically be onto the private network.
+61
+So one reason is do not use the public IP
+62
+to communicate between two instances
+63
+in the same region into AZ.
+64
+The second thing is that if you have a cluster
+65
+that does some computation
+66
+and does require a lot of communication
+67
+between your EC2 instances from one another,
+68
+then you may want to use the same availability zones
+69
+for a maximum amount of savings, okay?
+70
+That obviously these cost savings come at a cost
+71
+and the cost is that you're not highly available anymore.
+72
+That means that if your AZ goes down,
+73
+then you don't have any fell over available.
+74
+So here you have to balance
+75
+between the high availability and cost.
+76
+And based on the question you will be ask in the exam,
+77
+you have to choose the right balance.
+78
+So typical example of that would be,
+79
+hey, we have an RDS database
+80
+and we want you to create a read replica
+81
+and do some analytics on top of this read replica.
+82
+How do we create a read replica
+83
+for the cheapest amount of money?
+84
+Well, if you create that read replica in the same AZ,
+85
+then you're not going to be charged anything to replicate
+86
+the one database to another in terms of network costs.
+87
+But if you create that read replica in another AZ,
+88
+then you're going to pay 1 cents per gigabyte
+89
+of data transfer between the two databases.
+90
+So now let's talk about
+91
+how we can optimize our networking costs
+92
+by making some smart architectural decisions.
+93
+So egress traffic is outbound traffic.
+94
+That means from AWS to the outside.
+95
+An ingress traffic is inbound traffic.
+96
+That means from the outside to AWS
+97
+which is typically free.
+98
+So sending data to AWS is usually free,
+99
+but taking data outside of AWS, you have to pay.
+100
+So your goal is going to be to try to keep
+101
+as much internet traffic as possible
+102
+within AWS to minimize the costs.
+103
+So let's say we have a database
+104
+and then we have a user in a corporate data center
+105
+and we run an application in our corporate data center.
+106
+That application is doing a query to the database
+107
+and retrieving 100 megabytes of data from the database.
+108
+And then it will do some aggregation, some computations
+109
+and then finally, returned the query results,
+110
+only 50 kilobytes to the user.
+111
+In that case,
+112
+the egress traffic is going to be really, really high.
+113
+And the cost associated with it as well
+114
+is going to be really high.
+115
+Because we took 100 megabytes of data from AWS
+116
+and we took it into our corporate data center,
+117
+maybe over the internet, right?
+118
+But if we make a smart choice,
+119
+we could move our application directly into the AWS cloud
+120
+on an EC2 instance.
+121
+In this case, if we're very smart
+122
+and we keep the data within the same availability zone,
+123
+then the DB query data transfer is going to be free.
+124
+And so 100 megabytes will not be built at all for accounts.
+125
+And then the query results themselves
+126
+of only 50 kilobytes will be sent to us
+127
+and it will be a much cheaper cost.
+128
+And in this case, the egress cost is minimized.
+129
+Another thing you need to know
+130
+to minimize egress traffic network costs
+131
+is that if you're using Direct Connect,
+132
+you need to choose a Direct Connect location
+133
+that is co-located in the same AWS region
+134
+to result in the lower cost for egress network.
+135
+Okay. What about S3 data transfer pricing?
+136
+Let's do an analysis for the USA.
+137
+So we have an S3 bucket
+138
+and any data going into the S3 bucket is going to be free,
+139
+because this is ingress traffic.
+140
+But if we download the data from Amazon S3
+141
+to our computers through the internet,
+142
+then we're going to pay an egress traffic cost
+143
+of 9 cents per gigabytes.
+144
+This is represented right here.
+145
+If we want to use S3 transfer acceleration
+146
+to get faster transfer times from 50 to 500% better,
+147
+then we're going to get an additional cost
+148
+on top of the data transfer pricing,
+149
+which is going to be anywhere
+150
+between 4 cents to 8 cents per gigabytes.
+151
+So using transfer acceleration has a cost.
+152
+Now S3 to CloudFront is going to be free traffic.
+153
+So if you set up a CloudFront distribution
+154
+on top of your S3 bucket,
+155
+any data transfer that happens
+156
+between S3 and CloudFront is free.
+157
+But from CloudFront to the internet
+158
+is going to cost you 8.50 cents per gigabyte,
+159
+which is slightly cheaper than Amazon S3.
+160
+On top of it, you're going to get caching capabilities.
+161
+So lower latency for the access of the data
+162
+and the reduced cost is going to be also
+163
+whenever you have requests being made.
+164
+So when someone makes a request to your S3 bucket,
+165
+you're going to pay for that requests,
+166
+but a request made into Amazon CloudFront is much cheaper.
+167
+It is seven times cheaper.
+168
+So you're going to save a lot of money by using CloudFront
+169
+on top of your Amazon S3 bucket, if that fits your use case.
+170
+And then finally, if you do a Cross Region Replication
+171
+for your Amazon S3 buckets,
+172
+then you're going to pay 2 cents per gigabyte for it, okay?
+173
+So the numbers can change over time
+174
+and this is for the USA and it can change for your region,
+175
+but what you need to remember
+176
+is that using some services have an added cost
+177
+and it's important for you to know
+178
+how these costs relates to one another.
+179
+Another analysis of cost is to use a NAT Gateway
+180
+versus a Gateway VPC Endpoint.
+181
+So we have a VPC in the region
+182
+and we have two private subnets
+183
+with two different types of EC2 instances.
+184
+And they both want to access data into an Amazon S3 bucket.
+185
+So one way to do so is to use the public internet
+186
+and so to do so, we set up a public subnets,
+187
+which has a NAT Gateway.
+188
+For the subnet to be public, we need to have a route
+189
+into an Internet Gateway.
+190
+And so we're going to establish a route
+191
+using the route table.
+192
+And then we have a direct connectivity
+193
+from the EC2 instance through the NAT Gateway
+194
+and through the Internet Gateway into the internet.
+195
+Then from the internet,
+196
+we access the data in your Amazon S3 buckets.
+197
+And so the cost associated with this is $0.045 per hour
+198
+for your NAT Gateway,
+199
+$0.045 per gigabytes of data process
+200
+through your NAT Gateway
+201
+and then $0.09 per hour for data transfer out
+202
+to S3 cross-region or $0 if it's same region, okay?
+203
+But if we were to set up a VPC Endpoints, okay,
+204
+to access our data into our Amazon S3 bucket privately,
+205
+then we set up a different route table.
+206
+So in this case, to access the VPC Endpoint
+207
+we just set up a route to it.
+208
+And so the data flows directly from the private subnets
+209
+into the VPC Endpoints and the S3 buckets.
+210
+And we have no cost for using Gateway Endpoint
+211
+and we pay 1 cent per gigabytes of data transferred
+212
+in and out of your S3 bucket for the same region.
+213
+So this can be a significantly lower cost
+214
+to use a VPC Endpoint instead of your NAT Gateway.
+215
+And this is again, something that the exam can test you on.
+216
+So I hope you liked this lecture
+217
+and I will see you in the next lecture.
+
+--- AWS Network Firewall ---
+
+1
+So let's summarize the kind
+2
+of ways you can protect your network
+3
+on AWS that we know about so far.
+4
+So we've seen Network Access Control Lists,
+5
+we've seen Amazon VPC security groups,
+6
+we've seen AWS WAF.
+7
+It protect against malicious requests made through HTP
+8
+on specific services that we have.
+9
+We've seen AWS Shield and Shield Advance
+10
+to protect against DDoS,
+11
+and we've seen AWS Firewall Manager
+12
+to manage them all, your rules for WAF and Shield and so on,
+13
+across multiple accounts.
+14
+Okay, so we know about this,
+15
+but what if we want to protect our entire VPC
+16
+in a sophisticated way?
+17
+Introducing the AWS Network Firewall.
+18
+So this is used to protect your entire VPC with a firewall.
+19
+So here's my VPC
+20
+and the firewall is going to be all around it.
+21
+And so this AWS Network Firewall protects it
+22
+from the layer 3 to the layer 7 protection.
+23
+So you can inspect any kind of traffic in any direction.
+24
+So you can expect VPC to VPC traffic,
+25
+outbound to internet, inbound from internet,
+26
+and to and from Direct Connect
+27
+and Site-to-Site VPN connections.
+28
+So every representative there,
+29
+so here we protect anything coming
+30
+in and out of the internet,
+31
+in and out of a peered VPC
+32
+and in and out of Direct Connect
+33
+or a Site-to-Site VPN connection.
+34
+So we define rules
+35
+and then we can control anything that happens.
+36
+So internally, the network firewall uses
+37
+the AWS Gateway Load Balancer,
+38
+but instead of us setting up a third party appliance
+39
+to inspect the traffic,
+40
+we just have AWS manage it with its own appliances.
+41
+And so therefore, we have our own rules
+42
+on the firewall.
+43
+And these rules can be centrally managed as well
+44
+across multiple accounts and many VPCs
+45
+on the AWS Firewall Manager service.
+46
+So with the network firewall,
+47
+we have fine grained controls
+48
+over all kind of network traffic.
+49
+So we support thousands of rules at our VPC level.
+50
+We can filter by IP and by port
+51
+with tens of thousands of IPs.
+52
+We can filter by protocol.
+53
+For example, we can disable the SMB protocol
+54
+for outbound communication.
+55
+We can filter at the domain level.
+56
+So we say, hey, you only allow outbound traffic
+57
+from our VPC into our mycorp domain
+58
+or any third party software repository
+59
+that we only allow.
+60
+We can do general pattern matching with regex and so on.
+61
+And we can choose to allow,
+62
+drop or get alerted on the traffic
+63
+that will match the rules that we've set up.
+64
+And we also have active flow inspection,
+65
+so we can actually have an intrusion prevention capability
+66
+just like we have with the Gateway Load Balancer,
+67
+but all managed by AWS.
+68
+And all the rule matches can also be sent
+69
+to Amazon S3, CloudWatch Logs,
+70
+and Kinesis Data Firehose for analysis.
+71
+So that's it for the network firewall.
+72
+This is a firewall that you do at the VPC level.
+73
+Remember this.
+74
+And you can do traffic filtering and flow inspection.
+75
+I hope you liked it
+76
+and I will see you in the next lecture.
+

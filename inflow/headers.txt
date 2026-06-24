@@ -1,0 +1,429 @@
+    3 | SECTION | === Introduction - AWS Certified Solutions Architect Associate ===
+    6 | LECTURE | --- Course Introduction - AWS Certified Solutions Architect Associate ---
+  209 | LECTURE | --- PLEASE READ: Lectures you can skip if you took a course from me before ---
+  214 | SECTION | === Code & Slides Download ===
+  217 | LECTURE | --- Creating an AWS Account ---
+  385 | SECTION | === Getting started with AWS ===
+  388 | LECTURE | --- AWS Account Activation Troubleshooting ---
+  393 | SECTION | === IAM & AWS CLI ===
+  396 | LECTURE | --- Important Message ---
+  458 | SECTION | === EC2 Fundamentals ===
+  461 | LECTURE | --- About your instructor ---
+  603 | SECTION | === EC2 - Solutions Architect Associate Level ===
+  606 | LECTURE | --- Slides and Code Download ---
+  611 | SECTION | === EC2 Instance Storage ===
+  614 | LECTURE | --- AWS Cloud Overview - Regions & AZ ---
+  986 | SECTION | === High Availability and Scalability: ELB & ASG ===
+  989 | LECTURE | --- [Important] AWS Console UI Update ---
+ 1049 | SECTION | === AWS Fundamentals: RDS + Aurora + ElastiCache ===
+ 1052 | LECTURE | --- Tour of the AWS Console & Services in AWS ---
+ 1262 | SECTION | === Route 53 ===
+ 1265 | LECTURE | --- IAM Introduction: Users, Groups, Policies ---
+ 1393 | SECTION | === Classic Solutions Architecture Discussions ===
+ 1396 | LECTURE | --- IAM Users & Groups Hands On ---
+ 1720 | SECTION | === Amazon S3 Introduction ===
+ 1723 | LECTURE | --- AWS Console Simultaneous Sign-in ---
+ 1821 | SECTION | === Advanced Amazon S3 ===
+ 1824 | LECTURE | --- IAM Policies ---
+ 1972 | SECTION | === Amazon S3 Security ===
+ 1975 | LECTURE | --- IAM Policies Hands On ---
+ 2347 | SECTION | === CloudFront & AWS Global Accelerator ===
+ 2350 | LECTURE | --- IAM MFA Overview ---
+ 2590 | SECTION | === AWS Storage Extras ===
+ 2593 | LECTURE | --- IAM MFA Hands On ---
+ 2785 | SECTION | === Decoupling applications: SQS, SNS, Kinesis, Active MQ ===
+ 2788 | LECTURE | --- AWS Access Keys, CLI and SDK ---
+ 2988 | SECTION | === Containers on AWS: ECS, Fargate, ECR & EKS ===
+ 2991 | LECTURE | --- AWS CLI Setup on Windows ---
+ 3083 | SECTION | === Serverless Overviews from a Solution Architect Perspective ===
+ 3086 | LECTURE | --- AWS CLI Setup on Mac OS X ---
+ 3174 | SECTION | === Serverless Solution Architecture Discussions ===
+ 3177 | LECTURE | --- AWS CLI Setup on Linux ---
+ 3259 | SECTION | === Databases in AWS ===
+ 3262 | LECTURE | --- AWS CLI Hands On ---
+ 3468 | SECTION | === Data & Analytics ===
+ 3471 | LECTURE | --- AWS CloudShell: Region Availability ---
+ 3476 | SECTION | === Machine Learning ===
+ 3479 | LECTURE | --- AWS CloudShell ---
+ 3695 | SECTION | === AWS Monitoring & Audit: CloudWatch, CloudTrail & Config ===
+ 3698 | LECTURE | --- IAM Roles for AWS Services ---
+ 3788 | SECTION | === Identity and Access Management (IAM) - Advanced ===
+ 3791 | LECTURE | --- IAM Roles Hands On ---
+ 3893 | SECTION | === AWS Security & Encryption: KMS, SSM Parameter Store, Shield, WAF ===
+ 3896 | LECTURE | --- IAM Security Tools ---
+ 3944 | SECTION | === Networking - VPC ===
+ 3947 | LECTURE | --- IAM Security Tools Hands On ---
+ 4063 | SECTION | === Disaster Recovery & Migrations ===
+ 4066 | LECTURE | --- IAM Best Practices ---
+ 4142 | SECTION | === More Solution Architectures ===
+ 4145 | LECTURE | --- IAM Summary ---
+ 4203 | SECTION | === Other Services ===
+ 4206 | LECTURE | --- AWS Budget Setup ---
+ 4474 | SECTION | === WhitePapers and Architectures - AWS Certified Solutions Architect Associate ===
+ 4477 | LECTURE | --- EC2 Basics ---
+ 4671 | SECTION | === Preparing for the Exam + Practice Exam - AWS Certified Solutions Architect Assoc ===
+ 4674 | LECTURE | --- Create an EC2 Instance with EC2 User Data to have a Website Hands On ---
+ 5328 | SECTION | === Congratulations - AWS Certified Solutions Architect Associate ===
+ 5331 | LECTURE | --- EC2 Instance Types Basics ---
+ 5648 | LECTURE | --- Security Groups & Classic Ports Overview ---
+ 6015 | LECTURE | --- Security Groups Hands On ---
+ 6270 | LECTURE | --- SSH Overview ---
+ 6409 | LECTURE | --- How to SSH using Linux or Mac ---
+ 6754 | LECTURE | --- How to SSH using Windows ---
+ 7065 | LECTURE | --- How to SSH using Windows 10 ---
+ 7296 | LECTURE | --- SSH Troubleshooting ---
+ 7300 | LECTURE | --- EC2 Instance Connect ---
+ 7447 | LECTURE | --- EC2 Instance Roles Demo ---
+ 7656 | LECTURE | --- EC2 Instance Purchasing Options ---
+ 8159 | LECTURE | --- Spot Instances & Spot Fleet ---
+ 8624 | LECTURE | --- EC2 Instances Launch Types Hands On ---
+ 9079 | LECTURE | --- Private vs Public vs Elastic IP ---
+ 9298 | LECTURE | --- Private vs Public vs Elastic IP Hands On ---
+ 9577 | LECTURE | --- EC2 Placement Groups ---
+ 9856 | LECTURE | --- EC2 Placement Groups - Hands On ---
+ 9949 | LECTURE | --- Elastic Network Interfaces (ENI) - Overview ---
+10060 | LECTURE | --- Elastic Network Interfaces (ENI) - Hands On ---
+10327 | LECTURE | --- ENI - Extra Reading ---
+10331 | LECTURE | --- EC2 Hibernate ---
+10498 | LECTURE | --- EC2 Hibernate - Hands On ---
+10691 | LECTURE | --- EBS Overview ---
+10770 | LECTURE | --- EBS Hands On ---
+11035 | LECTURE | --- EBS Snapshots ---
+11128 | LECTURE | --- EBS Snapshots - Hands On ---
+11307 | LECTURE | --- AMI Overview ---
+11432 | LECTURE | --- AMI Hands On ---
+11673 | LECTURE | --- EC2 Instance Store ---
+11814 | LECTURE | --- EBS Volume Types ---
+12055 | LECTURE | --- EBS Multi-Attach ---
+12146 | LECTURE | --- EBS Encryption ---
+12321 | LECTURE | --- Amazon EFS ---
+12564 | LECTURE | --- Amazon EFS - Hands On ---
+13153 | LECTURE | --- EFS vs EBS ---
+13256 | LECTURE | --- EBS & EFS - Section Cleanup ---
+13339 | LECTURE | --- High Availability and Scalability ---
+13616 | LECTURE | --- Elastic Load Balancing (ELB) Overview ---
+13931 | LECTURE | --- Application Load Balancer (ALB) ---
+14218 | LECTURE | --- Application Load Balancer (ALB) - Hands On - Part 1 ---
+14613 | LECTURE | --- Application Load Balancer (ALB) - Hands On - Part 2 ---
+14892 | LECTURE | --- Network Load Balancer (NLB) ---
+15041 | LECTURE | --- Network Load Balancer (NLB) - Hands On ---
+15320 | LECTURE | --- Gateway Load Balancer (GWLB) ---
+15571 | LECTURE | --- Elastic Load Balancer - Sticky Sessions ---
+15866 | LECTURE | --- Elastic Load Balancer - Cross Zone Load Balancing ---
+16121 | LECTURE | --- Elastic Load Balancer - SSL Certificates ---
+16438 | LECTURE | --- Elastic Load Balancer - SSL Certificates - Hands On ---
+16521 | LECTURE | --- Elastic Load Balancer - Connection Draining ---
+16644 | LECTURE | --- Auto Scaling Groups (ASG) Overview ---
+16871 | LECTURE | --- Auto Scaling Groups Hands On ---
+17304 | LECTURE | --- Auto Scaling Groups - Scaling Policies ---
+17515 | LECTURE | --- Auto Scaling Groups - Scaling Policies Hands On ---
+17942 | LECTURE | --- Amazon RDS Overview ---
+18133 | LECTURE | --- RDS Read Replicas vs Multi AZ ---
+18506 | LECTURE | --- Amazon RDS Hands On ---
+18967 | LECTURE | --- RDS Custom for Oracle and Microsoft SQL Server ---
+19054 | LECTURE | --- Amazon Aurora ---
+19417 | LECTURE | --- Amazon Aurora - Hands On ---
+19826 | LECTURE | --- Amazon Aurora - Advanced Concepts ---
+20191 | LECTURE | --- RDS & Aurora - Backup and Monitoring ---
+20454 | LECTURE | --- RDS  Security ---
+20575 | LECTURE | --- RDS Proxy ---
+20794 | LECTURE | --- ElastiCache Overview ---
+21035 | LECTURE | --- ElastiCache Hands On ---
+21286 | LECTURE | --- ElastiCache for Solution Architects ---
+21437 | LECTURE | --- List of Ports to be familiar with ---
+21441 | LECTURE | --- What is a DNS ? ---
+21732 | LECTURE | --- Route 53 Overview ---
+22029 | LECTURE | --- Route 53 - Registering a domain ---
+22214 | LECTURE | --- Route 53 - Creating our first records ---
+22419 | LECTURE | --- Route 53 - EC2 Setup ---
+22662 | LECTURE | --- Route 53 - TTL ---
+22935 | LECTURE | --- Route 53 CNAME vs Alias ---
+23276 | LECTURE | --- Routing Policy - Simple ---
+23485 | LECTURE | --- Routing Policy - Weighted ---
+23738 | LECTURE | --- Routing Policy - Latency ---
+23985 | LECTURE | --- Route 53 - Health Checks ---
+24254 | LECTURE | --- Route 53 - Health Checks Hands On ---
+24507 | LECTURE | --- Routing Policy - Failover ---
+24726 | LECTURE | --- Routing Policy - Geolocation ---
+24931 | LECTURE | --- Routing Policy - Geoproximity ---
+25090 | LECTURE | --- Routing Policy - IP-based ---
+25179 | LECTURE | --- Routing Policy - Multi Value ---
+25378 | LECTURE | --- 3rd Party Domains & Route 53 ---
+25503 | LECTURE | --- Route 53 Resolvers & Hybrid DNS ---
+25646 | LECTURE | --- Route 53 - Section Cleanup ---
+25727 | LECTURE | --- Solutions Architecture Discussions Overview ---
+25802 | LECTURE | --- WhatsTheTime.com ---
+26355 | LECTURE | --- MyClothes.com ---
+26874 | LECTURE | --- MyWordPress.com ---
+27083 | LECTURE | --- Instantiating applications quickly ---
+27212 | LECTURE | --- Beanstalk Overview ---
+27491 | LECTURE | --- Beanstalk Hands On ---
+27888 | LECTURE | --- S3 Overview ---
+28145 | LECTURE | --- S3 Hands On ---
+28518 | LECTURE | --- S3 Security: Bucket Policy ---
+28755 | LECTURE | --- S3 Security: Bucket Policy Hands On ---
+28912 | LECTURE | --- S3 Website Overview ---
+28973 | LECTURE | --- S3 Website Hands On ---
+29072 | LECTURE | --- S3 Versioning ---
+29143 | LECTURE | --- S3 Versioning - Hands On ---
+29362 | LECTURE | --- S3 Replication ---
+29437 | LECTURE | --- S3 Replication Notes ---
+29486 | LECTURE | --- S3 Replication - Hands On ---
+29809 | LECTURE | --- S3 Storage Classes Overview ---
+30118 | LECTURE | --- S3 Storage Classes Hands On ---
+30317 | LECTURE | --- S3 Express One Zone ---
+30410 | LECTURE | --- S3 Lifecycle Rules (with S3 Analytics) ---
+30615 | LECTURE | --- S3 Lifecycle Rules - Hands On ---
+30732 | LECTURE | --- S3 Requester Pays ---
+30815 | LECTURE | --- S3 Event Notifications ---
+30992 | LECTURE | --- S3 Event Notifications - Hands On ---
+31267 | LECTURE | --- S3 Performance ---
+31518 | LECTURE | --- S3 Batch Operations ---
+31613 | LECTURE | --- S3 Storage Lens ---
+31890 | LECTURE | --- S3 Encryption ---
+32231 | LECTURE | --- About DSSE-KMS ---
+32235 | LECTURE | --- S3 Encryption - Hands On ---
+32454 | LECTURE | --- S3 Default Encryption ---
+32519 | LECTURE | --- S3 CORS ---
+32722 | LECTURE | --- S3 CORS Hands On ---
+33083 | LECTURE | --- S3 MFA Delete ---
+33162 | LECTURE | --- S3 MFA Delete Hands On ---
+33445 | LECTURE | --- S3 Access Logs ---
+33520 | LECTURE | --- S3 Access Logs - Hands On ---
+33587 | LECTURE | --- S3 Pre-signed URLs ---
+33674 | LECTURE | --- S3 Pre-signed URLs - Hands On ---
+33763 | LECTURE | --- Glacier Vault Lock & S3 Object Lock ---
+33956 | LECTURE | --- S3 Access Points ---
+34117 | LECTURE | --- S3 Object Lambda ---
+34256 | LECTURE | --- CloudFront Overview ---
+34523 | LECTURE | --- CloudFront with S3 - Hands On ---
+34800 | LECTURE | --- CloudFront - ALB/EC2 as an Origin ---
+34929 | LECTURE | --- CloudFront - Geo Restriction ---
+35020 | LECTURE | --- CloudFront - Cache Invalidation ---
+35141 | LECTURE | --- AWS Global Accelerator - Overview ---
+35484 | LECTURE | --- AWS Global Accelerator - Hands On ---
+35875 | LECTURE | --- AWS Snow Family Overview ---
+36014 | LECTURE | --- AWS Snow Family Hands On ---
+36141 | LECTURE | --- Architecture: Snowball into Glacier ---
+36172 | LECTURE | --- Amazon FSx ---
+36551 | LECTURE | --- Amazon FSx - Hands On ---
+36692 | LECTURE | --- Storage Gateway Overview ---
+37037 | LECTURE | --- Storage Gateway Hands On ---
+37138 | LECTURE | --- AWS Transfer Family ---
+37253 | LECTURE | --- DataSync - Overview ---
+37442 | LECTURE | --- All AWS Storage Options Compared ---
+37619 | LECTURE | --- Introduction to Messaging ---
+37760 | LECTURE | --- Amazon SQS - Standard Queues Overview ---
+38287 | LECTURE | --- SQS - Standard Queue Hands On ---
+38602 | LECTURE | --- SQS - Message Visibility Timeout ---
+38861 | LECTURE | --- SQS - Long Polling ---
+38936 | LECTURE | --- SQS - FIFO Queues ---
+39115 | LECTURE | --- SQS + Auto Scaling Group ---
+39336 | LECTURE | --- Amazon Simple Notification Service (AWS SNS) ---
+39555 | LECTURE | --- SNS and SQS -  Fan Out Pattern ---
+39844 | LECTURE | --- SNS - Hands On ---
+40067 | LECTURE | --- Amazon Kinesis Data Streams ---
+40288 | LECTURE | --- Amazon Kinesis Data Streams - Hands On ---
+40777 | LECTURE | --- Amazon Data Firehose ---
+40972 | LECTURE | --- Amazon Data Firehose - Hands On ---
+41455 | LECTURE | --- SQS vs SNS vs Kinesis ---
+41600 | LECTURE | --- Amazon MQ ---
+41717 | LECTURE | --- Docker Introduction ---
+41970 | LECTURE | --- Amazon ECS ---
+42274 | LECTURE | --- Creating ECS Cluster - Hands On ---
+42585 | LECTURE | --- Creating ECS Service - Hands On ---
+43032 | LECTURE | --- Amazon ECS - Auto Scaling ---
+43185 | LECTURE | --- Amazon ECS - Solutions Architectures ---
+43320 | LECTURE | --- Amazon ECS - Clean Up - Hands On ---
+43401 | LECTURE | --- Amazon ECR ---
+43530 | LECTURE | --- Amazon EKS - Overview ---
+43701 | LECTURE | --- Amazon EKS - Hands On ---
+44110 | LECTURE | --- About the Serverless Section ---
+44114 | LECTURE | --- Serverless Introduction ---
+44255 | LECTURE | --- Lambda Overview ---
+44612 | LECTURE | --- Lambda Hands-On ---
+44943 | LECTURE | --- Lambda Limits ---
+45038 | LECTURE | --- Lambda Concurrency ---
+45363 | LECTURE | --- Lambda Concurrency - Hands On ---
+45502 | LECTURE | --- Lambda SnapStart ---
+45571 | LECTURE | --- Lambda@Edge & CloudFront Functions ---
+45850 | LECTURE | --- Lambda in VPC ---
+45995 | LECTURE | --- RDS - Invoking Lambda & Event Notifications ---
+46130 | LECTURE | --- Amazon DynamoDB ---
+46385 | LECTURE | --- Amazon DynamoDB - Hands-On ---
+46642 | LECTURE | --- Amazon DynamoDB - Advanced Features ---
+47051 | LECTURE | --- API Gateway Overview ---
+47412 | LECTURE | --- API Gateway Basics Hands-On ---
+47909 | LECTURE | --- Step Functions ---
+47988 | LECTURE | --- Amazon Cognito Overview ---
+48281 | LECTURE | --- Mobile Application: MyTodoList ---
+48528 | LECTURE | --- Serverless Website: MyBlog.com ---
+48825 | LECTURE | --- MicroServices Architecture ---
+49042 | LECTURE | --- Software updates distribution ---
+49157 | LECTURE | --- Choosing the right database ---
+49328 | LECTURE | --- RDS ---
+49465 | LECTURE | --- Aurora ---
+49606 | LECTURE | --- ElastiCache ---
+49699 | LECTURE | --- DynamoDB ---
+49864 | LECTURE | --- S3 ---
+49995 | LECTURE | --- DocumentDB ---
+50056 | LECTURE | --- Neptune ---
+50191 | LECTURE | --- Keyspaces (for Apache Cassandra) ---
+50256 | LECTURE | --- Timestream ---
+50369 | LECTURE | --- Athena ---
+50650 | LECTURE | --- Athena Hands On ---
+50905 | LECTURE | --- Redshift ---
+51232 | LECTURE | --- OpenSearch (ex: ElasticSearch) ---
+51421 | LECTURE | --- EMR ---
+51556 | LECTURE | --- QuickSight ---
+51753 | LECTURE | --- Glue ---
+51920 | LECTURE | --- Lake Formation ---
+52103 | LECTURE | --- Amazon Managed Service for Apache Flink ---
+52192 | LECTURE | --- Amazon Managed Service for Apache Flink - Hands On ---
+52307 | LECTURE | --- MSK - Managed Streaming for Apache Kafka ---
+52488 | LECTURE | --- Big Data Ingestion Pipeline ---
+52693 | LECTURE | --- Rekognition Overview ---
+52884 | LECTURE | --- Transcribe Overview ---
+53009 | LECTURE | --- Polly Overview ---
+53202 | LECTURE | --- Translate Overview ---
+53237 | LECTURE | --- Lex + Connect Overview ---
+53338 | LECTURE | --- Comprehend Overview ---
+53437 | LECTURE | --- Comprehend Medical Overview ---
+53536 | LECTURE | --- SageMaker AI Overview ---
+53753 | LECTURE | --- Kendra Overview ---
+53824 | LECTURE | --- Personalize Overview ---
+53907 | LECTURE | --- Textract Overview ---
+53960 | LECTURE | --- Machine Learning Summary ---
+54019 | LECTURE | --- AWS Monitoring - Section Introduction ---
+54046 | LECTURE | --- CloudWatch Metrics ---
+54261 | LECTURE | --- CloudWatch Logs ---
+54542 | LECTURE | --- CloudWatch Logs - Hands On ---
+54939 | LECTURE | --- CloudWatch Logs - Live Tail - Hands On ---
+55054 | LECTURE | --- CloudWatch Agent & CloudWatch Logs Agent ---
+55223 | LECTURE | --- CloudWatch Alarms ---
+55436 | LECTURE | --- CloudWatch Alarms Hands On ---
+55637 | LECTURE | --- CloudWatch Network Synthetic Monitor ---
+55690 | LECTURE | --- EventBridge Overview (formerly CloudWatch Events) ---
+56025 | LECTURE | --- Amazon EventBridge - Hands On ---
+56332 | LECTURE | --- CloudWatch Insights and Operational Visibility ---
+56595 | LECTURE | --- CloudTrail Overview ---
+56878 | LECTURE | --- CloudTrail Hands On ---
+56953 | LECTURE | --- CloudTrail - EventBridge Integration ---
+57034 | LECTURE | --- AWS Config - Overview ---
+57271 | LECTURE | --- AWS Config - Hands On ---
+57762 | LECTURE | --- CloudTrail vs CloudWatch vs Config ---
+57905 | LECTURE | --- Organizations - Overview ---
+58220 | LECTURE | --- Organizations - Hands On ---
+58689 | LECTURE | --- Organizations - Tag Policies ---
+58760 | LECTURE | --- IAM - Advanced Policies ---
+58941 | LECTURE | --- IAM - Resource-based Policies vs IAM Roles ---
+59120 | LECTURE | --- IAM - Policy Evaluation Logic ---
+59463 | LECTURE | --- AWS IAM Identity Center ---
+59794 | LECTURE | --- AWS Directory Services ---
+60099 | LECTURE | --- AWS Directory Services - Hands On ---
+60176 | LECTURE | --- AWS Control Tower ---
+60325 | LECTURE | --- AWS Security - Section Introduction ---
+60348 | LECTURE | --- Encryption 101 ---
+60553 | LECTURE | --- KMS Overview ---
+60902 | LECTURE | --- KMS Hands On w/ CLI ---
+61367 | LECTURE | --- KMS - Multi-Region Keys ---
+61652 | LECTURE | --- S3 Replication with Encryption ---
+61731 | LECTURE | --- Encrypted AMI Sharing Process ---
+61800 | LECTURE | --- SSM Parameter Store Overview ---
+62029 | LECTURE | --- SSM Parameter Store Hands On (CLI) ---
+62356 | LECTURE | --- AWS Secrets Manager - Overview ---
+62461 | LECTURE | --- AWS Secrets Manager - Hands On ---
+62670 | LECTURE | --- AWS Certificate Manager (ACM) ---
+63029 | LECTURE | --- AWS CloudHSM ---
+63252 | LECTURE | --- Web Application Firewall (WAF) ---
+63383 | LECTURE | --- Shield - DDoS Protection ---
+63480 | LECTURE | --- Firewall Manager ---
+63617 | LECTURE | --- WAF & Shield - Hands On ---
+63898 | LECTURE | --- DDoS Protection Best Practices ---
+64165 | LECTURE | --- Amazon GuardDuty ---
+64290 | LECTURE | --- Amazon Inspector ---
+64397 | LECTURE | --- Amazon Macie ---
+64448 | LECTURE | --- Section Introduction ---
+64523 | LECTURE | --- CIDR, Private vs Public IP ---
+64818 | LECTURE | --- Default VPC Overview ---
+65113 | LECTURE | --- VPC Overview ---
+65174 | LECTURE | --- VPC Hands On ---
+65287 | LECTURE | --- Subnet Overview ---
+65384 | LECTURE | --- Subnet Hands On ---
+65569 | LECTURE | --- Internet Gateways & Route Tables ---
+65638 | LECTURE | --- Internet Gateways & Route Tables Hands On ---
+65995 | LECTURE | --- Bastion Hosts ---
+66124 | LECTURE | --- Bastion Hosts Hands On ---
+66373 | LECTURE | --- NAT Instances ---
+66566 | LECTURE | --- NAT Instances Hands On ---
+66857 | LECTURE | --- NAT Gateways ---
+67080 | LECTURE | --- NAT Gateways Hands On ---
+67251 | LECTURE | --- Regional NAT Gateway ---
+67322 | LECTURE | --- NACL & Security Groups ---
+67921 | LECTURE | --- NACL & Security Groups Hands On ---
+68282 | LECTURE | --- VPC Peering ---
+68395 | LECTURE | --- VPC Peering Hands On ---
+68676 | LECTURE | --- VPC Endpoints ---
+68935 | LECTURE | --- VPC Endpoints Hands On ---
+69230 | LECTURE | --- VPC Flow Logs ---
+69453 | LECTURE | --- VPC Flow Logs Hands On + Athena ---
+69936 | LECTURE | --- Site to Site VPN, Virtual Private Gateway & Customer Gateway ---
+70149 | LECTURE | --- Site to Site VPN, Virtual Private Gateway & Customer Gateway Hands On ---
+70252 | LECTURE | --- Direct Connect & Direct Connect Gateway ---
+70575 | LECTURE | --- Direct Connect + Site to Site VPN ---
+70628 | LECTURE | --- Transit Gateway ---
+70879 | LECTURE | --- VPC Traffic Mirroring ---
+71010 | LECTURE | --- IPv6 for VPC ---
+71173 | LECTURE | --- IPv6 for VPC - Hands On ---
+71354 | LECTURE | --- Egress Only Internet Gateway ---
+71525 | LECTURE | --- Egress Only Internet Gateway Hands On ---
+71586 | LECTURE | --- Section Cleanup ---
+71709 | LECTURE | --- VPC Section Summary ---
+71982 | LECTURE | --- Networking Costs in AWS ---
+72419 | LECTURE | --- AWS Network Firewall ---
+72574 | LECTURE | --- Disaster Recovery in AWS ---
+73177 | LECTURE | --- Elastic Disaster Recovery (DRS) ---
+73266 | LECTURE | --- Database Migration Service (DMS) ---
+73507 | LECTURE | --- Database Migration Service (DMS) - Hands On ---
+73766 | LECTURE | --- RDS & Aurora Migrations ---
+73893 | LECTURE | --- On-Premises Strategies with AWS ---
+74058 | LECTURE | --- AWS Backup ---
+74253 | LECTURE | --- AWS Backup - Hands On ---
+74482 | LECTURE | --- Application Migration Service (MGN) ---
+74629 | LECTURE | --- Transferring Large Datasets into AWS ---
+74802 | LECTURE | --- VMware Cloud on AWS ---
+74885 | LECTURE | --- Event Processing in AWS ---
+75164 | LECTURE | --- Caching Strategies in AWS ---
+75333 | LECTURE | --- Blocking an IP Address in AWS ---
+75584 | LECTURE | --- High Performance Computing (HPC) on AWS ---
+75949 | LECTURE | --- EC2 Instance High Availability ---
+76316 | LECTURE | --- Other Services Section Introduction ---
+76337 | LECTURE | --- CloudFormation Intro ---
+76546 | LECTURE | --- CloudFormation - Hands On ---
+76973 | LECTURE | --- CloudFormation - Service Role ---
+77146 | LECTURE | --- Amazon SES ---
+77221 | LECTURE | --- Amazon Pinpoint ---
+77314 | LECTURE | --- SSM Session Manager ---
+77581 | LECTURE | --- SSM Other Services ---
+77788 | LECTURE | --- AWS Cost Explorer ---
+77903 | LECTURE | --- AWS Cost Anomaly Detection ---
+77960 | LECTURE | --- AWS Outposts ---
+78095 | LECTURE | --- AWS Batch ---
+78260 | LECTURE | --- Amazon AppFlow ---
+78329 | LECTURE | --- AWS Amplify ---
+78436 | LECTURE | --- Instance Scheduler on AWS ---
+78721 | LECTURE | --- WhitePaper Section Introduction ---
+78776 | LECTURE | --- AWS Well-Architected Framework & Well-Architected Tool ---
+79077 | LECTURE | --- AWS Trusted Advisor Overview + Hands-On ---
+79238 | LECTURE | --- Examples of Architecture - AWS Certified Solutions Architect Associate ---
+79457 | LECTURE | --- Exam Preparation - Section Introduction ---
+79476 | LECTURE | --- State of Learning Checkpoint - AWS Certified Solutions Architect Associate ---
+79711 | LECTURE | --- Exam Tips - AWS Certified Solutions Architect Associate ---
+79902 | LECTURE | --- Links to Whitepapers ---
+79906 | LECTURE | --- Exam Walkthrough and Signup ---
+80115 | LECTURE | --- Save 50% on your AWS Exam Cost! ---
+80176 | LECTURE | --- Get an Extra 30 Minutes on your AWS Exam - Non Native English Speakers only ---
+80227 | LECTURE | --- How does the exam work? ---
+80314 | LECTURE | --- AWS Certification Paths ---
+80661 | LECTURE | --- Congratulations ---
+80742 | LECTURE | --- Bonus Lecture ---

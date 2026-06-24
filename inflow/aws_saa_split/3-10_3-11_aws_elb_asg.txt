@@ -1,0 +1,4603 @@
+--- High Availability and Scalability ---
+
+1
+So, it's just a quick lecture,
+2
+just to touch base
+3
+on what is scalability and high availability.
+4
+This is quite the beginners level,
+5
+so if you feel very confident about these concepts,
+6
+feel free to skip this lecture.
+7
+Now, scalability means that your application system
+8
+can hinder a greater load by adapting.
+9
+And so, there are two kind of scalability.
+10
+There's going to be vertical scalability
+11
+or horizontal scalability, also called elasticity.
+12
+And so, scalability is different from high availability.
+13
+They're linked but different.
+14
+So, what I want to do is deep dive into all this distinction
+15
+and we'll use a call center as a fun example
+16
+to really put into practice how things work.
+17
+So, let's talk about vertical scalability.
+18
+Vertical scalability,
+19
+that means that you need
+20
+to increase the size of your instance.
+21
+So, let's take a phone operator, for example.
+22
+We have a junior operator and we just hired him.
+23
+He's great but he can only take five calls per minute.
+24
+Now, we have a senior operator and he's much greater.
+25
+He can take up to ten calls per minute.
+26
+So, we've basically scaled up our junior operator
+27
+into senior operator and he's faster and better.
+28
+This is vertical scalability.
+29
+As you can see, it goes up.
+30
+So, for example, in EC2,
+31
+our application runs on a a t2.micro
+32
+and we want to upscale that application,
+33
+that means we want to run it on a t2.large
+34
+So, when do we use vertical scalability?
+35
+Well, it's very common when you have non distributed system,
+36
+such as a data base.
+37
+So, it's quite common for a data base, for example,
+38
+on RDS or ElastiCache,
+39
+these are services that you can just scale vertically
+40
+by upgrading the underlying instance type,
+41
+although, there usually are limits
+42
+to how much you can vertically scale
+43
+and that's a hardware limit
+44
+but still, vertical scalability
+45
+is fine for a lot of use cases.
+46
+Now, let's talk about horizontal scalability.
+47
+Horizontal scalability means
+48
+that you increases the number of instances/systems
+49
+for your application.
+50
+So, let's take again, our call center.
+51
+We have an operator and he is being overloaded.
+52
+I don't want to vertically scale it,
+53
+I want to hire a second operator
+54
+and now, I've just doubled my capacity.
+55
+Actually, I'll hire a third operator.
+56
+You know what?
+57
+I'll hire six operators.
+58
+I have horizontally scaled my call center.
+59
+So, when you have horizontal scaling,
+60
+that implies you have distributed systems
+61
+and this is quite common when you have a web application
+62
+or a modern application
+63
+but remember,
+64
+that not every application can be a distributed system.
+65
+And I think it's easy, now a days, to horizontally scale,
+66
+thanks to the cloud offerings such as Amazon EC2
+67
+because we just right click on the web page and boom,
+68
+all of the sudden we have a new EC2 instance
+69
+and we can just horizontally scale our application.
+70
+Now let's talk about high availability.
+71
+High availability, that goes usually hand in hand
+72
+with horizontal scaling but not all the time.
+73
+High availability, that means
+74
+that you're running your application or system
+75
+in at least two data centers,
+76
+or two availability zones in AWS.
+77
+And he goal of high availability
+78
+is to be able to survive a data center loss,
+79
+so in case one center goes down, then we're still running.
+80
+So, let's talk about our phone operators.
+81
+Maybe I'll have three of my phone operators
+82
+in the first building in New York
+83
+and maybe I'll have three of my phone operators
+84
+in the second building
+85
+on the other side of the United States, in San Francisco.
+86
+Now, if my building in New York
+87
+loses their internet connection or their call connection,
+88
+then that's okay, they can't work
+89
+but my second building in San Francisco
+90
+is still fine and they can still take the phone calls.
+91
+So, in that case, my call center is highly available.
+92
+Now, high availability, can also be passive,
+93
+for example, when we have RDS Multi AZ, for example,
+94
+we have a passive kind of high availability
+95
+but it can also be active
+96
+and this is when we have a horizontal scaling,
+97
+so this is where, for example,
+98
+I have all my phone calls in two buildings in New York.
+99
+They're all taking calls at the same time.
+100
+So, for EC2, what does that mean?
+101
+Well, vertical scaling again,
+102
+increasing the instance size,
+103
+it's going to scale up or down.
+104
+So, for example, the smallest kind of instance you can get
+105
+in AWS today is t2.nano and this is 0.5 gigs of RAM, 1 vCPU
+106
+and the biggest is A u-t12tb1.metal,
+107
+which has 12.3 terabytes of Ram and 450 vCPUs,
+108
+so quite a big instance
+109
+and I'm sure these things will get bigger
+110
+as time goes along.
+111
+So, you can vertically scale from something very, very small
+112
+to something extremely large.
+113
+Horizontal scaling, that means you increase the number
+114
+of instances you have
+115
+and in AWS terms, it's called scale out or scale in.
+116
+Out, when you increase the number of instances.
+117
+In, when you decrease number of instances
+118
+and this could be used
+119
+for other scaling groups or load balancers.
+120
+And then finally, high availability
+121
+is when you run the same instance
+122
+of the same application across multiple AZ
+123
+and so this is for an auto scaler group
+124
+that has multi AZ enabled
+125
+or a load balancer that has multi AZ enabled, as well.
+126
+So, that's it.
+127
+Just a quick run down were fine
+128
+on the terms high availability and scalability.
+129
+They're necessary for you to understand
+130
+when you look at the exam questions
+131
+'cause they can trick you sometime,
+132
+so make sure you're very confident with those.
+133
+They're pretty easy when you think about it.
+134
+Remember the call center in your mind
+135
+when you have these questions.
+136
+Okay, that's good.
+137
+I will see yo in the next lecture.
+
+--- Elastic Load Balancing (ELB) Overview ---
+
+1
+Now let's learn about load balancing.
+2
+And a question you may have is what is load balancing?
+3
+Well, a load balancer is going to be a server
+4
+or a set of servers that will forward traffic
+5
+that is received to multiple backend
+6
+or downstream EC2 instances or servers.
+7
+So the idea is that for example,
+8
+we have three EC2 instances
+9
+and they're going to be
+10
+fronted by an elastic load balancer,
+11
+which is a set of servers behind the scenes.
+12
+Now, what happens when you have, for example,
+13
+three users directly connecting into
+14
+your elastic load balancer?
+15
+Well, the first one is going to have its
+16
+load being sent in one backend EC2 instance
+17
+and because there's load balancing well,
+18
+if another user is connecting to your elastic load balancer,
+19
+then it will be sent to another EC2 instance.
+20
+And then finally,
+21
+while if a third user is connecting to
+22
+your elastic load balancer,
+23
+that user will again be load balance
+24
+and sense to the third EC2 instance.
+25
+So the idea is that the more users you have,
+26
+the more the load is going to be balanced across
+27
+EC2 instances.
+28
+But the idea is that your users do not know
+29
+which backend instances they're connected to.
+30
+They just know that they have to connect to your
+31
+elastic load balancer,
+32
+which gives them one end point of connectivity only.
+33
+Now,
+34
+why should you use a load balancer
+35
+where you spread the load across
+36
+multiple downstream instances,
+37
+you're going to expose a single point of access
+38
+to your applications as I just said.
+39
+You're going to seamlessly handle failures
+40
+of downstream instances
+41
+because the load balancer will have
+42
+some health check mechanisms
+43
+and can understand to which instances
+44
+and cannot send traffic to.
+45
+You can do health checks on your instances.
+46
+You can provide SSL termination.
+47
+So if you have HTTPS encrypted traffic for you websites,
+48
+you can enforce stickiness with cookies,
+49
+high availability across zones
+50
+and separate public traffic,
+51
+from private traffic on your cloud.
+52
+And we'll explore these concepts obviously in a deeper dive.
+53
+So the elastic load balancer is a managed load balancer
+54
+as such.
+55
+AWS will be managing it,
+56
+and we'll guarantees that it will be working no matter what.
+57
+AWS we'll take care of upgrades, maintenance
+58
+and high availability.
+59
+And it will provide you a few configuration knobs to tweak
+60
+the behavior of the load balancer.
+61
+The idea is that using an elastic load balancer is a
+62
+no-brainer
+63
+because it will cost you less
+64
+than setting up your own load balancer.
+65
+And also if you had to manage your own load balancer,
+66
+it will be a nightmare from a scalability perspective.
+67
+So also the load balancer is integrated with so many AWS
+68
+offerings and services.
+69
+The idea is that it can be integrated with of course,
+70
+EC2 instances,
+71
+but also we'll see later on with the scaling groups,
+72
+Amazon ECS, Certificate Manager, CloudWatch, Route 53,
+73
+WAF Global Accelerator, and most likely more over time.
+74
+So the idea is that the load balancer is a no-brainer
+75
+when it comes to load balancing on AWS.
+76
+Now I mentioned health checks.
+77
+So health checks is a way for your elastic load balancer
+78
+to verify whether or not an EC2 instance
+79
+is properly working,
+80
+because if it's not working properly,
+81
+then we don't want to send any traffic to that instance.
+82
+So they're crucial for load balancers
+83
+and they are done by using
+84
+a port and a routes to check the health button.
+85
+So for example, in this example,
+86
+I have the protocol being HDP,
+87
+the port being 4567
+88
+and the end points to be slash health
+89
+because maybe this route is an easy way
+90
+from an application perspective to
+91
+check the health of my application.
+92
+And if the EC2 instance does not respond
+93
+with an okay response,
+94
+which is usually the 200 status code of HDP,
+95
+then the instance will be marked as unhealthy.
+96
+And the elastic load balancer will not send traffic
+97
+to that instance.
+98
+Okay,
+99
+so now you have four kinds of managed load balancers on AWS.
+100
+You have the classic load balancer,
+101
+which are called older generation or V1, which is from 2009,
+102
+and it's called CLB.
+103
+Now, it's compatible with HTTP, HTTPS, TCP, SSL,
+104
+or security CP.
+105
+And overall AWS not want you to use
+106
+that load balancer anymore.
+107
+So it is going to be shown as deprecated within the console,
+108
+but still available to use.
+109
+Then we have newer generations load balancer.
+110
+So we have the application load balancer
+111
+from 2016 or so-called ALB.
+112
+And this one supports HTTP, HTTPS and web socket protocol.
+113
+Then we have the network load balancer from 2017,
+114
+which supports the TCP, TLS, security CP and UDP protocols.
+115
+And then finally we have the gateway load balancer from 2020
+116
+GWLB, which operates at the network layer,
+117
+so there are three and the IP protocol.
+118
+So overall it is definitely recommended for you to use
+119
+the newer generation load balancers
+120
+as they provide more features.
+121
+And some load balancers can be set up as internal,
+122
+so private and private access for the network
+123
+or external public load balancers,
+124
+for example, for your websites and public applications.
+125
+Finally, you need to understand the security
+126
+around the load balancers.
+127
+So the users can access your load balancer from anywhere
+128
+using HTTP or HTTPS.
+129
+And therefore the security group rule is going to look like
+130
+something like this,
+131
+where the port range is going to be 80 or 443.
+132
+And the source is going to be 0.0.0.0/0,
+133
+which means anywhere.
+134
+And so we allow the users to connect to our load balancer,
+135
+but then the cool thing is that EC2 instances
+136
+should only allow traffic coming directly
+137
+from the load balancer.
+138
+And therefore the security group rule of your EC2 instances
+139
+is going to look a little bit different.
+140
+So it's going to allow HTTP traffic on port 80
+141
+and the source of it is not going to be an IP range
+142
+is going to be a security group.
+143
+So we're going to link the security group
+144
+of the EC2 instance,
+145
+to the security group of the load balancer.
+146
+And effectively what this will do is that it will say
+147
+that the EC2 instance is only allowing traffic
+148
+if the traffic originates from the load balancer,
+149
+which is an enhanced security mechanism.
+150
+So that's, it's for the overview of load balancers.
+151
+I hope you liked it.
+152
+And obviously in this section,
+153
+we're going to discuss a lot more around
+154
+classic application load balancers
+155
+and network load balancers
+156
+So I will see you in the next lecture.
+
+--- Application Load Balancer (ALB) ---
+
+1
+Now, let's get into the second kind
+2
+of load balancers we'll see
+3
+is the application load balancer.
+4
+So it's a layer seven only load balancer.
+5
+So that means HTTP.
+6
+And it allows you to route
+7
+to multiple HTTP applications across machines.
+8
+And these machines are going to be grouped
+9
+in something called a target group.
+10
+And it will make a lot of sense
+11
+once we get into the hands-on.
+12
+It allows you to load balance
+13
+to multiple applications on the same EC2 instance.
+14
+So using containers and using ECS as we'll see.
+15
+And it has support for HTTP/2 and WebSockets.
+16
+It supports redirect as well.
+17
+So if you want it to redirect traffic
+18
+from HTTP to HTTPS automatically,
+19
+it could be done at the load balancer level.
+20
+It also supports route routing.
+21
+So there's routing based on different target groups.
+22
+For example, you can route based
+23
+on the target path of your URL.
+24
+For example, example.com/users and example.com/posts.
+25
+/users and /posts are different routes in your URL,
+26
+different path, and so you can redirect
+27
+these two things into different target groups.
+28
+We'll see what that means in a second.
+29
+You can also do routing based on the host name of the URL.
+30
+So if your load balancer is accessed using
+31
+one.example.com or other.example.com,
+32
+it could be routed to different target groups,
+33
+and you could also be routing based on
+34
+the query strings and headers.
+35
+So for example, example.com/reserves
+36
+and id=123&amp;order=false could be routed
+37
+to a different target group.
+38
+So ALB, and this is the short for
+39
+application load balancers,
+40
+they're great when you have micro services
+41
+and container-based application.
+42
+So as soon as we'll go into learning what docker is
+43
+and Amazon ECS, ALB are going to be
+44
+the go-to load balancers,
+45
+because they have a port mapping features,
+46
+which allows you to redirect to a dynamic port
+47
+on the ECS instance, and again,
+48
+more on that directly into the ECS section.
+49
+And in comparison, if we want it to have
+50
+multiple applications, okay,
+51
+behind multiple, behind a classic load balancer,
+52
+we would have to have multiple classic load balancer.
+53
+We need to actually have one per application,
+54
+whereas with load balancers, we're able to have
+55
+one application load balancer in front of many applications.
+56
+So maybe a graph will help.
+57
+So we have our external application load balancer.
+58
+It's public facing, and behind it,
+59
+we have our first target group made of EC2 instances.
+60
+And this one is going to be routing for the route /user.
+61
+And we have a second target group
+62
+made of EC2 instances again,
+63
+and this one is going to be our search application,
+64
+and there's going to be a health check as well with it.
+65
+And it's going to be routed through rules
+66
+for the /search routes.
+67
+So as you can see here, we have two independent
+68
+microservices that do different things.
+69
+The first one is the user application.
+70
+The second one is a search application.
+71
+But they're behind the same application load balancer,
+72
+which knows how to intelligently route
+73
+to these target groups based on the route
+74
+that is being used in the URL.
+75
+So the target groups, what are they?
+76
+The first one is that they can be EC2 instances,
+77
+and they can be managed as we'll see very, very soon.
+78
+They can be managed by Auto Scaling Group.
+79
+It could be ECS tasks
+80
+and we'll see this in the ECS section.
+81
+It could be Lambda functions,
+82
+and this is something that's not very known.
+83
+So application load balancers can be in front
+84
+of lambda functions, and we'll see what
+85
+Lambda functions are in the future section,
+86
+but they're the base of everything
+87
+called serverless in AWS.
+88
+And finally, it can be a front to IP addresses,
+89
+and they must be private IP addresses.
+90
+So ALB can route to multiple target groups,
+91
+and the health checks are going to be done
+92
+at the target group level.
+93
+So let's take another example.
+94
+And we have an ALB and we have two target groups.
+95
+The first one is based on AWS with EC2 instances,
+96
+and the second one is going to have
+97
+private servers on premises, so in our own data center.
+98
+And so for the target groups, you'd be able to exist.
+99
+We need to specify the private IP of our servers
+100
+into the target group, choose for them to be registered.
+101
+And now say we have an application
+102
+that is serving as request through the ALB.
+103
+And what we want is to send the first
+104
+to the first target group on the mobile-based traffic,
+105
+and to the second target group on the desktop-based traffic.
+106
+For this, we can use, for example,
+107
+a query string or parameters routing.
+108
+So if, in the URL that the clients are trying to use,
+109
+there is a ?Platform=Mobile,
+110
+we can write a rule in the ALB redirection rules,
+111
+the routing rules, to redirect to the first target group.
+112
+And if you have ?Platform=Desktop,
+113
+so this is a query string or parameter,
+114
+then we can say it to redirect
+115
+to the target group number two.
+116
+I don't know where you would do this,
+117
+but this is just an example I'm providing you, okay?
+118
+So good to know before we go into the hands-on,
+119
+the first one is that you also get a fixed host name
+120
+with your application load balancers,
+121
+just like the classic one.
+122
+The application servers don't see the IP
+123
+of the client directly.
+124
+The true IP of the clients is going to be inserted
+125
+instead in the header called X-Forwarded-For.
+126
+And so you can also get the port using X-Forwarded-Ports
+127
+and the protocol used, being used,
+128
+using X-Forwarded-Proto.
+129
+And so what that means is that our client IP,
+130
+which is 12.34.56.78 is directly talking
+131
+to our load balancer, which performs something
+132
+called a connection termination.
+133
+And when your load balancer talks to your EC2 instance,
+134
+it's going to use the load balancer IP,
+135
+which is a private IP into your EC2 instance.
+136
+And so for the EC2 instance to know the client IP,
+137
+it will have to look at these extra headers
+138
+in your HTTP request, which are called
+139
+X-Forwarded-Port and Proto.
+140
+All right, that's it.
+141
+Now, let's go into the hands-on,
+142
+and create our first application load balancer.
+
+--- Application Load Balancer (ALB) - Hands On - Part 1 ---
+
+1
+So we are going to practice launching
+2
+a load balancer, but first,
+3
+we need to send traffic to something.
+4
+So first we're going to launch EC2 Instances.
+5
+So I'm gonna go into launch instances
+6
+and I will launch two instances.
+7
+So on the right hand side I can say two instances
+8
+and the name's going to be My First Instance.
+9
+We'll rename the second one when it comes to it.
+10
+We're going to use Amazon Linux 2 on this architecture.
+11
+We're going to use a t2.micro,
+12
+and then we are going to proceed
+13
+without a key pair because we don't need SSH capability.
+14
+We can use EC2 Instance Connect if we ever need to.
+15
+Then for network settings
+16
+we can select an existing security group
+17
+and we will use the Launch Wizard 1 security group
+18
+which allowed us to do HTTP traffic
+19
+and SSH traffic into our EC2 instance.
+20
+So that's perfect.
+21
+We're going to use the basic storage
+22
+and for advanced details, I will scroll down
+23
+and I will add some EC2 user data,
+24
+and to do so I'm going to copy what I have here
+25
+and paste it here.
+26
+So this will just launch the EC2 instances
+27
+the same way we've launched them before
+28
+using this EC2 user data script.
+29
+So let's launch our two instances
+30
+and now we're going to view all instances.
+31
+So I'm going to rename the second one
+32
+My Second Instance and save.
+33
+So let's wait for these instances to be ready.
+34
+So my EC2 instances are now ready.
+35
+I'm going to copy the first IPv4 address and paste it,
+36
+and I will visit the URL
+37
+and as you can see, I get a hello world from my instance
+38
+so this is great.
+39
+And then I'm gonna go to my second instance right here.
+40
+I will copy again the IPv4 and then paste it, press enter,
+41
+and I get a hello world again.
+42
+So as you can see, two instances give us two hello worlds,
+43
+and the last part is changing.
+44
+And so what we'd like to do is to have only one URL
+45
+to access these two EC2 instances
+46
+and balance the load between them.
+47
+So for this of course, we're going to use a load balancer.
+48
+So let's scroll down and look at load balancers.
+49
+And here you can create a load balancer.
+50
+So we have different load balancer types,
+51
+and in this demo we're going to only look
+52
+at the application balancer, but you need to
+53
+understand the difference between the ALB,
+54
+the network load balancer, and the gateway load balancer.
+55
+So for the application of balancer,
+56
+you can see here it is for HTTP
+57
+and HTTPS kind of traffic.
+58
+For the network load balancer it's going to be on the TCP
+59
+and UDP protocol or TLS over TCP.
+60
+And this is something you going to use
+61
+when you need ultra high performance.
+62
+That means millions of requests per second
+63
+while maintaining ultra low latency.
+64
+So this is a very high performance load balancer, this one.
+65
+And then finally the gateway load balancer right here,
+66
+as you can see, it's used for security,
+67
+for intrusion detection, for firewalls and so on.
+68
+So it's to analyze the network traffic.
+69
+When it goes to the classic load balancer,
+70
+by the time you watch this video, this may be gone
+71
+because the classic load balancer is going away
+72
+and so therefore I'm not going to discuss it and touch it.
+73
+Okay, so let's focus on creating
+74
+the application load balancer.
+75
+So I'm going to call this one DemoALB.
+76
+And if you wanted to read about how load balancing works,
+77
+you can read it here,
+78
+but hopefully the previous lecture was enough for you.
+79
+So this scheme is internet facing
+80
+and the address type is IPv4.
+81
+For network mapping, we we need to decide where
+82
+to deploy the load balancer and how many availability zones.
+83
+So let's deploy it in all of them.
+84
+Great, and then we need to assign a security group
+85
+to our load balancer.
+86
+So it turns out that I'm going to create
+87
+a new security group for it
+88
+and we need to only allow HTTP traffic.
+89
+So I'll call it demo-sg-load-balancer.
+90
+Allow HTTP into load balancer, into ALB,
+91
+and the inbound rules
+92
+is going to allow all HTTP from anywhere.
+93
+Okay, and the outbound rules are fine.
+94
+Let's create this security group.
+95
+So it is now created
+96
+and I can go back in here, refresh this page,
+97
+choose my demo-sg-load-balancer
+98
+and remove the default security group
+99
+so that I'm only left with one security group.
+100
+So let's scroll down.
+101
+And we are under listeners and routing.
+102
+And so we need to route the traffic
+103
+from SHTTP on port 80 to a target group.
+104
+And a target group is nothing more
+105
+than a group of my EC2 instances that were created.
+106
+So for this we need to create a target group.
+107
+So let's click here to create one.
+108
+And the basic configuration tells us that we want
+109
+to group instances together,
+110
+but you can see you have other options.
+111
+So we want to group instances together
+112
+and I'll call this one demo-tg-alb.
+113
+The protocol is HTTP on port 80.
+114
+You have different options, but based on the option
+115
+you choose, it's going to be a target group
+116
+for a different kind of load balancer.
+117
+So we'll keep it as HTTP on port 80, the version
+118
+of HTTP is 1 so we'll keep it as 1.
+119
+The health check is good.
+120
+And then let's click on next.
+121
+And then we need to register our targets.
+122
+So we're going to register both EC2 instances on port 80,
+123
+and let's include them as spending below.
+124
+So now my instances are registered
+125
+and let's create this target group.
+126
+So it's created, and now I need to refresh my page
+127
+and actually I had created one before
+128
+so the one I wanna use is demo-tg-alb.
+129
+So this target group is created
+130
+and it's linked to the listener
+131
+on my load balancer on port 80.
+132
+So now I'm good to go
+133
+and I can go ahead and create my load balancer.
+134
+So I'm going to click on view load balancer,
+135
+and I'm back into this page
+136
+where I can have a look at my load balancer.
+137
+And right now it is in the provisioning space
+138
+so we need to wait until it is provisioned.
+139
+So my ALB is now active, it's ready.
+140
+And as you can see, there's a DNS name available for me.
+141
+So I'm going to copy this, paste it in a new tab
+142
+and through the application load balancer
+143
+I'm able to get a hello world.
+144
+But the cool thing about it is
+145
+that if I refresh this page
+146
+and keep on refreshing it,
+147
+then as you can see the target is changing.
+148
+That's because my application load balancer
+149
+is actually redirecting between both my EC2 instances,
+150
+which is very cool.
+151
+And that's the proof
+152
+that load balancing is actually happening.
+153
+How do we know?
+154
+Well, if we go to our target group, this one,
+155
+and we look at the targets of my target group,
+156
+as you can see they're both healthy.
+157
+That means that the application load balancer
+158
+through the target group is going to send traffic
+159
+to both of them, one after the other.
+160
+And the target group is very smart
+161
+because if I take my first instance for example
+162
+and I stop it,
+163
+through this, what we're doing
+164
+is that we're stopping our two instance
+165
+and so therefore it's going to be unhealthy
+166
+because it cannot respond anymore to the traffic coming in.
+167
+And so if I go in my target group,
+168
+maybe I'm too fast, let's see,
+169
+and refresh, so I will wait about 30 seconds.
+170
+And now as you can see
+171
+the first instance is unused because it's in stopped states.
+172
+And so therefore, if I go back
+173
+to my applicational balancer
+174
+and refresh, the only response I'm getting
+175
+for this instance is that one instance
+176
+that is still up and running.
+177
+This is the power of using load balancers
+178
+because they know when the targets are healthy
+179
+or not healthy.
+180
+And so this instance is stopped,
+181
+but of course if I recover it, if I start it again
+182
+then it's going to boot up
+183
+and is going to create the service behind the scenes.
+184
+And so let's wait for the instance to be started
+185
+and hopefully we'll see it again
+186
+as being healthy in our target group.
+187
+The instance is now up
+188
+and we are in the initial health status as you can see
+189
+and now we are in a healthy status.
+190
+So the instance was deemed healthy
+191
+and so therefore if I go back
+192
+to my application balancer and refresh, as you can see now,
+193
+the hello world is coming from both instances.
+194
+So that's it, we've practiced load balancer,
+195
+we created one as well as two targets in the target group.
+196
+I hope you liked it, and I will see you in the next lecture.
+
+--- Application Load Balancer (ALB) - Hands On - Part 2 ---
+
+1
+So let's have a look
+2
+at a few more advanced concepts for our load balancer.
+3
+Number one is around network security.
+4
+So currently we access this load balancer
+5
+through a security group here.
+6
+This is my load balancer security group.
+7
+And then we access our EC2 instances
+8
+through their own security group.
+9
+So right now if I look at the public IP and access it,
+10
+as you can see I can access my EC2 instance directly
+11
+or I can access it, of course, through my load balancer.
+12
+But it may be preferable to only access my EC2 instance
+13
+through my load balancer.
+14
+So how do we do this?
+15
+Well under instances, let's go for Security Groups,
+16
+so right here.
+17
+And we're going to look at
+18
+the launch-wizard-1 security group.
+19
+And in here for the inbound rules, we're going to edit them
+20
+and we're going to look at the HTTP rule.
+21
+Right now we allow everything from everywhere
+22
+on this security group.
+23
+But what we wanna say is that no, the only traffic allowed
+24
+into our EC2 instance should be traffic
+25
+coming from the load balancer.
+26
+So how do we change this?
+27
+Well, let's first delete this rule.
+28
+You have to first delete it and then you add a new rule.
+29
+And so again, we want HTTP.
+30
+But this time instead of having a CIDR block,
+31
+you can scroll down and you can see
+32
+that you can have security groups in there.
+33
+So the security group we want to allow in
+34
+is the security group of my load balancer.
+35
+So if you just type load as well
+36
+is going to filter the list.
+37
+So then you select the security group of the load balancer.
+38
+And the effect of this is that if we save this role
+39
+and have a look at it,
+40
+now if we have a look at our EC2 instance directly
+41
+and I refresh this page, as you can see it's timing out
+42
+because it's like not being able to access the instance
+43
+because I'm not allowed to access directly the instance.
+44
+But if you refresh the load balancer,
+45
+well the load balancer can still access my instances
+46
+because in the rule that we have created
+47
+in our security group, we allow inbound coming from,
+48
+if you have a look at here,
+49
+we allow inbound coming from the security group
+50
+of the application balancer.
+51
+So here we have tightened network security.
+52
+The second thing I want to show you
+53
+is around application balancer rules.
+54
+So currently if you go into this ALB right here,
+55
+and we go under listeners and I click on it.
+56
+So as you can see I have my listener right here.
+57
+There are some details over it and then I scroll down
+58
+and we have the rules, listener rules.
+59
+So here we can add some rules.
+60
+So we have the default over now which is saying that,
+61
+"Hey, for every request, send it to my demo target group
+62
+for my ALB."
+63
+But we can add rules and make it as complex as we want.
+64
+So this one is going to be a DemoRule,
+65
+that's the name I want to give it.
+66
+And next we need to add conditions.
+67
+So conditions is what do we want to filter
+68
+in terms of requests for this role?
+69
+So do we want to look at host headers or, for example,
+70
+have a look at, for example,
+71
+if we are on the star.example.com or myapp.example.com
+72
+or whatever you want.
+73
+Path is for the path.
+74
+So we'll use /error and saying,
+75
+"Okay if in the path we have /error
+76
+then this rule should come in."
+77
+We can also have the HTTP request method to be get
+78
+or post whatever you want.
+79
+You can filter and condition based on the source IP
+80
+and then you can have query string and HTTP header as well.
+81
+So, quite a lot of different possibilities
+82
+but for now I'm going to use path
+83
+and the path is going to be /error.
+84
+Okay, confirm.
+85
+So we can add multiple conditions if we wanted to.
+86
+Right now in the rules limit you can see
+87
+the types of limits you can have.
+88
+So let's click on Next.
+89
+We have one condition, that's enough.
+90
+And then what is the action?
+91
+So once we match on the condition,
+92
+what do we want to do with it?
+93
+Do we want to forward to specific target groups?
+94
+For example, if you had more than one target group
+95
+then we could define one or more applications
+96
+based on path or based on host domain.
+97
+Or we can redirect to a specific URL, for example,
+98
+with a URI parts or full URL on the protocol HTTP or HTTPS,
+99
+and then a specific status code.
+100
+And then as well customize the host, the path,
+101
+and the query.
+102
+Or we can return a fixed response,
+103
+and this is the one I'm going to do right now.
+104
+So we can say, "Hey, 404, it's not found.
+105
+So not found, custom error."
+106
+So this is the what we're going to return
+107
+when we go to /error.
+108
+You'll see in a second that will make more sense to you.
+109
+Then what is the priority of this rule?
+110
+So right now it is pending.
+111
+And so we have rules
+112
+and we can have maybe a hundred rules in here.
+113
+So we can define priorities
+114
+and the one is going to be the highest priority,
+115
+five is going to be a bit lower, up to 50,000.
+116
+So, of course based on like, for example,
+117
+if a condition is matched by multiple rule
+118
+is the rule with the highest priority, that will win.
+119
+So we're going to use priority of five
+120
+just to give it as an example.
+121
+And now we can see both our listener rules.
+122
+Let's click on Next.
+123
+Everything looks good for this demo rule
+124
+and it has been created.
+125
+So we can see now we have two rules,
+126
+the default rule and the demo rule.
+127
+And they're here
+128
+and you can add more rules if you wanted to.
+129
+Now let's test it out.
+130
+So if I go into my load balancer detail,
+131
+look at the DNS name, copy it and add /error,
+132
+then this is going to trigger my rule
+133
+and the result is not found, custom error.
+134
+Which means that yes, indeed, this request was matching
+135
+the path pattern of /error and so therefore 404
+136
+and text plain was returned.
+137
+So, okay, that's it.
+138
+I hope you liked it and I will see you in the next lecture.
+
+--- Network Load Balancer (NLB) ---
+
+1
+So now let's talk about
+2
+the network load balancer.
+3
+So it's a Layer 4 load balancer
+4
+and therefore it allows you to deal
+5
+with TCP and UDP traffic.
+6
+This is lower level, Layer 7 was HTTP
+7
+and Layer 4 is going to be TCP and UDP traffic.
+8
+So these work for the network load balancer
+9
+and therefore when in the exam you see UDP
+10
+think network load balancer or even TCP.
+11
+Okay, also on top of it,
+12
+the network load balancer is really, really high performance
+13
+and therefore it can handle millions of requests per seconds
+14
+and it has ultra low latency.
+15
+Now, another specificity of the network load balancer
+16
+is that it only has one static IP per availability zones
+17
+and you can assign an elastic IP to each AZ.
+18
+So this is very helpful when you need
+19
+to expose your application with a set of static IPs.
+20
+And this can be elastic IPs.
+21
+So when the exam you say,
+22
+Hey, your application can only be accessed within
+23
+one, two, or three different IPs,
+24
+then you need to think about the network load balancer
+25
+as an option.
+26
+So if you see extreme performance TCP or UDP
+27
+or static IPs, think network balancer.
+28
+So let's have a look at how that works.
+29
+So it works very similarly to the application balancer.
+30
+We create target groups
+31
+and then the network balancer will redirect to them.
+32
+So we can use for example, the TCP traffic
+33
+or for example, in the backend, the GTP,
+34
+but still in the front end use TCP.
+35
+So what about the target groups?
+36
+This is the important part.
+37
+So the target groups can be EC2 instances.
+38
+That means that your network load balancer
+39
+can redirect to your EC2 instances
+40
+and send TCP or UDP traffic to them.
+41
+But you can also register IP addresses
+42
+and these IP addresses when they're hard coded
+43
+and they must be hard coded,
+44
+they must be private IPs.
+45
+So why would you do this?
+46
+Well, you can of course send the private IP
+47
+of the EC2 instance that you own,
+48
+but also you could use the private IP of a server
+49
+that you have in your own data center
+50
+and therefore both of them can be fronted
+51
+by the same network load balancer.
+52
+And it's also possible for you
+53
+to have a network load balancer
+54
+in front of an application load balancer.
+55
+So in that case, the NLB is in front of your ALB.
+56
+So why would you do this?
+57
+Well, thanks to the network load balancer
+58
+you would get, for example, the fixed IP addresses,
+59
+and then thanks to the application load balancer,
+60
+you can get all the rules that you have
+61
+around the handling HTTP type of traffic.
+62
+So it is a valid combination.
+63
+Now one last thing you need to know for the exam
+64
+is that the health checks performed
+65
+by the network load balancer target groups
+66
+are support three different kind of protocols.
+67
+They support the TCP protocol, the HTTP protocol
+68
+and the HTTPS protocol.
+69
+So if your backend application supports the HTTP
+70
+or HTTPS protocol, then it is definitely possible for you
+71
+to define a health check on these protocols.
+72
+So that's it for the network load balancer.
+73
+I hope you liked it and I will see you in the next lecture.
+
+--- Network Load Balancer (NLB) - Hands On ---
+
+1
+Okay, so let's go ahead
+2
+and practice creating a network load balancer.
+3
+So let's create a network load balancer right here,
+4
+and we're going to call this one DemoNLB.
+5
+And so,
+6
+we will choose an internet facing load balancer of IPv4.
+7
+In terms of network mapping, I will use the VPC I have,
+8
+and I will take every availability zone so the three I have.
+9
+And as you can see for each AZ, there's a subnet.
+10
+And then there is an IPv4 address that is assigned by AWS.
+11
+So that means that for each AZ
+12
+that you enable for your network load balancer,
+13
+you're going to get a fixed IPv4 address.
+14
+And in that case, this is going to be assigned by AWS,
+15
+but if you had an elastic IP,
+16
+you could use an elastic IP address instead
+17
+for each specific availability zones.
+18
+Okay, next we can attach a security group
+19
+to our network load balancer, and this is recommended.
+20
+So this is new.
+21
+And the way we do it is
+22
+that we can create a security group.
+23
+I call this one demo-sg-nlb.
+24
+And for inbound rules,
+25
+we're going to allow anyone on port 80.
+26
+So we'll have HTTP from anywhere,
+27
+and outbound rules is fine.
+28
+So let's create the security group,
+29
+and Demo SG for NLB, we have the description.
+30
+So we're good.
+31
+We're going to now use this demo security group.
+32
+So I'm going to refresh this and choose my demo-sg-nlb,
+33
+and remove the default, okay?
+34
+So the idea is that similarly to application load balancers,
+35
+for network load balancers, you also attach a security group
+36
+and then this control traffic to your network load balancer.
+37
+In terms of listeners and routing,
+38
+we're going to have a protocol.
+39
+So you can use TCP, TCP_UDP, TLS, or UDP.
+40
+We'll use TCP over port 80.
+41
+And then we have a target group we should send it to.
+42
+So let's create a target group.
+43
+And this one is going to be specifically
+44
+for a network load balancer.
+45
+And so as such, I'm going to choose instances in here,
+46
+and the target name is going to be called demo-tg-nlb.
+47
+The protocol is going to be TCP on port 80,
+48
+because we're using a network load balancer.
+49
+And we'll use the VPC as before.
+50
+For the health check, we have different options.
+51
+So TCP, HTTP, or HTTPS.
+52
+But because we have an HTTP application running
+53
+on our EC2 instances, we'll use HTTP.
+54
+And for the advanced health check settings,
+55
+we'll just define the healthy threshold to be two,
+56
+and the timeout to be two seconds,
+57
+and the interval to be five seconds.
+58
+So let's click on Next,
+59
+and then we are going to register targets.
+60
+So my two available instances,
+61
+I'm going to click here to include them
+62
+as pending below, and create the target group.
+63
+So now that we have created our demo-tg-nlb,
+64
+we can go ahead, click on it,
+65
+to have it in a different page.
+66
+And I'm gonna go into my network balancer,
+67
+and refresh this, and select my demo-tg-nlb.
+68
+Perfect.
+69
+Now let's scroll down,
+70
+and we have done the configuration
+71
+of our network load balancer.
+72
+So let's create this network load balancer
+73
+and switch right away to its page.
+74
+Now let's wait for it to be provisioned,
+75
+and we're good to go.
+76
+Okay, so my network load balancer is now active.
+77
+And so if I enter the URL in my web browser,
+78
+as we can see right now, it doesn't seem to work.
+79
+So let's observe the kind
+80
+of problems we may have with our load balancer.
+81
+So if you look at the target group right now,
+82
+and refresh this page,
+83
+it looks like my instances are still in the initial phase
+84
+of being checked.
+85
+So let me come back and see if they're healthy or unhealthy.
+86
+And so they are unhealthy,
+87
+because they have checks have failed.
+88
+So the idea is that if we look at these instances
+89
+and we look at the security group of these instances,
+90
+we go to Security, and then Security groups.
+91
+So let's click on it,
+92
+and open up the security group.
+93
+And we can see that from the inbound rules,
+94
+that we allow SSH from anywhere
+95
+and we allow HTTP from this security group,
+96
+which is, if you remember, the security group
+97
+of our application load balancer.
+98
+But we actually need to allow also HTTP traffic
+99
+from our network load balancer.
+100
+And so we need to click on demo-sg-nlb.
+101
+So allow traffic from NLB.
+102
+And this was allow traffic from ALB.
+103
+And so the idea is that now with this security group rule,
+104
+we allow the NLB
+105
+to talk to our EC2 instances in our target group,
+106
+and therefore,
+107
+they should help with passing the health checks.
+108
+So now let's just wait a little bit here
+109
+to see if that solves our issue.
+110
+And yes, as you can see, now my instances are healthy.
+111
+So that means
+112
+that if I go into my network load balancer now,
+113
+it has resolved automatically, and we refresh,
+114
+and we get the fact that we get a Hello World
+115
+from a specific IP, which is our instance.
+116
+And so after a while and refreshing, the IP changes,
+117
+so that proves that we are load balancing to two instances.
+118
+And that's it.
+119
+So we've seen the security groups
+120
+of our network load balancer.
+121
+It works similarly to the application load balancer,
+122
+and how to change our EC2 security group
+123
+to really make sure that we also allow traffic
+124
+from the NLB and not only the ALB,
+125
+which was right here.
+126
+Okay, so that's it for this hands-on.
+127
+Now what you can do to prevent having some costs is
+128
+just delete the load balancer, the DemoNLB,
+129
+and optionally, if you wanted to,
+130
+you could delete the demo target group,
+131
+right here, for the NLB.
+132
+And if you wanted to,
+133
+you could delete also the security groups of the NLB.
+134
+But I don't think that's necessary,
+135
+but it's good practice if you wanted to try it out.
+136
+Okay, so that's it for this lecture.
+137
+I hope you liked it,
+138
+and I will see you in the next lecture.
+
+--- Gateway Load Balancer (GWLB) ---
+
+1
+So now let's talk about the newest kind of load balancer
+2
+called the gateway load balancer.
+3
+So it is used to deploy
+4
+scale and manage your fleet of
+5
+third-party network, neutral appliances in AWS.
+6
+And it will explain what that means in a second.
+7
+So you would use a gateway load balancer
+8
+if you want it to have all traffic,
+9
+of your network
+10
+to go through a firewall that you have,
+11
+or an intrusion detection and prevention system.
+12
+So IDPs or a deep packet inspection system,
+13
+or you want to, to modify some payloads,
+14
+but at the network level. Okay.
+15
+So let's have a look
+16
+to make it very simple with a diagram.
+17
+So, say have users and these users
+18
+are used to access your applications.
+19
+Now we know that their users, for example,
+20
+can access our applications directly
+21
+using a load balancer,
+22
+for example, and an application, or balancer.
+23
+And then the traffic goes directly
+24
+from the users to the ALB, to the application.
+25
+But what if you wanted
+26
+all that network traffic
+27
+to be inspected first,
+28
+before being sent to your application,
+29
+you have actually deployed
+30
+a bunch of third party virtual appliances,
+31
+for example, EC2 instances
+32
+that you want all traffic to go through
+33
+before the traffic reaches your application.
+34
+So to do so, it used to be very complicated,
+35
+but now with a gateway load balancer,
+36
+it is actually very simple.
+37
+So you're going to create a gateway load balancer
+38
+and what's going to happen is that
+39
+behind the scenes.
+40
+The route tables have to be updated in your VPC.
+41
+Now this is quite advanced
+42
+and it's more in the networking side,
+43
+but bear with me.
+44
+So the route tables are modified.
+45
+And now what happens at all users traffic
+46
+first goes through a gateway load balancer
+47
+and the gateway load balancer
+48
+will then spread that traffic across
+49
+a target group of your virtual appliances.
+50
+And so all the traffic will reach these appliances
+51
+then the appliances will analyze the traffic,
+52
+you know, what do whatever they have to do.
+53
+So for example, firewall again,
+54
+intruder detection and so on.
+55
+And then if they're happy with it,
+56
+they can send it back to the gateway load balancer.
+57
+If they're not happy with it,
+58
+they can just drop the traffic. For example,
+59
+for a firewall, you would drop the traffic,
+60
+but if it's accepted,
+61
+then it goes through your gateway load balancer again,
+62
+and then the gateway load balancer
+63
+Will forward a traffic
+64
+all the way to your application
+65
+and for your application. This is transparent.
+66
+The only thing that has happened now
+67
+is that all the traffic
+68
+has gone through the gateway load balancer.
+69
+And your third-party patrol appliances,
+70
+for you to analyze all that network traffic
+71
+and possibly drop it.
+72
+So this is the power of the gateway load balancer
+73
+is to analyze network traffic and so on.
+74
+So how does that work?
+75
+Well, the gateway load balancer
+76
+operates at a lower level than all
+77
+the load balancers we've seen.
+78
+This is layer three,
+79
+which is a network layer for IP packets.
+80
+So what's going to happen
+81
+is that you're gateway load balancer
+82
+has two functions.
+83
+The first one is a transparent network gateway
+84
+because all the traffic
+85
+will in your VPC will go through a single entry
+86
+and a single exit,
+87
+which is going to be your gateway load balancer,
+88
+and then is going to be a load balancer
+89
+because it distributes that traffic
+90
+across a sets of virtual appliances
+91
+and your target group.
+92
+So this is basically
+93
+what you remember about the gateway load balancer.
+94
+And finally, if you see on an exam,
+95
+that's you want to use the GENEVE protocol
+96
+on ports 6081
+97
+Then again, this will be right away
+98
+if you getaway load balancer.
+99
+So hopefully this diagram makes sense. Now,
+100
+what can be target groups, for the gateway load balancers
+101
+So this is your third party appliances.
+102
+They can either be EC2 instances
+103
+and you register them by instance ID,
+104
+or they can be IP addresses.
+105
+In that case, they must be private IPs.
+106
+And for example, if you are running
+107
+these virtual appliances on your own network,
+108
+on your own data center,
+109
+then you can register them by IP manually.
+110
+So that's it for the gateway load balancer.
+111
+It is extremely difficult to do a hands-on on it.
+112
+So I will skip one. Okay.
+113
+But just so you know, again,
+114
+the most important thing to remember
+115
+is that one diagram on the right-hand side,
+116
+if you understand this diagram,
+117
+you understand, getaway load balancers.
+118
+And I don't think
+119
+any deep dive question will be asked on it
+120
+just at a high level,
+121
+what it means and how it works. Okay.
+122
+So that's it.
+123
+I hope you liked it,
+124
+and I will see you in the next lecture.
+
+--- Elastic Load Balancer - Sticky Sessions ---
+
+1
+Let's talk about sticky sessions
+2
+or so-called session affinity
+3
+for your elastic load balancer.
+4
+So it's possible to implement
+5
+what's called stickiness or sticky sessions.
+6
+And the idea is that the client
+7
+doing two requests to the load balancer
+8
+will have the same instance in the backend
+9
+to respond to the request.
+10
+So the idea is that, for example, you have the ALB
+11
+with two EC2 instances and you have three clients.
+12
+If the client one makes a request
+13
+and it goes to the first EC2 instance,
+14
+that means that when it does a second request
+15
+to the load balancer, it will go to the same instance,
+16
+which is a different behavior
+17
+where usually the application balancer
+18
+will do a spread of all the requests
+19
+across all the EC2 instances.
+20
+Now for client two, if it goes to the ALB
+21
+and talks to the second instance,
+22
+then all the requests will go there.
+23
+And same for client three, okay?
+24
+So this can be enabled for the Classic Load Balancer
+25
+Application Balancer and Network Load Balancer.
+26
+And how it works, well, there is a cookie
+27
+that is sent as part of the request
+28
+from the clients to the load balancer
+29
+and it has stickiness and it has an expiration date.
+30
+That means that when the cookie expires,
+31
+then the client may be redirected to another EC2 instance.
+32
+The use case for this is to make sure
+33
+that the user is connected to the same backend instance
+34
+in order not to lose his session data,
+35
+which can take some important information
+36
+such as the login of the user, for example.
+37
+But if you enable stickiness,
+38
+it may bring imbalance to the load
+39
+over the backend EC2 instances
+40
+in case some instances I have a very, very sticky user.
+41
+Okay, now to go a little bit deeper,
+42
+how about the cookie itself?
+43
+Well, there are two types of cookie
+44
+that you can have for sticky sessions.
+45
+The first one is application-based cookie
+46
+and the second one is duration-based cookie.
+47
+So for application-based cookies,
+48
+well, it's a custom cookie that is generated by the target,
+49
+so by your application itself.
+50
+And you can include any custom attributes you want
+51
+required by your application.
+52
+The cookie name must be specified individually
+53
+for each target group, okay?
+54
+And you may not, you must not use the following names,
+55
+so AWSALB, AWSALBAPPOR or AWSALBTG,
+56
+because they are already reserved for use by the ELB itself.
+57
+Or it could be an application cookie.
+58
+And this time will be generated by the load balancer itself,
+59
+and the cookie name used by the ALB will be AWSALBAPP, okay?
+60
+Now the second type of cookies is duration-based cookie
+61
+and it's a cookie generated by the load answer,
+62
+and the name is AWSALB for the ALB
+63
+and AWSELB for the CLB, okay?
+64
+And the idea is this one,
+65
+will have an expiry based on a specific duration,
+66
+and the duration is generated
+67
+by the load balancer itself, okay?
+68
+Whereas before, while there is an application-based cookie,
+69
+so the duration can be specified by the application itself.
+70
+So that's how it works, okay?
+71
+You don't need to remember exactly the name of the cookies
+72
+or the fact that you have custom and application,
+73
+but you remember there's application-based cookies
+74
+and duration based, and they have a specific name.
+75
+And this will be coming into account
+76
+when we talk about CloudFront.
+77
+Okay, so if I look at my load balancer right now
+78
+and I open it in the new tab, as you can see,
+79
+it goes between my three instances in my load answer.
+80
+So that's perfect.
+81
+But now I'm going to enable sticky sessions.
+82
+So to do so, I'm going to go at the target group level,
+83
+open my target group and then Action,
+84
+and I will can edit the attributes of my target group.
+85
+So here, let's scroll down
+86
+and we have the target selection configuration,
+87
+and here we have stickiness.
+88
+So here for stickiness, we can turn it on.
+89
+And we have two types of stickiness available to us.
+90
+We have a load balancer generated cookie
+91
+or the application based cookie.
+92
+So let's look at the first one.
+93
+So here we're able to set a duration.
+94
+So between one second to seven days, you can modify it here.
+95
+Or if you wanted to have your own application cookie,
+96
+again, they are the same settings,
+97
+but you need to add an app cookie name,
+98
+for example, MYCUSTOMCOOKIEAPP.
+99
+And this is just a name that you would give your cookie
+100
+so that you know how to apply stickiness
+101
+at the low balancer level.
+102
+Now, to keep things simple,
+103
+we're going to choose Load balancer generated cookie
+104
+and have everything as the default, so one day.
+105
+And let's click on Save changes.
+106
+So now let's have a look.
+107
+So I'm going to go and open the debugger as well,
+108
+so we can have a look at the network and see what happens.
+109
+So if you ever look at the network
+110
+and then I refresh this page,
+111
+as we can see, I refresh multiple times, okay?
+112
+You get access to the same instance.
+113
+So 7176 is the one that's coming back,
+114
+back and back and back.
+115
+And now what's going to happen
+116
+is that when you look at the get request
+117
+made to the load balancer.
+118
+I'm very, very sorry for the font size here.
+119
+I don't think I can really increase it.
+120
+But if you go to Cookies, as you can see here,
+121
+there is a response cookie, okay,
+122
+that is saying that your cookie expires tomorrow.
+123
+Here is the path and here is the value of the cookie.
+124
+And then in the request cookie,
+125
+when the browser makes a request to the load balancer,
+126
+it sends again the cookie it has right here.
+127
+And so because of the cookie being passed and sent,
+128
+this is how stickiness works, okay?
+129
+So just a little bit of a deeper dive
+130
+into how stickiness works.
+131
+But that's it for this lecture.
+132
+I hope you liked it.
+133
+And by the way, to access the web developer tools,
+134
+you click on Web Developer and then Web Developer Tools.
+135
+And I just use a short shortcut for that.
+136
+And it's the same on Chrome and Firefox.
+137
+And then you go into Network
+138
+and you get access to your information
+139
+around your request, okay?
+140
+And finally, just go back to your target group,
+141
+and then you edit the attributes itself
+142
+and you can disable stickiness
+143
+to come back to a normal behavior,
+144
+which should be good to go.
+145
+So that's it for this lecture, I hope you liked it.
+146
+And I will see you in the next lecture.
+
+--- Elastic Load Balancer - Cross Zone Load Balancing ---
+
+1
+Now let's talk about cross zone balancing.
+2
+So let's take an example of a very imbalanced situation
+3
+but it will illustrate the point.
+4
+So we two availability zones
+5
+and the first one has a load balancer
+6
+with two EC2 instances.
+7
+And the second one also has a load balancer.
+8
+So a load balancer instance obviously,
+9
+with eight EC2 instances.
+10
+The Load balance serves instances are part
+11
+of the same more general load balancer.
+12
+So the client is accessing these load balancers.
+13
+And so with cross zone load balancing
+14
+each load balancer instance will distribute evenly
+15
+across all registered instances in all availability zones.
+16
+So the client itself is sending 50%
+17
+of the traffic to the first ALB instance
+18
+and 50% of traffic to the other ALB instance.
+19
+But each ALB is going to redirect the traffic
+20
+across all 10 EC2 instances
+21
+regardless of which availability zones they're in.
+22
+This is why it's called cross zone load balancing.
+23
+So if you take a look at the first
+24
+at the second ALB, sorry instance
+25
+it's going to send 10% of the traffic it receives, okay?
+26
+To all these instances because we have 10 instances.
+27
+So each of them gets 10% of the traffic.
+28
+And same story with the first ALB instance.
+29
+It's going to send also 10%
+30
+of traffic to all these instances.
+31
+So in this example with cross zone balancing
+32
+we are distributing the traffic evenly
+33
+across all EC2 instances.
+34
+And then maybe something you want to have or not, who knows
+35
+but at least this behavior is available to you.
+36
+The second behavior that's available
+37
+to you is to not have cross zone balancing.
+38
+So we take the same example
+39
+but without cross zone balancing.
+40
+The requests, the requests, sorry, are distributed
+41
+in the instances of the node of the elastic load balancer.
+42
+So in this example, what we have is that the client
+43
+sends 50% of the traffic to the first AZ and the 50%
+44
+of traffic to the second AZ, okay?
+45
+But the first ALB instance is going to send the traffic
+46
+to only the EC2 instances in its region.
+47
+So that means that each EC2 instance in this sorry ability
+48
+zone is going to get 25% of the traffic overall, okay?
+49
+So half and half.
+50
+And the one on the right hand side will again divide
+51
+up the traffic it receives into the EC2 instances
+52
+that are registered within its AZ.
+53
+So AZ2.
+54
+So we can see here without cross balancing
+55
+the traffic is contained within each AZ.
+56
+But if there are an imbalanced number of EC2 instances
+57
+in each AZ, then some EC2 instances of a specific AZ we'll
+58
+receive more traffic than others.
+59
+It's just an option to know about.
+60
+There's no right or wrong answer.
+61
+It depends on the use case, obviously.
+62
+So for the application balancer, by default
+63
+cross zone load balancing is going to be enabled
+64
+but you can disable it at the target group level and
+65
+there's going to be no charges
+66
+if your data goes across availability zones
+67
+because usually in AWS, if data goes
+68
+from one AZ to another one, you're going to pay some money.
+69
+But for the application balancer
+70
+because cross zone lowdown is enabled by default
+71
+you won't have any charges for inter AZ data.
+72
+Now, if you consider the network load balancer
+73
+and the gateway load balancer,
+74
+then cross zone load balancing is disabled by default.
+75
+And if you enable it
+76
+then you're going to pay some amount of money
+77
+because the data is going to go from one AZ to the next.
+78
+Finally, for the classic load balancer
+79
+it is disabled by default, and in case you enable it
+80
+you're not going to be charged for inter AZ data transfers.
+81
+Okay, so just for the sake of doing a hands on
+82
+I've created a workload balancer, an application balancer
+83
+and a gateway load balancer.
+84
+So let's first have a look at the network load balancer.
+85
+So if I scroll down and click on attributes, as you can see
+86
+cross zone low balancing is off
+87
+but I can edit this and turn this on.
+88
+And as you can see, I will enable cross zone balancing
+89
+and this may include some regional charges for your NLB.
+90
+So this is a similar setting for the gateway low balancer
+91
+because they have a similar behavior in that regard.
+92
+So for the attributes, again, cross zone
+93
+load balancing is off
+94
+but I can edit it and turn it on.
+95
+And this will imply data charges.
+96
+Now if you have a look at the application load balancer
+97
+it is a little bit different.
+98
+So if you go to attributes
+99
+you can see that cross zone load balancing is on by default.
+100
+And if I edit this and and scroll down, as you can see
+101
+I will show you in a second.
+102
+As you can see, the cross zone balancing is always on,
+103
+okay?
+104
+And this message
+105
+you can discard it because I think it's wrong.
+106
+But anyway, so cross zone load balancing
+107
+is always on for your ALB.
+108
+But if you go to your actual target group, so if I go
+109
+to my target group that has been created for this and I go
+110
+to attributes of the target group, we can actually do edit.
+111
+And for the cross zone load balancing here, we can
+112
+either inherit settings from the low balancer attributes
+113
+which is on by default or force on or off
+114
+and turn it off for that one specific target group.
+115
+And when it comes
+116
+to doing the demo for the classic load balancer,
+117
+I will not include it this time
+118
+because the classic load balancer is going away.
+119
+It is previous generation
+120
+and is going to be retired very soon.
+121
+So I don't think you will need to know
+122
+about it for the exam.
+123
+Okay, so let's see.
+124
+For this lecture, just make sure
+125
+if you wanted to follow along to delete the load balancers.
+126
+I hope you liked it and I will see you in the next lecture.
+
+--- Elastic Load Balancer - SSL Certificates ---
+
+1
+Okay, so now let's talk about SSL
+2
+and TLS Certificates.
+3
+So this is a dumb down version of how this works.
+4
+This is obviously way more complicated
+5
+but I want to introduce you to the concepts
+6
+in case you don't know it.
+7
+And even if you do know SSL and TLS,
+8
+please watch this lecture.
+9
+I'm going to talk about SNI
+10
+and I'm going to talk about the integrations
+11
+with load balancers.
+12
+So bear with me please.
+13
+So an SSL certificate allows the traffic
+14
+between your clients and your load balancer
+15
+to be encrypted while in transit.
+16
+This is called in-flight encryption.
+17
+So that means the data as it goes through a network is going
+18
+to be encrypted and only going to be able to be decrypted
+19
+by the sender and the receiver.
+20
+So, SSL refers to Secure Sockets Layer
+21
+and it's used to encrypt transfer connections.
+22
+And TLS is the newer version of SSL
+23
+and it refers to Transport Layer Security.
+24
+But the thing is, nowadays,
+25
+TLS certificates are the one that are mainly used,
+26
+but people, including myself,
+27
+I will still refer this as SSL.
+28
+So I'm making a mistake,
+29
+but I'm making it on purpose, okay?
+30
+So it's better to say a TLS certificate
+31
+than SSL certificates,
+32
+but for many reasons, I'm still gonna say it's SSL
+33
+because it's easier to understand.
+34
+So public SSL certificates are issued
+35
+by Certificate Authorities,
+36
+and they include something like Comodo, Symantec, GoDaddy,
+37
+GlobalSign, Digicert, Letsencrypt, and so on.
+38
+And using this public SSL certificate attached
+39
+to our load balancer,
+40
+we're able to encrypt the connection
+41
+between the clients and the load balancer.
+42
+So whenever you go to a website,
+43
+for example google.com or anything, any other website,
+44
+and you have a lock or a green lock
+45
+that means that your traffic is encrypted.
+46
+And if traffic is not encrypted,
+47
+you'll have a red sign saying,
+48
+"Hey, traffic is not encrypted.
+49
+Don't put your credit card details.
+50
+Don't put your login information because it's not secure."
+51
+So the SSL certificates, they have an an expiration date
+52
+that you set and they must be renewed regularly
+53
+to make sure that they're authentic, okay?
+54
+So how does it work from a load balancer perspective?
+55
+So users connect over HTTPS,
+56
+and it's S because it's using SSL certificates
+57
+and it's encrypted.
+58
+It's secure,
+59
+and it connects over the public internet
+60
+to your load balancer.
+61
+And internally, your load balancer does something
+62
+called SSL certificate termination.
+63
+And in the backend, it can talk to your EC2 instance
+64
+using HTTP, so not encrypted,
+65
+but the traffic goes over your VPC,
+66
+which is private traffic network.
+67
+And that is somewhat secure.
+68
+So the load balancer will load an X.509 certificate,
+69
+which is called a SSL or TLS server certificate.
+70
+And you can manage these SSL certificates in AWS using ACM,
+71
+meaning AWS Certificate Manager.
+72
+So we're not going to view ACM in that lecture
+73
+but just to get an idea of what it is.
+74
+Now, you can also upload your own certificates
+75
+to ACM if you wanted to.
+76
+And when you set you an HTTPS listener,
+77
+you must specify a default certificate.
+78
+Then you can add an optional list of certs
+79
+to support multiple domains,
+80
+and clients can use something called SNI
+81
+or Server Name Indication
+82
+to specify the hostname they reach.
+83
+Now don't worry, I'm going to explain what SNI is
+84
+in details in the next slide
+85
+because it is really, really important for you
+86
+to understand what it means.
+87
+That means that, and you can also,
+88
+finally for HTTPS, set a specific security policy
+89
+if you wanted to support all their versions
+90
+of SSL and TLS, called also legacy clients.
+91
+Okay, so let's talk about SNI 'cause it is so important.
+92
+SNI solves a very important problem,
+93
+which is how do you load multiple SSL certificates
+94
+onto one web server in order for that web server
+95
+to serve multiple websites?
+96
+And there's a newer protocol
+97
+that now requires the client to indicate the hostname
+98
+of the target server in the initial SSL handshake.
+99
+So the client will say,
+100
+"I want to connect to this website."
+101
+And the server will know what certificate to load.
+102
+And so, this is a newer protocol and this is something new.
+103
+Not every client supports this.
+104
+So it only works when you use the application load balancer
+105
+and the network load balancer, so the newer generations,
+106
+or CloudFront.
+107
+And we'll see what CloudFront is later in this course.
+108
+And it does not work when you use the classic load balancer
+109
+because it is older generation.
+110
+So anytime you see multiple SSL certificates
+111
+onto your load balancer, think ALB or NLB.
+112
+So as a diagram, what does it look like?
+113
+We have our ALB here and we have two target groups.
+114
+The first one is www.mycorp.com,
+115
+and the second one is Domain1.example.com.
+116
+So the ALB will be routing to these target groups
+117
+based on some rules and the rules may be directly linked,
+118
+in this case to the hostname.
+119
+So the ALB will have two SSL certificates:
+120
+Domain1.example.com and www.mycorp.com,
+121
+which corresponds to the corresponding target groups.
+122
+Now the clients connects to our ALB and says,
+123
+"I would like www.mycorp.com",
+124
+and that is part of server name indication.
+125
+And the ALB says, "Okay, I've seen that you want mycorp.com.
+126
+Let me use the correct SSL certificates
+127
+to fill that request."
+128
+So it's going to take the right SSL certificates,
+129
+encrypt the traffic,
+130
+and then thanks to the routes,
+131
+it's going to know to redirect
+132
+to the correct target group, mycorp.com.
+133
+And obviously, if you have another client connecting
+134
+to your ALB for Domain1.example.com,
+135
+then you will be able
+136
+to pull the right SSL certificate again
+137
+and connect to the right target group.
+138
+So using SNI or server name indication,
+139
+you are able to have multiple target groups
+140
+for different websites using different SSL certificates.
+141
+Excellent.
+142
+So finally, what is supported for SSL certificates?
+143
+So classic load balancer is yes,
+144
+you can only support one SSL certificate.
+145
+And if you want multiple hostnames
+146
+with multiple SSL certificates,
+147
+the best way is to use multiple classic load balancer.
+148
+For ALB, the v2, you need to,
+149
+you can support multiple listeners
+150
+with multiple SSL certificates.
+151
+And that's the great part of it,
+152
+and it uses SNI to make it work.
+153
+And we just saw what it is.
+154
+And for the NLB or network load balancer,
+155
+it supports, again, multiple listeners
+156
+with multiple SSL certificates,
+157
+and it will use SNI again to make it work.
+
+--- Elastic Load Balancer - SSL Certificates - Hands On ---
+
+1
+So let's have a look at how we can enable
+2
+SSL certificates on both the ALB and the NLB.
+3
+So if I look at the ALB,
+4
+I just have to add one listener, for example,
+5
+I will add a listener, and the protocol will be HTTPS
+6
+and the ports by default will be 443.
+7
+And then we can say, okay if the clients are using
+8
+the port 403 for HTTPS protocol,
+9
+then forward to a specific target group.
+10
+And then we can also have secure listener settings.
+11
+So we can say, we can actually set a SSL security policy
+12
+to see how to negotiate the certificates itself,
+13
+and this is based on if you need, for example,
+14
+previous compatibility with older version of SSL or TLS
+15
+and so on, so you can leave this as default
+16
+and then you need to say where this SSL
+17
+or TLS certificate is located
+18
+and so it can be in ACM, Amazon Certificate Manager,
+19
+but I currently don't have any,
+20
+so I won't see here one or from IAM,
+21
+but this is not recommended as domain method.
+22
+Or you can import it by just pasting the private key,
+23
+the body and the certificate chain here if need be
+24
+and then this will import the certificate itself
+25
+into ACM directly.
+26
+So it's a similar process for the network cloud balancer.
+27
+So if I go in the network balancer right here,
+28
+and have a look at the listeners,
+29
+I can add a listener of it being TLS,
+30
+and then we can forward to a demo target group right here
+31
+and then for security policy,
+32
+we can set whatever policy we want,
+33
+as well as choose where the certificate is from
+34
+so from SCM, IAM, or import, and finally we can set
+35
+an application layer protocol negotiation,
+36
+which I won't go over
+37
+but this is a pretty advanced setting for TLS.
+38
+So that's it, you've seen how to use SSL
+39
+or TLS certificates on your load balancers.
+40
+I hope you liked it and I will see you in the next lecture.
+
+--- Elastic Load Balancer - Connection Draining ---
+
+1
+So now let's talk about a feature
+2
+that can come up in the exam,
+3
+which is called Connection Draining.
+4
+So it has two names, actually.
+5
+If you're using a Classic Load Balancer,
+6
+it is called Connection Draining,
+7
+but if you're using an Application Balancer
+8
+or a Network Load Balancer,
+9
+this is called a Deregistration Delay.
+10
+And the idea behind this concept is that
+11
+it will give some time for your instances
+12
+to complete the inflight request or the active request
+13
+while the instance is being deregistered
+14
+or marked unhealthy.
+15
+And once a connection is being drained,
+16
+so once an instance is being drained,
+17
+then the ELB will stop sending your request
+18
+to the EC2 instance that is being drained
+19
+while being deregistered.
+20
+So let's have a look at a diagram to understand better.
+21
+So we have three EC2 instances
+22
+and in one of them we'll set it in draining mode.
+23
+So the users that are already connected to that EC2 instance
+24
+are going to be given enough time,
+25
+which is the draining period, okay,
+26
+to complete their existing connection
+27
+and to complete their existing request.
+28
+And then once everything's done,
+29
+then all the connections will be shut down.
+30
+Now, if new users try to connect to our ELB,
+31
+our ELB is smart enough to know
+32
+that because our EC2 instance is in draining state,
+33
+then it will only establish new connections
+34
+with other EC2 instances, for example,
+35
+my second EC2 instance or my third EC2 instance.
+36
+Now you can parametrize
+37
+these Connection Draining parameters.
+38
+So you can set it anywhere between 1 to 3,600 seconds.
+39
+By default, it is 300 seconds, so five minutes,
+40
+and you can disable it altogether
+41
+if you set the value to zero,
+42
+which means that there's no draining happening.
+43
+Now, if you set it to low value, okay, this is good
+44
+if your requests are short, for example, if there were very,
+45
+very short requests for, let's say, less than one second,
+46
+well, it's a good idea to set
+47
+the draining connection parameter to maybe 30 seconds, okay,
+48
+because then this will allow your EC2 instance
+49
+to be drained really fast and then be taken offline,
+50
+maybe to be replaced or something like this.
+51
+If your request can be quite long, for example,
+52
+if you have uploads or long lived requests,
+53
+then you want to set it to something pretty high,
+54
+but the trade-off is that's your EC2 instance
+55
+is not going to go away as soon as soon as possible, okay,
+56
+it's going to have to wait
+57
+until this Connection Draining period is done, okay?
+58
+So this is what you need to know about this setting
+59
+at a high level.
+60
+I hope you liked it and I will see you in the next lecture.
+
+--- Auto Scaling Groups (ASG) Overview ---
+
+1
+So now let's talk about
+2
+what is an auto scaling group.
+3
+So when we deploy a website or an application,
+4
+the load can change over time because we may have
+5
+more users visiting our websites over time.
+6
+And we've seen that in the cloud, in AWS,
+7
+it's possible for us to create
+8
+and also get rid of servers very quickly
+9
+with the EC2 instance creation API call.
+10
+So, if you wanna automate this,
+11
+we can create an auto-scaling group.
+12
+So the goal of the ASG is to scale out,
+13
+that means add EC2 instances and you need to remember this,
+14
+scale out to match an increased load
+15
+or to scale in that means removing EC2 instances
+16
+to match a decreased load.
+17
+And so therefore the size of our ASG
+18
+is going to vary over time.
+19
+Overall, we can also define parameters
+20
+to ensure we'll have a minimum
+21
+and a maximum number of EC2 instances running at any time
+22
+in our ASG.
+23
+ASG also have the superpower
+24
+that if you are pairing it with a load balancer,
+25
+then any EC2 instances as part of the ASG
+26
+will be linked to the load balancer.
+27
+Another superpower is that
+28
+if one instance is deemed unhealthy, it is terminated
+29
+and a new EC2 instance is created to replace it.
+30
+So, auto scaling groups are free
+31
+and you're only going to pay
+32
+for whatever resources are created underneath
+33
+such as your EC2 instances.
+34
+So let's see how an ESG works in AWS.
+35
+So we set a minimum capacity,
+36
+which is how many instances you want at minimum in your ASG.
+37
+For example, two.
+38
+Then you set a desired capacity,
+39
+which is how many instances you want in your ASG,
+40
+for example, four and then you set a maximum capacity
+41
+which is how many instances
+42
+at a maximum do I want in my ASG.
+43
+And then that means that if you move the desire capacity
+44
+to higher number,
+45
+but that's still less than a maximum capacity,
+46
+then you can scale out as needed.
+47
+That means scale out means adding EC2 instances
+48
+and so therefore your ASG can grow bigger
+49
+and bigger and bigger.
+50
+In this instance, the maximum capacity is seven.
+51
+As I said, the ASG also works with a load balancer.
+52
+So if we have four instances registered in our ASG,
+53
+then the ELB is going to distribute traffic
+54
+to all these instances right away
+55
+and so your users can access a load balanced website.
+56
+But the ELB also has the ability
+57
+to check for the health of your EC2 instances
+58
+using the health check
+59
+and that health check can be passed on to the ASG.
+60
+That means that the ASG can terminate EC2 instances
+61
+if they are deemed unhealthy by the load balancer,
+62
+which is very handy.
+63
+Also, if you scale out, that means if you add EC2 instances,
+64
+then of course the ELB is going to send traffic
+65
+to them as well and spread the load.
+66
+Therefore, it's a really great combination
+67
+to use a load balancer and an auto scaling group.
+68
+Now, in terms of attributes to create your ASG,
+69
+you need to create a launch template.
+70
+There used to be a thing called launch configurations
+71
+but it's deprecated, but the idea is the same.
+72
+A launch template contains information
+73
+on how to launch EC2 instances within your ASG.
+74
+So you have information about the AMI
+75
+and the instance type, the EC2 user data,
+76
+the EBS volumes, security groups, SSH key pair,
+77
+IAM roles for your EC2 instances,
+78
+network and subnet information
+79
+as well as load balancer information and more if you want.
+80
+And so all these parameters look a lot like
+81
+the ones we specified when we created an EC2 instance.
+82
+On top of it, your ASG has a min size,
+83
+a max size and an initial capacity we need to define
+84
+as well as scaling policies.
+85
+Talking about scaling policies,
+86
+let's see how CloudWatch alarm integrates with auto scaling.
+87
+So you don't know what CloudWatch is yet of course,
+88
+but let me just tell you a little bit about it right now.
+89
+So it's possible to scale in and out,
+90
+an ASG based on CloudWatch alarms.
+91
+So for example, we have an ASG right here
+92
+with three EC2 instances
+93
+and the alarm is going to be triggered
+94
+and therefore we're going to get a scale out activity.
+95
+So what would trigger an alarm?
+96
+Well, it's a metric you can return, for example,
+97
+for the average CPU or any custom metric you want.
+98
+So for example, if the average CPU
+99
+as a whole for your ASG is too high,
+100
+then you need to add EC2 instances
+101
+and therefore the alarm is going to be triggered
+102
+and is going to trigger a scaling activity
+103
+in your auto scaling group
+104
+and this is why it's called an auto scaling group
+105
+because paired with alarms,
+106
+there is an automatic aspect of scaling behind the scenes.
+107
+So based on the alarm, we can create scale out policies.
+108
+That means increasing the number of instances
+109
+or we can create scale in policies
+110
+to decrease the number of instances.
+111
+And all these things together are what composes ASG.
+112
+I hope you liked it and I will see you in the next lecture.
+
+--- Auto Scaling Groups Hands On ---
+
+1
+Okay, so let's practice using
+2
+auto scaling groups.
+3
+To do so, first of all, please make sure
+4
+to take your instances and terminate them all
+5
+to have zero instances running in EC2.
+6
+Okay, so next we have to create an auto scaling group.
+7
+So let's go into auto scaling groups on the left hand side
+8
+and we're going to create our first auto scaling group.
+9
+So create auto scaling group.
+10
+Let's name our auto scaling group Demo ASG.
+11
+And we need to refer to a launch template.
+12
+So I'm going to create a launch template right now.
+13
+So when you create a launch template,
+14
+you need to give it a name.
+15
+I will give it my demo template
+16
+as well as a description, templates.
+17
+Okay, so we're going to scroll down
+18
+and specify different options.
+19
+So for the Amazon Machine image I'm going to use,
+20
+I'm going to go into quick start, Amazon Linux.
+21
+I will choose Amazon Linux 2 in the version X86.
+22
+And we'll use a free tier eligible AMI.
+23
+So that's good.
+24
+Next, for instance type, I'm going to select t2 micro
+25
+because it is free tier eligible.
+26
+So anything free tier eligible is good.
+27
+And I will scroll down.
+28
+In terms of key pair, I will include EC2 tutorial.
+29
+So this is defining pretty much
+30
+how EC2 instances within my launch template
+31
+and therefore within my ASG should be launched.
+32
+Okay, so the options are very similar
+33
+to the ones you've seen when you launch an EC2 instance
+34
+on its own.
+35
+For subnets, you don't include it in the launch templates.
+36
+For a firewall security group,
+37
+you can select an existing one.
+38
+For example, your launch wizard 1.
+39
+You have eight gigabytes of gp2 volume.
+40
+This is good.
+41
+And then for advanced details,
+42
+I'm going to scroll all the way down
+43
+and I will find my user data.
+44
+And for user data, I'm going to input the user data
+45
+we used from before.
+46
+So all of it.
+47
+And this is going to allow a web server
+48
+to be created on every EC2 instance as part of this ASG.
+49
+So we're good to go.
+50
+Let's create this launch template.
+51
+It has been created called the my demo template.
+52
+I'm going to refresh it and select it right here.
+53
+So we have my demo template version one.
+54
+We have the summary of it
+55
+and we click on next to keep on going.
+56
+So we choose the instance launch options,
+57
+and the first thing is around instance type requirements.
+58
+So we can override the launch template if we wanted to
+59
+and be very specific around the types
+60
+of the EC2 instances we may want.
+61
+Now all the options are very advanced.
+62
+We can have a look on your own time,
+63
+but we're just going to click on reset to launch templates.
+64
+And the only instance type we're going to create
+65
+is a t2 micro.
+66
+Then we have under network a VPC,
+67
+and then we select multiple AZ
+68
+to launch our instances there.
+69
+And for AZ distribution, we're going to keep it
+70
+as balanced best effort.
+71
+So this ensures that our instances
+72
+are spread across three AZ.
+73
+Next we have optionally integration with a load balancer.
+74
+And so because we have created one before,
+75
+we may want our instances
+76
+and we want our instances to be attached
+77
+to an existing load balancer.
+78
+So to do so, we just attach it
+79
+to a load balancer target group
+80
+and we're going to choose the demo tg alb load balancer
+81
+that we have created from before.
+82
+So now we have all our instances from our ASG attached
+83
+to the load balancer through this target group.
+84
+We don't do anything for VPC Lattice integration,
+85
+we don't do anything for the zonal shift
+86
+and for health checks, we're going to enable
+87
+the EC2 health checks
+88
+as well as the load balancer health checks.
+89
+So that's our load balancer.
+90
+Actually will also check the health of our EC2 instances
+91
+and our ASG can terminate these instances
+92
+in case they are unhealthy.
+93
+Click on next.
+94
+We leave everything for desired capacity
+95
+min and max capacity to one, we'll see scaling in a moment.
+96
+We don't do anything for automatic scaling.
+97
+We'll have a look at it later as well.
+98
+And for instance maintenance policy,
+99
+we just have no policy.
+100
+We'll use default for additional capacity setting
+101
+and we don't touch any of the additional settings.
+102
+So we review notifications,
+103
+we don't want any and we don't need any tags.
+104
+And then when we're good to go, we review all these options
+105
+and then we click on create auto scaling group.
+106
+Okay, so my auto scaling group is created
+107
+and what it's going to do is that it's going to create
+108
+one EC2 instance for me.
+109
+So the idea here is that if I click on my auto scaling group
+110
+and we get some details, we can see the desired
+111
+min and max capacity as well as the launch template
+112
+that was used for this ASG.
+113
+And then if I go into activity,
+114
+this is where the interesting stuff happens.
+115
+So when the ASG will decide to create an EC2 instance,
+116
+it's going to appear in the activity notification.
+117
+So if I refresh this very soon, sorry,
+118
+in the activity history,
+119
+so if I refresh the activity history,
+120
+then I can see that there is a launching
+121
+a new instance right here
+122
+because the auto scaling group has a capacity of zero
+123
+and we wanted one capacity.
+124
+So it's just increasing the number of EC2 instances
+125
+in our ASG to match the desired capacity.
+126
+So if I go to the tab instance management, as we can see,
+127
+one EC2 instance was created by the ASG.
+128
+And so if we go to the instances tab right here,
+129
+we can see that the EC2 instance is currently running
+130
+and initializing.
+131
+So it's pretty cool.
+132
+Now the cool thing is that because we had set up
+133
+our ASG to be linked to our target groups,
+134
+then if we go to the target groups on the left hand side
+135
+and find my first target group
+136
+and go to targets, my EC2 instance is being,
+137
+and I will just expand it.
+138
+My EC2 instance is being registered into my ALB.
+139
+So right now it shows that as unhealthy
+140
+because the objects are failing
+141
+because the EC2 instance is still bootstrapping,
+142
+but if after a bit it passes, it will be shown as healthy
+143
+and then will be registered into my ALB.
+144
+So let me pause the video to wait for that.
+145
+Okay, so my instance is now healthy,
+146
+and then if I go to my ALB
+147
+and refresh, I get the hello world response.
+148
+That means that everything is functioning.
+149
+The instance was created by an ASG,
+150
+we can see it in the EC2 console.
+151
+It was registered into the target group, which is linked
+152
+to our load balancer and therefore our load balancer
+153
+is fully working.
+154
+Now if the instance never gets healthy, it gets unhealthy,
+155
+then because we set up our ASG
+156
+to terminate unhealthy instances,
+157
+what you're going to see is that the instance
+158
+is going to be terminated and a new one will be created.
+159
+So you will see this mostly in the activity history.
+160
+If you do have this, the reason why this is happening
+161
+is that your EC2 instance is misconfigured.
+162
+This could be either a security group issue
+163
+or it could be an EC2 user data script issue.
+164
+So please check those
+165
+before asking questions in the Q&amp;A.
+166
+But these are the errors that you should be having.
+167
+So now we have one EC2 instance and it's in service.
+168
+And what we could do is that we can experience the scaling
+169
+by editing the auto scaling group size.
+170
+So we want two instances
+171
+and so we have to increase the maximum capacity as well.
+172
+So we'll update this.
+173
+And now what we told the ASG is that we want you to create
+174
+one or more EC2 instance for us.
+175
+So if you go to the activity history
+176
+and then refresh it,
+177
+very soon is going to show a new activity
+178
+that it will be trying to be launching an EC2 instance.
+179
+So here we go.
+180
+Now it says launching a new EC2 instance
+181
+because you have changed the desired capacity
+182
+from one to two.
+183
+And the actual number of instances
+184
+in our ASG was only one.
+185
+So now as you can see, we have a second EC2 instance
+186
+being created and after a while
+187
+it's going to be registered
+188
+into our target group and added.
+189
+So we'll post the video for this process to happen.
+190
+Okay, so my instance is now healthy.
+191
+And so if I go to my ALB and refresh, as we can see,
+192
+I got my two IPs that are looping through my ALB.
+193
+So everything is working great.
+194
+And so one last thing.
+195
+So if we go to activities, we can see the two EC2 instances
+196
+were launched successfully.
+197
+Now let's go through the opposite.
+198
+We're going to scale down our capacity
+199
+by putting the desire capacity back to one and update it.
+200
+And what this will do is that it will say,
+201
+hey, it looks like you have two instances,
+202
+but now you need only one.
+203
+So I'm going to pick one of these two instances right here
+204
+and terminate them.
+205
+So as you can see here, it says I'm terminating
+206
+one of these instances because of the change
+207
+of the configuration of the ASG
+208
+and it's going to terminate the instance
+209
+and then de register it from the target group.
+210
+And then we'll be back with only one EC2 instance
+211
+in our ASG.
+212
+So that's it for this lecture.
+213
+You've seen the whole power of ASG
+214
+and I will see you in the next lecture
+215
+to talk about automatic scaling.
+
+--- Auto Scaling Groups - Scaling Policies ---
+
+1
+So we have several scaling policies
+2
+for auto scaling group.
+3
+The first one is dynamic scaling and within this category,
+4
+we have the target tracking scaling,
+5
+which is very simple to set up.
+6
+The idea is that you define a metric for your ASG,
+7
+for example, the CPU utilization
+8
+and you define a target value, for example, 40%.
+9
+And automatically, the ASG is going to scale out or in
+10
+to allow you to keep this metric to around 40%.
+11
+We also have the simple or step scaling
+12
+and the idea is that you define CloudWatch alarms
+13
+that are being triggered when you want to add units
+14
+of capacity to your auto scaling group
+15
+or when you want to remove units of capacity
+16
+to your auto scaling group.
+17
+Then we have scheduled scaling.
+18
+So this is when you anticipate a scaling
+19
+based on a known usage pattern.
+20
+For example, you say that you know that every time
+21
+at 5:00 PM on Fridays, you're going to get new users
+22
+and therefore, you want to increase
+23
+the minimum capacity to 10.
+24
+Then we have predictive scaling.
+25
+So this is when you continuously forecast load
+26
+and then you start scheduling ahead of time.
+27
+So this is very good when you have patterns
+28
+that repeat themselves.
+29
+So automatically, the ASG is going to analyze
+30
+historical load then generate a forecast
+31
+and then schedule scaling actions based on the forecast,
+32
+which can be very handy if you have cyclical data.
+33
+So some good metrics to scale on is a big question.
+34
+So it depends really on what your application is doing
+35
+and how it's working.
+36
+But usually, here are a few.
+37
+So number one is CPU utilization,
+38
+because every time your instance receive a request,
+39
+usually, they will do some sort of computation
+40
+and so it will use some CPU.
+41
+And so if you look at the average CPU utilization
+42
+across all your instances and it goes higher,
+43
+that means that your instances are being more utilized.
+44
+And so it would be a good metric to scale on.
+45
+Another metric to scale on, it's more application-specific,
+46
+but it is a RequestCountPerTarget,
+47
+which is based on your testing,
+48
+you know that your EC2 instances operate
+49
+at an optimal request of 1,000 requests
+50
+per target at a time and so maybe this is the target
+51
+you want to have for your scaling.
+52
+So here as an example.
+53
+You have an auto scaling group with three EC2 instances
+54
+and your ALB is currently spreading the request
+55
+across all of them.
+56
+So right now the value of the request counts
+57
+per target metric is three,
+58
+because each EC2 instance, on average,
+59
+has three requests outstanding.
+60
+Next if your application is network-bound,
+61
+so for example there's a lot of uploads and downloads
+62
+and you know that network is going to be a bottleneck
+63
+for your EC2 instances,
+64
+then you may want to scale on the average network in or out
+65
+to make sure that if you reach some certain threshold,
+66
+then you're going to scale based on that.
+67
+Or any custom metric that you push to CloudWatch,
+68
+so you can set up your own metrics
+69
+that are going to be application-specific
+70
+and based on that, you can set up your scaling policies.
+71
+Now one last thing you need to know about scaling policies
+72
+is what's called a scaling cooldown.
+73
+So the idea is that after there is a scaling activity,
+74
+so whenever you add or you remove instances,
+75
+you are entering the cooldown period,
+76
+which is, by default, five minutes or 300 seconds.
+77
+And during that cooldown period,
+78
+the ASG will not launch or terminate additional instances.
+79
+And the reason behind this reasoning
+80
+is that you allow for metrics to stabilize,
+81
+for your new instance to enter into effect
+82
+and to see what the new metric will become.
+83
+So the idea is that when there is a scaling action
+84
+that occurs, the question is,
+85
+is there a default cooldown in effect?
+86
+If yes, then ignore the action.
+87
+If no, then proceed with the scaling action,
+88
+which is to launch or terminate instances.
+89
+And so an advice to you is to use a ready-to-use AMI
+90
+to reduce the configuration time for your EC2 instances
+91
+in order for them to be serving the request faster.
+92
+So if you don't spend time configuring your EC2 instance,
+93
+then they can be in effect right away.
+94
+And then because they can be active way faster,
+95
+then the cooldown period can be decreased
+96
+and you can have a more dynamic scaling up and down
+97
+of your ASG.
+98
+And of course, you need to make sure to enable
+99
+something like detailed monitoring for your ASG
+100
+to get access to metrics every one minute
+101
+and to make sure that you have
+102
+these metrics being updated fast enough.
+103
+So that's it for this lecture.
+104
+I hope you liked it and I will see you in the next lecture.
+
+--- Auto Scaling Groups - Scaling Policies Hands On ---
+
+1
+Okay, so now let's have a look
+2
+at automatic scaling for your ASG.
+3
+As you can see we have three categories,
+4
+dynamic scaling policies, predictive scaling policies,
+5
+and scheduled actions.
+6
+So let's start with the simplest.
+7
+So schedule actions
+8
+is when you want to schedule a scaling action in the future,
+9
+so you can create one
+10
+and then you say what you want the desired capacity
+11
+or the min or the max to be,
+12
+and then is it once every week, every hour,
+13
+is it's based on a specific schedule and so on?
+14
+And then a start time and an end time
+15
+if you wanted it to be done.
+16
+So this is pretty cool and this is allowing you to schedule
+17
+based on events that you can predict
+18
+and that you know in advance.
+19
+Because you know, for example
+20
+that you're going to run a big promotion next Saturday.
+21
+Next, predictive scaling policies
+22
+is where it's going to be machine learning driven.
+23
+So you need to scale it based on a forecast.
+24
+So you need to have a look at the actual policy
+25
+and the actual scaling based on the past
+26
+and then it will have a look at a metric to look at.
+27
+For example, CPU utilization or network in, network out,
+28
+the application load balancer request counts
+29
+or a custom metric that you want.
+30
+And then you want to, for example,
+31
+to have a target of 50% of CPU utilization for instance,
+32
+and then you can set up some additional settings,
+33
+but based on this,
+34
+and based on the actual scheduled utilization
+35
+for the past week, for example,
+36
+then a forecast is going to be created
+37
+and your ASG is going to be scaling based on that forecast.
+38
+So it's not something I can demonstrate with you
+39
+because I would need to enable this
+40
+for a very long time a week
+41
+and then make sure I have some usage on my application.
+42
+But at least you see that predictive scaling policy
+43
+is quite simple to set up,
+44
+you just specify the metric you want
+45
+and the target utilization,
+46
+and then some machine learning will be applied
+47
+for the scaling to happen.
+48
+So the one policy I can demonstrate to you
+49
+is the dynamic scaling policy.
+50
+So let's go ahead and create a dynamic scaling policy.
+51
+So here we have three options.
+52
+We have target tracking, step scaling and simple scaling.
+53
+So let's have a look at simple scaling first.
+54
+So here we have to specify a name than a CloudWatch alarm,
+55
+which is an alarm that can scale capacity
+56
+whenever it is being triggered.
+57
+So we need to create an alarm beforehand,
+58
+but we'll see this later on.
+59
+And so in case the alarm is being triggered
+60
+and what happens, maybe you want to add two capacity units,
+61
+or maybe you want to add 10% of your group.
+62
+And then add capacity units
+63
+in increments of at least two capacity units.
+64
+So this is a simple scaling policy.
+65
+So we can have a scaling policy that goes out
+66
+by adding instances,
+67
+or that goes in by removing instances here.
+68
+Or you can have a set to action as well.
+69
+And next we have step scaling.
+70
+So this is allowing you to set up multiple an alarm
+71
+and based on the alarm value to have different steps
+72
+to, for example, if the alarm is very, very high
+73
+in terms of the value, then add 10 capacity units.
+74
+But if it's high, but not too high, add one.
+75
+This is the idea behind step scaling,
+76
+but we'll set up a target tracking scaling policy
+77
+because this is going to create a CloudWatch alarms for us.
+78
+So here's the name target tracking policy
+79
+and it will track the average CPU utilization
+80
+of a target value of 40,
+81
+and then I will go ahead and create my policy.
+82
+So now what we're saying is that, hey,
+83
+the goal of this ASG
+84
+is to maintain the CPU utilization to 40.
+85
+And in case, then you go over,
+86
+then please add capacity units.
+87
+So to see this in action, we need to change a few things.
+88
+So right now the main end of the desired
+89
+is one which is good, but let's set the max capacity
+90
+to be three or two whatever happens.
+91
+The idea is that you want to give it a maximum
+92
+that is greater than the minimum
+93
+so that the capacity can go from one to two
+94
+and then to three.
+95
+And so the idea now is that we want the CPU utilization
+96
+of my autoscaling group to be at a target value of 40.
+97
+So if you have a look right now at the CPU utilization
+98
+is going to be zero, obviously.
+99
+So let's have a look at EC2
+100
+is going to be close to zero because,
+101
+well, my EC2 instance is not doing anything.
+102
+So what I want to do is to go to my EC2 instance,
+103
+and I'm going to stress it to make the CPU utilization
+104
+skyrocket to 100%.
+105
+So I'm going to connect to my EC2 instance,
+106
+using EC2 instance connect, and then connect to it
+107
+and then I'll Google install stress Amazon Linux 2.
+108
+Cause there's a few commands and here is the commands,
+109
+so I'll copy the first command in here,
+110
+and then I'll copy the second command to install stress.
+111
+Here we go.
+112
+So stress is installed.
+113
+And then I just run the command stress -C 4
+114
+and this is going to make the CPU go to 100%
+115
+by leveraging four CPU units by making four VCPUs
+116
+being used at a time.
+117
+So this should make my CPU go to 100%
+118
+and so what's going to happen is that
+119
+in my monitoring of my ASG in here,
+120
+what I wanted to happen is to go see the CPU tradition
+121
+to go to something very, very, very high.
+122
+And then in activities, I want to see a scaling action.
+123
+And so that means that I will go from one instance
+124
+to two instances.
+125
+So what I'm going to do is just pause the video until,
+126
+well, enough metrics are being captured
+127
+and until we can see that the CPU utilization
+128
+is at a very high value
+129
+and then we'll see how the target tracking policy works.
+130
+So now I went into activity and under Activity history,
+131
+it says that's a alarm has been triggered
+132
+and due to the target driving policy,
+133
+then the capacity went from one instance to two instances.
+134
+So if I go into instance management,
+135
+as you can see, now I have two EC2 instances
+136
+due to the scaling.
+137
+And if I go into monitoring
+138
+and look at the EC2 level monitoring,
+139
+as we can see the CPU utilization went to a very high value
+140
+and then four scaling happens.
+141
+So how do we know that the scaling happens?
+142
+So if you're going to Automatic scaling, as you can see,
+143
+there is a target tracking policy right here.
+144
+And what I want to show you is the backend.
+145
+So if we go into the CloudWatch service in here
+146
+and go into CloudWatch,
+147
+at the left hand side, I want to go into Alarms.
+148
+So we need to go into alarms.
+149
+As you can see, two alarms are created directly
+150
+by the target tracking policy.
+151
+And one of them is called AlarmHigh, which is to scale out,
+152
+so add instances.
+153
+And one of them is called AlarmLow,
+154
+which is to scale in so less instances.
+155
+And so this one is looking at if the CPU utilization
+156
+is more than 40% for three to the points
+157
+within three minutes, then go into the alarm states.
+158
+And this one is looking at if CPU utilization
+159
+is less than 20 eights for 15 data points, then scale in.
+160
+So this is the idea.
+161
+So this one was in alarm
+162
+and so due to the metric itself, going into the alarm state,
+163
+by having the CPU utilization
+164
+going over that limit right here,
+165
+well, it got triggered
+166
+and this made a scaling activity happen
+167
+from my autoscaling group,
+168
+which in turn made a new instance being in service.
+169
+And so now if I go here and I stop this command
+170
+and I'm not even sure that I can stop it,
+171
+but if I stop this command or let me just finish it
+172
+and to stop this command,
+173
+I can probably go to my EC2 instances and reboot it.
+174
+So I'm going to have a look at this one, I believe,
+175
+and I'm going to reboot it.
+176
+So reboot this instance,
+177
+and I'm going to also reboot that one just in case.
+178
+So this should make my CPU utilization go back to zero
+179
+and this would trigger a scale in action within 15 minutes.
+180
+So I'm going to yet again, pause the video in my ASG
+181
+and see if by any chance within the activity,
+182
+I see a scale in action happening.
+183
+So I will pause right now
+184
+and actually just because I wasn't quick enough
+185
+because the CPU still was high,
+186
+then the desired capacity went from two to three.
+187
+So as we can see yet another instance has been added.
+188
+So this really shows the power of autoscaling group
+189
+and now if I go into instance managements,
+190
+we'll have three EC2 instances,
+191
+and I'm going to have to wait a little while
+192
+until they're being terminated.
+193
+So now let's go back into activity and as you can see,
+194
+more activities have been going on.
+195
+So some instances have been terminated.
+196
+So because the alarm went from the lower CPU
+197
+and then the capacity was set from three to two
+198
+and then one more time from two to one.
+199
+And so if you go into your instance management,
+200
+as you can see, one instance was already terminated
+201
+and the other one is in the terminating phase,
+202
+as that means that's your target tracking policy is working.
+203
+And you can see this by going into this alarm right here.
+204
+And as you can see, the CPU utilization went up
+205
+and then it went down
+206
+and then as soon it's past this 28% threshold,
+207
+then it went to do the alarm state,
+208
+which means that your ASG we'll start removing instances.
+209
+So that really shows the power of target tracking policies.
+210
+When you're done, please make sure to delete this policy
+211
+and you'll be good to go for the cleanup.
+212
+That's it, I will see you in the next lecture.
+

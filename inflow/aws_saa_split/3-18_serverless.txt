@@ -1,0 +1,5047 @@
+--- About the Serverless Section ---
+
+[No transcript available for this lecture]
+
+--- Serverless Introduction ---
+
+1
+Okay, so let's discuss now
+2
+what is serverless.
+3
+So serverless is something new.
+4
+And the developers when you use serverless services,
+5
+you don't have to manage servers anymore.
+6
+So it's not that you don't have servers anymore,
+7
+it's just that you don't manage them.
+8
+You just deploy code
+9
+and originally, you just deploy it functions.
+10
+So initially serverless meant Function as a Service,
+11
+or FaaS.
+12
+But now serverless means a lot more.
+13
+So in the beginning,
+14
+serverless was pioneered by AWS Lambda
+15
+that we'll see in the section,
+16
+but now also includes anything that is remotely managed.
+17
+So databases, messaging, storage,
+18
+as long as you don't provision servers.
+19
+So serverless doesn't mean there are no servers,
+20
+it just means you don't see them
+21
+or you don't provision them.
+22
+So if we drill down into what serverless means,
+23
+in AWS, we have our users
+24
+and they would get for example,
+25
+static content for from our S3 buckets
+26
+delivered as a website's
+27
+or CloudFront plus S3.
+28
+Then we would login with cognito,
+29
+this is where our users would have their identity stored.
+30
+And they would invoke your REST API
+31
+through the API gateway,
+32
+the API gateway would invoke Lambda functions,
+33
+and Lambda functions would store
+34
+and retrieve data from DynamoDB.
+35
+So this is just an example.
+36
+This section is going to be dedicated to
+37
+learning a lot of things around Lambda DynamoDB,
+38
+API Gateway, Cognito, and so on.
+39
+But so it's just to give you an a reference architecture
+40
+for serverless applications.
+41
+So in AWS, it's Lambda DynamoDB, Cognito, API Gateway,
+42
+Amazon S3,
+43
+but also things we've already seen such as
+44
+SNS and SQS,
+45
+yes indeed,
+46
+we did not manage any servers for SQS and SNS
+47
+and it was scaling on its own.
+48
+So that fits the serverless use case
+49
+Kinesis Data Firehose, because again
+50
+it scales
+51
+based on the throughput you have
+52
+you just pay for what you use
+53
+and you don't provision servers,
+54
+Aurora Serverless,
+55
+when your Aurora database
+56
+scales on demand
+57
+without you managing servers,
+58
+step functions and fargate
+59
+because fargate was a serverless function of ECS,
+60
+where we didn't provision the infrastructure
+61
+to run our Docker containers.
+62
+So hopefully this is short
+63
+and sweet introduction to serverless.
+64
+Next lecture, we'll be starting with AWS lambda.
+65
+And it will be a lot of content to learn,
+66
+but the exam does test you heavily
+67
+on your serverless knowledge.
+68
+So let's get started.
+69
+(keys tapping)
+
+--- Lambda Overview ---
+
+1
+Though, what is AWS Lambda
+2
+and why is it helpful for us?
+3
+So let's take an example.
+4
+We are going to start with the Amazon EC2.
+5
+And Amazon EC2, as we know, there are virtual servers
+6
+in the cloud, and we have to provision them,
+7
+so we are limited by the amount of memory
+8
+and CPU we're going to provision.
+9
+They have to be continuously running.
+10
+I mean, we can optimize them by starting them
+11
+and stopping them efficiently,
+12
+but otherwise, they run continuously
+13
+regardless of if something's happening or not
+14
+on your instance.
+15
+And if you wanna scale, you can use Auto Scaling groups,
+16
+but that means that you need to do something
+17
+to automatically add and remove servers.
+18
+Now, this is one way of doing things
+19
+and it has worked great, but then there is AWS Lambda.
+20
+So with Lambda, these are visual functions,
+21
+no servers to manage.
+22
+So that means that we just provision the code
+23
+and the functions run.
+24
+It is limited by time.
+25
+So we're talking about short executions of up to 15 minutes,
+26
+which is, in my opinion, not that short.
+27
+And then finally, they run on demand.
+28
+So that means that when you don't use Lambda,
+29
+your Lambda function is not running
+30
+and you only are going to be billed when your function
+31
+is running and it'll run on demand when it gets invoked,
+32
+which is a huge shift from Amazon EC2.
+33
+Finally, the scaling is automated.
+34
+If you need more Lambda functions occurrences
+35
+and the concurrency,
+36
+then automatically, AWS will provision
+37
+for you more Lambda functions.
+38
+Magical.
+39
+We'll see this in the hands-on.
+40
+So benefits of Lambda, I'm sure you see many.
+41
+First of all, the pricing is super easy.
+42
+You're going to pay for the number
+43
+of requests Lambda receives, so the number of invocations,
+44
+and your compute time.
+45
+So how long Lambda was running for.
+46
+There is a very generous free tier on Lambda,
+47
+which is 1 million Lambda requests
+48
+and 400,000 gigabyte seconds of compute time.
+49
+It is also integrated with so many AWS services
+50
+as we'll see.
+51
+We can use a lot of different programming languages
+52
+on Lambda, so we're quite free.
+53
+And there is very easy monitoring integrations
+54
+through CloudWatch.
+55
+Finally, if you wanted to provision more resources
+56
+per function, you can provision up to 10 gigabytes
+57
+of RAM per function, which is a lot.
+58
+And by the way, you need to know this.
+59
+If you increase the RAM of your function,
+60
+then it will also improve the quality
+61
+and performance of your CPU and network.
+62
+So AWS Lambda can run many languages such as node.js
+63
+for JavaScript, Python, Java, C#, so either .NET Core
+64
+or PowerShell, Ruby, and it supports many other languages
+65
+through something called the custom runtime API,
+66
+for example.
+67
+It supports the Rust or the Golang languages through that.
+68
+You also have the option to use containers on Lambda.
+69
+So this is a container image
+70
+and you must implement what's called the Lambda Runtime API.
+71
+Now, that maybe too advanced from an exam perspective,
+72
+but what don't we should remember
+73
+is that there is a service named ECS or Fargate.
+74
+And so to run container images, especially Docker images,
+75
+it is always going to be preferred from an exam perspective
+76
+to run them on ECS or Fargate versus Lambda,
+77
+even though Lambda supports running some level
+78
+of customized Docker images.
+79
+So you don't need to remember all the languages,
+80
+of course, from Lambda, but just remember
+81
+that it has some level of support.
+82
+The most important ones is going to be, for sure, node.js
+83
+and Python.
+84
+Now, I said that Lambda was integrated
+85
+with so many services, so I'll give you a few
+86
+and some idea of how they're integrated.
+87
+And in this course, we will see some of these integrations.
+88
+So API Gateway is to create a REST API
+89
+and they will invoke our Lambda functions.
+90
+Kinesis will be using Lambda
+91
+to do some data transformations on the fly.
+92
+DynamoDB will be used to create some triggers.
+93
+So whenever something happens in our database,
+94
+a Lambda function will be triggered.
+95
+Amazon is free.
+96
+We've seen it already.
+97
+Lambda function would be triggered anytime,
+98
+for example, a file is created in S3.
+99
+CloudFront, this will be Lambda at edge,
+100
+and I have a lecture dedicated to this in this section.
+101
+CloudWatch Events or EventBridge.
+102
+This is whenever things happen in our infrastructure on AWS
+103
+and we want to be able to react to things.
+104
+For example, say, we have a code pipeline state changes
+105
+and we want to do some automations based on it,
+106
+we can use a Lambda function.
+107
+CloudWatch Logs to stream these logs wherever you want.
+108
+SNS to react to notifications in your SNS topics.
+109
+SQS to process messages from your SQS queues.
+110
+And finally, Cognito to react to whenever, for example,
+111
+a user logs in to your database.
+112
+So these are just the main ones.
+113
+There are tons of Lambda integrations.
+114
+And so I wanna show you a very good example here,
+115
+which is a serverless thumbnail creation.
+116
+So let's say we have an S3 bucket
+117
+and we want to create thumbnails on the flight.
+118
+So there will be an event, which is that the new image
+119
+will be uploaded in Amazon S3.
+120
+This will trigger through an S3 event notification,
+121
+a Lambda function.
+122
+In that Lambda function,
+123
+we'll have code to generate a thumbnail.
+124
+That thumbnail may be pushed
+125
+and uploaded into another S3 Bucket or the same S3 Bucket,
+126
+which will be a smaller version of that image.
+127
+And also, our Lambda function may want to insert some data
+128
+into DynamoDB around some metadata for the image.
+129
+For example, the image name, size, creation date,
+130
+et cetera, et cetera.
+131
+And so thanks to Lambda, we've automated
+132
+and had a reactive architecture to the event of new app,
+133
+new images being created in S3.
+134
+Another example that's extremely popular
+135
+is a serverless CRON job.
+136
+So CRON is a way on your EC2 instances, for example,
+137
+to generate jobs every five minutes
+138
+or every Monday at 10:00 AM, et cetera, et cetera.
+139
+But you need to run CRON on a virtual server,
+140
+so an EC2 instance and so on.
+141
+And so while your instance is not running,
+142
+or at least your CRON's are not doing anything,
+143
+then your instance time is wasted.
+144
+And so as such, you can create a CloudWatch Event rule
+145
+or an EventBridge rule
+146
+that will be triggered every one hour.
+147
+And every one hour, it will be integrated
+148
+with a Lambda function that will perform your task.
+149
+So this is a way to create a serverless CRON
+150
+because in this example, CloudWatch Events is serverless
+151
+and Lambda functions are serverless too.
+152
+Now, let's take an example at the Lambda pricing.
+153
+So you can find all the information on this website
+154
+in case the information here is outdated,
+155
+but it will give you an example of how that works.
+156
+So you pay per calls, the first 1 million requests are free,
+157
+and then you're going to pay 20 cents
+158
+per extra 1 million requests.
+159
+So that makes a very, very cheap request.
+160
+Then you're going to pay per duration in increments
+161
+of one millisecond.
+162
+So you get the first 400,000 gigabytes seconds
+163
+of compute time per month for free.
+164
+And then what that means, this gigabyte seconds
+165
+is that it means you get 400,000 seconds of execution
+166
+if the function has one gigabyte of RAM.
+167
+That means you get eight times as more seconds
+168
+if the function has eight times as less RAM,
+169
+so 128 megabytes of RAM.
+170
+And after that, you're going to pay $1
+171
+for 600,000 gigabyte seconds.
+172
+So to be honest, you can make the math.
+173
+It's usually very, very cheap to run your code on Lambda.
+174
+So it's a very popular option to create your applications.
+175
+So that's it.
+176
+Now, let's go into the hands-on
+177
+to get a feeling of how Lambda works.
+
+--- Lambda Hands-On ---
+
+1
+Okay, so let's practice Lambda.
+2
+And so if you go in the Lambda console
+3
+and you get one of these screens, just go into the URL
+4
+and go to slash and go to slash begin
+5
+because I really like this little UI
+6
+to show you how Lambda is working first.
+7
+It's just to show you a diagram.
+8
+So here we have the Lambda function,
+9
+and as you can see, it can be written in several languages,
+10
+for example, .NET, Java, Node.js, Python, Ruby,
+11
+or a custom runtime if you wanted to
+12
+to have other languages.
+13
+So here, let's take our Node.js and click on Run.
+14
+So it runs and says, "Hello from Lambda."
+15
+Next we click on Lambda Responds to Events.
+16
+So here the pretty cool thing is that
+17
+we have access to different sources of event triggers
+18
+that are going to trigger our Lambda function.
+19
+As you can see right now, we get streaming analytics
+20
+that's sending data into our Lambda function
+21
+and our Lambda function is saying, "Hello from Lambda."
+22
+And so if I somehow click more on all these things,
+23
+so this, the mobile phone and the camera and so on,
+24
+as you can see, my Lambda function is scaling up.
+25
+So right now only have one pair of cogs
+26
+but if I click a lot more, my Lambda is scaling up
+27
+and now I have eight or nine,
+28
+which shows that Lambda can scale seamlessly
+29
+and is very nice because, well,
+30
+you get access to scalability
+31
+without managing any kind of servers.
+32
+So Lambda can respond to events,
+33
+for example, here, streaming analytics
+34
+or your mobile phone sending data
+35
+into a mobile or IOT backend
+36
+or photos being dropped into an S3 bucket
+37
+and Lambda reacting to it in real time.
+38
+So here as we can see,
+39
+the more invocations we have, at first it's free
+40
+because we have a generous free tier,
+41
+but then if we start having a lot more events,
+42
+the invocations are going to increase faster
+43
+and then the cost is going to accumulate.
+44
+So Lambda can be a cheap service,
+45
+but, again, it's for you to estimate your workload
+46
+and see how much it would cost you.
+47
+So here are some information around what's free.
+48
+Next, let's click on Create a Function.
+49
+And so we're going to use a blueprint
+50
+and we're going to use the hello world.
+51
+So hello world, and I will choose Python.
+52
+So it could be whatever Python version you want, but Python.
+53
+And I'll call this one HelloWorld.
+54
+And now we have the execution role.
+55
+So your Lambda function
+56
+is going to be having execution role.
+57
+This is similar to the role you would set
+58
+on an EC2 instance, but this time it's for Lambda function.
+59
+So we're going to create a new role
+60
+with basic Lambda permissions,
+61
+and then this is the function code
+62
+that will be created automatically.
+63
+So let's create this function.
+64
+So my function is now created,
+65
+and as we can see, we have the code right here
+66
+that's available to us.
+67
+And so we have a function
+68
+and it's saying hey, load this function.
+69
+And then we have a handler.
+70
+This is what gets invoked when an event is passed
+71
+and say hey, we have value one equals this,
+72
+value two equals this, value three equals this,
+73
+and then we return just the first event key.
+74
+So it's not very important
+75
+for you to know code or anything like this,
+76
+just so you know that this is the code that gets executed
+77
+whenever our Lambda function is executed.
+78
+So what we can do
+79
+is that we can actually test our function right here
+80
+and we click on Test,
+81
+and as you can see, it has succeeded
+82
+and we get value1 as a result.
+83
+So the input JSON is in the bottom,
+84
+this is our hello-world template
+85
+and key1, value1, key2, value2, key3, value3
+86
+has been passed as a JSON to our Lambda function.
+87
+And our Lambda function returned this log,
+88
+and as you can see, it's successfully executed.
+89
+If I trigger a failure, for example, by removing this key,
+90
+I'm just going to remove it temporarily and then test it,
+91
+my code is going to fail
+92
+because my code does not know how to handle this exception.
+93
+This is just something that I know from the code, okay?
+94
+So I put this back in and I can test it again.
+95
+So we can save our Lambda function
+96
+and we say this is our HelloWorld
+97
+event and we save,
+98
+and now we have saved our test event,
+99
+so now we can test it as many times as we want.
+100
+So we also have the option to monitor our Lambda function.
+101
+So this is where you get invocations from CloudWatch,
+102
+we know some statistics,
+103
+so it takes a bit of time to populate,
+104
+but if you run it and wait, you'll see some stuff here
+105
+and you can click on View CloudWatch Logs.
+106
+This is where you're going to get the logs of your function.
+107
+And so if I look at my log stream one,
+108
+as we can see, we get the first time passed,
+109
+so we get the value1 equals one and so on.
+110
+And then we also get the error
+111
+that happened at some point when I triggered it.
+112
+And so this is cool because we can debug our functions
+113
+directly from the CloudWatch logs.
+114
+Okay, then we get access to come to some configuration.
+115
+So this is where you set
+116
+the general configuration of your Lambda function,
+117
+the memory, and you can set it to very large
+118
+or very small, ephemeral storage,
+119
+the timeout, so how long you want it to run
+120
+before saying it should fail,
+121
+and the execution role.
+122
+So this role, if you click on it,
+123
+is the role that allows you to access CloudWatch.
+124
+So if we look at it,
+125
+this is the basic Lambda role execution.
+126
+And if we look at what it does,
+127
+and we click on this,
+128
+as you can see, the permissions
+129
+is around the CloudWatch Logs.
+130
+And so this allows our Lambda function
+131
+to write to CloudWatch Logs.
+132
+And this is very handy
+133
+because if we wanted to also interact
+134
+with Amazon S3 and so on,
+135
+we would just go ahead and change that role
+136
+and add more permissions to that IAM role.
+137
+Okay, so let's cancel.
+138
+So this is general configuration.
+139
+As you can see, there's tons of configuration
+140
+in the Lambda world, so I don't wanna go over this,
+141
+but two things I wanna show you.
+142
+So first, permissions here.
+143
+So as you can see, the role again is here
+144
+and we get a role summary.
+145
+So we can see that CloudWatch Logs is allowed
+146
+and we have three actions allowed.
+147
+We can do it by resource or by action.
+148
+And then I wanna show you the triggers.
+149
+So currently we have no triggers, but we can add a trigger,
+150
+and this shows you all the sources of events
+151
+that can be triggering a Lambda function.
+152
+So this is a lot of them.
+153
+We have some AWS as well as some partner events,
+154
+but Amazon S3, for example,
+155
+is going to be one of the main use case,
+156
+and you have to select a bucket and event types.
+157
+But this is too much for right now.
+158
+Okay, so we have pretty much seen
+159
+how our Lambda function is working end to end.
+160
+Obviously this is something that can be explored a lot more
+161
+because this is a very complete service,
+162
+but this is good enough for an intro.
+163
+So I hope you liked it
+164
+and I will see you in the next lecture.
+
+--- Lambda Limits ---
+
+1
+So you need to know a few Lambda Limits
+2
+before going into the exam,
+3
+because the exam likes to see if you know these limits
+4
+and these limits are per region.
+5
+So we have some execution limits
+6
+and then we'll have some deployment limits.
+7
+So execution is that the memory allocation
+8
+is between 128 megabytes to 10 gigabytes.
+9
+And this is in 64 megabytes increments.
+10
+And when we increase the memory,
+11
+then we have more vCPU, you understand this now.
+12
+The maximum execution time is 900 seconds
+13
+which is 15 minutes.
+14
+So anything above that is not a good use case for Lambda.
+15
+Environment variables,
+16
+we can only have up to four kilobytes
+17
+of environment variable,
+18
+so a little bit amount of space.
+19
+But there is a temp space
+20
+if you want to pull in some big files
+21
+while we create another function.
+22
+And so this is this capacity in the /tmp folder
+23
+and we have up to 10 gigabytes there.
+24
+We can have up to 1000 concurrent executions
+25
+over Lambda functions.
+26
+This can be increased as well if we do a request.
+27
+But it's good to use reserved concurrency early on.
+28
+Finally, for deployments,
+29
+the max size for your compressed zip is 50,
+30
+uncompressed, it is 250 megabytes.
+31
+So anything above that, for example, big files,
+32
+you should use a /tmp space instead.
+33
+So as I said,
+34
+in case you need to have a big file (mumbles),
+35
+please use that directory.
+36
+And finally,
+37
+again, the environment variables is four kilobytes.
+38
+So once you know all these limits,
+39
+when the exam will ask you a few questions
+40
+such as we need 30 gigabytes of RAM,
+41
+or we need 30 minutes of execution time,
+42
+or we need a big file of three gigabytes,
+43
+then you will know that Lambda is not the right way
+44
+to run this workload.
+45
+I hope that was helpful,
+46
+and I will see you in the next lecture.
+
+--- Lambda Concurrency ---
+
+1
+So now let's talk
+2
+about Lambda concurrency and throttling.
+3
+So the more we invoke our Lambda functions,
+4
+the more we will have concurrent executions
+5
+of our Lambda functions.
+6
+We know this because Lambda can scale
+7
+very, very easily and fast.
+8
+So that means that's if we invoke our Lambda function
+9
+at a low scale, we may have two concurrent executions
+10
+of our Lambda functions.
+11
+But if we have a very high scale of events happening,
+12
+we may have up to 1000 concurrence of Lambda functions
+13
+working together to process whatever comes through.
+14
+So something can do though is to limit the number
+15
+of concurrent execution a Lambda function can do,
+16
+and that is recommended.
+17
+So for this, we can set what's called a reserved concurrency
+18
+and that is set at the function level.
+19
+So this is a limit, and we're saying,
+20
+"Okay, this Lambda function can only have
+21
+"up to 50 concurrent executions."
+22
+So each invocation over the concurrency limits
+23
+will trigger what's called a throttle.
+24
+And there are different behaviors with a throttle
+25
+if it's a synchronous invocation.
+26
+So we invoke our Lambda functions directly
+27
+and we're being throttled,
+28
+it will return a throttle error, 429.
+29
+And if it's an asynchronous invocation,
+30
+it will retry automatically and then go to the DLQ.
+31
+So in case you need a higher
+32
+than 1000 concurrent executions at a time,
+33
+you can just open a support ticket
+34
+to request a higher limits.
+35
+So now that we know about the concept of currency,
+36
+here is something that can happen
+37
+if we don't set the concurrently very carefully.
+38
+So if you don't set any reserve concurrency,
+39
+so any limit on your function concurrency,
+40
+then this could happen.
+41
+So we have our application balancer,
+42
+for example, connected to a Lambda function.
+43
+We have another application where we have few users
+44
+that connect to an API gateway,
+45
+connected to another Lambda function,
+46
+and one last application may be using the SDK and the CLI
+47
+to invoke a Lambda function.
+48
+So when everything is pretty low-level,
+49
+like low throughput of invocation,
+50
+everything is fine.
+51
+But let's say that we are running a huge promotion
+52
+and somehow we get many, many users hammering
+53
+our application load balancers, we're very successful.
+54
+So what happens is that our load balancer
+55
+will be invoking many, many Lambda functions
+56
+and Lambda functions can scale automatically.
+57
+So we'll get up to 1000 concurrent executions.
+58
+So this looks good, right?
+59
+Lambda has scaled.
+60
+But here is the problem.
+61
+All of the concurrent executions
+62
+went to the first application.
+63
+So that means that the application users
+64
+of our API gateway will be throttled.
+65
+And that means that the CLI and SDK will also be throttled.
+66
+So what you get to remember out of this slide
+67
+is that the concurrency limit applies
+68
+to all the functions in your accounts,
+69
+and so you have to be careful because
+70
+if one function goes over the limit,
+71
+it's possible that your other functions get throttled.
+72
+So that's very, very important.
+73
+Next, let's talk about concurrency
+74
+and your asynchronous invocations.
+75
+So let's take the example of S3 event notifications.
+76
+So we are uploading files into our S3 buckets,
+77
+and this creates a new file event
+78
+that will invoke our Lambda functions,
+79
+and say we are putting many, many files at the same time.
+80
+So we get many, many different Lambda
+81
+concurrent executions happening.
+82
+And if the function doesn't have enough
+83
+concurrency available.
+84
+So if it cannot scale up because we have reached the limits,
+85
+then the additional requests are throttled.
+86
+But this is an asynchronous request.
+87
+So for any throttling errors and system error,
+88
+so 429 and 500-series,
+89
+Lambda will return the event to the event queue.
+90
+So remember in the asynchronous mode
+91
+there is an internal event queue,
+92
+and Lambda will attempt to run the function again
+93
+for up to six hours.
+94
+So there's a lot of retries that happens
+95
+due to the throttling and so on.
+96
+Then this retry interval will increase
+97
+in an exponential bucket fashion.
+98
+So from one second to our maximum of every five minutes.
+99
+So this allows your Lambda functions to keep on retrying
+100
+and hopefully one day find the concurrency
+101
+and capacity available to run correctly.
+102
+Okay, so next let's talk
+103
+about cold starts and provisioned concurrency.
+104
+So you may have heard the term before, if you use Lambda.
+105
+So cold start, it means that when you create
+106
+a new Lambda function instance,
+107
+your code has to be loaded and your code outside
+108
+of the handler has to be run.
+109
+So this corresponds to all your initialization.
+110
+So in it.
+111
+And if your initialization is large,
+112
+because you have a lot of code, a lot of dependencies,
+113
+you're connecting to many databases and creating many SDK,
+114
+this process can take a lot of time.
+115
+So that means that the first request
+116
+served by new instances has a higher latency
+117
+than the rest and that may impact your users.
+118
+So if your user is maybe waiting three seconds
+119
+to get a request response,
+120
+that may be very, very slow for them
+121
+and they may experience a cold start
+122
+and may be unhappy with your product.
+123
+So what can you do?
+124
+Well, you can use something
+125
+called a provisioned concurrency.
+126
+That means that you allocate concurrency
+127
+before the function is even invoked.
+128
+So you allocate this concurrency in advance.
+129
+This way, the cold start never happens,
+130
+and all the invocations will have a lower latency.
+131
+And to manage this concurrency, you can...
+132
+This provisioned concurrency,
+133
+you can use Application Auto Scaling.
+134
+For example, for a schedule or target position
+135
+to make sure that you have enough reserved Lambda functions
+136
+to be ready to be used and minimize this cold start problem.
+137
+So please note that whenever before you used
+138
+to launch a Lambda function in a VPC
+139
+that used to take forever.
+140
+So now there was a blog in October and November, 2019
+141
+that has been released by AWS.
+142
+Here is the link.
+143
+And this blog show the improvements they have done
+144
+to dramatically reduce the cold starts in your VPC.
+145
+So the good news is if you were using Lambda before
+146
+the cold starts, really have a minimal impact on your VPC.
+147
+Okay, finally, there's two diagrams you can look
+148
+in your own time to look at the concept
+149
+of reserved concurrency and provisioned concurrency.
+150
+And this graphs, I like them.
+151
+So here's the link in the slides.
+152
+Have a look at them.
+153
+They explain to you how they work.
+154
+I think they're quite complicated to describe
+155
+as is with a slide.
+156
+But have a look at them in your own time,
+157
+and hopefully they will help you understand
+158
+this concept a little bit better
+159
+if I didn't help you right now.
+160
+Okay, so now let's go into the hands-on
+161
+and see how concurrency works.
+
+--- Lambda Concurrency - Hands On ---
+
+1
+So let's have a quick look at the
+2
+concurrency settings within our Lambda function.
+3
+And so for this under configuration,
+4
+we can find on the left hand side, the concurrency tab.
+5
+So right now we have the unreserved account concurrency
+6
+that we're using whenever this function run.
+7
+And we have an unreserved account concurrency
+8
+of 1000 for our entire accounts.
+9
+And this is shared across all the Lambda functions
+10
+in our account.
+11
+But you can edit this, and instead you're saying,
+12
+okay, this Lambda function probably needs some concurrency
+13
+of 20, and you can reserve it.
+14
+In which case, when you save this, then what happens
+15
+is that we have 20 reserve concurrency
+16
+for this Lambda function.
+17
+And your account has 980 unreserved account concurrency
+18
+available to all the other functions.
+19
+So to test concurrency, what we can do is that
+20
+we can reserve concurrency of zero.
+21
+Which means that the function is always throttled,
+22
+which is a good use case to test.
+23
+So now, if we go into our code.
+24
+Or just, we click on test here and just click on test
+25
+then, calling the invoke API action failed
+26
+because we have exceeded the rate.
+27
+So this is the kind of error message you will get
+28
+whenever you go over your reserve concurrency.
+29
+So this is why it is good to set it to zero,
+30
+just to be able to deal with this use case
+31
+maybe in your applications, okay?
+32
+But we can fix this by going back into the concurrency
+33
+and use the unreserved account currency
+34
+or reserve a specific currency for our function.
+35
+Now, if we test this function right now,
+36
+then the execution will work and we'll get
+37
+the results directly from within this window, right here.
+38
+Okay, great.
+39
+Back into our function.
+40
+We can also provision concurrency to
+41
+remove these cold starts.
+42
+And the cold starts wiz,
+43
+are whenever your application first starts
+44
+and it takes a bit of time to initialize.
+45
+In which case we want to keep a warm pool of them,
+46
+the function available to reduce these cold starts.
+47
+And this is the Provisioned Concurrency Configuration.
+48
+So in this case, we need to add a configuration
+49
+and you can set the provisioned concurrency
+50
+either for as alias or a version.
+51
+And we'll see aliases and version very, very soon.
+52
+So alias, we don't have any right now.
+53
+And versions, we cannot apply it to the latest
+54
+because latest is not working for provisioned concurrency,
+55
+we need to publish a version.
+56
+So we'll see how to do this in the future lectures.
+57
+But right now, just want to show you where the setting is.
+58
+And then whenever you have a provisioned concurrency
+59
+for example, we say,
+60
+hey, we want to have five as provisioned concurrency.
+61
+We're going to get some cost associated with it.
+62
+So make sure that you set a number that makes sense for you
+63
+and this is not free.
+64
+So we're not going to say this,
+65
+anyway, we cannot as of right now.
+66
+But that's it for the concurrency settings in Lambda.
+67
+I hope this makes sense.
+68
+And I will see you in the next lecture.
+
+--- Lambda SnapStart ---
+
+1
+so let's talk about Lambda SnapStart,
+2
+so it's a feature
+3
+that improves your Lambda function performance up to 10x
+4
+at no extra cost
+5
+for Java, Python, and .NET,
+6
+so the idea is that we want our Lambda functions
+7
+to run very quickly,
+8
+so what happens when SnapStart is disabled?
+9
+Well, your Lambda function is going to be invoked,
+10
+and then it goes into three life cycle phases,
+11
+so we have the initialize phase.
+12
+This is where your function's gonna be initialized.
+13
+Then it's going to be invoked, and finally, shut down,
+14
+and so what happens
+15
+is that this initialize phase can take a lot of time
+16
+because, well, it can take some time, for example,
+17
+for a Java function to initialize its whole environment,
+18
+and so when you use SnapStart,
+19
+there's going to be an optimization done
+20
+that is that the function is going to be preinitialized,
+21
+and so the idea is that once the function is preinitialized,
+22
+it can directly go into the invoke stage
+23
+and then get to the shutdown stage,
+24
+so the magic is that when you publish
+25
+a new version of your Lambda function,
+26
+then Lambda is going to be
+27
+automatically initializing your function,
+28
+and then a snapshot of the memory and the disk state
+29
+is going to be done,
+30
+and then, that snapshot is what's going to be used
+31
+for low latency access to go directly into the invoke stage,
+32
+so that's it for this optimization called Lambda SnapStart.
+33
+I hope you liked it, and I will see you in the next lecture.
+
+--- Lambda@Edge & CloudFront Functions ---
+
+1
+So let's talk about
+2
+Customization At The Edge.
+3
+So what does it mean?
+4
+Well we know we deploy our functions
+5
+and our applications in a specific region,
+6
+but sometimes using, for example, CloudFront,
+7
+we have the Edge locations are distributing our content.
+8
+And sometimes the modern applications require
+9
+to execute some form of logic at the Edge
+10
+before reaching the application itself.
+11
+So these are called Edge Functions,
+12
+and this is a piece of code that you write
+13
+and that you will attach to your CloudFront distributions.
+14
+The idea is that you want to run these functions
+15
+close to users in order to minimize latency in some cases.
+16
+So CloudFront has two kinds of functions,
+17
+you have the CloudFront Functions and Lambda@Edge.
+18
+The idea will be to be able to understand
+19
+when they are required and their differences,
+20
+and will do this in this lecture.
+21
+But using the Edge Functions,
+22
+you don't have to manage any servers,
+23
+these Edge Functions are deployed globally.
+24
+And the use cases of them,
+25
+for example, would be to customize the CDN content
+26
+coming out of CloudFront.
+27
+Also, you only pay for what you use,
+28
+and it is fully serverless.
+29
+So now let's have a deeper look
+30
+into these things, the use cases.
+31
+The first one is around website security and privacy,
+32
+then we have dynamic web applications at the Edge,
+33
+we can do search engine optimization, SEO,
+34
+we can do intelligent routing across
+35
+Origins and data center,
+36
+Bot mitigation at the Edge,
+37
+real-time image transformation at the Edge,
+38
+A/B testing, user authentication and authorization,
+39
+user prioritization, user tracking and analytics, and so on.
+40
+So this is a lot of different customizations
+41
+we can have using CloudFront Functions and Lambda@Edge.
+42
+So now let's discuss what CloudFront Functions
+43
+are used for and how they work.
+44
+So this is what a typical request
+45
+into CloudFront looks like.
+46
+So the client will do a request into CloudFront,
+47
+and this is called a viewer request,
+48
+because the client views it.
+49
+Then CloudFront will do an origin request
+50
+into your origin server,
+51
+the server will reply to CloudFront,
+52
+so we have an origin response,
+53
+and finally CloudFront sends that response to the client,
+54
+so we have a viewer response.
+55
+Now CloudFront Functions are lightweight functions
+56
+written in JavaScript,
+57
+and they modified the viewer request and response.
+58
+They're used for high-scale,
+59
+latency-sensitive CDN customizations,
+60
+which gives you sub-millisecond startup times,
+61
+and a scale of millions of requests per second.
+62
+As I said, they're used to change viewer request
+63
+and responses only,
+64
+so the view request is after CloudFront
+65
+receives a request from a viewer, we can modify this,
+66
+or the viewer response is to
+67
+before CloudFront forwards the response back to the viewer.
+68
+It's a native feature of CloudFront,
+69
+and the entire code is managed
+70
+from within CloudFront directly.
+71
+Remember, CloudFront Functions high performance,
+72
+high scale only for the viewer request and response.
+73
+Now Lambda@Edge is a bit more,
+74
+so you can modify all of them.
+75
+So these are functions returned in NodeJS or Python,
+76
+and you scale to 1000s of requests per second,
+77
+and it's used to change CloudFront request
+78
+and response, multiple ones, so all of them actually,
+79
+the viewer request and the origin request,
+80
+which is before CloudFront forwards a request to the origin.
+81
+You also have the origin response,
+82
+which is after CloudFront receives the response
+83
+from the origin, and the viewer response,
+84
+which is before CloudFront forwards
+85
+the response back to the viewer.
+86
+You author your function in one region,
+87
+which is us-east-1, which is the same region
+88
+where you manage your CloudFront distributions,
+89
+and then CloudFront is going to replicate this function
+90
+to all of its locations.
+91
+So we have a table here to differentiate
+92
+between CloudFront Functions and Lambda@Edge.
+93
+So one notable difference is the runtime support,
+94
+of course JavaScript only for CloudFront Functions,
+95
+and then NodeJS and Python for Lambda@Edge.
+96
+The scale is really, really high scale
+97
+for CloudFront Functions, we're talking about
+98
+millions of requests per second,
+99
+versus thousands for Lambda@Edge.
+100
+Now where the trigger is happening is a big difference.
+101
+So Lambda@Edge has impact on both
+102
+the viewer request and the origin,
+103
+whereas the CloudFront Functions is only on the viewer.
+104
+And very important, the max execution time
+105
+is less than one millisecond for CloudFront Functions,
+106
+so they're very, very quick and simple functions.
+107
+Whereas for Lambda@Edge you can get
+108
+up to 5 to 10 seconds,
+109
+so you can perform a lot of logic in these functions.
+110
+The rest, you can have a look, okay?
+111
+Now in terms of use cases,
+112
+CloudFront Functions is going to be for
+113
+cache key normalization,
+114
+so to transform, for example the request attributes
+115
+to create an optimal cache key.
+116
+Header manipulation to insert, modify, or delete
+117
+HTTP headers in the request or response,
+118
+or to do URL rewrites or redirects,
+119
+or to request of an authorization
+120
+to create and validate JWT tokens to allow or deny request.
+121
+So all these things can be executed
+122
+in less than one millisecond,
+123
+whereas Lambda@Edge has a longer execution time,
+124
+it could be up to 10 seconds, for example.
+125
+You have adjustable CPU and memory,
+126
+so you can load a lot of libraries,
+127
+and your code can depend therefore,
+128
+on third party libraries, such as the SDK
+129
+if you wanted to access other AWS services.
+130
+You also have network access to external services
+131
+for processing the data,
+132
+so you can really perform some big integrations.
+133
+And Lambd@Edge gives you file system access,
+134
+or access to the body itself of the HTTP request,
+135
+so you can do some more customizations.
+136
+So hopefully that helps you.
+137
+I hope you liked this lecture,
+138
+and I will see you in the next lecture.
+
+--- Lambda in VPC ---
+
+1
+Now let's talk
+2
+about some networking fundamentals for Lambda.
+3
+So by default, when you launch your functions
+4
+they're launched outside of your own VPC.
+5
+They're actually launched in an AWS own VPC.
+6
+So you do not have access to resources within your VPC.
+7
+So if you launch an RDS database, an ElastiCache Cache,
+8
+or an internal load balancer
+9
+then your Lambda function will not have access to it.
+10
+So this is the default Lambda deployment.
+11
+It will work if it needs to access any
+12
+public API on the internet.
+13
+It will work if it needs to access DynamoDB
+14
+because DynamoDB is a public resource on the AWS cloud.
+15
+But if you have a private RDS database,
+16
+the connectivity will not be working.
+17
+You know where this is getting to
+18
+we need to actually launch your Lambda function in your VPC.
+19
+So this is an option you can do
+20
+and you need to specify therefore, your VPC ID,
+21
+the subnets you want to launch in,
+22
+and attach a security group to your Lambda function.
+23
+Then your Lambda will have a elastic network interface
+24
+in your subnets, and therefore it will be able to
+25
+access your Amazon RDS, for example, running in your VPC.
+26
+So this is how we launch a Lambda function
+27
+in your private subnets.
+28
+And therefore you will have private connectivity
+29
+to anything in your VPC, which is good.
+30
+So a major use case of Lambda in a VPC
+31
+is to use Lambda with the RDS proxy.
+32
+So again, we have an RDS database in a private subnet
+33
+but we have our Lambda functions
+34
+and they access it directly.
+35
+But the problem is that
+36
+if they access your RDS database directly
+37
+it's going to be huge problem,
+38
+because if you have many of the functions
+39
+appearing and disappearing over time,
+40
+then you may have too many open connections
+41
+under high load on your RDS database
+42
+and it will lead to timeouts and issues.
+43
+So instead, what you would do is to launch an RDS proxy
+44
+and this proxy was going to pull connection and connect
+45
+with less connections into your RDS database instance.
+46
+So your Lambda functions now connect to the RDS proxy
+47
+which connects to the RDS database instance
+48
+and you've solved your architectural problems.
+49
+So three benefits of the RDS proxy is that number one
+50
+it improves scalability
+51
+by pulling and sharing database connections.
+52
+Also, in case of a failover,
+53
+this will improve the availability by reducing by 66%
+54
+the failover time and preserving connections.
+55
+This is for RDS and Aurora, of course.
+56
+And also if you wanted to enforce IAM authentication
+57
+you could enforce it at the RDS proxy level
+58
+and store these details in secrets manager.
+59
+So for this to work for the Lambda functions
+60
+to connect to your RDS proxy,
+61
+you need to launch your Lambda functions in your VPC,
+62
+if that makes sense,
+63
+because your RDS proxy is never publicly accessible.
+64
+And therefore, if you launch your Lambda functions publicly
+65
+you will have no network connectivity
+66
+to your RDS proxy because it is never public.
+67
+So if you understand this
+68
+you will be able to solve one or two questions at the exam.
+69
+Okay, that's it.
+70
+I hope you liked it.
+71
+And I will see you in the next lecture.
+
+--- RDS - Invoking Lambda & Event Notifications ---
+
+1
+Is there a tight integration from RDS, Aurora, and Lambda?
+2
+Well, we can actually invoke Lambda functions
+3
+from within your database instance in some cases.
+4
+And this would allow you to actually process data events
+5
+happening from within your database.
+6
+So this is supported, for example,
+7
+by RDS for PostgreSQL, and Aurora MySQL.
+8
+And the idea is that, for example,
+9
+a user is going to insert an event data into your table,
+10
+your registration table.
+11
+And RDS will be set up
+12
+to directly invoke your Lambda function.
+13
+Your Lambda function may send a welcome email to your user,
+14
+and then the user will receive it.
+15
+This is something that you have to set up
+16
+from within the database by connecting to it.
+17
+This is not something that you set up from the AWS console.
+18
+And when you do do that
+19
+the RDS instance is the one invoking your Lambda function.
+20
+And so therefore you must sure to have allowed
+21
+the inbound traffic from the RDS database instance
+22
+to the Lambda function through whatever way,
+23
+either because your Lambda is on the public interest.
+24
+So we can use the Invoke,
+25
+or the NAT gateway, or the VPC endpoints and so on.
+26
+But network connectivity is important.
+27
+On top of it, of course,
+28
+because your RDS database instance is going to
+29
+invoke your Lambda function,
+30
+then you must have the required permissions
+31
+to invoke the Lambda function.
+32
+And so you make sure that your database instance
+33
+has a proper IAM policy.
+34
+This is completely different
+35
+from using the RDS event notifications.
+36
+So these notifications are happening within AWS
+37
+and there are notifications that tell you information
+38
+about the database instance itself.
+39
+For example, when it was created,
+40
+when it was started, and so on.
+41
+And you don't have any information
+42
+of the data happening within your database.
+43
+So don't fall for this trap.
+44
+You can subscribe, for example,
+45
+to events about your database instance,
+46
+your database snapshots, your parameter group,
+47
+your security group, your proxy,
+48
+or the custom engine version.
+49
+But you're not gonna get information
+50
+about the data within your database.
+51
+You get near real time events,
+52
+so up to five minutes of delivery.
+53
+And then you can send these to SNS,
+54
+or you can also intercept them in EventBridge.
+55
+So from SNS, we can, for example,
+56
+send them to an SQS Queue, or a Lambda function.
+57
+And from Event Bridge
+58
+you can have so many different destinations,
+59
+including, for example, a Lambda function.
+60
+But remember, you do not get information
+61
+about the data events themselves.
+62
+You have to use the previous methodology
+63
+as I've shown you from before.
+64
+Okay, that's it for this lecture,
+65
+I hope you liked it.
+66
+And I will see you in the next lecture.
+
+--- Amazon DynamoDB ---
+
+1
+So now let's talk about a database
+2
+that will appear quite a lot at the exam
+3
+from an architectural point of view,
+4
+which is Amazon DynamoDB.
+5
+So it's a fully managed database, it's highly available,
+6
+and it has replication of data across multiple AZs.
+7
+DynamoDB is special because it is Cloud native,
+8
+it's made by AWS's proprietary and it's a NoSQL database.
+9
+So it's not a relational database like RDS and Aurora
+10
+although it has still transaction supports.
+11
+So with DynamoDB, the use case is that
+12
+you can scale to massive workloads
+13
+because the database is internally distributed.
+14
+That means you can scale
+15
+to millions of requests per seconds,
+16
+trillions of rows and hundreds of terabytes of storage.
+17
+The idea is that, and you need to remember this,
+18
+you have single digit millisecond performance
+19
+which is going to be fast, of course, and consistent.
+20
+Also for all your security needs,
+21
+everything is integrated with IAM.
+22
+So for security, authorization, and administration,
+23
+it's low cost, has auto-scaling capabilities
+24
+that we'll see in a second,
+25
+and there is no maintenance or patching,
+26
+it's always available.
+27
+So you don't need to provision a database,
+28
+it's already there.
+29
+You just need to go ahead and create a table
+30
+and say how much capacity you want to put in this table.
+31
+You have two kind of table class,
+32
+you have the standard class for frequently accessed data
+33
+and you have the infrequent access,
+34
+the IA table class for infrequently accessed data.
+35
+So the basics of DynamoDB is that
+36
+DynamoDB is made of tables
+37
+but you don't need to create a database, okay?
+38
+It's not like Aurora and RDS,
+39
+the database is already there,
+40
+that is the service named DynamoDB.
+41
+So you go ahead and you create tables
+42
+and each table will have a primary key
+43
+and you decide on this at the creation time,
+44
+and then you add data.
+45
+So each table can have an infinite number of items
+46
+and there are rows and each item will have attributes.
+47
+And they're pretty much columns, but you can add
+48
+the attributes over time and they can be null.
+49
+So this is a big difference in an RDS or Aurora database,
+50
+you can add columns over time, but it's complicated process
+51
+and it can be difficult to evolve your schemas.
+52
+But then in DynamoDB, you can add attributes just like that
+53
+over time without any pre-requirements.
+54
+So the item size, the maximum item size in DynamoDB
+55
+is 400 kilobytes,
+56
+so DynamoDB is not there to store very large objects.
+57
+You have different data types supported,
+58
+you have the Scalar types such as String, Number, Binary,
+59
+Boolean, and Null, you have list, and maps, and sets.
+60
+So DynamoDB is at the exam,
+61
+gonna be a great choice if you need to see from
+62
+the exam that the schema,
+63
+so that means how your data looks, how it's shaped,
+64
+if the schema needs to rapidly evolve.
+65
+In that case, DynamoDB is a much better choice
+66
+than Aurora or RDS,
+67
+so look for this at the exam.
+68
+So here is an example of a table in DynamoDB.
+69
+We have a partition key,
+70
+optionally a sort key, which composes your primary key,
+71
+and then we have attributes
+72
+and then it looks just like a database, okay?
+73
+But it's possible, for example,
+74
+for your attributes to be null or to add attributes
+75
+over time, which makes the strength of DynamoDB.
+76
+Another thing you need to choose,
+77
+if you need to choose DynamoDB
+78
+is the capacity mode for reads and writes.
+79
+So you can control how to manage your table's capacity
+80
+and there are two modes you need to know about.
+81
+There is the provision mode, which is the default
+82
+in which you are going to provision the capacity in advance,
+83
+so you're going to say how many reads
+84
+and writes you expect per second
+85
+and that's going to be your capacity of your table,
+86
+so you need to plan the capacity beforehand
+87
+and then you're going to pay for every provision RCU or WCU
+88
+which stands for Read Capacity Units
+89
+or Write Capacity Units.
+90
+Although if you want a planned capacity,
+91
+you can still automatically adjust it
+92
+thanks to autoscaling,
+93
+which will increase or decrease your RCU and WCU
+94
+over time based on the load of your table.
+95
+So this is the provision mode and it works great
+96
+if your load is predictable, it evolves smoothly,
+97
+and you wanna do some cost saving
+98
+but there is also the On-Demand Mode.
+99
+And here, the read and writes capacity
+100
+will scale automatically with your workload.
+101
+There's no capacity planning needed,
+102
+there is actually no concept of RCU and WCU,
+103
+so instead in the On-Demand Mode
+104
+you're going to pay exactly for what you use,
+105
+so for every single writes
+106
+and every single reads you're going to pay for it.
+107
+So it's a lot more expensive as a solution
+108
+but it's going to be amazing for unpredictable workloads
+109
+or workloads that have steep, sudden spikes.
+110
+So again, these are some keywords you need to look
+111
+at for the exam,
+112
+if you have an application that will scale
+113
+from a thousand transactions
+114
+to 1 million transactions in less than a minute,
+115
+Provision Mode is not going to be good for you
+116
+because it doesn't scale fast enough.
+117
+So in that case, you need to use On-Demand Mode
+118
+or if you have a workload that has no transactions at all,
+119
+maybe four or five times a day maximum then
+120
+On-Demand Mode is great because you're only going to pay
+121
+for these four or five transactions.
+122
+So look out for the differences and these keywords
+123
+and you will be able to select
+124
+between Provision Mode and On-Demand Mode.
+125
+So that's it for the DynamoDB basics,
+126
+I hope you liked it and I will see you in the next lecture.
+
+--- Amazon DynamoDB - Hands-On ---
+
+1
+So let's have a first look at DynamoDB.
+2
+And so DynamoDB allows us to create table.
+3
+As you can see, I just click on create table
+4
+and there's no such thing as
+5
+creating a database. So right away,
+6
+we have to create a table,
+7
+which makes it a serverless database.
+8
+So the table is going to be DemoTable.
+9
+And here we have to choose what's called a partition key
+10
+and optionally a sort key.
+11
+And the combination of these two columns
+12
+is going to make your primary key.
+13
+So to make it very simple, I would just have user ID
+14
+as my partition key, and I will not specify a sort key.
+15
+Now for the settings. This is where it gets important
+16
+from an exam perspective. So we're going to customize
+17
+the settings to have a look at all the options we have.
+18
+So, for read and write capacity settings,
+19
+we have two options.
+20
+We can either go on-demand or provisions.
+21
+So on demand is very simple.
+22
+We're going to pay for the actual reads and writes
+23
+that your application will perform.
+24
+And again, I said, this is great when your application has
+25
+unpredictable workloads, because on-demand
+26
+is two to three times more
+27
+expensive than provision capacity.
+28
+So use at your own risk obviously,
+29
+but this can be a great case and a great fit for many
+30
+kinds of scenarios.
+31
+And this is what the exam will test you on.
+32
+Now, provisioned is when you need to
+33
+manage and optimize your cost by allocating
+34
+read and write capacity in advance.
+35
+So we have two options. We have read capacity,
+36
+and write capacity. And so for these,
+37
+we have either auto scaling, on and off.
+38
+So auto-scaling applies to read and write capacity.
+39
+So if we specified off,
+40
+then we've provisioned capacity unit.
+41
+So we can set, for example,
+42
+I want to provision 10 capacity units,
+43
+and for right capacity you can say,
+44
+I want to provision five right capacity units. Okay.
+45
+So that's one way of doing it.
+46
+Or if we don't know ahead of time,
+47
+what we'll need in terms of capacity,
+48
+we can say, hey, min is max. Min is one.
+49
+Max is 100 and I want a target utilization of 70%.
+50
+And automatically auto-scaling activities will take place to
+51
+manage your read capacity,
+52
+to match about the 70% of the target utilization,
+53
+which is true for read capacity and for write capacity.
+54
+So I'm going to turn it off right now and I'll just set it
+55
+to one and one, but it shows you these two very,
+56
+very important options you need to know.
+57
+Next we have indexes. And indexes I will discuss them
+58
+in the next lecture, so let's skip them for now.
+59
+And by the way, if you want to know how to find out
+60
+which read and write capacity is right for you,
+61
+there's a capacity calculator.
+62
+Now this is a bit more complex.
+63
+This is more relevant for the developer exam.
+64
+So I'm not going to go over it.
+65
+Okay.
+66
+So we're going to scroll down.
+67
+So as you can see, because we have one RCU and one WCU,
+68
+we have an estimated cost of 71 cents
+69
+per month for this table.
+70
+So this gives you information around the
+71
+pricing of DynamoDB.
+72
+Okay, now we will enable encryption at rest,
+73
+and then I will click on create table.
+74
+So now that my table is created, I can click on it.
+75
+And then on the right hand side,
+76
+I can have a look at view items.
+77
+And this is just to show you how we can
+78
+insert items into our DynamoDB table.
+79
+So as we can see, you can create an item.
+80
+And when you specify a user ID, for example,
+81
+stephane under score 1 2 3,
+82
+and then we can start adding attributes into this table.
+83
+So we can say, name is Stephane Maarek.
+84
+And then we can have an example around another one,
+85
+for example, favorite movie,
+86
+and you can say Memento, and then it may be a number.
+87
+Favorite number...
+88
+42.
+89
+Okay. And we're going to create this item.
+90
+And as you can see, now, the item has been
+91
+inserted into my table.
+92
+So it's quite easy to reason about,
+93
+and we can create another item, obviously.
+94
+We can say Alice 4 5 6,
+95
+and again, we can set the name
+96
+of Alice to be Alice Doe.
+97
+And then we can just say
+98
+favorite...
+99
+movie and then Pocahontas.
+100
+Okay, great.
+101
+So I will create this item and maybe we can add also a
+102
+number called age in here.
+103
+I will say...
+104
+23.
+105
+Okay. Let's create this item.
+106
+So as you can see, in this example,
+107
+I specify different attributes for Alice, then Stephane.
+108
+And the idea is that in DynamoDB,
+109
+you don't need to have all the
+110
+attributes filled out for all the items.
+111
+Actually, every item can have different attributes.
+112
+So this show you the whole power of DynamoDB table,
+113
+and no SQL type of technology versus SQL type of technology.
+114
+So it's very simple.
+115
+Now we have Alice and Stephane in our table,
+116
+and I'm not going to go too deep into DynamoDB.
+117
+As you can see, there are a lot of options.
+118
+So if we go back into our table,
+119
+there are a lot of options in here available to us.
+120
+But in the next lecture,
+121
+what I will do is I will describe what are some of these
+122
+options that can be important for the exam are.
+123
+And what you need to see just in this lecture was how to set
+124
+the read and write capacity units or the on-demand mode,
+125
+as well as inserting some data into the DynamoDB table.
+126
+So I hope you liked it,
+127
+and I will see you in the next lecture.
+
+--- Amazon DynamoDB - Advanced Features ---
+
+1
+So let's talk about the advanced features
+2
+that can come up at the exam for DynamoDB.
+3
+And the first one is DynamoDB Accelerator or DAX.
+4
+So this is a fully-managed, highly available,
+5
+and seamless in-memory cache for DynamoDB.
+6
+The idea is that if you have a lot of reads
+7
+on your DynamoDB table,
+8
+then you can create a DAX cluster
+9
+to solve read congestion by caching the data.
+10
+And with DynamoDB DAX,
+11
+you get microseconds latency for cached data.
+12
+So this is something you have to look out for
+13
+in terms of keywords at the exam.
+14
+It doesn't require for you
+15
+to change any of your application logic
+16
+because the DAX cluster is compatible
+17
+with the existing DynamoDB APIs.
+18
+So you have your DynamoDB tables and your application,
+19
+and you will just create a DAX cluster
+20
+made of few cache nodes, connect to this DAX cluster.
+21
+And then behind the scenes,
+22
+the DAX cluster is connected to your Amazon DynamoDB table.
+23
+The cache has a default TTL of five minutes,
+24
+but you can change this.
+25
+So you may ask me,
+26
+why should I use DAX and not elastic cache?
+27
+Well, DAX is in front of DynamoDB
+28
+and it's going to be very helpful
+29
+for individual objects cache or queries,
+30
+and scanned queries' cache.
+31
+But if you want to store, say, aggregation results,
+32
+then Amazon ElastiCache is a great way to do it.
+33
+So if you want to store a very big computation
+34
+that you've done on top of Amazon DynamoDB.
+35
+So they're not drop-in replacements for one another,
+36
+they're actually complementary.
+37
+But most of the time,
+38
+for caching solution on top of Amazon DynamoDB,
+39
+it's just going to be using DynamoDB Accelerator DAX.
+40
+You can also do stream processing on top of DynamoDB.
+41
+The idea is that you want to have a stream
+42
+of all the modifications that happen on your table.
+43
+Would it be create, update, and delete.
+44
+And the use cases for that will be, for example,
+45
+to react to changes on your DynamoDB table in real time.
+46
+For example, to send a welcome email
+47
+whenever you have a new user in your user's table.
+48
+Or if so, you may wanna do real-time usage analytics,
+49
+or maybe you want to insert data into a derivative table,
+50
+or you want to implement cross region replication,
+51
+or you want to invoke Lambda on any changes made
+52
+on your DynamoDB table.
+53
+So two kind of stream processing on DynamoDB.
+54
+You have DynamoDB Streams, with 24 hours retention,
+55
+a limited number of consumers,
+56
+and is going to be greatly used with Lambda triggers.
+57
+Or if you wanted to read it yourself,
+58
+there is something
+59
+called the DynamoDB Stream Kinesis Adapter.
+60
+Or you can also choose to send all your changes
+61
+directly into a Kinesis Data Streams.
+62
+And here you can have up to one year of retention,
+63
+you can have a much higher number of consumers,
+64
+and you have a much higher number
+65
+of ways to process the data,
+66
+whether we blend the functions, Kinesis Data Analytics,
+67
+Kinesis Data Firehose, Glue Streaming ETLs, and so on.
+68
+So let's have a look at an architectural diagram
+69
+to understand DynamoDB Streams better.
+70
+So your application does create updates
+71
+and delete operations on top of your DynamoDB table,
+72
+which is going to be either a DynamoDB Streams
+73
+or a Kinesis Data Streams.
+74
+If you choose to use Kinesis Data Streams,
+75
+then you can use Kinesis Data Firehose.
+76
+And from this, you can send your data into Amazon Redshift
+77
+for analytics purposes,
+78
+or Amazon S3 if you want to archive some of the data,
+79
+or Amazon OpenSearch to do some indexing
+80
+and some searches on top of it.
+81
+Or if you are using DynamoDB Streams,
+82
+you can have a processing layer
+83
+and you can use either the DynamoDB KCL Adapter
+84
+to run your applications
+85
+on top of EC2 instances or Lambda functions.
+86
+And from there, do some notifications on top of SNS
+87
+or do some filtering and transformations
+88
+into another DynamoDB table.
+89
+Or use the processing layer to do whatever you want,
+90
+such as, again, send the data to Amazon OpenSearch.
+91
+So I didn't represent all the possibilities
+92
+or our architectures.
+93
+Of course, you can have EC22 instances
+94
+reading from Kinesis Data Streams.
+95
+You can have Kinesis Data Analytics and so on
+96
+on top of Kinesis Data Streams, many, many transformations.
+97
+But again, you know enough now
+98
+to figure out what is going to be the right architecture
+99
+at the right time.
+100
+DynamoDB also has a concept of global table.
+101
+So a global table is a table, of course,
+102
+that is going to be replicated across multiple regions.
+103
+So you can have a table in US-East-1
+104
+and a table in AP-Southeast-2.
+105
+And there is a two-way replication between the tables.
+106
+That means that you can write to a table
+107
+either in US-East-1 and AP-Southeast-2.
+108
+So here, the idea with global tables
+109
+is to make DynamoDB accessible
+110
+with low latency in multiple regions.
+111
+And it is an Active-Active replication.
+112
+That means that your applications can read and write
+113
+to the table in any specific region.
+114
+And to enable global tables,
+115
+you must first enable DynamoDB Streams
+116
+because this is the underlying infrastructure
+117
+to replicate the table across regions.
+118
+DynamoDB also has a feature named Time To Live, or TTL.
+119
+The idea is that you want to automatically delete items
+120
+after an expiry timestamp.
+121
+So you have your table, SessionData,
+122
+and then you will have one last attribute
+123
+called ExpTime, which is your TTL,
+124
+and it has a timestamp in it.
+125
+And the idea is that you're going to define a TTL.
+126
+And as soon as the current time in the Epoch timestamp
+127
+is going to be over your ExpTime column,
+128
+then automatically it's going to expire items
+129
+and then eventually delete them through a deletion process.
+130
+So the idea is that the items in your data table
+131
+are going to be deleted after a while.
+132
+So the use cases for this will be to only store data
+133
+by keeping only the most current items
+134
+or to adhere to regulatory obligations by,
+135
+for example, deleting data after two years.
+136
+Or another use case that is very common at the exam
+137
+is the web session handling.
+138
+So a user would log into your website,
+139
+and then would've a session.
+140
+And you would keep the session in a central place,
+141
+such as DynamoDB for two hours.
+142
+And you would set the session data there
+143
+and any kind of applications can access it.
+144
+And at some point, after two hours,
+145
+if it hasn't been renewed,
+146
+then it will expire and move away from this table.
+147
+You can also use DynamoDB for disaster recovery.
+148
+So what are your backups options?
+149
+Well, you can have continuous backups
+150
+with point-in-time recovery, PITR.
+151
+So it's optionally enabled,
+152
+but you can have it for the last 35 days.
+153
+And then if you enable it,
+154
+you can do a point-in-time recovery
+155
+to any time within the backup window.
+156
+And if you do happen to do a recovery,
+157
+then it will create a new table.
+158
+If you wanted to have longer term backups,
+159
+then you can use on-demand backups,
+160
+and they will be retained until you delete them explicitly.
+161
+And doing these kind of backups
+162
+do not affect the performance
+163
+or the latency of your DynamoDB table.
+164
+And if you wanted to have
+165
+a better management of your backups,
+166
+you can use the AWS Backup Service,
+167
+and this will enable you to have lifecycle policies
+168
+for your backups and so on.
+169
+And also copy your backups across regions
+170
+for disaster recovery purposes.
+171
+And again, if you were to do a recovery
+172
+of one of these backups, it will create a new table.
+173
+Now, let's talk about the integrations
+174
+between DynamoDB and Amazon S3.
+175
+So you can export a table into S3, just like this.
+176
+And to do so, you must enable point-in-time recovery
+177
+and you would export DynamoDB table into S3.
+178
+For example, if you wanted to do some queries,
+179
+for example, using the Amazon Athena engine.
+180
+So you can export at any point in time
+181
+during the last 35 days
+182
+because you've enabled continuous backups.
+183
+And when you do an export,
+184
+this does not affect the read capacity of your table
+185
+or your performance.
+186
+So with this, you can perform,
+187
+for example, data analysis on top of DynamoDB
+188
+through exporting through Amazon S3 first.
+189
+You can also use this to retain snapshots for auditing,
+190
+or to do any kind of big transformation,
+191
+maybe any ETL of the data before importing it back
+192
+into a new DynamoDB table, for example.
+193
+The format of the export can be in DynamoDB JSON
+194
+or the ION format.
+195
+And similarly, you can import to Amazon S3.
+196
+So you can export from S3 into the CSV, JSON, or ION format
+197
+back into a new DynamoDB table.
+198
+And this does not consume any write capacity
+199
+and it will create a new table.
+200
+If there are any import errors,
+201
+they will be logged in CloudWatch Logs.
+202
+So that's it for DynamoDB. I hope you liked it.
+203
+And I will see you in the next lecture.
+
+--- API Gateway Overview ---
+
+1
+So, so far in our serverless journey,
+2
+we've seen how to create Lambda functions
+3
+and we've seen how to use DynamoDB.
+4
+And so the functions can use DynamoDB
+5
+as a database for our API, and we can do create, read,
+6
+update, delete on our tables,
+7
+but we'd like our clients to be able to invoke
+8
+this Lambda function in some way.
+9
+So there are multiple of doing it.
+10
+We can have the client directly invoke the Lambda function,
+11
+but that means that the client would need IAM permissions,
+12
+or we've seen we can use an application load balancer
+13
+to have it in between the client and the Lambda function
+14
+and that would expose our Lambda function
+15
+as an HTTP endpoint.
+16
+There's one last thing we can use.
+17
+It's called the API Gateway.
+18
+And this is a serverless offering from AWS
+19
+which allows us to create REST APIs
+20
+that are going to be public and accessible for our clients.
+21
+So the client will talk to the API Gateway
+22
+and the beautiful things that the API Gateway
+23
+will then proxy the request to our Lambda functions.
+24
+So it would use an API Gateway
+25
+because it provides us more than just an HTTP endpoint.
+26
+It will provide us a lot of features
+27
+as we'll see in this section,
+28
+such as authentication, such as usage plans,
+29
+development stages and all that kind of things.
+30
+So the API Gateway has a lot of features
+31
+and this is just an overview,
+32
+but we can integrate the API Gateway and Lambda
+33
+and that gives us a full serverless application.
+34
+So no infrastructure to manage.
+35
+We have support for the WebSocket Protocol
+36
+so we can do real-time streaming
+37
+through the API Gateway in two different ways.
+38
+The API Gateway handle API versioning.
+39
+So we can go from version one to version two
+40
+and version three and not break our clients.
+41
+We can handle multiple environments
+42
+that includes a dev, a test and the prod environment.
+43
+There is a whole thing about API Gateway and security.
+44
+So there's a tons of way to enable security
+45
+on your API Gateway
+46
+for both authentication and authorization.
+47
+We have the ability to create API keys,
+48
+do request throttling in case some clients
+49
+are doing too many requests on our API Gateway,
+50
+and we can also use some common standards
+51
+such as Swagger or Open API 3.0
+52
+to import quickly defined APIs,
+53
+and also we can export them as Swagger and Open API.
+54
+We can transform and validate request and response
+55
+in the API Gateway level
+56
+to ensure that the invocation are correct,
+57
+and we can generate SDK and API specifications
+58
+and cache API responses.
+59
+So lots of features that come with the API Gateway
+60
+that are not necessarily included
+61
+when you use something as simple
+62
+as an application load balancer.
+63
+So what is the API Gateway integrate with?
+64
+Well, there is a Lambda function
+65
+and we've seen this from the previous diagram,
+66
+so it can invoke a Lambda function.
+67
+And with this integration, it is the most common way
+68
+and a very easy way to expose REST a API
+69
+backed by a Lambda function
+70
+to do a full serverless application.
+71
+But also HTTP.
+72
+So we can expose any HTTP endpoints in the backend.
+73
+So it could be, for example,
+74
+an HTTP API you have on premises,
+75
+or it could be an application load balancer
+76
+you have on your cloud environment.
+77
+And why would you do this?
+78
+Well, you would use an API Gateway
+79
+to leverage the rate limiting features, the caching,
+80
+the user authentication, the API keys, et cetera.
+81
+So it's definitely used full to have a layer
+82
+of API Gateway on top of your HTTP endpoint.
+83
+And finally, we can use an evidence service
+84
+so we can expose any AWS API through the API Gateway.
+85
+So which ones, for example,
+86
+where we can start a Step Function workflow,
+87
+we can post a message to SQS
+88
+directly from an API Gateway API.
+89
+Why would you do this?
+90
+Well, because maybe you want to add authentication,
+91
+deploy some APIs publicly
+92
+or do some rate control on some AWS services.
+93
+So here is an example of the API Gateway
+94
+used with an AWS service.
+95
+So example, Kinesis Data Streams.
+96
+So we want to have people send data
+97
+into a Kinesis Data Streams
+98
+but in a secure way,
+99
+without giving them access to AWS credentials.
+100
+So what we do is that's in between our clients
+101
+and our Kinesis Data Streams,
+102
+we're going to have the API Gateway.
+103
+And the clients will send HTTP request
+104
+into the API Gateway.
+105
+And it's been configured to then send the messages
+106
+into a Kinesis Data Streams.
+107
+And as you see in this setting, we don't manage any servers.
+108
+Then Kinesis Data Stream from there,
+109
+we can, for example, send the records
+110
+into a Kinesis Data Firehose
+111
+and eventually put them into an Amazon S3 bucket
+112
+in the JSON format.
+113
+So you start to see the power of API Gateway.
+114
+You can actually expose any AWS service
+115
+to the outside through an API Gateway.
+116
+There are three ways to deploy your API Gateway.
+117
+This is called endpoint types.
+118
+So the first type, which is the default one
+119
+is called Edge-Optimized.
+120
+This is for your global clients.
+121
+So that means that your API Gateway
+122
+is going to be accessible from anywhere in the world.
+123
+And to be efficient,
+124
+the request are going to be routed
+125
+through all the CloudFront Edge locations,
+126
+which will improve the latency.
+127
+Your API Gateway is still only in one region
+128
+where you created it, but it's accessible efficiently
+129
+from every CloudFormation Edge location.
+130
+Then there's a regional deployment.
+131
+So this is when we don't want to use
+132
+CloudFront Edge locations.
+133
+So it's when we expect all our users
+134
+to be within the same region
+135
+where we created our API Gateway.
+136
+And if you wanted to,
+137
+you could create your own platform distribution,
+138
+and this will give you the same result
+139
+as an Edge-Optimized distribution,
+140
+but this time you have more control over location strategies
+141
+and the platform settings themselves.
+142
+And then finally, the last kind of API Gateway you can do
+143
+is a private API Gateway.
+144
+So this time it's not public.
+145
+So a private API Gateway can only be accessed
+146
+from within your VPC.
+147
+And it will use interface VPC endpoints for your ENIs.
+148
+And to define access to your API Gateway,
+149
+you can use a resource policy.
+150
+Now, a few comments about the security
+151
+on top of the API Gateway.
+152
+So you can identify users on the API Gateway
+153
+in multiple ways.
+154
+The first way is through IAM roles.
+155
+So this is very helpful if you have internal applications,
+156
+for example, running on EC2 instances,
+157
+and they want to access an API on API Gateway,
+158
+they can just use IAM roles.
+159
+If you wanted to have external users,
+160
+for example, for mobile applications or web applications,
+161
+then you would use something called Amazon Cognito.
+162
+Or if you wanted to implement your own logic,
+163
+you could do do so with a custom authorizer.
+164
+This is a Lambda function.
+165
+Also, you can have HTTPS security
+166
+through your own custom domain name
+167
+by integration with a service called
+168
+the AWS Certificate Manager or ACM.
+169
+And so that certificate, if you're using
+170
+an Edge-Optimized endpoint must be in us-east-1
+171
+but if you're using a regional endpoint
+172
+then that certificate may be in the same region
+173
+as the API Gateway stage.
+174
+Finally, you must set up, of course, a CNAME
+175
+or an A-alias record in Route 53
+176
+to point to your domain and API Gateway.
+177
+So that's it for this lecture.
+178
+I hope you liked it.
+179
+And I will see you in the next lecture.
+
+--- API Gateway Basics Hands-On ---
+
+1
+So let's open API Gateway
+2
+and we are in the API Gateway console.
+3
+So as you can see in here,
+4
+I have option of choosing an API type.
+5
+So we have HTTP, APIs, we have WebSocket API,
+6
+REST API, which are public or private,
+7
+and so as such, we will only deal with a REST API for now.
+8
+So we can try out new console by clicking on this
+9
+and this is going to be the default very soon.
+10
+So please make sure to have that.
+11
+And then you choose REST API, and then you build it.
+12
+So when you build an API, a REST API
+13
+you have several options.
+14
+You can create a new API, you can import one
+15
+from an open API definition file.
+16
+So where it's says file and just import
+17
+and API's created for you.
+18
+You can clone an existing API
+19
+or you can start from the example API.
+20
+For us, we were going to start from a new API
+21
+and the name is going to be MyFirstAPI.
+22
+Now as you see for the API endpoint type,
+23
+we have three options.
+24
+We have Regional, Edge-optimized, or Private.
+25
+So Regional is going to be deployed in one region.
+26
+Edge-optimized is going to be deployed
+27
+in many different regions,
+28
+but it's at the edge that is going to be deployed.
+29
+And then one, the API will still live in one region.
+30
+Or private is just private not exposed to the web.
+31
+To keep things simple right now
+32
+I'm going to choose regional API type.
+33
+So let me create the API.
+34
+And here we are.
+35
+So now we are here,
+36
+we are going to create our first method in this API.
+37
+So for this, you click on create method here
+38
+and then we choose the method type.
+39
+So it could be any of these HTTP verbs
+40
+but we're going to do a GET just to get a page.
+41
+And then you have to choose the integration type.
+42
+So you can see we have five options.
+43
+We have Lambda function, HTTP, Mock, AWS service
+44
+and VPC link.
+45
+And the one we'll be testing is Lambda function.
+46
+But I want to show you that we can also integrate
+47
+with any service in any region.
+48
+So we choose a region and then we choose a service.
+49
+And what it does that you can expose
+50
+some of your AWS services
+51
+as an API through API Gateway.
+52
+So we're going to keep things simple
+53
+and use Lambda functions in this one.
+54
+And so we need to choose a Lambda function
+55
+but for this of course we need to create it.
+56
+So let's go in Lambda and create our function
+57
+that is going to react to this API gateway.
+58
+So create a function and I call this one
+59
+api-gateway-route-gets.
+60
+And this is perfect.
+61
+And then the framework I'll use at the runtime
+62
+is going to be Python 3.11
+63
+but whatever Python 3 or Python should work.
+64
+So this is perfect.
+65
+Let's go and create this function.
+66
+And while this is creating,
+67
+I wanna show you the code we're going to use.
+68
+So I am in my code, in my folder
+69
+and there's lambda-code.py.
+70
+And this is the entire code we're going to copy to Lambda.
+71
+And so the idea is that this is a very simple
+72
+in the function which responds to an event
+73
+with some context and says, "Hey,
+74
+the body's going to be hello from Lambda.
+75
+It's going to be returned as the body."
+76
+The status code is 200.
+77
+And then the headers is Content-Type application/json,
+78
+to let our web browser know
+79
+that we get back a JSON response.
+80
+So I'm going to copy this entire code.
+81
+Scroll down and paste it here.
+82
+So we're going to deploy this function.
+83
+So I'm going to click on Deploy to deploy this function,
+84
+and we can also test it.
+85
+So for example, I can create a test event called DemoTest.
+86
+And then we just send this event, we save it
+87
+and then we click on Test.
+88
+And as you can see, the result is hello from Lambda
+89
+with status code 200.
+90
+So everything is working fine right now and this is perfect.
+91
+And what I'm going to do now is to integrate,
+92
+this Lambda function to my API gateway.
+93
+So back in here, I'm going to copy the function ARN,
+94
+go to my API gateway, and then just click and paste the ARN.
+95
+Perfect.
+96
+So now we have the Lambda function integrated
+97
+and because we want to see the full requests being passed
+98
+to Lambda and being sent back from Lambda,
+99
+you're going to take Lambda proxy integration.
+100
+Now for timeout, as you can see,
+101
+even though a Lambda function can have a long timeout,
+102
+for example, five minutes or 15 minutes,
+103
+API Gateway has a limited timeout
+104
+and the default is 29 seconds.
+105
+You can customize it and have it less than 29 seconds
+106
+but the default timeout is 29 seconds regardless
+107
+of how long your Lambda function takes to execute.
+108
+So let's create this method
+109
+and this is going to automatically grant API gateway,
+110
+the right to invoke our Lambda function.
+111
+So if I go back here and refresh this page,
+112
+as you can see now our API gateway
+113
+can invoke our Lambda function
+114
+and we can verify this by going into the configuration
+115
+and then permissions.
+116
+And if we have a look at the resource-based
+117
+policy statement, this one, and we click on View policy,
+118
+it turns out that my API gateway
+119
+is allowed to invoke my Lambda function
+120
+if the source API is the one from my API gateway
+121
+being route GET.
+122
+So this is the stuff that happens behind the scenes on AWS
+123
+to allow the API gateway to invoke our Lambda function.
+124
+So we know that everything is done
+125
+from a security perspective.
+126
+So now we can have a look at our API gateway.
+127
+So the client for this one method sends a request
+128
+and we can have a look at the request itself here.
+129
+So all the settings are here, it's done integration
+130
+with Lambda, and so it's a Lambda type of integration
+131
+with proxy enabled.
+132
+Then the Lambda itself is this function.
+133
+We can click on it and get back to our function.
+134
+Then the response is proxy integration.
+135
+That means that it will, the API gateway will parse
+136
+what is being sent by the Lambda and interpret it.
+137
+And then the method response is what we have here.
+138
+We could modify it if you wanted to,
+139
+but we're looking for application/json.
+140
+So let's test out this API.
+141
+So for this on the bottom right there is a test
+142
+and you can specify some query strings or some headers
+143
+but we don't specify anything.
+144
+Just click on Test.
+145
+And the test is, hey,
+146
+the response body is hello from Lambda.
+147
+So you can see from the API gateway, the status is 200.
+148
+That comes right from our code right here
+149
+which says status is 200.
+150
+We also have the response body, hello from Lambda, again,
+151
+was defined in our code right here,
+152
+body equals json.dumps.
+153
+And then hello from Lambda.
+154
+And finally the content type is JSON,
+155
+and that is retrieved as part of the response headers
+156
+being content type JSON.
+157
+On top of it from the test,
+158
+we can have a look at the execution log
+159
+from the API gateway, which is really nice,
+160
+which is also when you wanna debug and see what's happening.
+161
+A very nice way of doing so.
+162
+So we have done our first execution
+163
+of an API gateway on top of a Lambda function.
+164
+So now let's actually debug this
+165
+and see what is being sent to our Lambda function.
+166
+So I'm going to do print event,
+167
+and then I'm going to deploy this,
+168
+and we are going to invoke now our Lambda function again
+169
+from our API gateway.
+170
+So we're going to run a new test,
+171
+which still says hello from Lambda, but this time
+172
+we are printing the events.
+173
+So if we go to the CloudWatch logs
+174
+we should be able to find it.
+175
+So let's go into monitoring
+176
+and then look at CloudWatch logs.
+177
+We're going to find the latest log stream, this one.
+178
+And here we have our log.
+179
+And we can see here that this was the printed event
+180
+that was received from API Gateway.
+181
+So some information you have in here, for example,
+182
+the resource which is slash, the path slash,
+183
+the method which is GET, and then you get headers
+184
+and then you get query string parameters and so on.
+185
+So a lot of information is passed on
+186
+by the API gateway to our Lambda function.
+187
+And our Lambda function can use this information
+188
+to forge a response and send it back to the API gateway.
+189
+So now we can go ahead and actually create a new resource.
+190
+So this time we're going to have the resource by doing this
+191
+and the resource name is going to be houses.
+192
+So let's create this resource.
+193
+And now we have the /houses path that I just opened.
+194
+And in /houses, I'm going to create a method.
+195
+It's going to be a GET again for Lambda function
+196
+of proxy integration.
+197
+And I need to create my Lambda function.
+198
+So let's do this quickly, I'm going to copy this
+199
+and then create a function.
+200
+And it's not root yet, it's houses yet now.
+201
+The runtime is still going to be Python.
+202
+And let's create this function.
+203
+Yet again, I'm going to just copy this code.
+204
+And so instead of hello from Lambda,
+205
+we're going to change the message to be hello from,
+206
+and then something with houses.
+207
+So my function is now created.
+208
+We're going to copy this
+209
+and it's going to be hello from my pretty house.
+210
+Okay, we're going to deploy this.
+211
+So now we have deployed the function.
+212
+I'm going to copy the function ARN
+213
+and paste it in here.
+214
+And create this method.
+215
+And so now we have /houses that has the GET method.
+216
+I can test this.
+217
+So let's test it and click on Test.
+218
+And as you can see, I get a 200 hello from my pretty house.
+219
+And so far it's pretty cool.
+220
+We have the root, GET and we have the houses, GET,
+221
+which invoke two different Lambda functions.
+222
+But we want to be able to access this from a web browser,
+223
+not just testing it from the API Gateway UI.
+224
+So let's click on Deploy API, and we need to select a stage.
+225
+So it's going to be a new stage, and the name is dev,
+226
+we'll have a look at it later.
+227
+Let's deploy this.
+228
+And now that we've deployed this API, there's an invoke URL.
+229
+So I'm going to copy this URL
+230
+and then I'm going to paste it in my web browser.
+231
+And as you can see when I go to /dev,
+232
+it says hello from Lambda.
+233
+So this is just Firefox doing a pretty print
+234
+but you get hello from Lambda.
+235
+And if I go to /houses
+236
+then I get hello from my pretty house.
+237
+So this API has two Lambda functions replying to me.
+238
+And if I do something wrong, if I do /wrong
+239
+then I'm getting error message
+240
+such as message missing authentication token.
+241
+So here we go.
+242
+We have deployed our API to API Gateway
+243
+and this is pretty cool
+244
+because, well, we have two Lambda functions
+245
+behind the scenes actually replying to it.
+246
+And that's it for our basics role on API Gateway.
+247
+I hope you liked it, and I will see you in the next lecture.
+
+--- Step Functions ---
+
+1
+Now let's learn
+2
+about the AWS Step Functions.
+3
+So, Step Functions is a way for you
+4
+to build a serverless visual workflow
+5
+to perform orchestration,
+6
+and it's usually of your Lambda functions.
+7
+So you would design a graph,
+8
+and you would say at each step of the graph,
+9
+in case of success or failure, what goes on next?
+10
+And this is really cool,
+11
+because you can start really having some complex workflows
+12
+within AWS.
+13
+So Step Functions have some internal features,
+14
+such as sequencing, parallel functions, conditions,
+15
+timeouts, error handling, and so much.
+16
+And it doesn't just do Lambda functions.
+17
+It is actually integrate with EC2 instances, ECS tasks,
+18
+On-premises servers, the API Gateway,
+19
+the SQS queues, [00:00:47 NMADB],
+20
+and actually a lot of AWS services.
+21
+Also, it is possible for you
+22
+within the Step Function workflow
+23
+to implement a human approval feature.
+24
+For example, a workflow goes up to some points,
+25
+and you say, okay, a human will have a look at the results.
+26
+And if the human says "Yes," then please go on.
+27
+If "No," then fail.
+28
+This is something that's possible
+29
+thanks to the Step Functions.
+30
+So the use cases of Step Functions are manifold,
+31
+but, like, we can have, for example, the order fulfillment.
+32
+We can have data processing, web applications,
+33
+or any kind of workflow that is complex
+34
+to describe and that would require some sort
+35
+of graph for you to visualize it, okay?
+36
+So that's it for this little intro.
+37
+I hope you liked it.
+38
+And I will see you in the next lecture.
+
+--- Amazon Cognito Overview ---
+
+1
+So now let's talk about Amazon Cognito.
+2
+And the goal of it is to give user an identity
+3
+to interact with a web and mobile application.
+4
+So these users usually sit outside of our AWS account,
+5
+hence the name Cognito,
+6
+because it gives an identity to users
+7
+that we don't know about yet.
+8
+So we have two kind of sub-services within Cognito.
+9
+We have the Cognito user pool,
+10
+and this provides a sign-in functionality
+11
+for app users and has really good integration
+12
+with API Gateway and the Application Load Balancer.
+13
+And we have the Cognito Identity Pool,
+14
+used to be called Federated Identity.
+15
+And this is to actually provide temporary AWS credentials
+16
+to users that are registered with their application
+17
+so that they can access some resources of AWS directly.
+18
+And there is a good integration
+19
+as we'll see with Cognito User Pools.
+20
+So if you are asking yourself,
+21
+"Don't we already have users in IAM?"
+22
+The answer is yes, you do,
+23
+but Cognito is gonna be for your web
+24
+and mobile application users,
+25
+which sits outside of AWS.
+26
+So look for the keyword,
+27
+such as hundreds of users, or mobile users,
+28
+or authentication with whatever mechanism
+29
+such as SAML and so on.
+30
+So let's do a deep dive into Cognito User Pool or CUP.
+31
+So it's a serverless database of users
+32
+for your web and mobile application.
+33
+And you can define a simple login,
+34
+such as username or email and a password as a combination.
+35
+You have password reset feature.
+36
+You can have email and phone number verification,
+37
+multi-factor authentication for users,
+38
+and you can also have integration with,
+39
+for example, Facebook for your login,
+40
+or Google for your login, and so on.
+41
+So this Cognito User Pools,
+42
+they integrate with the API Gateway
+43
+or the Application Load Balancer.
+44
+So if we take the example of the API Gateway,
+45
+the user is going to connect to your Cognito User Pool,
+46
+retrieve a token, pass this token to the API Gateway,
+47
+which is going to verify it, and then if it's good,
+48
+it's going to translate it into the user identity,
+49
+which will be passed to your lambda function as a backend.
+50
+And now your lambda function knows
+51
+the user it's dealing with,
+52
+and the fact that it has a very specific user
+53
+that's been really well authenticated.
+54
+Alternatively, you can also do the exact same thing
+55
+with your Cognito User Pool
+56
+on top of your Application Load Balancer.
+57
+So that means that your application
+58
+will connect again with your Cognito User Pool,
+59
+then pass it on to your Application Load Balancer,
+60
+and make sure that there is a true login.
+61
+And if it's true,
+62
+it will redirect the request to your backend,
+63
+and pass in some additional headers
+64
+with the identity of the user.
+65
+So this really allows you
+66
+to have in one place either your API Gateway or your ALB,
+67
+the certainty that you can verify the login of your user.
+68
+So it's a responsibility that you've moved
+69
+from your backend to the actual piece
+70
+that is going to balance the load for your backend.
+71
+So the API Gateway or the ALB.
+72
+Okay, the other sub-part of Cognito is
+73
+Cognito Identity Pools or Federated Identities.
+74
+And it's to get identities for users, but this time,
+75
+they don't access our application
+76
+through the API Gateway or the Application Load Balancer,
+77
+but instead, they're going to directly access
+78
+your AWS accounts using temporary AWS credentials.
+79
+So the users' source can be, for example,
+80
+users that are within Cognito User Pools,
+81
+or it can be third party logins,
+82
+and then they can access the services
+83
+of AWS directly or through the API Gateway.
+84
+So the IAM policies applied to the credentials are defined
+85
+within the Cognito Identity Pool service already.
+86
+And they can be customized
+87
+based on the user ID for fine grain control.
+88
+And in case you want to have a default IAM role, you can,
+89
+so that your guest users or authenticated users
+90
+that don't have specific roles defined to them
+91
+will inherit this defined IAM role.
+92
+So a diagram will surely help you
+93
+to understand what identity pools are.
+94
+So let's say your web and mobile applications
+95
+want to have direct access
+96
+into an S3 bucket or DynamoDB table.
+97
+So we're going to have Cognito Identity Pools for this.
+98
+So the web and mobile application is
+99
+going to log in and get a token out of it.
+100
+So it could be a login against Cognito User Pools,
+101
+or social identity provider,
+102
+or SAML, or open ID connect and so on.
+103
+And then it's going to take this token
+104
+and pass it on to the Cognito Identity Pool service
+105
+to exchange this token for temporary AWS credentials.
+106
+And to do so,
+107
+the Cognito Identity Pool is first going to evaluate
+108
+whether or not the token passed is being correct,
+109
+meaning the login is valid.
+110
+And the second thing it's going to do is
+111
+to craft this IAM policy that is specific to that user.
+112
+So these credentials now will,
+113
+thanks to this very temporary credentials
+114
+with associated IAM policy,
+115
+will be able to access AWS on your, for example,
+116
+your S3 bucket, or your DynamoDB table,
+117
+without going through an API Gateway
+118
+or an Application Load Balancer.
+119
+And this enables for you a use case
+120
+where you can do row level security in DynamoDB.
+121
+So you would, for example,
+122
+have this policy coming out of the Cognito Identity Pools.
+123
+And the idea is that in it, you have a condition,
+124
+and this condition is saying
+125
+that the leading key for DynamoDB
+126
+must be equal to the Cognito identity user ID.
+127
+And therefore, what's going to happen is
+128
+that the user with this policy cannot read
+129
+and write all the items in your DynamoDB table,
+130
+that would be too much power,
+131
+but instead they can only deal with the items
+132
+that they have access to through this condition.
+133
+So I understand that Cognito is a very complicated service.
+134
+Thankfully, you just need to know
+135
+at a high level what it means.
+136
+So it means that you can create a user base
+137
+for your web and mobile application.
+138
+It means you can enable row level security in DynamoDB,
+139
+for example, to get fine grain access.
+140
+And finally, remember this integration
+141
+between Cognito User Pools
+142
+and your API Gateway or your Application Load Balancer.
+143
+Okay, that's it.
+144
+I hope you liked it.
+145
+And I will see you in the next lecture.
+
+--- Mobile Application: MyTodoList ---
+
+1
+Okay, so let's discuss
+2
+serverless architectures now,
+3
+and we're going to create
+4
+a mobile application called MyTodoList.
+5
+So, what we want to do is have the following requirements.
+6
+We want to expose a REST API that has HTTPS endpoints.
+7
+We want to be serverless architecture,
+8
+and we want the users to be able to directly interact
+9
+with their own folder in S3
+10
+to manage their data if you want to.
+11
+And users should be able to also authenticate
+12
+through a managed serverless service.
+13
+And finally, users can write and read to-dos,
+14
+but they mostly read them.
+15
+So, maybe there's something to do around performance here.
+16
+The database layer should scale
+17
+and should have some really high read throughputs.
+18
+So, that's a pretty good requirements.
+19
+Now, let's see how we can do it.
+20
+Number one is to get started, we have mobile clients,
+21
+and we talked about doing a REST HTTPS thing.
+22
+So, let's use Amazon API Gateway for this.
+23
+This is a great way of doing it.
+24
+Now, in the classic serverless API fashion,
+25
+API Gateway will invoke a Lambda function,
+26
+which basically allows us to scale
+27
+and use serverless infrastructure.
+28
+Okay, Amazon Lambda needs to be able to store
+29
+and read to-do from a database.
+30
+A database that scales really well
+31
+that is serverless is DynamoDB.
+32
+So, here we have DynamoDB as our backend.
+33
+Now, we said there was going to be also some kind
+34
+of authentication layer going on.
+35
+So, for this, we can use a serverless technology such
+36
+as Amazon Cognito, so our mobile client can connect
+37
+and authenticate to Cognito,
+38
+and then API Gateway along the way will verify
+39
+the authentication with Cognito.
+40
+And so, that gives us a very classic serverless API
+41
+that we've just created here.
+42
+Nothing new for you here, but it's good to see it again.
+43
+Now, if you wanna give our users access
+44
+to Amazon S3 bucket, how do we do this?
+45
+Well, we have our mobile clients
+46
+that authenticates to Amazon Cognito
+47
+and Cognito that can generate temporary credentials for us
+48
+and return these credentials to our mobile clients.
+49
+And these credentials allow our mobile clients to store
+50
+and retrieve files in Amazon S3
+51
+and basically access their own little space in S3.
+52
+So, this is a very classic question as well, how to do this?
+53
+And the wrong answer is to store
+54
+AWS user credentials on your mobile clients.
+55
+You definitely do not want to do this.
+56
+What you want to do is really use Amazon Cognito,
+57
+and then Amazon is free with temporary credentials.
+58
+Okay, so it's a very common question.
+59
+So, next, our app is starting to scale.
+60
+We're starting to get more users,
+61
+and it turns out that we, by looking at the patterns,
+62
+figure out that we have a very high read throughput.
+63
+So, we have many RCUs,
+64
+and the to-dos don't really change much.
+65
+They don't get edited very often.
+66
+So, how can we change this architecture
+67
+to basically improve the read throughput
+68
+and decrease maybe the cost overall?
+69
+What we can do is use DAX as a caching layer.
+70
+So, just before DynamoDB, we'll use DynamoDB DAX,
+71
+and this will basically have a caching layer.
+72
+And because we're doing so many reads,
+73
+now the reads will be cached in DAX.
+74
+And so DynamoDB, we won't need as much read capacity units.
+75
+Maybe we'll scale better, maybe we'll have less cost overall
+76
+because so many reads are cached.
+77
+And this is a great way overall
+78
+to keep on improving our architecture
+79
+in a serverless fashion.
+80
+Now, there could be another way of doing caching.
+81
+Maybe we want to use DAX, but maybe also we want
+82
+to start caching the responses
+83
+at the Amazon API gateway level.
+84
+This is also something we can do,
+85
+and this is also a very good one if you think
+86
+that the answers never really change
+87
+and that you can start caching a few responses
+88
+for a few API routes.
+89
+So, overall, really interesting to see these kind
+90
+of architectures because they really show you
+91
+how serverless is done, where the caching appears.
+92
+And in this architecture, nothing is managed by us.
+93
+We really pay per usage,
+94
+and we really don't think about management of databases.
+95
+All these things is done by AWS for us.
+96
+So, in this lecture,
+97
+we've seen the classic serverless REST API architecture,
+98
+basically leveraging HTTPS, API Gateway,
+99
+Lambda, and DynamoDB.
+100
+And then, we've used Cognito
+101
+to generate temporary credential, which gives us access
+102
+to an S3 bucket with a restricted policy.
+103
+And we could use the exact same app pattern using Cognito.
+104
+So, our app can access maybe DynamoDB
+105
+or Lambda directly or whatever.
+106
+This is a very common pattern.
+107
+Now, caching the reads on DynamoDB can be done using DAX.
+108
+It's a very easy way to enable,
+109
+and you can bring not only performance improvement,
+110
+but also cost reduction and caching the REST request
+111
+can be done at the API Gateway level
+112
+if we have very static responses.
+113
+Security, finally, for the entire thing can be done
+114
+with Cognito and Cognito is directly integrated
+115
+with the API Gateway.
+116
+So, this was a very basic example,
+117
+but it gives us started basically
+118
+on serverless architectures
+119
+and shows us all the different components we've seen
+120
+in the past section.
+121
+So, I hope that helps,
+122
+and I will see you in the next lecture.
+
+--- Serverless Website: MyBlog.com ---
+
+1
+Okay, so let's talk
+2
+about a serverless hosted website,
+3
+maybe called MyBlog.com.
+4
+So our website should scale globally,
+5
+and we rarely write blogs,
+6
+we often read blogs.
+7
+So our blog is seen
+8
+by hundreds of thousands of people online,
+9
+and we really add blogs maybe one a day, one a week.
+10
+But, most of the time, these blogs are being read.
+11
+And so most of my websites is going
+12
+to be purely static files,
+13
+and maybe a little bit of my website is going
+14
+to be a dynamic REST API.
+15
+I want to implement caching, where possible,
+16
+to really save cost and save latency,
+17
+and have a great user experience.
+18
+And any new user that subscribes to my website,
+19
+to my blog, I really want them
+20
+to receive a warm welcome email.
+21
+And this should be serverless.
+22
+And any photo uploaded to the blog,
+23
+I also wanna have a thumbnail being generated,
+24
+also serverless, because I really like serverless.
+25
+So how do we implement all these requirements?
+26
+Number one, we wanna serve content,
+27
+it's static and it's global.
+28
+So if you remember, we have our clients,
+29
+and our static content maybe stored in Amazon S3.
+30
+So how do we expose that bucket?
+31
+Remember the Amazon S3 bucket is in specific region.
+32
+How do we expose this globally?
+33
+Well, we can use Amazon CloudFront.
+34
+And Amazon CloudFront is a global distribution CDN,
+35
+and so basically our client is going to interact
+36
+with edge locations of Amazon CloudFront,
+37
+and it's going to cache data coming straight from Amazon S3.
+38
+Okay. Super easy.
+39
+We've seen CloudFront,
+40
+we've seen S3 is a classic architecture.
+41
+Now how do we do this securely?
+42
+Now, that's a very common question as well.
+43
+So we have the clients, it's interacting with CloudFront
+44
+and it's a global distribution still.
+45
+But now we will add an Origin Access Control
+46
+which will ensure that our Amazon S3 bucket
+47
+can only be accessed by CloudFront.
+48
+For this, we will add a bucket policy
+49
+to only authorize the CloudFront distribution.
+50
+Therefore, a user trying
+51
+to access our Amazon S3 bucket directly
+52
+will not be authorized,
+53
+and we have secured our Amazon S3 buckets.
+54
+Okay, so now we have this, and this is really good.
+55
+How do we add a public serverless REST API?
+56
+Well, for this, we'll have a REST HTTPS,
+57
+talking to Amazon API Gateway,
+58
+invoking a Lambda function,
+59
+maybe querying and reading from DynamoDB.
+60
+And because we have so many reads,
+61
+maybe DAX is a great caching layer we could use.
+62
+Okay? So far very easy.
+63
+If we're going global,
+64
+maybe we could be leveraging DynamoDB Global Databases
+65
+to reduce the latencies in part of the world.
+66
+That also could be a really good way
+67
+of maybe speeding up our infrastructure
+68
+and our architecture.
+69
+Okay, so this is fine.
+70
+We have everything we need.
+71
+Now let's talk about the User Welcome email flow.
+72
+Well here, remember when a user subscribes,
+73
+I want them to be having an email saying,
+74
+hello, how are you?
+75
+So for this maybe in DynamoDB,
+76
+we want to enable streams of changes.
+77
+So we'll have a DynamoDB stream being created,
+78
+and that DynamoDB stream will invoke a Lambda function.
+79
+That Lambda function is going to be very special.
+80
+It's going to have an IAM role,
+81
+which allows us to use Amazon SES.
+82
+So we haven't seen what Amazon SES is,
+83
+but it's really simple.
+84
+It's called Amazon Simple Email Service.
+85
+So SES, and it basically allows us to send emails.
+86
+So here our Amazon Lambda function can use the AWS SDK
+87
+to send emails from Amazon SES.
+88
+And here we go.
+89
+We have a basically serverless User Welcome email flow,
+90
+and really simple, no infrastructure to manage,
+91
+it just works and scales really, really well.
+92
+Okay, so now we said,
+93
+okay, if users upload images,
+94
+we want thumbnails to be created.
+95
+So our clients is going to maybe upload
+96
+to our S3 bucket directly,
+97
+or maybe we again have an OAC and a CloudFront distribution,
+98
+in which case our clients will upload photos to CloudFront,
+99
+and CloudFront will forward them onto the Amazon S3 bucket.
+100
+And this is called S3 Transfer Acceleration.
+101
+So either directly to S3 or using Transfer Acceleration.
+102
+And then what we'll do is
+103
+that whenever a file is added to S3,
+104
+it's going to trigger a Lambda function,
+105
+so Lambda can be triggered by S3,
+106
+and Lambda will be creating a thumbnail,
+107
+and putting that thumbnail into an S3 bucket,
+108
+could be a different bucket, for example.
+109
+And just to show you that it's possible,
+110
+Amazon S3 also has triggers to SQS and SNS.
+111
+Now this is optional, and from SQS SNS you can do
+112
+whatever you want, but it's just to show you
+113
+that you're very free into how you want things to work.
+114
+And so Amazon S3 can invoke either Lambda, SQS or SNS,
+115
+and you're really free to think
+116
+about your solution architecture
+117
+and how to make things serverless
+118
+and easy for you on your end.
+119
+So this is quite a complete architecture we've just done,
+120
+but it's all serverless, it's all scaling globally,
+121
+and I think that's what matters most.
+122
+So we've seen static content being distributed
+123
+using CloudFront with S3.
+124
+We've seen the rest API that was serverless.
+125
+We didn't need Cognito this time,
+126
+because it was a public REST API.
+127
+And we leveraged a Global DynamoDB Table,
+128
+to serve the data globally.
+129
+We could have used also Aurora Global Database,
+130
+but in this case he wouldn't have been serverless,
+131
+it would've been provisioned Aurora.
+132
+Or we could also enable DynamoDB streams.
+133
+Basically, these streams will tell us about changes
+134
+to our user tables and then trigger a Lambda function.
+135
+And that Lambda function had an IAM role attached to it,
+136
+so it could use SES or Simple Email Service.
+137
+And this was just to send emails in a serverless way.
+138
+And S3, we've seen that it could trigger SQS, SNS, Lambda
+139
+to notify of events.
+140
+So quite a lot of learnings.
+141
+All these things we know,
+142
+but now it's I think, really nice
+143
+to see all these things working together,
+144
+and how we can create really cool applications
+145
+using all the concepts we know.
+146
+So I hope you liked it,
+147
+and I will see you in the next lecture.
+
+--- MicroServices Architecture ---
+
+1
+Okay, so now we're talking about micro services.
+2
+So, not exactly the server-less, but
+3
+still a very interesting discussion to have.
+4
+So, we want to switch to a micro service architecture
+5
+and many services will interact with
+6
+each other maybe using a REST API.
+7
+So, this is how they have interaction with
+8
+one another, they just use the REST API.
+9
+Each architecture for each micro service may vary
+10
+in form and shape, so we are free to do whatever we want.
+11
+And so, we want to use a micro service architecture
+12
+for the reason that we want to have leaner
+13
+development lifecycle for each service.
+14
+We want each service to scale independently
+15
+and have it's own quote repository.
+16
+So this is why we would use a micro service architecture.
+17
+Now, let's have a look, so our users may be able
+18
+to talk to our first micro service over HTTPS
+19
+and we've decided to have an elastic load balancer
+20
+talking to ECS, and then talking to Dynamo DB.
+21
+And, it's just a choice we made.
+22
+ECS, by the way, if you don't know what it is yet,
+23
+it is for docker, so for writing docker containers on AWS.
+24
+So that's it, now this micro service
+25
+usually has a DNS name or URL, so maybe it's
+26
+service1.example.com, and so to get all
+27
+that information maybe you will do a DNS Query
+28
+to route 53, get an alias record back and then
+29
+we can interact with that service.
+30
+That's my first service, but maybe we have
+31
+a second service, and this one is using
+32
+a classic architecture for server-less,
+33
+but instead of having Dynamo DB,
+34
+we have ElastiCache.
+35
+And again, just, you know, something just for fun,
+36
+just to mix things up, but we can definitely
+37
+use ElastiCache as the back end for Lambda.
+38
+So, cool everything works, but maybe
+39
+that second micro service, service two,
+40
+maybe it also interacts with service one.
+41
+So the lambda function will make
+42
+a call to our elastic load balancer
+43
+because it needs to get some information
+44
+from the first micro service to be able to make a response.
+45
+And then maybe we have a third micro service,
+46
+also using an ELB, but this one
+47
+is not server-less, it's using Amazon EC2 auto
+48
+scaling and an Amazon RDS database, so more
+49
+of the classic architecture we've seen from before.
+50
+And it turns out that maybe the EC2 instance
+51
+must make a call to the second micro service
+52
+before making a decision, so it's represented
+53
+here by the dotted lines.
+54
+And here, the URL for this is going
+55
+to be service3.example.com.
+56
+So, it's very simple, but what I
+57
+want to show is just have a quick discussion.
+58
+You're free to design each micro service
+59
+the way you want, and this is why
+60
+I had so many different random architectures.
+61
+There is two patterns for micro services.
+62
+There is a synchronous pattern, so this is
+63
+when we make explicit calls to other
+64
+micro service, so API Gateway, Load Balancer
+65
+are great way to do HTTPS calls to other micro services.
+66
+But there is also an asynchronous pattern
+67
+that I haven't made into a diagram,
+68
+but using SQS, or Kinesis, or SNS,
+69
+or Lambda triggers, or S3.
+70
+All these things basically we're saying,
+71
+"I'm goin to put a message in SQS,
+72
+but I don't care when I get a response,
+73
+actually I don't care about a response,
+74
+something else will happen, though."
+75
+And this is an asynchronous pattern.
+76
+So, some challenges with micro services,
+77
+the first one is that you need to
+78
+have some overhead for creating
+79
+each new micro service.
+80
+And you may get issues optimizing
+81
+server density or utilization.
+82
+You may get complexity of running
+83
+multiple versions of each micro
+84
+service simultaneously.
+85
+You may get a proliferation of client-side
+86
+code requirements to integrate with many
+87
+separate services.
+88
+But so, most of these challenges,
+89
+or some of them, are solved by using
+90
+server-less patterns.
+91
+For example, API Gateway, Lambda they scale
+92
+automatically and then you pay for usage.
+93
+So no need to worry about server utilization.
+94
+You can easily clone APIs or reproduce
+95
+environments in API Gateway.
+96
+And you can, for example, generate
+97
+client SDK through Swagger integration
+98
+for the API Gateway.
+99
+So, all in all, what you need to
+100
+remember is that micro service is
+101
+a design, and you can use any of this for that,
+102
+and it does solve some problems,
+103
+and it does add some problems.
+104
+But at least you get an idea of
+105
+how things would work.
+106
+Okay, that's it for this lecture.
+107
+I will see you in the next lecture.
+
+--- Software updates distribution ---
+
+1
+Okay, yet another solution architecting
+2
+we are going to see right here.
+3
+So, let's talk about software updates offloading.
+4
+So, we have an application is running on EC2
+5
+and it distributes software updates once in a while.
+6
+So, think about the computers
+7
+that need to download the patch
+8
+and then you download from us and this patch sits on EC2.
+9
+So, when a new software update is out,
+10
+we are going to get a lot of request
+11
+because a lot of people want to update.
+12
+And so the content is distributed
+13
+in mass over the networking.
+14
+It cost us so much money.
+15
+Additionally, we really don't want to change
+16
+or re-architect our application.
+17
+We just wanna optimize our cost and CPU.
+18
+Is there an easy way for us to do it?
+19
+Of course the answer is yes.
+20
+There is.
+21
+So, let's talk about the application current state.
+22
+So, we have a classic ELB plus ASG develop application
+23
+running in multi AZ and we'll assume that these M5 instances
+24
+are the instances distributing the software updates.
+25
+Now, for simplicity stake,
+26
+let's say that these software updates
+27
+they're put into the Amazon EFS,
+28
+so all of them are in the EFS.
+29
+So, how do we fix things?
+30
+How do we basically enable these applications
+31
+to scale more globally and to reduce CPU utilization
+32
+and to reduce cost.
+33
+Super easy.
+34
+We just put CloudFront on top of it.
+35
+So, CloudFront will be our savior, and why?
+36
+Well, there's no changes to architecture.
+37
+They will cache software update files at the edge
+38
+because the software update files they don't change,
+39
+they're not dynamic, there're static,
+40
+they're never changing.
+41
+And so our EC2 instances, even though they're not serverless
+42
+CloudFront is and it will scale for us.
+43
+So that means that our ASG will not scale as much
+44
+and we'll save tremendously in EC2 class, network class,
+45
+EFS class and so much.
+46
+And on top of it, we'll save on availability and so on.
+47
+So, remember.
+48
+CloudFront is such an easy way
+49
+to make an existing application more scalable and cheaper
+50
+if it's mostly static content just using some caching
+51
+at the edges all around the well.
+52
+So remember it.
+53
+I find it pretty cool.
+54
+And sometimes the best solution are the easiest one
+55
+and this is one example of them.
+56
+So, hope you like it and I will see you in the next lecture.
+

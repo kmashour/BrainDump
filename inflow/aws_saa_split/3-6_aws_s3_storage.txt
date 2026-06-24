@@ -1,0 +1,6368 @@
+--- S3 Overview ---
+
+1
+Welcome to this section on Amazon S3.
+2
+So this section is very important
+3
+because Amazon S3 is one of the main building blocks of AWS.
+4
+And the way it's advertised
+5
+is that it's infinitely scaling storage.
+6
+So as a matter of fact,
+7
+a lot of the web relies on Amazon S3.
+8
+For example, many websites use Amazon S3 as a backbone,
+9
+and many AWS services will also use Amazon S3
+10
+for integrations as well.
+11
+So in this section,
+12
+we'll have a step-by-step approach to Amazon S3
+13
+to learn the main features.
+14
+So there are so many use cases for Amazon S3
+15
+because at its core, it is storage.
+16
+So Amazon S3 is used for backup and storage.
+17
+It could be for your files,
+18
+it could be for your disk and so on.
+19
+For disaster recovery purposes,
+20
+for example, you'll move your data to another region.
+21
+In case a region goes down,
+22
+then your data is backed up somewhere else.
+23
+It's for archival purposes.
+24
+So you can archive files in Amazon S3
+25
+and retrieve it at a later stage for much, much cheaper.
+26
+For hybrid cloud storage,
+27
+so in case you have storage on premises,
+28
+but you won't expand it into the cloud,
+29
+you can use Amazon S3 for this.
+30
+To host applications, to host media such as video files,
+31
+images, and so on,
+32
+to have a data lake to store a lot of data
+33
+and to perform big data analytics,
+34
+for delivering software updates
+35
+for hosting static websites, and so on.
+36
+And two use cases is that the NASDAQ
+37
+stores seven years of data into the S3 Glacier service,
+38
+which is like the archival service of Amazon S3.
+39
+And Sysco runs analytics
+40
+on its data and gains business insights from Amazon S3.
+41
+So now, let's talk about the bucket.
+42
+So Amazon S3 allows people to store objects
+43
+or files into buckets.
+44
+They're directories within the cloud.
+45
+And the buckets are defined at the region level.
+46
+So you say you create a buckets for a specific AWS region.
+47
+Even though S3 has a global interface
+48
+in which you'll be able to see all the buckets
+49
+from all the regions,
+50
+the buckets themselves are assigned to a specific region.
+51
+Now, for the naming, there is something that you should know
+52
+that is quite recent and new.
+53
+So it used to be that Amazon S3
+54
+needed to have buckets with a globally unique name.
+55
+That means that the name for your S3 bucket belong to you
+56
+and no one else could use it across the world,
+57
+across all the regions, across all the accounts.
+58
+But now, there is a new feature
+59
+to have an account regional namespace,
+60
+and it allows you to reuse the same bucket name
+61
+across the regions for all your accounts and so on,
+62
+even though someone else may have named
+63
+the bucket the same way because AWS will add a suffix
+64
+to your bucket name,
+65
+making sure that it's going to be unique anyway.
+66
+So naming constraints, you have no uppercase,
+67
+no underscore, not an IP.
+68
+It must start with a lowercase number or letter,
+69
+it must not start with a prefix XN,
+70
+and it must not end with a suffix minus S3 alias.
+71
+So overall, you're completely fine
+72
+if you use letters and numbers and you keep it simple.
+73
+And before there was a constraint
+74
+around the global unique name,
+75
+but now with the account original namespace,
+76
+you can pretty much use whatever you want
+77
+for your bucket name in AWS, which is super nice.
+78
+Okay, so now let's talk about objects.
+79
+So these objects, they're files
+80
+and they have what's called a key.
+81
+And an Amazon S3 object key is the full path of your file.
+82
+So if you look at my bucket,
+83
+this is the top level directory.
+84
+Then the key of my file, a TXT, is my_file.txt.
+85
+But in case you want to nest it in what we call folders,
+86
+then the key is going to be the full path.
+87
+So my_folderI/another_folder
+88
+/my_file.txt.
+89
+Therefore, the key is composed of a prefix,
+90
+and then an object name.
+91
+So we can, for example,
+92
+decompose the path from before into the prefix,
+93
+which is my_folderI and another_folder,
+94
+and the object name, which is my_file.txt.
+95
+So Amazon S3 does not have a concept
+96
+of directories per se,
+97
+although when you look in the console,
+98
+the UI, you will think otherwise
+99
+and you will actually create directories.
+100
+But anything and everything in Amazon S3 is actually a key.
+101
+And keys are just very, very long names
+102
+that contain slashes and keys are made of a prefix
+103
+and an object name.
+104
+Okay, so the objects then, what are they?
+105
+Well, the values are the content of the body.
+106
+So you can upload a file,
+107
+you can upload whatever you want into Amazon S3.
+108
+So the max object size is 50 terabytes.
+109
+And if you upload a file that is very big,
+110
+and if that file is greater than five gigabytes,
+111
+so a big file, okay, then you must use the multi-part upload
+112
+to upload that file into several parts.
+113
+So if you have a file of five terabytes,
+114
+then you must upload at least 1,000 parts of five gigabytes.
+115
+Now, the objects can also have metadata,
+116
+their list of key and value pairs,
+117
+and that could be set by the system
+118
+or set by the user to indicate some elements about the file,
+119
+some metadata.
+120
+Their tags, for example,
+121
+their Unicode key and value pairs up to 10,
+122
+they're very useful for security and lifecycles,
+123
+and sometimes the object will have a version ID
+124
+if you have enabled versioning.
+125
+So that's it for an introduction to Amazon S3.
+126
+I'm sure you're curious about how that works.
+127
+So let's go in the console to get started.
+
+--- S3 Hands On ---
+
+1
+So here I am in Amazon S3,
+2
+and we're going to go ahead and create a bucket.
+3
+So as you can see,
+4
+this bucket is created in a specific region.
+5
+For example, Europe (Ireland) eu-west-1.
+6
+You can change the region selector
+7
+on the top right if you wanted to.
+8
+So next we have the bucket type.
+9
+So we have General purpose or Directory.
+10
+Directory is for low-latency use cases.
+11
+We're not going to use it.
+12
+General purpose is what we're going to use.
+13
+This is the most common
+14
+and recommended type of bucket for most access patterns.
+15
+Now here comes the namespace.
+16
+So it used to be only Global,
+17
+but now we have Global and Account Regional namespace.
+18
+So this is about naming your bucket.
+19
+So if you use the Global namespace
+20
+and you name your bucket bucket test for example,
+21
+you're going to have a problem.
+22
+So let's name it test,
+23
+and then scroll down and then create this bucket.
+24
+As you can see, a bucket with the same name already exists.
+25
+So someone created a bucket named test.
+26
+And so you need to make sure
+27
+that the bucket name here is going to be globally unique.
+28
+So for me, it would be for example, stephane-demo-s3-v6.
+29
+But as you can see, it already exists.
+30
+So I need to go to v7 and so on.
+31
+So someone already took it and it's not even me.
+32
+So how do we do then to find a bucket that's unique
+33
+while we can keep on increasing the versions
+34
+until one one will work,
+35
+or we can use now
+36
+what's called the Account Regional namespace,
+37
+and the idea is that you can do whatever you want.
+38
+You can name it test, you can name it demo,
+39
+you can name it whatever you want.
+40
+And it turns out
+41
+that there will be an Account Regional namepace suffix
+42
+that is added and so your full bucket name is going
+43
+to be this, but you have the guarantee that this is going
+44
+to be available no matter what
+45
+because this is your account number
+46
+and this is the region you're in.
+47
+And so this is the recommended way going forward
+48
+because you create a bucket named demo
+49
+and you can use this demo name across all your regions
+50
+and all your accounts if you wanted to.
+51
+But for the purpose of this demo,
+52
+I'm going to name my bucket stephane-demo-s3-v12,
+53
+which I know is available.
+54
+All right, so the bucket name is now available.
+55
+Okay, so next for Object Ownership,
+56
+right now you have ACL disabled, this is recommended.
+57
+This is a security setting. Don't worry about it.
+58
+We'll leave it as a default.
+59
+Now for blocking public access to this bucket,
+60
+we again, we'll leave this enabled.
+61
+So we'll block all public access
+62
+and we want to have maximum security in our buckets
+63
+so only us can upload files to it.
+64
+Next for Bucket Versioning,
+65
+so we want to disable Bucket Versioning right now
+66
+and we'll see later on how to enable it.
+67
+No tags are needed.
+68
+And for Default encryption,
+69
+I'm going to use server-side encryption
+70
+with Amazon S3 managed key.
+71
+So all my objects are going to be encrypted,
+72
+and then we'll choose the first option.
+73
+We'll talk about encryption later on.
+74
+And Bucket Key, I will enable it.
+75
+So we'll leave, as you can see, all the settings as default.
+76
+The only thing we have set really is the bucket name.
+77
+So I'll go ahead and create my bucket.
+78
+And now it has been successfully created.
+79
+And you will see here in this UI all your buckets.
+80
+If you have directory enabled,
+81
+you will see also directory buckets.
+82
+Right now I have none,
+83
+but your general purpose buckets are here.
+84
+Right now you should see one bucket
+85
+that you've just created this course.
+86
+For me, I have 33
+87
+because I've been using my account quite a lot.
+88
+And this will deploy buckets for all AWS regions,
+89
+not just the one you're in right now, but all regions.
+90
+As you can see, I have Ireland, London,
+91
+I scroll down and get us-east-1, Frankfurt and so on.
+92
+So all your buckets are going to be displayed here
+93
+and you can do a little search.
+94
+For example, stephane-demo, and here is my bucket.
+95
+So I'm going to click on it and have a look at it inside.
+96
+And now in my bucket,
+97
+I would like to start uploading objects
+98
+because currently, you have zero objects.
+99
+So let's click on Upload and then we can add files.
+100
+And navigate into your code, go into the s3 folder,
+101
+and then you will find a coffee.jpg file.
+102
+So choose this coffee.jpg file.
+103
+As you can see, it's an image JPEG,
+104
+it has 100 kilobytes in size,
+105
+and then the destination is s3://stephane-demo,
+106
+which is my bucket.
+107
+Okay, so let's upload this file.
+108
+We're done, so I can close this on the right-hand side.
+109
+And now back into my S3 bucket,
+110
+I can see the coffee.jpg file is under my Objects.
+111
+So what I can do is now click on it
+112
+and have more details around that file.
+113
+So now that we are in the Object page,
+114
+we can have a look at a bunch of overviews.
+115
+So a bunch of properties where it's been uploaded,
+116
+the size, the type, and there is an object URL here,
+117
+we'll be playing it in a moment.
+118
+So how do we do this?
+119
+So now we want to open this object
+120
+and see if we can open it.
+121
+We can view it because we have uploaded it
+122
+onto our Amazon S3 bucket.
+123
+Therefore, I'm going to click on Open.
+124
+And if I do click on Open, as you can see,
+125
+I can see my coffee.jpg file.
+126
+So this is the one I have uploaded
+127
+and it is on the internet.
+128
+Awesome, right?
+129
+But if I go back to my overview
+130
+and click on this object URL over here,
+131
+so I copy it, I paste it, and I enter it,
+132
+as you can see, I get an AccessDenied.
+133
+And this AccessDenied tells me
+134
+that I cannot access my object using
+135
+what's called the public URL.
+136
+So as you can see here, this public URL is not working,
+137
+but this URL is working.
+138
+So what's the difference?
+139
+Well, this URL right here, if you have a look at it,
+140
+the beginning is exactly the same,
+141
+but then the rest is a very,
+142
+very complicated and long URL
+143
+because it's called an S3 pre-signed URL, why?
+144
+Well, because this URL contains actually a signature
+145
+that verifies that I am the one making the request,
+146
+and therefore it has my credentials in it.
+147
+And so because my credentials are encoded in this URL,
+148
+then Amazon S3 says, "Well,
+149
+Stephane is allowed to view his own object,
+150
+therefore I will display it."
+151
+So this public URL does not work,
+152
+but this pre-signed URL with my own credentials works
+153
+and obviously this URL is only for me.
+154
+So we'll see how to make that object public later on
+155
+so that the public URL will function as well.
+156
+So let's go back into our bucket, the stephane-demo-s3,
+157
+and I have one object, but I can create a folder,
+158
+and this folder name may be called images.
+159
+So we scroll down and create this folder.
+160
+So now I have the images folder in my bucket.
+161
+I can click on it and within it, I can upload again a file,
+162
+and this time I will upload the beach.jpg file
+163
+into, as you can see,
+164
+the destination is my images folder within my S3 bucket.
+165
+So let's upload this, close this.
+166
+As you can see now we have the beach.jpg object
+167
+within the images folder.
+168
+And if I go one level up, we can see the folder here.
+169
+So this looks just like, you know,
+170
+the cloud storage service you used to know,
+171
+such as Google Drive or Dropbox or whatever you want.
+172
+Here, we have something very similar in terms
+173
+of the user experience on Amazon S3.
+174
+So of course, I can go to images
+175
+and I can delete this folder entirely.
+176
+So this will delete everything within the folder.
+177
+And to delete things,
+178
+I just type permanently delete into the text input,
+179
+delete my object, and I'm good to go.
+180
+So that's it for this lecture.
+181
+We've seen how we can upload objects into Amazon S3,
+182
+we've seen how we can open them in two different ways,
+183
+creating folders, deleting folders, and so on.
+184
+So I hope you liked it
+185
+and I will see you in the next lecture.
+
+--- S3 Security: Bucket Policy ---
+
+1
+So now let's talk about Amazon S3-Security.
+2
+The first part is User-Based.
+3
+So as a user you can have IAM policies that you
+4
+and this IAM policy is going to authorize
+5
+which API calls should be allowed for a specific IAM user.
+6
+You can also have Resource-Based Security.
+7
+So this is new.
+8
+We can use what's called S3 Bucket policies
+9
+and there are bucket wide rules
+10
+that you can assign directly from the S3 console.
+11
+And this will allow, for example, a specific user to come in
+12
+or allow a user from another account,
+13
+this is called cross-account
+14
+to access your S3 Buckets.
+15
+This is also how we'll make our S3 Buckets public
+16
+as I will show you in a minute.
+17
+Next, you have the Object Access Control List or ACL,
+18
+they're finer grain security and they can be disabled.
+19
+And if you need to go
+20
+at the Bucket level, you can have Buckets ACL
+21
+which is way less common also can be disabled.
+22
+And the most common way now to do security
+23
+on an Amazon S3 Bucket is to use Bucket policies.
+24
+So in which situation can an IAM principle
+25
+can access an S3 object?
+26
+Well, if the IAM permissions allow it
+27
+or if the resource policies allows it
+28
+and that there is no explicit deny in the action,
+29
+then the IAM principle can access the S3 object
+30
+on the specified API call.
+31
+So we'll have a look at these use cases in a minute.
+32
+Finally, another way to do security on Amazon S3
+33
+is to encrypt the objects using encryption keys.
+34
+So what does S3 Bucket policy actually look like?
+35
+Because this is the focus of S3-Security for us.
+36
+So they are JSON based policies and they look like this.
+37
+So this is JSON documents and it's quite easy to read.
+38
+So the first thing is that you have a resource block
+39
+and the resource tells the policy
+40
+what buckets and object this policy applies on.
+41
+And in here we can see that this applies to every object
+42
+within the example Bucket,
+43
+this is what the star is for.
+44
+Next we have the effect.
+45
+So Allow or Deny, and what do we Allow or Deny?
+46
+Well, we Deny actions.
+47
+So we have a set of APIs we can either Allow or Deny
+48
+and in this example, the action we Allow is GetObject.
+49
+So this allows anyone thanks to the principle,
+50
+the principle presents the account or the user
+51
+to apply the policy to so principle is star.
+52
+So, here we allow anyone with a star to GetObject,
+53
+so to retrieve an object from my example Bucket
+54
+with a start, that means any object within it.
+55
+So therefore this S3 Bucket, is setting public reads
+56
+on all objects inside my Buckets.
+57
+So we can use an S3 Bucket policy
+58
+to grant public access to the Bucket
+59
+as the one shown on the right hand side
+60
+or to force objects to be encrypted at upload
+61
+or to grant access to another account.
+62
+So let's have a look at the situation.
+63
+So here is a Bucket Policy for Public Access.
+64
+So we have a user, it's on the worldwide web
+65
+it's a website visitor
+66
+and he wants to access files within our S3 Buckets.
+67
+So we'll attach an S3 Bucket policy
+68
+that allows public access.
+69
+This is the one you've seen in the previous slide.
+70
+And once this Bucket policy is attached to the S3 Bucket
+71
+then we can access any objects within it.
+72
+That's what we'll see in the hands-on.
+73
+But another way to do it
+74
+is that if you have a user within your account,
+75
+so it's an IAM user
+76
+and that user wants to access Amazon S3,
+77
+then we can assign IAM permissions
+78
+to that user through a policy.
+79
+And therefore because the policy allows access
+80
+to the S3 Buckets
+81
+then the user can access our S3 Buckets right now.
+82
+If we have an EC2 instance and want to give access
+83
+from the EC2 instance into the S3 Buckets,
+84
+we've seen that IAM users are not appropriate.
+85
+We need to use IAM roles instead.
+86
+So we create an EC2 instance role
+87
+with the correct IAM permissions
+88
+and that EC2 instance will be able to access
+89
+the Amazon S3 Buckets.
+90
+More advanced,
+91
+if we want to allow Cross-Account Access,
+92
+then we must use the Bucket Policy.
+93
+So we have an IAM user in another AWS account
+94
+and we create an S3 Bucket policy
+95
+that allows Cross-Account Access for that specific IAM user
+96
+and therefore the IAM user will be able to make API calls
+97
+into our S3 Buckets.
+98
+Other security settings you need to know about
+99
+is that there is the Bucket settings
+100
+for Block Public Access.
+101
+So this is what we set to own when we created the Buckets
+102
+and these settings were invented by AWS
+103
+as a extra layer of security to prevent company data leaks.
+104
+So even though you would set an S3 Bucket policy
+105
+that would make it public,
+106
+if these settings are enabled,
+107
+the Bucket will never be public.
+108
+So this is to prevent data leaks.
+109
+So if you know that your Bucket should never be public,
+110
+then leave these settings on
+111
+and you have this level of security
+112
+against people who would set the wrong S3 Bucket policy.
+113
+And if you know that none
+114
+of your S3 Buckets ever should be public,
+115
+then you can set this at the account level.
+116
+Okay, so that's it for S3-Security.
+117
+Now let's go in the hands-on to practice.
+
+--- S3 Security: Bucket Policy Hands On ---
+
+1
+So let's go ahead and make a bucket policy
+2
+so that we can access this coffee file from the public URL.
+3
+So to do so, let's go under the Permission tabs.
+4
+And the first thing we have to do is
+5
+to allow public access from the bucket setting,
+6
+because right now everything is blocked.
+7
+So we edit this and we're going to untick this,
+8
+and, therefore, we will allow public access.
+9
+But again, this is something you would disable
+10
+only, and only if, you know you want
+11
+to set a public bucket policy.
+12
+So this is dangerous action.
+13
+So we say yes, because, of course, if you set real data
+14
+of your company on an S3 bucket and you make this public,
+15
+you have data leaks and that can never be good.
+16
+So now, under Permissions overview,
+17
+the access that objects can be public.
+18
+So that's the first step.
+19
+Next, we scroll down and we look at Bucket policy.
+20
+So currently we have none and we wanna create one
+21
+so that we make our entire bucket public.
+22
+So the first thing you can do is look
+23
+at the policies example, and this is the documentation,
+24
+and it will show you a lot
+25
+of use cases on the right hand side
+26
+that will show you what's the appropriate
+27
+and corresponding bucket policy.
+28
+But for us, we're going to use the policy generator.
+29
+So here's the AWS Policy Generator,
+30
+and we're going to create an S3 Bucket Policy.
+31
+So let's select the right type.
+32
+We'll allow, and then the principal is going to be a star
+33
+because we want to allow anyone
+34
+on the Amazon S3 service to perform,
+35
+and because we will read objects on our bucket,
+36
+we want to perform a getObject.
+37
+So here it is.
+38
+We want to allow getObjects.
+39
+And the Amazon Resource Name must be the bucket name
+40
+with a slash, and then with a star.
+41
+So let's have a look first.
+42
+So back into our S3 buckets, we have the bucket arn here,
+43
+the Amazon resource name here.
+44
+So we copy it, we paste it into the Amazon Resource Name,
+45
+and this is not over.
+46
+We add a slash and then we add a star.
+47
+And the reason why we do this is that this action,
+48
+the getObject action right here,
+49
+applies to objects within your buckets,
+50
+and, therefore, objects within your bucket
+51
+are after a slash and there are stars
+52
+to represent these objects.
+53
+So let's add these statements
+54
+and then let's generate this policy.
+55
+And this policy is what we copy into here,
+56
+and this is a public S3 policy.
+57
+So that means that getObjects are allowed from anyone
+58
+on any objects of this bucket.
+59
+Okay, that's good.
+60
+So let's save these changes.
+61
+And there is a space here, so let's remove this.
+62
+Perfect.
+63
+Save these changes.
+64
+Now that works.
+65
+So we can see that our bucket policy
+66
+has properly been applied.
+67
+So, now, let's go into our object, coffee.jpg,
+68
+and let's find the object URL, right here.
+69
+We copy it and we enter it.
+70
+And as you can see now, my coffee image is fully visible
+71
+and it is public as well as any other objects
+72
+in my Amazon S3 buckets.
+73
+So that's it for this lecture.
+74
+We've seen bucket policies, we've seen the policy generator,
+75
+and we've seen that now our image is public.
+76
+So I hope you liked it,
+77
+and I will see you in the next lecture.
+
+--- S3 Website Overview ---
+
+1
+So now let's talk about how Amazon S3
+2
+can be used to create aesthetic websites.
+3
+So S3 can host static websites
+4
+and have them accessible on the internet
+5
+and the website URL will be depending
+6
+on the AWS region where you create this,
+7
+either this or that.
+8
+And they look very, very similar as you can tell.
+9
+But the only difference is that here, you have a dash
+10
+and here, you have a dot.
+11
+It doesn't really matter for you to remember this
+12
+but just so you know, here it is.
+13
+So we have an extra bucket
+14
+and it will contain files, maybe HTML files, maybe images
+15
+and then we're going to enable this to be compatible
+16
+with hosting a website.
+17
+So this is what it will look like with the corresponding URL
+18
+and then the user will access our S3 buckets.
+19
+But this will not work
+20
+if we don't have public reads enabled on our S3 buckets.
+21
+And this is why in the first place,
+22
+in the last lecture we learned about S3 bucket policies.
+23
+So if you have a 403 forbidden error
+24
+after enabling your S3 bucket for reads,
+25
+then that means that your bucket is not public.
+26
+Therefore, you must attach an S3 bucket policy
+27
+that allows it to be public.
+28
+So that's it for this short lecture,
+29
+now let's go into the hands on to practice this.
+
+--- S3 Website Hands On ---
+
+1
+Okay, so let's enable our bucket
+2
+to be a website.
+3
+But first, I'm going to upload one more file here,
+4
+I'm going to upload my beach.jpg file into our buckets.
+5
+Okay, this is done, so we have two files into our buckets,
+6
+and let's go into Properties, scroll down,
+7
+and all the way down
+8
+you will find the static website hosting.
+9
+So click on Edit,
+10
+and here we will enable static website hosting.
+11
+We want to host a static website
+12
+and we need to specify an index document.
+13
+So I will say, index.html
+14
+and we will have to upload that file.
+15
+This is the default or homepage of the websites.
+16
+As you can see here, we also have a little warning sign
+17
+saying, hey, by the way
+18
+if you want to enable this as a website endpoint
+19
+you must make all your content publicly readable.
+20
+And we've done this in the previous lecture, so that's good.
+21
+Okay, so let's go and save this.
+22
+So this is saved, and go back into our objects.
+23
+And the one thing that's missing here
+24
+is that index, that HTML file.
+25
+So let's go to upload this,
+26
+we Add files and then I will click on index.html
+27
+and then upload, close it.
+28
+It's created, so now back into Properties,
+29
+let's scroll all the way down,
+30
+and you see now that's under static website hosting,
+31
+we have a bucket website endpoint.
+32
+So I copy this URL, paste it,
+33
+and I get, I love coffee.
+34
+Hello world!
+35
+And my coffee.jpg file.
+36
+So this working, so this is my index at HTML file,
+37
+and if I right click on this and open this image in new tab,
+38
+we have the public URL of our coffee.jpg.
+39
+So this is working,
+40
+and by the way if you wanted to change the coffee for beach,
+41
+well under beach.jpg we can see as well
+42
+this beach image right here.
+43
+So that means that everything is working,
+44
+our S3 bucket is enabled for static website hosting,
+45
+and thanks to the S3 bucket policy being public,
+46
+we can see all these files.
+47
+So we're good to go, I hope you like this lecture
+48
+and I will see you in the next lecture.
+
+--- S3 Versioning ---
+
+1
+So, now let's talk about versioning
+2
+in Amazon S3.
+3
+Because we've seen how to create a website,
+4
+but it would be nice to be able to update it in a safe way.
+5
+So, you can version your files in Amazon S3,
+6
+and this is a setting you have to enable
+7
+at the bucket level.
+8
+So, we have my bucket and it's enabled with versioning.
+9
+So, whenever a user uploads a file,
+10
+it's going to create a version of that file
+11
+at the selected key.
+12
+And then should we re-upload the same key,
+13
+should we overwrite that file,
+14
+then instead it's going to create a version two,
+15
+and then a version three, and so on.
+16
+So, therefore, it is best practice to version your buckets.
+17
+Why?
+18
+Well, the first thing is that it protects
+19
+against unintended deletes.
+20
+So, for example, if you delete a file version,
+21
+actually you just add a delete marker
+22
+and therefore you can restore versions
+23
+that were previously there instead.
+24
+You can also easily roll back to a previous version.
+25
+So, if you want to go back to what happened two days ago,
+26
+you can take a file and roll it back.
+27
+So, there are some notes you need to be aware of.
+28
+First of all, that any file that is not versioned
+29
+prior to enabling versioning will have the version null.
+30
+And also that if you suspend versioning,
+31
+it does not delete the previous version,
+32
+so, it's a safe operation.
+33
+Okay, so now let's go into the console
+34
+and have a look at how we can use versioning.
+
+--- S3 Versioning - Hands On ---
+
+1
+So now let's play with S3 versioning.
+2
+And so first you need to go into the properties
+3
+and then we have a bucket versioning setting.
+4
+We're going to edit this and we're going to enable it.
+5
+And this is to enable bucket versioning.
+6
+And therefore any files we override now
+7
+is just going to add versions into our buckets.
+8
+So this is good.
+9
+Let's go into our objects
+10
+and say we want to update our website.
+11
+So let's go back, find the website URL.
+12
+It is right here.
+13
+Okay, so we have "I love coffee"
+14
+but let's say we want to write, "I really love coffee"
+15
+so therefore let's go back into here, our file.
+16
+And I'm going to edit it
+17
+and say I really love coffee.
+18
+I've saved it.
+19
+And now I upload this file again.
+20
+So I'm going to add a file and it will be my index.html.
+21
+And now we have updated content in that file.
+22
+So if I upload it.
+23
+It's successful.
+24
+So now it's been overwritten.
+25
+If I go into my first webpage and refresh this,
+26
+I get "I REALLY love coffee."
+27
+But what did happen in the back?
+28
+Well, if we go here
+29
+and we have here this toggle "Show versions"
+30
+we're going to show the actual version ID with the files.
+31
+And so we can notice a few things.
+32
+Number one, the files that we had uploaded before
+33
+such as the beach.jpg and the coffee.jpg
+34
+have a null version id.
+35
+That's because they were uploaded
+36
+before we had enabled versioning.
+37
+But this file index.html as you can see has two versions.
+38
+One has version ID null, which is the file we had uploaded
+39
+before enabling versioning.
+40
+But the file we uploaded just right now has a version ID.
+41
+And therefore, by updating this file
+42
+and uploading it into our S3 bucket,
+43
+we have created a new version ID.
+44
+So this is something you can only see if you
+45
+enable this toggle.
+46
+So now thanks to versioning
+47
+what we can do is we can actually roll-back our page.
+48
+So we have, "I REALLY love coffee"
+49
+but we wanna go back to "I love coffee."
+50
+So how do we do this while we click on
+51
+this specific version ID
+52
+Okay, so make sure that "Show versions" is enabled
+53
+and then we're going to delete.
+54
+And here we have to delete a specific version ID
+55
+of our object.
+56
+And therefore when we delete a specific version ID
+57
+of our object, it's called a permanent delete.
+58
+So it's a destructive operation, it cannot be undone.
+59
+And so if we're sure, we type permanently delete
+60
+in this text box and click on delete objects.
+61
+And now if you go back, as we can see,
+62
+we are back with the previous date of our bucket.
+63
+And therefore if I refresh this page,
+64
+I just get "I love coffee."
+65
+But what if we disable "Show versions"?
+66
+So now we just have our objects
+67
+and I'm going to take this coffee.jpg file,
+68
+and I will delete it itself.
+69
+So this time we don't actually delete
+70
+the underlying version ID,
+71
+we delete by adding a delete marker.
+72
+And so it doesn't actually delete the underlying object
+73
+as we'll see.
+74
+Let's just type delete this time.
+75
+It's not permanently delete, it's just delete
+76
+and we delete the object.
+77
+Perfect.
+78
+So now if we have a look at it from within our bucket,
+79
+it looks like the coffee.jpg file is done.
+80
+But if we click on "Show versions"
+81
+we see that we have a delete marker on our coffee.jpg file
+82
+with this version ID.
+83
+And the real, the previous, at least, coffee.jpg file
+84
+is still in our buckets
+85
+but it's being overwritten at least right now
+86
+from a version perspective by a delete marker.
+87
+So back into our webpage, if I refresh this page
+88
+and I refresh it by forcing a refresh,
+89
+by doing a Command + Shift + R to force a refresh
+90
+then we see that the image is not available.
+91
+So how do we get back this image?
+92
+And if I just try to, for example,
+93
+open this image in the new tab, it doesn't work.
+94
+I get a "404 Not Found."
+95
+So instead to get back the previous objects
+96
+I can click on this delete marker
+97
+and I'm going to delete the delete marker.
+98
+So I will permanently delete this delete marker.
+99
+And the effect of that is that it will restore
+100
+the previous version of my object
+101
+which is this one from before.
+102
+So back into my webpage, if I refresh it now
+103
+we can see that the coffee.jpg file is there.
+104
+So you can play around with versioning
+105
+you can add as many file version as you want.
+106
+You can start deleting them and view what happens.
+107
+But I hope you like this lecture
+108
+and I will see you in the next lecture.
+
+--- S3 Replication ---
+
+1
+Now let's talk about Amazon S3 Replication,
+2
+and there are two flavors of it.
+3
+So CRR is for cross-region replication
+4
+and SRR is for same-region replication.
+5
+The idea is that we have an S3 Bucket in one region
+6
+and a target S3 Bucket in another region,
+7
+and we want to set up asynchronous replication
+8
+between these two buckets.
+9
+So, to do so, we first must enable Versioning
+10
+in the source and the destination buckets.
+11
+And if we do CRR, so cross-region replication,
+12
+the two regions must be different.
+13
+If we do SRR, the two regions are the same.
+14
+Now, it's possible for you to have these buckets
+15
+in different AWS accounts
+16
+and copying happens asynchronously.
+17
+So the replication mechanism happens behind the scenes,
+18
+in the background.
+19
+And to make replication work,
+20
+you must give proper IAM permissions
+21
+to the S3 service so that it has the permission
+22
+to read and write from specified buckets.
+23
+So the use cases for replication are manyfold.
+24
+The first one is that if you use cross-region replication,
+25
+this can be helpful for compliance
+26
+or for providing lower latency access to your data
+27
+because it's in another region,
+28
+or to replicate data across accounts.
+29
+For SRR, or same-region replication,
+30
+this can be very helpful to aggregate logs
+31
+across multiple S3 Buckets
+32
+or to perform a live replication
+33
+between a production and test accounts,
+34
+so, you have your own test environment.
+35
+Okay, so that's it about replication.
+36
+I will see you in the next lecture for some practice.
+
+--- S3 Replication Notes ---
+
+1
+Hey, so just a few notes
+2
+about Amazon S3 Replications.
+3
+So after you enable Replication, as you've seen,
+4
+only new objects are going to be replicated.
+5
+And if you want to replicate existing objects,
+6
+then you need to use the S3 Batch Replication feature.
+7
+So this will replicate the existing objects
+8
+and the objects that have failed Replication,
+9
+and in case you have delete operations,
+10
+you can replicate these delete markers
+11
+from the source bucket to the target bucket.
+12
+It's an optional setting, but if you have a deletion
+13
+with the version ID, they are not replicated,
+14
+so if it's a permanent deletion,
+15
+because you want to avoid malicious deletes happening
+16
+from one bucket to another.
+17
+Finally, there's no chaining of replications.
+18
+So that means that if bucket one
+19
+has replication to bucket two,
+20
+and then, bucket two has replication to bucket three,
+21
+then the objects of bucket one
+22
+are not replicated into the bucket three, so that's it.
+23
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 Replication - Hands On ---
+
+1
+So let's practice replication
+2
+on Amazon S3.
+3
+For this, we're going to create a new bucket.
+4
+I'll call it s3-stephane-bucket-origin-v2.
+5
+And I will set it in one region that I want,
+6
+for example, eu-west-1.
+7
+This will be my origin bucket
+8
+and then data will be replicated
+9
+from this bucket to another bucket.
+10
+So the thing I need to do, of course,
+11
+is to enable versioning
+12
+because replication only works
+13
+if versioning is enabled.
+14
+So I will create this bucket.
+15
+And then open this bucket in a new tab.
+16
+And I will create a second bucket
+17
+and this will be my target bucket.
+18
+So I will do s3-stephane-bucket-replica-v2.
+19
+And this time, the region can be either the same,
+20
+for example, if you wanted to do same region replication
+21
+or something completely different,
+22
+for example, if you wanted the US,
+23
+you could do us-east-1
+24
+to replicate from Europe to the US.
+25
+Okay, so let's scroll down
+26
+and let's again enable bucket versioning
+27
+on the target bucket.
+28
+And we're good to go.
+29
+So now we have our primary bucket
+30
+and our secondary bucket.
+31
+What I'm going to do is that in the origin bucket,
+32
+I'm going to upload a file,
+33
+so I will add a file of my beach, for example.
+34
+Beach.jpg.
+35
+Okay, this is done and we can close this.
+36
+So now this has one file
+37
+but, of course, this does not get replicated yet
+38
+because we haven't set up replication yet.
+39
+So let's go ahead and do this.
+40
+So on the origin bucket,
+41
+what I need to do is to go under Management,
+42
+scroll down and there are replication rules.
+43
+Currently zero.
+44
+So let's go ahead and create our first replication rule.
+45
+So I'll call this one DemoReplicationRule.
+46
+Okay, perfect.
+47
+We'll set it as enabled.
+48
+For the source bucket, we'll leave it as is
+49
+and in terms of rule scope,
+50
+we'll apply it to all objects in the bucket.
+51
+Now, for the destination,
+52
+we can specify a bucket in this account
+53
+or another account.
+54
+And we'll choose one in this account.
+55
+And the bucket name is my target bucket.
+56
+So I need to actually enter the name.
+57
+So we'll take this bucket right here,
+58
+copy and paste it.
+59
+Okay, and as you can see,
+60
+the destination region was identified
+61
+as being us-east-1.
+62
+So therefore, this is a Cross-Region Replication.
+63
+Okay.
+64
+Now for IAM role,
+65
+we need to actually go and create a new role for this.
+66
+So here's the option.
+67
+And then we can have a look at some settings
+68
+but for now it doesn't really matter for us.
+69
+Let's just save this.
+70
+So we get a prompt right here,
+71
+which says do you want to replicate existing objects?
+72
+So it turns out that when you do enable replication,
+73
+it will only replicate objects
+74
+from the moment you set it.
+75
+So for newer uploads.
+76
+So if you wanted to replicate the previous objects
+77
+from the source to the destination bucket,
+78
+you could use something called a Batch Operation,
+79
+an S3 Batch Operation to do so
+80
+and you would need to say yes, replicate existing objects.
+81
+But this is separate
+82
+from the replication feature itself.
+83
+Therefore, I'm going to say no,
+84
+do not replicate existing objects.
+85
+And we're good to go.
+86
+So now let's have a look.
+87
+So we have this Management
+88
+with a replication rule that is ready.
+89
+And now what I'm going to do
+90
+is check in my replica bucket.
+91
+Of course, if I refresh now,
+92
+we see that the objects haven't been replicated.
+93
+So I'm going to do is now upload a new file,
+94
+for example, upload the coffee.jpg file.
+95
+Upload it.
+96
+We're done.
+97
+So here is the coffee.jpg file.
+98
+Let's show the versions.
+99
+So this is coffee.jpg and the version is GBk.
+100
+Okay, perfect.
+101
+Now if we go in my target bucket, and refresh this,
+102
+it's gonna take maybe five seconds.
+103
+And this took about 10 seconds on the first replication
+104
+but we can see that my coffee.jpg
+105
+has been added into my replica bucket.
+106
+And if I show the versions,
+107
+we can see that the version ID of my coffee.jpg
+108
+is the exact same of the origin bucket.
+109
+So the version's IDs are replicated,
+110
+which is great.
+111
+And if I wanted to import the beach.jpg,
+112
+I would need to upload a new version of that file.
+113
+So let's upload beach.jpg again.
+114
+Now this has been uploaded,
+115
+we can look at the versions,
+116
+so there is a new version right here
+117
+of DK2 of my beach.jpg file.
+118
+And now if I go here and refresh,
+119
+now let's look at one more setting
+120
+that is important for your exam.
+121
+So if I go back into Management,
+122
+and take this and edit this role,
+123
+we can scroll down and have a look
+124
+at one setting called the delete marker replication.
+125
+So by default, delete markers
+126
+are not replicated
+127
+but there's a feature to do so.
+128
+So if you enable delete marker replication,
+129
+then they will be replicated from one bucket to another.
+130
+So let's save this.
+131
+So my replication rules have been saved.
+132
+And so that means that if I go in this bucket,
+133
+and I choose to delete this file, for example,
+134
+I delete my coffee.jpg file, let's delete it.
+135
+This will actually create a delete marker
+136
+because my bucket is versioned.
+137
+We're done.
+138
+So now my coffee.jpg is deleted.
+139
+And let's have a look in here.
+140
+So let's refresh and we need to wait little bit.
+141
+And now you can see that the delete marker
+142
+has been replicated to my replica bucket.
+143
+So if I don't show version,
+144
+I don't see my coffee.jpg file
+145
+but of course, if I show versions, I will see it.
+146
+This is true here.
+147
+And of course, this is true here as well.
+148
+So the delete markers are deleted
+149
+but if you decide to delete a specific version
+150
+of a file, for example,
+151
+I delete this one, which is I delete a specific version ID.
+152
+So this is called the permanent delete.
+153
+And if I permanently delete one object
+154
+in my origin bucket,
+155
+it will not be replicated to my replica bucket.
+156
+So this beach.jpg here will never be deleted
+157
+because only delete markers are replicated,
+158
+not deletes, okay?
+159
+So that's it for this lecture.
+160
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 Storage Classes Overview ---
+
+1
+Okay, so let's discuss
+2
+different storage classes we have for Amazon S three.
+3
+The first one is Amazon S three Standard-General Purpose.
+4
+Then we have Amazon S three-Infrequent Access.
+5
+Then we have Amazon S three One Zone-Infrequent Access.
+6
+Then we have Glacier Instant Retrieval,
+7
+Glacier Flexible Retrieval, Glacier Deep Archive,
+8
+and then finally, the Amazon S three Intelligent Tiering.
+9
+So we'll learn about all these classes in depth
+10
+in this lecture, but you have to know them for the exam.
+11
+Then when you create an object in Amazon S three,
+12
+you can choose its class,
+13
+you can also modify its storage class manually,
+14
+or as we'll see as well,
+15
+you can use Amazon S3 Lifecycle configurations
+16
+to move objects automatically
+17
+between all these storage classes.
+18
+So first, before we go into the classes,
+19
+let's define the concept of durability and availability.
+20
+So durability represents how many times an object
+21
+is going to be lost by Amazon S three.
+22
+And so Amazon S three has a very high durability.
+23
+It's called 11 nines.
+24
+So nine nine point and then nine times nine percent.
+25
+And that means that on average,
+26
+if you store 10 million objects on Amazon S three,
+27
+you can expect to lose a single object
+28
+once every 10,000 years.
+29
+So it's quite durable.
+30
+And the durability is the same
+31
+for all storage classes in Amazon S three.
+32
+Availability represents how readily a service is.
+33
+And so this depends on the storage class.
+34
+For example, S three Standard has a 99.99% availability.
+35
+That means that about 53 minutes a year,
+36
+the service is not going to be available.
+37
+That means that you'll get some errors
+38
+when you deal with the service.
+39
+So you need to take that into account
+40
+when you develop your applications.
+41
+Okay.
+42
+So S3 standard has 99.99 availability.
+43
+It's going to be used for frequently accessed data.
+44
+This is the kind of storage you use by default,
+45
+and it has low latency and high throughputs.
+46
+It can sustain two concurrent facility failures
+47
+on the side of AWS and the use cases for it
+48
+is going to be big data analytics,
+49
+mobile and gaming application,
+50
+as well as content distribution.
+51
+Next, we have S three infrequent access.
+52
+So this is data that is going to be as the name indicates,
+53
+less frequently accessed,
+54
+but requires rapid access when needed.
+55
+It's going to be lower cost than S three Standard,
+56
+but you will have a cost on retrieval.
+57
+So the S three Standard-IA is 99.9% availability,
+58
+so a bit less available.
+59
+And the use case for it is going to be Disaster Recovery
+60
+and backups.
+61
+And Amazon S three One Zone-Infrequent access, One Zone-IA.
+62
+ESC has high durability, okay, within a single AZ only,
+63
+and the data is going to be lost
+64
+if the AZ is somewhat destroyed.
+65
+As well as durability, it's even lower.
+66
+So it's 99.5% availability.
+67
+And so the use cases of S three One Zone-IA
+68
+is to store secondary copy of backups
+69
+of maybe on-premises data, or data you can recreate.
+70
+Next we have the Glacier Storage Classes.
+71
+So Glacier is, as the name it gets very cold,
+72
+so it's low cost object storage
+73
+meant for archiving and backup.
+74
+And the pricing is that you're going to pay for the storage
+75
+plus pay for a retrieval cost.
+76
+In your three classes of storage within Glacier,
+77
+you have the Amazon S three Glacier Instant Retrieval.
+78
+And this gives you milliseconds retrieval
+79
+which is great for example,
+80
+for data that's accessed once a quarter,
+81
+and the minimum store duration is 90 days.
+82
+So this is backup,
+83
+but you need to access it within milliseconds.
+84
+Then we have the Glacier Flexible Retrieval.
+85
+It used to be called Amazon S three Glacier
+86
+but then they renamed things as they added more tier.
+87
+So the Amazon Glacier Flexible Retrieval
+88
+has three flexibility.
+89
+So you have expedited where you get the data back
+90
+between one and five minutes.
+91
+You have standard to get the data back
+92
+between three to five hours, or bulk, which is free,
+93
+where you get data back between five to 12 hours.
+94
+And the minimum storage duration as well is 90 days.
+95
+So here, instance means you retrieve data instantly
+96
+and flexible means that you're willing
+97
+to wait up to for example, 12 hours to retrieve your data.
+98
+And then we have Glacier Deep Archive
+99
+which is meant for long term storage.
+100
+So we have two tiers of retrieval as well.
+101
+We have Standard of 12 hours and Bulk of 48 hours.
+102
+So you may be ready to wait a lot of time
+103
+to retrieve data,
+104
+but it's going to give you the lowest cost,
+105
+and as well, the minimum storage duration is 180 days.
+106
+So as you know, that's a lot of storage classes
+107
+and there's one last called S three Intelligent- Tiering,
+108
+which is going to allow you to move objects
+109
+between excess tiers based on usage patterns.
+110
+And for this, you're going to incur a small
+111
+monthly monitoring fee, and auto tiering fee.
+112
+And there are no retrieval charges
+113
+in S three Intelligent- Tiering.
+114
+So there is the frequent access tier that's automatic
+115
+the default tier.
+116
+Then we have the Infrequent Access tier
+117
+for objects not accessed for example, for 30 days.
+118
+Then you have the Archive Instant Access tier,
+119
+automatic as well for objects not accessed over 90 days.
+120
+And then the Archive Access tier that's optional.
+121
+And you can configure it from 90 days to 700 plus days.
+122
+And then you have the Deep Archive Access tier
+123
+also optional, that you can configure for objects
+124
+that haven't been accessed between 180 days
+125
+to 700 plus days.
+126
+Okay.
+127
+So S three Intelligent-Tiering is really
+128
+to allow you to just sit back and relax
+129
+while S three moves objects for you.
+130
+So if you compare all the storage classes
+131
+you don't need to remember these numbers,
+132
+but it's just for you to make sense of what they are.
+133
+So you get durability of 11 nine's everywhere.
+134
+Then as availability goes down, the less zones you have,
+135
+of course.
+136
+It just shows you like for example
+137
+the minimum storage duration chart and so on.
+138
+So take some time to look at this diagram on your own.
+139
+You should understand it,
+140
+but you should not remember it for sure.
+141
+So if we look at some pricing, for example
+142
+in the us-east-one,
+143
+so this is the kind of pricing you would have
+144
+for all the storage classes.
+145
+And again, you're not supposed to remember everything.
+146
+But it's good for you to have a look at it
+147
+on your own time, just to make sure you understand.
+148
+Because if you understand what the classes name are,
+149
+then you should be able to make sense of these classes.
+150
+Okay?
+151
+So that's it for the lecture.
+152
+I hope you liked it.
+153
+And I will see you in the next lecture.
+
+--- S3 Storage Classes Hands On ---
+
+1
+So let's create a new bucket industry
+2
+and call it "s3-storage-classes-demos-2022."
+3
+Okay. Then I create into any kinda region,
+4
+and I will go ahead and just create this bucket.
+5
+So back in my bucket, I can go ahead
+6
+and upload a object, and click on add files.
+7
+I will choose my coffee.JPEG.
+8
+And let's have a look at the options.
+9
+So we can look at the properties
+10
+of that object,
+11
+and under storage class, I get the wide range
+12
+of storage class that are for AWS objects.
+13
+So we have S3 standard, okay,
+14
+and we get the design four column.
+15
+How many AZ's we have,
+16
+as well as some other (indistinct)
+17
+the minimum storage duration,
+18
+minimum billable object size,
+19
+and monitoring and auto-tiering fees.
+20
+So let's have a look at all of them.
+21
+So we have standard, which is the basic ones by default.
+22
+Then we get intelligent tiering,
+23
+in case we don't know our data patterns,
+24
+and therefore we want AWS
+25
+to perform the data tiering for us.
+26
+Standard-IA, if we want data to be infrequently accessed,
+27
+but still with low latency.
+28
+One-Zone-IA,
+29
+which is that you can recreate this data,
+30
+and it's going to be stored in one AZ only.
+31
+And therefore you can
+32
+run the risk of losing the object,
+33
+if the AZ is destroyed.
+34
+Then we have three glacier levels.
+35
+So we have Glacier Instant Retrieval,
+36
+Glacier Flexible Retrieval,
+37
+or a Glacier Deep Archive,
+38
+and it tells you exactly
+39
+what are the conditions in here.
+40
+And finally, Reduced Redundancy,
+41
+which is a deprecated type of storage tier,
+42
+and therefore I did not describe it in the course.
+43
+So what if we go with standard IA
+44
+for example, and create an object there.
+45
+So we're going there,
+46
+and then we're going to say upload.
+47
+Back in our bucket.
+48
+So now this object has the storage class, Standard-IA,
+49
+as it is shown here.
+50
+But what I can do is
+51
+that I can also change the storage class
+52
+if I wanted to.
+53
+So I can go into properties and scroll down,
+54
+and we can actually edit the storage class
+55
+to do something different.
+56
+So we can move it for example,
+57
+to One-Zone-IA,
+58
+in which case this object is going
+59
+to be stored in one zone only.
+60
+So let's save these changes.
+61
+And now my object has successfully been edited
+62
+and therefore the object class has changed.
+63
+So if we scroll down, now we are in One-Zone-IA.
+64
+And again, you could edit it,
+65
+and go, for example, for Glacier-Instant-Retrieval.
+66
+And now it's going to be archived,
+67
+or you can go for Intelligent-Tiering,
+68
+and it could be automatically set
+69
+to the right tier based on our patterns, and so on.
+70
+So you can see there's a lot of power using storage classes.
+71
+And finally,
+72
+I want to show you how we can automate moving these objects
+73
+between the different storage classes.
+74
+So let's go back
+75
+into our buckets, and there under management,
+76
+you can create lifecycle rules.
+77
+And you can create a rule,
+78
+and we'll call this one "DemoRule."
+79
+And then you're going to say,
+80
+"hey," apply to all objects in the buckets.
+81
+Yeah, sure.
+82
+And then we can say, okay
+83
+move current versions between storage classes.
+84
+And you're saying, hey, you go
+85
+to Standard-IA after, for example, 30 days.
+86
+And then you go to Intelligent-Tiering after 60 days.
+87
+And then you would go to Glacier-Flexible-Retrieval
+88
+after 180 days,
+89
+and so on.
+90
+So you get some transitions.
+91
+And in here you can review
+92
+all the transitions you have done.
+93
+So it is possible
+94
+for you to automate moving objects between tiers.
+95
+Okay. So that's it,
+96
+we've seen everything we need to know about storage classes.
+97
+I hope you liked it.
+98
+And I will see you in the next lecture.
+
+--- S3 Express One Zone ---
+
+1
+So here's one more storage class,
+2
+but I wanted to make a separate lecture for it
+3
+because it's a bit different than the other ones.
+4
+So the S3 Express One Zone storage class
+5
+is high performance,
+6
+but for a single availability zone type of storage class.
+7
+What does that mean?
+8
+That means that your objects are stored
+9
+not on the standard bucket on S3,
+10
+but in what's called a directory bucket,
+11
+and it's a special type of S3 bucket.
+12
+But this bucket, instead of being distributed
+13
+across multiple availability zone,
+14
+it's going to be in a single availability zone only,
+15
+and you get to choose which one you want it to be in.
+16
+So it's a different kind of bucket,
+17
+and that's why there is a different kind
+18
+as well of storage class.
+19
+So it's a very specific use case, but the idea is that
+20
+because you are in a single AZ,
+21
+then you're going to be able to handle
+22
+hundreds of thousands of requests per second
+23
+with single digit millisecond latency,
+24
+so very high performance.
+25
+You get about 10 times the performance of S3 standard
+26
+with about 50% lower the cost.
+27
+So good durability, but the availability is of course lower
+28
+because now instead of being three availability zones
+29
+with some replication, you only have one availability zone.
+30
+And of course, if there is a problem on this AZ,
+31
+you're going to be directly affected.
+32
+So the idea of using S3 Express One Zone is
+33
+that you're gonna be able to co-locate your storage
+34
+and compute resources in the same availability zone
+35
+and therefore reduce latency
+36
+and maybe even reduce your networking cost.
+37
+So the use cases are for latency sensitive apps,
+38
+for data intensive apps, for AI and ML training,
+39
+financial modeling, media processing,
+40
+and high performance computing,
+41
+and it's best integrated with, for example,
+42
+with SageMaker Model Training, Athena, EMR, Glue,
+43
+all these kind of data services.
+44
+All right, so that's it for this lecture.
+45
+I hope you liked it, and I will see you in the next lecture.
+
+--- S3 Lifecycle Rules (with S3 Analytics) ---
+
+1
+So now let's talk
+2
+about how we can move objects
+3
+between different storage classes
+4
+so you can transition them,
+5
+and this is a diagram of how it's possible.
+6
+So as you can see,
+7
+you can go from the Standard, for example,
+8
+to Standard IA to Intelligent Tiering to One-Zone IA,
+9
+and then from One-Zone IA, as you can see,
+10
+you can go to Flexible Retrieval or Deep Archive.
+11
+And so all the types
+12
+of permutations are shown in this graph.
+13
+So as a matter of fact, if you know
+14
+that your objects are going to be infrequently accessed,
+15
+then move them to Standard IA.
+16
+And if you know that you're going to archive objects,
+17
+move them into the Glacier
+18
+of tiers or the Deep Archive tier.
+19
+Now, moving these objects can be done manually, of course,
+20
+but we can automate this using lifecycle rules.
+21
+So these lifecycle rules are made of multiple things.
+22
+The first thing is a transition action
+23
+to configure the object
+24
+to transition to another storage class.
+25
+For example, you say move
+26
+to Standard IA class after 60 days after creations
+27
+or move to Glacier for archiving after six months.
+28
+You can also set up expiration actions.
+29
+So configure objects to be deleted,
+30
+to be expired after some time.
+31
+For example, your access log files,
+32
+you want to delete them after 365 days.
+33
+Or you can, for example,
+34
+use an expiration action to delete old versions
+35
+of files if you have enabled versioning.
+36
+Or we can use this to delete incomplete multi-part uploads
+37
+if, for example, the multi-part uploads is more
+38
+than two weeks old because, well,
+39
+the thing should have been fully uploaded by now.
+40
+The rules can also be specified for a certain prefix.
+41
+So they can apply to entire buckets
+42
+or to a specific path within your buckets.
+43
+And you can also specify it for specific object tags.
+44
+So if you want to only do a rule
+45
+for the department finance, you can.
+46
+So here's some scenarios.
+47
+For example, you have an application on EC2,
+48
+and it creates images, thumbnails
+49
+after profile photos are uploaded to Amazon S3.
+50
+But these thumbnails, they can be easily recreated
+51
+from the original photo
+52
+and they only need to be kept for 60 days.
+53
+But the source images, they should be able
+54
+to be immediately retrieved for these 60 days
+55
+and afterwards the user can wait up to six hours.
+56
+So how would you design this?
+57
+This is what an exam question will ask you.
+58
+So the S3 source images can be on the Standard class
+59
+with a lifecycle configuration to transition them
+60
+to Glacier after 60 days and the thumbnails images,
+61
+so this is how you would use a prefix to differentiate
+62
+between source and thumbnails, for example.
+63
+So the thumbnails can be on One-Zone IA
+64
+because well, they're infrequently accessed,
+65
+and they can be recreated easily,
+66
+and you can have a lifecycle configuration to expire them
+67
+or delete them after 60 days.
+68
+Another scenario, so a rule
+69
+in your company states that you should be able
+70
+to recover deleted S3 objects immediately for 30 days,
+71
+although this may happen rarely.
+72
+After this time, for up to 365 days,
+73
+deleted objects should be recoverable within 48 hours.
+74
+For this, we can enable S3 versioning in order to keep
+75
+and have object versions so that the deleted objects
+76
+are in fact hidden by a delete marker
+77
+and then can be recovered.
+78
+And then you will create a rule to transition
+79
+the non-current versions of the objects to Standard IA.
+80
+So that means the versions
+81
+that are not the top level versions,
+82
+and then transition afterwards these non-current versions
+83
+to Glacier Deep Archive for archival purposes.
+84
+Lastly, how do we determine what's the optimal number
+85
+of days to transition an object from one class to another?
+86
+Well, you can do this thanks to Amazon S3 Analytics.
+87
+So it's going to give you recommendations
+88
+for Standard and for Standard IA.
+89
+It does not work with One-Zone IA or Glacier.
+90
+And so the S3 buckets
+91
+will have S3 Analytics run on top of it.
+92
+And this will create a CSV report
+93
+that will give you some recommendations and some statistics.
+94
+The report is going to be updated daily
+95
+and then it can take between 24 to 48 hours
+96
+to start seeing data analysis coming out of it.
+97
+So this is a good first step, this CSV report
+98
+to put together lifecycle rules that makes sense
+99
+or to improve them.
+100
+Okay, so that's it for this lecture.
+101
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 Lifecycle Rules - Hands On ---
+
+1
+So let's go ahead
+2
+and create a lifecycle rule for our buckets.
+3
+So let's go under management and create a lifecycle rule.
+4
+This one is going to be called demo rule, and we apply it
+5
+to all the objects in the buckets and I acknowledge it.
+6
+Okay, so we can see we have five different rule actions.
+7
+We can move current versions
+8
+of objects between storage classes,
+9
+non-current versions of objects between classes,
+10
+expired current versions of objects,
+11
+permanently delete non-current versions of objects,
+12
+and finally delete expired objects, delete markers
+13
+or incomplete multi-part upload.
+14
+So five different use cases.
+15
+Let's have a look at them one by one.
+16
+So to move current version objects between storage classes
+17
+that means that you have a version bucket, and
+18
+the current version is the version that is the most recent
+19
+the one displayed to the user.
+20
+So for example, we can transition
+21
+to standard IA after 30 days.
+22
+Then we can go into intelligent tier after 60 days.
+23
+Then we can go into
+24
+say glacier after 90 days for instant retrieval.
+25
+Then after 180 days flexible retrieval
+26
+and then maybe deep archive after 365 days.
+27
+So you can have a transition as much as you want.
+28
+Okay?
+29
+And we need to take this back to acknowledge what we do.
+30
+We can also, for example
+31
+move non-current versions so faster.
+32
+So this one, we want to move an object that is non-current
+33
+therefore an object that has been overridden
+34
+quote unquote by near one.
+35
+So we can say, okay, this one
+36
+we wanna move it into glacier flexible because we know
+37
+that after 90 days we won't need it for retrieval.
+38
+So this is perfect and we're good to go
+39
+but we could add more transitions.
+40
+And for example
+41
+we want to expire current versions of objects after,
+42
+and at the bottom you can set it up after 700 days.
+43
+And same for the non-current options.
+44
+We want to permanently delete them after 700 days as well.
+45
+Okay, so this is something we can do
+46
+and now we can have a look
+47
+at all these transitions and expiration actions.
+48
+So this is nice because it shows you a timeline
+49
+of what is going to happen to your current version
+50
+and your non-current versions of your objects.
+51
+So if we're happy with all of this, we can just go ahead
+52
+and create this role, and this role will act
+53
+in the background to do what it's supposed to be doing.
+54
+So that's it.
+55
+Now you know how to automate moving objects
+56
+in AWS free between different source classes.
+57
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 Requester Pays ---
+
+1
+So here is a feature that you may get tested on
+2
+at the exam.
+3
+And this is called S3 Requester Pays.
+4
+And the name is quite obvious.
+5
+So, in general, from what we've seen,
+6
+the bucket owners will pay for all of the Amazon S3 storage
+7
+and also the data-transfer costs associated
+8
+with their buckets.
+9
+So let's take an example.
+10
+We have a set of buckets,
+11
+we're storing some objects in it,
+12
+and then a requester, so, a user will download a file
+13
+from our bucket.
+14
+And then what happens is that
+15
+the networking cost is also being billed
+16
+to the owner of the bucket and the objects, okay?
+17
+But, in case you are having a lot of heavy files
+18
+and some of the customers want to download them,
+19
+maybe you want to enable Requester Pays buckets.
+20
+And in that case, the requester will pay
+21
+instead of the bucket owner
+22
+for the data download of the objects.
+23
+So let's take an example again.
+24
+The owner still will pay for the storage costs
+25
+of the objects within the bucket,
+26
+but now the requester will download the object
+27
+and the requester will be the one paying
+28
+for the networking costs associated with that download.
+29
+The idea is that this is very helpful if you want to
+30
+start sharing large data sets with other accounts.
+31
+And for it to do so,
+32
+the requester must not be anonymous, okay?
+33
+The requester must be authenticated
+34
+in AWS because when it is authenticated with AWS,
+35
+then AWS knows to bill the requester of that request
+36
+for that specific download of the object, okay?
+37
+So that's it, just a feature to remember.
+38
+It can come up in the exam in a scenario.
+39
+I hope you liked it,
+40
+and I will see you in the next lecture.
+
+--- S3 Event Notifications ---
+
+1
+So now let's talk about S3 Event Notifications.
+2
+And the idea is that your events
+3
+are going to happen in Amazon S3.
+4
+What are events?
+5
+Well, events are things such as an object is created,
+6
+or an object is removed, or an object is restored,
+7
+or there is replication happening.
+8
+And you can filter these events.
+9
+So you can say I only want to consider the objects
+10
+that end with JPEG.
+11
+So the use case for Event Notification will be, for example,
+12
+to automatically react to certain events
+13
+happening in Amazon S3.
+14
+For example, you want to generate thumbnails
+15
+of all the images upload to Amazon S3.
+16
+Therefore, you're going to create your Event Notification.
+17
+And then you can send it to a couple of destinations.
+18
+It could be an SNS topic, it could be an SQS queue,
+19
+and a Lambda function.
+20
+And don't worry if you don't know this by now,
+21
+we will learn about these features in the next lectures.
+22
+So you can create as many S3 events as desired,
+23
+and you can send them to whatever target you want.
+24
+So the idea is that these events
+25
+are typically delivered within seconds
+26
+to these destinations,
+27
+but sometimes it can take a minute or longer.
+28
+Now, for the Event Notifications to work,
+29
+we need to have IAM permissions.
+30
+So the S3 service is sending data
+31
+into an SNS topic, for example.
+32
+So to make this possible, we need to attach
+33
+what's called an SNS resource access policy.
+34
+This is a IAM policy you attach to the SNS topic,
+35
+and this will allow the S3 bucket
+36
+to send messages directly into the SNS topic.
+37
+Similarly, if we use SQS,
+38
+we create an SQS resource access policy,
+39
+which authorizes the S3 service to send data
+40
+into our SQS queue.
+41
+And finally, for Lambda function, you will have guessed,
+42
+we need a Lambda resource policy
+43
+attached to our Lambda function
+44
+to make sure that Amazon S3
+45
+has the right to invoke our function.
+46
+So here we don't use IAM roles for Amazon S3.
+47
+Instead, we define resource access policies
+48
+on the SNS topic, on the SQS queue,
+49
+or on the Lambda function.
+50
+And they function similarly
+51
+to what we had when we were using an S3 bucket policy.
+52
+So you have to remember SNS, SQS, and lambda function
+53
+as Event Notifications targets.
+54
+But now, there's a fourth integration
+55
+you need to also learn about.
+56
+So your events are going into your Amazon S3 buckets.
+57
+And all the events end up in Amazon Event Bridge
+58
+no matter what.
+59
+So all of them, okay?
+60
+And then from Event Bridge that you don't know yet,
+61
+but you can set up rules.
+62
+And from Event Bridge,
+63
+you can, thanks to these rules, send these events
+64
+to over 18 different AWS services as destinations.
+65
+So it really enhances the capability
+66
+of S3 Event Notification.
+67
+And again, we'll see Event Bridge later on this course,
+68
+but with Event Bridge,
+69
+you get advanced filtering options
+70
+a lot more than what we had from before.
+71
+So you can filter by metadata, object, size, and name.
+72
+You can send to multiple destinations at the time.
+73
+You can say, for example, to Step Functions,
+74
+Kinesis Data Streams, or Firehose,
+75
+or you even get the features
+76
+coming straight from Amazon Event Bridge.
+77
+So you can archive events, replay events,
+78
+and you get more reliable delivery.
+79
+Okay, there's a lot you don't know in this lecture
+80
+around the news services,
+81
+but let's just focus on Amazon S3 Event Notifications.
+82
+The idea is that you can react to events
+83
+happening in Amazon S3,
+84
+thanks to sending it to SQS, SNS, Lambda,
+85
+or Amazon Event Bridge.
+86
+Okay, that's it.
+87
+I will see you in the next lecture.
+
+--- S3 Event Notifications - Hands On ---
+
+1
+Okay, so let's go ahead
+2
+and demonstrate S3 Event Notifications.
+3
+For this, I'm going to create a bucket.
+4
+I call it "stephane-v3-events-notifications"
+5
+and then when Ireland's...
+6
+and I will just go ahead and create my bucket altogether.
+7
+Okay. So now bucket is created.
+8
+I'm going to go into it.
+9
+And what I'm going to do now
+10
+is make sure that event notifications are set up.
+11
+So I go to properties,
+12
+scroll down and then, here we have event notifications.
+13
+And as you can see, we have two options.
+14
+Number one is to create an event notification,
+15
+and I will show you this in a second,
+16
+or number two is to enable
+17
+the Amazon EventBridge integration
+18
+to send all the events
+19
+from this S3 bucket into EventBridge.
+20
+And for this, you just you set it on
+21
+and you'll be good to go.
+22
+So it is something that now if I wanted to,
+23
+I could use Amazon EventBridge
+24
+to catch the events happening in my S3 buckets.
+25
+But I will show you the simpler way
+26
+because it's a bit more complicated,
+27
+is to just create an event notification
+28
+and send it for example to SQS.
+29
+So I'll call this one "DemoEventNotification"
+30
+and then we can set up a prefix, a suffix,
+31
+but I won't do it.
+32
+And next, we to choose event types.
+33
+So we want to react to all object create events.
+34
+So that means that any time an object is created,
+35
+then an event is going to be created.
+36
+But if you wanted to, you could get more granular
+37
+and select which type of events you wanted.
+38
+But to keep it simple, I'll take it here.
+39
+And you can also include for example,
+40
+object removals, object restores,
+41
+and it shows you all the events you can catch
+42
+on the right hand side.
+43
+So I'll keep it simple.
+44
+I'm just going to scroll down,
+45
+but as you can see,
+46
+there are a lot of different events
+47
+you can react to in Amazon S3.
+48
+And then, you want to publish to a destination.
+49
+And so we have three options.
+50
+We have Lambda functions, SNS topic, and SQS queue.
+51
+And I'm going to choose SQS queue
+52
+but we first need to create a queue,
+53
+and then authorize Amazon S3
+54
+to publish messages into that destination.
+55
+So what I'm going to do now
+56
+is just go into Amazon SQS and then create a queue.
+57
+And I call this one "DemoS3Notification."
+58
+I will go ahead and create this queue.
+59
+And it's created.
+60
+So now wanting to do is to enhance the access policy
+61
+to allow my S3 bucket to write into my SQS queue.
+62
+So to do so, let me first demonstrate the problem.
+63
+So if I go back here
+64
+and I am going to refresh this page to see my queue appear.
+65
+So I refresh it and I say DemoS3Events.
+66
+All object created, and then scroll down
+67
+and then choose the SQS queue.
+68
+I can choose the queue ARN.
+69
+Sorry. I could choose queue here in the dropdown,
+70
+DemoS3Notification.
+71
+And if I try to save my changes,
+72
+I get an unknown error, which is saying that,
+73
+"Hey, you are not able to validate
+74
+the destination configuration
+75
+because this SQS queue does not accept yet messages
+76
+from my S3 buckets."
+77
+And so I need to change the access policy
+78
+by clicking on edits,
+79
+scroll down, here's my access policy.
+80
+And I need to go ahead and generate a new policy.
+81
+So I go to Policy Generator.
+82
+It's going to be an SQS queue policy.
+83
+And the effect is allow anyone, just to be very permissive,
+84
+to do a send message.
+85
+And my Amazon resource name is right here.
+86
+I need to copy it and paste it.
+87
+I add a statement, and then generate this policy.
+88
+And now, this is the policy I wanna use
+89
+which allows anyone to write to my SQS queue.
+90
+So it's very, very permissive, but it will work.
+91
+Let's save this.
+92
+And now my access policy has been updated.
+93
+So now, if I go back here and try to save my changes,
+94
+as you can see, the operation was successfully completed.
+95
+And what happened is that if I go into my SQS queue
+96
+and click on send and receive messages,
+97
+and then click on poll for messages,
+98
+as you can see, a message was being sent by Amazon S3
+99
+which is to test event, to test the connectivity.
+100
+So what I can do is I can take this message and delete it.
+101
+So now we want to test whether or not
+102
+the S3 Event Notification is working with SQS.
+103
+So therefore we're going to upload an object,
+104
+click on add files and choose our coffee, the JPEG.
+105
+I will upload this file.
+106
+Now the file has been uploaded.
+107
+And if I go into my bucket,
+108
+I can indeed see that my coffee, the JPEG, has been created.
+109
+And imagine we wanted to automate this
+110
+and create a thumbnail from it.
+111
+Then, we will need to have a message into our SQS queue
+112
+to then process it and create a thumbnail.
+113
+Therefore, I'm going to pull for messages.
+114
+And as you can see, a message was created here.
+115
+And if you look at the message itself,
+116
+and I'm going to try to increase this window size,
+117
+we can see the fact that the "eventName"
+118
+was "ObjectCreatedPut"
+119
+So an object was indeed created.
+120
+And if we look deeper,
+121
+we're going to see that the key of that message
+122
+is coffee, the JPEG.
+123
+So the coffee, the JPEG, was created
+124
+and it generated a whole event into my SQS queue.
+125
+And therefore, that shows the power
+126
+of S3 Event Notifications.
+127
+What I can do here is I can delete the message
+128
+and we're done.
+129
+Okay. So that's it.
+130
+We've seen S3 Event Notifications.
+131
+What you need to remember again
+132
+is that you can send to SQS, SNS and Lambda,
+133
+as well as send all events to Amazon EventBridge
+134
+for further processing and sending it to more destinations.
+135
+Okay. That's it.
+136
+I will see you in the next lecture.
+
+--- S3 Performance ---
+
+1
+So, we have to talk about the S3 Baseline performance.
+2
+So, by default, Amazon S3 automatically scales
+3
+to a very, very high number of requests,
+4
+and has a very, very low S3 between 100 and 200 milliseconds
+5
+to get the first byte out of S3.
+6
+So, this is quite fast.
+7
+And in terms of how many requests per second you can get,
+8
+you can get 3,500 PUT/COPY/POST/DELETE,
+9
+per second, per prefix,
+10
+and 5,500 GET/HEAD requests
+11
+per second per prefix in the buckets.
+12
+So, this is something you can get on the website
+13
+and I think it's not very clear,
+14
+so I'll explain to you what per second per prefix means.
+15
+But what that means in viral is
+16
+that it's really, really high performance and,
+17
+there's no limits to the number of prefixes in your bucket.
+18
+So, let's take an example of four objects named file,
+19
+and let's analyze the prefix for that object.
+20
+The first one is in your bucket,
+21
+in folder one, sub folder one slash file.
+22
+In this case, the prefix is going to be anything
+23
+between the bucket and the file.
+24
+So, in this case it is slash folder one, slash sub one.
+25
+So, that means that for this file in this prefix,
+26
+you can get 3,500 Puts and 5,500 Gets per second.
+27
+Now, if we have another folder one and then sub two,
+28
+the prefix is anything between buckets and file,
+29
+so slash folder one slash sub two,
+30
+and so we get also 3,500 Puts and 5,500 Gets
+31
+for that one prefix, and so on.
+32
+So, if I have one and two we have different prefixes,
+33
+and so it's easy now to understand what a prefix is,
+34
+and so it's easy to understand the rule of 3,500 Puts
+35
+and 5,500 Gets per second per prefix in a bucket.
+36
+So, that means that if you spread reads
+37
+across all the four prefixes above evenly,
+38
+you can achieve 22,000 requests per second
+39
+for Head and Gets.
+40
+Now, let's talk about S3 performance,
+41
+how we can optimize it?
+42
+The first one is multi-part upload.
+43
+So, it is recommended to use multi-part upload
+44
+for files that are over 100 megabytes,
+45
+and it must be used for files that are over five gigabytes.
+46
+And what multi-part upload does is
+47
+that it parallelize uploads and that will help us
+48
+speed up the transfers to maximize the bandwidth.
+49
+So, as a diagram, it always makes more sense.
+50
+So, we have a byte file,
+51
+and we want to upload that file into Amazon S3.
+52
+We will divide it in parts, so smaller chunks of that files
+53
+and each of these files will be uploaded
+54
+in parallel to Amazon S3.
+55
+In Amazon S3, once all the parts have been uploaded,
+56
+it's smart enough to put them together
+57
+back into the big file.
+58
+Okay, very important.
+59
+Now, we have S3 transfer acceleration,
+60
+which is for upload and download
+61
+and it is to increase the transfer speed
+62
+by transferring a file to an AWS edge location,
+63
+which will forward the data to the S3 bucket
+64
+in the target region.
+65
+So, edge locations there are more than regions.
+66
+There are about over 200 edge locations today,
+67
+and it's growing,
+68
+and let me show you in the graph what that means?
+69
+And that's S3 transfer acceleration
+70
+is compatible with multi-part upload.
+71
+So, let's have a look.
+72
+We have a file in the United States of America,
+73
+and we want to upload it to S3 bucket in Australia.
+74
+So, what this will do is that we will upload that file
+75
+through an edge location in the United States,
+76
+which will be very, very quick,
+77
+and then we'll be using the public internet.
+78
+And then from that edge location
+79
+to the Amazon S3 bucket in Australia,
+80
+the edge location will transfer it
+81
+over the fast, private AWS network.
+82
+So, this is called transfer acceleration,
+83
+because we minimized the amount of public internet
+84
+that we go through and we maximized the amount
+85
+of private AWS network that we go through.
+86
+So, transfer acceleration
+87
+is a great way to speed up transfers.
+88
+Okay, now how about getting files?
+89
+How about reading the file in the most efficient way?
+90
+We have something called an S3 Byte Range Fetches,
+91
+and so it is to paralyze Gets,
+92
+by getting specific byte ranges for your files.
+93
+So, it's also in case you have a failure
+94
+to get a specific byte range,
+95
+then you can retry a smaller byte range
+96
+and you have better resilience in case of failures.
+97
+So, it can be used to speed up downloads this time.
+98
+So, let's try a file in S3, it's really, really big
+99
+and this is the file.
+100
+Maybe you want to request the first part,
+101
+which is the first few bytes of the file,
+102
+then the second part and then the end parts.
+103
+So, we request all these parts
+104
+as specific bytes range fetches,
+105
+that's why it's called byte range,
+106
+because we only request a specific range of the file.
+107
+And all these requests can be made in parallel.
+108
+So, the idea is that we can parallelize the Gets
+109
+and speed up the downloads.
+110
+The second use case is to only retrieve
+111
+a partial amount of the file.
+112
+For example, if you know that the first 50 bytes
+113
+of the file in S3 are a header
+114
+and give you some information about the file,
+115
+then you can just issue a header request
+116
+to byte range request for the headers
+117
+using the first say 50 bytes,
+118
+and you would get that information very quickly.
+119
+All right, so that's it for S3 performance.
+120
+We've seen how to speed up uploads-downloads.
+121
+We've seen the baseline performance
+122
+and we've seen the KMS limits.
+123
+So, make sure you know those going into the exam
+124
+and I will see you in the next lecture.
+
+--- S3 Batch Operations ---
+
+1
+So now, let's talk about
+2
+the S3 batch operation.
+3
+So this allows you to perform bulk operations
+4
+on existing S3 objects with a single request.
+5
+For example, and there are lots of use cases for it,
+6
+you can modify all the object metadata
+7
+and properties of many S3 objects at a time.
+8
+Or you can copy objects between S3 buckets
+9
+as a batch operation.
+10
+Or something that can come up in the exam,
+11
+is to encrypt all the unencrypted objects
+12
+in your S3 buckets.
+13
+Or to modify ACLs or tags,
+14
+or to restore many objects at a time from S3 Glacier.
+15
+Or to invoke a Lambda function
+16
+to perform whatever custom action you want on every object
+17
+from your S3 batch operation.
+18
+So the idea is that you can do whatever operation you want
+19
+on the list of objects.
+20
+And so, therefore, a job consists of a list of objects,
+21
+the action to perform, as well as optional parameters.
+22
+So why would we use S3 batch operations
+23
+versus scripting it ourselves?
+24
+Well, because when we use the S3 batch operation,
+25
+there is a management of retries, we can track the progress.
+26
+We can send completion notifications,
+27
+generate reports, and so on.
+28
+And, well, how to generate a list to pass to S3 Batch?
+29
+Well, we can use S3 Inventory
+30
+to get your object list in an S3 bucket.
+31
+And then you use Athena to query that list,
+32
+and filter the objects you actually wanna pass
+33
+to the S3 batch service.
+34
+So using S3 Inventory and then Athena,
+35
+we get a filtered list of objects
+36
+that we want to include in our batch operation.
+37
+We pass it to the batch operation,
+38
+plus whatever operation we wanna do,
+39
+as well as some parameters.
+40
+And then S3 Batch will do its thing and process the objects.
+41
+So, again, one main use case is to find
+42
+all the unencrypted objects using S3 Inventory.
+43
+And then encrypt them all at once
+44
+using an S3 batch operation.
+45
+So that's it for this lecture, I hope you liked it,
+46
+and I will see you in the next lecture.
+
+--- S3 Storage Lens ---
+
+1
+Next, we have S3 Storage Lens, which is a service
+2
+to help you understand, analyze, and optimize
+3
+storage across your entire AWS Organization.
+4
+With this, you're going to discover anomalies,
+5
+identify cost efficiencies,
+6
+and you're going to apply protection
+7
+best practices across your entire AWS Organization.
+8
+You're going to get 30-day usage and activity metrics.
+9
+You can aggregate the data at the organization
+10
+level or for specific accounts, regions,
+11
+buckets, or even prefixes.
+12
+You can create your own dashboard or use
+13
+a default dashboard provided by the Storage Lens service.
+14
+And finally, all these metrics,
+15
+all these reports can be exported into an
+16
+S3 bucket in the CSV or Parquet format.
+17
+So to summarize, Storage Lens will take all
+18
+these things into account, organization,
+19
+accounts, region, buckets.
+20
+Then you aggregate all this data into a report,
+21
+which is going to help you with your analysis.
+22
+And then finally, this can be sent for summary insights,
+23
+data protection, cost efficiency, which allows you
+24
+to optimize your usage of Amazon S3.
+25
+So when you use the S3 Storage Lens service,
+26
+you have a default dashboard
+27
+and the dashboard gives you summarized insights
+28
+and trends for both the free and the advanced metrics.
+29
+This default dashboard will show data across multiple
+30
+regions and across multiple accounts.
+31
+So you don't have to do anything special just
+32
+to set up the filters.
+33
+It is pre-configured by Amazon S3.
+34
+You cannot delete the default dashboard,
+35
+but you can disable it, if you wanted to.
+36
+So in this UI right here, you would select
+37
+the region you want, the accounts you want,
+38
+the buckets you want, storage classes, and so on.
+39
+And this is a centralized configuration.
+40
+And then once you have that,
+41
+the dashboard right here gives you information
+42
+such as, for example, the total storage,
+43
+the objects count, the average object size,
+44
+the number of buckets you have, accounts,
+45
+and you can get detailed per accounts,
+46
+or per region.
+47
+So let's have a look at what kind
+48
+of metrics are available into Storage Lens,
+49
+because this will help you understand if Storage Lens
+50
+is a service you should be choosing for the exam.
+51
+So you have summary metrics which give you general
+52
+insights about your S3 storage.
+53
+For example, storage bytes to know the size
+54
+of your storage and object counts to know
+55
+how many objects you have in your storage.
+56
+So use cases for this is to identify, for example,
+57
+the fastest-growing or not used bucket and prefixes,
+58
+because if the storage bytes remains the same,
+59
+that means that no new objects have been added
+60
+or same for object counts.
+61
+Then you have cost optimization metrics
+62
+and they provide you insights to manage
+63
+and optimize your storage cost.
+64
+So they give you an information about the non-current
+65
+version storage bytes, meaning how many version objects
+66
+that are not current,
+67
+how much space they're actually taking,
+68
+or incomplete multi-part upload storage bytes.
+69
+You know, if for example,
+70
+you've had some incomplete uploads,
+71
+how much space they take
+72
+in your bucket and you can clean it.
+73
+So the use cases will be, for example,
+74
+to see which buckets have failed multi-part uploads,
+75
+or which objects could be transitioned
+76
+to lower-cost storage classes.
+77
+You have data protection metrics to provide insights
+78
+for data protection features.
+79
+So here we have versioning enabled bucket counts
+80
+to make sure that all your buckets have been
+81
+enabled with versioning and so on.
+82
+MFA, delete enabled bucket counts.
+83
+SSCKMS enable bucket counts, cross replication
+84
+region rules, counts, and so on.
+85
+So the use cases are, for example, to identify
+86
+the buckets which are not following your data
+87
+protection best practices.
+88
+You have access management metrics to provide
+89
+insights for S3 bucket ownership.
+90
+So here's the name of the metric
+91
+and the use cases will be to identify which object
+92
+ownership settings your buckets currently use.
+93
+You have event metrics to get insights
+94
+for S3 event notifications
+95
+and to know how many buckets have the S3 event
+96
+notifications configured.
+97
+You have performance metrics
+98
+to get insights into S3 transfer acceleration
+99
+and see how many buckets have
+100
+S3 transfer acceleration enabled.
+101
+And you have activity metrics such
+102
+as information about all requests, get requests,
+103
+put requests, the number of bytes downloaded and so on.
+104
+And finally, metrics around the HTTP status code
+105
+such as 200OK, 403 Forbidden, et cetera, et cetera,
+106
+to understand the type of usage
+107
+your buckets are getting.
+108
+Now, you have different kinds of metrics
+109
+in two Storage Lens, you have the free
+110
+and the paid metrics.
+111
+So the metrics selection can be done in the UI as well.
+112
+But just as a summary,
+113
+while the three metrics are automatically available
+114
+to all customers, and it contains around 28 usage metrics,
+115
+and the data is available for queries for 14 days,
+116
+whereas for advanced metrics and recommendations,
+117
+you get additional paid metrics and features
+118
+such as the activity, the advanced cost optimization,
+119
+the advanced data protection and status codes.
+120
+And then you get also these metrics being
+121
+published to CloudWatch.
+122
+So you can access them without any additional charges.
+123
+And then you can collect metrics at the prefix
+124
+level within your S3 buckets.
+125
+And finally, the data when you pay,
+126
+is available for 15 months.
+127
+So that's it for S3 Storage Lens.
+128
+It's a very helpful service.
+129
+You have to remember the difference
+130
+between free and paid.
+131
+You have to remember that the default dashboard
+132
+has data across multiple accounts and multiple regions.
+133
+And of course, the fact that Storage Lens
+134
+covers your object storage, the fact that you can
+135
+count how many objects are encrypted and so on.
+136
+So let's say for this lecture, I hope you liked it
+137
+and I will see you in the next lecture.
+
+--- S3 Encryption ---
+
+1
+So now let's talk about object encryption
+2
+in Amazon S3.
+3
+So you can encrypt objects in S3 buckets using one
+4
+of the following four methods.
+5
+The first one is server-side encryption, SSE,
+6
+and you have multiple flavors of it.
+7
+So you have SSE-S3,
+8
+which is server-side encryption with Amazon S3-managed keys,
+9
+and that is enabled by default
+10
+for your buckets and your objects.
+11
+Then we have SSE-KMS, where we encrypt this time
+12
+with a KMS key to manage the encryption key.
+13
+Then we have SSE-C to use customer-provided key,
+14
+so this time we provide the own encryption key.
+15
+And don't worry, we'll see all of these
+16
+in great details in the next slide,
+17
+so this is just an overview.
+18
+And then we have client-side encryption
+19
+when we want to encrypt everything client side
+20
+and then upload it to Amazon S3.
+21
+So at the exam it's important to understand
+22
+which ones are for which situation,
+23
+so let's do a deep dive into all of those
+24
+and understand the specificities of them.
+25
+So the first one is Amazon S3 for SSE-S3 encryption.
+26
+So in this case, the encryption is using a key
+27
+that's handled, managed and owned by AWS.
+28
+You never have access to this key.
+29
+The object is going to be encrypted server side by AWS
+30
+and the security type of the encryption is a AES-256.
+31
+Therefore, you must set the header
+32
+to "x-amz-server-side-encryption": "AES256"
+33
+to request Amazon S3 to encrypt the object
+34
+for you using the SSE-S3 mechanism.
+35
+Now SSE-S3 is enabled by default
+36
+for new buckets and new objects.
+37
+So how does that work?
+38
+We have Amazon S3, and we have our user.
+39
+The user, you, you're going to upload a file
+40
+with the correct header,
+41
+and then it will be an object under Amazon S3.
+42
+Amazon S3 will pair it with the S3-owned key, okay,
+43
+because we're using the SSE-S3 mechanism.
+44
+And then we'll perform encryption
+45
+by mixing the key and the object,
+46
+and that will be what will be stored on your S3 buckets.
+47
+So that's for the simpler one, SSE-S3.
+48
+Then we have SSE-KMS.
+49
+So this time, instead of relying on the key
+50
+that is owned by AWS and the S3 service,
+51
+you want to manage your own keys yourself using
+52
+the KMS service, the Key Management Service.
+53
+So the advantages using KMS
+54
+is that you have user control over this key,
+55
+so you can create keys yourself within KMS,
+56
+and you can edit the key usage using CloudTrail.
+57
+So anytime someone uses a key in KMS,
+58
+this is going to be logged in a service
+59
+that logs everything that happens in AWS called CloudTrail.
+60
+So for this, we must have a header called
+61
+the "x-amz-server-side-encryption": "aws:kms"
+62
+and then the object will be encrypted server side.
+63
+So anything SSE, of course, is server side.
+64
+So how does that work?
+65
+Well, again, we upload the object,
+66
+this time with a different header,
+67
+and in the header we actually specify
+68
+the KMS key we want to use.
+69
+Then the object is appearing in Amazon S3,
+70
+and this time the KMS key that's going to be used
+71
+is coming out of the AWS KMS.
+72
+So these two things together are going to be blended
+73
+and then you're gonna get encryption,
+74
+and that's the file is going to end up in the S3 buckets.
+75
+So now to read that file from the S3 bucket,
+76
+not only do you need access to the object itself
+77
+but also to the underlying KMS key that was used
+78
+to encrypt this object.
+79
+So this is another level of security.
+80
+So SSE-KMS has some limitations
+81
+because while now that you upload
+82
+and download files from Amazon S3,
+83
+you need to leverage a KMS key.
+84
+The KMS key has its own APIs, for example,
+85
+GenerateDataKey, and when you decrypt,
+86
+you're going to use the Decrypt API, and so therefore,
+87
+you're going to do API calls into the KMS service.
+88
+Each of these API calls is going to count
+89
+towards the KMS quotas of API calls per second,
+90
+so based on the region,
+91
+you have between 5,000 and 30,000 requests per second,
+92
+although they can be increased using
+93
+the Service Quotas Console.
+94
+And so if you have a very, very high throughput S3 bucket,
+95
+and everything is encrypted using KMS keys,
+96
+you may go into a thread link kind of use case.
+97
+So this is something the exam may test you on.
+98
+Next we have the SSE-C type of encryption.
+99
+So this time the keys are managed outside of AWS,
+100
+but it still server-side encryption
+101
+because we send the key to AWS.
+102
+But Amazon S3 will never store
+103
+the encryption key you provide.
+104
+After they're used, they're being discarded.
+105
+So in that case, because we transmit a key into Amazon S3,
+106
+we must use HTTPS and we must pass the key
+107
+as part of HTTP headers for every request being made.
+108
+So how does that work?
+109
+The user is going to upload a file as well as the key,
+110
+but the user manages the key outside of AWS.
+111
+Then, Amazon S3 will use the client's provided key
+112
+and the object to perform some encryption
+113
+and then put the file as encrypted into an S3 bucket.
+114
+And of course, to read that file,
+115
+the user must again provide the key
+116
+that was used to encrypt that file.
+117
+Finally, we have the client-side encryption.
+118
+So this is easier to implement
+119
+if we leverage some client library
+120
+such as the Client-Side Encryption Library.
+121
+And the idea with client-side encryption
+122
+is that the clients must encrypt data themselves
+123
+before sending data to Amazon S3.
+124
+And also, you can retrieve the data from Amazon S3,
+125
+and then the decryption of the data happens
+126
+on the client outside of Amazon S3.
+127
+Therefore the clients fully manages the keys
+128
+and the encryption cycle.
+129
+So how does that work?
+130
+We have a file and we have a client's key
+131
+that's outside of AWS.
+132
+The client itself is going to provide
+133
+and perform the encryption,
+134
+so now we have an encrypted file,
+135
+and that file as is can be sent into Amazon S3 for upload.
+136
+So we've seen all the levels of encryption of objects,
+137
+but now let's talk about encryption in transit.
+138
+So encryption in transit, or in flight,
+139
+is also called SSL or TLS,
+140
+and basically your Amazon S3 bucket has two endpoints,
+141
+the HTTP endpoint that is not encrypted
+142
+and the HTTPS endpoint that has encryption in flights.
+143
+So anytime you visit a website
+144
+and you see that green lock or lock,
+145
+usually that means it's using encryption in flights,
+146
+meaning the connection between you
+147
+and the target server is secure and fully encrypted.
+148
+Therefore, when you're using Amazon S3,
+149
+it's fully recommended to use HTTPS
+150
+to have secure transmission of data, of course,
+151
+and if you use the SSE-C type of mechanism,
+152
+you must use the HTTPS protocol.
+153
+Now this is not something to worry about in real life
+154
+because while most clients would use
+155
+the HTTPS endpoint by default.
+156
+Now how would you go about forcing encryption in transits?
+157
+For this, we could use a bucket policy.
+158
+So you attach a bucket policy to your S3 bucket,
+159
+and you attach this statement which is saying
+160
+that you deny any GetObject operation
+161
+if the condition is "aws:SecureTransport": "false".
+162
+So SecureTransport is going to be true whenever using HTTPS
+163
+and false whenever you're not using an encryption,
+164
+an encrypted connection,
+165
+and so, therefore, any user trying to use HTTP
+166
+on your bucket is going to be blocked,
+167
+but users using HTTPS may be allowed.
+168
+Okay, so that's it for encryption,
+169
+I hope you liked it, and I will see you in the next lecture.
+
+--- About DSSE-KMS ---
+
+[No transcript available for this lecture]
+
+--- S3 Encryption - Hands On ---
+
+1
+So let's practice encryption.
+2
+And for this I'm going to create a bucket
+3
+called demo-encryption-stephane-v2.
+4
+And we scroll down,
+5
+we're going to leave this on, leave this on.
+6
+We're going to enable bucket versioning.
+7
+And then under default encryption, as we can see,
+8
+we have three different options
+9
+but we must choose a default encryption for our buckets.
+10
+So I will go over SSE-S3 right now
+11
+and we'll have a look at SSE-KMS and DSSE-KMS later on.
+12
+So let's click on Create a bucket.
+13
+And now we have created a bucket
+14
+that has default encryption turn on.
+15
+So let's verify this by actually uploading an object.
+16
+So we're going to add a file
+17
+and we'll add our coffee.jpg file.
+18
+And then we're going to just click on Upload.
+19
+And as you can see now I can click on this file
+20
+and scroll down,
+21
+look for the server side encryption settings.
+22
+And indeed the file was encrypted
+23
+with server side encryption
+24
+with Amazon S3 managed keys, so SSE-S3.
+25
+We can also edit the encryption mechanism for a file.
+26
+So I could just click on Edit.
+27
+And as you can see,
+28
+if we do edit the server side encryption,
+29
+then this will create a new version
+30
+of the object with updated setting.
+31
+And so therefore, this is why I have enabled versioning
+32
+for my bucket, is to show you
+33
+that a new version of the file will be created.
+34
+So let's change the encryption.
+35
+And for this, we're going to override the bucket settings
+36
+for default encryption for this one object.
+37
+And so we have a choice to use
+38
+either SSE-KMS or DSSE-KMS.
+39
+So DSSE-KMS, I won't spend a lot of time on this.
+40
+It's just two level of encryptions on KMS.
+41
+So just a stronger KMS.
+42
+We're just going to use KMS right now.
+43
+It is simpler and it is not going to cost us any money.
+44
+So we're going to use SSE-KMS as we learned.
+45
+And then we have to specify a KMS key.
+46
+So we can either enter a KMS key ARN,
+47
+or we can choose from your own KMS keys.
+48
+So if we choose from the KMS keys right now,
+49
+you should have only one key available
+50
+the AWS/S3 key, and it's called the default KMS key
+51
+for the S3 service.
+52
+So if you click on it, we can use this key.
+53
+And that's not going to cost us any money
+54
+because this is the default key for the service.
+55
+If you created your own KMS key,
+56
+then it would be available in this list.
+57
+But creating your own KMS key
+58
+will cost you some money every month.
+59
+So for this purpose, we're just going
+60
+to use the default AWS/S3 KMS key.
+61
+Okay, so let's save the changes.
+62
+We close this, and now if we go under Versions,
+63
+as we can see, we have two versions
+64
+of our file right now available.
+65
+And so the current version, if we scroll down
+66
+and go under service side encryption,
+67
+as we can see it is indeed encrypted with SSE-KMS
+68
+with this encryption key, which corresponds
+69
+to the default AWS/S3 KMS key.
+70
+Okay, so this is really good.
+71
+Next we go under this part.
+72
+So we can do the same process by uploading a file
+73
+and then we're going to add a file, for example, beach.jpg.
+74
+And under Properties,
+75
+we're going to find server side encryption.
+76
+And here we can specify an encryption key
+77
+to either use the default encryption mechanism
+78
+or to override it with SSE-S3, SSE-KMS or DSSE-KMS.
+79
+So this is one way of doing it.
+80
+And finally, let's have a look
+81
+at the default encryption properties.
+82
+So let's scroll down
+83
+and we're going to find default encryption.
+84
+Let's edit this, and here we have the option.
+85
+So we can enable SSE-S3, SSE-KMS
+86
+as the default encryption, or DSSE-KMS.
+87
+So in case we do SSE-KMS,
+88
+we have the bucket key option available to us.
+89
+So this is to reduce the cost
+90
+by doing less API calls to AWS KMS.
+91
+And so this is enabled by default.
+92
+If we just use SSE-S3, then this setting doesn't count.
+93
+So we've seen
+94
+that we can change the default encryption here.
+95
+And you may ask me, well, SSE-C is missing.
+96
+Well, indeed it is missing
+97
+because SSE-C you can only do from the CLI,
+98
+not from the console.
+99
+So that means that you cannot enable SSE-C right here.
+100
+And finally, for client side encryption,
+101
+while you have to encrypt everything client side,
+102
+then upload it to AWS and then decrypted client side,
+103
+and so you don't need to tell AWS
+104
+that the data is client side encrypted.
+105
+So therefore, the only options you can deal with
+106
+in the console are SSE-S3, SSE-KMS and DSSE-KMS.
+107
+So that's it, we've seen all the encryption options in AWS.
+108
+I hope you liked it, and I will see you in the next lecture.
+
+--- S3 Default Encryption ---
+
+1
+So just a short lecture
+2
+on default encryption versus bucket policies.
+3
+So by default
+4
+now all buckets are having a default encryption of SSE-S3.
+5
+So it's applied automatically
+6
+to new objects toward the new buckets.
+7
+But you can change this
+8
+to be a different default encryption, for example, SSE-KMS.
+9
+Nonetheless, you can also force encryption
+10
+by using a bucket policy to refuse any API call
+11
+to put an S3 object without the correct encryption headers.
+12
+So for example, SSC-KMS or SSE-C.
+13
+So this is the kind of bucket policies
+14
+you could have in, for example,
+15
+this one is saying, hey, if you do a PUT object
+16
+but you don't have the encryption header that says AWS KMS,
+17
+then deny this request.
+18
+Or, hey, if you are uploading this
+19
+but there is no customer side algorithm, so no SSE-C,
+20
+then deny this object.
+21
+So this is just an example,
+22
+but at least you see that a bucket policy
+23
+can also force a way to have encryption in your buckets.
+24
+And by the way, bucket policies are always going
+25
+to be evaluated before your default encryption settings.
+26
+So that's it, just remember, default encryption
+27
+is on by default with SSC-S3 but you can change it
+28
+and you can apply a bucket policy preemptively
+29
+to force encryption to the one you want.
+30
+Alright, that's it.
+31
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 CORS ---
+
+1
+So now let's talk about CORS.
+2
+CORS is Cross-Origin Resource Sharing.
+3
+And this is something you need to know
+4
+at the exam for one question.
+5
+Now, I'm gonna go in depth to how that works
+6
+and that will make answering that question very easy.
+7
+So, the origin is a scheme, a protocol
+8
+a host, a domain, and a port.
+9
+For example, if you look at https://www.example.com
+10
+the implied port is 443 for HTTPS,
+11
+the protocol is HTTPS itself
+12
+and the domain of course is www.example.com
+13
+Now, CORS is a web browser based mechanism of security
+14
+to allow or to deny request
+15
+to other origins while visiting the main origin.
+16
+So, let's have a look at what the same origin means.
+17
+So, it's the same origin if we have the same scheme,
+18
+the same host and the same port.
+19
+For example, we have these two URLs,
+20
+they're share the same origin.
+21
+But, we can have different origins.
+22
+For example, www.example.com and other.example.com
+23
+And so, if our web browser is visiting one website
+24
+and supposed to make a request
+25
+to another website as part of the request scheme
+26
+then these requests will not be fulfilled
+27
+unless the other origin allows
+28
+for the request using the CORS header.
+29
+They're called the Access-Control-Allow-Origin headers.
+30
+So, let's go through a diagram to understand how that works
+31
+and how they can be leveraged.
+32
+So, we have a web server and that's your origin
+33
+and it's https://www.example.com and a web browser.
+34
+And the second web server, which is the cross-origin, okay?
+35
+So, www.other.com
+36
+Now, the web browser is going to do an HTTPS request
+37
+into the first origin web server.
+38
+And as part of the result
+39
+the index that HTML file retrieved is gonna say,
+40
+Hey, you must also get some images, for example,
+41
+from this other web server.
+42
+So, the web browser has a security built in,
+43
+and first is going to do a pre-flight request
+44
+to the cross-origin.
+45
+So, it's gonna say, Hey, I wanna get the options
+46
+for www.other.com
+47
+And, by the way, my origin where the request is coming from
+48
+is the https://www.example.com.
+49
+And then the web server, if it's considered
+50
+and configured to use the Cross-Origin Resource Sharing
+51
+is going to say, Yes, I do allow this origin,
+52
+the example.com origin, for the get, put and delete methods.
+53
+So, this is what we call the CORS headers.
+54
+And, if the web browser is happy with this CORS
+55
+headers, then the web browser is going
+56
+to make a request to the other server
+57
+to retrieve these files
+58
+and make these calls.
+59
+So, how does it apply to Amazon S3?
+60
+Well, if a client makes a cross-origin request
+61
+on our S3 buckets,
+62
+we need to enable the correct CORS headers.
+63
+It's a very popular exam question,
+64
+and one way to do it very quickly is to allow
+65
+for a specific origin or to allow for*,
+66
+that means all origins.
+67
+So, let's have a look.
+68
+We have a web browser and we have an S3 bucket,
+69
+which has a static website being enabled.
+70
+So, that's my bucket HTML.
+71
+And we are storing our assets, our images
+72
+in another S3 bucket called my-buckets-assets.
+73
+And again, we have enabled a static website for it.
+74
+So, the web browser goes to the first S3 bucket
+75
+and say, Hey, I want to get the index,
+76
+that HTML file, for this URL right here
+77
+which is, of course, the static website URL.
+78
+So, we get back the index.html
+79
+and within the index.html there is an image
+80
+and that image lives on another website.
+81
+So, we get the images/coffee
+82
+this is the web browser doing its thing,
+83
+but this time it's saying, Hey
+84
+the target host is this other website,
+85
+but the origin is this first website.
+86
+And if the S3 bucket is not configured
+87
+to have the correct CORS headers
+88
+it's going to refuse the request,
+89
+or else if it's allowing this request,
+90
+then it's going to have the correct headers
+91
+and say, Okay, you can do this request
+92
+and you can get the image.
+93
+So remember, CORS is a web browser security that allows you
+94
+to enable images or assets or files being retrieved
+95
+from one S3 bucket in case the request is originating
+96
+from another origin.
+97
+So, that's it.
+98
+I hope you liked it, and I will see you in the next lecture
+99
+for some hands on
+100
+to show you exactly how CORS works.
+
+--- S3 CORS Hands On ---
+
+1
+So let's practice using CORS.
+2
+And for this we first must change the index.html files.
+3
+So if you open it,
+4
+you will find that this part has been commented out
+5
+and this part is to demo CORS.
+6
+Okay, so the way to just make it work
+7
+is that you first go to line 13
+8
+and you remove the first characters before the div.
+9
+And after script,
+10
+you remove as well the dash, dash and arrow.
+11
+So this is going to enable CORS.
+12
+And what's going to happen is that
+13
+my first webpage is now gonna say
+14
+Hello world I love coffee
+15
+and show the coffee image.
+16
+But after this, we're going to have a script
+17
+that is going to fetch an extra page,
+18
+an extra HTML page, okay?
+19
+And then displays underneath.
+20
+And this extra HTML page right here is saying
+21
+this extra page has been successfully loaded.
+22
+So let's go into our buckets
+23
+and we're going to upload two files.
+24
+So we have the extra-page.html and the index.html.
+25
+So we're going to do
+26
+is that we're going to upload these two files now,
+27
+because this is successful.
+28
+And if I go into my Properties
+29
+and look for my endpoints right here,
+30
+I can click on this to open in a new tab.
+31
+And we have I love coffee, Hello world! The coffee image.
+32
+And then this extra page has been successfully loaded.
+33
+So that means that the fetch request worked
+34
+from within the same origin
+35
+because, well, both my extra page
+36
+and my index.html files are on the same bucket.
+37
+So now let's demonstrate CORS.
+38
+And to do this,
+39
+I must first create another extra extra bucket
+40
+and enable it as a website.
+41
+So let's create a bucket and call it
+42
+demo-other-origin-stephane.
+43
+And I will choose it to be in another region, for example,
+44
+to demonstrate that there are very different servers.
+45
+For example, I will put this one in Canada.
+46
+Okay, so I'll scroll down.
+47
+I will unblock all public access
+48
+because we will make this public.
+49
+And then I will scroll down, create this bucket.
+50
+Now I go into the bucket itself.
+51
+And then under Properties I will scroll down
+52
+and make sure that we have enabled this as a website.
+53
+So yes, this is a website
+54
+and I wanna host a static website.
+55
+And then we'll say index.html,
+56
+even though we don't have one,
+57
+this will be enough for the index documents.
+58
+Okay, so this is good.
+59
+Next, we need to make this bucket public.
+60
+So let's go into Permissions.
+61
+And then for the bucket policy, let's edit it, okay.
+62
+And to make it simple,
+63
+I'm going to just copy the one I had from before.
+64
+So this one is going to be copied here and pasted,
+65
+and I will just swap out the buckets ARN,
+66
+right here under the resource.
+67
+So this is effectively going to make
+68
+these buckets public as well.
+69
+So let's save these changes.
+70
+And we have an unexpected response
+71
+because we just removed the first character.
+72
+Save the changes. Perfect.
+73
+Back in here, we are going to now upload,
+74
+in my other-origin, we're going to upload a file.
+75
+So we're going to upload this extra-page.html.
+76
+Upload it, and we're good.
+77
+So this file should now be a public file
+78
+on my buckets enabled as a website.
+79
+So if I click on this, this Object URL right here,
+80
+as we can see the extra page has been loaded
+81
+and the file is public.
+82
+So now what we have
+83
+is that we have the origin buckets in here
+84
+and we can remove this extra-page.html
+85
+because we don't need this one right now
+86
+because we have placed it in another bucket.
+87
+And then we're going to have to change the index.html file
+88
+to point instead to the extra page in my other origin.
+89
+So first, let's go to this page,
+90
+and I'm going to refresh this.
+91
+And I get a "404 Not Found" because, well,
+92
+we cannot find the extra-page.html.
+93
+So this is perfect.
+94
+Right now we shows that we have something to fix.
+95
+So let's close this.
+96
+Let's go to this demo-origin-stephane, other-origin.
+97
+Let's go to the properties, find the public URL, this one.
+98
+So let's open this as an STS website,
+99
+/extra-page.html.
+100
+So perfect, we have this extra page, this puzzle website.
+101
+And we'll use this entire URL and change our index.html.
+102
+And this time to fetch, we're going to fetch not this
+103
+but the full path to my extra-page.html on another bucket.
+104
+And this is going to trigger
+105
+across origin resource share request.
+106
+So now I need to re-upload this index.html file
+107
+where I need to.
+108
+So let's upload it here on the main buckets,
+109
+the first one.
+110
+Perfect. And let's override it.
+111
+Okay, so now my file is uploaded.
+112
+So let's go onto my first webpage right now.
+113
+And it's using the new index.html.
+114
+And I'm going to first open, under More tools,
+115
+I'm going to open the web developer tools.
+116
+This is something also called the Chrome Developer Tools.
+117
+And I'm going to refresh this page
+118
+to see if we have an error.
+119
+So let's refresh this page.
+120
+As you can see now, we don't have any error message here,
+121
+but in my console log debugger,
+122
+we have something that is written very, very small
+123
+and may be aware.
+124
+But it says cross-origin request blocked
+125
+because the policy does not allow this.
+126
+There's a CORS header called
+127
+the Access-Control-Allow that is missing.
+128
+And so therefore, currently,
+129
+because my request is going onto this other bucket,
+130
+but this other bucket is not set up for CORS yet,
+131
+then this request is failing.
+132
+And the web browser is saying
+133
+that the cross-origin request has been blocked.
+134
+So let's fix this by adding the CORS setting.
+135
+So let's go here under my other origin, okay,
+136
+and you go under Permissions, scroll down,
+137
+and we have the CORS setting here that we define in JSON.
+138
+So let's edit this.
+139
+And we need to add the correct CORS setting.
+140
+So thankfully I have them here.
+141
+So you just copy this block of code and you paste it here.
+142
+And here, the AllowedOrigins we need to define
+143
+are going to be a URL of the first bucket with http
+144
+without a slash at the end.
+145
+So fair lazy.
+146
+Let's go to my first web page.
+147
+We copy this entirely,
+148
+we paste it here,
+149
+and if there's a slash at the end like right now,
+150
+just remove it.
+151
+And then you're going to save these CORS settings.
+152
+So now we're saying to this other origin that's, yes
+153
+it's okay to make requests from the first origin.
+154
+So how do we know that it's going to work?
+155
+Well, let's refresh this page now.
+156
+As we can see now,
+157
+this extra pet has been successfully loaded,
+158
+and that's correct.
+159
+And we can also have a look at this
+160
+by going into the networking tab.
+161
+And if you look at the request that was made
+162
+on the extra page, and we look at the response headers,
+163
+we can see right here, again, it's very small,
+164
+but we can see that there is
+165
+Access-Control-Allow-Methods GET,
+166
+Access-Control-Allow-Origin,
+167
+and this is the origin of my first buckets.
+168
+So these are the headers
+169
+that allow this cross origin request to be made.
+170
+Now, I know that what we've seen right now
+171
+may be a bit advanced, of course,
+172
+but this CORS settings just come up at the exam
+173
+at a high level.
+174
+Did you know what it is?
+175
+But I wanted to show you exactly how it worked
+176
+so that it becomes very easy
+177
+for you to answer this one question.
+178
+Okay, that's it for this lecture.
+179
+I hope you liked it, and I will see you in the next lecture.
+
+--- S3 MFA Delete ---
+
+1
+So now let's talk about a security feature
+2
+called MFA Delete.
+3
+MFA stands for multi-factor authentication,
+4
+and this is a way to force users
+5
+to generate a code on a device.
+6
+It could be, for example, a mobile phone
+7
+with a Google Authenticator application or whatever,
+8
+or another one for example,
+9
+or a hardware such as an MFA hardware device.
+10
+And this is going to give you a code,
+11
+and that code must be inserted into Amazon S3
+12
+before doing important operations.
+13
+So when is MFA going to be required?
+14
+Well, it's going to be required
+15
+when you want to permanently delete an object version.
+16
+So, this is definitely a protection
+17
+against permanent deletions
+18
+or if you want to suspend Versioning on the bucket.
+19
+So, both these options are quite destructive,
+20
+and so MFA will be recovered for this.
+21
+But if you want to enable Versioning
+22
+or list deleted versions,
+23
+then the MFA will not be required
+24
+because these are not dangerous operations.
+25
+So to use MFA Delete, you must first enable
+26
+Versioning on the bucket
+27
+because this is relating, of course, to Versioning,
+28
+and only the bucket owner, the root account,
+29
+can enable or disable the MFA Delete,
+30
+as you'll see in the next hands on.
+31
+So this is quite complicated
+32
+because while using the root account
+33
+is not something you should do a lot,
+34
+but you will see how do this in the next lecture.
+35
+And just remember that MFA Delete is an extra protection
+36
+to prevent against the permanent deletion
+37
+of specific object versions.
+38
+So that's it and I will see you in the next lecture.
+
+--- S3 MFA Delete Hands On ---
+
+1
+Okay, so let's demonstrate MFA delete.
+2
+So I'm going to create a bucket,
+3
+and I'll call it demo stephane MFA delete 2020 in eu-west-1.
+4
+And I'm going to enable bucket versioning,
+5
+and click on create buckets.
+6
+Okay, good.
+7
+Now, if we go to this bucket,
+8
+the MFA bucket,
+9
+and go to properties and bucket versioning
+10
+and click on edit.
+11
+As you can see, Multi-Factor authentication (MFA) delete
+12
+is currently disabled,
+13
+and you cannot change this
+14
+through the UI of Amazon console, for some reason.
+15
+So maybe someday they will allow us to enable it.
+16
+But for now,
+17
+what you have to do is to enable it
+18
+directly using the AWS CLI.
+19
+So a prerequisite of this hands-on is to make sure that,
+20
+under IAM,
+21
+you have already set up an MFA device
+22
+for your root accounts.
+23
+So I'm using my root account right now,
+24
+as you can see, it's, I'm logged in as roots.
+25
+And what I need to do is click on it and click on my
+26
+security credentials.
+27
+This is taking me to the security credentials I have in IAM.
+28
+And under a Multi-Factor authentication MFS,
+29
+you can see I've set up already a virtual device for my MFA,
+30
+and the ARN is right here.
+31
+Okay, so this is good.
+32
+Next, we have to go ahead and actually configure the ADA CLA
+33
+to use this root account.
+34
+Now, this is something I don't recommend on doing,
+35
+except for enabling MFA delete on your S3 bucket.
+36
+So what I'm going to do is to create new access keys,
+37
+and I will download the key file and then show the access
+38
+keys as well.
+39
+I will remove them, so don't worry about seeing mine,
+40
+but you should never share your root access key with anyone
+41
+as well as your secret access key.
+42
+And so what I need you to do now is to set up the CLA with
+43
+these two little settings.
+44
+So I'm going to configure my command line.
+45
+So AWS configure and then I'm going to create a profile
+46
+and I've called this profile, roots-MFA-delete-demo.
+47
+And this file, you can find under,
+48
+s3advanced.mfadelete.sh.
+49
+So we're using the comments from there.
+50
+So I'm going to set up this profile and then after you enter
+51
+my access key Id, which is right here.
+52
+So let's go ahead and paste this, my secret access key,
+53
+which is all the way here, paste it.
+54
+Default region name, eu-west-1, and we're good to go.
+55
+Now, if I do AWS S3 LS, does it work?
+56
+and do it with my profile that I've just created,
+57
+which is called by the way, root-MFA-delete-demo.
+58
+Yes this gives me my three buckets that I have.
+59
+So my profile is correctly set up.
+60
+Next, what I have to do is to enable the MFA delete.
+61
+So for this, there is this full setting right here
+62
+that I'm going to copy and then edit, with you.
+63
+So I paste it and I need to first change the bucket names.
+64
+So the bucket for now is called, MFA-demo-stephane
+65
+but I'm going to change it by demo-stephane-MFA-delete-2020,
+66
+which is good.
+67
+Versioning configuration status enabled.
+68
+MFA delete equals enabled.
+69
+So we are good to go here and then we need to specify the
+70
+ARN of the MFA device and this I can find.
+71
+So let's find it's right here.
+72
+This is the ARN of the MFA device,
+73
+So I'm going to paste it.
+74
+And finally, the MFA code.
+75
+This is something that I'm going to get directly from my
+76
+application, that gives me my MFA code.
+77
+So seven one zero three four three, press enter.
+78
+And apparently this is not correct.
+79
+So let's wait another one.
+80
+(typing)
+81
+And we're good to go.
+82
+Okay, so this was set up.
+83
+So now, how do we know if it worked?
+84
+Well, if I go into my bucket versioning and refresh,
+85
+as we can see now, bucket versioning,
+86
+it says bucket versioning is enabled
+87
+as well as Multi-Factor authentication,
+88
+MFA delete is enabled.
+89
+And so, how do we know if it worked?
+90
+Well, let's say I'm going to my objects
+91
+and I'm going to upload objects.
+92
+So let me upload, for example,
+93
+a copy of the JPEG file,
+94
+I will upload it, so this is working
+95
+Now If I go back to my buckets,
+96
+take that objects and delete it.
+97
+Okay, we're going to delete it,
+98
+but we have enabled versioning,
+99
+so this is just going to add a delete marker.
+100
+This is working as well.
+101
+So all in all so far, so good.
+102
+And if I list my bucket versions now,
+103
+okay I have two versions for my file,
+104
+but now if I wanted to, for example,
+105
+delete this specific version ID.
+106
+Okay, so this one is called a permanent delete.
+107
+It says, you cannot delete object
+108
+because Multi-Factor authentication, MFA deletes
+109
+is enabled for this bucket.
+110
+And so to do so we need to use the CLI command to delete
+111
+this file or disabled MFA delete.
+112
+So we can just go ahead and disable MFA delete,
+113
+so for this, the command is right here.
+114
+So it's the same command that this time will do
+115
+MFA delete equals disabled.
+116
+So I'm going to take the command from before and I'm going
+117
+to edit it out, so here we go.
+118
+MFA delete equals disabled and obviously
+119
+the MFA code I need to change.
+120
+So let me wait for the next MFA code to appear on my screen.
+121
+Hopefully it will work.
+122
+Press enter.
+123
+And here we go, this works.
+124
+So now if I try another time to delete, for example, delete,
+125
+the delete marker.
+126
+Yes, it is working because I have disabled MFA delete.
+127
+So let's confirm it by typing in this texts.
+128
+And then finally going back to my buckets,
+129
+go into my properties and under bucket versioning,
+130
+yes, we can see that MFA delete is disabled.
+131
+So that's it for this lecture.
+132
+I hope you liked it.
+133
+And obviously at the end of the lecture, I almost forgot,
+134
+but no, I didn't forget.
+135
+Please delete your route access key.
+136
+This is really bad to you have them
+137
+so, I will deactivate them and we're good to go,
+138
+and then finally I can probably delete them at some point.
+139
+Okay, so that's it.
+140
+Thank you so much, and I will see you in the next lecture.
+
+--- S3 Access Logs ---
+
+1
+So now, let's talk about S3 Access Logs.
+2
+So for audit purposes,
+3
+you may want to log all the access made
+4
+into your S3 buckets.
+5
+So that means that any request made
+6
+to your S3 bucket from any account,
+7
+whether or not it's authorized or denied,
+8
+is going to be logged as a file into another S3 bucket.
+9
+And that data then can be analyzed using data analysis tool
+10
+such as Amazon Athena.
+11
+Now, the target logging buckets must also be
+12
+in the same AWS region.
+13
+So how does that work?
+14
+Well, you're going to request against your S3 buckets,
+15
+and then you're going to enable the access logs.
+16
+So that's all the requests are being logged
+17
+into the logging buckets.
+18
+Now, there's a specific format to this logs,
+19
+and you can find it at this URL
+20
+to find the log formats.
+21
+Now, with access logs, there is a little bit of warning.
+22
+Never ever set your logging bucket to be the same
+23
+as the bucket you are monitoring,
+24
+because otherwise, it will create a logging loop
+25
+and it will be infinite
+26
+and your bucket will grow in size exponentially.
+27
+So what does that mean?
+28
+While you do put object,
+29
+but the app bucket and the logging bucket is the same.
+30
+So there will be a logging loop
+31
+and you will log that again and log that again
+32
+and log that again and you will pay a lot of money.
+33
+So do not try this at home.
+34
+Okay, that's it for S3 access logs.
+35
+I hope you liked it,
+36
+and I will see you in the next lecture.
+
+--- S3 Access Logs - Hands On ---
+
+So let's go ahead and practice S3 access logs.
+And for this I'm going to create an S3 access logs, define V3 buckets.
+And then I will go ahead and create that bucket.
+So that bucket is going to be our logging bucket.
+And I'm going to keep this open here.
+And in another tab I'm going to take one of my buckets that I've created.
+And then I'm going to enable the um logging.
+So I just took one bucket.
+But whatever bucket you want for your really I will go on properties and then I will scroll down and
+look for server access logging.
+So we edit it.
+So let's enable it.
+And as you can see the bucket policy will be updated for the target buckets where we want to write data.
+So first we have to specify a destination.
+So oops.
+So I'm going to go in my bucket and type access.
+So Stefan access log v3.
+This is the bucket I want.
+And I will choose this as my destination.
+Then we have a destination region.
+So this is EU West one.
+We have the destination bucket name prefix.
+This is if I wanted to select an optional prefix in my bucket to for example have slash logs, but we
+will not do this.
+And then the log object key format.
+So we have this format right here.
+And there is an example here given to me as the log key example.
+Or if I use the second one, I can also specify a different S3 event time or a log file delivery time.
+And again this would change my final uh key format.
+Right now we're going to keep it as default.
+So let's just use the first option okay.
+Which will be enough for our use case.
+And then click on Save changes.
+And now my S3.
+Uh, server access logging is enabled.
+So now what I can do is I can go to my objects, I can click on this one, I can maybe open it, um,
+back into my bucket, I can go in it and I can upload a file.
+So I'll add a file and it'll be, for example, my JPEG.
+So you can do a lot of things in your bucket.
+And all of this is going to generate activity.
+And this activity is going to be logged into your logging bucket.
+Now if I refresh, as you can see nothing happens yet.
+That's because it takes a little bit of time for your access logs to go into your logging buckets.
+But what we can do in the meantime is have a look at the permissions.
+Because when we enabled the server bucket.
+So we were right here the server access logging.
+When we enabled it, it was saying that the bucket policy will be updated.
+So let's verify that we can scroll down.
+And we have the bucket policy right here.
+And indeed yes, the bucket policy was updated to allow the logging service of Amazon S3 to put objects
+into this buckets.
+So this is pretty good.
+So this, um, not what we have to do is go back into our buckets and wait for the first logs to be
+sent.
+So it took a couple of hours, but I just refreshed.
+And in my bucket I see a lot of files now objects and these have been created directly for my access
+log.
+So I can click on one of them and I can open it for example.
+And in here I'm able to see, well what happened.
+And this is quite hard to decipher okay.
+But it gives you the API call, the success rate, who accessed it, what bucket it was, at what time,
+and a lot of information.
+So okay, that's it for S3 access logs.
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 Pre-signed URLs ---
+
+1
+So, now, let's talk about
+2
+Amazon S3 pre-signed URLs.
+3
+So, they are URLs you can generate using the S3 console,
+4
+the CLI or the SDK, and the URL has an expiration.
+5
+So if you use the console, it's up to 12 hours
+6
+and if use the CLI, you can go up to 168 hours.
+7
+So, the idea is that when you generate a pre-signed URL,
+8
+the user that will get that URL will inherit the permissions
+9
+of the user that generated that URL for a GET or a PUT.
+10
+So what's the use case?
+11
+Well, say you have an S3 bucket and it's private,
+12
+and you want to give someone outside of AWS
+13
+access to one file.
+14
+You don't want to make that file public.
+15
+You don't want to make that file in any way
+16
+that would break your security, right?
+17
+So, you as your bucket owner or the user,
+18
+you're going to generate a pre-signed URL out of this file,
+19
+and the S3 Bucket will give you a URL.
+20
+That URL is going to be pre-signed,
+21
+meaning that it will carry over your credentials,
+22
+in terms of authorization to access that file.
+23
+Then you will send this URL to the target user
+24
+that you want to give access to the file
+25
+for a limited amount of time.
+26
+And then that user, sorry,
+27
+will be using the URL to access the file
+28
+on the S3 Buckets.
+29
+And then you will get a file back from the S3 buckets,
+30
+and the user has being able to download it, for example.
+31
+So, pre-signed URL are a very, very common use case
+32
+when it comes to temporary access to one specific file
+33
+for download or even for upload.
+34
+So, the examples are to only allow logged-in users
+35
+to download a premium video of your S3 bucket
+36
+or to allow an ever-changing list of users
+37
+to download files by generating URLs dynamically,
+38
+or to allow, temporarily, a user to upload a file
+39
+to a precise location in your S3 bucket,
+40
+while maintaining your S3 bucket private.
+41
+So that's it for this lecture,
+42
+and I will see you in the next lecture for some hands on.
+
+--- S3 Pre-signed URLs - Hands On ---
+
+1
+Okay, so let's demonstrate S3 pre-signed URL.
+2
+And I'm just going to take
+3
+one bucket that I know is not public.
+4
+And so I click on my coffee.jpg for example,
+5
+you can take whatever image you want.
+6
+And so, let's have a look.
+7
+So, we know that this image is private
+8
+because if I go and click on my object URL right here,
+9
+I get an access denied.
+10
+So, this public URL right here
+11
+is not working because my bucket is not public.
+12
+But, I know that if I clicked on open right here,
+13
+it's going to open a new tab
+14
+and my image is still showing, why?
+15
+Well, because the beginning is exactly the same as before,
+16
+but then in here all the way,
+17
+you have what's called a pre-signed URL.
+18
+And so this URL was pre-signed with my credentials
+19
+which allowed me to access this image.
+20
+And so the idea is how do we generate
+21
+pre-signed URLs for everyone?
+22
+So two options, number one, you can use a CLI
+23
+and the other option is now to do it
+24
+from the console itself.
+25
+So, if you click on object action,
+26
+you can click on share a pre-signed URL.
+27
+And now, it says that anyone can access the object
+28
+with this URL until it expires,
+29
+even if the bucket and object are private.
+30
+So we're saying, "Hey, I want to have this image
+31
+and I want to allow minutes or hours."
+32
+So I will say, "Hey, it's going to be valid
+33
+for the next five minutes."
+34
+And then click on create pre-signed URL.
+35
+Now it has been created and I can share this URL with anyone
+36
+and they will be able to enter it, press Enter
+37
+and voila, get access to your image.
+38
+So, that's very handy if you want to share access
+39
+to some files in your S3 bucket very quickly
+40
+and then make sure that the URL expires
+41
+for maximum security.
+42
+Okay, that's it.
+43
+I hope you liked it and I will see you in the next lecture.
+
+--- Glacier Vault Lock & S3 Object Lock ---
+
+1
+So now let's talk about S3 Glacier Vault Lock.
+2
+So the idea is that you want to lock your Glacier Vault
+3
+to adapt a WORM model.
+4
+That means Write Once Read Many.
+5
+So the idea is that you take an object,
+6
+you put it into your S3 Glacier Vault,
+7
+and then you lock it so it cannot
+8
+be ever modified or deleted.
+9
+So for this, you need to create a Vault Lock
+10
+Policy on top of your Glacier
+11
+and then you lock the policy itself for future edits.
+12
+That means that once you've set a Vault Lock
+13
+Policy and you locked it,
+14
+it can no longer be changed or deleted by anyone
+15
+which is very helpful for compliance and data retention.
+16
+So that means that once an object is inserted into your
+17
+Glacier vault and the vault itself has a Vault Lock Policy
+18
+then the object can never be deleted
+19
+and even by administrator or AWS or whatever you want.
+20
+So it's very helpful for anything legal
+21
+such as compliance or data retention.
+22
+So that's for the Glacier option.
+23
+And it's quite simple to understand.
+24
+Now, there is the same option or something similar at least
+25
+for the S3 buckets, but it's a bit more complicated.
+26
+So for enabling S3 Object Lock,
+27
+you must first enable versioning.
+28
+And again, it allows you to adapt a WORM model, okay?
+29
+But this time it's not a lock policy
+30
+at the whole S3 bucket level.
+31
+It is a lock you can adapt for each and every object
+32
+within your bucket.
+33
+So you can do an object lock on the single object.
+34
+And the idea is that thanks to an S3 object lock,
+35
+you want to block a specific object version to be deleted
+36
+for a specified amount of time.
+37
+So we have two retention modes.
+38
+And the first one is the compliance mode.
+39
+The compliance mode looks a lot like what we had
+40
+for S3 Glacier Vault Lock.
+41
+So the idea is that the object versions cannot be
+42
+overwritten or deleted by any user,
+43
+including the root user.
+44
+So that means that once you are in your compliance mode,
+45
+no one can change anything.
+46
+And also the retention modes themselves cannot be changed
+47
+and the retention period cannot be shortened.
+48
+So it's when you wanna be super compliance.
+49
+But if you want to be a bit more flexibility
+50
+you have the Governance Retention mode.
+51
+So in this case, most user cannot override or delete
+52
+an object version or alter its lock settings.
+53
+But some users, the admin users,
+54
+have special permissions and that's given through IAM
+55
+and they can change the retention or delete
+56
+an object directly.
+57
+So compliance is very strict as a retention mode.
+58
+Whereas government's is a bit more lenient
+59
+and some users have had admin powers
+60
+and can change a few things.
+61
+Now, in both these modes you have to set a retention period.
+62
+That means that you can either apply the compliance
+63
+or the governance mode with a retention period
+64
+to say that you want to protect the object for
+65
+a fixed period of time.
+66
+And that period of time can be extended,
+67
+if you wanted to.
+68
+Now, there is one more thing you can do
+69
+with the S3 object log, it's to pull the legal hold
+70
+on an object.
+71
+So this is different from what we saw.
+72
+So legal hold protects any object
+73
+on your S3 bucket indefinitely
+74
+and that's independent from the retention period.
+75
+So once you place a legal hold on an object
+76
+think of like, oh, this object is very important.
+77
+We need to use it in a trial.
+78
+Let's place a legal hold on it.
+79
+Then the object is protected forever
+80
+regardless of what retention mode
+81
+and retention period you've set on it from before.
+82
+And then someone who has the IAM permissions
+83
+S3 PutObjectLegalHold has the option to take any objects
+84
+and put legal holds on them or to remove them.
+85
+So this is a flexible mode where you can say, hey,
+86
+when someone wants to protect an object in admin,
+87
+they use the PutObjectLegalHold permission.
+88
+And then once, for example, a legal investigation is over
+89
+then it gets removed again using this
+90
+PutObjectLegalHold IAM permissions.
+91
+Okay.
+92
+So you need to know the differences
+93
+of the S3 object lock going at the exam.
+94
+So I hope you liked it.
+95
+And I will see you in the next lecture.
+
+--- S3 Access Points ---
+
+1
+So now let's talk about S3 access points.
+2
+So let's take an example
+3
+of an S3 bucket that has a lot of data.
+4
+We have finance data, we have sales data,
+5
+and we have different users
+6
+or groups that want to access their data.
+7
+We could create a very complicated S3 bucket policy
+8
+and make it grow over time.
+9
+The more users, the more data you have,
+10
+the more unmanageable this may become.
+11
+So what is the solution?
+12
+Well, we can create what's called S3 access points.
+13
+So we can, for example,
+14
+create a finance access point that is going
+15
+to be connected to the finance data.
+16
+How is it connected to the finance data?
+17
+Well, we're going to define an access point policy
+18
+and this policy looks just like an S3 bucket policy
+19
+and is going to grant read write access
+20
+to the finance prefix.
+21
+Then we can define a sales access point.
+22
+And, again, this will be connected to the sales data
+23
+thanks to an access point policy,
+24
+a different one attached to this access point,
+25
+which is going to grant read and write access
+26
+to the sales prefix.
+27
+As you can see, I now have two policy
+28
+and if I want to have an analytics access point,
+29
+well, we can create it so that it points to finance
+30
+and sales, but in read only access.
+31
+So we're going to create our own read only policy
+32
+on the analytics access point.
+33
+So you can see here we have pushed the security management
+34
+from the S3 bucket policy into the access points
+35
+and each access point will have its own security.
+36
+Therefore, with the proper IAM permissions
+37
+then our users can access the finance access points
+38
+and connect only to the finance part of our bucket.
+39
+The users as well for sales can only access the sales
+40
+and the analytics group can access finance
+41
+and sales at the same time.
+42
+So by using access points, we define different ways
+43
+to access our S3 bucket.
+44
+And the result of that is that we have
+45
+a very simple way to manage security.
+46
+We have policies attached to each access point
+47
+and also we have a very simple bucket policy on Amazon S3.
+48
+Therefore, we can really scale access to our S3 buckets.
+49
+So to summarize access points, simplify security managements
+50
+for S3 buckets, and each access point will have
+51
+its own DNS name.
+52
+That's how you connect to the access point.
+53
+You can choose it to be connected to the internet
+54
+as an origin or a VPC for private traffic.
+55
+And then you attach again an access point policy
+56
+which is very similar to bucket policy.
+57
+And this allows you to manage security at scale.
+58
+Regarding the VPC origin of S3 access points,
+59
+we can define them to be privately accessible.
+60
+So that's, for example, an EC2 instance
+61
+in a VPC access says without going through the internet
+62
+our S3 bucket through the VPC access point
+63
+through a VPC origin.
+64
+So to do so, to get access to this VPC origin,
+65
+we must create what's called a VPC endpoint
+66
+to access the access point.
+67
+So it's something in our VPC that will allow us to connect
+68
+privately into the access point through our VPC origin.
+69
+And then the VPC endpoint has a policy,
+70
+and this policy must allow access
+71
+to the target buckets and the access points.
+72
+So the VPC endpoint policy will allow our EC2 instance
+73
+to connect to both the VPC, the access points
+74
+on Amazon S3 and the S3 buckets.
+75
+So in this case, we have VPC endpoint for security.
+76
+We also have security for the access point policy
+77
+and security at the S3 bucket level.
+78
+All right. That's it for access points.
+79
+I hope you liked it and I will see you in the next lecture.
+
+--- S3 Object Lambda ---
+
+1
+So there is another use case for EFS three access points
+2
+and it's called S3 Object Lambda.
+3
+So the idea is that you have an S3 bucket,
+4
+but you want to modify the object
+5
+just before it is being retrieved by a color application.
+6
+And instead of, for example
+7
+duplicating our buckets to have different versions
+8
+of each object, we can use S3 Object Lambda instead.
+9
+And for this, we need the S3 access points that we just saw.
+10
+So how does that work?
+11
+Say we have the cloud and we have an S3 bucket in it.
+12
+So an E-commerce application maybe owns the data
+13
+in this S3 bucket
+14
+and so they're able to access directly the S3 buckets
+15
+and put and get the original object out of it.
+16
+But then an analytics application may want to
+17
+only have access to the redacted object.
+18
+That means that some data has been deleted from the object.
+19
+And so instead of creating a new S3 bucket for this
+20
+what we can do is that we create an S3 access point
+21
+on top of a S3 bucket and is connected to a Lambda function.
+22
+Now, we haven't seen Lambda in depth,
+23
+but a Lambda function allows you to run a bit of code
+24
+in the cloud very easily.
+25
+And so this Lambda function is going to redact the object
+26
+as it is being retrieved.
+27
+And on top of this Lambda function,
+28
+we're going to create an S3 object Lambda access point.
+29
+And, this is how the analytics application is
+30
+going to access our S3 buckets.
+31
+So to summarize
+32
+the analytics application accesses our S3 Object
+33
+Lambda access points, which invokes our Lambda function.
+34
+Our Lambda function is going to retrieve the data
+35
+from the S3 bucket and runs some code to redact the data.
+36
+And therefore the analytics application is
+37
+obtaining a redacted object from the very same S3 bucket
+38
+as the E-commerce application.
+39
+Now, a marketing application may want to have access
+40
+to an enriched object, and they have a customer
+41
+loyalty database to enhance the data.
+42
+So instead of, again, creating a new S3 bucket and
+43
+creating all the objects with all the enriched data.
+44
+What we can do is, again, using a Lambda function.
+45
+So another piece of code.
+46
+And this one will enrich the data by looking it up
+47
+from the customer loyalty database.
+48
+And therefore we can also create an object
+49
+Lambda access point on top of it.
+50
+And therefore our marketing application
+51
+can access this access point,
+52
+this S3 object Lambda access point to get, again
+53
+the enriched objects.
+54
+As you can see, we only need one S3 bucket
+55
+but we can create access points
+56
+and object Lambda to modify the data
+57
+as we wish.
+58
+So the use cases for it is to redact, for example, PII data.
+59
+So personally identifiable information, for analytics
+60
+or non-production environments, or for example
+61
+to convert data from XML to JSON or to perform any kind
+62
+of transformation you want.
+63
+For example resizing and watermarking images on the fly
+64
+but the watermark is specific
+65
+to the user who request the object.
+66
+So that's kind of a cool usage for S3 Object Lambda.
+67
+So I hope you liked it,
+68
+and I will see you in the next lecture.
+

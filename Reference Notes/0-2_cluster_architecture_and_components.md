@@ -82,11 +82,11 @@ graph TD
 Before container orchestration, deploying multi-tier applications (e.g., UI, backend, database) in **standalone containers** posed major reliability challenges:
 * **Host Failures:** If a container crashed, the host system restarted it. However, if the entire host machine crashed, all containers went offline.
 * **Network Resolution:** Manually resolving container network locations across different hosts required custom, fragile routing layers.
-* **Orchestration Need:** An orchestrator acts as a control agent to handle container runtime states, configure virtual networks, scale containers, and automate recovery.
-  * **Docker Swarm:** A lightweight, simple orchestrator suitable for small teams but hard to scale for massive configurations.
-  * **Kubernetes:** A mature, open-source orchestrator developed by Google (derived from their internal project **Borg**).
+* **Orchestration Need:** An Orchestrator acts as a control agent to handle container runtime states, configure virtual networks, scale containers, and automate recovery.
+  * **Docker Swarm:** A lightweight, simple Orchestrator suitable for small teams but hard to scale for massive configurations.
+  * **Kubernetes:** A mature, open-source Orchestrator developed by Google (derived from their internal project **Borg**).
 
-Kubernetes operates as both an **Orchestrator** (managing container lifecycle, networks, and configurations) and a **Cluster** (pooling compute, memory, and storage from multiple physical or virtual nodes into a single unified resource pool).
+Kubernetes operates as both an **Orchestrator** (managing container life-cycle, networks, and configurations) and a **Cluster** (pooling compute, memory, and storage from multiple physical or virtual nodes into a single unified resource pool).
 * **Node Redundancy:** If a node crashes, other nodes complement the resource deficiency and take over the workloads.
 * **Horizontal Scaling (Scale Out/In):** Dynamically adding or removing nodes to adjust cluster compute capacity.
 * **Vertical Scaling:** Increasing or decreasing the CPU/Memory resources allocated to a node or a container.

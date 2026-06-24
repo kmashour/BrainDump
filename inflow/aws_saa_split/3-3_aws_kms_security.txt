@@ -1,0 +1,4123 @@
+--- AWS Security - Section Introduction ---
+
+0
+This section is one of the most important one the exam will ask you lots of question about security.
+1
+Now you may have noticed in all the previous lectures I have talked about security quite a bit.
+2
+I said how different AWS services were integrated with security and I'm sure you get a good idea of it but
+3
+I wanted to dedicate a whole section just to reflect on what we learn and learn about the KMS properly
+4
+encryption properly, the parameters store and so on. This section
+5
+should really bring light to everything you've seen on the security side.
+6
+I hope you like it.
+7
+It is very real world oriented.
+8
+And we're going to practice stuff with AWS Lambda.
+9
+So let's go and learn about security.
+
+--- Encryption 101 ---
+
+1
+Okay, so in this lecture,
+2
+if you're not too familiar with how encryption works,
+3
+I want to give you a little bit of details
+4
+on how it works at a high level.
+5
+So, first let's talk about encryption in flight,
+6
+which is going to be referred as TLS or SSL.
+7
+TLS is the newest version of SSL.
+8
+So what we have is that the data is going to be encrypted
+9
+before sending the data.
+10
+And then it will be decrypted after receiving it.
+11
+So this is for communication
+12
+between a client and a server over a network.
+13
+And so what's going to be happening
+14
+is that for encrypting the data
+15
+TLS certificates are going to be used.
+16
+And this is what you see when you go onto websites
+17
+and it says HTTPS, that means that the connection
+18
+between you and the server
+19
+is going to be encrypted using TLS certificates.
+20
+Why do we want encryption in flight?
+21
+Well, because we're sending data over a network
+22
+and sometimes a public network
+23
+and the data goes around many different servers.
+24
+We don't want to be having a man in the middle attacks
+25
+where a middle server receives the data
+26
+and just observes the packages we're sending to the server.
+27
+And so what we want to have HTTPS or TLS, or SSL,
+28
+this is when we know that only the target server
+29
+can decrypt the encrypted data we're sending.
+30
+So let's take an example.
+31
+We have a client and a server
+32
+and we want to be able to securely login
+33
+into the server by providing our username and password.
+34
+But we only want the target server to be able to receive it.
+35
+So we're going to have the username and password
+36
+and then we're going to apply TLS encryption
+37
+on the client side automatically.
+38
+The data is going to be encrypted and sent over the network.
+39
+So as you can see, no between server can decrypt the data
+40
+and only the target server
+41
+can use the TLS decryption mechanism
+42
+to decrypt that package
+43
+and then see that we've sent the username and password.
+44
+And therefore say that we're securely logged in.
+45
+So that's for encryption in flight.
+46
+The next one is around the server side encryption at rest.
+47
+The idea is that the data will be encrypted
+48
+after being received by the server
+49
+so that it's stored securely.
+50
+And then it will be decrypted
+51
+before being sent back to our clients.
+52
+It will be stored in an encrypted form
+53
+thanks to a key, and that key is usually a data key.
+54
+And so the whole idea of managing these keys
+55
+for encryption and decryption
+56
+is that the management must happen somewhere
+57
+and the server must have access to these keys.
+58
+So let's take a service,
+59
+for example, Amazon S3.
+60
+We're sending an object over HTTP,
+61
+maybe even HTTPS for inflight encryption.
+62
+And so the service receives our object, but it is decrypted.
+63
+So the service can use a data key,
+64
+and using the data key and the decrypted objects,
+65
+we can have encryption of that object at rest.
+66
+And then when it comes to sending back that object
+67
+to the clients, the encrypted objects and the data key
+68
+will be used together to decrypt.
+69
+We'll have a decrypted form of object,
+70
+and then that object will be sent over HTTPS
+71
+back to the clients.
+72
+So we received the decrypted object as is.
+73
+As we can see in this case,
+74
+there is a server side encryption
+75
+because all the encryption and decryption
+76
+happens on the server.
+77
+So finally let's talk about client-side encryption.
+78
+And the idea is that this time
+79
+the data is encrypted and decrypted at the client side.
+80
+And the server should never be able to decrypt the data
+81
+because we don't trust a server in that case.
+82
+So for this, we could leverage encryption
+83
+for this mechanism.
+84
+So let's have an example.
+85
+The client has an object
+86
+and the data key this time is client side.
+87
+And after encryption, we get an encrypted object.
+88
+That encrypted object can be sent then securely
+89
+to any storage service available, an FTP server,
+90
+Amazon S3, EBS volumes, et cetera.
+91
+And they will be stored in encrypted form.
+92
+So the entire server can not even decrypt the data contents.
+93
+When we retrieve the contents,
+94
+we retrieve the encrypted object directly.
+95
+And if we still have access to the data key client-site,
+96
+then we're able to perform the decryption mechanism
+97
+and get the decrypted objects back.
+98
+So that's it for the three encryption mechanisms
+99
+we can see in the Cloud.
+100
+I hope you liked it.
+101
+And I will see you in the next lecture.
+
+--- KMS Overview ---
+
+1
+So now let's talk about AWS KMS,
+2
+which is a key management service of AWS.
+3
+So we've been using it a lot without knowing,
+4
+but anytime you hear encryption
+5
+when you have an AWS service,
+6
+it's most likely going to be KMS encryption.
+7
+The aim is that with this KMS service,
+8
+AWS is going to manage the encryption keys for us.
+9
+And that's great,
+10
+because that means that we have less things to do.
+11
+So KMS is, of course,
+12
+fully integrated with IAM for authorization,
+13
+and it gives us very easy ways to control access
+14
+to our data if it's encrypted with KMS.
+15
+The power of using AWS KMS is that you're able
+16
+to audit every single API call made to use your keys
+17
+through CloudTrail,
+18
+which is something the exam may test you on.
+19
+So on top of it,
+20
+KMS can be used seamlessly into most AWS services.
+21
+So for example, if you wanted to encrypt the data at rest
+22
+in an EBS volume, just enable the KMS integration.
+23
+Same for S3, same for RDS, same for SSM,
+24
+and same for pretty much all the services
+25
+that require encryption.
+26
+The idea is that with KMS, you can also use it yourself.
+27
+And if you have secrets data,
+28
+you never ever store them in plain text,
+29
+that means just as is.
+30
+Especially in your code.
+31
+So if you want to use KMS,
+32
+you can also use KMS through API calls.
+33
+You can use the AWS CLI or the SDK.
+34
+And that means that you can encrypt
+35
+whatever is a secret for you with a KMS key.
+36
+And then these encrypted secrets can be, for example,
+37
+stored in your code or in environment variables.
+38
+That is a much better pattern.
+39
+So now let's talk about the different types
+40
+of KMS keys available to you.
+41
+So now it's called a KMS key.
+42
+By the way, it used to be called
+43
+the KMS customer master key, but it was confusing
+44
+because there's also the customer managed keys
+45
+as we'll see in a second.
+46
+So now, we just talk about KMS keys.
+47
+So we have two types of KMS keys.
+48
+We have the symmetric KMS keys,
+49
+and that means there's only one single encrypted key
+50
+that is used to encrypt and decrypt data.
+51
+And so any service of AWS that is integrated
+52
+with KMS will use symmetric keys.
+53
+The idea is that when we create or use a KMS symmetric key,
+54
+then we never get access to the key itself, okay?
+55
+All we do is that we use the KMS API calls
+56
+to leverage and use that key.
+57
+The second kind of key available on KMS
+58
+are called asymmetric keys.
+59
+That means that you have two keys.
+60
+You have a public key that's used to encrypt data,
+61
+and a private key used to decrypt data.
+62
+So this is used when you have encrypt/decrypt,
+63
+or sign/verify type of operations.
+64
+And in that case,
+65
+you can download the public key out of KMS,
+66
+but you can use access the private key.
+67
+You can only use API calls
+68
+against to access the private key.
+69
+So the use cases for an asymmetric type of key
+70
+is when you want the encryption to be done outside
+71
+of your AWS cloud by users who cannot
+72
+or don't have access to the KMS API key.
+73
+In which case they will use the public key
+74
+to encrypt the data.
+75
+Send it over to you.
+76
+And you within your account,
+77
+you would use the private key of AWS to decrypt that data.
+78
+So within the world of KMS keys,
+79
+you have different types of KMS keys.
+80
+The first one are AWS owned keys.
+81
+They're free, and this is the kind of key you would use
+82
+when you use SSE-S3 type of encryption,
+83
+or SSC DynamoDB, where you have the option, for example,
+84
+that you choose a key owned by DynamoDB.
+85
+So these are not really KMS
+86
+because you don't really see them,
+87
+but they're types of encryption keys within AWS.
+88
+Then you have the AWS managed keys, and they're free,
+89
+and you will recognize them
+90
+because they start with AWS slash and then the service name.
+91
+For example, AWS/RDS or AWS/EBS,
+92
+or in this example, AWS/DynamoDB.
+93
+They're free and you can just use them as you please,
+94
+but only from within the service that it's assigned to.
+95
+Then you have your own customer managed keys
+96
+and their custom keys, and they cost you $1 per month.
+97
+And if you want to import them as well, you can import them,
+98
+and they cost you $1 per month.
+99
+KMS also has a pricing where you're going to pay
+100
+for each API call made to the KMS service,
+101
+which is about 3 cents per 10,000 API calls.
+102
+You also have automatic key rotation.
+103
+So if it's an AWS managed KMS key,
+104
+then it's automatic every one year.
+105
+And if it's a customer managed key,
+106
+you can enable automatic rotation and you set the period,
+107
+and you can also have on-demand rotation of your key.
+108
+And if it's imported KMS key,
+109
+then you can only manually rotate it.
+110
+And for this, you need to leverage an alias.
+111
+So KMS keys are scoped per region.
+112
+That means that if you have an EBS volume encrypted
+113
+with KMS key in a region, for example, EUS2,
+114
+then if you want to copy that to a different region,
+115
+we have to do several steps.
+116
+First of all, we have to take a snapshot of this EBS volume.
+117
+And if we take a snapshot from an encrypted snapshot,
+118
+then this snapshot itself will also be encrypted
+119
+with the same KMS key.
+120
+Then to copy the snapshot to another region,
+121
+we need to re-encrypt the snapshot using
+122
+a different KMS key.
+123
+And this is something AWS will do for you.
+124
+But the same KMS key cannot live in two regions.
+125
+So now we have an EBS snapshot,
+126
+it's encrypted with KMS with a different key,
+127
+and it lives in another region.
+128
+Now, we restore the snapshot
+129
+into its own EBS volume with KMS,
+130
+and it's KMS key B into the region AP southeast two.
+131
+Now, the other thing we need
+132
+to know about is KMS key policies.
+133
+So this is to control access to your KMS keys.
+134
+It's similar to an S3 bucket policy.
+135
+With a difference that if you don't have the KMS key policy
+136
+on your KMS key, then no one can access it.
+137
+So in that regards, we have two types of KMS key policies.
+138
+We have the default one,
+139
+and it's created if you don't provide
+140
+a specific custom KMS key policy.
+141
+And the idea is that the default allows
+142
+everyone in your account to access this key.
+143
+That means that if you have an IAM policy allowing a user
+144
+or role to access this key policy, you're good.
+145
+But if you want to have more specific controls over it,
+146
+you could use a KMS key policy that is custom.
+147
+In which you define the users,
+148
+the roles that can access your KMS key.
+149
+And you define who can administer the key.
+150
+And this is especially helpful
+151
+if you want to do cross account access for your KMS key,
+152
+because we can authorize another account to use our KMS key.
+153
+So when do we use this?
+154
+Well, for example,
+155
+if we wanted to copy an encrypted snapshots across accounts.
+156
+So we create a snapshot encrypted with our own KMS key,
+157
+and it's a customer managed key.
+158
+It must be that because we need
+159
+to attach a custom key policy.
+160
+And then we attach a KMS key policy
+161
+to authorize for cross account access.
+162
+It looks like this.
+163
+Then we share the encrypted snapshot
+164
+with the target account.
+165
+And then in the target account,
+166
+we create a copy of the snapshot
+167
+and we encrypt it with a different customer managed key
+168
+in that target account.
+169
+And then we can create a volume from the snapshot
+170
+in the target account, and we're done.
+171
+So that's a lot of information by KMS,
+172
+but let's go into hands-on
+173
+to hopefully learn a bit more about it.
+
+--- KMS Hands On w/ CLI ---
+
+1
+So let's have a look at the KMS service.
+2
+And first on the left hand side,
+3
+I wanna look at the AWS managed keys.
+4
+You can see if I've been using KMS encryption
+5
+throughout this course, then these keys
+6
+will appear right here.
+7
+So we can look for example at the AWS EBS,
+8
+and this is an Else managed key
+9
+because it belongs to the EBS service.
+10
+So we can have a look here, how it's being used.
+11
+So there is a key policy,
+12
+and this complex policy defines what can access this key.
+13
+And of course, because this is an EBS AWS key,
+14
+then you will look at all the actions,
+15
+so it can come from anywhere, do some kind of actions.
+16
+But the condition is that the caller accounts
+17
+has to be mine and the Via Service
+18
+has to be the EC2 service,
+19
+which is a service above the EBS service, okay?
+20
+If I looked for example, at another AWS managed key,
+21
+for example, the SQS one,
+22
+and look at the key policy, here the Via Service
+23
+as a condition to my KMS key policy is the SQS service,
+24
+therefore allowing only access from SQS to this key.
+25
+We can also look at the cryptographic configuration,
+26
+which show that this key is symmetric of origin KMS
+27
+and it's used to encrypt and decrypt data.
+28
+Okay.
+29
+So that's for the KMS managed key by AWS,
+30
+but then we have other kinds.
+31
+We have the customer managed keys,
+32
+as well as the custom key store.
+33
+So the custom key store is when we wanna use CloudHSM,
+34
+but this is out of scope for this exam.
+35
+So we don't go over this,
+36
+we're just gonna go over the customer managed key.
+37
+So this is when we want to create our own keys within KMS
+38
+and not use the ones managed by AWS.
+39
+So let's create a key, but if we do so,
+40
+remember this is going to cost you $1 per month.
+41
+So if you don't want to pay anything, then do not do this.
+42
+So here for the key type, have multiple options,
+43
+have the symmetric or asymmetric type of key.
+44
+So if I use asymmetric, this could be used for encrypt
+45
+and decrypt or sign and verify type of operations.
+46
+But this is out of scope for this lecture,
+47
+I'm going use the symmetric type of KMS key,
+48
+and we'll use the encrypt and decrypt option.
+49
+Okay, this is the most basic one I want to show you
+50
+For advanced options, the key origin is going to be KMS
+51
+because we want KMS to create this key for us.
+52
+If we wanted to import a key,
+53
+this would be the external type of key origin
+54
+or custom key store if we wanted to have CloudHSM,
+55
+but again, this is out of scope.
+56
+So we'll use KMS.
+57
+And here for regionality we have single region key
+58
+and multi region key.
+59
+And we're just going to consider single region key
+60
+right now because this is the most,
+61
+the oldest type of option and the most common for KMS.
+62
+So we'll use single region key, click on Next.
+63
+Next we have a key alias,
+64
+so I'll just have it as tutorial.
+65
+Click on Next.
+66
+And here we can start define key administrators.
+67
+So if I don't define one, then we're going
+68
+to use the default KMS key policy, which is what I want.
+69
+But if you wanted to be very specific about
+70
+who can use this key and who could administer it,
+71
+this is where it would happen.
+72
+So right now I'm not going to take anything,
+73
+and click on Next.
+74
+Then you can say, who can use this key?
+75
+So again, this is for your KMS key policy.
+76
+To be more specific, right now I want to allow everyone
+77
+to use it if they have the right IAM permissions.
+78
+But if you wanted to also have some extra security,
+79
+you could say, hey, only Stefan can use this key
+80
+and this would create a custom KMS key policy.
+81
+But in this instance, I don't want this.
+82
+And as you can see at the bottom,
+83
+I can choose other AWS accounts to access my key.
+84
+So this is if you had for example,
+85
+the use case of sharing an encrypted snapshot,
+86
+an EBS snapshot for example,
+87
+you would add another account to allow access to your key.
+88
+So we summarize everything, so we have a symmetric key,
+89
+and then this is the key policy
+90
+and this is what I call the default key policy.
+91
+This is just to enable IAM user permission,
+92
+so it allows anything to do any resource on KMS
+93
+as long as they will have, of course,
+94
+IAM permissions to do so.
+95
+So let's finish this.
+96
+And now my key has been created
+97
+and we can click on View Key.
+98
+So now that my key is created,
+99
+I can have a look at the key policy.
+100
+And so the key policy is just like this,
+101
+it's an IAM policy for your key.
+102
+But you can switch to the default view
+103
+and you can see in a better summary,
+104
+like who are the key administrators,
+105
+is it allowed for key deletion?
+106
+Who are the key users?
+107
+And can other accounts access it?
+108
+So I won't touch this.
+109
+Then you can have a look at the cryptographic configuration.
+110
+I won't touch this.
+111
+Tags not needed.
+112
+So for key rotation, we can enable automatic key rotation
+113
+by editing here and saying yes, it's enabled,
+114
+and we can set up the rotation period from 90 days
+115
+to many more days, to 2,560 days.
+116
+So here this is one year,
+117
+but you have the option to customize it.
+118
+If you enable this, then you know the next rotation dates.
+119
+And also for example,
+120
+you can initiate on demand key rotation
+121
+by just clicking on this button.
+122
+Whenever you rotate your key automatically
+123
+or on demand, it's going to appear
+124
+in the key rotation history.
+125
+So these options are available
+126
+because we have created their key directly from KMS.
+127
+And finally, see, finally what is the alias for my key?
+128
+It is named tutorial, so I can refer to it
+129
+with an alias ARN,
+130
+which will be a little bit simpler for us.
+131
+Finally, for key actions,
+132
+you can disable it or schedule key deletion.
+133
+So we have our key, it's great,
+134
+but now let's go use the CLI to encrypt
+135
+and decrypt some data.
+136
+So under KMS I have kms-demo-cli.sh,
+137
+which is going to show us how to use the encrypt
+138
+and decrypt call of KMS with an example.
+139
+So, first we have got to create a file,
+140
+and I'm going to call it ExampleSecretFile.txt.
+141
+And with it I'm going to say
+142
+there is a super, secret, password, okay?
+143
+So this is whatever you want in this text file.
+144
+For me I just entered a password
+145
+called SuperSecretPassword,
+146
+and we're going to encrypt it and then decrypt it using KMS.
+147
+So the first thing that you do for KMS encryption
+148
+is use the encrypt command.
+149
+So we have to specify a key ID,
+150
+for me it's alias/tutorial, so this corresponds
+151
+to the key you have created in My Console.
+152
+And you could use the alias,
+153
+you could use this key ID right here,
+154
+or you could use the full ARN,
+155
+it doesn't really matter, just use whatever you want.
+156
+And then you need to pass in plain text
+157
+the address of your file.
+158
+So for me it's ExampleSecretFile.txt.
+159
+The output of the query, so you're querying
+160
+for a Cipher text blog,
+161
+which represents the encrypted contents,
+162
+and you want the text as is.
+163
+And finally the region your key is in,
+164
+so for me, mine is manage region eu-west-2.
+165
+This is going to give us a base 64 file
+166
+containing the encrypted content.
+167
+So let's copy this command right here
+168
+and paste it, run it.
+169
+And now I have a file called
+170
+ExampleSecretFileEncrypted.base64.
+171
+And this represents my encrypted file, okay, in base 64,
+172
+so just with letters and numbers that we can recognize.
+173
+Now though, we're going to do a base 64 decode
+174
+to get the binary encrypted value.
+175
+So if you're on Windows, the command is different.
+176
+So for Linux, I'm just going to run this one,
+177
+but for Windows you can run the other one.
+178
+And so the idea is that you're going
+179
+to create a file called ExampleSecretFileEncrypted
+180
+without a base 64.
+181
+So let me copy this and paste it.
+182
+And now I have a new file called
+183
+ExampleSecretFileEncrypted.
+184
+And if I try to open it with my text editor,
+185
+it's not going to work because it say
+186
+it uses either binary or unsupported text encoding.
+187
+So this is indeed a binary file.
+188
+So this is the kind of secret file
+189
+that you would share with someone.
+190
+And so now I want to go and decrypt it.
+191
+So this is completely gibberish
+192
+and we cannot get any information of it.
+193
+Even this one, we cannot get any information.
+194
+How do we know it's super secret password?
+195
+So this is an encrypted file,
+196
+but now we want to take this encrypted binary file,
+197
+and decrypt it.
+198
+So for this we're going to run an KMS decrypt command.
+199
+So this time we pass in the file that was encrypted.
+200
+So this is where we pass in the file in here.
+201
+Then we query for the plain text value,
+202
+so the decrypted value,
+203
+and we write this to another file
+204
+that is going to be base 64 encrypted,
+205
+and we specify the region.
+206
+So let's go ahead.
+207
+KMS knows automatically which key to use
+208
+for the description because it is included
+209
+in the blob of encrypted value.
+210
+So let me enter this, and so this has succeeded.
+211
+So now if I go to my Example File decrypted base 64,
+212
+it is here, it's a much shorter thing,
+213
+and now we're going to base 64 decode this
+214
+to get my text value.
+215
+So we'll have a different command again,
+216
+if you're on Windows or if you're on Mac,
+217
+so I'm on Mac, so I'm going to use this one.
+218
+So I'm copying this command, pasting it,
+219
+and now we have done a base 64 decoding of our file.
+220
+So if we go back to Example File decrypted.txt,
+221
+we find back our super secret password.
+222
+So we have shown the encryption
+223
+and it's reverse operation, the decryption.
+224
+Obviously these are low level commands,
+225
+the SDK will abstract some of that for us,
+226
+but this shows you the full example of
+227
+how you can use the encrypt and decrypt command
+228
+of KMS with your own customer master key.
+229
+So that's it, super simple.
+230
+I hope that was helpful,
+231
+and I will see you in the next lecture.
+
+--- KMS - Multi-Region Keys ---
+
+1
+So, now let's talk about KMS Multi-Region keys.
+2
+So, we have KMS and we can actually have a Multi-Region key.
+3
+That means that you're going to have your primary key
+4
+in one selected Region, such as for example, us-east-1.
+5
+And then, that key is going to be replicated
+6
+to other Regions.
+7
+For example, us-west-2, eu-west-1 and ap-southeast-2.
+8
+And so the similarity is that
+9
+the key material is going to be replicated.
+10
+The same key is going to be in other Regions.
+11
+And the key ID is going to be the exact same.
+12
+So as you can see the key ID slash mrk and then whatever
+13
+is the same across all Regions.
+14
+And this is the principle behind the KMS Multi-Region keys.
+15
+So, what would you use them?
+16
+Well, it's a set of KMS keys
+17
+that you can use in different AWS Regions
+18
+and they can be used interchangeably.
+19
+So that means that you can encrypt in one Region
+20
+and then decrypt in another Region.
+21
+And Multi-Region keys they're possible
+22
+because they have the same key ID, the same key material.
+23
+And if you have automatic rotation enabled
+24
+for the primary key, and it actually rotates
+25
+it's going to be also replicated to the other Regions.
+26
+So the idea with that, with the Multi-Region key,
+27
+you can encrypt in one Region and decrypt
+28
+in another Region, and you don't need therefore
+29
+to re-encrypt your data
+30
+when moving from one Region to the next;
+31
+or to make cross Region API calls.
+32
+So something to understand though
+33
+is that KMS Multi-Region keys are not global.
+34
+Okay? You have your Primary and your Replicas.
+35
+And each Multi-Region key
+36
+is going to be managed independently
+37
+with its own key policy and so on.
+38
+So it's not recommended to use Multi-Region key,
+39
+except in very specific use cases
+40
+because KMS likes to have the fact that
+41
+a key is bounded to a single Region.
+42
+And so the use cases for using Multi-Region keys
+43
+is if you want to have a global client-side encryption.
+44
+So to be able to encrypt client-side in one Region
+45
+and to decrypt client-side in another Region.
+46
+or to do encryption on Global DynamoDB tables
+47
+or on Global Aurora.
+48
+And we'll see this in a second.
+49
+So how does it work when you use
+50
+Global Tables in DynamoDB and KMS Multi-Region key
+51
+with client side encryption?
+52
+So the idea is that you want to encrypt
+53
+not just the whole table
+54
+because this is just at risk encryption.
+55
+You want to encrypt actual attributes on your table.
+56
+And so that they're only available to specific clients.
+57
+Not even to database administrators.
+58
+For this we're going to use
+59
+the Amazon DynamoDB Encryption Clients.
+60
+So let's take an example where we have us-east-1
+61
+and ap-southeast-2.
+62
+So the KMS service is having a Multi-Region key
+63
+which is replicated to another Region.
+64
+The Region ap-southeast-2.
+65
+And the client application wants to insert data
+66
+into a DynamoDB table.
+67
+So first is going to encrypt the attribute
+68
+that it needs to be encrypted
+69
+with the primary Multi-Region key.
+70
+So the idea is that the DynamoDB table,
+71
+most of the fields will not be encrypted client-side. Okay.
+72
+But then one of them, for example
+73
+the Social Security number is going to be encrypted.
+74
+So this is great because well,
+75
+your database administrators
+76
+that have accessed your DynamoDB table,
+77
+if they don't have access to the KMS key
+78
+that we used to encrypt that one attribute,
+79
+the Social Security number.
+80
+Then they will not be able to access it.
+81
+So it gives you a protection even
+82
+against the database administrators.
+83
+So if this DynamoDB table happens to be a Global Table
+84
+then this data is going to be replicated to another Region.
+85
+And so this is now in ap-southeast-2.
+86
+And thankfully we've decided to encrypt our data,
+87
+the attributes, with a Multi-Region key.
+88
+And therefore, a client's application
+89
+in the ap-southeast-2 Region can retrieve the row,
+90
+see that one attribute is encrypted
+91
+and then perform an API call
+92
+to actually decrypt the attribute
+93
+with the replica Multi-Region key.
+94
+And this is why we are doing Multi-Region key this instance.
+95
+Is it so that client applications in the ap-southeast-2
+96
+can do a local API call to KMS
+97
+to decrypt that one attribute.
+98
+So using this client-side encryption technique
+99
+we can protect specific fields or attributes on our data
+100
+and only guarantee decryption when our client has access
+101
+to an API key.
+102
+And thanks to Global Tables
+103
+we can make sure the data and the encryption keys
+104
+are also replicated together.
+105
+So the same concept can be applied to Global Aurora.
+106
+So I will go a bit faster.
+107
+And this time we're going to use the AWS Encryption SDK.
+108
+So we have two Regions
+109
+and we have a Multi-Region key in KMS
+110
+replicated across these two Regions.
+111
+And so the client application wants to encrypt a column
+112
+yet to get it is my SSN column.
+113
+And this time we put the data into an Amazon Aurora database
+114
+with a table.
+115
+And so all the data is unencrypted on this one row,
+116
+except that one column, which is the SSN, which is encrypted
+117
+actually with the, mrk, the Multi-Region key.
+118
+Now this is a Global Database.
+119
+So that means that the tables are going to be
+120
+replicated globally.
+121
+And therefore the same data is going to happen to be
+122
+in the ap-southeast-2.
+123
+And because we have clients in the ap-southeast-2
+124
+they're going to get this encrypted data from your table.
+125
+And because we are using a Multi-Region key
+126
+they can do a local API call to KMS
+127
+to decrypt this attribute.
+128
+And therefore we have achieved lower latency.
+129
+So we've seen that using client-side encryption,
+130
+we can also protect this data
+131
+even from database administrators.
+132
+So if you have a database admin
+133
+that accesses your Amazon Aurora database
+134
+and wants to access that one column,
+135
+the Social Security number.
+136
+Unless they have access to the KMS key
+137
+they will not be able to read this data
+138
+which is very helpful.
+139
+So that's it for KMS Multi-Region keys.
+140
+I hope you liked it.
+141
+And I will see you in the next lecture.
+
+--- S3 Replication with Encryption ---
+
+1
+So now let's talk about S3 Replication
+2
+and its relation to encrypted objects.
+3
+So if you enable S3 Replication from one bucket to another,
+4
+then any unencrypted objects
+5
+and objects encrypted with SSE-S3
+6
+will be replicated by default.
+7
+Objects that are also encrypted with SSE-C,
+8
+with the customer provided key,
+9
+can also be replicated,
+10
+and then we have objects encrypted with SSE-KMS.
+11
+So by default, they're not replicated
+12
+but we need to enable the option
+13
+to actually replicate these objects.
+14
+And so we specify with which KMS Key
+15
+we want to encrypt the objects within the target buckets,
+16
+and then we adapt this KMS Key Policy for the target key
+17
+and we create an IAM Role
+18
+that is allowing the S3 Replication service
+19
+to first decrypt the data in the source bucket
+20
+and then re-encrypt the data in the target bucket
+21
+with the target KMS Key.
+22
+And so when you do so, this enables replication
+23
+because there is a lot of encryption
+24
+and decryption happening.
+25
+You may get KMS throttling errors,
+26
+in which case you need to ask for a service quotas.
+27
+So the question you may have is
+28
+should I use multi-region key with S3 Replication?
+29
+And the documentation says that you can use multi-region key
+30
+for S3 Replication
+31
+but currently they are treated as independent keys
+32
+by the Amazon S3 service,
+33
+and therefore the object is still going to be decrypted
+34
+and then encrypted using the same key
+35
+even though the key is a multi-region key, okay?
+36
+So this is it for this lecture,
+37
+I hope you liked it,
+38
+and I will see you in the next lecture.
+
+--- Encrypted AMI Sharing Process ---
+
+1
+So here is a question that can come up
+2
+in the exam.
+3
+This is around the process to share an AMI
+4
+with another account, and the AMI has been encrypted
+5
+with a KMS key.
+6
+So the AMI is in your source account,
+7
+and it's encrypted with your KMS key.
+8
+So how do you launch an EC2 instance
+9
+in account B from the AMI in account A?
+10
+So first you must modify the AMI property
+11
+with a launch permission, and the list launch permission
+12
+allows account B to launch this AMI.
+13
+So effectively, this is how you share an AMI.
+14
+You must modify the launch permissions
+15
+and add the specified target to its account ID.
+16
+Then you need to also share the KMS key
+17
+for the accounts B to be able to use it.
+18
+So this is done usually with a key policy.
+19
+Then in account B, you would create an IAM role
+20
+or IAM user with enough permissions to actually
+21
+use both the KMS key and the AMI.
+22
+So you must have it on the KMS side, access to the
+23
+Describekey API call, the ReEncrypted API call,
+24
+CreateGrant and Decrypt API calls.
+25
+And then once all of this is done, you can simply launch
+26
+an EC2 instance from that AMI and optionally
+27
+the target accounts can choose to re-encrypt everything
+28
+with the KMS key that it's owned, that it owns
+29
+in its own accounts, to re-encrypt the volumes.
+30
+But there you go, you can launch an EC2 instance.
+31
+And so if you understand this process you're good to go
+32
+to maybe answer one question at the exam.
+33
+I hope you liked it, and I will see you in the next lecture.
+
+--- SSM Parameter Store Overview ---
+
+1
+So now let's talk about
+2
+the SSM Parameter Store.
+3
+It's a secure storage for your configuration
+4
+and your secrets.
+5
+And optionally,
+6
+you can choose to encrypt these configurations
+7
+and therefore make it secrets
+8
+by using the KMS service.
+9
+SSM Parameter Store is serverless,
+10
+it's scalable, it's durable,
+11
+and the SDK is very easy to use.
+12
+On top of it, if you update your parameters
+13
+then you have version tracking of them.
+14
+The security is provided through IAM
+15
+and you get notifications with Amazon EventBridge,
+16
+in certain amount of cases.
+17
+You have full integration with CloudFormation.
+18
+That means that CloudFormation can leverage the parameters
+19
+from parameter store as input parameters for your stacks.
+20
+So let's take an example.
+21
+We have an application
+22
+and then we have the SSM parameter store.
+23
+So we can store plain text configuration in this way.
+24
+Then the IAM permissions of your applications
+25
+are going to be checked.
+26
+For example, your EC2 instance role
+27
+or you can have encrypted configuration.
+28
+In that case
+29
+the SSM parameter store is going to encrypt it with KMS.
+30
+And so the KMS service is going to be used
+31
+for encryption and decryption.
+32
+And of course, you need to make sure
+33
+that your applications do have access
+34
+to the underlying KMS key to perform that encryption
+35
+and that decryption.
+36
+So you can store parameters in the parameter store
+37
+with a hierarchy.
+38
+So for example, you can define my department
+39
+as a path and underneath the My-app and then the Dev
+40
+and then we have the Dev DB-URL
+41
+and then the DB-password within that folder.
+42
+So that means that your parameters goes all the way down
+43
+into the hierarchy.
+44
+We can go one level up and store a parameter
+45
+for the Prod DB-URL, as well as a Prod DB password
+46
+and go up to another app or another department.
+47
+That really allows you to organize your parameters
+48
+the way you want in a structured fashion.
+49
+And then this is going to simplify your IAM policies to
+50
+allow applications to have access to an entire department,
+51
+or to an entire app,
+52
+or just to an app department environment specific path.
+53
+You also have the opportunity
+54
+to access Secrets of Secrets Manager
+55
+through the Parameter Store
+56
+by using this reference right here.
+57
+So it's a little trick that not many people know.
+58
+And there are something called Public Parameters
+59
+that are issued by AWS that you can use.
+60
+For example, if you want to find the latest AMI
+61
+for the Amazon Index 2 in your specific region.
+62
+This is something that's available
+63
+within the Parameter Store as an API call.
+64
+So if you take an application,
+65
+for example our Dev Lambda function is going to have
+66
+an IAM roll that allows it to access
+67
+the DB-URL and DB-password within the Dev of my app.
+68
+And then if you have a Prod Lambda Function,
+69
+thanks to again, a different IAM policy
+70
+and maybe some environment variables,
+71
+you can access the Prod DB-URL
+72
+and Prod DB-password of another path.
+73
+(mouse clicks)
+74
+Now, within Systems Manager,
+75
+you have two kinds of parameter tiers.
+76
+You have the standard and the advanced tier.
+77
+So the big difference is going to be around the size
+78
+of 4KB which is 8KB,
+79
+and also the availability of a parameter policy.
+80
+For the standard one, we have none but for advanced,
+81
+we have some.
+82
+The advanced type of parameters
+83
+is going to be a $0.05 per month.
+84
+Whereas the first one is going to be free.
+85
+So what are these parameter policies?
+86
+And this is only for advanced parameters.
+87
+(mouse clicks)
+88
+Well, this allows you to assign a time to live
+89
+to a parameter, that means an expiration date.
+90
+So that you forced users to update
+91
+or delete sensitive data such as passwords.
+92
+And you can assign multiple policies at a time.
+93
+So here is an example policy.
+94
+So this is an expiration policy to delete a parameter
+95
+and you say, "Hey, on this time stamp
+96
+you must delete these parameter."
+97
+And then through the EventBridge integration,
+98
+EventBridge is going to get notifications of it.
+99
+So in this example, 15 days before the parameter expires
+100
+we'll receive notification in EventBridge
+101
+which gives us enough time to actually update it
+102
+and make sure the parameter is not getting deleted
+103
+because of the TTL.
+104
+Or maybe sometimes you wanna make sure the parameters
+105
+change once in a while.
+106
+So you can have a no change notification in EventBridge
+107
+so that if a parameter has not been updated for 20 days,
+108
+then you will be notified as well.
+109
+So you can get very, you know,
+110
+creative with the parameter store.
+111
+But now you get the idea behind it.
+112
+So I hope you like this lecture
+113
+and I will see you in the next lecture.
+
+--- SSM Parameter Store Hands On (CLI) ---
+
+1
+Okay, so let's go ahead and practice
+2
+using the Parameter Store.
+3
+So the best way to do it is
+4
+to type Parameter Store in the search bar,
+5
+and you can click here.
+6
+It's a Systems Manager feature.
+7
+So if you click on Parameter Store, on the left hand side,
+8
+you will see that under Systems Manager,
+9
+you have, under Application Tools, the Parameter Store,
+10
+and what we can do here is create a new parameter.
+11
+We specify types and values,
+12
+and then we can reference the parameters
+13
+in the comments or the code.
+14
+So let's go ahead and practice using this service.
+15
+So I first create a parameter
+16
+and I need to enter a name for it.
+17
+So the name is whatever you want.
+18
+You don't have to follow my direction,
+19
+but I like to name it like this
+20
+so /my-app/dev/db-url,
+21
+and this is going to allow me, with these four slashes
+22
+to organize them into a hierarchy.
+23
+So this is my app, this is the Dev Environment,
+24
+and this is the name of my parameter
+25
+within the Dev Environment.
+26
+So here, I say DB Url for the Dev Environment.
+27
+That's perfect, and then Tier, we have two options.
+28
+We have Standard and Advanced.
+29
+So we are going to use a Standard tier.
+30
+We can store up to 10,000 standard parameters.
+31
+They are four kilobytes in value maximum,
+32
+and we can't share that with other accounts,
+33
+but the Advanced parameters, you can have 100,000 of them,
+34
+they can be eight kilobytes
+35
+and you can share them with your other accounts.
+36
+So next we're going to choose the type,
+37
+and the type could be String, StringList, or SecureString.
+38
+So here we're going to use String,
+39
+but later we'll be using SecureString,
+40
+and if you need to list of string,
+41
+you can have a StringList, but String here has Data Type.
+42
+It's either text or AWS EC2 image
+43
+because you can also reference image ARNs here,
+44
+and here you just have to specify the
+45
+text in a specific format.
+46
+But we'll use Text, and for the string, I will have
+47
+for example, dev.database.stephantheteacher.com.
+48
+This is just an example.
+49
+You don't have to put anything that's a URL.
+50
+You can put whatever you want in it,
+51
+but that's going to be the value of my parameter, this one.
+52
+So let's create this parameter,
+53
+and as you can see now it's been created.
+54
+I can click on it and have a look at it.
+55
+So this is Version One of this parameter.
+56
+We can view the version history here.
+57
+So if I were to change it, then I can of course update it,
+58
+but I will have access to my version history, which is nice,
+59
+and then we're going to do the same but add more parameters,
+60
+so we're going to go under Parameter Store
+61
+and I'm going to copy this,
+62
+and here I'm going to have it as db-password,
+63
+so we're going to create it.
+64
+So DB Password for Dev,
+65
+and as you guessed it,
+66
+we're going to have a SecureString this time,
+67
+and because it's a password, we're going to encrypt it
+68
+with a KMS key,
+69
+so it could belong in my account or another account.
+70
+We'll use my account.
+71
+You could use the default KMS Key ID
+72
+managed by AWS for the SSM service,
+73
+which is this one, alias/aws/ssm,
+74
+or you can select one that you have created before.
+75
+For example, you may have created, for example, KMS,
+76
+a key called Tutorial or whatever you want to create it.
+77
+You don't have to, and so if you had created it,
+78
+then you can use it here and leverage it.
+79
+It's really as you want,
+80
+but let's choose Tutorial for this example,
+81
+it doesn't really matter,
+82
+and we need to put a password,
+83
+so I'll have it as devpassword,
+84
+and now this is going to be automatically encrypted by KMS.
+85
+So let's create this parameter.
+86
+As you can see now, the type is a SecureString,
+87
+and if I click on it, as you can see,
+88
+the value is encrypted and hidden,
+89
+and if I click on show decrypted value,
+90
+it will check that I have the KMS permission to use the key
+91
+and then therefore decrypt the value for me,
+92
+so that's great.
+93
+What we can do now is just really quickly
+94
+create the other parameters for Prod.
+95
+So instead of here, I have Prod and I'll call it
+96
+prod.stephantheteacher.com3306,
+97
+and then for the password, same.
+98
+I'm going to copy this real quick and have it as prod.
+99
+We'll use a SecureString, we'll use the Tutorial one,
+100
+and then we'll have it as prodpassword.
+101
+Okay, so now we have four parameters
+102
+and they're all available within the Parameter Store
+103
+and they're ordered by a hierarchy.
+104
+So now let's try to access these parameters using the CLI.
+105
+So I'm going to open a CloudShell on the top
+106
+because it has the CLI installed of AWS
+107
+and it's already configured.
+108
+And so what we're going to use is a command
+109
+called the SSM Get Parameters.
+110
+So we'll do aws ssm get-parameters,
+111
+and then you have to provide names,
+112
+and the names correspond to the names of your parameters.
+113
+So I can have, for example, my dev/db-url
+114
+as well as my dev password, db-password.
+115
+So we'll press Enter, and as you can see, now I get a result
+116
+with my two parameters.
+117
+So we have this one and that one,
+118
+and you can see that for the db-url, it's a String,
+119
+the value has been returned as is,
+120
+but for the db-password, it's a SecureString
+121
+and it has been returned as an encrypted value.
+122
+So to decrypt this value, I'll press Enter, Enter, Enter,
+123
+and quit, q.
+124
+I have to specify a flag,
+125
+and the flag is called with-decryption,
+126
+and so it's going to check additionally if I have the KMS
+127
+security policy allowed on my account
+128
+to decrypt that parameter.
+129
+So as you can see now, the db-password
+130
+is still a SecureString, but now we have devpassword
+131
+as a decrypted value thanks to this flag with decryption.
+132
+So the CLA is very powerful
+133
+and something you can definitely use in your scripts.
+134
+Another command I would like to show you
+135
+is going to be the Get Parameters by Path.
+136
+So you do aws ssm get-parameters-by-path,
+137
+and then you have to specify a path,
+138
+and the path is whatever you want,
+139
+so because we have a hierarchy, we have my-app/dev,
+140
+it's going to give me all the parameters in this namespace,
+141
+and as you can see, we got again, the dev db-password
+142
+and the dev db-url.
+143
+But you can do something more now, you can do, for example,
+144
+my-app as a whole,
+145
+and as you can see, I get nothing,
+146
+but if I use the flag
+147
+and it's a flag called Recursion,
+148
+so it's going to be recursive,
+149
+then you have access to all the parameters recursively
+150
+under that namespace.
+151
+So we have access to the dev as well as the prod
+152
+type of parameters, which is brilliant,
+153
+so now we have our four parameters.
+154
+And finally, if you want it, of course,
+155
+you can also use with-decryption to decrypt all of them.
+156
+And that's it.
+157
+So we've seen how the Parameter Store was working,
+158
+we've seen about the hierarchy, we've seen the CLI,
+159
+and it starts to show you the power
+160
+of using the Parameter Store.
+161
+So I hope you liked it,
+162
+and I will see you in the next lecture.
+
+--- AWS Secrets Manager - Overview ---
+
+1
+So now let's talk about a very simple service
+2
+called the AWS Secrets Manager.
+3
+So it's a newer service and it's meant for storing secrets
+4
+and it's going to be different from the SSM parameter store,
+5
+because on Secrets Manager, you have the capability to force
+6
+the rotation of secrets every X number of days,
+7
+and therefore you have a better secret management schedule.
+8
+On top of it, from within Secrets Manager,
+9
+you can force and automate the generation
+10
+of secrets on the rotation.
+11
+And for this, you have to define a Lambda function
+12
+that will generate that new secrets.
+13
+Moreover, Secrets Manager is really well integrated
+14
+with different services on AWS.
+15
+And I just showed you Amazon RDS
+16
+for example, for MySQL, PostgreSQL, SQL or Aurora.
+17
+But there are other services as well with AWS,
+18
+other databases, that are integrated
+19
+with Secrets Manager out of the box.
+20
+That means that the username and the password to get into
+21
+your database is stored directly in Secrets Manager
+22
+and it can be rotated and so on.
+23
+Now, Secrets can be encrypted using the KMS service.
+24
+And so anytime in the exam you see Secrets,
+25
+or integration for RDS,
+26
+or for Aurora of Secrets, really think Secrets Manager.
+27
+There's one more feature we need to know about
+28
+which is the concept of multi-region Secrets.
+29
+So the idea is that you can replicate your Secrets
+30
+across multiple AWS regions
+31
+and Secrets Manager Service will keep readers
+32
+in sync with the primary Secrets.
+33
+So here have two regions.
+34
+We create a Secret in the primary one
+35
+and it gets replicated as a same Secret
+36
+into a secondary region.
+37
+Now, why would we do this?
+38
+Well, multiple things.
+39
+Number one, in case there is a problem with US East 1,
+40
+you're able, for example, to promote a replica Secret
+41
+as a standalone secret.
+42
+And then thanks to the fact that that Secret is replicated
+43
+across regions, then you can build multiple regions apps.
+44
+You can also have disaster recovery strategies,
+45
+or if you have an RDS database that is also being replicated
+46
+from one region to the next,
+47
+then you can use the same Secret to access,
+48
+the same, the RDS database, the corresponding one,
+49
+in the corresponding region.
+50
+So that's it for this lecture.
+51
+I hope you liked it, and I will see you in the next lecture.
+
+--- AWS Secrets Manager - Hands On ---
+
+1
+So, now let's talk about
+2
+the Secrets Manager service.
+3
+So, as we can see,
+4
+it's to easily rotate, manage, and retrieve secrets
+5
+throughout their life cycle.
+6
+So, it's similar to the SSM parameter store
+7
+because you can store secret things,
+8
+but it's going to be different from it
+9
+because while you have rotation, management,
+10
+and tight integrations with databases
+11
+such as MySQL, PostgreSQL, Amazon Aurora,
+12
+and RDS and so on.
+13
+So, the pricing is you have a 30-day free trial available,
+14
+and then you're going to pay $0.40 per secret, per month,
+15
+and then $0.05 per 10,000 API calls.
+16
+So, if you again expect to remain within the free tier,
+17
+just create a secret and then delete it.
+18
+So, let's go ahead and store a new secret,
+19
+and we can choose a secret type.
+20
+Now, over time,
+21
+it's very possible that this gets increased
+22
+in terms of the capability of integrations,
+23
+but we have Amazon RDS, we have Amazon DocumentDB,
+24
+Amazon Redshift, other databases, or other type of secrets.
+25
+So, if you are on Amazon RDS, as you can see,
+26
+it prompts you for username and password and so on.
+27
+And if you go for example,
+28
+for other type of secrets,
+29
+here we can store anything we want.
+30
+So for example, I can say MySecretKey,
+31
+and then MyVerySecretValue,
+32
+and this would be a secret stored in here.
+33
+And another one could be, for example, API_KEY,
+34
+and then would be as well like a secret API key,
+35
+so you would enter some text in here.
+36
+So you can enter it through this UI,
+37
+or you can go in plain text and you have adjacent document
+38
+that you can edit it.
+39
+To edit the key values,
+40
+this is just a different way of specifying your secrets.
+41
+So, this will be kept secret so that only person
+42
+with the correct IAM permissions can access these secrets.
+43
+Then we specify an encryption key.
+44
+So, we have the default one,
+45
+but you can use your own KMS key if you wanted to.
+46
+I click on next.
+47
+Then we need to name our secret.
+48
+So prod/my-secret for example,
+49
+and a description but I don't need it.
+50
+Resource permission,
+51
+so do we want to have a policy
+52
+that restricts who can access the secret?
+53
+And it could be across AWS accounts
+54
+thanks to this resource policy right here,
+55
+and you would've have it adjacent form.
+56
+So, it's similar to an S3 bucket policy.
+57
+And then you have the option
+58
+to replicate the secret across regions.
+59
+And this is good if you want to have multi-region setups
+60
+which as multi-region apps or multi-region databases.
+61
+And here we can say,
+62
+"Okay, I want to replicate this
+63
+into us-west-2 using this encryption key right here
+64
+and also into AP Southeast-1 and so on.
+65
+So, I'm not gonna do this,
+66
+but this would be how you would replicate your secrets.
+67
+So, then I click on Next.
+68
+Then you want to automatically rotate our secrets,
+69
+yes or no.
+70
+And when do we want to rotate it,
+71
+and if we do enable rotation,
+72
+then we need to specify a rotation function.
+73
+This is a Lambda function
+74
+that will be performing this rotation.
+75
+So for now, disable it.
+76
+And then we have a look.
+77
+So, we have a secret right here.
+78
+It's replicated into us-west-2.
+79
+And here's some code if we wanted to invoke
+80
+and get that secrets from our clients.
+81
+So, I'm not gonna go ahead with creating this,
+82
+but as you can see, this would store a secret
+83
+and then use this code
+84
+to retrieve in your code the correct secrets.
+85
+So, we'll cancel this.
+86
+Another kind of secret you can have
+87
+is a credential for an Amazon RDS database.
+88
+So, you would create a username and a password
+89
+and then you would specify a database.
+90
+And the cool thing about it
+91
+is that thanks to the integration
+92
+between RDS and Secrets Manager,
+93
+then this username and this password
+94
+would be used to be able to login into the database.
+95
+And if you wanted to rotate it,
+96
+then automatically the database also gets updated.
+97
+So, here you would enter it.
+98
+Then you would configure the secrets
+99
+as well if you wanted to have for example
+100
+some kind of multi-region replication.
+101
+Rotation as well if you wanted to review it and you're done.
+102
+So, that's it for this lecture.
+103
+I hope you liked it, and I will see you in the next lecture.
+
+--- AWS Certificate Manager (ACM) ---
+
+1
+So now let's talk about the AWS
+2
+Certificate Manager Service, also called ACM.
+3
+So with ACM, you can easily provision, manage,
+4
+and deploy TLS certificates on AWS.
+5
+What are TLS certificates used for?
+6
+And they sometimes say SSL.
+7
+So they're used to provide
+8
+in-flight encryptions for websites.
+9
+You know when you go to websites,
+10
+and it says HTTPS, the S stands for secure,
+11
+and therefore this is where you know
+12
+that there is a TLS certificate involved in the transaction.
+13
+So how does that work?
+14
+Well, you have an ALB, for example,
+15
+connected to your Auto Scaling group,
+16
+but you want to expose your application load balancer
+17
+as an HTTPS endpoint.
+18
+Therefore, you would integrate it with a certificate manager
+19
+to provision and maintain TLS certificates
+20
+directly on your application load balancer,
+21
+and your users will access your websites
+22
+or your API using the HTTPS protocol.
+23
+So ACM supports both public and private TLS certificates
+24
+and is free of charge
+25
+if you want to use public TLS certificates.
+26
+There is also a feature
+27
+to automatically renew these certificates,
+28
+we will see this in a second on other slides,
+29
+and you have integrations with many AWS services,
+30
+so you can load TLS certificates on elastic load balancers,
+31
+for example, the classic one, the application load balancer
+32
+or the network load balancer,
+33
+CloudFront distributions,
+34
+or any APIs on the API Gateway.
+35
+So what's the process to request a public certificate?
+36
+First of all, you need to list the domain names
+37
+that are going to be included in your certificates.
+38
+So they could be a fully qualified domain name, FQDN,
+39
+such as corp.example.com,
+40
+or it could be a wildcard domain,
+41
+for example, *.example.com,
+42
+and you can include as many domains as you want.
+43
+Then you select the validation method.
+44
+Would it be through DNS validation
+45
+or through email validation?
+46
+And for automation purposes,
+47
+when it comes to automatically renewing
+48
+your SSL certificates,
+49
+DNS validation is going to be a preferred method.
+50
+And for email validation,
+51
+what's going to happen is that ACM
+52
+is going to send emails to contact addresses
+53
+in the registrar for your domain
+54
+and verify that you did request that certificates.
+55
+And if you decide to do DNS validation,
+56
+then you will have to create a CNAME record
+57
+in your DNS configuration
+58
+to verify that you own the domain.
+59
+And so, if you have Route 53, for example,
+60
+then it's automatically integrated with ACM
+61
+to do this for you.
+62
+Next, you have to wait a few hours to get verified
+63
+and then your certificate will be issued,
+64
+and this public certificate
+65
+will also be enrolled for automatic renewal,
+66
+that means that automatically
+67
+ACM will renew any ACM-generated certificates
+68
+60 days before expiry,
+69
+which gives you a lot of peace of mind.
+70
+So when it comes to ACM,
+71
+what if you import a public certificate?
+72
+So you have the option
+73
+to actually generate a certificate outside of ACM
+74
+and then import it into ACM.
+75
+But, in that case,
+76
+because it's been generated outside of ACM,
+77
+there is no automatic renewal.
+78
+And so therefore,
+79
+before your existing certificate expires,
+80
+you need to import a new one.
+81
+And how do you know when a certificate is going to expire?
+82
+Well, the ACM service is going to send
+83
+daily expiration events starting 45 days prior to expiration
+84
+into your EventBridge service.
+85
+And the number of days can be configured.
+86
+You can set 45, you can say 30, whatever you want.
+87
+So that means that daily, you will have an event,
+88
+in EventBridge for expiring certificates,
+89
+and that's one way of doing it.
+90
+And then from EventBridge,
+91
+then you can trigger Lambda functions
+92
+or SNS topics or SQS queues.
+93
+There's another way to use AWS Config,
+94
+and there is a managed rule in Config
+95
+called the ACM Certificate Expiration Check,
+96
+and it's going to check for expiring certificates.
+97
+You can configure the number of days again.
+98
+And so the Config service
+99
+is going to have a rule that will check the ACM service,
+100
+and then if any certificate is deemed not compliant,
+101
+then the event of non-compliance
+102
+will be sent to EventBridge.
+103
+And yet again, we can trigger Lambda, SNS, or SQS.
+104
+So two ways of getting these automatic alerts.
+105
+Now, how does the ACM service integrate with ALB?
+106
+So we've seen kind of an ALB
+107
+with an Auto Scaling group in the backend,
+108
+and we can provision and maintain a TLS certificate
+109
+through the ACM service.
+110
+But there is a very good specificity.
+111
+On your ALB,
+112
+you can set a redirect rule from HTP to HTTPS.
+113
+That means that if your user is accessing
+114
+your application load balancer on the HTTP protocol,
+115
+the ALB will return with a redirect
+116
+and say you need to redirect to HTTPS.
+117
+So the user comes back to the application load balancer
+118
+now on the HTTPS protocol,
+119
+and therefore it will leverage the TLS certificate
+120
+coming from the Certificate Manager.
+121
+And then once a request is going through the HTTPS protocol,
+122
+then it will be directed into your Auto Scaling group.
+123
+So let's look at how ACM integrates with the API Gateway.
+124
+But first we have to remember the endpoint types.
+125
+So we have the edge-optimized endpoint type for API Gateway.
+126
+This is when your clients are global
+127
+and the requests are going to be routed first
+128
+through CloudFront Edge locations
+129
+to improve the latency
+130
+and then sent to an API Gateway
+131
+that still lives in only one region.
+132
+You can also have the regional type of endpoints
+133
+in which clients are within the same region
+134
+as your API Gateway.
+135
+In this case, we don't have CloudFront available,
+136
+but we could still, if we wanted to,
+137
+create our own CloudFront distribution
+138
+to have more control over the caching
+139
+and the distribution strategy.
+140
+And then we have the private API Gateway endpoints
+141
+that can only be accessed
+142
+from within our VPC using an interface VPC endpoints.
+143
+And we need to use a resource policy
+144
+to define access to this API Gateway in a private mode.
+145
+So ACM makes sense for edge-optimized
+146
+and regional endpoints, so let's have a look at that.
+147
+So to integrate ACM with the API gateway,
+148
+first, we need to create a resource
+149
+in the API gateway called a custom domain name
+150
+and then we need to configure it.
+151
+So for edge-optimized endpoints,
+152
+then because the requests are routed through CloudFront,
+153
+then the TLS certificates are going to be attached
+154
+to your CloudFront distribution
+155
+and therefore the TLS certificate must be created
+156
+in the same region as CloudFront, which is us-east-I.
+157
+So therefore, your API Gateway lives in one region,
+158
+but then everything is distributed through CloudFront
+159
+and your ACM certificates
+160
+must live in the us-east-I region
+161
+because this is where CloudFront is located.
+162
+All the certificates for CloudFront are in us-east-I.
+163
+So then we set up a CNAME
+164
+or an alias record in Route 53 to be done.
+165
+And the regional endpoints, okay,
+166
+they're for clients in the same region as your API Gateway.
+167
+And therefore, because we only have an API Gateway,
+168
+then the TLS certificates must be imported on API Gateway
+169
+in the same region as the API Stage.
+170
+And therefore, in this example,
+171
+my ACM is only in ap-southeast-2.
+172
+And then we set up a CNAME or an alias record in Route 53
+173
+to point to your DNS.
+174
+And that's it.
+175
+So you've learned a lot about AWS Certificate Manager
+176
+in this lecture.
+177
+I hope you liked it,
+178
+and I will see you in the next lecture.
+
+--- AWS CloudHSM ---
+
+1
+So we have seen KMS for encryption,
+2
+but now let's look at CloudHSM.
+3
+So with KMS, AWS will manage the software for the encryption
+4
+and will have control over the encryption keys.
+5
+But with CloudHSM,
+6
+AWS will provision some encryption hardware.
+7
+It's called an HSM device, so a dedicated hardware,
+8
+which is a hardware security module.
+9
+And then we are going
+10
+to manage our own encryption keys entirely, not AWS.
+11
+So we have full control over the encryption keys.
+12
+The HSM device is going to be set up within the cloud
+13
+of AWS, but it is tamper resistant
+14
+with FIPS 140-2 Level 3 compliance, which means
+15
+that if anyone tries to access your HSM device manually,
+16
+then they're going to be stopped and blocked.
+17
+The CloudHSM device supports both symmetric
+18
+and asymmetric encryption keys.
+19
+So that means that you can have, for example, SSL
+20
+and TLS keys on top of it.
+21
+There is no free tier and to use the CloudHSM device,
+22
+you need to use the client software,
+23
+which is quite complicated and out of scope right now.
+24
+There is an integration
+25
+between Redshift and CloudHSM
+26
+if you wanted to leverage CloudHSM
+27
+for your database encryption and key managements.
+28
+CloudHSM is a really, really good candidate
+29
+if you want to implement SSE-C type
+30
+of encryption on top of S3, for example,
+31
+because you are managing your own encryption keys
+32
+and you are storing them into this CloudHSM.
+33
+So with the CloudHSM, AWS will manage your hardware,
+34
+whereas the service itself can be used on your own.
+35
+The CloudHSM client is something you have to use
+36
+to establish a connection into the CloudHSM service.
+37
+And then you are going to manage the keys overall.
+38
+So the IAM permissions are going to be used
+39
+to do a create, read, update, a delete of an HSM cluster
+40
+at a high level,
+41
+but then you're going to use your CloudHSM software
+42
+to manage the keys and manage the users
+43
+and their permissions to access the keys,
+44
+which is different from KMS
+45
+because in KMS, well, everything is managed using IAM.
+46
+Now, the CloudHSM clusters can have high availability
+47
+and they're spread across multiple AZ.
+48
+So they're HA, and this is super important to understand.
+49
+So you can have two AZs.
+50
+One is going to be replicated from another
+51
+and your HSM client can connect to either.
+52
+So how do we transparently leverage CloudHSM
+53
+within the AWS services encryption?
+54
+Well, there is an integration between CloudHSM and KMS.
+55
+How does that work?
+56
+Well, in KMS, we're going to define a KMS custom key store,
+57
+and that will be CloudHSM.
+58
+And that means we can get CloudHSM encryption for EBS,
+59
+S3, RDS and so on.
+60
+So how does that work?
+61
+Well, we create the CloudHSM cluster,
+62
+and we define a KMS custom key store that is going
+63
+to be connected to our CloudHSM cluster.
+64
+From there, if we create an RDS database instance
+65
+that has an encrypted EBS volume with KMS encryption,
+66
+well, internally this KMS encryption is going
+67
+to be leveraging encryption keys
+68
+within your CloudHSM cluster.
+69
+The benefit of doing this is number one,
+70
+we are actually using our CloudHSM cluster.
+71
+And number two, any API calls made through KMS
+72
+that reaches our cloud HSM cluster is going
+73
+to be logged in CloudTrail.
+74
+So if we compare CloudHSM and KMS,
+75
+the tendency of KMS is multi-tenant,
+76
+whereas for CloudHSM, it's single tenants.
+77
+They both have the same standard.
+78
+The master keys are three kinds on KMS, they're AWS owned,
+79
+AWS managed, and customer managed CMK.
+80
+Whereas for CloudHSM, it's only customer-managed CMK
+81
+because AWS cannot access your HSM device.
+82
+In terms of key type, it is very similar, symmetric,
+83
+asymmetric and digital signing for KMS
+84
+and symmetric, asymmetric and digital sending
+85
+and hashing for CloudHSM.
+86
+In terms of key accessibility, well,
+87
+KMS is accessible in multiple regions,
+88
+but because CloudHSM is deployed in a VPC,
+89
+you can share it across VPCs using VPC for sharing.
+90
+And so that means that it's going to be accessible
+91
+across multiple regions if you wanted to.
+92
+For cryptographic acceleration, well,
+93
+you can set up none on KMS, but with CloudHSM,
+94
+you have SSL and TLS acceleration you can use
+95
+at your load balancer level, or you can use Oracle
+96
+and TDE acceleration as well for your database.
+97
+That is Oracle based.
+98
+For access and authentication, you have IAM for KMS,
+99
+whereas CloudHSM has its own security mechanism
+100
+to manage users and their permissions and their keys.
+101
+And then finally, for high availability,
+102
+while KMS is a managed service and is always available
+103
+and CloudHSM will have multiple HSM devices
+104
+over different availability zones.
+105
+Other capability is CloudTrail and CloudWatch for KMS,
+106
+whereas we have MFS support as well for CloudHSM.
+107
+Finally, KMS is part of the free tier in AWS,
+108
+whereas CloudHSM is not.
+109
+So that's it for CloudHSM, I hope you liked it,
+110
+and I will see you in the next lecture.
+
+--- Web Application Firewall (WAF) ---
+
+1
+So now let's talk about AWS WAF,
+2
+the Web Application Firewall.
+3
+It's used to protect your web application
+4
+from common web exploits at the Layer 7.
+5
+Just a reminder Layer 7 is HTTP,
+6
+so it protects you against HTTP exploits.
+7
+Whereas as comparison Layer 4 is for TCP or UDP protocol.
+8
+So this WAF, this Web Application Firewall can be deployed
+9
+on the Application Balancer, and API gateway, CloudFront,
+10
+the AppSync GraphQL API, or Cognito user pools.
+11
+So remember, this is very important.
+12
+You remember the targets of WAF
+13
+because the exam will try to trick you,
+14
+and for example, make you deploy WAF on an NLB
+15
+but this is not possible.
+16
+So once you've deployed a firewall on these services,
+17
+you can define web ACL,
+18
+they're web access control lists, and their rules.
+19
+And so you can set a rule, for example,
+20
+to filter based on IP addresses.
+21
+So you can define an IP sets.
+22
+Each IP set can be up to 10,000 IP addresses.
+23
+And if you need more IP addresses,
+24
+you can use multiple rules for more IPs.
+25
+You can also filter based on HTTP headers, body.
+26
+You can use URI strings to protect
+27
+from the most common attacks, such as SQL injection
+28
+and cross-site scripting.
+29
+You can have size constraints to make sure
+30
+that the request are only up to, for example, two megabytes
+31
+or geo match to allow or block specific countries.
+32
+And you can even have rate-based rules
+33
+to count the occurrences of requests per IP
+34
+for DDoS protection, for example, to prevent a specific IP
+35
+from sending more than 10 requests per second.
+36
+So these web ACLs, they're regional, except for CloudFront,
+37
+where they are defined globally.
+38
+And if you see the term rule group, well,
+39
+it's a set, it's a reasonable set of rules
+40
+that you can add it to many web ACL.
+41
+So this is just to organize them.
+42
+So WAF has a really good use case.
+43
+So what if you want to get a fixed IP on our application
+44
+while using WAF with an application load balancer?
+45
+So WAF does not support the Network Load Balancer
+46
+because the NLB operates on Layer 4 and WAF is for Layer 7.
+47
+So therefore, to provide WAF, you need to have
+48
+an application load balancer.
+49
+But we know that an application balancer
+50
+does not have fixed IPs.
+51
+So to solve a problem, we can use a Global Accelerator
+52
+to get fixed IP for application,
+53
+and then enable WAF on our ALB.
+54
+So the architecture looks like this.
+55
+We have one region with an ALB and EC2 instances.
+56
+We're going to front our ALB with a Global Accelerator
+57
+to get a fixed IP for our application.
+58
+And we're going to attach a Web Application Firewall
+59
+with a WebACL on the same region
+60
+as where our application low balancer is located.
+61
+And therefore, we have achieved our target architecture.
+62
+So that's it for this lecture.
+63
+I hope you liked it.
+64
+And I will see you in the next lecture.
+
+--- Shield - DDoS Protection ---
+
+1
+So now let's talk about AWS Shields.
+2
+And Shield is a service to protect yourself
+3
+from DDoS attacks.
+4
+What is DDoS?
+5
+Well, it's a distributed denial of service.
+6
+And the idea is that your infrastructure
+7
+is going to suddenly receive many, many requests
+8
+at the same time
+9
+from a lot of computers all around the world.
+10
+And so the goal of it is to overwhelm
+11
+and overload your infrastructure.
+12
+And this way your infrastructure cannot serve
+13
+your real users
+14
+and this is what it's called a distributed denial
+15
+of service.
+16
+So we can protect against it,
+17
+so we have the AWS Shield Standard service.
+18
+It's a free service,
+19
+it's already activated for every customer of AWS
+20
+and is going to give you protection from attacks
+21
+such as the SYN or UDP floods or any reflection attack
+22
+or other layer 3, or layer 4 attacks.
+23
+And if you want to get advanced protection,
+24
+you can use the AWS Shield Advanced service.
+25
+So this is an optional DDoS mitigation service.
+26
+It costs around 3,000 per month per organization.
+27
+And the idea is that you're going to get protected
+28
+against more sophisticated DDoS attacks
+29
+on Amazon EC2, Elastic Load Balancing, Amazon CloudFront,
+30
+the Global Accelerator and Route 53.
+31
+It also gives you 24/7 access
+32
+to the AWS DDoS response team.
+33
+So in case you get attacked,
+34
+you will have someone to help you
+35
+and get you along the way.
+36
+In case you are incurring higher fees
+37
+because you are also being attacked,
+38
+this Shield Advance protects you from these higher fees.
+39
+And this Shield Advance has an automatic application layer,
+40
+DDoS mitigation, and it's going to mean
+41
+that it's automatically going to create and evaluate
+42
+and deploy WAF rules to mitigate layer 7 attacks.
+43
+So automatically your web application firewall
+44
+will have rules to help you mitigate these attacks,
+45
+DDoS attacks if they happen at the layer 7, which is great.
+46
+So let's say for this lecture, I hope you liked it,
+47
+and I will see you in the next lecture.
+
+--- Firewall Manager ---
+
+1
+So now let's talk
+2
+about the AWS Firewall Manager.
+3
+So this is a service to manage all the firewall rules
+4
+in all accounts of an AWS organization.
+5
+So the idea is that you can manage rules
+6
+across many, many accounts at the same time.
+7
+So you can set a security policy,
+8
+and a security policy is a common set of security rules.
+9
+And so this could be Web Application Firewall rules,
+10
+so they apply it to the ALB, the API gateways, CloudFronts
+11
+and so on.
+12
+Or it could be Shield Advanced rules,
+13
+so for your ALB, CLB, NLB, the Elastic IP, and CloudFront.
+14
+It could be security policy to standardize security groups
+15
+for EC2, your Application Load Balancer,
+16
+and ENI resources in your VPC.
+17
+And it could be, as well,
+18
+rules for your AWS Network Firewall at the VPC level.
+19
+So this is something we haven't seen yet
+20
+or your Amazon Route 53 Resolver DNS Firewall.
+21
+So the idea is that Firewall Manager allows you
+22
+to manage all your firewalls in one place.
+23
+The policies are created at the region level, okay?
+24
+And then they are applied to all the accounts
+25
+of your organization.
+26
+And on top of it,
+27
+if somehow in your organization, for example,
+28
+you create a WAF rule for an Application Load Balancer,
+29
+and somehow there's a new Application Load Balancer
+30
+being created,
+31
+then automatically the Firewall Manager
+32
+is going to apply the same rule
+33
+to this newly created ALB.
+34
+That's a feature of Firewall Manager.
+35
+So you may ask yourself,
+36
+"Well, what is the difference between WAF
+37
+and Firewall Manager and Shield?"
+38
+Well, WAF, Shield, and Firewall Manager
+39
+are used together for comprehensive protection
+40
+of your accounts.
+41
+So first you define your Web ACL rules in WAF.
+42
+And in case you need one-time protection,
+43
+then WAF is going to be the right choice for you.
+44
+But if you want to use WAF across multiple accounts
+45
+and accelerate WAF configuration
+46
+and automate the protection of new resources,
+47
+then you would manage your WAF rules
+48
+within Firewall Manager.
+49
+And Firewall Manager will just apply
+50
+all these rules to all your accounts
+51
+and all your resources automatically.
+52
+So now we also have Shield Advanced
+53
+to help you get protected against DDoS attacks.
+54
+And it has additional features on top of WAF
+55
+such as a dedicated support
+56
+from the Shield Response Team, SRT,
+57
+advanced reporting,
+58
+and also, it can automatically create WAF rules for you.
+59
+And if you're prone to frequent DDoS attacks,
+60
+then you should definitely consider
+61
+purchasing Shield Advanced.
+62
+And so Firewall Manager
+63
+can also help you deploy Shield Advanced
+64
+across all your accounts
+65
+So hopefully the distinction is pretty clear for you now.
+66
+I hope you liked this lecture,
+67
+and I will see you in the next lecture.
+
+--- WAF & Shield - Hands On ---
+
+1
+Okay, so let's have a look at WAF and Shield
+2
+in this lecture.
+3
+So here in WAF we have the ability
+4
+to protect our web applications from common web exploits.
+5
+And this is going to protect multiple type of resources such
+6
+as CloudFront distributions, API gateways, APIs,
+7
+application balancers and so on.
+8
+So what I'm going to do is that I'm going
+9
+to just create a protection pack
+10
+and see what are the steps to do so.
+11
+So if we look at this, first we need
+12
+to tell AWS about our app.
+13
+This is the new flow.
+14
+So for example, let's say we are pretty much everything.
+15
+This is going to give us the best options.
+16
+So then what do we protect?
+17
+Both the API and web version,
+18
+or just the API, or just the web version?
+19
+Again, we're just going to choose both as an option.
+20
+Now you have resources to protect.
+21
+So it turns out that if you call info, you will see the kind
+22
+of resources that you can protect.
+23
+For example, you have Amazon platform distributions,
+24
+and it tells you what you're going to do
+25
+by protecting distributions, amplify applications,
+26
+Amazon API gateway or AppsSync APIs,
+27
+load balancers for example, to filter malicious traffic
+28
+before it reaches your application server,
+29
+cognito user pools, and app runner services,
+30
+and of course, over time maybe you will have more services.
+31
+So it turns out, because we have none
+32
+of this already in our accounts,
+33
+we can't really click on add regional resources.
+34
+It's not going to give us anything.
+35
+Or we cannot also click on add, for example,
+36
+platform distribution tenants
+37
+'cause they have deleted everything.
+38
+But if we had, we could add it.
+39
+But that's fine for this tutorial, we don't need to.
+40
+So we just click on skip for now.
+41
+Now we need to select the web ACL resource types.
+42
+So either it's going to be Amplify application,
+43
+CloudFront distribution, and CloudFront distribution tenant
+44
+is gonna be be a global rule,
+45
+or we have this option to select
+46
+all the other kind of services.
+47
+So this is up to us, let's just select the second one,
+48
+and next we choose the initial protections.
+49
+So this is the kind of stuff we can use a list for,
+50
+or we can build your own.
+51
+But if we use, and I'm going to just close this info panel.
+52
+If we use the recommended rule, we have some rate limits
+53
+for get requests, rate limit for post put
+54
+and delete requests, Amazon IP reputation list,
+55
+anonymous IP protection, manage IP DDoS protection,
+56
+and bot control protection.
+57
+If we want more rules, for example, we want
+58
+to apply an IP allow list or an IP block list,
+59
+or geographic restriction, we would need to go
+60
+into the essentials pack,
+61
+or you can build your own pack.
+62
+In here, you have the option to either define a custom rule,
+63
+for example, if we do so, we can choose an IP based rule,
+64
+or a geo-based rule, or rate based rules, or a custom rule.
+65
+So for example, geo-based rule.
+66
+And here we would say in this rule, for example,
+67
+we would choose these countries right here,
+68
+and we would for example, block them.
+69
+So this is the kind of configuration you would do.
+70
+Block these countries.
+71
+Of course, this is a whole course on its own to just
+72
+parametize WAF correctly, but you see
+73
+that you can use custom rules.
+74
+You can also use the managed rules from AWS
+75
+in which you would choose the kind of rules
+76
+that you want to apply.
+77
+For example, hey, these are free rules,
+78
+so you want to protect a PHP application, sure.
+79
+Click on this and you'll have a rule from AWS
+80
+to protect against injections and unsafe PHP functions,
+81
+for example.
+82
+Or if you wanted to, you also have paid rules,
+83
+for example, bot control,
+84
+or for account takeover prevention,
+85
+or for layer seven attacks.
+86
+So as you can see, lots of different rules.
+87
+You can build your own, or use the ones from AWS,
+88
+but there is a cost to everything.
+89
+So this one is going to cost you, for example, between 62
+90
+to $63 per 10 million requests.
+91
+And here, based on the customer you have,
+92
+you'll have different costs.
+93
+Next, you need to name your web ACL, so what MyWebACL,
+94
+and then potentially you could customize it more in terms
+95
+of logging, but no need to.
+96
+And then you would click on create protection pack.
+97
+If you do so, just so you know, this will actually
+98
+be billed at $5 per month per web ACL.
+99
+So I'm not gonna do it, just to not encourage to do it,
+100
+and we're not going to use it anyway.
+101
+But you've seen the flow of how we would define a web ACL,
+102
+how we would add rules to it, and how we would link it
+103
+to some resources if we needed to.
+104
+Okay, so that's it for WAF.
+105
+Then for Shield, this is the protection
+106
+against DDoS attacks.
+107
+So here this is manage DDoS,
+108
+and that means we're going to be protected against attacks,
+109
+and we'll have automatic mitigations.
+110
+So we have two tiers of protection.
+111
+We have standard and advanced.
+112
+And standard is already included.
+113
+And if you go to Advanced, and you click on here
+114
+to subscribe to Shield Advanced,
+115
+just be aware you're going to pay about $3,000 per month.
+116
+So this is quite a big cost, and we're not going to do this.
+117
+But as we can see, it's going to help you
+118
+to protect your infrastructure globally.
+119
+So this is good, but we won't do anything else
+120
+besides just watching this.
+121
+And then finally, around Firewall Manager,
+122
+let's have a quick look right here in getting started.
+123
+This is a way for you to manage firewall rules
+124
+across different accounts.
+125
+So this is centralized security management.
+126
+As you can see, if you wanted to have an admin account,
+127
+and then have a firewall manager policy to apply
+128
+to all accounts and applications, this policy will cost you
+129
+about $100 per month.
+130
+Again, we just need to know it at a high level,
+131
+and that's what we're doing right now
+132
+by just exploring this UI, but we won't go deep with it.
+133
+So WAF is to protect your applications individually.
+134
+Shield is to protect your account against DDoS,
+135
+and Firewall Manager is to manage policies for security
+136
+across, for example, your different firewalls
+137
+and so on across all your accounts.
+138
+Alright, that's it for this lecture.
+139
+I hope you liked it, and I will see you in the next lecture.
+
+--- DDoS Protection Best Practices ---
+
+1
+So here is a lecture
+2
+that is more focused on the solution architecture,
+3
+and this is around DDoS protection and best practices.
+4
+So let's assume that you have this kind of architecture.
+5
+We have an auto scaling group with EC2 instances.
+6
+It's fronted by a Elastic Load Balancer,
+7
+and then your load balancer can be either exposed
+8
+by a Global Accelerator as fixed IPs,
+9
+or it could be fronted, for example, by CloudFronts.
+10
+CloudFronts can be linked to WAF,
+11
+a web application firewall, and so on.
+12
+You can have Route 53 for DNS routing.
+13
+And finally you could also have another architecture
+14
+where you have CloudFront and the API gateway.
+15
+So this is just to represent the
+16
+kind of combinations you can do.
+17
+Obviously there are more than one,
+18
+but the idea's that we're going to discuss
+19
+thanks to the letter BP1, best practice one,
+20
+best practice two, et cetera,
+21
+what the implications are
+22
+in terms of DDoS resiliency, okay?
+23
+So by using CloudFront, we are actually at the Edge.
+24
+So this slide is all about Edge location mitigation.
+25
+That means that your web application delivery
+26
+is at the Edge, and so you're going
+27
+to be protected against DDoS common attacks
+28
+by using Shield, just a normal setup of Shield's,
+29
+so SYN floods and UDB reflection.
+30
+If you use the Global Accelerator,
+31
+this is going to be able to access your application
+32
+around the world, again at the Edge.
+33
+And again, it's fully integrated
+34
+with Shield for DDoS protection.
+35
+So it's very helpful if your backend
+36
+is somehow not compatible with CloudFronts.
+37
+In this case, you would have Global Accelerator
+38
+in front of it, and so that means that no matter
+39
+what backend you have, either using CloudFront
+40
+or the Global Accelerator,
+41
+you will be fully distributed at the Edge of AWS
+42
+and the Edge location will be DDoS protected.
+43
+Also, if you use Route 53,
+44
+then the domain name resolution is global,
+45
+it's at the Edge, and you also have
+46
+a DDoS protection mechanism on your DNS.
+47
+So we understand that if we're at the Edge,
+48
+we can have a better DDoS protection.
+49
+Next, we can have the best practices for DDoS mitigation.
+50
+So first, let's look at the infrastructure layer defense.
+51
+This is BP1, BP3, and BP6.
+52
+So the idea is that by using CloudFront,
+53
+Global Accelerator, Route 53
+54
+and the Elastic Load Balancing,
+55
+we protect our Amazon EC2 instances against high traffic.
+56
+And this is the idea that by using all these services,
+57
+the traffic is going to be handled by most of them
+58
+before ever reaching our EC2 instances.
+59
+Now, if we enable our EC2 instances with auto-scaling,
+60
+that means that in case the traffic does indeed
+61
+reach our auto scaling group, we can scale automatically
+62
+to accommodate for a greater load on our application.
+63
+And if we use Elastic Load Balancing,
+64
+then the ELB is going to automatically spread
+65
+the traffic across many EC2 instances.
+66
+And so that means that each EC2 instances
+67
+will have a manageable amount of traffic onto them,
+68
+provided the fact that the auto-scaling group
+69
+of course has scaled as well.
+70
+Now at the application layer defense,
+71
+we can detect and filter malicious requests
+72
+at BP1 and BP2.
+73
+So the idea is that CloudFront is going
+74
+to serve static content, and serve it from Edge locations,
+75
+therefore protecting your backend.
+76
+And then you can use WAF on top of CloudFront,
+77
+or your application load balancers to filter
+78
+and block requests based on request signatures,
+79
+for example, you can block specific IPs,
+80
+specific request types and so on.
+81
+And if you use the WAF rate based rules,
+82
+you can automatically block the IPs of bad actors.
+83
+So you can use a bunch of managed rules on WAF
+84
+to block IPs based on reputation
+85
+or block anonymous IPs and so on.
+86
+And using CloudFront, you can block specific geographies.
+87
+The idea is that CloudFront and WAF are managed services,
+88
+and so they will take care of filtering
+89
+some requests for you, so you can be protected
+90
+against DDoS attack.
+91
+And of course using Shield Advanced,
+92
+so in case you enable it,
+93
+then it will automatically create WAF rules for you
+94
+to mitigate layer seven attacks.
+95
+So this is good for the application layer defense,
+96
+again to protect your EC2 instances
+97
+from getting any bad request or at least minimize them.
+98
+And also, how do we reduce our attack surface?
+99
+So the idea with this architecture is
+100
+that the backend AWS resources are used
+101
+to serve our application, are hidden.
+102
+So we have BP1, BP4, and BP6.
+103
+So if we use CloudFront, the API Gateway,
+104
+or Elastic Load Balancing,
+105
+we can hide our backend resources.
+106
+The attacker will never know if it's a lambda function
+107
+or EC2 instances or ECS tasks, and so on,
+108
+because we have used other things in front of them.
+109
+Also, we can set up security groups and network ACLs
+110
+to filter traffic based on specific IPs,
+111
+and elastic IPs, if we use them,
+112
+they can be protected by AWS Shield Advanced as well.
+113
+And then you can protect API endpoints themselves,
+114
+so if you use the API gateway,
+115
+then you can hide whatever backend it is,
+116
+whether it be EC2, lambda or something else.
+117
+And if you use the Edge optimized mode,
+118
+you're already global.
+119
+Otherwise you can use CloudFront plus the regional mode,
+120
+which gives you more control for DDoS protection.
+121
+And if you use WAF on top of the API gateway,
+122
+then you can get filtering of any HTTP request.
+123
+And if you set up the API gateway correctly,
+124
+you can have burst limits, you can do headers filtering,
+125
+and you can use and force API keys for your users,
+126
+therefore protecting yourself from a DDoS attack.
+127
+So hopefully this kind of architecture makes sense
+128
+and you understand the different ways you can protect
+129
+against DDoS, because the exam will ask you
+130
+to think just like that, okay?
+131
+So that's it for this lecture.
+132
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon GuardDuty ---
+
+1
+So now let's talk about Amazon GuardDuty.
+2
+GuardDuty helps you do intelligent threat discovery
+3
+to protect your AWS accounts.
+4
+How does it do it?
+5
+Well, it has machine learning algorithm, performs anomaly
+6
+detection and uses third party data to find these threats.
+7
+So to enable it, it's just one click.
+8
+Then you have a 30 days trial.
+9
+You don't need to install any software.
+10
+So GuardDuty is going to look at a lot of input data,
+11
+such as your CloudTrail event logs
+12
+to look for unusual API calls
+13
+or unauthorized deployments.
+14
+It's going to look at your management events
+15
+and your data events.
+16
+So for example, on the management side,
+17
+the create VPC Subnet event and so on,
+18
+whereas on the S3 data events
+19
+for example, get object, list objects, delete objects
+20
+and so on.
+21
+And then for VPC flow logs, it's going to look
+22
+at unusual internet traffic.
+23
+It's going to look at unusual IP addresses.
+24
+DNS logs to look at EC2 instances, sending encoded data
+25
+within DNS queries, which would mean they're compromised
+26
+and optional features to allow you to analyze, for example,
+27
+other input data sources such as your EKS audit logs,
+28
+your RDS and Aurora login events, your EBS, your Lambda
+29
+and your S3 data events.
+30
+So we can also set up EventBridge rules to
+31
+be notified automatically in case you have findings.
+32
+And then these rules can target whatever EventBridge
+33
+can target, such as AWS, Lambda, or SNS topics.
+34
+Also, this can come up in the exam.
+35
+GuardDuty is a very good tool to protect you
+36
+against cryptocurrency attacks
+37
+because there is a dedicated finding for it.
+38
+So it knows how to analyze all these input data
+39
+and find that there is a cryptocurrency attack.
+40
+So to summarize, within GuardDuty,
+41
+we have several input data.
+42
+We have the VPC flow logs,
+43
+the CloudTrail logs, and the DNS logs
+44
+that will be, no matter what, into GuardDuty
+45
+as well as some optional features you can enable,
+46
+such as your S3 logs, your EBS volumes,
+47
+your Lambda network activity, RDS and Aurora login activity
+48
+and your EKS logs and runtime monitoring as well
+49
+as most likely, more features over time
+50
+that I will not put here
+51
+because you get the idea of optional features.
+52
+And so from all these things,
+53
+then GuardDuty can generate findings
+54
+and if these findings are detected,
+55
+an event is created in Amazon EventBridge.
+56
+And therefore from EventBridge, thanks to rules,
+57
+we can trigger automations, for example,
+58
+using Lambda functions
+59
+or send notifications, for example, using SNS.
+60
+So that's it for this lecture.
+61
+I hope you liked it and I will see you in the next lecture.
+
+--- Amazon Inspector ---
+
+1
+So now let's talk about Amazon Inspector.
+2
+So Amazon Inspector is a service that allows you
+3
+to run automated security assessments on a couple of things.
+4
+First of all, on the E2 instances.
+5
+So you are going to be leveraging the Systems Manager agent
+6
+on your EC2 instances and Amazon Inspector
+7
+is going to start to assess the security
+8
+of that E2 instance.
+9
+It's going to analyze against unintended network
+10
+accessibility and also analyze the running operating system
+11
+for known vulnerabilities.
+12
+This is done continuously.
+13
+Then we have also Amazon Inspector
+14
+for your Container Images push to Amazon ECR.
+15
+For example, your Docker images.
+16
+So as your Container Images are being pushed
+17
+to Amazon ECR, they will be analyzed
+18
+by Amazon Inspector against known vulnerabilities.
+19
+And we also have Amazon Inspector for Lambda functions.
+20
+So Lambda functions, when they're deployed,
+21
+will be analyzed again
+22
+by Inspector for software vulnerabilities
+23
+in the function code and the package dependencies.
+24
+And this assessment happens
+25
+as the functions are being deployed.
+26
+So once Amazon Inspector is done doing its job,
+27
+it can report its findings
+28
+into the AWS Security Hub and also send findings
+29
+and events of these findings into Amazon EventBridge.
+30
+This gives you one way to centrally
+31
+see the vulnerabilities running on your infrastructure
+32
+and with EventBridge you can run some kind of automations.
+33
+So what does Amazon Inspector evaluate?
+34
+You have to remember, the Inspector is only
+35
+for your running EC2 instances, your Container Images
+36
+on Amazon ECR and your Lambda functions.
+37
+And it's going to do a continuous scanning
+38
+of the infrastructure only when needed.
+39
+So it's going to look
+40
+at a database of vulnerabilities, so CVE,
+41
+for package vulnerability for EC2, ECR and Lambda.
+42
+And it's going to look
+43
+at network reachability on Amazon EC2
+44
+and in case the database of CVE gets updated,
+45
+then Amazon Inspector is going to automatically
+46
+run again to make sure
+47
+that all your infrastructure is tested one more time.
+48
+Every time it will run,
+49
+a risk score is going to be associated
+50
+with all the vulnerabilities for prioritization.
+51
+So that's it for Amazon Inspector.
+52
+I hope you liked it and I will see you in the next lecture.
+
+--- Amazon Macie ---
+
+1
+Now let's talk about Macie.
+2
+Macie is a fully managed data security
+3
+and data privacy service that will use machine learning
+4
+and pattern matching to discover
+5
+and protect your sensitive data in AWS.
+6
+More specifically, it will alert you around sensitive data
+7
+such as personally identifiable information,
+8
+which is named PII.
+9
+So very simply, your PII data will be in your S3 buckets
+10
+and it will be analyzed by Macie
+11
+which will discover what data can be classified as PII.
+12
+And then will notify you
+13
+through EventBridge of the discoveries.
+14
+Then you can have integrations into an SNS topic,
+15
+Lambda functions and so on.
+16
+So Macie in this instance will be used
+17
+to find the sensitive data in your S3 buckets
+18
+and that's the only thing it will do.
+19
+It's just one click to enable it.
+20
+You just specify the S3 buckets you want to have
+21
+and that will be it.
+22
+So that's it for this lecture, very, very short,
+23
+but that's enough on Macie.
+24
+I hope you liked it, and I will see you in the next lecture.
+

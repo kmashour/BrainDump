@@ -1,0 +1,2393 @@
+--- Docker Introduction ---
+
+1
+Hello, and welcome to this section
+2
+on containers where we'll be talking about Docker,
+3
+ECS and EKS.
+4
+So what is Docker?
+5
+Docker is a software development platform to deploy apps.
+6
+The idea is that it's a container technology.
+7
+So apps are going to be packaged into containers
+8
+and these containers are sort of standardized.
+9
+And so they can be run on any operating system.
+10
+That means that your apps, once they're containerized
+11
+they run the same way, regardless of where they run.
+12
+It could be any machine.
+13
+You don't have any compatibility issue.
+14
+The behavior is predictable, which means
+15
+that you have less work to do.
+16
+It's easier to maintain and deploy
+17
+and it should work with any kind of language
+18
+any operating system and any technology.
+19
+So the use cases for Docker are a microservice architecture.
+20
+So this is a good keyword to have in mind.
+21
+Lift and chip apps from on premises to the cloud.
+22
+And anytime you wanna run a container, really.
+23
+So how does Docker work on an operating system?
+24
+Well, we have a server and
+25
+in our case it may be EC2 Instances
+26
+but it could be any kind
+27
+of server and you're going to run a Docker agent.
+28
+And then from there you can start Docker containers.
+29
+And so your first Docker container may contain
+30
+a Java application.
+31
+And your second Docker container may contain a
+32
+node JS application and Docker containers
+33
+they can run multiple times the same.
+34
+So you can have multiple Docker containers
+35
+of the same Java application or multiple Docker containers
+36
+of the same node JS application.
+37
+You can also run databases within Docker, for example
+38
+My SQL and so on.
+39
+So Docker is very versatile.
+40
+And from a server perspective
+41
+all these things are Docker containers.
+42
+So where do you store Docker images?
+43
+Well you store them
+44
+in something called a Docker Repository.
+45
+Okay, we have multiple options.
+46
+The first one is Docker Hub
+47
+and so it's a public repository
+48
+and you can find base images for many technologies
+49
+or operating systems such as Ubuntu, MySQL and so on.
+50
+It's very popular.
+51
+And then for more private integration
+52
+you have Amazon ECR, Amazon Elastic Container Registry
+53
+and you can run your private images on there
+54
+but there's also a public repository option available
+55
+on ECR called the Amazon ECR Public Gallery.
+56
+Now, how is Docker different from a virtual machine?
+57
+Well, Docker is sort of a virtualization technology
+58
+but not exactly,
+59
+the purists will try to hit me if I say this,
+60
+so the resources are shared with a host.
+61
+That means that you can share many containers on one server.
+62
+So if you look
+63
+at the architecture for a VM, you have the infrastructure
+64
+then you have the host operating system
+65
+then you have a hypervisor
+66
+and then you have your apps and your guest operating system.
+67
+And so this is how, for example, EC2 works,
+68
+for example, when you get an EC2 machine
+69
+it is actually a virtual machine running on a hypervisor.
+70
+And so this allows Amazon to offer many EC2 instances
+71
+to many different type of customers
+72
+and all these EC2 instances
+73
+all these virtual machines are going to be separate.
+74
+They're not going to share resources
+75
+and they're going to be isolated, but for a Docker container
+76
+you still have the infrastructure and the host OS
+77
+which may be this time an EC2 instance
+78
+then you have the Docker Daemon
+79
+and then on top of it, you can have a lot
+80
+of containers that can be lightweight running
+81
+on top of the Docker Daemon.
+82
+And this allows the containers to really
+83
+cohabitate together.
+84
+They can actually share networking
+85
+share some data and so on.
+86
+So it's a bit less quote unquote,
+87
+secure as a virtual machine,
+88
+but it allows you to run more containers on a single server.
+89
+And this is why we really like Docker containers.
+90
+So how do you get started with Docker?
+91
+Well, first you have to write a Docker file,
+92
+which is defining how your Docker container will look.
+93
+So we have a base Docker image
+94
+and we add some files and then we're going to build it.
+95
+And this will become a Docker image.
+96
+And that Docker image,
+97
+you can store it on a Docker repository
+98
+it's called a Push and you push it to either Docker hub
+99
+which is a public repository, or Amazon is ECR
+100
+which is Amazon's version of Docker repositories.
+101
+Then you can pull back these images
+102
+from these repositories and then you would run them.
+103
+And when you run a Docker image
+104
+it becomes a Docker container, which runs your code
+105
+that you had built from your Docker build.
+106
+That is the whole process with Docker.
+107
+So how do you do Docker container management on AWS?
+108
+Well, the first one is called Amazon ECS.
+109
+It's Amazon Elastic Container Service.
+110
+It's the own platform of Amazon for Docker management.
+111
+We'll have a look at it in deep dive.
+112
+Then we have Amazon EKS
+113
+which is Amazon Elastic Kubernetes Service
+114
+which is Amazon's managed version of Kubernetes
+115
+which is an open source project.
+116
+We'll have a quick look at it.
+117
+We have AWS Fargate
+118
+which is Amazon's own serverless container platform.
+119
+And Fargate works both with ECS and EKS
+120
+and we'll do a deep dive of Fargate in this section.
+121
+And then we have Amazon ECR used to store container images
+122
+as I showed you from before.
+123
+So we have an overview of how to do Docker
+124
+and what is Docker and how to do Docker in AWS.
+125
+Now let's do a deep dive onto Amazon ECS and the rest.
+
+--- Amazon ECS ---
+
+1
+Okay, so now let's talk about Amazon ECS,
+2
+and we're gonna get an overview
+3
+into all different aspects of it.
+4
+So the first thing I wanna talk to you about
+5
+is the EC2 Launch Type.
+6
+So ECS stands for Elastic Container Service.
+7
+And when you launch Docker Containers on AWS,
+8
+you are launching what's called an ECS Task on ECS Cluster.
+9
+And an ECS Cluster is made of things.
+10
+And with the EC2 Launch Type,
+11
+well these things are EC2 instances.
+12
+And in that case,
+13
+if you use an ECS Cluster with an EC2 Launch Type
+14
+you must provision and maintain the infrastructure yourself.
+15
+So that means that your Amazon ECS/ ECS Cluster
+16
+is going to be composed of multiple EC2 instances.
+17
+Now, these instances are a little bit special
+18
+because each of them must run the ECS Agent,
+19
+and then this Agent is going to register each,
+20
+EC2 Instance into the Amazon ECS service
+21
+and the specified ECS Cluster.
+22
+Now, once you have that in place
+23
+then when you start ECS tasks
+24
+then AWS is going to be starting or stopping the containers.
+25
+That means that whenever we have a new Docker container
+26
+it's going to be placed accordingly
+27
+on each EC2 Instance over time as you can see right here.
+28
+And you can start or stop the ECS task,
+29
+and it will be placed automatically.
+30
+So that's the EC2 Launch Type,
+31
+and Docker containers are placed on Amazon
+32
+EC2 instances that we provision in advance, okay?
+33
+Now, there's a second launch type called
+34
+the Fargate Launch Type.
+35
+And again, you launch Docker containers on AWS
+36
+but this time you do not provision the infrastructure
+37
+so there are no EC2 instances to manage it.
+38
+It's all serverless.
+39
+Well, because we don't manage servers
+40
+but there of course, there are servers behind.
+41
+So, in the Fargate type,
+42
+if we have an ECS Cluster
+43
+we just create task definition to define our ECS tasks.
+44
+And then AWS will run these ECS tasks for us
+45
+based on how many CPU and RAM we need.
+46
+So when we want to run a new Docker container,
+47
+simple as that, it's going to be run,
+48
+without us knowing where it's run
+49
+and without an EC2 Instance to be created
+50
+in the backend in our accounts for it to work.
+51
+So it's a little bit magic.
+52
+And then to scale, well you just need to increase
+53
+the number of tasks.
+54
+Simple, you don't need to manage any more
+55
+EC2 instances.
+56
+And the exam loves to go
+57
+and tell you to use Fargate because Fargate is serverless,
+58
+and it's way easier to manage than the EC2 Launch Type.
+59
+Okay, so we've seen the two launch types for Amazon ECS.
+60
+Now let's talk about the IAM Roles for ECS tasks.
+61
+So let's take an example of the EC2 Launch Type
+62
+in which we have an EC2 Instance
+63
+running the ECS Agent on Docker.
+64
+So in this case, we can create an EC2 Instance Profile
+65
+which is only valued of course
+66
+if you use EC2 Launch Type.
+67
+And it's going to be used by the ECS Agents only,
+68
+and then the ECS Agent will use the EC2 Instance Profile,
+69
+to make API calls to the ECS service
+70
+to restore the instance,
+71
+is going to make API calls to CloudWatch Logs
+72
+to send container logs.
+73
+It's going to use the API calls to ECR,
+74
+to pull Docker images from ECR
+75
+and also reference sensitive data
+76
+in Secrets Manager or the SSM Parameter Store.
+77
+And then our ECS tasks are going to get ECS Task Roles.
+78
+And so this is valued for both
+79
+EC2 Launch Type and Fargate.
+80
+And so here I have two tasks.
+81
+And we can create a specific role per task.
+82
+So my first Task A will have an ECS Task A Role,
+83
+and the first Task B and second Task B
+84
+is going to have the Task B Role.
+85
+Well, why do we have different roles?
+86
+Because each role allows you to be linked
+87
+to different ECS services.
+88
+And so, for example, the ECS Task A Role
+89
+allows you to have your Task A,
+90
+runs some API calls against Amazon S3.
+91
+Whereas Task B Role allows you to run,
+92
+again API calls against DynamoDB.
+93
+And you define the Task Role
+94
+in the task definition of your ECS service.
+95
+So remember this, the distinction between
+96
+EC2 Instance Profile Role and the ECS Task Role.
+97
+Next, Load Balancer Integrations.
+98
+So in example, I'm in the EC2 Launch Type
+99
+but it could be Fargate as well, of course,
+100
+and have multiple ECS Tasks running.
+101
+It's all in the ECS Cluster.
+102
+And we want to expose these tasks
+103
+as a HTP or HTTPS endpoint.
+104
+Therefore we can run an Application Load Balancer
+105
+in front of it and then our users will be going
+106
+to the ALB and in the back end to the ECS tasks directly.
+107
+So in that case
+108
+the ALB is supported and will support most use cases,
+109
+and that's a good choice.
+110
+The Network Load Balancer is recommended only
+111
+if you have very high throughput
+112
+or high performance use cases,
+113
+or as you learn later on in this course,
+114
+if you use it with AWS Private Link.
+115
+Or, if you want to use the
+116
+older generation Classic Load Balancer you can,
+117
+but it's definitely not recommended
+118
+because you don't get any advanced features
+119
+and you cannot link your Elastic Load Balancer to Fargate.
+120
+Whereas if you're using the Application Load Balancer
+121
+then it works of course, with Fargate.
+122
+So what about data persistent on Amazon ECS?
+123
+For this you need Data Volume,
+124
+and they're different kinds but one of them
+125
+is noticeable and that's EFS.
+126
+So say you have an ECS cluster,
+127
+and in this case are represented both the EC2 Instance
+128
+as well as the Fargate Launch Type for my ECS Cluster.
+129
+And we want to mount a file system
+130
+onto the ECS task to share some data.
+131
+In that case, we use an Amazon EFS file system,
+132
+because it's a network file system is going to be compatible
+133
+with both EC2 and the Fargate launch types.
+134
+And it allows us to mount the file system directly
+135
+onto our ECS tasks.
+136
+Why?
+Well then tasks running in any
+137
+AZ linked to this Amazon EFS file system
+138
+will share the same data,
+139
+and therefore can communicate with another
+140
+via the file system if they wanted to.
+141
+So the ultimate combo,
+142
+is to use Fargate to launch ECS task
+143
+in the serverless fashion
+144
+and Amazon EFS for file system persistent,
+145
+because EFS again is also serverless,
+146
+we don't manage any servers, it's pay as you go.
+147
+It's just provisioned in advance and you're good to go.
+148
+So the use cases of using EFS with ECS
+149
+is to do persistent multi-AZ shared storage
+150
+for your containers.
+
+--- Creating ECS Cluster - Hands On ---
+
+1
+So let's have a look at Amazon ECS,
+2
+and we're going to create our first cluster.
+3
+So on the left-hand side, let's click on Clusters,
+4
+and then click on Create cluster.
+5
+So the cluster name can be whatever you want.
+6
+For example, DemoCluster.
+7
+And then under Infrastructure,
+8
+we have the way to select how to obtain capacity.
+9
+So now we have several options.
+10
+And the options is Fargate only.
+11
+This is serverless. You don't think about servers,
+12
+and AWS will provide them for you.
+13
+You have Fargate and Manage Instances,
+14
+and Fargate and Self-managed instances.
+15
+So this is the old way
+16
+in which you manage your EC2 instances,
+17
+and you have to create an auto-scaling group,
+18
+and then you have to select the type of AMI that you want,
+19
+the type of EC2 instance you want, and so on.
+20
+It's nice to see these options,
+21
+but we're not going to go over this
+22
+because now AWS is trying to move you
+23
+away from self-managed instances.
+24
+Fargate and Managed Instances is very similar
+25
+in which we're also going to have Fargate,
+26
+but also AWS is going to manage
+27
+our EC2 instances behind the scenes.
+28
+And here what we have to do
+29
+is to create an instance profile.
+30
+So you can click on Create new instance profile right here.
+31
+And then this is for ECS.
+32
+And this is for EC2 Role for ECS Managed Instances.
+33
+And we click on Next.
+34
+And then this is called ecsInstanceRole.
+35
+And click on Create role.
+36
+So my role already exists,
+37
+so I'm going to just use this role right here,
+38
+and I'm good to go.
+39
+And then for infrastructure role,
+40
+I'm going to create a new infrastructure role.
+41
+I scroll down.
+42
+You use this one, Infrastructure for ECS Managed Instances.
+43
+Next. This is a new role,
+44
+so I'm going to create this role.
+45
+And now my role is created.
+46
+So back at it, I can just put it right here.
+47
+And we are good to go.
+48
+Next, we have the instant selection.
+49
+So do we want to have the ECS default
+50
+to choose based on the test definition
+51
+and service requirements?
+52
+And for a production workload,
+53
+this is definitely necessary.
+54
+Or do you want to use custom?
+55
+And here you would choose between the vCPU attribute
+56
+and the memory, say how much min and max you want.
+57
+So this is more advanced.
+58
+And also, if you wanted to force, for example,
+59
+a specific instance type,
+60
+you would say Allowed instance type.
+61
+And you would say, for example, only t3.micro.
+62
+That's it.
+63
+And then you would only have t3.micro
+64
+as part of these managed instances.
+65
+So it's quite nice because AWS is going to manage
+66
+these instances for you.
+67
+And then you can go and click on Create.
+68
+Now, to be compatible with the next lectures that I've done,
+69
+but they're very similar things,
+70
+instead of managing our instances,
+71
+we'll have self-managed instances.
+72
+Here we're going to create a new auto-scaling group
+73
+of on-demand.
+74
+We specify the instance type to be t3.micro.
+75
+And then we'll use the default role
+76
+for the EC2 instance role.
+77
+We say a maximum 2. No need for SSH.
+78
+We specify the min root EBS volume size of 30 gigabytes.
+79
+And then we leave everything for network settings
+80
+as defaults, and then click on Create.
+81
+So while this is happening,
+82
+let's have a look at the auto-scaling group
+83
+that is being created on AWS.
+84
+And then on the left-hand side,
+85
+I will click on Auto Scaling Groups right here.
+86
+And it's showing, as you can see,
+87
+there was an auto-scaling group created for me
+88
+called Infra-ECS-Cluster.
+89
+And these are capacity 0,
+90
+min capacity 0, max capacity 5.
+91
+And this was created directly by my ECS cluster.
+92
+And the creation is in progress.
+93
+And what this cluster has,
+94
+we'll have maybe EC2 instances
+95
+for me to launch tasks on.
+96
+So we can see it's in three available two zones.
+97
+So we know that the ECS tasks
+98
+are going to be launched across three AZ.
+99
+And what I'm going to do now
+100
+is just wait for this cluster to be created,
+101
+which is the case now.
+102
+So what I can do now is explore this DemoCluster.
+103
+So if I click on it, I'm in the DemoCluster,
+104
+and I can go to Services, are 0,
+105
+tasks are 0 because we haven't launched anything yet.
+106
+And then we go to the more interesting, Infrastructure.
+107
+So if you go here to the Infrastructure,
+108
+we have three capacity providers in this ECS cluster.
+109
+The first one is FARGATE.
+110
+That means that we can launch Fargate task
+111
+onto our ECS cluster.
+112
+The second one is FARGATE_SPOT.
+113
+That means that we can launch Fargate task in Spot mode,
+114
+select Spot instances for EC2.
+115
+And the last one is a ASG provider.
+116
+And this one means that we can launch EC2 instances
+117
+in this cluster directly through this ASG.
+118
+So it's managed scaling right now,
+119
+and the current size is 0.
+120
+But I can change it if I wanted to.
+121
+So let me show you what it would look like.
+122
+I go here, I go to Details,
+123
+and I would edit the desired capacity to be 1,
+124
+just to show you what it's like.
+125
+So what's going to happen out of this
+126
+is that an EC2 instance is going to be created, okay?
+127
+And when is created is going to register itself
+128
+into the DemoCluster.
+129
+And then I will see it under Container instances.
+130
+That means that when we create an ECS task,
+131
+it can either be launched on a Fargate
+132
+or Fargate Spot capacity provider,
+133
+or it can be launched on the container instances
+134
+that I will have launched as part of this ASG.
+135
+So what I'm going to do now
+136
+is just wait for this instance
+137
+to be in the running state
+138
+and registered into my ECS cluster.
+139
+So let me refresh now.
+140
+My instance is in service, and it's t2.micro.
+141
+And if I go back into my Amazon ECS cluster,
+142
+it is registered as a container instance
+143
+that is currently, of course, running 0 tasks,
+144
+and has 1024 CPU available,
+145
+and 982 memory available.
+146
+So this is giving me the capacity of this instance,
+147
+and I can launch, as you'll see, tasks on it
+148
+until the capacity runs out.
+149
+So, we're good to go.
+150
+So we have an ECS cluster.
+151
+We've seen two capacity providers. Three.
+152
+We've seen the container instances.
+153
+So now let's go ahead and do run our first service.
+154
+And I will see you in the next lecture to do that.
+
+--- Creating ECS Service - Hands On ---
+
+1
+So now let's create an ECS service.
+2
+But before we do so, we need to create a task definition.
+3
+So I'm going to create a new task definition from the task
+4
+definition panels, and I need to give it a name.
+5
+So I'll call this nginxdemos-hello.
+6
+And this is coming from this
+7
+docker image called nginxdemohello on docker hub.
+8
+And so this is the one we're going to be using in our demo.
+9
+So this is why I call my test definition nginxdemo
+10
+with a hyen of hello.
+11
+Okay, next we need
+12
+to choose the infrastructure requirements.
+13
+So do we want to launch on Fargate
+14
+or Amazon EC2 instances.
+15
+Well, Fargate is serverless compute,
+16
+so we'll leave it enabled.
+17
+And if we enable this, we could launch this task,
+18
+this service on our Amazon EC2 instances.
+19
+But for simplicity's sake, right now I'm just going
+20
+to use AWS Fargate
+21
+and launch our containers in two serverless compute mode.
+22
+Then we need to choose what type
+23
+of OS and architecture we have.
+24
+So Linux is fine.
+25
+And what is the task size for our Fargate container?
+26
+So we can say for example, that we have 0.5 or one vCPU,
+27
+and you can go up to 16 vCPU in this example.
+28
+And then you can also adjust memory.
+29
+So you can say, hey, I want up to, for example,
+30
+120 gigabytes of memory.
+31
+So all of this would be
+32
+provided by Fargate in a serverless fashion.
+33
+To keep things very cheap and simple,
+34
+I will choose 0.5 vCPU, and one gigabytes.
+35
+Next we have task role.
+36
+So task roll is an IM role that we can assign
+37
+to our task if we wanted to make API request
+38
+to AWS services.
+39
+But because we don't do this right now, we are not going
+40
+to specify a task role.
+41
+But this is something of utmost importance
+42
+if your containers need to use AWS.
+43
+Now for the task execution role, leave it as default
+44
+and if this ECS task execution role is not created yet,
+45
+it's going to be created automatically by ECS service.
+46
+So we're good.
+47
+Next our container.
+48
+So the name is going to be nginxdemos-hello.
+49
+And the image URL is going to be nginxdemoshello/hello.
+50
+And this is going to pull automatically this image
+51
+from the docker hub right here.
+52
+So this is very handy and it's an essential container.
+53
+Now we have lots of different options.
+54
+For example, the port mappings.
+55
+So we want to map the port 80 to the port 80
+56
+of the container, which is great, and we'll leave it as is.
+57
+And then you could add more port mappings if you wanted to.
+58
+You could for example, set the resource allocation limits,
+59
+the environment variables from file
+60
+or manually and the logging.
+61
+But all these things I'm gonna leave as default
+62
+because this is going to work fine for us.
+63
+Storage, Fargate comes with some ephemeral storage.
+64
+So we'll leave it as is again, from 21 gigabytes,
+65
+which is a default right here.
+66
+And this is fine, just leave the value you have right now.
+67
+So let's create this.
+68
+And this is creating our first task definition.
+69
+Now you see version two for me
+70
+because I've just created it twice.
+71
+But for you, you should see version one.
+72
+So next, let's launch this task definition as a survey.
+73
+So let's go into clusters and then demo cluster.
+74
+And under services, I'm going to create a service.
+75
+Okay, so I should specify the details of the service.
+76
+So first we're going to select a task definition family.
+77
+We'll choose the nginxdemoshello.
+78
+Then you choose whatever task definition
+79
+revision is available for you.
+80
+I choose the latest, which is number two for me.
+81
+And then service name, you can keep this
+82
+or you can remove this, whatever you want.
+83
+Okay, so now the service name is going
+84
+to be created on this cluster.
+85
+We need to choose the compute configuration.
+86
+So we'll use capacity provider strategy, we'll leave it
+87
+as default, and then we'll use Fargate to launch
+88
+our own services and tasks.
+89
+Okay, platform version will leave it as latest as well.
+90
+We don't touch any of these.
+91
+For the deployment configuration, which is replica.
+92
+So we'll have a number of tasks across our cluster.
+93
+And right now we want one task.
+94
+But if you wanted more tasks, for example,
+95
+select four, and you would have four containers of your
+96
+nginxdemo available to you.
+97
+But we wanna keep it small to keep the cost at a minimum.
+98
+Okay, so we leave everything as is for AZ rebalancing.
+99
+This is an ECS feature
+100
+to rebalance in case you have too many
+101
+tasks in one specific AZ.
+102
+We don't touch any of the deployment options or this.
+103
+For networking we're gonna go in here,
+104
+we're good with these subnets,
+105
+we're going to create a new security group.
+106
+I can keep this name, this is fine.
+107
+And then we're going to allow HTP traffic from anywhere.
+108
+This allows us to access the port80 of our nginx service.
+109
+Okay, next we'll use public IP turn on, yes, perfect.
+110
+And then for load balancing, we're going
+111
+to allow load balancing.
+112
+To have a load balancer
+113
+we have an application load balancer.
+114
+It's going to be connected to our port80 of our nginx demo.
+115
+We're going to create it, I'll call it DemoALBForECS.
+116
+Listener on port 80,
+117
+And then we're going to create a new target group,
+118
+nginxdemosTG.
+119
+On port 80, we're good to go.
+120
+And then we will not touch the VPC lattice.
+121
+We will not touch the service auto scaling
+122
+since we wanna scale up
+123
+and down based on the CloudWatch alarm.
+124
+We will not set up any volume.
+125
+We'll just go ahead and create this service.
+126
+So our service has now been deployed successfully.
+127
+So let's click on the service and have a look at it.
+128
+So as we can see right now we have one desired task
+129
+and one is running and the status is active.
+130
+So this is really good.
+131
+And we can see that the service
+132
+is linked to a target group.
+133
+So I click on the target group,
+134
+and in the target group itself, we can see that it's linked
+135
+to our demoALB, which is the application balancer
+136
+that was created as part of this service.
+137
+And it looks like one IP address is registered as a target.
+138
+And this is the IP address
+139
+of my container, which is very good.
+140
+So now if we have a look at this load balancer itself,
+141
+it is active, I can copy the DNS name
+142
+and then open a new tab and paste it.
+143
+And I get the nginx welcome page, which is very good.
+144
+So that means that everything is working.
+145
+The server address is the exact same
+146
+as the IP we have registered in here.
+147
+So this is the private IP, which is good.
+148
+And what else?
+149
+So if we go under the service itself,
+150
+now we can have a look at tasks.
+151
+So as you can see, one container is running right now,
+152
+and this is this one task.
+153
+And I can click on it and have a look at this task itself.
+154
+So it tells me the configuration, the task revision,
+155
+where it's been launched, the private IP, the containers.
+156
+We can have a look at logs to know the logs
+157
+of our nginx container as well, which is good.
+158
+And if we look at the service itself,
+159
+so we are on the service,
+160
+and then we go to events, we can have a look at
+161
+what were the events of this.
+162
+So that means that we have one task that has been started.
+163
+It was registered in Atari group,
+164
+and then it's been complete deployment,
+165
+and now we have a steady state.
+166
+So as we can see in this, I can go to slash test
+167
+for example, and the URI will change in here.
+168
+So nginx is working as expected.
+169
+Now what we can do, because we're under ECS,
+170
+is that we have a look at our task.
+171
+We have one of them, but we can launch some more.
+172
+So I will show you how easy it is
+173
+to launch more tasks with Farget.
+174
+So let's update this service.
+175
+And now the desired number of task is going to be three.
+176
+So one per AZ, for example,
+177
+and the rest I will just leave as is.
+178
+So we'll leave the test definition to the same.
+179
+We'll leave the compute configuration as Fargate
+180
+and load balancing does not change in
+181
+terms of health checks and so on.
+182
+So let's just click on updates.
+183
+And now what's going to happen is that we have asked
+184
+the ECS service to run two more tasks.
+185
+So if I refresh this
+186
+and wait a little bit,
+187
+now we have two more tasks being provisioned
+188
+and they are provisioned on the Fargate engine.
+189
+So that means that behind the scenes, AWS is going
+190
+to provision automatically the resource that it needs
+191
+to launch these tasks.
+192
+So let's wait a little bit. They're pending.
+193
+Now they're activating, and now they're running.
+194
+So this was very quick actually.
+195
+And if I go under here
+196
+and now refresh this page, as you can see,
+197
+the IP address is changing every time I refresh.
+198
+So the application balancer is distributing the load
+199
+between all my containers on ECS, which is great.
+200
+So this is quite powerful,
+201
+and we just demonstrated the scaling
+202
+of ECS while scaling up.
+203
+And just to scale back the demo
+204
+and save on cost, we can update the service here
+205
+and have the desired number of tasks to be zero.
+206
+This way the service is still there,
+207
+but we don't have any containers running.
+208
+And under my application my auto scaling group, sorry,
+209
+then I'm going to click on this
+210
+and make sure the desired capacity is also zero.
+211
+This way we are sure not to be running any type
+212
+of instances on our EC2 cluster for ECS.
+213
+Okay?
+214
+So now you can verify this,
+215
+that the tasks are gone and you're good to go.
+216
+And you can look at the events to see
+217
+what has ECS done while we were asking it
+218
+to update the service.
+219
+Okay? So that's it.
+220
+We've seen how to create an ECS cluster, we've seen how
+221
+to create an ECS service on Fargate.
+222
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon ECS - Auto Scaling ---
+
+1
+So now let's talk
+2
+about ECS Service Auto Scaling.
+3
+So as we can see, we can manually increase
+4
+the number of ECS tasks in our service.
+5
+But we can also automatically increase
+6
+or decrease the number of tasks.
+7
+For this, we can leverage the service
+8
+called the AWS Application Auto Scaling.
+9
+And we have three metrics we can scale on using the service.
+10
+We can scale on the CPU Utilization of the ECS Service.
+11
+We can scale on the Memory Utilization,
+12
+which is the RAM of the ECS Service.
+13
+Or, the ALB Request Count Per Target,
+14
+which is a metric coming from the ALB.
+15
+So only these metrics you have to remember.
+16
+Then, you can set up different kind of auto scaling.
+17
+You can set up Target Tracking to track
+18
+for a specific target for the three metrics shown above.
+19
+Or Step Scaling.
+20
+Or Scheduled Scaling,
+21
+if you wanted to scale your ECS Service ahead of time
+22
+thanks to predictable changes.
+23
+Remember, that scaling your service, your ECS Service,
+24
+at the task level is not equal to scaling your cluster
+25
+of EC2 instances if you are in the EC2 launch type.
+26
+And so therefore, that's why when you don't
+27
+have an EC2 auto scaling that's necessary,
+28
+when you don't have EC2 instances in the backend,
+29
+then using Fargate makes service auto scaling much easier
+30
+to set up, because everything is serverless.
+31
+And it's why I'm fan of Fargate.
+32
+And the exam is pushing you to use Fargate a lot.
+33
+So for the EC2 launch type,
+34
+how can we actually scale the EC2 instances
+35
+in the backend if we're using it?
+36
+So we have multiple ways of doing it.
+37
+We can use an Auto Scaling Group Scaling.
+38
+And so we scale our ASG, for example,
+39
+based on CPU Utilization.
+40
+And then we can add EC2 instance over time
+41
+if the CPU skyrockets.
+42
+Or, we can use the newer and more advanced feature
+43
+called the ECS Cluster Capacity Provider
+44
+that we've seen before in the hands-on.
+45
+And with this one, the Capacity Provider is very smart.
+46
+And as soon as you lack capacity to launch new tasks,
+47
+it's going to automatically scale your ASG.
+48
+So the Capacity Provider is paired
+49
+with a Auto Scaling Group.
+50
+And then when you're missing RAM or CPU,
+51
+there you go, EC2 instances are created.
+52
+And so the second option is the smarter way of doing things.
+53
+So if you have to choose between Auto Scaling Group Scaling
+54
+and ECS Cluster Capacity Provider,
+55
+please use ECS Cluster Capacity Provider
+56
+for your EC2 launch type.
+57
+So let's have a look at the service.
+58
+So we have a Service A with two tasks.
+59
+And we have CPU Usage.
+60
+And it's going to be auto scaled
+61
+by the AWS Application Auto Scaling.
+62
+But let's assume we have more users,
+63
+and therefore your CPU usage goes really up,
+64
+then your CloudWatch Metric,
+65
+which monitors the CPU Usage at the ECS service level again,
+66
+is going to trigger a CloudWatch Alarm,
+67
+which will trigger a scaling activity
+68
+in your Auto Scaling for your ECS service.
+69
+The desired capacity will increase
+70
+for your ECS Service, and a new task will be created.
+71
+And optionally, if this service is running
+72
+on the EC2 launch type,
+73
+then the ECS Capacity Providers
+74
+can help you scale your ECS cluster
+75
+backed by EC2 instances.
+
+--- Amazon ECS - Solutions Architectures ---
+
+1
+Now let's talk about
+2
+a few solution architectures
+3
+you can encounter with Amazon ECS.
+4
+So the first one are ECS tasks invoked by Event Bridge.
+5
+So for example, say we have an Amazon ECS cluster,
+6
+it's backed by Fargate, and we have S3 buckets.
+7
+Our users are going to upload objects into our S3 buckets,
+8
+And these S3 buckets can be, for example,
+9
+integrated with Amazon Event Bridge
+10
+to send all the events to it.
+11
+And Amazon Event Bridge can have a rule
+12
+to run ECS tasks on the go.
+13
+Now, when ECS tasks are going to be created,
+14
+they will have an ECS task role associated with them,
+15
+and from the task itself
+16
+what it can do is that it can get the objects, process it,
+17
+and then send the results into Amazon DynamoDB.
+18
+And that is thanks to the fact
+19
+that we have an ECS task role associated with it.
+20
+And so effectively here, what we've done
+21
+is that we've created a serverless architecture
+22
+to process images, or to process objects,
+23
+from your S3 buckets using a Docker container.
+24
+And that is using Amazon Event Bridge ECS
+25
+in the Fargate mode, as well as an ECS task role
+26
+to talk to Amazon S3 and Amazon DynamoDB.
+27
+Another architecture using, again, Event Bridge,
+28
+is to use an Event Bridge schedule.
+29
+So we have an Amazon ECS cluster
+30
+backed by Fargate and Amazon Event Bridge,
+31
+and we schedule a rule to be triggered every 1 hour.
+32
+Now, this rule is going to run ECS tasks for us in Fargate,
+33
+and so that means that every 1 hour,
+34
+a new task will be created in our Fargate cluster,
+35
+and the task can do whatever we want.
+36
+For example, we can create an ECS task role
+37
+with access to Amazon S3, and therefore our task,
+38
+our Docker container, our program can, for example,
+39
+do every 1 hour some batch processing
+40
+against some files in Amazon S3.
+41
+And again, all of that architecture is fully serverless.
+42
+A last example is using ECS and an SQS queue,
+43
+so we could have a service on ECS with two ECS tasks,
+44
+and messages are being sent into an SQS queue,
+45
+and the service itself is pulling for messages
+46
+from the SQS queue, and processing them.
+47
+We can enable ECS Service Auto Scaling
+48
+on top of this service.
+49
+That means that, for example, the more messages we have
+50
+in our SQS queue, the more tasks we're going to have
+51
+into our ECS service, thanks to auto-scaling.
+52
+Another integration is when you want to use Event Bridge
+53
+to actually intercept events from within your ECS cluster.
+54
+So, for example, say you wanted to react
+55
+to tasks being exited.
+56
+In that case, any task exiting or starting
+57
+in your ECS cluster can be triggered as an event
+58
+in Event Bridge, and it will look like this.
+59
+For example, the ECS task state change for "stopped"
+60
+and the stopped reason.
+61
+Then from there, for example, we could alert an SNS topic
+62
+and send emails to your administrators.
+63
+So, bottom line, Event Bridge does allow you to understand
+64
+the lifecycle of your containers in your ECS cluster.
+65
+Okay, so that's it for this lecture.
+66
+I hope you liked it, and I will see you in the next lecture.
+
+--- Amazon ECS - Clean Up - Hands On ---
+
+1
+So let's make sure to destroy everything
+2
+before we're done.
+3
+So first, we need to stop the service.
+4
+So to stop the service,
+5
+make sure you have zero tasks running.
+6
+If not, you update the service
+7
+and you set the desired task to zero.
+8
+And then you can click on Delete Service, type in Delete,
+9
+and this will delete the service.
+10
+Now, when you delete the service,
+11
+this is actually going to go
+12
+into a service called CloudFormation.
+13
+And CloudFormation is going to take its time
+14
+to delete the entire stack that it created.
+15
+And so part of the thing it's going to delete
+16
+is the ECS service, but also you LoadBalancer Listener,
+17
+you LoadBalancer itself, the security group,
+18
+and the target groups.
+19
+So this can take a little bit of time
+20
+and we need to wait for everything to be deleted.
+21
+And when the service is fully deleted,
+22
+then you can go and delete this cluster.
+23
+So for this, you just click on Delete Cluster
+24
+and it's going to delete the demo cluster.
+25
+And we can do this right now.
+26
+And again, this is going to start something
+27
+in CloudFormation to delete the infrastructure
+28
+of the ECS cluster.
+29
+So that includes the capacity provider,
+30
+the auto-scaling group that we have created,
+31
+the cluster, and the launch templates.
+32
+So this is very good.
+33
+Finally, for your task definition, you can leave them as is.
+34
+They don't cost you any money, they're just definitions.
+35
+But if you wanted to,
+36
+you could also click on one of them and deregister.
+37
+Do Action and deregister the test definition itself.
+38
+So that's it.
+39
+I hope you liked it and I will see you in the next lecture.
+
+--- Amazon ECR ---
+
+1
+Okay, so let's do a short intro
+2
+to Amazon ECR.
+3
+So Amazon ECR stands
+4
+for Elastic Container Registry,
+5
+and it's used to store
+6
+and manage Docker images on AWS.
+7
+So so far, we've been using online repository
+8
+such as Docker hub
+9
+but we can also store our own images
+10
+on Amazon ECR.
+11
+And actually you have two options for ECR.
+12
+We can store images privately,
+13
+just for your account
+14
+or your own accounts
+15
+with an s
+16
+or you can use a public repository and publish
+17
+to the Amazon ECR public gallery.
+18
+Now ECR is fully integrated
+19
+with Amazon ECS,
+20
+which is great.
+21
+And your images
+22
+are behind the scenes stored
+23
+by Amazon S3.
+24
+So your ECR repository
+25
+may contain different Docker images
+26
+and then your ECS cluster.
+27
+And for example,
+28
+an EC2 instance
+29
+on your ECS cluster may want
+30
+to pull these images.
+31
+So to do so
+32
+while we're going
+33
+to sign an IAM role
+34
+to our EC2 instance
+35
+and this IAM role will allow our instance
+36
+to pull Docker images.
+37
+So of course, all access
+38
+to ECR is protected by IAM.
+39
+That includes that if you have a permission error
+40
+on ECR have a look
+41
+at your policies
+42
+and then your
+43
+containers are going
+44
+to be started
+45
+on your EC2 instance
+46
+after they are pulled
+47
+by your EC2 instance.
+48
+And this is how ECS
+49
+and ECR ECR work together.
+50
+Now, Amazon ECR is great
+51
+because on top
+52
+of being a repository,
+53
+it, supports image vulnerability
+54
+scanning, versioning, image tags,
+55
+and image lifecycle.
+56
+So overall, anytime you see
+57
+storing Docker images think ECR
+58
+and that should be it
+59
+for you at the exam.
+60
+All right.
+61
+I hope you liked it.
+62
+And I will see you
+63
+in the next lecture.
+
+--- Amazon EKS - Overview ---
+
+1
+So let's talk about the other way
+2
+to run containers onto AWS, and this is using Amazon EKS.
+3
+So Amazon EKS stands for Amazon Elastic Kubernetes Service.
+4
+So it is a way, as the name indicates,
+5
+to launch and manage Kubernetes cluster onto AWS.
+6
+So what is Kubernetes?
+7
+Well, this is the blue logo
+8
+you see in the top right corner of the screen.
+9
+Kubernetes is an open-source system
+10
+for automatic deployments, scaling and management
+11
+of containerized, usually Docker, applications.
+12
+So it is an alternative to ECS, which has a similar goal
+13
+which is to run your containers, but a very different API.
+14
+The idea is that ECS is definitely not open-source.
+15
+Whereas Kubernetes is open-source
+16
+and used by many different cloud providers
+17
+which gives you some sort of standardization.
+18
+So EKS supports two launch modes,
+19
+again the EC2 launch mode if you want to deploy
+20
+worker mode like EC2 instances,
+21
+or the Fargate mode if you wanted to deploy
+22
+serverless containers in an EKS cluster.
+23
+So the use case for using EKS is that your company
+24
+is already using Kubernetes on-premises,
+25
+or already using Kubernetes in another cloud,
+26
+or they just want use the Kubernetes API,
+27
+and they want to use AWS to manage the Kubernetes cluster,
+28
+then they would use Amazon EKS.
+29
+So again, Kubernetes from an exam perspective,
+30
+is cloud agnostic, it can be used into any cloud
+31
+such as Azure, Google Cloud and so on.
+32
+And so that means that if you are trying to migrate
+33
+between clouds or your containers,
+34
+using Amazon EKS may be a much more simple solution.
+35
+So in terms of diagram, this is what it looks like.
+36
+So we have a VPC, 3 AZ separated
+37
+into public subnets and private subnets.
+38
+And so you would create EKS Worker Nodes
+39
+they would be EC2 instances for example,
+40
+and each of these nodes will be running EKS Pods.
+41
+So they're very similar to ECS tasks,
+42
+but from a naming perspective,
+43
+anytime you see pods, it relates to Amazon Kubernetes, okay?
+44
+So we have EKS Pods and they're running onto EKS Nodes,
+45
+and so these nodes can be managed by an Auto Scaling group.
+46
+Now, very similarly to ECS,
+47
+if you wanted to expose EKS Service and Kubernetes Service,
+48
+we could set up a private load balancer,
+49
+or a public load balancer to talk to the web.
+50
+So let's summarize the different node types
+51
+that exist for Amazon EKS.
+52
+So you have the Manage Node Groups,
+53
+and this is AWS that will create and manage Nodes,
+54
+so EC2 instances for you.
+55
+And these nodes are part of an Auto Scaling group,
+56
+managed by the EKS service itself.
+57
+And you have support for On-Demand and Spot Instances.
+58
+You can also choose if you wanted to,
+59
+to self-manage nodes, this is if you want to have
+60
+more customizations and more control.
+61
+So in that case you need to create the nodes yourself,
+62
+and then you need to register them to an EKS cluster,
+63
+and then you manage your own nodes as part of an ASG.
+64
+You can still use the pre-built Amazon EKS Optimized AMI
+65
+for this, which saves you a bit of time,
+66
+or you can build your own AMI, which is more complicated.
+67
+This supports as well, the On-Demand and the Spot Instances.
+68
+And finally, if you don't wanna see any nodes at all,
+69
+then Amazon EKS, as I told you, supports the Fargate mode
+70
+in which there is no maintenance required,
+71
+and no nodes are managed at all you can just run containers
+72
+on top of Amazon EKS.
+73
+Now you can attach data volumes to your Amazon EKS cluster.
+74
+For this, you need to specify a StorageClass manifest
+75
+on your EKS cluster, and this leverages something called
+76
+the Container Storage Interface, CSI compliant driver.
+77
+So keywords to look out for at the exam.
+78
+And you have support for Amazon EBS,
+79
+you have support for Amazon EFS, and this is the only type
+80
+of storage class that works with Fargate.
+81
+You have Amazon FSx for Lustre
+82
+and Amazon FSx for NetApp ONTAP.
+83
+So that's it for Amazon EKS.
+84
+I hope you liked it and I will see you in the next lecture.
+
+--- Amazon EKS - Hands On ---
+
+1
+So I want to show you
+2
+how to use the EKS service.
+3
+You don't have to follow my hands-on,
+4
+it's just for you to get an idea of how this works
+5
+and how this gets configured
+6
+so you have a better understanding of the service,
+7
+but we're not going to use it
+8
+and it may cost you money to do so,
+9
+so just look at what I'm doing.
+10
+Of course, if you want to, you can follow along.
+11
+So we are in the EKS console
+12
+and we're going to create a cluster.
+13
+So here we have two options, the quick configuration
+14
+or the custom configuration to choose more options.
+15
+So let's go over custom configuration
+16
+and we'll have a look at all the options quickly.
+17
+So let's scroll down.
+18
+And now we have the EKS Auto Mode, which is new.
+19
+We're going to use it, this is going to make sure that
+20
+when a new pod,
+21
+so a new task, cannot fit onto existing nodes,
+22
+EKS will automatically create a new node for us.
+23
+That means that we have the infrastructure
+24
+that is managed by EKS, which is great.
+25
+So I'll call this one DemoEKSCluster.
+26
+Then there is a cluster role. So this is very important.
+27
+We currently don't have a role for this cluster.
+28
+So you click on create recommended role,
+29
+and this is going to automatically create the role
+30
+we need for this cluster.
+31
+So then it needs to also have these managed policy
+32
+or equivalent to use EKS Auto Mode.
+33
+So I guess this is not created out of the box for us.
+34
+So in permission policies we would add policy,
+35
+attach policies, and then we would look for EKS,
+36
+and then we would need to match this.
+37
+So EKS block storage, cluster policy, compute policy,
+38
+and then load balancing and networking,
+39
+load balancing and networking.
+40
+Add permissions.
+41
+And now we have the proper permissions to this role.
+42
+Let's refresh this. No more error message.
+43
+The Kubernetes version, we're good to go.
+44
+Standard support, yes.
+45
+We don't need to enable a higher scaling tier.
+46
+Auto Mode is going to say
+47
+what we choose the node pools to choose from.
+48
+So general purpose and system.
+49
+Node IAM role,
+50
+this is the IAM role needed for the nodes
+51
+to be registered with the cluster.
+52
+So there's a role here, but it's not the right one.
+53
+So we need to create a recommended role
+54
+called AmazonEKSAutoNodeRole.
+55
+It has the default policies right here.
+56
+Let's create this role.
+57
+And no error message. So we're good here.
+58
+Let's remove these notifications.
+59
+Then we have the cluster access.
+60
+So we allow cluster administrator access
+61
+for your IAM principal
+62
+to make things easy.
+63
+We don't need to change anything here.
+64
+We don't need to look at encryption right now.
+65
+This is a way for you
+66
+to shift traffic across AZs in case there's a problem in AZ.
+67
+So for now we'll disable it, but we can enable it after.
+68
+This is just a way for you to have a better
+69
+disaster recovery protection.
+70
+Let's click on next. Networking is more interesting.
+71
+So you choose the VPC to launch your EKS resources in
+72
+as well as subnets where to launch your resources.
+73
+So here are three subnets that are public.
+74
+You could add security groups if you wanted to,
+75
+but right now we don't need to.
+76
+Choose the type of IP you want to use.
+77
+IPv4 is fine.
+78
+Then how to access the cluster.
+79
+Is it public, public and private or just private?
+80
+We'll use public and private.
+81
+Next you have all the metrics.
+82
+So you have metrics
+83
+that are gonna go directly in CloudWatch,
+84
+but also you can have Prometheus if you wanted to.
+85
+To set these up.
+86
+You have network monitoring, control plane logs.
+87
+So all these things are Kubernetes specific.
+88
+Again, I just wanna show you the options,
+89
+but you can see you can also send all the logs
+90
+into CloudWatch logs for these things if you need to.
+91
+So it's quite a lot of options when you
+92
+configure your EKS cluster.
+93
+You can also add add-ons for your cluster.
+94
+This is Kubernetes-related knowledge, so I will not do it,
+95
+but as you can see, you have lots of options around DNS,
+96
+around SageMaker, around EFS and so on.
+97
+So it's great.
+98
+And then you also have community add-ons
+99
+if you want around all these things.
+100
+So let's scroll down.
+101
+And then you have third party marketplace add-ons
+102
+if you wanted to.
+103
+Let's click on next, then this how you configure an add-on
+104
+and then you review everything and you scroll down
+105
+and create your cluster.
+106
+So if you're a Kubernetes expert, you would know
+107
+that it's difficult to set up your own Kubernetes cluster,
+108
+but thanks to AWS, it's managed
+109
+and it has the resources created for you behind the scenes
+110
+and you make sure that the cluster is properly configured.
+111
+So my EKS cluster is now created
+112
+and I wanna show you a few things.
+113
+First of all, under resources,
+114
+you have access to the resources within Kubernetes.
+115
+So you have your pods in here, you have your replica sets,
+116
+your deployments, your stateful sets and so on.
+117
+So all these things are Kubernetes specific,
+118
+but you can see them directly from the UI
+119
+of the EKS service, which is very handy.
+120
+Under compute, this is where you're going to see your nodes.
+121
+So this is a c6g.large
+122
+that has been created thanks to the Auto Mode.
+123
+So you can see it's a pretty large instance
+124
+and you would pay a lot of money
+125
+if you were to do this on your account.
+126
+So don't have to follow this hands-on
+127
+if you don't want to, of course.
+128
+But this is the built-in node pool.
+129
+So this is managed by EKS Auto Mode.
+130
+But if you scroll down, you have two options.
+131
+You have node groups and fargate profiles.
+132
+So I'll just show you how to create a node group
+133
+if you needed to.
+134
+This is a way for you to create a set of EC2 instances
+135
+that will be managed by an auto scaling group.
+136
+So I call this one DemoNodeGroup.
+137
+You need to select a role.
+138
+So I click on create recommended role.
+139
+I scroll down
+140
+and the policies have been selected for me already,
+141
+so I don't need to do anything.
+142
+Click on next and I'll call this one NodeGroupRoleEKS.
+143
+As you can see, these four policies
+144
+have been added automatically.
+145
+So it's perfect.
+146
+And we create this role.
+147
+So now we get this role name, we enter it,
+148
+refresh and enter it.
+149
+Here we go.
+150
+Next we can, for example, use a launch template.
+151
+So this is to indicate how our EC2 instances
+152
+are going to be launched within our auto scaling group.
+153
+So you would go ahead and create a launch template,
+154
+and this is all the information we already know
+155
+around the AMIs, around the instance type that we want
+156
+and so on.
+157
+So we've seen this before,
+158
+so I'm not going to go over it right now.
+159
+Then click on next.
+160
+So here you choose the AMI type, the capacity,
+161
+the instance types, the disc size,
+162
+then the minimum and maximum size
+163
+for your auto scaling group,
+164
+whether or not you want to use a warm pool.
+165
+I mean all these things are auto scaling group specific.
+166
+And enable node repairs in case you have an issue.
+167
+Then you specify networking. So where to launch these nodes.
+168
+And then you would go ahead and create this.
+169
+And this is going to create its own auto scaling group.
+170
+And so after a bit I can see that
+171
+two nodes are appearing under this node group.
+172
+And actually if I go into the EC2 console,
+173
+within my instances, I can see that I have,
+174
+this is my management instance, the c6 large,
+175
+and this is the two t3.medium instances.
+176
+And so if I go on the left hand side
+177
+under auto scaling groups,
+178
+we can see that this auto scaling group
+179
+was created by EKS
+180
+and contains the configuration we just did.
+181
+So we can see how EKS is now managing my node group.
+182
+So I go back to resources, we would have a computes,
+183
+we would have a similar type of configuration
+184
+for fargate profiles in which we define
+185
+how to launch pods directly on fargates managed by EKS.
+186
+So I'm not gonna do this, but you get the idea.
+187
+Under add-ons, I just wanna show you something.
+188
+So you can click on get on more add-ons,
+189
+and you can look at something called the EBS CSI driver.
+190
+And if you add it as well as the EFS CSI driver,
+191
+this would allow you to use EBS volumes
+192
+or Amazon EFS file systems within your cluster.
+193
+And this is something that is important to know,
+194
+but I won't do this right now.
+195
+So that's it, I just wanted to show you
+196
+how to configure your cluster.
+197
+Now I will delete it.
+198
+So to do so, I need to make sure
+199
+I first delete my node groups and the cluster,
+200
+so I'm going do this offline.
+201
+But you get the idea of how EKS works now in AWS.
+202
+So I hope you liked it
+203
+and I will see you in the next lecture.
+

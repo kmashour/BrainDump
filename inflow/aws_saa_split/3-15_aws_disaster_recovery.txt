@@ -1,0 +1,3742 @@
+--- Disaster Recovery in AWS ---
+
+1
+So disaster recovery
+2
+as a solutions architect is super important,
+3
+and the exam expects you to know about disaster recovery.
+4
+And there's a white paper on it, you should read it,
+5
+but I try to summarize everything clearly
+6
+with graphs and diagrams in this lecture,
+7
+so you don't have to read it if you don't want to.
+8
+But overall, you can expect some question
+9
+on disaster recovery, and as a solutions architect,
+10
+you need to know about disaster recovery anyway.
+11
+Don't worry, I try to make this
+12
+as simple as possible for you.
+13
+So what is a disaster?
+14
+Well, it's any event that has a negative impact
+15
+on the company's business continuity or finances.
+16
+And so disaster recovery is about preparing
+17
+and recovering from these disasters.
+18
+So what kind of disaster recovery can we do on AWS
+19
+or in general?
+20
+Well, we can do on-premise to on-premise.
+21
+That means we have a first data center, maybe in California,
+22
+another data center maybe in Seattle.
+23
+And so this is traditional disaster recovery,
+24
+and it's actually very, very expensive.
+25
+Or we can start using the cloud
+26
+and do on-premise as a main data center.
+27
+And then if we have any disaster, use the cloud.
+28
+So this is called hybrid recovery,
+29
+or if you're just all in the cloud,
+30
+then you can do AWS cloud region A to cloud region B,
+31
+and that would be a full cloud type of disaster recovery.
+32
+Now, before we do disaster recovery,
+33
+we need to define two key terms,
+34
+and you need to understand them from an exam perspective.
+35
+The first one is called RPO, Recovery Point Objective,
+36
+and the second one is called RTO, Recovery Time Objective.
+37
+So remember these two terms,
+38
+and I'm going to explain them right now.
+39
+So what is RPO and RTO?
+40
+The first one is the RPO, Recovery Point Objective.
+41
+And so this is basically
+42
+how often basically you run backups.
+43
+How back in time can you to recover?
+44
+And when a disaster strikes, basically,
+45
+the time between their RPO
+46
+and the disaster is going to be a data loss.
+47
+For example, if you back up data every hour
+48
+and a disaster strikes, then you can go back in time
+49
+for an hour and so you'll have lost one hour of data.
+50
+So the RPO, sometimes it can be an hour,
+51
+sometimes maybe one minute.
+52
+It really depends on the requirements.
+53
+But RPO is how much of a data loss
+54
+are you willing to accept in case a disaster happens.
+55
+RTO, on the other end,
+56
+is when you recover from your disaster, okay?
+57
+And so between the disaster and the RTO
+58
+is the amount of downtime your application has.
+59
+So sometimes it's okay to have 24 hours of downtime,
+60
+I don't think it is.
+61
+Sometimes it's not okay,
+62
+and maybe you need just one minute of downtime, okay?
+63
+So basically optimizing for the RPO and the RTO
+64
+does drive some solution architecture decisions,
+65
+and obviously, the smaller you want these things to be,
+66
+usually the higher the cost.
+67
+So let's talk about disaster recovery strategies.
+68
+The first one is Backup and Restore.
+69
+Second one is Pilot Light. Third one is Warm Standby.
+70
+And fourth one is Hot Site or Multi Site Approach.
+71
+So if we basically rank them,
+72
+all will have different RTO.
+73
+Backup and Restore will have the smaller RTO.
+74
+Pilot Light then Warm Standby, and Multi Site,
+75
+all these things cost more money, but they get a faster RTO.
+76
+That means you have less downtime overall.
+77
+So let's look at all of these one by one
+78
+in details to really understand
+79
+from an architectural standpoint what they mean.
+80
+Backup and Restore has a high RPO.
+81
+That means that you have a corporate data center,
+82
+for example, and here is your a AWS's Cloud,
+83
+and you have an S3 bucket.
+84
+And so if you want to back up your data over time,
+85
+maybe we can use AWS's Storage Gateway
+86
+or and have some lifecycle policy,
+87
+put data into Glacier for cost optimization purposes.
+88
+Or maybe once a week, you're sending a ton of data
+89
+into Glacier using AWS's Snowball.
+90
+So here, you know, if you use Snowball,
+91
+your RPO is gonna be about one week,
+92
+because if your data center burns or whatever
+93
+and you lose all your data, then you've lost one week
+94
+of data because you send that Snowball device once a week.
+95
+If you're using the AWS's cloud instead,
+96
+maybe EBS volumes, Redshift, and RDS.
+97
+If you schedule regular snapshots and you back them up,
+98
+then your RPO is going to be maybe 24 hours
+99
+or one hour based on how frequently
+100
+you do create these snapshots.
+101
+And then when you have a disaster strike you
+102
+and you need to basically restore all your data,
+103
+then you can use AMIs to recreate EC2 instances
+104
+and speed up your applications.
+105
+Or you can restore straight from a snapshot
+106
+and recreate your Amazon RDS database or your EBS volume,
+107
+or your Redshift, whatever you want.
+108
+And so that can take a lot of time as well to restore
+109
+this data and so you get a high RTO as well.
+110
+But the reason we do this is actually
+111
+it's quite cheap to do Backup and Restore.
+112
+We don't manage infrastructure in the middle.
+113
+We just recreate infrastructure
+114
+when we need it, when we have a disaster.
+115
+And so the only cost we have
+116
+is the cost of storing these backups.
+117
+So it gives you an idea. Backup and Restore.
+118
+Very easy, not too expensive,
+119
+and you get high RPO, high RTO.
+120
+The second one is going to be Pilot Light.
+121
+So here with Pilot Light,
+122
+a small version of the app is always running in the cloud.
+123
+And so usually that's going to be your critical core.
+124
+And this is what it's called Pilot Lights.
+125
+So it's very similar to Backup and Restore,
+126
+but this time, it's faster because your critical systems,
+127
+they're already up and running.
+128
+And so when you do recover, you just need to add on
+129
+all the other systems that are not as critical.
+130
+So let's have an example.
+131
+This is your data center has a server and a database
+132
+and this is the AWS cloud.
+133
+Maybe you're going to do continuous data replication
+134
+from your critical database into RDS,
+135
+which is going to be running at any time.
+136
+So you get an RDS database ready to go running,
+137
+but your EC2 instances, they're not critical just yet.
+138
+What's really important is your data.
+139
+And so they're not running,
+140
+but in case you have a disaster happening,
+141
+Route 53 will allow you to fail over from your server
+142
+on your data center, recreate that EC2 instance in the cloud
+143
+and make it up and running.
+144
+But your RDS database is already ready.
+145
+So here, what do we get?
+146
+Well, we get a lower RPO, we get a lower RTO,
+147
+and we still manage costs.
+148
+We still have to have an RDS running,
+149
+but just the RDS database is running, the rest is not.
+150
+And your EC2 instance only are created
+151
+when you need to do a disaster recovery.
+152
+So Pilot Light is a very popular choice.
+153
+Remember, it's only for critical core systems.
+154
+Warm Standby is when you have a full system up and running,
+155
+but at a minimum size.
+156
+So it's ready to go, but upon disaster,
+157
+we can scale it to production load.
+158
+So let's have a look.
+159
+We have our corporate data center.
+160
+Maybe it's a bit more complicated this time.
+161
+We have a reverse proxy, an app server,
+162
+and a primary database.
+163
+And currently, our Route 53 is pointing the DNS
+164
+to our corporate data center.
+165
+And in the cloud, we'll still have our data replication
+166
+to an RDS secondary database that is running.
+167
+And maybe we'll have an EC2 Auto Scaling group,
+168
+but running at minimum capacity.
+169
+That's currently talking
+170
+to our corporate data center database.
+171
+And maybe we have an ELB as well, ready to go.
+172
+And so if a disaster strikes you,
+173
+because we have a Warm Standby,
+174
+we can use Route 53 to failover to the ELB,
+175
+and we can use the failover to also change
+176
+where our application is getting our data from.
+177
+Maybe it's getting the data now from the other RDS,
+178
+and so we've effectively basically stood by
+179
+and then maybe using auto scaling,
+180
+our application will scale pretty quickly.
+181
+So this is a more costly thing to do now
+182
+because we already have an ELB
+183
+and EC2 Scaling running at any time.
+184
+But again, you can decrease your RPO
+185
+and your RTO doing that.
+186
+And then finally, we get the Multi Site/Hot Site approach.
+187
+It's very low RTO.
+188
+We're talking minutes or seconds,
+189
+but it's also very expensive.
+190
+But you get two full production scales
+191
+running on AWS and on-premise.
+192
+So that means that we have your on-premise data center,
+193
+full production scale.
+194
+You have your AWS data center, full production scale
+195
+with some data replication happening.
+196
+And so here, what happens is that
+197
+because you have a hot site that's already running,
+198
+your Route 53 can route request
+199
+to both your corporate data center and the AWS cloud.
+200
+It's called an active-active type of setup.
+201
+And so the idea here is that the failover can happen.
+202
+You know, your EC2 can failover
+203
+to your RDS database if need be,
+204
+but you get full production scale running
+205
+on AWS and on premise.
+206
+And so this costs a lot of money,
+207
+but at the same time, you're ready to failover already
+208
+and you're running into a multi-DC type of infrastructure,
+209
+which is quite cool.
+210
+Finally, if you wanted to go all cloud,
+211
+you know, it would be the same kind of architecture.
+212
+It would be a multi region.
+213
+So maybe we could use Aurora here
+214
+because we're really in the cloud.
+215
+So we have a primary database in a region,
+216
+and then we have a Aurora global database
+217
+that's being replicated to another region.
+218
+These both regions are working for me,
+219
+and then when I want to failover, you know,
+220
+I will be ready to go full production scale again
+221
+in another region if I need to.
+222
+So this gives you an idea
+223
+of all the strategies you can have for disaster recovery.
+224
+It's really up to you to select
+225
+the disaster recovery strategy you need.
+226
+But the exam will ask you basically
+227
+based on some scenarios, you know, what do you recommend?
+228
+Do you recommend Backup and Restore, Pilot Lights?
+229
+Do you recommend Multi Site or do you recommend Hot Site?
+230
+All that kind of stuff.
+231
+Warm Backups and all that stuff.
+232
+Okay, so finally, disaster recovery tips.
+233
+And it's more like, real life stuff.
+234
+So for backups, you can use EBS Snapshots,
+235
+RDS automated Snapshots and backups, et cetera.
+236
+And you can push all these Snapshots regularly
+237
+to S3, S3 IA Glacier.
+238
+You can implement a Lifecycle Policy,
+239
+you can use Cross Region Replication if you wanted
+240
+to make sure these backups would be in different regions.
+241
+And if you wanted to have your data from on-premise
+242
+to the cloud, Snowball or Storage Gateway
+243
+would be great technologies.
+244
+For high availability, using Route 53
+245
+to migrate DNS from a region to another region
+246
+is really, really helpful and easy to implement.
+247
+But you can also use technology
+248
+to have multi easy implemented, such as RDS Multi-AZ,
+249
+ElastiCache Multi AZ, EFS, S3,
+250
+all these things are highly available by default
+251
+if you enable them.
+252
+Obviously, if you are talking about the higher availability
+253
+of your network, maybe you've implemented Direct Connect
+254
+to connect from your corporate data center to AWS,
+255
+but what if the connection goes down for whatever reason?
+256
+Maybe you can use site-to-site VPN
+257
+as a recovery option for your network.
+258
+In terms of replication,
+259
+you can use RDS Replication (Cross Region),
+260
+Aurora + Global Databases.
+261
+Maybe you can use a database replication software
+262
+to do your on-premise database to RDS.
+263
+Or maybe you can use Storage Gateway as well.
+264
+In terms of automation,
+265
+so how do we, you know, recover from disasters?
+266
+I think you would know already CloudFormation,
+267
+Elastic Beanstalk can help recreate whole new environments
+268
+in the cloud very quickly.
+269
+Or maybe if we use CloudWatch,
+270
+we can recover or reboot our EC2 instances
+271
+when the CloudWatch alarms fail.
+272
+AWS Lambda can also be great
+273
+to customize optimum automation.
+274
+So they're great to do, you know, rest API,
+275
+but they can also be used to automate
+276
+your entire AWS infrastructure.
+277
+And so overall, if you manage
+278
+to automate your whole disaster recovery,
+279
+then you are really, really well set for success.
+280
+And then finally, chaos testing.
+281
+So how do we know how to recover from the disaster?
+282
+Then you create disasters.
+283
+And so an example that's I think widely quoted now
+284
+in the AWS world is that Netflix,
+285
+they run everything on the AWS
+286
+and they have created something called a simian army,
+287
+and they randomly terminate EC2 instances, for example.
+288
+They do so much more,
+289
+but basically, they just take an application server
+290
+and terminate it randomly.
+291
+In production, okay? Not endeavor test, in production.
+292
+So they wanna make sure that their infrastructure is capable
+293
+to survive failures,
+294
+and so that's why they're running a bunch of chaos monkeys
+295
+that just terminate stuff randomly
+296
+just to make sure that their infrastructure is rock solid
+297
+and can survive any types of failures.
+298
+So that's it for this section on disaster recovery.
+299
+I hope you enjoyed it
+300
+and I will see you in the next lecture.
+
+--- Elastic Disaster Recovery (DRS) ---
+
+1
+Hi, and welcome to AWS
+2
+Elastic Disaster Recovery, or DRS.
+3
+This service used to be named Cloud Endure Disaster Recovery
+4
+because it was acquired by AWS
+5
+but then it's been renamed as a proper AWS service.
+6
+So elastic disaster recovery, DRS, allows you to quickly
+7
+and easily recover your physical, virtual,
+8
+and cloud based servers
+9
+into AWS, to do, well, disaster recovery.
+10
+So for example,
+11
+say you wanted to protect your most critical databases.
+12
+That includes Oracle, MySQL, SQL server,
+13
+your enterprise apps, such as SAP
+14
+or you want to protect your data
+15
+in case someone's performs an attack
+16
+and tries to get a ransom out of it.
+17
+Well, for this
+18
+you're going to do continuous block level replication
+19
+of your servers from your corporate data center
+20
+into the cloud, using the elastic disaster recovery service.
+21
+So your operating systems, your apps, your database,
+22
+all of them write to disk and what's going to happen is
+23
+that thanks to an AWS replication agent that is present
+24
+on your corporate data center
+25
+then you're going to get continuous replication
+26
+of these disks into a staging environment in AWS
+27
+with low cost in EC2 instances and EBS volumes.
+28
+And then in case a disaster strikes your data center
+29
+and you need to perform digital recovery,
+30
+then you can fell over within minutes from
+31
+staging to production by creating bigger
+32
+EC2 instances, better EBS volumes,
+33
+and you have performed effectively your disaster recovery.
+34
+And then when your incorporated sensor
+35
+or anywhere else really is back online
+36
+you can perform what's called a failback
+37
+which is that the system falls back
+38
+into your incorporated sensor and you're operating normally.
+39
+Okay?
+40
+So that's it, elastic disaster recovery is a service
+41
+that allows you to do better disaster recovery.
+42
+I hope you liked it.
+43
+And I will see you in the next lecture.
+
+--- Database Migration Service (DMS) ---
+
+1
+So let's say you wanted to migrate a database
+2
+from your on-premise systems to the AWS Cloud.
+3
+In this case, you should use DMS,
+4
+or Database Migration Service.
+5
+It's a quick and secure database service
+6
+that allows you to migrate your database
+7
+from on-premise to AWS, but the cool thing
+8
+is that it's resilient and it's self-healing.
+9
+And all alongside the migration,
+10
+the source database remains available.
+11
+And it supports many types of engines,
+12
+such as homogeneous migration,
+13
+so from Oracle to Oracle, or Postgres to Postgres,
+14
+but also heterogeneous migrations.
+15
+For example, if you want to migrate
+16
+from Microsoft SQL server all the way to Aurora
+17
+and it supports continuous data replication using CDC,
+18
+which is Change Data Capture.
+19
+Finally, to use DMS,
+20
+you need to create an EC2 instance, and that EC2 instance
+21
+will perform the replication tasks for you.
+22
+So very simply, your source database may be on-premise
+23
+and then you're running an EC2 instance
+24
+that has the DMS software
+25
+and it will pull data from the source database,
+26
+in continuously, and put it in the target database.
+27
+So the question is
+28
+what are the sources and what are the targets?
+29
+You don't need to remember them all,
+30
+but the important to see ones,
+31
+just to understand the concepts behind the DMS.
+32
+So the sources can be on-premises databases
+33
+or EC2 instances based databases,
+34
+such as Oracle, Microsoft SQL Server, MySQL,
+35
+MariaDB, PostgreSQL, MongoDB, SAP, and DB2.
+36
+It can also be Azure databases, such as Azure SQL Database.
+37
+It could be Amazon RDS, any database including Aurora.
+38
+It could be Amazon S3 and DocumentDB.
+39
+In terms of targets,
+40
+well we have different options, as well.
+41
+We have on-premises and EC2 instances databases.
+42
+So we can have Oracle, Microsoft SQL Server, MySQL,
+43
+MariaDB, PostgreSQL, SAP.
+44
+We can also have any database on Amazon RDS.
+45
+We can have Redshift, DynamoDB, Amazon S3,
+46
+the OpenSource service, Kinesis Data Streams,
+47
+Apache Kafka, DocumentDB, and Amazon Neptune,
+48
+as well as Redis and Babelfish.
+49
+So you don't need to remember all of these, of course,
+50
+but the general idea is that DMS can help you
+51
+take a database, for example, an on-premise database
+52
+and have it put and exported and migrated onto a target
+53
+that is, pretty much, any database that AWS is offering.
+54
+If you understand this,
+55
+then you have the general idea behind DMS.
+56
+So what if the source database and the target database
+57
+do not have the same engine?
+58
+Then you need to use something called AWS SCT,
+59
+for Schema Conversion Tool,
+60
+and it will convert the database schema
+61
+from one engine to another.
+62
+So for example, if you're using an OLTP, we can migrate
+63
+from SQL server or Oracle to MySQL, PostgreSQL, or Aurora.
+64
+As you can see on the left hand side, the database engine
+65
+is different from the one on the right hand side,
+66
+but also you can transform for analytics process,
+67
+such as Teradata or Oracle, all the way to Amazon Redshift.
+68
+So the idea is that here, the source database
+69
+has a different engine than the Target database.
+70
+In the middle, we have DMS,
+71
+but it's now also running SCT, or Schema Conversion Tool.
+72
+And the thing to know going into the exam
+73
+is that you do not need to use SCT
+74
+if you are migrating the same database engine.
+75
+So if you're doing on-premise PostgreSQL to RDS PostgreSQL,
+76
+it is the same database agent, it is PostgreSQL.
+77
+And so this for, you will not use SCT.
+78
+But if you're doing something such as Oracle to Postgres,
+79
+then you will need to use SCT.
+80
+So just so you know, the database agent is PostgreSQL,
+81
+but RDS is just a platform
+82
+that we're using to run this database engine.
+83
+So how would you go to set up
+84
+a continuous replication for DMS?
+85
+Well, you would have your corporate data center,
+86
+for example, with an Oracle database as a source
+87
+and an Amazon RDS database for MySQL DB as a target.
+88
+And as we can see,
+89
+we have two different kinds of types of database.
+90
+So in this case, we have to use SCT,
+91
+otherwise it will not work.
+92
+So the Schema Conversion Tool.
+93
+So we set up a server with AWS SCT installed
+94
+and we can set it up on-premises,
+95
+this is best practice,
+96
+and then we will do the schema conversion
+97
+into our Amazon RDS database running MySQL.
+98
+Then we can set up a DMS replication instance
+99
+that will do the full load and the change data capture, CDC,
+100
+to have continuous replication.
+101
+And so it will perform the data migration
+102
+by reading the database on-premises,
+103
+the source Oracle database,
+104
+and inserting the data into your private subnets.
+105
+That's it. So that's all you need to know for DMS.
+106
+This is for Database Migration Service.
+107
+Remember, you need to use SCT whenever you have
+108
+two different kinds of databases that you're migrating from.
+109
+And for DMS, there is a multi AZ deployment.
+110
+So when you have this,
+111
+then you have a DMS replication instance in one AZ
+112
+and then you have synchronous replication of that instance
+113
+into another AZ, which is going to be a standby replica.
+114
+So the benefits of using this is, of course,
+115
+to be resilient to a failure in one specific AZ,
+116
+but also gives you data redundancy,
+117
+will eliminate IO freezes and will minimize latency spikes.
+118
+So that's it for this lecture.
+119
+I hope you liked it and I will see you in the next lecture.
+
+--- Database Migration Service (DMS) - Hands On ---
+
+1
+So now let's have a look at AWS DMS.
+2
+So you click on get started,
+3
+and this gives you just an overview page
+4
+of what you can do with DMS,
+5
+but the real magic happens on the left-hand side.
+6
+So this can change, but the idea remains the same.
+7
+You can do a discovery and assessment
+8
+in which you're going to create a data collector,
+9
+find databases, analyze inventory,
+10
+and then use the recommendations.
+11
+You can convert or move to managed,
+12
+so the idea is that you convert a schema
+13
+using the DMS Schema Conversion tool.
+14
+Then you move your data into AWS
+15
+and you move to a managed service,
+16
+or you can migrate or replicate data.
+17
+And here, we choose the end points,
+18
+we're gonna see this in a second.
+19
+We create a provision instance
+20
+and we create a task for the replication.
+21
+You see that for some of these options,
+22
+we have Provisioned or Serverless
+23
+for the migration of the replication.
+24
+And here to convert a database,
+25
+we have this schema conversion.
+26
+Or if we don't convert the schema,
+27
+we have a homogeneous data migration.
+28
+So this is just to give you an overview of DMS,
+29
+but the real magic happens on left-hand side.
+30
+So here you're going to go into Endpoints
+31
+and we're going to look at it.
+32
+So first of all, this is how to move data.
+33
+So it could be from source to target,
+34
+and so you must create an endpoint
+35
+for the source and the target.
+36
+So the idea is that I will create an endpoint,
+37
+and here you choose whatever you want.
+38
+So you enter an identifier,
+39
+and then you have to choose the source engine.
+40
+So you have all these options for the source engines.
+41
+For example, you choose Amazon Aurora MySQL.
+42
+And then you have to enter
+43
+all the information about the endpoint.
+44
+We cannot do this
+45
+because we don't have an Aurora database ready,
+46
+but you get the idea.
+47
+Finally, you have the option for some databases
+48
+to test the endpoint connection.
+49
+This is optional, but at least you're able to see
+50
+whether or not your replication instance,
+51
+that we'll create in a second,
+52
+can connect to your source.
+53
+So you have the same type of idea with target
+54
+in which you say what you want DMS to write to.
+55
+And again, you need to choose a target engine
+56
+amongst the list.
+57
+And you enter some configuration.
+58
+For example, if you choose DynamoDB right here,
+59
+you enter a service role access, endpoint setting,
+60
+wizard, editor, and so on,
+61
+and then test again the connection to the endpoint.
+62
+So you get a lot of information as well
+63
+when you choose an endpoint on the right-hand side
+64
+around what to do and the best practices.
+65
+So once you've created two endpoints,
+66
+you can create a replication task.
+67
+And so you have two options.
+68
+For this task, you can either create
+69
+a replication instance,
+70
+and here you create a replication instance
+71
+by actually creating a physical server.
+72
+So here, we can choose the size of the server,
+73
+as you can see.
+74
+For the bigger replication task,
+75
+you may want to choose a bigger server.
+76
+And you can click here to estimate
+77
+the instance class and storage.
+78
+And then you can configure it.
+79
+You say whether or not you want high availability,
+80
+the networking type,
+81
+you apply a subnet group,
+82
+you will apply security groups and so on,
+83
+and then you have an instance.
+84
+Or optionally, you can use serverless.
+85
+And so if it's serverless,
+86
+then you don't need to provision an instance.
+87
+So here, when you go to Provisioned instances,
+88
+it's not to do serverless, it's to do the opposites.
+89
+So when you go to tasks, here we go,
+90
+you can create a task,
+91
+and you're going to specify the source database endpoint
+92
+that we've created from before,
+93
+the target database endpoint that we've created after,
+94
+and then the task mode.
+95
+So if it's provisioned,
+96
+we need to select the provisioned instance
+97
+that we'll have created from before,
+98
+or if it's serverless,
+99
+then DMS will automatically adjust
+100
+the level of compute needed
+101
+for your migration error application task,
+102
+and we don't need to select the type of instance we need.
+103
+So this is an easier option, I would say.
+104
+Now you choose the test types.
+105
+So you want to migrate data once,
+106
+do you want to migrate and replicate?
+107
+Which means a full load
+108
+and then anytime the source data changes,
+109
+you're going to replicate these changes,
+110
+it's called CDC.
+111
+Or do you want to just do the replication?
+112
+And then for how long?
+113
+And then once you've done that,
+114
+based on what your source and your target is,
+115
+you can specify some settings and so on
+116
+for some logging, some connectivity,
+117
+how to do it, so it's quite a complete service.
+118
+To go deep into setting a replication, it takes time.
+119
+But from this overview,
+120
+what I want to show you is that you have the idea
+121
+behind all the steps needed to set up DMS
+122
+and migrate a database
+123
+from one source engine to a target engine,
+124
+and with two options,
+125
+serverless or provisioned instances.
+126
+So that's it for this lecture,
+127
+I hope you liked it,
+128
+and I will see you in the next lecture.
+
+--- RDS & Aurora Migrations ---
+
+1
+So here is a short lecture
+2
+that unfortunately you have to learn for the exam,
+3
+maybe for one question.
+4
+It is a way to do migrations to Aurora MySQL.
+5
+So if you have an RDS database
+6
+and you want to move it into Aurora MySQL,
+7
+the option number one is to take a database snapshot
+8
+from the RDS MySQL database
+9
+and you restore this snapshot as a MySQL Aurora database.
+10
+Potentially, you'll have some downtime
+11
+because you have to stop operations
+12
+on the first MySQL database before migrating to Aurora.
+13
+The option number two, which is more continuous,
+14
+is to use and create an Amazon Aurora Read Replica
+15
+on top of your RDS MySQL.
+16
+So it's a possibility indeed.
+17
+And once the Replica lag is zero,
+18
+that means that once the Aurora Replica
+19
+has fully caught up with MySQL,
+20
+you can promote it into its own database cluster.
+21
+Now this can take a bit more time
+22
+than the database snapshot option
+23
+and cost some money because of the network cost
+24
+that may be associated with this replication.
+25
+The other option is, if you have a MySQL database
+26
+that is external to RDS,
+27
+then you can back it up
+28
+using the Percona XtraBackup utility.
+29
+This will create a backup file and you put it in Amazon S3
+30
+and then there is an option from Amazon Aurora
+31
+to directly import this backup file
+32
+into a new Aurora MySQL DB cluster.
+33
+Just so you know,
+34
+this only supports the Percona XtraBackup utility.
+35
+The other option is to use the MySQL Dump utility
+36
+to run it against a MySQL database
+37
+and you would pipe the output of this
+38
+into your existing Amazon Aurora database.
+39
+So this is taking a lot of time
+40
+and this does not leverage Amazon S3.
+41
+And a last option is to use Amazon DMS,
+42
+if both databases are up and running
+43
+to do continuous replication between the two databases.
+44
+We do the same process for PostgreSQL,
+45
+so for RDS, it's pretty much similar.
+46
+You have two option to use the database snapshots
+47
+restored as an Amazon Aurora database
+48
+or you create an Amazon Aurora Read Replica of PostgreSQL
+49
+to have to have a Read Replica
+50
+and then you wait until a replication lag is zero
+51
+to promote it into its own database cluster.
+52
+And if it's an external PostgreSQL database
+53
+that you want to migrate to Aurora,
+54
+you can create a backup of it
+55
+and then you put the backup in Amazon S3,
+56
+and then you import the data
+57
+using the AWS S3 Aurora extension
+58
+and this will create a new database out of it.
+59
+And finally, again, you can use DMS to migrate
+60
+from PostgreSQL to Amazon Aurora continuously.
+61
+Okay. That's it for this lecture.
+62
+I hope you liked it and I will see you in the next lecture.
+
+--- On-Premises Strategies with AWS ---
+
+1
+Okay, so yet another theoretical lecture,
+2
+but I still want to mention it
+3
+because I think it's extremely important
+4
+going to the exam.
+5
+You need to know about the services that AWS offers
+6
+at a very, very high level,
+7
+but just hear about them once
+8
+to do on-premise strategy with the cloud.
+9
+So, we have the ability to download
+10
+the Amazon Linux 2 AMI as a virtual machine,
+11
+and it will be in the ISO format.
+12
+And you can load this ISO image
+13
+into the common software used to create VMs.
+14
+That includes VMware, KVM,
+15
+Virtual Box, which is Oracle VM,
+16
+or Microsoft Hyper V.
+17
+And this would allow you to run Amazon Linux 2
+18
+on your on-premise infrastructure directly using that VM.
+19
+That means that you can make it work
+20
+with some user data and so on.
+21
+So, quite cool to think about.
+22
+Then, we have a feature called VM Import/Export,
+23
+and what this allows you to do
+24
+is to migrate your existing VMs and applications
+25
+into EC2 directly using this feature.
+26
+And you can also create a,
+27
+for example, a disaster recovery repository strategy
+28
+if you had a lot of on-premise VMs,
+29
+but you wanted to back them up into the cloud.
+30
+And because it's called import and export,
+31
+you can export back the VMs from EC2
+32
+to your on-premise environment if you wanted to.
+33
+Now, for AWS Application Discovery Service,
+34
+well, this is a service that allows you
+35
+to gather information about your on-premise servers
+36
+and plan a migration.
+37
+This is very high level,
+38
+but it does give you some server utilization information
+39
+and dependency mappings,
+40
+and that could be quite helpful
+41
+when you want to do a massive migration
+42
+from on-premise to the cloud.
+43
+Finally, you can track all that migration
+44
+using the AWS Migration Hub.
+45
+Then, we have AWS Database Migration Service, or DMS,
+46
+which allows you to replicate from on-premise to AWS,
+47
+AWS to AWS, or AWS to on-premise for your database.
+48
+This is quite nice,
+49
+because if you had a MySQL
+50
+or a PostgreSQL database running on premise
+51
+and you wanted to start moving your workload into AWS,
+52
+you could use DMS to replicate the database in the meantime.
+53
+And when you're ready,
+54
+you can fully transition to using AWS only.
+55
+And the nice thing about it
+56
+is it works with various database technologies.
+57
+That includes Oracle, MySQL, DynamoDB, et cetera,
+58
+and allows you to do some really fancy use cases,
+59
+for example, migrate data from MySQL into DynamoDB, okay?
+60
+And finally, you have the AWS Application Migration Service,
+61
+or MGN,
+62
+which is used for incremental replication
+63
+of on-premises live servers to AWS.
+64
+So, at a high level, you may be like,
+65
+"Oh, this is a lot of services."
+66
+Just remember the names at a high level.
+67
+So, Linux 2 on on-premise is possible.
+68
+We can do VM import and export for on-premise and EC2.
+69
+We can have migration services,
+70
+such as Application Discovery Service,
+71
+AWS Migration Hub,
+72
+Database Migration Service
+73
+and Server Migration Service,
+74
+DMS and SMS.
+75
+And just remember those at a high level, that's it,
+76
+just so you can see,
+77
+if you see the name in the question,
+78
+then you're not taken by surprise, okay?
+79
+You know that all these things have to relate to on-premise.
+80
+Okay, well, that's for this short theory lecture.
+81
+I will see you in the next lecture.
+
+--- AWS Backup ---
+
+1
+Hello, and welcome to this lecture on AWS Backup.
+2
+So AWS Backup is a fully managed service
+3
+and it allows you to centrally manage
+4
+and automate backups across all
+5
+your AWS services.
+6
+And the list is getting bigger and bigger
+7
+by the day.
+8
+So the idea is that you want
+9
+to have a central place.
+10
+You don't want to create any custom scripts
+11
+or have any manual processes.
+12
+You want to have a central view
+13
+of your backup strategy.
+14
+So supported services are pretty wide.
+15
+For example, Amazon EC2, EBS, Amazon S3, RDS and
+16
+all database engines supported,
+17
+Aurora, DynamoDB, DocumentDB, Amazon Neptune,
+18
+EFS, FSX, including Lustre,
+19
+and Windows File Server
+20
+and probably others.
+21
+AWS Storage Gateway,
+22
+such as the Volume Gateway.
+23
+And it's more that can come over time, but I'm
+24
+not necessarily going to update
+25
+this lecture because, well
+26
+it doesn't really matter.
+27
+The ideas that you get the concept behind
+28
+database backup
+29
+and the most important services
+30
+are shown on the slide.
+31
+So it supports cross-region backups.
+32
+Doesn't mean that you cant have
+33
+your backup pushed to another region
+34
+for disaster recovery strategy,
+35
+all in one place.
+36
+And also supports cross-account backups,
+37
+if you are using multiple accounts
+38
+in your AWS strategy.
+39
+So, it supports point
+40
+in time recovery for supported services,
+41
+such as Aurora.
+42
+It supports on-demand and scheduled backups.
+43
+There's tag-based backup policies to
+44
+make sure you only backup
+45
+maybe resources that have been tagged
+46
+with production.
+47
+And you can create backup policies known
+48
+as Backup Plans.
+49
+You define the frequency, for example
+50
+every 12 hours or weekly or monthly
+51
+or whatever cron expression you have,
+52
+the Backup Window.
+53
+If you want to transition the backup
+54
+itself to Cold Storage.
+55
+So never, or maybe after some days,
+56
+some weeks, some months or some years,
+57
+and the Retention Period of your backup.
+58
+So every always or days, weeks, months, and years.
+59
+So it's quite supportive and comprehensive
+60
+and it supports really most services,
+61
+so it's a really nice addition
+62
+to the AWS services.
+63
+So if we have a look at AWS Backup,
+64
+we create a backup plan, as I said, and then
+65
+you assign specific AWS resources
+66
+that are important to you.
+67
+So here is a list, but it can get bigger.
+68
+And then once it's done well,
+69
+automatically your back,
+70
+your data is going to be backed up to Amazon S3
+71
+in an internal bucket that is specific
+72
+to AWS Backup.
+73
+And another feature you need to know about
+74
+for AWS Backup is the Vault Lock.
+75
+So you enforce a WORM read, Write Once Read Many
+76
+Policy.
+77
+That means that all your backup
+78
+that you store in your Backup Vault
+79
+cannot be deleted.
+80
+So the idea is that, you know for sure,
+81
+you can prove it that thanks
+82
+to the Vault Lock Policy,
+83
+you cannot delete your backups.
+84
+And it provides an additional layer of defense
+85
+for your backups against, for example
+86
+inadvertent or malicious delete operations or
+87
+updates that shorten or alter
+88
+the retention period.
+89
+And even the root user itself cannot delete
+90
+backups when enabled.
+91
+So it gives you strong guarantees on the safety
+92
+of your backups.
+93
+Okay, that's all you need to know
+94
+for the AWS Backup service.
+95
+I hope you liked it,
+96
+and I will see you in the next lecture.
+
+--- AWS Backup - Hands On ---
+
+1
+Okay, so let's practice using AWS Backup.
+2
+So I'm going to type AWS Backup into the search bar
+3
+and open the Backup service.
+4
+So we are going to create our first backup plan.
+5
+So I'm going to click on Create Backup plan.
+6
+And we have three options.
+7
+Either we start with a template or we build a new plan,
+8
+or we define a plan using JSON.
+9
+So the simplest for us is to start with a template,
+10
+and we can have different templates.
+11
+For example, Daily-35day-Retention,
+12
+Daily-Monthly-1yr-Retention, and so on.
+13
+So let's go with Daily-Monthly-1yr-Retention,
+14
+and I'll call it TestPlan.
+15
+Next, we click at Backup rules.
+16
+And you see we can have many Backup rules
+17
+in our Backup rules.
+18
+So we have two, we have daily Backups and monthly.
+19
+So if I click on Daily Backup,
+20
+as we can see, there's a rule name.
+21
+The Backup vault is wherever the backup is going.
+22
+So we can use a default one by AWS,
+23
+or we can create our own new Backup vault if we wanted to.
+24
+The Backup frequency, the Backup window, so when to start,
+25
+which is 5:00 AM UTC, start within eight hours,
+26
+or you can customize it if you want.
+27
+Whether or not you want to transition to cold storage,
+28
+never, after some days, weeks, months, or years.
+29
+And the retention period of your backup,
+30
+for example, this one is retained for five weeks.
+31
+Then we can also copy these backups
+32
+to a specific destination.
+33
+For example, another region for disaster recovery purposes.
+34
+So I'm going to save this backup rule.
+35
+And for monthly while we get the similar thing,
+36
+so it's going into the default Backup vault.
+37
+It's monthly on day one of each month,
+38
+and the rest looks the same.
+39
+So we actually transition these ones to cold storage
+40
+after one month, and then we retain them for one year.
+41
+Okay, so we have these ready,
+42
+and then I can just scroll down and click on create plan.
+43
+So now our test plan is created
+44
+and we need to assign resources to it.
+45
+So I'm going to click on assign resources,
+46
+and I will just call it TestAssignments.
+47
+And so here for IAM role,
+48
+we're going to use the default role,
+49
+which is going to create a role for us
+50
+with the correct permissions,
+51
+or you can choose your own one,
+52
+but let's go with default role, easy.
+53
+And then for resource selection,
+54
+we have two things we can do.
+55
+Number one, we can include all resource types,
+56
+or number two, we can include specific resource types.
+57
+For example, if you wanted to just have a DynamoDB table,
+58
+and then you could select the resource you want on there,
+59
+you could do this.
+60
+Or if you wanted to, you can have all tables.
+61
+So it's one way of doing it.
+62
+Or if you go with all resource types,
+63
+usually we'd use this as a combination with tags.
+64
+And so for tags you would say, well,
+65
+if the key environment is equal to the value production,
+66
+then do a backup.
+67
+This would be the kind of use cases for backups,
+68
+but you're free to do anything you want, of course.
+69
+And then when you're done, you click on assign resources.
+70
+And so just to make it very, very clear,
+71
+if I went into EC2 and I were to create an EBS volume,
+72
+and that volume would have, so for example, one gigabytes
+73
+and then the key would be environment production.
+74
+Then this would be automatically backed up by my Backup plan
+75
+because it has the correct tags.
+76
+So if we look at our volume right now,
+77
+and we go into tags,
+78
+as we can see has environment production,
+79
+which corresponds to the tags that I've set up
+80
+for my backup plan, okay?
+81
+So this is the assignments right here.
+82
+And we can have multiple assignments as well in here. Okay?
+83
+And then that's it.
+84
+The backup plan is going to run automatically,
+85
+and then the backups are going to happen here
+86
+in my Backup vaults, okay?
+87
+The jobs are the jobs that are going to be scheduled
+88
+and happening.
+89
+So we have backup jobs, restore jobs
+90
+and copy jobs if we wanted to.
+91
+And then we can look at the settings.
+92
+So the settings is around,
+93
+do you want to have backup policies,
+94
+cross account monitoring,
+95
+cross account backups, and so on.
+96
+But we've seen the basics of how backups work.
+97
+And so that's it.
+98
+I want to show you all this, okay?
+99
+That's all you need to know.
+100
+And I'm going to delete everything.
+101
+So for that, please make sure to delete your EBS volume,
+102
+or you could wait a day
+103
+if you wanted to see if the backups work, obviously.
+104
+And then when you're done,
+105
+you take the assignments and you delete it.
+106
+So type the name of the assignment in here,
+107
+and then for the Daily Backup rules,
+108
+you can delete them or delete directly the Backup plan.
+109
+And for this, just enter the name of the backup plan
+110
+and press delete.
+111
+And that's it.
+112
+We've seen backups.
+113
+I hope you liked it, and I will see you in the next lecture.
+
+--- Application Migration Service (MGN) ---
+
+1
+So there are two use cases
+2
+when you move to the cloud.
+3
+For example, you wanna start fresh
+4
+and you wanna leverage the cloud directly.
+5
+In this case, you don't need to do a migration.
+6
+But if you have on-premises servers and data centers
+7
+and you want to migrate to the cloud,
+8
+then you need to plan your migration.
+9
+And a way to do this is to plan your migration
+10
+using the AWS Application Discovery Service.
+11
+So the idea is that you're going to scan your servers,
+12
+and going to gather information
+13
+about the server utilization data and dependency mapping
+14
+which are going to be important for your migrations
+15
+so we can understand how to migrate
+16
+and what to migrate first.
+17
+So there are two types of migration you can do.
+18
+One is called the Agentless Discovery using a Connector.
+19
+And this gives you information around your virtual machines,
+20
+your configuration, your performance history
+21
+such as a CPU, memory, and disk usage.
+22
+Or you can run an agent
+23
+to do an Application Discovery Agent,
+24
+and this gives you more updates
+25
+and more information from within your virtual machines.
+26
+For example, system configuration, performance,
+27
+processes are running, and the details
+28
+of all the network connections between your systems,
+29
+which is good to get your dependency mapping.
+30
+Now, all this results data can be viewed
+31
+within another service called the AWS Migration Hub.
+32
+So this Application Discovery Service
+33
+really helps you to map out what you need to move
+34
+and how they are interconnected.
+35
+But then you actually need to move.
+36
+And the simplest way to move from on-premises
+37
+to AWS is using the AWS Application Migration Service,
+38
+also called MGN.
+39
+So this used to be called CloudEndure Migration,
+40
+but now it's been replaced.
+41
+And the idea is that using
+42
+the AWS Application Migration Service, so MGN,
+43
+you can do rehosting, also called lift-and-shift solution,
+44
+in which you convert your physical, virtual,
+45
+or other service on the other clouds to run natively on AWS.
+46
+How does that work?
+47
+Well, say you have a corporate data center
+48
+with OS apps and databases, and they run on disks.
+49
+What's going to happen is that you're going to run
+50
+the Application Migration Service.
+51
+And then the replication agent
+52
+that you have to install on your data center
+53
+is going to perform a continuous replication of your disks
+54
+so that you have, for example, low-cost EC2 instances
+55
+and EBS volumes that get this replication of data.
+56
+Now, the day you're ready to perform a cut over,
+57
+you can actually move from staging to production,
+58
+and have a bigger EC2 instance of the size you want,
+59
+as well as EBS volumes that match the performance you need.
+60
+So the idea is that you replicate data,
+61
+and then at some point, you do a cut over.
+62
+And that is by far the simplest way of doing it.
+63
+So this supports a wide range of platforms,
+64
+operating systems, and databases.
+65
+And this gives you minimal downtime,
+66
+as well as reduced costs
+67
+because, well, you don't need to hire complex engineers
+68
+to do this.
+69
+This is done automatically by this service.
+70
+So that's it.
+71
+I hope you liked it.
+72
+And I will see you in the next lecture.
+
+--- Transferring Large Datasets into AWS ---
+
+1
+So here is a quick summary lecture
+2
+to describe to you all the ways you can transfer
+3
+a large amount of data into AWS
+4
+and which one is going to be the most appropriate based
+5
+on the constraints you have.
+6
+So for example,
+7
+let's say we want to transfer 200 terabytes of data
+8
+into the cloud,
+9
+and what we have currently
+10
+is a 100 megabits per second internet connection.
+11
+So, option number one would be to use the internet,
+12
+the public internet,
+13
+or establish a Site-to-Site VPN,
+14
+which also uses the public internet.
+15
+And the advantage of this is that it's immediate to set up.
+16
+We can leverage our connection right away.
+17
+If we do a quick computation,
+18
+what we get is that it will take 200 terabytes converted
+19
+into gigabytes and then megabytes,
+20
+then you have to convert this to megabits,
+21
+so times eight,
+22
+then you divide by the speed you have,
+23
+so 100 megabits per second,
+24
+and that gives you about 16 million seconds,
+25
+which is the equivalent of 185 days.
+26
+So, almost half a year
+27
+to transfer 200 terabytes of data
+28
+over 100 megabits internet connection,
+29
+so this can take a long time.
+30
+Obviously, based on the size you have of the data,
+31
+it could be appropriate or not.
+32
+And in this case,
+33
+I will never probably transfer 200 terabytes
+34
+over this internet connection speed.
+35
+If I want to transfer now over direct connect
+36
+and say we have provisioned a one gigabits per second line,
+37
+then the first thing
+38
+is that it's going to be a long, one-time setup.
+39
+So if I'd never had direct connect before,
+40
+it will take about a month
+41
+to get this connection established.
+42
+And then, once I have this connection,
+43
+it will take about,
+44
+if we do the exact same computation,
+45
+10 times faster than my first connection,
+46
+so it's gonna end up being 18.5 days.
+47
+So a lot quicker, but still quite long.
+48
+Now, if I use Snowball, how long do I need?
+49
+Well, first of all, I need to order my Snowballs,
+50
+and then it takes about one week all in all
+51
+from the Snowball to being delivered, to being loaded,
+52
+to being sent back to AWS and the data being transferred.
+53
+It'll take about one week for the end-to-end transfer
+54
+and on top of it,
+55
+if there was a database
+56
+that was being transferred through Snowball,
+57
+it could be combined with DMS
+58
+to transfer the rest of the data afterwards.
+59
+So finally, for ongoing replications,
+60
+so this is like for one-off transfers.
+61
+For ongoing replications,
+62
+we could use techniques such as Site-to-Site VPN,
+63
+again, because we'll have less data to transfer
+64
+on an ongoing basis,
+65
+or use direct connect, or use DMS,
+66
+or use a service like we just saw, like DataSync.
+67
+So, all these things would allow us to transfer the data
+68
+on an ongoing basis continuously or not
+69
+through some more reasonable internet lines,
+70
+such as a Site-to-Site VPN or direct connect, okay?
+71
+Snowball is going to be used more
+72
+for one-off large transfers.
+73
+And as you can see, Snowball in this case
+74
+is really, really helpful into speeding up
+75
+our first data transfer into AWS, okay?
+76
+So, this lecture is just about to make you realize
+77
+which use case is more appropriate
+78
+and what are the constraints of each use case.
+79
+And then in the exam,
+80
+you will be asked to figure out
+81
+what is the easiest, fastest, or most reliable way
+82
+to send data into AWS
+83
+if it's a small data or a large data set.
+84
+All right, that's it.
+85
+I will see you in the next lecture.
+
+--- VMware Cloud on AWS ---
+
+1
+So now let's talk about VMware Cloud on AWS.
+2
+So here's some context.
+3
+When you have an on-premises data center,
+4
+sometimes you would use the VMware Cloud
+5
+to manage your own on-premise data center.
+6
+So you have your vSphere-based environment
+7
+and your VMs all managed from VMware Cloud.
+8
+And consumers who have their own data center with VMware,
+9
+they want to extend their data center capacity
+10
+to also leverage the cloud and in particular,
+11
+they want to leverage AWS.
+12
+But they want to keep on managing everything,
+13
+their own data center and the cloud,
+14
+using the VMware Cloud software.
+15
+So this is the idea behind VMware Cloud on AWS.
+16
+Thanks to it you can extend
+17
+your entire VMware Cloud infrastructure to also be on AWS
+18
+and run vSphere, vSAN, NSX, and so on,
+19
+which you don't have to know
+20
+but they are VMware sub-services.
+21
+So once you have this, what are the use cases?
+22
+Well, the first thing is that now you can
+23
+extend computing power from data center to the cloud
+24
+or storage from the data center to the cloud,
+25
+and therefore you can start migrating
+26
+your VMware-based workloads to AWS.
+27
+You can also run your production workloads
+28
+across multiple data centers, and you can choose between
+29
+private, public, or hybrid cloud environments.
+30
+And finally, it gives you a disaster recovery strategy
+31
+because now you can quickly go to the cloud
+32
+using the same suite of software that you know.
+33
+And because that now you are on the AWS cloud
+34
+you can actually access the different AWS services
+35
+and start leveraging them such as Amazon EC2,
+36
+Amazon FSx, S3, RDS,
+37
+Direct Connect, Redshift, and so on.
+38
+So that's it.
+39
+It's just a high level overview that you need to know.
+40
+I hope you liked it, and I will see you in the next lecture.
+
+--- Event Processing in AWS ---
+
+1
+So let's talk about event processing in AWS
+2
+and the different possibilities we have
+3
+and the kind of constraints that we have alongside them.
+4
+So the first one is to use SQS and Lambda.
+5
+And if you use SQS and Lambda with our SQS queue
+6
+in the Lambda function
+7
+and so the events are going to be inserted
+8
+into our SQS queue.
+9
+And the Lambda service is going to pull the SQS queue.
+10
+And in case there are issues,
+11
+it's going to put back the messages into the SQS queue
+12
+and try and retry to pull them, okay?
+13
+And this can go into some sort of infinite loop.
+14
+So in case there is a big problem with one message,
+15
+what we can do is set up SQS to send the message
+16
+to a dead letter Q after say, five tries, okay?
+17
+This will be our way out of it.
+18
+Now we can also use SQS FIFO and Lambda.
+19
+In this case, FIFO means first in, first out.
+20
+And that means that the messages
+21
+are going to be processed in order.
+22
+So now our Lambda function is going to try
+23
+and retry to get the messages from the queue.
+24
+But because it's just to process them in order,
+25
+in case one message doesn't go through,
+26
+it's going to be a blocking, never ending process
+27
+and the whole queue processing will be blocked.
+28
+In which case, yet again, we can set up a dead letter queue
+29
+to send these messages off to SQS queue
+30
+and allow our functions to keep on processing it.
+31
+Okay.
+32
+Next, we have another option, SNS and Lambda.
+33
+In this case, SNS is a service
+34
+and the message goes through with it
+35
+and then the message is sent asynchronously to Lambda.
+36
+In which case, the Lambda function
+37
+is a different retry behavior.
+38
+In case it cannot process that message,
+39
+it's going to retry, but internally.
+40
+And that retry will be three times.
+41
+And if the message is not processed successfully,
+42
+it will be discarded, or we can set up a DLQ.
+43
+But this time, at the Lambda service level
+44
+to send that message into, for example, the SQS queue
+45
+for letter processing.
+46
+So as we can see, this is a different kind of architecture.
+47
+With SQS, the DLQ is set up on the SQS side.
+48
+And for Lambda, the DLQ is set up on the Lambda side.
+49
+So different architectures with different needs.
+50
+Now let's talk about the Fan Out pattern,
+51
+which is, how do you deliver a data to multiple SQS queues?
+52
+So, option one, we have our application
+53
+and it has the AWS SDK installed on it.
+54
+And we have say three SQS SQS
+55
+we'd like to deliver a message on to.
+56
+So what we could do, very easily,
+57
+is to write our application,
+58
+to first send a message to the first queue
+59
+and then send a message to the second queue.
+60
+And then send again the same message to the third queue.
+61
+And that would work,
+62
+but that would be somewhat not too reliable, right?
+63
+Because for example, if our application crashes
+64
+after we send a message to the second queue,
+65
+then the third queue will never receive the last message.
+66
+And the content of each queue will be different.
+67
+So while this works, this is not very reliable
+68
+and this is not pretty.
+69
+Instead, we can use a fan out pattern,
+70
+which is to combine your SQS queue
+71
+with an SNS topic in the middle.
+72
+And in this case, what happens?
+73
+Well, our SQS queues are going to be subscribers
+74
+of our SNS topic in the middle?
+75
+And what will happen is that anytime we send a message
+76
+to the SNS topic, it will be sent by the SNS service
+77
+into all of our SQS queues, which is a higher guarantee.
+78
+So from our application perspective now,
+79
+we just do a put into our SNS topic.
+80
+And automatically, the SNS service
+81
+will fan out that message into your other SQS queue.
+82
+And this works really well.
+83
+And that's a very common design pattern on AWS.
+84
+Regarding S3 event notifications,
+85
+it's possible for you to react
+86
+to specific events on your Amazon S3 buckets
+87
+such as when the objects is created, removed, restored,
+88
+when replication happens,
+89
+and you can filter by name as well.
+90
+So a use case would be to generate thumbnails
+91
+of images uploaded to Amazon S3.
+92
+So from Amazon S3 events, you can send to SNS,
+93
+SQS or a Lambda function
+94
+and you can create as many S3 events as desired.
+95
+And these event notifications
+96
+typically get delivered within seconds,
+97
+but sometimes it can take a minute or longer.
+98
+So you have to remember these three integrations.
+99
+And there's one last, which is to use Amazon event bridge.
+100
+So in this case
+101
+the events will happen in your Amazon S3 buckets.
+102
+And all the events are actually sent
+103
+to now Amazon event bridge.
+104
+And using rules, we can send them
+105
+to over 18 AWS services as destination.
+106
+So why would you use EventBridge?
+107
+Well, because you get filtering options
+108
+with adjacent rules.
+109
+So you can filter on metadata, on object-size,
+110
+on name and so on.
+111
+You can also send it to multiple destinations at once,
+112
+such as step functions, Kinesis Streams or Data Firehose.
+113
+And then, you can also the EventBridge capabilities,
+114
+such as archiving, replaying,
+115
+and reliable delivery of events,
+116
+which is something that may be desirable.
+117
+Talking about EventBridge.
+118
+Remember, you can intercept any API call
+119
+with Amazon EventBridge
+120
+by using the integration with CloudTrail.
+121
+So for example, if you wanna react to the events
+122
+of a user deleting a table from DynamoDB
+123
+so using the delete table API call.
+124
+Then this API call is going to be logged in CloudTrail.
+125
+Actually all of them will be logged in CloudTrail.
+126
+These will trigger an event in Amazon EventBridge.
+127
+And from this, you can create alerts to alert Amazon SNS.
+128
+And finally, you can have external events onto AWS.
+129
+For example, using the API gateway.
+130
+So they say clients will send the request
+131
+into an API gateway.
+132
+The API gateway will send messages
+133
+into Kinesis Data Stream.
+134
+The records will end up at Nemesis data Firehose
+135
+and then the data for example, can end up in Amazon S3.
+136
+So you've seen a lot of options to integrate events
+137
+in AWS and to build some cool automations.
+138
+I hope you liked it and I will see you in the next lecture.
+
+--- Caching Strategies in AWS ---
+
+1
+Okay, so let's talk about caching strategies
+2
+on AWS, and what they imply.
+3
+So this is a typical solution architecture
+4
+that I've just described, it could be,
+5
+obviously, very different for you.
+6
+But, we have something that we know of.
+7
+So we have CloudFront in front of an API Gateway,
+8
+which is in front of our application logic,
+9
+could be EC2, could be Lambda.
+10
+Our application stores and uses data from the database,
+11
+and maybe you will use an internal cache
+12
+such as Redis, Memcached and DAX.
+13
+And then, that's where the dynamic routes,
+14
+or all the dynamic content.
+15
+And there be will an aesthetic content route,
+16
+in which our client goes through a CloudFront
+17
+and the CloudFront will source data from S3.
+18
+So this is something we've seen, this is not very new.
+19
+But what I wanna talk about
+20
+is all the caching strategies you have,
+21
+and their implication.
+22
+So, if we look at CloudFront,
+23
+these two CloudFronts right here
+24
+they're doing caching at the edge.
+25
+That means that they're doing caching as close as possible
+26
+to our users.
+27
+So that means that if we enable caching in CloudFront,
+28
+and the users do hit the cache, then they get a response
+29
+right away, it's very very quick.
+30
+But because it's at the edge, there is a chance
+31
+that things have changed in the back end,
+32
+and obviously that the thing is outdated here.
+33
+So we can use a TTL to make sure
+34
+the cache is often very renewed,
+35
+and the new stuff is picked up from backend.
+36
+And so we have a balancing act to do between
+37
+how much more to cache at the edge,
+38
+versus how much we want to cache in the app logic.
+39
+Okay, next, we go to API gateway.
+40
+And API gateway also has some caching capabilities,
+41
+so it doesn't have to be used with CloudFront.
+42
+And so the API gateway is a regional service
+43
+and so in case we do use the cache at the API gateway,
+44
+then the cache will be regional.
+45
+So that means that where there's going to be network lying
+46
+between the clients and the API gateway,
+47
+if the cache is hit here.
+48
+Then we have our app logic.
+49
+And our app logic usually doesn't do any caching,
+50
+but it will do caching in a cache that we could use
+51
+such as Redis, Memcached, or DAX if we have DynamoDB.
+52
+And the idea here is that we don't want to repeatedly hit
+53
+our database, which does not have any caching capability.
+54
+We want to make sure that the frequent queries
+55
+or the complex queries, the result is stored into
+56
+a shared cache that can be accessed
+57
+by your app logic more easily.
+58
+And so here, we are saving by using caching here.
+59
+We are saving pressure on our database,
+60
+and we are augmenting the read capacity.
+61
+Finally, I want you to notice that
+62
+there is no caching capability in your database
+63
+in Amazon S3 and so on.
+64
+And so, as we move along this line of caching,
+65
+the more we move alongside, the more there's gonna be
+66
+a computation to cost and it's gonna be a latency.
+67
+So it's really up to you, there's no right way
+68
+or wrong way of doing caching.
+69
+It's all up to what you want to achieve
+70
+and how you want to set up your application
+71
+to achieve that behavior.
+72
+So it's all about choosing where do we want to cache content
+73
+how do we want to cache content,
+74
+how long do we want to cache content,
+75
+and then, are we okay with some latency,
+76
+and which content actually do we want to be cached?
+77
+So, this lecture again is not a "you should do this",
+78
+it's just to hopefully show you that
+79
+there's a lot of different ways to do caching on AWS,
+80
+and it really depends on what the scenario is
+81
+to figure out where the caching
+82
+is going to be most appropriate and most efficient.
+83
+Okay, that's it, I will see you in the next lecture.
+
+--- Blocking an IP Address in AWS ---
+
+1
+Okay, so let's talk about
+2
+a little bit of networking
+3
+because I want you to understand how it works
+4
+to block an IP address if you want it to in AWS.
+5
+So say for example, we have the architecture
+6
+of an EC2 instance in a public subnet
+7
+and a client wants to access it.
+8
+So the first line of defense in your public subnet
+9
+is going to be your Network ACL, or NACL.
+10
+And with it you can very cheaply and very simply
+11
+explicitly write, deny, or allow rules
+12
+which will allow or block the client if you need to.
+13
+But say you have a default Network ACL, for example,
+14
+and everything is allowed through,
+15
+your second line of defense
+16
+is going to be your Security Group.
+17
+And here you have no deny rules,
+18
+but you can only have allow rules,
+19
+so if you know in advance the IP of your clients,
+20
+you can specifically only allow
+21
+your clients to get to your EC2 instance.
+22
+If the traffic gets all the way through
+23
+to your EC2 instance,
+24
+it is possible for you to optionally run a firewall software
+25
+on your EC2 instance,
+26
+which is going to inspect all the packets getting to it.
+27
+And here you have a lot more control
+28
+over everything, of course,
+29
+because this is customized solutions, not AWS dependent,
+30
+but because you have firewall software running
+31
+on your EC2 instance,
+32
+there will be a CPU cost on your instance.
+33
+It can slow it down, for example.
+34
+So hopefully that makes sense
+35
+for this first line of defense.
+36
+Okay, so now let's consider this situation
+37
+in which we have a Network ACL, a Application Load Balancer,
+38
+and an EC2 instance.
+39
+So here what's happening is that we have the ability
+40
+to have the client connect directly
+41
+into an Application Load Balancer
+42
+that will be sitting in the public subnet.
+43
+And that Application Load Balancer
+44
+will be diverting traffic to the EC2 instance.
+45
+That means your EC2 instance can live in a private subnet
+46
+and it's going to be better for your security
+47
+of your application, of course.
+48
+And so your EC2 instance has a private IP,
+49
+and so you need to have a security group
+50
+around the EC2 instance that will allow only connections
+51
+from your Application Load Balancer.
+52
+We've seen this before.
+53
+So what's happening is that the Application Load Balancer
+54
+that sits in the public subnet
+55
+is doing a connection termination.
+56
+That means that the client connects to the ALB
+57
+and the ALB will connect to the EC2 instance.
+58
+That also means that you now have the ability
+59
+to manage security at the Application Load Balancer level
+60
+with the security group, or with some extra features
+61
+within the Application Load Balancer.
+62
+And if you need to, you can always, as well,
+63
+leverage the Network ACL to do allow or deny rules
+64
+at the public subnet level.
+65
+So all of this shouldn't be new
+66
+and should be mastered by now.
+67
+And the situation is very similar
+68
+if you are to use a Network Load Balancer
+69
+that will have a security group
+70
+that's connected to EC2 instances, okay?
+71
+So same for ALB and NLB in terms of security.
+72
+Now we can explore security features
+73
+around the application balancer.
+74
+So you can pair it with WAF,
+75
+the Web Application Firewall from AWS.
+76
+And this allows you, for example,
+77
+to set IP address filtering from within WAF.
+78
+So obviously, now this has a cost
+79
+because you have a firewall set up
+80
+at the Application Load Balancer level,
+81
+but WAF has more than just the IP address filtering feature.
+82
+It has a lot more and you will get a lot of control
+83
+and defenses for your infrastructure
+84
+if you expose directly your Application Load Balancer.
+85
+Another place where you can apply AWS WAF
+86
+is around CloudFronts.
+87
+So CloudFronts can be set up, for example,
+88
+on a public infrastructure, for example,
+89
+using an Application Load Balancer in public mode.
+90
+And so what's happening is that CloudFront
+91
+will send traffic directly from all the edge locations
+92
+with the public IPs of them
+93
+directly into your Application Load Balancer.
+94
+Here your Network ACL is not helpful
+95
+to filter traffic from the clients
+96
+because, well, the client
+97
+does not reach the traffic of AWS, okay?
+98
+CloudFront does.
+99
+And so therefore you must set up security at the ALB level
+100
+with your Security Group
+101
+so that you allow all the CloudFront public IPs
+102
+into your infrastructure only.
+103
+Also, you have the ability, for example,
+104
+if a client was coming from a specific country
+105
+and was attacking your infrastructure,
+106
+you could use the Geo Restriction feature
+107
+to block that specific country
+108
+and that's one line of defense.
+109
+Another line of defense, is again to use WAF
+110
+and all its features
+111
+to have a firewall at the CloudFront level
+112
+and, for example, implement IP address filtering.
+113
+So now hopefully that makes sense into
+114
+how network security is working.
+115
+This kind of diagrams hopefully show you the path
+116
+that the network traffic is taking
+117
+and so why it makes sense to apply some rules at some level.
+118
+And if you have any issue
+119
+understanding what are the specific rules,
+120
+it's always very helpful to draw what the network is doing.
+121
+And then it will make a lot of sense into
+122
+how to define the rules along the way.
+123
+So that's it for this lecture.
+124
+I hope you liked it and I will see you in the next lecture.
+
+--- High Performance Computing (HPC) on AWS ---
+
+1
+So there is this concept in AWS
+2
+that's becoming more and more common
+3
+and something that the exam will test you on
+4
+which is called High Performance Computing or HPC.
+5
+So the cloud is the perfect place
+6
+to perform high performance computing.
+7
+Why? Because you can create a very high number
+8
+of resources in no time,
+9
+and you can speed up the time to results
+10
+by adding more resources
+11
+and you only pay for what you've used.
+12
+Once you're done, you can destroy the entire infrastructure
+13
+and not be built a single dime.
+14
+So the idea here is that
+15
+we can have an extremely high number
+16
+of instances performing competition for us,
+17
+and then be done with it and just pay for what we used.
+18
+This is perfect.
+19
+This is a great use case for the cloud,
+20
+and something that AWS is encouraging you
+21
+to do more and more.
+22
+So where do we use HPC?
+23
+Well to perform genomics,
+24
+computational chemistry, financial risk modeling
+25
+weather prediction, machine learning
+26
+deep learning, autonomous driving and so on.
+27
+So the question is,
+28
+what services in AWS will help us perform HPC?
+29
+Let's have a look.
+30
+So the first category is, how do we manage the data
+31
+and how do we transfer the data into AWS?
+32
+The first one is going to be Direct Connect
+33
+to move data gigabytes per second of data into the cloud
+34
+over a private secure network.
+35
+So we've seen this in details.
+36
+Then we have Snowballs and Snowmobile to move PetaBytes
+37
+of data to the cloud through a physical route,
+38
+and they're usually four big transfers or one off transfers.
+39
+And then we have data sync,
+40
+where we have to install the data sync agents
+41
+and they will help us move large amount of data
+42
+between on-premise and FS or SMB systems
+43
+into S3 EFS or FSX for windows.
+44
+Okay. This makes sense.
+45
+Now what about Compute and Networking?
+46
+Very important.
+47
+The first one is obviously EC2 instances.
+48
+We have CPU optimized or GPU optimized instances
+49
+based on the type of computations we're trying to do.
+50
+We can also leverage Spot instances
+51
+or Spot fleets for huge cost saving
+52
+and Auto Scaling to automatically scale our fleets
+53
+based on the computation we're doing.
+54
+Finally, if our EC2 instances need to talk to one another
+55
+and perform some computation in a distributed fashion,
+56
+then using an EC2 placement group of type cluster
+57
+is great to get the best network performance.
+58
+In which case, we have a Low latency,
+59
+10 gigabyte per second network in this example,
+60
+and for the cluster placement group,
+61
+everything is on the same rack,
+62
+everything is on the same AZ.
+63
+Okay, next, how can we go even further
+64
+to improve the performance of our EC2 instances?
+65
+The first one is EC2 Enhanced Networking,
+66
+also called also called (SRI-IOV).
+67
+And this gives you higher bandwidth,
+68
+higher PPS which is packet per second,
+69
+and lower latency.
+70
+And how do we get this easy two enhance networking?
+71
+The Option 1, which is the most recent and popular,
+72
+is called an Elastic Network Adapter.
+73
+And this delivers you a network speed
+74
+of up to 100 gigabits per second.
+75
+And this is something you have to know going into the exam.
+76
+So, ENA, is for easy to enhance networking,
+77
+and gives you higher bandwidth,
+78
+higher package per second,
+79
+and lower latency.
+80
+Option number two,
+81
+is to use this very complicated things from Intel,
+82
+called 82599 VF,
+83
+and that gives you up to 10 gigabits per second,
+84
+and that was to be the old ENA,
+85
+so it's LEGACY
+86
+but I'm still including it here,
+87
+just in case this comes up in the exam
+88
+and you see it you know what it is.
+89
+So, both these things,
+90
+the ENA and the Intel,
+91
+allow you to get easy to enhance networking
+92
+on your instance.
+93
+But you can push this a step further,
+94
+and using the Elastic Fabric Adapter or EFA.
+95
+And this is an improved ENA,
+96
+dedicated for HPC for High Performance Computing,
+97
+and it only works for Linux,
+98
+and it's great when you have inter-node communication
+99
+or tightly coupled workload.
+100
+So think about distributed computation.
+101
+Why? Because it's going to leverage something called MPI,
+102
+the Message Passing Interface standard.
+103
+And this standard will bypass the underlying Linux OS
+104
+to provide even lower latency and more reliable transport.
+105
+So think of it as like, if you have a Linux instance,
+106
+and you're performing tightly a couple workloads,
+107
+then using an EFA,
+108
+will bypass the OS
+109
+and provide you even higher network performance.
+110
+So it is quite common in the exam,
+111
+that you will be asked to differentiate
+112
+between an ENA and EFA or ENI or something else.
+113
+And so this is good that we are seeing this right now.
+114
+You need to make sure to understand these concepts
+115
+very very clearly.
+116
+Okay. So we have transferred the data,
+117
+we're computing over the data,
+118
+and we've configured our network,
+119
+but how do we store the data?
+120
+So multiple choice,
+121
+we can use the instance-attached storage.
+122
+So we could be EBS,
+123
+and this can scale up to 256,000 IOPS
+124
+with io2 Block Express.
+125
+It could be an instant store,
+126
+and we've seen this can scale to million of IOPS.
+127
+And it's linked to the EC2 instance.
+128
+So it's on a hardware.
+129
+It's going to be lower latency,
+130
+but we can lose it if we lose our instance.
+131
+Then we can use network storage,
+132
+such as Amazon S3 to store large blob of data.
+133
+It's not a file system,
+134
+it's to store large objects.
+135
+Or EFS, where the IOPS is going to be scaled
+136
+based on the total size of your file system.
+137
+Or we can use provisioned IOPS mode on EFS
+138
+to get higher IOPS.
+139
+But we've seen there is a file system
+140
+that's dedicated to HPC,
+141
+which was called FSX for Luster.
+142
+And Luster was for Linux and cluster.
+143
+And it's gonna be HPC optimized,
+144
+gives you millions of IOPS,
+145
+and in the backend, it's backed by S3.
+146
+So lots of options again.
+147
+Finally, how about Automation and Orchestration?
+148
+The first thing will be to use batch,
+149
+which is (indistinct) indicates,
+150
+a support service to perform multi-node parallel jobs
+151
+and enables you to run jobs
+152
+that spend multiple EC2 instances.
+153
+There are Batch jobs,
+154
+and it's very easy to schedule these jobs
+155
+and launch the EC2 instance accordingly.
+156
+They will be managed by the batch service.
+157
+So batch is a very popular choice for HPC.
+158
+And we have AWS parallel cluster,
+159
+which is an open source cluster management tool
+160
+to deploy high performance computing on AWS.
+161
+So you configure it using text files,
+162
+and then you would deploy it on AWS.
+163
+And it's going to automate the creation for you of VPC,
+164
+Subnet, cluster types and instance types.
+165
+And it can come up in the exam
+166
+that you must use parallel cluster alongside EFA,
+167
+because there is a perameter in the text files
+168
+to enable elastic fabric adapters.
+169
+So EFA on the cluster,
+170
+and the impact of that is to improve the network performance
+171
+and therefore have a higher performance HPC cluster.
+172
+So to summarize,
+173
+HPC is something that comes up more and more in the exam,
+174
+and it's not a service,
+175
+it's a combination of service and different options,
+176
+and need to make sure you understand all,
+177
+of those to maximize the potential
+178
+of computation within AWS.
+179
+And I hope that for this, this lecture was helpful.
+180
+All right, that's it.
+181
+I will see you in the next lecture.
+
+--- EC2 Instance High Availability ---
+
+1
+So now let's talk about
+2
+solution architecture,
+3
+to see how we can make an EC2 instance
+4
+become highly available.
+5
+Because we know that an EC2 instance,
+6
+by default, it's launched in one Availability Zone,
+7
+and it's not really highly available,
+8
+but we can engineer something to make it highly available,
+9
+and that is the whole purpose of this lecture.
+10
+We'll see there're different ways of doing things,
+11
+and it all depends on your requirements
+12
+and the amount of work you wanna do.
+13
+So, let's say we have a Public EC2 instance
+14
+that's running a web server,
+15
+and we wanna be able to access the web server,
+16
+so what we'll do is that we'll attach an Elastic IP
+17
+to that EC2 instance,
+18
+and so our users can access our website
+19
+directly through this Elastic IP,
+20
+and they will be directly talking to the EC2 instance
+21
+thanks to it,
+22
+and we get a result from our web server, so this is great.
+23
+But now, what we want to do
+24
+is have a Standby EC2 instance,
+25
+just in case things go wrong,
+26
+that makes our EC2 instance highly available.
+27
+Now, we need to be able to failover
+28
+to our Standby EC2 instance, in case something goes wrong.
+29
+So how do we know if something goes wrong?
+30
+Well, you should think that anytime
+31
+you wanted to know that something is about to go wrong,
+32
+there must be some kind of monitoring in place.
+33
+So, we're going to create a CloudWatch Event
+34
+or a CloudWatch Alarm, based on an event we know.
+35
+For example, if we have a CloudWatch Event,
+36
+maybe we want to see if an instance is getting terminated.
+37
+Or if we are having a web server,
+38
+and we know the CPU can go all the way to 100%,
+39
+maybe you want to have a CloudWatch Alarm
+40
+that monitors the CPU,
+41
+and if we see the CPU is at 100%,
+42
+maybe the EC2 instance has gone wrong,
+43
+and we want to trigger an alarm based on that.
+44
+So there's different ways of monitoring your EC2 instance,
+45
+based on what your requirements may be.
+46
+Then, from the Alarm or the CloudWatch Events,
+47
+you could go ahead and trigger a Lambda function.
+48
+And that Lambda function,
+49
+will allow you to do whatever you want,
+50
+and that lambda function,
+51
+for example, can issue API calls
+52
+to start the instance if it hasn't been started yet, okay,
+53
+if there's no Standby EC2 instance.
+54
+And then, issue an API call
+55
+to attach the Elastic IP to my Standby instance.
+56
+So now the Elastic IP will be attached,
+57
+and it will be obviously detached
+58
+from the other EC2 instance,
+59
+because an Elastic IP can only be attached
+60
+to one instance at a time,
+61
+and the other EC2 instance, can be terminated or disappear,
+62
+and we have effectively failed over
+63
+to a new Standby EC2 instance.
+64
+But our users because they communicate to our architecture,
+65
+thanks to the Elastic IP,
+66
+they don't really see anything happening,
+67
+it's all in the back end.
+68
+And so that's one way,
+69
+of creating a highly available EC2 instance.
+70
+But there are more ways.
+71
+Okay, let's talk about a second way of doing it,
+72
+with an Auto Scaling Group.
+73
+So, we have an ASG in two Availability Zones,
+74
+and again, we're using the same concept,
+75
+where a user is going to be talking to our application
+76
+using an Elastic IP because it makes things
+77
+a little bit simpler.
+78
+So now how should we configure our Auto Scaling Group?
+79
+What if we configure it this way,
+80
+we say the minimum amount of instances is one,
+81
+the maximum is one, and we want one desired,
+82
+and we specify over two Availability Zones.
+83
+So, what does it mean?
+84
+That means we're going to get only one EC2 instance,
+85
+and that EC2 instance may be in the first AZ.
+86
+And that's what we get out of these settings.
+87
+So why would we use these settings?
+88
+Well, for example, we can say that
+89
+on the user data of the EC2 instance,
+90
+when it does come up,
+91
+its going to acquire and attach
+92
+this Elastic IP address based on Tags.
+93
+So this user data will issue API calls
+94
+and the Elastic IP will be attached
+95
+to our Public EC2 instance,
+96
+and our users will be able to talk to our web server.
+97
+But now, let's discuss that this instance
+98
+is being terminated, it goes down,
+99
+and so what the ASG will do,
+100
+is that it will terminate the first instance
+101
+and create a Replacement EC2 instance in another AZ,
+102
+and thanks to that,
+103
+what we get is that, the first instance is terminated,
+104
+and the second instance will run it's EC2 user data scripts
+105
+and attach the Elastic IP.
+106
+And we have effectively failover, so in this case,
+107
+we don't need a CloudWatch Alarm or a CloudWatch Event,
+108
+the Auto Scaling Group as soon as it sees
+109
+that one instance has been terminated,
+110
+thanks to its settings,
+111
+will create a new EC2 instance and another AZ.
+112
+And the reason we have one mix, one max and one desired
+113
+is that we'll never get more than one instance
+114
+running at the same time
+115
+in our entire ASG, which is great.
+116
+Finally, because our EC2 instance
+117
+does do API calls directly,
+118
+to attach this Elastic IP Address,
+119
+then we need to make sure that the EC2 instance
+120
+has an instance role, that allows it to issue API calls
+121
+to attach this Elastic IP Address.
+122
+So here we have a combo of using EC2 User Data
+123
+to attach the Elastic IP Address,
+124
+and also having an EC2 instance role
+125
+to make sure the API call will succeed.
+126
+So we can extend this pattern to another thing.
+127
+For example, our EC2 instance,
+128
+can be stateful and have an EBS volume,
+129
+so we can get even more complicated,
+130
+so let's get started with it,
+131
+so we have an Auto Scaling Group,
+132
+two AZ, our Public EC2 instance,
+133
+and an Elastic IP, so we already know this.
+134
+But now, we also have an EBS Volume
+135
+attached to our EC2 instance,
+136
+let's imagine for example,
+137
+that EC2 instance is a database,
+138
+and we're trying to make that database highly available.
+139
+So, all of our data is onto our EBS Volume,
+140
+and we know an EBS Volume
+141
+is locked into a specific Availability Zone.
+142
+So let's imagine that our EC2 instance is being terminated,
+143
+and now what should we do?
+144
+Well, we know that on termination,
+145
+the Auto Scaling Group can use lifecycle hooks,
+146
+and thanks to this lifecycle hook,
+147
+we can create a script to take that EBS Volume
+148
+and create an EBS Snapshot from it.
+149
+Because, it will be triggered
+150
+as soon as the EC2 instance goes down,
+151
+and so we know that the EBS volume will be frayed.
+152
+So we have an EBS Snapshot,
+153
+and we tag it properly,
+154
+and the ASG will be launching a Replacement EC2 instance,
+155
+we have the same settings as before,
+156
+and now, by properly configuring again
+157
+our Auto Scaling Group
+158
+to create a lifecycle hook on the Launch event,
+159
+then we can create an EBS Volume out of this EBS Snapshot
+160
+into the correct Availability Zone,
+161
+and then attach it to the Replacement EC2 instance.
+162
+And then the EC2 user now can just check that
+163
+and also attach the Elastic IP address directly,
+164
+and we need to make sure obviously the API calls are correct
+165
+so we need to have an EC2 instance role,
+166
+which as we can see here,
+167
+we've done a combo of EC2 user data,
+168
+and also lifecycle hooks
+169
+to make sure that the EBS Volume
+170
+was first getting Snapshots
+171
+and then being restored from the Snapshot
+172
+into a different AZ.
+173
+And that makes it a highly available EC2 instance,
+174
+with an EBS volume.
+175
+So as we can see the possibilities are endless,
+176
+but it's good to see them once
+177
+to see how these kind of architectures can work,
+178
+obviously, they're a bit more work,
+179
+they're a bit more custom,
+180
+but we can achieve great things with automation.
+181
+So that's it for this lecture, I hope you liked it,
+182
+and I will see you in the next lecture.
+
