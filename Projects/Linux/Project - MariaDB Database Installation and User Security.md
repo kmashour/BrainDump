@@ -31,7 +31,7 @@ This playbook covers installing and initializing a MariaDB relational database e
 
 ### Step 1: Install MariaDB Server Packages
 ```bash
-yum install -y mariadb-server mariadb
+dnf install -y mariadb-server mariadb
 ```
 
 ### Step 2: Start Service and Secure Installation

@@ -32,7 +32,7 @@ Design a private sub-network lookup environment:
 ### Step 1: Install BIND Packages
 ```bash
 # Install named daemon and resolution tools
-yum install -y bind bind-utils
+dnf install -y bind bind-utils
 ```
 
 ### Step 2: Configure named.conf
@@ -192,7 +192,7 @@ Increment the serial number in `/var/named/corp.local.db` (e.g. to `2026062401`)
 
 ### Step 2: Configure BIND Slave DNS (`192.168.12.11`)
 1. On the Slave host, install BIND:
-   `yum install -y bind bind-utils`
+   `dnf install -y bind bind-utils`
 2. Configure `/etc/named.conf` options to listen on `192.168.12.11` and allow queries.
 3. Add the slave zone block in `/etc/named.conf`:
    ```named

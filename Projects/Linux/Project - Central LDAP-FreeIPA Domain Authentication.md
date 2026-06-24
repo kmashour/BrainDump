@@ -39,7 +39,7 @@ echo "192.168.12.10 ipa.corp.local ipa" >> /etc/hosts
 
 # 3. Install FreeIPA server packages
 # (Requires RHEL Identity Management - IdM group repo subscription)
-yum install -y ipa-server bind-dyndb-ldap ipa-server-dns
+dnf install -y ipa-server bind-dyndb-ldap ipa-server-dns
 
 # 4. Install FreeIPA Server (Interactive setup configuration wrapper)
 # We execute with automated options:
@@ -60,7 +60,7 @@ firewall-cmd --reload
 Run these steps on target node `client.corp.local`:
 ```bash
 # 1. Install LDAP client enrollment utility
-yum install -y ipa-client
+dnf install -y ipa-client
 
 # 2. Set client hostname
 hostnamectl set-hostname client.corp.local

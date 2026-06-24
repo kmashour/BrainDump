@@ -31,7 +31,7 @@ Set up an Apache server hosting two separate domains on a single host:
 ### Step 1: Install httpd and Secure SSL Modules
 ```bash
 # Install packages
-yum install -y httpd mod_ssl openssl
+dnf install -y httpd mod_ssl openssl
 
 # Enable service
 systemctl enable --now httpd

@@ -31,7 +31,7 @@ This playbook covers installing, configuring, testing, and securing a Dynamic Ho
 ### Step 1: Install DHCP Server Package
 Run this command on the server host:
 ```bash
-yum install -y dhcp
+dnf install -y dhcp-server
 ```
 
 ### Step 2: Configure DHCP Daemon

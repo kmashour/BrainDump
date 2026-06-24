@@ -31,7 +31,7 @@ This project demonstrates configuring secure file-sharing systems: setting up NF
 ### Part 1: NFS Server Configuration
 ```bash
 # 1. Install nfs utility package
-yum install -y nfs-utils
+dnf install -y nfs-utils
 
 # 2. Create the target share directory
 mkdir -p /srv/shares/documents
@@ -56,7 +56,7 @@ firewall-cmd --reload
 Run these sequences on the client system:
 ```bash
 # 1. Install autofs
-yum install -y autofs nfs-utils
+dnf install -y autofs nfs-utils
 
 # 2. Define master map configuration in /etc/auto.master
 # Append:
@@ -72,7 +72,7 @@ systemctl enable --now autofs
 ### Part 3: Secure FTP (vsftpd) Server
 ```bash
 # 1. Install ftp server package
-yum install -y vsftpd
+dnf install -y vsftpd
 
 # 2. Configure /etc/vsftpd/vsftpd.conf
 # Enforce secure configuration parameters:

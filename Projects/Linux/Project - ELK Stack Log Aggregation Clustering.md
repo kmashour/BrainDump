@@ -32,7 +32,7 @@ This playbook covers establishing a centralized log collection and analysis envi
 Run these commands on the observability host:
 ```bash
 # 1. Install Java Development Kit
-yum install -y java-11-openjdk-devel
+dnf install -y java-11-openjdk-devel
 
 # 2. Add Elastic official repository signature
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
@@ -53,7 +53,7 @@ EOF
 ### Step 2: Install and Configure Elasticsearch Node
 ```bash
 # 1. Install Elasticsearch package
-yum install -y elasticsearch
+dnf install -y elasticsearch
 
 # 2. Override default elasticsearch configurations
 cat <<EOF > /etc/elasticsearch/elasticsearch.yml
@@ -74,7 +74,7 @@ systemctl enable --now elasticsearch
 ### Step 3: Install and Configure Logstash Parsing Pipeline
 ```bash
 # 1. Install Logstash package
-yum install -y logstash
+dnf install -y logstash
 
 # 2. Write Logstash Syslog/Beats input and grok parser configuration
 cat <<EOF > /etc/logstash/conf.d/syslog-pipeline.conf
@@ -110,7 +110,7 @@ systemctl enable --now logstash
 ### Step 4: Install and Configure Kibana Interface
 ```bash
 # 1. Install Kibana package
-yum install -y kibana
+dnf install -y kibana
 
 # 2. Override Kibana configs
 cat <<EOF > /etc/kibana/kibana.yml

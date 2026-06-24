@@ -31,7 +31,7 @@ This playbook covers establishing a remote SAN (Storage Area Network) block stor
 Run these commands on Target Server `192.168.12.10`:
 ```bash
 # 1. Install target command line interface wrapper
-yum install -y targetcli
+dnf install -y targetcli
 
 # 2. Open iSCSI ports in firewall
 firewall-cmd --permanent --add-port=3260/tcp
@@ -53,7 +53,7 @@ systemctl enable --now target
 Run these commands on Client Node `192.168.12.11`:
 ```bash
 # 1. Install initiator utilities
-yum install -y iscsi-initiator-utils
+dnf install -y iscsi-initiator-utils
 
 # 2. Define client IQN name
 echo "InitiatorName=iqn.2026-06.com.example:client1" > /etc/iscsi/initiatorname.iscsi

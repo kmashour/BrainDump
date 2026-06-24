@@ -211,7 +211,7 @@ Compiling from source allows custom compile-time flags and configurations.
     ```bash
     yum search vim                    # Query packages matching string
     yum info httpd                    # Display metadata, description, and source repo
-    yum install httpd                 # Install package and resolve dependencies
+    dnf install httpd                 # Install package and resolve dependencies
     yum remove httpd                  # Uninstall package (does not strip shared deps)
     yum update                        # Perform system-wide package upgrades
     yum update tzdata                 # Update a single package
@@ -405,7 +405,7 @@ Run multiple websites on a single server, separated by domain name (Name-based V
 
 #### SSL/TLS Security
 Enforce SSL/TLS encryption for secure virtual host connections.
-1.  Install the SSL module: `yum install -y mod_ssl`
+1.  Install the SSL module: `dnf install -y mod_ssl`
 2.  Configure virtual host block on port 443:
     ```apache
     <VirtualHost 192.168.12.10:443>
@@ -469,7 +469,7 @@ iSCSI (Internet Small Computer Systems Interface) maps IP blocks to storage devi
 #### Server Setup (iSCSI Target)
 *   **Package:** `targetcli`
 *   **System Commands:**
-    1.  Install targetcli: `yum install -y targetcli`
+    1.  Install targetcli: `dnf install -y targetcli`
     2.  Enter target configuration shell: `targetcli`
     3.  Create backstore (mapping raw storage):
         `/backstores/block create name=disk1_backstore dev=/dev/sdb1`
@@ -486,7 +486,7 @@ iSCSI (Internet Small Computer Systems Interface) maps IP blocks to storage devi
 #### Client Setup (iSCSI Initiator)
 *   **Package:** `iscsi-initiator-utils`
 *   **System Commands:**
-    1.  Install initiator utils: `yum install -y iscsi-initiator-utils`
+    1.  Install initiator utils: `dnf install -y iscsi-initiator-utils`
     2.  Configure Client IQN name in `/etc/iscsi/initiatorname.iscsi`:
         `InitiatorName=iqn.2026-06.com.example:client1`
     3.  Discover target port portal:
@@ -500,7 +500,7 @@ iSCSI (Internet Small Computer Systems Interface) maps IP blocks to storage devi
 MariaDB is the default relational database engine packaged in modern RHEL systems.
 *   **Package:** `mariadb-server`, `mariadb`
 *   **Installation & Security Initialization:**
-    1.  Install packages: `yum install -y mariadb-server mariadb`
+    1.  Install packages: `dnf install -y mariadb-server mariadb`
     2.  Start service: `systemctl enable --now mariadb`
     3.  Secure installation default settings:
         `mysql_secure_installation` (Interactive CLI script to set root password, remove anonymous users, disable remote root login, and purge test databases).
@@ -557,8 +557,23 @@ FreeIPA (Identity, Policy, Audit) is an integrated centralized directory service
     ```
 *   **Server Installation:**
     ```bash
-    yum install ipa-server
-    ipa-server-install  # Choose integrated DNS: no | realm: EXAMPLE.COM
+    # Install FreeIPA Server package using DNF (RHEL 8/9 standard)
+    dnf install -y ipa-server
+    ipa-server-install  # Configure integrated DNS: no | realm: EXAMPLE.COM
+    ```
+
+*   **Client Enrollment:**
+    SSSD client configuration in RHEL 8/9 uses `authselect` instead of legacy `authconfig`.
+    ```bash
+    # Install client packages
+    dnf install -y ipa-client
+
+    # Enroll the system to the FreeIPA domain and configure PAM mkhomedir automatically
+    ipa-client-install --server=server.example.com --domain=example.com --mkhomedir --unattended
+
+    # Manual alternative configuring home directory auto-creation via authselect
+    authselect select sssd with-mkhomedir --force
+    systemctl enable --now oddjobd.service
     ```
 *   **Kerberos Auditing & User Provisioning:**
     ```bash
@@ -592,8 +607,8 @@ The `realmd` daemon simplifies joining Linux clients to an existing Active Direc
     # Discover AD domain
     realm discover example.com
 
-    # Install required integration packages
-    yum install sssd adcli samba-common-tools oddjob oddjob-mkhomedir openldap-clients
+    # Install required integration packages (RHEL 8/9 DNF command)
+    dnf install -y sssd adcli samba-common-tools oddjob oddjob-mkhomedir openldap-clients
 
     # Join the AD Domain
     realm join example.com -U Administrator  # Prompts for Domain Admin credentials
@@ -604,8 +619,8 @@ The `realmd` daemon simplifies joining Linux clients to an existing Active Direc
 
 #### Approach 2: FreeIPA Cross-Forest Domain Trust
 Establish a direct cross-forest trust link between FreeIPA (`example.com`) and Active Directory (`ad.example.com`):
-1. Install trust packages on primary FreeIPA server:
-   `yum install -y ipa-server-trust-ad`
+1. Install trust packages on primary FreeIPA server (using DNF):
+   `dnf install -y ipa-server-trust-ad`
 2. Run trust setup wizard:
    `ipa-ad-trust-setup --local-address=192.168.153.150`
 3. Create the trust relationship:
@@ -791,7 +806,7 @@ The ELK (Elasticsearch, Logstash, Kibana) stack forms a centralized logging solu
 
 #### Elasticsearch Node Setup
 Elasticsearch is the distributed search and analytics engine that indexes log payloads.
-*   **Prerequisites:** Install Java Development Kit: `yum install -y java-11-openjdk-devel`
+*   **Prerequisites:** Install Java Development Kit: `dnf install -y java-11-openjdk-devel`
 *   **Configuration file:** `/etc/elasticsearch/elasticsearch.yml`
 *   **Parameters:**
     ```yaml
