@@ -24,12 +24,15 @@ tags:
 
 ## 📑 EBS and EFS Storage Overview
 
-This core concept covers block storage options on Amazon EC2 including network-attached SAN drives, physically attached temporary host drives, regional network shared filesystems, and volume snapshots.
+This core concept covers storage options on AWS including network-attached block drives, temporary host drives, regional file systems, volume snapshots, managed high-performance file systems, hybrid storage gateways, and physical migration devices.
 
 *   **Network Block Storage:** Scalable, persistent zonal network drives: [[aws - Amazon EBS]]
 *   **Point-in-Time Backups:** Incremental S3-backed volume snapshots: [[aws - EBS Snapshot]]
 *   **Local Ephemeral Drive:** High-speed physically attached host storage: [[aws - Instance Store]]
 *   **Shared Network Filesystem:** Regional POSIX-compliant multi-AZ shared file storage: [[aws - Amazon EFS]]
+*   **Managed File Systems:** High-performance third-party file systems: [[aws - Amazon FSx]]
+*   **Hybrid Cloud Gateway:** Bridges on-premises data to cloud storage: [[aws - AWS Storage Gateway]]
+*   **Physical Data Migration:** Portable edge compute and rugged storage devices: [[aws - AWS Snow Family]]
 
 *Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md|Module 3-5: AWS EBS & EFS Storage]]*
 

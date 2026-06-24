@@ -4,6 +4,22 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: AWS Storage Extras (Snow Family, FSx, Storage Gateway, Transfer Family, DataSync)
+
+### Added
+- **Main Notes:** Created 3 atomic conceptual deeper-dive notes:
+  - [[Main Notes/aws - AWS Snow Family.md|aws - AWS Snow Family.md]]
+  - [[Main Notes/aws - Amazon FSx.md|aws - Amazon FSx.md]]
+  - [[Main Notes/aws - AWS Storage Gateway.md|aws - AWS Storage Gateway.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Refactored [[Reference Notes/3-5_aws_ebs_efs_storage.md|3-5_aws_ebs_efs_storage.md]] to integrate details on AWS Snow Family models, FSx types (Lustre/ONTAP/Windows/OpenZFS) and deployment options, AWS Storage Gateway modes, AWS Transfer Family, and DataSync metadata preservation features. Inserted a comprehensive comparative table of all AWS storage options.
+- **Main Notes:** Updated [[Main Notes/aws - EBS and EFS Storage.md|aws - EBS and EFS Storage.md]] MOC note to link to the new sub-concepts.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-5_aws_storage_extras.txt`
+
 ## [2026-06-24] - Ingestion: AWS EBS & EFS Storage
 
 ### Added
