@@ -25,10 +25,10 @@ tags:
 
 Amazon Route 53 is a highly available and scalable Domain Name System (DNS) service. It maps human-readable domain names (e.g. `example.com`) to numeric IP addresses.
 
-*   **Hosted Zones:** 
-    *   **Public Hosted Zones:** Route traffic over the internet to resources (ALB, S3, CloudFront).
-    *   **Private Hosted Zones:** Route traffic inside one or more VPCs (resolving internal resources without exposing them to the internet).
-*   **Routing Policies:** Simple, Weighted, Latency-based, Failover (for active-passive DR), Geolocation, Geoproximity, and Multi-value answer routing.
+*   **Concept MOC:** See `[[Amazon Route 53]]` for the service architecture overview.
+*   **Hosted Zones:** See `[[Route 53 Hosted Zone]]` (Public vs. Private hosted zones, Zone Apex constraints, CNAME vs. Alias).
+*   **Routing Policies:** See `[[Route 53 Routing Policies]]` (Simple, Weighted, Latency, Failover, Geolocation, Geoproximity, IP-based, and Multi-value routing).
+*   **Resolver Endpoints:** See `[[Route 53 Resolver]]` (Inbound vs. Outbound resolver endpoints for hybrid cloud networking).
 
 ---
 

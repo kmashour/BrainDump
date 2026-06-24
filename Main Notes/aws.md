@@ -12,6 +12,7 @@ related_concepts:
   - "[[Amazon Aurora]]"
   - "[[RDS Proxy]]"
   - "[[Amazon ElastiCache]]"
+  - "[[Amazon Route 53]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:

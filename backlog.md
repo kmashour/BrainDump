@@ -4,6 +4,27 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: Amazon Route 53 DNS
+
+### Added
+- **Main Notes:** Created 4 landing notes:
+  - [[Main Notes/Amazon Route 53.md|Amazon Route 53.md]]
+  - [[Main Notes/Route 53 Hosted Zone.md|Route 53 Hosted Zone.md]]
+  - [[Main Notes/Route 53 Routing Policies.md|Route 53 Routing Policies.md]]
+  - [[Main Notes/Route 53 Resolver.md|Route 53 Resolver.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Refactored [[Reference Notes/3-12_aws_route53_dns.md|3-12_aws_route53_dns.md]] to merge detailed transcript context on domain registration (auto-renew, WHOIS privacy protection, registrant contact options), default records (NS and SOA), DNS record types (A, AAAA, CNAME, Alias), TTL caching behavior, and all routing policies (Simple, Weighted, Latency, Geolocation, Geoproximity, IP-based, Failover, Multi-value), and resolver endpoints (Inbound/Outbound). Added a hands-on verification lab section (using AWS CloudShell, `nslookup`, and `dig` to monitor TTL cache decrement).
+- **Main Notes:**
+  - Updated [[Main Notes/aws.md|aws.md]] to link to the new Amazon Route 53 landing note.
+  - Updated [[Main Notes/aws - Route 53 DNS and CloudFront CDN.md|aws - Route 53 DNS and CloudFront CDN.md]] to route to the individual atomic conceptual notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-12_aws_route53_dns.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: AWS RDS, Aurora, and ElastiCache
 
 ### Added
