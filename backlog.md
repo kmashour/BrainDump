@@ -4,6 +4,25 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: AWS CloudFront CDN & AWS Global Accelerator
+
+### Added
+- **Main Notes:** Created 2 landing notes:
+  - [[Main Notes/Amazon CloudFront.md|Amazon CloudFront.md]]
+  - [[Main Notes/AWS Global Accelerator.md|AWS Global Accelerator.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Consolidated and rewrote [[Reference Notes/3-13_aws_cloudfront_cdn.md|3-13_aws_cloudfront_cdn.md]] to merge detailed transcript context on CloudFront POP architecture (Edge locations, Regional caches), origins (S3 with OAC bucket policy, VPC origins, custom HTTP origins), caching behaviors, geo restriction mapping, invalidations (force refresh path wildcards), Signed URLs vs Signed Cookies, and AWS Global Accelerator Anycast IP routing flow and failover operations. Included a Mermaid comparison diagram and hands-on lab setups.
+- **Main Notes:**
+  - Updated [[Main Notes/aws.md|aws.md]] to link to the new Amazon CloudFront and AWS Global Accelerator landing notes under related concepts.
+  - Updated [[Main Notes/aws - Route 53 DNS and CloudFront CDN.md|aws - Route 53 DNS and CloudFront CDN.md]] to reference the new atomic MOCs.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-13_aws_cloudfront_cdn.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: Amazon Route 53 DNS
 
 ### Added

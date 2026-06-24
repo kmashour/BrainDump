@@ -13,6 +13,8 @@ related_concepts:
   - "[[RDS Proxy]]"
   - "[[Amazon ElastiCache]]"
   - "[[Amazon Route 53]]"
+  - "[[Amazon CloudFront]]"
+  - "[[AWS Global Accelerator]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:
