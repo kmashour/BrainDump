@@ -371,6 +371,24 @@ And from `inflow/linux_administration/`:
 - `72 - 72-Day-40_Apache_Server_Part_3.txt`
 
 
+## [2026-06-24] - Ingestion: AWS VPC Networking & Conceptual Integration
+
+### Added
+- **Main Notes:** Created 6 atomic conceptual landing notes:
+  - [[Main Notes/Amazon VPC.md|Amazon VPC.md]]: Regional virtual network isolation, CIDR blocks planning, primary/secondary block constraints, and the 5 AWS reserved IPs per subnet.
+  - [[Main Notes/AWS NAT Gateway.md|AWS NAT Gateway.md]]: Managed outbound-only internet connectivity for private subnets, AZ-independent HA design pattern.
+  - [[Main Notes/Network Access Control List.md|Network Access Control List.md]]: Stateless subnet-level firewall rules, sequential rule evaluation, and outbound ephemeral port TCP 1024-65535 returns.
+  - [[Main Notes/VPC Peering.md|VPC Peering.md]]: Highly available, non-transitive private inter-VPC connectivity on the AWS backbone.
+  - [[Main Notes/VPC Endpoint.md|VPC Endpoint.md]]: Gateway endpoints (S3 and DynamoDB prefix routing) and Interface endpoints (PrivateLink ENI and DNS resolution).
+  - [[Main Notes/Transit Gateway.md|Transit Gateway.md]]: Hub-and-spoke transit router connecting VPCs, VPNs, and DX links with transitive routing.
+
+### Refactored / Upgraded
+- **Reference Notes:** Refactored [[Reference Notes/3-9_aws_vpc_networking.md|3-9_aws_vpc_networking.md]] to clean out all conversational fluff, integrate detailed technical sections on Traffic Mirroring, AWS Network Firewall, IPv6 Egress-Only IGW, and VPC Flow Logs. Inserted a custom comparison Mermaid diagram for VPC endpoints.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from the `inflow/` directory:
+- `aws_saa_split/3-9_aws_vpc_networking.txt`
+
 ## [2026-06-22] - Ingestion: AWS CloudOps Study Guide & Projects
 
 ### Added
