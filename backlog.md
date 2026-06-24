@@ -4,6 +4,25 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: AWS RDS, Aurora, and ElastiCache
+
+### Added
+- **Main Notes:** Created 4 landing notes:
+  - [[Main Notes/Amazon RDS.md|Amazon RDS.md]]
+  - [[Main Notes/Amazon Aurora.md|Amazon Aurora.md]]
+  - [[Main Notes/RDS Proxy.md|RDS Proxy.md]]
+  - [[Main Notes/Amazon ElastiCache.md|Amazon ElastiCache.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Overwrote and consolidated [[Reference Notes/3-7_aws_rds_aurora_databases.md|3-7_aws_rds_aurora_databases.md]] integrating RDS backups, snapshots, storage autoscaling, disaster recovery Multi-AZ vs. read replicas, RDS Custom access controls, Aurora storage virtualization and quorum topologies, Aurora writer/reader/custom endpoints, Aurora serverless and global database configurations, Amazon RDS Proxy connection pooling, and ElastiCache caching strategies (Lazy Loading, Write-Through) comparing Redis and Memcached. Inserted a Mermaid diagram comparing Multi-AZ and Read Replica topologies.
+- **Main Notes:** Updated [[Main Notes/aws.md|aws.md]] and [[Main Notes/aws - RDS, Aurora, and DynamoDB.md|aws - RDS, Aurora, and DynamoDB.md]] to link to the new relational database and caching MOC concepts.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-7_aws_rds_aurora_databases.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: AWS ELB & ASG
 
 ### Added

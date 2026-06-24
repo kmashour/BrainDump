@@ -8,6 +8,10 @@ domains:
 related_concepts:
   - "[[virtual-machine]]"
   - "[[Amazon S3]]"
+  - "[[Amazon RDS]]"
+  - "[[Amazon Aurora]]"
+  - "[[RDS Proxy]]"
+  - "[[Amazon ElastiCache]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:
