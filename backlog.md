@@ -3,22 +3,33 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
-## [2026-06-24] - Ingestion: RHEL Central Authentication, Package Management, ACLs, LVM/RAID Review, and BIND DNS Replication Transcripts
+## [2026-06-24] - Ingestion: RHEL Central Authentication, Package Management, ACLs, LVM/RAID Review, BIND DNS Replication, and Custom Core Services Playbooks
 
 ### Added
 - **Reference Notes:** Added new comprehensive sections to [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]:
-  - **Package Management (YUM and DNF):** Outlining RPM system mechanics, caching rules, provides query methods, and transaction log management via `yum history` rollbacks.
-  - **Centralized Authentication and Identity Management:** Explaining identity management strategies using FreeIPA servers/clients and Active Directory integration via `realmd`/SSSD.
+  - **Package Management (RPM, YUM, DNF, and Source Compilation):** Outlining low-level RPM command arrays, source code compilation procedures (configure, make, make install), caching rules, provides query methods, and transaction log management via `yum history` rollbacks.
+  - **Centralized Authentication and Identity Management:** Explaining identity management strategies using FreeIPA servers/clients, replica HA promotion configurations (`ipa-replica-install`), and Active Directory integration via client enrollment (`realmd`) or cross-forest trusts (`ipa trust-add`).
+  - **DHCP Server Configuration:** Dynamic Host Configuration Protocol subnet range allocations, lease timers, and static MAC reservation bindings.
+  - **iSCSI Target and Initiator:** Configuring server side block mappings (backstores, LUNs, portals, target IQNs) and client side mounts using `iscsiadm` with `_netdev` mount properties.
+  - **Database Administration (MariaDB):** Relational database installations, securing instances via `mysql_secure_installation`, provisioning users, and configuring access control tables.
+  - **Central Logging (ELK Stack):** Centralized log observability configurations detailing Elasticsearch indices, Logstash grok parsing filter pipelines, and Kibana dashboard portal controls.
+- **Projects:** Created 4 new hands-on project playbooks under `Projects/Linux/`:
+  - [[Projects/Linux/Project - DHCP Server Installation and Dynamic IP Allocation.md|Project - DHCP Server Installation and Dynamic IP Allocation.md]]
+  - [[Projects/Linux/Project - iSCSI Target and Initiator Storage Configuration.md|Project - iSCSI Target and Initiator Storage Configuration.md]]
+  - [[Projects/Linux/Project - MariaDB Database Installation and User Security.md|Project - MariaDB Database Installation and User Security.md]]
+  - [[Projects/Linux/Project - ELK Stack Log Aggregation Clustering.md|Project - ELK Stack Log Aggregation Clustering.md]]
 
 ### Refactored / Upgraded
 - **Reference Notes:** Updated and expanded existing storage, security, DNS, and boot systems modules in [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]:
   - Expanded LVM architecture commands to detail volume decommissioning CLI operations.
   - Expanded Software RAID configurations to show superblock wiping methods.
   - Added `systemctl daemon-reload` mount cache flushing troubleshooting to persistent storage mounting setup.
+  - Expanded Apache configuration to address directory options (Indexes), basic auth (`htpasswd`), virtual hosts, and mod_ssl certificates.
   - Added BIND replication configuration specifying Master-Slave zone transfer options (`allow-transfer`, `also-notify`), SOA parameter rules, and slave write path directory guidelines under `/var/named/slaves/`.
   - Added systemd service masking/unmasking targets control.
   - Refactored POSIX ACLs section to address security limitations of UGO permissions, kernel compatibility options, explicit mount flags verification, recursive/default rules, and specific rule entries purging.
 - **Projects:** Updated the [[Projects/Linux/Project - BIND DNS Server Installation and Caching Name Server.md|Project - BIND DNS Server Installation and Caching Name Server.md]] playbook to add a complete step-by-step master/slave DNS replication and zone transfer setup guide.
+- **Reference MOCs:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog the 4 new project playbooks.
 
 ### Ingested Inflow Sources
 Processed and integrated the following transcript files from `inflow/linux_administration/`:

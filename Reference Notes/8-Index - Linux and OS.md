@@ -51,3 +51,8 @@ Hands-on playbooks and milestone projects:
 - 🚀 **[Project: Apache Web Server Deployment, Virtual Hosts, and Directory Security](../Projects/Linux/Project%20-%20Apache%20Web%20Server%20Deployment%2C%20Virtual%20Hosts%2C%20and%20Directory%20Security.md)**
 - 🚀 **[Project: BIND DNS Server Installation and Caching Name Server](../Projects/Linux/Project%20-%20BIND%20DNS%20Server%20Installation%20and%20Caching%20Name%20Server.md)**
 - 🚀 **[Project: Central LDAP/FreeIPA Domain Authentication](../Projects/Linux/Project%20-%20Central%20LDAP-FreeIPA%20Domain%20Authentication.md)**
+- 🚀 **[Project: DHCP Server Installation and Dynamic IP Allocation](../Projects/Linux/Project%20-%20DHCP%20Server%20Installation%20and%20Dynamic%20IP%20Allocation.md)**
+- 🚀 **[Project: iSCSI Target and Initiator Storage Configuration](../Projects/Linux/Project%20-%20iSCSI%20Target%20and%20Initiator%20Storage%20Configuration.md)**
+- 🚀 **[Project: MariaDB Database Installation and User Security](../Projects/Linux/Project%20-%20MariaDB%20Database%20Installation%20and%20User%20Security.md)**
+- 🚀 **[Project: ELK Stack Log Aggregation Clustering](../Projects/Linux/Project%20-%20ELK%20Stack%20Log%20Aggregation%20Clustering.md)**
+

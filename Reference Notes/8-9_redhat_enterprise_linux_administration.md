@@ -162,9 +162,49 @@ For filesystems to survive reboots, they must be registered in `/etc/fstab`.
 
 ---
 
-## Package Management (YUM and DNF)
+## Package Management (RPM, YUM, DNF, and Source Compilation)
 
-Package managers automate software distribution and local dependency resolution (resolving "dependency hell") by querying remote or local repository database metadata (`repodata` XML files).
+Package managers automate software distribution and local dependency resolution by querying package databases or remote repository metadata.
+
+### RPM Package Manager (Red Hat Package Manager)
+RPM is the low-level packaging tool that installs, uninstalls, queries, and verifies individual `.rpm` packages. It does not automatically resolve external dependencies (resulting in "dependency hell").
+*   **Core Commands:**
+    ```bash
+    # Install or upgrade a package with verbose progress bars
+    rpm -ivh htop-2.2.0-3.el7.x86_64.rpm
+    rpm -Uvh htop-2.2.0-4.el7.x86_64.rpm
+
+    # Uninstall (erase) a package
+    rpm -e htop
+
+    # Query installed packages
+    rpm -q htop                           # Check if htop is installed
+    rpm -qa                               # List all installed packages on the system
+    rpm -qi htop                          # Display detailed package information
+    rpm -ql htop                          # List all files installed by this package
+    rpm -qc httpd                         # List configuration files only
+    rpm -qd httpd                         # List documentation files only
+
+    # Query package files (not yet installed)
+    rpm -qpl epel-release-7-11.noarch.rpm # List files in a local RPM package file
+
+    # Find which package owns a specific file path
+    rpm -qf /etc/httpd/conf/httpd.conf
+    ```
+
+### Source Code Compilation and Installation
+Compiling from source allows custom compile-time flags and configurations.
+*   **Prerequisites:** Install standard compilation toolsets:
+    `yum groupinstall -y "Development Tools"`
+*   **Compilation Steps:**
+    1.  **Extract Tarball:**
+        `tar -zxvf redis-6.2.1.tar.gz` (Use `-jxvf` for `.tar.bz2` archives).
+    2.  **Configure Build parameters:** Run the custom environment script to check dependencies and generate a `Makefile`:
+        `./configure --prefix=/usr/local/redis`
+    3.  **Compile Source:** Run `make` to compile source code into binary executables:
+        `make`
+    4.  **Install Binaries:** Run `make install` to copy binaries and configs to target prefixes:
+        `make install`
 
 ### YUM Command Set
 *   **Core Commands:**
@@ -262,23 +302,122 @@ NetworkManager CLI (`nmcli`) manages interface states and persistent configurati
     *   Package: `vsftpd`
     *   Configuration file: `/etc/vsftpd/vsftpd.conf`
     *   Parameters: `anonymous_enable=NO`, `local_enable=YES`, `write_enable=YES`, `chroot_local_user=YES`
+    *   System command: `systemctl enable --now vsftpd`
+
+### DHCP Server Configuration
+DHCP (Dynamic Host Configuration Protocol) automates IPv4 parameter allocation for host machines in local segments.
+*   **Package:** `dhcp`
+*   **Configuration File:** `/etc/dhcp/dhcpd.conf`
+*   **Configuration Block:**
+    ```named
+    # Global Parameters
+    option domain-name "example.com";
+    option domain-name-servers 192.168.12.10, 8.8.8.8;
+    default-lease-time 600;
+    max-lease-time 7200;
+    authoritative;
+
+    # Subnet IP Allocation Range
+    subnet 192.168.12.0 netmask 255.255.255.0 {
+        range 192.168.12.100 192.168.12.200;
+        option routers 192.168.12.1;
+        option broadcast-address 192.168.12.255;
+    }
+
+    # Persistent IP Reservation (MAC Address Binding)
+    host client-workstation {
+        hardware ethernet 00:11:22:33:44:55;
+        fixed-address 192.168.12.99;
+    }
+    ```
+*   **System Commands:**
+    ```bash
+    # Verify dhcpd.conf syntax correctness
+    dhcpd -t -cf /etc/dhcp/dhcpd.conf
+
+    # Open DHCP port in firewall
+    firewall-cmd --permanent --add-service=dhcp
+    firewall-cmd --reload
+
+    # Start and enable the daemon
+    systemctl enable --now dhcpd
+    ```
+
 
 ### Apache HTTPD Web Hosting
-*   **Package:** `httpd`
-*   **Configuration Files:** `/etc/httpd/conf/httpd.conf` and additional configurations in `/etc/httpd/conf.d/` (e.g. `ssl.conf`, `vhosts.conf`).
-*   **Virtual Hosts:** Set up multiple domain namespaces on a single host.
+*   **Package:** `httpd`, `mod_ssl`
+*   **Configuration Directories:**
+    *   Main config: `/etc/httpd/conf/httpd.conf`
+    *   Modular configs: `/etc/httpd/conf.d/*.conf` (loaded automatically by main config)
+    *   Default DocumentRoot: `/var/www/html/`
+
+#### Directory Permissions, Control, and Basic Authentication
+Control access to specific document pathways using blocks in configuration files.
+*   **Directory Access Rules:**
     ```apache
-    # Name-based VirtualHost configuration
-    <VirtualHost *:80>
-        ServerName www.example.com
-        DocumentRoot /var/www/example
-        ErrorLog logs/example_error_log
+    <Directory "/var/www/secured">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+    ```
+    *   `Options Indexes`: Lists files in a directory if no index document (e.g. `index.html`) is present. To disable, use `Options -Indexes`.
+    *   `AllowOverride None`: Disables the parsing of `.htaccess` files for overriding directory configuration. Setting `AllowOverride All` enables it.
+*   **Basic HTTP Authentication Setup:**
+    1.  Create password database and add user `webadmin`:
+        `htpasswd -c /etc/httpd/conf/.htpasswd webadmin` (Omit `-c` to append additional users).
+    2.  Secure the directory path in configuration:
+        ```apache
+        <Directory "/var/www/html/admin">
+            AuthType Basic
+            AuthName "Restricted Administration Panel"
+            AuthUserFile /etc/httpd/conf/.htpasswd
+            Require valid-user
+        </Directory>
+        ```
+
+#### Virtual Hosts Configuration
+Run multiple websites on a single server, separated by domain name (Name-based VirtualHost).
+```apache
+# Define site: www.site1.com on port 80
+<VirtualHost 192.168.12.10:80>
+    ServerName www.site1.com
+    DocumentRoot /var/www/site1
+    DirectoryIndex index.html
+    ErrorLog logs/site1_error.log
+    CustomLog logs/site1_access.log combined
+    
+    <Directory "/var/www/site1">
+        AllowOverride None
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+# Define site: www.site2.com on port 80
+<VirtualHost 192.168.12.10:80>
+    ServerName www.site2.com
+    DocumentRoot /var/www/site2
+    DirectoryIndex index.html
+    ErrorLog logs/site2_error.log
+    CustomLog logs/site2_access.log combined
+</VirtualHost>
+```
+
+#### SSL/TLS Security
+Enforce SSL/TLS encryption for secure virtual host connections.
+1.  Install the SSL module: `yum install -y mod_ssl`
+2.  Configure virtual host block on port 443:
+    ```apache
+    <VirtualHost 192.168.12.10:443>
+        ServerName www.site1.com
+        DocumentRoot /var/www/site1
+        
+        SSLEngine on
+        SSLCertificateFile /etc/pki/tls/certs/httpd.crt
+        SSLCertificateKeyFile /etc/pki/tls/private/httpd.key
     </VirtualHost>
     ```
-*   **SSL/TLS Security:** Requires module `mod_ssl` to handle certificates.
-    *   `SSLEngine on`
-    *   `SSLCertificateFile /etc/pki/tls/certs/httpd.crt`
-    *   `SSLCertificateKeyFile /etc/pki/tls/private/httpd.key`
+
 
 ### BIND DNS Configuration
 *   **Package:** `bind`, `bind-utils`
@@ -324,6 +463,71 @@ Deploying a secondary nameserver distributes traffic load and provides failover 
     Check the system logs on the Slave server to verify that the zone transfer succeeded:
     `tail -n 50 /var/log/messages` (Verify completion: `transfer of 'example.com/IN' from 192.168.200.128#53: Transfer completed`).
 
+### iSCSI Storage Target and Initiator
+iSCSI (Internet Small Computer Systems Interface) maps IP blocks to storage devices, allowing clients to access remote block storage as if it were a local disk.
+
+#### Server Setup (iSCSI Target)
+*   **Package:** `targetcli`
+*   **System Commands:**
+    1.  Install targetcli: `yum install -y targetcli`
+    2.  Enter target configuration shell: `targetcli`
+    3.  Create backstore (mapping raw storage):
+        `/backstores/block create name=disk1_backstore dev=/dev/sdb1`
+    4.  Create target IQN (Internet Qualified Name):
+        `/iscsi create iqn.2026-06.com.example:server`
+    5.  Create LUN (Logical Unit Number) linking the backstore:
+        `/iscsi/iqn.2026-06.com.example:server/tpg1/luns create /backstores/block/disk1_backstore`
+    6.  Configure Client Access ACL (specify initiator IQN):
+        `/iscsi/iqn.2026-06.com.example:server/tpg1/acls create iqn.2026-06.com.example:client1`
+    7.  Configure Portals listening interface:
+        `/iscsi/iqn.2026-06.com.example:server/tpg1/portals create 192.168.12.10 3260`
+    8.  Enable target service: `systemctl enable --now target`
+
+#### Client Setup (iSCSI Initiator)
+*   **Package:** `iscsi-initiator-utils`
+*   **System Commands:**
+    1.  Install initiator utils: `yum install -y iscsi-initiator-utils`
+    2.  Configure Client IQN name in `/etc/iscsi/initiatorname.iscsi`:
+        `InitiatorName=iqn.2026-06.com.example:client1`
+    3.  Discover target port portal:
+        `iscsiadm --mode discoverydb --type sendtargets --portal 192.168.12.10 --discover`
+    4.  Log in to the discovered target block device:
+        `iscsiadm --mode node --targetname iqn.2026-06.com.example:server --portal 192.168.12.10:3260 --login`
+    5.  Verify block device attachment: `lsblk` or `fdisk -l`
+    6.  Start initiator services: `systemctl enable --now iscsid iscsi`
+
+### Database Administration (MariaDB)
+MariaDB is the default relational database engine packaged in modern RHEL systems.
+*   **Package:** `mariadb-server`, `mariadb`
+*   **Installation & Security Initialization:**
+    1.  Install packages: `yum install -y mariadb-server mariadb`
+    2.  Start service: `systemctl enable --now mariadb`
+    3.  Secure installation default settings:
+        `mysql_secure_installation` (Interactive CLI script to set root password, remove anonymous users, disable remote root login, and purge test databases).
+*   **Core Administrative Queries:**
+    ```bash
+    # Connect to the local server
+    mysql -u root -p
+    ```
+    ```sql
+    -- Create database and tables
+    CREATE DATABASE app_db;
+    USE app_db;
+    CREATE TABLE users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL,
+        email VARCHAR(100)
+    );
+    INSERT INTO users (username, email) VALUES ('mhamouda', 'mostafa@example.com');
+    SELECT * FROM users;
+
+    -- Grant user access and privileges
+    GRANT ALL PRIVILEGES ON app_db.* TO 'app_user'@'localhost' IDENTIFIED BY 'UserSecurePass123!';
+    FLUSH PRIVILEGES;
+    EXIT;
+    ```
+*   **Firewall Settings:**
+    `firewall-cmd --permanent --add-service=mysql` && `firewall-cmd --reload`
 
 ---
 
@@ -364,16 +568,19 @@ FreeIPA (Identity, Policy, Audit) is an integrated centralized directory service
     ipa user-add                   # Provision new user (e.g. login: developer)
     ipa passwd developer           # Assign initial password
     ```
-*   **Client Enrollment:**
-    ```bash
-    yum install ipa-client
-    ipa-client-install             # Server: server.example.com | Domain: example.com
-    authconfig --enablemkhomedir --update   # Enable automatic home dir creation on login
-    ```
+*   **Replica Server Installation (High Availability):**
+    For redundancy, configure a secondary FreeIPA replica node (`replica.example.com` at `192.168.153.152`):
+    1.  On the primary server, add the replica host entry to DNS and hosts.
+    2.  On the replica node, enroll as a client:
+        `ipa-client-install --server=server.example.com --domain=example.com`
+    3.  Promote the replica node to a full server replica:
+        `ipa-replica-install` (This establishes multi-master LDAP and Kerberos replication).
 
-### Microsoft Active Directory Integration (realmd)
+### Microsoft Active Directory Integration
+SSSD can integrate Linux clients with Microsoft Active Directory using either individual host enrollment (`realmd`) or a cross-forest domain trust link.
+
+#### Approach 1: Direct Client Enrollment (realmd)
 The `realmd` daemon simplifies joining Linux clients to an existing Active Directory domain, coordinating SSSD, Samba, Kerberos, and PAM configurations under a single tool.
-
 *   **Setup Prerequisites:** Set the DNS server of the Linux client to point directly to the AD Domain Controller (e.g. `192.168.153.148`):
     ```bash
     nmcli connection modify eth0 ipv4.dns 192.168.153.148
@@ -394,6 +601,16 @@ The `realmd` daemon simplifies joining Linux clients to an existing Active Direc
     # Confirm domain registration
     realm list
     ```
+
+#### Approach 2: FreeIPA Cross-Forest Domain Trust
+Establish a direct cross-forest trust link between FreeIPA (`example.com`) and Active Directory (`ad.example.com`):
+1. Install trust packages on primary FreeIPA server:
+   `yum install -y ipa-server-trust-ad`
+2. Run trust setup wizard:
+   `ipa-ad-trust-setup --local-address=192.168.153.150`
+3. Create the trust relationship:
+   `ipa trust-add --type=ad ad.example.com --admin Administrator --password`
+
 *   **Authentication Check:**
     ```bash
     su - developer@example.com   # Log in on Linux with AD credentials
@@ -568,4 +785,68 @@ Custom files are integrated into the logrotate configuration daemon `/etc/logrot
     *   `rotate 4`: Maintain up to 4 historical compressed archives.
     *   `compress`: Apply gzip compression.
     *   `postrotate`: Execute commands after rotation sequence (e.g. reload app).
+
+### Log Aggregation and Observability (ELK Stack)
+The ELK (Elasticsearch, Logstash, Kibana) stack forms a centralized logging solution to aggregate, parse, and visualize distributed system logs.
+
+#### Elasticsearch Node Setup
+Elasticsearch is the distributed search and analytics engine that indexes log payloads.
+*   **Prerequisites:** Install Java Development Kit: `yum install -y java-11-openjdk-devel`
+*   **Configuration file:** `/etc/elasticsearch/elasticsearch.yml`
+*   **Parameters:**
+    ```yaml
+    cluster.name: production-logs
+    node.name: node-1
+    network.host: 192.168.12.10
+    http.port: 9200
+    discovery.seed_hosts: ["192.168.12.10"]
+    cluster.initial_master_nodes: ["node-1"]
+    ```
+*   **Service commands:** `systemctl enable --now elasticsearch`
+
+#### Logstash Parsing Pipeline
+Logstash receives raw logs, applies filters, and forwards structured JSON data to Elasticsearch.
+*   **Configuration file:** `/etc/logstash/conf.d/syslog.conf`
+*   **Complete Pipeline Definition:**
+    ```named
+    # 1. Receive syslog feeds on port 5044
+    input {
+      beats {
+        port => 5044
+      }
+    }
+
+    # 2. Parse Apache access logs
+    filter {
+      if [fields][log_type] == "apache-access" {
+        grok {
+          match => { "message" => "%{COMBINEDAPACHELOG}" }
+        }
+        date {
+          match => [ "timestamp" , "dd/MMM/yyyy:HH:mm:ss Z" ]
+        }
+      }
+    }
+
+    # 3. Output to Elasticsearch
+    output {
+      elasticsearch {
+        hosts => ["http://192.168.12.10:9200"]
+        index => "app-logs-%{+YYYY.MM.dd}"
+      }
+    }
+    ```
+*   **Service commands:** `systemctl enable --now logstash`
+
+#### Kibana Dashboard Interface
+Kibana exposes a web UI to search and visualize Elasticsearch log indexes.
+*   **Configuration file:** `/etc/kibana/kibana.yml`
+*   **Parameters:**
+    ```yaml
+    server.port: 5601
+    server.host: "192.168.12.10"
+    elasticsearch.hosts: ["http://192.168.12.10:9200"]
+    ```
+*   **Service commands:** `systemctl enable --now kibana`
+
 ```
