@@ -3,6 +3,24 @@
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
 
+
+## [2026-06-24] - Ingestion: AWS EBS & EFS Storage
+
+### Added
+- **Main Notes:** Created 4 atomic conceptual deeper-dive notes:
+  - [[Main Notes/aws - Amazon EBS.md|aws - Amazon EBS.md]]
+  - [[Main Notes/aws - Amazon EFS.md|aws - Amazon EFS.md]]
+  - [[Main Notes/aws - EBS Snapshot.md|aws - EBS Snapshot.md]]
+  - [[Main Notes/aws - Instance Store.md|aws - Instance Store.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Refactored [[Reference Notes/3-5_aws_ebs_efs_storage.md|3-5_aws_ebs_efs_storage.md]] to integrate detailed EBS volume types, snapshots, encryption, instance store, and EFS storage class parameters from the transcript, and inserted a comparative Mermaid diagram.
+- **Main Notes:** Refactored [[Main Notes/aws - EBS and EFS Storage.md|aws - EBS and EFS Storage.md]] MOC note to reference new atomic sub-concept notes and added Dataview query aggregation.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-5_aws_ebs_efs_storage.txt`
+
 ## [2026-06-24] - Ingestion: AWS EC2 Compute Architecture
 
 ### Added

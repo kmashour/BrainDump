@@ -5,9 +5,10 @@ class: reference-note
 tier: reference-note
 tags:
   - aws/storage
+  - aws/ebs
+  - aws/efs
+  - aws/instance-store
 ---
-
-# Module 3-5: AWS EBS & EFS Storage
 
 # Module 3-5: AWS EBS & EFS Storage
 
@@ -15,226 +16,214 @@ This module details persistent block storage using **Amazon Elastic Block Store 
 
 ---
 
----
+## 🗺️ Cognitive Map: Storage Topology & Lifecycle Comparison
 
-## 🗺️ Cognitive Map: Storage Topology Comparison
 ```mermaid
-graph TD
-    EC2["Amazon EC2 Instance"]
-    
-    EC2 -->|"zonal block SAN (gp3/io2)"| EBS["EBS Volume"]
-    EC2 -->|"local ephemeral NVMe"| InstStore["Instance Store (volatile)"]
-    EC2 -->|"network file POSIX (NFSv4)"| EFS["Elastic File System (EFS)"]
+graph TB
+    subgraph RegionalScope ["Regional / VPC Scope (AWS Cloud)"]
+        EFS["Amazon EFS (Shared NFSv4)"]
+    end
+
+    subgraph AZ_A ["Availability Zone A"]
+        subgraph Host_Server_A ["Host Server (Physical Rack)"]
+            EC2_A1["EC2 Instance A1"]
+            EC2_A2["EC2 Instance A2"]
+            InstStore_A["Instance Store (NVMe SSD - Local Bus)"]
+        end
+        EBS_zonal_A["EBS Volume A (gp3/io2 Block SAN)"]
+    end
+
+    subgraph AZ_B ["Availability Zone B"]
+        EC2_B1["EC2 Instance B1"]
+        EBS_zonal_B["EBS Volume B (Zonal SAN)"]
+    end
+
+    %% Network Mounts (EFS)
+    EC2_A1 -->|POSIX NFSv4 Mount| EFS
+    EC2_A2 -->|POSIX NFSv4 Mount| EFS
+    EC2_B1 -->|POSIX NFSv4 Mount| EFS
+
+    %% Block SAN Connections (EBS)
+    EBS_zonal_A -.->|Attached via Network SAN| EC2_A1
+    EBS_zonal_A -.->|Multi-Attach io1/io2 (max 16 instances)| EC2_A2
+
+    %% Local Attached Disk (Instance Store)
+    EC2_A1 ===|PCIe NVMe Physical Bus| InstStore_A
+
+    %% Notes/Lifecycles
+    style InstStore_A fill:#fbb,stroke:#333,stroke-width:2px;
+    style EBS_zonal_A fill:#bbf,stroke:#333,stroke-width:2px;
+    style EFS fill:#f9f,stroke:#333,stroke-width:2px;
 ```
 
----
+### 📊 Quick Comparison Matrix
+
+| Storage Option | Scope | Access Pattern | Durability & Lifecycle | Performance Profiles | Primary Use Cases |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Amazon EBS** | Zonal (Locked to AZ) | Single instance (Default); Multi-Attach (Optional for `io1`/`io2`) | Persists independently of EC2 instance termination. Highly durable, replicated in AZ. | gp2/gp3 (up to 16k IOPS), io1/io2 (up to 64k/256k IOPS). Sub-millisecond latency. | Boot volumes, transactional databases (RDS), general purpose VM disks. |
+| **Instance Store** | Zonal (Host-local) | Single instance mounted to host server | Volatile/Ephemeral. Lost on Stop/Terminate or hardware failure. Survives OS reboots. | Ultra-high performance (millions of IOPS), raw host physical bus speed (NVMe). | Buffers, high-speed caches, scratch spaces, distributed DB replica members. |
+| **Amazon EFS** | Regional (VPC) | Shared file access (thousands of Linux nodes concurrently) | Serverless, multi-AZ replication. Highly durable. Lifecycle rules move data to IA/Archive. | Dynamic scale, Elastic throughput up to 3 GB/s read, 1 GB/s write. POSIX compliant. | Web server content shares, CMS (WordPress), container log aggregation, big data ETL. |
 
 ---
 
-## 1. Amazon EBS & Storage Options
-AWS provides multiple storage choices depending on persistence, durability, performance, and accessibility.
+## 1. Amazon EBS (Elastic Block Store)
 
+Amazon EBS represents network-attached block storage designed for EC2 instances. Unlike local disks, EBS behaves like a Storage Area Network (SAN) drive connected over the network interface.
 
+### ⚙️ Core Characteristics
+*   **Network Bound:** Communicates with the EC2 instance via the network, resulting in minor latency overhead compared to physically attached drives.
+*   **Zonal Scope:** An EBS volume is provisioned within a specific **Availability Zone (AZ)**. An EC2 instance in `eu-west-1a` cannot mount an EBS volume created in `eu-west-1b` directly. 
+*   **Detaching and Migration:** Can be detached and attached to another instance in the same AZ dynamically (useful for active-passive failover). Migration across AZs or Regions requires taking a **Snapshot**, copying it, and creating a new volume in the target zone.
+*   **Provisioned Capacity:** Size (GB) and performance characteristics (IOPS/Throughput) must be specified in advance. Size can be dynamically increased but never decreased.
 
-EBS is zonal scope available over the same AZ to copy it across AZ we need to take snapshot and copy it to another zone or region 
-
-
-We can create a EC2 based on EBS volume with all our configuration in an AMI as template for fast bring up 
-
-EBS can be backed up manually or automatically 
-
-EFS is available over the VPC so any AZ under the VPC can use the EFS its like NAT a Paas everything is handled by aws scaling and backups so aws ensures that my data on efs will always be availabe 
-
-EFS is inside the VPC for security reasons so no one could access it 
-CloudWatch Events ---> Event Bridge
-
----
-
-## EC2 Instance-Store
-- Instance store volumes provide temporary block-storage.
-- It is ideal for temporary storage of data that changes frequently. For example, Buffers and caches, Scratch data, Temporary content.
-- Some instance types include instance store volumes by default (ex. i3, i3en). 
-- Instance store volumes such as those on the i3 & i3en Instances can be used for high IOPS "Input/Output operations per second" OLTP databases, relational DBs and non-relational DBs.
-- They can provide millions of IOPS, while EBS has a maximum limit of 64000 IOPS.
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/storage-optimized-instances.html
-
-The architecture of Instance Store will compensate for its volatile storage nature, since if its a DB cluster if one fails others will work and as long as the operations and state is saved regulary in intervals we can compensate for the volatile nature of instance store and use its high speed input output
+### 🔄 Delete on Termination Attribute
+*   This attribute controls what happens to the attached EBS volumes when their parent EC2 instance is terminated.
+*   **Root Volume:** Enabled (`DeleteOnTermination = True`) by default. The root volume is destroyed alongside the instance.
+*   **Non-Root Data Volumes:** Disabled (`DeleteOnTermination = False`) by default. Volumes persist after instance termination, keeping data intact.
+*   **Customization:** Can be toggled at launch or runtime via CLI/Console to preserve root data or auto-clean data volumes.
 
 ---
 
-## Elastic Block Store (EBS)
-![[Pasted image 20250527153621.png]]
+## 2. EBS Volume Types
 
-![[Pasted image 20250524110915.png]]
-- EBS volumes behave like raw, unformatted, external block storage devices. 
-- EBS volume data is replicated across multiple servers in the same availability zone (AZ).
-- An EBS volume attaches to a single EC2 instance at a time ***(Except for the Multi Attach Provisioned IOPS)***, this happens through the AWS network. 
-- Multi Attach EBS volumes allow up to 16 instances per volume, & cannot be used as boot/root volume, only for data volumes. Exclusive only for some instances "Provisioned IOPS instances".
-- Both the instance and the EBS volume must be in the same AWS AZ.
-- Elasticity in EBS Volumes lets us dynamically modify the size, performance, and volume type of the Amazon EBS volumes without detaching them. Size can be increased not decreased.
-### EBS Types
+EBS volumes are split into Solid State Drives (SSD) for transaction-heavy database operations and Hard Disk Drives (HDD) for large throughput-oriented workloads.
 
-![[Pasted image 20250524113316.png]]
-##### 1- Provisioned IOPS (io1)
-- Used Cases:
-	- Large IOPS intensive workloads that require consistent performance.
-	- Large production databases.
-- Cost: Highest
-- Orientation: IOPS
-##### 2- General Purpose (gp2) 
-- Used cases:
-	- General workloads.
-	- Small Databases.
-	- Dev/Test environments.
-	- Virtual Desktops.
-	- Workloads performing small, random I/O.
-- Cost: Higher
-- Orientation: IOPS
-##### 3- Throughout Optimized (st1)
-- Used Cases:
-	- Large, sequential I/O workloads such as Amazon EMR, Big Data, ETL, data warehouses, and log processing.
-	- Streaming workloads requiring consistent, fast throughput "transfer speed" at a low price.
-- Cost: Low
-- Orientation: Throughout
-##### 4- Cold HDD (sc1)
-- Used Cases:
-	- Large, sequential cold- data workloads.
-	- Throughput-oriented storage for large volumes of data that is infrequently accessed.
-	- Scenarios where the lowest storage cost is important.
-- Cost: Lowest
-- Orientation: Throughout
-![Pasted image 20221203225855](https://user-images.githubusercontent.com/109697567/206047934-32f888a5-0942-4cce-9c55-50e4149415a5.png)
-#### Volume Actions:
-![Pasted image 20221205191105](https://user-images.githubusercontent.com/109697567/206047952-88c3a0be-a1fb-42b4-9035-e1547836d383.png)
+### 🟢 Solid State Drives (SSD)
 
-### EBS Snapshots
-![[Pasted image 20250527153744.png]]
+SSD volumes are optimized for small, random I/O operations and transactional database workloads. They can be used as boot/root volumes.
 
-Can be manual or scheduled, the snapshots go to an S3 bucket in the same region, but can be copied to another region if desired.
-##### Amazon Data Lifecycle Manager (DLM)
+#### 1. General Purpose SSD (gp2 / gp3)
+*   **Use Cases:** System boot volumes, virtual desktops, dev/test environments, small databases, and general-purpose workloads.
+*   **gp3 (Newer Generation):** 
+    *   Baseline performance of **3,000 IOPS** and **125 MB/s throughput** is included free with the volume.
+    *   Allows provision of IOPS (up to 16,000) and throughput (up to 1,000 MB/s) **independently** from storage size.
+*   **gp2 (Older Generation):** 
+    *   Performance and size are linked: **3 IOPS per GB** provisioned.
+    *   Small volumes can burst up to 3,000 IOPS using a burst credit balance.
+    *   Maxes out performance at **16,000 IOPS** which requires provision of **5,334 GB** ($5334 \times 3 = 16,002$ IOPS).
 
-![[Pasted image 20250527154412.png]]
-
-A total solution for creating, deleting, and retaining EBS volume snapshots. 
--  You can configure snapshot lifecycle policies to carry the required EBS snapshot tasks.
-- A DLM policy can snapshot a single volume or multiple volumes attached to an EC2 instance. 
-- A DLM Policy uses resource tags to identify the volumes it needs to work on. 
-- You can also automate EBS snapshots with CloudWatch events, but that is for individual EBS volumes.
-#### Snapshot Actions:
-![Pasted image 20221205192326](https://user-images.githubusercontent.com/109697567/206047986-ad1be682-6d34-42ca-ae62-0031b10d1872.png)
-
-*Note:* Upon restoring a snapshot to a volume, the volume must be equal to or larger than the original snapshot volume size.
-*EX.* A snapshot of a volume of 8Gb containing data of 3Gb "5Gb free space", when restoring or copying to a new volume, the new volume must be ≥ 8Gb.
-
-### Copying EBS Snapshots 
-![[Pasted image 20250527155002.png]]
-### EBS Encryption
-![[Pasted image 20250527154449.png]]
-Amazon EBS uses KMS Customer Master Keys (CMKs) to generate data (encryption) keys to encrypt and decrypt data on EBS volumes. 
-- EBS Currently supports symmetric keys only.
-- Data is encrypted on the host of the EC2 instance. This means data in-transit to an encrypted EBS volume is also encrypted "encrypted all the way".
-- Using AWS CMK is fully managed by AWS unlike customer CMK we are responsible for key rotation, who can and who can't use it , can audit who used it..
-https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html#EBSEncryption
-![Pasted image 20221204204548](https://user-images.githubusercontent.com/109697567/206048024-0547319f-f1ec-4f5e-8a4d-603bde1920a6.png)
-### Encrypting a volume using a CMK:
-- When we encrypt a volume using CMK, its snapshots, volumes restored from its snapshots, and copies of the snapshots are all encrypted.
-- There is no direct way of changing the encryption status of a volume or a snapshot.
-- We cannot change the CMK key used to encrypt an existing encrypted volume or snapshot.
-- However, we can work around these restrictions with copy and create volume actions.
-	- Encrypting and unencrypted EBS :
-		- 
-	- unencrypting  an encrypted EBS volume :
-		- 
-![Pasted image 20221205010658](https://user-images.githubusercontent.com/109697567/206048105-2f61b935-1f41-404f-a05f-6f8c91b2a430.png)
-*Note:* We can enable EBS Encryption region-wide which will encrypt all current & future volumes, snapshots & copies of snapshots.
-
-### Sharing EBS Snapshots
-Snapshots by default have permissions set to private & can only be viewed by the account. 
-***V.Imp.NOTE:*** If we want to share an snapshot with an account in a different region, we need to copy it to that region first.
-
-##### Unencrypted snapshots:
-- Snapshots can be shared with all AWS community by modifying permissions to public. 
-- Snapshots can be shared with select AWS accounts (permission needs to be private). 
-##### Encrypted snapshots:
--  Can't be shared as public snapshots. 
-- Can only be shared with select accounts.
-- The receiving accounts must be given ****permissions*** on the CMK used to encrypt the shared snapshot "not the key, as the key don't leave the KMS to be downloaded as mentioned before".
-- An encrypted snapshot that was encrypted by the default CMK "AWS-managed CMKs (*aws/service_name*)" cannot be shared.
-![Pasted image 20221205192100](https://user-images.githubusercontent.com/109697567/206048254-23c21bf8-f24b-42b5-a5db-e973fd54e70f.png)
+#### 2. Provisioned IOPS SSD (io1 / io2 Block Express)
+*   **Use Cases:** Large, latency-sensitive database workloads (MongoDB, Oracle, SQL Server) requiring sustained performance above 16,000 IOPS.
+*   **io1:** 
+    *   Max provisioned IOPS of **64,000** for EBS-Optimized instances (32,000 for standard instances).
+    *   IOPS can be configured independently of storage size.
+*   **io2 Block Express:** 
+    *   Designed for sub-millisecond latency and high durability (99.999%).
+    *   Supports volumes up to **64 TB**.
+    *   Offers up to **256,000 IOPS** with an IOPS-to-GB ratio of **1,000:1**.
+*   **EBS Multi-Attach:** Only `io1` and `io2` volumes support being attached to up to **16 instances** concurrently within the *same* AZ. Requires a cluster-aware file system (e.g., OCFS2, GFS2) to prevent write-collisions and data corruption.
 
 ---
 
-## AMIs & Golden AMIs, Creating AMI From an EBS-Backed EC2 Instance
-(AMI: Amazon Machine Images. *ex:* Linux image)
+### 🔵 Hard Disk Drives (HDD)
 
-After launching an instance and customizing it; customer creates his own AMI, which can also be called a Golden AMI.
-- *ie.:* Golden AMIs are customized AMIs.
-- The custom AMI includes snapshots of all attached EBS volumes and they get stored in S3.
-- This comes in handy when taking a snapshot, the snapshot will include the basic AMI, plus all the configurations & customizations required for reinstallation.
-##### Copying Accounts
-- We can copy an AMI within the same region or across AWS regions. 
-- We can copy AMIs with encrypted snapshots and change the encryption status during the copy process.
-- AMIs from the marketplace (with billing product codes) and Windows AMIs can't be copied to another account. 
-	To work around that, launch an instance from the AMI, then create an AMI from that EC2 instance.
-##### Sharing AMIs Between Accounts
-- When sharing an AMI that has encrypted volumes, we need to share the CMKs used to encrypt those volumes' snapshots.
-- If we want to share an AMI with an account in a different region, we need to copy the AMI to that region first.
-- Sharing an AMI does not change its ownership. The owning account is charged for the storage of the AMI.
-*Note:* Notice that the AMI images is treated the same way as EBS volumes when sharing & copying. This is also true in the AWS Console.
+HDD volumes are optimized for large, sequential read/write operations. They **cannot** be used as root/boot volumes.
 
-### Creating Custom AMI Image from EC2 Console:
-![Pasted image 20221205224425](https://user-images.githubusercontent.com/109697567/206048309-eaa7aa65-9b56-45cf-86c7-4019305f773d.png)
-*Note:* When creating an AMI image, it's registered automatically in AWS, **Deregistration** is required first before deletion.
+#### 1. Throughput Optimized HDD (st1)
+*   **Use Cases:** Big Data analytics (Amazon EMR, Hadoop), MapReduce, Data Warehouses, ETL pipelines, and log processing servers.
+*   **Performance:** High throughput (up to 500 MB/s) and a max IOPS of 500. Optimized for sequential data streaming at a low price point.
+
+#### 2. Cold HDD (sc1)
+*   **Use Cases:** Infrequently accessed archival data, backup storage, or massive filesystems where lowest storage cost is the primary metric.
+*   **Performance:** Max throughput of 250 MB/s and a max IOPS of 250. Offers the lowest storage tier cost.
 
 ---
 
-## RAID (Redundant Array of Independent Disks)
-It's combining multiple volumes & using them as one volume, either for redundancy or performance, & can be used to increase number of IOPS.
-- EBS volumes support all RAID types. 
-- RAID is performed at the OS level Software. 
-- RAID volumes are not recommended by AWS to be used as root/boot volumes.
-### RAID Types
-##### 1- RAID 0
-- Highest IOPS performance among all RAID types.
-- Resulting IOPS is the sum of individual IOPS for all volumes.
-- No redundancy/mirroring.
-- Failure of any volume means failure of the entire array.
-##### 2- RAID 1
-- NO IOPS performance enhancement.
-- Redundant since the same data is written to all volumes.
-##### 3- RAID 10
-- Combines the benefits of RAID 0 and RAID 1.
-- Provides redundancy and performance enhancements.
+## 3. EBS Snapshots, Encryption, and Sharing
+
+### 📸 EBS Snapshots Mechanics
+*   **Incremental Backups:** Point-in-time backups of EBS volumes stored in Amazon S3. Only modified blocks are copied on subsequent snapshots to minimize storage charges.
+*   **Consistency:** While a snapshot can be taken while the volume is actively mounted, it is highly recommended to detach the volume or freeze the filesystem first to ensure absolute data integrity.
+*   **Regional Scope:** Snapshots reside at the Region level. They can be used to restore new EBS volumes to any Availability Zone within that region.
+
+### ⚙️ Snapshot Lifecycle Features
+1.  **Amazon Data Lifecycle Manager (DLM):** Automates the creation, retention, and deletion of EBS snapshots via resource tags.
+2.  **Recycle Bin for EBS Snapshots:** Protects against accidental deletion. Deleted snapshots are moved to the Recycle Bin and can be restored within a retention window of **1 day to 1 year**.
+3.  **Fast Snapshot Restore (FSR):** Forces full initialization of the restored EBS volume directly from S3, eliminating the baseline reading latency ("warming up") during the first read of each block. High operational cost.
+4.  **Snapshot Archive:** Moves snapshots to a low-cost archive tier (up to **75% cheaper**). Restoring from archive is not immediate, taking **24 to 72 hours**.
+
+### 🔒 EBS Encryption & Key Infrastructure
+*   **Transparent Security:** Handled dynamically at the host level of the EC2 instance using **KMS (Key Management Service)** keys with **AES-256** encryption.
+*   **Scope of Encryption:** Once enabled, data at rest inside the volume, data in-transit between instance and volume, snapshots, and volumes restored from those snapshots are encrypted transparently.
+*   **Encryption Migration Workflow:** 
+    *   There is no direct command to encrypt an existing unencrypted volume or change its KMS key.
+    *   **Workaround:** Create a Snapshot of the unencrypted volume -> Copy the Snapshot while checking the "Enable Encryption" box and selecting a KMS Customer Managed Key (CMK) -> Restore the copied snapshot to a new EBS volume (which will be encrypted) -> Swap the volumes on the instance.
+    *   **Shortcut:** A volume can be encrypted on-the-fly when creating it directly from an unencrypted snapshot in the console.
+
+### 🤝 Sharing EBS Snapshots
+*   **Unencrypted Snapshots:** Can be shared with individual AWS accounts or made public to the entire AWS community.
+*   **Encrypted Snapshots:** Cannot be made public. They can only be shared with specific accounts.
+*   **CMK Sharing Requirement:** The source account must grant permission on the Customer Managed Key (CMK) used to encrypt the snapshot to the target account. Snapshots encrypted with the default AWS Managed key (`aws/ebs`) **cannot** be shared across accounts.
+*   **Cross-Region Sharing:** To share a snapshot with an account in a different region, the snapshot must first be copied to that target region.
 
 ---
 
-## 2. EBS Snapshots, Copying, and Sharing (Eissa Notes)
-Snapshots are incremental backups of EBS volumes stored in Amazon S3.
+## 4. EC2 Instance Store (Ephemeral Block Storage)
 
-### A. Snapshot Properties & Sharing
-*   **Scope:** Snapshots reside at the regional level, allowing recovery to any Availability Zone within the region.
-*   **Encryption:** Sharing encrypted snapshots requires granting destination accounts access to the custom **Customer Managed Key (CMK)** used to encrypt the source snapshot. Default AWS Managed Keys cannot be shared.
+An **Instance Store** provides temporary block-level storage physically attached to the host hardware running the virtual EC2 instance.
+
+### ⚙️ Mechanics & Performance
+*   **Hardware Attached:** Bypasses the network interface, linking directly via the host's physical bus (SATA, SAS, or PCIe/NVMe).
+*   **Ultra-High IOPS:** Capable of delivering **millions of IOPS** (e.g. 3.3 million read IOPS on `i3` instances) and massive throughput, whereas EBS has limits of 16k (gp3) or 64k/256k (io1/io2).
+
+### 🔄 Lifecycle & Volatility Constraints
+*   **Ephemeral Nature:** Storage is volatile. Data is lost if:
+    *   The instance is **Stopped** (virtual machine is moved to another physical host).
+    *   The instance is **Terminated**.
+    *   The underlying host hardware fails.
+*   **Persistence:** Data survives operating system **Reboots**.
+*   **Replication Strategy:** Use cases must leverage software-level cluster replication (e.g. Cassandra, MongoDB, Elasticsearch clusters, OLTP DB replication) to replicate state dynamically across instances, compensating for the ephemeral storage model.
 
 ---
 
+## 5. Amazon EFS (Elastic File System)
+
+Amazon EFS is a serverless, fully managed network file system (NFS) offering shared file storage accessible by thousands of Linux EC2 instances concurrently.
+
+### ⚙️ Core Architecture
+*   **Protocol:** Uses standard Network File System version 4 (**NFSv4**).
+*   **Compatibility:** Linux-based AMIs only (Not compatible with Windows Server).
+*   **VPC & Multi-AZ Scope:** Mount targets are created inside target subnets across different Availability Zones within a VPC.
+*   **Elastic Scaling:** Capacity scales automatically up to petabytes as files are added or deleted. Pay-per-use model (no provisioned size required). EFS storage costs roughly **3x** the price of gp2 EBS volumes.
+*   **Security:** Governed by EFS security groups (port **2049** for NFS access must be open from instance security groups). Supports KMS data encryption at rest.
+
+### 📈 Performance and Throughput Modes
+
+#### 1. Performance Modes
+*   **General Purpose (Default):** Optimized for latency-sensitive applications like web serving, content management (WordPress), and general file shares.
+*   **Max I/O:** High latency overhead but scales to massive concurrent throughput and I/O. Ideal for parallelized workloads like big data processing or media transcoding.
+
+#### 2. Throughput Modes
+*   **Elastic (Recommended):** Automatically scales read/write throughput up and down based on the workload (reads up to 3 GB/s, writes up to 1 GB/s). Pay-per-use.
+*   **Bursting:** Throughput scales proportionally to the size of the stored data filesystem.
+*   **Provisioned:** Forces a baseline throughput regardless of the storage volume size. High cost, billed for the throughput itself.
+
+### 🔄 Storage Classes and Lifecycle Management
+EFS uses lifecycle policies to automatically transition files to cheaper storage tiers based on access patterns:
+*   **EFS Standard (Frequent Access):** Optimized for active files.
+*   **EFS Infrequent Access (EFS-IA):** Optimized for files not accessed in 7, 14, 30, 60, or 90 days. Offers cheaper storage but charges a retrieval fee per gigabyte.
+*   **EFS Archive:** Optimized for rarely accessed files (few times a year). Lowest cost tier.
+*   **Transition Policy:** Transition rules automatically move files to IA or Archive based on elapsed time, and transition them back to Standard immediately upon first access.
+*   **Deployment Options:**
+    *   **Regional (Multi-AZ):** Replicates data across multiple AZs. Recommended for production.
+    *   **One Zone (Single AZ):** Stores data in one AZ. Up to **47% cheaper** than Regional. Ideal for development/testing but vulnerable to AZ failure.
+
 ---
 
-## 3. RAID Configurations on EBS Volumes
-If an application requires performance or redundancy beyond a single EBS volume, RAID can be configured within the guest OS:
-*   **RAID 0 (Striping):** Combines volumes to increase I/O speed. No redundancy; if one volume fails, all data is lost.
+## 6. RAID Configurations on EBS Volumes
+
+If an application requires performance or redundancy beyond the capabilities of a single EBS volume, RAID can be configured within the guest OS:
+
+*   **RAID 0 (Striping):** Combines volumes to increase read/write throughput and IOPS (sum of all volume capacities and performance). No redundancy; a single disk failure corrupts the entire array.
 *   **RAID 1 (Mirroring):** Duplicates data on multiple volumes. Provides fault tolerance; slower write speeds.
 *   **RAID 10 (Striped Mirroring):** Combines RAID 0 and RAID 1. High I/O performance and redundancy at double the storage cost.
 
----
+> [!IMPORTANT]
+> RAID configurations are performed at the Guest OS level (Software RAID) and are not recommended by AWS to be used as root/boot volumes.
 
 ---
 
-## 4. Deep-Intuition (AARF) Breakdowns
-
-
----
-
-## Deep-Intuition (AARF) Breakdowns
+## 7. Deep-Intuition (AARF) Breakdowns
 
 ### AARF Breakdown: EBS gp3 vs. io2 Volume Selection
 1.  **The Answer (Core Pattern):** Utilize EBS gp3 for standard applications and database instances. Transition to io2 Block Express only when baseline storage performance requires sustained IOPS above 16,000 or absolute sub-millisecond write performance.
