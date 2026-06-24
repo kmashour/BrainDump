@@ -4,6 +4,27 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: AWS Disaster Recovery and Database Migrations
+
+### Added
+- **Main Notes:** Created 4 landing notes:
+  - [[Main Notes/AWS Disaster Recovery.md|AWS Disaster Recovery.md]]
+  - [[Main Notes/AWS Elastic Disaster Recovery.md|AWS Elastic Disaster Recovery.md]]
+  - [[Main Notes/AWS Database Migration Service.md|AWS Database Migration Service.md]]
+  - [[Main Notes/AWS Backup.md|AWS Backup.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Consolidated and rewrote [[Reference Notes/3-15_aws_disaster_recovery.md|3-15_aws_disaster_recovery.md]] to merge detailed transcript context on RPO and RTO metrics, the 4 DR strategies (Backup and Restore, Pilot Light, Warm Standby, Multi-site Active-Active) with a comprehensive Mermaid visual comparison, AWS DRS continuous block-level replication, DMS and SCT homogeneous/heterogeneous CDC migrations, RDS/Aurora migration paths (snapshots, replica promotion, Percona XtraBackup, pg dump), AWS Backup plans and vaults (with Vault Lock WORM policy), AWS Application Migration Service (MGN) lift-and-shift, VMware Cloud on AWS hybrid capabilities, EC2 HA architectures (Elastic IP failovers, ASG active-passive, stateful ASG hooks with EBS snapshots), HPC configurations (ENA, EFA, Parallel Cluster, FSx for Lustre), Event Processing (SQS/SNS Lambda retries, Fan-Out, S3 events notifications, EventBridge/CloudTrail alerts), Caching policies, Subnet and IP blocking (NACL, SG, WAF), and Chaos testing.
+- **Main Notes:**
+  - Updated [[Main Notes/aws.md|aws.md]] to link to the new conceptual landing notes.
+  - Updated [[Main Notes/aws - Disaster Recovery Strategies.md|aws - Disaster Recovery Strategies.md]] to reference [[Main Notes/AWS Disaster Recovery.md|AWS Disaster Recovery.md]] as its parent concept and updated breadcrumbs.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-15_aws_disaster_recovery.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: AWS SQS, SNS, Kinesis & Amazon MQ Decoupling
 
 ### Added

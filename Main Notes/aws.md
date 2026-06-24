@@ -19,6 +19,10 @@ related_concepts:
   - "[[Amazon Route 53]]"
   - "[[Amazon CloudFront]]"
   - "[[AWS Global Accelerator]]"
+  - "[[AWS Disaster Recovery]]"
+  - "[[AWS Elastic Disaster Recovery]]"
+  - "[[AWS Database Migration Service]]"
+  - "[[AWS Backup]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:

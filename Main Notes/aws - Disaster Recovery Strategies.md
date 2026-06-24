@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[aws]]"
+parent_concept: "[[AWS Disaster Recovery]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-of-workloads-on-aws/disaster-recovery-of-workloads-on-aws.html"
@@ -17,7 +17,7 @@ tags:
 
 # aws - Disaster Recovery Strategies
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[aws]] > **Disaster Recovery Strategies**
+**Breadcrumbs:** [[0-Index|🏠 Index]] > [[AWS Disaster Recovery]] > **Disaster Recovery Strategies**
 
 ---
 
