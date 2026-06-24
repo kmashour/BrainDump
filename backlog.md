@@ -4,6 +4,27 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-24] - Ingestion: AWS SQS, SNS, Kinesis & Amazon MQ Decoupling
+
+### Added
+- **Main Notes:** Created 4 landing notes:
+  - [[Main Notes/Amazon SQS.md|Amazon SQS.md]]
+  - [[Main Notes/Amazon SNS.md|Amazon SNS.md]]
+  - [[Main Notes/Amazon Kinesis.md|Amazon Kinesis.md]]
+  - [[Main Notes/Amazon MQ.md|Amazon MQ.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Consolidated and rewrote [[Reference Notes/3-14_aws_sqs_sns_decoupling.md|3-14_aws_sqs_sns_decoupling.md]] to integrate comprehensive SQS configuration settings (visibility timeout, long polling), queue types (Standard vs FIFO), SQS Auto Scaling integration and database write buffering patterns, SNS Topic pub/sub mechanics, message filtering, the SNS-to-SQS Fan-Out pattern (with a detailed Mermaid architecture diagram), real-time Amazon Kinesis Data Streams (shards, provisioned vs on-demand modes, KPL/KCL/EFO), near real-time Amazon Data Firehose targets/transformations, and Amazon MQ managed message broker active-standby HA deployment backed by shared Amazon EFS storage. Aligned Amazon MQ details with the Evolutionary Conceptual Bridging Rule.
+- **Main Notes:**
+  - Updated [[Main Notes/aws.md|aws.md]] to link to the new SQS, SNS, Kinesis, and MQ conceptual MOCs.
+  - Updated [[Main Notes/aws - SQS, SNS, and Decoupled Microservices.md|aws - SQS, SNS, and Decoupled Microservices.md]] to refer to the new atomic landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-14_aws_sqs_sns_decoupling.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: AWS CloudFront CDN & AWS Global Accelerator
 
 ### Added
