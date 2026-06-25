@@ -55,4 +55,5 @@ EBS volumes are categorized by SSD (Solid State Drives) optimized for random tra
 *   **st1:** Optimized for large, sequential workloads (Hadoop, EMR, Big Data, log processing) with up to 500 MB/s throughput. Billed for throughput.
 *   **sc1:** Lowest storage tier cost, optimized for large volume cold/archival data that is infrequently accessed.
 
-*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#1. amazon-ebs-elastic-block-store]] and [[Reference Notes/3-5_aws_ebs_efs_storage.md#2. ebs-volume-types]]*
+*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#1. Amazon EBS (Elastic Block Store)]] and [[Reference Notes/3-5_aws_ebs_efs_storage.md#2. EBS Volume Types]]*
+

@@ -52,4 +52,5 @@ EBS volumes utilize KMS AES-256 key encryption transparently at the EC2 host lev
 *   **KMS CMK Requirement:** The recipient account must be granted permissions on the KMS Customer Managed Key used to encrypt the snapshot. Snapshots encrypted using the default AWS Managed key (`aws/ebs`) **cannot** be shared across accounts.
 *   **Cross-Region Transfer:** Sharing across different Regions requires copying the snapshot to the target region first.
 
-*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#3. ebs-snapshots, encryption, and sharing]]*
+*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#3. EBS Snapshots, Encryption, and Sharing]]*
+

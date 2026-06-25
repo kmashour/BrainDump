@@ -55,4 +55,5 @@ EFS implements lifecycle policies to move files to cheaper tiers based on access
     *   *Regional (Multi-AZ):* Standard production availability replicating data across multiple AZs.
     *   *One Zone (Single AZ):* Stores data in one AZ (up to **47% cheaper**). Good for dev/test but lacks disaster durability.
 
-*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#5. amazon-efs-elastic-file-system]]*
+*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#5. Amazon EFS (Elastic File System)]]*
+

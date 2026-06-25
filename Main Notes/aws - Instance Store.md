@@ -49,4 +49,5 @@ Storage on an Instance Store is **volatile/ephemeral**, meaning data is lost in 
 *   Temporary web server assets.
 *   Distributed transactional databases with application-level data replication.
 
-*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#4. ec2-instance-store-ephemeral-block-storage]]*
+*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#4. EC2 Instance Store (Ephemeral Block Storage)]]*
+
