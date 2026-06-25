@@ -1,30 +1,41 @@
 # Module 11-1: CloudOps Monitoring, Logging & Dashboards
 
-This module details system metrics aggregation, configuring the unified CloudWatch Agent on Linux hosts, parsing application logs via Custom Metric Filters, and auditing API events with CloudTrail.
+This module details system metrics aggregation, configuring the unified CloudWatch Agent on Linux hosts, parsing logs via Custom Metric Filters, administrative auditing with CloudTrail, resource compliance with AWS Config, and operational event routing via EventBridge.
 
 ---
 
 ## 🗺️ Cognitive Map: How to Think About the Flow of Knowledge
 
-To implement robust observability, route data from host processes up to centralized security trails:
+To implement robust observability, route telemetry from guest operating systems up to centralized auditing trails:
 
 ```mermaid
 graph TD
-    Host["1. Linux Host Processes (Kernel Memory/Disk usage)"] -->|CloudWatch Agent JSON| CWLogs["2. CloudWatch Log Streams"]
+    Host["1. Linux Guest OS (RAM / Disk / Inodes)"] -->|CloudWatch Agent JSON| CWLogs["2. CloudWatch Log Streams"]
     CWLogs -->|Metric Filters (Regex Matching)| CWMetrics["3. CloudWatch Metrics & Alarms"]
     CWMetrics -->|EventBridge / SNS| OpsNotification["4. Incident Notification (Slack/Email)"]
     AWSAPICalls["5. AWS Console & CLI API Events"] -->|CloudTrail S3 Delivery| AuditTrail["6. CloudTrail Audits (Log Validation)"]
+    Config["7. Resource Changes (Compliance Timeline)"] -->|Config Rules / SSM Remediation| AutoHeal["8. Compliance Drift Remediation"]
 ```
 
-1. **Step 1: Host-Level Instrumentation (Section 1):** Deploy the CloudWatch agent to fetch metrics hidden from the hypervisor.
-2. **Step 2: Log Filtering & Alarming (Section 2):** Scan incoming log streams for error patterns and trigger notifications.
-3. **Step 3: Administrative Auditing (Section 3):** Validate API audit trails to verify compliance and track configuration changes.
+1. **Step 1: Host-Level Instrumentation (Section 1):** Deploy the Unified CloudWatch agent to fetch metrics hidden from the hypervisor.
+2. **Step 2: Alarms, Network Synthetic & Logs (Section 2 & 3):** Set thresholds, create composite alarms, establish synthetic monitors for direct connectivity, and aggregate logs.
+3. **Step 3: Event Routing & Schema Registry (Section 4):** Route API and partner events through EventBridge and replay archived transactions.
+4. **Step 4: Administrative Auditing & Log Integrity (Section 5):** Collect audit logs with CloudTrail and validate integrity against tampering.
+5. **Step 5: Resource Governance & Drifts (Section 6):** Set configuration compliance baselines using Config and automate auto-remediation runbooks.
 
 ---
 
-## 1. Unified CloudWatch Agent Configurations
+## 1. Unified CloudWatch Agent (Host-Level Instrumentation)
 
 By default, Amazon EC2 hypervisor metrics only capture resources visible from the physical host virtualization layer: CPU utilization, network I/O, and disk I/O metadata. They **cannot** read OS-level metrics like RAM utilization, active swap usage, or internal filesystem disk space.
+
+### A. Hypervisor vs. Agent Metrics
+*   **Hypervisor Metrics (Default EC2):** Collected from the virtualization layer without host login. Includes physical disk read/write bandwidth, network interfaces throughput, and virtual CPU utilization. The hypervisor has no visibility inside the virtual machine's RAM tables or filesystem structure.
+*   **OS/Agent Metrics (Unified CloudWatch Agent):** Requires host authentication and agent execution. By reading `/proc` virtual files (such as `/proc/meminfo` and `/proc/diskstats`), the agent collects memory usage (active, available, cached), swap file activity, active network connections, and directory-level storage block allocation.
+
+### B. Logs Agent (Deprecated) vs. Unified Agent (Modern)
+*   **CloudWatch Logs Agent:** The older, deprecated agent that could only send log files to CloudWatch logs.
+*   **CloudWatch Unified Agent:** The modern replacement that aggregates both logs and system-level performance metrics, with built-in integration to SSM Parameter Store for centralized configuration management.
 
 ### AARF Breakdown: Unified CloudWatch Agent Deployment
 1.  **The Answer (Core Pattern):** Install the CloudWatch Agent package on the Linux EC2 instance, attach an IAM Instance Profile containing the `CloudWatchAgentServerPolicy`, and write the configuration file under `/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json`:
@@ -43,6 +54,10 @@ By default, Amazon EC2 hypervisor metrics only capture resources visible from th
           "disk": {
             "measurement": ["used_percent", "inodes_free"],
             "resources": ["/"],
+            "metrics_collection_interval": 60
+          },
+          "swap": {
+            "measurement": ["swap_used_percent"],
             "metrics_collection_interval": 60
           }
         }
@@ -74,11 +89,50 @@ By default, Amazon EC2 hypervisor metrics only capture resources visible from th
 
 ---
 
-## 2. CloudWatch Log Custom Metric Filters
+## 2. CloudWatch Alarms, Synthetic Monitor, and Metrics Streaming
 
-Log groups aggregate text logs. Custom Metric Filters scan incoming text lines in real-time, matching specific strings or regex patterns and converting them into numeric CloudWatch metrics that can be used for alarms.
+CloudWatch provides metrics across all services, organizes them in namespaces, and filters them using dimensions (attributes of a metric, up to 30 dimensions per metric).
 
-### AARF Breakdown: Regex Metric Filtering
+### A. Alarms & Composite Alarms
+*   **States:** `OK`, `ALARM`, `INSUFFICIENT_DATA`.
+*   **Evaluation Period:** Time window used to evaluate the metric (e.g. 10s, 30s for high-resolution custom metrics, or multiples of 60s).
+*   **Targets:** EC2 Actions (Stop, Terminate, Reboot, Recover), Auto Scaling rules (Scale out/in), SNS notifications (which can trigger Lambda).
+*   **Composite Alarms:** Combines multiple alarms using boolean logic (`AND`, `OR`) to reduce alerting noise (e.g., only trigger an alert if CPU is high AND network bandwidth is low, indicating a hung process rather than typical query load).
+*   **Testing Alarms:** Administrators can test alerting pipelines using the CLI call:
+    ```bash
+    aws cloudwatch set-alarm-state --alarm-name "HighCPUAlarm" --state-value ALARM --state-reason "Manual trigger for testing"
+    ```
+
+### B. EC2 Auto-Recovery
+CloudWatch monitors instance status checks (guest VM level issues) and system status checks (underlying host physical hardware issues). A dedicated EC2 Auto-Recovery action can be attached to the system status check alarm to automatically move the instance to a new physical host without changes to public/private/elastic IPs, placement groups, or metadata.
+
+### C. CloudWatch Network Synthetic Monitor
+Designed to detect network performance issues (packet loss, latency, jitter) between AWS resources and on-premises data centers connected via Direct Connect or Site-to-Site VPN. It executes synthetic ICMP/TCP checks across IPv4 traffic without requiring local agent installation.
+
+### D. Near Real-Time Metrics Streaming
+For logging environments requiring centralized metrics collection, CloudWatch Metrics can be streamed directly via Kinesis Data Firehose to:
+1.  **S3 + Athena:** For long-term ad-hoc SQL querying.
+2.  **Amazon Redshift:** For data warehousing and business intelligence.
+3.  **Amazon OpenSearch:** For real-time visualizations and search indexing.
+4.  **Third-Party Providers:** Direct HTTP streaming to platforms like Datadog, Splunk, Dynatrace, New Relic, or Sumo Logic.
+
+---
+
+## 3. CloudWatch Logs & Custom Metric Filters
+
+CloudWatch Logs act as a target repository for application logs, configured with log groups (applications) and log streams (individual containers, files, or instances).
+
+### A. Logging Destination Architectures
+*   **Batch S3 Export:** Log groups can be exported to S3 using the `CreateExportTask` API call. This is non-real-time and can take up to 12 hours to complete.
+*   **Real-Time Streaming (Subscription Filters):** Streams logs immediately to Kinesis Data Streams, Kinesis Data Firehose, or Lambda for real-time analysis.
+*   **Cross-Account Log Aggregation:** Real-time subscription filters in a sender account can stream logs into a central Kinesis stream in a receiver account. This is configured using a **Log Destination** in the recipient account, backed by a **destination access policy** and an IAM role with write permissions to the destination Kinesis stream.
+
+### B. Live Tail
+A real-time logging terminal interface in the CloudWatch console for debugging events as they occur.
+> [!WARNING]
+> Live Tail pricing allows only 1 free usage hour per day. Always close the Live Tail session once debugging is finished to avoid ongoing costs.
+
+### AARF Breakdown: Custom Metric Filters
 1.  **The Answer (Core Pattern):** Create a metric filter resource bound to the target log group using a specific filter pattern:
     ```hcl
     resource "aws_cloudwatch_log_metric_filter" "nginx_errors" {
@@ -100,7 +154,24 @@ Log groups aggregate text logs. Custom Metric Filters scan incoming text lines i
 
 ---
 
-## 3. Administrative Auditing (AWS CloudTrail)
+## 4. Amazon EventBridge (Operational Event Hub)
+
+Amazon EventBridge (formerly CloudWatch Events) acts as an event bus routing messages from various sources (AWS services, custom apps, SaaS partners) to targets based on matching rules.
+
+### A. Event Buses and Routing
+*   **Default Event Bus:** Receives default events emitted by AWS services (e.g., EC2 state change, console login).
+*   **Partner Event Bus:** Integrates with third-party SaaS applications (e.g., Auth0, Datadog, Zendesk) to route non-AWS events into AWS targets.
+*   **Custom Event Bus:** Created for user applications to emit custom JSON events. Cross-account routing is configured using resource-based policies on the target event bus.
+
+### B. Event Archiving & Replaying
+EventBridge can archive event streams with set or indefinite retention policies. These archived events can be replayed through EventBridge buses. This is critical for troubleshooting: if a Lambda destination fails or bugs are found in processing, developers can fix the code and replay the archived logs to process the missed transactions.
+
+### C. Schema Registry
+Analyzes events dynamically inside the event bus to infer code bindings and structure definitions. Developers can download code binding templates (Java, Python, TypeScript) to automatically map incoming event JSONs directly to code classes.
+
+---
+
+## 5. Administrative Auditing (AWS CloudTrail)
 
 CloudTrail records AWS API activity (console logins, CLI commands, IaC execution) as audit events.
 
@@ -116,6 +187,18 @@ sequenceDiagram
     Trail->>Trail: Generate SHA-256 Digest Signature
     Trail->>S3: Write Log file & Digest Signature file
 ```
+
+### A. Event Classifications
+*   **Management Events:** Log operations performed on resource configurations (e.g., `IAM:AttachRolePolicy`, `EC2:CreateSubnet`). Read events (read-only list/describe APIs) can be logged separately from Write events (mutate/delete APIs). Enabled by default with 90-day retention.
+*   **Data Events:** High-volume resource operations (e.g., `S3:GetObject`, `Lambda:Invoke`). Disabled by default due to high transaction volume.
+*   **Insights Events:** Anomaly detection engines that analyze Management Events to establish a standard API volume baseline and generate alerts if activity spikes (e.g., provisioning storms or rapid user deletions).
+*   **Long-Term Audit Querying:** Audit events beyond the default 90-day retention are archived to S3 and queried serverlessly using **Amazon Athena**.
+
+### B. Real-Time API Interception
+CloudTrail API events are published directly to EventBridge. This allows developers to catch destructive operations immediately:
+*   `DeleteTable` in DynamoDB -> EventBridge Rule -> SNS alert to security admins.
+*   `AssumeRole` in IAM -> EventBridge Rule -> Lambda validation script.
+*   `AuthorizeSecurityGroupIngress` in EC2 -> EventBridge Rule -> Trigger Auto-Remediation script.
 
 ### AARF Breakdown: Log File Integrity Validation
 1.  **The Answer (Core Pattern):** Enable **Log File Validation** on CloudTrail configurations:
@@ -136,3 +219,53 @@ sequenceDiagram
 3.  **The Rationale (Why):** When validation is enabled, CloudTrail delivers a signed digest file containing the SHA-256 hash of each log file delivered to S3. Running the `validate-logs` CLI command recalculates these hashes and verifies the signatures. If an attacker modifies or deletes a log file to hide their actions, the validation signature check fails.
 4.  **The Failure Loop (What if not):** If log validation is disabled, an intruder who compromises administrative credentials can delete or modify trail log files inside the S3 bucket. Incident responders will find missing or corrupted log files, making it impossible to reconstruct the attack timeline or determine the breach scope.
 5.  **Alternative Case (When to use 'if not'):** None. For production environments, log file validation should be enabled universally.
+
+---
+
+## 6. AWS Config (Compliance Recording & Auto-Remediation)
+
+AWS Config records configuration history and evaluates resource configurations against organizational rules (e.g., checking if encryption is enabled, or ports are left open).
+
+### A. Compliance Rules & Remediations
+*   **Rules:** Per-region rules (AWS Managed Rules like `restricted-ssh` vs Custom Rules written using AWS Lambda). They evaluate resource compliance either on configuration change or periodically. Config rules are audit tools; they do not block API calls (unlike Service Control Policies).
+*   **Auto-Remediation:** If a resource is marked non-compliant, Config can trigger an SSM Automation Runbook (e.g. `RevokeUnusedIAMUserCredentials` or disabling insecure ports). Remediation rules support automatic retries (up to 5 times) if the resource fails compliance checks after remediation.
+*   **Config Timeline:** Config captures a resource timeline, mapping configuration history directly alongside CloudTrail API calls to trace exactly *who* modified a resource and *when* it became non-compliant.
+
+---
+
+## 7. Operational Visibility (CloudWatch Insights)
+
+CloudWatch provides specialized engines for tracing systems, containers, and applications:
+
+### A. Container Insights
+Aggregates container performance metrics and logs from Amazon ECS, Amazon EKS, Fargate, and self-managed Kubernetes clusters on EC2.
+*   **Kubernetes Discovery:** Container Insights uses a containerized version of the Unified CloudWatch Agent running as a daemonset to collect performance metrics.
+
+### B. Lambda Insights
+Aggregates detailed system metrics (CPU time, memory usage, disk, network), cold start frequencies, and execution lifetimes. It is injected into serverless environments using a **Lambda Layer**.
+
+### C. Contributor Insights
+Scans raw log data (like VPC Flow Logs or DNS logs) to count unique occurrences and map top-N contributors (e.g. finding the top 10 IP addresses causing network traffic, or top URLs throwing errors).
+
+### D. Application Insights
+Analyzes application environments (Java, .NET, IIS, SQL Server) and their supporting resources (EBS, RDS, ELB, ASG, Lambda, DynamoDB, S3) using machine learning algorithms (backed by SageMaker) to generate troubleshooting dashboards. It routes findings to EventBridge and SSM OpsCenter.
+
+---
+
+## 8. Observability Comparison Matrix
+
+The table below contrasts the scopes and roles of CloudWatch, CloudTrail, and AWS Config:
+
+| Feature / Service | Amazon CloudWatch | AWS CloudTrail | AWS Config |
+| :--- | :--- | :--- | :--- |
+| **Primary Focus** | Resource performance and health. | API call auditing and security trail. | Configuration drift and compliance history. |
+| **Data Types** | Metrics, logs, alarms, trace data. | JSON API activity logs. | Resource attributes, compliance states. |
+| **Evaluation Scope** | CPU, RAM, Disk, log text matching. | Console, CLI, SDK API execution. | AWS Resource compliance rules. |
+| **Remediation Trigger** | Alarms -> Auto Scaling, EC2 Recover. | EventBridge -> Auto-remediation. | SSM Automation runbooks. |
+| **Temporal View** | Real-time performance streams. | API event ledger (90-day default). | Compliance history timeline. |
+
+### Architectural Example: Observability of an Elastic Load Balancer (ELB)
+To monitor an ELB:
+*   **CloudWatch:** Tracks performance metrics such as active connections, target response times, and 5xx HTTP error code counts to scale resources or alert engineers.
+*   **AWS Config:** Verifies configuration settings, ensuring the ELB has an SSL certificate attached, matches approved cipher suites, and does not allow unencrypted HTTP traffic.
+*   **CloudTrail:** Tracks API audits to see which IAM entity modified the certificate, deleted the listener rules, or changed security group configurations.
