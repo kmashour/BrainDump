@@ -37,4 +37,4 @@ Both options implement the **WORM (Write Once, Read Many)** data model to preven
   - Protects an object indefinitely.
   - Applied and removed using the `s3:PutObjectLegalHold` permission. Does not require a retention period; it stays active until explicitly removed.
 
-*Read more in [[Reference Notes/3-6_aws_s3_storage.md#7-s3-object-lock--glacier-vault-lock]]*
+*Read more in [[Reference Notes/3-6_aws_s3_storage.md#7-data-protection--worm-object-lock--vault-lock]]*

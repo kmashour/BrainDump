@@ -48,4 +48,8 @@ Amazon S3 offers a variety of storage classes tailored to different data access 
 - **Use Case:** Extremely low-latency and high-performance applications (AI/ML training, financial simulations).
 - **Details:** Stores data in a single AZ within custom **Directory Buckets**. Handles hundreds of thousands of requests per second with single-digit millisecond latency (10x faster than Standard).
 
-*Read more in [[Reference Notes/3-6_aws_s3_storage.md#2-s3-storage-classes-lifecycle-transitions]]*
+### 7. S3 on Outposts
+- **Use Case:** Local on-premises workloads with strict data residency and latency requirements.
+- **Details:** Delivers object storage local to your Outposts physical hardware, using the same S3 APIs.
+
+*Read more in [[Reference Notes/3-6_aws_s3_storage.md#a-s3-storage-class-comparison]]*

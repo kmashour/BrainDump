@@ -45,4 +45,4 @@ S3 Analytics scans access patterns of standard objects to provide data-driven re
 - **Scope:** Recommendations only apply to S3 Standard and Standard-IA. It does not work with One Zone-IA or Glacier.
 - **Output:** Generates a daily CSV report, taking 24 to 48 hours of initial monitoring before generating recommendations.
 
-*Read more in [[Reference Notes/3-6_aws_s3_storage.md#3-s3-lifecycle-rules--analytics]]*
+*Read more in [[Reference Notes/3-6_aws_s3_storage.md#b-lifecycle-policies]]*

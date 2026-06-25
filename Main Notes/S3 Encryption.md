@@ -36,4 +36,4 @@ The client encrypts the data locally before sending it to S3. Decryption also ha
 ### 3. Encryption in Transit (Enforcing SSL/TLS)
 S3 supports both unencrypted HTTP and encrypted HTTPS. Best practice dictates forcing encryption in transit. This is done via a bucket policy that explicitly denies any S3 operations when the condition `"aws:SecureTransport": "false"` is met.
 
-*Read more in [[Reference Notes/3-6_aws_s3_storage.md#6-s3-encryption]]*
+*Read more in [[Reference Notes/3-6_aws_s3_storage.md#4-s3-encryption-architecture]]*
