@@ -51,9 +51,12 @@ This index contains our Amazon Web Services (AWS) cloud architecture modules, de
   * Hands-on walk-through scenarios, EC2 role access, SQS order processing, highly available tiers.
 - 🐳 **[Module 3-17: AWS Containers (ECS, EKS & ECR)](3-17_containers_ecs_eks.md)**
   * Docker primitives, ECS clusters, Task/Execution roles, Fargate serverless, EKS nodes, and Auto Mode.
+- ⚡ **[Module 3-18: AWS Serverless (Lambda, API Gateway, DynamoDB & Cognito)](3-18_serverless.md)**
+  * Lambda pricing/concurrency/SnapStart, API Gateway endpoints, DynamoDB modes/DAX/streams, and Cognito identity flows.
 
 ---
 
 ## 🛠️ Verification Projects
 - 🚀 **[Project: Secure Load-Balanced Web API](../Projects/Systems%20Design/Project%20-%20Secure%20Load-Balanced%20Web%20API.md)**
 - ☸️ **[Project: ECS and EKS Cluster Deployments](../Projects/kubernetes/Project%20-%20ECS%20and%20EKS%20Cluster%20Deployments.md)**
+- ⚡ **[Project: Serverless REST API with Lambda and API Gateway](../Projects/kubernetes/Project%20-%20Serverless%20REST%20API%20with%20Lambda%20and%20API%20Gateway.md)**

@@ -4,6 +4,27 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-25] - Ingestion: AWS Serverless (Lambda, API Gateway, DynamoDB & Cognito)
+
+### Added
+- **Reference Notes:** Created [[Reference Notes/3-18_serverless.md|3-18_serverless.md]].
+- **Projects:** Created [[Projects/kubernetes/Project - Serverless REST API with Lambda and API Gateway.md|Project - Serverless REST API with Lambda and API Gateway.md]] detailing hands-on playbooks for serverless setups, Python codes, and throttling/concurrency verification.
+- **Main Notes:** Created 4 landing notes:
+  - [[Main Notes/AWS Lambda.md|AWS Lambda.md]]
+  - [[Main Notes/API Gateway.md|API Gateway.md]]
+  - [[Main Notes/Amazon DynamoDB.md|Amazon DynamoDB.md]]
+  - [[Main Notes/Amazon Cognito.md|Amazon Cognito.md]]
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[Reference Notes/3-Index - AWS.md|3-Index - AWS.md]] to catalog Module 3-18 and its verification project.
+- **Main Notes:** Updated [[Main Notes/aws.md|aws.md]] to link to the new serverless-related landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-18_serverless.txt`
+
+---
+
 ## [2026-06-25] - Ingestion: AWS Containers (ECS, EKS & ECR)
 
 ### Added
