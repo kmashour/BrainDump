@@ -55,4 +55,6 @@ AWS supports two versions of the metadata service, with IMDSv2 providing critica
 *   **Mitigation:** The PUT request is blocked by standard HTTP proxies. The session token cannot be retrieved via simple URL redirection or standard SSRF vulnerabilities.
 *   **Hop Limit Control:** Set the HTTP PUT response hop limit (e.g., `--http-put-response-hop-limit 1`) to prevent containers (which require network hops through host virtual bridges) from querying the metadata service from within Docker/Kubernetes.
 
-*Read more in [[Reference Notes/3-4_aws_ec2_compute.md#Deep-Intuition (AARF) Breakdowns]]*
+*Read more in [[Reference Notes/3-4_aws_ec2_compute.md#8. Instance Metadata Service (IMDS)]]*
+
+

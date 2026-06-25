@@ -109,6 +109,7 @@ Understanding when compute resources are billed is critical for cost-efficient s
 *   **Benefits:** Faster boot times upon restart because the OS is frozen (not rebooted), preserving applications state, running processes, and warmed-up caches.
 *   **Prerequisites & Limits:**
     *   The root volume must be an encrypted EBS volume with sufficient capacity to hold the RAM dump.
+    *   The EBS root volume must be large enough to contain the RAM dump.
     *   Supported for On-Demand, Reserved, and Spot instances.
     *   Cannot be used on bare-metal instances.
     *   RAM size limit is typically < 150 GB.
@@ -128,17 +129,21 @@ AWS provides several purchasing models to balance cost optimization with perform
 *   **Model:** 1-year or 3-year commitment specifying standard compute attributes. Offers up to 72% discounts compared to On-Demand. Can be purchased in three payment tiers: All Upfront, Partial Upfront, and No Upfront.
 *   **Standard RIs:** Highest discount (up to 72%). Allows modification of AZ, instance size (within the same family), and scope, but **cannot** change the instance family, OS, or tenancy. RIs can be sold on the RI Marketplace.
 *   **Convertible RIs:** Slightly lower discount (up to 54%). Allows exchanging for a different instance class, family, OS, tenancy, or scope.
+*   **Scheduled RIs:** Allows reserving capacity for recurring scheduled blocks of time (e.g., daily, weekly, or monthly) for a 1-year commitment. Charged only for the duration the scheduled instance runs.
 *   **Scope:** 
     *   *Zonal:* Binds capacity reservation to a specific Availability Zone.
     *   *Regional:* Provides billing discounts across all AZs in the region without capacity guarantees.
 
 ### Savings Plans
 *   **Model:** A modern, flexible pricing commitment where you commit to a specific hourly spend (e.g., $10/hour) for 1 or 3 years. Any usage within the limit is charged at the discounted rate; excess usage is billed at standard On-Demand rates. Up to 72% savings.
-*   **Flexibility:** Automatically applies across instance sizes, operating systems, tenancy, and regions for a given instance family. Compute Savings Plans extend flexibility to Fargate and Lambda.
+*   **Flexibility:** Automatically applies across instance sizes, operating systems, tenancy, and regions for a given instance family.
+*   **Types:**
+    *   **EC2 Instance Savings Plans:** Up to 72% savings. Binds to a specific instance family in a region. Automatically applies to any instance size, OS, or tenancy within that family.
+    *   **Compute Savings Plans:** Up to 66% savings. Most flexible plan. Applies to EC2 instances (any family, size, OS, tenancy, region), AWS Fargate, and AWS Lambda.
 
 ### Dedicated Infrastructure
 *   **Dedicated Hosts:** A physical server fully dedicated to a single customer. Billed per physical server.
-    *   *Use Cases:* Regulatory compliance demanding physical separation, or licensing models bound to physical sockets, cores, or hypervisor configurations (BYOL).
+    *   *Use Cases:* Regulatory compliance demanding physical separation, or licensing models bound to physical sockets, cores, or hypervisor configurations (BYOL - Bring Your Own License).
     *   *Control:* Permits full visibility and control over instance placement on the hardware.
 *   **Dedicated Instances:** Running on hardware dedicated to you, but shared with other instances under the same AWS account. You lack control over physical placement on the hardware.
 
@@ -148,15 +153,16 @@ AWS provides several purchasing models to balance cost optimization with perform
 ### Spot Instances & Spot Fleets
 *   **Spot Instances:** Utilizes unused AWS capacity at discounts up to 90%.
     *   **Bid Mechanism:** You specify a maximum price you are willing to pay. If the spot price (based on supply and demand) rises above your maximum, you receive a **2-minute warning** before the instance is stopped or terminated.
+    *   **Spot Block:** *Historical Note:* Previously, Spot Blocks allowed reserving Spot Instances for a fixed duration of 1 to 6 hours without interruption. AWS has **deprecated and withdrawn** Spot Blocks since 2021.
     *   **Requests:**
         *   *One-Time:* Active until fulfilled, then deleted.
         *   *Persistent:* Remains active to launch new spot instances if the current ones are reclaimed or stopped, as long as the request duration is valid.
-    *   **Termination Protocol:** To permanently delete a persistent spot setup, you **must cancel the Spot Request first**, and then terminate the running instances. Terminating the instances first will prompt the persistent request to launch a replacement instance.
+    *   **Termination Workflow (Cancel Workflow):** To permanently delete a persistent spot setup, you **must cancel the Spot Request first**, and then terminate the running instances. Terminating the instances first will prompt the persistent request to launch a replacement instance.
 *   **Spot Fleet:** A collection of Spot Instances (and optionally On-Demand instances) that automatically requests capacity across multiple instance types, OS profiles, and AZs to meet a target budget or capacity.
-    *   *LowestPrice Strategy:* Provisions instances from the cheapest pool (best for short-duration batch processing).
-    *   *Diversified Strategy:* Distributes instances across all defined pools (optimal for long-running, fault-tolerant workloads).
-    *   *CapacityOptimized:* Launches instances from the pool with the highest available capacity (reduces termination rates).
-    *   *PriceCapacityOptimized:* Selects the highest capacity pool first, then chooses the cheapest within it (recommended default).
+    *   *lowestPrice Strategy:* Provisions instances from the cheapest pool (best for short-duration batch processing).
+    *   *diversified Strategy:* Distributes instances across all defined pools (optimal for long-running, fault-tolerant workloads).
+    *   *capacityOptimized Strategy:* Launches instances from the pool with the highest available capacity (reduces termination rates).
+    *   *priceCapacityOptimized Strategy:* Selects the highest capacity pool first, then chooses the cheapest within it (recommended default).
 
 ---
 
@@ -182,50 +188,78 @@ To optimize network latency or isolate physical hardware failures, customers can
 *   **Purpose:** Isolates failures at the partition level. A rack failure in Partition 1 will not impact Partition 2.
 *   **Use Cases:** Partition-aware distributed databases (Cassandra, HBase), big data clusters (HDFS), and message streams (Apache Kafka).
 
-### 🗺️ Placement Group Topology Configurations
+---
 
-```mermaid
-flowchart TD
-    subgraph Cluster ["Cluster Placement Group (Single AZ)"]
-        direction LR
-        c1["EC2 Instance 1"] <-->|"10Gbps+ Network <br> Ultra-Low Latency"| c2["EC2 Instance 2"]
-        c2 <-->|"Enhanced Networking"| c3["EC2 Instance 3"]
-        c1 <--> c3
-    end
-    
-    subgraph Spread ["Spread Placement Group (Max 7 per AZ)"]
-        direction TB
-        subgraph Rack_A1 ["Physical Rack A"]
-            s1["EC2 Instance 1"]
-        end
-        subgraph Rack_A2 ["Physical Rack B"]
-            s2["EC2 Instance 2"]
-        end
-        subgraph Rack_A3 ["Physical Rack C"]
-            s3["EC2 Instance 3"]
-        end
-    end
-    
-    subgraph Partition ["Partition Placement Group (Up to 7 Partitions per AZ)"]
-        direction TB
-        subgraph Part1 ["Partition 1 (Rack X)"]
-            p1_1["EC2 Instance 1"]
-            p1_2["EC2 Instance 2"]
-        end
-        subgraph Part2 ["Partition 2 (Rack Y)"]
-            p2_1["EC2 Instance 3"]
-            p2_2["EC2 Instance 4"]
-        end
-        subgraph Part3 ["Partition 3 (Rack Z)"]
-            p3_1["EC2 Instance 5"]
-            p3_2["EC2 Instance 6"]
-        end
-    end
-```
+## 6. Elastic Network Interfaces (ENI)
+
+An **Elastic Network Interface (ENI)** is a logical component in a VPC representing a virtual network card that provides network connectivity to EC2 instances.
+
+### ENI Attributes & Configuration Limits
+*   **Primary Private IPv4:** Permanently assigned to the ENI from the subnet range.
+*   **Secondary Private IPv4s:** One or more secondary private IPs can be assigned to a single ENI.
+*   **Elastic IP (EIP):** Can associate one Elastic IP to each private IP on the ENI.
+*   **Public IPv4:** Automatically assigned if launching in a public subnet.
+*   **Security Groups:** One or more security groups must be associated with the ENI to control ingress/egress.
+*   **MAC Address:** Globally unique hardware address assigned to the virtual interface.
+
+### Placement and Failover Workflow
+*   **AZ Bound:** ENIs are strictly bound to a specific Availability Zone. You cannot attach an ENI to an instance in a different AZ.
+*   **Failover Pattern:** You can detach an ENI from one instance and attach it to another instance within the same AZ. This acts as a fast failover mechanism, shifting the private IP address, associated Elastic IP, and security group settings to the standby instance.
+*   **Termination Behavior:** 
+    *   By default, the primary ENI created automatically during instance launch is deleted when the instance is terminated (`DeleteOnTermination` set to true).
+    *   Secondary ENIs created manually persist independently of the EC2 instance lifecycle and remain available to be re-attached to other instances.
 
 ---
 
-## 6. EC2 Monitoring & Checking
+## 7. Amazon Machine Image (AMI) Lifecycle
+
+An **Amazon Machine Image (AMI)** is a pre-packaged template containing the operating system, server configurations, and application stacks required to launch an EC2 instance.
+
+### AMI Creation, Sharing, and Copying
+*   **AMI Creation:**
+    *   Created from an existing EC2 instance (running or stopped).
+    *   AWS takes a snapshot of the root volume (and other mapped volumes) and registers it as an AMI.
+    *   *Best Practice:* Stop the instance before creating the AMI to ensure data integrity and file system consistency.
+*   **AMI Sharing:**
+    *   AMIs can be configured with distinct launch permissions:
+        *   *Public:* Shared globally with all AWS accounts.
+        *   *Private:* Accessible only to the owning account.
+        *   *Explicit:* Shared securely with specific AWS Account IDs.
+    *   *Encryption Constraint:* If the AMI is backed by an encrypted EBS snapshot, the associated KMS Key used to encrypt the snapshot must also be shared explicitly with the target AWS accounts.
+*   **AMI Region Copying:**
+    *   AMIs are **Region-scoped** resources. An AMI ID in `us-east-1` cannot be referenced or launched directly in `us-west-2`.
+    *   To deploy an AMI in a different region, you must execute an AMI Copy operation, which replicates the underlying snapshot data to the target region and registers a new AMI with a unique Region-scoped ID.
+
+---
+
+## 8. Instance Metadata Service (IMDS)
+
+The **Instance Metadata Service (IMDS)** provides configuration metadata and temporary security credentials to applications and scripts running inside an EC2 instance.
+
+### The Metadata Endpoint
+*   **Link-Local Address:** Accessed via HTTP at the non-routable link-local address:
+    `http://169.254.169.254/latest/meta-data/`
+*   **Common Attributes:** Queryable paths include `instance-id`, `instance-type`, `ami-id`, `local-ipv4`, and `iam/security-credentials/<role_name>` (provides temporary security tokens).
+*   **User Data:** Launch scripts are retrieved via `http://169.254.169.254/latest/user-data/`.
+
+### IMDSv1 vs. IMDSv2
+*   **IMDSv1:** Request-response model using simple HTTP GET requests. Vulnerable to Server-Side Request Forgery (SSRF) vulnerabilities where web proxies or application parameters can be exploited to read metadata.
+*   **IMDSv2:** Session-oriented model requiring an HTTP PUT request to fetch a session token, which is then passed in an HTTP header for subsequent requests.
+*   **Token Requirement Workflow:**
+    ```bash
+    # 1. Fetch a session token specifying a TTL in seconds
+    TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+
+    # 2. Query metadata utilizing the token header
+    curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/instance-id
+    ```
+*   **Hop Limit Control:**
+    *   The HTTP PUT token response defaults to a hop limit. 
+    *   Setting the hop limit to 1 (`--http-put-response-hop-limit 1`) prevents containerized workloads on the host (which require network hops through host bridged virtual adapters) from reading the host's metadata service directly, isolating host credentials from container access.
+
+---
+
+## 9. EC2 Monitoring & Status Checks
 
 AWS provides built-in instrumentation to track compute platform health and application behavior.
 
@@ -242,7 +276,7 @@ AWS provides built-in instrumentation to track compute platform health and appli
 
 ---
 
-## 7. Decoupled Orchestration Basics: ELB & ASG
+## 10. Decoupled Orchestration Basics: ELB & ASG
 
 *   **ELB (Elastic Load Balancing):** Distributes traffic statefully or statelessly across target groups. For deeper traffic configurations (ALB vs. NLB), refer to [[Reference Notes/3-10_aws_elb_load_balancing|Module 3-10: AWS Elastic Load Balancing]].
 *   **ASG (Auto Scaling Groups):** Automatically scales capacity based on CPU limits or target parameters. For scaling rules and cooldowns, refer to [[Reference Notes/3-11_aws_asg_auto_scaling|Module 3-11: AWS Auto Scaling Groups]].
