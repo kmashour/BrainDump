@@ -35,10 +35,10 @@ Amazon Elastic Kubernetes Service (EKS) is a managed service that runs the Kuber
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Managed Control Plane:** Automatically replicates and hosts API servers and etcd databases across multiple AZs, handling control plane upgrades and patches.
-*   **Auto Mode Capacity Provisioning:** Integrates with built-in node management engines (powered by Karpenter) to dynamically spin up worker instances when pods lack capacity.
-*   **IAM Roles for Service Accounts (IRSA):** Maps IAM Roles to Kubernetes ServiceAccounts, enabling fine-grained, least-privilege AWS access at the pod level.
-*   **Storage CSI Integration:** Provisions AWS EBS, EFS, or FSx persistent volumes dynamically using Container Storage Interface (CSI) drivers.
+*   **Managed Control Plane:** Automatically replicates and hosts Kubernetes API servers and etcd databases across multiple Availability Zones, managing backups, certificates, updates, and patches.
+*   **Node Provisioning Models:** Supports Managed Node Groups (AWS-managed EC2 instance lifecycle/ASG), Self-Managed Nodes (custom user-managed AMIs/bootstrapping), EKS Fargate (serverless pods), and EKS Auto Mode (fully managed node lifecycle using built-in node provisioning engines powered by Karpenter to auto-provision optimal EC2 instances dynamically).
+*   **IAM Roles for Service Accounts (IRSA):** Integrates Kubernetes ServiceAccounts natively with AWS IAM Roles to provide fine-grained, least-privilege security permissions directly at the pod level.
+*   **Storage CSI Integration:** Mounts persistent storage volumes using standard Container Storage Interface (CSI) drivers: the EBS CSI Driver (provisions gp3/io2 block volumes, restricted by same-AZ scheduling bounds) and the EFS CSI Driver (provisions multi-AZ shared network file systems, which is the required storage class for EKS Fargate).
 
 ---
 

@@ -33,10 +33,11 @@ Amazon Elastic Container Service (ECS) is a fully managed container orchestratio
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Task Scheduling:** Places tasks (running container instances) onto compute capacity based on CPU, memory, and availability constraints.
-*   **Service Maintenance:** Monitors task health and automatically recreates failed tasks to maintain a desired running state.
-*   **Dynamic Port Mapping:** Integrates with Elastic Load Balancing (ELB) to register tasks using dynamic host port configurations.
-*   **Capacity Provider Scaling:** Automatically scales the underlying EC2 Auto Scaling Groups (ASGs) when tasks are pending due to capacity constraints.
+*   **Launch Types:** Computes tasks using two execution modes: EC2 Launch Type (user-managed VMs running the ECS Agent with an EC2 Instance Profile Role) and Fargate Launch Type (fully serverless, allocating a dedicated ENI per task using `awsvpc` mode).
+*   **Granular IAM Roles:** Enforces security isolation using the ECS Task Execution Role (used by the agent *before* boot to pull images from ECR and fetch secrets from Secrets Manager/SSM Parameter Store) and the ECS Task Role (used by the application container *during* runtime to access AWS APIs like S3 or DynamoDB).
+*   **Dynamic Port Mapping:** Enables load balancing compatibility. For EC2, ALB target groups map dynamic ephemeral host ports (32768-65535) to container ports. For Fargate, the ALB routes traffic directly to the private IP of the task ENI.
+*   **Shared Storage:** Supports mounting Amazon EFS (Elastic File System) volumes directly inside ECS tasks, enabling multi-AZ persistent, shared file access for serverless and VM containers.
+*   **Service & Infrastructure Scaling:** Automatically scales task count based on CPU/Memory utilization or ALB Request Count per Target. Also scales the underlying host infrastructure dynamically using ECS Cluster Capacity Providers to provision more EC2 instances in the Auto Scaling Group when tasks are pending capacity.
 
 ---
 

@@ -31,9 +31,10 @@ Amazon Elastic Container Registry (ECR) is a fully managed container registry th
 
 ## ⚙️ Functionality (What it is doing)
 *   **Image Storage:** Securely stores Docker and OCI-compliant container image layers using Amazon S3 for 99.999999999% durability.
-*   **Vulnerability Scanning:** Scans uploaded images for software vulnerabilities automatically on push or on-demand.
-*   **Lifecycle Management:** Expired image versions and untagged images are automatically deleted based on set policy rules.
-*   **Authentication & Access Control:** Restricts image push and pull access permissions via AWS IAM policies and ECR repository policies.
+*   **Vulnerability Scanning:** Offers two scanning tiers: Basic scanning (static analysis powered by Clair, triggered on push) and Advanced scanning (continuous runtime and registry scanning integrated with Amazon Inspector).
+*   **Lifecycle Management:** Automatically expires and deletes old or untagged image versions based on custom lifecycle policy rules to reduce S3 storage costs.
+*   **Authentication & Access Control:** Leverages native AWS IAM policies. Users must run the `aws ecr get-login-password` CLI command to retrieve a temporary authorization token (valid for 12 hours) to perform `docker push` or `docker pull` operations.
+*   **Public Registries:** Supports Amazon ECR Public Gallery to publish and share container images globally with free anonymous pull capacity.
 
 ---
 

@@ -42,15 +42,26 @@ By following this flow, you progress from **Container Isolation → Managed Orch
 Virtual Machines (VMs) virtualize physical hardware. Each VM includes a complete guest operating system, a virtual copy of hardware, and application binaries, managed by a hypervisor (e.g., AWS Nitro). This results in strong security isolation but high boot times and storage footprints.
 
 Containers virtualize the host operating system kernel instead of the hardware. Multiple container sandboxes share the same host OS kernel via kernel boundaries, managed by a container daemon (e.g., Docker, containerd). 
-*   **Linux Namespaces (Isolation Walls):** Separate system resources per container (UTS for hostname, PID for processes, NET for network interfaces, IPC for inter-process communication, MNT for mount points).
-*   **Linux Control Groups / cgroups (Resource Limits):** Limit the amount of physical resources (CPU, Memory, Disk I/O) a container sandbox can consume.
+*   **Linux Namespaces (Isolation Walls):** Separate system resources per container:
+    *   `UTS` (or `UT` in shorthand): Hostname and NIS domain name isolation.
+    *   `PID`: Process isolation, making the container's primary process PID 1, mapping to a unique host PID.
+    *   `NET`: Network stack isolation (dedicated network devices, IP routing tables, port mappings).
+    *   `IPC`: Inter-Process Communication isolation (System V IPC, POSIX message queues).
+    *   `MNT`: Filesystem mount point isolation.
+    *   `USER`: User and group ID mappings isolation (root inside container doesn't have root on host).
+*   **Linux Control Groups / cgroups (Resource Limits):** Enforce strict limits on physical hardware consumption (CPU shares, memory constraints, Disk I/O throttling) for container sandboxes.
 
 ### ECR: Amazon Elastic Container Registry
 Amazon ECR is a fully managed, secure Docker registry backed by **Amazon S3** for image layer durability.
-*   **Access Control:** Protected natively via IAM policies. Users must run `aws ecr get-login-password` to fetch a temporary token before running `docker push` or `docker pull`.
-*   **Vulnerability Scanning:** Scans image layers for software vulnerabilities (Basic scanning powered by Clair, Advanced scanning integrated with Amazon Inspector).
-*   **Image Lifecycle Policies:** Automates registry cleanup by setting rules to expire untagged images or old image versions, reducing S3 storage costs.
-*   **Public Gallery:** Allows publishing images to public repositories with AWS-backed global distribution.
+*   **Access Control & Authentication:** Native IAM policies protect ECR repositories. Developers must obtain a temporary authorization token (valid for 12 hours) by running:
+    ```bash
+    aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.<region>.amazonaws.com
+    ```
+*   **Vulnerability Scanning:** Scans image layers for software vulnerabilities:
+    *   *Basic scanning:* Powered by Clair (static analysis, free tier, scans on push).
+    *   *Advanced scanning:* Integrated with Amazon Inspector (continuous scanning, scans package managers, database engines, etc., at runtime/registry).
+*   **Image Lifecycle Policies:** Automate registry cleanup based on rules (e.g., expiring untagged images or old image versions) to control storage costs.
+*   **Public Gallery:** ECR Public Gallery allows publishing public images with AWS-backed global distribution and anonymous pull limits.
 
 ---
 
@@ -59,8 +70,15 @@ Amazon ECR is a fully managed, secure Docker registry backed by **Amazon S3** fo
 Amazon ECS is AWS's proprietary container orchestrator designed for running Docker applications at scale without Kubernetes API complexity.
 
 ### ECS Compute Launch Types
-*   **EC2 Launch Type:** Tasks are placed on EC2 instances provisioned and maintained by the user. Instances must run the **ECS Agent** (which registers the instance into the ECS cluster). The user is responsible for OS patching, agent upgrades, and scaling the underlying EC2 fleet.
-*   **Fargate Launch Type (Serverless):** AWS provisions, manages, and secures the underlying compute servers. Users specify task CPU/Memory requirements, and AWS runs the containers in isolated environments. There are no EC2 instances in the user's account.
+*   **EC2 Launch Type:**
+    *   Tasks are placed on EC2 instances provisioned and maintained by the user.
+    *   Each EC2 host instance must run the **ECS Agent** which registers the instance into the ECS cluster.
+    *   Requires an **EC2 Instance Profile Role** attached to the host instances.
+    *   Tasks share host IP routing and map containers to specific **host ports**.
+*   **Fargate Launch Type (Serverless):**
+    *   AWS provisions, manages, and secures the underlying compute servers.
+    *   No EC2 instances reside in the user's account.
+    *   Each ECS task gets its own dedicated **Elastic Network Interface (ENI)** via `awsvpc` network mode, enabling direct IP routing and separate security groups.
 
 ```mermaid
 graph TD
@@ -81,18 +99,20 @@ graph TD
 
 ### ECS Granular IAM Roles
 *   **EC2 Instance Profile Role (EC2 Launch Type Only):** Associated with the host EC2 instance. Used by the ECS Agent to register the host with the ECS API, send metric/agent logs to CloudWatch Logs, and pull container images from ECR.
-*   **ECS Task Execution Role:** Used by the ECS container agent to prepare the task before boot. Required on both Fargate and EC2 launch types to retrieve container images from ECR, retrieve environment variables from SSM Parameter Store, or decrypt configurations from Secrets Manager.
+*   **ECS Task Execution Role:** Used by the ECS container agent to prepare the task *before* boot. Required on both Fargate and EC2 launch types to retrieve container images from ECR, retrieve environment variables from SSM Parameter Store, or decrypt configurations from Secrets Manager.
 *   **ECS Task Role:** The runtime role associated with the container application. Dictates what AWS API requests (e.g., S3 read, DynamoDB query) the container program can run once it is active.
 
 ### ECS Load Balancing & Data Storage
-*   **ALB Integration:** The Application Load Balancer supports **Dynamic Port Mapping** with the EC2 Launch Type. If a host runs multiple tasks of the same container, ECS maps them to dynamic ephemeral host ports (e.g., 32768-65535) and updates the ALB target group dynamically. On Fargate, tasks get their own Elastic Network Interface (ENI), so the ALB targets their private IPs directly on port 80.
+*   **Dynamic Port Mapping (ALB Integration):** 
+    *   On the **EC2 Launch Type**, multiple tasks of the same container can run on a single EC2 instance. ECS maps container ports to dynamic ephemeral host ports (e.g., 32768-65535) and automatically registers them with the ALB target groups.
+    *   On the **Fargate Launch Type**, tasks get their own ENI. The ALB bypasses ephemeral host port mapping and routes traffic directly to the private IP of the task ENI on the configured container port.
 *   **EFS Shared Storage:** ECS supports mounting **Amazon EFS** (Elastic File System) as directory volume mounts inside tasks. This provides multi-AZ persistent shared storage, allowing Fargate tasks to share state or configuration files seamlessly.
 
 ### ECS Service Auto Scaling
 ECS leverages **Application Auto Scaling** to scale the count of running tasks based on CloudWatch metrics:
 1.  **Metrics:** CPU Utilization, Memory Utilization, and ALB Request Count per Target.
 2.  **Target Tracking:** Scales task count to keep a metric at a set target (e.g., keep average CPU at 60%).
-3.  **ECS Cluster Capacity Providers:** Used with the EC2 Launch Type to connect ECS Service scaling with Auto Scaling Group (ASG) scaling. If tasks are pending due to a lack of host EC2 capacity, the Capacity Provider automatically instructs the ASG to launch more EC2 instances.
+3.  **ECS Cluster Capacity Providers:** Connects ECS Service task scaling with Auto Scaling Group (ASG) scaling. If tasks are pending due to a lack of host EC2 capacity, the Capacity Provider automatically scales the ASG (launches more EC2 instances) to host them.
 
 ---
 
@@ -104,11 +124,11 @@ Amazon EKS is a managed service that runs Kubernetes control plane components (A
 *   **Managed Node Groups:** AWS automatically provisions, updates, and scales EC2 worker nodes as part of an Auto Scaling Group. AWS handles node OS AMI upgrades and patches.
 *   **Self-Managed Nodes:** The user creates the EC2 instances, applies custom configurations (e.g., customized AMIs), and registers them manually to the EKS cluster.
 *   **EKS Fargate:** Serverless mode. Pods are mapped to AWS-managed serverless compute nodes, removing EC2 node management entirely.
-*   **EKS Auto Mode:** The EKS service automatically manages node provisioning, scaling (utilizing built-in Karpenter engines), and networking. When a pod spec requests resources that do not fit on active nodes, EKS immediately scales a new EC2 instance matching the exact requirements.
+*   **EKS Auto Mode:** The EKS service automatically manages node provisioning, scaling, and networking. It dynamically provisions nodes using built-in node provisioning engines powered by **Karpenter**. When a pod spec requests resources that do not fit on active nodes, EKS immediately scales a new EC2 instance matching the exact requirements.
 
 ### Container Storage Interface (CSI) Drivers
 To mount persistent volumes in EKS, Kubernetes utilizes CSI drivers to interface with AWS storage systems:
-*   **EBS CSI Driver:** Provisions block volumes (`gp3`, `io2`). Pods must reside in the same AZ as the EBS volume to mount.
+*   **EBS CSI Driver:** Provisions block volumes (`gp3`, `io2`). Pods must reside in the same AZ as the EBS volume to mount (same-AZ limitation).
 *   **EFS CSI Driver:** Provisions shared file systems. Allows multi-AZ mounts and is the only storage class supported when running pods on **EKS Fargate**.
 
 ---
