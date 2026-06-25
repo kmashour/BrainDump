@@ -36,6 +36,9 @@ AWS Organizations is an account management service that enables cloud administra
 - **Automated Account Creation:** Provides APIs to automate the creation of new AWS accounts programmatically.
 - **Resource Sharing:** Automatically shares Reserved Instances (RIs) and Savings Plans discounts across all member accounts.
 - **Service Integration:** Integrates with other AWS services (e.g., CloudTrail, GuardDuty, IAM Identity Center) to enable organization-wide monitoring and access.
+- **Stronger Security Boundaries:** Isolates workloads in separate accounts to restrict security breaches and API/credential exposure, rather than relying solely on VPC separation.
+- **Centralized Security Logging:** Provisions organization-wide CloudTrail logging to collect audit trails in a dedicated, secure Central Logging S3 account.
+- **Automatic Cross-Account Administration:** Automatically establishes administrative roles in member accounts for management and security monitoring.
 
 ---
 

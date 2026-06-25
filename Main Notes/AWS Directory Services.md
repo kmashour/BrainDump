@@ -29,11 +29,11 @@ AWS Directory Services enables AWS resources to run and integrate with Microsoft
 ---
 
 ## ⚙️ Functionality (What it is doing)
-- **Managed Active Directory:** Deploys a highly available, Microsoft AD framework on AWS managed infrastructure (Managed Microsoft AD).
-- **Directory Proxying:** Connects AWS applications to an on-premises directory without data replication (AD Connector).
-- **AD-Compatible Directory:** Deploys a lightweight, Samba-based active directory for cloud-only use cases (Simple AD).
+- **Managed Active Directory:** Deploys a highly available, actual Microsoft AD framework (Managed Microsoft AD). Available in Standard (up to 30,000 objects) and Enterprise (up to 500,000 objects) editions. Supports trust relationships.
+- **Directory Proxying:** Direct gateway proxy to redirect login/auth requests to on-premises AD without data replication (AD Connector). Available in Small (up to 500 users) and Large (up to 5,000 users) tiers.
+- **AD-Compatible Directory:** Standalone Samba 4-compatible directory on AWS for cloud-only workloads (Simple AD). Available in Small (up to 500 users/objects) and Large (up to 5,000 users/objects) tiers. Cannot establish trust relationships.
 - **Domain Joining:** Enables EC2 instances running Windows or Linux to join the directory domain for centralized credential authentication.
-- **Trust Relationships:** Establishes secure forest trust relationships between AWS Managed AD and on-premises Active Directories.
+- **Trust Relationships:** Establishes secure forest trust relationships (e.g., two-way trust) between AWS Managed AD and on-premises Active Directories, enabling IAM Identity Center to authenticate on-premises users.
 - **Multi-Factor Authentication:** Integrates with RADIUS infrastructures to enable MFA for directory authentication.
 
 ---

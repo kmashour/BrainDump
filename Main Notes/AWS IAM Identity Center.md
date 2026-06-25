@@ -33,6 +33,7 @@ AWS IAM Identity Center (formerly AWS Single Sign-On) centralizes administrative
 - **Unified Portal Authentication:** Provides users with a single portal login URL to access all authorized AWS consoles, CLI commands, and business apps.
 - **Identity Provider Federation:** Connects to external identity providers (IdPs) like Okta, OneLogin, Ping Identity, Active Directory, or utilizes its built-in directory.
 - **Permission Sets Management:** Centralizes the definition of IAM policies (Permission Sets) that are automatically deployed as IAM roles in target member accounts.
+- **Multi-Account Group Assignment:** Maps directory user groups (e.g., `DatabaseAdmins`) to specific Permission Sets in target member accounts. Identity Center automatically provisions matching IAM roles in those accounts, which users assume dynamically upon login.
 - **SAML 2.0 Integration:** Federates access to popular SaaS platforms (e.g., Salesforce, Microsoft 365, Box) or custom internal SAML-enabled applications.
 - **Attribute-Based Access Control (ABAC):** Utilizes directory tags (e.g., Cost Center, Title) to evaluate fine-grained permissions dynamically.
 

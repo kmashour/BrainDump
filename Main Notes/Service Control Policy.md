@@ -34,6 +34,7 @@ Service Control Policies (SCPs) are organizational policy types used to manage p
 - **Hierarchical Inheritance:** Applies to accounts at Root, OU, or individual levels, cascading permissions down the organizational tree.
 - **Explicit Allow Filtering:** Filters permissions rather than granting them. Accounts must have an explicit allow at every level of the hierarchy (`FullAWSAccess` SCP is attached by default).
 - **Deny Precedence:** An explicit deny statement in an SCP overrides any allows granted in identity-based or resource-based policies in member accounts.
+- **Concrete Inheritance Example:** If a Sandbox OU has a `DenyS3` SCP, and Account A within that OU has a `DenyEC2` SCP, Account A cannot access S3 or EC2. Adjacent Accounts B and C under the same Sandbox OU can access all services except S3 (blocked by inheritance).
 - **Safety Bypass:** Management accounts are immune to SCPs to prevent accidental lockout of root management functions.
 
 ---

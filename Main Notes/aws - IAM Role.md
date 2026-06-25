@@ -27,4 +27,9 @@ An **IAM Role** is an IAM identity that you can create in your account that has 
 *   **Dynamic Credential Generation:** When an entity assumes a role, AWS Security Token Service (STS) dynamically generates temporary security credentials.
 *   **Instance Profiles:** A container for an IAM role that you use to pass the role permissions to an EC2 instance. The EC2 instance retrieves credentials automatically from the Instance Metadata Service (IMDS).
 
-*Read more in [[Reference Notes/3-2_aws_iam.md#5. IAM Roles & AWS STS]]*
+### 🔄 Cross-Account Access: IAM Role vs. Resource-Based Policy
+When delegating access across AWS accounts, operators can either use IAM Roles or Resource-Based Policies:
+*   **IAM Roles (Trust Delegation):** The caller assumes a role in the target account via `sts:AssumeRole`. They temporarily **relinquish** their original account permissions and inherit the target role's permissions. (Ideal for administrative delegation).
+*   **Resource-Based Policies (Direct Access):** The caller accesses the resource directly without assuming a role. They **keep** all their original permissions. (Ideal for data pipeline operations, e.g., scanning a DynamoDB table in Account A and writing the output directly to S3 in Account B).
+
+*Read more in [[Reference Notes/3-2_aws_iam.md#5. IAM Roles & AWS STS]] and [[Reference Notes/3-2_aws_iam.md#9. Advanced IAM Security Mechanics]]*
