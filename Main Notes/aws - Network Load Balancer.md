@@ -39,7 +39,7 @@ The Network Load Balancer (NLB) is a Layer 4 load balancer designed to handle mi
 ---
 
 ## 🏛️ Architectural Context (How it fits in the architecture)
-NLB sits at the networking layer, routing connections to EC2 targets, private IP targets, or ALBs. Since NLB does not support Security Groups directly (it forwards traffic directly without proxying HTTP), target EC2 instances must allow traffic from NLB nodes or subnet CIDRs in their security groups and NACLs.
+NLB sits at the networking layer (Layer 4), routing connections to EC2 targets, private IP targets, or ALBs. As of 2023, NLBs support security groups, allowing you to filter incoming traffic at the load balancer level. Downstream target EC2 instances can be configured to allow inbound traffic originating directly from the NLB's security group (which is stateful) or from client IP ranges (if client IP preservation is enabled on the target group).
 
 ---
 

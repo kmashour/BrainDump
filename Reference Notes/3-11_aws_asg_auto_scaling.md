@@ -9,108 +9,60 @@ tags:
 
 # Module 3-11: AWS Auto Scaling Groups (ASG)
 
-## Scalability & Elasticity
-### Scalability 
-- Scalability refers to system's ability to handle the growth of load by adding resources.
-- This scaling can be vertical scaling (up/down) or horizontal scaling(out/in).
- ![Pasted image 20221103043119](https://user-images.githubusercontent.com/109697567/200859709-cc84e90c-9afd-4851-90fa-87e2878137ac.png)
-### Elasticity 
-  
-- Elasticity describes the system ability to provision &  deprovision resources **automatically** to ensure that resources matches the need. 
-- **Auto scaling groups can be configured for EC2 instances**, There  are another auto scaling type called Application Autoscaling will be covered later 
-- **Autoscaling is always accompanied with load balancer** in design to ensure high availability  
+## 1. Scalability & Elasticity
 
-> [!NOTE]
-> - Remember we need to take in consideration the time need for horizontal scaling to start executing it needs triggers from cloud watch and autoscaling groups health checks then start in creating the EC2 instances and EC2 instance may need Minutes to initialize so if it was a 1 min spike in traffic, The application has failed to be fault tolerant we tackle more of this in later videos  
+### A. Scalability
+Scalability refers to a system's ability to handle the growth of load by adapting resources.
+- **Vertical Scaling (Up/Down):** Increasing or decreasing the size/specification of an individual instance (e.g., upscaling an EC2 instance from a `t2.micro` to a `t2.large`). Common for non-distributed systems like databases (RDS, ElastiCache), but restricted by physical hardware limits.
+- **Horizontal Scaling (Out/In):** Increasing or decreasing the number of instances/systems (also called **elasticity**). This requires a distributed system architecture and is highly standard for modern web applications.
 
-![[Pasted image 20250512092901.png]]
+### B. Elasticity
+Elasticity is the ability of a system to provision and deprovision compute resources **automatically** so that the running fleet closely matches the real-time demand.
+- In AWS, this is natively implemented for EC2 instances using **Auto Scaling Groups (ASG)**.
+- **Bootstrapping Latency Warning:** Horizontal scaling is not instantaneous. Triggers must wait for CloudWatch alarm evaluations, and newly launched instances can take several minutes to initialize, run user data scripts, and become healthy. If traffic spikes are extremely brief (e.g., less than 5 minutes), horizontal scaling will react too slowly, requiring vertical headroom or caching to maintain fault tolerance.
 
 ---
 
-## 3. Auto Scaling Groups (ASG) Deep Dive
-ASGs dynamically scale EC2 fleets based on CPU, network, or custom CloudWatch metrics.
+## 2. Auto Scaling Group (ASG) Core Concepts
+An ASG is a logical grouping of managed EC2 instances. It manages the fleet lifecycle, automatically scaling instances out or in based on configured parameters.
 
-### A. Lifecycle & Metrics
+### A. Capacity Settings
+- **Min Size (Minimum Capacity):** The minimum number of instances that must run in the group at all times.
+- **Desired Capacity:** The starting or targeted number of instances. The ASG launches or terminates instances to maintain this number unless dynamic scaling policies override it.
+- **Max Size (Maximum Capacity):** The absolute ceiling for the group size, preventing runaway costs.
 
----
-
-## Application Auto Scaling
-Application Auto Scaling is a web service for automatically scaling resources for services beyond Amazon EC2. 
-- It can be used with Auto Scaling and EC2 Auto Scaling to scale resources across multiple services including:
-	- ECS services 
-	- Spot Fleet requests
-	- EMR Clusters 
-	- AppStream 2.0 fleets
-	- Aurora Replicas DynamoDB Read and Write Capacity units
-	- SageMaker endpoints
-	- Amazon Comprehend
+### B. ASG Integration Features
+- **Load Balancer Integration:** ASG targets are automatically registered with a Load Balancer's Target Group. As instances scale out, they receive traffic from the ELB automatically.
+- **Auto-healing:** If an instance is terminated manually or is marked unhealthy by health checks, the ASG automatically terminates the faulty instance and launches a new one to replace it.
+- **Cost:** The ASG service itself is free. You pay only for the underlying EC2 instances, EBS volumes, and monitoring resources launched.
 
 ---
 
-## EC2 Auto Scaling
-- It's a Regional service
-- It can span multiple Availability Zones in the same AWS Region.
-- It integrates with ELB, CloudWatch, and Cloud Trail.
-- It is free to use, but customers pay only for EC2 and EBS resources used. 
-- ASG will try to balance resources across Availability Zones.
-- The EC2 Auto Scaling configuration components are:
-	 - ##### An Auto Scaling Group 
-		- Is the logical grouping of managed instances.
-		- Desired no. is the starting no. of instances to launch.
-	- ##### A Launch Configuration (or A Template)
-		- The template for instance configurations. 
-	- ##### A Scaling Policy (Plan) 
-		- Defines the when and how to scale out or in.
-![Pasted image 20221207224003](https://user-images.githubusercontent.com/109697567/220480680-0209af7f-cc18-4f14-9ac8-22739d398533.png)
-### EC2 Auto Scaling: Launch Templates vs. Launch Configurations
-- **Launch Configurations (Deprecated):** Legacy method to define instance configurations. They cannot be modified or versioned (requiring creating a new one each time) and do not support modern EC2 features.
-- **Launch Templates (Recommended):** Modern standard.
-  - **Features Defined:** Contains AMI, instance type, EC2 user data, EBS volumes, security groups, SSH key pairs, IAM roles, and network interface settings.
+## 3. Configuration Components
+
+### A. Launch Templates vs. Launch Configurations
+To launch instances, the ASG requires a blueprint defining the instance specifications.
+
+- **Launch Configurations (Deprecated):** The legacy method. They are immutable (cannot be modified after creation, requiring a new configuration for any changes) and do not support versioning or modern EC2 features.
+- **Launch Templates (Recommended):** The modern standard.
+  - **Parameters Defined:** AMI, instance type, EC2 user data (bootstrapping scripts), EBS volumes, security groups, SSH key pairs, IAM roles, and network settings.
   - **Key Advantages:**
-    - Supports multiple **versions** (allowing easy rollbacks or updates).
-    - Supports mixed **instance types** (e.g., launching both `t3.medium` and `c5.large` to meet demand).
-    - Can combine **On-Demand and Spot instances** in the same Auto Scaling Group.
-    - Allows specifying placement groups.
-    - *Note:* Subnets are configured at the **Auto Scaling Group level**, not within the launch template, to ensure network flexibility.
+    - Supports **versioning** (allows easy upgrades or rollbacks to previous templates).
+    - Supports mixed **instance types** (e.g., combining different instance sizes to satisfy demand).
+    - Can combine **On-Demand and Spot instances** inside the same group to optimize costs.
+    - Supports placement groups and zonal shifts.
+    - *Note:* Subnets are configured at the **Auto Scaling Group level**, not in the launch template, to ensure network flexibility.
 
-### EC2 Auto Scaling: Health Checks
-![[Pasted image 20250626164334.png]]
-By default the EC2 Auto Scaling service determines if the instance is running or not via EC2 status check, even with ELB applied.
-- This can be changed when creating Auto Scaling Group in the console to wait for EC2 status check ***AND*** the ELB health checks.
-- If either of the two checks states a negative response, the instance is terminated.
-![Pasted image 20221207230640](https://user-images.githubusercontent.com/109697567/220480719-52273ba7-8493-4fcf-afef-cbcd4b9f92d8.png)
+### B. Health Check Settings
+By default, the ASG determines instance health using **EC2 status checks** (hypervisor and system ping tests).
+- **ELB Health Checks:** You can enable the ASG to also use health checks from the attached **Elastic Load Balancer (ELB)**.
+- **Behavior:** If ELB health checks are enabled, the instance is marked unhealthy and replaced if *either* the EC2 status check or the ELB health check returns a negative response.
+- **Grace Period:** Configure a health check grace period (default: 300 seconds) to prevent the ASG from terminating newly launched instances before they finish bootstrapping.
 
-### EC2 Auto Scaling: Scaling Policies & Types
-![[Pasted image 20250626164350.png]]
-Auto Scaling policy types define when and how the fleet changes size:
+---
 
-##### 1- Manual Scaling
-- Maintain a specific number of instances.
-- Manually change the Min/Desired/Max capacities or manually attach/detach EC2 instances.
-
-##### 2- Scheduled Scaling
-- Scales based on predictable, cyclical usage patterns.
-- Pre-scheduled scaling events add capacity ahead of known load spikes (e.g., scale up to 10 instances every Friday at 5:00 PM) and scale down afterward.
-
-##### 3- Dynamic Scaling
-- Scales in and out dynamically in response to CloudWatch alarms/events.
-- **Target Tracking Scaling:** 
-  - The simplest and most common policy.
-  - You specify a target value for a metric (e.g., keep average CPU utilization at 40%, or maintain a specific `RequestCountPerTarget` on the ALB).
-  - ASG automatically adjusts capacity to keep the metric near the target.
-- **Step Scaling:**
-  - Scales in response to CloudWatch alarms with varying step adjustments based on the size of the breach.
-  - *Example:* If CPU > 50%, add 1 instance; if CPU > 70%, add 3 instances.
-- **Simple Scaling:**
-  - A legacy policy. Scales by a single adjustment (e.g., add 2 instances) when a single CloudWatch alarm triggers.
-  - *Constraint:* Requires waiting for a cooldown period to expire before responding to any further alarms, making it less responsive than step scaling.
-
-##### 4- Predictive Scaling
-- Uses machine learning to continuously analyze historical load patterns, forecast future load, and proactively schedule scaling actions ahead of time.
-- Highly effective for cyclical applications with repeating demand cycles.
-
-### EC2 Auto Scaling: Lifecycle Hooks
-Lifecycle hooks enable performing custom administrative actions (such as configuring software, installing dependencies, or exporting logs/troubleshooting data) by pausing instances as they transition between lifecycle states (launching or terminating).
+## 4. Scaling Policies & Types
+Scaling policies determine when and how the capacity of the group changes.
 
 ```mermaid
 flowchart TD
@@ -140,44 +92,63 @@ flowchart TD
     end
 ```
 
-- **Wait State:** When a lifecycle hook is triggered, the instance pauses in a `Pending:Wait` or `Terminating:Wait` state.
-- **Duration:** It remains paused until a custom action signals completion via the `CompleteLifecycleAction` API, or the heartbeat timeout expires (default: 3,600 seconds / 1 hour).
-- **Custom Actions:**
-  - *On Launch:* Run installation scripts, download files, verify service startup.
-  - *On Terminate:* Ship application logs to S3, drain active client sessions, backup state.
-- **Hook Outcomes:**
-  - `CONTINUE`: Proceeds with the launch or termination.
-  - `ABANDON`: Stops the launch (terminates and replaces the instance) or proceeds with termination.
-![Pasted image 20221208001552](https://user-images.githubusercontent.com/109697567/220480740-5be069f5-566e-4da8-9eba-7cbb2ce8bb87.png)
+### A. Manual Scaling
+- Maintaining a fixed capacity by manually adjusting the desired capacity in the console or CLI, or attaching/detaching specific instances.
 
-### EC2 Auto Scaling: Cooldown & Warm-up Periods
-##### Cooldown Period
-- After a scale-out or scale-in activity.
-- Is the amount of time Auto Scaling waits after a scale-out or scale-in activity before another scale activity can start. 
-- This help ensure that the impact of the scaling activity becomes visible.
-##### Instance Warm-up Period
-- After a scale out activity.
-- Is the amount of time that elapses before a newly launched instance (due to a scale-out activity) begins contributing to CloudWatch metrics.
-- Basically to allow new launched instances to start giving impact after fully launching.
+### B. Scheduled Scaling
+- Scales based on predictable, recurring usage patterns.
+- Pre-scheduled events change capacity ahead of known load changes (e.g., scale up to 10 instances every Friday at 5:00 PM and scale down to 2 instances on Monday at 8:00 AM).
 
-### EC2 Auto Scaling: Scale-in Termination Protection
-Instances can be protected from being automatically terminated during a scale-in event using Scale-in instance protection.
-This setting can be changed at the Auto Scaling Group level.
+### C. Dynamic Scaling
+Scales in response to metric thresholds evaluated by CloudWatch.
+- **Target Tracking Scaling:**
+  - The most common dynamic policy. You specify a target metric and value (e.g., maintain average CPU utilization at 40%, or request count per target at 1,000).
+  - AWS automatically creates two CloudWatch alarms in the background:
+    - **`AlarmHigh` (Scale Out):** Triggers when the metric exceeds the target value, causing the ASG to add instances.
+    - **`AlarmLow` (Scale In):** Triggers when the metric falls below the target, causing the ASG to terminate instances.
+- **Step Scaling:**
+  - Scales in response to CloudWatch alarms using step adjustments based on the size of the metric breach.
+  - *Example:* If CPU > 50%, add 1 instance; if CPU > 70%, add 3 instances; if CPU > 85%, add 5 instances.
+- **Simple Scaling:**
+  - Legacy policy. Scales by a single adjustment (e.g., add 2 instances) when a single CloudWatch alarm triggers.
+  - *Constraint:* Disables further scaling actions until the cooldown period expires, which is less responsive than step scaling.
 
-However, this does not protect the instance from:
-- Manual termination. 
-- Replacement if it becomes unhealthy.
-- Spot instance interruption.
-
-### EC2 Auto Scaling: Termination Policy
-Which Instance is to be terminated??
-
-- The AZ with the larger number of EC2 instances is selected first for termination.
-- If there is a mix of launch configuration and Launch Template instances, ones with launch configuration are selected first for termination.
-- AS terminates the instance with the oldest launch configuration first.
-- If they are all the same, AS terminates the one that is closest to billing hour.
-![Pasted image 20221208003255](https://user-images.githubusercontent.com/109697567/220480864-e59cfb4c-1324-4fe9-9446-bded240ec9f6.png)
-
-
+### D. Predictive Scaling
+- Uses machine learning to continuously analyze historical load patterns, forecast future load, and proactively schedule scaling actions ahead of time.
+- Highly effective for cyclical applications with repeating weekly or daily demand patterns.
 
 ---
+
+## 5. Lifecycle Hooks, Cooldowns, & Tuning
+
+### A. Lifecycle Hooks
+Lifecycle hooks enable performing custom administrative actions by pausing instances as they transition between pending and terminating states.
+- **Wait States:** The instance is paused in a `Pending:Wait` or `Terminating:Wait` state.
+- **Heartbeat Timeout:** The instance remains paused until a custom action signals completion via the `CompleteLifecycleAction` API, or the default heartbeat timeout (3,600 seconds / 1 hour) is reached.
+- **Typical Use Cases:**
+  - *On Launch:* Run custom software setup, verify database connection availability, configure networking.
+  - *On Terminate:* Export logs to Amazon S3, drain active client sessions, back up data state.
+- **Outcomes:**
+  - `CONTINUE`: Proceeds with the launch or termination.
+  - `ABANDON`: Stops the launch (terminates and replaces the instance) or proceeds with the termination.
+
+### B. Scaling Cooldown vs. Instance Warm-up
+- **Scaling Cooldown:** The period (default: 300 seconds) after a scaling activity during which the ASG will not execute additional scaling actions. This allows metrics to stabilize and prevents rapid, runaway scaling (flapping).
+  - *Cooldown Advice:* To make scaling more responsive, use **ready-to-use AMIs** (Golden AMIs) rather than performing heavy configuration at startup. This drastically reduces bootstrapping time, allowing you to safely decrease the cooldown period for faster scaling responses.
+- **Instance Warm-up:** The time a newly launched instance needs before it is considered ready to contribute data to the group's CloudWatch metrics.
+
+### C. Detailed Monitoring Tip
+- Enable **detailed monitoring** (1-minute intervals) for your ASG instances. By default, basic monitoring runs on 5-minute intervals. Detailed monitoring ensures CloudWatch detects metric changes faster, triggering scaling actions with minimal delay.
+
+---
+
+## 6. Termination Policies
+When a scale-in event occurs, the ASG decides which instance to terminate first using a default hierarchy:
+1. **Balance Availability Zones:** Selects the AZ with the most instances to keep the group balanced across subnets.
+2. **Launch Configuration vs. Launch Template:** If there is a mix of instances, it terminates instances launched via a **Launch Configuration** first, forcing migration to Launch Templates.
+3. **Oldest Configuration Version:** Selects instances launched with the oldest Launch Configuration or oldest version of the Launch Template.
+4. **Billing Hour Proximity:** Selects the instance that is closest to the next billing hour (this was historically used to minimize EC2 charges, though EC2 is now billed per-second for most OS versions).
+
+### A. Scale-in Instance Protection
+- You can protect specific instances from being automatically terminated during scale-in by enabling **Scale-in instance protection** at the instance level.
+- *Exceptions:* Instance protection does **not** protect instances from manual termination, auto-replacement if they fail ASG health checks, or Spot instance interruptions.
