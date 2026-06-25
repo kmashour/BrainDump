@@ -74,25 +74,51 @@ Example:
 }
 ```
 
-### B. Policy Types
-1.  **AWS-Managed Policies:** Standardized, reusable policies created and maintained by AWS (e.g., `AdministratorAccess`, `IAMReadOnlyAccess`).
-2.  **Customer-Managed Policies:** Custom, reusable policies created by the account owner.
-3.  **Inline Policies:** Non-reusable policies attached directly to a single user, group, or role.
+### B. Advanced IAM Conditions & Variable Mapping
+AWS policies support complex evaluation criteria via the `Condition` block. Key condition keys include:
+*   `aws:SourceIP`: Restricts API access based on the caller's client IP address range. Commonly used to restrict calls to company corporate networks.
+*   `aws:RequestedRegion`: Restricts calls to specific target AWS regions (e.g., `eu-west-1`), blocking access to unauthorized regions.
+*   `ec2:ResourceTag/[Key]`: Evaluates resource tags on the target EC2 resource. Allows actions only on resources matching tags.
+*   `aws:PrincipalTag/[Key]`: Evaluates tags assigned to the calling user or role (principal), enabling attribute-based access control (ABAC).
+*   `aws:MultiFactorAuthPresent`: Boolean flag ensuring the caller has authenticated using MFA before executing high-risk operations (e.g., terminating instances).
+*   `aws:PrincipalOrgID`: Limits resource-based policy access to only API calls originating from accounts within a specific AWS Organization.
 
-### C. Policy Evaluation Logic Diagram
-AWS IAM operates on a default deny basis. Evaluation follows these absolute rules:
-1.  **Explicit Deny:** If any policy statement evaluates to `Deny` for the requested action, the final decision is immediately `Deny` (overriding all allows).
-2.  **Explicit Allow:** If no explicit deny exists, there must be an explicit `Allow` statement for the action to be authorized.
-3.  **Implicit Deny:** If there is neither an explicit deny nor an explicit allow, the request is denied by default.
+### C. S3 Resource ARN Scopes: Buckets vs. Objects
+When writing S3 policies, ARN structure dictates the permission scope:
+*   **Bucket-Level Permissions:** Apply to the bucket resource itself. Actions like `s3:ListBucket` require the bucket ARN format without a trailing slash/wildcard:
+    `"Resource": "arn:aws:s3:::my-bucket-name"`
+*   **Object-Level Permissions:** Apply to files/keys within the bucket. Actions like `s3:GetObject`, `s3:PutObject`, and `s3:DeleteObject` require target objects to be specified using wildcards:
+    `"Resource": "arn:aws:s3:::my-bucket-name/*"`
+
+### D. Comprehensive Policy Evaluation Flowchart
+AWS IAM operates on a default deny basis. Evaluation follows a strict hierarchy shown below:
 
 ```mermaid
 flowchart TD
     Start([Request Evaluation Start]) --> DenyDefault[Default Decision: Deny]
-    DenyDefault --> EvalDeny{Is there an Explicit Deny?}
+    DenyDefault --> EvalDeny{Is there an Explicit Deny in ANY Policy?}
     EvalDeny -- Yes --> FinalDeny([Decision: Deny])
-    EvalDeny -- No --> EvalAllow{Is there an Explicit Allow?}
-    EvalAllow -- Yes --> FinalAllow([Decision: Allow])
-    EvalAllow -- No --> FinalDeny
+    
+    EvalDeny -- No --> EvalSCP{Is Organization SCP Active?}
+    EvalSCP -- Yes --> CheckSCP{Is Action Allowed by SCP?}
+    CheckSCP -- No --> FinalDeny
+    CheckSCP -- Yes --> EvalPB{Is Permissions Boundary Active?}
+    EvalSCP -- No --> EvalPB
+    
+    EvalPB -- Yes --> CheckPB{Is Action Allowed by Boundary?}
+    CheckPB -- No --> FinalDeny
+    CheckPB -- Yes --> EvalIdentity{Is there an Identity-Based Policy?}
+    EvalPB -- No --> EvalIdentity
+    
+    EvalIdentity -- Yes --> CheckIdentity{Allowed by Identity-Based Policy?}
+    CheckIdentity -- Yes --> FinalAllow([Decision: Allow])
+    CheckIdentity -- No --> EvalResource{Is there a Resource-Based Policy?}
+    EvalIdentity -- No --> EvalResource
+    
+    EvalResource -- Yes --> CheckResource{Allowed by Resource-Based Policy?}
+    CheckResource -- Yes --> FinalAllow
+    CheckResource -- No --> FinalDeny
+    EvalResource -- No --> FinalDeny
 ```
 
 ---
@@ -181,6 +207,99 @@ A proactive cost-governance tool to alert administrators when spending threshold
 
 ---
 
+## 8. AWS Organizations & Multi-Account Governance
+As organizations scale, managing multiple AWS accounts independently becomes operationally unfeasible. [[AWS Organizations]] provides a framework to consolidate and govern multiple AWS accounts from a central management console.
+
+### A. Core Architecture & Organizational Units (OUs)
+AWS Organizations implements a tree-like hierarchy:
+*   **Root Organizational Unit (OU):** The outermost container of the organization.
+*   **Management Account (formerly Master Account):** The administrative anchor of the organization. It pays the bills, invites member accounts, and manages policies.
+*   **Member Accounts:** Accounts created under or invited to join the organization. Member accounts can only belong to one organization at a time.
+*   **Sub-Organizational Units (Nested OUs):** Logical groups of member accounts (e.g., by environment like Dev, Test, Prod, or by business unit). OUs can contain other OUs, enabling nested hierarchies.
+
+### B. Billing Consolidation & Aggregated Pricing Benefits
+Organizations merges the billing lifecycle of all accounts:
+*   **Consolidated Billing:** A single payment method on the management account covers all member account invoices.
+*   **Aggregated Usage Discounts:** AWS volumes tiers are calculated across total aggregate usage of all accounts. S3 storage and EC2 usage are summed, resulting in lower volume unit pricing.
+*   **Reservation Sharing:** Unused Reserved Instances (RIs) and Savings Plans in one member account automatically apply to eligible usage in other accounts under the organization, maximizing utilization.
+
+### C. Service Control Policies (SCPs)
+[[Service Control Policy|Service Control Policies (SCPs)]] are organization-level JSON policies used to establish permissions boundaries across member accounts.
+*   **Inheritance:** Policies attached to the Root OU apply to all OUs and accounts. Policies attached to sub-OUs cascade to their nested accounts.
+*   **Explicit Allow Requirement:** To execute any API call, every level of the hierarchy (Root, target OU, and the member account itself) must have an explicit Allow policy. By default, organizations attaches the `FullAWSAccess` SCP to the root and all child OUs.
+*   **Management Account Immunity:** SCPs **never** apply to the management account. The management account maintains unrestricted administrative control.
+*   **Evaluation Hook:** SCPs restrict permissions. They do not grant permissions; they filter the maximum permissions that identity-based and resource-based policies can grant in member accounts.
+
+### D. Compliance Policies: Tag and Backup Policies
+*   **Tag Policies:** Define standard tag keys and allowed values. Standardizes resource categorization for cost allocation tags and attribute-based access control (ABAC). Non-compliant tagging operations can be blocked or reported using EventBridge alerts.
+*   **Backup Policies:** Enforce standardized, organization-wide AWS Backup plans to ensure accounts comply with backup retention requirements.
+
+---
+
+## 9. Advanced IAM Security Mechanics
+
+### A. Resource-Based Policies vs. IAM Roles (Cross-Account Access)
+When accessing resources across account boundaries (e.g., Account A accessing an S3 bucket in Account B), administrators choose between two delegation models:
+1.  **IAM Roles (Trust Delegation):**
+    *   *Action:* User in Account A assumes an IAM Role in Account B via `sts:AssumeRole`.
+    *   *Permission Shift:* The user temporarily **relinquishes** their Account A permissions and inherits the target role's permissions in Account B.
+    *   *Use Case:* High-security administration or where the target resource does not support resource policies.
+2.  **Resource-Based Policies (Direct Access):**
+    *   *Action:* A policy is attached directly to the resource (e.g., S3 bucket policy) in Account B, specifying the Account A principal as the `Principal` element.
+    *   *Permission Shift:* The user in Account A accesses the resource **directly** without assuming a role. They **keep** all their Account A permissions.
+    *   *Use Case:* Data transit operations, such as scanning a DynamoDB table in Account A and copying the output directly to an S3 bucket in Account B.
+
+### B. EventBridge Target Invocations
+Amazon EventBridge invokes target services using one of two security models:
+*   **Resource-Based Policies:** Used when the target service supports resource-level access policies (e.g., Lambda functions, SNS topics, SQS queues, S3 buckets, API Gateways). EventBridge adds a policy to the target allowing invocation.
+*   **IAM Roles:** Used when the target service does not natively support resource-based policies (e.g., Kinesis Streams, EC2 Auto Scaling, SSM Run Command, ECS tasks). EventBridge assumes an IAM service role to execute the target action.
+
+### C. Permissions Boundaries
+An **IAM Permissions Boundary** is a managed policy used to set the maximum permissions that an identity-based policy can grant to an IAM User or Role.
+*   *Scope:* Supported only for IAM Users and Roles. They **cannot** be assigned to IAM Groups.
+*   *Effective Permissions:* The intersection of the identity-based policy and the permissions boundary. If an action is not allowed in BOTH the policy and the boundary, access is denied.
+*   *Use Case:* Safe delegation of administrator duties. Allows team leaders to create new developers and roles without allowing them to elevate their own privileges to full administrator access.
+
+---
+
+## 10. AWS IAM Identity Center & Identity Federation
+[[AWS IAM Identity Center]] (successor to AWS Single Sign-On / SSO) centralizes identity federation and user console/API access across all accounts in an AWS Organization.
+
+### A. Multi-Account and Multi-Application SSO
+*   **Single Login Portal:** Users access a single URL, authenticate once, and gain one-click console or API access to authorized AWS accounts, business applications (e.g., Salesforce, Box, Microsoft 365 via SAML 2.0), and Windows EC2 instances.
+*   **Integrated Directory Stores:** Supports the built-in Identity Center user directory or federates with external providers (Okta, OneLogin, Ping Identity, Active Directory).
+
+### B. Permission Sets & Attribute-Based Access Control (ABAC)
+*   **Permission Sets:** Managed templates of IAM policies defined in the management account. When a user/group is assigned a permission set on a member account, Identity Center automatically provisions a corresponding IAM Role inside that member account.
+*   **ABAC Enablement:** Leverages user directory attributes (e.g., Title, CostCenter, Department) passed as session tags. Permissions boundaries are defined once, and access changes dynamically as attributes are updated in the directory.
+
+---
+
+## 11. AWS Directory Services (Active Directory Integration)
+[[AWS Directory Services]] provides managed directory deployment options, enabling AWS resources to join Windows domains and authenticate users.
+
+### A. Directory Service Flavors
+*   **AWS Managed Microsoft AD:** A fully managed, actual Microsoft Active Directory hosted in AWS. Supports standard AD administration tools, local group policies, and multi-factor authentication (MFA). Available in Standard (up to 30,000 objects) and Enterprise (up to 500,000 objects) editions. Supports establishing trust relationships with on-premises directories.
+*   **AD Connector:** A stateless active directory gateway acting as a proxy. Redirects authentication queries back to an existing on-premises Active Directory. MFA support is included. No users are stored or managed in AWS.
+*   **Simple AD:** A lightweight, AD-compatible directory built on Samba 4. Standalone in the AWS cloud; cannot establish trust relationships or connect back to on-premises AD.
+
+### B. Integration Scenarios with IAM Identity Center
+When integrating IAM Identity Center with Active Directory, two paths exist:
+1.  **Two-Way Trust (AWS Managed AD):** Establish a forest/domain trust relationship between AWS Managed Microsoft AD and the on-premises AD. Identity Center integrates with the AWS Managed AD out-of-the-box, allowing on-premises users to authenticate.
+2.  **AD Connector Proxy:** Deploy AD Connector to proxy login requests from the Identity Center portal directly to the on-premises Active Directory.
+
+---
+
+## 12. AWS Control Tower & Governance
+[[AWS Control Tower]] acts as an orchestration layer on top of AWS Organizations, automating the deployment and compliance of a multi-account AWS environment based on well-architected practices.
+
+### A. Guardrails: Preventive vs. Detective
+Control Tower governs member accounts using Guardrails:
+*   **Preventive Guardrails:** Enforce compliance by blocking actions. Implemented using **Service Control Policies (SCPs)** via AWS Organizations (e.g., blocking S3 bucket public access organization-wide).
+*   **Detective Guardrails:** Monitor environments and flag violations. Implemented using **AWS Config** rules. When a non-compliant resource is detected, it triggers an Amazon SNS notification, which can notify administrators or invoke an AWS Lambda function for automated remediation (e.g., deleting an untagged resource).
+
+---
+
 ## 7. Deep-Intuition (AARF) Breakdowns
 
 ### AARF Breakdown: IAM Roles (STS) vs. Permanent Credentials
@@ -212,3 +331,17 @@ A proactive cost-governance tool to alert administrators when spending threshold
 3.  **The Rationale (Why):** Enforces global corporate compliance rules. Even if a member account's administrator credentials are stolen, the attacker cannot delete audit logs or disable compliance tools because the SCP explicitly blocks those actions at the organization level.
 4.  **The Failure Loop (What if not):** Without SCPs, a compromised admin account in a child sandbox can delete CloudTrail logs, delete backups, and spin up runaway GPU clusters for crypto-mining, rendering the incident untraceable.
 5.  **Alternative Case (When to use 'if not'):** In standalone accounts or developer sandboxes not bound to corporate compliance frameworks, bypass SCPs to maximize API freedom and speed of experimentation.
+
+### AARF Breakdown: Permissions Boundaries vs SCPs
+1.  **The Answer (Core Pattern):** Use **Permissions Boundaries** to restrict delegate admins (such as developers given user creation privileges) from granting full administrative access to their new entities, while using **SCPs** to enforce organization-wide restrictions that apply to all users and roles within a member account.
+2.  **The Assumptions (Context):** Permissions boundaries apply only to IAM users and roles within a single account. SCPs apply organization-wide to entire member accounts. Neither affects the organization's management account.
+3.  **The Rationale (Why):** If a developer creates a role and attaches a boundary policy to it, that role can never perform actions blocked by the boundary, even if the developer attaches `AdministratorAccess` to it. SCPs ensure corporate boundaries are never crossed at the account level.
+4.  **The Failure Loop (What if not):** Delegating `iam:CreateUser` permissions without a boundary allows a developer to create a new user, attach the `AdministratorAccess` policy to it, and log in as that administrator, escalating their own privileges.
+5.  **Alternative Case (When to use 'if not'):** In small organizations with centralized administrative control and no delegation of IAM management, skip boundaries and rely on tight IAM policies on administrator accounts.
+
+### AARF Breakdown: AD Connector vs. Managed Microsoft AD
+1.  **The Answer (Core Pattern):** Use **AD Connector** to federate on-premises users into AWS applications (like IAM Identity Center or WorkSpaces) without replicating directory database data into AWS, and use **Managed Microsoft AD** when you need a local domain controller in the AWS cloud to support trusted resource operations or schema extensions.
+2.  **The Assumptions (Context):** AD Connector requires persistent VPN/Direct Connect connectivity back to on-premises domain controllers to proxy queries. Managed AD can run independently after initial sync/trust setup.
+3.  **The Rationale (Why):** AD Connector is stateless and does not store user passwords, reducing directory synchronization management. Managed AD acts as a true directory forest, supporting trust relationships and low-latency local queries for EC2 instances.
+4.  **The Failure Loop (What if not):** Using AD Connector when VPN connection is unstable results in immediate authentication failures for all cloud services, locking out WorkSpaces and SSO users.
+5.  **Alternative Case (When to use 'if not'):** If there is no on-premises Active Directory infrastructure, use **Simple AD** to host local domain controllers at a lower tier cost.

@@ -23,6 +23,17 @@ related_concepts:
   - "[[AWS Elastic Disaster Recovery]]"
   - "[[AWS Database Migration Service]]"
   - "[[AWS Backup]]"
+  - "[[AWS Key Management Service]]"
+  - "[[AWS Secrets Manager]]"
+  - "[[SSM Parameter Store]]"
+  - "[[AWS WAF]]"
+  - "[[AWS Shield]]"
+  - "[[Amazon GuardDuty]]"
+  - "[[AWS Organizations]]"
+  - "[[Service Control Policy]]"
+  - "[[AWS IAM Identity Center]]"
+  - "[[AWS Directory Services]]"
+  - "[[AWS Control Tower]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:

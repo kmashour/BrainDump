@@ -4,6 +4,50 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-25] - Ingestion: AWS IAM & Identity Governance
+
+### Added
+- **Main Notes:** Created 5 landing notes:
+  - [[Main Notes/AWS Organizations.md|AWS Organizations.md]]
+  - [[Main Notes/Service Control Policy.md|Service Control Policy.md]]
+  - [[Main Notes/AWS IAM Identity Center.md|AWS IAM Identity Center.md]]
+  - [[Main Notes/AWS Directory Services.md|AWS Directory Services.md]]
+  - [[Main Notes/AWS Control Tower.md|AWS Control Tower.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Consolidated and rewrote [[Reference Notes/3-2_aws_iam.md|3-2_aws_iam.md]] to clean out conversational fluff and merge detailed transcript context on AWS Organizations (OUs, member vs management, consolidated billing and aggregate usage/RI sharing), Service Control Policies (SCPs, OU inheritance and explicit allow requirements), Tag Policies (consistent tagging for cost-allocation and ABAC), Backup Policies, Advanced IAM Policy Conditions (SourceIP, RequestedRegion, ec2:ResourceTag, aws:PrincipalTag, aws:MultiFactorAuthPresent, aws:PrincipalOrgID), S3 Bucket-level vs Object-level ARNs scope, IAM Resource-based policies vs IAM Roles cross-account resource access nuances (assuming roles/relinquishing permissions vs direct resource access), EventBridge target invocation permissions (resource-based vs IAM roles), Permissions Boundaries (users & roles max permissions limits, intersection with identity-based policies and SCPs), AWS IAM Identity Center (successors to SSO, multi-account portals, permission sets, ABAC dynamic tag evaluations), AWS Directory Services (Managed Microsoft AD, AD Connector proxy gateway, Simple AD standalone domain controllers), Directory trust relationships and AD connectors integration with IAM Identity Center, and AWS Control Tower (governance baselines, Landing Zone Account Factory, preventive SCP guardrails vs detective Config rule guardrails). Added a comprehensive evaluation flowchart Mermaid diagram and detailed AARF breakdowns.
+- **Main Notes:**
+  - Updated [[Main Notes/aws.md|aws.md]] to link to the new IAM and Governance landing notes under related concepts.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-2_aws_iam_advanced.txt`
+
+---
+
+## [2026-06-25] - Ingestion: AWS KMS & Security Services
+
+### Added
+- **Main Notes:** Created 6 landing notes:
+  - [[Main Notes/AWS Key Management Service.md|AWS Key Management Service.md]]
+  - [[Main Notes/AWS Secrets Manager.md|AWS Secrets Manager.md]]
+  - [[Main Notes/SSM Parameter Store.md|SSM Parameter Store.md]]
+  - [[Main Notes/AWS WAF.md|AWS WAF.md]]
+  - [[Main Notes/AWS Shield.md|AWS Shield.md]]
+  - [[Main Notes/Amazon GuardDuty.md|Amazon GuardDuty.md]]
+
+### Refactored / Upgraded
+- **Reference Notes:** Consolidated and rewrote [[Reference Notes/3-3_aws_kms_security.md|3-3_aws_kms_security.md]] to clean out conversational fluff and integrate comprehensive transcript details including encryption types (in-transit TLS, redirect HTTP to HTTPS, server-side vs client-side), KMS key types (AWS owned, AWS managed, Customer Managed, and Imported), default vs custom key policies, regional scoping snapshot re-encryption flow, cross-account sharing permissions (`kms:CreateGrant`, `kms:DescribeKey`, `kms:ReEncrypt*`, `kms:Decrypt`), Multi-Region Keys (`mrk-`) client-side database column/field encryption flow (DynamoDB Encryption Client and AWS Encryption SDK), S3 Replication with KMS encryption rules, SSM Parameter Store standard vs advanced tiers and advanced Parameter Policies (Expiration, Expiration Notification, No-change Notification), Secrets Manager automatic credentials rotation and Lambda handlers, AWS Certificate Manager (ACM) public vs imported certificates validation/monitoring (EventBridge, AWS Config `acm-certificate-expiration-check` rule), AWS CloudHSM dedicated single-tenant HSM setups and Custom Key Store integration, Layer 7 AWS WAF web ACL rules (IP sets, rate limits), AWS Shield Standard vs Advanced DDoS protections, AWS Firewall Manager security policies, Amazon GuardDuty threat discovery logs/ML inputs and cryptocurrency warnings, Amazon Inspector vulnerability scanning (EC2, ECR, Lambda), and Amazon Macie data privacy scans. Inserted a strict-compliant Mermaid diagram depicting the Envelope Encryption workflow, and added a classic-to-modern HSM Evolutionary Conceptual Bridge.
+- **Main Notes:**
+  - Updated [[Main Notes/aws.md|aws.md]] to link to the new security and KMS landing notes under related concepts.
+  - Updated [[Main Notes/aws - KMS and Security Services.md|aws - KMS and Security Services.md]] to reference the new atomic landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-3_aws_kms_security.txt`
+
+---
+
 ## [2026-06-24] - Ingestion: AWS Disaster Recovery and Database Migrations
 
 ### Added
