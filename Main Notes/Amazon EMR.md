@@ -31,10 +31,14 @@ Amazon EMR (Elastic MapReduce) is a managed cluster platform that simplifies run
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Big Data Cluster Orchestration:** Automatically provisions and configures EC2 clusters running distributed data processing frameworks.
-*   **Purchasing Optimization:** Integrates Master, Core, and Task nodes with Reserved and Spot Instances to scale processing capacity while minimizing costs.
-*   **Transient Cluster Deployment:** Boots up clusters to run specific analytics jobs and terminates them immediately upon completion.
-*   **Glue Integration:** Interfaces with the AWS Glue Data Catalog to query metadata schemas directly.
+*   **Big Data Cluster Orchestration:** Provisions and configures managed EC2 instances running Apache Spark, Hadoop, HBase, Flink, and Hive.
+*   **Node Role Topology:**
+    *   **Master Node:** Coordinative node that manages workloads, resource allocation, and cluster health (must be long-running).
+    *   **Core Node:** Processes data tasks and stores filesystem datasets locally in HDFS (must be long-running).
+    *   **Task Node:** Compute-only node that executes processing tasks without storing HDFS data (optional, ideal candidate for Spot Instances).
+*   **Spot Instance Integration:** Leverages cheaper, volatile Spot capacity for compute-only Task Nodes to scale processing throughput at minimal cost.
+*   **Deployment Lifecycles:** Supports **long-running clusters** for continuous analytics pipelines and **transient clusters** that spin up, run a batch job, and terminate.
+*   **Glue Shared Metadata Catalog:** Integrates with AWS Glue Data Catalog to resolve table schemas directly during job runs.
 
 ---
 

@@ -31,9 +31,9 @@ Amazon Neptune is a fast, reliable, fully managed graph database service optimiz
 
 ## ⚙️ Functionality (What it is doing)
 *   **Graph Query Processing:** Evaluates complex relational networks without requiring expensive SQL JOIN operations.
-*   **Multi-AZ Deployment:** Replicates data across multiple Availability Zones, offering high availability and supporting up to 15 low-latency read replicas.
-*   **Neptune Streams:** Captures real-time changes to the graph dataset to trigger Lambda functions or synchronize external systems.
-*   **W3C and Property Graph Support:** Enables standard Gremlin, openCypher, and SPARQL queries.
+*   **Multi-AZ & Read Replicas:** Automatically replicates data across three Availability Zones and supports up to 15 low-latency read replicas for scaling read capabilities.
+*   **Neptune Streams HTTP API:** Captures real-time changes to graph data in a strict ordered sequence with no duplicates, exposed via an HTTP REST API to trigger downstream Lambda workflows or synchronize external systems.
+*   **Property Graph & RDF Models:** Supports standard graph languages including Apache TinkerPop Gremlin, openCypher, and W3C SPARQL.
 
 ---
 

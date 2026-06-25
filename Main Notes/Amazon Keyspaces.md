@@ -30,10 +30,11 @@ Amazon Keyspaces (for Apache Cassandra) is a scalable, highly available, and man
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Cassandra Compatibility:** Supports the Cassandra Query Language (CQL) API and standard Cassandra drivers.
-*   **Serverless Scaling:** Adjusts table throughput (read/write capacity) automatically based on application traffic.
-*   **High Availability:** Replicates data three times across multiple AWS Availability Zones automatically.
-*   **Security Integration:** Authenticates access requests via AWS IAM credentials and policy structures.
+*   **CQL API Compatibility:** Supports the Cassandra Query Language (CQL) API and standard Cassandra drivers without modifying application code.
+*   **PITR Backups:** Provides continuous backups with Point-in-Time Recovery (PITR) up to 35 days for disaster restoration.
+*   **Multi-Region Replication:** Automatically replicates table datasets across multiple Availability Zones natively, and supports multi-region active-active clusters.
+*   **Flexible Capacity Modes:** Offers on-demand capacity scaling (automatic instant adjustments) or provisioned capacity modes (with target-tracking auto-scaling).
+*   **IAM Authentication:** Integrates with AWS IAM for user database authentication and table-level access authorization.
 
 ---
 

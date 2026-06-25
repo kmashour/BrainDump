@@ -30,10 +30,10 @@ Amazon Timestream is a fast, scalable, and serverless time-series database servi
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Adaptive Schema Ingestion:** Accepts incoming time-series data streams dynamically without requiring a pre-defined schema.
-*   **Tiered Storage Management:** Moves data automatically from a high-speed, in-memory store (for recent writes) to a cost-effective magnetic storage tier based on customer retention policies.
-*   **Built-in Analytical Functions:** Supports time-series SQL analytical queries (e.g., smoothing, interpolation, and approximation) natively.
-*   **Auto-Scaling:** Scales compute and storage capacity automatically based on ingestion and query load.
+*   **Adaptive Schema Ingestion:** Accepts incoming time-stamped telemetry data streams dynamically without requiring a pre-defined schema.
+*   **In-Memory vs. Magnetic Storage Tiers:** Automates data lifecycle policies, keeping fresh telemetry data in-memory for sub-second writes and queries, then transitioning it to cost-optimized magnetic storage for historical retention.
+*   **SQL Compatibility:** Supports standard ANSI SQL queries, including specialized built-in time-series functions for smoothing, interpolation, and trend approximation.
+*   **Serverless Auto-Scaling:** Adjusts compute and storage tier capacity automatically to scale to trillions of ingestion events per day without manual tuning.
 
 ---
 

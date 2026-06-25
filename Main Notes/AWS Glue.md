@@ -32,11 +32,12 @@ AWS Glue is a serverless, managed Extract, Transform, and Load (ETL) service des
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Glue Data Catalog:** Acts as a central metadata repository to store database and table structures.
-*   **Glue Crawlers:** Connects to data stores (S3, RDS, DynamoDB, on-premises JDBC), infers schema structures, and writes metadata tables into the Data Catalog.
-*   **Glue ETL Jobs:** Generates Scala or Python (Apache Spark) code to transform data format (e.g. CSV to Parquet) and load it into destinations.
-*   **Job Bookmarks:** Tracks execution state across runs to prevent reprocessing historical data.
-*   **Glue Data Brew & Studio:** Visual interfaces to clean, normalize, monitor, and run ETL workflows.
+*   **Glue Data Catalog (Shared Metadata):** Central repository that stores metadata table definitions, shared across Athena, Redshift Spectrum, and EMR.
+*   **Glue Crawlers (Schema Inference):** Connects to storage systems (S3, RDS, DynamoDB, JDBC), infers schema fields automatically, and writes structural tables to the catalog.
+*   **Serverless ETL Execution:** Generates Scala/Python code running on serverless Apache Spark execution environments to transform and load datasets (e.g. CSV to Parquet/ORC).
+*   **Job Bookmarks:** Remembers processed state across execution runs to prevent reprocessing historical data in recurring batch runs.
+*   **Glue Data Brew:** Visual data preparation tool allowing analysts to clean and normalize data using pre-built transformations.
+*   **Streaming ETL:** Executes real-time ETL processing against data streaming continuously from Kinesis Data Streams or Apache Kafka.
 
 ---
 

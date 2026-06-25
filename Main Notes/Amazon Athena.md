@@ -32,10 +32,11 @@ Amazon Athena is an interactive, serverless query service designed to analyze da
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Serverless Query Execution:** Executes standard SQL queries directly on files stored in Amazon S3, scaling compute resources automatically based on query complexity.
-*   **Schema Schema-on-Read:** Maps schema structures defined in the AWS Glue Data Catalog to raw S3 data during query runtime.
-*   **Federated Querying:** Queries multiple data sources (RDS, DynamoDB, on-premises systems) outside of S3 using custom AWS Lambda connectors.
-*   **Data Format Support:** Reads structured, semi-structured, and unstructured files including CSV, JSON, TSV, Parquet, ORC, and log formats.
+*   **Presto SQL Engine:** Runs standard ANSI SQL queries built on the open-source Presto distributed engine, executing directly on files in S3.
+*   **Schema-on-Read Cataloging:** Resolves S3 text structures at query time by reading database and table schemas defined in the AWS Glue Data Catalog.
+*   **Performance Optimization:** Minimizes scanned data volume and query costs through the use of columnar data formats (Parquet/ORC) and S3 path partitioning (e.g. `/year=/month=/`).
+*   **Federated Query with Lambda:** Connects to external relational, NoSQL, and custom data sources (RDS, DynamoDB, on-premises) using AWS Lambda connectors.
+*   **Multi-Format Ingestion:** Reads structured and semi-structured file types including CSV, JSON, Parquet, ORC, Avro, and raw logs.
 
 ---
 

@@ -33,11 +33,11 @@ Amazon Redshift is a fully managed, petabyte-scale data warehouse service design
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Columnar Data Storage:** Stores data by column rather than by row, reducing the I/O footprint for analytical aggregation queries.
-*   **Massively Parallel Processing (MPP):** Distributes data and query execution across multiple compute nodes to run queries in parallel.
-*   **Redshift Spectrum:** Executes queries directly against unstructured data stored in Amazon S3, avoiding the need to load the data into the warehouse compute nodes.
-*   **VPC Route Enforcement:** Restricts all COPY and UNLOAD operations to traverse private subnets within the VPC via Enhanced VPC Routing.
-*   **Cross-Region Replication:** Automatically replicates database snapshots to remote AWS regions for disaster recovery.
+*   **Columnar Data Storage:** Organizes data by column instead of row on disk, drastically reducing I/O and accelerating query aggregation.
+*   **Leader & Compute Node Topology:** Deploys a **Leader Node** to parse queries, compile execution plans, and aggregate results, coordinating multiple **Compute Nodes** that execute queries in parallel and store database slices.
+*   **Redshift Spectrum:** Queries massive external datasets directly in Amazon S3 by scanning metadata from Glue/Athena without loading S3 files into Redshift storage.
+*   **Enhanced VPC Routing:** Secures network flows by routing all COPY and UNLOAD operations through private VPC subnets rather than crossing the public internet.
+*   **Cross-Region Automated Snapshots:** Automatically replicates snapshots to a secondary AWS region for cross-region disaster recovery and disaster restoration.
 
 ---
 
