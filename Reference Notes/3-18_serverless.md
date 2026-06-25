@@ -91,9 +91,12 @@ AWS Lambda runs code on-demand without provisioning or managing servers, scaling
 *   **Lambda SnapStart:** Optimizes cold start latency (up to 10x) for Java, Python, and .NET. When a version is published, Lambda pre-initializes the code, takes a snapshot of the memory and disk state, and uses it to boot future instances.
 
 ### VPC Networking Primitives
-*   By default, Lambda functions run in an AWS-managed network boundary and cannot access private resources inside a user's VPC (e.g. private RDS databases). They have default public access to DynamoDB, S3, and public APIs.
-*   **VPC Configuration:** To access private resources, configure Lambda with target VPC IDs, private subnets, and security groups. AWS dynamically attaches ENIs.
-*   **RDS Proxy Integration:** Lambda functions booting dynamically can exhaust RDS connection pools. RDS Proxy pools database connections, maintains warm connections, and reduces RDS failover times by up to 66%. The Lambda function must be configured in the VPC to access RDS Proxy.
+*   **Default Behavior (No VPC):** By default, Lambda functions run in an AWS-managed network boundary and cannot access private resources inside a user's VPC (e.g., private RDS databases, internal load balancers). They have default public access to DynamoDB, S3, and internet-facing APIs.
+*   **VPC Configuration:** To access private resources, configure Lambda with target VPC IDs, private subnets, and security groups. AWS dynamically attaches Elastic Network Interfaces (ENIs) inside those subnets.
+*   **RDS Proxy Integration:** Lambda functions booting dynamically can exhaust RDS connection pools due to rapid scaling. RDS Proxy pools database connections, maintains warm connections, and reduces RDS failover times by up to 66%. To access RDS Proxy, the Lambda function must be configured to run inside the VPC.
+*   **🌉 Evolutionary Bridge: VPC Cold Start ENI Allocation (Hyperplane):**
+    *   *Core Classic Behavior:* Historically, when a Lambda function was placed in a VPC, AWS dynamically created and attached a new ENI to the execution container *during* the cold start invocation phase. This network provisioning penalty added a strict latency overhead of 10 to 30 seconds, rendering VPC Lambda functions unusable for latency-sensitive public API endpoints.
+    *   *Modern Implementation (Hyperplane):* In late 2019, AWS transitioned to AWS Hyperplane (a shared network virtualization system). During function creation or configuration updates, AWS pre-allocates dedicated Hyperplane ENIs inside the user's subnet. At invocation time, the Lambda execution environment attaches to a pre-existing, shared Hyperplane ENI, eliminating the dynamic network creation latency and dropping VPC cold start times to sub-second levels. This also drastically conserves private subnet IP addresses since multiple concurrent functions share the same ENIs.
 
 ```mermaid
 graph TD

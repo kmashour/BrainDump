@@ -34,10 +34,15 @@ Amazon DynamoDB is a fully managed, serverless, multi-AZ replicated NoSQL key-va
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Key-Value & Document Storage:** Persists unstructured or semi-structured data blocks, allowing items to have varying schemas and attributes.
-*   **Capacity Tuning Modes:** Provisions Read/Write Capacity Units (RCU/WCU) for predictable traffic or scales dynamically (On-Demand) to handle spikes.
-*   **Real-time Stream Integration:** Publishes modifications to tables to DynamoDB Streams or Kinesis streams to trigger downstream processes.
-*   **Active-Active Replication:** Replicates tables globally (Global Tables) across regions, permitting low-latency regional reads and writes.
+*   **Key Schema & Schema Flexibility:** Composed of tables storing items (rows) up to a **maximum size of 400 KB** each. Items are identified by a Primary Key (composed of a Partition Key, and an optional Sort Key) and can hold varying attributes, allowing schemas to evolve dynamically.
+*   **Read/Write Capacity Modes:**
+    *   *Provisioned Capacity:* Allocates explicit Read Capacity Units (RCUs) and Write Capacity Units (WCUs) in advance, scaling automatically using Auto Scaling. Recommended for predictable workloads.
+    *   *On-Demand Capacity:* Automatically adjusts read and write limits dynamically in response to traffic. Operates on a pay-per-request model, making it ideal for highly unpredictable or low-utilization apps.
+*   **DynamoDB Accelerator (DAX):** A fully managed, API-compatible in-memory write-through cache placed in front of tables. Reduces read latencies to microseconds for raw reads and queries. 
+    *   *Contrast with ElastiCache:* Use **DAX** as a drop-in cache for database query results; use **ElastiCache** for storing processed/aggregated calculation outputs.
+*   **DynamoDB Streams:** Emits a rolling 24-hour log capturing all item modifications (inserts, updates, deletes) in real-time. Natively triggers Lambda handlers to enable event-driven architectures.
+*   **Global Tables:** Configures Active-Active, multi-region database replication. Leverages DynamoDB Streams under the hood to synchronize data across global regions with low regional latency.
+*   **Time-to-Live (TTL):** Automatically purges items from tables when an epoch timestamp value is exceeded. Deletions happen in the background without consuming write capacity units, making it ideal for session tokens or compliance.
 
 ---
 

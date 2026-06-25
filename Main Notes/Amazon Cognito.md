@@ -30,10 +30,9 @@ Amazon Cognito is a serverless identity management service that provides user si
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **User Directory (User Pools):** Stores application user credentials, managing signup, email/phone verifications, password resets, and MFA.
-*   **Federated Identity (Identity Pools):** Exchanges external authentication tokens (Google, Facebook, CUP) for temporary AWS credentials.
-*   **ALB & API Gateway Integration:** Intercepts client connections to validate tokens before traffic is forwarded to backends.
-*   **Fine-Grained Authorization:** Attaches dynamic IAM policies to users to restrict AWS API access down to specific resource folders or rows.
+*   **Cognito User Pools (CUP - Authentication Directory):** A serverless directory database of users. Manages signup, signin, email/phone verifications, password resets, and MFA. Emits JSON Web Tokens (JWTs) (ID, Access, and Refresh tokens). Integrates natively with API Gateway and Application Load Balancer (ALB) to validate user tokens before routing traffic to backend compute.
+*   **Cognito Identity Pools (Federated Identity - Authorization):** Exchanges authentication tokens (from CUP, social sign-ins, or OIDC/SAML) for temporary AWS credentials (via AWS Security Token Service / STS). This allows mobile/web clients to make direct API calls to AWS resources (such as writing to a private S3 folder or querying a database table) without routing through a custom backend API.
+*   **Fine-Grained Row-Level Security:** Secures DynamoDB tables for multi-tenant applications by applying IAM policies with conditions that compare the `dynamodb:LeadingKeys` partition key against the user's validated Cognito Identity ID (`cognito-identity.amazonaws.com:sub`). This guarantees that users can only read or write their own rows of data.
 
 ---
 

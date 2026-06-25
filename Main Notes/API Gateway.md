@@ -32,10 +32,15 @@ Amazon API Gateway is a fully managed, serverless ingress gateway that makes it 
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Request Routing:** Integrates natively with backends like AWS Lambda, private HTTP endpoints (via VPC Links), or AWS services directly.
-*   **Traffic Management:** Enforces rate-limiting and request throttling parameters to protect backend resources from traffic spikes.
-*   **Lifecycle Management:** Enables versioning APIs and deploying separate environments (e.g. dev, test, prod) to stages.
-*   **WebSocket Duplex Routing:** Supports real-time, persistent connection streams between clients and backends.
+*   **Request Routing & Ingress Endpoints:** Routes incoming HTTPS traffic to backends (Lambda, public/private HTTP, or AWS APIs). Supported endpoint types include:
+    *   *Edge-Optimized:* Deployed globally using CloudFront Edge locations. ACM SSL certificates must reside in `us-east-1`.
+    *   *Regional:* Deployed locally in the same region as the client. ACM SSL certificates must reside in the same region.
+    *   *Private:* Accessible only inside a user's VPC via Interface VPC Endpoints (PrivateLink) and secured via resource policies.
+*   **Strict Timeout Enforcements:** Enforces a hard integration limit of **29 seconds**. If the backend (e.g., a Lambda function) does not respond within this window, API Gateway closes the connection and returns an HTTP `504 Gateway Timeout` to the client.
+*   **Traffic Management & Throttling:** Protects backends from resource exhaustion using a token-bucket rate-limiting algorithm. Throttling limits can be configured globally, per-stage, or per-method, and can be tied to API Keys.
+*   **Response Caching:** Stores backend responses inside a local cache, allowing API Gateway to serve static/predictable requests directly, reducing backend execution load and costs.
+*   **API Versioning & Lifecycle:** Supports deploying multiple versions of APIs to distinct environments (e.g., `dev`, `test`, `prod`) represented as stages.
+*   **WebSocket Protocol Support:** Exposes full-duplex WebSocket connections to maintain real-time, persistent connection states between clients and backends.
 
 ---
 
