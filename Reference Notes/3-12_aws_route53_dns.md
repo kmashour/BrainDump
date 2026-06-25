@@ -19,25 +19,41 @@ Amazon Route 53 is a highly available, scalable, fully managed, and authoritativ
 *   **Zone File:** A text file containing all the DNS records mapping hostnames to IPs/destinations.
 *   **Name Servers:** Servers that resolve queries by returning the target records.
 
+#### Recursive DNS Resolution Chain Walkthrough
+When a client (web browser) queries a domain like `api.www.example.com` for the first time:
+1.  **Local DNS Server Query:** The browser asks the Local DNS Server (usually assigned dynamically by the ISP or corporate network). If the IP is cached, it is returned immediately.
+2.  **Root DNS Server Query:** If not cached, the Local DNS Server queries a **Root DNS Server** (managed by **ICANN**). The Root DNS Server does not know the IP but returns the Name Server (NS) records for the TLD registry (e.g., `.com`).
+3.  **TLD DNS Server Query:** The Local DNS Server queries the **TLD DNS Server** (managed by **IANA**). The TLD DNS Server returns the NS records for the Second-Level Domain DNS Server (e.g., Route 53 or GoDaddy).
+4.  **SLD DNS Server (Authoritative DNS Query):** The Local DNS Server queries the authoritative name servers (e.g., Amazon Route 53 authoritative servers). Route 53 checks its hosted zone and returns the record value (e.g., A record pointing to `9.10.11.12`).
+5.  **Browser Connection:** The Local DNS Server caches the record based on its TTL (Time To Live) and returns the IP address to the browser, which then opens a direct HTTP connection to the web server.
+
 ### B. Public vs. Private Hosted Zones
 A hosted zone is a container for records that define how to route traffic for a domain and its subdomains.
 *   **Public Hosted Zones:** Route traffic over the public internet to public-facing resources. Anyone on the internet can query public records.
 *   **Private Hosted Zones:** Resolve DNS queries internally inside one or more VPCs. The domain name is completely hidden from the public internet (e.g., `api.company.internal`).
     *   *Requirement:* You must enable `enableDnsHostnames` and `enableDnsSupport` in the VPC configuration to resolve private hosted zones.
+*   **Split-Horizon DNS:** You can create both a public hosted zone and a private hosted zone for the exact same domain name (e.g., `example.com`). Internal VPC clients will resolve to the private hosted zone, while external internet clients resolve to the public zone.
 *   **Pricing:**
     *   $0.50 per hosted zone per month.
     *   Domain registration costs minimum of $12 to $13 per year depending on TLD.
 
-### C. Domain Registration Process & Initial Configuration
+### C. Domain Registration & Third-Party Registrar Integration
+#### Route 53 Domain Registration Process
 When registering a new domain using Amazon Route 53 as the Domain Registrar:
-*   **Registration Options & Best Practices:**
-    *   **Auto-Renewal:** Can be toggled on/off. Best practice is keeping it active for production domains to prevent expiration and hijacking.
-    *   **Contact Information:** Requires entering registrant, administrator, and technical contact details (can be duplicated across roles).
-    *   **Privacy Protection:** Enabling privacy protection is highly recommended to shield personal contact details (email, address, phone number) from the public WHOIS registry, preventing spam.
-*   **Initial Hosted Zone Creation:**
-    *   Once domain registration completes, Route 53 automatically spins up a matching **Public Hosted Zone** containing two default records:
-        1.  **Name Server (NS) Record:** Contains four authoritative DNS servers delegated by AWS Route 53 to host name resolution for the zone.
-        2.  **Start of Authority (SOA) Record:** Contains administrative metadata about the zone file, including the primary name server, serial number, refresh intervals, and retry timers.
+*   **Auto-Renewal:** Can be toggled on/off. Keeping auto-renewal on for production domains prevents domain hijacking or expiration.
+*   **Contact Information:** Requires entering registrant, administrator, and technical contact details (can use the same contact info for all roles).
+*   **Privacy Protection:** Shield personal contact details (email, address, phone number) from the public WHOIS registry to prevent spam.
+*   **Default Records:** Once domain registration completes, Route 53 automatically spins up a matching **Public Hosted Zone** containing:
+    1.  **Name Server (NS) Record:** Contains four authoritative DNS servers delegated by AWS Route 53.
+    2.  **Start of Authority (SOA) Record:** Administrative metadata about the zone, including primary name server, serial number, and refresh intervals.
+
+#### Integration with Third-Party Registrars (e.g., GoDaddy, Namecheap)
+If you register a domain name on GoDaddy but want to manage its DNS records using Route 53:
+1.  Create a **Public Hosted Zone** for the domain (e.g., `example.com`) in Route 53.
+2.  Copy the four authoritative **Name Servers (NS)** generated by Route 53.
+3.  Log into your GoDaddy management console and locate the domain's Name Server settings.
+4.  Change the name servers to "Custom Name Servers" and input the four Route 53 Name Server addresses.
+5.  Wait for DNS delegation to propagate. All future DNS resolution queries will be handled by Route 53.
 
 ![[Pasted image 20250513221529.png]]
 ![[Pasted image 20250513221555.png]]
@@ -55,12 +71,12 @@ When registering a new domain using Amazon Route 53 as the Domain Registrar:
 *   **NS Record:** Name Server records containing the DNS servers authorized to resolve the zone.
 
 ### B. Route 53 Alias Records
-An Alias record is a Route 53-specific extension to DNS that maps a hostname directly to an AWS Resource (e.g., Application Load Balancer, CloudFront distribution, S3 website, API Gateway).
-*   **Zone Apex Compatibility:** Unlike CNAMEs, Alias records can be used for the Zone Apex (root domain).
+An Alias record is a Route 53-specific extension to DNS that maps a hostname directly to an AWS Resource (e.g., Application Load Balancer, CloudFront distribution, S3 website, API Gateway, Elastic Beanstalk, VPC Interface Endpoints, Global Accelerator, or other Route 53 records in the same hosted zone).
+*   **Zone Apex Compatibility:** Unlike CNAMEs, Alias records can be used for the Zone Apex (root domain, e.g., `example.com` -> `ALB-DNS-name`).
 *   **Auto-IP Mapping:** If the underlying AWS resource (like an ALB) changes its IP addresses, Route 53 automatically recognizes the change and resolves to the new IPs.
 *   **Cost & Performance:** Queries for Alias records are free of charge. They support native health checks.
 *   **TTL Configuration:** You cannot set the TTL manually on an Alias record. Route 53 handles the TTL dynamically.
-*   **Unsupported Targets:** You cannot map an Alias record to an EC2 instance's public DNS name.
+*   **Unsupported Targets:** You cannot map an Alias record directly to an EC2 instance's public DNS name.
 
 ---
 
@@ -74,7 +90,12 @@ TTL is the duration in seconds that a DNS resolver caches a record before queryi
 *   **Low TTL (e.g., 60 seconds):**
     *   *Pros:* Rapid propagation of changes. Fast failover.
     *   *Cons:* High volume of queries to Route 53, which increases costs (billed per query).
-*   **Migration Strategy:** To change record values with minimal downtime, first reduce the TTL. Once the new low TTL propagates to all clients, modify the record value, and then restore the high TTL.
+*   **Migration Strategy (Zero-Downtime Migration):**
+    To change record values with minimal downtime:
+    1.  Decrease the TTL of the existing record (e.g., from 24 hours to 60 seconds) in advance.
+    2.  Wait for the original TTL to expire so that all clients cache the new low TTL.
+    3.  Modify the record value (e.g., change target IP address). The change will propagate to clients within 60 seconds.
+    4.  Verify the migration and restore the high TTL to minimize DNS query charges.
 
 ---
 
@@ -89,14 +110,15 @@ Route 53 monitors endpoints, calculated health checks, or CloudWatch alarms to e
 *   **Text Matching:** Health checks can examine the first 5,120 bytes of a response body to confirm specific text content.
 *   **Probing Intervals:** Standard interval is 30 seconds. Fast interval is 10 seconds (costs more).
 *   **Healthy/Unhealthy Threshold:** Custom threshold of failures/successes (e.g., 3 consecutive failures). Over 18% of global checkers must report healthy for Route 53 to consider the resource healthy overall.
+*   **Invert Status:** The health check status can be inverted (e.g., report healthy as unhealthy) for testing failover policies.
 
 ### B. Calculated Health Checks
 *   Combine up to 256 child health checks into a single parent health check using logical operations (`AND`, `OR`, `NOT`).
-*   Useful for multi-component status aggregation (e.g., reporting a site as healthy if at least 2 of 3 instances are healthy).
+*   Useful for multi-component status aggregation (e.g., reporting a site as healthy if at least 2 of 3 instances are healthy, or monitoring parent status during maintenance).
 
 ### C. CloudWatch Alarm-Based Health Checks
-*   Routes 53 health checks cannot directly query resources inside private subnets or on-premises networks because health checkers exist on the public internet.
-*   *Solution:* Monitor private resources using CloudWatch Metrics, set a CloudWatch Alarm, and assign the Route 53 health check to trigger based on the alarm state.
+*   Route 53 health checkers exist on the public internet and cannot directly probe resources inside private subnets or on-premises networks.
+*   *Solution:* Monitor private resources using CloudWatch Metrics, set a CloudWatch Alarm, and assign the Route 53 health check to trigger based on the alarm state (unhealthy when in `ALARM` state).
 
 ---
 
@@ -106,15 +128,15 @@ Routing policies define how Route 53 responds to DNS queries. Traffic does not p
 
 ### A. Simple Routing Policy
 *   Routes traffic to a single resource or returns multiple values in a single record.
-*   If multiple values are returned (e.g., multiple IP addresses), the client randomly selects one.
+*   If multiple values are returned (e.g., multiple IP addresses), the client randomly selects one (client-side choice).
 *   **No Health Check Integration:** Cannot be associated with health checks. If a returned resource is down, clients may still attempt to connect to it.
 
 ### B. Weighted Routing Policy
 *   Distributes traffic based on relative weights assigned to different records.
-*   **Weight Math:** Traffic % = $\text{Weight of Record} / \text{Sum of All Weights}$.
-*   Weights do not need to sum to 100.
+*   **Weight Math:** Traffic % = $\text{Weight of Record} / \text{Sum of All Weights}$. Weights do not need to sum to 100.
 *   All records in the set must have the same name and record type.
-*   **Use Cases:** Load balancing, canary deployments, or regional testing. A weight of `0` stops sending traffic to a resource. If all records have a weight of `0`, they default to equal distribution.
+*   **Use Cases:** Load balancing, canary deployments, or regional testing.
+*   **Weight of 0:** A weight of `0` stops sending traffic to a resource. If all records have a weight of `0`, they default to equal distribution.
 
 ### C. Latency-Based Routing Policy
 *   Redirects users to the AWS region that provides the lowest network latency.
@@ -159,7 +181,7 @@ By default, the Route 53 Resolver (available at the VPC IP base `+2`, e.g., `10.
 
 ### B. Hybrid DNS Resolver Architecture
 To connect an AWS VPC and an on-premises network over VPN or Direct Connect so both environments can resolve each other's domain names, you must configure **Route 53 Resolver Endpoints**:
-1.  **Inbound Resolver Endpoints:** Allows on-premises DNS servers to forward queries to AWS to resolve private hosted zones (e.g., `aws.internal`).
+1.  **Inbound Resolver Endpoints:** Allows on-premises DNS servers to forward queries to AWS to resolve private hosted zones (e.g., `aws.internal`). Uses ENIs provisioned inside private subnets.
 2.  **Outbound Resolver Endpoints:** Enables EC2 instances in the VPC to forward queries to on-premises DNS servers to resolve on-premises domains (e.g., `corp.local`) via forwarding rules.
 
 ```mermaid
@@ -257,3 +279,20 @@ To observe the caching mechanics of Time To Live (TTL):
 6.  Re-query and verify browser:
     *   *Result:* Resolves to the Singapore IP and resets the TTL cache counter to `120`.
 
+### D. Automated Failover Verification Flow
+To test active-passive failover:
+1.  Create a failover set: `failover.stephanetheteacher.com`.
+    *   **Primary Record:** Target is Frankfurt (`eu-central-1`) IP, failover type `Primary`, health check linked to `eu-central-1` (monitoring Port 80, path `/`, interval 30s).
+    *   **Secondary Record:** Target is US-East (`us-east-1`) IP, failover type `Secondary`.
+2.  Query the domain: returns the primary endpoint (Frankfurt IP).
+3.  Simulate failure: Edit the inbound security group rules of the Frankfurt EC2 instance to delete the rule allowing inbound HTTP (Port 80) traffic.
+4.  Wait for Route 53 health check status to report `Unhealthy` (due to connection timeout).
+5.  Re-query the domain: Route 53 automatically fails over and resolves queries to the US-East secondary instance IP.
+6.  Restore access: Add the HTTP inbound rule back to the Frankfurt security group. The health check becomes healthy and Route 53 routes queries back to the primary endpoint.
+
+### E. Multi-Value Answer Filtering Verification Flow
+To test healthy endpoint filtering:
+1.  Create three records under `multi.stephanetheteacher.com` using `Multivalue answer` routing policy, targeting the Frankfurt, Singapore, and US-East instance IPs. Link each to its respective health check.
+2.  Query the domain via `dig`: returns all three IP addresses.
+3.  Simulate failure on the Frankfurt health check (using the `Invert health check status` toggle).
+4.  Query the domain again: `dig` now returns only the remaining two healthy IPs (Singapore and US-East), successfully filtering out the unhealthy endpoint.
