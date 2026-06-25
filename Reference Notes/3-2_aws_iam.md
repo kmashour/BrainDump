@@ -31,13 +31,19 @@ IAM is a **global service** that manages access to AWS resources securely throug
 *   **Root User:** Created by default when the AWS account is created. Has absolute, unrestricted access to all resources and billing information. 
     *   *Best Practice:* Only use the root user for initial account setup tasks (such as creating the first admin user, changing account settings, or enabling billing access), then protect it with MFA and lock it away.
 *   **IAM User:** Represents a single physical person or application inside your organization (1-to-1 mapping). Each user has a password for AWS Console access and/or access keys for programmatic access.
+    *   *Hands-on Details:* When creating a user (e.g., `Stephane`), you can specify an auto-generated password or a custom password, and require a password change at the next sign-in. You can also assign tags (e.g., `Department: engineering`) to users.
 *   **IAM Group:** A logical container for IAM users. 
     *   *Best Practice:* Assign policies directly to groups rather than individual users, allowing users to inherit permissions dynamically.
     *   *Constraints:* Groups can only contain users, not other groups (no nested groups). Users can belong to multiple groups or no groups (though no groups is against best practice).
 
-### B. AWS Console Simultaneous Sign-in (Multi-Session Support)
+### B. Account Aliases & Sign-in URLs
+To simplify the sign-in URL for users, administrators can create an **Account Alias**.
+*   The default sign-in URL contains the 12-digit AWS Account ID (e.g., `https://123456789012.signin.aws.amazon.com/console`).
+*   An Account Alias (e.g., `aws-stephane-v5`) replaces the Account ID in the sign-in URL. The alias must be unique across all of AWS.
+
+### C. AWS Console Simultaneous Sign-in (Multi-Session Support)
 AWS supports multi-session console access using the same browser. Users can click "Add Session" and sign into multiple identities or account IDs concurrently within the same browser session.
-*   *Evolutionary Context:* Historically, users had to use private browser windows (Incognito) or separate browsers to manage multiple active sessions simultaneously. The native multi-session feature represents a major workflow optimization for cloud administrators operating at scale.
+*   *Hands-on Trick:* Historically, operators had to use private browser windows (Incognito mode) or separate browsers to manage multiple active sessions (e.g., root user on the left, IAM admin user on the right) without disconnecting. The native multi-session feature represents a major workflow optimization for cloud administrators operating at scale.
 
 ---
 
@@ -56,7 +62,7 @@ An IAM policy consists of one or more statements, each containing:
     *   **Resource:** The list of resources the actions apply to (specified by ARN or `*` for all resources).
     *   **Condition:** Optional constraints specifying when the statement is active.
 
-Example:
+Example of a custom policy:
 ```json
 {
   "Version": "2012-10-17",
@@ -74,7 +80,10 @@ Example:
 }
 ```
 
-### B. Advanced IAM Conditions & Variable Mapping
+### B. Visual Editor vs. JSON Editor
+IAM policies can be created using the **JSON Editor** (directly writing or pasting JSON syntax) or the **Visual Editor** (selecting actions from categorization lists, e.g., selecting 1 out of 38 list actions and 1 out of 32 read actions for the IAM service).
+
+### C. Advanced IAM Conditions & Variable Mapping
 AWS policies support complex evaluation criteria via the `Condition` block. Key condition keys include:
 *   `aws:SourceIP`: Restricts API access based on the caller's client IP address range. Commonly used to restrict calls to company corporate networks.
 *   `aws:RequestedRegion`: Restricts calls to specific target AWS regions (e.g., `eu-west-1`), blocking access to unauthorized regions.
@@ -83,14 +92,14 @@ AWS policies support complex evaluation criteria via the `Condition` block. Key 
 *   `aws:MultiFactorAuthPresent`: Boolean flag ensuring the caller has authenticated using MFA before executing high-risk operations (e.g., terminating instances).
 *   `aws:PrincipalOrgID`: Limits resource-based policy access to only API calls originating from accounts within a specific AWS Organization.
 
-### C. S3 Resource ARN Scopes: Buckets vs. Objects
+### D. S3 Resource ARN Scopes: Buckets vs. Objects
 When writing S3 policies, ARN structure dictates the permission scope:
 *   **Bucket-Level Permissions:** Apply to the bucket resource itself. Actions like `s3:ListBucket` require the bucket ARN format without a trailing slash/wildcard:
     `"Resource": "arn:aws:s3:::my-bucket-name"`
 *   **Object-Level Permissions:** Apply to files/keys within the bucket. Actions like `s3:GetObject`, `s3:PutObject`, and `s3:DeleteObject` require target objects to be specified using wildcards:
     `"Resource": "arn:aws:s3:::my-bucket-name/*"`
 
-### D. Comprehensive Policy Evaluation Flowchart
+### E. Comprehensive Policy Evaluation Flowchart
 AWS IAM operates on a default deny basis. Evaluation follows a strict hierarchy shown below:
 
 ```mermaid
@@ -127,16 +136,17 @@ flowchart TD
 Securing authentication is critical to preventing account compromise.
 
 ### A. Password Policy
-Administrators can customize password complexity requirements:
+Administrators can customize password complexity requirements in **Account Settings**:
 *   Enforcing minimum length.
 *   Requiring uppercase, lowercase, numbers, and non-alphanumeric characters.
-*   Enforcing password expiration (e.g., every 90 days).
+*   Enforcing password expiration (e.g., requiring user resets every 90 days).
 *   Preventing password reuse.
 *   *Note:* New password policies apply immediately to new users, but existing users are only forced to change their password when it expires.
 
 ### B. Multi-Factor Authentication (MFA)
 MFA adds an extra layer of defense by combining a password (something you know) with a device (something you own). Enforcing MFA on the Root User and all IAM users is a high-priority security best practice.
 *   **Virtual MFA App:** Authenticator applications (Google Authenticator, Authy, Twilio Authenticator) running on a phone. Authy supports multiple tokens on a single device, making it highly portable. One virtual device can manage multiple AWS users and accounts.
+    *   *Setup Steps:* Generate the virtual MFA device in IAM, click "Show QR Code", scan it with the mobile app, and input two consecutive, real-time generated MFA codes. Up to 8 MFA devices can be registered per user.
 *   **Universal 2nd Factor (U2F) Security Key:** A physical USB/NFC token (e.g., YubiKey by Yubico) supporting multiple users and accounts.
 *   **Hardware Key Fob TOTP:** A physical token (e.g., Gemalto) generating time-based one-time passwords.
 *   **SurePassID Key Fob:** Specialized key fobs designed for the US GovCloud region.
@@ -154,12 +164,22 @@ To call APIs programmatically, users must generate **Access Keys**:
 
 ### B. AWS CLI (Command Line Interface)
 An open-source command-line tool built on the **AWS SDK for Python (Boto/Botocore)**.
-*   **Configuration:** Configured by running `aws configure` in the terminal, which prompts for the Access Key ID, Secret Access Key, default Region (e.g., `eu-west-1`), and default output format.
+*   **Installation Processes:**
+    *   *Windows:* Install using the 64-bit MSI installer. Verification: `aws --version` (verifies CLI v2 is active).
+    *   *macOS:* Download the PKG graphical installer, run, and verify using `aws --version`.
+    *   *Linux:* Download the zip archive, unzip, and run the install script:
+        ```bash
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+        aws --version
+        ```
+*   **Configuration:** Configured by running `aws configure` in the terminal, which prompts for the Access Key ID, Secret Access Key, default Region (e.g., `eu-west-1`), and default output format (e.g., `json`).
 *   **Testing Access:** Use the command `aws iam list-users` to confirm credential connectivity and permissions.
 
 ### C. AWS SDK (Software Development Kit)
 Language-specific libraries embedded directly into application code to call AWS APIs programmatically.
-*   Supports languages like JavaScript, Python, PHP, .NET, Ruby, Java, Go, Node.js, C++, and includes specialized SDKs for mobile and IoT devices.
+*   Supports languages like JavaScript, Python (Boto/Botocore), PHP, .NET, Ruby, Java, Go, Node.js, C++, and includes specialized SDKs for mobile and IoT devices.
 
 ### D. AWS CloudShell
 A browser-based, pre-authenticated terminal environment built directly into the AWS Console.
@@ -167,7 +187,7 @@ A browser-based, pre-authenticated terminal environment built directly into the 
 *   **Features:**
     *   Preloaded with AWS CLI Version 2, Python, and other utilities.
     *   Pre-authenticated using the credentials of the logged-in console session.
-    *   Includes a home directory (`/home/cloudshell-user`) that persists files across sessions.
+    *   Includes a home directory (`/home/cloudshell-user`) that persists files across sessions (e.g., creating files like `demo.txt` that persist across terminal restarts).
     *   Supports splitting the console pane into multiple active columns/tabs and uploading/downloading files.
 
 ---
@@ -177,8 +197,9 @@ AWS services (like EC2 instances or Lambda functions) often need permissions to 
 
 ### A. IAM Roles
 An IAM Role is an identity with permission policies that can be temporarily assumed by a trusted service, resource, or federated user.
-*   **Trust Policy:** Defines *which* trusted entity can assume the role (e.g., `ec2.amazonaws.com`).
-*   **Permission Policy:** Defines *what* actions the entity can take once the role is assumed.
+*   **Trust Policy:** Defines *which* trusted entity can assume the role (e.g., `ec2.amazonaws.com` is defined as a trusted relationship for Amazon EC2).
+*   **Permission Policy:** Defines *what* actions the entity can take once the role is assumed (e.g., `IAMReadOnlyAccess`).
+*   *Hands-on Details:* When creating a role (e.g., `DemoRoleForEC2`), select the trusted service, attach policies, name the role, and verify the trust relationships in the JSON view.
 
 ### B. AWS STS (Security Token Service)
 A global service that issues **temporary security credentials** (access key ID, secret access key, and a security token) when a role is assumed.
@@ -193,17 +214,22 @@ A global service that issues **temporary security credentials** (access key ID, 
 ## 6. Audit & Governance: Security Tools, Billing, & Budgets
 
 ### A. IAM Security Tools
-1.  **Credential Report (Account-Level):** Generates a CSV audit containing all users in the account, password usage, MFA status, access key generation/usage/rotation dates.
-2.  **Access Advisor (User/Role-Level):** Shows which services are authorized for a user/role and when they were last accessed. Critical for enforcing the **Principle of Least Privilege** by identifying and removing unused permissions.
+1.  **Credential Report (Account-Level):** Generates a CSV audit containing all users in the account, password usage, MFA status, access key generation/usage/rotation dates. Helpful for identifying inactive users or accounts violating security rules.
+2.  **Access Advisor (User/Role-Level):** Shows which services are authorized for a user/role and when they were last accessed. Critical for enforcing the **Principle of Least Privilege** by identifying and removing unused permissions (e.g., detecting if a user has Alexa for Business permissions but has never used them).
 
 ### B. AWS Billing Access Activation
 By default, even administrators cannot access the billing console.
 *   *Action Required:* The **Root User** must explicitly enable "IAM User and Role Access to Billing Information" under account settings to delegate billing visibility to administrators.
+*   *Activation Path:* Navigate to `Account` settings > Scroll to `IAM User and Role Access to Billing Information` > Click `Edit` > Select `Activate IAM Access` > Click `Update`.
+*   *Bill Debugging:* Administrators can review bills month-by-month and view "Charges by Service" (e.g., isolating NAT Gateway or EBS storage charges) to resolve costing issues.
 
 ### C. AWS Budgets
 A proactive cost-governance tool to alert administrators when spending thresholds are breached.
-*   **Zero Spend Budget:** Alerts immediately via email when actual spending exceeds $0.01. Highly recommended for developer sandboxes.
-*   **Monthly Cost Budget:** Triggers alerts when spending approaches a set limit (e.g., $10), evaluating actual spending against thresholds (e.g., 85% and 100%) and forecasted spending (e.g., 100%).
+*   **Zero Spend Budget:** Alerts immediately via email when actual spending exceeds $0.01 (1 cent). Highly recommended for developer sandboxes to avoid unexpected charges.
+*   **Monthly Cost Budget:** Triggers alerts when spending approaches a set limit (e.g., $10). Alerts are sent to designated emails when:
+    1. Actual spend reaches 85% of the threshold.
+    2. Actual spend reaches 100% of the threshold.
+    3. Forecasted spend is expected to reach 100% of the threshold.
 
 ---
 
