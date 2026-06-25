@@ -29,10 +29,12 @@ AWS **Transit Gateway (TGW)** is a fully managed cloud router that connects mult
 ---
 
 ## ⚙️ Functionality (What it is doing)
-- **Centralized Transit Routing:** Directs network packets transitively between any attached VPC, VPN, or Direct Connect connection.
+- **Centralized Transit Routing:** Directs network packets transitively between any attached VPC, VPN, or Direct Connect connection in a star topology.
 - **TGW Route Tables:** Provides dynamic or static routing tables that can be edited to segment or route traffic between specific attachments.
 - **Cross-Region Peering:** Interconnects Transit Gateways in different AWS Regions to establish global private networks.
-- **Multicast Support:** Supports IP multicast traffic (not supported by standard VPC routing).
+- **Multicast Support:** Supports IP multicast traffic (the only AWS service to natively support multicast).
+- **Equal-Cost Multi-Path (ECMP):** Supports ECMP to scale VPN bandwidth beyond the default 1.25 Gbps per tunnel by dynamically load-balancing traffic across multiple active tunnels (up to 2.5 Gbps or more).
+- **Cross-Account Sharing:** Integrated with AWS Resource Access Manager (RAM) to share Transit Gateways across multiple AWS accounts in an organization.
 
 ---
 
