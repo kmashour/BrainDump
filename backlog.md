@@ -4,6 +4,30 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-25] - Ingestion: AWS Deployment, Management & Optimization
+
+### Added
+- **Reference Notes:** Created [[Reference Notes/3-20_other_services_whitepapers.md|3-20_other_services_whitepapers.md]].
+- **Projects:** Created [[Projects/aws-cloudops/Project - CloudFormation Stack Updates and Change Sets.md|Project - CloudFormation Stack Updates and Change Sets.md]] detailing declarative YAML layouts, parameterization, change set verification (`Replacement: True`), and stack teardown logs.
+- **Main Notes:** Created 7 landing notes:
+  - [[Main Notes/AWS CloudFormation.md|AWS CloudFormation.md]]
+  - [[Main Notes/AWS Systems Manager.md|AWS Systems Manager.md]]
+  - [[Main Notes/Amazon SES.md|Amazon SES.md]]
+  - [[Main Notes/Amazon Pinpoint.md|Amazon Pinpoint.md]]
+  - [[Main Notes/AWS Batch.md|AWS Batch.md]]
+  - [[Main Notes/AWS Outposts.md|AWS Outposts.md]]
+  - [[Main Notes/AWS Amplify.md|AWS Amplify.md]]
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[Reference Notes/3-Index - AWS.md|3-Index - AWS.md]] to catalog Module 3-20 and its verification project.
+- **Main Notes:** Updated [[Main Notes/aws.md|aws.md]] to link to the new management, hybrid, batch, and communication landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-20_other_services_whitepapers.txt`
+
+---
+
 ## [2026-06-25] - Ingestion: AWS Databases, Analytics & Machine Learning
 
 ### Added

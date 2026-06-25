@@ -55,6 +55,8 @@ This index contains our Amazon Web Services (AWS) cloud architecture modules, de
   * Lambda pricing/concurrency/SnapStart, API Gateway endpoints, DynamoDB modes/DAX/streams, and Cognito identity flows.
 - 📊 **[Module 3-19: AWS Databases, Analytics & Machine Learning Services](3-19_databases_analytics_ml.md)**
   * Redshift data warehouse, Neptune graphs, Timestream time-series, Keyspaces Cassandra, Athena SQL, Glue catalog, Lake Formation security, MSK Kafka, and AWS ML/SageMaker models.
+- ⚙️ **[Module 3-20: AWS Deployment, Management & Optimization Services](3-20_other_services_whitepapers.md)**
+  * CloudFormation IaC, Systems Manager suite, SES & Pinpoint mail/SMS campaigns, hybrid Outposts, AWS Batch jobs, Amplify platform, billing engines, and the Well-Architected Framework.
 
 ---
 
@@ -63,3 +65,4 @@ This index contains our Amazon Web Services (AWS) cloud architecture modules, de
 - ☸️ **[Project: ECS and EKS Cluster Deployments](../Projects/kubernetes/Project%20-%20ECS%20and%20EKS%20Cluster%20Deployments.md)**
 - ⚡ **[Project: Serverless REST API with Lambda and API Gateway](../Projects/kubernetes/Project%20-%20Serverless%20REST%20API%20with%20Lambda%20and%20API%20Gateway.md)**
 - 📊 **[Project: Athena S3 Access Log Analytics](../Projects/aws-cloudops/Project%20-%20Athena%20S3%20Access%20Log%20Analytics.md)**
+- 🛠️ **[Project: CloudFormation Stack Updates and Change Sets](../Projects/aws-cloudops/Project%20-%20CloudFormation%20Stack%20Updates%20and%20Change%20Sets.md)**

@@ -49,6 +49,13 @@ related_concepts:
   - "[[Amazon Keyspaces]]"
   - "[[Amazon EMR]]"
   - "[[AWS Glue]]"
+  - "[[AWS CloudFormation]]"
+  - "[[AWS Systems Manager]]"
+  - "[[Amazon SES]]"
+  - "[[Amazon Pinpoint]]"
+  - "[[AWS Batch]]"
+  - "[[AWS Outposts]]"
+  - "[[AWS Amplify]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:
