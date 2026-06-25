@@ -39,14 +39,18 @@ tags:
 *   **Glacier Transition:** Cannot write directly to Glacier. Transition to Glacier requires configuring S3 Lifecycle Policies on the target S3 bucket.
 *   **AD Integration:** Natively supports Active Directory for user authorization when using the SMB protocol.
 
-### 2. Volume Gateway
+### 2. Amazon FSx File Gateway
+*   **Access Protocol:** Server Message Block (**SMB**).
+*   **Operational Mechanics:** Natively exposes Windows File Server shares (from FSx for Windows File Server) to on-premises clients with a local cache for low-latency SMB access.
+
+### 3. Volume Gateway
 *   **Access Protocol:** Exposes block volumes over **iSCSI** targeting local application servers. Backed by S3 and managed via EBS snapshots.
 *   **Cached Volumes:** Stores primary data in S3; frequently accessed data is cached locally on the VM. Cost-effective for expanding local storage.
 *   **Stored Volumes:** Stores the entire dataset locally on-premises. Backs up snapshots asynchronously to S3 on a schedule, providing low-latency local access with cloud disaster recovery.
 *   **Evolutionary Bridge:** Translates legacy physical SAN SCSI commands routed over TCP/IP (iSCSI protocol) to REST API payloads against S3 object store.
 
-### 3. Tape Gateway
+### 4. Tape Gateway
 *   **Access Protocol:** Virtual Tape Library (VTL) interface exposed over **iSCSI** to backup servers (e.g., NetBackup, Veeam).
 *   **Evolutionary Bridge:** Replaces legacy physical tape backup storage libraries (LTO cartridges) and media rotation systems with virtual cloud cartridges in S3 and S3 Glacier, eliminating offsite storage logistics.
 
-*Read more in [[Reference Notes/3-5_aws_ebs_efs_storage.md#9-aws-storage-gateway|Module 3-5: AWS Storage Gateway]]*
+*Read more in [[Reference Notes/3-5_aws_storage_extras.md#1-aws-storage-gateway|Module 3-5: AWS Storage Gateway]]*
