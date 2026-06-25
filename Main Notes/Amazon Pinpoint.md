@@ -30,9 +30,9 @@ Amazon Pinpoint is a managed, two-way marketing communication service. It is des
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Multichannel Messaging:** Broadcasts updates via SMS, email, voice, and push channels.
-*   **Audience Segmentation:** Filters customer registries dynamically based on demographics, purchase histories, or behaviors.
-*   **Campaign Scheduling:** Schedules campaign run times and configures automatic event-based triggers (e.g. sending a cart abandonment SMS).
+*   **Multichannel Targeted Campaigns:** Executes campaigns across multiple communication channels (SMS, Email, Push notifications, Voice, In-app messaging).
+*   **Dynamic User Segmentation:** Groups and segment users dynamically based on demographics, behaviors, attributes, or customer data patterns.
+*   **Campaign Scheduling & Triggers:** Schedules marketing campaigns, sets rate limits, and triggers automated follow-ups based on user actions.
 *   **Analytics Delivery:** Streams message delivery, bounce, and open metrics to SNS, Firehose, or S3.
 
 ---

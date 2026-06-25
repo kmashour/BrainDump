@@ -30,10 +30,10 @@ Amazon Simple Email Service (SES) is a highly scalable, managed email sending an
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Outbound Delivery:** Sends emails via standard SMTP protocols or native AWS API calls.
+*   **Outbound Delivery:** Sends bulk transactional and marketing emails via standard SMTP protocols or native AWS API calls.
 *   **Inbound Receiving:** Accepts incoming emails, saving raw data in S3 or triggering Lambda functions to process message bodies.
-*   **Sender Verification:** Implements DKIM (DomainKeys Identified Mail) and SPF (Sender Policy Framework) to authenticate domains.
-*   **Deliverability Auditing:** Tracks deliveries, bounces, complaint rates, and spam feedback loop results.
+*   **Sender Verification:** Implements DKIM (DomainKeys Identified Mail) and SPF (Sender Policy Framework) to authenticate domains and prevent spoofing.
+*   **Reputation Dashboard & Auditing:** Tracks domain sending reputations, deliverability statistics, bounces, complaint rates, and spam feedback loops.
 
 ---
 

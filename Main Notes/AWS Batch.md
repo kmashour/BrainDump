@@ -32,10 +32,11 @@ AWS Batch is a managed batch processing service designed to run hundreds of thou
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Dynamic Resource Provisioning:** Scales instances (on-demand or Spot) automatically based on CPU and memory demands in the job queue.
-*   **Job Containerization:** Runs batch tasks defined as Docker images, executing them via ECS, EKS, or Fargate.
-*   **Queue Prioritization:** Schedules tasks based on priority, resolving dependency trees (e.g. Job B runs only after Job A completes).
+*   **Dynamic Resource Provisioning:** Scales compute instances (dynamic provisioning of EC2 vs. Spot instances) automatically based on CPU/memory demands in the job queue.
+*   **Job Containerization Scheduler:** Schedules and runs batch tasks packaged as Docker container images on ECS, EKS, or AWS Fargate.
+*   **Queue Prioritization:** Schedules tasks based on priority, resolving dependency trees (e.g., Job B runs only after Job A completes).
 *   **EC2 Storage Access:** Integrates with local EBS volumes or Instance Stores to support heavy file processing.
+*   **Contrast with AWS Lambda:** Unlike Lambda's strict 15-minute timeout limit, limited programming language support, and constrained temporary disk space, AWS Batch has no execution timeout limits, runs any Dockerized payload, and accesses raw EC2 instances and EBS block storage.
 
 ---
 

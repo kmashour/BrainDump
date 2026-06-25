@@ -55,11 +55,13 @@ flowchart TD
 *   **Change Sets:** Previews changes before they are applied. Displays whether resources will be added, modified, or replaced.
     *   *Replacement behavior:* Certain properties (like AvailabilityZone or DB engines) require recreating the resource (`Replacement: True`). This causes downtime and deletes ephemeral data.
 *   **Tag Propagation:** Stack-level tags are automatically inherited and applied to all supported resources in the stack.
-*   **CloudFormation Service Roles:** Dedicated IAM roles that delegate permissions to CloudFormation to create, update, and delete resources. This enforces the least-privilege model because users only need permissions to execute the stack, not direct access to resources (requires the user to have the `iam:PassRole` permission).
+*   **CloudFormation Service Roles:** Dedicated IAM roles that delegate permissions to CloudFormation to create, update, and delete stack resources on your behalf. This enforces the least-privilege model because users only need permissions to execute the stack, not direct access to resources (requires the user to have the `iam:PassRole` permission to pass the service role to CloudFormation).
 
 ### AWS Amplify
-*   **Purpose:** A development platform for building web and mobile applications (often compared to "Elastic Beanstalk for mobile/web apps").
-*   **Architecture:** Automates provisioning backends (S3, Cognito, API Gateway, AppSync, Lambda, DynamoDB) via its CLI, connects them to frontend libraries (React, iOS, Android), and deploys host assets via CloudFront.
+*   **Purpose:** A mobile and web application development fabric and hosting service. It acts as a pre-configured framework for fast application builds.
+*   **Backend Automation:** Automatically provisions backend resources (Cognito for auth, S3 for storage, AppSync/API Gateway for GraphQL/REST APIs, and DynamoDB/Lambda for databases/functions) using a single framework.
+*   **CLI Build Integrations:** Offers CLI-based workflows to initialize, configure, and connect backend components to frontend client libraries.
+*   **Frontend Deployment:** Connects to repository hosts (GitHub, GitLab, Bitbucket) to automate CI/CD frontend builds and deploy assets to the Amazon CloudFront CDN.
 
 ---
 
@@ -67,14 +69,19 @@ flowchart TD
 
 AWS Systems Manager (SSM) provides operational control over EC2 instances and on-premises servers via the **SSM Agent**.
 
+### SSM Agent Prerequisites & Setup
+*   **Agent Requirement:** The SSM Agent must be installed and running on the target EC2 instances or on-premises servers (pre-installed on standard Amazon Linux AMIs).
+*   **IAM Instance Profile:** The managed node must have an attached IAM role or instance profile containing the `AmazonSSMManagedInstanceCore` policy.
+*   **Connectivity:** Nodes must have outbound connectivity to the Systems Manager API endpoints (via an Internet Gateway, NAT Gateway, or VPC Endpoints).
+
 ### SSM Session Manager
-*   **Purpose:** Starts secure terminal shells on EC2 instances or on-premises servers without opening inbound SSH port 22, managing SSH keys, or hosting bastion instances.
-*   **Prerequisites:** The instance must run the SSM Agent and have an IAM instance profile with the `AmazonSSMManagedInstanceCore` policy attached. Fleet Manager monitors online agent status.
-*   **Security:** Access is controlled via IAM. Terminal inputs/outputs are logged directly to S3 or CloudWatch Logs for audit compliance.
+*   **Purpose:** Starts a secure, keyless CLI shell session on EC2 instances or on-premises servers.
+*   **Port Hardening:** Works entirely over Systems Manager tunnels, allowing port 22/3389 to be completely closed in Security Groups.
+*   **Auditing:** Streams and logs terminal session inputs and outputs directly to Amazon S3 or CloudWatch Logs for security auditing.
 
 ### SSM Run Command
 *   **Purpose:** Executes shell commands or SSM Documents (scripts) on multiple instances simultaneously using Resource Groups.
-*   **Features:** Operates without SSH. Command outputs are saved to S3/CloudWatch, updates route to SNS, and executions are audited via CloudTrail.
+*   **Features:** Operates without SSH. Command outputs are saved to S3/CloudWatch, status updates route to SNS, and executions are audited via CloudTrail.
 
 ### SSM Patch Manager
 *   **Purpose:** Automates patching operating systems, applications, and security updates on Linux, macOS, and Windows.
@@ -95,7 +102,7 @@ AWS Systems Manager (SSM) provides operational control over EC2 instances and on
 *   **Benefits:** Sub-millisecond latency to local systems, local data processing, and compliance with data residency requirements.
 
 ### AWS Batch
-*   **Purpose:** Managed batch processing service that runs containerized jobs at scale.
+*   **Purpose:** Managed batch processing scheduler that runs containerized jobs at scale.
 *   **Compute Tier:** Dynamically provisions EC2 or Spot Instances to process job queues, executing Docker images on ECS, EKS, or Fargate.
 *   **Batch vs. Lambda:**
     *   **Lambda:** Serverless, strictly capped at a 15-minute timeout, limited runtime environments, and up to 10 GB ephemeral `/tmp` storage.
@@ -105,31 +112,36 @@ AWS Systems Manager (SSM) provides operational control over EC2 instances and on
 
 ## 4. Marketing & Integration Services
 
-### Amazon SES (Simple Email Service)
-*   **Purpose:** Managed transactional and marketing email service.
-*   **Features:** Sends bulk emails via SMTP or SES APIs. Supports SPF and DKIM security. Includes reputation dashboards to track deliverability, bounces, and spam feedback loops.
-
-### Amazon Pinpoint
-*   **Purpose:** Two-way multichannel marketing campaign communications manager (Email, SMS, Push, Voice, In-app messaging).
-*   **Pinpoint vs. SES/SNS:**
-    *   **SNS/SES:** The application must manage customer lists, scheduling, templates, and tracking metrics manually.
-    *   **Pinpoint:** Natively manages user segmentation, scheduling, templates, and full campaigns, sending metrics back to S3/CloudWatch.
+### AWS Marketing: Amazon SES vs. Amazon Pinpoint
+*   **Amazon SES (Simple Email Service):**
+    *   **Purpose:** High-volume transactional and bulk SMTP/API email service.
+    *   **Features:** Sends transactional alerts (password resets, notifications) and marketing campaigns via SMTP or SES APIs. Supports SPF and DKIM authentication. Includes reputation dashboards to track deliverability, bounces, and spam feedback loops.
+*   **Amazon Pinpoint:**
+    *   **Purpose:** Multichannel targeted campaign execution and customer engagement manager (Email, SMS, Push, Voice, In-app messaging).
+    *   **Features:** Natively handles user segmentation, scheduling, customized templates, and full marketing campaigns, sending metrics back to S3/CloudWatch.
+*   **Key Distinction (Pinpoint vs. SES/SNS):**
+    *   **SNS/SES:** Low-level messaging utilities; application logic must manually handle lists, scheduling, templates, and metrics tracking.
+    *   **Pinpoint:** High-level campaign manager; natively manages segments, template builders, delivery scheduling, and analytics.
 
 ### Amazon AppFlow
-*   **Purpose:** A managed integration service that transfers data between SaaS applications (e.g. Salesforce, SAP, Slack, Zendesk) and AWS destinations (S3, Redshift) privately using AWS PrivateLink.
+*   **Purpose:** Managed SaaS integration service.
+*   **Functionality:** Automates data transfer between Software-as-a-Service (SaaS) applications (e.g., Salesforce, Slack, Zendesk, SAP) and AWS targets (Amazon S3, Amazon Redshift) privately using AWS PrivateLink.
 
 ---
 
 ## 5. Billing & Cost Management
 
 ### AWS Cost Explorer
-*   **Purpose:** Visualizes and manages AWS cost and usage over time, forecasting future costs (up to 18 months) and recommending Savings Plans.
+*   **Purpose:** Visualizes, analyzes, and manages AWS cost and usage over time.
+*   **Features:** Generates custom reports at monthly, daily, or hourly granularity. Forecasts future usage and spend up to 18 months and recommends optimal Savings Plans.
 
 ### AWS Cost Anomaly Detection
-*   **Purpose:** Monitors cost usage data using machine learning to detect cost anomalies (one-time spikes or continuous increases) without defining manual thresholds. Alerting routes to SNS.
+*   **Purpose:** Machine learning-powered cost checks that continuously monitor cost and usage data.
+*   **Features:** Detects unusual spends (one-time spikes or continuous increases) without defining manual thresholds. Sends root-cause analysis alerts via Amazon SNS.
 
 ### AWS Instance Scheduler
-*   **Purpose:** An AWS CloudFormation solution that schedules starting and stopping EC2, RDS, and Auto Scaling instances (e.g. stopping development servers outside of 9-to-5 business hours to save up to 70% in compute costs). Uses DynamoDB for schedules and Lambda for execution.
+*   **Purpose:** An AWS CloudFormation solution that schedules starting and stopping EC2 and RDS instances.
+*   **Features:** Configures rules in a DynamoDB table, which are evaluated by Lambda functions, automatically starting/stopping instances to reduce costs (saving up to 70% in compute costs for development environments).
 
 ---
 
@@ -144,7 +156,7 @@ Provides architectural best practices categorized into **six pillars**:
 5.  **Cost Optimization:** Run systems to deliver business value at the lowest price point.
 6.  **Sustainability:** Minimize the environmental impacts of running cloud workloads.
 
-#### Core Design Guidelines:
+#### Core Design Principles:
 *   Stop guessing capacity needs (use scaling).
 *   Test systems at production scale.
 *   Automate to make architectural experimentation easier.
@@ -156,7 +168,7 @@ Provides architectural best practices categorized into **six pillars**:
 *   **Purpose:** An assessment tool where users review workloads against the six pillars to generate risk identification reports (High/Medium risks) and improvement plans.
 
 ### AWS Trusted Advisor
-*   **Purpose:** Scans the account to recommend optimizations across six categories: **Cost Optimization, Performance, Security, Fault Tolerance, Service Limits, and Operational Excellence**.
+*   **Purpose:** Scans the AWS account to recommend optimizations across six categories: Cost Optimization, Performance, Security, Fault Tolerance, Service Limits, and Operational Excellence.
 *   **Support Tiers:**
     *   *Basic/Developer Support:* Limited access to core security and service limit checks.
     *   *Business/Enterprise Support:* Unlocks full checks (over 100+) and Support API access.

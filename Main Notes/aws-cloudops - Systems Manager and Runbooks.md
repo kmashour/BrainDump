@@ -27,8 +27,8 @@ AWS Systems Manager (SSM) provides operational control over AWS and on-premises 
 Traditional server administration relies on SSH (Port 22) or RDP (Port 3389) open to the internet or a bastion host. This architecture introduces security risks (brute-force attacks, key management overhead, network exposure).
 
 AWS Systems Manager Session Manager eliminates these risks:
-*   **Port-Free Access:** The SSM Agent running inside the EC2 operating system establishes an outbound connection to the Systems Manager service endpoint via secure WebSocket tunnels. No inbound firewall rules (Port 22/3389) are required in security groups.
-*   **Central Authentication:** IAM policies control access permissions rather than static SSH keys.
+*   **Prerequisites:** Target instances must run the SSM Agent, have outbound network access to Systems Manager endpoints, and have an IAM instance profile with the `AmazonSSMManagedInstanceCore` managed policy attached.
+*   **Port-Free Access:** The SSM Agent running inside the EC2 operating system establishes an outbound connection to the Systems Manager service endpoint via secure WebSocket tunnels. No inbound firewall rules (Port 22/3389) are required in security groups, enabling keyless CLI access.
 *   **Auditing:** Every keystroke and console output is logged and streamed directly to CloudWatch Logs or archived in a secure S3 bucket for compliance auditing.
 
 ### 2. Fleet Configuration (Run Command & Patch Manager)

@@ -31,10 +31,12 @@ AWS CloudFormation is a managed service designed for Infrastructure as Code (IaC
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Declarative Infrastructure:** Outlines resource configurations, dependencies, and parameters in a template file, which CloudFormation builds automatically.
+*   **Declarative Infrastructure:** Outlines resource configurations, dependencies, and parameters in a JSON or YAML template file, which CloudFormation builds automatically.
 *   **Dependency Management:** Resolves the correct order of resource creation and destruction based on logical references.
 *   **Change Sets:** Previews changes to stacks to identify additions, modifications, and resource replacements before execution.
-*   **Service Role Delegation:** Uses dedicated IAM roles (via `iam:PassRole`) to execute stack modifications, enforcing security boundaries.
+    *   *Replacement Warning:* Certain property modifications trigger resource recreation (`Replacement: True`), which deletes the old physical resource, resulting in downtime and ephemeral data loss.
+*   **Tag Propagation:** Stack-level tags automatically propagate to all supported resources provisioned within the stack, simplifying cost allocation.
+*   **Service Role Delegation:** Uses dedicated IAM service roles (via `iam:PassRole`) to delegate permissions to CloudFormation to create, update, or delete stack resources on behalf of the invoking user.
 
 ---
 

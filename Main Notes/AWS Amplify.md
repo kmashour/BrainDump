@@ -32,9 +32,10 @@ AWS Amplify is an application development platform that simplifies building mobi
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Amplify CLI Backend Provisioning:** Configures and deploys Cognito (Auth), S3 (Storage), AppSync (GraphQL APIs), API Gateway (REST APIs), and Lambda functions using simple CLI declarations.
-*   **Managed UI Hosting:** Hosts web applications with CI/CD capabilities, building and serving frontend code via Amazon CloudFront.
-*   **Frontend Libraries:** Connects iOS, Android, and web frameworks (React, Vue, Flutter) to AWS backends.
+*   **Backend Automation (Mobile/Web App Fabric):** Natively provisions and orchestrates backend resources (Cognito, S3, AppSync, API Gateway, DynamoDB, Lambda, Lex, SageMaker) into a single, cohesive application fabric.
+*   **CLI Build Integrations:** Integrates CLI-driven workflows to initialize project templates, configuration parameters, and connect frontend client applications directly to AWS.
+*   **Frontend Deployment:** Offers managed hosting with built-in CI/CD pipelines, automating frontend builds from repositories and deploying web/mobile host assets to CloudFront.
+*   **Frontend Libraries:** Integrates standard platform wrappers (React, Vue, iOS, Android, Flutter) to access backend APIs and data stores using simple SDK calls.
 *   **Analytics & Notifications:** Monitors user engagement and coordinates push notifications.
 
 ---

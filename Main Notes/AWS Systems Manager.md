@@ -30,11 +30,11 @@ AWS Systems Manager (SSM) is a secure management hub that provides visibility an
 ---
 
 ## ⚙️ Functionality (What it is doing)
-*   **Fleet Management:** Discovers and inventories running server OS configurations and agent statuses.
-*   **SSM Session Manager:** Starts secure, keyless CLI shell access without opening port 22 or using bastion hosts.
-*   **Run Command:** Runs shell commands or scripts remotely on selected target fleets using Resource Groups.
-*   **Patch Manager:** Schedules and automates the deployment of OS updates and security patches.
-*   **Automation Runbooks:** Executes declarative workflows to remediate compliance issues or perform common tasks.
+*   **SSM Agent Prerequisites:** Managed instances (EC2 or on-premises) must run the SSM Agent, have outbound endpoint connectivity, and use an IAM instance profile with the `AmazonSSMManagedInstanceCore` policy attached.
+*   **SSM Session Manager:** Starts secure, keyless CLI shell sessions with port 22/3389 completely closed. Keystroke audits and session outputs are streamed directly to Amazon S3 or CloudWatch Logs.
+*   **Run Command:** Remotely executes shell commands or SSM Documents (predefined script templates) across server resource groups without requiring SSH.
+*   **Patch Manager:** Scans for and installs OS/security updates according to patch baselines, scheduled via Maintenance Windows.
+*   **Automation Runbooks:** Executes multi-step workflows (remotely or automatically triggered by EventBridge alerts or AWS Config compliance remediations).
 
 ---
 
