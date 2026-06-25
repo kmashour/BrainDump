@@ -30,11 +30,15 @@ Amazon Aurora is a cloud-native, high-performance relational database engine com
 ---
 
 ## ⚙️ Functionality (What it is doing)
-- **Shared Storage Mesh:** Striping data across a virtualized storage volume that auto-expands up to 128 TB, independent of database compute instances.
-- **6-Way Replication:** Replicates every database write 6 ways across 3 Availability Zones (2 copies per AZ).
-- **Quorum Writes/Reads:** Writes require a quorum of 4 out of 6 copies; reads require 3 out of 6 copies. Continuous background self-healing via peer-to-peer volume verification.
-- **Fast Failovers:** Minimizes failover recovery times to under 30 seconds by promoting an active Read Replica (up to 15 supported) to Master.
-- **Serverless & Global Scaling:** Automatically scales compute resources via Aurora Serverless v2, and provides global cross-region asynchronous replication with latency < 1 second.
+- **Shared Storage Mesh:** Decoupled storage striping data across a virtualized storage volume that auto-expands up to 128 TB.
+- **6-Way Replication & Quorum:** Replicates writes 6 ways across 3 Availability Zones (2 copies per AZ). Requires a quorum of 4/6 for writes and 3/6 for reads, with automatic peer-to-peer self-healing.
+- **Connection Endpoints:** Exposes DNS endpoints for database routing:
+  - **Writer Endpoint:** Points directly to the Master/Primary DB instance.
+  - **Reader Endpoint:** Performs connection-level load balancing across up to 15 Read Replicas.
+  - **Custom Endpoints:** Groups a specific subset of instances to isolate analytical queries.
+- **Aurora Serverless (v1 & v2):** Scales compute dynamically using Aurora Capacity Units (ACUs). Serverless v1 supports scaling to 0 (with cold starts); Serverless v2 scales down to fractional ACUs instantly (no cold starts, production-ready).
+- **Aurora Global Database:** Asynchronously replicates from a primary region to up to 5 (or 10) secondary read-only regions via physical storage replication (replication lag < 1 second, regional failover RTO < 1 minute).
+- **Advanced Integrations:** Native SQL-level integrations with AWS Machine Learning (SageMaker/Comprehend) and Babelfish for translation of T-SQL queries.
 
 ---
 

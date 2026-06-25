@@ -30,11 +30,13 @@ Amazon RDS (Relational Database Service) is a managed SQL database service that 
 ---
 
 ## ⚙️ Functionality (What it is doing)
-- **Engine Management:** Supports multiple relational database engines including PostgreSQL, MySQL, MariaDB, Oracle, Microsoft SQL Server, and IBM DB2.
-- **Disaster Recovery (Multi-AZ):** Replicates data synchronously to a Standby DB instance in another Availability Zone. Provides automatic failover via DNS CNAME updates.
-- **Read Scaling:** Provisions up to 15 Read Replicas with asynchronous replication (eventual consistency) within the same region or cross-region.
-- **Storage Auto Scaling:** Dynamically increases allocated storage capacity on-demand with zero downtime based on free-space thresholds.
-- **Backup & Recovery:** Performs automated daily backups and continuous transaction logging every 5 minutes to support Point-in-Time Recovery (PITR).
+- **Engine Management:** Supports PostgreSQL, MySQL, MariaDB, Oracle, Microsoft SQL Server, and IBM DB2.
+- **Disaster Recovery (Multi-AZ):** Replicates data synchronously to a passive standby DB instance in another Availability Zone, providing automatic failover via DNS CNAME update.
+- **Read Scaling:** Provisions up to 15 Read Replicas (same-AZ, cross-AZ, or cross-region) using asynchronous replication (eventual consistency) and allows promotion to independent databases.
+- **Storage Auto Scaling:** Dynamically increases allocated storage capacity on-demand with zero downtime.
+- **Backup & Recovery:** Automates daily full backups and continuous transaction logging every 5 minutes to support Point-in-Time Recovery (PITR) up to the last 5 minutes.
+- **Security Parameters:** Enforces storage encryption at rest via AWS KMS, SSL/TLS for in-flight encryption, and supports IAM Database Authentication.
+- **RDS Custom:** Grants full administrative/root access to the underlying OS and database environment (via SSH/SSM) for Oracle and SQL Server.
 
 ---
 

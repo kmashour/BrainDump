@@ -25,7 +25,7 @@ tags:
 ---
 
 ## 🎯 Purpose (Why it is used)
-Amazon ElastiCache is a fully managed, in-memory caching service designed to improve the performance and scalability of web applications by retrieving data from fast, managed in-memory caches (Redis OSS or Memcached) instead of relying solely on slower disk-based relational databases.
+Amazon ElastiCache is a fully managed, in-memory caching service designed to improve the performance and scalability of web applications by retrieving data from fast, managed in-memory caches (Redis OSS, Valkey, or Memcached) instead of relying solely on slower disk-based relational databases.
 
 ---
 
