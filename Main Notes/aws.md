@@ -7,6 +7,9 @@ domains:
   - "aws"
 related_concepts:
   - "[[virtual-machine]]"
+  - "[[Amazon ECS]]"
+  - "[[Amazon EKS]]"
+  - "[[Amazon ECR]]"
   - "[[Amazon S3]]"
   - "[[Amazon RDS]]"
   - "[[Amazon Aurora]]"

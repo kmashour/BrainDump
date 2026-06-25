@@ -49,8 +49,11 @@ This index contains our Amazon Web Services (AWS) cloud architecture modules, de
   * Backup & Restore, Pilot Light, Warm Standby, Multi-Site active-active, RPO vs RTO.
 - 🧪 **[Module 3-16: AWS SAA Playbook & Labs](3-16_aws_saa_playbook_labs.md)**
   * Hands-on walk-through scenarios, EC2 role access, SQS order processing, highly available tiers.
+- 🐳 **[Module 3-17: AWS Containers (ECS, EKS & ECR)](3-17_containers_ecs_eks.md)**
+  * Docker primitives, ECS clusters, Task/Execution roles, Fargate serverless, EKS nodes, and Auto Mode.
 
 ---
 
 ## 🛠️ Verification Projects
 - 🚀 **[Project: Secure Load-Balanced Web API](../Projects/Systems%20Design/Project%20-%20Secure%20Load-Balanced%20Web%20API.md)**
+- ☸️ **[Project: ECS and EKS Cluster Deployments](../Projects/kubernetes/Project%20-%20ECS%20and%20EKS%20Cluster%20Deployments.md)**

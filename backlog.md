@@ -4,6 +4,26 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-25] - Ingestion: AWS Containers (ECS, EKS & ECR)
+
+### Added
+- **Reference Notes:** Created [[Reference Notes/3-17_containers_ecs_eks.md|3-17_containers_ecs_eks.md]].
+- **Projects:** Created [[Projects/kubernetes/Project - ECS and EKS Cluster Deployments.md|Project - ECS and EKS Cluster Deployments.md]] detailing hands-on playbooks for ECS and EKS configurations and verification steps.
+- **Main Notes:** Created 3 landing notes:
+  - [[Main Notes/Amazon ECS.md|Amazon ECS.md]]
+  - [[Main Notes/Amazon EKS.md|Amazon EKS.md]]
+  - [[Main Notes/Amazon ECR.md|Amazon ECR.md]]
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[Reference Notes/3-Index - AWS.md|3-Index - AWS.md]] to catalog Module 3-17 and its verification project.
+- **Main Notes:** Updated [[Main Notes/aws.md|aws.md]] to link to the new container-related landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-17_containers_ecs_eks.txt`
+
+---
+
 ## [2026-06-25] - Ingestion: AWS IAM & Identity Governance
 
 ### Added
