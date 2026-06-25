@@ -37,7 +37,13 @@ This architecture presented significant challenges:
 2. **Security & Stability:** Bugs in a third-party storage driver could crash the control plane. In-tree drivers also required high-level privileges in the core components.
 3. **Bloat:** Core Kubernetes binaries carried code for dozens of storage systems.
 
-The **Container Storage Interface (CSI)** was introduced to move storage plugins **out-of-tree**. CSI is a standardized, gRPC-based specification that allows container orchestrators (like Kubernetes, Mesos, Nomad) to interact with arbitrary storage backends using standard interfaces.
+The **Container Storage Interface (CSI)** was introduced to move storage plugins **out-of-tree**. CSI is a standardized, gRPC-based specification that allows container orchestrators (like Kubernetes, Mesos, Nomad, Cloud Foundry) to interact with arbitrary storage backends using standard interfaces.
+
+CSI defines a standardized set of Remote Procedure Calls (RPCs) that storage vendor drivers must implement:
+* **`CreateVolume` / `DeleteVolume`**: Invoked by the controller to provision and decommission physical storage volumes on the backend array.
+* **`ControllerPublishVolume` / `ControllerUnpublishVolume`**: Invoked to attach and detach volumes to/from host nodes.
+* **`NodeStageVolume` / `NodeUnstageVolume`**: Formats raw block storage with filesystems (e.g. `ext4`, `xfs`) and mounts them to global staging directories on the node.
+* **`NodePublishVolume` / `NodeUnpublishVolume`**: Bind-mounts the staged filesystem directory into the Pod's private container directory.
 
 ---
 
@@ -359,7 +365,9 @@ To manually reclaim a `Released` PV:
 The PV is automatically deleted, and the CSI driver invokes the backend storage API to destroy the physical volume (e.g. AWS EBS block storage or GCP persistent disk).
 
 #### 3. Recycle (Deprecated)
-Performs a basic file system scrub (`rm -rf /mount/*`) and returns the PV to `Available`. This policy is deprecated and unsupported by modern CSI plugins.
+Performs a basic file system scrub (`rm -rf /mount/*`) and returns the PV to `Available`. 
+* **Evolutionary Context:** This policy is deprecated and unsupported by modern CSI plugins. Originally, the Recycle controller launched a tiny recycler pod on the node that mounted the volume and executed a shell file-level delete (`rm -rf /mount/*`). This approach introduced significant portability and security gaps: it did not guarantee secure erasure of underlying block devices, could not manage snapshots or cloud provider metadata, and often failed due to local permission issues or left orphaned inode metadata.
+* **Modern Replacement:** Kubernetes has shifted entirely to out-of-tree CSI drivers that use `Delete` (invoking provider APIs to delete underlying storage resources) or `Retain` (manual secure scrubbing), integrated with dynamic StorageClass provisioning.
 
 ---
 

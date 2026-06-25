@@ -4,6 +4,21 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-25] - Ingestion: CKA Kubernetes and Docker Storage (Mumshad)
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-8_storage_mechanics_and_csi.md|0-8_storage_mechanics_and_csi.md]] to incorporate detailed Container Storage Interface (CSI) Remote Procedure Calls (`CreateVolume`/`DeleteVolume`/`NodeStageVolume`/`NodePublishVolume`) and the evolutionary context on the deprecation of the `Recycle` reclaim policy (recycler pod filesystem scrub vulnerability vs out-of-tree CSI delete).
+  - Expanded [[Reference Notes/2-3_docker_volumes_and_storage.md|2-3_docker_volumes_and_storage.md]] to document Docker storage drivers (layered architecture, read-only/writable layers, copy-on-write mechanism, default drivers like `overlay2`/`aufs`/`devicemapper`/`btrfs`/`zfs`) and Docker volume driver plugins (`local` default and third-party plugins like REX-Ray, Portworx, GlusterFS, NetApp, Convoy, Flocker, DigitalOcean).
+- **Main Notes:**
+  - Updated [[Main Notes/persistentvolume.md|persistentvolume.md]] to include deprecation details of the `Recycle` reclaim policy.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/`:
+- `StorageCKAMumshad.md`
+
+---
+
 ## [2026-06-25] - Ingestion: AWS Deployment, Management & Optimization
 
 ### Added

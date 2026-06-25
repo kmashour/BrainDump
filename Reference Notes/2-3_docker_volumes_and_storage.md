@@ -28,7 +28,33 @@ graph TD
 
 ---
 
-## 1. Storage Mount Primitives
+## 1. Docker Storage Drivers & Layered Filesystems
+
+Docker uses **Storage Drivers** to maintain its layered image architecture and manage the filesystems of running containers.
+
+### A. Layered Architecture & Read-Only Images
+When building an image, Docker processes instructions in the Dockerfile sequentially, creating a separate, read-only layer for each step. 
+* **Layer Sharing:** If multiple images share identical base instructions (e.g., identical base operating system and dependencies), Docker shares those read-only layers in cache to save disk space and accelerate builds.
+* **Ephemeral Writable Layer:** When a container is started from an image, the runtime driver mounts a transient, read-write layer on top of the image's read-only layers. This container layer stores all modifications, logs, and temporary files created during the container's lifecycle.
+* **Copy-on-Write (CoW) Mechanism:** Image layers are immutable. If a containerized process needs to modify a pre-existing file located in one of the read-only image layers, Docker automatically copies that file up into the container's read-write layer *before* saving the modifications. The container then operates on the copied version, leaving the original image layer untouched.
+
+### B. Common Storage Drivers
+The choice of storage driver dictates how these filesystem layers are managed. The selection depends on the underlying host operating system:
+* **`overlay2`**: The modern, default storage driver for most Linux distributions (Ubuntu, Debian, RHEL). Highly efficient, fast, and does not require complex disk management.
+* **`aufs`**: Legacy storage driver, historically popular on Debian/Ubuntu systems but largely succeeded by `overlay2`.
+* **`devicemapper`**: Uses thin-provisioning block storage, historically used on CentOS/Fedora hosts where union filesystems were not natively supported.
+* **`btrfs` / `zfs`**: Utilizes host filesystems with native copy-on-write features, suitable for systems where Docker partitions reside on Btrfs or ZFS disks.
+
+### C. Volume Driver Plugins
+While storage drivers manage transient filesystem layers, **Volume Driver Plugins** manage persistent volumes outside the layered union filesystem:
+* **`local` (Default)**: Provisions storage folders locally on the host, defaulting to `/var/lib/docker/volumes/<volume-name>/_data`.
+* **Third-Party Plugins**: Allow containers to connect directly to external network arrays, cloud storage systems, or SAN/NAS pools. Notable plugins include:
+  * **REX-Ray**: Manages mounts for Amazon EBS, Amazon S3, Google Persistent Disk, OpenStack Cinder, or EMC arrays.
+  * **Others**: Portworx, GlusterFS, NetApp, Convoy, Flocker, DigitalOcean Block Storage, and VMware vSphere Storage.
+
+---
+
+## 2. Storage Mount Primitives
 
 Container images utilize a Union Filesystem (UFS) where layers are read-only. When a container runs, a transient, writable layer (ephemeral layer) is added on top. Any modification to container data resides in this writable layer and is destroyed when the container is deleted. To persist data or share it across environments, Docker provides three mount primitives:
 

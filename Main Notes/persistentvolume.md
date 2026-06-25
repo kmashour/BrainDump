@@ -34,8 +34,8 @@ A `PersistentVolume` (PV) represents a piece of storage in the cluster that has 
 * **Access Control:** Enforces access modes (`ReadWriteOnce`, `ReadOnlyMany`, `ReadWriteMany`, `ReadWriteOncePod`).
 * **Lifecycle Reclaim Governance:** Defines what happens to the underlying disk after the claim is deleted:
   - `Retain`: Keeps data on disk; administrator must recover it manually.
-  - `Delete`: Automatically wipes and deletes the physical storage volume.
-  - `Recycle`: Performs basic scrub (`rm -rf`) (Deprecated).
+  - `Delete`: Automatically wipes and deletes the physical storage volume via CSI APIs.
+  - `Recycle` (Deprecated): Wiped files via a temporary recycler pod executing `rm -rf /mount/*`. This is deprecated due to security and portability limitations (lack of secure erasure, inability to handle snapshots, and platform-specific dependencies).
 
 ---
 
