@@ -18,7 +18,8 @@ This module details disaster recovery metrics, strategies, migration patterns, a
 ## 📑 Disaster Recovery Metrics: RPO and RTO
 
 Disaster Recovery planning is driven by two key business metrics:
-*   **Recovery Point Objective (RPO):** The maximum acceptable age of data that can be lost when a system fails. It defines the frequency of backups/replication (e.g., an RPO of 1 hour means you must run backups every hour, and you accept losing up to 1 hour of transaction history).
+*   **Recovery Point Objective (RPO):** The maximum acceptable age of data that can be lost when a system fails. It defines the frequency of backups/replication.
+    *   *Example:* If backups are transferred once a week using AWS Snowball, the RPO is 1 week (up to 1 week of data loss). If database snapshots are scheduled hourly, the RPO is 1 hour.
 *   **Recovery Time Objective (RTO):** The maximum acceptable duration of downtime before the application must be restored to service.
 *   **Optimization Trade-off:** The smaller the RPO and RTO requirements, the higher the architecture cost.
 
@@ -55,8 +56,8 @@ graph TD
 ```
 
 ### 1. Backup and Restore (High RTO/RPO, Lowest Cost)
-*   **Operational Mechanics:** Create periodic EBS snapshots, RDS automated backups, and AMI configurations of application hosts, and copy them to a target disaster recovery region.
-*   **Infrastructure Status:** No infrastructure resources (e.g., EC2 instances, Load Balancers) run in the DR region until a disaster is declared.
+*   **Operational Mechanics:** Create periodic EBS snapshots, RDS automated backups, and AMI configurations, and copy them to a target disaster recovery region. Storage Gateway or lifecycle policies can transition backups to Glacier. Large datasets can be moved weekly using Snowball.
+*   **Infrastructure Status:** No infrastructure resources (e.g., EC2 instances, Load Balancers) run in the DR region until a disaster is declared. Only backup storage costs are incurred.
 *   **Recovery Method:** Recreate resources on-demand from snapshots and AMIs (e.g., using CloudFormation or Terraform).
 
 ### 2. Pilot Light (Moderate RTO/RPO, Low Cost)
@@ -67,13 +68,13 @@ graph TD
 ### 3. Warm Standby (Low RTO/RPO, Moderate Cost)
 *   **Operational Mechanics:** A scaled-down but fully functional duplicate of the primary environment is always running in the DR region (e.g., an Auto Scaling Group running at a minimum capacity of 1 instance instead of 10).
 *   **Infrastructure Status:** All tiers are active but provisioned at minimal size/capacity.
-*   **Recovery Method:** Reroute DNS traffic to the standby load balancer and trigger auto-scaling policies to scale up the DR environment to handle production loads.
+*   **Recovery Method:** Reroute DNS traffic to the standby load balancer via Route 53 and trigger auto-scaling policies to scale up the DR environment to handle production loads.
 
 ### 4. Multi-Site Active-Active / Hot Site (Near-Zero RTO/RPO, Highest Cost)
-*   **Operational Mechanics:** Complete, identical production-scale environments run concurrently in both regions.
+*   **Operational Mechanics:** Complete, identical production-scale environments run concurrently in multiple regions.
 *   **Infrastructure Status:** All environments actively serve traffic under a split-routing model.
 *   **Data Replication:** Aurora Global Databases or DynamoDB Global Tables provide bidirectional/cross-region replication with sub-second replication latency.
-*   **Recovery Method:** Failover is instantaneous. If one region goes down, DNS routing policies (latency or geolocation) drop the dead region and route 100% of traffic to the healthy active region.
+*   **Recovery Method:** Failover is instantaneous. Route 53 DNS routing policies (latency or geolocation) drop the dead region and route 100% of traffic to the healthy active region.
 
 ---
 
@@ -95,11 +96,13 @@ AWS DMS is a managed migration service that copies and replicates data from sour
 *   **Zero Downtime:** The source database remains fully functional and accessible throughout the migration.
 *   **Homogeneous Migrations:** Migrations between identical database engines (e.g., Oracle to Oracle, PostgreSQL to RDS PostgreSQL). Does *not* require the Schema Conversion Tool.
 *   **Heterogeneous Migrations:** Migrations between different database engines (e.g., Microsoft SQL Server to Amazon Aurora MySQL).
-    *   **AWS SCT (Schema Conversion Tool):** Must be installed on-premises to convert tables, views, stored procedures, and functions to the target database engine before DMS copies the raw data.
+    *   **AWS SCT (Schema Conversion Tool):** Must be installed on-premises (best practice) to convert tables, views, stored procedures, and functions to the target database engine before DMS copies the raw data.
 *   **Change Data Capture (CDC):** Uses source database transaction logs to continuously replicate data changes from the source to the target, allowing a low-downtime cutover.
 *   **DMS Replication Instance:** Runs on a dedicated EC2 instance.
-    *   **Provisioned Mode:** Select specific instance sizes (e.g., `dms.t3.medium`) and configure Multi-AZ failovers for high availability and synchronous failover.
+    *   **Provisioned Mode:** Select specific instance sizes (e.g., `dms.t3.medium`) and configure Multi-AZ failovers for high availability. Multi-AZ deployment provides synchronous replication to a standby replica in another AZ to survive failures, eliminate IO freezes, and minimize latency spikes.
     *   **Serverless Mode:** Automatically scales compute resources based on data replication throughput, eliminating capacity management.
+*   **Source Options:** On-premises or EC2 databases (Oracle, SQL Server, MySQL, MariaDB, PostgreSQL, MongoDB, SAP, DB2), Azure SQL Database, Amazon RDS (including Aurora), S3, DocumentDB.
+*   **Target Options:** On-premises or EC2 databases (Oracle, SQL Server, MySQL, MariaDB, PostgreSQL, SAP), Amazon RDS (including Aurora), Redshift, DynamoDB, Amazon S3, Kinesis Data Streams, Apache Kafka, DocumentDB, Amazon Neptune, Redis, Babelfish.
 
 ---
 
@@ -110,13 +113,14 @@ AWS provides multiple strategies to migrate databases into Amazon Aurora MySQL o
 ### RDS MySQL to Aurora MySQL
 1.  **RDS Snapshot Restore:** Take a database snapshot of the RDS MySQL instance and restore it directly as an Amazon Aurora database cluster. (Requires stopping writes during snapshot to prevent data drift).
 2.  **Aurora Read Replica:** Create an Amazon Aurora Read Replica on top of the RDS MySQL instance. Wait for replication lag to drop to zero, then promote the Aurora Read Replica to a standalone cluster. (Minimizes downtime).
-3.  **Percona XtraBackup (External DB):** For MySQL databases external to RDS, back up the database using Percona XtraBackup, upload the backup file to Amazon S3, and import it directly into a new Aurora MySQL cluster.
+3.  **Percona XtraBackup (External DB):** For MySQL databases external to RDS, back up the database using Percona XtraBackup, upload the backup file to Amazon S3, and import it directly into a new Aurora MySQL DB cluster. (Only Percona XtraBackup is supported for this direct S3 import path).
 4.  **MySQL Dump Utility:** Run `mysqldump` and pipe the output into Aurora MySQL. (Slower, does not leverage S3, but works across versions).
+5.  **AWS DMS:** Set up source and target endpoints and run continuous replication via a DMS task.
 
 ### RDS PostgreSQL to Aurora PostgreSQL
 1.  **RDS Snapshot Restore:** Take a snapshot of the RDS PostgreSQL instance and restore it directly as an Aurora PostgreSQL cluster.
 2.  **Aurora Read Replica:** Create an Aurora Read Replica of the RDS PostgreSQL database, wait for replication lag to drop to zero, and promote the replica.
-3.  **S3 Export and Import (External DB):** Back up the external database, upload it to S3, and import using the `aws_s3` Aurora extension.
+3.  **S3 Export and Import (External DB):** Back up the external database using `pg_dump`, upload the backup file to Amazon S3, and import using the `aws_s3` Aurora extension.
 4.  **AWS DMS:** Set up source and target endpoints and run continuous replication via a DMS task.
 
 ---
@@ -125,7 +129,7 @@ AWS provides multiple strategies to migrate databases into Amazon Aurora MySQL o
 
 AWS Backup is a fully managed, centralized backup service that automates backup execution across multiple AWS services (EC2, EBS, RDS, Aurora, DynamoDB, DocumentDB, Neptune, EFS, FSx, and Storage Gateway).
 
-*   **Backup Plans:** Define backup rules including frequency (e.g., hourly, daily), backup window, retention period, and lifecycle transitions (e.g., moving snapshots to Cold Storage after 30 days).
+*   **Backup Plans:** Define backup rules including frequency (e.g., hourly, daily), backup window, retention period, and lifecycle transitions (e.g., moving snapshots to Cold Storage after a defined timeframe).
 *   **Cross-Region / Cross-Account Backups:** Configured in the backup rule to automatically copy backups to another region or AWS account for geographic separation and compliance.
 *   **Resource Assignment:** Assign resources to backup plans automatically using tags (e.g., `Environment = Production`).
 *   **Vault Lock:** Enforces a WORM (Write Once Read Many) policy on a Backup Vault.
@@ -140,7 +144,9 @@ AWS Application Migration Service (MGN) is the primary service for lift-and-shif
 
 *   **Mechanics:** Uses a replication agent installed on the source server to continuously replicate block-level storage disks into a low-cost staging environment (EC2 instances and EBS volumes) in AWS.
 *   **Cutover:** On migration day, trigger a cutover to launch full-capacity EC2 instances in production.
-*   **Application Discovery Service:** Scans on-premises infrastructure to map out hardware utilization and server dependency maps (available via agentless connector or agent-based scanning).
+*   **Application Discovery Service:** Scans on-premises infrastructure to map out hardware utilization and server dependency maps.
+    *   **Agentless Discovery:** Deploy a Connector VM to gather virtual machine configuration and performance history (CPU, memory, disk usage).
+    *   **Agent-based Discovery:** Install an agent on VMs to collect system configuration, performance, running processes, and details of all network connections to construct dependency maps.
 *   **Migration Hub:** Provides a single pane of glass to track migration status across discovery, replication, and cutover.
 
 ---
@@ -151,7 +157,7 @@ For organizations managing on-premises virtual machines via VMware ESXi, vSphere
 *   **Hybrid Capacity Extension:** Run the VMware Software-Defined Data Center (SDDC) stack directly on bare metal AWS infrastructure.
 *   **Workload Portability:** Migrate VM workloads dynamically to AWS without refactoring or rewriting hypervisor configurations.
 *   **Disaster Recovery:** Use VMware Cloud tools to quickly configure failovers between local infrastructure and AWS.
-*   **AWS Native Service Access:** Connect VM nodes over high-speed networks to native AWS resources (RDS, S3, EC2).
+*   **AWS Native Service Access:** Connect VM nodes over high-speed networks to native AWS resources (RDS, S3, EC2, FSx, Direct Connect, Redshift).
 
 ---
 
@@ -161,7 +167,7 @@ To make a single EC2 instance highly available across availability zones:
 
 ### 1. Elastic IP Failover via Lambda
 *   **Architecture:** Maintain a primary EC2 instance and a standby instance in separate AZs. Point public DNS records to an Elastic IP.
-*   **Detection:** Configure a CloudWatch Alarm/Event to monitor the primary instance health (e.g., StatusCheckFailed).
+*   **Detection:** Configure a CloudWatch Alarm/Event to monitor the primary instance health (e.g., `StatusCheckFailed`).
 *   **Action:** Trigger an AWS Lambda function to detach the Elastic IP from the failed primary instance and attach it to the healthy standby instance.
 
 ### 2. Auto Scaling Group Active-Passive (Min=1, Max=1, Desired=1)
@@ -202,7 +208,7 @@ HPC workloads require specialized compute, networking, and storage components to
 
 ### SQS and Lambda Retries
 *   **Polled Architecture:** AWS Lambda automatically polls the SQS queue, processes batches of messages, and deletes them if successful.
-*   **Dead-Letter Queue (DLQ):** If a message fails processing, Lambda retries. To avoid infinite processing loops (poison pill messages), set up an SQS DLQ. SQS moves the message to the DLQ after a defined number of failed attempts (configured on the SQS queue side).
+*   **Dead-Letter Queue (DLQ):** If a message fails processing, Lambda retries. To avoid infinite processing loops (poison pill messages), set up an SQS DLQ. SQS moves the message to the DLQ after a defined number of failed attempts (configured on the SQS queue side). SQS FIFO queues require a DLQ to prevent blocked queues from halting all processing.
 
 ### SNS and Lambda Retries
 *   **Asynchronous Push Architecture:** SNS pushes messages directly to Lambda.
@@ -214,7 +220,7 @@ HPC workloads require specialized compute, networking, and storage components to
 *   **Execution:** SQS queues subscribe to the SNS Topic. The SNS service duplicates and pushes the message to all queues, allowing parallel, decoupled processing.
 
 ### S3 Event Notifications
-*   **S3 Actions:** Triggers events on object creation, deletion, or restore.
+*   **S3 Actions:** Triggers events on object creation, deletion, restore, or replication.
 *   **Direct Destinations:** S3 can publish event notifications directly to SNS Topics, SQS Queues, or Lambda functions (using resource-based SQS/SNS access policies).
 *   **Amazon EventBridge Integration:** If enabled on the S3 bucket, S3 routes all events to EventBridge. This allows advanced JSON filtering (on metadata, object size, file extensions) and routes to over 18 AWS service targets (including Step Functions, Kinesis Data Firehose, or custom endpoints).
 
@@ -229,7 +235,7 @@ HPC workloads require specialized compute, networking, and storage components to
 ### Caching Tiers
 *   **CloudFront Edge Caching:** Caches static and dynamic content at geographic edge locations (Point of Presence - POP) closest to users, reducing latency and backend compute loads.
 *   **API Gateway Caching:** Caches API responses regionally at the gateway layer, reducing calls to regional backend microservices.
-*   **ElastiCache (Redis / Memcached) and DynamoDB DAX:** Caches frequently accessed database query results in-memory, protecting relational/NoSQL databases from read overload.
+*   **ElastiCache (Redis / Memcached) and DynamoDB DAX:** Caches frequently accessed database query results in-memory, protecting relational/NoSQL databases from read overload. (S3, RDS, and standard databases do not have built-in caching).
 
 ### Subnet Blocking and Network Firewalls
 *   **NACLs (Network Access Control Lists):** Stateless firewall filters at the subnet boundary. Natively supports explicit `Deny` and `Allow` rules (useful for blocking malicious IP addresses cheaply at the entry gate).
@@ -237,6 +243,7 @@ HPC workloads require specialized compute, networking, and storage components to
 *   **Host Firewalls:** Running firewall software on EC2 instances incurs CPU overhead and latency.
 *   **AWS WAF (Web Application Firewall):** Integrates with Application Load Balancers (ALBs) or CloudFront. Provides advanced IP filtering, rate limiting, and SQL injection blocking.
 *   **CloudFront Country Blocking (Geo-Restriction):** Blocks traffic at the edge location based on the country of origin.
+*   **Security Configuration:** When pairing CloudFront with an ALB, configure the ALB's Security Group to only allow CloudFront public IPs to prevent clients from bypassing CloudFront.
 
 ---
 
@@ -248,4 +255,9 @@ Chaos testing validates system resilience by deliberately injecting failures int
 
 ---
 
-*For conceptual landing notes, refer to: [[AWS Disaster Recovery]], [[AWS Elastic Disaster Recovery]], [[AWS Database Migration Service]], and [[AWS Backup]]*
+*For conceptual landing notes, refer to:*
+*   [[AWS Disaster Recovery]] ([AWS Disaster Recovery.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/AWS%20Disaster%20Recovery.md))
+*   [[AWS Elastic Disaster Recovery]] ([AWS Elastic Disaster Recovery.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/AWS%20Elastic%20Disaster%20Recovery.md))
+*   [[AWS Database Migration Service]] ([AWS Database Migration Service.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/AWS%20Database%20Migration%20Service.md))
+*   [[AWS Backup]] ([AWS Backup.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/AWS%20Backup.md))
+*   [[aws - Disaster Recovery Strategies]] ([aws - Disaster Recovery Strategies.md](file:///home/karim/Desktop/BrainDump/Main%20Notes/aws%20-%20Disaster%20Recovery%20Strategies.md))

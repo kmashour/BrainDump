@@ -44,4 +44,4 @@ AWS offers four primary strategies for disaster recovery, balancing cost against
 *   **High Availability (HA):** Ensures the application remains accessible (e.g. by routing traffic around failed nodes using a Load Balancer). Performance may degrade.
 *   **Fault Tolerance:** Guarantees zero downtime and zero performance degradation during hardware/component failure (requires fully redundant configurations).
 
-*Read more in [3-15_aws_disaster_recovery.md](../Reference%20Notes/3-15_aws_disaster_recovery.md)*
+*Read more in [[3-15_aws_disaster_recovery]] ([3-15_aws_disaster_recovery.md](file:///home/karim/Desktop/BrainDump/Reference%20Notes/3-15_aws_disaster_recovery.md))*
