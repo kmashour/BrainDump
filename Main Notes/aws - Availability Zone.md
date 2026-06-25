@@ -27,4 +27,4 @@ An Availability Zone (AZ) consists of one or more discrete, physical data center
 *   **High-Speed Interconnection:** All AZs within a region are interconnected using ultra-low latency, high-bandwidth private fiber-optic networks.
 *   **Multi-AZ Deployments:** Standard sizing is between 3 and 6 AZs per region (with a minimum of 3). Distributing applications across multiple AZs (Multi-AZ) is the fundamental architecture pattern for implementing high availability and automatic failover.
 
-*Read more in [[Reference Notes/3-1_aws_global_infrastructure.md#3. AWS Physical Footprint & Edge Caching]]*
+*Read more in [[Reference Notes/3-1_aws_global_infrastructure.md#4. AWS Physical Footprint & Global Infrastructure]]*

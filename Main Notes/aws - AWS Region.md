@@ -32,4 +32,4 @@ An AWS Region is a physical, geographically isolated location in the world where
 3. **Service Availability:** Confirming via the AWS Region Table that the target region supports all required services and feature sets (as some regions do not launch with all services).
 4. **Cost and Pricing:** Auditing pricing pages since service costs vary by region due to localized operational expenses, taxation, and power utility rates.
 
-*Read more in [[Reference Notes/3-1_aws_global_infrastructure.md#3. AWS Physical Footprint & Edge Caching]]*
+*Read more in [[Reference Notes/3-1_aws_global_infrastructure.md#4. AWS Physical Footprint & Global Infrastructure]]*
