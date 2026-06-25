@@ -31,10 +31,15 @@ Amazon Kinesis is a fully managed service designed to ingest, buffer, and analyz
 ---
 
 ## ⚙️ Functionality (What it is doing)
-- **Kinesis Data Streams:** Collects data continuously. Divided into shards, where each shard supports 1 MB/s write and 2 MB/s read. Supports provisioned and on-demand capacity modes.
-- **Data Persistence:** Persists data for 1 to 365 days, enabling consumers to replay or backprocess past streams.
-- **Enhanced Fan-Out (EFO):** Pushes data to consumers using HTTP/2, providing a dedicated 2 MB/s throughput per shard per consumer.
-- **Amazon Data Firehose:** Serverless delivery stream that buffers incoming data (by size or time) and flushes it to targets (S3, Redshift, OpenSearch, Splunk, HTTP) with optional Lambda transformations.
+- **Kinesis Data Streams:** Collects data continuously. Divided into shards for parallel ingestion.
+  - **Provisioned Mode:** Choose the number of shards manually. Each shard supports 1 MB/s (or 1,000 records/s) write capacity and 2 MB/s read capacity.
+  - **On-Demand Mode:** Scales shards automatically. Default capacity is 4 MB/s (or 4,000 records/s) write capacity, dynamically scaling based on the peak throughput observed during the past 30 days.
+- **Data Persistence & Replay:** Persists data for 1 to 365 days, enabling consumers to replay or backprocess past streams. Data cannot be manually deleted once written.
+- **Ordering via Partition Keys:** Ensures records with the same Partition Key map to the same shard, guaranteeing strict ordering within that shard.
+- **Developer Libraries (KPL/KCL):** Optimized using the Kinesis Producer Library (KPL) for high-performance publishing, and the Kinesis Client Library (KCL) for stateful horizontal scaling of consumers.
+- **Enhanced Fan-Out (EFO):** Pushes data to consumers using HTTP/2, providing a dedicated 2 MB/s throughput per shard per consumer instead of sharing the shard's aggregate read capacity.
+- **Amazon Data Firehose:** Serverless delivery stream that buffers incoming data (by size: 1MB-128MB, or time: 60s-900s) and flushes it to targets (S3, Redshift, OpenSearch, Splunk, custom HTTP endpoints) with optional Lambda transformations on the fly.
+- **AWS CLI Low-level APIs:** CLI commands like `put-record`, `describe-stream`, `get-shard-iterator`, and `get-records` enable direct low-level stream access.
 
 ---
 

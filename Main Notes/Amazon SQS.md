@@ -35,9 +35,12 @@ Amazon SQS (Simple Queue Service) is a fully managed message queuing service tha
 - **Queueing Middleware:** Stores messages durably in queues. Producers enqueue messages using the `SendMessage` API; consumers poll messages via `ReceiveMessage`, process them, and delete them via `DeleteMessage`.
 - **Queue Types:**
   - **Standard Queues:** Provide unlimited throughput, at-least-once delivery (potential duplicates), and best-effort ordering.
-  - **FIFO Queues:** Guarantee first-in-first-out ordering and exactly-once delivery (duplicates removed within a 5-minute window based on deduplication ID).
-- **Message Visibility Timeout:** Prevents other consumers from processing a polled message for a set time (default 30 seconds). Consumers can extend this using the `ChangeMessageVisibility` API.
+  - **FIFO Queues:** Guarantee first-in-first-out ordering and exactly-once delivery (duplicates removed within a 5-minute window based on deduplication ID, naming ends with `.fifo`).
+- **Message Visibility Timeout:** Prevents other consumers from processing a polled message for a set time (default 30 seconds, range 0s to 12h). Consumers can extend this using the `ChangeMessageVisibility` API.
 - **Long Polling:** Reduces API calls and empty responses by allowing consumers to wait up to 20 seconds (`WaitTimeSeconds`) for a message to arrive in an empty queue.
+- **Dead-Letter Queues (DLQs):** Isolates messages that fail processing after a specified number of times (`maxReceiveCount` in the Redrive Policy). DLQs must be of the same type (Standard/FIFO) as the source queue.
+- **Payload Limits & Extended Client:** Payload size limit is 256 KB. Payloads up to 2 GB can be processed via the Amazon SQS Extended Client Library, which transparently stores large payloads in an Amazon S3 bucket and passes pointers.
+- **Message Retention:** Messages are kept in the queue for a default of 4 days, configurable from 60 seconds up to 14 days.
 
 ---
 

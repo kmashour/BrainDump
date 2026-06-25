@@ -34,7 +34,7 @@ Amazon MQ is a managed message broker service for RabbitMQ and ActiveMQ. It is d
 - **Managed Broker Engines:** Provisions and manages instances of Apache ActiveMQ or RabbitMQ.
 - **Protocol Compatibility:** Supports industry-standard messaging protocols including AMQP, MQTT, STOMP, OpenWire, and WSS.
 - **Combined Messaging Patterns:** Offers both queue (point-to-point) and topic (pub/sub) capabilities within a single broker instance.
-- **Active-Standby High Availability:** Configures a hot-standby broker in a secondary Availability Zone that automatically takes over if the primary broker fails.
+- **Active-Standby High Availability:** Configures a hot-standby broker in a secondary Availability Zone that automatically takes over if the primary broker fails. The Active and Standby brokers share a persistent storage backend on **Amazon EFS** (Elastic File System), which replicates message state across AZs to ensure zero data loss during failovers.
 
 ---
 

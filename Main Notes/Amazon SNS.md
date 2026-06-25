@@ -33,9 +33,11 @@ Amazon SNS (Simple Notification Service) is a fully managed pub/sub (publish/sub
 
 ## ⚙️ Functionality (What it is doing)
 - **Pub/Sub Brokerage:** Publishers send a single message to an SNS Topic. SNS replicates and distributes that message to all active subscriber endpoints.
-- **Subscribers Support:** Integrates with SQS, Lambda, HTTP/HTTPS webhooks, email, SMS, and mobile push notifications.
+- **Subscribers Support:** Integrates with SQS, Lambda, HTTP/HTTPS webhooks, email, SMS, and mobile push notifications (APNS, GCM/FCM, ADM).
 - **Message Filtering:** Allows subscribers to define JSON Filter Policies to receive only a subset of messages (e.g., filtering based on message attributes like `State = "Placed"`).
-- **SNS FIFO Topics:** Combines with SQS FIFO queues to guarantee strict ordering and deduplication for multi-consumer messaging.
+- **SNS FIFO Topics:** Combines with SQS FIFO queues to guarantee strict ordering (by Message Group ID) and deduplication (via Deduplication ID or content-based deduplication).
+- **No Persistence:** Standard SNS messages are not persistent. If a subscriber is down and retries fail, messages can be lost unless buffered by SQS queues or redirected to DLQs.
+- **S3 Event Notification Fanning:** Bypasses S3's limitation of only allowing a single event rule destination for a prefix/suffix combination. S3 publishes the event to an SNS topic, which then fans it out to multiple SQS queues or other subscribers.
 
 ---
 

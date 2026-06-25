@@ -34,8 +34,13 @@ Amazon SQS is a fully managed, highly scalable, and durable message queuing serv
 | **Deduplication** | None (application must handle idempotency). | Handled via Deduplication ID (SHA-256 hash or explicit ID). |
 
 ### Key SQS Configuration Settings
-*   **Message Size Limit:** Maximum message size is 256 KB. For larger payloads, store the payload in Amazon S3 and send an S3 pointer message in the queue (or use SQS Extended Client).
-*   **Message Retention Period:** Default retention is 4 days; configurable from 60 seconds up to 14 days. Messages not deleted within the retention period are discarded.
+*   **Message Size Limit & Extended Client:**
+    *   Maximum standard message size is 256 KB.
+    *   For larger payloads, store the payload in Amazon S3 and send an S3 pointer in the queue message.
+    *   The **Amazon SQS Extended Client Library for Java** handles this automatically, allowing payloads from 256 KB up to 2 GB.
+*   **Message Retention Period:**
+    *   Default retention is 4 days.
+    *   Configurable from 60 seconds up to 14 days. Messages not deleted within the retention period are discarded automatically.
 *   **Message Visibility Timeout:** 
     *   The period during which SQS prevents other consumers from receiving and processing a message that has already been polled.
     *   Default is 30 seconds (range: 0 seconds to 12 hours).
@@ -44,6 +49,11 @@ Amazon SQS is a fully managed, highly scalable, and durable message queuing serv
 *   **SQS Long Polling:**
     *   Reduces empty responses, API call counts, and overall latency by allowing the consumer to wait for messages to arrive if the queue is empty.
     *   Configured using `WaitTimeSeconds` (set between 1 and 20 seconds). Preferable over short polling (which returns immediately, incurring high API costs).
+*   **Dead-Letter Queues (DLQs):**
+    *   Used to isolate messages that cannot be processed successfully (poison pill messages).
+    *   Configured using a **Redrive Policy** with a `maxReceiveCount` (number of times a message can be received before being moved to the DLQ).
+    *   A DLQ must be of the same type (Standard to Standard, FIFO to FIFO) as the source queue.
+    *   Once isolated in the DLQ, administrators can debug the messages or use DLQ redrive to move them back to the source queue.
 
 ### SQS + Auto Scaling Group (ASG) Integration Pattern
 1.  **Metric-Based Scaling:** An ASG running consumer instances can scale dynamically based on the queue length.
@@ -65,11 +75,11 @@ Amazon SNS is a fully managed Pub/Sub (Publish-Subscribe) messaging service. Pub
 
 ### Key Characteristics & Features
 *   **Scale:** Supports up to 100,000 topics and over 12 million subscriptions per topic.
-*   **Subscribers:** Endpoints can be SQS queues, AWS Lambda functions, HTTP/S webhooks, email addresses, SMS, or mobile push notifications.
+*   **Subscribers / Endpoints Support:** Endpoints can be SQS queues, AWS Lambda functions, HTTP/HTTPS webhooks, email addresses, SMS, or mobile push notifications (APNS, GCM/FCM, ADM).
 *   **Persistence:** SNS messages are *not* persistent. If a subscriber endpoint is offline and retries fail, the message may be lost (unless SQS is used as a buffer or dead-letter queues are configured).
 *   **Cross-Region Delivery:** SNS topics can deliver messages to SQS queues in other AWS regions.
 *   **Message Filtering:** Subscriptions can specify a JSON **Filter Policy**. If the attributes of an incoming message match the filter policy (e.g., `State = "Placed"` vs. `State = "Canceled"`), the message is delivered; otherwise, it is skipped for that specific subscriber.
-*   **SNS FIFO Topics:** Provides message ordering and deduplication when used in conjunction with SQS FIFO queues as subscribers.
+*   **SNS FIFO Topics:** Provides message ordering (by Message Group ID) and deduplication (using a Deduplication ID or content-based deduplication) when used in conjunction with SQS FIFO queues as subscribers.
 
 ---
 
@@ -80,6 +90,10 @@ The **Fan-Out Pattern** is a powerful architecture where an SNS Topic is combine
 *   **Decoupled Parallel Processing:** Independent teams can process the same event concurrently without modifying the producer application.
 *   **Durability and Retries:** If one downstream service fails, its SQS queue retains the message for retries, while other services continue processing successfully.
 *   **Extensibility:** Adding a new service requires only subscribing a new SQS queue to the SNS topic.
+
+### Special Case: S3 Event Notification Fanning
+*   Amazon S3 has a limitation where a bucket event notification rule (for a combination of event type and prefix/suffix) can only have one target destination.
+*   To fan out the same S3 event notification (e.g., `ObjectCreated`) to multiple SQS queues or email endpoints, developers configure S3 to publish events to an SNS topic, and subscribe multiple SQS queues to that SNS topic.
 
 ### Mermaid Diagram: SNS-to-SQS Fan-Out Integration
 ```mermaid
@@ -107,16 +121,42 @@ Amazon Kinesis is designed to collect, process, and analyze real-time streaming 
 *   **Producers:** Custom applications using the SDK, the Kinesis Producer Library (KPL), or the Kinesis Agent installed on servers to stream logs.
 *   **Retention:** Data is persisted in the stream for 1 to 365 days, enabling consumers to replay or reprocess past data. Once written, data cannot be deleted manually; it must expire.
 *   **Scale (Shards):** Data Streams are divided into shards.
-    *   **Provisioned Mode:** You specify the number of shards. Each shard provides 1 MB/s (or 1,000 records/s) input and 2 MB/s output. You scale shards manually and pay per shard hour.
-    *   **On-Demand Mode:** Automatically scales shards based on traffic. Defaults to 4 MB/s (or 4,000 records/s) write capacity and scales dynamically. Pay per stream-hour and data volume.
-*   **Ordering:** Guaranteed within a shard. Partition Keys are used to group related events onto the same shard.
-*   **Consumers:** Custom consumer applications using the SDK, Kinesis Client Library (KCL), AWS Lambda, or Managed Apache Flink.
+    *   **Provisioned Mode:** You specify the number of shards. Each shard provides 1 MB/s (or 1,000 records/s) input and 2 MB/s output. You scale shards manually (splitting or merging) and pay per shard hour.
+    *   **On-Demand Mode:** Automatically scales shards based on traffic. Defaults to 4 MB/s (or 4,000 records/s) write capacity and scales dynamically based on peak throughput in the past 30 days. Pay per stream-hour and data volume.
+*   **Ordering:** Guaranteed within a shard. **Partition Keys** are used to group related events onto the same shard.
+*   **Consumers:** Custom consumer applications using the SDK, Kinesis Client Library (KCL), AWS Lambda, or Managed Service for Apache Flink.
     *   *Standard Consumers:* Consumers poll shards (2 MB/s aggregate limit per shard).
-    *   *Enhanced Fan-Out:* Pushes data to consumers over HTTP/2, giving each consumer its own dedicated 2 MB/s throughput per shard.
+    *   *Enhanced Fan-Out (EFO):* Pushes data to consumers over HTTP/2, giving each consumer its own dedicated 2 MB/s throughput per shard.
+
+### AWS CLI Command Examples for Kinesis Data Streams
+To write and read data at a low level using the AWS CLI:
+1.  **Write a Record (put-record):**
+    ```bash
+    aws kinesis put-record \
+      --stream-name DemoStream \
+      --partition-key user1 \
+      --data "user signup" \
+      --cli-binary-format raw-in-base64-out
+    ```
+2.  **Describe the Stream (get Shard IDs):**
+    ```bash
+    aws kinesis describe-stream --stream-name DemoStream
+    ```
+3.  **Get Shard Iterator:**
+    ```bash
+    aws kinesis get-shard-iterator \
+      --stream-name DemoStream \
+      --shard-id shardId-000000000000 \
+      --shard-iterator-type TRIM-HORIZON
+    ```
+4.  **Read Records:**
+    ```bash
+    aws kinesis get-records --shard-iterator <ShardIterator_Value>
+    ```
 
 ### Amazon Data Firehose (formerly Kinesis Data Firehose)
 *   **Purpose:** A serverless, near real-time delivery stream designed to load data directly into destinations like Amazon S3, Redshift, OpenSearch, Splunk, or custom HTTP endpoints.
-*   **Near Real-Time Buffer:** Accumulates records in a buffer based on Size (e.g., 1MB to 128MB) or Time (e.g., 60 seconds to 900 seconds) before flushing to target destinations.
+*   **Near Real-Time Buffer:** Accumulates records in a buffer based on Buffer Size (1MB to 128MB) or Buffer Interval (60 seconds to 900 seconds) before flushing to target destinations.
 *   **Transformation:** Can invoke an AWS Lambda function to transform data format (e.g., CSV to JSON, Parquet, or ORC conversion) and compress data (gzip, snappy) on the fly.
 *   **Management:** Fully serverless, scales automatically, no storage, no replay capability, and you pay only for processed data volume.
 
