@@ -4,6 +4,31 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-25] - Ingestion: AWS Databases, Analytics & Machine Learning
+
+### Added
+- **Reference Notes:** Created [[Reference Notes/3-19_databases_analytics_ml.md|3-19_databases_analytics_ml.md]].
+- **Projects:** Created [[Projects/aws-cloudops/Project - Athena S3 Access Log Analytics.md|Project - Athena S3 Access Log Analytics.md]] detailing serverless log query setups, DDL expressions with `RegexSerDe`, and HTTP status audits.
+- **Main Notes:** Created 8 landing notes:
+  - [[Main Notes/Amazon Athena.md|Amazon Athena.md]]
+  - [[Main Notes/Amazon Redshift.md|Amazon Redshift.md]]
+  - [[Main Notes/Amazon OpenSearch.md|Amazon OpenSearch.md]]
+  - [[Main Notes/Amazon Neptune.md|Amazon Neptune.md]]
+  - [[Main Notes/Amazon Timestream.md|Amazon Timestream.md]]
+  - [[Main Notes/Amazon Keyspaces.md|Amazon Keyspaces.md]]
+  - [[Main Notes/Amazon EMR.md|Amazon EMR.md]]
+  - [[Main Notes/AWS Glue.md|AWS Glue.md]]
+
+### Refactored / Upgraded
+- **Reference Indexes:** Updated [[Reference Notes/3-Index - AWS.md|3-Index - AWS.md]] to catalog Module 3-19 and its verification project.
+- **Main Notes:** Updated [[Main Notes/aws.md|aws.md]] to link to the new database, analytics, and Glue landing notes.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/aws_saa_split/`:
+- `3-19_databases_analytics_ml.txt`
+
+---
+
 ## [2026-06-25] - Ingestion: AWS Serverless (Lambda, API Gateway, DynamoDB & Cognito)
 
 ### Added

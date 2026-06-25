@@ -41,6 +41,14 @@ related_concepts:
   - "[[AWS IAM Identity Center]]"
   - "[[AWS Directory Services]]"
   - "[[AWS Control Tower]]"
+  - "[[Amazon Athena]]"
+  - "[[Amazon Redshift]]"
+  - "[[Amazon OpenSearch]]"
+  - "[[Amazon Neptune]]"
+  - "[[Amazon Timestream]]"
+  - "[[Amazon Keyspaces]]"
+  - "[[Amazon EMR]]"
+  - "[[AWS Glue]]"
 against:
   - "[[infra/openstack]]"
 reference_guides:

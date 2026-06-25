@@ -53,6 +53,8 @@ This index contains our Amazon Web Services (AWS) cloud architecture modules, de
   * Docker primitives, ECS clusters, Task/Execution roles, Fargate serverless, EKS nodes, and Auto Mode.
 - ⚡ **[Module 3-18: AWS Serverless (Lambda, API Gateway, DynamoDB & Cognito)](3-18_serverless.md)**
   * Lambda pricing/concurrency/SnapStart, API Gateway endpoints, DynamoDB modes/DAX/streams, and Cognito identity flows.
+- 📊 **[Module 3-19: AWS Databases, Analytics & Machine Learning Services](3-19_databases_analytics_ml.md)**
+  * Redshift data warehouse, Neptune graphs, Timestream time-series, Keyspaces Cassandra, Athena SQL, Glue catalog, Lake Formation security, MSK Kafka, and AWS ML/SageMaker models.
 
 ---
 
@@ -60,3 +62,4 @@ This index contains our Amazon Web Services (AWS) cloud architecture modules, de
 - 🚀 **[Project: Secure Load-Balanced Web API](../Projects/Systems%20Design/Project%20-%20Secure%20Load-Balanced%20Web%20API.md)**
 - ☸️ **[Project: ECS and EKS Cluster Deployments](../Projects/kubernetes/Project%20-%20ECS%20and%20EKS%20Cluster%20Deployments.md)**
 - ⚡ **[Project: Serverless REST API with Lambda and API Gateway](../Projects/kubernetes/Project%20-%20Serverless%20REST%20API%20with%20Lambda%20and%20API%20Gateway.md)**
+- 📊 **[Project: Athena S3 Access Log Analytics](../Projects/aws-cloudops/Project%20-%20Athena%20S3%20Access%20Log%20Analytics.md)**
