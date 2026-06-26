@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[Admission Controllers]]"
+parent_concept: "[[admission-controller]]"
 sub_type: use-case
 source_type: documentation
 source_url: "https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook"
@@ -15,7 +15,7 @@ tags:
 
 # Admission Controllers - ImagePolicyWebhook
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Admission Controllers]] > **ImagePolicyWebhook**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[admission-controller|Admission Controllers]] > **ImagePolicyWebhook**
 
 ---
 

@@ -93,7 +93,11 @@ If a Pod is already created and stuck in a `Pending` state (e.g., because no sch
 ### B. Labels and Selectors
 Labels and Selectors are the core grouping and loose-coupling mechanism in Kubernetes. Unlike traditional systems that group resources via hardcoded hierarchical paths or arrays of IDs, Kubernetes uses labels (metadata attached to objects) and selectors (queries used to filter those labels) to create dynamic, flexible relationships between resources.
 
-#### 1. Labels on Pods vs Nodes
+#### 1. Labels vs. Annotations (Purposes)
+* **Labels:** Attaching identifying metadata used to group, filter, and select objects. Selectors query labels to route traffic, scale replicas, or match scheduling constraints.
+* **Annotations:** Attaching non-identifying metadata (such as build info, client tool configurations, or API contract details). Unlike labels, annotations cannot be used by selectors to query or filter objects; they are intended for external tools, controllers, or API clients to store metadata.
+
+#### 2. Labels on Pods vs Nodes
 * **Pod Labels:** Key-value pairs attached to Pods at metadata level. They do not affect container execution but are used by controllers and Services to track, scale, and route traffic to Pods.
 * **Node Labels:** Attached to worker nodes to define physical or logical node characteristics (e.g., zone, rack, disk speed, hardware accelerator like GPUs).
   * *Default labels* are added automatically by Kubelet/cloud-provider:
@@ -115,7 +119,7 @@ Labels and Selectors are the core grouping and loose-coupling mechanism in Kuber
     kubectl label nodes worker-1 hardware=tpu --overwrite
     ```
 
-#### 2. Usage of Selectors in Kubernetes Components
+#### 3. Usage of Selectors in Kubernetes Components
 Selectors allow resources to dynamically find and bind to each other. Here is how different components use selectors:
 
 ```
@@ -133,7 +137,7 @@ Selectors allow resources to dynamically find and bind to each other. Here is ho
 * **Deployments & ReplicaSets (`spec.selector`):** Deployments use selectors to determine which Pods they own. When the ReplicaSet controller sees fewer Pods matching its selector than the desired `replicas` count, it creates new Pods. If it sees more, it deletes the excess Pods.
 * **NetworkPolicies (`spec.podSelector` / `spec.ingress.from.podSelector`):** NetworkPolicies use selectors to target a group of Pods and apply firewall rules, allowing traffic only from source Pods matching specific selectors.
 
-#### 3. Selectors Syntax & Matching Logic
+#### 4. Selectors Syntax & Matching Logic
 Kubernetes supports two levels of selector complexity:
 1. **Equality-Based Selectors:**
    * Matches keys and values exactly. Used in services, replication controllers, and `nodeSelector`.
@@ -225,6 +229,16 @@ A taint is applied to a node and consists of a `key`, a `value` (optional), and 
 * **Example:**
   ```bash
   kubectl taint nodes worker-1 dedicated=special-user:NoSchedule
+  ```
+* **Default Control Plane Taints:**
+  By default, Kubernetes cluster bootstrappers (like `kubeadm`) automatically taint control plane/master nodes to prevent application workloads from scheduling on them. The default taints used are:
+  * `node-role.kubernetes.io/master:NoSchedule` (legacy)
+  * `node-role.kubernetes.io/control-plane:NoSchedule` (modern)
+  To allow application pods to run on the control plane (e.g. in a single-node cluster), you can remove this taint using:
+  ```bash
+  kubectl taint nodes controlplane node-role.kubernetes.io/control-plane:NoSchedule-
+  # or for legacy nodes:
+  kubectl taint nodes controlplane node-role.kubernetes.io/master:NoSchedule-
   ```
 
 #### 2. Taint Effects
@@ -463,16 +477,18 @@ If you specify a selector that **matches****** no nodes in the cluster (e.g. `st
 Node Affinity provides a rich set of constraints that extends the capabilities of `nodeSelector` by using set-based matching expressions and soft preferences.
 
 #### 1. Rules: Required vs. Preferred
-Node Affinity has two main types of rules:
+Node Affinity has two main types of rules (plus a planned third type):
 1. **`requiredDuringSchedulingIgnoredDuringExecution` (Hard Affinity):**
    * The scheduler **must** find a node that matches the affinity rules. If no node matches, the Pod remains `Pending`.
 2. **`preferredDuringSchedulingIgnoredDuringExecution` (Soft Affinity):**
    * The scheduler tries to find a node that matches the rules. If it cannot, it will schedule the Pod on a non-matching node.
    * You can assign a `weight` (from 1 to 100) to each preferred rule. The scheduler calculates scores for each node by adding weights of satisfied affinity terms. The node with the highest score is selected.
+3. **`requiredDuringSchedulingRequiredDuringExecution` (Planned/Future Hard Execution Affinity):**
+   * If a node's labels change at runtime such that the node no longer matches the Pod's affinity requirements, the Pod is immediately evicted (terminated) from the node.
 
 > [!NOTE]
 > **What does "IgnoredDuringExecution" mean?**
-> If the labels of a node change while a Pod is running, or if the affinity rule changes, the running Pod **will not** be evicted from the node. It will continue to execute undisturbed. Only scheduling decisions are affected.
+> If the labels of a node change while a Pod is running, or if the affinity rule changes, the running Pod **will not** be evicted from the node under currently available types (since execution status is ignored). It will continue to execute undisturbed. Only scheduling decisions are affected. Once `requiredDuringSchedulingRequiredDuringExecution` is supported, execution will no longer be ignored for that type.
 
 #### 2. Match Expressions and Operator Logic
 Node affinity uses `nodeSelectorTerms` and `matchExpressions`.
@@ -1116,6 +1132,33 @@ kubectl get pods -A -w -o json | jq --unbuffered -c '. | select(.status.phase ==
   fi
 done
 ```
+
+---
+
+### H. DaemonSets (Node-Level Scheduling)
+A **DaemonSet** (`apps/v1`) ensures that a single copy of a specific Pod runs on all (or selected) nodes in the cluster.
+* **Scheduling Mechanics Evolution:**
+  * **Legacy Scheduling (Prior to v1.12):** The DaemonSet controller bypassed the `kube-scheduler` entirely by setting the `spec.nodeName` field directly on the Pod at creation time.
+  * **Modern Scheduling (v1.12+):** DaemonSets are **scheduler-driven**. The DaemonSet controller automatically adds Node Affinity rules (`requiredDuringSchedulingIgnoredDuringExecution`) to the Pod specification, and the default scheduler places the Pods onto their target nodes. This ensures DaemonSets respect scheduler features (like scheduling queue sorting, scheduling gates, and priority).
+* **Taints and Tolerations:** The DaemonSet controller automatically appends necessary tolerations to the Pod template to ensure that DaemonSet Pods (e.g. CNI plugins or log collectors) can schedule on tainted nodes (such as the default control plane node, or cordoned/unschedulable nodes).
+
+---
+
+### I. Static Pods
+**Static Pods** are managed directly by the Kubelet daemon on a specific node without the supervision or intervention of the control plane (API Server, Controller Manager, Scheduler).
+* **Kubelet Configuration Pathways:**
+  * **Manifest Path Flag:** Pass the `--pod-manifest-path` option to the Kubelet binary.
+  * **Config File Option (Common):** Pass `--config=/var/lib/kubelet/config.yaml` to the Kubelet, and specify `staticPodPath: /etc/kubernetes/manifests` inside the configuration file.
+* **Checking and Troubleshooting Static Pods:**
+  * **When API Server is Offline:** Since `kubectl` queries the API Server, running `kubectl get pods` will fail. You must access the host node and query the container runtime socket directly:
+    ```bash
+    crictl ps
+    # or for older Docker-based runtimes:
+    docker ps
+    ```
+  * **Mirror Pods & Naming Conventions:** When a node joins a cluster, the Kubelet creates a read-only **Mirror Pod** in the API Server for visibility. 
+    * Mirror Pod names follow the naming convention `<pod-name>-<node-name>` (e.g. `static-busybox-controlplane`).
+    * You cannot edit or delete a static pod via the API server (`kubectl delete pod` will delete the mirror pod representation, but the Kubelet will recreate it immediately). To delete the static pod, you must delete its manifest file from the node's static pod directory.
 
 ---
 
@@ -2026,4 +2069,7 @@ The `NodeResourcesFit` score plugin supports bin-packing strategies to maximize 
 * [Module 07: Kubernetes Workloads & Controllers](0-6_kubernetes_workloads_and_controllers.md) - Comprehensive specifications of ReplicaSets, Deployments, DaemonSets, and Static Pods.
 * [Module 08: Security and Network Policies](0-7_security_and_network_policies.md) - Covers ServiceAccounts, securityContexts, and detailed TLS configurations.
 * [Module 12: Troubleshooting and Diagnostics](0-11_troubleshooting_and_diagnostics.md) - Operational playbooks for resolving node and control plane failures.
+
+### 📖 Sources & Ingested Transcripts
+- CKA Course Transcript Segment: `inflow/cka_split/06_scheduling_and_placements.txt`
 

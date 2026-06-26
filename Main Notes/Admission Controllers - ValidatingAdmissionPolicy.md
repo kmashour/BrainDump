@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[Admission Controllers]]"
+parent_concept: "[[admission-controller]]"
 sub_type: core-concept
 source_type: documentation
 source_url: "https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/"
@@ -16,7 +16,7 @@ tags:
 
 # Admission Controllers - ValidatingAdmissionPolicy
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Admission Controllers]] > **ValidatingAdmissionPolicy**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[admission-controller|Admission Controllers]] > **ValidatingAdmissionPolicy**
 
 ---
 

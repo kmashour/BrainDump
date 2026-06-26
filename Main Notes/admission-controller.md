@@ -6,6 +6,7 @@ role: control-plane
 domains:
   - "kubernetes"
   - "security"
+aliases: ["Admission Controllers", "Admission Controller"]
 related_concepts:
   - "[[kube-apiserver]]"
   - "[[pod-security-admission]]"
@@ -33,15 +34,18 @@ tags:
 
 ## ⚙️ Functionality (What it is doing)
 *   **Request Interception:** Every write/modify request (Create, Update, Delete) is checked by the enabled admission controller chain. Read requests (Get, List, Watch) bypass them.
-*   **Dual Phases:** Operating in two phases:
-    1.  **Mutating Phase:** Modifies or injects defaults into the incoming request (e.g. adding a default StorageClass or injecting sidecar containers).
-    2.  **Validating Phase:** Audits the final request configuration and either allows or rejects it based on custom rules (e.g. block running as root).
-*   **Dynamic Extension:** Can call out to external custom webhooks (`MutatingAdmissionWebhook`, `ValidatingAdmissionWebhook`).
+*   **Dual Phases Execution:** 
+    1.  **Mutating Phase (First):** Modifies or injects defaults into the incoming request (e.g. `DefaultStorageClass` assigning a storage class, or `NamespaceAutoProvision` creating a namespace).
+    2.  **Schema Validation (Second):** Validates the mutated object against the OpenAPI v3 schema.
+    3.  **Validating Phase (Third):** Audits the final request configuration and either allows or rejects it based on custom rules (e.g. `NamespaceLifecycle` blocking deletions of default namespaces).
+*   **Dynamic Extension:** Calls out to external custom HTTPS webhooks:
+    *   **Mutating Webhooks:** Invoked sequentially during the mutating phase to inject sidecars or default fields.
+    *   **Validating Webhooks:** Invoked in parallel during the validating phase to reject or accept the final request.
 
 ---
 
 ## 🏛️ Architectural Context (How it fits in the architecture)
-Admission controllers run inside the `kube-apiserver` process. The order of execution is critical: mutating controllers run first, followed by validating controllers, ensuring that any mutations are validated.
+Admission controllers run in-process inside the `kube-apiserver` binary. The order of execution is critical: mutating controllers run first, followed by validating controllers, ensuring that any mutations are audited by the validating phase before being written to `etcd`. If any controller rejects the request, the entire transaction is immediately aborted.
 
 ---
 

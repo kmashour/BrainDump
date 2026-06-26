@@ -115,7 +115,7 @@ This roadmap outlines the exact step-by-step sequence you should follow when stu
    * [[api-security - Defenses]] - Hardening API server endpoints.
    * [[rbac]] - Creating Role, ClusterRole, RoleBinding, and ClusterRoleBinding resources.
    * [[Node Bootstrap and TLS Bootstrapping]] - Secure kubelet client cert rotation.
-   * [[Admission Controllers]] - Intercepting requests after authorization.
+   * [[admission-controller|Admission Controllers]] - Intercepting requests after authorization.
    * [[Admission Webhooks - Mutating and Validating]] - Extending admission logic dynamically.
    * [[pod-security-admission]] - Built-in admission standards.
 

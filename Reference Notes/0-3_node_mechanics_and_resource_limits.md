@@ -567,3 +567,7 @@ Resources Measurement units in Kubernetes  :
 - [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Outlines the role of the control plane (scheduler, controller-manager, API server) in coordinating with Kubelets.
 - [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md) - Details how eviction triggers restarts and replication controller healing.
 - [Module 05: Containers, Runtimes, and Lifecycle Management](0-5_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.
+
+### 📖 Sources & Ingested Transcripts
+- CKA Course Transcript Segment: `inflow/cka_split/06_scheduling_and_placements.txt`
+

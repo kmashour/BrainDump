@@ -8,7 +8,7 @@ sub_concepts:
   - "[[Node Conditions and Hard Eviction Thresholds]]"
   - "[[Kubelet Heartbeats & The Lease API]]"
   - "[[CRI Socket Communication]]"
-  - "[[Static Pods]]"
+  - "[[static-pod]]"
 use_cases:
   - "[[Inspecting kubelet systemd service logs]]"
 external_links:

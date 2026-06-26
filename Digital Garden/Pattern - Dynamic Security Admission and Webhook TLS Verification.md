@@ -7,7 +7,7 @@ domains:
   - "security"
 components:
   - "[[kube-apiserver]]"
-  - "[[Admission Controllers]]"
+  - "[[admission-controller]]"
 sources:
   - "Kubernetes Extensible Admission Control Docs"
 tags:

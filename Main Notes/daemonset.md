@@ -30,7 +30,8 @@ A `DaemonSet` ensures that all (or some) Nodes run a single copy of a Pod. It is
 
 ## ⚙️ Functionality (What it is doing)
 * **Host Co-location:** Automatically schedules a copy of the declared Pod to every newly joined Node in the cluster.
-* **Tolerations Overrides:** Bypasses normal scheduling rules, automatically adding tolerations (e.g. `node.kubernetes.io/unschedulable`) to schedule on control plane or cordoned nodes.
+* **Tolerations Overrides:** Bypasses normal scheduling rules, automatically adding tolerations (e.g. `node.kubernetes.io/unschedulable`, `node.kubernetes.io/not-ready`) to schedule on control plane or cordoned nodes.
+* **Scheduler-Driven Placement (v1.12+):** Historically (prior to v1.12), the DaemonSet controller scheduled pods by writing `spec.nodeName` directly to bypass the scheduler. In v1.12+, it uses the default scheduler under the hood by generating Node Affinity rules (`requiredDuringSchedulingIgnoredDuringExecution`) on the Pod specs, resolving race conditions and allowing scheduler features (like priority/preemption) to apply.
 * **Automatic Eviction:** Terminates the target Pod copy when its parent Node is removed from the cluster.
 
 ---

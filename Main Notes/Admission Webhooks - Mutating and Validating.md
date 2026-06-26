@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[Admission Controllers]]"
+parent_concept: "[[admission-controller]]"
 sub_type: core-concept
 source_type: documentation
 against: []
@@ -13,7 +13,7 @@ tags:
 
 # Admission Webhooks - Mutating and Validating
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Admission Controllers]] > **Admission Webhooks - Mutating and Validating**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[admission-controller|Admission Controllers]] > **Admission Webhooks - Mutating and Validating**
 
 ---
 
