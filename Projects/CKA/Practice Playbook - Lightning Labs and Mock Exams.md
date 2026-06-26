@@ -1917,3 +1917,235 @@ $ kubectl exec tester -it -- nslookup my-service.default.svc > /opt/some-file.tx
 
 ---
 
+# Section 5: Ultimate Mock Exams & High-Density Exam Scenarios
+
+This section focuses on advanced scenarios encountered in the Ultimate Mock Exam series, simulating complex multi-cluster context transitions, container runtime bootstrapping, autoscaler optimization, modern routing interfaces (Gateway API), and Helm lifecycle operations.
+
+---
+
+## 1. Multi-Cluster Context Navigation & Boundary Traversal
+In high-density exam environments, operations are performed across multiple distinct clusters. You must explicitly verify and set context boundaries before executing tasks.
+
+### A. Context Mapping & Auditing Commands
+* **Retrieve All Available Clusters:**
+  ```bash
+  kubectl config get-clusters
+  ```
+* **Retrieve All Configured Contexts:**
+  ```bash
+  kubectl config get-contexts
+  ```
+* **Switch Active Context:**
+  ```bash
+  kubectl config use-context cluster3
+  ```
+
+### B. Node SSH & Privilege Escalation
+In multiple cluster topologies, the main terminal runs on a central client node (`student-node`). Direct host access requires traversing the network boundary:
+1. **SSH to Target Node:**
+   ```bash
+   ssh Bob@node01
+   ```
+2. **Escalate to root Privileges:**
+   ```bash
+   sudo -i
+   # Or switch shell user:
+   sudo su
+   ```
+
+---
+
+## 2. Advanced Autoscaling & Traffic Routing Manifests
+
+### A. Horizontal Pod Autoscaler (HPA) with Stabilization Window
+Scale down rules can cause rapid fluctuations ("thrashing" or "flapping") when traffic drops briefly. To cautiously scale down pods, implement a `behavior` block specifying a stabilization window:
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: webapp-hpa
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kkapp-deploy
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 300 # Wait 5 minutes before reclaiming replicas
+```
+
+### B. Vertical Pod Autoscaler (VPA) with Auto-recreate
+Unlike HPA (which adds replicas), VPA adjusts the resource limits (CPU/Memory) of existing containers. When set to `Auto` mode, VPA is permitted to evict and recreate pods to apply the new resources:
+
+```yaml
+apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: analytics-vpa
+  namespace: default
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: analytics-deployment
+  updatePolicy:
+    updateMode: Auto # Automatically evicts and redeploys pods with resized specifications
+```
+
+### C. Gateway API Resource (Modern Ingress Alternative)
+The Gateway API separates configuration responsibilities between cluster operators (provisioning infrastructure Gateways) and application developers (defining routing paths via HTTPRoutes).
+
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-gateway
+  namespace: nginx-gateway
+spec:
+  gatewayClassName: nginx # Maps to the ingress controller GatewayClass implementation
+  listeners:
+  - name: http
+    protocol: HTTP
+    port: 80
+    allowedRoutes:
+      namespaces:
+        from: Same
+```
+
+---
+
+## 3. Helm Client-Side Release Lifecycle
+During local application audits, you must fetch remote chart modifications and apply upgrades using the `helm` client:
+
+1. **List Active Releases in a Specific Namespace:**
+   ```bash
+   helm list -n kk-ns
+   ```
+2. **Update Remote Repositories:** Fetch the latest chart version definitions:
+   ```bash
+   helm repo update
+   ```
+3. **Search for All Available Versions of a Chart:**
+   ```bash
+   helm search repo nginx --versions
+   ```
+4. **Upgrade an Existing Release to a Mapped Version:**
+   ```bash
+   helm upgrade kk-mock1 kk-mock1/nginx --version 18.1.5 -n kk-ns
+   ```
+
+---
+
+## 4. Quick-Fire Hands-On Diagnostic Playbooks
+
+### Scenario A: Secret Metadata Retrieval & Base64 Decoding
+* **Goal:** Extract an encrypted database password from a secret in namespace `prod` and write the decrypted text to `/root/db-password.txt` on the student node.
+* **CLI Command:**
+  ```bash
+  kubectl get secret beta-sec-cka14-arch -n prod -o jsonpath='{.data.password}' | base64 -d > /root/db-password.txt
+  ```
+
+### Scenario B: Bare-Metal Container Runtime (cri-dockerd) Bootstrapping
+* **Goal:** Install and enable a container runtime package (`cri-docker`) on a worker node.
+* **Playbook:**
+  1. SSH to the target worker node and escalate to root:
+     ```bash
+     ssh Bob@node01
+     sudo -i
+     ```
+  2. Install the local Debian package using `dpkg`:
+     ```bash
+     dpkg -i /root/cri-dockerd_*.deb
+     ```
+  3. Start the systemd service and configure it to run persistently on system boot:
+     ```bash
+     systemctl start cri-docker
+     systemctl enable cri-docker
+     ```
+  4. Verify the active status:
+     ```bash
+     systemctl is-enabled cri-docker && systemctl status cri-docker
+     ```
+
+### Scenario C: Init Container Command Typo Crash-Loops
+* **Goal:** Resolve a pod stuck in `Init:CrashLoopBackOff` or `Init:Error`.
+* **Playbook:**
+  1. Fetch the logs of the crashing init container:
+     ```bash
+     kubectl logs orange -c init-my-service
+     # Resulting error: "sleeeep: command not found" (typo in sleep binary)
+     ```
+  2. Export the pod manifest:
+     ```bash
+     kubectl get pod orange -o yaml > orange.yaml
+     ```
+  3. Edit `orange.yaml` using `vi`/`sed` to change `sleeeep` to `sleep`.
+  4. Force replace the immutable pod:
+     ```bash
+     kubectl replace --force -f orange.yaml
+     ```
+
+### Scenario D: Service NodePort Custom Port Assignment
+* **Goal:** Expose the `hr-web-app` deployment on a static NodePort `30082`.
+* **Playbook:**
+  1. Imperatively generate the service template manifest:
+     ```bash
+     kubectl expose deployment hr-web-app --type=NodePort --port=8080 --name=hr-web-app-service --dry-run=client -o yaml > svc.yaml
+     ```
+  2. Add `nodePort: 30082` under the service ports spec inside `svc.yaml`:
+     ```yaml
+     spec:
+       ports:
+       - port: 8080
+         protocol: TCP
+         targetPort: 8080
+         nodePort: 30082 # <-- Add this static port mapping
+     ```
+  3. Apply the resource:
+     ```bash
+     kubectl apply -f svc.yaml
+     ```
+
+### Scenario E: HostPath Persistent Volume Setup
+* **Goal:** Provision a local-host persistent volume `pv-analytics` mapping to directory `/pv/data-analytics`.
+* **PV Manifest (`pv.yaml`):**
+  ```yaml
+  apiVersion: v1
+  kind: PersistentVolume
+  metadata:
+    name: pv-analytics
+  spec:
+    capacity:
+      storage: 100Mi
+    volumeMode: Filesystem
+    accessModes:
+      - ReadWriteMany
+    hostPath:
+      path: /pv/data-analytics
+  ```
+* **Apply Command:**
+  ```bash
+  kubectl apply -f pv.yaml
+  ```
+
+### Scenario F: Custom Resource Definition (CRD) Metadata Auditing
+* **Goal:** Save the names of all Vertical Pod Autoscaler CRDs present in the cluster to `/root/vpa-crds.txt`.
+* **CLI Command:**
+  ```bash
+  kubectl get crd | grep -i vertical | awk '{print $1}' > /root/vpa-crds.txt
+  ```
+
+---
+
+

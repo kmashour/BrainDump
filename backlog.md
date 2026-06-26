@@ -4,6 +4,24 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA Labs, Exams, and Conclusion Transcript
+
+### Refactored / Upgraded
+- **Projects & Playbooks:**
+  - Expanded [[Projects/CKA/Practice Playbook - Lightning Labs and Mock Exams.md|Practice Playbook - Lightning Labs and Mock Exams.md]] to add Section 5 ("Ultimate Mock Exams & High-Density Exam Scenarios"):
+    - Documented multi-cluster context management (`kubectl config use-context`) and boundary traversal commands.
+    - Added Horizontal Pod Autoscaler (HPA) specifications detailing CPU target utilization and the scaleDown stabilization window.
+    - Added Vertical Pod Autoscaler (VPA) autoscaling auto update mode configs.
+    - Documented Gateway API resource schemas for modern routing configurations.
+    - Compiled quick-fire troubleshooting playbooks for base64 secret decoding, local package runtime installation (`cri-docker` via `dpkg`), init container command spelling typo recoveries, custom NodePort service maps, PersistentVolume hostPath setups, and CRD listing and sorting filters.
+    - Documented Helm repository updating and release version upgrades.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/cka_split/`:
+- `17_labs_exams_and_conclusion.txt`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA Troubleshooting Transcript
 
 ### Refactored / Upgraded
