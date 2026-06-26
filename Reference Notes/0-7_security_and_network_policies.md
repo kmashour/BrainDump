@@ -282,6 +282,13 @@ spec:
     - --etcd-keyfile=/etc/kubernetes/pki/apiserver-etcd-client.key
 ```
 
+> [!NOTE]
+> **Dual-CA Architecture & Blast Radius Isolation (The "Dual-Citizen" API Server):**
+> * **The Isolation (Why):** ETCD holds the cluster's state and secrets. The primary Kubernetes CA (`/etc/kubernetes/pki/ca.crt`) signs credentials for scheduler, controller manager, kubelets, and admin users. If a worker node is compromised, we prevent the attacker from querying ETCD directly by giving ETCD its own completely isolated Private Root CA (`/etc/kubernetes/pki/etcd/ca.crt`). Even if the main K8s CA is compromised, ETCD remains secured because it only trusts client certificates signed by its own CA.
+> * **The Bridge (How):** The `kube-apiserver` acts as the exclusive entry point and "dual-citizen" bridging the two isolated certificate authorities:
+>   1. **Server Identity (Cluster-Facing):** Signed by the main Kubernetes CA (`apiserver.crt`). This is served to `kubectl` and worker node `kubelet` processes.
+>   2. **Client Identity (ETCD-Facing):** Signed by the ETCD CA (`apiserver-etcd-client.crt`). The API server presents this specific certificate to ETCD on port `2379` to query or write data. No other component in the cluster is given this client certificate.
+
 #### ETCD Config Highlights (`/etc/kubernetes/manifests/etcd.yaml`):
 ```yaml
 spec:

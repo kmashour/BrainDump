@@ -4,6 +4,18 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA ETCD Private CA Architecture
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] to incorporate the architectural explanation of the separate Private Root CA for ETCD and the "Dual-Citizen" API server configuration bridging the isolated security domains.
+
+### Ingested Inflow Sources
+Processed and integrated the following file from `inflow/`:
+- `CKA_ETCD_PrivateCA.md`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA Labs, Exams, and Conclusion Transcript
 
 ### Refactored / Upgraded
