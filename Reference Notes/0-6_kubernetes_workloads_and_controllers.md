@@ -1657,6 +1657,67 @@ Helm packages multiple interdependent resources into a single versioned unit cal
 ### 14.2 Kustomize: Template-Free Customization
 Kustomize is a template-free tool built directly into `kubectl` (via `kubectl apply -k <dir>`). It uses a `kustomization.yaml` file to apply overlays and patches on top of a common set of base manifests (allowing dev/staging/prod variance).
 
+#### 14.2.1 Kustomize vs. Helm (Conceptual Comparison)
+*   **Helm (Template-Based):**
+    - Uses Go templating syntax (`{{ .Values.parameter }}`).
+    - Manifests are not valid YAML on their own and must be compiled.
+    - Highly functional (supports loops, conditionals, hooks, package repositories, and rollback state history).
+    - Can become hard to read when heavily parameterized.
+*   **Kustomize (Overlay-Based):**
+    - Template-free customization.
+    - All base manifests and overlay patches are 100% valid Kubernetes YAML.
+    - Built-in directly to `kubectl`, requiring no additional binaries for basic apply workflows.
+    - Simple and readable, but lacks loops, conditionals, and package management repository structures.
+
+#### 14.2.2 Common Transformers
+Kustomize provides standard transformers to apply settings globally across all resources imported by a `kustomization.yaml`:
+*   **`namespace`:** Places all imported resources into a specific namespace.
+    ```yaml
+    namespace: dev-namespace
+    ```
+*   **`namePrefix` / `nameSuffix`:** Prepends or appends a string to the names of all resources.
+    ```yaml
+    namePrefix: dev-
+    nameSuffix: -v1
+    ```
+*   **`commonLabels`:** Adds a common set of labels to all resources.
+    ```yaml
+    commonLabels:
+      environment: development
+      team: backend
+    ```
+*   **`commonAnnotations`:** Injects annotations across all resources.
+    ```yaml
+    commonAnnotations:
+      monitoring: prometheus
+    ```
+
+#### 14.2.3 Surgical Modifications: Patches
+When global transformations are too broad, patches allow targeting specific resources. Kustomize supports two main patch styles:
+1.  **Strategic Merge Patch:** Overrides fields by supplying a partial standard Kubernetes manifest. Kustomize merges the fields automatically based on matching API Version, Kind, and Name.
+    *   *Example (Scale replicas to 5):*
+        ```yaml
+        # replica-patch.yaml
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: api-deployment
+        spec:
+          replicas: 5
+        ```
+2.  **JSON 6902 Patch:** Performs precise operations (`add`, `remove`, `replace`) targeting specific path coordinates inside a resource.
+    *   *Example (Change a label component):*
+        ```yaml
+        patches:
+          - target:
+              kind: Deployment
+              name: api-deployment
+            patch: |
+              - op: replace
+                path: /spec/template/metadata/labels/component
+                value: web
+        ```
+
 #### Crucial Alignment: Deprecated `bases` vs. `resources`
 *   **Deprecated Syntax:** Historically, Kustomize configurations referenced bases using:
     ```yaml

@@ -4,6 +4,21 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA Kustomize Basics Transcript
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md|0-6_kubernetes_workloads_and_controllers.md]] to incorporate Kustomize concepts:
+    - Added conceptual comparison matrix between Helm (template-based) and Kustomize (overlay-based).
+    - Documented common transformers: `namespace`, `namePrefix`/`nameSuffix`, `commonLabels`, and `commonAnnotations`.
+    - Detailed surgical modification types: Strategic Merge Patches and JSON 6902 Patches (op: add/remove/replace).
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/cka_split/`:
+- `15_kustomize_basics.txt`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA Helm Basics Transcript
 
 ### Refactored / Upgraded
