@@ -28,6 +28,9 @@ deeper_dive: "[[kube-proxy-deeper]]"
 ## 🎯 Purpose (Why it is used)
 `kube-proxy` is a network agent that runs on every node in the cluster. Its purpose is to implement the Kubernetes Service concept, enabling network communication and load balancing to Pods from both inside and outside the cluster.
 
+> [!TIP] Conceptual Analogy (Mumshad's CKA)
+> In a shipping port analogy, `kube-proxy` represents the **Port Services / Communications Office**. It installs and maintains the communication rules on each cargo ship (worker node) to ensure that containers running on different ships can reach and talk to each other (e.g., routing web server traffic on one ship to database container on another).
+
 ---
 
 ## ⚙️ Functionality (What it is doing)

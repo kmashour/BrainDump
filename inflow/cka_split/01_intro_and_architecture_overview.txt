@@ -1,0 +1,390 @@
+
+
+=== Introduction ===
+
+
+--- Course Introduction ---
+
+(upbeat music)
+-: Kubernetes is one of the highest trending technology
+in cloud computing, as of today.
+Kubernetes had the fastest growth in job searches,
+over 173% from a year before.
+My name is Mumshad Mannambeth
+and this is the certified Kubernetes Administrators course.
+Kubernetes is the go-to platform
+for hosting production grade applications.
+Currently, demand for engineers
+with knowledge on Kubernetes is on the rise,
+and it is the right time
+to get your Kubernetes certification
+to stand out in the market.
+However, it is not that easy,
+especially as the exam is practical and hands-on.
+You need to know the technology
+and you need to have enough practice to make it work
+(upbeat music)
+Which is why in this course,
+we first understand various concepts
+using illustrations and animations,
+combined with some fun analogies
+to break down and simplify complex concepts.
+We then design and build our own custom cluster from scratch
+and finally run end-to-end tests
+to validate that our cluster is fully functional.
+(upbeat music)
+More importantly, we have coding exercises
+where you will practice solving Kubernetes coding challenges
+in a live Kubernetes environment, right in your browser.
+Yes, you don't need to have a high-end system
+or access to cloud platforms
+or worry about cloud costs to gain practice.
+We will provide you access to actual lab environments
+and challenges to practice on.
+Our labs are unique,
+as in we don't provide a blank environment
+and give you instructions to copy and paste.
+Instead, every lab is created specifically
+for the topic you just learned
+and you're asked questions to explore
+and identify information in the lab
+or do specific tasks.
+And your job is to figure out how to do those tasks.
+So, we will validate your work
+and give you feedback instantly.
+In case you're stuck,
+we have hints and solutions to help you.
+We have hundreds of such exercises
+that will give you enough practice
+to be confident to appear for the exam.
+(upbeat music)
+This course has helped thousands of students
+clear the certification exam with good grades.
+(upbeat music)
+You will also have exclusive access
+to a community through Slack channel
+where you can interact with me
+and others and other students
+and get your doubts cleared.
+The exam gets updated every quarter or so,
+and we make sure our courses are updated as well.
+Over the past three years,
+we have released multiple updates to our courses
+to ensure the contents are up to date
+with the latest changes in the exams.
+You can see a release history
+in the beginning of the course.
+(upbeat music)
+We're also a CNCF certified Kubernetes training partner
+so you can rest assured that you are in safe hands.
+We're so sure you'll benefit from our course
+that we offer a 30-day money back guarantee
+so there's nothing for you to lose.
+So jump right in, enroll today and I'll see you in class.
+(upbeat music)
+
+--- Certification ---
+
+Hello and welcome to this lecture.
+In this lecture we look at some of the details around the Certified Kubernetes Administrators program.
+What is it, why you need it, and how to prepare for it.
+There is no doubt about the fact that the adoption of Kubernetes is expected to grow exponentially in
+the coming years, as seen in the graph from Google Trends.
+As per a recent survey conducted by indeed, Kubernetes had the fastest growth in job searches over
+173% from a year before.
+And so it is important for us to be prepared to establish credibility and value in the market.
+The Kubernetes Administrator certification, developed by Cloud Native Computing Foundation in collaboration
+with the Linux Foundation, does just that.
+It helps you stand out in the crowd and allows companies to quickly hire high quality engineers like
+you.
+On attaining the certification, you will be certified to design, build and administer highly available
+Kubernetes clusters.
+You can read more about the certification at CNCF certification.
+The exam includes one.
+Free retake.
+In case you don't manage to pass on the initial attempt, you have one more attempt available for free
+within the next 12 months.
+The mode of delivery is online.
+You can deliver the exam anytime, anywhere, at the comfort of your house.
+Since this is an online exam and online proctor will be watching you at all times.
+There are a set of requirements that need to be met with respect to the environment.
+The room you're attending, the exam from, the system you're using to give the test, your network
+connectivity, etc. all of these are described in detail in the Candidate Handbook available on the
+certification website.
+Unlike most of the certification exams out there, the Kubernetes certification is not a multiple choice
+exam.
+It is an online performance based exam that tests your hands on skills with technology.
+This would mean that you don't have to worry about memorizing lots of different numbers in preparation
+for the exam.
+However, you need to know how the technology works and how you can get it to work.
+You will be given different tasks to complete in a set amount of time, which happens to be three hours
+for this exam.
+As per the exam guidelines, you will however, be able to refer to the Kubernetes official documentation
+pages at all times during the exam and in this course, we will walk through how to make best use of
+the documentation site so that you can easily locate the right information.
+Well, I wish you good luck in preparing for and delivering the Kubernetes certification exam, and
+I'm sure with enough practice you will pass with flying colors.
+So let us begin.
+
+
+=== Core Concepts ===
+
+
+--- Course Release Notes ---
+
+[No transcript available for this lecture]
+
+
+=== Scheduling ===
+
+
+--- The Kubernetes Trilogy ---
+
+-: Hello there.
+Before we begin, I wanna spend a minute
+on the Kubernetes series of courses.
+Kubernetes is one of the most trending technology
+in cloud computing as of today.
+It is supported on any cloud platform
+and supports hosting enhanced and complex applications
+on various kinds of architectures
+that make it a vast and complex technology.
+There are a set of prerequisite knowledge required
+such as containers, applications, yammel files, et cetera.
+A lot of topics to discuss,
+a lot of concepts to cover
+such as the architecture, networking, load balancing,
+a variety of monitoring tools,
+auto scaling, configuration, security storage, et cetera.
+There are students from different backgrounds
+such as the absolute beginners to Kubernetes
+or those with some experience
+looking for specialized knowledge in administration
+or those from an application development background.
+And there are two certifications in the mix as well,
+one for the administrators
+and another for the application developers.
+Covering all of these topics for all of these students
+in a single course is an impossible task,
+which is why we created a three course series
+so each course can target specific audience,
+topics, and certifications.
+The Kubernetes for the Absolute Beginner's course,
+The Certified Kubernetes Administrators course,
+and The Certified Kubernetes Application Developers course.
+Let's look at what we cover in each of these courses.
+The Kubernetes for the Absolute Beginner's course
+helps a beginner having no prior experience
+with containers or container orchestration
+get started with the concepts of Kubernetes.
+As this is a beginner's course,
+we do not deep dive into technical details.
+Instead, we focus on a high level overview of Kubernetes,
+setting up a symbol lab environment to play with Kubernetes,
+learning the prerequisites
+required to understand and get started,
+understanding the various concepts to deploy an application
+such as pods, replica sets, deployments, and services.
+This course is also suitable for a non-technical person
+trying to understand the basic concepts of Kubernetes
+just enough to get involved in discussions
+around technology.
+The Kubernetes for Administrators course
+focuses on advanced topics on Kubernetes
+and in-depth discussions into the various concepts
+around deploying a high availability cluster
+for production use case,
+understanding more about scheduling, monitoring,
+maintenance, securities, storage, and troubleshooting.
+This course also helps you prepare
+for the certified Kubernetes administrator exam
+and gets you verified as a Kubernetes administrator.
+The Kubernetes for Developers course
+is for application developers
+who are looking to learn how to design, build,
+and configure cloud native applications.
+Now, you don't have to be
+an expert application developer for this course,
+and there's no real coding or application development
+involved in either this course or the certification itself.
+You only need to know the real basics of development
+on a platform like Python or Node.js.
+This course focuses on topics relevant
+for a developer such as ConfigMaps,
+secrets and service accounts,
+multi container pods, readiness and liveness probes,
+logging and monitoring, jobs, services, and networking.
+This course also helps you prepare
+for the certified Kubernetes application developer exam.
+All of these courses are filled with coding exercises
+and quizzes that will help you practice developing
+and deploying applications on Kubernetes.
+Now, remember, that there are some topics
+that overlap between these courses,
+so we recap and discuss them as and when required.
+Now, you don't have to take these courses in order.
+If you're an administrator,
+you may choose to take the beginners
+as well as the second course
+and get yourself certified as a Kubernetes administrator
+or take the beginner's course and the developer's course
+to get yourself certified
+as a Kubernetes application developer,
+which I'd say is the easier of the two
+if you were to ask me.
+So, if you're ready, let's get started.
+
+
+=== Logging & Monitoring ===
+
+
+--- Notes available at KodeKloud Notes ---
+
+[No transcript available for this lecture]
+
+
+=== Application Lifecycle Management ===
+
+
+--- Core Concepts - Section Introduction ---
+
+-: Hello.
+In the first section, we start with the core concepts.
+We look at the cluster architecture at a high level
+and then look at some of the API primitives,
+such as the basic concepts
+like Pods, ReplicaSets, Deployments,
+followed by services.
+If you have attended the beginner's course
+or other certification course for application developers,
+then you might want to skip some of these topics
+or maybe just go through the practice tests alone.
+We will now start with the cluster architecture.
+
+
+=== Cluster Maintenance ===
+
+
+--- Cluster Architecture ---
+
+We start with a basic overview of the Kubernetes cluster architecture.
+We first look at the architecture at a high level, and then we drill down into each of these components.
+We see what their roles and responsibilities are and how they are configured.
+And finally, you go through a practice test where you look at an existing cluster and are asked to
+identify various details with respect to these components in the cluster.
+We're going to use an analogy of ships to understand the architecture of Kubernetes.
+The purpose of Kubernetes is to host your applications in the form of containers in an automated fashion,
+so that you can easily deploy as many instances of your application as required, and easily enable
+communication between different services within your application.
+So there are many things involved that work together to make this possible.
+So let's take a 10,000 foot look at Kubernetes architecture.
+Sector.
+We have two kinds of shapes in this example cargo ships that does the actual work of carrying containers
+across the sea, and control ships that are responsible for monitoring and managing the cargo ships.
+The Kubernetes cluster consists of a set of nodes, which may be physical or virtual, on premise or
+on cloud, that host applications in the form of containers.
+These relate to the cargo ships.
+In this analogy, the worker nodes in the cluster are ships that can load containers, but somebody
+needs to load the containers on the ships and not just load.
+Plan how to load.
+Identify the right ships.
+Store information about the ships.
+Monitor and track the location of containers on the ships.
+Manage the whole loading process, etc..
+This is done by the control ships that host different offices and departments.
+Monitoring equipment's, communication equipments, cranes for moving containers between ships, etc..
+the control shifts relate to the master node in the Kubernetes cluster.
+The master node is responsible for managing the Kubernetes cluster, storing information regarding the
+different nodes, planning which containers goes where, monitoring the nodes and containers on them,
+etc..
+The master node does all of these using a set of components together known as the control plane components.
+We will look at each of these components now.
+Now there are many containers being loaded and unloaded from the ships on a daily basis.
+And so you need to maintain information about the different ships, what container is on which ship
+and what time it was loaded, etc. all of these are stored in a highly available key value store known
+as etcd.
+Etcd is a database that stores information in a key value format.
+We will look more into what etcd cluster actually is, what data is stored in it, and how it stores
+the data in one of the upcoming lectures.
+When ships arrive, you load containers on them using cranes.
+The cranes identify the containers that need to be placed on ships.
+It identifies the right ship based on its size, its capacity, the number of containers already on
+the ship, and any other conditions such as the destination of the ship, the type of containers it
+is allowed to carry, etc. so those are schedulers.
+In a Kubernetes cluster, a scheduler identifies the right node to place a container on based on the
+containers resource requirements, the worker nodes capacity, or any other policies or constraints
+such as taints and tolerations or node affinity rules that are on them.
+We will look at these in much more detail with examples and practice tests later in this course.
+We have a whole section on scheduling alone.
+There are different offices in the dock that are assigned to special tasks or departments.
+For example, the operations team takes care of ship handling, traffic control, etc. they deal with
+issues related to damages, the routes the different ships take, etc. the cargo team takes care of
+containers when containers are damaged or destroyed.
+They make sure new containers are made available.
+We have these services office that takes care of the IT and communications between different ships.
+Similarly, in Kubernetes we have controllers available that take care of different areas.
+The node controller takes care of nodes.
+They're responsible for onboarding new nodes to the cluster, handling situations where nodes become
+unavailable or get get destroyed, and the replication controller ensures that the desired number of
+containers are running at all times in a replication group.
+So we have seen different components like the different offices, the different ships, the data store,
+the cranes.
+But how do these communicate with each other?
+How does one office reach the other office, and who manages them all at a high level?
+The cube API server is the primary management component of Kubernetes.
+The cube API server is responsible for orchestrating all operations within the cluster.
+It exposes the Kubernetes API, which is used by external users to perform management operations on
+the cluster, as well as the various controllers to monitor the state of the cluster and make necessary
+changes as required by the worker nodes to communicate with the server.
+Now we are working with containers here.
+Containers are everywhere, so we need everything to be container compatible.
+Our applications are in the form of containers.
+The different components that form the entire management system on the master node could be hosted in
+the form of containers.
+The DNS service networking solution can all be deployed in the form of containers.
+So we need this software that can run containers and that's the container runtime engine.
+A popular one being Docker.
+So we need Docker or its supported equivalent installed on all the nodes in the cluster, including
+the master nodes.
+If you wish to host the control plane components as containers.
+Now it doesn't always have to be Docker.
+Kubernetes supports other runtime engines as well, like container D or rocket.
+Let us now turn our focus onto the cargo ships.
+Now every ship has a captain.
+The captain is responsible for managing all activities on these ships.
+The captain is responsible for liaising with the master ships, starting with letting the mastership
+know that they are interested in joining the group.
+Receiving information about the containers to be loaded on the ship and loading the appropriate containers
+as required.
+Sending reports back to the master about the status of this ship and the status of the containers on
+the ship, etc..
+Now the captain of the ship is the kubelet in Kubernetes.
+A kubelet is an agent that runs on each node in a cluster.
+It listens for instructions from the kube API server and deploys or destroys containers on the nodes
+as required.
+The kube API server periodically fetches status reports from the Kubelet to monitor the status of nodes
+and containers on them.
+The Kubelet was more of a captain on the ship that manages containers on the ship.
+But the applications running on the worker nodes need to be able to communicate with each other.
+For example, you might have a web server running in one container on one of the nodes and a database
+server running on another container on another node.
+How would the web server reach the database server on the other node?
+Communication between worker nodes are enabled by another component that runs on the worker node, known
+as the kube proxy.
+Service.
+The kube proxy service ensures that the necessary rules are in place on the worker nodes to allow the
+containers running on them to reach each other.
+So to summarize, we have master and worker nodes on the master.
+We have the etcd cluster which stores information about the cluster.
+We have the kube scheduler that is responsible for scheduling applications or containers on nodes.
+We have different controllers that take care of different functions like the node controller, replication
+controller, etc. we have the kube API server that is responsible for orchestrating all operations within
+the cluster.
+On the worker node, we have the Kubelet that listens for instructions from the kube API server and
+manages containers and the kube proxy that helps in enabling communication between services within the
+cluster.
+So that's a high level overview of the various components.
+We will drill down into each of these in the upcoming lectures.
+That's it for now and I will see you in the next lecture.
+
+
