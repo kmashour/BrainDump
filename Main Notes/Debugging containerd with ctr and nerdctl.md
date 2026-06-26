@@ -20,10 +20,18 @@ tags:
 ---
 
 ## 📑 1. Core CLI Debugging Tools
-If Kubelet fails to manage containers and you suspect containerd issues, use these command-line utilities directly on the host node.
+If Kubelet fails to manage containers and you suspect containerd issues, use these command-line utilities directly on the host node. 
 
-* **`ctr`:** Low-level, official CLI tool bundled with containerd. Used for raw container administration (does not support high-level CRI configurations directly unless matching namespaces).
-* **`nerdctl`:** User-friendly, Docker-compatible CLI for containerd that supports Docker-like syntax (`run`, `build`, `compose`).
+Both `ctr` and `nerdctl` are developed by the **containerd community** specifically for containerd, as opposed to `crictl`, which is developed by the Kubernetes community to target any CRI-compliant runtime socket.
+
+* **Standalone containerd:** Containerd is a graduated CNCF project that can run standalone without any Docker Engine dependencies. You can install it on its own to manage containers via API or CLI.
+* **`ctr`:** Low-level, official CLI tool bundled with containerd. Solely made for debugging containerd. It is not user-friendly and has a limited feature set.
+* **`nerdctl`:** User-friendly, Docker-compatible CLI for containerd. It supports Docker-like command line syntax (`run`, `build`, `compose`) and exposes newer, advanced features of containerd:
+  * Encrypted container images.
+  * Lazy pulling of images (e.g., via eStargz).
+  * Peer-to-peer (P2P) image distribution.
+  * Image signing and verification.
+  * Namespace awareness (e.g., inspecting Kubernetes namespaces via `-n k8s.io`).
 
 ---
 

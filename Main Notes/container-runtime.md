@@ -46,6 +46,7 @@ The `container-runtime` resides on the host OS of every cluster node:
 
 ## 🧩 Problem Solver (What problem it solves)
 * **Runtime Pluggability:** Separates the core Kubernetes codebase from container engine details. The Container Runtime Interface (CRI) allows any runtime (e.g., `containerd`, `CRI-O`) to be plugged in seamlessly.
+* **Docker-to-Containerd Decoupling:** Bypasses unnecessary developer platform subsystems (such as the Docker API, build tools, and local volume managers) by transitioning directly to standalone CRI runtimes. This was finalized with the removal of Dockershim in Kubernetes v1.24, reducing the host footprint and overhead.
 * **Process Isolation:** Solves the security and stability problem of running multiple applications on the same physical host by applying kernel namespaces (walls) and cgroups (limits) to prevent interference.
 
 ---

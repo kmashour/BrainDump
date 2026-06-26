@@ -24,15 +24,34 @@ tags:
 
 ---
 
-## ⚙️ 2. Configuration Requirement (CKA Setup)
-`crictl` must know where the runtime socket resides. Check configuration in `/etc/crictl.yaml`:
+## ⚙️ 2. Configuration & Default Fallbacks
+`crictl` must know where the runtime socket resides. 
+
+### Configuration File (`/etc/crictl.yaml`):
 ```yaml
 runtime-endpoint: unix:///run/containerd/containerd.sock
 image-endpoint: unix:///run/containerd/containerd.sock
 timeout: 10
 debug: false
 ```
-If empty, you can pass the socket via CLI arguments: `crictl --runtime-endpoint=unix:///run/containerd/containerd.sock ps`.
+
+### Default Socket Polling Order:
+If config files and environment variables are absent, `crictl` defaults to polling sockets in the following order:
+1. `unix:///var/run/dockershim.sock` (Dockershim)
+2. `unix:///run/containerd/containerd.sock` (containerd)
+3. `unix:///run/crio/crio.sock` (CRI-O)
+4. `unix:///var/run/cri-dockerd.sock` (cri-dockerd)
+
+If empty, you can pass the socket via CLI arguments: `crictl --runtime-endpoint=unix:///run/containerd/containerd.sock ps` or set `export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock`.
+
+### ⚠️ Production Warning
+Do not run `crictl` commands to create, run, or start containers in production. Since Kubelet is the orchestrator on the node, it is unaware of containers created directly via the CRI socket. It will detect them as untracked resources in the sandbox and will automatically delete or garbage collect them. Use `crictl` strictly for inspection and debugging.
+
+### 🎛️ Port Awareness
+To list port mappings mapped under the Pod sandbox namespaces, use:
+```bash
+crictl ports
+```
 
 ---
 

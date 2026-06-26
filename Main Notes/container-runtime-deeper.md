@@ -81,13 +81,13 @@ Linux uses control groups (`cgroups`) to limit container resources. Kubernetes a
 ---
 
 ## 🛠️ 6. Debug CLI Tools Comparison (CKA Essential)
-When debugging a broken node, you cannot use `kubectl` or `docker`. You must use node-level tools:
+When debugging a broken node, you cannot use `kubectl` or `docker`. You must use node-level tools to inspect container configurations and logs:
 
-| CLI Tool | Target Level | Namespace Aware? | Purpose |
-| :--- | :--- | :--- | :--- |
-| **`ctr`** | containerd daemon | Yes (`ctr -n k8s.io ...`) | Native containerd debugging. |
-| **`nerdctl`** | containerd daemon | Yes (`nerdctl -n k8s.io ...`) | Docker-compatible syntax for containerd. |
-| **`crictl`** | CRI endpoint socket | Yes (Automatically connects to CRI) | **Kubernetes-native CLI** for troubleshooting runtime issues. |
+| CLI Tool | Target Level | Developer / Community | Namespace Aware? | Purpose & Features |
+| :--- | :--- | :--- | :--- | :--- |
+| **`ctr`** | containerd daemon | containerd Community | Yes (`ctr -n k8s.io ...`) | Native containerd debugging. Minimal feature set, not user-friendly. Used strictly for raw container tasks and image pulls on containerd directly. |
+| **`nerdctl`** | containerd daemon | containerd Community | Yes (`nerdctl -n k8s.io ...`) | User-friendly, Docker-compatible CLI. Supports Docker CLI commands (`run`, `ps`, `build`, etc.) plus advanced containerd features (encrypted images, eStargz lazy image pulling, P2P image distribution, image signing, and Kubernetes namespace isolation). |
+| **`crictl`** | CRI endpoint socket | Kubernetes Community | Yes (CRI connection aware) | **Kubernetes-native CLI** for inspecting and debugging runtime issues across *any* CRI-compliant runtime (containerd, CRI-O, etc.). Matches Docker syntax (`ps`, `logs`, `exec`) but interfaces at the CRI socket level. |
 
 ### crictl Commands Example
 To list Pods, Containers, and Images on a node using the CRI socket:
@@ -98,33 +98,53 @@ crictl pods
 crictl ps
 crictl images
 crictl logs <container-id>
+crictl exec -it <container-id> sh
 ```
 
-*Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture).*
+#### ⚠️ Production Warning: Bypassing Kubelet
+While `crictl` supports creating containers, **never run `crictl` container creation commands on production nodes**. The `kubelet` is the sole manager of node state. If it discovers a running container that it did not spin up itself, it will flag it as an untracked resource and automatically delete or garbage collect it. Use `crictl` purely for debugging.
+
+#### 🎛️ Port Awareness
+Unlike Docker, `crictl` is designed to inspect CRI-mapped ports. Use the command:
+```bash
+crictl ports
+```
+to list active port mappings mapped under the Pod sandbox namespaces.
+
+*Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#2-container-runtime-interface-cri--namespaces).*
 
 ---
 
 ## 🚫 7. Dockershim Deprecation & Socket Requirements
 
-Originally, Docker was the sole runtime supported by Kubernetes, bridged via **Dockershim**.
+Originally, Docker was the sole runtime supported by Kubernetes, bridged via **Dockershim**. 
 
-### Key Milestones:
-*   **Removal in v1.24:** Dockershim was deprecated and completely removed from the core Kubernetes codebase. The Kubelet now interacts directly with native CRI runtimes like `containerd` or `CRI-O`.
-*   **Legacy Adapter (`cri-dockerd`):** If you still need to run Docker container engines in v1.24+, you must install `cri-dockerd`. It acts as an adapter, exposing a CRI-compliant socket (`unix:///var/run/cri-dockerd.sock`) and forwarding gRPC calls to the Docker Daemon socket (`unix:///var/run/docker.sock`).
+### The Decoupling Logic:
+Docker is a full developer suite (encompassing API, CLI, image building tools, authentication layers, volumes, and networking helper systems). Because Kubernetes natively manages networking, scheduling, secrets, and volumes, it did not need these high-level Docker features. Therefore, to minimize overhead and cluster vulnerability surface, support for Docker Engine was deprecated and **completely removed** in Kubernetes **v1.24**.
+*   **OCI Compliance:** Since Docker builds images matching the Open Container Initiative (OCI) image specification, old Docker images continue to work seamlessly with standalone containerd or CRI-O.
+*   **Standalone containerd:** Clusters can run containerd alone without any Docker package installed.
+
+### Default crictl Socket Polling Order:
+When `crictl` runs without an explicit endpoint configuration, it polls local sockets in the following priority sequence:
+1.  `unix:///var/run/dockershim.sock` (Dockershim)
+2.  `unix:///run/containerd/containerd.sock` (containerd)
+3.  `unix:///run/crio/crio.sock` (CRI-O)
+4.  `unix:///var/run/cri-dockerd.sock` (cri-dockerd)
 
 ### Modern Socket Requirements:
 Modern clusters require explicit configurations for socket endpoints:
 1.  **Kubelet Startup Flags:** Configure `--container-runtime=remote` and `--container-runtime-endpoint=unix:///run/containerd/containerd.sock` (or appropriate runtime path).
-2.  **`crictl` Configuration:** Explicitly declare the endpoint either in `/etc/crictl.yaml` or as an environment variable:
+2.  **`crictl` Configuration:** Explicitly declare the endpoint either in `/etc/crictl.yaml` or as environment variables:
     ```bash
     export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+    export IMAGE_SERVICE_ENDPOINT=unix:///run/containerd/containerd.sock
     ```
 
 > [!TIP]
 > **The Runtime Upgrade Trap:** Upgrading containerd on a live node using package managers can cause socket interruptions. If Kubelet fails its gRPC reconnection attempts, perform a hard service restart:
 > `sudo systemctl restart kubelet`
 
-*Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#2-the-kubelet-to-cri-architecture)*
+*Read more in [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#2-container-runtime-interface-cri--namespaces)*
 
 ## 🔍 Sub-Concepts & Use Cases
 This table automatically displays all deeper notes, use cases, and configurations associated with **container-runtime-deeper**.

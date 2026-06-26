@@ -50,6 +50,7 @@ The `kubelet` is the primary worker node agent. It runs directly on every node i
 The `kubelet` sits on the boundary between the Kubernetes cluster control plane and the node's operating system:
 * **Systemd Service:** Unlike other Kubernetes components, the `kubelet` does not run inside a container. It runs as a native systemd daemon directly on the host OS.
 * **CRI Coordinator:** It translates Kubernetes-specific Pod configurations into low-level container instructions sent over gRPC to the local Container Runtime (e.g., containerd).
+* **Direct CRI Connection:** Since the removal of Dockershim in v1.24, the Kubelet no longer bridges to Docker by default and must be explicitly configured with a remote container runtime socket path (e.g., `--container-runtime-endpoint=unix:///run/containerd/containerd.sock`).
 
 ---
 
