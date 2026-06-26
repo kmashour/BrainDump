@@ -78,6 +78,20 @@ The scheduler runs as a control daemon configured using key parameters and confi
 * **Existing Pod Safety:** Currently running Pods are unaffected and continue executing.
 * **Self-Healing Failure:** If a running Pod crashes or its host node dies, the Controller Manager will detect it and create a replacement Pod, but this replacement will stay `Pending` because there is no scheduler to place it.
 * **Manual Bypass:** Administrators can bypass a failed scheduler by manually defining `spec.nodeName: <node-name>` directly inside a Pod's YAML manifest at creation time.
+
+---
+
+## 📊 Observability (Logging & Profiling)
+* **Tailing Logs:** Administrators debug custom or default scheduler issues by retrieving standard output logs:
+  ```bash
+  kubectl logs -n kube-system -l component=kube-scheduler
+  ```
+* **Performance Profiling:** When diagnosing scheduler bottlenecks or CPU/memory leaks, query Go's profiling endpoint (exposed via the `--enable-profiling=true` flag by default):
+  ```bash
+  kubectl get --raw /debug/pprof/profile > scheduler_cpu.pprof
+  kubectl get --raw /debug/pprof/heap > scheduler_heap.pprof
+  ```
+
 ---
 
 ## 🔍 Deeper Dive

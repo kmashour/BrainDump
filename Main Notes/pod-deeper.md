@@ -93,6 +93,23 @@ Triggered at specific points in a container's lifecycle:
 
 *Read more in [0-3_node_mechanics_and_resource_limits.md](../Reference%20Notes/0-3_node_mechanics_and_resource_limits.md#4-quality-of-service-qos-classes), [0-4_workload_lifecycle_and_healing.md](../Reference%20Notes/0-4_workload_lifecycle_and_healing.md#2-garbage-collection-gc), and [0-5_containers_runtimes_and_lifecycle.md](../Reference%20Notes/0-5_containers_runtimes_and_lifecycle.md#6-container-lifecycle-hooks).*
 
+---
+
+## 📊 6. Pod Application Logs
+* **Tailing Standard Output:** Telemetry written to `stdout`/`stderr` inside any container is captured by the host node's container runtime and written to `/var/log/pods/`. Use `kubectl logs` to stream:
+  ```bash
+  kubectl logs <pod-name>
+  ```
+* **Multi-Container Pods:** If a Pod runs multiple containers, `kubectl logs` requires the `-c` or `--container` flag to target a container name. Omitting this flag will fail, listing the available container names:
+  ```bash
+  kubectl logs <pod-name> -c <container-name>
+  ```
+* **Logging Sidecar Patterns:** 
+  1. **Streaming Sidecar:** App container writes log files to a shared `emptyDir` volume. A sidecar container tails the files and streams them to its own `stdout` so that the node-level logger can ingest them.
+  2. **Direct Shipper:** A sidecar containing a log shipper (e.g. Fluent Bit) reads log files from a shared volume and sends them directly to a centralized server (e.g., Elasticsearch).
+
+---
+
 ## 🔍 Sub-Concepts & Use Cases
 This table automatically displays all deeper notes, use cases, and configurations associated with **pod-deeper**.
 

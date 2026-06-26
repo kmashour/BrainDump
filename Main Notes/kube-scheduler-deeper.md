@@ -140,6 +140,22 @@ To assign a running `Pending` pod to a node, post a `Binding` resource directly 
 
 *Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#c-kube-scheduler-the-matchmaker).*
 
+---
+
+## 📊 4. Scheduler Logging & Profiling Metrics
+To monitor scheduler behavior or debug latency issues (such as slow scheduling cycles or high memory usage):
+* **Logs Inspection:** Stream logs from the default scheduler static pod or daemon:
+  ```bash
+  kubectl logs -n kube-system -l component=kube-scheduler
+  ```
+* **Component Metrics:** The scheduler exposes detailed Prometheus performance metrics (e.g., scheduling latency, queue depth) at `/metrics` (default port `10259`).
+* **pprof Profiling Dumps:** With `--enable-profiling=true` (enabled by default), administrators can retrieve raw pprof profiles for CPU and memory usage debugging:
+  ```bash
+  kubectl get --raw /debug/pprof/profile > scheduler_cpu.pprof
+  ```
+
+---
+
 ## 🔍 Sub-Concepts & Use Cases
 This table automatically displays all deeper notes, use cases, and configurations associated with **kube-scheduler-deeper**.
 

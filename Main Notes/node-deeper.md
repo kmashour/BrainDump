@@ -82,6 +82,20 @@ Control Groups (`cgroups`) are the Linux kernel feature used to limit container 
 
 *Read more in [0-3_node_mechanics_and_resource_limits.md](../Reference%20Notes/0-3_node_mechanics_and_resource_limits.md#2-node-status-and-conditions).*
 
+---
+
+## 📊 6. Node Observability, Metrics & Diagnostics
+To monitor worker node health and resource consumption:
+* **cAdvisor Integration:** The Kubelet runs an embedded **cAdvisor** daemon to gather CPU, memory, filesystem, and network stats from all running container cgroups on the host.
+* **Metrics Pipeline:** Telemetry is exposed via Kubelet's `/stats/summary` endpoint. The cluster's **Metrics Server** queries this API periodically, aggregates it, and serves it via the `metrics.k8s.io` API.
+* **CLI Inspection:**
+  ```bash
+  kubectl top node
+  ```
+* **Kubelet diagnostics profiling:** Administrators query the Kubelet's `/debug/pprof` endpoints directly to gather CPU and memory utilization snapshots during daemon slowdowns.
+
+---
+
 ## 🔍 Sub-Concepts & Use Cases
 This table automatically displays all deeper notes, use cases, and configurations associated with **node-deeper**.
 

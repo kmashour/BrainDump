@@ -440,6 +440,80 @@ Reference the file via the API Server flag:
 
 ---
 
+### 6.4 Metrics Server & The Resource Metrics Pipeline
+
+The Resource Metrics Pipeline provides the CPU and memory utilization data needed by the Horizontal Pod Autoscaler (HPA) and `kubectl top` commands. 
+
+#### 🌉 Evolutionary Concept Bridge: Heapster to Metrics Server
+*   **The Classic Design (Heapster):** In earlier Kubernetes versions (deprecated in v1.11, removed in v1.13), cluster-wide resource monitoring relied on **Heapster**. Heapster ran as a pod, collected stats from all Kubelets, and contained dedicated adapter code to push metrics directly to various external backends (InfluxDB, Elasticsearch, Stackdriver, etc.).
+*   **The Bottleneck:** Because Heapster had to import third-party client libraries for dozens of storage backends, it became bloated, hard to maintain, and a security risk. Furthermore, coupling core Kubernetes autoscaling logic (HPA) directly to Heapster created a critical dependency on external storage engines.
+*   **The Modern Solution (Metrics Server):** Kubernetes separated core cluster autoscaling metrics from general long-term telemetry/analytics.
+    *   **Slimmed-Down Purpose:** The **Metrics Server** was introduced as a lightweight, single-purpose successor. It collects CPU and memory usage from Kubelets, stores them strictly **in-memory** (no database storage, hence no historical query capabilities), and exposes them via the Kubernetes API server using the standard `metrics.k8s.io` sub-resource.
+    *   **Separation of Concerns:** Long-term historical telemetry is offloaded to independent monitoring stacks like Prometheus or Datadog, which scrape Kubelets directly, keeping the Kubernetes core simple and decoupled.
+
+```
+[ kubectl top / HPA ] 
+         |
+         v (metrics.k8s.io API)
+[ Metrics Server ] (In-memory aggregation, single instance per cluster)
+         |
+         v (Kubelet Summary API: /stats/summary via port 10250)
+[ Kubelet (on Nodes) ]
+         |
+         v
+[ cAdvisor (collects resource usage from container cgroups) ]
+```
+
+#### cAdvisor Integration
+The Kubelet on each node contains a subcomponent called **cAdvisor** (Container Advisor). cAdvisor automatically discovers all container processes running under the Container Runtime (CRI), queries resource usage directly from their Linux control groups (`cgroups`), and exposes this raw telemetry to the Kubelet. The Kubelet exposes it via the `/stats/summary` endpoint. Metrics Server polls this endpoint on every node in the cluster (typically every 15 or 60 seconds).
+
+#### Core Inspection Commands
+*   **Node Resource Metrics:**
+    ```bash
+    kubectl top node
+    ```
+*   **Pod Resource Metrics:**
+    ```bash
+    kubectl top pod
+    # Filter by namespace or label
+    kubectl top pod -n kube-system
+    kubectl top pod -l app=web
+    # View individual container stats
+    kubectl top pod --containers
+    ```
+
+---
+
+### 6.5 Profiling & Diagnostics Metrics (`/debug/pprof`)
+
+To diagnose performance bottlenecks, deadlocks, or memory leaks within control plane components, Kubernetes binaries expose Go's profiling library (`pprof`) endpoint under `/debug/pprof`.
+
+#### Enablement & Security Hardening
+Profiling is highly useful for system administrators but exposes deep internal state details.
+*   **Enablement Flag:** Profiling is enabled by default on `kube-apiserver`, `kube-scheduler`, and `kube-controller-manager` via the `--enable-profiling=true` flag.
+*   **Hardening:** In high-security production environments, disable profiling on public interfaces to prevent information exposure:
+    ```bash
+    --enable-profiling=false
+    ```
+
+#### Retrieving Component Profiles
+Authorized cluster administrators can retrieve profiles directly using `kubectl get --raw`:
+*   **CPU Profile (samples execution for 30s):**
+    ```bash
+    kubectl get --raw /debug/pprof/profile > cpu.pprof
+    ```
+*   **Memory Heap Profile (instant snapshot):**
+    ```bash
+    kubectl get --raw /debug/pprof/heap > heap.pprof
+    ```
+*   **Goroutine Dump (shows active threads & call stacks):**
+    ```bash
+    kubectl get --raw /debug/pprof/goroutine > goroutine.pprof
+    ```
+These binary files can then be analyzed locally using the Go profiling tool: `go tool pprof cpu.pprof`.
+
+---
+
 ## 7. API Priority and Fairness (APF)
 
 To prevent the `kube-apiserver` from freezing or crashing during traffic spikes, API Priority and Fairness (APF) categorizes, queues, and dispatches requests fairly.

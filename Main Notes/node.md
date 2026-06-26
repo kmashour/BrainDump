@@ -63,6 +63,18 @@ Nodes form the execution plane (Worker Nodes) of the cluster:
 * **Pending States:** Newly created Pods hang in `Pending` because no worker node is available to accept them.
 * **Eviction Outages:** If a running node crashes, its workloads fail. The Control Plane will attempt to recreate them, but if no other healthy nodes exist, the workloads will remain offline.
 * **Split Brain & Frozen State:** If a node suffers a network partition, the control plane marks it `NotReady` but cannot terminate its processes, potentially leading to volume conflicts if the node is still running workloads locally.
+
+---
+
+## 📊 Observability (Metrics & Diagnostics)
+* **Resource Collection:** Nodes collect CPU and memory usage statistics from container `cgroups` using cAdvisor (an embedded component inside the Kubelet).
+* **Metrics Pipeline:** Telemetry is exposed by the Kubelet's `/stats/summary` endpoint and aggregated by the cluster's **Metrics Server** (the slimmed-down successor to the legacy **Heapster** aggregator).
+* **CLI Inspection:**
+  ```bash
+  kubectl top node
+  ```
+* **Kubelet Diagnostics Profiling:** Go profiling metrics can be retrieved from the Kubelet's `/debug/pprof` endpoints when enabled to debug node daemon bottlenecks.
+
 ---
 
 ## 🔍 Deeper Dive

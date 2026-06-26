@@ -77,6 +77,20 @@ The Pod is the building block of all workloads in the cluster:
 * **Loss of Orchestration:** Containers must be run manually as individual host processes or raw Docker containers, losing all automatic scheduling, scaling, and self-healing benefits.
 * **Resource Leakage:** Without Pod-level cleanups, terminated containers, orphaned volumes, and stale network routes accumulate on the host OS.
 * **Broken Helper Relationships:** Helper containers cannot easily share the same network address space or file systems with primary containers, breaking standard architectural patterns (like sidecar proxies).
+
+---
+
+## 📊 Observability (Logging)
+* **Tailing Container Logs:** Standard output and standard error streams are read via the Kubelet:
+  ```bash
+  kubectl logs <pod-name>
+  ```
+* **Multi-Container Targets:** When a Pod runs multiple containers, omitting the target container results in a selection error. You must explicitly target the container name using `-c`:
+  ```bash
+  kubectl logs <pod-name> -c <container-name>
+  ```
+* **Logging Sidecars:** To capture application logs written to internal filesystem paths rather than stdout/stderr, pods can run streaming sidecars (which tail internal files to stdout) or log shipper sidecars (which read internal files and push metrics/logs directly to external engines).
+
 ---
 
 ## 🔍 Deeper Dive
