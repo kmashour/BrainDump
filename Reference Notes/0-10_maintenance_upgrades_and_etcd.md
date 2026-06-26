@@ -214,6 +214,12 @@ Always upgrade components in the following chronological order:
 
 This playbook demonstrates upgrading a cluster from version **`v1.27.0`** to **`v1.28.2`** on Debian/Ubuntu systems.
 
+> [!IMPORTANT]
+> **Package Repository Migration Warning (`pkgs.k8s.io`):**
+> Legacy package repositories (`apt.kubernetes.io` and `yum.kubernetes.io`) are deprecated and shut down. All modern Kubernetes packages must be sourced from the community-managed repositories under **`pkgs.k8s.io`**.
+> * **Package Suffix Shift:** Package manager suffixes have changed. Suffixes under the old repo were typically `-00` (e.g., `kubeadm=1.28.2-00`). Under the new `pkgs.k8s.io` repository, the suffix is `-1.1` or `-2.1` (e.g., `kubeadm=1.28.2-1.1`).
+> * **Finding exact suffix:** Run `apt-cache madison kubeadm | grep 1.28.2` to find the exact package version string in the system package manager's cache before executing install commands.
+
 ### 3.1 Control Plane Node Upgrade
 
 #### Step 1: Upgrade Kubeadm Package
@@ -222,7 +228,7 @@ This playbook demonstrates upgrading a cluster from version **`v1.27.0`** to **`
 sudo apt-mark unhold kubeadm
 
 # Update apt repositories and install targeted version
-sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.28.2-00
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.28.2-1.1
 
 # Hold the package back
 sudo apt-mark hold kubeadm
@@ -249,7 +255,7 @@ kubectl drain controlplane --ignore-daemonsets
 sudo apt-mark unhold kubelet kubectl
 
 # Install targeted version
-sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.28.2-00 kubectl=1.28.2-00
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.28.2-1.1 kubectl=1.28.2-1.1
 
 # Re-hold packages
 sudo apt-mark hold kubelet kubectl
@@ -274,7 +280,7 @@ kubectl drain node-1 --ignore-daemonsets --force --delete-emptydir-data
 #### Step 2: Upgrade Kubeadm on Worker Node (SSH to node-1)
 ```bash
 sudo apt-mark unhold kubeadm
-sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.28.2-00
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.28.2-1.1
 sudo apt-mark hold kubeadm
 ```
 
@@ -287,7 +293,7 @@ sudo kubeadm upgrade node
 #### Step 4: Upgrade Kubelet & Kubectl on Worker Node
 ```bash
 sudo apt-mark unhold kubelet kubectl
-sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.28.2-00 kubectl=1.28.2-00
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.28.2-1.1 kubectl=1.28.2-1.1
 sudo apt-mark hold kubelet kubectl
 
 # Reload configuration and restart service
@@ -421,6 +427,8 @@ sudo systemctl stop kubelet
     sudo ETCDCTL_API=3 etcdutl snapshot restore /opt/backup/etcd-snapshot.db \
       --data-dir=/var/lib/etcd-restored
     ```
+    > [!NOTE]
+    > **Accidental Cluster Joining Prevention:** When restoring a snapshot, `etcdutl` (or `etcdctl`) initializes a new cluster configuration and configures the etcd members as new members of a new cluster. This prevents a restored node from accidentally trying to join an existing running cluster, ensuring database isolation.
 *   **Method B: Restore from a File-Level Backup**
     If the backup was created using `etcdutl backup` offline directories replication, simply copy the backup data directory contents into `/var/lib/etcd-restored`:
     ```bash

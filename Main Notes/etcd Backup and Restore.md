@@ -49,8 +49,12 @@ ETCDCTL_API=3 etcdctl   --endpoints=https://127.0.0.1:2379   --cacert=/etc/kuber
 ### Step 3: Restore the Snapshot
 Restore the snapshot data to a new database directory (e.g. `/var/lib/etcd-restored`):
 ```bash
-ETCDCTL_API=3 etcdctl   --data-dir=/var/lib/etcd-restored   snapshot restore /tmp/etcd-backup.db
+ETCDCTL_API=3 etcdctl \
+  --data-dir=/var/lib/etcd-restored \
+  snapshot restore /tmp/etcd-backup.db
 ```
+> [!NOTE]
+> **Accidental Cluster Joining Prevention:** The restore command initializes a new cluster configuration and sets the restored node as a new member of a new cluster. This prevents it from accidentally joining any existing live cluster.
 
 ### Step 4: Update ETCD Manifest
 Modify the `/etc/kubernetes/manifests/etcd.yaml` static pod spec to use the restored directory.
