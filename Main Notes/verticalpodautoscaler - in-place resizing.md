@@ -2,7 +2,7 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[Vertical Pod Autoscaler]]"
+parent_concept: "[[verticalpodautoscaler]]"
 sub_type: core-concept
 source_type: udemy
 source_url: "https://kubernetes.io/docs/tasks/configure-pod-container/resize-container-resources/"
@@ -14,9 +14,9 @@ tags:
   - status/completed
 ---
 
-# Vertical Pod Autoscaler - In-Place Resizing
+# verticalpodautoscaler - in-place resizing
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Vertical Pod Autoscaler]] > **In-Place Resizing**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[verticalpodautoscaler]] > **In-Place Resizing**
 
 ---
 

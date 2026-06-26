@@ -413,7 +413,45 @@ If a Pod remains in a **Pending** status, the scheduler cannot assign it to a no
   kubectl delete pod web
   ```
 
+### 2.4 Commands and Arguments (Docker vs. Kubernetes)
+When configuring Pod specifications, understanding how Kubernetes handles the container startup process compared to Docker is essential.
+
+#### 1. Conceptual Mapping & Overriding Logic
+At the OS level, launching a process requires passing an executable and its argument list (the `argv` array in a UNIX `execve` call). Docker split this into `ENTRYPOINT` and `CMD`, while Kubernetes uses `command` and `args`:
+* **`ENTRYPOINT` $\rightarrow$ `command`:** Specifies the executable binary.
+* **`CMD` $\rightarrow$ `args`:** Specifies the default arguments passed to the executable.
+
+The overriding behavior behaves as follows:
+* **Neither defined:** Uses the Dockerfile's `ENTRYPOINT` and `CMD`.
+* **Only `command` defined:** Overrides the image's `ENTRYPOINT` and **completely discards** the image's `CMD` (no arguments are passed).
+* **Only `args` defined:** Overrides the image's `CMD` and passes the new arguments to the image's `ENTRYPOINT`.
+* **Both defined:** Overrides both the image's `ENTRYPOINT` and `CMD`.
+
+```
+                  ┌───────────────────────┐
+                  │   K8s Container Spec  │
+                  └───────────┬───────────┘
+                              │
+               ┌──────────────┴──────────────┐
+               ▼                             ▼
+       [ command: [...] ]             [ args: [...] ]
+               │                             │
+               ▼                             ▼
+      (Overrides Docker)            (Overrides Docker)
+         ENTRYPOINT                         CMD
+```
+
+#### 2. Technical Pitfalls & YAML Type Constraints
+* **The String Unmarshalling Gotcha:** The Kubernetes API server parses container fields as strict Go structs. The `command` and `args` fields must be arrays of strings.
+  * *Failure Mode:* If a numeric command or argument (e.g., sleeping for `5000` seconds) is written as an unquoted number (`command: ["sleep", 5000]`), the API server will reject the request:
+    `Cannot unmarshal number into Go struct field containers.spec.containers.command of type string`
+  * *Mitigation:* Always wrap numeric parameters in quotes: `command: ["sleep", "5000"]`.
+* **Imperative CLI Double-Dash (`--`) Separator:** When creating a pod imperatively, you must isolate the options meant for the `kubectl` tool from the arguments passed directly to the container's entrypoint.
+  * E.g., `kubectl run webapp-green --image=webapp -- --color green`
+  * The `--` separates `kubectl` flags from container arguments (which map to `args: ["--color", "green"]`).
+
 ---
+
 
 
 ## 3. Pod Lifecycle, Conditions, and Hooks
@@ -890,11 +928,19 @@ A **Deployment** is a parent wrapper (`apps/v1`) that manages one or more Replic
 
 #### `Recreate` Strategy
 *   **Behavior:** Terminates all running Pods associated with the Deployment before creating any new Pods.
-*   **Downtime:** Causes absolute service downtime during the update window.
+*   **Events Under the Hood:**
+    1. The Deployment Controller scales down the active ReplicaSet (old version) to `0` replicas.
+    2. The old Pods are sent SIGTERM (and SIGKILL if graceful termination window expires) and deleted.
+    3. Once all old Pods are fully terminated, the controller scales up the new ReplicaSet (new version) to the desired count.
+*   **Downtime:** Causes absolute service downtime during the update window while old pods are dead and new pods are starting.
 *   **Use Case:** Recommended when the application cannot support running multiple versions concurrently (e.g. sharing read-write storage with exclusive file lock requirements, or database schemas that do not support backward compatibility).
 
 #### `RollingUpdate` Strategy
 *   **Behavior:** Gradually replaces Pods of the old ReplicaSet with Pods of the new ReplicaSet. This is the default update strategy.
+*   **Events Under the Hood:**
+    1. The Deployment Controller creates a new ReplicaSet.
+    2. It scales up the new ReplicaSet and scales down the old ReplicaSet incrementally, taking down old pods and bringing up new pods one-by-one (or in batches depending on `maxSurge` and `maxUnavailable`).
+    3. The processes overlap: new pods are provisioned and old pods are terminated simultaneously, maintaining service availability.
 *   **Parameters & Defaults:**
     *   `maxSurge`: The maximum number of Pods that can be created above the desired replica count during the update. Can be expressed as an absolute integer (e.g., `2`) or a percentage (e.g., `25%`). **Default: `25%`**.
     *   `maxUnavailable`: The maximum number of Pods that can be offline during the update. Can be an integer or percentage. **Default: `25%`**.
@@ -902,6 +948,7 @@ A **Deployment** is a parent wrapper (`apps/v1`) that manages one or more Replic
     *   *Calculation Example:* With 4 desired replicas, `maxSurge: 25%` (1 pod) and `maxUnavailable: 25%` (1 pod):
         *   Max total Pods during rollout: $4 + 1 = 5$
         *   Min active/healthy Pods during rollout: $4 - 1 = 3$
+
 
 ### 9.2 E2E Deployment Spec with Strategy Parameters
 ```yaml

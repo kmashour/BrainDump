@@ -62,6 +62,53 @@ If Secrets were not used, sensitive database passwords and API keys would be har
 
 ---
 
+## ⚙️ Operational Workflow
+
+### 1. Creating Secrets
+*   **From Literal Values (Imperative):**
+    ```bash
+    kubectl create secret generic db-secret --from-literal=password="password123"
+    ```
+*   **From Files:**
+    ```bash
+    kubectl create secret generic ssh-key-secret --from-file=id_rsa=~/.ssh/id_rsa
+    ```
+
+### 2. Injecting into Pods
+*   **Environment Variables (`valueFrom`):**
+    ```yaml
+    env:
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: db-secret
+            key: password
+    ```
+*   **Bulk Ingestion (`envFrom`):**
+    ```yaml
+    envFrom:
+      - secretRef:
+          name: db-secret
+    ```
+*   **Volume Mounts (RAM-backed `tmpfs`):**
+    ```yaml
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          volumeMounts:
+            - name: secret-vol
+              mountPath: /etc/secrets
+              readOnly: true
+      volumes:
+        - name: secret-vol
+          secret:
+            secretName: db-secret
+    ```
+
+---
+
+
 ## 🔍 Deeper Dive Notes
 This table automatically displays all deeper notes, use cases, and pitfalls associated with the **Secret**.
 

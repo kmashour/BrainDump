@@ -1613,6 +1613,89 @@ data:
 
 ---
 
+### E. Multi-Container Pod Design Patterns
+To decouple concerns, helper processes can run in separate containers within the same Pod, sharing the same lifecycle, network namespace (`localhost`), and storage volumes.
+
+#### 1. Sidecar Pattern
+Enhances or extends the main application container without altering its core logic.
+* **Use Case:** A log shipper (e.g. Filebeat or Fluent Bit) that tails log files written by the main application to a shared `emptyDir` volume and streams them to a central indexing backend, or an Envoy proxy running as a service mesh helper.
+
+#### 2. Adapter Pattern
+Normalizes or modifies application output/telemetry before exporting it to external systems.
+* **Use Case:** A container that polls the main application's custom metrics endpoint, formats them into standard Prometheus metrics, and exposes them on port `9100`.
+
+#### 3. Ambassador Pattern
+Acts as a local proxy for outgoing connections, hiding the complexity of external networking or service discovery from the main application.
+* **Use Case:** The main application connects to database services on `localhost:3306`, while the ambassador container handles routing, SSL termination, and authentication to the remote database cluster.
+
+```
+┌───────────────────────────────── Pod ─────────────────────────────────┐
+│                                                                       │
+│  ┌───────────────────┐    localhost     ┌──────────────────────────┐  │
+│  │  Main Container   │ ◄──────────────► │    Helper Container      │  │
+│  │  (App Process)    │   (TCP/Ports)    │   (Sidecar/Ambassador)   │  │
+│  └─────────┬─────────┘                  └────────────┬─────────────┘  │
+│            │                                         │                │
+│            ▼                                         ▼                │
+│       ┌────────────────────────────────────────────────────────┐      │
+│       │               Shared emptyDir Volume                   │      │
+│       └────────────────────────────────────────────────────────┘      │
+└───────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### F. Init Containers
+Init containers run initialization tasks sequentially to completion before any application containers start.
+
+#### 1. Lifecycle Mechanics
+* **Sequential Execution:** Defined in `spec.initContainers` as a list. They are executed one-by-one. Each must exit with code `0` before the next starts.
+* **Failure Behavior:** If an init container fails (non-zero exit code), the Kubelet restarts the Pod (according to `spec.restartPolicy`). If the policy is `Never`, the Pod status transitions to `Failed`.
+* **Application Delay:** Application containers do not start until all init containers have run to completion successfully.
+
+#### 2. Native Sidecars (restartPolicy: Always)
+Introduced to support sidecars (like log shippers or service mesh proxies) that must start before the main app but continue running for the entire Pod lifecycle.
+* **Definition:** Defined in `spec.initContainers` but set with `restartPolicy: Always`.
+* **Execution:** Kubelet starts the native sidecar, waits for its startup/readiness probe to succeed, and then proceeds to execute the next init container or app container. Unlike standard init containers, native sidecars do not exit and are terminated only when the Pod is deleted.
+
+#### 3. Resource Allocation Math
+The scheduler computes resource demands for the Pod by comparing sequential app container requirements with init container requirements:
+$$\text{Pod Request} = \max\left(\sum\text{App Requests} + \sum\text{Active Sidecar Requests},\,\max(\text{Sequential Init Requests})\right)$$
+$$\text{Pod Limit} = \max\left(\sum\text{App Limits} + \sum\text{Active Sidecar Limits},\,\max(\text{Sequential Init Limits})\right)$$
+
+---
+
+### G. Workload Autoscaling (HPA, VPA, and In-Place Resizing)
+Kubernetes automates resource capacity adjustments horizontally (by replicas) or vertically (by container size).
+
+#### 1. Horizontal Pod Autoscaler (HPA)
+HPA monitors resource utilization (CPU/Memory) and dynamically scales the number of Pod replicas.
+* **Prerequisite:** Requires the **Metrics Server** to run in the cluster to expose node/container metrics via `metrics.k8s.io`.
+* **Formula:**
+  $$\text{desiredReplicas} = \left\lceil \text{currentReplicas} \times \frac{\text{currentMetricValue}}{\text{desiredMetricValue}} \right\rceil$$
+
+#### 2. Vertical Pod Autoscaler (VPA)
+VPA monitors actual CPU/Memory usage and recommends or applies optimal container requests and limits.
+* **Components:**
+  1. **Recommender:** Analyzes metrics and calculates optimal resource boundary recommendations.
+  2. **Updater:** Evicts Pods whose current configurations deviate significantly from the recommendations.
+  3. **Admission Webhook:** Mutating webhook that overrides resources at Pod startup.
+* **Update Modes (`spec.updatePolicy.updateMode`):**
+  * `Off`: Generates recommendations only (read-only).
+  * `Initial`: Applies target recommendations only at Pod creation.
+  * `Recreate`: Evicts active running Pods to apply updated sizes.
+  * `Auto`: Automatically sizes containers. Currently behaves like `Recreate` but will support in-place resizing in the future.
+
+#### 3. In-Place Container Resizing (Vertical Scaling)
+Traditionally, changing resources requires terminating the Pod and spinning up a new one. In-Place Pod Resizing allows modifying resource limits/requests without restarts.
+* **Feature Level:** Container-level resize is stable in **v1.35+** (enabled by default). Pod-level sandbox sizing is beta in **v1.36+**.
+* **Configuration (`resizePolicy`):** Defines how the runtime handles dynamic resource updates:
+  * `RestartNotRequired` (Default for CPU): Updates CPU weights on the fly via cgroups.
+  * `Restart` (Default for Memory): Restarts the container (brief container downtime, no Pod replacement) to apply memory limits.
+
+---
+
+
 ## 🛠️ Practical Proof of Concept (PoC)
 
 In this PoC, we will create a dedicated scheduling scenario (Taint + Node Affinity), verify Metrics Server operations, and observe the lifecycle difference between ConfigMaps injected as Environment Variables versus Volume Mounts.

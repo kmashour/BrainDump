@@ -1418,7 +1418,7 @@ ConfigMaps and Secrets can be injected into container runtimes in three ways:
 
 #### A. Environment Variables
 Injects keys as environment variables directly available to the application process.
-* **YAML Syntax:**
+* **YAML Syntax (Individual Keys via `valueFrom`):**
   ```yaml
   spec:
     containers:
@@ -1436,7 +1436,21 @@ Injects keys as environment variables directly available to the application proc
                 name: app-secret
                 key: DB_PASSWORD
   ```
+* **YAML Syntax (Bulk Ingestion via `envFrom`):**
+  Loads all keys in the ConfigMap or Secret as environment variables, where the key names automatically map to the environment variable names.
+  ```yaml
+  spec:
+    containers:
+      - name: app
+        image: my-app
+        envFrom:
+          - configMapRef:
+              name: app-config
+          - secretRef:
+              name: app-secret
+  ```
 * **Pitfall:** If values are updated in the ConfigMap/Secret, env variables are **NOT** updated inside the running container until the container is restarted.
+
 
 #### B. Command-Line Arguments
 Injects ConfigMap or Secret values as start arguments for the container entrypoint.

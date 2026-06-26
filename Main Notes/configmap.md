@@ -61,6 +61,52 @@ Without ConfigMaps, application configurations would have to be hardcoded into c
 
 ---
 
+## ⚙️ Operational Workflow
+
+### 1. Creating ConfigMaps
+*   **From Literal Values:**
+    ```bash
+    kubectl create configmap app-config --from-literal=LOG_LEVEL="INFO" --from-literal=DB_HOST="mysql"
+    ```
+*   **From Files:**
+    ```bash
+    kubectl create configmap app-config --from-file=app.properties
+    ```
+
+### 2. Injecting into Pods
+*   **Environment Variables (`valueFrom`):**
+    ```yaml
+    env:
+      - name: LOG_LEVEL
+        valueFrom:
+          configMapKeyRef:
+            name: app-config
+            key: LOG_LEVEL
+    ```
+*   **Bulk Ingestion (`envFrom`):**
+    ```yaml
+    envFrom:
+      - configMapRef:
+          name: app-config
+    ```
+*   **Volume Mounts:**
+    ```yaml
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          volumeMounts:
+            - name: config-vol
+              mountPath: /etc/config
+      volumes:
+        - name: config-vol
+          configMap:
+            name: app-config
+    ```
+
+---
+
+
 ## 🔍 Deeper Dive Notes
 This table automatically displays all deeper notes, use cases, and pitfalls associated with the **ConfigMap**.
 

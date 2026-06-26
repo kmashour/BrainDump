@@ -3,7 +3,7 @@ obsidianUIMode: preview
 class: project-note
 tier: project
 domains: ["kubernetes"]
-concepts_referenced: ["[[Vertical Pod Autoscaler]]", "[[Vertical Pod Autoscaler - In-Place Resizing]]"]
+concepts_referenced: ["[[verticalpodautoscaler]]", "[[verticalpodautoscaler - in-place resizing]]"]
 difficulty: "intermediate"
 status: "completed"
 ---

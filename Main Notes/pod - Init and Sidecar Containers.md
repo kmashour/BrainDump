@@ -27,12 +27,19 @@ Kubernetes supports sequential initialization tasks and native helper processes 
 ### 1. Init Containers
 Init containers run sequentially to completion before any application containers start. If an init container fails, the Kubelet restarts it until it succeeds (unless the Pod `restartPolicy` is `Never`).
 
-### 2. Native Sidecar Containers (restartPolicy: Always)
+### 2. Multi-Container Pod Patterns (Sidecar, Adapter, Ambassador)
+Tightly coupled container processes can share a Pod sandbox. Three primary design patterns exist for multi-container architectures:
+*   **Sidecar Pattern:** Extends or enhances the main application container. For example, a log shipper (e.g. Filebeat) that mounts a shared `emptyDir` volume to tail logs written by the main application, or a service mesh proxy (e.g. Envoy) managing ingress/egress.
+*   **Adapter Pattern:** Normalizes and formats the application output or telemetry before exposing it externally. For example, a metrics exporter that scrapes custom application output, converts it into Prometheus format, and serves it to a central metrics collector.
+*   **Ambassador Pattern:** Serves as a local proxy for the application's outgoing connections to external systems. For example, the application queries database services on `localhost:3306`, while the ambassador container handles request routing, service discovery, and database connection security dynamically.
+
+### 3. Native Sidecar Containers (restartPolicy: Always)
 Introduced as a native feature, sidecar containers run alongside main application containers but start *before* them and stop *after* them.
 * **Definition:** Configured in `spec.initContainers` but defined with `restartPolicy: Always`.
 * **Execution:** Starts and blocks subsequent init container execution until its startup/readiness probe succeeds.
 
-### 3. Resource Scheduling Math
+
+### 4. Resource Scheduling Math
 * **Standard Init:** The Pod request/limit is calculated as the `Max(sum of app containers, highest init container)`.
 * **Native Sidecar:** Because sidecar containers run concurrently with app containers, the pod scheduling calculation is modified:
   $$\text{Pod Request} = \text{Sum(App Containers)} + \text{Sum(Active Sidecars)}$$

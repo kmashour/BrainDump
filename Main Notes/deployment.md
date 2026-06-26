@@ -44,11 +44,13 @@ $$\text{Deployment} \longrightarrow \text{ReplicaSet} \longrightarrow \text{Pods
 
 ### Rollout Strategies
 * **`RollingUpdate` (Default):** Replaces pods incrementally.
+  * *Events Under the Hood:* The deployment controller creates a new ReplicaSet, then scales it up while scaling down the old ReplicaSet simultaneously. Pods are replaced one-by-one or in batches, ensuring no service downtime.
   * `maxSurge`: Maximum number of pods that can be created above the desired count during rollout (e.g. `25%` or `1`).
   * `maxUnavailable`: Maximum number of pods that can be offline during the update.
   * > [!IMPORTANT]
   > Both `maxSurge` and `maxUnavailable` cannot be `0` at the same time.
-* **`Recreate`:** Terminates all existing pods before starting any new ones, causing temporary downtime (useful for single-writer databases or incompatible schemas).
+* **`Recreate`:** Terminates all existing pods before starting any new ones.
+  * *Events Under the Hood:* The deployment controller scales the old ReplicaSet down to `0` first, waits for all old Pods to terminate (service is down), and only then scales the new ReplicaSet up to the desired replica count.
 
 ### Rollout Checking & Rollback Commands
 * **Check Status:** `kubectl rollout status deployment/<deployment-name>`
