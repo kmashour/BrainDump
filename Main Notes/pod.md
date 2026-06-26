@@ -40,6 +40,16 @@ The `Pod` is the smallest, most basic deployable object in Kubernetes. It repres
 
 ---
 
+## 📄 Pod Manifest Structure & Metadata Scopes
+
+A Pod manifest consists of the four mandatory Kubernetes root fields: `apiVersion: v1`, `kind: Pod`, `metadata` (containing identification like `name` and `labels`), and `spec` (specifying container configuration like `image` and `ports`).
+
+### Pod Metadata vs. Template Metadata
+* **Pod Metadata (Outer Scope):** Configured at the root of the Pod manifest. Defines identification properties for the specific Pod resource instance (e.g., `metadata.name: my-app-pod`).
+* **Template Metadata (Inner Scope):** Embedded under `spec.template.metadata` in higher-level controllers (such as Deployments or ReplicaSets). This defines the template from which Pods will be created, specifying labels that must match the controller's label selectors (`spec.selector.matchLabels`).
+
+---
+
 ## 🏛️ Architectural Context (How it fits in the architecture)
 The Pod is the building block of all workloads in the cluster:
 * **The Scheduling Target:** The `kube-scheduler` assigns the Pod to a Node by updating its metadata in the API Server.

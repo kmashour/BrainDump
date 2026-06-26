@@ -36,6 +36,27 @@ The `Deployment` controller provides declarative updates for Pods and ReplicaSet
 
 ---
 
+## 🏛️ Deployment Hierarchy & Rollout Management
+
+A Deployment behaves as a high-level wrapper orchestrating underlying resources:
+$$\text{Deployment} \longrightarrow \text{ReplicaSet} \longrightarrow \text{Pods}$$
+* **Hierarchy:** Updating the Pod template in the Deployment triggers the creation of a new ReplicaSet. The Deployment manager scales up the new ReplicaSet while scaling down the old one.
+
+### Rollout Strategies
+* **`RollingUpdate` (Default):** Replaces pods incrementally.
+  * `maxSurge`: Maximum number of pods that can be created above the desired count during rollout (e.g. `25%` or `1`).
+  * `maxUnavailable`: Maximum number of pods that can be offline during the update.
+  * > [!IMPORTANT]
+  > Both `maxSurge` and `maxUnavailable` cannot be `0` at the same time.
+* **`Recreate`:** Terminates all existing pods before starting any new ones, causing temporary downtime (useful for single-writer databases or incompatible schemas).
+
+### Rollout Checking & Rollback Commands
+* **Check Status:** `kubectl rollout status deployment/<deployment-name>`
+* **Rollout History:** `kubectl rollout history deployment/<deployment-name>` (Add `--revision=<num>` to view revision details).
+* **Rollback (Undo):** `kubectl rollout undo deployment/<deployment-name>` (Add `--to-revision=<num>` to roll back to a specific revision).
+
+---
+
 ## 🏛️ Architectural Context (How it fits in the architecture)
 * **High-Level Controller:** Sits above `ReplicaSet` and `Pod`. It does not manage Pods directly; it creates and manages `ReplicaSets` which in turn manage the `Pods`.
 * **Reconciliation Loop:** Run by the `kube-controller-manager`'s deployment controller thread, continuously comparing actual cluster status to the deployment spec.

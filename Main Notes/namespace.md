@@ -43,6 +43,32 @@ A **Namespace** is a logical partition inside a single Kubernetes cluster. It is
 
 ---
 
+## 🔒 Namespace Isolation & Resource Control
+
+### ResourceQuotas per Namespace
+To prevent a single tenant or environment from consuming the entire cluster's capacity, administrators define `ResourceQuota` objects inside the namespace (e.g., limiting the maximum CPU, Memory, or total number of Pods).
+* **Quota Configuration:**
+  ```yaml
+  apiVersion: v1
+  kind: ResourceQuota
+  metadata:
+    name: compute-quota
+    namespace: dev
+  spec:
+    hard:
+      pods: "10"
+      requests.cpu: "4"
+      requests.memory: 10Gi
+      limits.cpu: "10"
+      limits.memory: 20Gi
+  ```
+
+### Cross-Namespace Service Routing (DNS Resolution)
+Although Namespaces provide logical boundaries, they do not block network traffic by default. Services in other namespaces are discoverable and reachable using the Fully Qualified Domain Name (FQDN) format:
+$$\langle\text{service-name}\rangle.\langle\text{namespace-name}\rangle.\text{svc}.\text{cluster}.\text{local}$$
+
+---
+
 ## 🏛️ Architectural Context (How it fits in the architecture)
 *   **API Server:** Namespaces partition the API path structure. Namespaced API calls target `/api/v1/namespaces/{namespace}/pods` whereas non-namespaced cluster-scoped calls target `/api/v1/nodes`.
 *   **etcd:** Key paths in the etcd database are logically separated by namespace names (e.g., `/registry/pods/dev/my-pod`).

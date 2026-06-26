@@ -22,8 +22,21 @@ graph TD
 
 By following this flow, you progress from **Theoretical Recovery Loops (Self-Healing) → Active Monitoring (Probes) → Automatic Cleanup (Garbage Collection) → Live Verification (PoC Execution)**.
 
----
+## 0. Pod Anatomy & Manifest Structure
 
+Every Kubernetes object definition YAML file requires four top-level root properties:
+1. **`apiVersion`**: Specifies the version of the Kubernetes API to use. Pods use `v1`. Workload controllers use `apps/v1`.
+2. **`kind`**: Defines the type of API object being created. Case-sensitive (e.g., `Pod`, `ReplicaSet`, `Deployment`, `Service`, `Namespace`).
+3. **`metadata`**: Houses data identifying the resource uniquely, including `name`, `namespace`, `labels`, and `annotations`.
+4. **`spec`**: Declares the desired state of the resource (e.g., containers, volumes, restart policy).
+
+### Pod Metadata vs. Template Metadata
+* **Pod Metadata (Outer):** Placed at the root level of a Pod's YAML. Defines properties (like the `name` or `labels`) of the Pod object itself.
+* **Template Metadata (Inner):** Nested under `spec.template.metadata` in workload controllers (like ReplicaSets or Deployments). This defines the labels and annotations that will be stamped onto every Pod spawned by the controller.
+  > [!IMPORTANT]
+  > The selector matching labels in the controller's `spec.selector.matchLabels` must match the labels defined in the `spec.template.metadata.labels` of the Pod template.
+
+---
 
 ## 1. The Four Pillars of Self-Healing
 

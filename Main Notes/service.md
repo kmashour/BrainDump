@@ -40,6 +40,25 @@ A `Service` provides an abstract way to expose an application running on a set o
 
 ---
 
+## 🔌 Port Configurations & Service Discovery
+
+### Port Mapping Layout
+A Service coordinates three distinct port types:
+* `port`: The port that the Service listens on internally within the cluster.
+* `targetPort`: The port on the container where the application runs. Defaults to `port` if omitted.
+* `nodePort`: The port on each host node for external traffic routing (only valid for `NodePort`/`LoadBalancer` services; range: `30000-32767`).
+
+### Session Affinity
+* **`spec.sessionAffinity`:** Set to `ClientIP` to bind a client's requests to the same backend Pod replica based on the client's IP address. Default is `None`.
+
+### Service Discovery & Namespace Routing
+Services register DNS records automatically inside the cluster:
+* **Intra-Namespace:** Reachable via `service-name`.
+* **Cross-Namespace:** Reachable via the Fully Qualified Domain Name (FQDN) format:
+  `<service-name>.<namespace-name>.svc.cluster.local`
+
+---
+
 ## 🏛️ Architectural Context (How it fits in the architecture)
 * **Endpoint Controller:** Sits above Pods. The `endpoints-controller` in the controller manager updates `Endpoints` (or `EndpointSlices`) lists matching the service selector.
 * **Routing Agent:** `kube-proxy` monitors Services and Endpoints on every node, programming `iptables` or `IPVS` load balancing tables to redirect traffic to pod IPs.

@@ -459,11 +459,15 @@ A Service's ClusterIP is not assigned to any physical interface. Instead, it is 
 *   **`NodePort`:** Exposes the service on each node's IP at a static port (in the `30000-32767` range). External clients can connect to the Service by querying any node's IP address on the allocated `nodePort`.
 *   **`LoadBalancer`:** Provisions an external cloud load balancer pointing to the node's NodePorts. Cloud platforms generate a public IP or DNS name. To optimize cost, organizations typically route external traffic to a single Ingress Controller NodePort/LoadBalancer rather than provisioning a separate LoadBalancer service for every internal microservice.
 
-#### Port Mapping & Named Ports
+#### Port Mapping Layout
 A Service matches incoming requests to backend container ports:
-*   `port`: The port that the Service listens on inside the cluster.
-*   `targetPort`: The port on the container where traffic is forwarded.
+*   `port`: The port that the Service listens on internally inside the cluster.
+*   `targetPort`: The port on the container where the application processes incoming requests. If not explicitly defined, it defaults to the same value as `port`.
+*   `nodePort`: The port on the physical/virtual node for external access (only applicable to `NodePort` or `LoadBalancer` services). Must be within the range `30000-32767`. If omitted, Kubernetes automatically assigns a free port from this range.
 *   **Named Ports:** You can assign a name to a container port in the Pod spec and reference that name in the Service's `targetPort`. This isolates the Service from changes to the physical port numbers, allowing you to update container port numbers without modifying the Service YAML.
+
+#### Session Affinity
+*   **`spec.sessionAffinity`:** Configures session persistence. By default, Service routing is random (`None`). Setting this to `ClientIP` routes all requests from a specific client IP address to the same backend Pod replica.
 
 ```yaml
 # Example: Pod with Named Port
@@ -480,6 +484,7 @@ spec:
     ports:
     - name: http-web-port
       containerPort: 80
+```
 ---
 # Example: ClusterIP Service with Named targetPort
 apiVersion: v1
