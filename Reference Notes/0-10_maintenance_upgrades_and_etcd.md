@@ -538,6 +538,11 @@ To remove single points of failure in production Kubernetes environments, contro
 An HA control plane requires at least 3 control plane nodes:
 *   **kube-apiserver (Active-Active)**: Replicas run concurrently. A load balancer (e.g. HAProxy, NGINX, Keepalived, or AWS NLB) is configured in front of them to route traffic to active nodes on port `6443`.
 *   **kube-scheduler & kube-controller-manager (Active-Passive)**: Running multiple instances modifying state simultaneously causes race conditions. They use **leader election** leases. All replicas run, but only one is elected active leader. The remaining standby replicas poll the leader lease and take over immediately if the leader dies.
+    *   **Leader Election Configuration Flags**:
+        *   `--leader-elect=true`: Activates the leader election client before starting any controller/scheduler loops.
+        *   `--lease-duration=15s`: The duration that non-leader candidates will wait before forcing acquisition of leadership (default is `15s`).
+        *   `--renew-deadline=10s`: The interval at which the acting leader will renew its leader lock (default is `10s`).
+        *   `--retry-period=2s`: The interval at which the standby clients will retry to acquire the leader lease (default is `2s`).
 
 ---
 

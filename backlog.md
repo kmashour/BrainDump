@@ -4,6 +4,19 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA Cluster HA and Bootstrapping Transcript
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-10_maintenance_upgrades_and_etcd.md|0-10_maintenance_upgrades_and_etcd.md]] to incorporate control plane leader election options:
+    - Added specific configuration flags for scheduler and controller-manager active-passive lease management: `--leader-elect=true`, `--lease-duration=15s`, `--renew-deadline=10s`, and `--retry-period=2s`.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/cka_split/`:
+- `13_design_and_install_kubeadm.txt`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA Networking, DNS, and Ingress Transcript
 
 ### Refactored / Upgraded
