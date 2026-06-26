@@ -136,9 +136,15 @@ Kubernetes operates as both an **Orchestrator** (managing container life-cycle, 
 * **Security Checks:** Authenticates the caller, validates their authorization permissions (e.g., checking if the user is allowed to create nodes or pods), applies admission plug-ins (e.g., `NodeRestriction`, `LimitRanger`), and persists state.
 * **Configurations & Flags:**
   * `--advertise-address`: IP address to advertise to cluster members.
-  * `--etcd-servers`: List of backend `etcd` URLs.
+  * `--etcd-servers`: List of backend `etcd` URLs (e.g. `https://127.0.0.1:2379`). This is how the API server connects to the etcd cluster.
   * `--authorization-mode`: Decides auth chain order (e.g., `Node,RBAC`).
   * `--enable-admission-plugins`: Sequence of admission controllers (e.g., `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`).
+* **Client and Component Certificate Configurations:**
+  * To secure connectivity, several certificates are specified as CLI flags:
+    * `--client-ca-file`: CA certificate bundle used to authenticate client certificates (e.g., `/etc/kubernetes/pki/ca.crt`).
+    * `--tls-cert-file` and `--tls-private-key-file`: The server certificate and key enabling HTTPS on the API server.
+    * `--etcd-cafile`, `--etcd-certfile`, `--etcd-keyfile`: Client certificates used by the API server to authenticate itself to the `etcd` cluster securely.
+    * `--kubelet-client-certificate` and `--kubelet-client-key`: Credentials used by the API server to connect and authenticate to worker node `kubelet` API endpoints.
 * **Verification Paths:**
   * **kubeadm Clusters:** Configured as a Static Pod. Manifest path: `/etc/kubernetes/manifests/kube-apiserver.yaml`.
   * **Manual Setup:** Configured as a systemd service. Service file path: `/etc/systemd/system/kube-apiserver.service`.
@@ -184,7 +190,8 @@ Kubernetes operates as both an **Orchestrator** (managing container life-cycle, 
   2. **Ranking (Priorities):** Scores the remaining candidate nodes on a scale of `0` to `10` using priority functions (e.g., resource balance, image locality). The node with the highest score is selected.
   3. **Binding:** Submits a binding object to the API server, which writes the selected node name to `spec.nodeName`. Kubelet then detects and executes this binding.
 * **Configurations & Customization:** Schedulers are highly customizable. You can configure multiple custom schedulers in the same cluster and reference them via `spec.schedulerName` in your Pod manifests.
-* **Verification Paths:**
+* **Config Files & Binary Run:** In manual installations, the scheduler runs as a service pointing to a scheduler configuration file via `--config=<path-to-config-file>`.
+* **Verification & Static Pod Paths:**
   * **kubeadm:** Manifest at `/etc/kubernetes/manifests/kube-scheduler.yaml`.
   * **Manual Setup:** Service file at `/etc/systemd/system/kube-scheduler.service`.
   * Process check: `ps -aux | grep kube-scheduler`.
@@ -193,13 +200,13 @@ Kubernetes operates as both an **Orchestrator** (managing container life-cycle, 
 * **Mechanism:** Runs multiple asynchronous control loops packaged into a single binary. Every entity or resource in Kubernetes is managed by a specific controller loop.
 * **Hierarchy Flow:** A parent resource controller manages child resources. For example, a `Deployment Controller` manages `ReplicaSet` creation, which in turn commands the `ReplicaSet Controller`, which controls the `Pod Controller`.
 * **Reconciliation Loop:** Continually compares the Desired State (from `etcd`) with the Observed/Actual State (from the nodes) to reconcile discrepancies(unexpected difference or inconsistency).
-* **Key Controllers:**
-  * **Node Controller:** Detects when nodes go offline (see node heartbeat eviction timers below).
-  * **ReplicaSet Controller:** Keeps the correct number of Pod replicas running.
-  * **Endpoints Controller:** Links Service objects to the actual Pod IP addresses.
-* **Verification Paths:**
+* **Key Controllers & Types:**
+  * Node Controller, ReplicaSet Controller, Endpoints Controller, Namespace Controller, Job Controller, ServiceAccount Controller, etc.
+  * You can select which controllers to run using the `--controllers` flag (e.g. `--controllers=*` to enable all, or prefixing with a minus `-` to disable specific ones).
+* **Configuration directories & Static Pod Manifests:**
   * **kubeadm:** Manifest at `/etc/kubernetes/manifests/kube-controller-manager.yaml`.
   * **Manual Setup:** Service file at `/etc/systemd/system/kube-controller-manager.service`.
+  * Default settings like `--node-monitor-period` (default 5s) or eviction timeouts are specified as service/static-pod arguments here.
 
 > [!NOTE] Object vs. Resource Terminologies
 > * A **Kubernetes object** is a persistent *record of intent* in the cluster. It represents a specific instance of something you want to exist. When created, you tell Kubernetes your desired state (spec) and Kubernetes ensures the actual state (status) is reconciled to match it ("make it so and keep it that way"). Objects have a `spec`, `status`, and `metadata`.
@@ -227,12 +234,16 @@ Worker nodes through their `kubelet` actively update the control plane with heal
 ### G. `kube-proxy` (The Network Router)
 * **Role:** A network agent running on every node that enables cluster-wide network routing for Services.
 * **Service Virtual Entity:** Services are *virtual entities in the cluster's memory*  — they do not correspond to any container, network card, or physical interface.
-* **Routing Mechanism:** Kube-proxy watches the API Server for new Services and Endpoints. It configures host-level network rules (`iptables` or `IPVS` tables) so that traffic sent to a Service's IP is automatically redirected to the actual IP of an active backend Pod.
+* **Routing Mechanism (iptables vs IPVS):**
+  * Kube-proxy watches the API Server for new Services and Endpoints and implements host-level routing:
+    * **`iptables` Mode (Default):** Configures sequential netfilter rules inside the kernel. Lookup complexity is $O(N)$, causing high CPU overhead in large clusters. Uses random selection load balancing.
+    * **`IPVS` Mode:** Configures hash tables in the kernel's IP Virtual Server module. Lookup complexity is $O(1)$, which is highly scalable for large clusters. Supports advanced algorithms like Round Robin (`rr`) or Least Connections (`lc`).
 * **Important Distinction:** `kube-proxy` is for **Service networking** (handling client-to-service routing), not for API server-to-node ---> control plane communications to worker nodes (is handled directly by the `kubelet` to api-server).
 * **Verification & Deployment:**
   * **kubeadm:** Deployed as a `DaemonSet` in the `kube-system` namespace.
   * Retrieve DaemonSet configuration: `kubectl get daemonset -n kube-system kube-proxy`.
-  * List instances: `kubectl get pods -n kube-system -l k8s-app=kube-proxy`.
+  * List instances and check logs: `kubectl get pods -n kube-system -l k8s-app=kube-proxy` and `kubectl logs -n kube-system <pod-name>`.
+  * Verify programmed iptables rules on worker nodes: `iptables -t nat -L KUBE-SERVICES -n -v`.
 
 ---
 

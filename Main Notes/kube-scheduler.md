@@ -47,6 +47,18 @@ The `kube-scheduler` runs as an independent control loop:
 
 ---
 
+## ⚙️ Configuration & Key Flags
+The scheduler runs as a control daemon configured using key parameters and config paths:
+* **Configuration File:** Manual deployments configure the scheduler process pointing to a configurations policy file via the `--config=<path>` option.
+* **Predicates vs. Priorities:** The scheduling algorithm selects nodes using a two-step pipeline:
+  1. **Filtering (Predicates):** Filters out nodes that do not satisfy requirements (e.g., checks resource availability, node selectors, taints).
+  2. **Ranking (Priorities):** Assigns a score (0 to 10) to the remaining nodes using priority functions (e.g., image locality, least resource utilization) to choose the best host.
+* **Deployment & Paths:**
+  * **Static Pod Paths:** In a kubeadm setup, the manifest is located at `/etc/kubernetes/manifests/kube-scheduler.yaml`.
+  * **Manual Service Units:** In non-kubeadm clusters, options are configured in the systemd service file at `/etc/systemd/system/kube-scheduler.service`.
+
+---
+
 ## 🧩 Problem Solver (What problem it solves)
 * **Resource Contention:** Prevents scheduling workloads on nodes that lack the capacity, avoiding host CPU starvation or Out-Of-Memory (OOM) kills.
 * **Complex Placement Rules:** Handles complex affinity, anti-affinity, and co-location rules to place workloads close to their databases or spread them apart for high availability.

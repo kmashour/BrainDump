@@ -81,6 +81,23 @@ graph TD
 
 ---
 
+## ⚙️ Configuration & Key Flags
+The `kube-apiserver` behavior is customized using various command-line options. In standard deployments, these options are defined either inside the service file (`/etc/systemd/system/kube-apiserver.service`) or within the static pod manifest (`/etc/kubernetes/manifests/kube-apiserver.yaml`).
+
+### Core Backend Flags
+* `--etcd-servers`: List of etcd cluster URLs (e.g. `https://127.0.0.1:2379`). This tells the API server where to store and fetch state data.
+* `--advertise-address`: The IP address on which the API server advertises itself to the cluster members.
+* `--authorization-mode`: Defines authorization models in order (e.g. `Node,RBAC`).
+* `--enable-admission-plugins`: Sequence of admission control plugins to run against incoming objects (e.g., `NamespaceLifecycle`, `LimitRanger`, `ServiceAccount`).
+
+### SSL/TLS Certificate Flags
+* `--client-ca-file`: CA bundle file path to verify client certificates (e.g. `/etc/kubernetes/pki/ca.crt`).
+* `--tls-cert-file` & `--tls-private-key-file`: HTTPS server certificate and private key.
+* `--etcd-cafile`, `--etcd-certfile`, `--etcd-keyfile`: Client credentials used securely by the API server to authenticate its connection to the `etcd` cluster.
+* `--kubelet-client-certificate` & `--kubelet-client-key`: Certificate and key used by the API server to authenticate when initiating calls to worker node `kubelet` services.
+
+---
+
 ## 🧩 Problem Solver (What problem it solves)
 * **Concurrency and Database Guarding:** Prevents race conditions and raw data corruption in `etcd` by acting as a strict transaction controller and schema validator.
 * **Security Centralization:** Eliminates the need to distribute authentication, authorization, or audit logs across separate components. Every action is audited and validated at a single checkpoint.

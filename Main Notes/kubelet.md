@@ -54,6 +54,15 @@ The `kubelet` sits on the boundary between the Kubernetes cluster control plane 
 
 ---
 
+## ⚙️ Configuration & Key Flags
+The `kubelet` is configured directly on host nodes and does not run as a static pod:
+* **Configuration Files:** Main settings are loaded from `/var/lib/kubelet/config.yaml` using the `--config` flag, and TLS configurations reside in `/etc/kubernetes/kubelet.conf` via `--kubeconfig`.
+* **CRI Communication Socket:** Connects to container runtimes using the socket endpoint argument `--container-runtime-endpoint` (e.g. `unix:///run/containerd/containerd.sock` or `unix:///var/run/crio/crio.sock`).
+* **TLS Certificate Bootstrapping:** When joining a cluster, the `kubelet` uses bootstrap token settings (`/etc/kubernetes/bootstrap-kubelet.conf`) to submit a Certificate Signing Request (CSR) to the API Server. Auto-approval signs client certificates, generating the final credentials in `/etc/kubernetes/kubelet.conf` for subsequent daemon runs.
+* **Manual Service Path:** Executed as a systemd service daemon defined at `/etc/systemd/system/kubelet.service`.
+
+---
+
 ## 🧩 Problem Solver (What problem it solves)
 * **Local Process Orchestration:** Converts abstract, declarative YAML Pod definitions from the database into actual, isolated OS namespaces and processes.
 * **Telemetry Loop Closure:** Without the kubelet, the control plane has no hands on the worker node to spin up containers, pull images, or check local process health.

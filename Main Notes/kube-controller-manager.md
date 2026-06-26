@@ -53,6 +53,19 @@ The `kube-controller-manager` is an active administrative agent in the Control P
 
 ---
 
+## ⚙️ Configuration & Key Flags
+The `kube-controller-manager` runs all primary controllers as a single consolidated binary:
+* **Controllers Flag (`--controllers`):** Enables specifying exactly which controller loops to run. By default, all controllers are enabled (`--controllers=*`), but specific loops can be excluded (e.g., `--controllers=-route` to disable the route controller).
+* **Controller Count and Types:** Operates key controllers including:
+  * **Node Controller:** Watches node health, monitors heartbeat grace periods (`--node-monitor-grace-period`), and handles evictions.
+  * **Replication Controller:** Reconciles ReplicaSet and Pod replicas.
+  * **Namespace & Endpoints Controllers:** Clean resources and update dynamic networks.
+* **Manifests and Paths:**
+  * **Static Pod Manifest:** Located at `/etc/kubernetes/manifests/kube-controller-manager.yaml` in kubeadm clusters.
+  * **Systemd Service:** Manual installations run the service at `/etc/systemd/system/kube-controller-manager.service`.
+
+---
+
 ## 🧩 Problem Solver (What problem it solves)
 * **Automation of Maintenance:** Automates tasks that would otherwise require manual administrator intervention (e.g., rescheduling containers when hardware fails, updating load balancer routing tables, or garbage collecting orphaned resources).
 * **Declarative Guarantee:** Resolves the discrepancy between declarative intent (YAML specifications) and dynamic physical realities (running server processes).

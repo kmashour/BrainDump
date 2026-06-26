@@ -48,6 +48,22 @@ deeper_dive: "[[kube-proxy-deeper]]"
 
 ---
 
+## ⚙️ Configuration & Key Flags
+The `kube-proxy` is configured on nodes and is usually deployed as a cluster DaemonSet:
+* **Proxy Modes (iptables vs IPVS):**
+  * Configured via the `--proxy-mode` flag (or `mode` inside the ConfigMap).
+  * **iptables (Default):** Uses kernel netfilter rules sequentially ($O(N)$ lookup), with random selection distribution.
+  * **IPVS:** Uses hash tables ($O(1)$ lookup) for scalability, supporting Round Robin (`rr`) or Least Connections (`lc`) algorithms.
+* **Verification and Verification Methods:**
+  * **DaemonSet Verification:** Retrieve stats using `kubectl get daemonset -n kube-system kube-proxy`.
+  * **Logs Verification:** Check logs of pod instances via `kubectl logs -n kube-system -l k8s-app=kube-proxy`.
+  * **Network Rules Verification:** Inspect host iptables NAT chains using `iptables -t nat -L KUBE-SERVICES -n -v` on worker nodes.
+* **Configuration directories & paths:**
+  * **kubeadm:** Deployed as DaemonSet with a ConfigMap (`kube-proxy` in `kube-system`).
+  * **Manual Service:** Service unit configuration file at `/etc/systemd/system/kube-proxy.service`.
+
+---
+
 ## 🧩 Problem Solver (What problem it solves)
 * **Dynamic Pod IP Management:** Pods are transient; they are constantly created and destroyed, changing their IP addresses. Services provide a single, immutable ClusterIP. `kube-proxy` dynamically maps this stable IP to the current set of healthy Pod IPs, solving the problem of stale destination addresses.
 * **Low-Overhead Routing:** By utilizing Linux kernel subsystems, it routes packets without requiring application processes to perform DNS lookups or pass traffic through user-space proxy software.

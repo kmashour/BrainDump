@@ -126,6 +126,13 @@ When bootstrapping a node manually:
      * `--kubeconfig`: Path to certificate file authorizing Kubelet to talk to the API Server.
      * `--register-node`: When set to `true`, Kubelet self-registers the host with the API server.
 
+#### 4. Kubelet TLS Bootstrapping
+To securely connect new worker nodes to the control plane, Kubernetes utilizes a TLS bootstrapping mechanism to distribute client certificates:
+1. **Initial Bootstrap token:** The `kubelet` is started with a bootstrap-kubeconfig file (e.g. `/etc/kubernetes/bootstrap-kubelet.conf`) that contains a short-lived token allowing access only to submit Certificate Signing Requests (CSRs).
+2. **CSR Submission:** The `kubelet` contacts the API server using the bootstrap token, generates a local key pair, and submits a client certificate signing request (CSR).
+3. **Approval & Issuance:** A cluster administrator or controller-manager auto-approves the CSR. The API server signs the client certificate and returns it to the node.
+4. **Final Kubeconfig:** The `kubelet` writes the signed certificate into `/var/lib/kubelet/pki/` and generates the final configuration (`/etc/kubernetes/kubelet.conf`), disabling the bootstrap token configuration for subsequent runs.
+
 ### C. Verifying Kubelet Health & Status
 When troubleshooting a node that shows `NotReady`, verify the Kubelet process:
 * **Check Service Status:**
