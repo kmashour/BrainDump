@@ -4,6 +4,21 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA Networking, DNS, and Ingress Transcript
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-9_networking_dns_and_ingress.md|0-9_networking_dns_and_ingress.md]] to incorporate additional troubleshooting utility patterns:
+    - Added host bridge inspection command using `ip address show type bridge` to identify CNI bridges like `cni0`.
+    - Added process-specific listening ports command using `netstat -npl` (e.g., grep for `scheduler` on port 10259).
+    - Added socket status command using `netstat -npa` to audit client connections vs. peer-to-peer connections for ETCD (ports 2379/2380).
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/cka_split/`:
+- `12_networking_dns_ingress_gateway_api.txt`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA Storage Mechanics Transcript
 
 ### Refactored / Upgraded

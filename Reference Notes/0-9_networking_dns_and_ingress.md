@@ -1328,6 +1328,15 @@ Use these command patterns to troubleshoot networking, DNS, Ingress, and Gateway
 # List network interfaces on the current host node
 ip link show
 
+# List bridge interfaces on the host (e.g. cni0)
+ip address show type bridge
+
+# Find component listening ports (e.g. kube-scheduler port 10259)
+netstat -npl | grep -i scheduler
+
+# Find established connections for ETCD client (2379) or peer (2380) ports
+netstat -npa | grep -i etcd
+
 # Execute network status check inside a containerd container's namespace
 # 1. Identify container runtime task PID
 docker inspect <container-id> --format '{{.State.Pid}}'
