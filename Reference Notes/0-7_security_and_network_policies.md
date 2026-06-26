@@ -68,6 +68,9 @@ Kubernetes supports multiple authentication mechanisms, configured via flags on 
 > [!WARNING]
 > Basic authentication (`--basic-auth-file`) and static token authentication (`--token-auth-file`) were deprecated and have been completely removed in modern Kubernetes versions (removed in v1.22+). Do not use them in production or when building new clusters.
 
+> [!NOTE]
+> **Static File Ingestion in Kubeadm Control Planes:** If you must test static file-based authentication methods on older Kubernetes clusters (pre-v1.22) managed by `kubeadm`, remember that the `kube-apiserver` runs inside a container. Simply referencing a local host path like `--token-auth-file=/etc/kubernetes/tokens.csv` will fail because the container cannot access the host filesystem. You must define a host path volume and volume mount in `/etc/kubernetes/manifests/kube-apiserver.yaml` to project `/etc/kubernetes/tokens.csv` from the host into the container's namespace.
+
 ---
 
 ## 2. TLS Basics & TLS in Kubernetes
@@ -293,6 +296,29 @@ spec:
     - --peer-key-file=/etc/kubernetes/pki/etcd/peer.key
     - --peer-trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt
 ```
+
+### 2.5 Practical TLS/Certificate Troubleshooting Scenarios
+
+In production and on the CKA exam, static pod configurations for core components like the API Server and ETCD can be modified incorrectly, causing the cluster to go down. Since `kubectl` will not function when the control plane is offline, you must debug at the container runtime level.
+
+#### Scenario 1: ETCD Static Pod CrashLoop (Path/Name Mismatch)
+* **The Symptom:** `kubectl` commands fail with `connection refused` or `handshake timeout`.
+* **Investigation:** 
+  1. Inspect the running containers on the host using the container runtime CLI (e.g. `crictl ps -a` or `docker ps -a`).
+  2. Locate the stopped ETCD container and fetch its logs: `crictl logs <container-id>` (or `docker logs <container-id>`).
+  3. If you see an error like `etcdmain: cannot find /etc/kubernetes/pki/etcd/server-certificate.crt: no such file or directory`, it indicates a certificate configuration mismatch.
+* **The Root Cause:** The static pod manifest `/etc/kubernetes/manifests/etcd.yaml` has an incorrect file path for `--cert-file` or other certificate files.
+* **The Fix:** Edit `/etc/kubernetes/manifests/etcd.yaml` to specify the correct filename (e.g. `server.crt` instead of `server-certificate.crt`). The Kubelet will automatically reload the manifest and restart the ETCD static pod container.
+
+#### Scenario 2: API Server Fail-to-Start (Unknown Authority / Wrong CA Binds)
+* **The Symptom:** Kube-APIServer container is constantly exiting and restarting.
+* **Investigation:**
+  1. Check the logs of the failing API Server container: `crictl logs <kube-apiserver-container-id>`.
+  2. Look for errors like `authentication handshake failed: certificate signed by unknown authority` or `failed to connect to 127.0.0.1:2379: remote error: bad certificate`.
+  3. Check the client log on the ETCD container: `rejected connection from 127.0.0.1:xxxxx (bad certificate)`.
+* **The Root Cause:** The Kube-APIServer connects as a client to ETCD, but its client configuration references the wrong Certificate Authority. In a standard Kubeadm setup, the Cluster CA (`/etc/kubernetes/pki/ca.crt`) is used for Kubernetes clients, but the ETCD server uses its own dedicated ETCD CA (`/etc/kubernetes/pki/etcd/ca.crt`) to verify clients. 
+  * If the API server's `--etcd-cafile` flag in `/etc/kubernetes/manifests/kube-apiserver.yaml` is set to `/etc/kubernetes/pki/ca.crt` (Kubernetes CA), it will fail to validate the ETCD certificate.
+* **The Fix:** Edit `/etc/kubernetes/manifests/kube-apiserver.yaml` and set the `--etcd-cafile` flag to `/etc/kubernetes/pki/etcd/ca.crt`. Kubelet will reload the manifest and restart the Kube-APIServer.
 
 ---
 
