@@ -4,6 +4,21 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA Storage Mechanics Transcript
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-8_storage_mechanics_and_csi.md|0-8_storage_mechanics_and_csi.md]] to incorporate practical CKA troubleshoot and matching scenarios:
+    - Added warning/tip on access mode matching constraints for PV and PVC binding.
+    - Added troubleshooting scenario for PVCs stuck in `Terminating` due to the `kubernetes.io/pvc-protection` finalizer while in active pod use.
+    - Added troubleshooting scenario for PVCs remaining `Pending` under `WaitForFirstConsumer` volume binding mode until a consumer Pod is scheduled.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/cka_split/`:
+- `11_storage_mechanics.txt`
+
+---
+
 ## [2026-06-25] - Ingestion: CKA Kubernetes and Docker Storage (Mumshad)
 
 ### Refactored / Upgraded

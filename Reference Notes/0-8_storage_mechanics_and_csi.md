@@ -321,6 +321,10 @@ Kubernetes automatically matches and binds a PVC to a compatible PV based on the
 3. **Capacity Requirements:** The PV's capacity must be greater than or equal to the capacity requested by the PVC. The control plane selects the smallest available PV that satisfies the size.
 4. **Selector Match:** If the PVC specifies a label `selector`, the PV must have matching labels.
 
+> [!TIP]
+> **CKA Exam Tip - Access Mode Matching:**
+> A PVC requesting `ReadWriteOnce` will NOT bind to a PV that *only* lists `ReadWriteMany` in its access modes (and vice versa). The binder requires that the PV supports *all* access modes requested by the PVC. If there is a mismatch, the PVC remains stuck in `Pending`.
+
 ---
 
 ### B. Binding States Lifecycle
@@ -379,7 +383,15 @@ To prevent data loss and filesystem corruption, Kubernetes prevents active volum
 
 ---
 
-### F. Complete PV and PVC Manifest Templates
+### F. Troubleshooting Scenario: PVC Stuck in Terminating State
+* **The Symptom:** `kubectl delete pvc <pvc-name>` hangs, and `kubectl get pvc` shows the PVC stuck in `Terminating` status.
+* **The Investigation:** Running `kubectl describe pvc <pvc-name>` displays the finalizer `kubernetes.io/pvc-protection` in the metadata, indicating that the volume protection controller is active.
+* **The Root Cause:** An active Pod is still running and referencing the PVC in its volume mounts. Kubernetes blocks deletion of volumes in active use to prevent filesystem corruption and host-level resource leakage.
+* **The Fix:** Find and delete the Pod(s) that mount the volume. Once the Pod terminates and unmounts the volume, the volume protection finalizer is automatically removed, and the PVC completes its deletion immediately.
+
+---
+
+### G. Complete PV and PVC Manifest Templates
 #### PV Manifest (`pv-definition.yaml`)
 ```yaml
 apiVersion: v1
@@ -489,6 +501,12 @@ The `volumeBindingMode` controls when volume provisioning and binding occurs:
 - **Behavior:** Delays volume provisioning and binding until a Pod using the PVC is created and scheduled.
 - **The Solution:** The scheduler first evaluates the Pod's node selectors, resource limits, and affinity rules to choose a valid node. It then instructs the CSI provisioner to create the physical volume in the same Availability Zone (or local node) where that chosen node resides.
 - **Usage:** Mandatory for local volumes and highly recommended for cloud persistent storage.
+
+#### 3. Troubleshooting Scenario: PVC Stuck in Pending with WaitForFirstConsumer
+* **The Symptom:** The PVC remains in a `Pending` state indefinitely after creation.
+* **The Investigation:** Running `kubectl describe pvc <pvc-name>` shows an event with the message: `WaitForFirstConsumer: waiting for first consumer to be created before binding`.
+* **The Root Cause:** The PVC's StorageClass uses `volumeBindingMode: WaitForFirstConsumer`. The Kubernetes control plane delays volume creation and binding until a Pod consuming this storage is scheduled, to ensure that the volume is provisioned on the correct host node or Availability Zone where the workload will run.
+* **The Fix:** Create a Pod that references the PVC in its volume definitions. The scheduler will choose a node for the Pod first, which automatically triggers the binder to bind the PVC (or provision a new PV dynamically) on that specific node, shifting the PVC status to `Bound`.
 
 ---
 
