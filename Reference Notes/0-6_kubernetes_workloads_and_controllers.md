@@ -1606,6 +1606,18 @@ For complex multi-component applications, managing individual raw Kubernetes man
 ### 14.1 Helm: The Kubernetes Package Manager
 Helm packages multiple interdependent resources into a single versioned unit called a **Chart**. It template-interpolates parameters using a `values.yaml` file.
 
+#### 14.1.1 Helm 2 vs. Helm 3 Architectural Evolution
+*   **Tiller Removal (Security and Simplicity):**
+    - **Helm 2 (Deprecated):** Utilized a server-side pod called **Tiller** running inside the cluster. The Helm CLI client sent requests to Tiller, which then executed them against the API Server. Because Tiller was typically granted `cluster-admin` privileges, it bypassed fine-grained RBAC controls, creating severe security vulnerabilities.
+    - **Helm 3 (Modern):** Tiller was completely removed. The Helm client communicates directly with the Kubernetes API Server, using the authentication and permissions defined in the user's local `kubeconfig`. This natively respects Kubernetes RBAC constraints.
+*   **Three-Way Strategic Merge Patch:**
+    - **Helm 2:** Used a simple two-way merge, comparing only the manifest of the old Helm chart version and the new version. If a user made out-of-band manual changes using `kubectl` (such as changing an image version or adding annotations), Helm 2 did not inspect the live cluster state, resulting in manual adjustments being overwritten during upgrades or ignored during rollbacks.
+    - **Helm 3:** Employs a three-way strategic merge patch by comparing:
+      1. The chart template recorded in Helm storage.
+      2. The target chart template to install/rollback.
+      3. The live state of resources running in the cluster.
+    - **Result:** Manual live additions (like sidecar injections) are preserved during upgrades, and out-of-band configuration drift is successfully identified and corrected during rollbacks.
+
 #### Core Helm Commands (CKA Run Sheet):
 *   **Add Repository:** Add charts repositories:
     ```bash

@@ -4,6 +4,20 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA Helm Basics Transcript
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md|0-6_kubernetes_workloads_and_controllers.md]] to incorporate Helm 2 vs. Helm 3 evolution details:
+    - Added security architecture details on Tiller removal and direct local `kubeconfig` client-side authentication.
+    - Documented the Three-Way Strategic Merge Patch mechanism comparing recorded template state, target template state, and running cluster live state.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/cka_split/`:
+- `14_helm_basics.txt`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA Cluster HA and Bootstrapping Transcript
 
 ### Refactored / Upgraded
