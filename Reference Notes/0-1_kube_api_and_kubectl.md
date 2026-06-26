@@ -89,6 +89,24 @@ You can install `kubectl` using package managers or by downloading the compiled 
    kubectl version --client
    ```
 
+### B. Shell Aliases & Bash Auto-Completion (CKA Efficiency)
+To optimize terminal interaction and speed up command execution during the CKA exam:
+1. **Set up Bash Completion:** Load the completion script into the current shell session:
+   ```bash
+   source <(kubectl completion bash)
+   ```
+2. **Enable Persistent Completion:** Persist it in your shell environment:
+   ```bash
+   echo "source <(kubectl completion bash)" >> ~/.bashrc
+   ```
+3. **Configure the CLI Alias:** Set `k` as a shortcut for `kubectl`:
+   ```bash
+   alias k=kubectl
+   complete -F __start_kubectl k
+   echo "alias k=kubectl" >> ~/.bashrc
+   echo "complete -F __start_kubectl k" >> ~/.bashrc
+   ```
+
 ---
 
 ## 3. Local Cluster Bootstrapping with KinD (Kubernetes in Docker)

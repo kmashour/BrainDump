@@ -4,6 +4,19 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA Troubleshooting Transcript
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-11_troubleshooting_and_diagnostics.md|0-11_troubleshooting_and_diagnostics.md]] to incorporate two-tier application troubleshooting checklists, Namespace context switching tricks, control plane failures for `kube-scheduler` and `kube-controller-manager` static pods, and a step-by-step query construction flow for JSONPath/Custom Columns.
+  - Expanded [[Reference Notes/0-1_kube_api_and_kubectl.md|0-1_kube_api_and_kubectl.md]] to document `alias k=kubectl` and shell autocomplete setup for CKA efficiency.
+
+### Ingested Inflow Sources
+Processed and integrated the following transcript file from `inflow/cka_split/`:
+- `16_troubleshooting.txt`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA Kustomize Basics Transcript
 
 ### Refactored / Upgraded

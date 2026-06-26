@@ -161,16 +161,38 @@ If an application is running but clients get connection timeouts or refused erro
    ```
 
 ### E. Standalone Pod Re-Creation Workflow
-Unlike Deployments, standalone pods have immutable specs for most fields (e.g. ports, environment variables). To fix a broken standalone pod:
-1. Export the existing configuration:
+Unlike Deployments, standalone pods have immutable specs for most fields (e.g., ports, environment variables, command paths). If editing a running standalone pod via `kubectl edit` is rejected:
+1. **Export the Configuration:**
    ```bash
    kubectl get pod <pod-name> -n <namespace> -o yaml > pod-recovery.yaml
    ```
-2. Edit `pod-recovery.yaml` to fix the environmental variables or ports.
-3. Force replace the pod instantly:
+2. **Modify the Manifest:** Edit `pod-recovery.yaml` to fix ports, environment variables, or arguments.
+3. **Force Replace the Pod:**
    ```bash
    kubectl replace --force -f pod-recovery.yaml
    ```
+   *(Note: Alternatively, run `kubectl delete pod <pod-name> --grace-period=0 --force && kubectl apply -f pod-recovery.yaml` for instantaneous deletion and creation).*
+
+### F. Namespace Context Switching (CKA Speed Shortcut)
+When troubleshooting multiple resources within a specific namespace, typing `-n <namespace>` repeatedly is error-prone. Switch the default namespace of your active context:
+```bash
+# Set default namespace for current active context to "alpha"
+kubectl config set-context --current --namespace=alpha
+
+# Verify context namespace update
+kubectl config view --minify | grep namespace:
+```
+
+### G. Two-Tier (App & Database) Failure Debugging Matrix
+When a two-tier application fails (e.g., web frontend cannot reach the database backend), systematically check the following configuration layers:
+
+| Diagnostic Layer | Common Root Causes | Diagnostic Commands & Verification |
+| :--- | :--- | :--- |
+| **1. Front-End Access** | NodePort mapping mismatch (e.g., trying to access port `30081` but service is listening on port `30088`). | `kubectl get service <web-service>`<br>Check NodePort assignment. Verify access from node using:<br>`curl -I http://localhost:<nodeport>` |
+| **2. Service-to-Pod Labels** | Mismatched service selectors vs pod labels (e.g., service selector is `name=SQL00001` while pod label is `name=mysql`). | Compare `spec.selector` in `kubectl get svc <service> -o yaml` with `metadata.labels` in `kubectl get pod <pod> -o yaml`. Verify via:<br>`kubectl get endpoints <service-name>` (Should not be empty) |
+| **3. Target Port Configuration** | Incorrect `targetPort` in Service definition pointing to the wrong container port (e.g., targetPort is `8080` instead of the database port `3306`). | `kubectl describe service <service-name>`<br>Verify `Port` and `TargetPort` map correctly to the backend container's listening port. |
+| **4. Database Hostname Env** | Application environment variables point to an incorrect DNS service name (e.g., `DB_HOST` is configured as `mysql-service` but the service name is `mysql`). | `kubectl describe deployment <app-deployment>`<br>Check environment variables under the container spec (`DB_HOST`, `DATABASE_HOST`). |
+| **5. Authentication Credentials** | Username or password mismatch (e.g., database requires user `root` but application is using `SQL_USER`; database root password does not match application password env variables/configmaps). | Check deployment/pod env vars for user (`DB_USER`, `MYSQL_USER`) and password (`DB_PASSWORD`, `MYSQL_ROOT_PASSWORD`). Inspect corresponding ConfigMaps and Secrets. |
 
 ---
 
@@ -203,13 +225,31 @@ This indicates that the `kube-apiserver` process is down. Because `kubectl` reli
    ```bash
    sudo crictl logs <container-id>
    ```
-4. **Common Static Pod Manifest Errors:**
-   * **CA/Cert Directory Paths:** Typo in PKI volume mounts (e.g., mounting `/etc/kubernetes/pki-typo` instead of `/etc/kubernetes/pki`).
-   * **Kubeconfig File Paths:** Typo in configuration files (e.g., pointing to `/etc/kubernetes/controller-manager-typo.conf` instead of `/etc/kubernetes/controller-manager.conf`).
-   * **Exec Command Typo:** Typos in starting binaries (e.g., `command: ["kube-apiserverrrrr"]`).
-   * **YAML Formatting Errors:** Duplicate keys, tabs instead of spaces, or incorrect indentations. Check syntax:
+4. **Common Control Plane Component Manifest Failures:**
+   * **Scheduler Failure (OCI Runtime Executable Not Found):**
+     * **Symptom:** Created pods remain stuck in `Pending` indefinitely. A `kubectl describe pod` shows no node is assigned (`Node: <none>`), and no scheduler events exist.
+     * **Diagnosis:** Inspect the `kube-scheduler` pod status in the `kube-system` namespace. If it is in `CrashLoopBackOff` or `Error`, inspect its container runtime logs:
+       ```bash
+       kubectl logs -n kube-system kube-scheduler-controlplane
+       # Or via crictl logs if the API server is completely unresponsive:
+       sudo crictl logs $(sudo crictl ps -a --name kube-scheduler -q)
+       ```
+     * **Root Cause:** A typo in the binary or command name in `/etc/kubernetes/manifests/kube-scheduler.yaml` (e.g., `command: ["kube-schedulerrr"]`).
+     * **Fix:** Correct the command binary path in `/etc/kubernetes/manifests/kube-scheduler.yaml`. Kubelet will automatically restart the static pod.
+   * **Controller-Manager Failure (Replica Scaling Blocked):**
+     * **Symptom:** Deployments/ReplicaSets fail to scale up or down (e.g., running `kubectl scale deployment <name> --replicas=3` updates the desired count but no new pods are created).
+     * **Diagnosis:** Check if the `kube-controller-manager` static pod is running:
+       ```bash
+       kubectl get pods -n kube-system | grep controller-manager
+       ```
+     * **Root Cause 1: Kubeconfig Typo:** Typo in configuration flags under `spec.containers[*].command` (e.g., `--kubeconfig=/etc/kubernetes/controller-manager-xxxx.conf` instead of `/etc/kubernetes/controller-manager.conf`). Logs will show:
+       `failed to load client config: stat /etc/kubernetes/controller-manager-xxxx.conf: no such file or directory`
+     * **Root Cause 2: Mismatched PKI Volume Mount:** Misconfiguration in the certificate path or volume mapping on the host (e.g., host path is mapped to `/etc/kubernetes/pki-typo` instead of `/etc/kubernetes/pki`). Logs will show:
+       `unable to load client CA file: stat /etc/kubernetes/pki/ca.crt: no such file or directory` (because the container could not access the directory mapped from the host).
+     * **Fix:** Correct the file path or volume mounts under the `volumes` and `volumeMounts` sections in `/etc/kubernetes/manifests/kube-controller-manager.yaml`.
+   * **Manifest Syntax Check:** Before saving edits to control plane manifests, verify they contain valid YAML:
      ```bash
-     python3 -c 'import yaml, sys; yaml.safe_load(open("/etc/kubernetes/manifests/kube-apiserver.yaml"))'
+     python3 -c 'import yaml, sys; yaml.safe_load(open("/etc/kubernetes/manifests/kube-controller-manager.yaml"))'
      ```
 
 > [!TIP]
@@ -487,7 +527,22 @@ CoreDNS resolves internal service names (e.g. `mysql-service.alpha.svc.cluster.l
 
 Using advanced `kubectl` query parameters allows for rapid diagnosis and data collection without raw JSON processing in external utilities.
 
-### A. JSONPATH Parsing Syntax
+### A. Structured JSONPath Command Construction Protocol
+When debugging in an exam or production incident, formulate your queries using this 4-step workflow to ensure accuracy:
+1. **Identify the Base Command:** Determine the target resource to query (e.g., `kubectl get nodes`).
+2. **Inspect the Raw JSON Schema:** Fetch a single instance of the resource in JSON format to inspect its fields and hierarchy:
+   ```bash
+   kubectl get nodes -o json
+   ```
+3. **Formulate the Path Expression:** Trace the keys to your required data. For example:
+   * To find a node's CPU capacity, trace from the root `$` through: `.items[*].status.capacity.cpu`.
+   * To query a container's image name, trace through: `.items[*].spec.containers[*].image`.
+4. **Wrap and Execute:** Wrap the path inside curly braces and single quotes (`'{}'`) using the `-o jsonpath` parameter:
+   ```bash
+   kubectl get nodes -o jsonpath='{.items[*].status.capacity.cpu}'
+   ```
+
+### B. JSONPATH Parsing Syntax
 Use JSONPATH expressions to filter and output specific nested fields from API objects.
 
 #### Basic Syntax Operators
@@ -528,9 +583,25 @@ Use JSONPATH expressions to filter and output specific nested fields from API ob
    kubectl get pod <pod-name> -o jsonpath='{.status.podIP}'
    ```
 
+#### JSONPATH Range Loops (Formatting Tabular Text)
+When default layout custom-columns do not provide enough control, you can construct custom loops to iterate over resource lists. You can print formatting elements like tabs `{"\t"}` or newlines `{"\n"}` explicitly:
+*   **Iterate over Nodes printing Name and CPU Capacity:**
+    ```bash
+    kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.capacity.cpu}{"\n"}{end}'
+    ```
+*   **Iterate over Pods printing Name and IP Address:**
+    ```bash
+    kubectl get pods -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.podIP}{"\n"}{end}'
+    ```
+*   *Note:* The loop begins with `{range .items[*]}`. Inside the loop, all jsonpath expressions are evaluated relative to the current item (e.g. `{.metadata.name}` instead of `{.items[*].metadata.name}`). The loop block must be finalized using the `{end}` keyword.
+
 ### B. Custom Columns Formatting
 Format output into clean, user-defined tabular columns directly within the CLI:
 `kubectl get <resource> -o=custom-columns=<HEADER>:<JSONPATH>,<HEADER2>:<JSONPATH>`
+
+> [!IMPORTANT]
+> **Custom Columns Wildcard Exclusion Rule:**
+> Unlike raw `-o jsonpath` query commands which operate on the root list of resources and require the `.items[*]` array traversal prefix, the `custom-columns` parser automatically iterates over each item in the resource list. Therefore, you **must exclude** the `.items[*]` prefix from your JSONPath expressions (e.g., use `.metadata.name` instead of `.items[*].metadata.name`).
 
 1. **Extract Node Names and CPU Capacities:**
    ```bash
