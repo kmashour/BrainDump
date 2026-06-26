@@ -4,6 +4,21 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-26] - Ingestion: CKA mTLS Diagnostics & SAN Troubleshooting
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] to incorporate:
+    - Detailed two-phase mTLS authentication breakdown (Phase 1 client-side SAN matching vs Phase 2 server-side authorization check).
+    - Diagnostic symptoms for `x509: certificate is valid for...` SAN mismatches under external Load Balancer or Elastic IP setups.
+    - CLI commands for boot-time `kubeadm` extra SAN overrides and post-install ConfigMap modification and certificate regeneration workflows.
+
+### Ingested Inflow Sources
+Processed and integrated the following file from `inflow/`:
+- `More_Notes_On_MTLS_steps.md`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA ETCD Private CA Architecture
 
 ### Refactored / Upgraded

@@ -327,6 +327,42 @@ In production and on the CKA exam, static pod configurations for core components
   * If the API server's `--etcd-cafile` flag in `/etc/kubernetes/manifests/kube-apiserver.yaml` is set to `/etc/kubernetes/pki/ca.crt` (Kubernetes CA), it will fail to validate the ETCD certificate.
 * **The Fix:** Edit `/etc/kubernetes/manifests/kube-apiserver.yaml` and set the `--etcd-cafile` flag to `/etc/kubernetes/pki/etcd/ca.crt`. Kubelet will reload the manifest and restart the Kube-APIServer.
 
+#### Scenario 3: mTLS Handshake Rejections & External SAN Mismatches (Load Balancers / Public IPs)
+* **The Symptom:** When accessing the cluster externally via a Load Balancer DNS name or Public IP, the `kubectl` command instantly fails with:
+  `Unable to connect to the server: x509: certificate is valid for 10.96.0.1, 192.168.1.10... not 203.0.113.50`
+* **The Root Cause (Phase 1 vs Phase 2 mTLS Verification):**
+  * **Phase 1: Client Rejects Server (SAN Mismatch):** In Mutual TLS (mTLS), the client (`kubectl`) must authenticate the server before sending credentials. It compares the target IP or DNS it is connecting to against the **Subject Alternative Names (SANs)** list inside the API server's certificate (`apiserver.crt`). If the IP is not in the SANs, `kubectl` terminates the connection. The server did not reject you; the client rejected the server.
+  * **Phase 2: Server Rejects Client (Unauthorized/Forbidden):** If Phase 1 passes, the secure tunnel is built and the server verifies your client credentials (usually from `~/.kube/config`). If they are expired, signed by the wrong CA, or lack RBAC permissions, the server rejects the client with `Unauthorized` or `Forbidden`.
+  * **Default SAN Constraints:** By default, `kubeadm` only stamps `apiserver.crt` with internal cluster IPs (e.g., `10.96.0.1`), local host IPs, and local domain suffixes (`.default.svc.cluster.local`). External Load Balancers or public IPs are not automatically included.
+* **The Fix (Bootstrap extra SANs):** If provisioning a new cluster, pass the external IP/DNS during init:
+  ```bash
+  kubeadm init --apiserver-cert-extra-sans="my-loadbalancer.company.com,203.0.113.50"
+  ```
+* **The Fix (Regenerate SANs on Running Cluster):**
+  1. Edit the cluster config in the `kube-system` namespace to add the external values to the `certSANs` block:
+     ```bash
+     kubectl edit cm -n kube-system kubeadm-config
+     # Under apiServer -> certSANs, append:
+     # apiServer:
+     #   certSANs:
+     #   - "203.0.113.50"
+     #   - "my-loadbalancer.company.com"
+     ```
+  2. SSH onto the control plane node, elevate to root, and delete the existing API Server certificates:
+     ```bash
+     sudo rm /etc/kubernetes/pki/apiserver.crt /etc/kubernetes/pki/apiserver.key
+     ```
+  3. Regenerate the certificates using `kubeadm`:
+     ```bash
+     sudo kubeadm init phase certs apiserver
+     ```
+  4. Force a reload of the API server container by temporarily moving the static manifest and putting it back:
+     ```bash
+     mv /etc/kubernetes/manifests/kube-apiserver.yaml /tmp/
+     # Wait 5 seconds for Kubelet to kill the container
+     mv /tmp/kube-apiserver.yaml /etc/kubernetes/manifests/
+     ```
+
 ---
 
 ## 3. Certificates API
