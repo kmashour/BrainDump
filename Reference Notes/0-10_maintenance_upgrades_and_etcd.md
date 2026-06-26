@@ -310,6 +310,14 @@ ETCD is the distributed key-value datastore containing the state of the entire K
 *   **`etcdctl`:** The primary command-line client used to interact with a live etcd cluster (e.g., writing/retrieving keys, checking endpoint health, and taking live database snapshots).
 *   **`etcdutl`:** A database utility client introduced in v3.5 to handle offline and management operations (e.g., offline file backups, database verification, and snapshot restorations) without needing the etcd cluster daemon active.
 
+#### Release History & API Evolution:
+*   **August 2013 (v0.1):** First release of etcd as a basic key-value engine.
+*   **February 2015 (v2.0):** Redesigned the Raft consensus algorithm, enabling support for more than 1,000 writes per second. This was the first official stable release.
+*   **January 2017 (v3.0):** Released with significant optimizations and a major API change. Version 3 introduced standard transaction support, and deprecated the legacy v2 API commands in favor of a newer key space layout.
+*   **November 2018:** Became a CNCF Incubator project.
+*   **November 2020:** Graduated to a full CNCF project.
+*   **June 2021 (v3.5):** Released with enhanced stability and performance diagnostics, and introduced the `etcdutl` separation of concerns.
+
 #### Configuring the API Version:
 You can switch the active API version for `etcdctl` and `etcdutl` using one of two methods:
 1.  **Prepend the Environment Variable:** Specify the variable on a per-command basis:
@@ -323,7 +331,6 @@ You can switch the active API version for `etcdctl` and `etcdutl` using one of t
     etcdctl version
     ```
 
-
 #### CLI Command Comparison:
 | Operation | API v2 Command (`ETCDCTL_API=2`) | API v3 Command (`ETCDCTL_API=3`) | Notes |
 | :--- | :--- | :--- | :--- |
@@ -331,9 +338,21 @@ You can switch the active API version for `etcdctl` and `etcdutl` using one of t
 | **Write/Store Key** | `etcdctl set key1 value1` | `etcdctl put key1 value1` | v2 uses `set`; v3 uses `put` and returns `OK`. |
 | **Read/Retrieve Key** | `etcdctl get key1` | `etcdctl get key1` | v3 output prints both the key name and the value on separate lines. |
 | **Query Key Prefix** | `etcdctl ls` (Lists directory content) | `etcdctl get / --prefix --keys-only` | v3 lacks directories; it uses a flat key-value namespace with prefixes. |
-| **Delete Key** | `etcdctl rm key1` | `etcdctl del key1` | v2 uses `rm`; v3 uses `del`. |
+| **Delete Key** | `etcdctl rm key1` | `etcdctl del key1` (or `delete`) | v2 uses `rm`; v3 uses `del` or `delete`. |
 | **Create Directory** | `etcdctl mkdir dir1` | *N/A* | Not supported in v3 due to flat keyspace model. |
 | **Watch Key Changes** | `etcdctl watch key1` | `etcdctl watch key1` | In v3, watching keys provides detailed transaction events. |
+
+#### Kubernetes Registry Path Layout:
+Kubernetes uses the etcd database as a registry structured in a directory-like layout under the `/registry` prefix.
+*   **Root Prefix:** `/registry`
+*   **Subdirectories:** Resource namespaces are categorized under specific constructs:
+    *   Nodes: `/registry/minions/`
+    *   Pods: `/registry/pods/<namespace>/<pod-name>`
+    *   ReplicaSets: `/registry/replicasets/<namespace>/<replicaset-name>`
+    *   Deployments: `/registry/deployments/<namespace>/<deployment-name>`
+    *   Secrets: `/registry/secrets/<namespace>/<secret-name>`
+    *   Roles: `/registry/roles/<namespace>/<role-name>`
+*   Any Kubernetes operation (e.g. `kubectl run` or `kubectl delete`) is only completed once its corresponding key changes have been successfully committed to the etcd registry path.
 
 ---
 

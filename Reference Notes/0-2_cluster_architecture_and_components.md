@@ -145,19 +145,27 @@ Kubernetes operates as both an **Orchestrator** (managing container life-cycle, 
   * For runtime process inspection, execute: `ps -aux | grep kube-apiserver`.
 
 ### B. `etcd` (The Source of Truth)
-* **Key-Value Store vs Relational:** Relational databases use rigid rows/columns. `etcd` is a key-value store, organizing configuration data as independent, nested JSON documents, allowing highly flexible schemas.
-* **Independence:** It runs as an independent entity outside the API server (it is a standalone cluster/process).
-* **Consensus & Ports:** Uses the **Raft consensus algorithm** to prevent split-brain. Client communication listens on port **`2379`** (used by API Server), and peer cluster node communication listens on port **`2380`**.
-* **High Availability Quorum:** To work efficiently and guarantee high availability, the number of etcd members must be **odd** (e.g., 3, 5). This is required to achieve **Quorum** (the majority needed to agree on writes and elect a leader):
-  $$\text{Quorum} = \left\lfloor \frac{N}{2} \right\rfloor + 1$$
+* **Storage Model Comparison (SQL vs. Document vs. Key-Value):**
+  * **Relational / SQL Databases:** Tabular format using rigid schemas with rows and columns. Adding new columns (e.g. salary, grades) affects the entire table structure, resulting in null/empty cells for rows that do not require those attributes. Best for structured data and complex SQL queries, but rigid.
+  * **Document Stores:** Stores independent documents (usually in JSON format) per entry. Changes to one document do not affect others, meaning no strict schema is required. Flexible and best for semi-structured data, but limits complex queries (such as joins).
+  * **Key-Value Stores:** Stores values against unique keys (e.g. `name: John`, or hierarchical key strings like `user:john_doe` pointing to a JSON document). No schema constraints, extremely fast lookup performance, and highly flexible since any payload structure can be stored. `etcd` is a distributed, reliable key-value store optimized for simple, high-speed lookups and writes.
+* **Independence:** It runs as an independent daemon/service outside the API server (it is a standalone cluster/process).
+* **Consensus & Ports:** Uses the **Raft consensus algorithm** to prevent split-brain. Client communication (e.g., API Server queries) listens on port **`2379`** by default. Peer-to-peer cluster node communication (e.g., leader election and replication) listens on port **`2380`**.
+* **Raft Consensus Evolution & Quorum:**
+  * **Evolution:** etcd version 2.0 (released in February 2015) redesigned the Raft consensus algorithm, enabling it to support more than 1,000 writes per second.
+  * **HA Quorum:** In high-availability configurations, an odd number of `etcd` members (e.g., 3, 5) form a cluster to maintain consensus. Quorum is the majority of members needed to agree on writes and elect a leader:
+    $$\text{Quorum} = \left\lfloor \frac{N}{2} \right\rfloor + 1$$
 * **Configurations & Flags:**
-  * `--listen-client-urls` and `--advertise-client-urls`: Handles inbound API requests.
-  * `--initial-cluster`: Lists peers (`controller-0=https://...:2380,controller-1=https://...:2380`) for cluster formation.
+  * `--listen-client-urls` and `--advertise-client-urls`: Specifies the addresses on which etcd listens for client API requests (port `2379`). Kube API server configuration dials this advertised client URL.
+  * `--initial-cluster`: Lists cluster peer instances (`controller-0=https://...:2380,controller-1=https://...:2380`) for Raft consensus group formation.
   * `--data-dir`: Node-level directory path where keys are persisted (`/var/lib/etcd`).
 * **API v2 vs v3 (CKA Essential CLI Tricks):**
-  * `etcdctl` defaults to API v2. You must switch it to v3 via `export ETCDCTL_API=3`.
-  * API v2 uses `set`/`get` commands. API v3 uses `put`/`get` commands.
-  * In API v3, `version` is a subcommand (e.g., `etcdctl version` instead of `--version`).
+  * Default behavior of `etcdctl` can vary; you must target API v3 by exporting `export ETCDCTL_API=3` (or prepending `ETCDCTL_API=3` to commands).
+  * **API Changes:** Version 2.0 (2015) redesigned Raft; version 3.0 (2017) changed commands and added transaction support. API v2 used `set`, `get`, `rm` commands, while API v3 uses `put`, `get`, `del` (or `delete`) commands and supports transactions. CNCF incubation began in Nov 2018 and graduated in Nov 2020. Version 3.5 (2021) introduced `etcdutl`.
+* **Kubernetes Registry Key Layout:**
+  * All cluster state objects (nodes/minions, pods, replica sets, deployments, secrets, roles) are organized under a physical tree/directory hierarchy starting with `/registry` as the root.
+  * *Example Path:* Pod specs are written under `/registry/pods/<namespace>/<pod-name>`.
+  * Every change applied via `kubectl` is only considered complete once successfully written to the `etcd` registry database.
 * **Querying Registry Keys Command:**
   To list all objects registered by the API Server in etcd, target the static pod using certificate flags (required for TLS client authorization):
   ```bash

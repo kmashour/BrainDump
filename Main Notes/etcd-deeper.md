@@ -8,6 +8,8 @@ sub_concepts:
   - "[[Raft Quorum Rules]]"
   - "[[etcd network ports]]"
   - "[[etcd TLS certificate configurations]]"
+  - "[[etcd - Architecture]]"
+  - "[[etcd - Commands]]"
 use_cases:
   - "[[etcd Backup and Restore]]"
 external_links:

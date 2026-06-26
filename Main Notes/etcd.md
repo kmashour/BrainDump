@@ -70,6 +70,8 @@ deeper_dive: "[[etcd-deeper]]"
 ## 🔍 Deeper Dive
 For detailed configurations, sub-concepts, and step-by-step CKA playbooks, see:
 * **[[etcd-deeper]]**
+* **[[etcd - Architecture]]**
+* **[[etcd - Commands]]**
 
 ```dataview
 TABLE sub_type AS "Type", tags AS "Tags", source_type AS "Source"
