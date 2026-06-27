@@ -20,4 +20,8 @@ Whenever you ingest, refine, or write notes regarding classical computing system
 2. **Bridge the Gap to Modern Systems:** Explicitly bridge the gap to modern implementations, highlighting how it works today (e.g., Linux page cache, CFS/EEVDF process schedulers, copy-on-write `clone()` namespaces, or modern S3 strong consistency).
 3. **Capture Evolutionary Constraints:** Document historical constraints and compare them with modern versions, capabilities, or replacements. This preserves the "why" behind the evolution of modern software architecture.
 
-
+## 🎙️ Talks, Lectures & Video Ingestion Rule
+Whenever an inflow note represents a talk, lecture, KubeCon/tech presentation, or video tutorial (identified by a YouTube/Vimeo source URL, timestamp structures in the body, or frontmatter containing fields like `type: talk`, `type: presentation`, or tag `clippings` from video sources):
+1. **Isolate as Standalone:** You MUST compile the raw transcript content, Q&As, and presentation flow into a dedicated standalone reference note under `Reference Notes/` using the prefix of its respective domain (e.g., prefixing with `3-X` for AWS, `10-X` for Terraform, `12-X` for CNCF, etc.) and index it inside that domain's main Map of Content (MOC).
+2. **Integrate Where it Belongs:** You MUST extract all configurations, architectural diagrams, commands, and conceptual definitions from the talk and integrate them into the relevant atomic conceptual notes in `Main Notes/`, project playbooks in `Projects/`, and structured reference modules in `Reference Notes/0-X...`.
+3. **Dual Backlog Registration:** Document both the standalone file creation and the target note integrations in the transaction log (`backlog.md`).
