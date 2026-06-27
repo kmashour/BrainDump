@@ -75,15 +75,63 @@ As of the latest exam environments, the exam is strictly administered via a remo
 
 ---
 
-## 💡 4. High-Speed VIM Tricks for YAML Editing
+## 4. High-Speed VIM Tricks for YAML Editing
 * **Multi-Line Indentation:**
-  1. Press `Esc` to enter command mode.
-  2. Press `Shift + V` to enter Visual Line Mode and select the target lines.
-  3. Type `>` to shift the entire block right by 2 spaces, or `<` to shift left.
+  1. Press `Esc` to enter Command Mode.
+  2. Press `Shift + V` to enter Visual Line Mode and select lines.
+  3. Type `>` to shift the block right by 2 spaces, or `<` to shift left.
 * **Block Deletion / Visual Block Mode:**
-  1. Press `Esc` and move your cursor to the start of the block.
+  1. Press `Esc` and move cursor to the start of the block.
   2. Press `Ctrl + V` to enter Visual Block Mode.
   3. Select the target block area using arrow keys, then press `d` to delete.
+* **Deletion Hacks for Long Strings (e.g. Base64 requests):**
+  * `C` (Change to EOL - **`Shift + c`**): Deletes all characters to the end of the line and drops you directly into `INSERT` mode (ideal for replacing base64 hashes).
+  * `D` (Delete to EOL - **`Shift + d`**): Deletes to the end of the line but stays in Normal mode.
+  * `daw` (Delete a Word): Deletes the word under the cursor and its trailing space (Vim treats an entire unbroken base64 string as one word).
+  * `diw` vs `diW` (Delete Inside Word):
+    * `diw` (lowercase): Deletes alphanumeric characters up to the next punctuation mark (dots, slashes, hyphens). Use this to edit segments (e.g. `v1` in `apps/v1`).
+    * `diW` (uppercase): Deletes all non-blank characters up to the next physical space. Use this to delete entire URLs, file paths, or IP addresses in one stroke.
 * **Undo / Redo:**
-  - Press `u` to undo the last edit.
+  - Press `u` to undo.
   - Press `Ctrl + R` to redo.
+
+---
+
+## 🖥️ 5. Safe Split-Screen Workspaces (Browser Bypass & Tmux)
+
+### A. The Browser Shortcut Collision Problem
+Web-based exam portals capture keyboard shortcuts. Standard commands like `Ctrl + W` (Vim split navigation) or `Ctrl + N` (Vim vertical completion) will close your exam tab or open a new browser window.
+
+To navigate splits safely within Vim without browser interference, add these remappings to your `~/.vimrc`:
+```vim
+" Change terminal escape inside Vim from Ctrl+\ Ctrl+n to Ctrl+x
+tnoremap <C-x> <C-\><C-n>
+
+" Change split window switching prefix from Ctrl+w to Ctrl+q
+nnoremap <C-q> <C-w>
+```
+*Navigating splits inside Vim:* Press **`Ctrl + q`** followed by `h`, `j`, `k`, or `l`.
+
+---
+
+### B. The TMUX Split-Pane Playbook (Recommended)
+`tmux` is pre-installed on CKA endpoints and uses **`Ctrl + b`** as its prefix key, which browsers safely ignore. This provides a robust, split-terminal workspace for editing YAML and executing commands side-by-side.
+
+#### 1. Core Tmux Commands
+* **Start Session:** `tmux`
+* **Split Vertically:** Press **`Ctrl + b`**, release, then type **`%`**
+* **Split Horizontally:** Press **`Ctrl + b`**, release, then type **`"`**
+* **Jump Between Panes:** Press **`Ctrl + b`**, release, then use **Arrow Keys**
+* **Toggle Maximize (Zoom Pane):** Press **`Ctrl + b`**, release, then type **`z`**
+* **Close Pane:** Type `exit` or press `Ctrl + d`
+
+#### 2. Enabling Mouse Interactivity
+Enable scrolling and clicking to switch panes instantly. Run this command inside tmux:
+```bash
+tmux set -g mouse on
+```
+
+#### 3. Copy-Paste in Mouse Mode
+When mouse mode is active, dragging highlights text inside tmux buffer, overriding the system clipboard:
+* **Option A (System Clipboard Bypass):** Hold **`Shift`** on your keyboard, then highlight text with the mouse. Copy using the browser context menu or `Ctrl+Shift+C`. Go into insert mode in Vim and paste using `Ctrl+Shift+V` or `Shift+Insert`.
+* **Option B (Tmux Internal Buffer):** Drag to highlight text normally (without Shift). The highlight will disappear when released, copying to tmux buffer. Click into the destination pane (e.g. Vim in insert mode), and press **`Ctrl + b`** then **`]`** to paste.

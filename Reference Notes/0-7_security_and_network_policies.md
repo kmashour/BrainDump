@@ -403,7 +403,18 @@ spec:
 ```
 
 > [!NOTE]
-> Since the promotion of the CSR API to `v1`, the `signerName` field is required. For client certificates accessing the API server, use `kubernetes.io/kube-apiserver-client`. For serving certificates (like Kubelets), use `kubernetes.io/kubelet-serving`.
+> **Key CSR Parameters and Validation Logic:**
+> * **`signerName` (Signing Pipelines):** Directs the signing request to the correct internal cluster Certificate Authority (CA) handler:
+>   * `kubernetes.io/kube-apiserver-client`: For human users, admins, or CLI clients logging into the API server.
+>   * `kubernetes.io/kubelet-serving`: For node Kubelets hosting secure endpoints (required by API server to stream logs or execute commands).
+>   * `kubernetes.io/kube-apiserver-client-kubelet`: For worker node Kubelet daemons logging in to report node statuses.
+> * **`usages` (Extended Key Usages):** Cryptographically defines the permitted actions for the certificate holder by encoding specific TLS Web Object Identifiers (OIDs) into the cert:
+>   * `client auth`: Inserts the Web Client Authentication OID. Necessary for clients running `kubectl` or API operations. If missing, connections are terminated immediately.
+>   * `server auth`: Inserts the Web Server Authentication OID. Used by server processes (like the API server itself).
+>   * **Validation Guard:** The API server validation engine checks that the `usages` match the `signerName` (e.g., `client auth` for a client signer). Mismatches trigger API submission rejections.
+> * **Submitter Metadata Injection:** At submission (`kubectl apply`), the API server automatically intercepts the manifest to record the submitter's `username` and `groups` in the CSR status block (e.g. `system:authenticated`, `system:masters`).
+> * **Group Mapping to RBAC:** Kubernetes does not save users or groups as entities in `etcd`. Instead, group names are compiled as Organization (`O=`) fields in the Subject line of the client certificate. The API server decrypts this metadata upon handshake and resolves permissions by matching these string names against the `kind: Group` subjects defined in active `RoleBindings`/`ClusterRoleBindings`.
+
 
 ### 3.3 CSR Management CLI
 ```bash

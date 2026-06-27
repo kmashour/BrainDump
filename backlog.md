@@ -4,6 +4,22 @@ This backlog tracks all updates, modifications, and restructuring activities per
 
 
 
+## [2026-06-27] - Ingestion: CSR Workflows, Groups, and Vim/Tmux Speed Setup
+
+### Added
+- **Main Notes:** Created [[Main Notes/rbac - CertificateSigningRequests and Groups.md|rbac - CertificateSigningRequests and Groups.md]] deeper-dive note explaining CSR submission states, `signerName` departments, Extended Key Usages (EKU) validations, and token/cert Organization group mappings.
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - Expanded Section 3 "Certificates API" in [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] with granular details on usages constraints, TLS OID extensions, and group binding logic.
+  - Expanded [[Projects/CKA/Vim and Terminal Setup.md|Vim and Terminal Setup.md]] to add high-speed string editing shortcuts (`C`, `D`, `daw`, `diw/diW`), Vim split escape remaps (`tnoremap`/`nnoremap`), and a Tmux split-pane configuration guide (mouse mode, scrolling, and Shift-highlight copy/paste workarounds).
+
+### Ingested Inflow Sources
+Processed and integrated the following file from `inflow/`:
+- `Notes_On_CSRLABs.md`
+
+---
+
 ## [2026-06-26] - Ingestion: CKA mTLS Diagnostics & SAN Troubleshooting
 
 ### Refactored / Upgraded
