@@ -1597,7 +1597,7 @@ Rather than synchronizing external secrets (e.g. AWS Secrets Manager, HashiCorp 
 * **CSI Volume Mount:** The Pod spec declares a volume targeting the `secrets-store.csi.k8s.io` driver and links it to the `SecretProviderClass`.
 * **Auto-rotation:** The CSI driver can poll the external Secret store periodically (e.g. every 2 minutes) to automatically update the mounted files.
 
-*See complete playbooks and deployment manifests in [[Projects/kubernetes/Project - Secrets Store CSI Driver.md|Project - Secrets Store CSI Driver.md]].*
+*See the isolated lecture digest in [[Reference Notes/12-2_secrets_store_csi_driver_integration.md|Module 12-2: Secrets Store CSI Driver Integration (KodeKloud Talk)]] and the complete implementation guides in [[Projects/kubernetes/Project - Secrets Store CSI Driver.md|Project - Secrets Store CSI Driver.md]].*
 
 ---
 
