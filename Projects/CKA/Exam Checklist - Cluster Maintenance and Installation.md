@@ -128,6 +128,14 @@ Identify the values for:
 *   `--cert-file` (e.g. `/etc/kubernetes/pki/etcd/server.crt`)
 *   `--key-file` (e.g. `/etc/kubernetes/pki/etcd/server.key`)
 
+### 3.1.1 ETCD Network Ports & API Server Connections
+During cluster diagnostics or network checks, you can inspect ETCD's listening ports on the control plane node:
+- **Port `2379` (Client):** Front door for `kube-apiserver` queries (binds to `127.0.0.1` and host IP).
+- **Port `2380` (Peer):** Internal Raft clustering replication channel (binds to routable host IP).
+- **Port `2381` (Metrics):** Exposes Prometheus scraping values locally (binds to loopback `127.0.0.1`).
+
+*Note:* Running `netstat -pant | grep etcd` will show dozens of active `ESTABLISHED` TCP connections to port `2379` from high-numbered host ports. These are concurrent channels maintained by the `kube-apiserver` to manage persistent resource **gRPC Watches** and **Connection Pooling** (for multiplexing API reads/writes).
+
 ### 3.2 Snapshot Backup Command
 Always set `ETCDCTL_API=3` before calling `etcdctl`.
 ```bash

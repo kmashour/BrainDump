@@ -375,6 +375,29 @@ Look for command arguments like:
 
 ---
 
+### 4.2.1 ETCD Port Architecture & API Server Concurrency
+
+ETCD listens on distinct, dedicated ports to segregate and optimize its network operations:
+
+| Port | Role / Function | Bind Targets | Primary Consumers / Clients |
+| :--- | :--- | :--- | :--- |
+| **`2379`** | Client Communication (Front Door) | Localhost `127.0.0.1` & Routable Node IP | `kube-apiserver`, administrators running `etcdctl` |
+| **`2380`** | Peer Communication (Back Channel) | Routable Node IP (e.g. `10.244.105.135`) | Peer ETCD instances in HA cluster (Raft consensus replication) |
+| **`2381`** | Metrics & Diagnostics (HTTP Dashboard) | Localhost `127.0.0.1` | Prometheus monitoring scraper, Kubelet liveness probes |
+
+#### Why are there dozens of simultaneous ESTABLISHED connections to Port `2379`?
+Running `netstat -pant | grep etcd` on a control plane node reveals a large volume of active connections to port `2379` originating from high-numbered host ports. This is normal behavior, representing **the `kube-apiserver` maintaining multiple concurrent channels** to ETCD for two primary reasons:
+1. **The Watch Mechanism (Persistent gRPC Streams):** Kubernetes controllers, schedulers, and node kubelets must detect changes immediately. The `kube-apiserver` satisfies this by maintaining persistent gRPC watches against ETCD, holding open dedicated streaming connections.
+2. **Connection Pooling (High Throughput):** To prevent TCP handshake latency overhead for every read/write operation, the API Server opens a pooled batch of TCP connections and keeps them active (`ESTABLISHED`) to multiplex requests.
+3. **Verification Command:**
+   Select a high-numbered port from the `netstat` output (e.g. `38656`) and run:
+   ```bash
+   netstat -pant | grep 38656
+   ```
+   This will show the matching connection held by the `kube-apiserver` process ID.
+
+---
+
 ### 4.3 Live Snapshot Backup using etcdctl
 To create a backup snapshot from a live, running etcd cluster, use the `etcdctl snapshot save` command:
 

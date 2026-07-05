@@ -41,9 +41,16 @@ This note covers the low-level consensus rules, CLI management operations, backu
 
 ---
 
-## 🔌 2. Network Ports
-* **Port `2379` (Client Communication):** Used by the `kube-apiserver` and `etcdctl` to send state requests and read configurations.
-* **Port `2380` (Peer Communication):** Used by `etcd` nodes internally to run the Raft protocol, synchronize state, and elect leaders.
+## 🔌 2. Network Ports & API Server Concurrency
+* **Port `2379` (Client Communication):** Used by the `kube-apiserver` and `etcdctl` to send state requests and read configurations (binds to `127.0.0.1` and host IP).
+* **Port `2380` (Peer Communication):** Used by `etcd` nodes internally to run the Raft protocol, synchronize state, and elect leaders (binds to routable host IP).
+* **Port `2381` (Metrics & Diagnostics):** HTTP endpoint exposing metrics to Prometheus and local kubelet liveness probes (binds to loopback `127.0.0.1`).
+
+#### Why the API Server maintains dozens of concurrent connections:
+Running `netstat -pant | grep etcd` on the control plane host reveals many high-numbered ports holding active `ESTABLISHED` connections to `2379`. This is the local `kube-apiserver` maintaining:
+- **gRPC Watches (Persistent Streams):** Continuous stream listeners updating schedulers, controllers, and kubelets about resources changes in real-time.
+- **Connection Pools:** Multiple persistent TCP tunnels kept warm to multiplex client reads/writes without TCP handshake delays.
+- **Verification:** Find the PID on the other side of an active port: `netstat -pant | grep <high-numbered-port>`.
 
 ---
 

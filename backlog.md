@@ -2,6 +2,22 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-05] - Ingestion: ETCD Port Roles and APIServer Watch Concurrency
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-10_maintenance_upgrades_and_etcd.md|0-10_maintenance_upgrades_and_etcd.md]]: Added Section 4.2.1 detailing the client, peer, and metrics ports and loopback vs routable IPs, and why the API Server opens dozens of simultaneous connections.
+- **Main Notes:**
+  - [[Main Notes/etcd-deeper.md|etcd-deeper.md]]: Expanded Section 2 with Port 2381 and api-server connections details.
+- **Projects:**
+  - [[Projects/CKA/Exam Checklist - Cluster Maintenance and Installation.md|Exam Checklist - Cluster Maintenance and Installation.md]]: Added Section 3.1.1 on ETCD network ports and API server connection pooling.
+
+### Ingested Inflow Sources
+Processed and integrated the following file from `inflow/`:
+- `inflow/Some notes on networking.md`
+
+---
+
 ## [2026-07-05] - Ingestion: CNI Specification Categories and Docker Networking Under the Hood
 
 ### Added
