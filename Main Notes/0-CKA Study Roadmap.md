@@ -121,6 +121,7 @@ This roadmap outlines the exact step-by-step sequence you should follow when stu
 
 2. **Cluster Networking, Service Routing & CoreDNS:**
    * [[cni]] - Pluggable container networking interface.
+   * [[cni - Specification vs Plugins]] - CNI standard spec vs plugin binaries.
    * [[cni - Overlay Networks and Encapsulation]] - VXLAN/UDP overlays vs L3 routing.
    * [[cni - IP Address Management (IPAM)]] - Decentralized host-local IP allocation.
    * [[service]] - Exposing pods internally or externally.

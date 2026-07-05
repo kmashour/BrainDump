@@ -296,6 +296,26 @@ iptables -t nat -S DOCKER
 
 The Container Network Interface (CNI) is a CNCF specification that standardizes how container runtimes (such as `containerd` or `CRI-O`) call external plugins to configure networking for container sandboxes.
 
+### 2.0 CNI Specification vs. CNI Plugins
+
+At a system level, there is a strict technical distinction between CNI and CNI plugins:
+
+*   **CNI (Container Network Interface):** A CNCF **specification** (API contract). It dictates the rules of *how* container runtimes (like `containerd` or `CRI-O`) should communicate with network components. Think of it like a wall electrical socket standard; it defines plug dimensions and voltage rules but does not generate electricity.
+*   **CNI Plugin:** The actual **executable binary software** that implements the specification. When a Pod is created, the container runtime calls the plugin (e.g. Calico, Cilium, Flannel) to build network namespaces, hook veth pairs, assign IPs, and create host routing rules.
+
+#### A. Vanilla Kubernetes vs. Managed Services
+Vanilla Kubernetes has a "batteries not included" philosophy for networking. When bootstraping with `kubeadm`, the cluster will remain in a `NotReady` state indefinitely until you manually download and install a third-party CNI plugin.
+However, **Managed Kubernetes Services** configure default CNI plugins automatically:
+- **AWS (EKS):** Pre-installs the **Amazon VPC CNI**, giving Pods native AWS VPC private IPs directly.
+- **Google Cloud (GKE):** Pre-installs **GKE Native VPC CNI** (often utilizing Dataplane V2 based on Cilium).
+- **Azure (AKS):** Pre-installs **Azure CNI** or Kubenet.
+- **Kind / Minikube:** Pre-installs simple local testing plugins like **Kindnet** or **Kubenet**.
+
+#### B. Classification of CNI Components
+1. **Low-Level "Building Block" Plugins:** Reference plugins maintained directly by the CNI team (e.g., `bridge`, `macvlan`, `ptp`). These are single-purpose, low-level binaries that configure networking on a **single host** only.
+2. **"Full Package" CNI Solutions:** Comprehensive third-party network providers (e.g. Calico, Flannel, Cilium) that configure cluster-wide topologies. They assign subnets, manage cross-node routing, and enforce NetworkPolicies. Under the hood, these full solutions often invoke the low-level building blocks (like `bridge`) to wire the local node interface, adding their own routing software layers (like BGP or VXLAN tunnels) on top.
+3. **Encapsulation Protocols (e.g. VXLAN):** VXLAN is not a CNI plugin itself, but a tunneling protocol. Full CNI solutions (like Flannel) use VXLAN to encapsulate virtual Pod packets inside standard Node-to-Node underlay IP envelopes to bypass physical network limits.
+
 ### 2.1 CNI Concept & Lifecycle Workflow
 
 ```

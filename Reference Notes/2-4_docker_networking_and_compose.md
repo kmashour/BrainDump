@@ -55,6 +55,64 @@ Docker uses namespaces to isolate network stacks (routing tables, interfaces, po
 *   **`macvlan`:** Assigns a unique MAC address and a physical network IP directly to the container. It connects the container to the host's physical network, bypassing NAT routing.
 *   **`overlay`:** Connects multiple Docker daemons across different hosts, enabling multi-host container-to-container communication (Docker Swarm).
 
+### 1.1 Bridge Networking Mechanics Under the Hood
+
+When Docker is installed, it creates a default bridge interface named `docker0` (IP: `172.17.0.1/16`) on the host kernel, which acts as a virtual switch.
+
+#### A. Host-Level Creation
+Under the hood, Docker executes standard Linux network commands to create the bridge:
+```bash
+# Create the software bridge device
+ip link add docker0 type bridge
+
+# Assign gateway IP address
+ip addr add 172.17.0.1/16 dev docker0
+
+# Bring the interface UP
+ip link set dev docker0 up
+```
+
+#### B. Namespace Integration & Virtual Cabling (veth Pairs)
+When a new container starts, Docker creates an isolated network namespace for it. To connect this namespace to the host network switch (`docker0`):
+1. **veth Pair Creation:** Docker creates a virtual cable with two endpoints (veth interfaces) on the host:
+   ```bash
+   ip link add veth-host type veth peer name veth-container
+   ```
+2. **Local Binds:** Docker binds one end (`veth-host`) to the `docker0` bridge.
+3. **Namespace Injection:** Docker injects the other end (`veth-container`) into the container's network namespace and renames it to `eth0`.
+4. **IP Assignment:** Docker assigns a unique IP in the `172.17.0.0/16` range to the container's `eth0` interface, setting `172.17.0.1` (the `docker0` IP) as its default gateway.
+5. **veth Index Matching:** You can identify veth pairs using their interface index numbers. For example, if `ip link` inside the container shows interface `9: eth0@if10`, the corresponding host interface is index `10: vethxxxx` (odd/even pair relationship).
+
+#### C. The Namespace Lookup Hack
+By default, Docker does not register container network namespaces under the standard `/var/run/netns/` directory. Consequently, the standard command `ip netns list` returns nothing.
+To view and troubleshoot Docker namespaces using standard Linux CLI tools:
+1. **Find Container PID:**
+   ```bash
+   PID=$(docker inspect -f '{{.State.Pid}}' <container-name>)
+   ```
+2. **Create Symlink:** Link the container's process namespace file to `/var/run/netns/`:
+   ```bash
+   mkdir -p /var/run/netns
+   ln -sf /proc/$PID/ns/net /var/run/netns/<container-name>
+   ```
+3. **Execute Namespace Commands:**
+   ```bash
+   # List namespaces (will now display the container name)
+   ip netns list
+   
+   # Run link commands inside the namespace
+   ip netns exec <container-name> ip addr
+   ```
+
+#### D. Port Mapping and iptables NAT Forwarding
+Because the bridge network `172.17.0.0/16` is private, external clients cannot route to the container IPs directly. When running a container with port publishing (e.g. `-p 8080:80`):
+- Docker configures a Destination Network Address Translation (DNAT) rule inside the host's `iptables` NAT tables.
+- Specifically, it appends a rule to the `DOCKER` chain in the `nat` table to intercept incoming traffic on host port 8080 and rewrite its destination address to the container's private IP on port 80:
+  ```bash
+  # View rules created by Docker
+  iptables -t nat -S DOCKER
+  ```
+
 ---
 
 ## 2. Deep-Intuition (AARF) Breakdowns: Networking

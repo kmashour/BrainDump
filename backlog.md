@@ -2,6 +2,28 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-05] - Ingestion: CNI Specification Categories and Docker Networking Under the Hood
+
+### Added
+- **Main Notes:**
+  - [[Main Notes/cni - Specification vs Plugins.md|cni - Specification vs Plugins.md]] (Deeper dive note clarifying CNI API specs vs plugin implementation binaries)
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-9_networking_dns_and_ingress.md|0-9_networking_dns_and_ingress.md]]: Expanded Section 2 with a new Subsection 2.0 (CNI Specification vs CNI Plugins), outlining vanilla vs managed defaults, building block CNI binaries, full solutions, and tunneling protocols.
+  - [[Reference Notes/2-4_docker_networking_and_compose.md|2-4_docker_networking_and_compose.md]]: Added Section 1.1 (Bridge Networking Mechanics Under the Hood), detailing bridge creation commands, veth pair integration, the namespace directory Lookup hack, and NAT forwarding NAT rules.
+- **Main Notes:**
+  - [[Main Notes/docker - Networking Primitives.md|docker - Networking Primitives.md]]: Expanded with under-the-hood details on bridge switch setups, veth pairing, namespace hacks, and iptables nat forwards.
+- **Study Guide:**
+  - [[Main Notes/0-CKA Study Roadmap.md|0-CKA Study Roadmap.md]]: Integrated CNI Specification vs Plugins concept note.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from `inflow/`:
+- `inflow/CNI and Plugins Kubernetes.md`
+- `inflow/Docker-Networking.md`
+
+---
+
 ## [2026-07-05] - Ingestion: CNI Overlay Networks and IPAM Delegation
 
 ### Added
