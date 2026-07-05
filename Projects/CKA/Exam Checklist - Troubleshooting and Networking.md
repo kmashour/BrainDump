@@ -170,14 +170,33 @@ crictl logs <container-id>
 
 Cluster networking failures include CNI failures, service routing issues, and CoreDNS name resolution issues.
 
-### 4.1 CNI Failures
+### 4.1 CNI & IPAM Failures
 If CNI is misconfigured or not running, pods stay stuck in `ContainerCreating` or `Pending`.
-*   Verify that configuration files exist in `/etc/cni/net.d/` (e.g., `10-flannel.conflist`, `10-calico.conflist`).
-*   Verify CNI binaries in `/opt/cni/bin/`.
-*   Deploy a CNI if missing:
+*   **Verify directories & configurations:**
+    - CNI binary executables: `/opt/cni/bin/` (e.g. `bridge`, `loopback`, `host-local`).
+    - CNI configuration manuals: `/etc/cni/net.d/` (e.g. `10-flannel.conflist`, `10-calico.conflist`).
+    - Local allocated IP database: `/var/lib/cni/networks/`.
+*   **Deploy a CNI if missing:**
     ```bash
     kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
     ```
+*   **Diagnose IPAM Subnet exhaustion conflicts:**
+    - If pods fail to boot with "no IP addresses available in range", verify node `PodCIDR` vs Kubelet `--max-pods` limit.
+    - Check the node's assigned IP block:
+      ```bash
+      kubectl get node <node-name> -o jsonpath='{.spec.podCIDR}'
+      ```
+    - Check `kube-controller-manager` IPAM settings:
+      Check manifest `/etc/kubernetes/manifests/kube-controller-manager.yaml` flags `--cluster-cidr` and `--node-cidr-mask-size` to verify allocation math.
+    - Check Kubelet's configured limits:
+      Inspect `/var/lib/kubelet/config.yaml` for `maxPods` (default 110) and ensure the CIDR block size matches or exceeds double this capacity.
+*   **Verify CNI DaemonSet status:**
+    - WeaveNet: `kubectl get pods -n kube-system -l name=weave-net`
+    - Calico: `kubectl get pods -n kube-system -l k8s-app=calico-node`
+    - Check daemon logs for BGP peering or VXLAN interface issues:
+      ```bash
+      kubectl logs -n kube-system daemonset/calico-node -c calico-node
+      ```
 
 ### 4.2 Service Routing & Kube-Proxy Failures
 If pod-to-pod IP traffic works, but Service IPs fail to route:

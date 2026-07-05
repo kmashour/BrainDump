@@ -2,7 +2,30 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-05] - Ingestion: CNI Overlay Networks and IPAM Delegation
 
+### Added
+- **Main Notes:**
+  - [[Main Notes/cni.md|cni.md]] (Landing note for Container Network Interface)
+  - [[Main Notes/cni - Overlay Networks and Encapsulation.md|cni - Overlay Networks and Encapsulation.md]] (Deeper dive on VXLAN/UDP overlay encapsulation vs Calico BGP direct routing)
+  - [[Main Notes/cni - IP Address Management (IPAM).md|cni - IP Address Management (IPAM).md]] (Deeper dive on decentralized PodCIDR delegation and host-local allocations)
+- **Digital Garden:**
+  - [[Digital Garden/Pattern - Cloud Provider Network Routing and CNI Encapsulation Bypasses.md|Pattern - Cloud Provider Network Routing and CNI Encapsulation Bypasses.md]] (Cross-domain pattern note mapping CNI overlays, AWS VPC source/dest checks, BGP peering, and AWS VPC CNI)
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-9_networking_dns_and_ingress.md|0-9_networking_dns_and_ingress.md]]: Expanded Section 3.2 (IPAM) to detail PodCIDR delegation hierarchy, subnet sizing formulas, and Kubelet maxPods constraints. Expanded Section 3.3 (CNI) to document SDN flat switch concepts, overlay encapsulation, and BGP naked routing. Added Mermaid diagrams for both sections.
+- **Study Guide:**
+  - [[Main Notes/0-CKA Study Roadmap.md|0-CKA Study Roadmap.md]]: Integrated CNI and its sub-notes into the Cluster Networking path.
+- **Projects:**
+  - [[Projects/CKA/Exam Checklist - Troubleshooting and Networking.md|Exam Checklist - Troubleshooting and Networking.md]]: Expanded Section 4.1 to cover local IPAM paths, Kube-Controller-Manager CIDR flags, and CNI log audits.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from `inflow/`:
+- `inflow/Kubernetes_Ovelay_Networks_vs_CalicoL3_CNI.md`
+- `inflow/Networking_KuberentesIPAM.md`
+
+---
 
 ## [2026-06-27] - Ingestion: CSR Workflows, Groups, and Vim/Tmux Speed Setup
 

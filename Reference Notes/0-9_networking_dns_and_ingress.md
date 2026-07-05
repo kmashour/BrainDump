@@ -406,37 +406,156 @@ ss -tulpn
 
 ### 3.2 IP Address Management (IPAM)
 
-IPAM plugins manage the assignment of subnets and IPs to nodes and pods.
-*   **`host-local`:** Allocates IP addresses out of a locally defined subnet range on each host. It stores state locally under `/var/lib/cni/networks/`.
-*   **`dhcp`:** Delegates IP allocation to an external DHCP server on the network.
+IPAM plugins manage the assignment of subnets and IPs to nodes and pods. Without a central runtime coordinator, Kubernetes prevents IP overlapping via a two-tier real estate delegation model.
+
+#### 1. Preventing IP Overlapping (The Two-Tier Model)
+1. **Central Delegation:** When initializing the cluster (e.g. `--pod-network-cidr=10.244.0.0/16`), the Control Plane (`kube-controller-manager`) owns the entire Cluster CIDR block. When a worker node joins, the control plane slices off a smaller subnet (e.g. `/24` or 256 IPs) and permanently assigns it to that node as its **`PodCIDR`** (stored in `etcd` under Node specs).
+2. **Local Allocation:** On each host, the local CNI plugin (e.g., Flannel/Calico using `host-local` IPAM) operates independently. It reads its assigned `PodCIDR` block and allocates individual pod IPs from its local database (stored under `/var/lib/cni/networks/`).
+- **No Conflict Guarantee:** Since Node 1 is restricted to `10.244.1.0/24` and Node 2 is restricted to `10.244.2.0/24`, the nodes can allocate IPs blindly at high speed with mathematical assurance of zero conflict.
+
+#### 📊 Subnet Delegation Diagram
+```mermaid
+flowchart TD
+    ClusterCIDR["Cluster CIDR (10.244.0.0/16) <br> Managed by Control Plane"]
+    
+    ClusterCIDR -->|Slices subnet block| PodCIDR1["Node 1 PodCIDR (10.244.1.0/24)"]
+    ClusterCIDR -->|Slices subnet block| PodCIDR2["Node 2 PodCIDR (10.244.2.0/24)"]
+    ClusterCIDR -->|Slices subnet block| PodCIDR3["Node 3 PodCIDR (10.244.3.0/24)"]
+    
+    PodCIDR1 -->|Local host-local IPAM| PodA["Pod A (10.244.1.5)"]
+    PodCIDR1 -->|Local host-local IPAM| PodB["Pod B (10.244.1.6)"]
+    
+    PodCIDR2 -->|Local host-local IPAM| PodC["Pod C (10.244.2.5)"]
+```
+
+#### 2. Controlling PodCIDR Slices & Math Constraints
+The size of the PodCIDR block handed to each node is controlled by the `kube-controller-manager` flag:
+`--node-cidr-mask-size` (defaults to `24`).
+
+*   **Subnet Math Example:**
+    - Cluster CIDR: `10.244.0.0/16` (65,536 IPs)
+    - `--node-cidr-mask-size=24` (256 IPs per node)
+    - **Max Supported Nodes:** $2^{(24-16)} = 2^8 = 256$ nodes.
+    - If you need 1,000 nodes, configure `--node-cidr-mask-size=26` (64 IPs per node), allowing up to $2^{(26-16)} = 2^{10} = 1,024$ nodes.
+*   **The maxPods Kubelet Limit Constraint:**
+    - The Kubelet has a default limit of `maxPods: 110` per node.
+    - **The Golden Rule:** The allocated `PodCIDR` subnet size must provide at least double the `maxPods` limit to allow for IP recycling delays and container restarts.
+    - If `--node-cidr-mask-size` is set to `26` (64 IPs), the node cannot support 110 pods. You **must** configure Kubelet's `maxPods` to around `30` or it will run out of IPs.
+
+---
+
+### 3.2.1 IPAM Configuration Playbook
+
+#### A. Pre-Build Setup (`kubeadm` configuration)
+Before initializing the cluster with `kubeadm init`, pass a configuration file:
+```yaml
+apiVersion: kubeadm.k8s.io/v1beta3
+kind: ClusterConfiguration
+networking:
+  podSubnet: "10.244.0.0/16"      # The overall Cluster CIDR pool
+controllerManager:
+  extraArgs:
+    node-cidr-mask-size: "24"     # Slices 256 IPs per node
+```
+
+#### B. Live Cluster Modifications (Static Pod Manifest)
+To view or modify this configuration on a live running cluster:
+1. Log into the Control Plane master node.
+2. Edit `/etc/kubernetes/manifests/kube-controller-manager.yaml`.
+3. Modify the startup command flags:
+   ```yaml
+   spec:
+     containers:
+     - command:
+       - kube-controller-manager
+       - --allocate-node-cidrs=true
+       - --cluster-cidr=10.244.0.0/16
+       - --node-cidr-mask-size=24
+   ```
+4. Save the manifest. The API Server will automatically detect changes and restart the static pod.
+
+#### C. Node Kubelet Limits
+To adjust the maximum allowed pods on a worker node:
+1. Edit `/var/lib/kubelet/config.yaml`.
+2. Update the property: `maxPods: 110`.
+3. Restart the service: `systemctl restart kubelet`.
+
+#### D. Cloud Provider Exception (Direct ENI Allocation)
+Managed Kubernetes engines (like AWS EKS running `vpc-cni`) bypass the `kube-controller-manager` IPAM block. Instead of virtual subnets, the CNI calls the AWS API to attach secondary Elastic Network Interfaces (ENIs) to nodes, allocating real AWS VPC IPs directly to Pods.
+
+#### E. Core Directories to Know
+- `/etc/cni/net.d/`: JSON configurations detailing network routing setups (IPAM subnet definitions).
+- `/opt/cni/bin/`: Location of physical CNI plugin executable binaries (e.g. `bridge`, `loopback`, `host-local`).
+- `/var/lib/cni/networks/`: Local database tracking allocated IPs on the node.
 
 ---
 
 ### 3.3 CNI Plugin Implementations (WeaveNet vs. Calico)
 
-| Feature | WeaveNet | Calico |
-| :--- | :--- | :--- |
-| **Network Type** | Encapsulated Overlay (VXLAN/UDP) | L3 Routed (No encapsulation by default) |
-| **Encapsulation Options** | VXLAN, FastDP (UDP) | IP-in-IP, VXLAN |
-| **Routing Protocol** | Proprietary gossip protocol | BGP (Border Gateway Protocol) |
-| **Datastore** | Ring-buffer distributed DB | Kubernetes CRDs or direct ETCD |
-| **Network Policy** | Supported (built-in) | Advanced Policies (highly scalable) |
+| Feature                   | WeaveNet                         | Calico                                  |
+| :------------------------ | :------------------------------- | :-------------------------------------- |
+| **Network Type**          | Encapsulated Overlay (VXLAN/UDP) | L3 Routed (No encapsulation by default) |
+| **Encapsulation Options** | VXLAN, FastDP (UDP)              | IP-in-IP, VXLAN                         |
+| **Routing Protocol**      | Proprietary gossip protocol      | BGP (Border Gateway Protocol)           |
+| **Datastore**             | Ring-buffer distributed DB       | Kubernetes CRDs or direct ETCD          |
+| **Network Policy**        | Supported (built-in)             | Advanced Policies (highly scalable)     |
 
-#### WeaveNet Overlay Architecture
+#### The Core Concept of Overlay vs. Underlay Networks
+An overlay network is a **Software-Defined Networking (SDN)** layer. It runs virtualized networks (`10.x.x.x`) on top of the physical network hardware or physical hosting network, which is the **Underlay** (`192.168.x.x` or AWS VPC fabric).
+- **The Flat Switch Illusion:** Overlay networks virtualize multi-rack, multi-router data center networks into a single, flat Layer 2/3 local switch where all pods communicate directly.
+- **IP Portability:** Because pod IPs are virtual, Pods can be destroyed and recreated on different nodes with different physical IPs. The overlay network dynamically updates its mapping without needing changes to physical network routers or corporate firewalls.
+- **Bypassing Cloud Limits:** Cloud providers (like AWS) drop packets if their source IP doesn't match the elastic network interface (ENI) of the hosting VM. Encapsulation hides the pod IPs, so the cloud provider only sees node-to-node traffic.
+
+#### 📦 Overlay Encapsulation (e.g. WeaveNet)
 WeaveNet deploys as a DaemonSet with one agent pod per node. It creates a host bridge named `weave` and builds a virtual overlay network.
+1. **The Request:** Pod A (`10.244.1.5`) sends a packet to Pod B (`10.244.2.10`).
+2. **The Intercept:** The local `weave` interface intercepts the packet.
+3. **Encapsulation:** The Weave agent wraps the raw packet in a larger Outer IP packet (VXLAN or UDP) with a source IP of Node 1 (`192.168.1.10`) and a destination IP of Node 2 (`192.168.1.11`).
+4. **Underlay Routing:** The physical network routers route the packet from Node 1 to Node 2 without knowing or caring about the internal Pod IPs.
+5. **Decapsulation:** The Weave agent on Node 2 intercepts the outer packet, strips it off, and routes the original naked packet to Pod B.
 
-*   **Overlay Routing:** Packets between pods on different nodes are captured by the `weave` interface, encapsulated in VXLAN (or UDP/FastDP), and sent to the peer agent on the target node.
-*   **Verification Commands:**
-    ```bash
-    # Check weave pods in kube-system
-    kubectl get pods -n kube-system -l name=weave-net
+#### 🔀 Calico L3 Routed Architecture (BGP Mode)
+By default, Calico operates without encapsulation, avoiding wrapping/unwrapping overhead to maximize performance.
+1. **BGP Peering:** Calico turns every worker node into an L3 router. The Calico agent (`Felix`) uses **BGP (Border Gateway Protocol)** to peer with physical top-of-rack switches or other Linux hosts.
+2. **Subnet Broadcast:** Felix broadcasts node subnet maps (e.g., Node 2 hosts `10.244.2.0/24`) directly to physical routers.
+3. **Naked Routing:** Packets leave Node 1 without any encapsulation envelope (Source: `10.244.1.5`, Dest: `10.244.2.10`). The underlay physical network routing tables route the raw packet directly to Node 2.
+*(Note: Calico can fall back to VXLAN or IP-in-IP encapsulation if the hosting network or cloud provider blocks BGP).*
+
+#### 📊 CNI Packet Routing Diagram
+```mermaid
+flowchart TD
+    subgraph Encapsulated ["Encapsulated Overlay (e.g. Weave VXLAN)"]
+        direction TB
+        PodA["Pod A (10.244.1.5)"] -->|Naked Packet| CNI_A["Weave Agent Node 1"]
+        CNI_A -->|Encapsulation: Wraps in Outer IP| Eth1["Node 1 Eth (192.168.1.10)"]
+        Eth1 -->|Outer Dest: 192.168.1.11| RouterE["Underlay Router (Cisco)"]
+        RouterE -->|Routes based on Node IP| Eth2["Node 2 Eth (192.168.1.11)"]
+        Eth2 -->|Hands to Weave Agent| CNI_B["Weave Agent Node 2"]
+        CNI_B -->|Decapsulation: Strips Outer IP| PodB["Pod B (10.244.2.10)"]
+    end
     
-    # View weave log output
-    kubectl logs -n kube-system daemonset/weave-net -c weave
-    
-    # View routes inside a container to verify default gateway (usually pointing to weave bridge IP)
-    kubectl exec -it <pod-name> -- ip route
-    ```
+    subgraph BGPRouted ["BGP Routed (Calico L3 Mode)"]
+        direction TB
+        PodA_B["Pod A (10.244.1.5)"] -->|Naked Packet| Eth1_B["Node 1 Eth (192.168.1.10)"]
+        Eth1_B -->|BGP Route Lookup| RouterB["Underlay Router (BGP Peered)"]
+        RouterB -->|Routes direct to Node 2| Eth2_B["Node 2 Eth (192.168.1.11)"]
+        Eth2_B -->|Delivers directly| PodB_B["Pod B (10.244.2.10)"]
+        
+        Felix1["Calico Felix (Node 1)"] <-->|BGP Peer Update| RouterB
+        Felix2["Calico Felix (Node 2)"] <-->|BGP Peer Update| RouterB
+    end
+```
+
+#### Verification Commands:
+```bash
+# Check CNI pods in kube-system
+kubectl get pods -n kube-system -l name=weave-net
+# or Calico
+kubectl get pods -n kube-system -l k8s-app=calico-node
+
+# View CNI routes inside a container to verify default gateway (usually pointing to CNI bridge IP)
+kubectl exec -it <pod-name> -- ip route
+```
 
 ---
 
@@ -516,17 +635,13 @@ spec:
       port: 80
       targetPort: 8080
       nodePort: 30080
-```
-
----
-
 ### 4.3 Kube-Proxy Modes: iptables vs. IPVS
 
 Kube-Proxy runs as a DaemonSet on every node. It watches the API Server for new Services and Endpoints, translating them into packet forwarding rules on the host.
 
 ```mermaid
 graph TD
-    subgraph iptables Mode (Sequential O(N))
+    subgraph iptables_Mode ["iptables Mode (Sequential O(N))"]
         Client1[Client] --> KubeServices[KUBE-SERVICES Chain]
         KubeServices --> ServiceRule1[Service 1 Rule]
         KubeServices --> ServiceRule2[Service 2 Rule]
@@ -534,7 +649,8 @@ graph TD
         RandomSEP --> PodA[Pod A IP]
         RandomSEP --> PodB[Pod B IP]
     end
-    subgraph IPVS Mode (Hash Table O(1))
+    
+    subgraph IPVS_Mode ["IPVS Mode (Hash Table O(1))"]
         Client2[Client] --> IPVS_VS[IPVS Virtual Server]
         IPVS_VS -- Hash Table Lookup --> RealServer[Real Server List]
         RealServer -- LB Algorithm --> PodC[Pod C IP]
@@ -740,13 +856,34 @@ CoreDNS is deployed as a Deployment in the `kube-system` namespace. It exposes a
 
 ```mermaid
 graph TD
-    Pod[Pod Resolver] -->|1. DNS Lookup| CoreDNS_SVC[kube-dns Service IP: 10.96.0.10]
-    CoreDNS_SVC -->|2. TCP/UDP Port 53| CoreDNS_Pod[CoreDNS Pods]
-    CoreDNS_Pod -->|3. Corefile Match| Match{Query Zone}
-    Match -->|Cluster Domain: *.cluster.local| KubernetesPlugin[kubernetes Plugin]
-    Match -->|External Domain: google.com| ForwardPlugin[forward Plugin]
-    KubernetesPlugin -->|Lookup API Cache| ClusterDNS[Cluster IPs / Pod IPs]
-    ForwardPlugin -->|Forward Query| Upstream[Upstream Nameserver /etc/resolv.conf]
+
+  
+
+Pod[Pod Resolver] -->|1. DNS Lookup| CoreDNS_SVC[kube-dns Service IP: 10.96.0.10]
+
+  
+
+CoreDNS_SVC -->|2. TCP/UDP Port 53| CoreDNS_Pod[CoreDNS Pods]
+
+  
+
+CoreDNS_Pod -->|3. Corefile Match| Match{Query Zone}
+
+  
+
+Match -->|Cluster Domain: *.cluster.local| KubernetesPlugin[kubernetes Plugin]
+
+  
+
+Match -->|External Domain: google.com| ForwardPlugin[forward Plugin]
+
+  
+
+KubernetesPlugin -->|Lookup API Cache| ClusterDNS[Cluster IPs / Pod IPs]
+
+  
+
+ForwardPlugin -->|Forward Query| Upstream[Upstream Nameserver /etc/resolv.conf]
 ```
 
 #### Kubelet ClusterDNS Integration

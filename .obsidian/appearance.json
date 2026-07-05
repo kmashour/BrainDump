@@ -1,4 +1,5 @@
 {
   "cssTheme": "Obsidian gruvbox",
-  "accentColor": "#c45cf5"
+  "accentColor": "#c45cf5",
+  "baseFontSize": 12
 }

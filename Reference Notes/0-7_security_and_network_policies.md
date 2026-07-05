@@ -1,4 +1,4 @@
-# Kubernetes Security and Network Policies
+******# Kubernetes Security and Network Policies
 
 This reference note compiles core security configurations, certificate management protocols, RBAC structures, authentication systems, workload security contexts, and network policies within a Kubernetes cluster. It is structured to serve as both a CKA exam study guide and a production-grade operations manual.
 
@@ -1176,7 +1176,7 @@ Base64 works by converting 3 bytes (24 bits) of raw binary input data into 4 ASC
    * Take the string `ABC` $\rightarrow$ ASCII values: `65`, `66`, `67` $\rightarrow$ Binary: `01000001 01000010 01000011`.
    * Re-group these 24 bits into four 6-bit segments: `010000` (16), `010100` (20), `001001` (9), `000011` (3).
    * Map indices to the alphabet: `16` $\rightarrow$ `Q`, `20` $\rightarrow$ `U`, `9` $\rightarrow$ `J`, `3` $\rightarrow$ `D`. Resulting string is `QUJD`.
-3. **Padding (`=`):** If the input size is not a multiple of 3 bytes, padding characters (`=`) are appended to complete the 4-character blocks.
+1. **Padding (=):** If the input size is not a multiple of 3 bytes, padding characters (=) are appended to complete the 4-character blocks.
 
 Because this mapping is entirely deterministic and does not involve any variable keys, **Base64 provides exactly the same level of security as plaintext**.
 

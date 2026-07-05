@@ -119,7 +119,10 @@ This roadmap outlines the exact step-by-step sequence you should follow when stu
    * [[Admission Webhooks - Mutating and Validating]] - Extending admission logic dynamically.
    * [[pod-security-admission]] - Built-in admission standards.
 
-2. **Service Routing & CoreDNS:**
+2. **Cluster Networking, Service Routing & CoreDNS:**
+   * [[cni]] - Pluggable container networking interface.
+   * [[cni - Overlay Networks and Encapsulation]] - VXLAN/UDP overlays vs L3 routing.
+   * [[cni - IP Address Management (IPAM)]] - Decentralized host-local IP allocation.
    * [[service]] - Exposing pods internally or externally.
    * [[service - EndpointSlices and Topology routing]] - Scalable endpoints backends.
    * [[service - Source IP and Pod Termination Lifecycle]] - Client IP preserving.
