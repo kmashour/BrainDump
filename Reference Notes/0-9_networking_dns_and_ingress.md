@@ -199,6 +199,9 @@ A virtual ethernet (`veth`) device is a local tunnel that acts as a bidirectiona
     ip -n red addr add 192.168.15.1/24 dev veth-red
     ip -n blue addr add 192.168.15.2/24 dev veth-blue
     ```
+
+> [!IMPORTANT]
+> **Specifying Subnet Netmask:** Always include the CIDR subnet netmask (e.g. `/24`) when assigning namespace IP addresses. Omitting the netmask (e.g. `ip -n red addr add 192.168.15.1 dev veth-red`) will make the interface default to a single host route (`/32`), causing adjacent namespace routing lookups and ping commands to fail.
 *   **Bring Interfaces UP:**
     ```bash
     # Bring loopback up inside the namespace
@@ -266,6 +269,9 @@ By default, traffic from namespaces can reach the bridge, but cannot egress to t
     ```bash
     iptables -t nat -nvL
     ```
+
+> [!TIP]
+> **Firewall Troubleshooting:** If pings between namespaces fail despite correct routing and IP assignments, local host firewall configurations (like `firewalld` or default `iptables` chains) might be blocking the forward traffic. Ensure IP forwarding is enabled (`/proc/sys/net/ipv4/ip_forward` set to `1`) and that forward chain rules allow traffic between namespaces (e.g. `iptables -P FORWARD ACCEPT` or disabling `firewalld` in educational environments).
 
 ---
 
@@ -1358,6 +1364,191 @@ spec:
     - name: canary-service
       port: 8080
       weight: 10
+```
+
+#### 3. Installing NGINX Gateway Controller
+The Gateway API defines standard custom resources (CRDs), but requires an active controller to implement the logic. For standard deployments (e.g., using NGINX Gateway Fabric), installation involves:
+```bash
+# 1. Install standard Gateway API CRDs
+kubectl kustomize "https://github.com/nginx/nginx-gateway-fabric/config/crd/gateway-api/standard?ref=v1.6.2" | kubectl apply -f -
+
+# 2. Install experimental Gateway API CRDs (if using advanced features like rewrites)
+kubectl kustomize "https://github.com/nginx/nginx-gateway-fabric/config/crd/gateway-api/experimental?ref=v1.6.2" | kubectl apply -f -
+
+# 3. Install NGINX Gateway Controller using Helm
+helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway
+```
+
+#### 4. Advanced HTTPRoute Filters (Redirects, Rewrites, Headers, and Mirroring)
+Gateway API specifies traffic modifications directly within the resource specs using filters, bypassing the need for ad-hoc annotations.
+
+##### A. HTTP to HTTPS Schema Redirect (`RequestRedirect`):
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: https-redirect
+  namespace: default
+spec:
+  parentRefs:
+  - name: nginx-gateway
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https
+```
+
+##### B. Prefix Path Rewrite (`URLRewrite`):
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: rewrite-path
+  namespace: default
+spec:
+  parentRefs:
+  - name: nginx-gateway
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /old
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          replacePrefixMatch: /new
+    backendRefs:
+    - name: my-app
+      port: 80
+```
+
+##### C. Custom Header Injection (`RequestHeaderModifier`):
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: header-mod
+  namespace: default
+spec:
+  parentRefs:
+  - name: nginx-gateway
+  rules:
+  - filters:
+    - type: RequestHeaderModifier
+      requestHeaderModifier:
+        add:
+        - name: x-env
+          value: staging
+    backendRefs:
+    - name: my-app
+      port: 80
+```
+
+##### D. Request Mirroring (`RequestMirror`):
+Sends a copy of incoming traffic to a test/analysis service concurrently without impacting the response returned to the user:
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: request-mirror
+  namespace: default
+spec:
+  parentRefs:
+  - name: nginx-gateway
+  rules:
+  - filters:
+    - type: RequestMirror
+      requestMirror:
+        backendRef:
+          name: mirror-service
+          port: 80
+    backendRefs:
+    - name: my-app
+      port: 80
+```
+
+#### 5. gRPC Routing
+Exposing high-performance gRPC services can be done natively matching on methods or services:
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grpc-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: nginx-gateway
+  rules:
+  - matches:
+    - method:
+        service: my.grpc.Service
+        method: GetData
+    backendRefs:
+    - name: grpc-service
+      port: 50051
+```
+
+#### 6. Layer 4 TCP/UDP Listeners & TLS Termination
+
+##### A. TLS Termination Gateway (Decrypt at ingress):
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: nginx-gateway-tls
+  namespace: default
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: tls-secret
+    allowedRoutes:
+      namespaces:
+        from: All
+```
+
+##### B. Layer 4 TCP Gateway (e.g., exposing a MySQL Database):
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: tcp-gateway
+  namespace: default
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: tcp
+    protocol: TCP
+    port: 3306
+    allowedRoutes:
+      namespaces:
+        from: All
+```
+
+##### C. Layer 4 UDP Gateway (e.g., exposing CoreDNS service):
+```yaml
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: udp-gateway
+  namespace: default
+spec:
+  gatewayClassName: nginx
+  listeners:
+  - name: udp
+    protocol: UDP
+    port: 53
+    allowedRoutes:
+      namespaces:
+        from: All
 ```
 
 ---

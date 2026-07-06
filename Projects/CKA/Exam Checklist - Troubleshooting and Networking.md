@@ -312,6 +312,15 @@ If a `Gateway` or `HTTPRoute` does not resolve or route traffic:
     kubectl describe httproute <route-name> -n <namespace>
     ```
     *Look for*: `status.parents[*].conditions` showing `Accepted: True`.
+4.  **Confirm Controller Logs**:
+    For NGINX Gateway Fabric:
+    ```bash
+    kubectl logs -n nginx-gateway deployment/nginx-gateway-fabric --tail=100
+    ```
+5.  **Check Filter Configuration Errors**:
+    Ensure the path prefix matches the filters' configurations (e.g. checking that a `URLRewrite` has a valid `replacePrefixMatch`). If using URL redirects or rewrites, make sure you installed the **experimental** CRDs (`experimental?ref=v1.6.2`); otherwise, the API Server will reject the fields or the controller will fail to parse them.
+6.  **Layer 4 TCP/UDP Port Bind Diagnostics**:
+    For L4 routes, check if the gateway controller pod is listening on the mapped port (e.g. 3306 or 53) using netstat inside the controller namespace, and check that the Gateway's listeners specify `allowedRoutes.namespaces.from: All` if routes are located in developer namespaces.
 
 #### 2. Troubleshooting Service Endpoints via EndpointSlices
 If traffic resolves to a Service ClusterIP but times out or fails:

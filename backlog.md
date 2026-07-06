@@ -2,6 +2,46 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-07] - Ingestion: CKA Networking Primitives & Gateway API Deep Dive
+
+### Added
+- **Main Notes:**
+  - [[Main Notes/gateway-api - Advanced Traffic Routing.md|gateway-api - Advanced Traffic Routing.md]] (Deeper dive note on Gateway API standard configs: redirect, URLRewrite rewrite, header modification, mirroring, gRPC, and L4 listeners)
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-9_networking_dns_and_ingress.md|0-9_networking_dns_and_ingress.md]]:
+    - Section 1.4: Added netmask configuration warning.
+    - Section 1.5: Added firewall/iptables forward chain troubleshooting.
+    - Section 10: Expanded Gateway API specs (Kustomize/Helm installation, RequestRedirect, URLRewrite, RequestHeaderModifier, RequestMirror filters, gRPC HTTPRoute, and L4 TCP/UDP listener configurations).
+- **Main Notes:**
+  - [[Main Notes/0-CKA Study Roadmap.md|0-CKA Study Roadmap.md]]: Integrated Gateway API Advanced Routing concept link.
+- **Projects:**
+  - [[Projects/CKA/Exam Checklist - Troubleshooting and Networking.md|Exam Checklist - Troubleshooting and Networking.md]]: Added controller logs verify, filters validation, and port binding diagnostics.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from `inflow/`:
+- `inflow/CNI-InKuberntes.md`
+- `inflow/Cluster-Networking.md`
+- `inflow/CoreDNS.md`
+- `inflow/DNS in Kubernetes.md`
+- `inflow/DNS-Kubernetes-reqw.md`
+- `inflow/Docker-NetworkingForKubernets.md`
+- `inflow/GatewayAPI.md`
+- `inflow/GatewayAPINotes.md`
+- `inflow/IPAM.md`
+- `inflow/Ingress Notes.md`
+- `inflow/IngressControllers.md`
+- `inflow/Namespace-kubernetes-note.md`
+- `inflow/Network-NameSpaces-Kuberentes.md`
+- `inflow/Networking.md`
+- `inflow/PodNetworking.md`
+- `inflow/Pre-requisites-kubernetes-Gateways-switching.md`
+- `inflow/Pre-requistes-CNI.md`
+- `inflow/Service-Networking.md`
+
+---
+
 ## [2026-07-05] - Ingestion: ETCD Port Roles and APIServer Watch Concurrency
 
 ### Refactored / Upgraded

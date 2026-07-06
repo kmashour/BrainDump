@@ -131,6 +131,7 @@ This roadmap outlines the exact step-by-step sequence you should follow when stu
 3. **Ingress & Policy Enforcement:**
    * [[ingress]] - Layer 7 HTTP/HTTPS reverse-proxy routing.
    * [[gateway-api]] - Role-oriented modern traffic routing.
+   * [[gateway-api - Advanced Traffic Routing]] - Redirects, rewrites, headers, and L4 listeners.
    * [[networkpolicy]] - Enforcing firewall rules between pods.
 
 ---
