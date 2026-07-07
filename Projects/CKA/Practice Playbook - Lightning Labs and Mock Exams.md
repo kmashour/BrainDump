@@ -2026,7 +2026,7 @@ spec:
 ---
 
 ## 3. Helm Client-Side Release Lifecycle
-During local application audits, you must fetch remote chart modifications and apply upgrades using the `helm` client:
+During local application audits, you must fetch remote chart modifications, apply upgrades, customize parameters, or execute rollbacks using the `helm` client:
 
 1. **List Active Releases in a Specific Namespace:**
    ```bash
@@ -2040,10 +2040,34 @@ During local application audits, you must fetch remote chart modifications and a
    ```bash
    helm search repo nginx --versions
    ```
-4. **Upgrade an Existing Release to a Mapped Version:**
+4. **Install a Chart with Custom Overrides:**
+   * **Via inline sets (`--set`):**
+     ```bash
+     helm install my-nginx bitnami/nginx --set replicaCount=3 -n kk-ns
+     ```
+   * **Via custom values file (`-f` or `--values`):**
+     ```bash
+     helm install my-nginx bitnami/nginx -f my-values.yaml -n kk-ns
+     ```
+5. **Inspect or Audit Local Chart Packages:**
+   Pull a compressed chart and extract the templates to customize or install locally:
+   ```bash
+   helm pull bitnami/nginx --untar
+   helm install my-nginx ./nginx -n kk-ns
+   ```
+6. **Upgrade an Existing Release to a Mapped Version:**
    ```bash
    helm upgrade kk-mock1 kk-mock1/nginx --version 18.1.5 -n kk-ns
    ```
+7. **Inspect Release History & Rollback to Previous Revision:**
+   * **View revisions list:**
+     ```bash
+     helm history kk-mock1 -n kk-ns
+     ```
+   * **Rollback to Revision 1:**
+     ```bash
+     helm rollback kk-mock1 1 -n kk-ns
+     ```
 
 ---
 

@@ -2,6 +2,36 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-07] - Ingestion: Helm Package Management & Release Lifecycles
+
+### Added
+- **Main Notes:**
+  - [[Main Notes/helm.md|helm.md]]: Landing note for the Helm package manager.
+- **Reference Notes:**
+  - [[Reference Notes/12-3_helm_package_management.md|12-3_helm_package_management.md]]: Module 12-3 detailing Helm 3 client-side architecture, 3-way strategic merge patch, CLI command cheatsheet, and Chart structure.
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-Index - Kubernetes.md|0-Index - Kubernetes.md]]: Added Module 12-3 reference mapping under Domain 2 API extensibility.
+  - [[Reference Notes/12-Index - CNCF References.md|12-Index - CNCF References.md]]: Listed Module 12-3 under CNCF Reference Modules.
+  - [[Reference Notes/0-CKA Study Alignment Guide.md|0-CKA Study Alignment Guide.md]]: Mapped Helm section to syllabus table and Study Pathway Step 4.3.
+- **Main Notes:**
+  - [[Main Notes/0-CKA Study Roadmap.md|0-CKA Study Roadmap.md]]: Integrated Helm reference link.
+- **Projects:**
+  - [[Projects/CKA/Practice Playbook - Lightning Labs and Mock Exams.md|Practice Playbook - Lightning Labs and Mock Exams.md]]: Expanded Section 3 with values overrides, rollbacks, and local untar operations.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from `inflow/`:
+- `inflow/CustomizingChartParameters.md`
+- `inflow/HelmCharts.md`
+- `inflow/HelmComponents.md`
+- `inflow/HelmIntroduction.md`
+- `inflow/LifeCycleManagementWithHelm.md`
+- `inflow/NoteOnHelm2vsHelm3.md`
+- `inflow/WorkingWithHelmBasics.md`
+
+---
+
 ## [2026-07-07] - Ingestion: CKA Networking Primitives & Gateway API Deep Dive
 
 ### Added

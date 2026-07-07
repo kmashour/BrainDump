@@ -133,6 +133,7 @@ This roadmap outlines the exact step-by-step sequence you should follow when stu
    * [[gateway-api]] - Role-oriented modern traffic routing.
    * [[gateway-api - Advanced Traffic Routing]] - Redirects, rewrites, headers, and L4 listeners.
    * [[networkpolicy]] - Enforcing firewall rules between pods.
+   * [[helm]] - Kubernetes package manager and release lifecycle controller.
 
 ---
 

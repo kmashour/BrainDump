@@ -21,6 +21,8 @@ This index contains reference summaries and technical digests of CNCF presentati
   * Cluster state boundaries analysis, master/node failures, etcd backup mechanics, persistent volume snapshots, backup hooks (fsfreeze), and Heptio Ark (Velero) architecture.
 - 🔑 **[Module 12-2: Secrets Store CSI Driver Integration (KodeKloud Talk)](12-2_secrets_store_csi_driver_integration.md)**
   * Dynamic secret mounting, RAM-backed tmpfs storage, IRSA credential mapping, SecretProviderClass parameters, and auto-rotation reconciliation loops.
+- ⛵ **[Module 12-3: Helm Package Management & Lifecycle Operations](12-3_helm_package_management.md)**
+  * Chart structure, default values.yaml overrides, installation, upgrade, rollback lifecycle operations, metadata storage, and Helm 2 vs Helm 3 architectural comparisons.
 
 ---
 

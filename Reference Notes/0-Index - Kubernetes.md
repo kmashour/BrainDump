@@ -29,6 +29,7 @@ tags:
 - 🛠️ **[API Mechanics & kubectl CLI](0-1_kube_api_and_kubectl.md)** (Module 01)
 - 🔀 **[API Management & Pod Spec Immutability](0-12_kubernetes_api_management_and_pod_immutability.md)** (Module 12)
 - 🔌 **[API Extensions & Operators](0-15_kubernetes_api_extension_and_operators.md)** (Module 15)
+- ⛵ **[Helm Package Management & Lifecycle Operations](12-3_helm_package_management.md)** (Module 12-3)
 
 ---
 

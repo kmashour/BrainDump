@@ -44,6 +44,7 @@ Mumshad's course is designed for **pedagogical progression**—introducing high-
 | **7. Storage**              | PV, PVC, StorageClasses, CSI drivers                 | [[0-8_storage_mechanics_and_csi \| 0-8_storage_mechanics_and_csi.md]]                                                                                                                          | CSI architecture, PV bindings, Mount volumes                                                                                                         |
 | **8. Networking**           | Services, CoreDNS, CNI plugins, Ingress              | [[0-9_networking_dns_and_ingress \| 0-9_networking_dns_and_ingress.md]]                                                                                                                        | Service iptables/IPVS routing, CoreDNS resolution<br>CNI packet headers, Ingress controller setups                                                   |
 | **9. Troubleshooting**      | Node, Application, Control Plane recovery            | [[0-11_troubleshooting_and_diagnostics \| 0-11_troubleshooting_and_diagnostics.md]]                                                                                                            | Diagnostic flows, systemd unit health, network tracing                                                                                               |
+| **10. Helm (CNCF App)**     | Chart templating, releases & lifecycles             | [[12-3_helm_package_management \| 12-3_helm_package_management.md]]                                                                                                                           | Helm CLI commands, values overrides, rollback mechanics, Helm 2 vs Helm 3 differences                                                                |
 
 ---
 
@@ -78,6 +79,7 @@ Master the persistent state of your cluster and internal network routes.
     - **CoreDNS:** How namespace DNS searches map to Service names.
     - **Kube-Proxy (iptables vs IPVS):** How packet rewriting redirects traffic to backend Pods.
     - **Ingress Controllers:** How routing tables and TLS certificates are matched.
+*   **Step 4.3:** Study **Helm Package Management**. Read [[12-3_helm_package_management|12-3_helm_package_management.md]] to learn how Helm templates resources, overrides default values, manages release revisions, and utilizes 3-way strategic merge patch logic.
 
 ### Phase 5: Deep Security & Troubleshooting (Mumshad Sections 9 & 10)
 Secure the cluster and handle multi-layer failures.
