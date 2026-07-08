@@ -14,40 +14,40 @@ This module details the architectural principles, CLI operations, and lifecycle 
 
 ```mermaid
 graph TD
-    subgraph ClientWorkstation["Local Admin Workstation"]
-        HelmCLI["Helm CLI (v3)"]
-        Kubeconfig["Local Kubeconfig Context (RBAC Credentials)"]
-    end
+subgraph ClientWorkstation["Local Admin Workstation"]
+    HelmCLI["Helm CLI (v3)"]
+    Kubeconfig["Local Kubeconfig Context (RBAC Credentials)"]
+end
 
-    subgraph KubernetesCluster["Kubernetes Cluster Boundary"]
-        APIServer["Kubernetes API Server"]
-        
-        subgraph TargetNamespace["Target Namespace (e.g., default)"]
-            Deploy["Deployment"]
-            Svc["Service"]
-            Sec["Secret (Target App Credentials)"]
-        end
-        
-        subgraph ReleaseMetadata["Release Metadata Storage"]
-            HelmSecret["Secret: sh.helm.release.v1.my-site.v1 <br> (Tracks state snapshot revision 1)"]
-        end
-    end
-
-    subgraph ChartRegistry["Remote Registry (Artifact Hub / Bitnami)"]
-        ChartTarball["Chart Package (wordpress.tgz)"]
-    end
-
-    %% Client Actions
-    HelmCLI -->|1. Reads Credentials| Kubeconfig
-    HelmCLI -->|2. Pulls/Searches Charts| ChartRegistry
-    HelmCLI -->|3. Submits Manifests via API| APIServer
+subgraph KubernetesCluster["Kubernetes Cluster Boundary"]
+    APIServer["Kubernetes API Server"]
     
-    %% API Actions
-    APIServer -->|4. Installs Objects| TargetNamespace
-    APIServer -->|5. Persists Release State| ReleaseMetadata
+    subgraph TargetNamespace["Target Namespace (e.g., default)"]
+        Deploy["Deployment"]
+        Svc["Service"]
+        Sec["Secret (Target App Credentials)"]
+    end
+    
+    subgraph ReleaseMetadata["Release Metadata Storage"]
+        HelmSecret["Secret: sh.helm.release.v1.my-site.v1 <br/> (Tracks state snapshot revision 1)"]
+    end
+end
 
-    %% Comparison logic
-    HelmCLI -.->|6. Performs 3-Way Strategic Merge <br> (Compares Proposed Chart, Last Revision Secret, and Live State)| APIServer
+subgraph ChartRegistry["Remote Registry (Artifact Hub / Bitnami)"]
+    ChartTarball["Chart Package (wordpress.tgz)"]
+end
+
+%% Client Actions
+HelmCLI -- "Step 1: Reads Credentials" --> Kubeconfig
+HelmCLI -- "Step 2: Pulls/Searches Charts" --> ChartRegistry
+HelmCLI -- "Step 3: Submits Manifests via API" --> APIServer
+
+%% API Actions
+APIServer -- "Step 4: Installs Objects" --> TargetNamespace
+APIServer -- "Step 5: Persists Release State" --> ReleaseMetadata
+
+%% Comparison logic
+HelmCLI -. "Step 6: Performs 3-Way Strategic Merge <br/> (Compares Proposed Chart, Last Revision Secret, and Live State)" .-> APIServer
 ```
 
 ---
