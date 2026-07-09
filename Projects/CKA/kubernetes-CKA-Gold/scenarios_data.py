@@ -13,7 +13,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-worker systemctl start kubelet",
         "check": "kubectl get node cka-gold-worker -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}' | grep -i True",
         "hint": "Check if kubelet is running on cka-gold-worker container using systemctl.",
-        "solution": "1. Run: docker exec cka-gold-worker systemctl status kubelet\n2. Start it: docker exec cka-gold-worker systemctl start kubelet"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the worker node console:\n   ssh cka-gold-worker\n2. Check kubelet service status:\n   systemctl status kubelet\n3. Start and enable the service:\n   sudo systemctl start kubelet\n   sudo systemctl enable kubelet\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nExecute command from host workstation:\ndocker exec cka-gold-worker systemctl start kubelet"
     },
     {
         "id": "E-02",
@@ -24,7 +24,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-worker2 sed -i 's/staticPodPathInvalid/staticPodPath/g' /var/lib/kubelet/config.yaml && docker exec cka-gold-worker2 systemctl start kubelet",
         "check": "kubectl get node cka-gold-worker2 -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}' | grep -i True",
         "hint": "Check the kubelet logs on cka-gold-worker2: journalctl -u kubelet. Look for config errors.",
-        "solution": "1. Run: docker exec -it cka-gold-worker2 journalctl -u kubelet\n2. Fix typo in /var/lib/kubelet/config.yaml\n3. Restart kubelet: docker exec cka-gold-worker2 systemctl restart kubelet"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the worker node console:\n   ssh cka-gold-worker2\n2. Check the kubelet system logs for errors:\n   sudo journalctl -u kubelet -n 50 --no-pager\n3. Correct configuration typo inside config file:\n   sudo vi /var/lib/kubelet/config.yaml  # Change staticPodPathInvalid -> staticPodPath\n4. Restart the service:\n   sudo systemctl restart kubelet\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nFix configuration and restart inside node container:\ndocker exec cka-gold-worker2 sed -i \'s/staticPodPathInvalid/staticPodPath/g\' /var/lib/kubelet/config.yaml && docker exec cka-gold-worker2 systemctl restart kubelet"
     },
     {
         "id": "E-03",
@@ -156,7 +156,7 @@ SCENARIOS = [
         "cleanup": "kubectl delete namespace break-me --ignore-not-found=true && rm -f /opt/backup.db",
         "check": "kubectl get ns break-me --no-headers 2>&1 | grep -q 'NotFound' || exit 0",
         "hint": "Restore etcd using 'etcdctl snapshot restore --data-dir=/var/lib/etcd-restored /opt/backup.db' and point control plane etcd configuration path to the restored dir.",
-        "solution": "1. Run etcdctl snapshot restore command.\n2. Update hostPath volume in /etc/kubernetes/manifests/etcd.yaml to point /var/lib/etcd to the restored directory."
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the control plane node console:\n   ssh cka-gold-control-plane\n2. Restore the database snapshot to a new data directory:\n   ETCDCTL_API=3 etcdctl --data-dir=/var/lib/etcd-restored snapshot restore /opt/backup.db\n3. Update hostPath volume inside static pod manifest:\n   sudo vi /etc/kubernetes/manifests/etcd.yaml\n   # Update volume named etcd-data hostPath to point to /var/lib/etcd-restored\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nRestore and configure inside control plane container:\ndocker exec -it cka-gold-control-plane sh -c \'ETCDCTL_API=3 etcdctl --data-dir=/var/lib/etcd-restored snapshot restore /opt/backup.db && sed -i \"s|path: /var/lib/etcd|path: /var/lib/etcd-restored|g\" /etc/kubernetes/manifests/etcd.yaml\'"
     },
     {
         "id": "E-15",
@@ -178,7 +178,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-worker rm -f /etc/kubernetes/manifests/static.yaml || true",
         "check": "kubectl get pods --all-namespaces | grep -i cka-gold-worker | grep -i static-pod",
         "hint": "Write a pod manifest file to /etc/kubernetes/manifests/static.yaml inside the cka-gold-worker node container.",
-        "solution": "1. Create YAML file: docker exec -i cka-gold-worker sh -c 'cat <<EOF > /etc/kubernetes/manifests/static.yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: static-pod\nspec:\n  containers:\n  - name: web\n    image: nginx\nEOF'"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the worker node console:\n   ssh cka-gold-worker\n2. Determine Kubelet staticPodPath directory (defaults to /etc/kubernetes/manifests/):\n   grep staticPodPath /var/lib/kubelet/config.yaml\n3. Create the directories if not exist, and write the static pod YAML file:\n   sudo mkdir -p /etc/kubernetes/manifests\n   sudo vi /etc/kubernetes/manifests/static.yaml\n   # Insert Pod manifest running nginx container\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nCreate static pod inside worker node container:\ndocker exec -i cka-gold-worker sh -c \'mkdir -p /etc/kubernetes/manifests && cat <<EOF > /etc/kubernetes/manifests/static.yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: static-pod\nspec:\n  containers:\n  - name: web\n    image: nginx\nEOF\'"
     },
     {
         "id": "E-17",
@@ -233,7 +233,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-worker2 systemctl unmask kubelet && docker exec cka-gold-worker2 systemctl start kubelet",
         "check": "kubectl get node cka-gold-worker2 -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}' | grep -i True",
         "hint": "Run systemctl unmask kubelet and then start the service inside the cka-gold-worker2 container.",
-        "solution": "1. Run: docker exec cka-gold-worker2 systemctl unmask kubelet\n2. Run: docker exec cka-gold-worker2 systemctl start kubelet"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the worker node console:\n   ssh cka-gold-worker2\n2. Unmask the kubelet systemd service:\n   sudo systemctl unmask kubelet\n3. Start the service:\n   sudo systemctl start kubelet\n4. Check service status:\n   sudo systemctl status kubelet\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nUnmask and start inside node container:\ndocker exec cka-gold-worker2 systemctl unmask kubelet && docker exec cka-gold-worker2 systemctl start kubelet"
     },
     {
         "id": "E-22",
@@ -336,7 +336,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-control-plane rm -f /opt/etcd-backup.db",
         "check": "docker exec cka-gold-control-plane ls -lh /opt/etcd-backup.db",
         "hint": "Use etcdctl inside cka-gold-control-plane to save snapshot to the path /opt/etcd-backup.db.",
-        "solution": "1. Run: docker exec cka-gold-control-plane sh -c \"ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key snapshot save /opt/etcd-backup.db\""
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the control plane node console:\n   ssh cka-gold-control-plane\n2. Execute etcdctl snapshot save specifying certificates located in /etc/kubernetes/pki/etcd/:\n   ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 \\\n     --cacert=/etc/kubernetes/pki/etcd/ca.crt \\\n     --cert=/etc/kubernetes/pki/etcd/server.crt \\\n     --key=/etc/kubernetes/pki/etcd/server.key \\\n     snapshot save /opt/etcd-backup.db\n3. Verify snapshot integrity:\n   ETCDCTL_API=3 etcdctl snapshot status /opt/etcd-backup.db\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nExecute inside control plane container:\ndocker exec -it cka-gold-control-plane sh -c \'ETCDCTL_API=3 etcdctl --endpoints=https://127.0.0.1:2379 --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key snapshot save /opt/etcd-backup.db\'"
     },
     {
         "id": "E-31",
@@ -347,7 +347,7 @@ SCENARIOS = [
         "cleanup": "kubectl delete configmap test-after-backup --ignore-not-found=true",
         "check": "kubectl get configmap test-after-backup 2>&1 | grep -q 'NotFound' || exit 0",
         "hint": "Restore snapshot and redirect hostPath volume to restored data directory.",
-        "solution": "1. Restore snapshot inside container.\n2. Update etcd.yaml hostPath path to point to restored data-dir."
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the control plane node console:\n   ssh cka-gold-control-plane\n2. Restore the database snapshot to a new data directory:\n   ETCDCTL_API=3 etcdctl --data-dir=/var/lib/etcd-restored snapshot restore /opt/snapshot.db\n3. Update hostPath volume inside static pod manifest:\n   sudo vi /etc/kubernetes/manifests/etcd.yaml\n   # Update volume named etcd-data hostPath to point to /var/lib/etcd-restored\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nRestore and configure inside control plane container:\ndocker exec -it cka-gold-control-plane sh -c \'ETCDCTL_API=3 etcdctl --data-dir=/var/lib/etcd-restored snapshot restore /opt/snapshot.db && sed -i \"s|path: /var/lib/etcd|path: /var/lib/etcd-restored|g\" /etc/kubernetes/manifests/etcd.yaml\'"
     },
     {
         "id": "E-32",
@@ -369,7 +369,7 @@ SCENARIOS = [
         "cleanup": "echo 'Done'",
         "check": "docker exec cka-gold-control-plane kubeadm certs check-expiration",
         "hint": "Run 'kubeadm certs renew all' inside the cka-gold-control-plane container.",
-        "solution": "1. Run: docker exec cka-gold-control-plane kubeadm certs renew all"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the control plane node console:\n   ssh cka-gold-control-plane\n2. Renew all certificates using kubeadm:\n   sudo kubeadm certs renew all\n3. Verify certificate lifetimes:\n   sudo kubeadm certs check-expiration\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nExecute inside control plane container:\ndocker exec -it cka-gold-control-plane kubeadm certs renew all"
     },
     {
         "id": "E-34",
@@ -446,7 +446,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-control-plane rm -f /etc/kubernetes/manifests/static-web.yaml || true",
         "check": "kubectl get pods -n default | grep -i static-web-cka-gold-control-plane",
         "hint": "Place the static pod manifest inside cka-gold-control-plane container at /etc/kubernetes/manifests/static-web.yaml.",
-        "solution": "1. Run: docker exec -i cka-gold-control-plane sh -c 'cat <<EOF > /etc/kubernetes/manifests/static-web.yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: static-web\nspec:\n  containers:\n  - name: web\n    image: nginx\nEOF'"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the control plane node console:\n   ssh cka-gold-control-plane\n2. Locate the staticPodPath configured for Kubelet:\n   grep staticPodPath /var/lib/kubelet/config.yaml  # Default: /etc/kubernetes/manifests\n3. Create the static pod manifest inside that folder:\n   sudo vi /etc/kubernetes/manifests/static-web.yaml\n   # Add nginx container pod spec\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nCreate static pod inside control plane container:\ndocker exec -i cka-gold-control-plane sh -c \'mkdir -p /etc/kubernetes/manifests && cat <<EOF > /etc/kubernetes/manifests/static-web.yaml\napiVersion: v1\nkind: Pod\nmetadata:\n  name: static-web\nspec:\n  containers:\n  - name: web\n    image: nginx\nEOF\'"
     },
     {
         "id": "E-41",
@@ -725,7 +725,7 @@ SCENARIOS = [
         "cleanup": "echo 'Done'",
         "check": "docker exec cka-gold-control-plane ls /etc/cni/net.d/",
         "hint": "Look at /etc/cni/net.d/ inside the control plane container.",
-        "solution": "1. Check CNI configuration: docker exec cka-gold-control-plane ls /etc/cni/net.d/"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the control-plane or worker node console:\n   ssh cka-gold-control-plane\n2. Navigate to CNI configuration directory and inspect files:\n   cd /etc/cni/net.d/\n   cat *.conflist\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nInspect from local terminal:\ndocker exec cka-gold-control-plane ls /etc/cni/net.d/"
     },
     {
         "id": "E-66",
@@ -1096,7 +1096,7 @@ SCENARIOS = [
         "cleanup": "echo 'Done'",
         "check": "docker exec cka-gold-control-plane grep -q 'cgroupDriver: systemd' /var/lib/kubelet/config.yaml || exit 0",
         "hint": "Check the cgroupDriver setting inside /var/lib/kubelet/config.yaml.",
-        "solution": "1. Cgroup driver on kind is systemd by default. Verify: docker exec cka-gold-control-plane grep 'cgroupDriver' /var/lib/kubelet/config.yaml"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the node console:\n   ssh cka-gold-control-plane\n2. Check configured cgroupDriver in kubelet config file:\n   cat /var/lib/kubelet/config.yaml | grep cgroupDriver\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nInspect inside node container:\ndocker exec cka-gold-control-plane grep \'cgroupDriver\' /var/lib/kubelet/config.yaml"
     },
     {
         "id": "E-99",
@@ -1107,7 +1107,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-control-plane pkill -f 'nc -l -p 6443' || true",
         "check": "kubectl get nodes",
         "hint": "Check port usage on control plane node. Kill the netcat process blocking port 6443.",
-        "solution": "1. Exec into control plane: docker exec cka-gold-control-plane fuser -k 6443/tcp || docker exec cka-gold-control-plane pkill -f 'nc -l -p 6443'"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the control-plane node console:\n   ssh cka-gold-control-plane\n2. Find the process occupying port 6443 and kill it:\n   sudo fuser -k 6443/tcp\n   # Or kill conflicting processes by name:\n   sudo pkill -f \'nc -l -p 6443\'\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nKill process inside container:\ndocker exec cka-gold-control-plane fuser -k 6443/tcp || docker exec cka-gold-control-plane pkill -f \'nc -l -p 6443\'"
     },
     {
         "id": "E-100",
@@ -1118,7 +1118,7 @@ SCENARIOS = [
         "cleanup": "docker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist.bak /etc/cni/net.d/10-kindnet.conflist 2>/dev/null || true",
         "check": "kubectl get node cka-gold-worker -o jsonpath='{.status.conditions[?(@.type==\"Ready\")].status}' | grep -i True",
         "hint": "Access cka-gold-worker node, look for backed up files in /etc/cni/net.d/, and rename it back.",
-        "solution": "1. Restore: docker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist.bak /etc/cni/net.d/10-kindnet.conflist"
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. SSH/access the worker node console:\n   ssh cka-gold-worker\n2. Restore the backed-up CNI conflist file inside /etc/cni/net.d/:\n   sudo mv /etc/cni/net.d/10-kindnet.conflist.bak /etc/cni/net.d/10-kindnet.conflist\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nRestore file inside node container:\ndocker exec cka-gold-worker mv /etc/cni/net.d/10-kindnet.conflist.bak /etc/cni/net.d/10-kindnet.conflist"
     }
 ]
 
