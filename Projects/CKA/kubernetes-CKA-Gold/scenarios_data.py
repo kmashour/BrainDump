@@ -308,24 +308,24 @@ SCENARIOS = [
     {
         "id": "E-28",
         "domain": "Cluster Architecture, Installation & Config (25%)",
-        "title": "Upgrade Control Plane Node Package Mock",
-        "problem": "Simulate the upgrade process. Upgrade the kubeadm and kubelet version on cka-gold-control-plane node to v1.35.1.",
+        "title": "Upgrade Control Plane Node (kubeadm & kubelet)",
+        "problem": "Systematic Upgrade: You are tasked with upgrading the control-plane node (cka-gold-control-plane) from v1.35.0 to v1.35.1. Perform a secure drain, plan and apply the kubeadm upgrade, upgrade the kubelet/kubectl packages, and restart services.",
         "setup": "docker exec cka-gold-control-plane mkdir -p /var/log/upgrade-test",
         "cleanup": "docker exec cka-gold-control-plane rm -rf /var/log/upgrade-test",
-        "check": "docker exec cka-gold-control-plane ls /var/log/upgrade-test",
-        "hint": "This is a conceptual check. In a real environment, you run apt-get install kubeadm=1.35.1-1.1. Create a dummy file /var/log/upgrade-test/upgraded to confirm.",
-        "solution": "1. Run: docker exec cka-gold-control-plane touch /var/log/upgrade-test/upgraded"
+        "check": "docker exec cka-gold-control-plane ls /var/log/upgrade-test/upgraded",
+        "hint": "On the actual CKA exam, you must follow the official Kubernetes documentation upgrade flow. This involves: 1. Draining the control plane node; 2. Upgrading kubeadm via apt-get; 3. Running 'kubeadm upgrade plan' and 'kubeadm upgrade apply'; 4. Upgrading kubelet and kubectl; 5. Reloading systemd and restarting kubelet; 6. Uncordoning the node. (Since KinD uses static binaries rather than APT packages, simulate this in your sandbox by running the drain command, and then creating the verification file: 'docker exec cka-gold-control-plane touch /var/log/upgrade-test/upgraded').",
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. Drain the control plane node:\n   kubectl drain cka-gold-control-plane --ignore-daemonsets --force\n2. SSH to the control-plane node and escalate to root:\n   ssh cka-gold-control-plane\n   sudo -i\n3. Upgrade kubeadm package:\n   apt-mark unhold kubeadm\n   apt-get update && apt-get install -y kubeadm=1.35.1-1.1\n   apt-mark hold kubeadm\n4. Plan and apply the upgrade:\n   kubeadm upgrade plan\n   kubeadm upgrade apply v1.35.1\n5. Upgrade kubelet and kubectl packages:\n   apt-mark unhold kubelet kubectl\n   apt-get install -y kubelet=1.35.1-1.1 kubectl=1.35.1-1.1\n   apt-mark hold kubelet kubectl\n6. Reload systemd manager configuration and restart kubelet daemon:\n   systemctl daemon-reload\n   systemctl restart kubelet\n7. Exit the node and uncordon the control plane:\n   exit\n   kubectl uncordon cka-gold-control-plane\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nIn this local KinD cluster environment, execute: \ndocker exec cka-gold-control-plane touch /var/log/upgrade-test/upgraded"
     },
     {
         "id": "E-29",
         "domain": "Cluster Architecture, Installation & Config (25%)",
-        "title": "Upgrade Worker Node 1 Package Mock",
-        "problem": "Simulate worker node upgrade. Drain cka-gold-worker node, then touch /var/log/worker-upgraded on it.",
+        "title": "Upgrade Worker Node (kubeadm & kubelet)",
+        "problem": "Systematic Upgrade: Upgrade the worker node 'cka-gold-worker' from v1.35.0 to v1.35.1. Cordon and drain the node first, then perform the local package upgrade.",
         "setup": "kubectl cordon cka-gold-worker",
         "cleanup": "kubectl uncordon cka-gold-worker && docker exec cka-gold-worker rm -f /var/log/worker-upgraded || true",
-        "check": "kubectl get node cka-gold-worker -o jsonpath='{.spec.unschedulable}' | grep -w 'true'",
-        "hint": "Cordon and drain the node cka-gold-worker, and create the file inside the container.",
-        "solution": "1. Run: kubectl drain cka-gold-worker --ignore-daemonsets --force\n2. Run: docker exec cka-gold-worker touch /var/log/worker-upgraded"
+        "check": "kubectl get node cka-gold-worker -o jsonpath='{.spec.unschedulable}' | grep -w 'true' && docker exec cka-gold-worker ls /var/log/worker-upgraded",
+        "hint": "On the actual CKA exam, worker node upgrades differ from control plane upgrades: 1. Drain the worker node from the control-plane; 2. SSH to the worker node; 3. Upgrade kubeadm via apt-get; 4. Run 'kubeadm upgrade node' (instead of apply); 5. Upgrade kubelet/kubectl and restart the services; 6. Uncordon the node from the control-plane. (Simulate this locally by running the drain command and creating the verification file: 'docker exec cka-gold-worker touch /var/log/worker-upgraded').",
+        "solution": "=== ACTUAL CKA EXAM SYSTEMATIC PATHWAY ===\n1. Drain the worker node from your management terminal:\n   kubectl drain cka-gold-worker --ignore-daemonsets --force\n2. SSH to the worker node:\n   ssh cka-gold-worker\n3. Upgrade kubeadm on the worker node:\n   apt-mark unhold kubeadm\n   apt-get update && apt-get install -y kubeadm=1.35.1-1.1\n   apt-mark hold kubeadm\n4. Upgrade the local node configuration:\n   sudo kubeadm upgrade node\n5. Upgrade kubelet and kubectl on the worker node:\n   apt-mark unhold kubelet kubectl\n   apt-get install -y kubelet=1.35.1-1.1 kubectl=1.35.1-1.1\n   apt-mark hold kubelet kubectl\n6. Restart the local kubelet service:\n   sudo systemctl daemon-reload\n   sudo systemctl restart kubelet\n7. Exit the worker node and uncordon it from the control plane:\n   exit\n   kubectl uncordon cka-gold-worker\n\n=== KIND SANDBOX PRACTICE SIMULATION ===\nRun the drain and touch verification file locally:\n1. kubectl drain cka-gold-worker --ignore-daemonsets --force\n2. docker exec cka-gold-worker touch /var/log/worker-upgraded"
     },
     {
         "id": "E-30",

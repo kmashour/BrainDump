@@ -3,3 +3,6 @@
 .DS_Store
 Attachments/
 tradingview/
+__pycache__/
+*.pyc
+.progress.json
