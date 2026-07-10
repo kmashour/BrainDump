@@ -2033,9 +2033,24 @@ flowchart TD
 *   **`QueueSort`:** Sorts Pods in the active scheduling queue.
 *   **`PreFilter` & `Filter`:** Evaluates node constraints (replaces the legacy "Predicates" check).
 *   **`PreScore` & `Score`:** Scores nodes to rank them (replaces the legacy "Priority" functions).
-*   **`Reserve`:** Reserves the node resources on local cache before writing to the API.
+*   **`Reserve`:** Reserves the node resources on the scheduler's local memory cache before writing the binding to the API server.
 *   **`Permit`:** Can approve, deny, or delay (wait) the scheduling decision (useful for batch/gang scheduling).
 *   **`Bind`:** Invokes the API to write the `Binding` resource.
+
+##### 🔒 Systems Rationale: The Reserve/Unreserve Cache Lock and Double-Booking Mitigation
+
+To maintain high scheduling throughput (hundreds of pods per second), Kubernetes separates finding a node from writing the binding:
+1. **Scheduling Cycle (Synchronous & Fast):** Runs sequentially inside the scheduler's local memory to pick the best node.
+2. **Binding Cycle (Asynchronous & Slow):** Sends a network request to the API server to persist the placement (`etcd` write).
+
+###### The Race Condition (Double-Booking Problem):
+Without a reservation stage, the scheduler would start evaluating the next pod in the queue before the API server finished writing the binding of the previous pod. If a node has 2 CPUs free, and two concurrent pods each request 2 CPUs, querying the API server sequentially would result in both pods seeing the node as "available" (since the first binding hasn't been written to `etcd` yet). This leads to **double-booking (resource overcommitment)**.
+
+###### The Reserve Cache Lock Solution:
+To prevent this, the `Reserve` phase acts as an **optimistic local cache lock**:
+*   As soon as a node is chosen, the scheduler immediately subtracts the pod's resource requests from that node's capacity in the scheduler's **local memory cache** (`SchedulerCache`).
+*   Subsequent pods evaluated milliseconds later read this updated local cache, seeing the node's resources as already occupied, thus routing safely elsewhere.
+*   **Rollback (`Unreserve`):** If the asynchronous Binding cycle subsequently fails (e.g. network timeout or API rejection), the scheduler triggers `Unreserve` to add the resources back to the node in the local cache, keeping the memory state aligned with the cluster's reality.
 
 ---
 
