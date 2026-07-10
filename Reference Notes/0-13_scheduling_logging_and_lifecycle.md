@@ -1280,16 +1280,69 @@ A logging agent (e.g., Fluent Bit, Fluentd, Promtail, Logstash) runs as a `Daemo
 
 ##### B. Logging Sidecar Patterns
 Used when applications write logs to custom files on a local disk (e.g., `/var/log/nginx/access.log`) instead of standard `stdout`/`stderr`.
+
 1. **Streaming Sidecar (Log Transporter):** 
    * A sidecar container runs alongside the application container.
    * Both share a local directory via an `emptyDir` volume.
    * The application container writes logs to a file in the shared directory.
-   * The sidecar container runs a tail process (e.g., `tail -f /var/log/app/access.log`) to stream the file contents to its own `stdout`.
+   * The sidecar container runs a tail process (e.g., `tail -F /var/log/app/access.log`) to stream the file contents to its own `stdout`.
    * **Benefit:** Allows the node-level logging agent to intercept the logs, and enables administrators to run `kubectl logs <pod-name> -c <sidecar-name>`.
 2. **Log Exporting/Shipper Sidecar:**
    * A sidecar container runs a lightweight log shipping agent (e.g. Fluent Bit, Filebeat).
    * It mounts the application's log directory via a shared volume, reads the log files, and pushes them *directly* to the external logging database (e.g. Elasticsearch, Loki, Splunk).
    * **Benefit:** Bypasses the node-level container runtime storage entirely, reducing disk I/O on the host node.
+
+###### Synergy: How Sidecars and DaemonSet Logging Agents Work Together
+*   **The Bridge (Pattern 1 + DaemonSet):** The streaming sidecar container acts as a bridge. By streaming the file logs to its own `stdout`, the container runtime (containerd) automatically captures the sidecar's stream and writes it to the host node's `/var/log/pods/` directory. The **DaemonSet Promtail/Fluentd agent** on that node can now tail this log file exactly like any standard pod, enriching it with metadata and shipping it off. This allows legacy file-based apps to leverage a single central DaemonSet collector.
+*   **The Egress Bypass (Pattern 2 Bypassing DaemonSet):** If using a shipping agent inside the sidecar, the logs are shipped directly from the Pod to the destination backend (Loki/Elasticsearch) over the network. This completely bypasses `/var/log/pods/` on the host, which is useful for highly sensitive data (PCI-DSS) that must not touch host physical disks, or for custom log-parsing rules that shouldn't load the shared DaemonSet agent.
+
+###### Architectural Trade-Offs Matrix:
+| Metric | DaemonSet Only (Stdout) | Collaborative (Sidecar + DaemonSet) | Sidecar Only (Direct Shipping) |
+| :--- | :--- | :--- | :--- |
+| **Resource Overhead** | Low (1 agent per node) | Medium (1 agent/node + 1 tail container/pod) | High (1 agent/node + 1 shipper container/pod) |
+| **Compatibility** | App must write to `stdout` | Works with legacy file-writing apps | Works with legacy file-writing apps |
+| **Config Isolation** | Low (Shared configuration) | Low (Shared configuration) | High (Per-pod custom pipelines) |
+| **Host Disk I/O** | Yes (Writes to `/var/log/pods`) | Yes (Double-writes: file + `/var/log/pods`) | No (Direct network egress from Pod) |
+
+###### Ready-to-Run Sidecar Log Streaming YAML:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: legacy-logging-pod
+  labels:
+    app: billing-service
+spec:
+  # 1. Shared temporary volume for log coordination
+  volumes:
+  - name: shared-logs
+    emptyDir: {}
+
+  containers:
+  # 2. Application container writing to local disk
+  - name: app
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args:
+    - >
+      while true; do
+        echo "$(date) - SUCCESS - Processed transaction" >> /var/log/app/transactions.log;
+        sleep 5;
+      done
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/app
+
+  # 3. Sidecar container tailing the file and streaming to stdout
+  - name: log-redirector
+    image: busybox
+    command: ["/bin/sh", "-c"]
+    args: ["tail -F /var/log/app/transactions.log"]
+    volumeMounts:
+    - name: shared-logs
+      mountPath: /var/log/app
+      readOnly: true  # Prevent the sidecar from corrupting the logs
+```
 
 ##### C. Native Sidecars (v1.29+) Logging Context
 Starting in v1.29, defining sidecars as Init Containers with `restartPolicy: Always` ensures logging sidecars start up *before* the main application and shutdown *after* it, preventing log loss during container startup or teardown phases.
