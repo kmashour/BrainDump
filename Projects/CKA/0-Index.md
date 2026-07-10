@@ -69,5 +69,12 @@ SORT file.name ASC
 
 ### Q: Can this BrainDump work as RAG for the AI assistant?
 * **Yes.** This repository functions as a structured "Second Brain" or Retrieval-Augmented Generation (RAG) knowledge base.
-* **How it works:** Because the Antigravity AI coding assistant can search, index, and read all files inside this workspace, the structured layouts, reference sheets, exam checklists, commands, and diagrams are loaded into the agent's context window.
+* **How it works:** Because the Antigravity AI coding assistant can search, index, and read all files inside this workspace, the structured layouts, reference sheets, exam checklists, commands, and diagrams are loaded into the active context.
 * **Benefits:** This grounding prevents LLM hallucinations, ensuring that code generation, terminal configurations, and troubleshooting steps match the specific, battle-tested Kubernetes setups, versions, and configurations defined in this vault.
+
+---
+
+## 🔮 Future Roadmap: VM-Based Kubeadm Redesign
+* **Goal:** Migrate and redesign the cluster bootstrapping and package upgrade labs from containerized KinD nodes to real Virtual Machines (VMs) using Vagrant/VirtualBox or QEMU. This will enable native `apt-get` package management, direct `systemd` node isolation, and realistic `kubeadm` binary upgrades.
+* **Workstation Constraint:** Currently blocked due to local hardware resources (CPU/RAM). Concurrently running 3+ VMs exceeds active host capacity. 
+* **Intermediate Strategy:** Maintain the highly resource-efficient KinD cluster (`cka-gold`) using containerized namespaces and simulated node access (`docker exec -it <node> bash`), while documenting the exact systematic VM-based command lines in the solutions playbooks.
