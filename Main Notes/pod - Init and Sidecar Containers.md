@@ -30,6 +30,10 @@ Init containers run sequentially to completion before any application containers
 ### 2. Multi-Container Pod Patterns (Sidecar, Adapter, Ambassador)
 Tightly coupled container processes can share a Pod sandbox. Three primary design patterns exist for multi-container architectures:
 *   **Sidecar Pattern:** Extends or enhances the main application container. For example, a log shipper (e.g. Filebeat) that mounts a shared `emptyDir` volume to tail logs written by the main application, or a service mesh proxy (e.g. Envoy) managing ingress/egress.
+    *   *Sidecar Logging Sub-Patterns:*
+        1.  **Streaming Sidecar (Log Transporter):** Tails a local log file written by the main application to the shared `emptyDir` volume and redirects it to the sidecar's `stdout`. This integrates directly with the node's **DaemonSet Logging Agent (e.g., Promtail, Fluent Bit)** which collects host `/var/log/pods/` logs.
+        2.  **Log Exporting Sidecar (Log Shipper):** Runs a lightweight log agent inside the sidecar that reads the log file and directly ships it over the network to a central log server (e.g., Loki, Elasticsearch), bypassing the DaemonSet and node-level container logs.
+        *See detailed architecture comparison and ready-to-run YAML manifest in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#Synergy: How Sidecars and DaemonSet Logging Agents Work Together|Module 13 Reference Note > Logging Sidecar Patterns]].*
 *   **Adapter Pattern:** Normalizes and formats the application output or telemetry before exposing it externally. For example, a metrics exporter that scrapes custom application output, converts it into Prometheus format, and serves it to a central metrics collector.
 *   **Ambassador Pattern:** Serves as a local proxy for the application's outgoing connections to external systems. For example, the application queries database services on `localhost:3306`, while the ambassador container handles request routing, service discovery, and database connection security dynamically.
 
