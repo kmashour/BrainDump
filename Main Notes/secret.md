@@ -32,15 +32,22 @@ A **Secret** is an API object used to store and manage sensitive information, su
 ## ⚙️ Functionality (What it is doing)
 *   **Sensitive Data Isolation:** Stores sensitive payloads separately from code and configurations.
 *   **Encoding:** Data is stored in base64 encoding to support binary files and arbitrary character sets.
-*   **Multiple Secret Types:** Supports standard Opaque secrets, docker-registry credentials, TLS certificates, and ServiceAccount tokens.
+*   **Multiple Secret Types:** Supports standard Opaque secrets, `kubernetes.io/dockerconfigjson` credentials, `kubernetes.io/tls` certificates, `kubernetes.io/basic-auth`, `kubernetes.io/ssh-auth`, and legacy `kubernetes.io/service-account-token`.
 *   **Dynamic Injection:** Exposes data to containers as environment variables or mounted files inside `tmpfs` (RAM-backed) volumes.
+*   **Immutable Secrets:** Supports marking secrets as immutable (`immutable: true`). Once set, contents cannot be changed (requires deletion/re-creation). This optimizes cluster performance by allowing Kubelet to skip setting up watches on those secrets.
+*   **Size Constraint:** Limits individual Secret size to **1MiB** to protect the API server and Kubelet from memory exhaustion.
 
 ---
 
 ## 🏛️ Architectural Context (How it fits in the architecture)
 *   **API Server:** Validates and stores Secrets. It can encrypt secrets before writing them to etcd if encryption at rest is configured.
-*   **Kubelet:** Retrieves secrets from the API server only if a Pod scheduled on its node requires it, minimizing node-level exposure. Mounted secrets are stored in memory (`tmpfs`) to prevent sensitive data from leaking to the worker node's physical disk.
+*   **Kubelet:** Retrieves secrets from the API server only if a Pod scheduled on its node requires it (least-privilege node distribution).
+*   **tmpfs Storage:** Mounted secrets are stored in a volatile memory-backed filesystem (`tmpfs`) on the node, ensuring sensitive decrypted data never touches persistent physical disks.
+*   **Garbage Collection:** Once the Pod depending on the Secret is deleted, Kubelet immediately purges its local copy of the secret data from memory.
 *   **etcd:** Stores the final secret payloads. By default, etcd stores secrets in plaintext unless explicit encryption providers are configured.
+*   **ServiceAccount Token Evolution (Evolutionary Bridge):**
+    *   *Legacy Approach:* `kubernetes.io/service-account-token` Secrets are static, have infinite lifetimes, and remain stored in etcd indefinitely.
+    *   *Modern Approach (v1.22+):* Uses **ServiceAccount Token Projection** via the `TokenRequest` API. Tokens are short-lived, automatically rotated, and bound directly to the lifecycle of the Pod (deleted automatically when the Pod terminates).
 
 ---
 
@@ -51,13 +58,14 @@ If Secrets were not used, sensitive database passwords and API keys would be har
 
 ## 🟢 Operational Impact (What will happen with it operating)
 *   **Enhanced Security:** Credentials are kept secure and separate from source code.
-*   **Access Control:** Access to Secrets can be restricted using RBAC (Role-Based Access Control).
+*   **Access Control:** Access to Secrets can be restricted using RBAC (Role-Based Access Control) at the namespace level.
 *   **Memory-only Storage:** Worker nodes store secrets in RAM-backed `tmpfs` volumes, ensuring they never touch persistent disk storage.
+*   **API Server Resource Optimization:** Using immutable secrets drastically reduces API server watch connections in large clusters.
 
 ---
 
 ## 🔴 Failure Impact (What will happen without it)
-*   **Workload Blockers:** If a Pod references a non-existent Secret, it will fail to start and stay in a `CreateContainerConfigError` or `RunContainerError` state.
+*   **Workload Blockers:** If a Pod references a non-existent or misconfigured Secret, it will fail to start and stay in a `CreateContainerConfigError` or `RunContainerError` state.
 *   **Security Breaches:** Credentials will be exposed in plain text within manifest repositories, logs, or image layers.
 
 ---

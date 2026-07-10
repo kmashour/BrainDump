@@ -1503,6 +1503,25 @@ When the ConfigMap is updated (e.g., `COLOR` changes to `blue`):
 3. The old timestamped directory `..2026_06_05_10_00_00_123456789/` is garbage collected and deleted.
 4. Because the user-facing files point to `..data/COLOR`, they resolve to the new file instantly and atomically.
 
+##### Systems Rationale: Why Kubernetes Uses This Symlink-Swap Pattern
+Rather than overwriting files directly in place (e.g., executing `write()` or redirecting stdout into the target config file), Kubernetes employs this complex symlink system to solve four core Linux systems engineering requirements:
+
+1. **Atomicity (Preventing Partial Reads):**
+   * *The Problem:* File writes are not instantaneous. If the Kubelet overwrote files directly, there would be a window of time where a file is empty or half-written. If the application configuration reloader triggered a read in this microsecond window, it would ingest corrupted data and crash.
+   * *The Solution:* In Unix/Linux, updating a symlink (`ln -sfn`) is an **atomic operation at the kernel level**. The pointer swaps in a single CPU instruction, ensuring that applications either read the complete old config or the complete new config—with zero risk of dirty/corrupted reads.
+
+2. **Multi-File Consistency:**
+   * *The Problem:* Large applications often consume multiple dependent configuration files (e.g., `db.conf`, `credentials.json`, `ports.yaml`). If Kubelet updated them sequentially, an application might reload a partial configuration state (new host, but old ports), breaking connections.
+   * *The Solution:* By preparing all updated configuration files inside the new timestamped folder, and then performing a single swap of the `..data` symlink, **all configurations are updated simultaneously** from the application's perspective.
+
+3. **Bypassing Inode Locks and Active File Descriptors:**
+   * *The Problem:* When an application opens and reads a configuration file, the Linux kernel assigns an **Open File Descriptor (FD)** and holds a lock on it in memory. If Kubelet tried to overwrite or delete that exact locked inode, the host write operation would block or fail.
+   * *The Solution:* Kubelet writes the new configuration to a fresh location with a new inode (inside the new timestamped directory). The active application can safely maintain its existing open file descriptor to the old inode without blocking Kubelet. The old folder is only deleted (garbage collected) by the OS kernel once all open file descriptors to it are closed.
+
+4. **Preserving Read-Only Mount Boundaries:**
+   * *The Problem:* Kubernetes projects ConfigMap and Secret volumes as **Read-Only (`ro`)** mounts inside the container's mount namespace to prevent containers from modifying their configurations. This read-only flag blocks direct write operations to the files within the container.
+   * *The Solution:* The directory `/etc/config` itself remains a read-only mount. By leaving the user-facing file entries as symlinks and having Kubelet modify the directory structures on the host layer (where Kubelet has full write permissions), the kernel handles the path resolution seamlessly without requiring write permissions inside the container's mount namespace.
+
 ##### inotify Sync Mechanics inside Containers
 The Linux kernel's `inotify` subsystem provides APIs for monitoring file system events. 
 * **Watching Individual Files:** If an application sets an `inotify` watch on the mounted key file itself (e.g., `/etc/config/COLOR`), it **will not receive any events** when the ConfigMap is updated. This is because `/etc/config/COLOR` is a static symlink whose inode and content never change; only its target resolves differently once `..data` changes.

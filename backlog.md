@@ -2,6 +2,22 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-10] - Ingestion: Secrets Systems Rationale, Types & Update Propagation
+
+### Refactored / Upgraded
+- **Main Notes:**
+  - [[Main Notes/secret.md|secret.md]]: Updated with 1MiB size limitations, Immutable secrets (`immutable: true`), and ServiceAccount Token Projection vs. legacy token secrets.
+  - [[Main Notes/secret - Encryption at Rest and Ingestion.md|secret - Encryption at Rest and Ingestion.md]]: Integrated sections detailing built-in Secret types (basic-auth, ssh-auth, tls, dockerconfigjson, bootstrap token) and update propagation mechanics (static env vars, symlink-swap mounts, and the `subPath` gotcha).
+- **Reference Notes:**
+  - [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md|0-13_scheduling_logging_and_lifecycle.md]]: Added Section 3's *Systems Rationale* subsection detailing Kubelet's atomic symlink-swap pattern, kernel-level atomic symlinks, multi-file consistency, active file descriptor inode locks, and read-only mount namespaces boundaries.
+
+### Ingested Inflow Sources
+Processed and integrated the following files from `inflow/`:
+- `inflow/Secrets.md`
+- `inflow/A Note on Secrets.md`
+
+---
+
 ## [2026-07-07] - Ingestion: Helm Package Management & Release Lifecycles
 
 ### Added
