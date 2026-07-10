@@ -11,6 +11,32 @@ This document contains the complete walkthrough, problems, hints, and step-by-st
 
 ---
 
+## ⚠️ KinD Cluster Environment Limitations & CKA Exam Differences
+
+Because this interactive practice suite runs inside a lightweight **KinD (Kubernetes in Docker)** 3-node cluster rather than dedicated Ubuntu virtual machines, there are several key architectural differences between this sandbox environment and the actual CKA exam:
+
+1. **SSH Connection Protocol:**
+   * **Actual CKA Exam:** You SSH directly into VM node hosts (`ssh node01`, `ssh controlplane`) or switch node contexts.
+   * **KinD Sandbox:** The nodes are Docker containers. You must simulate SSH access by running `docker exec -it <node-name> bash` (e.g. `docker exec -it cka-gold-control-plane bash`) from the host terminal.
+
+2. **Cluster & Package Upgrades (kubeadm/kubelet/kubectl):**
+   * **Actual CKA Exam:** The binaries are installed via APT/YUM package managers. Upgrades are done in-place by unholding and installing package versions (`apt-get install kubeadm=X.Y.Z`).
+   * **KinD Sandbox:** KinD node images have static binaries baked directly into `/usr/bin/` inside the containers without package repos. Therefore, in-place binary package upgrades are simulated using touch verification files (`/var/log/upgrade-test/upgraded` and `/var/log/worker-upgraded`) and draining commands.
+
+3. **ETCD Backup & Restoration Paths:**
+   * **Actual CKA Exam:** The ETCD snapshot database and manifests exist directly on the VM host.
+   * **KinD Sandbox:** You must run the `etcdctl` command *inside* the `cka-gold-control-plane` container, and the paths refer to the directories inside the container.
+
+4. **CNI Configurations & Network Drivers:**
+   * **Actual CKA Exam:** The CNI is typically Calico, Cilium, or Flannel.
+   * **KinD Sandbox:** The default CNI is `kindnet`. The daemonset and configurations are specific to KinD (`kindnet` daemonset in `kube-system` namespace, `/etc/cni/net.d/10-kindnet.conflist`).
+
+5. **Kernel Modules & Read-Only Sysctls:**
+   * **Actual CKA Exam:** Each VM has its own independent kernel. You can load new modules (`modprobe br_netfilter`) or set sysctls (`sysctl -w net.ipv4.ip_forward=1`).
+   * **KinD Sandbox:** The containers share the host machine's Linux kernel. Direct write modifications to `/proc/sys` are blocked inside containers unless run with extreme host privileges, which would affect your actual workstation OS.
+
+---
+
 ## Troubleshooting (30%)
 This section covers all tasks representing Troubleshooting (30%) of the CKA curriculum.
 
