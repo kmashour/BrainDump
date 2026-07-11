@@ -275,7 +275,24 @@ A `hostPath` volume mounts a file or directory from the host node's filesystem d
 > Running a Pod with root privileges and a `hostPath` volume pointing to `/` allows the container processes to access, read, and write to the entire host OS filesystem. This bypasses container isolation boundaries. Use `ReadOnly: true` where possible, and restrict `hostPath` using Pod Security Standards (PSS) or Admission Controllers (e.g. Kyverno, OPA Gatekeeper).
 
 #### 3. Host System Configuration (Permissions, SELinux, and Systemd)
-- **Linux Execution Permissions (`x`):** The directory path on the host must grant execute permissions to the container runtime user ID (UID). If a container runs as a non-root user (e.g., UID `10001`), and the host path is restricted to root (`0700`), the Pod will fail to mount or run.
+- **Linux Execution Permissions (`x`):** 
+  * *The Directory Traversal Mechanic:* In Linux filesystem permissions, the execute (`x`) permission on a **directory** governs the ability to **traverse or search** the directory (i.e. `cd` into it or resolve sub-paths), not to execute binaries. Without the `x` bit set for a given UID, the user cannot access any files or subfolders inside, even if those files have full read (`r`) permissions.
+  * *The Non-Root Conflict:* If a container runs as a non-root user (e.g. configured with `securityContext.runAsUser: 10001` or utilizing a default non-root image configuration) and mounts a `hostPath` directory with restrictive permissions (e.g., `0700` / `rwx------` owned by `root:root`), the container runtime process running as UID `10001` falls under the "others" class. The kernel will block the directory mount/traversal with a `Permission Denied (EACCES)` error.
+  * *Failure Symptoms:* The Pod will transition to `CreateContainerConfigError` or `CrashLoopBackOff`, logging mounting runtime errors such as:
+    `mounting "/var/host-dir" to rootfs at "/app/data" caused: permission denied`
+  * *Remediation Strategies:*
+    1. **Adjust Host Permissions:** Change host directory ownership or grant group/others traversal access (e.g. `chmod o+rx /var/host-dir` or `chown 10001 /var/host-dir`).
+    2. **Use Init Containers:** Define a root-privileged init container to adjust permissions before the application container starts:
+       ```yaml
+       initContainers:
+       - name: volume-permissions
+         image: busybox
+         command: ['sh', '-c', 'chown -R 10001:10001 /data']
+         volumeMounts:
+         - name: host-volume
+           mountPath: /data
+       ```
+    3. **The `fsGroup` Limitation:** While setting `securityContext.fsGroup` instructs Kubelet to recursively modify group ownership on standard CSI PersistentVolumes, it is **ignored or non-functional for raw `hostPath` mounts** to protect host OS stability from unauthorized permission mutations.
 - **SELinux Policies:** On hosts with SELinux (like RHEL, Rocky, Fedora), container access to host directories is blocked by default. You must append `:z` (shared content) or `:Z` (private unshared content) to the volume mount labels, or configure the host's directory with the `container_file_t` context using `chcon` or `semanage`.
 - **Systemd Mount Flags:** Host paths that are mounted with restrictive systemd flags (e.g. `ProtectSystem=strict` or `MountFlags=private`) can prevent Kubelet from mounting them cleanly.
 
@@ -297,7 +314,7 @@ spec:
     volumeMounts:
     - name: host-log-dir
       mountPath: /host/syslogs
-      **readOnly: true**
+      readOnly: true
   volumes:
   - name: host-log-dir
     hostPath:

@@ -2,11 +2,11 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
-## [2026-07-11] - Enhancement: CSI Volume Mount Stages & Analogy
+## [2026-07-11] - Enhancement: CSI Volume Mount Stages & Host Directory Permissions
 
 ### Refactored / Upgraded
 - **Reference Notes:**
-  - [[Reference Notes/0-8_storage_mechanics_and_csi.md|0-8_storage_mechanics_and_csi.md]]: Expanded section 1.E to detail Control Plane sidecars (external-provisioner, external-attacher) and Worker Node components (node-driver-registrar, Kubelet, CSI Node Plugin), adding a Mermaid architecture diagram and a Phase-by-Phase Mount Lifecycle breakdown (Provisioning, Attachment, Staging, Publishing).
+  - [[Reference Notes/0-8_storage_mechanics_and_csi.md|0-8_storage_mechanics_and_csi.md]]: Expanded section 1.E to detail CSI Control Plane sidecars and Worker Node components, adding a Mermaid diagram and Phase-by-Phase lifecycle. Also elaborated on Section 2.B.3 regarding Linux host execution permissions (`x`) directory traversal mechanics, non-root user UID conflicts (e.g. `0700` vs. runAsUser), error symptoms, and remediation methods (initContainers vs `fsGroup` limitations on `hostPath`).
 
 ---
 
