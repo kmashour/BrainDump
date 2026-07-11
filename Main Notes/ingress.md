@@ -123,7 +123,7 @@ spec:
 ---
 
 ## 🔍 Deeper Dive Notes
-*   **Detailed Architecture Walkthrough:** See [[12-4_ingress_controllers_architecture|Module 12-4: Ingress Controllers and Traffic Routing (Mumshad Lecture)]] for a complete architectural analysis of NodePort limitations, NGINX components, and TLS termination.
+*   **Detailed Architecture Walkthrough:** See [[Reference Notes/0-9_networking_dns_and_ingress|Module 0-9: Networking, DNS, and Ingress]] for a complete architectural analysis of NodePort limitations, NGINX components, and TLS termination.
 
 This table automatically displays all deeper notes, use cases, and pitfalls associated with **ingress**.
 
