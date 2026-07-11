@@ -164,6 +164,46 @@ sequenceDiagram
     Kubelet->>User: 11. Run Container processes inside Pod
 ```
 
+#### 1. CSI Controller and Node Components
+To support third-party storage plugins without compiling code in-tree, Kubernetes delegates volume management to Container Storage Interface (CSI) sidecars and driver binaries:
+
+*   **Control Plane Sidecars (Deployments):**
+    *   **`external-provisioner` (The Factory Order Desk):** Watches for new `PersistentVolumeClaims` (PVCs). It calls the cloud provider or storage system API to dynamically create a physical disk (e.g. AWS EBS, GCP PD). It then creates a corresponding `PersistentVolume` (PV) object in Kubernetes and binds it to the PVC.
+    *   **`external-attacher` (The Flatbed Delivery Truck):** Watches for a Pod referencing a PVC to be scheduled. It calls the storage API to attach (plug in) the physical disk to the assigned worker node host VM, creating a `VolumeAttachment` resource once complete.
+*   **Worker Node Components:**
+    *   **`node-driver-registrar` (The Receptionist):** Runs as a node-level sidecar to register the vendor's local Unix domain socket with the host's `Kubelet`.
+    *   **`Kubelet` (The Site Construction Manager):** Watches the API server. Once the volume is physically attached to the host node, it initiates direct gRPC communication with the local CSI Node Plugin to stage and publish the volume.
+    *   **`CSI Node Plugin` (The Carpenter, Privileged DaemonSet):** Runs on every worker node. It performs local host OS tasks such as formatting block devices, mounting file systems, and bind-mounting.
+
+#### 2. Phase-by-Phase Mount Lifecycle
+The lifecycle of mounting a volume moves sequentially through four primary phases:
+
+```mermaid
+graph LR
+    P["Phase 1: Provisioning<br/>(Create Physical Disk)"] --> A["Phase 2: Attachment<br/>(Attach Disk to VM Host)"]
+    A --> S["Phase 3: Staging<br/>(Format & Global Mount)"]
+    S --> Pub["Phase 4: Publishing<br/>(Bind-Mount to Pod Path)"]
+```
+
+1.  **Phase 1: Provisioning (Disk Creation)**
+    *   **Trigger:** A PVC requesting a CSI-based StorageClass is applied.
+    *   **Action:** The `external-provisioner` sidecar intercepts the request and issues a `CreateVolume()` gRPC call to the CSI Driver Controller. The controller API communicates with the cloud infrastructure (e.g., AWS EC2 EBS API) to provision a physical disk.
+    *   **Outcome:** A physical volume exists, and a bound PV object is registered in Kubernetes.
+2.  **Phase 2: Attachment (Hardware Connection)**
+    *   **Trigger:** A Pod referencing the PVC is scheduled to a worker node.
+    *   **Action:** The `external-attacher` sidecar issues a `ControllerPublishVolume()` gRPC call. This instructs the cloud/storage provider to attach the disk to the target VM host.
+    *   **Outcome:** The raw block device appears on the worker node's host OS (e.g., as `/dev/xvdf`).
+3.  **Phase 3: Staging (Formatting & Initial Global Mount)**
+    *   **Trigger:** Kubelet detects the volume is attached to its host.
+    *   **Action:** Kubelet sends a `NodeStageVolume()` gRPC call to the local `CSI Node Plugin`. The plugin formats the raw device (e.g., formats `/dev/xvdf` with `ext4` or `xfs`) and mounts it to a global staging directory on the node:
+        `/var/lib/kubelet/plugins/kubernetes.io/csi/pv/<pv-name>/globalmount`
+    *   **Outcome:** The block device is now structured with a filesystem and mounted globally on the host node.
+4.  **Phase 4: Publishing (Bind-Mounting to Container Space)**
+    *   **Trigger:** Kubelet prepares to start the Pod's containers.
+    *   **Action:** Kubelet sends a `NodePublishVolume()` gRPC call to the `CSI Node Plugin`. The plugin performs a bind-mount from the global staging directory to the Pod's specific mount path:
+        `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~csi/<pv-name>/mount`
+    *   **Outcome:** The container runtime starts the container processes, referencing this local bind-mounted directory as its volume target (e.g. `/data`), completing the end-to-end path.
+
 ---
 
 ## 2. Kubernetes Volume Primitives: `emptyDir` & `hostPath`
@@ -176,7 +216,7 @@ In Kubernetes, Pods are transient. **If a container crashes, its local filesyste
 An `emptyDir` volume is created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. It starts empty.
 
 #### 1. Core Mechanics & Pathing
-- All containers in the Pod can read and write the same files in the `emptyDir` volume, though that volume can be mounted at different paths in each container.
+- All **containers in the Pod** can read and write the same files in the `emptyDir` volume, though that volume can be mounted at different paths in each container.
 - When a Pod is removed from a node, the data in the `emptyDir` is erased permanently.
 - **Physical Path on Host:** `/var/lib/kubelet/pods/<pod-uid>/volumes/kubernetes.io~empty-dir/<volume-name>/`
 

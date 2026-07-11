@@ -2,6 +2,14 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-11] - Enhancement: CSI Volume Mount Stages & Analogy
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-8_storage_mechanics_and_csi.md|0-8_storage_mechanics_and_csi.md]]: Expanded section 1.E to detail Control Plane sidecars (external-provisioner, external-attacher) and Worker Node components (node-driver-registrar, Kubelet, CSI Node Plugin), adding a Mermaid architecture diagram and a Phase-by-Phase Mount Lifecycle breakdown (Provisioning, Attachment, Staging, Publishing).
+
+---
+
 ## [2026-07-11] - Ingestion: GitHub Actions Platform Fundamentals (Elfakharny Lecture)
 
 ### Added
