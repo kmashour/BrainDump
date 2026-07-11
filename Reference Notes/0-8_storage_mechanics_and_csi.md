@@ -383,7 +383,10 @@ It is a common logical assumption that a PV and its corresponding PVC must be ex
 
 Here is why they do not require identical parameters:
 *   **The Reclaim Policy belongs ONLY to the PV:** The PVC does not care what happens to the underlying disk after it is done using it. The Reclaim Policy (`persistentVolumeReclaimPolicy`) is a hardware lifecycle instruction, so it exists exclusively on the PV.
-*   **Capacity is a "Minimum Requirement":** A PVC requesting `50Mi` can bind to a PV of `100Mi`. The PVC will lock the entire `100Mi` PV (preventing other claims from binding to the remaining space), but the bind succeeds because PV capacity is $\ge$ PVC request.
+*   **Capacity is a "Minimum Requirement":** A PVC requesting `50Mi` can bind to a PV of `100Mi`. 
+    *   *The 1:1 Binding Lock:* The relationship between a PVC and a PV is strictly **one-to-one**. A single PVC binds to exactly one PV, locking it.
+    *   *Wasted Capacity:* If a `50Mi` claim binds to a `100Mi` PV, the remaining `50Mi` is completely inaccessible and wasted. You cannot bind a second `50Mi` claim to the leftover space on that same PV.
+    *   *Pod Perspective (`df -h`):* When the PVC is mounted into a Pod, running `df -h` inside the container will reveal the full physical capacity (`100Mi`) of the bound PV. Kubernetes maps the underlying volume filesystem directly, so the container process has access to the full volume limit.
 *   **Access Modes require strict matching:** If a PVC requests `ReadWriteOnce`, the PV must advertise support for `ReadWriteOnce`. If the PV only advertises `ReadWriteMany`, the binder will block the matching process, and the PVC will remain stuck in `Pending`.
 
 #### 2. Quick Reference: PV/PVC Parameter Match Grid

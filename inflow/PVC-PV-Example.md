@@ -148,3 +148,32 @@ Capacity	NO	PV capacity must be ≥ PVC request.
 Access Mode	YES	PV must support the exact mode the PVC requests.
 Storage Class	YES	If the PVC asks for storageClassName: slow, the PV must be slow. (If left blank, both must be blank).
 Reclaim Policy	NO	Exists only on the PV.
+
+
+
+
+
+Okay I request 50Mi and the available PVC is 100MI
+
+Exactly! You request 50Mi, and because the available PV has 100Mi (which satisfies the "at least 50Mi" rule), Kubernetes successfully binds them together.
+
+However, there is a massive "gotcha" here that you need to know for the CKA exam and for real-world cluster management.
+
+### **The 1:1 Binding Rule**
+
+In Kubernetes, the relationship between a PersistentVolumeClaim (PVC) and a PersistentVolume (PV) is **strictly one-to-one**.
+
+Here is exactly what happens to that volume once the binding occurs:
+
+- **The Lock:** Your 50Mi claim completely locks the entire 100Mi PV.
+    
+- **The Wasted Space:** The remaining 50Mi is completely inaccessible to the rest of the cluster. You **cannot** create a second 50Mi PVC and attach it to the leftover space on that same PV. The space is essentially wasted.
+    
+- **The Pod Perspective:** Interestingly, if you mount this PVC into a Pod and run `df -h` inside the container, your application will actually see and be able to write to the full 100Mi! Kubernetes doesn't put a hard cap on the disk space at the container level; it just maps the underlying physical volume to the container.
+    
+
+### **How the Real World Solves This**
+
+Because manually creating static PVs often leads to this exact scenario of wasted space, modern Kubernetes environments rarely use static PVs.
+
+Instead, they use **Dynamic Provisioning** via a `StorageClass`. With dynamic provisioning, you don't create PVs manually. You just create your 50Mi PVC, and the `StorageClass` automatically talks to the underlying infrastructure (like AWS EBS, Google Persistent Disk, or your local SAN) and spins up a brand new, perfectly sized 50Mi hard drive on the fly.

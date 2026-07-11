@@ -10,7 +10,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
     - Expanded section 1.E to detail CSI Control Plane sidecars and Worker Node components, adding a Mermaid diagram and Phase-by-Phase lifecycle.
     - Elaborated on Section 2.B.3 regarding Linux host execution permissions (`x`) directory traversal mechanics, non-root user UID conflicts (e.g. `0700` vs. runAsUser), error symptoms, and remediation methods (initContainers vs `fsGroup` limitations on `hostPath`).
     - Added Section 3.G covering **Volume Node Affinity (Topology-Aware Scheduling)**, explaining `.spec.nodeAffinity` on Local PVs, why PVCs do not have affinity, the root cause of `volume node affinity conflict` pending states, and a Q&A on local storage, nodeAffinity, and PVC selectors.
-    - Integrated a detailed conceptual Q&A breakdown in Section 3.A explaining why PV and PVC parameters (Reclaim Policy, Capacity, Access Modes) do not need to mirror each other exactly, and added a parameter match grid table.
+    - Integrated a detailed conceptual Q&A breakdown in Section 3.A explaining why PV and PVC parameters (Reclaim Policy, Capacity, Access Modes) do not need to mirror each other exactly, detailing the **1:1 Binding Lock & Wasted Capacity** constraint, the **Pod perspective (`df -h`)** showing full backing disk size, and adding a parameter match grid table.
 
 ### Ingested Inflow Sources
 Processed and integrated the following file from `inflow/`:
