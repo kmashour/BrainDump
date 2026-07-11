@@ -482,6 +482,12 @@ spec:
                 - worker-node-1 # The exact host name where this disk is located
 ```
 
+#### 3. Core Mechanics: Local Storage Provisioning Q&A
+*   **Question:** In the case of a local StorageClass, if I manually partition/format a local disk on `node01` and create a matching PV, must the PVC use a `selector` to bind to that PV, and how is it all influenced by `nodeAffinity`?
+*   **Answer:** 
+    *   **The PVC Selector is NOT mandatory:** You do **not** need a label selector on the PVC to bind it to a local PV. The standard way Kubernetes coordinates this is through the `storageClassName` and `volumeBindingMode: WaitForFirstConsumer`. When the Pod is created, the Scheduler evaluates which nodes can host the Pod (honoring the PV's `nodeAffinity`), schedules the Pod onto the correct host node, and automatically triggers the binder to bind the PVC to the matching local PV residing on that node. (A PVC label `selector` is only needed if you have multiple local PVs on the same node and want to target a specific physical drive class).
+    *   **The Scheduling Influence:** The entire Pod scheduling process is heavily governed by the PV's `nodeAffinity`. Because the PV is bound to a specific host (e.g. `node01`), the Scheduler is forced to assign the Pod to `node01`, ensuring the volume mount is physically accessible to the running containers.
+
 ---
 
 ### H. Complete PV and PVC Manifest Templates

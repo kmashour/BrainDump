@@ -9,7 +9,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
   - [[Reference Notes/0-8_storage_mechanics_and_csi.md|0-8_storage_mechanics_and_csi.md]]: 
     - Expanded section 1.E to detail CSI Control Plane sidecars and Worker Node components, adding a Mermaid diagram and Phase-by-Phase lifecycle.
     - Elaborated on Section 2.B.3 regarding Linux host execution permissions (`x`) directory traversal mechanics, non-root user UID conflicts (e.g. `0700` vs. runAsUser), error symptoms, and remediation methods (initContainers vs `fsGroup` limitations on `hostPath`).
-    - Added Section 3.G covering **Volume Node Affinity (Topology-Aware Scheduling)**, explaining `.spec.nodeAffinity` on Local PVs, why PVCs do not have affinity, and the root cause of `volume node affinity conflict` pending states.
+    - Added Section 3.G covering **Volume Node Affinity (Topology-Aware Scheduling)**, explaining `.spec.nodeAffinity` on Local PVs, why PVCs do not have affinity, the root cause of `volume node affinity conflict` pending states, and a Q&A on local storage, nodeAffinity, and PVC selectors.
 
 ---
 
