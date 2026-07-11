@@ -2,6 +2,25 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-11] - Ingestion: Ingress Controllers & Traffic Routing
+
+### Added
+- **Reference Notes:**
+  - [[Reference Notes/12-4_ingress_controllers_architecture.md|12-4_ingress_controllers_architecture.md]]: Standalone reference note compiling Mumshad's CKA Ingress Controller lecture. Detail NodePort/LoadBalancer cost consolidation, NGINX components deployment, and host-based/path-based YAML resource rules.
+
+### Refactored / Upgraded
+- **Main Notes:**
+  - [[Main Notes/ingress.md|ingress.md]]: Enriched with core controller components (ConfigMap, ServiceAccount, Deployment, Service) and path/host rule examples, linking to Module 12-4.
+- **Reference Notes:**
+  - [[Reference Notes/0-9_networking_dns_and_ingress.md|0-9_networking_dns_and_ingress.md]]: Linked Ingress section to Module 12-4 for deep architecture walkthrough.
+  - [[Reference Notes/12-Index - CNCF References.md|12-Index - CNCF References.md]]: Indexed Module 12-4 under the CNCF reference index.
+
+### Ingested Inflow Sources
+Processed and integrated the following file from `inflow/`:
+- `inflow/IngressController.md`
+
+---
+
 ## [2026-07-10] - Ingestion: Secrets Systems Rationale, Types & Update Propagation
 
 ### Refactored / Upgraded

@@ -1069,6 +1069,9 @@ kubectl edit configmap coredns -n kube-system
 
 ## 6. Ingress Control and Resources
 
+*For a detailed lecture transcript walkthrough of NodePort/LoadBalancer cost consolidation, NGINX Ingress Controller components deployment, and host-based/path-based YAML resource rules, see [[12-4_ingress_controllers_architecture|Module 12-4: Ingress Controllers and Traffic Routing (Mumshad Lecture)]].*
+
+
 ### 6.1 Limitations of Service Exposure & Ingress Architecture
 In microservice architectures, exposing every internal service using a `NodePort` or `LoadBalancer` is highly inefficient and expensive:
 *   **NodePort Drawbacks:** Requires managing custom port numbers (30000-32767) for each service and exposes node IPs directly to users.

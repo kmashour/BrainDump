@@ -77,7 +77,54 @@ graph TD
 
 ---
 
+## 🧱 Core Controller Components
+Exposing Ingress to external traffic relies on deploying four core objects in the cluster:
+1.  **Deployment:** Runs the controller proxy workload (e.g. `ingress-nginx/controller`).
+2.  **ConfigMap:** Decouples NGINX configuration settings (keepalive, session timeouts, buffering) from the Pod image.
+3.  **Service (NodePort/LoadBalancer):** Exposes HTTP/HTTPS ports 80/443 to external clients.
+4.  **ServiceAccount & ClusterRole Binding:** Grants the controller API permissions to `watch` and `list` Services, Endpoints, and Secrets.
+
+---
+
+## 🔀 Path-Based vs. Host-Based Routing YAML
+
+### Path-Based (Single Domain, Multiple Sub-Paths)
+```yaml
+spec:
+  rules:
+  - host: my-store.com
+    http:
+      paths:
+      - path: /wear
+        pathType: Prefix
+        backend:
+          service:
+            name: wear-service
+            port:
+              number: 80
+```
+
+### Host-Based (Multiple Domains / Subdomains)
+```yaml
+spec:
+  rules:
+  - host: wear.my-store.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: wear-service
+            port:
+              number: 80
+```
+
+---
+
 ## 🔍 Deeper Dive Notes
+*   **Detailed Architecture Walkthrough:** See [[12-4_ingress_controllers_architecture|Module 12-4: Ingress Controllers and Traffic Routing (Mumshad Lecture)]] for a complete architectural analysis of NodePort limitations, NGINX components, and TLS termination.
+
 This table automatically displays all deeper notes, use cases, and pitfalls associated with **ingress**.
 
 ```dataview
