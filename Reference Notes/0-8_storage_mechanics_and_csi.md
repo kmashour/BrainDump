@@ -378,6 +378,22 @@ Kubernetes automatically matches and binds a PVC to a compatible PV based on the
 3. **Capacity Requirements:** The PV's capacity must be greater than or equal to the capacity requested by the PVC. The control plane selects the smallest available PV that satisfies the size.
 4. **Selector Match:** If the PVC specifies a label `selector`, the PV must have matching labels.
 
+#### 1. Conceptual Breakdown: Do PV and PVC Parameters Need to Mirror Each Other?
+It is a common logical assumption that a PV and its corresponding PVC must be exact identical mirrors. However, in Kubernetes, they represent two different roles (PV is the physical hardware managed by the administrator; PVC is the request voucher created by the developer).
+
+Here is why they do not require identical parameters:
+*   **The Reclaim Policy belongs ONLY to the PV:** The PVC does not care what happens to the underlying disk after it is done using it. The Reclaim Policy (`persistentVolumeReclaimPolicy`) is a hardware lifecycle instruction, so it exists exclusively on the PV.
+*   **Capacity is a "Minimum Requirement":** A PVC requesting `50Mi` can bind to a PV of `100Mi`. The PVC will lock the entire `100Mi` PV (preventing other claims from binding to the remaining space), but the bind succeeds because PV capacity is $\ge$ PVC request.
+*   **Access Modes require strict matching:** If a PVC requests `ReadWriteOnce`, the PV must advertise support for `ReadWriteOnce`. If the PV only advertises `ReadWriteMany`, the binder will block the matching process, and the PVC will remain stuck in `Pending`.
+
+#### 2. Quick Reference: PV/PVC Parameter Match Grid
+| Parameter | Must Match Exactly? | Binding Rule / Validation |
+| :--- | :--- | :--- |
+| **Capacity** | **NO** | PV capacity must be greater than or equal to PVC request ($\text{PV} \ge \text{PVC}$). |
+| **Access Mode** | **YES** | PV access modes list must contain all access modes requested by the PVC. |
+| **Storage Class**| **YES** | The `storageClassName` strings must match exactly (or both must be empty/unset). |
+| **Reclaim Policy**| **NO** | Defined strictly on the PV; ignored/not present in PVC specifications. |
+
 > [!TIP]
 > **CKA Exam Tip - Access Mode Matching:**
 > A PVC requesting `ReadWriteOnce` will NOT bind to a PV that *only* lists `ReadWriteMany` in its access modes (and vice versa). The binder requires that the PV supports *all* access modes requested by the PVC. If there is a mismatch, the PVC remains stuck in `Pending`.
