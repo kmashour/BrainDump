@@ -58,6 +58,8 @@ Developers must build and test code locally, leading to environment mismatches. 
 ---
 
 ## 🔍 Deeper Dive Notes
+*   **Platform Fundamentals:** See [[Reference Notes/9-4_github_actions_lecture_elfakharny|Module 9-4: GitHub Actions & CI/CD Platform Automation (Elfakharny Lecture)]] for a complete breakdown of CI/CD principles, billing tiers, and Enterprise topologies.
+
 This table automatically displays all deeper notes and use cases associated with GitHub Actions.
 
 ```dataview

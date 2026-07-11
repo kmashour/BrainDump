@@ -155,3 +155,9 @@ jobs:
 *   `runs-on: ubuntu-latest`: Requests a standard Linux virtual machine runner containing pre-installed software (Docker, AWS CLI, node, python, etc.).
 *   `uses: actions/checkout@v4`: Downloads the checkout action code from GitHub's official actions organization and executes the git commands to clone the repo into `$GITHUB_WORKSPACE`.
 *   `run: npm ci`: Executes the specified bash/sh shell commands directly inside the runner environment. `npm ci` is preferred in CI over `npm install` because it enforces package-lock consistency and throws an error if packages mismatch.
+
+---
+
+### 📖 Sources & Ingested Transcripts
+- GitHub Actions Course Transcript (Arabic): `inflow/GithubAction-Elfakharny.md`
+- Standalone Lecture Summary: [[Reference Notes/9-4_github_actions_lecture_elfakharny.md|Module 9-4: GitHub Actions & CI/CD Platform Automation (Elfakharny Lecture)]]

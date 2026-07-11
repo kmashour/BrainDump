@@ -23,6 +23,8 @@ This index contains our GitHub Actions CI/CD automation study modules, starting 
   * Multi-job orchestration (dependencies, needs, outputs), dynamic storage (artifacts, dependency caching), matrix testing, environments, and secrets management.
 - 🔒 **[Module 9-3: Runner Administration & Pipeline Hardening](9-3_github_actions_administration_and_security.md)**
   * Self-hosted runner systemd deployments on Linux hosts, security controls (GITHUB_TOKEN permissions, OIDC cloud trust, action SHA pinning), diagnostic debugging, and comparisons to Jenkins.
+- 🐙 **[Module 9-4: GitHub Actions & CI/CD Platform Automation (Elfakharny Lecture)](9-4_github_actions_lecture_elfakharny.md)**
+  * Basic CI/CD principles, event-driven platform automation triggers, YAML anatomy (the checkout gotcha), VM multiplier billing tiers, and Enterprise Cloud vs Server topologies.
 
 ---
 
