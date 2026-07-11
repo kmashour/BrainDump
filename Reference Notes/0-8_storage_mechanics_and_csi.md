@@ -448,7 +448,43 @@ To prevent data loss and filesystem corruption, Kubernetes prevents active volum
 
 ---
 
-### G. Complete PV and PVC Manifest Templates
+### G. Volume Node Affinity (Topology-Aware Scheduling)
+Unlike network-attached storage (like AWS EBS or NFS), a **Local Persistent Volume** represents a physical SSD or directory attached directly to a single worker node. If a Pod mounts this volume, the Pod **must** be scheduled on that specific physical node.
+
+#### 1. The Role of `nodeAffinity` on the PV
+*   **Why PVs have affinity:** To enforce this scheduling constraint, the `PersistentVolume` manifest must specify `.spec.nodeAffinity`. This tells the Kubernetes Scheduler: *"This storage resource is physically locked to Node X. Any Pod that binds this volume's PVC must run on Node X."*
+*   **Why PVCs do not have affinity:** PVCs are namespace-scoped, developer-facing abstractions (e.g. *"I want 50Gi of fast storage"*). They do not reference specific nodes or infrastructure topology. The topology constraints are managed entirely on the backing `PersistentVolume` (PV) and matched during scheduling.
+*   **Volume Node Affinity Conflict:** If a Pod is scheduled to a different node (e.g. due to node selectors, taints, or resource shortages), or if the scheduler tries to place the Pod on a node that cannot physically reach the local disk, the Pod will remain stuck in a `Pending` state with the scheduling error: `1 node(s) had volume node affinity conflict`.
+
+#### 2. Local PV YAML Syntax with Node Affinity
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv-demo
+spec:
+  capacity:
+    storage: 50Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /mnt/disks/ssd1       # Path to the physical disk mounted on the host node
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - worker-node-1 # The exact host name where this disk is located
+```
+
+---
+
+### H. Complete PV and PVC Manifest Templates
 #### PV Manifest (`pv-definition.yaml`)
 ```yaml
 apiVersion: v1
