@@ -1751,3 +1751,16 @@ kubectl describe gateway <gateway-name> -n <namespace>
 
 ### 📖 Sources & Ingested Transcripts
 - CKA Course Transcript Segment: `inflow/IngressController.md`
+- Inflow Source note: `inflow/Services-Load Balancing-Networking.md`
+- Official Documentation References:
+  - [Services and Networking Concepts](https://kubernetes.io/docs/concepts/services-networking/)
+  - [Print View](https://kubernetes.io/docs/concepts/services-networking/_print)
+  - [Cluster IP Allocation](https://kubernetes.io/docs/concepts/services-networking/cluster-ip-allocation)
+  - [DNS for Pods and Services](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service)
+  - [IPv4/IPv6 Dual-Stack](https://kubernetes.io/docs/concepts/services-networking/dual-stack)
+  - [EndpointSlices](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices)
+  - [Gateway API](https://kubernetes.io/docs/concepts/services-networking/gateway)
+  - [Ingress API](https://kubernetes.io/docs/concepts/services-networking/ingress)
+  - [Ingress Controllers](https://kubernetes.io/docs/concepts/services-networking/ingress-controllers)
+  - [Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies)
+  - [Services API](https://kubernetes.io/docs/concepts/services-networking/service)

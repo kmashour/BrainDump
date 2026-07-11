@@ -2,17 +2,18 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
-## [2026-07-11] - Ingestion: Ingress Controllers & Traffic Routing
+## [2026-07-11] - Ingestion: Ingress Controllers & Services Networking
 
 ### Refactored / Upgraded
 - **Main Notes:**
   - [[Main Notes/ingress.md|ingress.md]]: Enriched with core controller components (ConfigMap, ServiceAccount, Deployment, Service) and path/host rule examples, linking to Module 0-9.
 - **Reference Notes:**
-  - [[Reference Notes/0-9_networking_dns_and_ingress.md|0-9_networking_dns_and_ingress.md]]: Appended IngressController lecture transcript under Sources and updated sections.
+  - [[Reference Notes/0-9_networking_dns_and_ingress.md|0-9_networking_dns_and_ingress.md]]: Appended IngressController lecture transcript, inflow Services-Load Balancing-Networking note, and all 10 scraped official sub-links (Service, Ingress, DNS, EndpointSlices, Gateway API, NetworkPolicies) to the Sources list.
 
 ### Ingested Inflow Sources
-Processed and integrated the following file from `inflow/`:
+Processed and integrated the following files from `inflow/`:
 - `inflow/IngressController.md`
+- `inflow/Services-Load Balancing-Networking.md`
 
 ---
 
