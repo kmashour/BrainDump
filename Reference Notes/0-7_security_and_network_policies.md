@@ -795,12 +795,29 @@ Impersonate the `dev-user` service account using `kubectl auth can-i` to verify 
 
 ## 7. ServiceAccounts
 
-ServiceAccounts provide identities for processes running in Pods.
+ServiceAccounts provide identities for containerized processes running inside Pods to authenticate against the Kubernetes API Server.
 
-### 7.1 Automounting ServiceAccount Tokens
-Every namespace has a `default` ServiceAccount. By default, Kubernetes mounts the default ServiceAccount token into all Pods at `/var/run/secrets/kubernetes.io/serviceaccount/token`.
+### 7.1 Identity Scoping and Mounting Rules
+*   **Identity Creation Only:** Running `kubectl create serviceaccount dev-user --namespace rbac-test` only registers a credentials identity. It remains idle and performs no actions until explicitly mounted.
+*   **Pod Exclusivity:** ServiceAccounts are exclusively consumed by **Pods**. They do not mount to or authenticate other resource types (e.g. Services, ConfigMaps, or Ingresses).
+*   **The Default Auto-mount:** Every namespace automatically features a `default` ServiceAccount. Unless overridden, Kubernetes automatically mounts the `default` ServiceAccount token into all newly created Pods at `/var/run/secrets/kubernetes.io/serviceaccount/token`.
 
-To disable this behavior (highly recommended if the Pod does not need to talk to the API server):
+To mount a custom ServiceAccount, declare the `serviceAccountName` in the Pod's specification:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dev-app-pod
+  namespace: rbac-test
+spec:
+  serviceAccountName: dev-user  # Explicitly associates the Pod with the custom identity
+  containers:
+  - name: app
+    image: nginx
+```
+
+### 7.2 Disabling Token Automounting
+To prevent credential leakage and minimize exposure (highly recommended for Pods that do not need to interact with the API Server):
 
 #### Option A: Disable at the ServiceAccount level
 ```yaml
@@ -922,6 +939,62 @@ spec:
         add: ["NET_BIND_SERVICE"] # Allows binding to privileged ports (<1024)
         drop: ["ALL"] # Drops all default Linux capabilities
 ```
+
+
+---
+
+### 9.3 fsGroup Volume Mechanics & Storage Types
+The `fsGroup` parameter dictates the Group ID (GID) associated with mounted storage volumes. When set:
+1.  **Ownership Rewrite:** Kubernetes recursively alters the ownership (GID) of all directories and files inside the mounted volume to match the specified `fsGroup` ID.
+2.  **Supplemental Groups:** It injects that GID as a supplemental group to all container processes running in the Pod.
+
+#### GID Selection Criteria
+*   **Arbitrary Selection:** For fresh persistent storage (`emptyDir` or dynamic PVs), you can assign any high non-root GID (e.g. `2000`). This ensures that containers running as non-root (e.g., UID `1000`) can write to the volume without requiring root privileges.
+*   **Explicit Matching:** If you mount legacy or external backend storage (such as NFS, SAN, or custom directories) where files have pre-established GIDs, your `fsGroup` must be configured to match the exact GID required by the storage controller (e.g. `5000`).
+
+#### Volume Type Behaviors
+*   **`emptyDir`:** Works flawlessly. Because the directory is provisioned on the fly, Kubernetes has full control and applies the GID mapping instantly.
+*   **Persistent Volumes (Network Storage):** Works, but recursive `chown` on mount can cause long startup delays if the volume contains millions of small files. (Mitigated using `fsGroupChangePolicy: OnRootMismatch`).
+*   **`hostPath`:** **Ignores `fsGroup`.** Directories mounted from the host node filesystem maintain their host permissions. If a `hostPath` is owned by host root (`0700` or `0750`), a non-root container will hit a `Permission Denied` error, and `fsGroup` cannot override it.
+
+---
+
+### 9.4 Kernel Tuning via sysctls
+The `sysctls` setting allows you to configure Linux kernel parameters at runtime on a per-Pod basis (e.g. tuning TCP parameters or IPC network settings).
+
+#### Safe vs. Unsafe sysctls
+*   **Safe sysctls:** (e.g., `net.ipv4.tcp_syncookies`). These parameters are fully isolated by Linux namespaces. Changing them inside a Pod network/IPC namespace does not affect the host node or other Pods.
+*   **Unsafe sysctls:** (e.g., `net.core.somaxconn`). These parameters are global and lack namespace isolation. Changing them would modify the kernel behavior for the entire host node. Consequently, Kubernetes disables unsafe `sysctls` by default (enabling them requires administrator reconfiguration of the Kubelet).
+
+#### Contrast: sysctls vs. Linux Capabilities
+*   **Linux Capabilities:** Concern **permissions**. They partition root privileges into distinct operational rights (e.g., `CAP_NET_BIND_SERVICE` allows binding ports < 1024; `CAP_SYS_ADMIN` allows administrative mounting).
+*   **sysctls:** Concern **kernel tuning**. They alter the actual operational thresholds, networks, or process rules of the Linux kernel itself.
+
+---
+
+### 9.5 Deep Dive: Bind Mounts, Symlinks, and Inode Permissions
+Understanding how containers bridge node filesystems to namespaces requires analyzing classical Linux file link mechanisms:
+
+#### 1. Linux Bind Mounts (How hostPath Works)
+When a container runtime mounts a `hostPath` volume, it performs a **Linux bind mount**. Unlike a standard disk mount, a bind mount takes an existing directory tree on the host node and mounts it as an alias at a different path inside the container's private namespace.
+*   **Shared Inode Mechanics:** Linux files are tracked by numeric **inodes** containing file metadata (owner UID, group GID, permissions). Paths are simply human-readable links pointing to these inodes. A bind mount shares the original directory's inodes.
+*   **Instant Propagation:** Any permissions change (e.g., `chmod`, `chown`) or file creations performed at either the host path or the container mount path alter the underlying inode directly and propagate instantly to both locations.
+*   **The Security Risk:** Because permission alterations write directly to the host's inodes, allowing a root-capable container to write to a `hostPath` represents a critical security risk. To secure this, always set `readOnly: true` in the container's `volumeMounts` specification.
+
+#### 2. Bind Mounts vs. Soft Links (Symlinks)
+While both allow accessing a file through multiple directories, their underlying mechanics are different:
+*   **Soft Link (Symlink):** A physical shortcut file containing a text string pointing to another file's path. If a symlink pointing to a host path (e.g., `/secure/data/app`) is mounted into a container, **it breaks**. The container attempts to resolve the path inside its own isolated root namespace, failing to find the host file.
+*   **Bind Mount:** Managed by the Linux Virtual File System (VFS) in kernel RAM. It projects the actual inodes directly into the container namespace, bypassing path isolation entirely.
+
+#### 3. Linux Soft Link Permission Mechanics
+*   **Fake Permissions:** Symlinks always display open permissions (`lrwxrwxrwx`). This metadata is ignored. The kernel evaluates access permissions strictly against the **target file's inode**.
+*   **Directory Permissions Control Deletion:** Deleting or renaming a symlink does not check target file permissions. Because a symlink is simply an entry in its parent directory's file list, you only need `write` and `execute` permissions on the **parent directory containing the symlink** to delete it.
+
+#### 4. Practical Symlink Deletion Examples
+*   **Example A: Deleting a symlink pointing to a restricted file:**
+    If a standard user (`dev-user`) has a symlink at `/home/dev-user/links/my-shortcut` pointing to a root-owned private file `/etc/secret.key` (with permissions `rw-------`), `dev-user` **can successfully delete** the symlink file itself using `rm`. This is because `dev-user` possesses write permissions on the directory `/home/dev-user/links/`. The target file `/etc/secret.key` is unaffected.
+*   **Example B: Failing to delete a symlink pointing to your own file:**
+    If a standard user (`dev-user`) owns a script at `/home/dev-user/script.sh` but a symlink pointing to it resides in `/opt/system-links/` (which is read-only for standard users), `dev-user` **cannot delete** the symlink. The kernel blocks the removal because `dev-user` lacks write permissions on `/opt/system-links/`, despite owning the target script itself.
 
 ---
 

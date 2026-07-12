@@ -2,11 +2,18 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
-## [2026-07-12] - Enhancement: Kubeadm Node Join Handshake Mechanics
+## [2026-07-12] - Ingestion & Enhancement: Node Joins, SecurityContexts & Linux Bind Mounts
 
 ### Refactored / Upgraded
 - **Reference Notes:**
   - [[Reference Notes/0-3_node_mechanics_and_resource_limits.md|0-3_node_mechanics_and_resource_limits.md]]: Expanded Section 1.B.4 to include a detailed explanation of the **Kubeadm Join Handshake**, detailing discovery token verification, bootstrap authentication, TLS bootstrapping, node registration, and adding a detailed Mermaid sequence diagram mapping the handshake.
+  - [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]]:
+    - Expanded Section 7 to clarify ServiceAccount mounting rules, namespace scoping, Pod exclusivity, and default token auto-mounting.
+    - Added Sections 9.3, 9.4, and 9.5 covering **`fsGroup` Volume Mechanics** across storage types, **Kernel Tuning via safe/unsafe `sysctls`** contrasted with Linux Capabilities, and a deep-dive on **Linux Bind Mounts (`hostPath`), Symlink path breaks inside containers, and Symlink directory deletion permissions**.
+
+### Ingested Inflow Sources
+Processed and integrated the following file from `inflow/`:
+- `inflow/Some-KubernetesQuestions.md`
 
 ---
 
