@@ -364,15 +364,20 @@ SSH to the affected worker node to debug the kubelet service:
     ```
     Then restart the service: `systemctl restart kubelet`.
 * **Incorrect API Server Port in Kubeconfig:**
-  * **Symptom:** Kubelet runs but reports:
-    `Unable to register node with API server: Post "https://controlplane:6553/api/v1/nodes": dial tcp 192.10.46.12:6553: connect: connection refused`
-  * **Fix:** Identify the kubeconfig path from Kubelet arguments (typically `/etc/kubernetes/kubelet.conf`). Edit `/etc/kubernetes/kubelet.conf` to fix the API server port:
+  * **Symptom:** Kubelet runs but fails to register with the control plane, reporting:
+    `Unable to register node with API server: Post "https://controlplane:6553/api/v1/nodes": dial tcp 192.24.132.5:6553: connect: connection refused`
+  * **Root Cause & Mechanics:** The Kubelet is configured via `/etc/kubernetes/kubelet.conf` with a malformed server port (e.g., `6553` instead of the default `6443`).
+    1.  *Name Resolution Success:* Note that the hostname `controlplane` successfully resolved to the IP `192.24.132.5`. Because Kubelet starts *before* CoreDNS is up, it relies entirely on local operating system resolution via **`/etc/hosts`** to find the API server.
+    2.  *The TLS SAN Trap:* Bypassing the hostname by changing the configuration server URL to a raw IP (e.g., `https://192.24.132.5:6443`) will fail. The API server's TLS certificate is signed with a strict list of **Subject Alternative Names (SANs)** (e.g. DNS: `controlplane`, IP: `10.96.0.1`). If you connect using an IP not in the SAN list, Kubelet's client TLS verification fails with the error: `x509: certificate is valid for controlplane, not 192.24.132.5`.
+    3.  *The Multi-Interface IP Trap:* Grabbing the internal IP from `kubectl get nodes -o wide` can retrieve the cluster overlay CNI network IP rather than the host's primary management network IP, leading to routing or firewall drops.
+  * **Fix:** Identify the kubeconfig path from Kubelet arguments (typically `/etc/kubernetes/kubelet.conf`). Edit the server URL, keeping the verified hostname but fixing the port:
     ```yaml
     clusters:
     - cluster:
-        server: https://controlplane:6443 # Fix port from 6553 to 6443
+        server: https://controlplane:6443 # Only fix the port; maintain the SAN-registered hostname
     ```
-    Then restart Kubelet: `systemctl restart kubelet`.
+    Restart Kubelet: `systemctl restart kubelet`.
+  * **Deeper Dive:** For full mTLS sequence diagrams and certificate generation steps, see [[0-7-a_tls_and_mtls_handshake_troubleshooting_lecture|Lecture: TLS, mTLS & Hostname Resolution Troubleshooting in Kubelet]].
 
 ### C. Container Runtime Interface (CRI) Socket Auditing
 Kubernetes uses CRI-compliant runtimes (e.g. `containerd`, `CRI-O`) to manage containers.

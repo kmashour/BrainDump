@@ -2,12 +2,13 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
-## [2026-07-12] - Ingestion & Enhancement: Node Joins, SecurityContexts, Linux Bind Mounts & Kubeadm Bootstrapping
+## [2026-07-12] - Ingestion & Enhancement: Node Joins, SecurityContexts, CKA Debugging & TLS/mTLS Mechanics
 
 ### Added
 - **Reference Notes:**
   - [[Reference Notes/0-10-a_vagrant_vm_provisioning_lecture.md|0-10-a_vagrant_vm_provisioning_lecture.md]]: Created standalone reference note detailing the VirtualBox/Vagrant VM local environment provisioning workflow.
   - [[Reference Notes/0-10-b_kubeadm_cluster_bootstrapping_lecture.md|0-10-b_kubeadm_cluster_bootstrapping_lecture.md]]: Created standalone reference note detailing bootstrapping a cluster (cgroup setup, kubeadm init, Flannel CNI, and worker joins).
+  - [[Reference Notes/0-7-a_tls_and_mtls_handshake_troubleshooting_lecture.md|0-7-a_tls_and_mtls_handshake_troubleshooting_lecture.md]]: Created standalone reference note detailing the Kubelet-to-APIServer TLS and mTLS handshake, cryptographic verification (hashing, signatures, CA certificates), Subject Alternative Names (SANs) constraints, and /etc/hosts name resolution during bootstrap.
 
 ### Refactored / Upgraded
 - **Reference Notes:**
@@ -15,14 +16,16 @@ This backlog tracks all updates, modifications, and restructuring activities per
   - [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]]:
     - Expanded Section 7 to clarify ServiceAccount mounting rules, namespace scoping, Pod exclusivity, and default token auto-mounting.
     - Added Sections 9.3, 9.4, and 9.5 covering **`fsGroup` Volume Mechanics** across storage types, **Kernel Tuning via safe/unsafe `sysctls`** contrasted with Linux Capabilities, and a deep-dive on **Linux Bind Mounts (`hostPath`), Symlink path breaks inside containers, and Symlink directory deletion permissions**.
-  - [[Reference Notes/0-Index - Kubernetes.md|0-Index - Kubernetes.md]]: Indexed both Vagrant and Kubeadm lecture notes under Domain 1.
+  - [[Reference Notes/0-Index - Kubernetes.md|0-Index - Kubernetes.md]]: Indexed Vagrant, Kubeadm, and TLS/mTLS troubleshooting lecture notes.
   - [[Reference Notes/0-10_maintenance_upgrades_and_etcd.md|0-10_maintenance_upgrades_and_etcd.md]]: Linked both new lectures from the main cluster bootstrapping playbook section.
+  - [[Reference Notes/0-11_troubleshooting_and_diagnostics.md|0-11_troubleshooting_and_diagnostics.md]]: Expanded Kubelet API Server port configuration error troubleshooting block, detailing local `/etc/hosts` name resolution success, the TLS SAN validation trap, and multi-network routing conflicts.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from `inflow/`:
 - `inflow/Some-KubernetesQuestions.md`
 - `inflow/Vagrant_ForKubeAdm.md`
 - `inflow/SettingUpwithKubeAdm.md`
+- `inflow/CKA-Notes.md`
 
 ---
 
