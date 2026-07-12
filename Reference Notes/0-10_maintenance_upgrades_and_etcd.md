@@ -662,7 +662,9 @@ Adding an even number of nodes provides no extra fault tolerance. For example, a
 
 ## 6. Bootstrapping a Cluster from Scratch with Kubeadm
 
-This section covers setting up a new multi-node cluster using `kubeadm` with `containerd` container runtime.
+This section covers setting up a new multi-node cluster using `kubeadm` with `containerd` container runtime. For specific walkthroughs and environment details, see the deep-dive lecture notes:
+*   🎥 **[Lecture: Vagrant VM Provisioning for Kubeadm](0-10-a_vagrant_vm_provisioning_lecture.md)** (Local hypervisor VMs setup)
+*   🎥 **[Lecture: Bootstrapping a Cluster with Kubeadm](0-10-b_kubeadm_cluster_bootstrapping_lecture.md)** (Full walk-through step-by-step)
 
 ### 6.1 Node System Preparation
 Perform these commands on **all nodes** (control plane and workers).

@@ -20,6 +20,8 @@ tags:
 *Control plane/worker components, HA topologies, cluster bootstrap (kubeadm), maintenance (cordon/drain), and upgrades.*
 - 🧠 **[Cluster Architecture & Components](0-2_cluster_architecture_and_components.md)** (Module 02)
 - 🥾 **[Cluster Bootstrapping, Maintenance & etcd](0-10_maintenance_upgrades_and_etcd.md)** (Module 10)
+  - 🎥 **[Lecture: Vagrant VM Provisioning for Kubeadm](0-10-a_vagrant_vm_provisioning_lecture.md)**
+  - 🎥 **[Lecture: Bootstrapping a Cluster with Kubeadm](0-10-b_kubeadm_cluster_bootstrapping_lecture.md)**
 - 📊 **[Administration, Observability & Flow Control](0-14_cluster_administration_and_observability.md)** (Module 14)
 
 ---
