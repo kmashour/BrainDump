@@ -126,12 +126,56 @@ When bootstrapping a node manually:
      * `--kubeconfig`: Path to certificate file authorizing Kubelet to talk to the API Server.
      * `--register-node`: When set to `true`, Kubelet self-registers the host with the API server.
 
-#### 4. Kubelet TLS Bootstrapping
-To securely connect new worker nodes to the control plane, Kubernetes utilizes a TLS bootstrapping mechanism to distribute client certificates:
-1. **Initial Bootstrap token:** The `kubelet` is started with a bootstrap-kubeconfig file (e.g. `/etc/kubernetes/bootstrap-kubelet.conf`) that contains a short-lived token allowing access only to submit Certificate Signing Requests (CSRs).
-2. **CSR Submission:** The `kubelet` contacts the API server using the bootstrap token, generates a local key pair, and submits a client certificate signing request (CSR).
-3. **Approval & Issuance:** A cluster administrator or controller-manager auto-approves the CSR. The API server signs the client certificate and returns it to the node.
-4. **Final Kubeconfig:** The `kubelet` writes the signed certificate into `/var/lib/kubelet/pki/` and generates the final configuration (`/etc/kubernetes/kubelet.conf`), disabling the bootstrap token configuration for subsequent runs.
+#### 4. Kubelet TLS Bootstrapping & The Kubeadm Join Handshake
+To securely connect new worker nodes to the control plane, Kubernetes utilizes a TLS bootstrapping mechanism to distribute client certificates. Instead of manually copying master certificates to each worker, the node registers itself using a temporary token.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Node as Joining Worker Node
+    participant API as Kubernetes API Server
+    participant ContManager as kube-controller-manager
+
+    Node->>API: 1. Request cluster-info anonymously
+    API-->>Node: 2. Return cluster-info ConfigMap (containing Root CA)
+    Note over Node: Node verifies Root CA hash matches<br/>--discovery-token-ca-cert-hash
+    Node->>API: 3. Authenticate using Bootstrap Token
+    Note over API: API Server validates token<br/>against bootstrap secrets
+    Node->>API: 4. Generate local key pair & submit CSR
+    API->>ContManager: 5. Forward CSR (CN=system:node:<name>)
+    ContManager->>ContManager: 6. Auto-approve CSR for system:nodes group
+    API-->>Node: 7. Issue signed TLS client certificate
+    Note over Node: Node writes kubelet.conf & deletes<br/>temporary bootstrap credentials
+    Node->>API: 8. Self-register Node object (kubeconfig)
+```
+
+##### Step 1: The Join Command Structure
+The `kubeadm join` command has three essential parameters that facilitate the mutual trust handshake:
+```bash
+sudo kubeadm join 192.168.1.10:6443 \
+  --token abcdef.0123456789abcdef \
+  --discovery-token-ca-cert-hash sha256:1a2b3c4d5e...
+```
+*   **API Server Endpoint (`192.168.1.10:6443`):** The target control plane IP and port.
+*   **Bootstrap Token (`--token`):** A short-lived (24-hour) shared secret used by the node to authenticate to the API Server during bootstrapping.
+*   **Discovery Hash (`--discovery-token-ca-cert-hash`):** The SHA-256 hash of the cluster's Root CA certificate.
+
+##### Step 2: Phase-by-Phase Handshake Breakdown
+1.  **Phase 1: Discovery (Node verifies Cluster):**
+    *   *The Problem:* The joining node must verify it is connecting to the genuine API server and not a malicious proxy (Man-in-the-Middle attack).
+    *   *The Action:* The node connects anonymously to the API server and fetches the `cluster-info` ConfigMap from the `kube-public` namespace. It extracts the public Root CA certificate, computes its SHA-256 hash, and compares it to the `--discovery-token-ca-cert-hash`.
+    *   *Outcome:* If the hash matches, the node trusts the API server and stores the CA certificate.
+2.  **Phase 2: Authentication (Cluster verifies Node):**
+    *   *The Action:* The node connects again, using the Bootstrap Token.
+    *   *The Verification:* The API server verifies the token matches a secret of type `bootstrap.kubernetes.io/token` inside the `kube-system` namespace.
+    *   *Outcome:* The node is temporarily authorized under the RBAC bootstrap group `system:bootstrap-signer`.
+3.  **Phase 3: TLS Bootstrapping (Issuing Node Certificates):**
+    *   *The Action:* Kubelet generates a local private key and a Certificate Signing Request (CSR) with name `system:node:<node-name>` and group `system:nodes`. It submits the CSR to the API server.
+    *   *The Verification:* The `kube-controller-manager` auto-approves the CSR (using RBAC rules matching the bootstrap group).
+    *   *Outcome:* The API server signs the client certificate and returns it. Kubelet saves the signed TLS certificate to `/var/lib/kubelet/pki/kubelet-client-current.pem`.
+4.  **Phase 4: Node Registration:**
+    *   *The Action:* Kubelet deletes the bootstrap kubeconfig (`/etc/kubernetes/bootstrap-kubelet.conf`) to prevent token reuse, and generates the final configuration (`/etc/kubernetes/kubelet.conf`) using the permanent certificate.
+    *   *Outcome:* Kubelet registers the `Node` object in the API server. The node status remains `NotReady` until the CNI plugin daemonset runs on the node, shifting it to `Ready`.
 
 ### C. Verifying Kubelet Health & Status
 When troubleshooting a node that shows `NotReady`, verify the Kubelet process:

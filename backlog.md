@@ -2,6 +2,14 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-12] - Enhancement: Kubeadm Node Join Handshake Mechanics
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-3_node_mechanics_and_resource_limits.md|0-3_node_mechanics_and_resource_limits.md]]: Expanded Section 1.B.4 to include a detailed explanation of the **Kubeadm Join Handshake**, detailing discovery token verification, bootstrap authentication, TLS bootstrapping, node registration, and adding a detailed Mermaid sequence diagram mapping the handshake.
+
+---
+
 ## [2026-07-11] - Ingestion & Enhancement: PV/PVC Parameter Mirroring & Storage Mechanics
 
 ### Refactored / Upgraded
