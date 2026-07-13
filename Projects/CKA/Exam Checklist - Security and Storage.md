@@ -294,6 +294,14 @@ allowVolumeExpansion: true
 *   `volumeBindingMode: WaitForFirstConsumer`: Mandatory for local storage and highly recommended for cloud storage. Delays volume provisioning until the Pod using the PVC is scheduled. This prevents Availability Zone mismatch errors.
 *   `allowVolumeExpansion: true`: Allows resizing a volume online by editing the PVC storage request.
 
+```bash
+# Check volume binding mode of a StorageClass
+kubectl get sc -o custom-columns=NAME:.metadata.name,BINDINGMODE:.volumeBindingMode
+```
+
+> [!TIP]
+> **Exam Warning (Local Storage Scheduling Trap):** If you configure a static `local` volume (`local: path: ...` with `provisioner: kubernetes.io/no-provisioner`), you **must** use a StorageClass with `volumeBindingMode: WaitForFirstConsumer` and specify `nodeAffinity` on the PV. If you skip the StorageClass or use `Immediate` binding, the PVC binds to the PV immediately on its node. If Scheduler constraints (e.g. CPU limits, node selectors) later force the Pod to another node, the Pod will hang in `Pending` with a `volume node affinity conflict` scheduler error.
+
 ### 6.4 PVC Protection Finalizers
 If a PVC is stuck in `Terminating` because the referencing pod is deleted, you can bypass safety checks by removing finalizers (Warning: Use with caution!):
 ```bash

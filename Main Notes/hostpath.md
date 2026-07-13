@@ -57,4 +57,4 @@ spec:
 * **No Node Portability:** If the Pod is rescheduled to a different node, it will mount the path on *that* host, which might have completely different files or lack the path entirely.
 * **Security Risk:** Pods running with root permissions can access sensitive host directories (like `/var/log`, `/etc/kubernetes/pki` or Docker socket), leading to host privilege escalation.
 
-*Read more in [[Reference Notes/0-8_storage_mechanics_and_csi.md#1-volume-plugins-and-in-tree-types]]*\n
+*Read more in [[Reference Notes/0-8_storage_mechanics_and_csi.md#1-volume-plugins-and-in-tree-types]] and [[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md]]*

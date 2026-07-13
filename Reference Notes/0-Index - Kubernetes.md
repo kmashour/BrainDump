@@ -57,6 +57,7 @@ tags:
 ## 💾 Domain 5: Data Storage & Networking
 *Out-of-tree CSI, storage classes, PV/PVC lifecycles, Linux networking bridges, CNI overlays (vxlan/BGP), and Service iptables/IPVS routing.*
 - 🔌 **[Storage Mechanics & CSI](0-8_storage_mechanics_and_csi.md)** (Module 08)
+  - 🎥 **[Lecture: Local Storage Models, Provisioners and Scheduling Traps](0-8-a_local_storage_models_and_scheduling_traps.md)**
 - 🕸️ **[Networking, DNS & Ingress](0-9_networking_dns_and_ingress.md)** (Module 09)
 
 ---

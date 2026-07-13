@@ -2,6 +2,35 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-13] - Ingestion & Restructuring: Local Storage Models, Provisioners & Scheduling Traps
+
+### Added
+- **Reference Notes:**
+  - [[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md|0-8-a_local_storage_models_and_scheduling_traps.md]]: Created standalone reference note detailing the differences between CSI and StorageClass, the three local storage models (`hostPath`, static `local` volumes, dynamic `local-path`), and the `WaitForFirstConsumer` volume binding mode.
+- **Projects:**
+  - [[Projects/CKA/Project - Local Storage Models and Scheduling Traps.md|Project - Local Storage Models and Scheduling Traps.md]]: Created CKA-focused hands-on project to simulate local storage provisioning and the scheduling affinity deadlock failure loop.
+- **Main Notes:**
+  - [[Main Notes/storageclass - Volume Binding Modes and Scheduling Traps.md|storageclass - Volume Binding Modes and Scheduling Traps.md]]: Created deeper-dive note documenting the immediate binding trap and `WaitForFirstConsumer` scheduling coordination.
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-Index - Kubernetes.md|0-Index - Kubernetes.md]]: Indexed the new local storage models lecture note under Domain 5.
+- **Main Notes:**
+  - [[Main Notes/storageclass.md|storageclass.md]]: Linked the new reference guide.
+  - [[Main Notes/persistentvolume.md|persistentvolume.md]]: Linked the new reference guide.
+  - [[Main Notes/hostpath.md|hostpath.md]]: Linked the new reference guide.
+- **Digital Garden:**
+  - [[Digital Garden/Pattern - Stateful Database Clustering in Kubernetes.md|Pattern - Stateful Database Clustering in Kubernetes.md]]: Updated Section 5 and frontmatter to reference the new local storage models reference and project notes.
+- **Projects:**
+  - [[Projects/CKA/Practice Playbook - Topic Labs.md|Practice Playbook - Topic Labs.md]]: Added Q4 to the Storage section pointing to the scheduling deadlock simulation project.
+  - [[Projects/CKA/Exam Checklist - Security and Storage.md|Exam Checklist - Security and Storage.md]]: Added CKA exam tip and troubleshooting commands for local storage scheduling traps.
+
+### Ingested Inflow Sources
+Processed and integrated the following file from `inflow/`:
+- `inflow/StorageNotes.md`
+
+---
+
 ## [2026-07-12] - Ingestion & Enhancement: Node Joins, SecurityContexts, CKA Debugging & TLS/mTLS Mechanics
 
 ### Added

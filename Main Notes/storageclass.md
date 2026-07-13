@@ -11,6 +11,7 @@ related_concepts:
 against: []
 reference_guides:
   - "[[Reference Notes/0-8_storage_mechanics_and_csi.md]]"
+  - "[[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md]]"
 tags:
   - kubernetes/storage
   - status/completed

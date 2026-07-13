@@ -584,3 +584,6 @@ This playbook compiles practice test questions and solution playbooks from the c
    kubectl apply -f safari-pod.yaml
    kubectl describe pod safari-pod
    ```
+
+#### Q4. Deploy and debug local storage scheduling deadlocks.
+*See the complete troubleshooting lab in [[Projects/CKA/Project - Local Storage Models and Scheduling Traps.md]].*
