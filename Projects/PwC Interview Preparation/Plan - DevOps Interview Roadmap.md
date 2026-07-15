@@ -45,10 +45,10 @@ gantt
     Mock Interview Grilling (/grill-me) :2026-07-19, 6h
 ```
 
-### 🗓️ Day 1: Docker & GitHub Actions (Thursday, July 16)
-*   **Focus:** Core containerization primitives, secure building, and DevSecOps pipelines.
+### 🗓️ Day 1: DevOps Leadership & Secure CI/CD (Thursday, July 16)
+*   **Focus:** Team governance, Git protection, and DevSecOps pipelines.
 *   **Action Items:**
-    1.  Study the distilled theory in [[Theory/Chapter 1 - Secure Containerization with Docker|Chapter 1 - Secure Containerization with Docker]] and [[Theory/Chapter 3 - CI-CD Pipelines & DevSecOps Integration|Chapter 3 - CI-CD Pipelines & DevSecOps Integration]].
+    1.  Study the theory in [[Theory/Chapter 1 - DevOps Leadership, Mentorship & Stakeholder Alignment|Chapter 1 - DevOps Leadership, Mentorship & Stakeholder Alignment]] and [[Theory/Chapter 3 - Secure CI-CD Pipelines & DevSecOps Compliance|Chapter 3 - Secure CI-CD Pipelines & DevSecOps Compliance]].
     2.  Write a secure, non-root multi-stage Dockerfile for the target Flask application.
     3.  Configure a GitHub Actions workflow with Trivy container image scanning and AWS authentication.
 *   **References:** [[Reference Notes/2-Index - Docker]], [[Reference Notes/9-Index - GitHub Actions]].
@@ -56,15 +56,15 @@ gantt
 ### 🗓️ Day 2: AWS (SAA) & Terraform IaC (Friday, July 17)
 *   **Focus:** Networking (VPC), Identity & Access Management (IAM), and automating infrastructure.
 *   **Action Items:**
-    1.  Study VPC designs, IAM trust policies, and ECR configuration in [[Theory/Chapter 2 - AWS Cloud Architecture & Terraform IaC|Chapter 2 - AWS Cloud Architecture & Terraform IaC]].
+    1.  Study VPC designs, IAM trust policies, and state locking in [[Theory/Chapter 2 - Production Infrastructure as Code (IaC) with Terraform|Chapter 2 - Production Infrastructure as Code (IaC) with Terraform]].
     2.  Write Terraform manifests configuring a private/public subnet VPC, security groups, and an EC2 instance acting as the deployment target.
     3.  Configure Terraform S3 Remote State backend with DynamoDB locking.
 *   **References:** [[Reference Notes/3-Index - AWS]], [[Reference Notes/10-Index - Terraform on AWS]].
 
-### 🗓️ Day 3: Prometheus & Grafana Observability (Saturday, July 18)
-*   **Focus:** Scraping architectures, PromQL calculations, metrics exposition, and Grafana dashboarding.
+### 🗓️ Day 3: Kubernetes & Observability (Saturday, July 18)
+*   **Focus:** Container orchestration scheduling, pulling metrics, and Grafana dashboarding.
 *   **Action Items:**
-    1.  Study Prometheus pull-model metrics exposition format in [[Theory/Chapter 4 - Observability with Prometheus & Grafana|Chapter 4 - Observability with Prometheus & Grafana]].
+    1.  Study orchestration scheduling deadlocks and scraper TSDB internals in [[Theory/Chapter 4 - Enterprise Containerization & Kubernetes Orchestration|Chapter 4 - Enterprise Containerization & Kubernetes Orchestration]] and [[Theory/Chapter 5 - Observability, Telemetry & Logging Stack (Prometheus & Grafana)|Chapter 5 - Observability, Telemetry & Logging Stack (Prometheus & Grafana)]].
     2.  Instrument the Flask app with the `prometheus_client` library (counters and histograms).
     3.  Deploy Prometheus and Grafana using Docker Compose, scrape the Flask app, write basic PromQL gauges (e.g., CPU, HTTP request latency rate), and build a custom Grafana dashboard.
 *   **References:** [[Reference Notes/8-6_monitoring_logs_and_diagnostics]], [[Reference Notes/0-14_cluster_administration_and_observability]].
