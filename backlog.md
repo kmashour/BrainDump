@@ -2,6 +2,35 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-15] - Ingestion: GitHub Actions Deep Dive Modules (Modules 9-5 to 9-10)
+
+### Added
+- **Reference Notes:**
+  - [[Reference Notes/9-5_github_actions_introduction_and_production_workflows.md|Module 9-5: GitHub Actions Introduction & Production Workflows]]
+  - [[Reference Notes/9-6_github_actions_triggers_runners_and_logic.md|Module 9-6: GitHub Actions Triggers, Runners & Workflow Logic]]
+  - [[Reference Notes/9-7_github_actions_functions_inputs_outputs_and_reusable_workflows.md|Module 9-7: GitHub Actions Functions, Inputs, Outputs & Reusable Workflows]]
+  - [[Reference Notes/9-8_github_actions_artifacts_and_caching.md|Module 9-8: GitHub Actions Artifacts & Caching]]
+  - [[Reference Notes/9-9_github_actions_matrix_strategy.md|Module 9-9: GitHub Actions Matrix Strategy]]
+  - [[Reference Notes/9-10_github_actions_environments_secrets_and_approvals.md|Module 9-10: GitHub Actions Environments, Secrets & Approvals]]
+
+### Updated
+- [[Reference Notes/9-Index - GitHub Actions.md|9-Index - GitHub Actions.md]]: Linked the new reference modules 9-5 through 9-10.
+
+### Ingested Inflow Sources
+Processed and integrated the following files in `inflow/`:
+- `inflow/What is GitHub Actions  Build Your First Workflow from Scratch.txt`
+- `inflow/GitHub Actions Triggers & Runners Explained  Events, Contexts & Hosted Runners.txt`
+- `inflow/Build Your First Production-Style Workflow with GitHub Actions.txt`
+- `inflow/GitHub Actions Workflow Logic Explained  Filters, Contexts, Variables & Expressions.txt`
+- `inflow/GitHub Actions Functions Explained  Build a Production-Style CI Pipeline.txt`
+- `inflow/GitHub Actions Outputs Explained  Step, Job & Reusable Workflow Outputs.txt`
+- `inflow/GitHub Actions Artifacts & Caching Explained  Share Files & Optimize Builds.txt`
+- `inflow/GitHub Actions Matrix Strategy Explained  Multi-OS, Multi-Version Testing at Scale.txt`
+- `inflow/GitHub Actions Environments Explained  Variables, Secrets, Approvals & Protection Rules.txt`
+- `inflow/GitHub Actions Inputs Explained  Workflow Inputs, Reusable Workflows & Production Use Cases.txt`
+
+---
+
 ## [2026-07-15] - Ingestion & Structuring: PwC DevOps Senior Associate Interview Preparation
 
 ### Added
