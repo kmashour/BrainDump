@@ -10,92 +10,82 @@ tags:
   - observability
   - prometheus
   - grafana
-difficulty: intermediate
+difficulty: advanced
 status: completed
 ---
 
-# Chapter 5: Observability, Telemetry, and Logging Stack (Prometheus & Grafana)
+# Chapter 5: Observability, Telemetry, and Logging Stack (AWS & CNCF)
 
-**Breadcrumbs:** [[Projects/PwC Interview Preparation/Plan - DevOps Interview Roadmap|DevOps Interview Roadmap]] > Theory > **Chapter 5: Prometheus & Grafana**
-
----
-
-## 🔌 1. Prometheus Architecture: The Scraper Pull Model
-
-In the interview, explain why Prometheus uses a pull model rather than a push model, and how it handles target discovery:
-
-### A. The HTTP Scrape Process
-*   **The Pull Mechanism:** The Prometheus server initiates connections outbound to target hosts on configure intervals (`scrape_interval`). It performs an HTTP GET request to the target's `/metrics` path.
-*   **Target Discovery:** Instead of hardcoding IPs, Prometheus utilizes **Service Discovery (SD)** modules (such as Consul, AWS EC2 tags, or Kubernetes API watchers) to dynamically discover newly launched containers and automatically start scraping them.
-*   **Pull Model Benefits:**
-    *   *Self-Protection:* In push-based monitoring, if a cluster scales up to 1000 nodes, they can flood the central server with metrics packets, triggering a denial-of-service crash. In a pull model, Prometheus scrapes at its own controlled pace. If it runs low on memory, it adjusts scrape rates.
-    *   *Dead-State Detection:* If a pull connection fails, Prometheus automatically flags the target's status as down (`up == 0`). A push-based system cannot tell the difference between a crashed node and a node that has no active metrics to report.
-
-### B. TSDB Storage Architecture
-Prometheus stores metric time-series data locally on disk:
-1.  **Memory Cache & Write-Ahead Log (WAL):** Raw scrapes are written to memory and immediately appended to a disk-based WAL. If a power failure occurs, Prometheus replays the WAL on startup to restore in-memory time-series data.
-2.  **2-Hour Compaction Blocks:** Every 2 hours, the in-memory data is compacted and flushed to disk as a Block. The block contains:
-    *   `chunks/`: Compressed, binary time-series data points.
-    *   `index`: An index mapping metric names and label-value pairs to byte offsets in the chunks.
-3.  **Compaction:** Over time, Prometheus runs background compaction merges, combining multiple 2-hour blocks into larger 24-hour blocks to reduce index duplication and disk space.
+**Breadcrumbs:** [[Projects/PwC Interview Preparation/Plan - DevOps Interview Roadmap|DevOps Interview Roadmap]] > Theory > **Chapter 5: Observability Stack**
 
 ---
 
-## 📈 2. Metric Types and Exposition Format
+## ☁️ 1. AWS CloudWatch Host Instrumentation & Filter Algebra
 
-Prometheus expects metrics in a plain-text, line-oriented exposition format:
+In an enterprise AWS deployment, observability spans host metrics, log filters, and composite alarm routing.
+
+### A. Hypervisor vs. Agent Telemetry
+*   **Hypervisor Metrics (EC2 Defaults):** AWS gathers metrics from the host virtualization hypervisor without VM access. These are limited to CPU utilization, virtual disk I/O metadata, and network throughput. The hypervisor cannot read OS-level memory tables or internal filesystem blocks.
+*   **Unified CloudWatch Agent Metrics:** To gather RAM utilization, active swap usage, and directory storage allocation, you must run the Unified CloudWatch Agent daemon inside the guest OS. The agent queries virtual filesystem tables (like `/proc/meminfo` and `/proc/diskstats`) and sends the data to CloudWatch via JSON API calls.
+
+### B. Custom Log Metric Filters
+Analyze log streams on-the-fly to compile metrics using Metric Filters.
+*   **Regex Pattern Matching:** Match Nginx or application log formats:
+    `[ip, id, user, timestamp, request, status_code = 4*, size]`
+*   This matches lines where the 6th field starts with `4`, incrementing a custom metric count in real-time, allowing you to configure threshold alarms before post-incident audits occur.
+
+### C. Composite Alarms
+*   **The Problem:** High load triggers multiple dependent alarms (e.g. CPU spikes, DB connections saturation, API latency delays), causing a notification storm.
+*   **The Solution:** Use Composite Alarms with Boolean algebra:
+    `ALARM(HighCPU) AND ALARM(HighAPI_Latency) AND NOT ALARM(MaintenanceMode)`
+*   This reduces alert fatigue by only alerting engineers under specific matching scenarios.
+
+---
+
+## 🔌 2. Prometheus Engine: Scraping Mechanics & Service Discovery
+
+Prometheus operates on an HTTP-pull model, which dictates how the metric ingestion pipeline scales.
+
+### A. Target Service Discovery (SD)
+Prometheus dynamically updates its scraping list:
+*   **Kubernetes SD:** Watches the `kube-apiserver` Endpoint resource tree, matching Pod labels or annotations (e.g., `prometheus.io/scrape: "true"`).
+*   **AWS EC2 SD:** Queries AWS regional APIs to fetch running instances matching specific tag filters.
+
+### B. Pull vs. Push Systems
+*   **Push Model (e.g. InfluxDB push):** Agents stream metrics to the server. If the application environment scales out during a traffic peak, the volume of metrics pushes can saturate the central collector, causing a crash.
+*   **Pull Model (Prometheus):** The server polls targets at regular intervals (`scrape_interval`). If Prometheus is low on resources, it can throttle scrapers or drop metrics to protect itself. Additionally, a failed pull request immediately identifies target liveness (`up == 0`).
+
+---
+
+## 💾 3. TSDB Internal Storage Layout
+
+The Time Series Database (TSDB) compiles scrapings into write-efficient blocks:
+
 ```plaintext
-# HELP http_requests_total Total HTTP Requests
-# TYPE http_requests_total counter
-http_requests_total{endpoint="/api/v1/users",status="200"} 4812
+/var/lib/prometheus/data/
+├── 01H3B89X... (2-hour block directory)
+│   ├── chunks/          # Raw compressed time-series segments
+│   ├── index            # Maps labels to chunks byte offsets
+│   ├── meta.json        # Time range, compaction source, and metadata
+│   └── tombstones       # Marks deleted data (cleared during compaction)
+└── wal/                 # Write-Ahead Log (Uncompressed recovery ledger)
 ```
 
-### A. Metric Primitives
-*   **Counter:** A cumulative value that only increases (or resets to 0 on target reboot). Used to track total event counts, errors, or throughput.
-*   **Gauge:** A value that can fluctuate up and down (e.g. CPU temperature, memory usage, queue size).
-*   **Histogram:** Observes values (e.g., request durations) and counts them in pre-defined bucket ranges (`le` label), alongside total sum and count. Histograms are fully aggregatable across multiple servers.
-*   **Summary:** Similar to histograms, but calculates specific quantiles (e.g., 90th, 99th percentile) client-side. Summaries cannot be aggregated across multiple hosts.
+1.  **Write-Ahead Log (WAL):** Ingested data is appended to the WAL on disk before it is cached in memory. If a server crash occurs, Prometheus replays the WAL on reboot to restore state.
+2.  **Head Block:** The active in-memory block where live series are cached for fast instant querying.
+3.  **Compaction:** Every 2 hours, the Head block is closed, compressed, and written to disk as a Block. Over time, background processes compact multiple 2-hour blocks into larger 24-hour blocks to reduce index duplication.
 
 ---
 
-## 📊 3. PromQL Query Design & Troubleshooting
+## 📊 4. Metrics Exposition & PromQL Vector Math
 
-Be ready to explain and write these critical PromQL queries:
+### A. Client-Side Quantiles (Summary) vs. Server-Side Aggregations (Histogram)
+*   **Summary:** Calculates percentiles (e.g., 99th percentile latency) on the application host. Because percentile values are pre-calculated, you **cannot** aggregate them across multiple hosts (e.g., you cannot calculate the average 99th percentile of a cluster by averaging the 99th percentiles of individual nodes).
+*   **Histogram:** Counts observations in pre-defined bucket boundaries (`le` label) alongside the total count and sum. Histograms are fully aggregatable. Use **`histogram_quantile`** to calculate cluster-level SLOs:
+    `histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))`
 
-### A. Counters and Rates
-*   *The Rule:* Never run calculations on raw counters. Wrap them in `rate()` or `increase()`.
-*   **`rate()` vs. `irate()`:**
-    *   `rate(http_requests_total[5m])`: Calculates the average per-second rate of increase across the entire 5-minute range vector. Smooths out temporary anomalies; recommended for alerting.
-    *   `irate(http_requests_total[5m])`: Calculates the per-second rate of increase based only on the last two data points of the range vector. Capture quick spikes; recommended for interactive debugging dashboards.
-*   **Aggregation:**
-    `sum(rate(http_requests_total[5m])) by (endpoint)`
+### B. PromQL Rate Calculations: `rate()` vs. `irate()`
+*   **`rate(metric[5m])`:** Computes the average per-second rate of increase across the entire 5-minute range vector. Smooths out temporary anomalies; recommended for alerts.
+*   **`irate(metric[5m])`:** Computes the rate based *only on the last two data points* inside the range vector. Captures rapid spikes; recommended for real-time debugging dashboards.
 
-### B. Latency Quantiles (Histograms)
-To calculate the 95th percentile latency of HTTP requests:
-`histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))`
-*   *Explanation:* Reads the bucket sizes (`le` label) and computes the boundary under which 95% of request durations reside.
-
----
-
-## 🚨 4. Alertmanager Alerting and Routing
-
-Prometheus defines alert thresholds via YAML alerting rules:
-```yaml
-groups:
-  - name: app-alerts
-    rules:
-      - alert: HighRequestLatency
-        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 2
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Instance {{ $labels.instance }} request latency is too high"
-```
-
-If the expression evaluates to true for more than `2m`, Prometheus fires the alert to **Alertmanager**:
-*   **Grouping (Deduplication):** Combines similar alerts into a single message (e.g. mutes 100 separate "Pod OOM" alerts into a single Slack notification).
-*   **Inhibition Rules:** Silences lower-priority alerts if a critical parent alert is already active (e.g. silences "App unreachable" alerts if "Host Offline" is already firing).
-*   **Silences:** Temporarily disables alert notifications during planned maintenance windows.
-
-*See details in [[Reference Notes/8-6_monitoring_logs_and_diagnostics]] and [[Reference Notes/0-14_cluster_administration_and_observability]].*
+*See details on AWS monitoring in [[Reference Notes/11-1_cloudops_monitoring_and_logging]] and Prometheus in [[Reference Notes/12-4_prometheus_and_grafana_observability_stack]].*

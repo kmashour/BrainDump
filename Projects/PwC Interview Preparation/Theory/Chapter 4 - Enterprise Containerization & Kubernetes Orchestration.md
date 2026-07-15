@@ -11,7 +11,7 @@ concepts_referenced:
   - "[[storageclass]]"
   - "[[persistentvolume]]"
   - "[[persistentvolumeclaim]]"
-difficulty: intermediate
+difficulty: advanced
 status: completed
 ---
 
@@ -21,78 +21,83 @@ status: completed
 
 ---
 
-## 🏛️ 1. Container Primitives: Docker Namespace & Cgroups isolation
+## 🏛️ 1. Container Runtimes & Linux OS Resource Drivers
 
-When presenting your Docker experience, explain the low-level Linux kernel boundaries:
+In a technical interview, you must separate Docker (the developer tool) from the production Kubernetes runtime environment.
 
-1.  **Namespaces (Isolation):** Virtualizes system resources. Enforces isolation using:
-    *   `PID`: Separate process trees.
-    *   `NET`: Custom routing tables, interfaces, and `veth` bridge endpoints.
-    *   `MNT`: Custom root filesystems mounted via `pivot_root`.
-    *   `USER`: Maps container root (UID 0) to non-privileged host UIDs.
-2.  **Cgroups (Resource Limits):** Sets limits on CPU execution windows (CFS quota) and physical memory. Mismatched host cgroup drivers (using `cgroupfs` instead of `systemd` on systemd hosts) cause container eviction and node instability.
-3.  **Overlay2 copy-on-write (CoW):** Filesystem storage driver. Modifying files in the read-only lower layers copies them to the mutable upper container layer, creating write latency. Bypass this latency for active I/O using volume mounts.
-4.  **Multi-stage builds & Hardened Bases:** Use stages to drop compilation tools from final release images. Run as a non-root system user (`USER appuser`) and set `readOnlyRootFilesystem: true` in the pod spec to stop write access to the host.
+### A. The Container Runtime Interface (CRI) Architecture
+When scheduling a Pod, the `kubelet` does not interact with Docker directly. It uses gRPC to query the node's CRI:
+*   **The CRI Layer (containerd / CRI-O):** Acts as a daemon managing image pull requests, container sandboxes, and lifecycle states.
+*   **The OCI Layer (`runc`):** The CRI daemon invokes an Open Container Initiative (OCI) compliant runtime (like `runc`) to execute the container.
+*   **The Execution:** `runc` interfaces with the Linux kernel to configure namespaces and cgroups, starts the container application process, and exits. A lightweight **`containerd-shim-v2`** process remains running to collect container exit codes and preserve standard input/output descriptors without keeping the main CRI daemon locked.
 
----
-
-## ☸️ 2. Kubernetes Cluster Components & API Mechanics
-
-Explain how the Kubernetes control plane coordinates state:
-
-*   **`kube-apiserver`:** The stateless gateway of the cluster. Every query, state change, and client command passes through the API server, which validates requests and writes them to etcd.
-*   **`etcd`:** The distributed, transactional key-value store acting as the cluster's single source of truth. Enforces consistency via the Raft consensus algorithm.
-*   **`kube-scheduler`:** Watches for newly created Pods with no assigned node. Filters nodes based on scheduling predicates (resource availability, selectors, taints) and scores them to pick the best host.
-*   **`kube-controller-manager`:** A collection of control loops (Node Controller, ReplicaSet Controller) that continuously query the API server to reconcile the actual cluster state with the declared state.
-*   **`kubelet`:** The worker node agent. It watches the API server for Pod assignments, communicates with local runtimes (containerd/Docker) via the **CRI (Container Runtime Interface)** to build containers, and exposes node health.
+### B. The Cgroup Driver Conflict (`systemd` vs. `cgroupfs`)
+Linux systems running systemd utilize a unified resource management hierarchy.
+*   **`cgroupfs` Driver:** Kubelet directly writes resource allocations to the `/sys/fs/cgroup` directory.
+*   **`systemd` Driver:** Kubelet requests cgroup resource updates via the systemd IPC interface.
+*   **The Conflict:** If `kubelet` is configured to use `cgroupfs` on a host running systemd, the node has two distinct resource management entities writing to cgroups. During high resource contention, the systemd process manager may terminate `kubelet` processes or evict running Pods due to incorrect resource tracking. **Always align the kubelet cgroup driver to `systemd` in production configurations.**
 
 ---
 
-## 🕸️ 3. EKS Networking, CoreDNS, and Service Discoveries
+## ⚙️ 2. Kubernetes API Mechanics: The 3-Way Strategic Merge Patch
 
-### A. CoreDNS Internal Naming Hierarchy
-Kubernetes services receive stable internal DNS FQDNs resolved by CoreDNS:
-*   **ClusterIP Service:** Resolves to a virtual IP load-balanced across pods:
-    `service-name.namespace-name.svc.cluster.local`
-*   **Headless Service (`clusterIP: None`):** Exposes no virtual IP. Querying the DNS record returns the raw IPs of all matching backend pods, allowing direct peer-to-peer clustering (e.g. database replicas):
-    `db-pod-0.db-service.default.svc.cluster.local`
-
-### B. Networking Plugins (CNI Overlay)
-The **Container Network Interface (CNI)** allocates IPs to pods.
-*   **Overlay Networks (Flannel, Calico VXLAN):** Encapsulate pod network packets inside standard host IP packets, creating a virtual layer-3 network.
-*   **AWS VPC CNI:** Bypasses encapsulation. Allocates native private IPs from the host's VPC subnet directly to Pods using elastic network interfaces (ENIs), achieving near-zero networking latency.
+When you execute `kubectl apply -f manifest.yaml`, the `kube-apiserver` does not simply overwrite the existing object in etcd. It calculates updates using a **3-Way Strategic Merge Patch**:
+1.  **Original (Last-Applied Configuration):** Read from the `kubectl.kubernetes.io/last-applied-configuration` annotation stored on the active cluster resource.
+2.  **Proposed:** The contents of the local manifest file you are applying.
+3.  **Active (Live State):** The current configuration of the resource in etcd (which may contain dynamic values added by control loops, such as `NodePort` numbers, Pod IPs, or replica counts adjusted by an HPA).
+*   **The Merge:** The API server compares all three configurations. It preserves dynamic cluster changes (present in Active but absent in Proposed) while applying your configuration changes (present in Proposed but absent in Original). This prevents configuration updates from overwriting live operational state.
 
 ---
 
-## 💾 4. Kubernetes Storage & The Scheduling Deadlock Trap
+## 🕸️ 3. Cluster Network Security: Default-Deny NetworkPolicies
 
-This is a critical area based on your recent local storage updates:
+By default, all pods in a Kubernetes cluster can communicate freely with each other. To secure microservices, you must implement a Zero-Trust network layout:
 
-### A. StorageClass Binding Modes
-*   **`Immediate`:** Binds the PVC to a PV (or provisions a new disk) instantly.
-*   **`WaitForFirstConsumer`:** Delays binding until the Pod using the PVC is scheduled.
-*   **The Trap:** If a local volume uses `Immediate` binding, it binds to a PV on `Node A` immediately. If the Pod is later scheduled but is forced to `Node B` (due to cpu limits or selectors), the Pod hangs in `Pending` with `volume node affinity conflict`. **For local storage, always use `WaitForFirstConsumer`.**
-
-### B. Node Affinity on PVs
-Static local PVs require an explicit `nodeAffinity` block locking them to a specific node, and the StorageClass must use `kubernetes.io/no-provisioner` to tell Kubernetes that a human is responsible for mounting the physical drive.
-
----
-
-## 🛡️ 5. Pod Security Admission (PSA) & Hardening
-
-*   **PSA Standards:** Built-in admission controllers enforcing security profiles:
-    *   *Privileged:* No restrictions.
-    *   *Baseline:* Prevents known privilege escalations (default host namespace block).
-    *   *Restricted:* Enforces strict security best practices (forces non-root user, blocks privilege escalation, blocks raw hostPath volumes).
-*   **Pod SecurityContext Hardening:**
+*   **The CNI Engine Requirements:** Enforcing network rules requires a CNI plugin that supports policy engines (e.g. **Calico**, **Cilium** using eBPF, or AWS VPC CNI with security groups). Standard plugins like Flannel ignore NetworkPolicy manifests.
+*   **Default-Deny Ingress Pattern:** Secure namespaces by blocking all incoming traffic by default, then explicitly whitelist permitted paths:
     ```yaml
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 10001
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
+    apiVersion: networking.k8s.io/v1
+    kind: NetworkPolicy
+    metadata:
+      name: default-deny-all
+      namespace: production
+    spec:
+      podSelector: {} # Matches all pods in the namespace
+      policyTypes:
+        - Ingress # Applies block on incoming connections
+    ```
+*   **Whitelisting Service Paths:** Explicitly permit your Flask backend to receive traffic *only* from the Nginx Ingress controller:
+    ```yaml
+    spec:
+      podSelector:
+        matchLabels:
+          app: flask-backend
+      ingress:
+        - from:
+            - podSelector:
+                matchLabels:
+                  app: ingress-nginx
+          ports:
+            - protocol: TCP
+              port: 5000
     ```
 
-*See details in [[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps]], [[Reference Notes/0-3_node_mechanics_and_resource_limits]], and [[Reference Notes/0-7_security_and_network_policies]].*
+---
+
+## 💾 4. Local Storage Scheduling Deadlocks (WaitForFirstConsumer)
+
+For stateful systems running local physical disks (such as high-performance databases), volume binding must be coordinated with node scheduling:
+
+### A. Volume Binding Modes
+*   **`Immediate` (Default):** As soon as a user submits a PVC, the control plane binds it to an available local PV (or provisions a new one).
+*   **`WaitForFirstConsumer`:** Delays PV binding until a Pod using the PVC is scheduled.
+
+### B. The Node Affinity Deadlock Trap
+1.  A local PV is tied to a physical disk on `Node A`.
+2.  If the StorageClass is set to `Immediate`, the PVC binds to this PV immediately.
+3.  When the Pod is created, the scheduler evaluates node constraints (e.g., `Node A` lacks required memory capacity, or has a Taint, but `Node B` is free).
+4.  The scheduler attempts to schedule the Pod on `Node B`.
+5.  The Pod fails to start because its bound volume is physically locked to `Node A`. The Pod hangs indefinitely in `Pending` with `volume node affinity conflict`.
+*   **Remediation:** Enforce `volumeBindingMode: WaitForFirstConsumer` inside your StorageClass definitions. This forces the scheduler to select a node *first*, and then binds the PVC to a PV on that selected node.
+
+*See details on runtimes in [[Reference Notes/2-1_container_runtime_interfaces_and_cgroups]], storage in [[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps]], and security in [[Reference Notes/0-7_security_and_network_policies]].*

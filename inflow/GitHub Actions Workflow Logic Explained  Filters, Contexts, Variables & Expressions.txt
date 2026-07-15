@@ -1,0 +1,3397 @@
+00:00 Hi, I am Vun Jooshi and I welcome you to
+00:03 
+
+00:03 lecture four of GitHub actions basics to
+00:06 
+
+00:06 production course. In this lecture, we
+00:09 
+
+00:09 will move deeper into workflow execution
+00:12 
+
+00:12 logic and trigger behavior. We will
+00:15 
+
+00:15 start by understanding how production
+00:18 
+
+00:18 teams refine workflow execution using
+00:21 
+
+00:21 event filters and activity types instead
+00:25 
+
+00:25 of triggering workflows for every
+00:27 
+
+00:27 possible GitHub event. In demo one, we
+00:31 
+
+00:31 will practically understand event
+00:33 
+
+00:33 filters and activity types using feature
+00:37 
+
+00:37 branches, pull requests and synchronize
+00:40 
+
+00:40 events. After this we will deeply
+00:43 
+
+00:43 understand variables, contexts and
+00:47 
+
+00:47 expressions while also exploring
+00:50 
+
+00:50 workflow engine evaluation, runner
+00:53 
+
+00:53 execution behavior and conditional
+00:56 
+
+00:56 workflow logic which will be followed by
+00:59 
+
+00:59 demo two where we practically understand
+01:03 
+
+01:03 variables, contexts and expressions. So
+01:06 
+
+01:06 let's get started. Now what we have done
+01:11 
+
+01:11 thus far is we have defined a certain
+01:15 
+
+01:15 event and based on that event our
+01:19 
+
+01:19 workflow got executed. For example
+01:22 
+
+01:22 whenever there was a push event our
+01:26 
+
+01:26 workflow got triggered. But do we want
+01:29 
+
+01:29 that behavior at all times? Our
+01:33 
+
+01:33 engineers, our DevOps engineers, our
+01:36 
+
+01:36 developers will have multiple branches
+01:39 
+
+01:39 created and they will be pushing all the
+01:42 
+
+01:42 time and I don't want my CI to trigger
+01:47 
+
+01:47 every time there is a push or every time
+01:52 
+
+01:52 there is a certain event because
+01:55 
+
+01:55 my CI runs are costly. So for now we
+02:00 
+
+02:00 should be grateful that whatever we have
+02:02 
+
+02:02 been doing is free of cost. But when you
+02:06 
+
+02:06 are dealing with enterprise applications
+02:09 
+
+02:09 you would have an enterprise plan with
+02:12 
+
+02:12 whatever CI tooling that you are using
+02:15 
+
+02:15 in that scenario. It's not just about
+02:17 
+
+02:17 GitHub actions. any CI tooling that you
+02:19 
+
+02:19 could be using, you do not want your
+02:23 
+
+02:23 pipelines to trigger until and unless
+02:26 
+
+02:26 you want to run the CI. Correct? Hence,
+02:31 
+
+02:31 we don't want our pipeline, our workflow
+02:35 
+
+02:35 in GitHub actions to trigger
+02:39 
+
+02:39 whenever there is a certain event. We
+02:42 
+
+02:42 want to have conditions in place and
+02:45 
+
+02:45 those conditions must define exactly
+02:50 
+
+02:50 when we want to trigger our pipeline.
+02:53 
+
+02:53 Hence, we do not want a blanket event
+02:58 
+
+02:58 calling the shots and that blanket event
+03:01 
+
+03:01 that we have used thus far has been
+03:03 
+
+03:03 pushed. So whenever there was a push our
+03:07 
+
+03:07 workflow got triggered and why this is
+03:10 
+
+03:10 bad not just from a cost perspective
+03:13 
+
+03:13 when you talk about unnecessary workflow
+03:16 
+
+03:16 executions
+03:18 
+
+03:18 it is unnecessary for your application
+03:20 
+
+03:20 for example let's say if you updated
+03:23 
+
+03:23 certain documentation about your
+03:25 
+
+03:25 application and then performed a push in
+03:28 
+
+03:28 that scenario you do not want your
+03:32 
+
+03:32 pipeline to trigger because you have not
+03:35 
+
+03:35 made any modifications in the code. You
+03:37 
+
+03:37 have just changed some documentation.
+03:40 
+
+03:40 Maybe you have just made changes in your
+03:42 
+
+03:42 MD files. In that scenario, you don't
+03:45 
+
+03:45 want your workflows to trigger. And
+03:50 
+
+03:50 again for the sake of operational
+03:53 
+
+03:53 efficiency as well when you are
+03:55 
+
+03:55 triggering your workflows left right and
+03:58 
+
+03:58 center and let's say you are using
+03:60 
+
+04:00 self-hosted runners in those scenarios
+04:03 
+
+04:03 your jobs will be ceued because maybe
+04:07 
+
+04:07 you are using a singlehosted runner
+04:11 
+
+04:11 single self-hosted runner to run your
+04:14 
+
+04:14 jobs. In that scenario, you do not want
+04:17 
+
+04:17 to overburden that. And if you
+04:20 
+
+04:20 overburden these things, your feedbacks
+04:23 
+
+04:23 are slower because your application is
+04:27 
+
+04:27 not getting deployed as fast as you
+04:31 
+
+04:31 would like it to be deployed. And again,
+04:35 
+
+04:35 wasted runner resources. Runners spend
+04:38 
+
+04:38 time executing irrelevant jobs,
+04:42 
+
+04:42 pipelines, and workflows. If you do not
+04:45 
+
+04:45 control this behavior and to control
+04:48 
+
+04:48 this behavior, my friends, we have two
+04:52 
+
+04:52 things when I talk about GitHub actions.
+04:54 
+
+04:54 There is event filters and then there is
+04:58 
+
+04:58 activity types. Refining workflow
+05:01 
+
+05:01 trigger behaviors. So let's discuss each
+05:04 
+
+05:04 of them and understand how we use them.
+05:08 
+
+05:08 First is control under what conditions
+05:12 
+
+05:12 workflow execute. Now here previously we
+05:16 
+
+05:16 just had push here but now we have
+05:19 
+
+05:19 defined certain event filters. We have
+05:22 
+
+05:22 said that you must trigger this pipeline
+05:26 
+
+05:26 when the branch is either develop or
+05:30 
+
+05:30 when the branch is prefixed with release
+05:33 
+
+05:33 and a forward slash. And then we have
+05:36 
+
+05:36 also said only trigger the workflow when
+05:40 
+
+05:40 the changes are made in these paths. So
+05:44 
+
+05:44 we have used two event filters here.
+05:47 
+
+05:47 First is the branches event filter.
+05:50 
+
+05:50 Second is the paths event filter. And
+05:53 
+
+05:53 we'll go to the documentation and see
+05:55 
+
+05:55 what all filters are available at your
+05:57 
+
+05:57 disposal. But for now within the push
+06:01 
+
+06:01 event, I have two event filters. And I
+06:04 
+
+06:04 want you to understand at this juncture
+06:07 
+
+06:07 itself that when we are talking about a
+06:11 
+
+06:11 specific event. So here we are talking
+06:13 
+
+06:13 about push. Here we have defined two
+06:16 
+
+06:16 event filters and they function in an
+06:19 
+
+06:19 and fashion. What is the and fashion?
+06:23 
+
+06:23 And fashion says this must be satisfied
+06:26 
+
+06:26 and this also must be satisfied. So this
+06:30 
+
+06:30 says the push must target these branches
+06:34 
+
+06:34 and this says and changes must occur in
+06:39 
+
+06:39 app directory, docker directory or in
+06:42 
+
+06:42 this directory. Now there are two
+06:44 
+
+06:44 possibilities here. You can either use a
+06:47 
+
+06:47 single asterisk or you can use double
+06:50 
+
+06:50 asterisk. Double asterisk signify that
+06:55 
+
+06:55 this is a wild card that represents
+06:59 
+
+06:59 recursive matching. So if you have a
+07:01 
+
+07:01 directory under app app one and then you
+07:03 
+
+07:03 have certain files where you make
+07:05 
+
+07:05 modifications and the branch in question
+07:08 
+
+07:08 is this then this workflow will trigger.
+07:10 
+
+07:10 If you had a single asterisk here that
+07:13 
+
+07:13 would imply if there are changes made to
+07:16 
+
+07:16 any file that is directly inside the app
+07:19 
+
+07:19 directory. So with this understanding
+07:23 
+
+07:23 let's see this one and again I want you
+07:26 
+
+07:26 to know one more thing at this stage
+07:28 
+
+07:28 itself. Here you see we are using the
+07:31 
+
+07:31 branches filter and here we are using
+07:34 
+
+07:34 the branches ignore filter. Now the
+07:37 
+
+07:37 point is you cannot use both of these
+07:39 
+
+07:39 filters together. You either use this or
+07:42 
+
+07:42 you use this which is why I have two
+07:45 
+
+07:45 separate YAML from where I have taken
+07:48 
+
+07:48 just the on section. So the same implies
+07:52 
+
+07:52 for paths as well. Either you use paths
+07:55 
+
+07:55 or you use paths ignore. And this is
+07:58 
+
+07:58 obvious. What does branches ignore mean?
+08:01 
+
+08:01 Whenever there are pushes to these
+08:03 
+
+08:03 branches, the workflow will not trigger.
+08:06 
+
+08:06 Whenever there will be changes made to
+08:08 
+
+08:08 these files, the workflow will not
+08:12 
+
+08:12 trigger. Understanding this is critical
+08:14 
+
+08:14 because in production implementations,
+08:17 
+
+08:17 you would be using both of these. Second
+08:20 
+
+08:20 is help reduce unnecessary workflow
+08:23 
+
+08:23 executions. We already discussed this.
+08:25 
+
+08:25 Commonly used filters, branches, paths,
+08:29 
+
+08:29 tags and ignore filters as we are seeing
+08:32 
+
+08:32 here. Commonly used for branch control,
+08:35 
+
+08:35 selective CI execution, mono repo
+08:39 
+
+08:39 optimization. That is pretty obvious. So
+08:41 
+
+08:41 I want to go to the browser and show you
+08:44 
+
+08:44 how to maneuver the documentation
+08:46 
+
+08:46 because that is very important in my
+08:48 
+
+08:48 opinion. So we will go to docs
+08:51 
+
+08:51 dotgithub.com
+08:56 
+
+08:56 and here I will zoom in a little and
+08:59 
+
+08:59 CI/CD and devops you see GitHub actions
+09:02 
+
+09:02 I will go here and then there are two
+09:04 
+
+09:04 sections that I want you to concentrate
+09:07 
+
+09:07 on. First is concept second is
+09:09 
+
+09:09 reference. So we have seen the reference
+09:11 
+
+09:11 section a couple of times already in
+09:13 
+
+09:13 this course. But when I talk about
+09:15 
+
+09:15 concepts if you want to learn something
+09:17 
+
+09:17 about a specific feature when you want
+09:20 
+
+09:20 to read the theory then you go to the
+09:23 
+
+09:23 concept section obvious. And when you
+09:26 
+
+09:26 want to see examples on how to use
+09:27 
+
+09:27 something then you go to reference. So
+09:29 
+
+09:29 I'll go to reference here. I will go to
+09:32 
+
+09:32 workflow and actions. And here I will go
+09:34 
+
+09:34 to events that trigger workflows. And if
+09:37 
+
+09:37 I go to this push event
+09:41 
+
+09:41 here, you can see that
+09:44 
+
+09:44 this is on push. This we have used in
+09:47 
+
+09:47 the past. And then you see you have
+09:49 
+
+09:49 multiple options that you can use paths.
+09:53 
+
+09:53 And then there are multiple options. And
+09:55 
+
+09:55 if you go to workflow syntax in this
+09:58 
+
+09:58 page, you can find some more options,
+10:02 
+
+10:02 some more ways via which you can use
+10:05 
+
+10:05 this. So I will let you explore this and
+10:07 
+
+10:07 in the demo we'll also explore a few of
+10:10 
+
+10:10 these. Now what I want to do is now I
+10:12 
+
+10:12 want to discuss the next one. So if I go
+10:15 
+
+10:15 to my diagrams again activity types
+10:18 
+
+10:18 controls which operation within an event
+10:22 
+
+10:22 trigger workflow. So for example the
+10:26 
+
+10:26 larger event is pull request. Within
+10:30 
+
+10:30 pull request you can have certain
+10:34 
+
+10:34 activity types and based on those
+10:37 
+
+10:37 activity types you can trigger your
+10:41 
+
+10:41 workflows. Now varun how do I know the
+10:46 
+
+10:46 activity types supported by an event. So
+10:50 
+
+10:50 documentation. So if I go here and then
+10:53 
+
+10:53 I scroll down what I want to do is event
+10:56 
+
+10:56 that trigger workflows. I'm at the right
+10:58 
+
+10:58 place. Let's go to pull request. And if
+11:00 
+
+11:00 I go here, the first section will tell
+11:03 
+
+11:03 you what are the activity types
+11:06 
+
+11:06 supported by a pull request. And it is
+11:09 
+
+11:09 imperative that you read what is given
+11:12 
+
+11:12 here. Now again I want you to understand
+11:14 
+
+11:14 one more thing. It is not possible for
+11:17 
+
+11:17 anyone to go in the documentation and
+11:20 
+
+11:20 read everything. But what I want my
+11:23 
+
+11:23 students and my viewers to inculcate at
+11:26 
+
+11:26 this stage itself is understanding the
+11:30 
+
+11:30 foundations that if I want to do this I
+11:33 
+
+11:33 can go there and maybe that place will
+11:37 
+
+11:37 have the information about what I want
+11:40 
+
+11:40 to achieve. So any good engineers they
+11:43 
+
+11:43 do not know everything that is under the
+11:45 
+
+11:45 sun but what they know is how to figure
+11:49 
+
+11:49 out things. And when I was in
+11:51 
+
+11:51 operations, I used to figure out things
+11:54 
+
+11:54 by reading documentation, searching here
+11:56 
+
+11:56 and there, Stack Overflow and so on. But
+11:60 
+
+11:60 you
+12:01 
+
+12:01 can always use AI along with the
+12:05 
+
+12:05 documentation to figure out something.
+12:08 
+
+12:08 So use those things to figure out how to
+12:12 
+
+12:12 achieve what your requirement is. Maybe
+12:16 
+
+12:16 your requirement is whenever there is a
+12:20 
+
+12:20 pull request and under that pull request
+12:22 
+
+12:22 whenever a PR is closed you want your
+12:26 
+
+12:26 workflow to trigger and if someone comes
+12:29 
+
+12:29 to you with that requirement you will
+12:31 
+
+12:31 say okay maybe let me see if in the pull
+12:35 
+
+12:35 request there is an activity type
+12:38 
+
+12:38 foreclosed if there is I can achieve
+12:40 
+
+12:40 this requirement. So I want you guys to
+12:44 
+
+12:44 think like this. Now let's come back to
+12:48 
+
+12:48 the topic again. So if I talk about pull
+12:50 
+
+12:50 request, when you just use pull request
+12:52 
+
+12:52 without supplying any activity types, it
+12:55 
+
+12:55 is telling you the workflow will by
+12:58 
+
+12:58 default run whenever a PR is opened,
+13:01 
+
+13:01 whenever a PR is reopened and whenever
+13:04 
+
+13:04 there is a synchronize event. Now what
+13:07 
+
+13:07 is synchronize? Synchronize is when
+13:09 
+
+13:09 there is a PR already opened and then
+13:12 
+
+13:12 you perform some new pushes in that
+13:15 
+
+13:15 scenario the synchronize will happen.
+13:19 
+
+13:19 Understood? But if let's say you also
+13:23 
+
+13:23 want your CI to trigger your workflow to
+13:27 
+
+13:27 trigger whenever a PR is closed or
+13:30 
+
+13:30 whenever a PR moves from a draft stage
+13:34 
+
+13:34 to a ready for review stage. In that
+13:38 
+
+13:38 scenario as well, you may choose to run
+13:41 
+
+13:41 your workflow. And again I have taken
+13:44 
+
+13:44 this pull request example. But if you go
+13:47 
+
+13:47 to the documentation, if I go to push,
+13:50 
+
+13:50 there are no activity types supported
+13:51 
+
+13:51 here. But if I go to labels, there are
+13:54 
+
+13:54 three activity types supported. Created,
+13:56 
+
+13:56 edited, deleted and so on. So based on
+13:60 
+
+13:60 the event that you wish to use, you see
+14:03 
+
+14:03 what activity types are supported and
+14:05 
+
+14:05 along with the filters. So if I scroll
+14:08 
+
+14:08 down, if I you know go to my diagrams
+14:11 
+
+14:11 then you can see when it comes to event
+14:13 
+
+14:13 filters you can see in the example what
+14:16 
+
+14:16 all are supported activity types you
+14:18 
+
+14:18 already know how to check. Now second is
+14:20 
+
+14:20 help improve workflow execution
+14:22 
+
+14:22 precision which is fine commonly used
+14:25 
+
+14:25 with pull request issues release events
+14:27 
+
+14:27 and so on and in production
+14:29 
+
+14:29 implementations what I have seen is at
+14:31 
+
+14:31 least 95% of the times push and pull
+14:36 
+
+14:36 request as events are pretty much always
+14:38 
+
+14:38 used. So these two are the most common
+14:40 
+
+14:40 ones and you may also see label tags
+14:44 
+
+14:44 being used. So keep those things in
+14:47 
+
+14:47 mind. So let's go here and see common
+14:49 
+
+14:49 examples opened, synchronize, reopened.
+14:52 
+
+14:52 And I want you to notice one more thing
+14:54 
+
+14:54 here. The indentation. So if I talk
+14:57 
+
+14:57 about push branches and paths are event
+15:00 
+
+15:00 filter that are indented at the same
+15:04 
+
+15:04 level and they are within the push
+15:06 
+
+15:06 block. If I talk about this these two
+15:09 
+
+15:09 they are inside the pull request block.
+15:12 
+
+15:12 So what we are doing here is we are
+15:15 
+
+15:15 combining activity types here and then
+15:20 
+
+15:20 we are combining that with something
+15:22 
+
+15:22 called event filter. So you can combine
+15:26 
+
+15:26 both of these. These are just
+15:28 
+
+15:28 bifurcations, logical bifurcations for
+15:31 
+
+15:31 you to understand these things. But at
+15:34 
+
+15:34 large, both of these will help you to
+15:37 
+
+15:37 execute the workflow based on your
+15:40 
+
+15:40 specific requirement. So I hope all of
+15:44 
+
+15:44 this makes sense to you with this
+15:47 
+
+15:47 understanding. Let's go on to the demo
+15:50 
+
+15:50 and see how this works in real time. So
+15:54 
+
+15:54 I will
+15:56 
+
+15:56 firstly go to my browser and then I want
+15:60 
+
+15:60 to go to the repository for this course
+16:03 
+
+16:03 and if you have not already started guys
+16:06 
+
+16:06 please please do start this repository
+16:09 
+
+16:09 if this is helping. So I'll go here
+16:12 
+
+16:12 and you can just click here and you can
+16:14 
+
+16:14 start it. I have selfstred it. I am
+16:16 
+
+16:16 guilty. And then what we'll do is we'll
+16:19 
+
+16:19 go to 04 that is lecture 4. And then
+16:23 
+
+16:23 what I want to do is I want to go to the
+16:27 
+
+16:27 first demo here. And then step one, you
+16:30 
+
+16:30 already should have authentication in
+16:33 
+
+16:33 place and you should have a private
+16:36 
+
+16:36 repository named this. You could have
+16:37 
+
+16:37 named this anything but you must have a
+16:41 
+
+16:41 repository created and you must be
+16:43 
+
+16:43 authenticated from your local git to
+16:46 
+
+16:46 that so that you can push whenever you
+16:50 
+
+16:50 need. Then let's start with the demo. So
+16:53 
+
+16:53 what I will do is I will go to my
+16:56 
+
+16:56 command prompt
+16:58 
+
+16:58 and here you see I am in lecture 4
+17:02 
+
+17:02 already. So what I will do is I will run
+17:04 
+
+17:04 mkdir because we know GitHub actions
+17:09 
+
+17:09 will look for files that are available
+17:12 
+
+17:12 in GitHub forward/
+17:15 
+
+17:15 workflows directory and I will create
+17:19 
+
+17:19 this directory structure and I'll also
+17:21 
+
+17:21 have to add hyphen p here so that it
+17:23 
+
+17:23 creates both these directories for me
+17:26 
+
+17:26 and rather before I do that I also want
+17:29 
+
+17:29 to create project files here do I have
+17:32 
+
+17:32 project files already created. I don't
+17:34 
+
+17:34 know that yet. Hold on. Let me run ls
+17:37 
+
+17:37 here. I have project files created. So,
+17:39 
+
+17:39 I'll cd into project files. I'll clear
+17:42 
+
+17:42 my screen. I'll press ls. LS - a. I have
+17:44 
+
+17:44 nothing here. So, what I will run is
+17:47 
+
+17:47 mkdir
+17:49 
+
+17:49 p.githubward
+17:53 
+
+17:53 slashworkflows.
+17:55 
+
+17:55 GitHub is spelled right. Workflows is
+17:57 
+
+17:57 also spelled right. I'll press enter.
+17:59 
+
+17:59 I'll run tree hyphen a because github is
+18:04 
+
+18:04 hidden file because it starts with dot.
+18:06 
+
+18:06 So you see this is created. Now what I
+18:09 
+
+18:09 want to do is I'll go to my visual
+18:11 
+
+18:11 studio code and then I will expand this.
+18:15 
+
+18:15 I'll expand project files and in the
+18:18 
+
+18:18 workflows directory I'll right click
+18:20 
+
+18:20 here new file. I'll create a new file.
+18:23 
+
+18:23 I'll call this 01 and then I will call
+18:27 
+
+18:27 this filter types because we are doing
+18:30 
+
+18:30 the demo on this and then I'll add a
+18:33 
+
+18:33 demo and then I'll add YAML here. So
+18:36 
+
+18:36 like I did in the past lectures what I
+18:38 
+
+18:38 will do is I'll copy paste and then I
+18:40 
+
+18:40 will explain you what we are doing. So
+18:42 
+
+18:42 I'll copy this from here. I will paste
+18:46 
+
+18:46 it here and I think I'll have to zoom in
+18:49 
+
+18:49 a little so that you can see a little
+18:50 
+
+18:50 better. So let's see what we are doing.
+18:54 
+
+18:54 We are calling this workflow 01
+18:56 
+
+18:56 production workflow trigger demo. We are
+18:59 
+
+18:59 saying that this workflow must trigger
+19:02 
+
+19:02 on a push when the push is performed on
+19:06 
+
+19:06 these branches and
+19:10 
+
+19:10 the modified content is available in
+19:12 
+
+19:12 this directory. So if there is something
+19:14 
+
+19:14 available in the root of project files
+19:16 
+
+19:16 and I push it, this workflow will not
+19:20 
+
+19:20 trigger because I have clearly defined
+19:23 
+
+19:23 when this workflow must trigger branches
+19:26 
+
+19:26 and also the paths. The second is pull
+19:29 
+
+19:29 request. I want this workflow to also
+19:33 
+
+19:33 trigger whenever there is a PR opened
+19:36 
+
+19:36 and that PR opened the target for that
+19:39 
+
+19:39 PR the base branch for that PR is main.
+19:43 
+
+19:43 So let's say if I create a feature
+19:44 
+
+19:44 branch and push onto that feature branch
+19:47 
+
+19:47 and then I raise a pull request for the
+19:50 
+
+19:50 base main the target is main then this
+19:54 
+
+19:54 workflow will trigger. Another thing I
+19:57 
+
+19:57 want you to understand that within the
+19:60 
+
+19:60 event. So for example, this is a push
+20:02 
+
+20:02 event. Within that I have two blocks,
+20:05 
+
+20:05 right? Branches and paths. Both of these
+20:07 
+
+20:07 they work in and fashion. Like I already
+20:10 
+
+20:10 told you, both of these conditions must
+20:13 
+
+20:13 be met for this to trigger. And within
+20:15 
+
+20:15 pull request as well, both of these
+20:18 
+
+20:18 conditions must be met for this workflow
+20:21 
+
+20:21 to trigger based on this event. But
+20:24 
+
+20:24 Warun, what about these two? I want you
+20:28 
+
+20:28 to know that when there are multiple
+20:31 
+
+20:31 events, the workflow can trigger based
+20:35 
+
+20:35 on all of these or a single one of them.
+20:39 
+
+20:39 So for example, if let's say this is
+20:41 
+
+20:41 also true and maybe in parallel someone
+20:44 
+
+20:44 opens a pull request as well, then this
+20:46 
+
+20:46 in the for the main branch, then both of
+20:49 
+
+20:49 these this workflow will trigger two
+20:51 
+
+20:51 times. A workflow can trigger multiple
+20:54 
+
+20:54 times based on the events that are
+20:57 
+
+20:57 defined. So for all true events, it will
+21:01 
+
+21:01 run. So for example, if right now I
+21:04 
+
+21:04 perform let's say a push in the feature
+21:07 
+
+21:07 branch and I modified something here,
+21:10 
+
+21:10 then the workflow will trigger because
+21:12 
+
+21:12 of this push event. If I am on the
+21:15 
+
+21:15 screen, I'm on the UI and then I open a
+21:18 
+
+21:18 PR whose target is main, then this
+21:22 
+
+21:22 workflow will trigger because of this
+21:24 
+
+21:24 event, not this event. So I hope that
+21:26 
+
+21:26 distinction is already in place in your
+21:29 
+
+21:29 heads. Now let's scroll down. So what is
+21:32 
+
+21:32 the job that we are doing? We are
+21:34 
+
+21:34 creating only one job that is the
+21:36 
+
+21:36 validation job that runs on Ubuntu. And
+21:39 
+
+21:39 the steps is we already know this name
+21:42 
+
+21:42 is print workflow context and we are
+21:44 
+
+21:44 using the pipe symbol because we are
+21:46 
+
+21:46 running multiple commands in the same
+21:49 
+
+21:49 run statement and then we are defining
+21:52 
+
+21:52 two of these events. So again if you
+21:55 
+
+21:55 want to check what from where did I take
+21:58 
+
+21:58 this variables again you go to
+21:59 
+
+21:59 documentation I'll go to my browser I
+22:02 
+
+22:02 will go to the page that I already
+22:04 
+
+22:04 opened. I'm already in the references
+22:06 
+
+22:06 section and I am using variables here
+22:09 
+
+22:09 and in the next section of this course
+22:11 
+
+22:11 we'll discuss these deeply but for now
+22:13 
+
+22:13 just understand if you go to variables
+22:16 
+
+22:16 you can use any of the variables
+22:19 
+
+22:19 available at your disposal. I am using
+22:21 
+
+22:21 two variables for first is the GitHub
+22:24 
+
+22:24 event name second is the reference name
+22:27 
+
+22:27 and reference name will give me the
+22:30 
+
+22:30 reference for the thing that triggered
+22:33 
+
+22:33 this workflow. It could be the branch
+22:35 
+
+22:35 name. It could be a label. It could be a
+22:38 
+
+22:38 tag and XYZ. If you want to learn more
+22:41 
+
+22:41 about this, go here. Search for ref_ame
+22:46 
+
+22:46 and you can read the short reference
+22:48 
+
+22:48 name of branch or tag that triggered the
+22:51 
+
+22:51 workflow. If I said label, please pardon
+22:53 
+
+22:53 me. Only two things. Branch or tag that
+22:56 
+
+22:56 triggered the workflow run. This value
+22:59 
+
+22:59 matches the branch or tag name shown on
+23:01 
+
+23:01 GitHub. For example, feature branch one.
+23:05 
+
+23:05 I'll let you read it. Maybe you want the
+23:08 
+
+23:08 repository name. Maybe you want the
+23:10 
+
+23:10 repository ID. You can use all of these
+23:14 
+
+23:14 based on your specific requirement. So,
+23:16 
+
+23:16 let's have fun some fun. I'll copy this
+23:19 
+
+23:19 one and let's also call this echo owner.
+23:24 
+
+23:24 So, I'll write echo and then I'll have
+23:28 
+
+23:28 owner here. And then let's write this
+23:31 
+
+23:31 here. So this will now also show me who
+23:36 
+
+23:36 is the repository owner. I hope this is
+23:39 
+
+23:39 understood. So let's go to our terminal
+23:43 
+
+23:43 and then let me clear my screen here and
+23:48 
+
+23:48 then what I will do is
+23:51 
+
+23:51 I will come here
+23:54 
+
+23:54 and then let me create two directories
+23:56 
+
+23:56 app and I'll create one docker. So I
+23:59 
+
+23:59 have created two directories and then
+24:01 
+
+24:01 what I will do is I'll create one more
+24:04 
+
+24:04 file app. In the app directory I will
+24:06 
+
+24:06 create a file called app. py. We won't
+24:09 
+
+24:09 be you know writing any python code
+24:11 
+
+24:11 here. I'm just creating this to show you
+24:14 
+
+24:14 a few things. I'll press enter. Now what
+24:17 
+
+24:17 I will do is I'll initialize my
+24:18 
+
+24:18 repository get init and then I will also
+24:22 
+
+24:22 write get branch
+24:25 
+
+24:25 m. I don't have to write this but I'm
+24:28 
+
+24:28 not sure what your branch is called. My
+24:32 
+
+24:32 is called main and this main is coming
+24:34 
+
+24:34 here because I have defined something in
+24:36 
+
+24:36 my zshrc file. If your branch is not
+24:39 
+
+24:39 called main by default and from version
+24:42 
+
+24:42 3 onwards git will call this main by
+24:45 
+
+24:45 default but for now git calls it master.
+24:48 
+
+24:48 So if your primary branch or the default
+24:51 
+
+24:51 branch is called right now master then I
+24:54 
+
+24:54 would request you to run this command so
+24:56 
+
+24:56 that your branch is renamed. For me it
+24:58 
+
+24:58 will not do anything but if your name
+24:60 
+
+25:00 branch is named master it will rename it
+25:02 
+
+25:02 to main. Now what I want to do is I want
+25:05 
+
+25:05 to run get remote add origin. I'm
+25:09 
+
+25:09 calling this origin. You can call this
+25:10 
+
+25:10 anything. I'll go to my browser and then
+25:14 
+
+25:14 I will come here. Let me just duplicate
+25:18 
+
+25:18 this tab. And here I want to go to a
+25:21 
+
+25:21 repository that I have already created.
+25:24 
+
+25:24 I'll go at the top here. And then if I
+25:28 
+
+25:28 expand this cloud with varos gha
+25:31 
+
+25:31 practice. So I have this here. I'll copy
+25:34 
+
+25:34 the SSH path from here and then I will
+25:37 
+
+25:37 go to the command prompt terminal and
+25:39 
+
+25:39 then I will paste it here. So if I run
+25:42 
+
+25:42 get remote I can see that my origin
+25:45 
+
+25:45 appears here. Now I will write echo. So
+25:48 
+
+25:48 I'll add something in that app. py file
+25:50 
+
+25:50 that we created. I will write print and
+25:55 
+
+25:55 then I will write gha github actions
+25:58 
+
+25:58 trigger demo. And then I will close
+26:01 
+
+26:01 these double quotes. I'll close this.
+26:03 
+
+26:03 I'll close this single quote. And then I
+26:05 
+
+26:05 will add this to app app. py. So if I
+26:09 
+
+26:09 cat app app. py I see that print gha
+26:14 
+
+26:14 trigger demo. What I want to do is now I
+26:18 
+
+26:18 want to push this to the main branch. So
+26:20 
+
+26:20 what I will do is get add dot I'll move
+26:23 
+
+26:23 this to the staging area. Get commit- m
+26:28 
+
+26:28 and I'll give a meaningful commit
+26:30 
+
+26:30 message. Let's add feature and I will
+26:33 
+
+26:33 add here add trigger demo application.
+26:38 
+
+26:38 What I also want you to understand is so
+26:40 
+
+26:40 let's first commit this and I will first
+26:43 
+
+26:43 run get pushy-en u and then I will run
+26:47 
+
+26:47 origin I'll write origin main I want you
+26:50 
+
+26:50 to first understand that right now we
+26:54 
+
+26:54 are pushing onto the main branch so if I
+26:56 
+
+26:56 go to my workflow
+26:59 
+
+26:59 my workflow should not trigger because
+27:02 
+
+27:02 we are not saying that our push our
+27:06 
+
+27:06 branch is main when the push happens. So
+27:10 
+
+27:10 this workflow will only trigger when
+27:12 
+
+27:12 this condition is met and this condition
+27:14 
+
+27:14 is met. So for us this condition is
+27:16 
+
+27:16 meeting because we are making some
+27:18 
+
+27:18 changes in the app directory. But this
+27:20 
+
+27:20 condition will not meet because we are
+27:23 
+
+27:23 not pushing to any of the feature or
+27:26 
+
+27:26 develop branch. We are pushing to the
+27:27 
+
+27:27 main branch and main branch is not part
+27:29 
+
+27:29 of this condition. Another thing I want
+27:32 
+
+27:32 you to clearly know. So when it comes to
+27:34 
+
+27:34 the branches that have your releasable
+27:36 
+
+27:36 code for example main branch, production
+27:40 
+
+27:40 branch, release branch or it could be
+27:42 
+
+27:42 named anything. So your primary branch
+27:44 
+
+27:44 the pushes will be disabled because your
+27:49 
+
+27:49 releasable branches are protected using
+27:52 
+
+27:52 branch protection rules. If you have
+27:54 
+
+27:54 been through my Git and GitHub course,
+27:56 
+
+27:56 you already know how to protect
+27:58 
+
+27:58 branches. And as you progress with this
+28:00 
+
+28:00 course when we do actual production like
+28:03 
+
+28:03 demos we will be using the same methods
+28:06 
+
+28:06 as you would see used in production
+28:09 
+
+28:09 similar if not same let's say now get
+28:13 
+
+28:13 pushy-U origin main I'll press this and
+28:16 
+
+28:16 let's go to our repository so I'll go to
+28:19 
+
+28:19 my browser I will go to actions and you
+28:24 
+
+28:24 see there has been no trigger vc 01
+28:28 
+
+28:28 production ction workflow trigger demo
+28:30 
+
+28:30 here but there are no workflow runs yet.
+28:34 
+
+28:34 I want you to clearly understand this.
+28:37 
+
+28:37 And if I go to code, you see our code is
+28:40 
+
+28:40 already here. App is here. Docker
+28:43 
+
+28:43 directory is not here because that
+28:44 
+
+28:44 directory is empty. Hence that was not
+28:46 
+
+28:46 pushed here. So you see gh trigger demo
+28:49 
+
+28:49 it is here but actions no trigger of
+28:53 
+
+28:53 this workflow. Now when this workflow
+28:56 
+
+28:56 will trigger when the conditions that we
+28:58 
+
+28:58 have defined will be met. So let's do
+29:02 
+
+29:02 certain things that will meet those
+29:04 
+
+29:04 conditions. So I'll go here to my
+29:05 
+
+29:05 terminal. I'll clear my screen. I'll run
+29:08 
+
+29:08 get switch-pho.
+29:17 
+
+29:17 I'll press enter. So I have created this
+29:19 
+
+29:19 branch and I have also switched to this
+29:22 
+
+29:22 branch. Now what I will do is I'll write
+29:25 
+
+29:25 one statement and this time what I'm
+29:27 
+
+29:27 doing is in app. py I'm adding
+29:31 
+
+29:31 triggering workflow from feature branch
+29:34 
+
+29:34 and I'm adding this to app. py. I will
+29:37 
+
+29:37 clear my screen and if I run get status
+29:40 
+
+29:40 we see that this has been modified. So
+29:42 
+
+29:42 what I will do is get add dot to move
+29:45 
+
+29:45 this to staging area and then what I
+29:47 
+
+29:47 will do is I will commit this with a
+29:50 
+
+29:50 meaningful commit message commit m
+29:52 
+
+29:52 feature trigger workflow from feature
+29:54 
+
+29:54 branch. I'll press enter and then what I
+29:56 
+
+29:56 will do is get pushy- u to define local
+30:01 
+
+30:01 to remote mapping and then I will write
+30:05 
+
+30:05 origin feature trigger demo. I'll press
+30:08 
+
+30:08 enter and this time let's go to our
+30:11 
+
+30:11 browser and I will refresh this.
+30:16 
+
+30:16 Yes. And you see this has appeared here.
+30:19 
+
+30:19 So if I go here and then this is the
+30:22 
+
+30:22 validation job that we defined and if I
+30:26 
+
+30:26 print workflow context because that was
+30:29 
+
+30:29 the name of our step here. So if I go
+30:32 
+
+30:32 here you see print workflow context was
+30:35 
+
+30:35 the name of the step and that is what we
+30:37 
+
+30:37 see here and we see workflow triggered
+30:40 
+
+30:40 successfully event type push branch is
+30:43 
+
+30:43 this owner is cloud with vjor so all the
+30:46 
+
+30:46 variables that we have defined we see
+30:49 
+
+30:49 the values for those variables I hope
+30:52 
+
+30:52 this is understood now I want to take
+30:54 
+
+30:54 this one step further so let's do one
+30:57 
+
+30:57 thing if I go to my code you will see
+30:60 
+
+30:60 that compare and pull pull request tab
+31:02 
+
+31:02 will come and it is here. So let's also
+31:05 
+
+31:05 see will this also trigger when we
+31:07 
+
+31:07 create a pull request. So I'll click on
+31:10 
+
+31:10 compare and pull request here. We have
+31:12 
+
+31:12 already discussed this deeply in Git and
+31:14 
+
+31:14 GitHub course. So I won't be explaining
+31:16 
+
+31:16 this but I want you to understand we are
+31:18 
+
+31:18 creating this pull request so that
+31:19 
+
+31:19 whatever changes we have done in this
+31:21 
+
+31:21 branch can be merged onto main. But
+31:23 
+
+31:23 before we do that we want our CI to
+31:26 
+
+31:26 trigger our workflow to trigger. I'll
+31:29 
+
+31:29 click on create pull request and as soon
+31:32 
+
+31:32 as I click on create pull request my
+31:34 
+
+31:34 workflow will trigger. Now if I map this
+31:37 
+
+31:37 to production scenarios, what you would
+31:39 
+
+31:39 often want to do is whenever someone
+31:41 
+
+31:41 raises a pull request to merge the code
+31:43 
+
+31:43 with the main branch and main branch is
+31:45 
+
+31:45 the one that is holding your releasable
+31:48 
+
+31:48 code and you want main to only have
+31:51 
+
+31:51 tried and tested code. Which is why
+31:54 
+
+31:54 whenever someone creates a PR to merge
+31:57 
+
+31:57 whatever they have done, whatever they
+31:58 
+
+31:58 have done in their feature branches,
+32:00 
+
+32:00 develop branches, buck fix branches,
+32:03 
+
+32:03 hotfix branches and so on. you want to
+32:06 
+
+32:06 perform certain checks on that code so
+32:09 
+
+32:09 that you only merge that once you know
+32:12 
+
+32:12 that that code works. Hence whenever a
+32:16 
+
+32:16 PR is raised you want to run your
+32:18 
+
+32:18 workflow or your pipeline. Similarly
+32:21 
+
+32:21 here also we are raising a pull request
+32:24 
+
+32:24 towards main whose base is main whose
+32:27 
+
+32:27 target is main a PR whose target is
+32:29 
+
+32:29 main. Once that is raised, the workflow
+32:33 
+
+32:33 must trigger. That is what we defined.
+32:35 
+
+32:35 And if I come to actions, you see a
+32:37 
+
+32:37 second run. And here you see this run.
+32:40 
+
+32:40 You see pull request here. If I go here,
+32:42 
+
+32:42 I go to validation job. I expand print
+32:46 
+
+32:46 workflow context. You see event type was
+32:50 
+
+32:50 pull request and branch. This is calling
+32:52 
+
+32:52 this. Right now the owner is cloud with
+32:56 
+
+32:56 vos. I hope this is understood. But
+33:00 
+
+33:00 while we are at it, let's also study the
+33:03 
+
+33:03 synchronize event. So understand the
+33:06 
+
+33:06 pull request is not yet closed. The pull
+33:08 
+
+33:08 request is still open. The pull request
+33:12 
+
+33:12 will only close when I merge it and then
+33:14 
+
+33:14 close it. I want you to also experience
+33:19 
+
+33:19 the synchronize part of the pull request
+33:23 
+
+33:23 event. So let's do one thing. I'll go to
+33:26 
+
+33:26 my terminal again
+33:29 
+
+33:29 and when will the synchronize be seen
+33:32 
+
+33:32 when the PR is opened and you have new
+33:35 
+
+33:35 comets in your repository in your branch
+33:38 
+
+33:38 so to speak. So let's come here. I will
+33:41 
+
+33:41 clear my screen and this time I will add
+33:45 
+
+33:45 another statement in our app. py I'll
+33:49 
+
+33:49 paste it here and we are saying testing
+33:53 
+
+33:53 synchronize activity and we are making
+33:54 
+
+33:54 these changes in app py and then I will
+33:58 
+
+33:58 run three commands the first is to stage
+34:01 
+
+34:01 this second is we are committing and
+34:03 
+
+34:03 writing validate synchronize workflow
+34:05 
+
+34:05 trigger lastly we are pushing the
+34:08 
+
+34:08 changes to the feature trigger demo I'll
+34:10 
+
+34:10 press enter and now if I go to my
+34:13 
+
+34:13 browser and let me go to actions And you
+34:18 
+
+34:18 see this has been triggered. And you see
+34:22 
+
+34:22 this has been triggered twice. If I
+34:26 
+
+34:26 refresh this now and now. Can anyone
+34:31 
+
+34:31 tell me why this workflow ran twice?
+34:36 
+
+34:36 Remember what were our conditions?
+34:39 
+
+34:39 I told you your workflow will run
+34:42 
+
+34:42 multiple times. If the events that you
+34:46 
+
+34:46 have defined dictate that and if I go
+34:49 
+
+34:49 back to Visual Studio Code, what did we
+34:53 
+
+34:53 say? We say you run this whenever there
+34:56 
+
+34:56 is a push which meets these conditions.
+35:01 
+
+35:01 And our push met both the conditions
+35:03 
+
+35:03 feature branch and we made changes to
+35:06 
+
+35:06 app dot py. Hence
+35:10 
+
+35:10 this also triggered this also triggered
+35:12 
+
+35:12 the workflow. And here since we said
+35:15 
+
+35:15 that we want to synchronize whenever
+35:18 
+
+35:18 there is a pull request and pull request
+35:20 
+
+35:20 opened and there is a synchronize type
+35:23 
+
+35:23 there then also you run and we have this
+35:27 
+
+35:27 opened to the target main. Hence if you
+35:31 
+
+35:31 go here this triggered because of the
+35:34 
+
+35:34 push and this triggered because of the
+35:37 
+
+35:37 synchronize part. So if I go here this
+35:39 
+
+35:39 will still show you pull request but
+35:43 
+
+35:43 under the hood it is synchronize
+35:45 
+
+35:45 activity type that triggered this. I
+35:47 
+
+35:47 hope this made sense. Now that we have
+35:51 
+
+35:51 this understanding, let's go to the next
+35:54 
+
+35:54 topic that I want to discuss and that
+35:56 
+
+35:56 topic is variable contexts
+36:00 
+
+36:00 and expressions. So I will
+36:05 
+
+36:05 I want to go to the repository for
+36:09 
+
+36:09 this lecture and then I want to go to
+36:12 
+
+36:12 variable context and expressions in
+36:15 
+
+36:15 GitHub actions. GitHub actions allows
+36:19 
+
+36:19 workflated information and execution
+36:22 
+
+36:22 logic to be handled in three primary
+36:25 
+
+36:25 ways. First is variables
+36:28 
+
+36:28 and we have been using this. This is not
+36:31 
+
+36:31 new to us. There is context and this as
+36:35 
+
+36:35 well we have been using it. There is
+36:37 
+
+36:37 nothing new here and we used this if you
+36:40 
+
+36:40 remember in this lecture. We said run
+36:43 
+
+36:43 echo my trigger and I explained this to
+36:46 
+
+36:46 you that this hole is called an
+36:48 
+
+36:48 expression. We learned GitHub is the
+36:51 
+
+36:51 context here and event name is the
+36:54 
+
+36:54 context property. We learned this but we
+36:57 
+
+36:57 are just defining it specifically in
+37:00 
+
+37:00 this section because you will be using
+37:02 
+
+37:02 these in your GitHub actions journey. So
+37:06 
+
+37:06 variables used mainly inside runner
+37:09 
+
+37:09 shell command scripts and runtime
+37:11 
+
+37:11 commands execution after the job starts
+37:14 
+
+37:14 running on the runner. So for variables
+37:17 
+
+37:17 we are saying use them when you want to
+37:21 
+
+37:21 run certain commands. So where do you
+37:24 
+
+37:24 run commands? You run commands in the
+37:27 
+
+37:27 run block which is why that is what we
+37:30 
+
+37:30 are doing here. But we are saying this
+37:33 
+
+37:33 for variables. But here we are using
+37:37 
+
+37:37 context. So there is nothing written in
+37:40 
+
+37:40 stone. I can use context as well or I
+37:44 
+
+37:44 can use variables. But what you should
+37:47 
+
+37:47 be using and I always say as a rule of
+37:50 
+
+37:50 thumb if something is made available to
+37:53 
+
+37:53 you in form of variables then use that
+37:57 
+
+37:57 when it comes to commands and shell
+38:00 
+
+38:00 scripts and you in the run block use
+38:03 
+
+38:03 them use variables but if something is
+38:06 
+
+38:06 not available via variables then of
+38:09 
+
+38:09 course you can use contexts as well but
+38:12 
+
+38:12 then there is one more thing there are
+38:15 
+
+38:15 certain things that are available as
+38:17 
+
+38:17 both variables and as context in that
+38:21 
+
+38:21 scenario what would you want to do so
+38:23 
+
+38:23 here we are using context but if I go to
+38:26 
+
+38:26 the documentation and I search for event
+38:30 
+
+38:30 name then I see github_event_ame
+38:34 
+
+38:34 is a variable and if I go to contexts
+38:38 
+
+38:38 and I go to the context github and I see
+38:41 
+
+38:41 the properties that are there I also the
+38:45 
+
+38:45 event name there as well. Then what
+38:50 
+
+38:50 should I use? If you are in the run
+38:53 
+
+38:53 block, then I would recommend you use
+38:56 
+
+38:56 variables, not context. Now the second
+38:58 
+
+38:58 is context. We already know used mainly
+39:01 
+
+39:01 for accessing workflow related metadata
+39:04 
+
+39:04 and information such as repository
+39:07 
+
+39:07 details, events, job, steps, runners,
+39:10 
+
+39:10 secrets, variables, and matrix values.
+39:13 
+
+39:13 and secrets. We have already seen this
+39:15 
+
+39:15 in the past lecture. So if you remember
+39:18 
+
+39:18 in this lecture where we created a
+39:21 
+
+39:21 pipeline and if I go to
+39:24 
+
+39:24 this step here where we created the
+39:27 
+
+39:27 workflow and if you see we defined
+39:30 
+
+39:30 certain secrets and then we called those
+39:33 
+
+39:33 secrets
+39:35 
+
+39:35 in our workflow YAML. So we defined
+39:38 
+
+39:38 these in our at repository level and
+39:42 
+
+39:42 then we called these and you can use
+39:45 
+
+39:45 contexts like this. So if I go here to
+39:49 
+
+39:49 the documentation and if you see context
+39:52 
+
+39:52 you see there are various contexts
+39:54 
+
+39:54 available GitHub env job jobs runners
+39:60 
+
+39:60 secrets and so on and within these
+40:03 
+
+40:03 contexts you have multiple
+40:06 
+
+40:06 properties. So if I talk about the
+40:09 
+
+40:09 GitHub context, you have action
+40:13 
+
+40:13 property, you have action path and there
+40:16 
+
+40:16 are plenty more available at your
+40:18 
+
+40:18 disposal and based on your requirement,
+40:22 
+
+40:22 you should be using these and if some of
+40:25 
+
+40:25 these things are not making sense right
+40:28 
+
+40:28 now because these are the things that
+40:30 
+
+40:30 only make sense when you start doing it.
+40:32 
+
+40:32 So in the demo all the dots will be
+40:34 
+
+40:34 connected. if something is hazy right
+40:37 
+
+40:37 now. And the third is expressions used
+40:40 
+
+40:40 mainly inside workflow YAML at workflow
+40:43 
+
+40:43 job and step level for conditions,
+40:45 
+
+40:45 dynamic evaluation, workflow
+40:48 
+
+40:48 orchestration and execution control. So
+40:51 
+
+40:51 in essence if I talk about this GitHub
+40:54 
+
+40:54 is a context in github.ref
+40:57 
+
+40:57 context property is ref. If I talk about
+41:00 
+
+41:00 this, this whole becomes an expression.
+41:03 
+
+41:03 And if I talk about this, this becomes a
+41:06 
+
+41:06 conditional expression. And we'll see
+41:08 
+
+41:08 how conditional expressions will help us
+41:11 
+
+41:11 later in this course. And I'll also show
+41:14 
+
+41:14 you a small example in this section
+41:17 
+
+41:17 itself. Now there are few notes I want
+41:21 
+
+41:21 you to know. GitHub documentation
+41:23 
+
+41:23 commonly uses the term variables while
+41:26 
+
+41:26 many engineers also c casually refer to
+41:29 
+
+41:29 them as environment variables because
+41:31 
+
+41:31 they become available inside the runner
+41:34 
+
+41:34 shell environment during job execution.
+41:36 
+
+41:36 And whatever I have written here, this
+41:39 
+
+41:39 is also at place recommended by GitHub
+41:42 
+
+41:42 actions documentation. And I have to
+41:45 
+
+41:45 admit here the documentation for GitHub
+41:48 
+
+41:48 actions is not as rich as the Kubernetes
+41:52 
+
+41:52 documentation or as rich as AWS's
+41:56 
+
+41:56 documentation. But at this stage I don't
+41:59 
+
+41:59 think it is as solid as it should be
+42:02 
+
+42:02 because the tool is already quite
+42:03 
+
+42:03 popular. So use variables inside shell
+42:07 
+
+42:07 commands and script wherever possible.
+42:09 
+
+42:09 Use context and expressions for workflow
+42:12 
+
+42:12 logic, conditions, orchestration and
+42:14 
+
+42:14 dynamic evaluation. These are some
+42:16 
+
+42:16 jargon I'm throwing at you, but we'll
+42:18 
+
+42:18 see in the example how do we use them.
+42:21 
+
+42:21 So variables, they are of two types.
+42:25 
+
+42:25 There is a default variable that are
+42:27 
+
+42:27 provided by GitHub. Then there are
+42:29 
+
+42:29 custom variables created by users. If
+42:31 
+
+42:31 you remember, if you go to the settings
+42:34 
+
+42:34 in your repository and then you go to
+42:38 
+
+42:38 secrets and variables and then you go to
+42:41 
+
+42:41 actions here. What we did was we defined
+42:44 
+
+42:44 our secrets at repository level. You
+42:47 
+
+42:47 could also define variables at your
+42:51 
+
+42:51 repository level or you can define these
+42:54 
+
+42:54 variables at your organization level.
+42:57 
+
+42:57 Now I want you to understand something.
+42:59 
+
+42:59 So let's say you are using multiple
+43:01 
+
+43:01 workflow YAML. Okay.
+43:04 
+
+43:04 Instead of defining a variable in each
+43:08 
+
+43:08 of those workflow YAML, what you can do
+43:10 
+
+43:10 is you can define the variable at
+43:12 
+
+43:12 repository level so that all your
+43:16 
+
+43:16 workflows can access them. Another thing
+43:19 
+
+43:19 is if you define your variables at
+43:22 
+
+43:22 organization level, we have not
+43:23 
+
+43:23 discussed that. We'll see that soon. But
+43:25 
+
+43:25 if you define them at organization level
+43:29 
+
+43:29 then all your repositories and their
+43:32 
+
+43:32 respective workflows can access those
+43:35 
+
+43:35 variables. So you have multiple options
+43:38 
+
+43:38 and in this example we'll also see how
+43:41 
+
+43:41 to define these variables within your
+43:44 
+
+43:44 workflow yaml. So in the past lecture we
+43:46 
+
+43:46 defined a secret. You can also define
+43:49 
+
+43:49 variables the same way. But if I go
+43:51 
+
+43:51 here, if I scroll down, default
+43:53 
+
+43:53 variables we have already seen. These
+43:55 
+
+43:55 are available here. You can see what all
+43:58 
+
+43:58 variables are available at your
+44:00 
+
+44:00 disposal. There is a runner specific,
+44:03 
+
+44:03 there is GitHub specific and so on. But
+44:06 
+
+44:06 if I go here, these are the common
+44:08 
+
+44:08 examples and this is how we use it and
+44:10 
+
+44:10 we have used this in the previous demo
+44:12 
+
+44:12 as well. Custom variables is the
+44:14 
+
+44:14 important thing. You can define these at
+44:16 
+
+44:16 repository level, at organization level
+44:19 
+
+44:19 or in the workflow itself. And this is
+44:22 
+
+44:22 how you define them in the workflow. So
+44:24 
+
+44:24 here I have defined two of these
+44:27 
+
+44:27 variables and you see how I am using
+44:30 
+
+44:30 those defined variables. And we will see
+44:32 
+
+44:32 this in the demo as well. Then context
+44:35 
+
+44:35 we have already seen expressions we
+44:36 
+
+44:36 already seen. I want to show you an
+44:39 
+
+44:39 example where we are using this. So what
+44:41 
+
+44:41 we are saying here is you run this
+44:45 
+
+44:45 workflow on push and you run this job
+44:50 
+
+44:50 only when
+44:52 
+
+44:52 the github dot reference is equal to
+44:56 
+
+44:56 main. So the reference here is the
+44:58 
+
+44:58 reference could be tag or it could be
+45:00 
+
+45:00 the branch name. Here the reference is
+45:03 
+
+45:03 the branch name. We are dealing at job
+45:06 
+
+45:06 level here not at this level. So in job
+45:10 
+
+45:10 level we are saying run this job only
+45:13 
+
+45:13 when something has happened in the
+45:18 
+
+45:18 main branch.
+45:20 
+
+45:20 I hope this is clear. And similarly you
+45:24 
+
+45:24 can have some more jobs where you define
+45:28 
+
+45:28 only run these jobs when something
+45:30 
+
+45:30 happens in the feature branch. And in
+45:32 
+
+45:32 the demo we will see that. So let's move
+45:35 
+
+45:35 to the demo and do this in real time. So
+45:39 
+
+45:39 I will go to my visual studio code and
+45:43 
+
+45:43 first let me go to the terminal and what
+45:45 
+
+45:45 I will do is I'll clear my screen. I
+45:47 
+
+45:47 will run rm - rf app
+45:52 
+
+45:52 app. py. I also want to remove docker
+45:56 
+
+45:56 and then I also want to remove
+46:00 
+
+46:00 and I'll press enter. So if I run ls- la
+46:05 
+
+46:05 I see.github GitHub created and app is
+46:09 
+
+46:09 still here. rm - rf. I'll also remove
+46:12 
+
+46:12 app. If I run ls- la. Now I don't see
+46:16 
+
+46:16 anything here. So I'll clear my screen.
+46:18 
+
+46:18 There is github but that we need. And
+46:21 
+
+46:21 I'll go to visual studio code and let's
+46:25 
+
+46:25 also delete this because right now we
+46:28 
+
+46:28 don't need this. I will delete this one
+46:30 
+
+46:30 as well. Move to trash. And then we have
+46:33 
+
+46:33 a clean structure now. So I'll go to my
+46:36 
+
+46:36 terminal and here I will run let's
+46:40 
+
+46:40 initialize this get init and your branch
+46:43 
+
+46:43 should already be called main and then
+46:46 
+
+46:46 what I will do is I'll go to visual
+46:48 
+
+46:48 studio code and in workflow I'll create
+46:51 
+
+46:51 a new file and this file I will call 02
+46:55 
+
+46:55 and [snorts] here I will write
+46:57 
+
+46:57 expressions
+46:60 
+
+46:60 variables
+47:02 
+
+47:02 context text
+47:05 
+
+47:05 demo and then I will write pretty long
+47:08 
+
+47:08 name. So, oh you should see how I name
+47:12 
+
+47:12 in when I was in operations I mean I
+47:16 
+
+47:16 used to have some really lengthy names.
+47:18 
+
+47:18 So I'll go here I'll copy the workflow
+47:21 
+
+47:21 YAML. Okay. So this is long long long
+47:24 
+
+47:24 but very simple. What we are saying here
+47:28 
+
+47:28 is this workflow should only be executed
+47:32 
+
+47:32 when there is a push to the main branch
+47:36 
+
+47:36 or there is push to any of the feature
+47:39 
+
+47:39 branches. Then we are defining three
+47:41 
+
+47:41 environment variables. Application name
+47:43 
+
+47:43 is payment service. Deployment
+47:45 
+
+47:45 environment is production. AWS region is
+47:47 
+
+47:47 AP South one which is Mumbai.
+47:50 
+
+47:50 Jobs we have demo job. This runs on
+47:54 
+
+47:54 Ubuntu latest runner. steps. The first
+47:57 
+
+47:57 step is we are just saying print
+48:01 
+
+48:01 variables context and expressions. So
+48:04 
+
+48:04 what we are doing is here we have
+48:06 
+
+48:06 different variables. In the first
+48:08 
+
+48:08 command we have different variables and
+48:11 
+
+48:11 all of these we have already seen at
+48:13 
+
+48:13 some stage in this course. Then we have
+48:16 
+
+48:16 some custom variables. we are displaying
+48:19 
+
+48:19 those custom variables and as we
+48:21 
+
+48:21 progress with this course we'll be doing
+48:23 
+
+48:23 production like examples so that
+48:26 
+
+48:26 everything gets connected but right now
+48:28 
+
+48:28 I want you to understand these concepts
+48:31 
+
+48:31 because these concepts these foundations
+48:34 
+
+48:34 will tell you how you deal with
+48:36 
+
+48:36 production environments and interviews
+48:38 
+
+48:38 then you have context values and here as
+48:42 
+
+48:42 well I am using what is already
+48:45 
+
+48:45 available to us we are using GitHub
+48:47 
+
+48:47 repos repository we are using GitHub
+48:49 
+
+48:49 actor, GitHub workflow, runner OS and so
+48:52 
+
+48:52 on. And similarly here we have context
+48:55 
+
+48:55 versus variable we are using the same
+48:58 
+
+48:58 thing but like I told you before if you
+49:01 
+
+49:01 are within your you know run command
+49:04 
+
+49:04 then prefer using variables if something
+49:07 
+
+49:07 is available as both variable and
+49:09 
+
+49:09 context. Here I want to show you certain
+49:12 
+
+49:12 examples which is why I'm using all of
+49:14 
+
+49:14 them. And then here is the important
+49:18 
+
+49:18 piece. So if I talk about expression,
+49:20 
+
+49:20 let me go to the documentation here. And
+49:23 
+
+49:23 then I will go to expressions. So if I
+49:26 
+
+49:26 go to expressions, you have multiple
+49:28 
+
+49:28 ways via which you can use them. And I
+49:31 
+
+49:31 don't want you to read all of them. Just
+49:34 
+
+49:34 have a glimpse of it and then when the
+49:37 
+
+49:37 requirement comes, you should be able to
+49:39 
+
+49:39 understand which one to use. So for
+49:41 
+
+49:41 example if it has contains it will tell
+49:45 
+
+49:45 you if that is there something is there
+49:48 
+
+49:48 then use that starts with if something
+49:51 
+
+49:51 starts with this then use this starts
+49:54 
+
+49:54 with we are using this in this demo and
+49:56 
+
+49:56 so on. So I'll let you read these but
+49:58 
+
+49:58 I'll go here and what I'm saying is
+50:02 
+
+50:02 expression evaluation echo is main
+50:06 
+
+50:06 branch GitHub reference is equal to this
+50:09 
+
+50:09 echo is feature branch starts with
+50:12 
+
+50:12 GitHub reference name feature this now
+50:16 
+
+50:16 when this runs we will see what this
+50:19 
+
+50:19 outputs but this is the piece where I
+50:22 
+
+50:22 want you to concentrate on in this step
+50:27 
+
+50:27 what I am saying is demonstrate feature
+50:30 
+
+50:30 branch condition. So if starts with this
+50:34 
+
+50:34 if the push has happened in the feature
+50:37 
+
+50:37 branch
+50:39 
+
+50:39 then you run this feature branch
+50:41 
+
+50:41 detected we are echoing this but if
+50:47 
+
+50:47 it is main branch then you run this
+50:50 
+
+50:50 step. So if we have performed a push on
+50:54 
+
+50:54 main branch then only this step will run
+50:57 
+
+50:57 otherwise if the push is performed in
+50:59 
+
+50:59 feature branch then this step is run. So
+51:02 
+
+51:02 it is imperative for you to understand
+51:05 
+
+51:05 that at certain times you may not want
+51:09 
+
+51:09 to run certain steps. You want to run
+51:11 
+
+51:11 certain steps only when push is
+51:13 
+
+51:13 performed onto certain branches. And
+51:15 
+
+51:15 that is where this becomes extremely
+51:17 
+
+51:17 powerful. And when we do the production
+51:19 
+
+51:19 grade demos, we'll be using the
+51:22 
+
+51:22 combination of all of these to achieve
+51:25 
+
+51:25 our desired outcome.
+51:28 
+
+51:28 Now we have understanding of this. What
+51:31 
+
+51:31 I will do is I'll come to my terminal
+51:35 
+
+51:35 and here I will run. I'll also have to
+51:40 
+
+51:40 get remote add origin again because we
+51:44 
+
+51:44 deleted the doggget directory. And I'll
+51:47 
+
+51:47 come here.
+51:49 
+
+51:49 Where is our Yeah, this is it. And then
+51:52 
+
+51:52 what I will do is I'll come here.
+51:56 
+
+51:56 I will copy this. And this is saying
+51:58 
+
+51:58 that your main branch isn't protected
+52:00 
+
+52:00 because we are able to push onto the
+52:02 
+
+52:02 main directly. And we recently created a
+52:04 
+
+52:04 PR which is why this prompt has come. So
+52:07 
+
+52:07 this is also telling you main branches
+52:10 
+
+52:10 are often protected and yours is not
+52:12 
+
+52:12 protected. So I'll come here and then
+52:14 
+
+52:14 I'll paste it here. I'll press enter and
+52:17 
+
+52:17 then let me just quickly copy the
+52:19 
+
+52:19 command and what we are doing here is
+52:23 
+
+52:23 get add let's move to the staging area
+52:27 
+
+52:27 I'm not copying the command because I'll
+52:30 
+
+52:30 have to do a force push here
+52:34 
+
+52:34 and then I will come here and if I do a
+52:37 
+
+52:37 normal push it might not work I'll paste
+52:41 
+
+52:41 it here because u the work that is there
+52:45 
+
+52:45 this work is entirely different. So I'll
+52:47 
+
+52:47 use a force flag here. I'll press enter
+52:54 
+
+52:54 and if I go to my browser and I want you
+52:58 
+
+52:58 to know whatever we have done we have
+52:59 
+
+52:59 done from the main branch. Okay. So if I
+53:02 
+
+53:02 go here let me just refresh this and
+53:06 
+
+53:06 then this is running variables context
+53:09 
+
+53:09 expressions demo. I'll come here.
+53:13 
+
+53:13 Oh, this is our
+53:16 
+
+53:16 file itself. I'll go to actions and you
+53:18 
+
+53:18 see now this ran just now. I'll go here
+53:22 
+
+53:22 demo job. This is fine. And you see this
+53:26 
+
+53:26 one did not run this step because we had
+53:29 
+
+53:29 a condition that this step should only
+53:32 
+
+53:32 run when there is something in the
+53:34 
+
+53:34 feature branch. So if there is nothing
+53:37 
+
+53:37 in the feature branch, then this step
+53:38 
+
+53:38 will not run. So if I go to Visual
+53:40 
+
+53:40 Studio Code that is what we said in this
+53:43 
+
+53:43 step demonstrate feature branch
+53:45 
+
+53:45 condition. If I go here now, print
+53:48 
+
+53:48 environment variables, you see whatever
+53:50 
+
+53:50 is there. Default variables, event name
+53:53 
+
+53:53 is this, branch name is this, commit sh
+53:55 
+
+53:55 is this, runner is this, and these are
+53:58 
+
+53:58 the custom variables that we defined.
+54:00 
+
+54:00 Environment variables also you can say
+54:02 
+
+54:02 them. And here context values is
+54:05 
+
+54:05 whatever is this is the repository actor
+54:08 
+
+54:08 is cloud with vos workflow 02 is the
+54:11 
+
+54:11 name of the workflow runner OS here
+54:14 
+
+54:14 context versus variables you see both
+54:16 
+
+54:16 are giving the same thing what you want
+54:18 
+
+54:18 to use is your choice but like I said if
+54:22 
+
+54:22 you are running commands or shell
+54:23 
+
+54:23 scripts prefer using variables
+54:26 
+
+54:26 expression evaluation is main branch
+54:29 
+
+54:29 true and you see is feature branch is
+54:32 
+
+54:32 false because the push was performed in
+54:37 
+
+54:37 the main branch which is why main is
+54:40 
+
+54:40 true and feature is false. And finally
+54:44 
+
+54:44 if I expand this you see main branch
+54:47 
+
+54:47 deployment logic triggered and why did
+54:49 
+
+54:49 it say this? Because we defined this
+54:52 
+
+54:52 this step ran because we pushed to the
+54:56 
+
+54:56 main branch. I hope all of these things
+54:59 
+
+54:59 are getting connected and I think that
+55:02 
+
+55:02 is all I wanted to discuss in this
+55:06 
+
+55:06 lecture. That concludes this lecture. In
+55:09 
+
+55:09 this lecture, we understood how GitHub
+55:11 
+
+55:11 actions controls workflow execution
+55:15 
+
+55:15 using event filters, activity types,
+55:17 
+
+55:17 variables, contexts, expressions, and
+55:20 
+
+55:20 conditional execution logic. Most
+55:24 
+
+55:24 importantly, we saw how modern GitHub
+55:27 
+
+55:27 actions workflow intelligently
+55:30 
+
+55:30 control execution behavior to reduce
+55:33 
+
+55:33 unnecessary workflow runs, optimize
+55:36 
+
+55:36 runner utilization, and build scalable
+55:39 
+
+55:39 automation pipelines. In the next
+55:42 
+
+55:42 lecture, we will continue building on
+55:44 
+
+55:44 these concepts while moving deeper into
+55:47 
+
+55:47 GitHub actions functions and workflow
+55:50 
+
+55:50 execution flow behavior. If you have any
+55:53 
+
+55:53 questions, feel free to ask them in the
+55:56 
+
+55:56 comment section and I will reply. If
+55:59 
+
+55:59 this helped, do consider liking,
+56:01 
+
+56:01 sharing, and subscribing. It will mean a
+56:04 
+
+56:04 lot to me. Thank you very much.

@@ -1,0 +1,4540 @@
+00:00 Hi, I am Varun Joshi and I welcome you
+00:03 
+
+00:03 to lecture six of GitHub Actions Basics
+00:06 
+
+00:06 to Production course.
+00:08 
+
+00:08 In this lecture, we will explore inputs,
+00:11 
+
+00:11 one of the most important concepts for
+00:14 
+
+00:14 building dynamic, reusable, and
+00:17 
+
+00:17 production-ready GitHub Actions
+00:20 
+
+00:20 workflows. We will start by
+00:22 
+
+00:22 understanding what inputs are, why they
+00:25 
+
+00:25 are needed, and how they allow workflows
+00:29 
+
+00:29 to receive information
+00:31 
+
+00:31 at runtime rather than relying on
+00:34 
+
+00:34 hard-coded values. After this, we will
+00:37 
+
+00:37 explore the different types of inputs
+00:39 
+
+00:39 supported by GitHub Actions, including
+00:42 
+
+00:42 workflow inputs,
+00:44 
+
+00:44 reusable workflow inputs, and action
+00:48 
+
+00:48 inputs,
+00:49 
+
+00:49 while understanding where each type is
+00:52 
+
+00:52 commonly used in real-world CI/CD
+00:56 
+
+00:56 environments.
+00:57 
+
+00:57 Finally, through hands-on demos, we will
+01:00 
+
+01:00 build an environment-aware
+01:03 
+
+01:03 CI pipeline using workflow inputs, and
+01:06 
+
+01:06 then learn how organizations centralize
+01:10 
+
+01:10 deployment logic using reusable workflow
+01:15 
+
+01:15 inputs to standardize automation across
+01:19 
+
+01:19 multiple applications and teams. So,
+01:22 
+
+01:22 let's get started. Inputs. Firstly, when
+01:26 
+
+01:26 I talk about
+01:28 
+
+01:28 real CI/CD pipelines, the workflows that
+01:31 
+
+01:31 you would use, they rarely operate with
+01:34 
+
+01:34 fixed values. Organizations, what they
+01:37 
+
+01:37 often need is same workflow to support
+01:41 
+
+01:41 multiple environments. And when I say
+01:43 
+
+01:43 multiple environments, it could be dev,
+01:45 
+
+01:45 QA, pre-prod, prod, and so on. Not just
+01:50 
+
+01:50 multiple environments, but multiple
+01:52 
+
+01:52 applications, deployment strategies, and
+01:55 
+
+01:55 operational scenarios. When you have a
+01:58 
+
+01:58 situation like this, when you want to
+01:60 
+
+02:00 provide some data to your workflow
+02:05 
+
+02:05 during runtime, that is when you use
+02:08 
+
+02:08 inputs. So, what are inputs? Inputs are
+02:12 
+
+02:12 parameters used to pass user-defined
+02:16 
+
+02:16 values into workflows. User-defined is
+02:20 
+
+02:20 the keyword here. Previously, the steps
+02:24 
+
+02:24 or jobs within our workflows were
+02:27 
+
+02:27 getting run or executed based on
+02:31 
+
+02:31 whatever we defined in our expressions
+02:34 
+
+02:34 and functions. But now what we are
+02:36 
+
+02:36 saying is whatever user defines at a
+02:40 
+
+02:40 runtime user-provided data as in based
+02:44 
+
+02:44 on that the workflow will execute. Now,
+02:49 
+
+02:49 what inside the workflow may be step one
+02:53 
+
+02:53 of a job should only run for
+02:56 
+
+02:56 development. It should not run for a
+02:58 
+
+02:58 production workload. In that scenario,
+03:03 
+
+03:03 inputs will help you. And as we
+03:05 
+
+03:05 progress, we will dissect various
+03:08 
+
+03:08 scenarios. So, inputs are parameters
+03:10 
+
+03:10 used to pass user-defined values into
+03:13 
+
+03:13 workflows reusable workflows, that is
+03:16 
+
+03:16 the second type of inputs, or actions at
+03:19 
+
+03:19 runtime, that is the third type. So, we
+03:21 
+
+03:21 have covered three types of inputs here.
+03:25 
+
+03:25 First is the normal generic workflow
+03:28 
+
+03:28 inputs. Second is reusable workflow
+03:31 
+
+03:31 inputs, and the third is action inputs.
+03:34 
+
+03:34 Now, we will be doing this lecture in a
+03:37 
+
+03:37 different way. So, what we will do is we
+03:40 
+
+03:40 will first discuss the theory of
+03:43 
+
+03:43 workflow inputs.
+03:45 
+
+03:45 Then we'll be doing the demo for
+03:47 
+
+03:47 workflow inputs, and then we will come
+03:49 
+
+03:49 to reusable workflow inputs. And when I
+03:52 
+
+03:52 talk about the third type here, we will
+03:55 
+
+03:55 only discuss the theory part. We will
+03:58 
+
+03:58 not be doing a demo for this. And why?
+04:01 
+
+04:01 The reason is we have not discussed how
+04:03 
+
+04:03 do you create custom actions. So, I
+04:05 
+
+04:05 don't want to demo something that has a
+04:08 
+
+04:08 foundational concept pending. So, first
+04:10 
+
+04:10 we will learn how to create actions, how
+04:13 
+
+04:13 to create custom actions, and then we
+04:15 
+
+04:15 will zoom in into action inputs at a
+04:18 
+
+04:18 later stage in this course.
+04:21 
+
+04:21 So, now let's understand what workflow
+04:24 
+
+04:24 inputs are.
+04:26 
+
+04:26 Used to provide values when triggering
+04:30 
+
+04:30 workflows using workflow dispatch. Now,
+04:33 
+
+04:33 what is workflow dispatch? And we have
+04:36 
+
+04:36 seen this in the past lecture. Workflow
+04:39 
+
+04:39 dispatch, whenever you use this event,
+04:42 
+
+04:42 what happens is you see a button in the
+04:45 
+
+04:45 UI from where you can run your workflow
+04:49 
+
+04:49 manually. And we have discussed various
+04:52 
+
+04:52 events via which you can trigger your
+04:55 
+
+04:55 workflow. We have discussed push, pull
+04:57 
+
+04:57 request, and now what we are seeing is
+05:00 
+
+05:00 workflow dispatch, which will allow you
+05:03 
+
+05:03 to run your workflow manually from the
+05:06 
+
+05:06 UI. And my this statement, manually from
+05:10 
+
+05:10 the UI, has few gaps. And I'll tell you
+05:14 
+
+05:14 what the gap is. So, it is not just
+05:16 
+
+05:16 limited to the UI. You can trigger a
+05:20 
+
+05:20 workflow that has workflow dispatch as
+05:23 
+
+05:23 an event using
+05:27 
+
+05:27 GitHub API
+05:29 
+
+05:29 or GitHub CLI. It's not just limited to
+05:33 
+
+05:33 the
+05:34 
+
+05:34 console, the UI that you see. So, let's
+05:37 
+
+05:37 take an example of something that we
+05:39 
+
+05:39 already know. So, if I talk about
+05:41 
+
+05:41 creating an EC2 instance, you can go to
+05:44 
+
+05:44 the console and create an EC2 instance.
+05:47 
+
+05:47 Or, you can use AWS CLI that is
+05:51 
+
+05:51 configured and installed onto your
+05:54 
+
+05:54 laptop to create an EC2 instance. Or,
+05:57 
+
+05:57 you can use Terraform to create an EC2
+05:60 
+
+06:00 instance. And what these things will do
+06:03 
+
+06:03 under the hood is they will be calling
+06:06 
+
+06:06 the EC2 API to create your instance.
+06:11 
+
+06:11 Similarly, if I talk about workflow
+06:14 
+
+06:14 dispatch,
+06:15 
+
+06:15 when you have this configured, you can
+06:17 
+
+06:17 either use the UI to click on
+06:22 
+
+06:22 the workflow and then run it. Or, you
+06:25 
+
+06:25 can use GitHub CLI or GitHub API to
+06:29 
+
+06:29 trigger that workflow. And we will see
+06:32 
+
+06:32 that theoretically how to do.
+06:35 
+
+06:35 used to provide values when triggering
+06:39 
+
+06:39 workflows using workflow dispatch. Now,
+06:41 
+
+06:41 what are these values? Now, I want you
+06:45 
+
+06:45 to concentrate on what we have here. So,
+06:47 
+
+06:47 what you see here is a snippet that we
+06:51 
+
+06:51 will be using in our demo. So, in our
+06:54 
+
+06:54 demo, we'll be making this a little
+06:56 
+
+06:56 advanced, but at this stage, I wanted to
+06:60 
+
+06:60 have snippets right in front of you so
+07:02 
+
+07:02 that you exactly can create that mental
+07:05 
+
+07:05 picture in your head that, "Okay, this
+07:08 
+
+07:08 is how it is working." So, you have the
+07:11 
+
+07:11 inputs keyword.
+07:12 
+
+07:12 Obviously, because we are dealing with
+07:15 
+
+07:15 inputs and all of these will have the
+07:18 
+
+07:18 input keyword.
+07:20 
+
+07:20 All of these types, I mean. And then,
+07:22 
+
+07:22 you have environment. What is
+07:24 
+
+07:24 environment? Environment is something
+07:27 
+
+07:27 that is user-defined. I, Varun Joshi,
+07:30 
+
+07:30 said, "I want an input named
+07:33 
+
+07:33 environment." You can have an input
+07:36 
+
+07:36 named something else, maybe deployment
+07:38 
+
+07:38 strategy, maybe security scans. So, this
+07:40 
+
+07:40 is something that you provide. So, this
+07:43 
+
+07:43 is the input name for me. The input name
+07:47 
+
+07:47 is environment. So, let me zoom in a
+07:49 
+
+07:49 little as well so that we can
+07:51 
+
+07:51 concentrate on this part only. And then
+07:54 
+
+07:54 you have a required. So, required is the
+07:57 
+
+07:57 keyword which is true here. This implies
+08:02 
+
+08:02 that this field is mandatory to be
+08:05 
+
+08:05 filled. If this field is not filled,
+08:09 
+
+08:09 then we will not be able to trigger the
+08:12 
+
+08:12 workflow. Again, there is one more thing
+08:15 
+
+08:15 I want you to notice. You also have a
+08:18 
+
+08:18 default here which is dev, which implies
+08:21 
+
+08:21 if someone does not provide the required
+08:24 
+
+08:24 field, then we would take default as
+08:28 
+
+08:28 dev. And why we are calling this dev?
+08:31 
+
+08:31 Because you have various options here
+08:33 
+
+08:33 and those options are dev, QA, and prod.
+08:38 
+
+08:38 And we will see how this is very useful
+08:41 
+
+08:41 in a little while. But for now, I want
+08:43 
+
+08:43 you to concentrate here. So, if I would
+08:46 
+
+08:46 have not provided this default, then it
+08:49 
+
+08:49 would have been must to provide
+08:52 
+
+08:52 something in the drop-down that you
+08:54 
+
+08:54 would have seen because the type here is
+08:57 
+
+08:57 choice. The type of this input is choice
+09:00 
+
+09:00 implying user who is running the
+09:03 
+
+09:03 workflow will have a choice to choose
+09:08 
+
+09:08 any of these options. And why these
+09:10 
+
+09:10 options? Because I have defined these
+09:13 
+
+09:13 options and I have only defined dev, QA,
+09:16 
+
+09:16 and prod. And I want you to know
+09:19 
+
+09:19 whatever I teach is subjective. Whatever
+09:22 
+
+09:22 configuration I do when it comes to
+09:25 
+
+09:25 configuring your workflows is
+09:27 
+
+09:27 subjective. Your application, maybe it
+09:30 
+
+09:30 has a pre-prod or staging area as well.
+09:33 
+
+09:33 I have not defined that here. Maybe your
+09:37 
+
+09:37 application is not that critical or not
+09:39 
+
+09:39 that compliance heavy, hence you do not
+09:43 
+
+09:43 have QA, you only have dev and prod. So,
+09:46 
+
+09:46 these things are subjective. I want you
+09:49 
+
+09:49 to keep that in mind.
+09:51 
+
+09:51 Now, let's discuss this again.
+09:54 
+
+09:54 Description, optional, but you should
+09:56 
+
+09:56 provide. Required is true, so there must
+09:58 
+
+09:58 be some choice. If the some choice is
+10:01 
+
+10:01 not provided by user, then default dev
+10:03 
+
+10:03 will be used. Type is choice. So, there
+10:06 
+
+10:06 are multiple types of inputs that you
+10:09 
+
+10:09 can use. We are using choice here. And
+10:13 
+
+10:13 then options, you have three options,
+10:16 
+
+10:16 dev, QA, and prod. So, if the user
+10:19 
+
+10:19 chooses dev, then
+10:22 
+
+10:22 if this workflow is to be completed, you
+10:25 
+
+10:25 would have a step that is calling
+10:28 
+
+10:28 whatever inputs the user has provided.
+10:31 
+
+10:31 So, for example, let's say echo
+10:32 
+
+10:32 deploying to and how do you call input
+10:36 
+
+10:36 in a workflow? You have the same
+10:38 
+
+10:38 expression that we have been using, the
+10:40 
+
+10:40 same syntax, and then you have
+10:42 
+
+10:42 inputs.environment,
+10:44 
+
+10:44 pretty simple, right? If you do
+10:46 
+
+10:46 interpolation, you first have inputs,
+10:49 
+
+10:49 and then you have environment. So,
+10:50 
+
+10:50 exactly like that, you are calling. And
+10:53 
+
+10:53 I also want you to know that it's not
+10:56 
+
+10:56 just one input you can have. You can
+10:59 
+
+10:59 have multiple inputs. So, here I have
+11:01 
+
+11:01 environment. Let's say I also have an
+11:04 
+
+11:04 input called deployment strategy. In
+11:06 
+
+11:06 that scenario, I could have called
+11:08 
+
+11:08 inputs.deployment
+11:10 
+
+11:10 strategy as well. So, broaden your
+11:13 
+
+11:13 imagination that way. So, this is how
+11:16 
+
+11:16 you call it. Now,
+11:18 
+
+11:18 I want to discuss what other things are
+11:22 
+
+11:22 achievable when I talk about type. So,
+11:24 
+
+11:24 the type we are using here is choice,
+11:27 
+
+11:27 but you also have other options. So,
+11:30 
+
+11:30 let's see what all other options you
+11:32 
+
+11:32 have. You can have string and string is
+11:35 
+
+11:35 a free form text input application
+11:38 
+
+11:38 version. This common use cases or you
+11:40 
+
+11:40 can supply a docker image tag, release
+11:43 
+
+11:43 identifier, branch name. So,
+11:45 
+
+11:45 depending on what choice you want to
+11:48 
+
+11:48 make. But, I think I should be adding
+11:51 
+
+11:51 one more thing here. Why these choices
+11:54 
+
+11:54 are useful? So, for example, let's say
+11:57 
+
+11:57 you have a workflow, a single workflow
+12:01 
+
+12:01 where you have defined everything that
+12:03 
+
+12:03 is to be done in dev, everything that is
+12:06 
+
+12:06 to be done in QA and prod.
+12:09 
+
+12:09 But, I also want you to know that not
+12:12 
+
+12:12 all jobs and not all steps
+12:16 
+
+12:16 are to be performed for all these
+12:18 
+
+12:18 environment. Maybe, when I talk about
+12:21 
+
+12:21 dev, I only want to perform a build and
+12:25 
+
+12:25 then I want to deploy. When I talk about
+12:28 
+
+12:28 QA, I just want build plus, because it
+12:32 
+
+12:32 is QA, quality assurance, I also want to
+12:35 
+
+12:35 perform security scans, integration
+12:38 
+
+12:38 tests, and then deploy. Maybe, if I talk
+12:42 
+
+12:42 about prod, I want to first build the
+12:44 
+
+12:44 application, then I have certain
+12:46 
+
+12:46 approvals, manual approvals, or
+12:48 
+
+12:48 automated approvals, and then I am
+12:50 
+
+12:50 deploying. Now, based on what user has
+12:54 
+
+12:54 selected, only the jobs or steps that
+12:58 
+
+12:58 are to be performed for that specific
+13:00 
+
+13:00 environment
+13:02 
+
+13:02 will be performed. How good is that? So,
+13:06 
+
+13:06 this is one use case. Now, let's come
+13:09 
+
+13:09 back here. If someone has provided a
+13:11 
+
+13:11 docker image tag, then whenever I'm
+13:15 
+
+13:15 tagging my image, what I can do is I can
+13:17 
+
+13:17 call that input, whatever user has
+13:20 
+
+13:20 provided in the string, I can use that
+13:24 
+
+13:24 input to tag my image. And same applies
+13:28 
+
+13:28 for application version. Maybe I'm also
+13:31 
+
+13:31 adding application version somewhere in
+13:34 
+
+13:34 my logs or in my echo statements and
+13:37 
+
+13:37 there I can always use this. So for
+13:40 
+
+13:40 example, if I'm displaying certain logs,
+13:43 
+
+13:43 then I would write logs for inputs. dot
+13:47 
+
+13:47 Whatever the name I have given to my
+13:50 
+
+13:50 application version. What whatever
+13:52 
+
+13:52 string I have defined. So if it is
+13:54 
+
+13:54 V1.2.0,
+13:56 
+
+13:56 then I would see that. I hope you can
+13:58 
+
+13:58 connect the dots here. Now, choice. Now
+14:01 
+
+14:01 choice as we saw,
+14:03 
+
+14:03 it is something that you as DevOps
+14:05 
+
+14:05 engineer or you as developer will be
+14:08 
+
+14:08 defining and based on that certain jobs
+14:11 
+
+14:11 or steps will run and we'll be seeing
+14:14 
+
+14:14 this in the demo. The demo will connect
+14:16 
+
+14:16 all your dots. Another thing I want you
+14:18 
+
+14:18 to understand, when you have an option
+14:21 
+
+14:21 to choose between the type string and
+14:24 
+
+14:24 choice, then I would typically choose
+14:27 
+
+14:27 choice because choice does not have room
+14:31 
+
+14:31 for human errors because if someone is
+14:34 
+
+14:34 supplying a string, they have option to
+14:37 
+
+14:37 type it and we all are humans. We can
+14:39 
+
+14:39 make mistakes. So it is recommended that
+14:42 
+
+14:42 you use choice, but if you must use
+14:45 
+
+14:45 string, then who is stopping you to do
+14:48 
+
+14:48 so. Then you have Boolean. Boolean is
+14:51 
+
+14:51 simple, true or false. For example,
+14:54 
+
+14:54 if I have an input defined for security
+14:57 
+
+14:57 scans, it could either be true, it could
+14:60 
+
+14:60 either be false. Then you have number,
+15:02 
+
+15:02 numeric value. Maybe you want to supply
+15:05 
+
+15:05 the replica count, timeout value, retry
+15:07 
+
+15:07 count, scaling parameters and so on. So
+15:10 
+
+15:10 the possibilities are many, but based on
+15:14 
+
+15:14 your requirement, based on your use
+15:16 
+
+15:16 case, you would be using these types.
+15:19 
+
+15:19 Environment. Now Now one is special. So
+15:22 
+
+15:22 if I go to my browser
+15:26 
+
+15:26 and then let's open my CK certification
+15:29 
+
+15:29 course repository. And if I zoom in a
+15:31 
+
+15:31 little, what I can do is I can go to
+15:33 
+
+15:33 settings. And if I go to settings, I
+15:35 
+
+15:35 have something called environments here.
+15:37 
+
+15:37 You see this. So, what you can do is
+15:40 
+
+15:40 within GitHub, you can define multiple
+15:43 
+
+15:43 environments. Now, these environments,
+15:46 
+
+15:46 what they will do is they will allow you
+15:48 
+
+15:48 to do certain other things as well. So,
+15:50 
+
+15:50 if I go to my diagrams again, choose
+15:52 
+
+15:52 environments with associated secrets,
+15:54 
+
+15:54 approvals, and protection rules. So,
+15:56 
+
+15:56 when you create these GitHub
+15:58 
+
+15:58 environments, each environment you can
+15:59 
+
+15:59 associate some of these things. And
+16:02 
+
+16:02 based on that, your environment will
+16:04 
+
+16:04 behave. Now, this is an advanced topic,
+16:06 
+
+16:06 so I don't want to go deep into it right
+16:08 
+
+16:08 now.
+16:09 
+
+16:09 Later in the course, we will be looking
+16:11 
+
+16:11 into it.
+16:13 
+
+16:13 So, I hope all the types are also clear.
+16:15 
+
+16:15 And this snip
+16:18 
+
+16:18 is something that I want to tell you.
+16:20 
+
+16:20 So, what I told you was it's not just UI
+16:23 
+
+16:23 from where you can run this. That's why
+16:25 
+
+16:25 I have this snip which tells you, "If
+16:28 
+
+16:28 you want to run a workflow that is named
+16:31 
+
+16:31 this workflow input demo, then you have
+16:35 
+
+16:35 to provide certain input." So, if let's
+16:37 
+
+16:37 say you have defined the default there,
+16:39 
+
+16:39 like we have defined here, we have
+16:41 
+
+16:41 defined default here. If you have
+16:43 
+
+16:43 defined defaults for all your inputs
+16:45 
+
+16:45 here, I'm just using environment, but
+16:47 
+
+16:47 you can have multiple like I told you,
+16:49 
+
+16:49 then if default is defined, then you
+16:53 
+
+16:53 don't have to supply this. If you want
+16:54 
+
+16:54 to run for the default values, of
+16:56 
+
+16:56 course. But here I'm telling you a
+16:59 
+
+16:59 scenario where you provide the inputs.
+17:02 
+
+17:02 So, you provide the environment to be
+17:04 
+
+17:04 production. You tell that perform smoke
+17:06 
+
+17:06 test is the second input name that I
+17:09 
+
+17:09 have defined, which is true. And we'll
+17:11 
+
+17:11 be seeing this in the demo shortly. And
+17:13 
+
+17:13 then, of course, like I told you, one
+17:16 
+
+17:16 method is GitHub API. another one is
+17:18 
+
+17:18 GitHub CLI. Like I told you with AWS,
+17:21 
+
+17:21 there is AWS CLI,
+17:24 
+
+17:24 and then there is also AWS API under the
+17:27 
+
+17:27 whole Terraform or anything that will
+17:28 
+
+17:28 hit the API to run your
+17:33 
+
+17:33 EC2 instance or anything that you want
+17:35 
+
+17:35 to do. So, here is how you would use
+17:38 
+
+17:38 GitHub CLI. GH workflow run, this is the
+17:40 
+
+17:40 name of the workflow, and then you
+17:42 
+
+17:42 provide the environment and perform
+17:44 
+
+17:44 smoke test input value. So, for this,
+17:46 
+
+17:46 the value is prod, and for this, the
+17:48 
+
+17:48 value is true. And there is one more
+17:51 
+
+17:51 thing I want to tell you that we have
+17:54 
+
+17:54 studied functions in the past lecture,
+17:56 
+
+17:56 so I don't want you to get confused
+17:58 
+
+17:58 between functions and input. So, inputs
+18:02 
+
+18:02 is the data that you provide, and
+18:05 
+
+18:05 functions and expressions, they decide
+18:08 
+
+18:08 what to do with what you have provided.
+18:11 
+
+18:11 Okay? So, for example, if I'm providing
+18:14 
+
+18:14 an input as prod, then it is expressions
+18:17 
+
+18:17 and functions that will decide
+18:20 
+
+18:20 what to do with that data. So, for
+18:22 
+
+18:22 example, if the data provided is, let's
+18:25 
+
+18:25 say, dev, then we would be echo
+18:28 
+
+18:28 deploying to
+18:30 
+
+18:30 and then here we have an expression, and
+18:32 
+
+18:32 inside that expression, we are using the
+18:35 
+
+18:35 data that is provided by the user. I
+18:38 
+
+18:38 hope this is extremely clear to you.
+18:41 
+
+18:41 Now,
+18:43 
+
+18:43 let's go to the demo. So, first I'll go
+18:46 
+
+18:46 to my browser, and then I will go to the
+18:49 
+
+18:49 home page. I'll close this one, and then
+18:52 
+
+18:52 this is the repository for this lecture,
+18:55 
+
+18:55 and I would request you to star this if
+18:57 
+
+18:57 this course is helping you. I'll go
+18:60 
+
+18:60 here,
+19:01 
+
+19:01 and then I'll go to today's lecture,
+19:03 
+
+19:03 which is 06 inputs, and I'll scroll
+19:06 
+
+19:06 down. I will go to
+19:09 
+
+19:09 step one of demo one, and this is
+19:11 
+
+19:11 clickable GitHub notes. Extremely
+19:14 
+
+19:14 useful. So, whatever I'm speaking,
+19:17 
+
+19:17 consider everything is mentioned here
+19:20 
+
+19:20 along with additional details that
+19:22 
+
+19:22 cannot be provided in the lectures
+19:25 
+
+19:25 videos because it could get very very
+19:27 
+
+19:27 long. So, I have added production
+19:30 
+
+19:30 insights operational notes for you to
+19:34 
+
+19:34 refer in all of these lectures so that
+19:38 
+
+19:38 you have solid understanding. So, let's
+19:40 
+
+19:40 go to step one for now and this has a
+19:43 
+
+19:43 prerequisite. Prerequisite is you must
+19:46 
+
+19:46 already have a private repository
+19:49 
+
+19:49 created. It could be a public as well,
+19:51 
+
+19:51 but I would recommend create a private
+19:53 
+
+19:53 one and then you must be able to push to
+19:57 
+
+19:57 that repository. So, that implies your
+19:60 
+
+19:60 authentication must be in place. Now, if
+20:02 
+
+20:02 you are not aware of that process, of
+20:05 
+
+20:05 course, you can watch lecture one where
+20:07 
+
+20:07 we discussed authentication in detail.
+20:10 
+
+20:10 So, if you have that in place, let's go
+20:14 
+
+20:14 to
+20:15 
+
+20:15 Docker Hub and create a token. So, here
+20:19 
+
+20:19 in this lecture for production, we will
+20:21 
+
+20:21 be pushing onto Docker Hub. We'll be
+20:24 
+
+20:24 pushing the container image to Docker
+20:26 
+
+20:26 Hub. That's why I'll be creating a token
+20:28 
+
+20:28 so that we can push to Docker Hub and to
+20:32 
+
+20:32 push to Docker Hub,
+20:35 
+
+20:35 a token is needed. We all know that from
+20:38 
+
+20:38 our past lectures because a runner would
+20:41 
+
+20:41 need that token to perform the push onto
+20:44 
+
+20:44 our
+20:46 
+
+20:46 repository, onto our image registry.
+20:50 
+
+20:50 Image registry is Docker Hub and here
+20:52 
+
+20:52 we'll be creating a repository first. I
+20:55 
+
+20:55 will name that repository Cloud with
+20:58 
+
+20:58 Varjo's Flask app. I will change this to
+21:01 
+
+21:01 private and then I will click on create.
+21:05 
+
+21:05 After that, I'll click on my profile
+21:08 
+
+21:08 icon. I'll go to account settings. Here,
+21:11 
+
+21:11 I will expand
+21:14 
+
+21:14 personal access tokens settings is
+21:16 
+
+21:16 already expanded. Then, I'll come here
+21:18 
+
+21:18 generate new token. I'll call this token
+21:21 
+
+21:21 GHA demo GitHub actions demo.
+21:24 
+
+21:24 Expiration, let's keep it custom, and I
+21:27 
+
+21:27 will be expiring this in let's say 2
+21:30 
+
+21:30 days. Since we will be pushing on to
+21:32 
+
+21:32 this repository, what I want to use is a
+21:35 
+
+21:35 read and write. And pushing on to the
+21:37 
+
+21:37 repository is not the correct word here
+21:40 
+
+21:40 because this access token is applicable
+21:44 
+
+21:44 to your entire account. So, all the
+21:46 
+
+21:46 repositories that you have, you anyone
+21:49 
+
+21:49 who has this token will have read and
+21:52 
+
+21:52 write access to those repositories
+21:54 
+
+21:54 implying they can push and they can
+21:57 
+
+21:57 pull. They can pull even your private
+22:00 
+
+22:00 repositories, private images. I'll click
+22:03 
+
+22:03 on generate. The token is generated. You
+22:05 
+
+22:05 will only see this once, so it's better
+22:07 
+
+22:07 you copy this. I will copy this. I will
+22:10 
+
+22:10 then go to
+22:12 
+
+22:12 Cloud with Varjo's GHA practice. This is
+22:15 
+
+22:15 the repository that I would be using.
+22:17 
+
+22:17 I'll go to settings,
+22:19 
+
+22:19 and then I will go to secrets and
+22:22 
+
+22:22 variables. I'll go to actions then.
+22:25 
+
+22:25 And then, I'll click on repository
+22:28 
+
+22:28 secret. Again, I'm creating a repository
+22:30 
+
+22:30 level secret. If you create an
+22:32 
+
+22:32 organization level secret, then multiple
+22:35 
+
+22:35 repositories can be using this. This
+22:37 
+
+22:37 secret that I am creating will only be
+22:40 
+
+22:40 accessible to the workflows that are
+22:42 
+
+22:42 created in this repository. So, the
+22:45 
+
+22:45 value for the secret is this one, the
+22:47 
+
+22:47 token that we just created. I'll click
+22:50 
+
+22:50 on add secret. It is It is recommended
+22:52 
+
+22:52 that you create secrets like this. You
+22:54 
+
+22:54 do not define your secrets in the
+22:56 
+
+22:56 workflow YAML. Secret is created.
+22:60 
+
+22:60 Repository is created. Now, what we want
+23:03 
+
+23:03 to do is now I want to give you a
+23:05 
+
+23:05 walk-through of our code. And we have
+23:07 
+
+23:07 already done this in our past lecture,
+23:10 
+
+23:10 so I will be pretty fast this time.
+23:13 
+
+23:13 So, I'll expand 06 inputs and I have a
+23:16 
+
+23:16 directory called project files there.
+23:18 
+
+23:18 I'll expand that too. And then here I
+23:21 
+
+23:21 have app.py. It's a very simple Python
+23:25 
+
+23:25 code and this Python application uses
+23:28 
+
+23:28 the Flask framework. What it will do is
+23:31 
+
+23:31 if you hit the root, it will display
+23:34 
+
+23:34 welcome to Cloud with Varun Joshi GitHub
+23:36 
+
+23:36 Actions Docker plus Flask. I have also
+23:39 
+
+23:39 created an endpoint which will tell me
+23:41 
+
+23:41 whether the application is healthy or
+23:44 
+
+23:44 not. It is forward slash health. If it
+23:47 
+
+23:47 returns 200, that is the success code,
+23:51 
+
+23:51 then my application is healthy. And my
+23:54 
+
+23:54 application listens on port 5000 by
+23:57 
+
+23:57 default. If you want to change that, you
+23:59 
+
+23:59 can use the variable port to change
+24:02 
+
+24:02 that. Host 0.0.0.0
+24:05 
+
+24:05 implies
+24:06 
+
+24:06 the container onto which this
+24:08 
+
+24:08 application is deployed or the virtual
+24:10 
+
+24:10 machine onto this application is
+24:12 
+
+24:12 deployed, the application will be
+24:14 
+
+24:14 running on all the network interfaces
+24:17 
+
+24:17 that that container or that virtual
+24:19 
+
+24:19 machine has or that physical machine has
+24:22 
+
+24:22 even. So, anywhere where it is deployed,
+24:24 
+
+24:24 it will listen on all the network
+24:26 
+
+24:26 interfaces. And then you have the
+24:28 
+
+24:28 Dockerfile. Dockerfile straight forward
+24:31 
+
+24:31 you are we are using the base Python
+24:34 
+
+24:34 slim image. Working directory is forward
+24:37 
+
+24:37 slash app. We are copying the
+24:38 
+
+24:38 requirements.txt. Requirements.txt
+24:41 
+
+24:41 has the package that we want to install
+24:45 
+
+24:45 onto our container image because our
+24:47 
+
+24:47 application uses the Flask framework,
+24:50 
+
+24:50 that is why we are installing
+24:53 
+
+24:53 Flask. So, we go here. pip install pip
+24:57 
+
+24:57 is a package manager for Python and then
+24:59 
+
+24:59 we are saying the packages are listed in
+25:01 
+
+25:01 requirements.text.
+25:03 
+
+25:03 No cache dir implies the package that
+25:08 
+
+25:08 you download or any of the caches that
+25:10 
+
+25:10 are being downloaded just discard those
+25:12 
+
+25:12 caches because what we want is a smaller
+25:16 
+
+25:16 image size as small as it can be while
+25:21 
+
+25:21 fulfilling all our requirements. We do
+25:24 
+
+25:24 not need the package bundle once the
+25:27 
+
+25:27 package is installed. Hence, we are
+25:28 
+
+25:28 discarding those things. Then we are
+25:31 
+
+25:31 copying the code app.py onto /app.
+25:35 
+
+25:35 We have this for documentation which is
+25:38 
+
+25:38 recommended. We are saying our
+25:40 
+
+25:40 application is exposed on port 5000. If
+25:43 
+
+25:43 you do not have this here, then this
+25:47 
+
+25:47 line will not magically allow your
+25:50 
+
+25:50 application to listen on port 5000. This
+25:52 
+
+25:52 is just for documentation. And finally,
+25:55 
+
+25:55 we are running our code by using python
+25:59 
+
+25:59 app.py.
+26:00 
+
+26:00 We have good understanding of this. So,
+26:03 
+
+26:03 let's start creating our workflow. So, I
+26:06 
+
+26:06 already have .github created here. I'll
+26:09 
+
+26:09 expand this. I already have workflows
+26:12 
+
+26:12 created here directory and this is the
+26:14 
+
+26:14 path where your workflow YAMLs must
+26:17 
+
+26:17 reside for GitHub actions to take action
+26:21 
+
+26:21 to run your workflows. So, I'll right
+26:24 
+
+26:24 click here.
+26:25 
+
+26:25 New file. I'll call this 01
+26:29 
+
+26:29 workflow inputs
+26:32 
+
+26:32 demo. yaml.
+26:36 
+
+26:36 And then what I will do is I'll quickly
+26:38 
+
+26:38 copy-paste the contents and then we will
+26:41 
+
+26:41 discuss the content line by line. I'll
+26:45 
+
+26:45 copy this. I'll then paste it here. It's
+26:47 
+
+26:47 going to be very interesting, okay? So,
+26:50 
+
+26:50 name 01 type one workflow inputs demo
+26:53 
+
+26:53 always give reasonable name so that
+26:56 
+
+26:56 anyone who is seeing the logs and you
+26:58 
+
+26:58 can have multiple workflows for
+27:00 
+
+27:00 enterprise application. So ensure your
+27:03 
+
+27:03 workflows are named properly. This name
+27:07 
+
+27:07 is what you will see in the UI when this
+27:09 
+
+27:09 workflow is triggered. We are saying
+27:12 
+
+27:12 trigger this workflow on workflow
+27:15 
+
+27:15 dispatch. This will give you a UI button
+27:18 
+
+27:18 which you can click and then run the
+27:20 
+
+27:20 workflow. This we have already discussed
+27:23 
+
+27:23 in our theoretical section. So we have
+27:25 
+
+27:25 inputs. In this we have two inputs.
+27:27 
+
+27:27 First input we already understand is
+27:30 
+
+27:30 environment and then I also have a
+27:33 
+
+27:33 second input which says perform smoke
+27:36 
+
+27:36 test. So this is what you will see in
+27:38 
+
+27:38 the UI. So as devops engineer, I would
+27:40 
+
+27:40 be given one drop down where I have to
+27:43 
+
+27:43 choose which environment I want to run
+27:45 
+
+27:45 this workflow for and then I'll choose
+27:47 
+
+27:47 one of these. If I don't choose, dev
+27:49 
+
+27:49 will be chosen and then the second input
+27:52 
+
+27:52 that is needed because required is true,
+27:55 
+
+27:55 you will have to supply a boolean. The
+27:57 
+
+27:57 boolean could be a true or false. So do
+27:60 
+
+27:60 you want to perform smoke test or not?
+28:02 
+
+28:02 If for example, you choose dev here,
+28:06 
+
+28:06 then you may not want to run smoke test
+28:10 
+
+28:10 for that. So we are giving developers or
+28:12 
+
+28:12 devops engineers options to choose
+28:15 
+
+28:15 whether they want to perform smoke test
+28:17 
+
+28:17 or not based on the environment
+28:21 
+
+28:21 that they have chosen here and this is
+28:23 
+
+28:23 so wonderful when you have authority on
+28:27 
+
+28:27 what devops engineers or developers
+28:30 
+
+28:30 could be running because I have choice
+28:32 
+
+28:32 used here. So whoever is executing the
+28:36 
+
+28:36 workflow will have to choose from one of
+28:38 
+
+28:38 these values. And here as well I have a
+28:41 
+
+28:41 boolean true or false. So they'll have
+28:42 
+
+28:42 to choose whatever I have decided and
+28:45 
+
+28:45 that's so powerful.
+28:47 
+
+28:47 And then we have three environment
+28:50 
+
+28:50 variables defined. We have application
+28:53 
+
+28:53 name, which is cloud with var Josh flask
+28:55 
+
+28:55 app, docker username cloud with var
+28:58 
+
+28:58 Josh, image tag we are giving manually
+29:01 
+
+29:01 here v1.0.1.
+29:03 
+
+29:03 And in the past lectures, we have seen
+29:06 
+
+29:06 how you can use dynamic values for image
+29:09 
+
+29:09 tag as well.
+29:11 
+
+29:11 Let's scroll down. Jobs. The first job
+29:14 
+
+29:14 is flask CI job. This job runs on Ubuntu
+29:19 
+
+29:19 latest runner. That is an Ubuntu based
+29:21 
+
+29:21 runner. The first step in the job is to
+29:25 
+
+29:25 check out the code.
+29:27 
+
+29:27 Hello. Our runner is executing this job
+29:31 
+
+29:31 and our runner must have the code
+29:35 
+
+29:35 to execute that job. Hence, the first
+29:39 
+
+29:39 step is checkout repository. And we are
+29:42 
+
+29:42 using an action here because there is
+29:44 
+
+29:44 the uses keyword. Then you have the
+29:47 
+
+29:47 second step, which is display input
+29:50 
+
+29:50 values. Now, this is simple. We are just
+29:52 
+
+29:52 displaying what user has chosen
+29:56 
+
+29:56 when the workflow was executed. So, here
+29:59 
+
+29:59 we are saying echo environment is
+30:02 
+
+30:02 whatever user chose. So, if we chose
+30:04 
+
+30:04 dev, you will see dev here. Perform
+30:06 
+
+30:06 smoke test. If it was false, you would
+30:09 
+
+30:09 see false here.
+30:11 
+
+30:11 Then build docker image. So, we are
+30:14 
+
+30:14 again using an action here. The action
+30:16 
+
+30:16 name is build push action and the author
+30:20 
+
+30:20 of that action is a third-party vendor,
+30:23 
+
+30:23 which is docker. It is not by GitHub
+30:26 
+
+30:26 themselves. Like this action is by
+30:29 
+
+30:29 GitHub themselves. So, this is by
+30:31 
+
+30:31 docker. With is used to supply different
+30:35 
+
+30:35 configurations that you want and you can
+30:37 
+
+30:37 check the documentation for the action
+30:39 
+
+30:39 that you are using to know what all
+30:41 
+
+30:41 options are there at your disposal and
+30:43 
+
+30:43 we have seen this before. Context is
+30:45 
+
+30:45 just {dot}. Why is it just {dot}?
+30:48 
+
+30:48 Because app.py, Dockerfile,
+30:50 
+
+30:50 requirements.text, the build context
+30:53 
+
+30:53 will be made available at the root of
+30:55 
+
+30:55 the repository. Hence, we just have a
+30:57 
+
+30:57 {dot} here. Push is false because push
+31:00 
+
+31:00 will be performed as the part of
+31:03 
+
+31:03 some other step.
+31:06 
+
+31:06 Tags. Now, this is the image tag. What
+31:09 
+
+31:09 is the tag that we want to give to the
+31:11 
+
+31:11 image? So, this is first the username.
+31:14 
+
+31:14 What the username is cloudwithvarjosh.
+31:17 
+
+31:17 We have already defined that here. And
+31:19 
+
+31:19 then environment.application
+31:22 
+
+31:22 name.
+31:23 
+
+31:23 So, the repository name here is cloud
+31:26 
+
+31:26 flask app. And if I go to my browser,
+31:30 
+
+31:30 that is what we also named our
+31:34 
+
+31:34 repository. CWVJ flask app. So, this is
+31:37 
+
+31:37 already there. Now, we are giving a tag.
+31:40 
+
+31:40 And tag we are saying env.imagetag.
+31:43 
+
+31:43 So, this will be v1.0.1.
+31:46 
+
+31:46 Simple. Then, the next step is QA
+31:50 
+
+31:50 validation. And here comes the
+31:53 
+
+31:53 interesting part. Here, we are defining
+31:56 
+
+31:56 a real logic using expressions. And as
+32:01 
+
+32:01 you progress in the mega demo, what I
+32:03 
+
+32:03 intend to do is I want to combine
+32:05 
+
+32:05 everything that we have learned. So, be
+32:07 
+
+32:07 it functions, be it expressions, be it
+32:10 
+
+32:10 inputs, and whatever we learn in future
+32:13 
+
+32:13 lessons like outputs, and so on.
+32:17 
+
+32:17 Then, here I'm saying the QA validation
+32:20 
+
+32:20 step must only run because I have a if
+32:24 
+
+32:24 condition here if the input provided is
+32:27 
+
+32:27 equal to
+32:29 
+
+32:29 QA. So, this step will only run if the
+32:33 
+
+32:33 input provided by user is QA. Next step
+32:37 
+
+32:37 is login to Docker Hub. We are not
+32:41 
+
+32:41 performing
+32:42 
+
+32:42 the Docker login, the Docker Hub login
+32:47 
+
+32:47 for dev environment. So, this is not
+32:49 
+
+32:49 when the environment is not dev. And why
+32:52 
+
+32:52 is that? Because if I am running
+32:55 
+
+32:55 something in dev, I don't want to push
+32:58 
+
+32:58 the image to Docker Hub for that.
+33:00 
+
+33:00 Because if let's say my container run
+33:04 
+
+33:04 fails, I don't want my image registry to
+33:08 
+
+33:08 have stale or faulty images. I only want
+33:11 
+
+33:11 my Docker Hub to have pushes
+33:14 
+
+33:14 that are legitimate, that results in
+33:18 
+
+33:18 container running successfully. Hence,
+33:20 
+
+33:20 I'm saying in dev, don't push because I
+33:23 
+
+33:23 don't know
+33:26 
+
+33:26 what the result of that
+33:29 
+
+33:29 workflow will be, of that container will
+33:32 
+
+33:32 be. And here as well, I'm performing the
+33:35 
+
+33:35 push only when the input provided is not
+33:38 
+
+33:38 dev. So, for QA and prod, we'll be
+33:41 
+
+33:41 pushing the image. And at this stage, I
+33:44 
+
+33:44 also want you to understand one thing
+33:47 
+
+33:47 very, very clearly.
+33:49 
+
+33:49 And if you have watched my, you know,
+33:52 
+
+33:52 the prerequisites for this course, I
+33:54 
+
+33:54 covered day one and day two of Jenkins
+33:56 
+
+33:56 where we discussed about SDLC and uh you
+33:59 
+
+33:59 know, branching strategies and so on. We
+34:01 
+
+34:01 discussed that there as well.
+34:04 
+
+34:04 Typically, what happens in production is
+34:05 
+
+34:05 you only create an artifact once. So,
+34:08 
+
+34:08 container image is created once, then
+34:11 
+
+34:11 the same artifact
+34:13 
+
+34:13 is promoted onto different environments.
+34:16 
+
+34:16 So, you create the container image for
+34:18 
+
+34:18 dev, and then the same image is promoted
+34:20 
+
+34:20 to QA. Same image is promoted to
+34:24 
+
+34:24 staging. Same image is promoted to
+34:27 
+
+34:27 production. So, generate once, deploy
+34:31 
+
+34:31 multiple times.
+34:33 
+
+34:33 And we discuss why we do that in the
+34:36 
+
+34:36 prerequisite part itself, in those
+34:38 
+
+34:38 lectures itself. And then what we are
+34:40 
+
+34:40 doing is we are running the container.
+34:44 
+
+34:44 And
+34:45 
+
+34:45 simple. Docker run {hyphen} d run the
+34:47 
+
+34:47 container in background or detached
+34:49 
+
+34:49 mode. {hyphen} p our runner is listening
+34:52 
+
+34:52 on 5,000 because that is our Docker
+34:54 
+
+34:54 host. And whatever comes on port 5,000
+34:57 
+
+34:57 is sent to 5,000 of the container. And
+35:01 
+
+35:01 our application listens on port 5,000.
+35:04 
+
+35:04 Name of the container is flask
+35:05 
+
+35:05 container. And this is the image that
+35:09 
+
+35:09 you should be using.
+35:11 
+
+35:11 Simple.
+35:12 
+
+35:12 And then we are performing the smoke
+35:15 
+
+35:15 test. And
+35:18 
+
+35:18 from where are we taking this input? We
+35:21 
+
+35:21 are saying only perform this
+35:25 
+
+35:25 if user has supplied true during
+35:28 
+
+35:28 execution of this workflow.
+35:31 
+
+35:31 So simple. And finally
+35:34 
+
+35:34 we have a step where we are deploying to
+35:36 
+
+35:36 Kubernetes. And we are only performing
+35:39 
+
+35:39 this deployment when the input provided
+35:44 
+
+35:44 is production. Again, like I told you,
+35:46 
+
+35:46 each application or each environment
+35:49 
+
+35:49 each strategy is different. Maybe in
+35:54 
+
+35:54 your application when dev is provided,
+35:57 
+
+35:57 then the application is deployed onto
+36:02 
+
+36:02 dev namespace of a Kubernetes cluster.
+36:04 
+
+36:04 Or maybe you have a different cluster
+36:08 
+
+36:08 all together for dev and QA. And then
+36:10 
+
+36:10 you have a different Kubernetes cluster
+36:13 
+
+36:13 for your production. All of these
+36:16 
+
+36:16 possibilities are there. So broaden your
+36:19 
+
+36:19 imagination and don't just be stuck with
+36:23 
+
+36:23 whatever I'm showing. Possibilities are
+36:26 
+
+36:26 many. But in our scenario we are saying
+36:29 
+
+36:29 when the environment is production then
+36:32 
+
+36:32 you deploy to Kubernetes. Again, these
+36:34 
+
+36:34 are dummy steps, I know, but first I
+36:38 
+
+36:38 want you to learn how to walk and once
+36:41 
+
+36:41 you have learned that we will learn how
+36:44 
+
+36:44 to run and how to sprint. So for now I
+36:48 
+
+36:48 hope whatever is defined here is crystal
+36:52 
+
+36:52 clear to you.
+36:54 
+
+36:54 Now, let's perform the push and see the
+36:57 
+
+36:57 magic happen. So I'll come here to my
+36:60 
+
+36:60 terminal. So I am in GitHub Actions 06
+37:04 
+
+37:04 lecture number six inputs in project
+37:07 
+
+37:07 files. And here if I run ls -la you see
+37:10 
+
+37:10 we already have this .github and under
+37:13 
+
+37:13 this we have
+37:15 
+
+37:15 workflows and then we have our
+37:17 
+
+37:17 workflow.yml and here is our code in the
+37:19 
+
+37:19 root itself. So what I will run is git
+37:21 
+
+37:21 add . to move.
+37:24 
+
+37:24 So first I will run git init because
+37:26 
+
+37:26 this is not initialized and then I will
+37:28 
+
+37:28 run git add .
+37:30 
+
+37:30 This will move everything to the staging
+37:32 
+
+37:32 area and then I will write git commit -m
+37:36 
+
+37:36 and then I will write here feature add
+37:40 
+
+37:40 workflow
+37:42 
+
+37:42 inputs
+37:43 
+
+37:43 demo.
+37:45 
+
+37:45 Okay, press enter.
+37:47 
+
+37:47 And then I will write
+37:49 
+
+37:49 git
+37:50 
+
+37:50 remote add origin and this name could be
+37:54 
+
+37:54 anything I'm calling this origin because
+37:56 
+
+37:56 that's most common. And then I'll move
+37:58 
+
+37:58 to my browser and here is my
+38:02 
+
+38:02 GHA practice and then I'll go here. I
+38:05 
+
+38:05 will copy the SSH link from here
+38:09 
+
+38:09 and then I'll paste it here. I'll press
+38:11 
+
+38:11 enter. This is added. I will write git
+38:14 
+
+38:14 push -u to define upstream local to
+38:18 
+
+38:18 remote mapping
+38:19 
+
+38:19 origin main. I'll press enter and this
+38:23 
+
+38:23 should work. And then I will go to my
+38:25 
+
+38:25 browser. Ensure your authentication is
+38:28 
+
+38:28 in place, okay? And then I'll go here. I
+38:30 
+
+38:30 will refresh this. I see my code is
+38:33 
+
+38:33 there at the root of the repository,
+38:35 
+
+38:35 which is why we just provided dot as
+38:38 
+
+38:38 context in the action that we are using.
+38:40 
+
+38:40 Here we'll go to actions tab, and you
+38:43 
+
+38:43 see zero workflow runs. But we just
+38:46 
+
+38:46 pushed, right? Why don't I see a
+38:48 
+
+38:48 workflow run? Because we have not said
+38:52 
+
+38:52 that you should be running this workflow
+38:54 
+
+38:54 on a push. We have workflow dispatch
+38:57 
+
+38:57 here, and workflow dispatch gives you a
+39:00 
+
+39:00 button in the UI, all right? So, if I
+39:04 
+
+39:04 click on this drop down, aha, this is
+39:08 
+
+39:08 nice. Use workflow from This is main for
+39:11 
+
+39:11 us right now, and then deployment
+39:14 
+
+39:14 environment. What is your development
+39:17 
+
+39:17 environment? My development environment
+39:19 
+
+39:19 is, let's say, dev. And it is asking,
+39:22 
+
+39:22 "Do you want to execute smoke test?"
+39:24 
+
+39:24 This is true right now. I'll uncheck
+39:26 
+
+39:26 this, and it is false. I'll now click on
+39:28 
+
+39:28 run workflow. And based on my inputs,
+39:33 
+
+39:33 this workflow will run. So, if I go
+39:36 
+
+39:36 here,
+39:37 
+
+39:37 the steps will be performed based on the
+39:41 
+
+39:41 input that I have given, and that is so
+39:45 
+
+39:45 wonderful. The workflow, the steps will
+39:48 
+
+39:48 run based on what I have provided. So,
+39:51 
+
+39:51 if you look here, build Docker image in
+39:54 
+
+39:54 either scenario, be it dev, QA, or prod,
+39:58 
+
+39:58 we were building the Docker image. But
+39:60 
+
+39:60 if I scroll down here,
+40:02 
+
+40:02 QA validation is skipped. Why this is
+40:05 
+
+40:05 skipped? Because I said you only should
+40:08 
+
+40:08 be running this QA validation when the
+40:11 
+
+40:11 environment chosen is QA. Because in QA
+40:14 
+
+40:14 you want to perform all the security
+40:16 
+
+40:16 scans, the compliance checks, and so on.
+40:20 
+
+40:20 So, if I go here, this is skipped. This
+40:23 
+
+40:23 is also skipped because we are only
+40:25 
+
+40:25 pushing the image in QA and production.
+40:28 
+
+40:28 We are not pushing the image in dev.
+40:31 
+
+40:31 The container ran. So, smoke testing is
+40:34 
+
+40:34 also skipped because I chose false
+40:37 
+
+40:37 there. I unchecked it. Deploy to
+40:39 
+
+40:39 Kubernetes was only applicable for
+40:42 
+
+40:42 production as we have defined here.
+40:44 
+
+40:44 Deploy to Kubernetes
+40:46 
+
+40:46 only for production. So, let's run this
+40:50 
+
+40:50 one more time for QA, and then we will
+40:53 
+
+40:53 run it for
+40:55 
+
+40:55 prod as well. I'll run it for
+40:58 
+
+40:58 QA once.
+40:59 
+
+40:59 And I'll execute smoke tests this time.
+41:03 
+
+41:03 And then
+41:04 
+
+41:04 from here itself, I will run it for
+41:06 
+
+41:06 prod, too. I'll come here.
+41:10 
+
+41:10 Prod, and let's run the smoke test there
+41:12 
+
+41:12 as well.
+41:14 
+
+41:14 And I'll run the workflow. The push will
+41:17 
+
+41:17 happen
+41:19 
+
+41:19 twice.
+41:20 
+
+41:20 But our tag is the same because we have
+41:23 
+
+41:23 manually
+41:25 
+
+41:25 added the tag. Let's go here.
+41:30 
+
+41:30 Let's step one step back. Let me scroll
+41:33 
+
+41:33 to the top.
+41:34 
+
+41:34 I'll go back, and first I want to see
+41:37 
+
+41:37 this one, which was done for QA.
+41:40 
+
+41:40 If I go here,
+41:43 
+
+41:43 and if I click here,
+41:47 
+
+41:47 deploy to Kubernetes is the only step
+41:50 
+
+41:50 that was skipped because this is
+41:52 
+
+41:52 production. And we chose to run smoke
+41:54 
+
+41:54 test. And if I go here to my repository,
+41:58 
+
+41:58 I go to tags,
+42:00 
+
+42:00 you see
+42:02 
+
+42:02 there has been a push here. We see the
+42:05 
+
+42:05 tag that we defined here. So, if I click
+42:09 
+
+42:09 this,
+42:10 
+
+42:10 you will see whatever image that was
+42:13 
+
+42:13 built. So, I'll go back.
+42:15 
+
+42:15 And then, let's also see what we have
+42:18 
+
+42:18 for the last run, which was for
+42:21 
+
+42:21 production. This was for production.
+42:24 
+
+42:24 And if I go here, I come here.
+42:28 
+
+42:28 QA validation was skipped here because
+42:31 
+
+42:31 QA validation was only supposed to be
+42:34 
+
+42:34 performed when QA was selected. I hope
+42:39 
+
+42:39 you have understood this end to end.
+42:42 
+
+42:42 Now, with this understanding,
+42:45 
+
+42:45 let's go and understand the next thing
+42:49 
+
+42:49 that we want to discuss. So, I'll go to
+42:51 
+
+42:51 my diagrams.
+42:53 
+
+42:53 And the next thing that I want to
+42:55 
+
+42:55 discuss is
+42:57 
+
+42:57 reusable workflow inputs. Used to pass
+43:01 
+
+43:01 values from a calling workflow
+43:05 
+
+43:05 to a reusable workflow using workflow
+43:09 
+
+43:09 call.
+43:10 
+
+43:10 So, there are two workflows that we are
+43:12 
+
+43:12 talking about. Previously, the inputs
+43:16 
+
+43:16 were provided by the user.
+43:19 
+
+43:19 Varun provided the inputs, and based on
+43:22 
+
+43:22 the inputs that Varun provided, the
+43:24 
+
+43:24 workflow ran. Correct?
+43:28 
+
+43:28 Here, we are saying
+43:31 
+
+43:31 it is the calling workflow that will
+43:34 
+
+43:34 already have the inputs defined, and
+43:37 
+
+43:37 based on those inputs, the workflow will
+43:42 
+
+43:42 run. So, there are two main things that
+43:45 
+
+43:45 we are talking about here. There is a
+43:47 
+
+43:47 reusable workflow, and then there is a
+43:50 
+
+43:50 calling workflow. I want to contrast
+43:54 
+
+43:54 this with Jenkins. So, if you have
+43:55 
+
+43:55 worked with Jenkins, what you did
+43:59 
+
+43:59 if there were certain common steps that
+44:02 
+
+44:02 were to be performed by, let's say, in
+44:05 
+
+44:05 15 of your microservices, then what you
+44:07 
+
+44:07 would do? You would keep those steps in
+44:11 
+
+44:11 a centralized shared library, and the
+44:15 
+
+44:15 pipelines for those 15 microservices
+44:19 
+
+44:19 will refer to that shared library
+44:22 
+
+44:22 whenever they want to run those common
+44:24 
+
+44:24 steps.
+44:25 
+
+44:25 Similarly,
+44:27 
+
+44:27 you have reusable workflow inputs in
+44:30 
+
+44:30 GitHub Actions. So, whatever
+44:33 
+
+44:33 commonalities are there in your
+44:38 
+
+44:38 microservices,
+44:40 
+
+44:40 you centralize them in the reusable
+44:43 
+
+44:43 workflow, and then you call that
+44:46 
+
+44:46 reusable workflow from a calling
+44:50 
+
+44:50 workflow.
+44:51 
+
+44:51 It's just that you have two workflows.
+44:54 
+
+44:54 One is the reusable workflow, and as the
+44:57 
+
+44:57 name implies, which can be reused
+44:59 
+
+44:59 multiple times, is called a reusable
+45:01 
+
+45:01 workflow. Calling workflow is the one
+45:04 
+
+45:04 that calls any of the reusable
+45:08 
+
+45:08 workflows.
+45:09 
+
+45:09 As simple as that. Now,
+45:13 
+
+45:13 let's discuss a little deeper. So, if
+45:17 
+
+45:17 you see here,
+45:19 
+
+45:19 we have on. So, understand here we have
+45:22 
+
+45:22 two workflow YAMLs. One is this workflow
+45:25 
+
+45:25 YAML, and you see this weird L-shape,
+45:27 
+
+45:27 and we'll discuss that. So, this is part
+45:29 
+
+45:29 of a single reusable workflow, and then
+45:32 
+
+45:32 you have a calling workflow here. And if
+45:36 
+
+45:36 something is a little hazy, I'm pretty
+45:38 
+
+45:38 certain that you will understand that
+45:40 
+
+45:40 part in the demo section. So, for now,
+45:43 
+
+45:43 reusable workflow, we have defined
+45:46 
+
+45:46 workflow call. Previously, we were using
+45:49 
+
+45:49 workflow dispatch because it was the
+45:52 
+
+45:52 DevOps engineer or developer who was
+45:54 
+
+45:54 providing the inputs. Here, the inputs
+45:58 
+
+45:58 are pre-populated
+46:01 
+
+46:01 in the calling workflow and based on
+46:05 
+
+46:05 whatever you have defined in the calling
+46:07 
+
+46:07 workflow.
+46:10 
+
+46:10 The reusable workflow steps will get
+46:13 
+
+46:13 executed and more on this as we
+46:16 
+
+46:16 progress.
+46:18 
+
+46:18 Here on is workflow call.
+46:21 
+
+46:21 Inputs we are defining three and why
+46:23 
+
+46:23 this is workflow call? Because this is
+46:25 
+
+46:25 the syntax for you use the workflow call
+46:28 
+
+46:28 and the name is pretty obvious, right?
+46:30 
+
+46:30 You are calling a workflow from a
+46:32 
+
+46:32 different workflow and then you have a
+46:34 
+
+46:34 reusable workflow. So inputs,
+46:37 
+
+46:37 application name we are
+46:40 
+
+46:40 giving three inputs. Application name,
+46:42 
+
+46:42 run security scans and replicas and let
+46:44 
+
+46:44 me also give you a use case.
+46:46 
+
+46:46 I forgot that. So let's say you are
+46:49 
+
+46:49 dealing with 50 microservices. Okay.
+46:54 
+
+46:54 And an application that contains 50
+46:56 
+
+46:56 microservices and all these 50
+46:59 
+
+46:59 microservices could have their own
+47:01 
+
+47:01 repositories, correct? And all those
+47:04 
+
+47:04 repositories can be part of a single
+47:07 
+
+47:07 organization. That is how it works. So
+47:09 
+
+47:09 in GitHub you have a GitHub organization
+47:12 
+
+47:12 and then that organization can have
+47:14 
+
+47:14 multiple repositories. It could have
+47:15 
+
+47:15 multiple repositories for multiple
+47:17 
+
+47:17 applications. Here we are taking an
+47:20 
+
+47:20 example of only one application. Let's
+47:22 
+
+47:22 call it app one and app one has 50
+47:26 
+
+47:26 repositories. And when app one has 50
+47:29 
+
+47:29 repositories, since all those
+47:32 
+
+47:32 repositories are depicting microservices
+47:35 
+
+47:35 that are associated with application
+47:37 
+
+47:37 one,
+47:38 
+
+47:38 then
+47:39 
+
+47:39 most of those microservices will have
+47:41 
+
+47:41 common steps because
+47:44 
+
+47:44 these
+47:45 
+
+47:45 conditions, for example, if you want to
+47:47 
+
+47:47 perform security scans, if you want to
+47:49 
+
+47:49 perform naming, these are decided per
+47:53 
+
+47:53 application. And one application, all
+47:57 
+
+47:57 the micro services of that application
+47:60 
+
+48:00 will have similar steps, if not same. Of
+48:04 
+
+48:04 course, there will be certain steps or
+48:06 
+
+48:06 certain jobs that will be doing
+48:08 
+
+48:08 something new, but at large, they will
+48:11 
+
+48:11 have a lot of common jobs or steps. In
+48:15 
+
+48:15 that scenario, you would have to
+48:17 
+
+48:17 maintain 50 different workflows, and all
+48:21 
+
+48:21 those 50 workflows will have same logic
+48:25 
+
+48:25 that you are repeating multiple times.
+48:26 
+
+48:26 And if you have to change something, God
+48:29 
+
+48:29 forbid,
+48:31 
+
+48:31 go to those 50 workflows and perform
+48:33 
+
+48:33 those changes. You don't want that. What
+48:36 
+
+48:36 you want is
+48:39 
+
+48:39 I want to deal with 50 workflows. That's
+48:41 
+
+48:41 okay. I will deal with them. But what I
+48:44 
+
+48:44 want is something that will only contain
+48:49 
+
+48:49 all the common steps. So, 50 workflows
+48:52 
+
+48:52 will shrink considerably because
+48:55 
+
+48:55 whatever the common steps were in those
+48:57 
+
+48:57 50 workflows are taken out
+49:01 
+
+49:01 and sent to something called reusable
+49:04 
+
+49:04 workflow.
+49:05 
+
+49:05 How good is that, right? So, that is
+49:08 
+
+49:08 where
+49:09 
+
+49:09 reusable workflow imports or reusable
+49:12 
+
+49:12 workflows come into play. Passing
+49:16 
+
+49:16 application name, replica count,
+49:17 
+
+49:17 security scan settings to a centralized
+49:20 
+
+49:20 deployment workflow, maybe AWS region,
+49:23 
+
+49:23 cost center number. All of these
+49:26 
+
+49:26 will be same for microservices that
+49:29 
+
+49:29 constitute an application. And like I
+49:33 
+
+49:33 said before, all of these microservices
+49:35 
+
+49:35 may have their own repositories, and do
+49:38 
+
+49:38 not quote me on that because
+49:41 
+
+49:41 maybe
+49:43 
+
+49:43 you have a single repository for your
+49:45 
+
+49:45 application, and then different
+49:47 
+
+49:47 microservices have their own directory
+49:50 
+
+49:50 within a single repository. That design
+49:53 
+
+49:53 is also there, but when I talk about
+49:56 
+
+49:56 enterprise grade applications,
+49:58 
+
+49:58 enterprise microservices, they will
+50:00 
+
+50:00 typically have their own repositories
+50:02 
+
+50:02 because each microservice is managed by
+50:07 
+
+50:07 different teams. Even if the teams are
+50:09 
+
+50:09 same, the development life cycle, the
+50:11 
+
+50:11 release life cycle of each microservice
+50:14 
+
+50:14 could be different, which is why it is
+50:15 
+
+50:15 recommended you have
+50:18 
+
+50:18 segregated the microservices into
+50:20 
+
+50:20 different repositories.
+50:22 
+
+50:22 Okay.
+50:23 
+
+50:23 I was I diverged for a little while. So,
+50:25 
+
+50:25 let's come back here. So, inputs we are
+50:28 
+
+50:28 saying you have three inputs.
+50:30 
+
+50:30 Application name, it is required, and
+50:33 
+
+50:33 that is of type string. So, you type
+50:36 
+
+50:36 that. Then you have run security scans,
+50:38 
+
+50:38 required is true, and type is boolean.
+50:40 
+
+50:40 So, it's either true or it is false.
+50:43 
+
+50:43 Then you have replicas, required is
+50:46 
+
+50:46 true, and type is number.
+50:48 
+
+50:48 Okay. I have defined that these are my
+50:51 
+
+50:51 inputs.
+50:53 
+
+50:53 Then in the calling workflow, see how
+50:55 
+
+50:55 good is this? I have
+50:58 
+
+50:58 a job called deploy job. It's just
+51:01 
+
+51:01 called deploy here. And then you have
+51:03 
+
+51:03 uses. Uses is
+51:06 
+
+51:06 We have used this somewhere, right?
+51:09 
+
+51:09 When we had to call an action, we use
+51:11 
+
+51:11 uses, correct? So, here as well we have
+51:14 
+
+51:14 uses, and here we are saying, go to this
+51:18 
+
+51:18 place, and then refer a deploy.yml. So,
+51:21 
+
+51:21 this is called deploy.yml,
+51:24 
+
+51:24 and in deploy.yml,
+51:26 
+
+51:26 with you fill these numbers. So, for
+51:29 
+
+51:29 payment microservice,
+51:31 
+
+51:31 the application name is payment service,
+51:33 
+
+51:33 run security scan is true, and replicas
+51:36 
+
+51:36 is five. Maybe I have another order
+51:39 
+
+51:39 service. Order service also sees heavy
+51:41 
+
+51:41 usage, so maybe I also want the replica
+51:44 
+
+51:44 count to be five here. Then maybe I have
+51:47 
+
+51:47 a wish list microservice. Wish list
+51:49 
+
+51:49 microservice does not need five
+51:52 
+
+51:52 replicas. Let's say we only need two
+51:53 
+
+51:53 replicas there. So, you can change all
+51:56 
+
+51:56 of these based on your requirement. But
+52:01 
+
+52:01 Varun,
+52:02 
+
+52:02 what are the jobs and the steps that
+52:04 
+
+52:04 will be performed as part of this?
+52:07 
+
+52:07 You define it here itself. Because what
+52:10 
+
+52:10 I told you, it's not just about inputs,
+52:13 
+
+52:13 it's also about what to do with those
+52:16 
+
+52:16 inputs. That is also defined in the
+52:18 
+
+52:18 reusable workflow. That is why I was
+52:20 
+
+52:20 saying you take out the commonalities
+52:23 
+
+52:23 from all of those 50 repositories, all
+52:26 
+
+52:26 of those 50 workflows, and put them into
+52:30 
+
+52:30 reusable workflow. So, here it's pretty
+52:33 
+
+52:33 simple. I did not want to bombard you
+52:36 
+
+52:36 with actual production logic here, which
+52:40 
+
+52:40 is why
+52:41 
+
+52:41 the
+52:42 
+
+52:42 things are still logical, but we are
+52:44 
+
+52:44 just echoing something. So, we are
+52:46 
+
+52:46 display deployment information. We are
+52:48 
+
+52:48 displaying this,
+52:49 
+
+52:49 and then we are just echoing deploying
+52:51 
+
+52:51 application. Pretty simple here, but in
+52:54 
+
+52:54 the demo we'll take it a notch above.
+52:56 
+
+52:56 So, we understand what is this. So,
+52:59 
+
+52:59 let's go to the demo. So, I will What
+53:02 
+
+53:02 first I want to do is I want to first
+53:05 
+
+53:05 clean whatever we have here.
+53:07 
+
+53:07 Uh although not cleaning everything will
+53:09 
+
+53:09 also do because we don't
+53:12 
+
+53:12 need this thing here.
+53:15 
+
+53:15 This one is not needed.
+53:17 
+
+53:17 But we won't be using our application
+53:20 
+
+53:20 code for this. So, this can also remain
+53:22 
+
+53:22 here. It won't hurt us. But what I will
+53:24 
+
+53:24 do is I'll write
+53:26 
+
+53:26 new file here. And what we are creating
+53:29 
+
+53:29 first is the reusable deployment
+53:32 
+
+53:32 workflow. And I'll just call this
+53:33 
+
+53:33 deploy.yaml,
+53:36 
+
+53:36 right? I'll press enter. And then let me
+53:38 
+
+53:38 just copy paste that. See, I guys I
+53:41 
+
+53:41 deliberately do not type here because I
+53:43 
+
+53:43 don't want to waste
+53:45 
+
+53:45 time. My lectures are already so long,
+53:47 
+
+53:47 okay? So, here name is reusable
+53:50 
+
+53:50 deployment workflow.
+53:52 
+
+53:52 Pretty simple, right? And we could also
+53:54 
+
+53:54 add 01 here to make it more
+53:58 
+
+53:58 Oh.
+53:59 
+
+53:59 You know, reader-friendly.
+54:01 
+
+54:01 Then I have on.
+54:04 
+
+54:04 And then workflow call, like I said,
+54:08 
+
+54:08 reusable workflow will have workflow
+54:09 
+
+54:09 call. Inputs, three. Application name,
+54:14 
+
+54:14 required, it should be a string. Run
+54:16 
+
+54:16 security scans, required, it should be a
+54:19 
+
+54:19 boolean. Replicas, it should be a
+54:21 
+
+54:21 number.
+54:22 
+
+54:22 Jobs.
+54:24 
+
+54:24 First job is deploy application job. It
+54:28 
+
+54:28 runs on Ubuntu. And then, if I scroll
+54:31 
+
+54:31 down, we are saying name display
+54:33 
+
+54:33 deployment parameters.
+54:35 
+
+54:35 We are just displaying whatever the
+54:38 
+
+54:38 inputs will be, and where will be the
+54:40 
+
+54:40 inputs? Inputs will be in the
+54:43 
+
+54:43 calling workflow, my dear friends. And
+54:45 
+
+54:45 then you have security validation. We
+54:47 
+
+54:47 are saying inputs run security scan. So,
+54:50 
+
+54:50 this will run based on what our calling
+54:54 
+
+54:54 workflow will define for run security
+54:57 
+
+54:57 scan. Then you run security scans.
+55:01 
+
+55:01 And then you have deploy application.
+55:03 
+
+55:03 So, here we are just saying deploying
+55:05 
+
+55:05 this, and desired replica is this.
+55:08 
+
+55:08 Very simple, like we have seen before.
+55:10 
+
+55:10 Inputs.application
+55:12 
+
+55:12 name will give you this. Inputs.run
+55:14 
+
+55:14 security scan will give you whatever
+55:16 
+
+55:16 value was supplied here. So, this is how
+55:18 
+
+55:18 you use it.
+55:20 
+
+55:20 And then, finally, we are saying
+55:22 
+
+55:22 deployment complete. Now, I want to show
+55:25 
+
+55:25 you something else which will connect
+55:27 
+
+55:27 all the dots if something is still
+55:29 
+
+55:29 pending. So, I'll click on new file, and
+55:31 
+
+55:31 this time I will call my file
+55:35 
+
+55:35 Uh let's call this payment service
+55:39 
+
+55:39 deploy
+55:41 
+
+55:41 .yml.
+55:43 
+
+55:43 Now, what we are creating is this we
+55:45 
+
+55:45 created was a a reusable workflow. Now,
+55:49 
+
+55:49 I want to create the calling workflow.
+55:51 
+
+55:51 So, what I'll do is I'll come here and
+55:53 
+
+55:53 I'll copy this.
+55:56 
+
+55:56 And I'll paste it here. And then I want
+55:59 
+
+55:59 to compare these side by side so that
+56:02 
+
+56:02 you have that perfect understanding,
+56:04 
+
+56:04 okay? So, I'll right-click here.
+56:07 
+
+56:07 Split right, right? This is Uh, yeah,
+56:10 
+
+56:10 this is how you do it. So, let's first
+56:12 
+
+56:12 understand this, then we'll compare
+56:14 
+
+56:14 these.
+56:15 
+
+56:15 This is the calling workflow, okay? I
+56:17 
+
+56:17 will What I'll do is I'll also write
+56:19 
+
+56:19 zero one here. And here I'll also add
+56:23 
+
+56:23 calling so that you pretty much clearly
+56:26 
+
+56:26 understand that uh, here you already
+56:29 
+
+56:29 have reusable. So, we have calling here.
+56:32 
+
+56:32 For consistency, okay?
+56:35 
+
+56:35 Let me just add calling here.
+56:41 
+
+56:41 I'll remove this. And we are saying you
+56:45 
+
+56:45 run this workflow.
+56:47 
+
+56:47 I want you to clearly know, my dear
+56:49 
+
+56:49 friends, very clearly, okay? Workflow
+56:53 
+
+56:53 call, this keyword was there in reusable
+56:56 
+
+56:56 deployment, in reusable workflow. In the
+56:59 
+
+56:59 calling workflow, I want to just define
+57:02 
+
+57:02 when do I want to run this workflow? And
+57:05 
+
+57:05 this workflow, I'm saying you can run
+57:08 
+
+57:08 this manually, workflow dispatch.
+57:10 
+
+57:10 And this also runs on push. So, do not
+57:14 
+
+57:14 just think that you can only manually
+57:16 
+
+57:16 run this. You can also run these calling
+57:19 
+
+57:19 workflows based on a push or a pull
+57:22 
+
+57:22 request and so on. So, whatever we have
+57:24 
+
+57:24 studied thus far.
+57:26 
+
+57:26 Now, see the important part.
+57:28 
+
+57:28 That is what I'm
+57:30 
+
+57:30 I was telling you.
+57:31 
+
+57:31 Certain parts are not common for all my
+57:34 
+
+57:34 all microservices. In this running unit
+57:38 
+
+57:38 tests and build payment artifact job
+57:42 
+
+57:42 was not part of all the microservices
+57:44 
+
+57:44 that would be using this workflow, this
+57:47 
+
+57:47 reusable workflow.
+57:48 
+
+57:48 Hence, whatever is specific to my
+57:51 
+
+57:51 payment service, I'm still defining
+57:53 
+
+57:53 those jobs in my payment service
+57:56 
+
+57:56 workflow. But
+57:58 
+
+57:58 all the common steps I'm defining here.
+58:01 
+
+58:01 So, the deployment related step, when it
+58:04 
+
+58:04 comes to deploying the application, that
+58:07 
+
+58:07 I have taken out
+58:10 
+
+58:10 from here. So, let's understand what we
+58:12 
+
+58:12 are doing, and this is extremely
+58:13 
+
+58:13 important because I'm also using needs
+58:16 
+
+58:16 here, okay? So, jobs I'm saying run your
+58:19 
+
+58:19 unit tests, run on Ubuntu latest, steps
+58:22 
+
+58:22 is execute unit steps. These are just
+58:24 
+
+58:24 echo statements, okay? And then, the
+58:27 
+
+58:27 second job is build payment artifact.
+58:29 
+
+58:29 Now, understand.
+58:31 
+
+58:31 When I talk about
+58:33 
+
+58:33 build payment artifacts,
+58:35 
+
+58:35 all microservices can have their own
+58:39 
+
+58:39 type of artifact, and maybe
+58:43 
+
+58:43 those steps are not common. Hence, my
+58:45 
+
+58:45 this workflow has this step. Runs on
+58:48 
+
+58:48 Ubuntu latest. This is fine. This is job
+58:51 
+
+58:51 one, this is job two, and this job runs
+58:54 
+
+58:54 on Ubuntu latest, and this also runs on
+58:56 
+
+58:56 Ubuntu latest. But
+58:58 
+
+58:58 this job needs the unit tests job to
+59:03 
+
+59:03 complete before this job can start.
+59:06 
+
+59:06 Understand,
+59:08 
+
+59:08 in GitHub actions, by default, all the
+59:11 
+
+59:11 jobs run in parallel until and unless
+59:14 
+
+59:14 you use something like needs, which
+59:17 
+
+59:17 defines the sequence. And needs here is
+59:20 
+
+59:20 a list. You can supply multiple jobs
+59:23 
+
+59:23 here.
+59:24 
+
+59:24 For example, to run this job, job one
+59:27 
+
+59:27 should succeed, and job two should also
+59:29 
+
+59:29 succeed. So, you can define come here,
+59:31 
+
+59:31 define another job name here. So, keep
+59:34 
+
+59:34 this thing in mind. So, here I'm saying
+59:38 
+
+59:38 step build payment artifact, build
+59:40 
+
+59:40 payment service artifacts, artifact
+59:42 
+
+59:42 generated success. These are just echo
+59:43 
+
+59:43 statements for now.
+59:45 
+
+59:45 And then is the interesting piece.
+59:48 
+
+59:48 Deploy payment service job needs
+59:52 
+
+59:52 this job.
+59:54 
+
+59:54 So, you see the hierarchy that we have
+59:56 
+
+59:56 created.
+59:58 
+
+59:58 First, this job will run. Okay? Only
+60:01 
+
+60:01 after this job is complete,
+60:04 
+
+60:04 this job will be started. And only after
+60:07 
+
+60:07 this job is done, then this job will
+60:10 
+
+60:10 start because
+60:12 
+
+60:12 we have defined needs here.
+60:14 
+
+60:14 Uses, this is the interesting part now.
+60:17 
+
+60:17 Uses GitHub workflows deploy.yaml. And
+60:21 
+
+60:21 where is deploy.yaml? Here is
+60:23 
+
+60:23 deploy.yaml. And here I have supplied
+60:26 
+
+60:26 the inputs. In the width block, I have
+60:28 
+
+60:28 said the payment service name is
+60:30 
+
+60:30 required, hence I have said payment
+60:32 
+
+60:32 service, run security scans is true, and
+60:35 
+
+60:35 replicas are five. And based on whatever
+60:40 
+
+60:40 I have provided here, all of these steps
+60:43 
+
+60:43 will be executed at the very last. So,
+60:46 
+
+60:46 let's go and push this. So, I'll go to
+60:48 
+
+60:48 the terminal. I'll have to use force
+60:50 
+
+60:50 push because
+60:51 
+
+60:51 my repository already has some work. So,
+60:54 
+
+60:54 what I will do is first I will do
+60:56 
+
+60:56 rm -rf .git. I don't want previous
+60:60 
+
+60:60 history now. I'll run git init again,
+61:03 
+
+61:03 and then I will run
+61:05 
+
+61:05 git
+61:07 
+
+61:07 add
+61:08 
+
+61:08 . to move everything to the staging
+61:10 
+
+61:10 area. Then
+61:11 
+
+61:11 Then I will write git
+61:14 
+
+61:14 remote add origin. And then I'll go to
+61:18 
+
+61:18 my repository again.
+61:21 
+
+61:21 And here I'll go here.
+61:24 
+
+61:24 And then code I will go to SSH and copy
+61:27 
+
+61:27 this.
+61:28 
+
+61:28 And then I will paste it here.
+61:31 
+
+61:31 I'll press enter.
+61:32 
+
+61:32 And then what I will do is get
+61:36 
+
+61:36 push
+61:37 
+
+61:37 -u origin main. And if I do this, I'll
+61:41 
+
+61:41 receive
+61:42 
+
+61:42 an error.
+61:45 
+
+61:45 Main does not have any L field or a new
+61:50 
+
+61:50 Git remote add origin. Hold on.
+61:53 
+
+61:53 Oh, I have not performed the commit. I'm
+61:56 
+
+61:56 so sorry. Git commit -m and then I will
+62:00 
+
+62:00 write
+62:02 
+
+62:02 feature
+62:03 
+
+62:03 add
+62:05 
+
+62:05 re-
+62:06 
+
+62:06 usable
+62:09 
+
+62:09 workflow
+62:12 
+
+62:12 inputs demo.
+62:14 
+
+62:14 I'll press enter.
+62:15 
+
+62:15 Okay. And now the push should work. And
+62:18 
+
+62:18 this will not be able to push because
+62:20 
+
+62:20 our repository has some other work. So,
+62:22 
+
+62:22 what I'll do is I'll add a force flag
+62:24 
+
+62:24 here and then I will push it.
+62:29 
+
+62:29 The push is done. So, I'll go to my
+62:31 
+
+62:31 repository.
+62:33 
+
+62:33 And then I'll hit refresh.
+62:37 
+
+62:37 And our workflow is getting executed.
+62:39 
+
+62:39 And why is it getting executed, my
+62:41 
+
+62:41 friends? Because in the calling
+62:43 
+
+62:43 workflow, I have push as well.
+62:46 
+
+62:46 So, it's not difficult to understand. We
+62:48 
+
+62:48 are just creating workflows that we have
+62:50 
+
+62:50 thus far. It's just that now we also
+62:54 
+
+62:54 have a centralized workflow, a reusable
+62:57 
+
+62:57 workflow, so to speak. So, I go here and
+63:00 
+
+63:00 then I go to actions.
+63:03 
+
+63:03 And these are from our previous runs, so
+63:06 
+
+63:06 you can ignore these. But this is the
+63:09 
+
+63:09 one that we
+63:11 
+
+63:11 just created. You see, calling reusable,
+63:13 
+
+63:13 both are listed here. If I go to
+63:15 
+
+63:15 reusable, you don't see any workflow
+63:18 
+
+63:18 runs because this is a template. This is
+63:20 
+
+63:20 a centralized workflow. This is a
+63:22 
+
+63:22 reusable workflow.
+63:25 
+
+63:25 In itself, it will not be running.
+63:27 
+
+63:27 But the workflows that are supposed to
+63:29 
+
+63:29 run will be referring this reusable
+63:32 
+
+63:32 workflow. Now, you see this here because
+63:35 
+
+63:35 we ran this workflow on the push. So, if
+63:37 
+
+63:37 I go here,
+63:40 
+
+63:40 you see how aligned the jobs are.
+63:44 
+
+63:44 First, this ran, then this ran, then
+63:46 
+
+63:46 this ran. We had three jobs. Run unit
+63:49 
+
+63:49 test. We were echoing some statements.
+63:51 
+
+63:51 And if you expand this,
+63:53 
+
+63:53 you will see those statements.
+63:56 
+
+63:56 Whatever we said. And then we go to
+63:58 
+
+63:58 build payment artifact job. You see
+64:02 
+
+64:02 whatever we
+64:04 
+
+64:04 echoed. And if I go here, this is
+64:08 
+
+64:08 the interesting one. So, if I go here,
+64:14 
+
+64:14 payment service
+64:16 
+
+64:16 true, five replicas, security validation
+64:19 
+
+64:19 because we selected
+64:21 
+
+64:21 If I go here, we said
+64:26 
+
+64:26 true here.
+64:27 
+
+64:27 That's why security scans also ran.
+64:31 
+
+64:31 Deploy application.
+64:33 
+
+64:33 Desired replica five. Deployment
+64:35 
+
+64:35 complete. So, this is the final step.
+64:40 
+
+64:40 Deploy payment service job.
+64:42 
+
+64:42 And I want you to understand that when
+64:46 
+
+64:46 this job was ran, then all these steps
+64:51 
+
+64:51 were executed. So, if you see here,
+64:54 
+
+64:54 deploy payment service job, deploy
+64:56 
+
+64:56 payment service job has a sub job, so to
+64:60 
+
+64:60 speak, and that sub job is this one.
+65:03 
+
+65:03 The reusable workflow one. And then
+65:05 
+
+65:05 whatever steps we just saw, they are
+65:08 
+
+65:08 part of this job.
+65:10 
+
+65:10 Right?
+65:14 
+
+65:14 Display deployment parameter security
+65:15 
+
+65:15 validation display deployment parameter
+65:17 
+
+65:17 security validation deploy application
+65:19 
+
+65:19 deploy complete. Deploy application
+65:21 
+
+65:21 deployment complete. So, all of these
+65:24 
+
+65:24 are here. I hope your dots are
+65:26 
+
+65:26 connected. Now that we understand this,
+65:29 
+
+65:29 let's discuss the third part
+65:31 
+
+65:31 theoretically. So, I'll go to my
+65:33 
+
+65:33 diagrams.
+65:34 
+
+65:34 I will scroll up. And this one is pretty
+65:37 
+
+65:37 simple. So, whatever we have seen this
+65:40 
+
+65:40 far is you know, we have used workflow
+65:43 
+
+65:43 inputs, we have used reusable workflow
+65:45 
+
+65:45 inputs, which are defined within the
+65:48 
+
+65:48 workflow somehow. So, if you talk about
+65:50 
+
+65:50 these inputs, these are defined in the
+65:53 
+
+65:53 workflow and then user calls them. Here
+65:56 
+
+65:56 as well, inputs are defined within the
+65:58 
+
+65:58 workflow. So, in both of these
+66:00 
+
+66:00 you are defining the inputs in the
+66:03 
+
+66:03 workflow. But, when I talk about action
+66:06 
+
+66:06 inputs, here you define your inputs in
+66:10 
+
+66:10 the custom action that you create.
+66:15 
+
+66:15 And then
+66:17 
+
+66:17 whatever
+66:18 
+
+66:18 values are for those inputs, you define
+66:22 
+
+66:22 them in the workflow using it. So, for
+66:24 
+
+66:24 example, here the custom action is
+66:27 
+
+66:27 inputs image name required is true. So,
+66:30 
+
+66:30 within the workflow, you would be
+66:33 
+
+66:33 telling uses
+66:35 
+
+66:35 because uses is the keyword to call an
+66:38 
+
+66:38 action, we are using this action.
+66:40 
+
+66:40 Company is you know, let's say we are
+66:42 
+
+66:42 the company, it could be Cloud With
+66:44 
+
+66:44 Varjo, it could be any company based on
+66:48 
+
+66:48 where you work or whatever your
+66:50 
+
+66:50 application architect has decided. And
+66:52 
+
+66:52 then you have Docker scan action at the
+66:54 
+
+66:54 rate version one because this is the
+66:56 
+
+66:56 custom action that you have. And then
+66:59 
+
+66:59 with we are saying image name is payment
+67:01 
+
+67:01 service V1. So, this is just a very
+67:05 
+
+67:05 small example, but as we learn about
+67:08 
+
+67:08 custom action, we will know more about
+67:11 
+
+67:11 this. Used to pass values from a
+67:13 
+
+67:13 workflow to a custom action. So, here is
+67:16 
+
+67:16 a workflow,
+67:18 
+
+67:18 and we are supplying the value for
+67:19 
+
+67:19 custom action, and maybe custom action
+67:22 
+
+67:22 based on this will be performing certain
+67:25 
+
+67:25 security scans.
+67:27 
+
+67:27 So, examples are providing an image
+67:28 
+
+67:28 name, Slack channel, or Terraform
+67:30 
+
+67:30 workplace to control action behavior. I
+67:33 
+
+67:33 would recommend you to go and
+67:36 
+
+67:36 also
+67:38 
+
+67:38 read about this in the repository.
+67:41 
+
+67:41 The next thing I personally do not like
+67:45 
+
+67:45 demoing something that I haven't covered
+67:48 
+
+67:48 yet, because I have not covered custom
+67:49 
+
+67:49 actions. That is why I'm not demoing
+67:51 
+
+67:51 this.
+67:52 
+
+67:52 But, once we learn custom actions, I
+67:54 
+
+67:54 assure you we will see action inputs in
+67:58 
+
+67:58 action. So, that is everything I wanted
+68:01 
+
+68:01 to discuss. So, that concludes this
+68:03 
+
+68:03 lecture. In this lecture, we learned how
+68:06 
+
+68:06 inputs allow workflows, reusable
+68:08 
+
+68:08 workflows, and actions to receive values
+68:11 
+
+68:11 at runtime and dynamically adjust their
+68:14 
+
+68:14 behaviors. Through the demos, we built
+68:17 
+
+68:17 an environment-aware CI pipeline using
+68:20 
+
+68:20 workflow inputs and implemented a
+68:22 
+
+68:22 centralized deployment model using
+68:26 
+
+68:26 reusable workflow inputs. In the next
+68:29 
+
+68:29 lecture, we will explore outputs and
+68:31 
+
+68:31 learn how information can be passed
+68:34 
+
+68:34 between steps, jobs, and reusable
+68:37 
+
+68:37 workflows in GitHub Actions. If you have
+68:40 
+
+68:40 any questions, feel free to ask them in
+68:42 
+
+68:42 the comment section, and I will reply.
+68:44 
+
+68:44 If this helps, do consider liking,
+68:47 
+
+68:47 sharing, and subscribing. It will mean a
+68:49 
+
+68:49 lot to me. Thank you very much.

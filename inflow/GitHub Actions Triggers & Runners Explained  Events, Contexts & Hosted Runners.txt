@@ -1,0 +1,3166 @@
+00:00 Hi, I am Vun Jooshi and I welcome you to
+00:03 
+
+00:03 lecture two of GitHub actions basics to
+00:07 
+
+00:07 production course. In the previous
+00:09 
+
+00:09 lecture, we built foundational
+00:12 
+
+00:12 understanding around workflows, jobs,
+00:15 
+
+00:15 steps, runners and GitHub actions
+00:19 
+
+00:19 execution model. In this lecture, we
+00:22 
+
+00:22 will move deeper into how workflows are
+00:25 
+
+00:25 triggered and where they execute. We
+00:28 
+
+00:28 will start by understanding different
+00:31 
+
+00:31 workflow trigger categories including
+00:34 
+
+00:34 repository events, manual triggers,
+00:37 
+
+00:37 scheduled workflows, external triggers,
+00:41 
+
+00:41 and reusable workflow orchestration. We
+00:45 
+
+00:45 will then understand built-in GitHub
+00:48 
+
+00:48 actions contexts and see how workflows
+00:52 
+
+00:52 dynamically access runtime metadata
+00:56 
+
+00:56 during execution. From there, we will
+00:59 
+
+00:59 perform hands-on demos using different
+01:02 
+
+01:02 event types and GitHub hosted runners.
+01:06 
+
+01:06 We will also understand standard versus
+01:09 
+
+01:09 larger GitHub hosted runners, runner
+01:13 
+
+01:13 sizing considerations and production
+01:16 
+
+01:16 runner selection strategies. So let's
+01:19 
+
+01:19 get started. Workflow trigger categories
+01:23 
+
+01:23 in GitHub actions. Firstly, what is a
+01:26 
+
+01:26 trigger? Trigger is an event or activity
+01:30 
+
+01:30 that starts workflow execution. So I
+01:34 
+
+01:34 have a workflow defined. Now there must
+01:37 
+
+01:37 be something that will trigger that
+01:40 
+
+01:40 workflow and in this part we will be
+01:44 
+
+01:44 discussing what are different categories
+01:46 
+
+01:46 of those triggers which can trigger your
+01:50 
+
+01:50 workflow or trigger your pipeline.
+01:54 
+
+01:54 GitHub actions workflows remain idle
+01:58 
+
+01:58 until triggered by configured event. So
+02:01 
+
+02:01 if I have a workflow defined in my
+02:05 
+
+02:05 GitHub repository, that workflow will
+02:08 
+
+02:08 not trigger until and unless there is an
+02:12 
+
+02:12 event that triggers that workflow. Now
+02:16 
+
+02:16 let's orient with this diagram. So what
+02:19 
+
+02:19 we have is we have different triggers
+02:23 
+
+02:23 written here and then in the below YAML
+02:26 
+
+02:26 what I have done is I have taken a
+02:28 
+
+02:28 screen grab of a specific section where
+02:31 
+
+02:31 we define when the workflow will be
+02:34 
+
+02:34 triggered and we have already seen this
+02:36 
+
+02:36 in the last lecture but in that lecture
+02:40 
+
+02:40 what we did was we only used the push
+02:44 
+
+02:44 event to trigger that workflow. But in
+02:48 
+
+02:48 this snip what you see is multiple lines
+02:53 
+
+02:53 which are responsible for triggering the
+02:56 
+
+02:56 workflow. So what I'm saying is this
+02:59 
+
+02:59 workflow will not just be triggered when
+03:02 
+
+03:02 there is a push event. This will be
+03:05 
+
+03:05 triggered when this happens. When this
+03:07 
+
+03:07 happens, when this happens, when this
+03:09 
+
+03:09 happens. So the crux is a workflow is
+03:14 
+
+03:14 not limited to getting triggered by only
+03:18 
+
+03:18 one thing. It can get triggered based on
+03:22 
+
+03:22 multiple things that you define in your
+03:26 
+
+03:26 workflow YAML. With that understanding,
+03:30 
+
+03:30 let's get started. First is repository
+03:34 
+
+03:34 events. And this is something that we
+03:37 
+
+03:37 have already seen in the past lecture.
+03:39 
+
+03:39 So what happened was whenever there was
+03:42 
+
+03:42 a push event our workflow got triggered
+03:46 
+
+03:46 and this is exactly what this is talking
+03:49 
+
+03:49 about. Now we discussed the push event
+03:52 
+
+03:52 in the past lecture but there could be
+03:55 
+
+03:55 multiple repository related event. Maybe
+03:59 
+
+03:59 I want my workflow to get triggered when
+04:02 
+
+04:02 there is a pull request. I want my
+04:05 
+
+04:05 workflow to be triggered when there is a
+04:08 
+
+04:08 release event when there is an issues
+04:10 
+
+04:10 event and there are multiple options
+04:13 
+
+04:13 that are available at your disposal. So
+04:16 
+
+04:16 first point is triggered automatically
+04:19 
+
+04:19 by repository activities foundation of
+04:22 
+
+04:22 CI and validation pipelines. Now like we
+04:26 
+
+04:26 discussed in the past lecture there are
+04:28 
+
+04:28 various steps that are performed in a
+04:31 
+
+04:31 typical CI/CD pipeline. So if I come
+04:34 
+
+04:34 here and zoom in here, what we saw was
+04:39 
+
+04:39 there were different stages when we
+04:42 
+
+04:42 talked about a CI phase. What we are
+04:45 
+
+04:45 saying is whenever there is a pull
+04:47 
+
+04:47 request, whenever there is a repository
+04:49 
+
+04:49 event that we define our workflow to get
+04:52 
+
+04:52 triggered on, then what you can do is
+04:55 
+
+04:55 you can fetch the source code, build the
+04:58 
+
+04:58 application, execute automated testing,
+05:01 
+
+05:01 run security scans and so on. But again,
+05:05 
+
+05:05 I want you to know that not all
+05:08 
+
+05:08 workflows will be doing something like
+05:10 
+
+05:10 this. We all at this point understand
+05:14 
+
+05:14 that GitHub actions is not just a CI/CD
+05:18 
+
+05:18 platform. It is an automation system. An
+05:21 
+
+05:21 automation system can be taking a
+05:24 
+
+05:24 backup. It can be triggering another
+05:27 
+
+05:27 workflow. It could be doing so many
+05:31 
+
+05:31 things because at its core it is an
+05:34 
+
+05:34 automation server. What we have been
+05:37 
+
+05:37 using it thus far as a DevOps engineers
+05:40 
+
+05:40 is CI/CD pipelines. But that does not
+05:43 
+
+05:43 mean that the functionality of a CI/CD
+05:47 
+
+05:47 system is just limited to your pipelines
+05:51 
+
+05:51 or your workflows. It can do a lot more
+05:55 
+
+05:55 than that. Use case is PR validation and
+05:59 
+
+05:59 automated testing. There could be
+06:01 
+
+06:01 multiple use cases you could be using
+06:03 
+
+06:03 this repository events for but
+06:06 
+
+06:06 performing these things is the most
+06:09 
+
+06:09 general use case that you would see
+06:12 
+
+06:12 being performed. The next is manual
+06:16 
+
+06:16 triggers. If you have worked with
+06:18 
+
+06:18 Jenkins, you see that you can always
+06:21 
+
+06:21 trigger a pipeline manually from the UI.
+06:25 
+
+06:25 Similarly, if I talk about GitHub
+06:28 
+
+06:28 actions, when you use workflow dispatch
+06:32 
+
+06:32 in the on part, you see workflow
+06:35 
+
+06:35 dispatch here. Whenever you do this,
+06:38 
+
+06:38 what happens is in the UI, you will see
+06:41 
+
+06:41 an additional button. And when you press
+06:43 
+
+06:43 that button, you can trigger the
+06:45 
+
+06:45 pipeline the workflow manually. Now,
+06:49 
+
+06:49 this is not just limited to UI. Think of
+06:52 
+
+06:52 it like that. So whenever you define
+06:54 
+
+06:54 workflow dispatch, you can call the
+06:57 
+
+06:57 workflow dispatch via GitHub CLI and
+07:01 
+
+07:01 also via rest. You have an API endpoint
+07:04 
+
+07:04 and when you hit that endpoint of the
+07:08 
+
+07:08 workflow dispatch then also the workflow
+07:11 
+
+07:11 will be triggered. So what I will do is
+07:12 
+
+07:12 I'll take you to my browser and then
+07:16 
+
+07:16 here I will go to GitHub actions basics
+07:18 
+
+07:18 to production course and if you are
+07:20 
+
+07:20 finding this helpful I would request you
+07:23 
+
+07:23 to please click on this star button. It
+07:25 
+
+07:25 helps a lot. Now I'll go to two and then
+07:30 
+
+07:30 if I scroll down I have manual triggers
+07:32 
+
+07:32 here. I will zoom in a little here and
+07:35 
+
+07:35 you see on workflow dispatch and I said
+07:40 
+
+07:40 you see a UI button that is of course
+07:42 
+
+07:42 we'll see that in the demo part but I
+07:45 
+
+07:45 also want you to understand it is called
+07:48 
+
+07:48 manual trigger but you can also trigger
+07:52 
+
+07:52 this programmatically.
+07:54 
+
+07:54 Hence you can use GitHub CLI to trigger
+07:59 
+
+07:59 your workflow like this gh workflow run.
+08:02 
+
+08:02 And here I'm naming the YAML of my
+08:05 
+
+08:05 workflow. And here you can see you can
+08:08 
+
+08:08 also trigger using post. So rest actions
+08:12 
+
+08:12 are also supported. Then I'll take you
+08:16 
+
+08:16 back to the diagrams and let's read
+08:18 
+
+08:18 this. Supports controlled ondemand
+08:21 
+
+08:21 workflow execution. I have seen
+08:24 
+
+08:24 applications or workflows where the CI
+08:29 
+
+08:29 is not triggered automatically. It is
+08:32 
+
+08:32 manually triggered for production
+08:35 
+
+08:35 workflows. And I don't want you to judge
+08:38 
+
+08:38 such teams. Maybe they have a use case
+08:42 
+
+08:42 which warrants manual execution.
+08:46 
+
+08:46 for example, they are dealing with a
+08:49 
+
+08:49 ultra critical application and they want
+08:54 
+
+08:54 to only trigger that manually. So this
+08:57 
+
+08:57 is one use case and when you are testing
+08:59 
+
+08:59 something then also you may choose to
+09:03 
+
+09:03 trigger the pipeline manually and
+09:06 
+
+09:06 understand let's say you did not have
+09:09 
+
+09:09 push here. So previously in our demo we
+09:11 
+
+09:11 had push. So what we were doing is as
+09:14 
+
+09:14 soon as there was a push the workflow
+09:17 
+
+09:17 was getting triggered. But let's say you
+09:19 
+
+09:19 didn't have push. You just have a
+09:22 
+
+09:22 workflow dispatch. In that scenario you
+09:25 
+
+09:25 have no other option to trigger your
+09:27 
+
+09:27 workflow than manually triggering it
+09:31 
+
+09:31 using the UI button or the CLI or API
+09:36 
+
+09:36 use case production deployments and
+09:38 
+
+09:38 rollbacks as we have just discussed.
+09:41 
+
+09:41 Then you have scheduled triggers. As the
+09:44 
+
+09:44 name implies, when you want your
+09:47 
+
+09:47 workflow to trigger based on a schedule
+09:51 
+
+09:51 that you define, then you would be using
+09:55 
+
+09:55 scheduled triggers. Executes workflows
+09:58 
+
+09:58 using POSIX cron schedules. And this is
+10:03 
+
+10:03 one example here. The chron expression
+10:06 
+
+10:06 dictates that you should be triggering
+10:08 
+
+10:08 this pipeline every five minutes. And
+10:12 
+
+10:12 the second point is critical uses
+10:15 
+
+10:15 GitHub's best effort scheduuling model.
+10:19 
+
+10:19 Now
+10:20 
+
+10:20 GitHub says that I don't guarantee that
+10:24 
+
+10:24 whatever you define here I will trigger
+10:27 
+
+10:27 the workflow in that interval. And I
+10:29 
+
+10:29 have seen that while I was practicing I
+10:33 
+
+10:33 used the same chron expression and I
+10:36 
+
+10:36 waited for half hour and my workflow
+10:39 
+
+10:39 never triggered. Then what I did was I
+10:42 
+
+10:42 used a different value. I used 17 here.
+10:46 
+
+10:46 So trigger this workflow every 17
+10:48 
+
+10:48 minutes and I went away to run some
+10:51 
+
+10:51 chore. And when I came back after 3 4
+10:54 
+
+10:54 hours, I only saw three triggers which
+10:57 
+
+10:57 is low based on what I defined. So
+11:00 
+
+11:00 that's why I'm saying uses GitHub's best
+11:04 
+
+11:04 effort scheduuling model. Another thing
+11:06 
+
+11:06 I want to highlight here is here we are
+11:09 
+
+11:09 saying run this pipeline every 5
+11:12 
+
+11:12 minutes. Run this workflow every 5
+11:14 
+
+11:14 minutes. 5 minutes is the lowest you can
+11:17 
+
+11:17 go. You cannot go below 5 minutes. use
+11:21 
+
+11:21 cases. Security scans, cleanup
+11:23 
+
+11:23 automation. Like I said, your workflows
+11:28 
+
+11:28 are not just meant to trigger your CI.
+11:31 
+
+11:31 It could be taking backups. It could be
+11:34 
+
+11:34 performing cleanups because at heart
+11:37 
+
+11:37 this is just automation. What you want
+11:40 
+
+11:40 to automate is your decision. Next, what
+11:44 
+
+11:44 I want to discuss is external triggers.
+11:47 
+
+11:47 And you can use this using repository
+11:51 
+
+11:51 dispatch. I want you to know that in
+11:55 
+
+11:55 production implementations when you
+11:57 
+
+11:57 advance when you see mature applications
+11:59 
+
+11:59 when you see the workflows for mature
+12:01 
+
+12:01 applications what you would also see is
+12:04 
+
+12:04 at times those workflows are being
+12:07 
+
+12:07 triggered when there is an event that
+12:10 
+
+12:10 happens somewhere outside. For example,
+12:13 
+
+12:13 if there is an ITSM ticket, let's say a
+12:16 
+
+12:16 service now incident, that incident can
+12:20 
+
+12:20 also trigger your workflow. Maybe there
+12:23 
+
+12:23 is an alarm in your cloudatch which is
+12:27 
+
+12:27 triggering your workflows. So understand
+12:30 
+
+12:30 you can always have external triggers
+12:34 
+
+12:34 that can trigger your pipeline. Allows
+12:38 
+
+12:38 external systems to trigger workflows.
+12:42 
+
+12:42 Supports custom event payload
+12:44 
+
+12:44 integrations. Use case monitoring and
+12:48 
+
+12:48 incident automation workflows. And I
+12:50 
+
+12:50 want you to broaden your imagination. So
+12:53 
+
+12:53 imagine let's say you have a service now
+12:57 
+
+12:57 incident. Whenever you are invoking a DR
+13:01 
+
+13:01 and when that DR is invoked when there
+13:04 
+
+13:04 is an incident that incident triggers
+13:07 
+
+13:07 your pipeline that is supposed to deploy
+13:10 
+
+13:10 resources onto your DR site. So broaden
+13:13 
+
+13:13 your imagination and think like a system
+13:17 
+
+13:17 design engineer how things will work
+13:20 
+
+13:20 when you are using all of these in
+13:22 
+
+13:22 combination. When would you use schedule
+13:25 
+
+13:25 triggers? because there is no definitive
+13:28 
+
+13:28 answer which is the most popular of
+13:31 
+
+13:31 these triggers. Of course, you would see
+13:33 
+
+13:33 a lot of times repository events are the
+13:36 
+
+13:36 triggers, but these are also used in
+13:39 
+
+13:39 production implementations. Now, when do
+13:41 
+
+13:41 you use it? It is subjective. It depends
+13:44 
+
+13:44 on what your application demands. So,
+13:47 
+
+13:47 always keep that in mind whenever you
+13:50 
+
+13:50 are designing anything in it. It must
+13:54 
+
+13:54 cater to what the application demands,
+13:57 
+
+13:57 not what you think is the most popular
+13:60 
+
+13:60 choice because popular choice may not
+14:03 
+
+14:03 apply to your application.
+14:06 
+
+14:06 Last one I want to discuss is
+14:08 
+
+14:08 crossworkflow triggers. And if anyone
+14:12 
+
+14:12 has a Jenkins background, we had
+14:15 
+
+14:15 something called we have something
+14:17 
+
+14:17 called Jenkins shared library. Now what
+14:20 
+
+14:20 that did was let's say we have 20
+14:23 
+
+14:23 pipelines and all those 20 pipelines we
+14:27 
+
+14:27 have 70% of the work that is exactly
+14:30 
+
+14:30 same in all those 20 pipelines and I
+14:35 
+
+14:35 personally don't want to write the same
+14:37 
+
+14:37 thing in that 20 pipelines because I
+14:41 
+
+14:41 don't want a repetitive work as a DevOps
+14:45 
+
+14:45 engineer. So what I did was I took that
+14:48 
+
+14:48 75 or 70% of the work from all those 20
+14:52 
+
+14:52 pipelines and centralized that into a
+14:55 
+
+14:55 shared library and then asked those 20
+14:58 
+
+14:58 pipelines to refer that shared library
+15:02 
+
+15:02 whenever you want to do that 70 or 75%
+15:06 
+
+15:06 of the work. Similarly in GitHub actions
+15:10 
+
+15:10 you have crossworkflow trigger and I
+15:14 
+
+15:14 want you to understand that let's say
+15:16 
+
+15:16 you are dealing with an application that
+15:19 
+
+15:19 uses five microervices
+15:23 
+
+15:23 it is low but let's say in our example
+15:25 
+
+15:25 five microservices constitute the
+15:29 
+
+15:29 application now all of these five
+15:32 
+
+15:32 microservices can have its own
+15:35 
+
+15:35 repositories right they can be deployed
+15:37 
+
+15:37 into a single repository. It depends on
+15:39 
+
+15:39 the repository design. But typically you
+15:41 
+
+15:41 would see that if it is a big micros
+15:43 
+
+15:43 service, it could have its own
+15:46 
+
+15:46 repository. So for this application, we
+15:49 
+
+15:49 would have five different repositories.
+15:52 
+
+15:52 Now imagine all these five repositories
+15:55 
+
+15:55 will have its own workflow YAML file.
+15:58 
+
+15:58 But let's say since the these
+16:02 
+
+16:02 microservices are part of the same
+16:04 
+
+16:04 application, I am performing the same
+16:08 
+
+16:08 security scans. I am performing the same
+16:11 
+
+16:11 sbomb. I am performing the same artifact
+16:15 
+
+16:15 signing deployment logic and so on. And
+16:19 
+
+16:19 I personally don't want to repeat all of
+16:22 
+
+16:22 those things in five different places.
+16:26 
+
+16:26 What I would therefore do is I would
+16:29 
+
+16:29 create a central logic and that central
+16:32 
+
+16:32 logic will consist of all the common
+16:35 
+
+16:35 steps that are required by my five
+16:39 
+
+16:39 workflows. So that whenever those five
+16:42 
+
+16:42 workflows want to perform those common
+16:44 
+
+16:44 actions, they can just refer to the
+16:49 
+
+16:49 workflow that has all the common steps.
+16:53 
+
+16:53 What happens when you do this is you
+16:56 
+
+16:56 don't have to do repetitive work. And in
+16:59 
+
+16:59 my example, I just took five
+17:01 
+
+17:01 microservices and five repositories.
+17:04 
+
+17:04 There could be hundreds of repositories
+17:07 
+
+17:07 which are performing the same steps.
+17:10 
+
+17:10 Their workflows of those respective
+17:13 
+
+17:13 repositories are performing the same
+17:15 
+
+17:15 steps. In that scenario, I don't want to
+17:18 
+
+17:18 define all of these things into
+17:20 
+
+17:20 different places. I want one place that
+17:23 
+
+17:23 has the standard for my organization
+17:26 
+
+17:26 that my organization will not let go of
+17:30 
+
+17:30 an application until and unless all of
+17:34 
+
+17:34 these things that I have defined in a
+17:36 
+
+17:36 common workflow YAML are adhered to.
+17:40 
+
+17:40 That is what crossworkflow triggers will
+17:43 
+
+17:43 do for you. enables reusable
+17:46 
+
+17:46 workflow-based automation patterns
+17:49 
+
+17:49 commonly used for centralized CI/CD
+17:52 
+
+17:52 logic use case organizationwide
+17:55 
+
+17:55 standardized pipelines. Now what I will
+17:58 
+
+17:58 do is I'll take you to my browser and
+17:60 
+
+18:00 then I'll take you to this page and this
+18:03 
+
+18:03 is the page that defines all the
+18:06 
+
+18:06 triggers you can use. Now what I did was
+18:10 
+
+18:10 I categorized all of these into these
+18:14 
+
+18:14 five trigger categories. You can have
+18:17 
+
+18:17 more categories because this is
+18:19 
+
+18:19 something that I did because I thought
+18:21 
+
+18:21 this will help me explain you the
+18:24 
+
+18:24 concepts in a better way but you may see
+18:28 
+
+18:28 that you need a sixth category as well
+18:31 
+
+18:31 based on what you read here. So you can
+18:34 
+
+18:34 see there are plenty of things. If I
+18:36 
+
+18:36 talk about repository events, you have
+18:38 
+
+18:38 pull request, you have pull request
+18:40 
+
+18:40 comment, pull request review, workflow
+18:43 
+
+18:43 dispatch. We already saw you see that
+18:45 
+
+18:45 here and so on. So I will let you give a
+18:50 
+
+18:50 brief read of this documentation page.
+18:53 
+
+18:53 I'll link this in the GitHub repository
+18:55 
+
+18:55 notes. just have an overview of it
+18:58 
+
+18:58 because as we progress with this course,
+19:00 
+
+19:00 we will be dissecting the important
+19:02 
+
+19:02 points step by step. So for now, let's
+19:07 
+
+19:07 go to the demo and see what we want to
+19:09 
+
+19:09 do. So I'll take you I'll stay here for
+19:11 
+
+19:11 a while because I want to show you
+19:14 
+
+19:14 something. I'll scroll down and I'll go
+19:17 
+
+19:17 to demo.
+19:19 
+
+19:19 And then here step one is what we did in
+19:24 
+
+19:24 the past lecture. we won't be repeating.
+19:26 
+
+19:26 So I hope you already have a repository.
+19:30 
+
+19:30 You can name that repository anything. I
+19:32 
+
+19:32 have named my repository this and it is
+19:35 
+
+19:35 a private repository and you must have
+19:39 
+
+19:39 authentication in place so that our
+19:42 
+
+19:42 local git client can push the code onto
+19:46 
+
+19:46 our remote. ensure the authentication is
+19:50 
+
+19:50 in place and if you have any doubts
+19:52 
+
+19:52 about it then you can of course visit
+19:54 
+
+19:54 lecture 1's video again. Now let's go to
+19:59 
+
+19:59 the visual studio code and here I am in
+20:02 
+
+20:02 workflow triggers and I am in project
+20:05 
+
+20:05 files and if I go to my terminal I see
+20:08 
+
+20:08 the same. So let me do one thing I'm in
+20:10 
+
+20:10 project files I will make directory
+20:14 
+
+20:14 p.github
+20:16 
+
+20:16 forward slash workflows and why I am
+20:19 
+
+20:19 doing that because all your workflow
+20:22 
+
+20:22 yaml must be residing in this path so
+20:25 
+
+20:25 that GitHub actions can take actions
+20:29 
+
+20:29 based on the yaml that are available in
+20:32 
+
+20:32 this path. I'll press enter and this
+20:35 
+
+20:35 will create a directory structure for
+20:38 
+
+20:38 me. So if I do this I see that there is
+20:41 
+
+20:41 a workflows directory inside the github
+20:44 
+
+20:44 directory.
+20:46 
+
+20:46 Now let's go to Visual Studio Code and
+20:49 
+
+20:49 here I will create my first workflow
+20:52 
+
+20:52 YAML and I will call this 01 CI contexts
+20:58 
+
+20:58 and why I'm calling this context because
+21:01 
+
+21:01 here I want to explain what are contexts
+21:05 
+
+21:05 when we are dealing with GitHub actions.
+21:07 
+
+21:07 So let's press enter and we see this and
+21:11 
+
+21:11 we will name this appropriately. Let's
+21:13 
+
+21:13 call this 01 understanding
+21:18 
+
+21:18 context. And in the first demo, I am
+21:22 
+
+21:22 typing these things. But as we move on,
+21:24 
+
+21:24 I would prefer just copy pasting and
+21:26 
+
+21:26 then explaining because my lectures are
+21:29 
+
+21:29 usually long and I don't want them to
+21:31 
+
+21:31 be, you know, extended because I take
+21:34 
+
+21:34 time typing. And then I'll press enter.
+21:36 
+
+21:36 So name is this. Let's say understanding
+21:39 
+
+21:39 context. And let's also add a hyphen for
+21:43 
+
+21:43 effect. And then I will move down and I
+21:47 
+
+21:47 will say when do you want to trigger
+21:49 
+
+21:49 this workflow? I want to trigger this
+21:51 
+
+21:51 workflow whenever there is a push. Then
+21:55 
+
+21:55 what are the jobs that should be there
+21:58 
+
+21:58 in this workflow? So let's define jobs.
+22:01 
+
+22:01 And the first job that I want this
+22:05 
+
+22:05 workflow to have is event info job. And
+22:11 
+
+22:11 then I will press a colon. Now this is
+22:13 
+
+22:13 the name of the first job. Now I have a
+22:17 
+
+22:17 habit of giving proper nomenclature so
+22:21 
+
+22:21 that when things are on fire, I can
+22:24 
+
+22:24 exactly see what thing is doing what.
+22:27 
+
+22:27 That's why you see I have a suffix here
+22:31 
+
+22:31 that is job. So that when I look at it I
+22:35 
+
+22:35 exactly know straight away that this is
+22:38 
+
+22:38 a job. Hence I add a job suffix. If you
+22:41 
+
+22:41 don't want to you can omit this. But I
+22:45 
+
+22:45 would recommend whatever helps you
+22:47 
+
+22:47 remember things do that because when
+22:50 
+
+22:50 things are on fire in production outage
+22:54 
+
+22:54 scenarios then proper nomenclature does
+22:58 
+
+22:58 help. So this is the job and where do I
+23:02 
+
+23:02 want to run this job? So I will add runs
+23:05 
+
+23:05 on and then I will say this job must run
+23:09 
+
+23:09 on Ubuntu latest and this is fine. Then
+23:12 
+
+23:12 I will come here and then I will define
+23:16 
+
+23:16 what will be the steps in my job. My job
+23:20 
+
+23:20 will just have one step and the name of
+23:23 
+
+23:23 that step will be print trigger event.
+23:28 
+
+23:28 And what is that you want to do here? I
+23:32 
+
+23:32 want to use run. And we know from our
+23:35 
+
+23:35 past lecture that run is used to run
+23:38 
+
+23:38 scripts. Now commands it could be your
+23:41 
+
+23:41 bash when we are talking about Linux. It
+23:44 
+
+23:44 could be PowerShell if you're talking
+23:45 
+
+23:45 about Windows. I'll write run and then I
+23:48 
+
+23:48 will write echo. My trigger event is now
+23:54 
+
+23:54 I'm writing an expression and I don't
+23:56 
+
+23:56 want you to be afraid of that. Okay. So
+23:58 
+
+23:58 I'll add a dollar sign curly braces.
+24:01 
+
+24:01 I'll hit space and then here I will
+24:04 
+
+24:04 write GitHub dot event-
+24:09 
+
+24:09 name and then I'll add one more space.
+24:12 
+
+24:12 What is this? Firstly, this in its
+24:15 
+
+24:15 entirety is an expression. What is this?
+24:19 
+
+24:19 This is part of the syntax. What is
+24:23 
+
+24:23 GitHub here? GitHub is the context.
+24:27 
+
+24:27 Okay. And what is event name? This is
+24:31 
+
+24:31 the property inside the context. Again,
+24:35 
+
+24:35 entire is an expression. These are part
+24:39 
+
+24:39 of the syntax. GitHub is the context and
+24:44 
+
+24:44 this is an object or a field inside that
+24:48 
+
+24:48 context. Now I will contrast this with
+24:51 
+
+24:51 Jenkins. When we used Jenkins, we had
+24:54 
+
+24:54 something called built-in variables. Now
+24:57 
+
+24:57 those built-in variables like build
+24:59 
+
+24:59 number, job name, workspace, build URL,
+25:03 
+
+25:03 get commit and so on. There were plenty
+25:06 
+
+25:06 of built-in variables that are available
+25:08 
+
+25:08 at your disposal with Jenkins. With
+25:11 
+
+25:11 GitHub actions, what they have done good
+25:14 
+
+25:14 is they have divided all those variables
+25:17 
+
+25:17 that they have into different contexts.
+25:21 
+
+25:21 Now, GitHub is one context. So if I take
+25:25 
+
+25:25 you to the documentation here is this
+25:28 
+
+25:28 and here is context. I'll open this in a
+25:32 
+
+25:32 new tab and you see there are multiple
+25:35 
+
+25:35 contexts. There is GitHub, there is job,
+25:38 
+
+25:38 there is jobs, there is steps, there is
+25:40 
+
+25:40 runners and inside these contexts they
+25:44 
+
+25:44 have different fields. So for example in
+25:48 
+
+25:48 our example we are using the GitHub
+25:50 
+
+25:50 context and within the GitHub context we
+25:52 
+
+25:52 are using a field that is event name. So
+25:57 
+
+25:57 if I go here and then I click on this
+26:01 
+
+26:01 and then what I do is I search for event
+26:06 
+
+26:06 name then you see github.event Event
+26:09 
+
+26:09 name is a string and then what it will
+26:12 
+
+26:12 give you is the name of the event that
+26:16 
+
+26:16 triggered the workflow run. And again
+26:19 
+
+26:19 there are multiple contexts available at
+26:22 
+
+26:22 your disposal and as we progress with
+26:25 
+
+26:25 this course we will be using multiple
+26:28 
+
+26:28 context. Again contexts are good because
+26:33 
+
+26:33 they provide you structure and this
+26:36 
+
+26:36 structure was not there in Jenkins. So
+26:38 
+
+26:38 this is a plus point of GitHub actions.
+26:41 
+
+26:41 What this also helps us do is it helps
+26:45 
+
+26:45 us categorize things. So when I want to
+26:48 
+
+26:48 have certain repository actions, they
+26:50 
+
+26:50 could be found under the GitHub context.
+26:52 
+
+26:52 If I want to find things that are
+26:54 
+
+26:54 specific to jobs, then I can find them
+26:56 
+
+26:56 in the jobs context. So for example,
+26:59 
+
+26:59 here jobs do. ID dot result. If I want
+27:03 
+
+27:03 to see the result of a job, I know which
+27:07 
+
+27:07 context to look into because I know
+27:10 
+
+27:10 GitHub actions has categorized things
+27:13 
+
+27:13 into different context. If I want to see
+27:15 
+
+27:15 something specific to a runner, then I
+27:18 
+
+27:18 will go to runner context and then if
+27:21 
+
+27:21 you want to see something specific to
+27:23 
+
+27:23 steps, then you can use the steps
+27:25 
+
+27:25 context. I will I'll leave it there and
+27:28 
+
+27:28 as we progress, we will learn more about
+27:30 
+
+27:30 this. So back to Visual Studio Code. I
+27:33 
+
+27:33 hope this is understood. So essentially
+27:36 
+
+27:36 what this should do is when I push this,
+27:39 
+
+27:39 what I should have is I should have an
+27:42 
+
+27:42 output which says my trigger event is
+27:46 
+
+27:46 push event. I'll add an event here as
+27:49 
+
+27:49 well. So let's go to our terminal and
+27:52 
+
+27:52 here I will run get in it in under
+27:56 
+
+27:56 project files. And if I now run get
+27:59 
+
+27:59 status, I will see that. GitHub is not
+28:02 
+
+28:02 tracked right now. So what I will do is
+28:04 
+
+28:04 get add dot get commit-m
+28:10 
+
+28:10 then I'll have a good commit message and
+28:12 
+
+28:12 that could be let's say I'm adding a
+28:13 
+
+28:13 feature and I'm saying add workflow
+28:17 
+
+28:17 event trigger demo. I'll close the
+28:21 
+
+28:21 double quotes and I'll press enter. So
+28:24 
+
+28:24 this has committed. Now what I will do
+28:27 
+
+28:27 is in case your branch is not called
+28:30 
+
+28:30 main and you can run git branch to see
+28:33 
+
+28:33 that my my default branch is called
+28:35 
+
+28:35 main. So in case your is not main then
+28:38 
+
+28:38 you can always write get branch m main.
+28:42 
+
+28:42 So my branch is already called main. So
+28:45 
+
+28:45 this will not do anything for me but for
+28:47 
+
+28:47 you it could. I'll run get remote add. I
+28:52 
+
+28:52 want to add a remote and that remote
+28:55 
+
+28:55 I'll identify as origin but verun what
+28:58 
+
+28:58 is the URL for that remote? Now I will
+29:01 
+
+29:01 add the SSH path of that remote. So I'll
+29:04 
+
+29:04 go to my repo and here is my GitHub pwja
+29:09 
+
+29:09 practice and I will do not copy this
+29:12 
+
+29:12 path. If you are using personal access
+29:14 
+
+29:14 tokens then this would work but we are
+29:16 
+
+29:16 using SSH. So I'll copy this one and
+29:18 
+
+29:18 then I will go here and I will paste
+29:21 
+
+29:21 this here and then I will press enter
+29:24 
+
+29:24 and if I now run get remote I should see
+29:27 
+
+29:27 origin there and which is expected. Now
+29:30 
+
+29:30 I will run get pushy-en
+29:33 
+
+29:33 u and I will say origin main. I press
+29:38 
+
+29:38 enter and this will perform the push and
+29:42 
+
+29:42 if you look at our on when to trigger
+29:46 
+
+29:46 this workflow we have set trigger it on
+29:48 
+
+29:48 a push and we have just performed a
+29:51 
+
+29:51 push. So if I go there and if I go to
+29:56 
+
+29:56 code again let's press here. You see
+29:59 
+
+29:59 that GitHub actions actioned on the
+30:02 
+
+30:02 workflow and it got triggered and we see
+30:06 
+
+30:06 a success message here. So if I go back
+30:10 
+
+30:10 here, you see 01 understanding contexts
+30:14 
+
+30:14 because that is what we named our
+30:18 
+
+30:18 workflow. Okay. So I'll go here. I will
+30:20 
+
+30:20 click here on the trigger and then I
+30:23 
+
+30:23 will click on the event info job. I know
+30:26 
+
+30:26 this is a job because I named it event
+30:29 
+
+30:29 info job. So I'll go here and then you
+30:33 
+
+30:33 see I will set up job. We have already
+30:36 
+
+30:36 seen this in the past lecture. So I'll
+30:38 
+
+30:38 expand this and this is what I wanted to
+30:41 
+
+30:41 show you. My trigger event is push
+30:45 
+
+30:45 event. So push was populated dynamically
+30:49 
+
+30:49 based on what we used in the context
+30:53 
+
+30:53 section. I hope this makes sense. Now I
+30:56 
+
+30:56 want to use multiple events. So what I
+30:59 
+
+30:59 will do is I will come here. I will
+31:02 
+
+31:02 create a new file. And this file I will
+31:05 
+
+31:05 call 02
+31:07 
+
+31:07 CI
+31:08 
+
+31:08 -. And this one I will call events.
+31:13 
+
+31:13 Okay. And I'll add YAML here. And this
+31:16 
+
+31:16 time what I will do is I'll just copy
+31:18 
+
+31:18 paste the contents here. So
+31:23 
+
+31:23 very simple let's understand this. So we
+31:26 
+
+31:26 are using workflow dispatch so that we
+31:28 
+
+31:28 see that manual button in the UI and in
+31:32 
+
+31:32 addition to manual button we already
+31:34 
+
+31:34 know that we can also use CLI or API to
+31:37 
+
+31:37 trigger that workflow. And then we have
+31:40 
+
+31:40 push. We have already seen this. We also
+31:42 
+
+31:42 have pull requests. But I won't be
+31:44 
+
+31:44 demoing pull request right now with a
+31:47 
+
+31:47 dummy demo because I want when we are
+31:49 
+
+31:49 dealing with production grade projects
+31:52 
+
+31:52 then we explore more of pull request.
+31:55 
+
+31:55 Then we have schedule and we have
+31:57 
+
+31:57 defined a schedule here. The chron
+31:60 
+
+31:60 expression says this this. If you are
+32:03 
+
+32:03 not familiar with cron then you can
+32:05 
+
+32:05 always Google
+32:08 
+
+32:08 chron expression generator
+32:12 
+
+32:12 and uh there is chron tab guru this is
+32:14 
+
+32:14 the one I've used most often and this
+32:17 
+
+32:17 will tell you the first is for minute
+32:19 
+
+32:19 then hour then day then month then week
+32:22 
+
+32:22 day so if you define what we have
+32:25 
+
+32:25 defined there so what we have said is we
+32:28 
+
+32:28 have said this so this says at every
+32:33 
+
+32:33 fifth minute you run this chron
+32:35 
+
+32:35 expression. So what I will do is I want
+32:37 
+
+32:37 to I like I told you I have not seen
+32:40 
+
+32:40 success it does not run as defined. So
+32:43 
+
+32:43 what I will do is I'll make this 17 so
+32:46 
+
+32:46 that as we progress with you know this
+32:49 
+
+32:49 lecture we can come back and see what
+32:51 
+
+32:51 are the results of this chron schedule.
+32:53 
+
+32:53 Okay now or let's make it 13 you know I
+32:56 
+
+32:56 want it something unusual so that you
+32:60 
+
+32:60 know it clicks so let's keep it seven
+33:02 
+
+33:02 runs every 7 minute and then jobs event
+33:05 
+
+33:05 info job runs on Ubuntu latest steps is
+33:09 
+
+33:09 print trigger event my trigger is I'm
+33:12 
+
+33:12 using the same thing like we used in the
+33:15 
+
+33:15 previous part now let's come to our
+33:19 
+
+33:19 terminal and here I'll clear my screen
+33:22 
+
+33:22 so so that I have more real estate and
+33:25 
+
+33:25 then I will run the same thing. I'll run
+33:28 
+
+33:28 get add dot to move this to the staging
+33:32 
+
+33:32 area. Then I will write get commit- m
+33:36 
+
+33:36 and the commit message would be let's
+33:38 
+
+33:38 say it is a feature add multiple
+33:42 
+
+33:42 workflow event triggers. I'll close this
+33:47 
+
+33:47 and I want to show you one more thing.
+33:49 
+
+33:49 So let me go to Visual Studio Code. So
+33:52 
+
+33:52 here on is a dictionary. So what I can
+33:55 
+
+33:55 also do is I can let me just comment
+33:57 
+
+33:57 this out. Okay. And then I can also use
+34:01 
+
+34:01 list here and here as well. And then I
+34:05 
+
+34:05 can remove this colon and this will also
+34:09 
+
+34:09 work. But what happens is when you have
+34:13 
+
+34:13 to define you know a cron schedule or
+34:15 
+
+34:15 when you are in pull request section you
+34:18 
+
+34:18 want to define certain branch names and
+34:20 
+
+34:20 so on then this will not work you will
+34:23 
+
+34:23 have to have dictionary so that's why I
+34:25 
+
+34:25 recommend always use dictionary to begin
+34:28 
+
+34:28 with so that when you advance let's say
+34:31 
+
+34:31 when your application matures and you
+34:33 
+
+34:33 want different flavors within your you
+34:37 
+
+34:37 know pull request or schedule then you
+34:39 
+
+34:39 should be using dictionary to begin with
+34:42 
+
+34:42 so that that jump becomes easier. So
+34:45 
+
+34:45 I'll press Ctrl Z so that we see what we
+34:49 
+
+34:49 had before. Okay. So this is this and
+34:51 
+
+34:51 then I'll go back to my terminal and
+34:54 
+
+34:54 what I will do is get push origin main
+34:58 
+
+34:58 or I can just write get push and that
+35:01 
+
+35:01 will also work. And if I go back to my
+35:04 
+
+35:04 browser and I go to my repository
+35:09 
+
+35:09 and if I go back understanding context
+35:13 
+
+35:13 and you also see now zero to
+35:15 
+
+35:15 understanding event. So if I click here
+35:18 
+
+35:18 you see we have a single job and there
+35:22 
+
+35:22 is a new button here run workflow
+35:25 
+
+35:25 workflow dispatch event trigger. So
+35:28 
+
+35:28 let's go inside here. inside we only see
+35:31 
+
+35:31 one run and that one run is because of
+35:34 
+
+35:34 the push event that happened when we
+35:36 
+
+35:36 performed the push. So let's go back and
+35:40 
+
+35:40 let's run it one more time. A run
+35:42 
+
+35:42 workflow run workflow and this time if
+35:46 
+
+35:46 you see here if I go here because
+35:49 
+
+35:49 understand every job is running onto a
+35:55 
+
+35:55 different virtual machine. So the
+35:58 
+
+35:58 previous virtual machine that ran the
+36:01 
+
+36:01 push job was different and the runner
+36:05 
+
+36:05 that is running this job is different.
+36:08 
+
+36:08 And we learned that in the past lecture
+36:10 
+
+36:10 when you are dealing with GitHub hosted
+36:13 
+
+36:13 runners then your each job receives a
+36:18 
+
+36:18 new runner a new virtual machine. And if
+36:21 
+
+36:21 I expand this you see my trigger is
+36:25 
+
+36:25 workflow dispatch event. So if I go back
+36:28 
+
+36:28 here, we can see the holistic view. This
+36:32 
+
+36:32 understanding events workflow, it ran a
+36:34 
+
+36:34 couple of times. The first time it ran,
+36:37 
+
+36:37 it ran because of the push event. The
+36:40 
+
+36:40 second time it ran, it ran because of a
+36:43 
+
+36:43 workflow dispatch event. I hope this is
+36:47 
+
+36:47 understood.
+36:48 
+
+36:48 I want you to understand one more thing.
+36:51 
+
+36:51 See how good this is looking. You have
+36:53 
+
+36:53 GitHub actions and this repository right
+36:57 
+
+36:57 now has two workflow defines defined.
+37:01 
+
+37:01 Now you could in actual production and
+37:03 
+
+37:03 as we progress we'll be doing projects
+37:05 
+
+37:05 that will do this. Your first workflow
+37:07 
+
+37:07 could be securitycentric. Your second
+37:10 
+
+37:10 workflow could be dealing with creating
+37:12 
+
+37:12 container images. And it depends on how
+37:15 
+
+37:15 you want to do things. You can even have
+37:17 
+
+37:17 work one workflow doing everything or
+37:21 
+
+37:21 segregate tasks jobs into different
+37:25 
+
+37:25 workflows. Now that we understand this,
+37:28 
+
+37:28 I want to talk about GitHub hosted
+37:31 
+
+37:31 runners one more time from a different
+37:34 
+
+37:34 lens. So let's go back to our
+37:36 
+
+37:36 repository. I'll scroll at the very top.
+37:39 
+
+37:39 I'll scroll down and then I will go to
+37:41 
+
+37:41 GitHub hosted runner types and
+37:43 
+
+37:43 configuration. And whatever we have done
+37:46 
+
+37:46 is defined in these notes step by step.
+37:49 
+
+37:49 So do refer them while you are
+37:52 
+
+37:52 practicing along and do start the
+37:54 
+
+37:54 repository if it is helping you. I'll go
+37:57 
+
+37:57 here and then we know that there are two
+37:60 
+
+37:60 types of runners GitHub hosted and
+38:03 
+
+38:03 self-hosted. GitHub hosted runners can
+38:06 
+
+38:06 be categorized into further two
+38:08 
+
+38:08 categories. Standard runners and larger
+38:12 
+
+38:12 runners. So what GitHub is provisioning
+38:15 
+
+38:15 for us right now is standard runners.
+38:18 
+
+38:18 Now these standard runners they have an
+38:21 
+
+38:21 approximate configuration. So for
+38:23 
+
+38:23 example if you are using Ubuntu OS then
+38:26 
+
+38:26 you may get two to four CPUs and 8 to 16
+38:30 
+
+38:30 GB of memory and 14 GB of storage.
+38:35 
+
+38:35 But what is the configuration that you
+38:38 
+
+38:38 receive depends on what OS you are
+38:41 
+
+38:41 choosing. So for example, if I go here,
+38:43 
+
+38:43 it is saying that there are different
+38:46 
+
+38:46 configurations for standard runners for
+38:49 
+
+38:49 public repositories and different for
+38:51 
+
+38:51 private repositories. So let's
+38:53 
+
+38:53 concentrate on private repositories.
+38:55 
+
+38:55 I'll click here. And what you see here
+38:57 
+
+38:57 is if I am using Ubuntu slim then the
+39:01 
+
+39:01 configuration that I get is one
+39:03 
+
+39:03 processor and 5GB of memory and this is
+39:06 
+
+39:06 the storage. If I use Ubuntu latest
+39:08 
+
+39:08 which we are using then you will see
+39:12 
+
+39:12 this configuration. So it depends on
+39:15 
+
+39:15 what is the OS that you have chosen and
+39:18 
+
+39:18 it also depends on whether your
+39:20 
+
+39:20 repository is private or public. So if
+39:23 
+
+39:23 you go to public repos you see the
+39:25 
+
+39:25 configurations here are I think a little
+39:28 
+
+39:28 higher. So Ubuntu latest has 416 and
+39:31 
+
+39:31 here Ubuntu latest had 28. So the
+39:35 
+
+39:35 configurations when it comes to public
+39:37 
+
+39:37 repositories is a little higher. Now
+39:40 
+
+39:40 let's go back and see what I want to
+39:43 
+
+39:43 discuss next.
+39:45 
+
+39:45 Why running size matters? Now I want you
+39:47 
+
+39:47 to know that not all jobs that you are
+39:51 
+
+39:51 running may require similar type of
+39:54 
+
+39:54 configuration. What if you have a heavy
+39:57 
+
+39:57 application and the security scans that
+40:00 
+
+40:00 happens require more amount of vCPU?
+40:05 
+
+40:05 What would you do in such scenario? What
+40:07 
+
+40:07 you would do is you would choose a
+40:10 
+
+40:10 larger GitHub hosted runner or you will
+40:14 
+
+40:14 choose a self-hosted runner because of
+40:17 
+
+40:17 course whatever you are doing is
+40:20 
+
+40:20 resulting in memory exhaustion, disk
+40:22 
+
+40:22 pressure, timeout failures, unstable
+40:25 
+
+40:25 pipeline behavior, workflow behavior or
+40:28 
+
+40:28 failed workflow execution under heavy
+40:32 
+
+40:32 workload conditions. So in such
+40:34 
+
+40:34 scenarios you may not want to go with
+40:37 
+
+40:37 what is available by default and what is
+40:40 
+
+40:40 available by default is standard
+40:42 
+
+40:42 runners. In in certain scenarios you may
+40:46 
+
+40:46 want to use larger runners or
+40:49 
+
+40:49 self-hosted runners. Now I want to tell
+40:51 
+
+40:51 you one more thing. This is my insight
+40:54 
+
+40:54 what I have seen. I have worked with
+40:58 
+
+40:58 multiple GitHub actions projects from a
+41:01 
+
+41:01 pre-sales standpoint and I have not seen
+41:05 
+
+41:05 any project use larger GitHub hosted
+41:08 
+
+41:08 runner. So what instead organizations or
+41:11 
+
+41:11 projects do is they use something called
+41:15 
+
+41:15 selfhosted runner. Important GitHub
+41:18 
+
+41:18 hosted larger runners are available only
+41:22 
+
+41:22 for organizations and enterprises using
+41:25 
+
+41:25 GitHub team or GitHub enterprise cloud
+41:29 
+
+41:29 plans. So this also must be taken into
+41:32 
+
+41:32 account. Again what I told you is my
+41:36 
+
+41:36 personal experience. Maybe architect 2
+41:39 
+
+41:39 may have a different experience in your
+41:42 
+
+41:42 experience. Maybe you you would have
+41:44 
+
+41:44 seen larger GitHub hosted runners used a
+41:48 
+
+41:48 lot. So it depends on what application
+41:51 
+
+41:51 you are dealing with. What are your
+41:53 
+
+41:53 organizational goals? What are your
+41:56 
+
+41:56 goals with a heavy machine? Maybe you
+41:58 
+
+41:58 want a custom network configuration and
+42:01 
+
+42:01 so on. In such scenarios, it is always
+42:04 
+
+42:04 preferred you use self-hosted runners.
+42:08 
+
+42:08 But I want you to also know that you
+42:11 
+
+42:11 have larger GitHub hosted runners as
+42:13 
+
+42:13 well at your disposal. Again, this is
+42:16 
+
+42:16 runner strategy in production
+42:17 
+
+42:17 environments. I would let you read that
+42:19 
+
+42:19 this only covers what I just told you.
+42:22 
+
+42:22 Runner strategy in production
+42:23 
+
+42:23 environments is influenced not only by
+42:26 
+
+42:26 technical workload requirements but also
+42:29 
+
+42:29 by security policies because it will
+42:32 
+
+42:32 always be the security team that will be
+42:35 
+
+42:35 holding hammer to your heads and telling
+42:37 
+
+42:37 you do not diverge and compliance
+42:40 
+
+42:40 controls, networking constraints,
+42:42 
+
+42:42 infrastructure ownership models,
+42:45 
+
+42:45 scalability requirements and overall
+42:47 
+
+42:47 CI/CD operating costs. With this
+42:51 
+
+42:51 understanding, let's go to the demo. So
+42:54 
+
+42:54 I will go to Visual Studio Code and here
+42:58 
+
+42:58 I will create a new file. And this file
+43:02 
+
+43:02 I will call 03 CI
+43:05 
+
+43:05 runners doty.
+43:09 
+
+43:09 And what I will do is I'll paste
+43:11 
+
+43:11 something that I already have here. I'll
+43:14 
+
+43:14 paste it here. Again very simple 03
+43:18 
+
+43:18 understanding runners name of this
+43:20 
+
+43:20 workflow is this on we are saying on
+43:23 
+
+43:23 push you trigger this workflow jobs we
+43:26 
+
+43:26 have one job that is called runnery info
+43:30 
+
+43:30 and let's also add a job suffix so that
+43:33 
+
+43:33 I know this is a job whenever I see it
+43:35 
+
+43:35 we run this on Ubuntu latest and steps
+43:39 
+
+43:39 we are saying print runner details and
+43:41 
+
+43:41 you also see a pipe symbol here this
+43:44 
+
+43:44 pipe symbol when I talk about YAML this
+43:48 
+
+43:48 is called multi-line block syntax. Now
+43:50 
+
+43:50 what what this is allowing us to do is
+43:53 
+
+43:53 it is allowing us to run multiple
+43:56 
+
+43:56 command then all these commands will be
+43:58 
+
+43:58 run in sequence. That is what multi-line
+44:01 
+
+44:01 block will do for you. This pipe symbol
+44:04 
+
+44:04 will do for you. If we were not using
+44:06 
+
+44:06 that we would have to use some sort of
+44:08 
+
+44:08 chaining you know using and or something
+44:11 
+
+44:11 of that sort. So we don't want that.
+44:13 
+
+44:13 Hence we are using a pipe symbol to
+44:16 
+
+44:16 execute multiple commands in a specific
+44:20 
+
+44:20 sequence that we have defined here. Now
+44:23 
+
+44:23 vun what is runner name? What is runner
+44:26 
+
+44:26 OS? What is runner architecture?
+44:29 
+
+44:29 Understand whenever you are running a
+44:32 
+
+44:32 job like I said before those jobs run
+44:35 
+
+44:35 somewhere right and that somewhere is
+44:38 
+
+44:38 runners. Runners is where your jobs
+44:40 
+
+44:40 execute. There are certain environment
+44:43 
+
+44:43 variables that are defined in those
+44:46 
+
+44:46 runners. Again, I am not talking about
+44:48 
+
+44:48 what we learned in Jenkins, let's say
+44:50 
+
+44:50 built-in variables or what we learned in
+44:52 
+
+44:52 GitHub actions context. We are not
+44:55 
+
+44:55 talking about that here. I am talking
+44:57 
+
+44:57 about the environment variables that are
+44:60 
+
+44:60 defined in the operating system of your
+45:03 
+
+45:03 runner. So, if I go to the documentation
+45:06 
+
+45:06 and let's come here, you see variables
+45:09 
+
+45:09 here, right? I'll right click open link
+45:11 
+
+45:11 in new tab. I'll go here and this will
+45:14 
+
+45:14 tell you what all environment variables
+45:17 
+
+45:17 are there at your disposal. And I want
+45:20 
+
+45:20 you to concentrate on let me come down
+45:25 
+
+45:25 here you see runner architecture, runner
+45:28 
+
+45:28 debug, runner environment and this will
+45:30 
+
+45:30 tell you a description about what this
+45:33 
+
+45:33 will do. But here we know runner OS is
+45:35 
+
+45:35 obvious, runner name is again obvious.
+45:38 
+
+45:38 So this will tell you things that are
+45:41 
+
+45:41 associated with your runner. So I wanted
+45:44 
+
+45:44 to tell you this which is why I have
+45:46 
+
+45:46 added three four variables here and
+45:50 
+
+45:50 let's now commit this and push this. So
+45:53 
+
+45:53 I'll go to my terminal. I will clear my
+45:56 
+
+45:56 screen. I will write get add. I'll move
+45:60 
+
+45:60 the files to the staging area. Then I'll
+46:02 
+
+46:02 write get commit- m and this time I will
+46:06 
+
+46:06 write feature. And let's say this
+46:08 
+
+46:08 feature is add GitHub hosted
+46:13 
+
+46:13 runner variables. Okay. And then I'll
+46:17 
+
+46:17 close this. I'll press enter. And then I
+46:20 
+
+46:20 will write get push. And then I will go
+46:22 
+
+46:22 to my browser and I will go here. I will
+46:28 
+
+46:28 go all workflows are here. One is here.
+46:31 
+
+46:31 Two is here. And now the third workflow
+46:33 
+
+46:33 that we have just defined will also come
+46:37 
+
+46:37 here. So if I refresh this I should see
+46:39 
+
+46:39 a three here understanding runners. So
+46:42 
+
+46:42 if I go to all workflows this will give
+46:44 
+
+46:44 me all the executions all the triggers
+46:48 
+
+46:48 what happened in all the workflows. But
+46:50 
+
+46:50 if I go to specific workflow then I will
+46:53 
+
+46:53 see the triggers only for that specific
+46:55 
+
+46:55 workflow. So if I go here now you see I
+46:59 
+
+46:59 have this. If I click here, I wanted to
+47:02 
+
+47:02 show you a couple of things here. So if
+47:05 
+
+47:05 I expand setup job, I see the image of
+47:09 
+
+47:09 the runner. Okay? And we used Ubuntu
+47:11 
+
+47:11 latest. But what you can also see is
+47:14 
+
+47:14 included software. This will tell you
+47:16 
+
+47:16 whatever is installed onto your runner.
+47:20 
+
+47:20 So if I open this, you see that's why
+47:23 
+
+47:23 the configuration was a little higher.
+47:25 
+
+47:25 You know there was certain amount of CPU
+47:27 
+
+47:27 that was assigned and certain amount of
+47:29 
+
+47:29 memory that was assigned because if you
+47:31 
+
+47:31 look at it it is running the runner is
+47:34 
+
+47:34 running so many software it's package
+47:36 
+
+47:36 management software then there are
+47:39 
+
+47:39 environment variables then there is
+47:41 
+
+47:41 project management software you see
+47:42 
+
+47:42 maven is also here then you see what all
+47:45 
+
+47:45 tools are installed anible get kind
+47:48 
+
+47:48 cubectl customize so there are so many
+47:50 
+
+47:50 tools that are already installed now if
+47:53 
+
+47:53 you want to install any tool that is not
+47:55 
+
+47:55 listed here then you can of course go
+47:59 
+
+47:59 here and in the run command in run you
+48:02 
+
+48:02 can mention the command to download that
+48:06 
+
+48:06 tool whatever you need and then install
+48:09 
+
+48:09 that tool but I want you to know that
+48:11 
+
+48:11 most of the tools that you would use for
+48:13 
+
+48:13 CI and CD tasks are already here and
+48:16 
+
+48:16 they also have AWS CLI so if you are
+48:19 
+
+48:19 deploying onto AWS you are covered here
+48:23 
+
+48:23 so I will let you read these and then
+48:26 
+
+48:26 let's see what we printed. So if I
+48:29 
+
+48:29 expand this, you see runner name GitHub
+48:33 
+
+48:33 actions. So this was the name of the
+48:35 
+
+48:35 runner that ran our job. Runner OS was
+48:39 
+
+48:39 Linux and the runner architecture was
+48:42 
+
+48:42 x64. Now I hope this all is making sense
+48:45 
+
+48:45 to you. But I also wanted to show you um
+48:49 
+
+48:49 a Windows runner. So I'll click here.
+48:52 
+
+48:52 I'll go to I'll click on new files and
+48:55 
+
+48:55 04
+48:56 
+
+48:56 and I'll call this CI
+48:59 
+
+48:59 runners 2.yaml YAML and then what I'll
+49:03 
+
+49:03 do is I'll quickly copy this and here
+49:07 
+
+49:07 I'm calling them uh I'm calling this
+49:09 
+
+49:09 workflow understanding runners Windows
+49:12 
+
+49:12 plus Ubuntu on push jobs I have two jobs
+49:16 
+
+49:16 Ubuntu runner job and Windows runner job
+49:22 
+
+49:22 and then this job runs on Ubuntu latest
+49:25 
+
+49:25 and this job runs on Windows and here I
+49:29 
+
+49:29 am printing the same details and here as
+49:31 
+
+49:31 well I'm printing the same details but
+49:34 
+
+49:34 what additional you see here is shell
+49:37 
+
+49:37 colon bash now by default when I talk
+49:40 
+
+49:40 about Ubuntu the chosen shell is bash
+49:43 
+
+49:43 the born again shell but when I talk
+49:46 
+
+49:46 about windows the default is powershell
+49:50 
+
+49:50 what we want is we want this machine
+49:52 
+
+49:52 this windows runner to be using git bash
+49:56 
+
+49:56 which is why we have said shell is bash
+49:59 
+
+49:59 and if If I expand
+50:02 
+
+50:02 the installed software onto this runner,
+50:05 
+
+50:05 you will see that git bash is already
+50:07 
+
+50:07 installed. Which is why we can say that
+50:10 
+
+50:10 the shell that you must be using my dear
+50:12 
+
+50:12 runner windows machine should be bash
+50:16 
+
+50:16 and when it is bash it can run our echo
+50:20 
+
+50:20 commands successfully. So let's go to
+50:23 
+
+50:23 the terminal and I'll clear my screen. I
+50:27 
+
+50:27 will run get add dot to move the files
+50:30 
+
+50:30 to the staging area. Then I will add get
+50:34 
+
+50:34 commit-m
+50:36 
+
+50:36 and here I will mention let's call this
+50:39 
+
+50:39 feature and let's say add multi-runner
+50:46 
+
+50:46 workflow demo. I'll close this and then
+50:50 
+
+50:50 okay I have to spell it right
+50:53 
+
+50:53 and then I will run get push to push
+50:56 
+
+50:56 this
+50:58 
+
+50:58 and if I go back to my browser
+51:02 
+
+51:02 and then I go back I should see a
+51:06 
+
+51:06 workflow 04 understanding runners I see
+51:08 
+
+51:08 it now you see all of these are also
+51:11 
+
+51:11 running because there has been a push
+51:14 
+
+51:14 event so we said that whenever there is
+51:16 
+
+51:16 a push you should be running. You see it
+51:19 
+
+51:19 ran now. If I go here, it also says it
+51:23 
+
+51:23 ran now because in all of them there is
+51:25 
+
+51:25 one thing that is common and that one
+51:28 
+
+51:28 thing is push. And while we are at it, I
+51:31 
+
+51:31 also want to see that. So we used chron
+51:34 
+
+51:34 in 02 right? 02 here I'm in 02
+51:39 
+
+51:39 manually run this is commit event
+51:42 
+
+51:42 understanding this is all. So you see
+51:45 
+
+51:45 the chron expression did not run the
+51:49 
+
+51:49 workflow. So if I check here so it is
+51:52 
+
+51:52 saying it only has push and workflow
+51:55 
+
+51:55 dispatch. If there was chron I would
+51:58 
+
+51:58 have seen something schedule or
+51:59 
+
+51:59 something of that sort here. But I don't
+52:01 
+
+52:01 see that. So the chron job has not yet
+52:04 
+
+52:04 run. And I'm sure the time that we
+52:07 
+
+52:07 defined there I think 11 minutes or 7
+52:09 
+
+52:09 minutes that time has already elapsed
+52:11 
+
+52:11 but you don't see it here. Our syntax is
+52:14 
+
+52:14 not wrong. This is from the official
+52:15 
+
+52:15 documentation but it just doesn't run.
+52:18 
+
+52:18 Like I said it's on best effort basis.
+52:20 
+
+52:20 If I go here now uh this was supposed to
+52:23 
+
+52:23 run in push so it's Windows plus Ubuntu.
+52:25 
+
+52:25 If I go it will have two jobs. We are
+52:28 
+
+52:28 concentrating on Windows runner job
+52:30 
+
+52:30 here. I'll go there setup job and then I
+52:33 
+
+52:33 want to expand the image part so that I
+52:36 
+
+52:36 can show you the installed software. If
+52:38 
+
+52:38 I go here it is telling what all is
+52:41 
+
+52:41 installed. So you see bash is here. Now
+52:45 
+
+52:45 let's scroll down. I will expand this.
+52:49 
+
+52:49 And then you see runner name GitHub
+52:51 
+
+52:51 action. This is the name of the runner.
+52:53 
+
+52:53 Runner OS is Windows. Architecture is
+52:56 
+
+52:56 x86.
+52:58 
+
+52:58 I think that's all I wanted to cover in
+53:01 
+
+53:01 this lecture. In this lecture, we
+53:03 
+
+53:03 explored workflow trigger categories,
+53:06 
+
+53:06 GitHub actions contexts, GitHub hosted
+53:09 
+
+53:09 runner architectures,
+53:11 
+
+53:11 runner sizing considerations, and
+53:14 
+
+53:14 production runner strategies. Through
+53:16 
+
+53:16 the demos, we also observed eventdriven
+53:19 
+
+53:19 workflow execution, predefined runner
+53:22 
+
+53:22 environment variables, Ubuntu and
+53:25 
+
+53:25 Windows runner behavior, and
+53:27 
+
+53:27 crossplatform workflow execution
+53:30 
+
+53:30 patterns. In the next lecture, we will
+53:32 
+
+53:32 move deeper into GitHub actions, events,
+53:35 
+
+53:35 contexts, and actions while
+53:38 
+
+53:38 understanding how workflows dynamically
+53:42 
+
+53:42 exchange data and execute reusable
+53:45 
+
+53:45 automation logic. If you have questions,
+53:49 
+
+53:49 feel free to ask them in the comment
+53:51 
+
+53:51 section and I will reply. If this
+53:53 
+
+53:53 helped, do consider liking, sharing, and
+53:56 
+
+53:56 subscribing. It will mean a lot to me.
+53:59 
+
+53:59 Thank you very

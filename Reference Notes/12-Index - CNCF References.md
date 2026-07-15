@@ -23,6 +23,8 @@ This index contains reference summaries and technical digests of CNCF presentati
   * Dynamic secret mounting, RAM-backed tmpfs storage, IRSA credential mapping, SecretProviderClass parameters, and auto-rotation reconciliation loops.
 - ⛵ **[Module 12-3: Helm Package Management & Lifecycle Operations](12-3_helm_package_management.md)**
   * Chart structure, default values.yaml overrides, installation, upgrade, rollback lifecycle operations, metadata storage, and Helm 2 vs Helm 3 architectural comparisons.
+- 🔌 **[Module 12-4: Prometheus and Grafana Observability Stack](12-4_prometheus_and_grafana_observability_stack.md)**
+  * Scraper pull-model, TSDB engine internals, write-ahead log (WAL), Prometheus metric types (Counter, Gauge, Histogram, Summary), PromQL query vector algebra, and Alertmanager routing hierarchies.
 
 ---
 

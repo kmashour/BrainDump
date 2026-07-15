@@ -1,0 +1,2347 @@
+00:00 Hi, I am Varun Joshi, and I welcome you
+00:03 
+
+00:03 to lecture nine of GitHub Actions Basics
+00:07 
+
+00:07 to Production course.
+00:09 
+
+00:09 In this lecture, we will explore another
+00:12 
+
+00:12 powerful GitHub Actions capability
+00:15 
+
+00:15 called matrix strategy. We will begin by
+00:19 
+
+00:19 understanding why matrix strategy is
+00:22 
+
+00:22 needed, what problem it solves, and how
+00:25 
+
+00:25 it helps us avoid creating multiple
+00:29 
+
+00:29 nearly identical jobs for different
+00:32 
+
+00:32 operating systems, runtime versions,
+00:35 
+
+00:35 browsers, databases, cloud providers,
+00:38 
+
+00:38 and many other environments.
+00:41 
+
+00:41 After that, through a hands-on demo, we
+00:45 
+
+00:45 will learn how GitHub Actions
+00:48 
+
+00:48 automatically generates multiple job
+00:51 
+
+00:51 executions
+00:53 
+
+00:53 from a single job definition. Along the
+00:57 
+
+00:57 way, we will understand matrix
+00:59 
+
+00:59 variables, the matrix context, and how
+01:03 
+
+01:03 matrix expansion works, and how every
+01:07 
+
+01:07 generated job executes independently on
+01:11 
+
+01:11 its own GitHub-hosted
+01:14 
+
+01:14 runner.
+01:15 
+
+01:15 So, [snorts] let's get started.
+01:18 
+
+01:18 Now, before I discuss the contents of
+01:21 
+
+01:21 this screen, let's talk about deployment
+01:24 
+
+01:24 targets. Now, as DevOps engineers, if
+01:28 
+
+01:28 you are starting with this career right
+01:31 
+
+01:31 now, then you might assume that every
+01:35 
+
+01:35 time that we deploy an application, that
+01:38 
+
+01:38 application is deployed onto Kubernetes
+01:41 
+
+01:41 or any containerized environment. It
+01:44 
+
+01:44 could be Amazon's ECS, it could be
+01:48 
+
+01:48 Google's Cloud Run, and so on. But, it
+01:52 
+
+01:52 is not always the scenario. At times,
+01:56 
+
+01:56 you will also be deploying application
+01:58 
+
+01:58 onto a virtual machine and do not think
+02:01 
+
+02:01 this is traditional traditional in
+02:03 
+
+02:03 nature because you would still see
+02:06 
+
+02:06 applications that deploy onto virtual
+02:09 
+
+02:09 machines. And I'm talking about
+02:11 
+
+02:11 enterprise applications because their
+02:13 
+
+02:13 use case requires a virtual machine or
+02:17 
+
+02:17 maybe it is a legacy application that
+02:20 
+
+02:20 maybe cannot be modernized. So, those
+02:23 
+
+02:23 applications will still be deployed onto
+02:26 
+
+02:26 virtual machines and there is no one
+02:29 
+
+02:29 stopping
+02:30 
+
+02:30 to use CICD pipelines to deploy
+02:34 
+
+02:34 applications onto those virtual
+02:37 
+
+02:37 machines. So, like I always say, broaden
+02:41 
+
+02:41 your imagination. Another use case could
+02:44 
+
+02:44 be
+02:45 
+
+02:45 First use case we discussed, you could
+02:47 
+
+02:47 be deploying to Kubernetes, of course,
+02:49 
+
+02:49 but you could also be deploying to
+02:51 
+
+02:51 virtual machines. And another use case I
+02:53 
+
+02:53 want to discuss is
+02:55 
+
+02:55 Whatever applications we install in our
+02:57 
+
+02:57 laptops,
+02:59 
+
+02:59 those applications
+03:01 
+
+03:01 they also adhere to some sort of CICD
+03:04 
+
+03:04 pipeline. And when you are developing
+03:07 
+
+03:07 applications like that, when you are
+03:10 
+
+03:10 creating workflows for applications like
+03:12 
+
+03:12 that, what you would typically do, once
+03:15 
+
+03:15 you have the application package, what
+03:18 
+
+03:18 you would do is you will upload that
+03:21 
+
+03:21 package maybe onto a central location.
+03:24 
+
+03:24 It could be an S3 bucket, it could be
+03:26 
+
+03:26 Azure blob, and so on. What matters is
+03:30 
+
+03:30 you are creating a deployment package,
+03:33 
+
+03:33 an application package, and then
+03:35 
+
+03:35 uploading that application package
+03:38 
+
+03:38 onto a certain location. And once that
+03:41 
+
+03:41 package is there, we as end users, if we
+03:44 
+
+03:44 want to use that application like we
+03:46 
+
+03:46 want to use Visual Code, we just
+03:49 
+
+03:49 download the setup for that, and then we
+03:51 
+
+03:51 install it in our
+03:54 
+
+03:54 laptop, correct? That's the flow that
+03:57 
+
+03:57 end users follow. So, do not limit your
+03:60 
+
+03:60 imagination to think that as DevOps
+04:03 
+
+04:03 engineers, you will only be deploying
+04:06 
+
+04:06 applications onto a containerized
+04:08 
+
+04:08 environment. It could be a serverless
+04:11 
+
+04:11 environment, which could, of course,
+04:13 
+
+04:13 underneath use containers. It could be
+04:17 
+
+04:17 a serverless environment which is just
+04:20 
+
+04:20 running functions for you, and you are
+04:22 
+
+04:22 deploying functions using your
+04:24 
+
+04:24 pipelines. It could be an application
+04:27 
+
+04:27 that is being deployed onto a Kubernetes
+04:30 
+
+04:30 environment, or onto virtual machines.
+04:33 
+
+04:33 It could be an application package that
+04:36 
+
+04:36 you are uploading somewhere. I'm sure
+04:38 
+
+04:38 while I'm saying this, most of you are
+04:41 
+
+04:41 thinking of other scenarios that could
+04:43 
+
+04:43 be there. So, of course, whatever I am
+04:46 
+
+04:46 saying are not the only deployment
+04:49 
+
+04:49 targets. You could have multiple
+04:52 
+
+04:52 deployment targets. Now that we
+04:55 
+
+04:55 understand that, I want you to imagine
+04:59 
+
+04:59 that we are developing an application
+05:02 
+
+05:02 that we want to deploy onto virtual
+05:05 
+
+05:05 machines, okay? Because I want you to
+05:08 
+
+05:08 get out of that cocoon that DevOps
+05:11 
+
+05:11 engineers only deal with Kubernetes.
+05:14 
+
+05:14 There are multiple other things as well.
+05:17 
+
+05:17 So, let's say the application that we
+05:19 
+
+05:19 are dealing with supports Ubuntu,
+05:22 
+
+05:22 Windows, macOS, and when it comes to
+05:25 
+
+05:25 Python version, the destination where
+05:28 
+
+05:28 the application is being installed
+05:30 
+
+05:30 should have Python 3.11,
+05:33 
+
+05:33 or Python 3.12, or Python 3.13. So,
+05:37 
+
+05:37 these are the compatibility requirements
+05:40 
+
+05:40 for my application, and you would see
+05:43 
+
+05:43 this often when you are downloading
+05:44 
+
+05:44 applications. You would see that this
+05:46 
+
+05:46 application requires Java 17 or later.
+05:50 
+
+05:50 This application supports Python 3.11
+05:54 
+
+05:54 or
+05:55 
+
+05:55 greater. This application is only
+05:58 
+
+05:58 compatible with Windows, macOS, and
+06:01 
+
+06:01 Linux. So, you would see these things
+06:04 
+
+06:04 when you download software from
+06:07 
+
+06:07 different vendors. And here we are
+06:09 
+
+06:09 discussing the same use case. Again,
+06:12 
+
+06:12 when I talk about Kubernetes
+06:14 
+
+06:14 implementation deploying when you are
+06:16 
+
+06:16 deploying onto a Kubernetes environment
+06:18 
+
+06:18 or a containerized environment, that
+06:20 
+
+06:20 thing is standardized because Docker did
+06:23 
+
+06:23 that for us. With Kubernetes, with
+06:26 
+
+06:26 containerization, you just tell that
+06:29 
+
+06:29 this is the base image that I want to
+06:31 
+
+06:31 use, and based on this base image,
+06:33 
+
+06:33 deploy my application. And your
+06:35 
+
+06:35 application will work the same way like
+06:39 
+
+06:39 it behaves in my laptop in any other
+06:42 
+
+06:42 system you run that container. The
+06:45 
+
+06:45 application will behave the same way
+06:48 
+
+06:48 because there everything is contained
+06:51 
+
+06:51 into a container image, but here the
+06:54 
+
+06:54 scenario that I am concentrating on is
+06:58 
+
+06:58 deploying onto a virtual machine or
+07:00 
+
+07:00 hosting the software package somewhere
+07:03 
+
+07:03 so that end users can download and
+07:05 
+
+07:05 install those things onto their laptops.
+07:07 
+
+07:07 So, make that distinction extremely
+07:10 
+
+07:10 clear in your head because this will
+07:13 
+
+07:13 start making sense only then. So, this
+07:17 
+
+07:17 is our application.
+07:18 
+
+07:18 Now,
+07:20 
+
+07:20 before I ask my users to download this
+07:24 
+
+07:24 package and run the application, what I
+07:27 
+
+07:27 as developer would want to do is I want
+07:30 
+
+07:30 to test all of these
+07:33 
+
+07:33 in my local environment because I want
+07:36 
+
+07:36 to ensure
+07:37 
+
+07:37 that my application works on Ubuntu, be
+07:40 
+
+07:40 it any version of Python. My application
+07:43 
+
+07:43 works on Windows, be it any Python
+07:46 
+
+07:46 version. My application works on Mac OS,
+07:49 
+
+07:49 be it any Python version like you see
+07:52 
+
+07:52 here. Now, imagine if I were to do this
+07:56 
+
+07:56 testing in my GitHub action runner via
+07:60 
+
+07:60 workflows, then I will have to have
+08:04 
+
+08:04 nine jobs.
+08:05 
+
+08:05 Three into three like you see here
+08:08 
+
+08:08 because I have to validate every
+08:10 
+
+08:10 scenario. And this is cumbersome for me.
+08:14 
+
+08:14 I cannot just go and create nine jobs.
+08:17 
+
+08:17 That will be so redundant. I can, of
+08:19 
+
+08:19 course, but that will be too redundant.
+08:22 
+
+08:22 And here I have just taken the example
+08:25 
+
+08:25 of operating system and a Python
+08:28 
+
+08:28 version. This could be I maybe I want to
+08:31 
+
+08:31 perform the testing in different
+08:32 
+
+08:32 browsers. Maybe my application is
+08:35 
+
+08:35 connected to a different database, and
+08:37 
+
+08:37 that database can have three other
+08:39 
+
+08:39 versions. I have to do all those
+08:41 
+
+08:41 testings, and to perform each testing, I
+08:44 
+
+08:44 will have to create so many jobs. And if
+08:46 
+
+08:46 you remember, if I take you to my
+08:48 
+
+08:48 browser, and in the last lecture, I'll
+08:51 
+
+08:51 I'll go to GitHub Actions Basics to
+08:53 
+
+08:53 Production, that is the repository for
+08:55 
+
+08:55 this course. And if you have not already
+08:57 
+
+08:57 started, please click on this button.
+08:59 
+
+08:59 Thank you very much. And then
+09:02 
+
+09:02 I'll take you to Artifacts and Caching,
+09:04 
+
+09:04 which we discussed in the last lecture.
+09:06 
+
+09:06 And then here I'll go to Demo 2,
+09:08 
+
+09:08 Creating the Workflow. So, if you
+09:10 
+
+09:10 remember here, what we said, I want to
+09:14 
+
+09:14 use Python. So, here in this step, I was
+09:17 
+
+09:17 instructing my GitHub runner that I want
+09:22 
+
+09:22 to run Python, but that Python should
+09:25 
+
+09:25 have this version. So, I was configuring
+09:27 
+
+09:27 Python in my runner with this version.
+09:30 
+
+09:30 But if I had to test my application for
+09:34 
+
+09:34 Python 3.12, 3.11, 3.10, then I would
+09:38 
+
+09:38 have to create separate jobs
+09:40 
+
+09:40 for everything because see, one
+09:44 
+
+09:44 runner is running this job and this job
+09:47 
+
+09:47 just deals with 3.13 version. For other
+09:51 
+
+09:51 jobs, I will have to create separate
+09:54 
+
+09:54 jobs because remember,
+09:56 
+
+09:56 there is a runner that is associated
+09:59 
+
+09:59 with a job. So, each job gets its own
+10:02 
+
+10:02 runner. I cannot say this runner that
+10:05 
+
+10:05 you install 10 different Python
+10:07 
+
+10:07 versions. Hello. Can I?
+10:11 
+
+10:11 There are ways, of course, if you are
+10:13 
+
+10:13 coming from a Linux background, there
+10:14 
+
+10:14 are ways by which you can have multiple
+10:16 
+
+10:16 Java versions and multiple software
+10:18 
+
+10:18 versions, but let's think about the
+10:21 
+
+10:21 scenario. Can you have 10 different
+10:23 
+
+10:23 Python versions installed in the same
+10:24 
+
+10:24 runner? No, right? So, you would have to
+10:26 
+
+10:26 create different runners and
+10:29 
+
+10:29 would have to create different jobs, of
+10:31 
+
+10:31 course, and those jobs will be executed
+10:33 
+
+10:33 by different runners. So, I hope you get
+10:36 
+
+10:36 the picture. You get the complexity, and
+10:39 
+
+10:39 this complexity, my dear friends, is
+10:42 
+
+10:42 what matrix strategy is solving for you.
+10:46 
+
+10:46 Now, let's discuss
+10:48 
+
+10:48 what of matrix strategy because we
+10:51 
+
+10:51 already understand why we need matrix
+10:54 
+
+10:54 strategy because we don't want to create
+10:57 
+
+10:57 so many jobs with identical
+10:60 
+
+10:60 configuration because it is just the
+11:02 
+
+11:02 version of Python that is changing and
+11:04 
+
+11:04 it is just the operating system that is
+11:06 
+
+11:06 changing.
+11:07 
+
+11:07 I don't want to create so many jobs.
+11:10 
+
+11:10 Hence, let's see what is matrix
+11:14 
+
+11:14 strategy. And before I do that, I will
+11:16 
+
+11:16 use the magic of editing to bring
+11:19 
+
+11:19 another picture here. I have the picture
+11:21 
+
+11:21 here. Now, let's discuss what of matrix
+11:24 
+
+11:24 strategy. Unlike traditional workflows,
+11:28 
+
+11:28 where a job runs only once,
+11:31 
+
+11:31 matrix strategy allows GitHub actions to
+11:35 
+
+11:35 automatically run the same job multiple
+11:38 
+
+11:38 times using different matrix values. So,
+11:42 
+
+11:42 you only create one job and that one job
+11:46 
+
+11:46 will create multiple jobs for you. You
+11:49 
+
+11:49 don't have to manage those jobs. You
+11:52 
+
+11:52 just have to create one job with the
+11:54 
+
+11:54 matrix strategy inbuilt and then
+11:58 
+
+11:58 everything will be taken care by matrix.
+12:02 
+
+12:02 You will have multiple jobs created
+12:05 
+
+12:05 based on the job definition that you
+12:07 
+
+12:07 have done. And this unburdens the
+12:11 
+
+12:11 operational load so much. You don't have
+12:13 
+
+12:13 to repeat yourself again and again for
+12:16 
+
+12:16 individual things. For individual You
+12:18 
+
+12:18 don't have to create individual jobs.
+12:20 
+
+12:20 You just create one and it will take
+12:22 
+
+12:22 care of the rest. Automatically creates
+12:25 
+
+12:25 one job for every matrix value or
+12:28 
+
+12:28 combination you define. So, before I
+12:31 
+
+12:31 move forward, let's discuss what is
+12:33 
+
+12:33 going on in this diagram because I
+12:35 
+
+12:35 believe once you visualize this, the
+12:38 
+
+12:38 YAML itself, then it makes much more
+12:40 
+
+12:40 sense. So, what you are saying jobs, you
+12:42 
+
+12:42 are creating a test job. Understand this
+12:45 
+
+12:45 test job as in this job is performing
+12:47 
+
+12:47 the testing for me. That is why I'm
+12:48 
+
+12:48 calling it a test job. And important
+12:51 
+
+12:51 thing is within the test job you have a
+12:53 
+
+12:53 strategy block and in that strategy
+12:56 
+
+12:56 block you define matrix. And matrix you
+12:59 
+
+12:59 are defining two matrix variable. The
+13:02 
+
+13:02 first variable is operating system. The
+13:04 
+
+13:04 second variable is Python version. So,
+13:06 
+
+13:06 this matrix
+13:09 
+
+13:09 variable has 1 2 3 values and this
+13:12 
+
+13:12 matrix variable has 1 2 3 values. So, in
+13:15 
+
+13:15 totality, this job essentially will have
+13:19 
+
+13:19 nine jobs. And why nine jobs? We'll see
+13:22 
+
+13:22 in a little while.
+13:24 
+
+13:24 I hope till this point this is making
+13:26 
+
+13:26 sense. And this matrix variable OS has
+13:31 
+
+13:31 three values. It is a list. I could have
+13:33 
+
+13:33 used hyphens as well to specify that,
+13:36 
+
+13:36 and we'll see that in the demo. So, for
+13:38 
+
+13:38 now, three values, Python version, three
+13:41 
+
+13:41 values. We are saying this runs on.
+13:45 
+
+13:45 Remember, we supply runs on. If I go
+13:48 
+
+13:48 here,
+13:49 
+
+13:49 you used to supply runs on, and runs on
+13:52 
+
+13:52 defined what operating system you want
+13:54 
+
+13:54 to use. So, you could use Ubuntu,
+13:56 
+
+13:56 Windows, and Mac OS. And here, I'm
+13:59 
+
+13:59 saying what I want to use is defined
+14:03 
+
+14:03 in
+14:05 
+
+14:05 the OS matrix variable. And what we
+14:08 
+
+14:08 understood in our past lecture, when we
+14:10 
+
+14:10 were talking about contexts, here matrix
+14:15 
+
+14:15 is the context. And we want to search
+14:17 
+
+14:17 for OS. So, OS is here. We have defined
+14:20 
+
+14:20 three values. So, when this job wants to
+14:22 
+
+14:22 run, it will first run for, let's say,
+14:24 
+
+14:24 this, then this, then this. And there is
+14:27 
+
+14:27 no sequence guarantees. Okay, I'm just
+14:29 
+
+14:29 telling you for reference, but we all
+14:32 
+
+14:32 know jobs run in parallel. Now, runs on
+14:35 
+
+14:35 matrix.os. So, for each OS, this will be
+14:38 
+
+14:38 populated here. Steps, I'm saying set up
+14:40 
+
+14:40 Python, and I am using an action set up
+14:44 
+
+14:44 Python. The version six is the version
+14:47 
+
+14:47 of that action. With Python version,
+14:49 
+
+14:49 previously, in the previous lecture, we
+14:51 
+
+14:51 supplied an explicit value here, 3.13.
+14:55 
+
+14:55 Here, because I want to test my
+14:57 
+
+14:57 application in all these three operating
+15:01 
+
+15:01 system, and with all these three Python
+15:04 
+
+15:04 versions. Hence, I'm saying
+15:05 
+
+15:05 matrix.python version. So, this will be
+15:08 
+
+15:08 populated from here. Now, 3 into 3 is
+15:12 
+
+15:12 equal to 9. So, this single job will
+15:15 
+
+15:15 have nine different jobs. So, Ubuntu
+15:18 
+
+15:18 latest with all those three versions,
+15:21 
+
+15:21 Windows latest with all these three
+15:22 
+
+15:22 versions, macOS latest with all these
+15:25 
+
+15:25 three versions. I hope the dots are
+15:28 
+
+15:28 getting connected and if they are not,
+15:31 
+
+15:31 they will connect in the demonstration
+15:33 
+
+15:33 section.
+15:35 
+
+15:35 And here this workflow will result in a
+15:37 
+
+15:37 test job matrix expansion automatically
+15:41 
+
+15:41 generated job execution. So different
+15:44 
+
+15:44 jobs will be automatically created for
+15:46 
+
+15:46 you.
+15:48 
+
+15:48 Every generated job runs the same
+15:51 
+
+15:51 workflow steps but uses a different
+15:54 
+
+15:54 matrix value. So understand, you don't
+15:57 
+
+15:57 have to create multiple workflows or
+15:60 
+
+15:60 multiple jobs. Within a single workflow
+16:02 
+
+16:02 YAML, you define a single job and you
+16:05 
+
+16:05 use matrix strategy and it will test
+16:07 
+
+16:07 your application in different
+16:09 
+
+16:09 environments. Different environments as
+16:11 
+
+16:11 in with different environments like here
+16:13 
+
+16:13 Ubuntu latest with 3.11 first. So one
+16:16 
+
+16:16 runner will test this, another runner
+16:18 
+
+16:18 will test this combination. Another
+16:20 
+
+16:20 runner will test Ubuntu latest with 3.13
+16:23 
+
+16:23 and so on. So understand the basic funda
+16:26 
+
+16:26 that we discussed before that each job
+16:28 
+
+16:28 gets executed in its own runner by
+16:31 
+
+16:31 default when you are using GitHub hosted
+16:33 
+
+16:33 runners. That is exactly how this will
+16:35 
+
+16:35 work. How this will work is one job will
+16:38 
+
+16:38 create this job will have nine different
+16:40 
+
+16:40 jobs and those nine different jobs will
+16:42 
+
+16:42 be executed in nine different runners
+16:45 
+
+16:45 because the core concepts, my friends,
+16:48 
+
+16:48 remain the same. commonly used to test
+16:51 
+
+16:51 applications across different runtime
+16:54 
+
+16:54 versions, operating systems, browsers,
+16:56 
+
+16:56 databases, cloud providers and
+16:58 
+
+16:58 deployment environments. Like I said
+16:60 
+
+16:60 before, as a developer, I want to ensure
+17:04 
+
+17:04 that my application works as expected in
+17:07 
+
+17:07 all the environments my application is
+17:09 
+
+17:09 compatible with. So if I am saying in my
+17:12 
+
+17:12 product's documentation that my
+17:14 
+
+17:14 application runs on Python 3.11, 3.12,
+17:17 
+
+17:17 3.13 and all these three operating
+17:20 
+
+17:20 systems are supported, then I must
+17:21 
+
+17:21 ensure that my application is validated
+17:24 
+
+17:24 to work on these environments and that
+17:26 
+
+17:26 is exactly what Matrix strategy is doing
+17:28 
+
+17:28 for me. It is ensuring that whoever runs
+17:32 
+
+17:32 my application in these environments, my
+17:35 
+
+17:35 application is guaranteed to work. And
+17:37 
+
+17:37 why I can say this with confidence is
+17:39 
+
+17:39 because I have tested my application on
+17:42 
+
+17:42 these versions. Now, if someone installs
+17:44 
+
+17:44 my application and is running Python
+17:47 
+
+17:47 version 3.10, my application may not
+17:49 
+
+17:49 work. And if the end user reaches out to
+17:52 
+
+17:52 me via a ticket, of course, I would say,
+17:56 
+
+17:56 "My dear friend, can you please upgrade
+17:59 
+
+17:59 your Python version? Because my
+18:01 
+
+18:01 application is documented to work on
+18:05 
+
+18:05 only these three Python versions." And I
+18:07 
+
+18:07 am using Python as an example here. It
+18:09 
+
+18:09 could be a Java application. It could be
+18:11 
+
+18:11 a Node.js application.
+18:14 
+
+18:14 And so on.
+18:16 
+
+18:16 I hope everything is clear. Now, with
+18:19 
+
+18:19 this understanding,
+18:20 
+
+18:20 let's go to the demo. So, I'll first
+18:22 
+
+18:22 take you to my browser.
+18:24 
+
+18:24 And here, what I will do is I will go
+18:28 
+
+18:28 Oh, I should have clicked here itself.
+18:29 
+
+18:29 Anyway, I'll click here. And then, if I
+18:33 
+
+18:33 go here, like my previous demos, there
+18:35 
+
+18:35 is a prerequisite that
+18:38 
+
+18:38 you must have authentication in place
+18:40 
+
+18:40 with your local and remote so that you
+18:42 
+
+18:42 can push properly. So, if you don't have
+18:45 
+
+18:45 that, you can watch lecture one where we
+18:47 
+
+18:47 explain how do we achieve this.
+18:49 
+
+18:49 Now, let's go to Visual Studio Code and
+18:52 
+
+18:52 understand what we are going to do. So,
+18:54 
+
+18:54 I'll expand Matrix strategy. I'll expand
+18:56 
+
+18:56 project files. I will first show you the
+18:59 
+
+18:59 code. Like I mentioned before, not every
+19:02 
+
+19:02 time you will be deploying onto
+19:03 
+
+19:03 containerized environment. Not always
+19:06 
+
+19:06 you will have Docker files. So,
+19:07 
+
+19:07 predominantly, Matrix strategy, I
+19:10 
+
+19:10 personally have not used in
+19:11 
+
+19:11 containerized environment, maybe you
+19:13 
+
+19:13 guys
+19:14 
+
+19:14 have had a use case that uses it. But
+19:17 
+
+19:17 for me, matrix strategy was
+19:19 
+
+19:19 predominantly used when we were dealing
+19:21 
+
+19:21 with applications that were deployed
+19:23 
+
+19:23 onto virtual machines because when you
+19:25 
+
+19:25 have different teams, they can have, you
+19:28 
+
+19:28 know, install software left, right, and
+19:30 
+
+19:30 center in their virtual machines. So,
+19:33 
+
+19:33 you cannot always guarantee that they
+19:35 
+
+19:35 have whatever your application requires.
+19:38 
+
+19:38 So, what you do is you
+19:40 
+
+19:40 create a compatibility graph for your
+19:42 
+
+19:42 application that only on these versions,
+19:44 
+
+19:44 once these are installed, my application
+19:47 
+
+19:47 will only work then. Now, only is a
+19:50 
+
+19:50 strong word here because it may work in
+19:53 
+
+19:53 an earlier version, but as a developer,
+19:56 
+
+19:56 what you are telling is I have tested my
+19:58 
+
+19:58 application in these versions. Now, if
+20:00 
+
+20:00 my application also works in a different
+20:02 
+
+20:02 version, good for you. But I can say
+20:05 
+
+20:05 with confidence that my application will
+20:08 
+
+20:08 definitely work when you use these
+20:10 
+
+20:10 versions.
+20:11 
+
+20:11 That is what matrix strategy is doing
+20:12 
+
+20:12 for you so that you can test those
+20:14 
+
+20:14 versions
+20:15 
+
+20:15 and say with confidence that yes, my
+20:18 
+
+20:18 application works on these versions. So,
+20:21 
+
+20:21 now application code is extremely
+20:23 
+
+20:23 simple. If you hit the root, you get a
+20:26 
+
+20:26 print message home endpoint invoked and
+20:28 
+
+20:28 this is what the application will
+20:30 
+
+20:30 return. If you hit the health endpoint,
+20:32 
+
+20:32 this is what you get and this is what is
+20:35 
+
+20:35 returned. Health status, healthy with a
+20:37 
+
+20:37 200 status code. And then, once the
+20:39 
+
+20:39 application runs, you see this message.
+20:42 
+
+20:42 this application multiple times.
+20:43 
+
+20:43 Requirements, my application uses the
+20:46 
+
+20:46 Flask framework. Now, the interesting
+20:49 
+
+20:49 part. Let's see what the workflow is.
+20:51 
+
+20:51 So, I will take you
+20:53 
+
+20:53 at the top. I will expand this. And here
+20:56 
+
+20:56 I'm saying the name of the workflow is
+20:59 
+
+20:59 and this is the name that you will see
+21:00 
+
+21:00 in the UI, 01 matrix strategy demo. Then
+21:04 
+
+21:04 on, whenever this API is invoked and
+21:07 
+
+21:07 we'll invoke this API using the UI, and
+21:10 
+
+21:10 then we have jobs. And here the first
+21:13 
+
+21:13 job is test job, and we are explicitly
+21:16 
+
+21:16 mentioning that run this on Ubuntu
+21:19 
+
+21:19 latest. And here in this example, we are
+21:22 
+
+21:22 only testing in different Python
+21:24 
+
+21:24 versions because let's say our
+21:26 
+
+21:26 application is only tested to work on
+21:29 
+
+21:29 Ubuntu with these three Python versions.
+21:33 
+
+21:33 Strategy, like we saw before, then we
+21:35 
+
+21:35 have matrix. Important thing to
+21:37 
+
+21:37 understand is
+21:39 
+
+21:39 within the job itself, you define your
+21:42 
+
+21:42 strategy. Matrix Python version, I'm
+21:45 
+
+21:45 calling the matrix variable as Python
+21:47 
+
+21:47 version 3.11, 3.12, 3.13. And if you see
+21:51 
+
+21:51 here, I am depicting a list with hyphens
+21:55 
+
+21:55 here, and in the diagrams, we saw it
+21:58 
+
+21:58 with square brackets. So, you can use
+22:01 
+
+22:01 either of these. Then steps, the first
+22:03 
+
+22:03 step is we are checking out the code.
+22:06 
+
+22:06 Next step is we are setting up Python.
+22:08 
+
+22:08 And here where the matrix strategy comes
+22:11 
+
+22:11 into play. So, as soon as matrix is
+22:14 
+
+22:14 seen, GitHub Actions understand that
+22:16 
+
+22:16 here I'll have to create 1 2 3 three
+22:20 
+
+22:20 different runners, and those three
+22:23 
+
+22:23 different runners, one will have Python
+22:25 
+
+22:25 3.11, matrix.python_version will be
+22:27 
+
+22:27 3.11, then matrix.python_version will be
+22:30 
+
+22:30 3.12, then the third runner will have
+22:33 
+
+22:33 3.13.
+22:35 
+
+22:35 Very simple, right? And next step is
+22:38 
+
+22:38 display matrix information. And I've
+22:41 
+
+22:41 added this so that I can show you how
+22:44 
+
+22:44 you see the OS as well. OS will be
+22:46 
+
+22:46 Ubuntu, of course, because we are not
+22:48 
+
+22:48 changing the operating system in this
+22:50 
+
+22:50 demo. But in the example that we saw,
+22:53 
+
+22:53 there we were using three different
+22:55 
+
+22:55 operating system as well. So, here you
+22:57 
+
+22:57 would see 3 into 3 nine jobs, but here
+23:00 
+
+23:00 you would only see three because we only
+23:03 
+
+23:03 are changing the Python version. For
+23:05 
+
+23:05 display matrix information, echo
+23:08 
+
+23:08 matrix Python version. So, we'll see the
+23:10 
+
+23:10 Python version in this step. Next step,
+23:12 
+
+23:12 we are installing the dependencies. And
+23:14 
+
+23:14 where are the dependencies getting
+23:15 
+
+23:15 installed? So, whatever you see here,
+23:17 
+
+23:17 these commands
+23:20 
+
+23:20 are executed in the GitHub runner. So,
+23:22 
+
+23:22 this you will see this. And then I'm
+23:24 
+
+23:24 saying execute application. I'm saying
+23:27 
+
+23:27 run Python app.py. And app.py
+23:32 
+
+23:32 is the file that holds my Python code.
+23:34 
+
+23:34 So, I'm saying Python app.py. And why
+23:36 
+
+23:36 does this machine have Python? It has
+23:39 
+
+23:39 because I'm using an action for Python.
+23:41 
+
+23:41 And we already saw there are certain
+23:44 
+
+23:44 software, certain applications that are
+23:46 
+
+23:46 installed in each runner. I think we saw
+23:48 
+
+23:48 this in lecture two or lecture one. So,
+23:50 
+
+23:50 I'll let you explore that separately.
+23:53 
+
+23:53 Then I have an and symbol here. Now,
+23:56 
+
+23:56 what happens is if this runs,
+23:59 
+
+23:59 you know, and this will run in the
+24:01 
+
+24:01 foreground. And another command that I
+24:04 
+
+24:04 want to run will not run until this
+24:07 
+
+24:07 exits. And we have not defined this to
+24:10 
+
+24:10 exit. So, it because it's a web page for
+24:13 
+
+24:13 us, right? So, our website, whatever we
+24:16 
+
+24:16 are whatever is there in the code, this
+24:18 
+
+24:18 will continue to run until and unless we
+24:21 
+
+24:21 explicitly stop it. Because only when we
+24:23 
+
+24:23 stop this, the runner will say that I
+24:26 
+
+24:26 have completed the job that I was
+24:28 
+
+24:28 supposed to complete. So, which is why I
+24:29 
+
+24:29 have added an and here. So, and says you
+24:33 
+
+24:33 run this command in the background. And
+24:36 
+
+24:36 as soon as this runs, I'm saying I'm
+24:39 
+
+24:39 creating a shell variable app_pid.
+24:43 
+
+24:43 And this dollar sign and exclamation
+24:45 
+
+24:45 mark says, whatever the last job is, you
+24:49 
+
+24:49 take the PID of that job. So, I'll tell
+24:51 
+
+24:51 you why I'm taking this PID. Then I'm
+24:53 
+
+24:53 saying sleep for 5 seconds. And then I'm
+24:56 
+
+24:56 accessing my website because it is
+24:60 
+
+24:60 deployed onto the localhost, which is
+25:02 
+
+25:02 why I'm supplying this. And then my
+25:04 
+
+25:04 application listens on port 5000 and the
+25:06 
+
+25:06 health endpoint I'm trying to access.
+25:09 
+
+25:09 And once this is accessible, I print
+25:11 
+
+25:11 echo application executed successfully.
+25:14 
+
+25:14 Then I'm echoing the matrix Python
+25:17 
+
+25:17 version like this,
+25:18 
+
+25:18 matrix.python_version.
+25:20 
+
+25:20 Like this, right? And then I'm running a
+25:23 
+
+25:23 command of Python that which will
+25:25 
+
+25:25 display the version of Python, python
+25:27 
+
+25:27 --version. And finally, I'm killing
+25:31 
+
+25:31 whatever is stored in this shell
+25:33 
+
+25:33 variable. So, I am killing the
+25:35 
+
+25:35 application because only when the
+25:37 
+
+25:37 application exits or application is
+25:39 
+
+25:39 killed, only then my job my runner will
+25:42 
+
+25:42 say the job is executed successfully.
+25:45 
+
+25:45 Until and unless I kill that job, my
+25:48 
+
+25:48 runner will continue to operate because
+25:52 
+
+25:52 the process is still running like
+25:54 
+
+25:54 containers. If the process is still
+25:56 
+
+25:56 running, containers continue to run. And
+25:59 
+
+25:59 as soon as you kill the process, the
+26:00 
+
+26:00 container also dies, right? I hope you
+26:02 
+
+26:02 know those concepts. Anyway, so let's
+26:06 
+
+26:06 push this and see how it works. So, I'll
+26:09 
+
+26:09 go to my CLI, my terminal. I'm already
+26:13 
+
+26:13 in project files, ls -a. I see both of
+26:16 
+
+26:16 these. .github I see that has the
+26:18 
+
+26:18 workflow, app.py and requirements.txt is
+26:21 
+
+26:21 also here. What I'll run is git init and
+26:25 
+
+26:25 then I will run git add . So, I want to
+26:28 
+
+26:28 move everything to the staging area.
+26:30 
+
+26:30 Understand that if your branch is not
+26:33 
+
+26:33 named main, then you should name it
+26:34 
+
+26:34 main. So, I'll run git
+26:36 
+
+26:36 commit -m and then I'll add a commit
+26:40 
+
+26:40 message that could be demo. And let's
+26:43 
+
+26:43 say matrix strategy. And then I will
+26:47 
+
+26:47 close the double quotes. I'll press
+26:48 
+
+26:48 enter. And if I run git branch, you can
+26:51 
+
+26:51 see that my branch is named main. If
+26:53 
+
+26:53 yours is not named like that, you can
+26:56 
+
+26:56 also rename it. So, if I go to my
+26:58 
+
+26:58 browser, I don't think I have a
+27:01 
+
+27:01 repository created. So, what I'll do is
+27:03 
+
+27:03 I'll click on this plus sign here. I
+27:06 
+
+27:06 will create a new repository. I will
+27:08 
+
+27:08 name that repository I'll make private,
+27:12 
+
+27:12 and then I'll click on create
+27:13 
+
+27:13 repository.
+27:16 
+
+27:16 So, if your branch is not named main,
+27:19 
+
+27:19 then you can always use this command to
+27:22 
+
+27:22 rename your branch.
+27:24 
+
+27:24 So, I hope this is making sense, and we
+27:25 
+
+27:25 have seen this a million times in the
+27:27 
+
+27:27 past lectures. So, I'll copy this SSH
+27:31 
+
+27:31 uh the path, and then I'll go here. I'll
+27:33 
+
+27:33 run get remote
+27:36 
+
+27:36 add origin, and this time the origin is
+27:40 
+
+27:40 this one. Remote is this. I'll press
+27:42 
+
+27:42 enter, and then I'll run get push
+27:44 
+
+27:44 {hyphen} u origin main. Perfect. And
+27:48 
+
+27:48 this will perform the push. So, I'll go
+27:50 
+
+27:50 to my browser. Here, I will just refresh
+27:54 
+
+27:54 this, and this should have the latest
+27:56 
+
+27:56 thing. I'll also zoom in a little. So,
+27:58 
+
+27:58 whatever we had is pushed here. If I go
+27:60 
+
+27:60 to actions,
+28:01 
+
+28:01 I will see 01 matrix strategy demo. I
+28:04 
+
+28:04 see this in the UI because I named
+28:08 
+
+28:08 it like this here. So, that's why this
+28:11 
+
+28:11 nomenclature is important.
+28:13 
+
+28:13 I will run workflow.
+28:15 
+
+28:15 Run workflow.
+28:16 
+
+28:16 And let it run. You see, matrix test job
+28:20 
+
+28:20 waiting for pending jobs. It created
+28:22 
+
+28:22 three jobs immediately. We just defined
+28:24 
+
+28:24 one, and because we are using matrix, it
+28:27 
+
+28:27 created three jobs for us. Show all
+28:29 
+
+28:29 jobs, and you see it automatically named
+28:32 
+
+28:32 the jobs in parentheses. You also see
+28:35 
+
+28:35 whatever was the Python version. So, now
+28:38 
+
+28:38 let's go to the first job.
+28:40 
+
+28:40 And I want you to notice one thing,
+28:42 
+
+28:42 okay? Set up job, I'll expand this.
+28:45 
+
+28:45 Runner image provisioner.
+28:48 
+
+28:48 It's in East US Azure region is East US
+28:52 
+
+28:52 and worker ID is 557.
+28:55 
+
+28:55 Let's go to the different job now,
+28:56 
+
+28:56 second job. And here
+29:00 
+
+29:00 I expand this
+29:02 
+
+29:02 and this is East US and this is a
+29:06 
+
+29:06 different
+29:08 
+
+29:08 runner. So, I want to emphasize on the
+29:11 
+
+29:11 point that all of these three, they get
+29:14 
+
+29:14 a different runner. Now, if I expand
+29:18 
+
+29:18 set up Python, this is a simple step
+29:20 
+
+29:20 because this is action that is doing
+29:22 
+
+29:22 display matrix information. You see,
+29:25 
+
+29:25 this is the first job. Matrix Python
+29:28 
+
+29:28 version 3.11 and this is the command
+29:31 
+
+29:31 that we ran. Echo runner OS, echo matrix
+29:35 
+
+29:35 Python version. And I hope you already
+29:37 
+
+29:37 understand contexts because we have
+29:40 
+
+29:40 studied this multiple times. So, if I go
+29:42 
+
+29:42 here,
+29:43 
+
+29:43 this is
+29:45 
+
+29:45 the runner context and this is the
+29:48 
+
+29:48 matrix context. And I want to also show
+29:50 
+
+29:50 you the matrix context. So, if I go here
+29:52 
+
+29:52 and I don't keep these links open
+29:55 
+
+29:55 because I want you to also know how to
+29:59 
+
+29:59 navigate through the documentation. So,
+30:01 
+
+30:01 I go to this page, docs.github.com, then
+30:04 
+
+30:04 I go to GitHub Actions and then I expand
+30:07 
+
+30:07 references. I'll zoom in a little and
+30:10 
+
+30:10 workflow and actions. Here I should see
+30:12 
+
+30:12 contexts. Yeah.
+30:13 
+
+30:13 So, runner context is here from where we
+30:16 
+
+30:16 are getting the runner.os and then
+30:18 
+
+30:18 matrix context. So, I'll let you read
+30:20 
+
+30:20 about this, whatever property name we
+30:22 
+
+30:22 want to populate, we can populate that.
+30:25 
+
+30:25 In this example, you see, they are also
+30:27 
+
+30:27 doing something similar so like we did.
+30:30 
+
+30:30 So, here they have node as example, we
+30:32 
+
+30:32 took Python as example. So, same OS and
+30:36 
+
+30:36 node. So, here they are saying I want to
+30:37 
+
+30:37 test my application on Ubuntu latest
+30:40 
+
+30:40 with version 14 node, with version 16 of
+30:43 
+
+30:43 node, and then similarly I want to check
+30:45 
+
+30:45 for Windows on with
+30:48 
+
+30:48 node version 14 and with node version
+30:51 
+
+30:51 16. So, if you understand the
+30:53 
+
+30:53 foundational concepts, no matter which
+30:55 
+
+30:55 language you are using, you will be able
+30:56 
+
+30:56 to get it in a flash.
+30:58 
+
+30:58 So, let's go back
+31:01 
+
+31:01 here, and then you see this install
+31:04 
+
+31:04 dependencies. This step is common, we're
+31:06 
+
+31:06 just installing the dependencies.
+31:08 
+
+31:08 Execute application. Now you see the
+31:10 
+
+31:10 interesting part. So, it first executed
+31:13 
+
+31:13 this, so if I go to my Visual Studio
+31:15 
+
+31:15 Code, what we were doing is we were just
+31:18 
+
+31:18 running the Python application, and as
+31:20 
+
+31:20 soon as our Python application run, we
+31:22 
+
+31:22 saw this Cloud with Varjo's Flask
+31:24 
+
+31:24 application started. And why did we see
+31:26 
+
+31:26 this? Because we defined that in our
+31:28 
+
+31:28 code. Print message Cloud with Varjo's
+31:31 
+
+31:31 Flask application started. And I'm being
+31:33 
+
+31:33 a little fast here because we have seen
+31:35 
+
+31:35 this code a million times before. So, if
+31:37 
+
+31:37 I scroll down, it is running on this
+31:39 
+
+31:39 this this is fine. We access the health
+31:41 
+
+31:41 endpoint, and here application executed
+31:45 
+
+31:45 successfully. And we quit the
+31:47 
+
+31:47 application here, right? In this step,
+31:49 
+
+31:49 if I go here, we quit the application in
+31:53 
+
+31:53 this step after everything is displayed.
+31:55 
+
+31:55 That's why. So, it first display
+31:57 
+
+31:57 displayed this application executed
+31:59 
+
+31:59 successfully, because that is what we
+32:01 
+
+32:01 echoed, and then
+32:03 
+
+32:03 matrix Python version 3.11
+32:07 
+
+32:07 and the Python version. You also see the
+32:09 
+
+32:09 patch release here. So, this is the
+32:11 
+
+32:11 major version, this is the minor
+32:13 
+
+32:13 version, this is the patch release 1.5.
+32:16 
+
+32:16 So, you see both of these things. And if
+32:18 
+
+32:18 I go to test job two, post set up
+32:21 
+
+32:21 Python, you can also see this is these
+32:23 
+
+32:23 are just clean up jobs for the runner
+32:25 
+
+32:25 itself. So, this runner would have
+32:27 
+
+32:27 terminated, and then if I go to test job
+32:30 
+
+32:30 two,
+32:31 
+
+32:31 here again, the important part, display
+32:33 
+
+32:33 matrix information. Matrix Python
+32:36 
+
+32:36 version 3.12.
+32:38 
+
+32:38 Execute application, let's see this as
+32:40 
+
+32:40 well.
+32:41 
+
+32:41 3.12
+32:43 
+
+32:43 and the patch release is 13. So, 3.12.13
+32:48 
+
+32:48 is the patch release that is being used
+32:50 
+
+32:50 here. Similarly, if I go here test job
+32:53 
+
+32:53 three and I expand execute application,
+32:56 
+
+32:56 what you see here is 3.13
+32:60 
+
+32:60 and the Python full version is 3.13.14.
+33:04 
+
+33:04 I hope all of these things are
+33:06 
+
+33:06 understood. It's one of those concepts,
+33:08 
+
+33:08 once you get it, you don't forget it for
+33:10 
+
+33:10 life. Now, with this, I will conclude
+33:14 
+
+33:14 this lecture. In this lecture, we
+33:17 
+
+33:17 learned how matrix strategy
+33:18 
+
+33:18 automatically generates multiple job
+33:21 
+
+33:21 executions
+33:22 
+
+33:22 from a single job definition. We also
+33:26 
+
+33:26 understood how matrix variables and why
+33:29 
+
+33:29 every generated job executes
+33:32 
+
+33:32 independently on its own GitHub hosted
+33:35 
+
+33:35 runner.
+33:36 
+
+33:36 Through our hands-on demo, we validated
+33:40 
+
+33:40 a Python application across multiple
+33:43 
+
+33:43 Python versions that are 3.11,
+33:46 
+
+33:46 3.12, and 3.13.
+33:49 
+
+33:49 In the next lecture, we will explore
+33:52 
+
+33:52 GitHub actions environments and learn
+33:56 
+
+33:56 how they help us manage deployments
+33:59 
+
+33:59 across environments such as development,
+34:02 
+
+34:02 QA, staging, production, and so on.
+34:06 
+
+34:06 If you have any questions, feel free to
+34:08 
+
+34:08 ask them in the comment section and I
+34:10 
+
+34:10 will reply. If this helped, do consider
+34:13 
+
+34:13 liking, sharing, and subscribing. It
+34:15 
+
+34:15 will mean a lot to me.
+34:17 
+
+34:17 Thank you very much.

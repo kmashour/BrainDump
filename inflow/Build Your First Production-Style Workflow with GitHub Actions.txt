@@ -1,0 +1,3781 @@
+00:00 Hi, I am Varun Joshi, and I welcome you
+00:03 
+
+00:03 to lecture three of this GitHub Actions
+00:06 
+
+00:06 Basics to production course.
+00:08 
+
+00:08 In this lecture, we will move deeper
+00:11 
+
+00:11 into one of the most important concepts
+00:14 
+
+00:14 in GitHub Actions
+00:16 
+
+00:16 called actions. We will start by
+00:19 
+
+00:19 understanding what actions are and how
+00:23 
+
+00:23 modern CI/CD pipelines rely heavily on
+00:27 
+
+00:27 reusable automation instead of manually
+00:31 
+
+00:31 scripting everything from scratch.
+00:34 
+
+00:34 From there, we will understand different
+00:36 
+
+00:36 sources of actions including official
+00:40 
+
+00:40 GitHub Actions, third-party vendor
+00:42 
+
+00:42 actions, and organization-specific
+00:46 
+
+00:46 reusable custom actions that you create.
+00:50 
+
+00:50 After the theory section, we will move
+00:52 
+
+00:52 into hands-on demos, and hands-on demos
+00:56 
+
+00:56 constitute the most part of this
+00:59 
+
+00:59 lecture. In demo one, we will build and
+01:02 
+
+01:02 run a containerized Flask application
+01:05 
+
+01:05 using GitHub Actions while understanding
+01:09 
+
+01:09 how workflows execute inside
+01:12 
+
+01:12 GitHub-hosted runners. In demo two, we
+01:16 
+
+01:16 will integrate Docker Hub
+01:19 
+
+01:19 authentication, GitHub secrets, reusable
+01:22 
+
+01:22 Docker actions, and container image
+01:25 
+
+01:25 publishing workflows using
+01:28 
+
+01:28 production-style automation patterns.
+01:31 
+
+01:31 So, let's get started. What are actions
+01:35 
+
+01:35 in GitHub Actions? GitHub Actions uses a
+01:40 
+
+01:40 reusable automation components called
+01:43 
+
+01:43 actions to simplify CI/CD and workflow
+01:48 
+
+01:48 automation. Firstly, I want you to know
+01:51 
+
+01:51 that GitHub Actions and actions are
+01:55 
+
+01:55 separate things because GitHub actions
+01:58 
+
+01:58 is the overall automation and CICD
+02:02 
+
+02:02 platform provided to you by GitHub.
+02:06 
+
+02:06 Whereas, when I talk about action, it is
+02:10 
+
+02:10 an individual reusable automation
+02:14 
+
+02:14 component that gets executed inside your
+02:18 
+
+02:18 workflow. So, understanding this
+02:20 
+
+02:20 distinction is important.
+02:24 
+
+02:24 Another thing I want you to to
+02:25 
+
+02:25 understand that we as DevOps engineers
+02:29 
+
+02:29 have already been automating a lot of
+02:32 
+
+02:32 things. For example, if you had to run,
+02:35 
+
+02:35 let's say 10 different commands, then
+02:38 
+
+02:38 what you would often do is you would
+02:41 
+
+02:41 take those commands and create a script
+02:44 
+
+02:44 out of it. So, that when you want to run
+02:46 
+
+02:46 those 10 commands, and let's say those
+02:48 
+
+02:48 10 commands are part of your daily
+02:50 
+
+02:50 operations and you run them every day.
+02:53 
+
+02:53 So, you create a script out of it. And
+02:55 
+
+02:55 whenever you want to do those tasks, you
+02:58 
+
+02:58 just run that script. And what it does
+03:01 
+
+03:01 is doing things like this
+03:04 
+
+03:04 saves time, reduces manual effort
+03:07 
+
+03:07 because every time you don't have to
+03:09 
+
+03:09 type those 10 commands, minimize human
+03:12 
+
+03:12 errors,
+03:14 
+
+03:14 and standardizes operational tasks. Here
+03:18 
+
+03:18 as well, when I talk about GitHub
+03:20 
+
+03:20 actions, it's like a glorified name for
+03:24 
+
+03:24 that script. Underneath, there are
+03:26 
+
+03:26 certain things that are programmed into
+03:29 
+
+03:29 actions. And when you run those actions,
+03:32 
+
+03:32 those things that are defined underneath
+03:34 
+
+03:34 those actions are performed. As simple
+03:37 
+
+03:37 as that.
+03:39 
+
+03:39 So,
+03:40 
+
+03:40 when I talk about creating a workflow
+03:42 
+
+03:42 YAML,
+03:44 
+
+03:44 you have two ways via which you can tell
+03:47 
+
+03:47 your runner what to do. The first is a
+03:51 
+
+03:51 and a we already understand is a way via
+03:55 
+
+03:55 which you can run regular commands or
+03:58 
+
+03:58 even scripts.
+04:00 
+
+04:00 Another way is uses, and uses keyword is
+04:05 
+
+04:05 used to define actions. So, when you
+04:09 
+
+04:09 want to run certain standard scripts or
+04:12 
+
+04:12 certain commands, then you can use run.
+04:15 
+
+04:15 But, if you want to use automation that
+04:18 
+
+04:18 has already been created, or maybe you
+04:21 
+
+04:21 have created that automation, you can
+04:24 
+
+04:24 run uses, which underneath uses actions,
+04:28 
+
+04:28 and actions underneath use
+04:32 
+
+04:32 the logic that you have decided. The
+04:35 
+
+04:35 logic that you have decided for that
+04:37 
+
+04:37 action to perform. So, for example, the
+04:40 
+
+04:40 action that you see on this screen is
+04:43 
+
+04:43 checkout action, which is version six
+04:46 
+
+04:46 right now, and this version may change
+04:49 
+
+04:49 when you are watching this recording.
+04:50 
+
+04:50 Maybe when you watch this comes to
+04:53 
+
+04:53 version seven or version eight. So, this
+04:55 
+
+04:55 is something that is mutable, but
+04:58 
+
+04:58 checkout is the name of the action. So,
+05:00 
+
+05:00 here this checkout action, what this
+05:04 
+
+05:04 does is this will checkout your code
+05:07 
+
+05:07 from your repository. There are multiple
+05:09 
+
+05:09 other things that you can define this
+05:11 
+
+05:11 action to do.
+05:13 
+
+05:13 I mean, apart from checking out the code
+05:15 
+
+05:15 as in if you want this to checkout a
+05:18 
+
+05:18 code from a specific branch in your
+05:20 
+
+05:20 repository, this action can do that. And
+05:23 
+
+05:23 there are ways via which you can
+05:25 
+
+05:25 instruct
+05:27 
+
+05:27 this workflow. You can have with
+05:29 
+
+05:29 parameter, which will let you do those
+05:31 
+
+05:31 things, and we'll see that as we
+05:32 
+
+05:32 progress. But, at large, this action is
+05:36 
+
+05:36 checking out your code because until and
+05:39 
+
+05:39 unless you checkout your code,
+05:42 
+
+05:42 how are you going to run your workflow?
+05:45 
+
+05:45 So, in most of the workflows that you
+05:47 
+
+05:47 would see, this will predominantly be
+05:51 
+
+05:51 part of the first job itself, and within
+05:54 
+
+05:54 the first job it could be part of the
+05:57 
+
+05:57 very first step. Now that we have this
+06:00 
+
+06:00 high-level understanding, let's
+06:02 
+
+06:02 understand these pointers. Actions
+06:05 
+
+06:05 execute predefined automation tasks
+06:08 
+
+06:08 inside workflows. Like I told you,
+06:11 
+
+06:11 underneath actions there are certain
+06:13 
+
+06:13 things that are defined, and those
+06:15 
+
+06:15 things are performed when that action is
+06:18 
+
+06:18 called, and it is similar to what you
+06:20 
+
+06:20 did when you were doing scripting. When
+06:23 
+
+06:23 you call that script, whatever inside
+06:25 
+
+06:25 that script is defined, those things are
+06:28 
+
+06:28 done. And this is similar to that, if
+06:31 
+
+06:31 not exactly same. Consumed using the
+06:34 
+
+06:34 uses keyword inside workflow steps, like
+06:38 
+
+06:38 we have seen here. Replace repetitive
+06:41 
+
+06:41 scripting with reusable automation
+06:44 
+
+06:44 logic. And like we know, when you are
+06:47 
+
+06:47 running 10 different commands, it is
+06:49 
+
+06:49 always good to automate that, to bundle
+06:52 
+
+06:52 those 10 commands into a single thing.
+06:55 
+
+06:55 And that single thing in our example is
+06:58 
+
+06:58 action. So, for example, if you were
+07:01 
+
+07:01 running commands like, let's say, get
+07:03 
+
+07:03 fetch, get pull,
+07:05 
+
+07:05 get clone, and so on, then you could
+07:08 
+
+07:08 rather use this action, which will do
+07:12 
+
+07:12 something similar to that, if not same.
+07:15 
+
+07:15 It is fetching your code, this action
+07:18 
+
+07:18 specifically. And we'll see this in
+07:20 
+
+07:20 detail as we progress with this lecture.
+07:23 
+
+07:23 Engineers must configure action inputs
+07:27 
+
+07:27 and parameters correctly for their use
+07:29 
+
+07:29 case. So, for now, I am just calling
+07:32 
+
+07:32 this action. But what if I only wanted
+07:36 
+
+07:36 to get the commits that are available in
+07:39 
+
+07:39 the main branch? Then I should specify
+07:43 
+
+07:43 that parameter. I should tell this
+07:45 
+
+07:45 action that
+07:47 
+
+07:47 don't just run it in the default
+07:49 
+
+07:49 behavior. What you do for me is you only
+07:53 
+
+07:53 fetch the commits of the main branch.
+07:55 
+
+07:55 So, that is configurable. This is
+07:57 
+
+07:57 exactly what this point is saying.
+07:60 
+
+07:60 Engineers must configure action inputs
+08:03 
+
+08:03 and parameters correctly for their use
+08:05 
+
+08:05 case. So, if I only want the code for
+08:07 
+
+08:07 main branch, I should specify that.
+08:10 
+
+08:10 Large GitHub marketplace ecosystem of
+08:14 
+
+08:14 reusable actions. And this is the best
+08:17 
+
+08:17 part. I do not have to go and create an
+08:20 
+
+08:20 action that can perform the checkout for
+08:24 
+
+08:24 me. That action is pre-created for me.
+08:27 
+
+08:27 If I have to build a Docker image, that
+08:30 
+
+08:30 action is pre-created for me. If I want
+08:32 
+
+08:32 to log in into AWS, that action is
+08:36 
+
+08:36 pre-created for me. So, in this
+08:38 
+
+08:38 marketplace, you will find a plethora of
+08:42 
+
+08:42 actions pre-created for you by GitHub
+08:46 
+
+08:46 or
+08:47 
+
+08:47 by different vendors. Different vendors
+08:50 
+
+08:50 like AWS, Docker, Azure, Aqua, and so
+08:54 
+
+08:54 on. Depending on what your use case is.
+08:57 
+
+08:57 But Varun,
+08:59 
+
+08:59 what if I do not find an action that
+09:02 
+
+09:02 satisfies my use case? What do I do
+09:05 
+
+09:05 then? My friends, you have an option to
+09:08 
+
+09:08 create custom actions for yourself. So,
+09:11 
+
+09:11 if your use case is not already
+09:14 
+
+09:14 available in the actions that are in the
+09:17 
+
+09:17 marketplace, then you can create your
+09:20 
+
+09:20 own actions. And what will your actions
+09:22 
+
+09:22 hold? Maybe you are a enterprise that
+09:26 
+
+09:26 has a specific deployment strategy. And
+09:29 
+
+09:29 whatever your deployment strategy is is
+09:32 
+
+09:32 predefined in the custom action that you
+09:35 
+
+09:35 have created. Now, when you want to
+09:37 
+
+09:37 execute your workflows, you just call
+09:40 
+
+09:40 that custom action and under the hood
+09:43 
+
+09:43 that custom action will deploy your
+09:45 
+
+09:45 application or do whatever you have
+09:47 
+
+09:47 asked that action to do
+09:50 
+
+09:50 for you. And that is the beauty of this
+09:53 
+
+09:53 ecosystem. You have a large GitHub
+09:56 
+
+09:56 marketplace ecosystem of reusable
+09:59 
+
+09:59 actions. And we'll see more of this in
+10:02 
+
+10:02 the next section.
+10:04 
+
+10:04 Then, I want to talk about uses versus
+10:06 
+
+10:06 run. And at this stage, you already
+10:09 
+
+10:09 know. When you want to use actions, you
+10:12 
+
+10:12 use uses. When you want to run commands,
+10:15 
+
+10:15 you use run. Now, what are the what is
+10:17 
+
+10:17 used in production? Modern production
+10:20 
+
+10:20 workflows commonly use both together.
+10:23 
+
+10:23 Now, let's say if I want to run a
+10:25 
+
+10:25 specific command and that command is not
+10:28 
+
+10:28 part of an action, then I would not go
+10:31 
+
+10:31 and create a custom action for that,
+10:33 
+
+10:33 right? I will just simply use the run
+10:37 
+
+10:37 keyword and run that command. So,
+10:39 
+
+10:39 understand you can create custom
+10:42 
+
+10:42 actions, but it does not mean that even
+10:44 
+
+10:44 if you want to run two three commands a
+10:46 
+
+10:46 couple of commands,
+10:48 
+
+10:48 you are creating custom actions for
+10:50 
+
+10:50 yourself. Of course, you can,
+10:53 
+
+10:53 but should you?
+10:55 
+
+10:55 Now that we understand this, let's move
+10:58 
+
+10:58 to the next section.
+11:00 
+
+11:00 Sources of action.
+11:03 
+
+11:03 Now, like I told you before, actions are
+11:07 
+
+11:07 available by GitHub. So, GitHub as in
+11:10 
+
+11:10 GitHub is the author of those actions.
+11:13 
+
+11:13 Then, there are third-party and vendor
+11:15 
+
+11:15 actions. For example, AWS, Docker,
+11:18 
+
+11:18 organization-specific
+11:19 
+
+11:19 internal actions. And these are the
+11:21 
+
+11:21 custom actions that I talked about.
+11:24 
+
+11:24 Official GitHub actions officially
+11:26 
+
+11:26 maintained and published by GitHub. So,
+11:28 
+
+11:28 if there is something that is made
+11:30 
+
+11:30 available by GitHub actions themselves
+11:34 
+
+11:34 and by a third-party vendor, then I
+11:37 
+
+11:37 would suggest you prefer the official
+11:40 
+
+11:40 GitHub action.
+11:43 
+
+11:43 Then commonly used for core workflows
+11:45 
+
+11:45 automation tasks. Now, you like I showed
+11:48 
+
+11:48 you, checkout is a common behavior. So,
+11:50 
+
+11:50 such common behaviors you would find
+11:53 
+
+11:53 that GitHub already has an action
+11:55 
+
+11:55 created for you. So, like actions
+11:58 
+
+11:58 checkout, setup Java, cache, setup
+12:01 
+
+12:01 Python, they have multiple actions
+12:04 
+
+12:04 available at your disposal, pre-created
+12:08 
+
+12:08 for you. And in a little while we'll go
+12:10 
+
+12:10 to the marketplace and explore those.
+12:13 
+
+12:13 Third-party and vendor actions published
+12:15 
+
+12:15 by vendors, communities, and these could
+12:17 
+
+12:17 be open-source communities as well, and
+12:20 
+
+12:20 external maintainers. Commonly used for
+12:24 
+
+12:24 cloud, Docker, and infrastructure
+12:26 
+
+12:26 workflows. So, you would see there are
+12:29 
+
+12:29 plenty of actions available by Docker.
+12:32 
+
+12:32 They are offered in the marketplace by
+12:35 
+
+12:35 Docker themselves, and those are the
+12:38 
+
+12:38 actions that we will be using in this
+12:40 
+
+12:40 lecture to build our image, to perform
+12:43 
+
+12:43 login, to push our image, and so on.
+12:47 
+
+12:47 Example Docker, AWS, Azure, Terraform
+12:51 
+
+12:51 actions or all of these vendors and many
+12:54 
+
+12:54 more are available in the marketplace.
+12:57 
+
+12:57 Next is organization-specific internal
+12:59 
+
+12:59 actions. Now, if you do not find actions
+13:02 
+
+13:02 that are suitable for your use case, or
+13:05 
+
+13:05 maybe there is an action available that
+13:07 
+
+13:07 is suitable for your
+13:09 
+
+13:09 use case, but is not secure.
+13:12 
+
+13:12 In that scenario, what you would want to
+13:15 
+
+13:15 do is you would want to create a custom
+13:17 
+
+13:17 action for yourself. So, custom reusable
+13:20 
+
+13:20 actions developed internally by
+13:22 
+
+13:22 organizations. Standardize CI/CD and
+13:26 
+
+13:26 automation across repositories. Example,
+13:29 
+
+13:29 maybe you have a specific deployment
+13:31 
+
+13:31 guideline. Maybe you have a specific
+13:33 
+
+13:33 compliance that must be adhered. There
+13:36 
+
+13:36 are security scans that you want to
+13:38 
+
+13:38 perform in a specific order in
+13:42 
+
+13:42 the process that has been approved by
+13:44 
+
+13:44 your chief architect. In that scenario,
+13:47 
+
+13:47 you would be using custom actions.
+13:50 
+
+13:50 Choosing actions for production
+13:52 
+
+13:52 workflows. Prefer verified creators and
+13:55 
+
+13:55 well-known vendors. And this is obvious.
+13:57 
+
+13:57 So,
+13:58 
+
+13:58 when we go to the marketplace, we'll see
+14:00 
+
+14:00 there is a blue tick. So, prefer
+14:03 
+
+14:03 the actions that have that blue tick,
+14:05 
+
+14:05 but do not automatically assume that
+14:08 
+
+14:08 the, you know, actions that do not have
+14:11 
+
+14:11 this blue blue tick are dangerous. It's
+14:14 
+
+14:14 not like that. It's It's just that these
+14:17 
+
+14:17 are trusted a little more. Then, prefer
+14:21 
+
+14:21 widely used, highly starred, and
+14:23 
+
+14:23 actively maintained action. So, the
+14:26 
+
+14:26 actions for which the development that
+14:28 
+
+14:28 you see is in progress. People are
+14:30 
+
+14:30 actively contributing. They have high
+14:32 
+
+14:32 number of stars. And we'll see GitHub
+14:35 
+
+14:35 does a good job in grading whatever is
+14:37 
+
+14:37 popular, so that users can give stars to
+14:40 
+
+14:40 those actions. We will see that popular
+14:44 
+
+14:44 actions have high number of stars.
+14:47 
+
+14:47 Review documentation, release history,
+14:50 
+
+14:50 and issue activity. And that goes
+14:51 
+
+14:51 without saying. So, if you want to use
+14:53 
+
+14:53 something in your production pipelines,
+14:55 
+
+14:55 then you want in your production
+14:58 
+
+14:58 workflows, then you would want that
+15:00 
+
+15:00 thing, that action,
+15:02 
+
+15:02 to have proper documentation, release
+15:05 
+
+15:05 history, issue activity. And also, you
+15:08 
+
+15:08 must ensure that the permissions that
+15:10 
+
+15:10 that action desires is in line with the
+15:14 
+
+15:14 security or compliance standards that
+15:17 
+
+15:17 you have set for your application. So,
+15:19 
+
+15:19 that's why the last point says, inspect
+15:22 
+
+15:22 source code and required permissions
+15:25 
+
+15:25 wherever possible."
+15:28 
+
+15:28 So, let's go to the marketplace and just
+15:30 
+
+15:30 explore how these actions look, okay?
+15:33 
+
+15:33 So, I'll run github.com
+15:38 
+
+15:38 /marketplace.
+15:40 
+
+15:40 And this is where
+15:42 
+
+15:42 we'll find all the actions. So, here
+15:44 
+
+15:44 I'll zoom in a little, I believe, yeah.
+15:47 
+
+15:47 And then I'll go to actions, I'll go to
+15:49 
+
+15:49 all actions. And you see there are so
+15:53 
+
+15:53 many actions available. So, blue tick,
+15:55 
+
+15:55 like I told you, are verified. And if I
+15:59 
+
+15:59 click on buy here, I can also check
+16:02 
+
+16:02 verified creators so that I only see the
+16:05 
+
+16:05 actions from verified creators. So, for
+16:07 
+
+16:07 example, if I go to this checkout
+16:09 
+
+16:09 action,
+16:11 
+
+16:11 I see this is by actions. And actions is
+16:15 
+
+16:15 the official name for the actions that
+16:17 
+
+16:17 are made available by GitHub themselves.
+16:20 
+
+16:20 So, if you see actions here,
+16:22 
+
+16:22 then you are safe. And here you see this
+16:25 
+
+16:25 has 7.9k stars. These are the
+16:28 
+
+16:28 contributors. And then you can check the
+16:31 
+
+16:31 details of this GitHub actions here. And
+16:35 
+
+16:35 this documentation does a wonderful job.
+16:38 
+
+16:38 It will tell you how to use this action.
+16:40 
+
+16:40 And if
+16:42 
+
+16:42 you do not get what you want here, then
+16:45 
+
+16:45 they will have external links or
+16:46 
+
+16:46 examples that will help you understand
+16:49 
+
+16:49 what all things can be done using this
+16:52 
+
+16:52 action. So, for example, in the example
+16:55 
+
+16:55 that I showed you, we were not using the
+16:58 
+
+16:58 with block. We just used this, correct?
+17:01 
+
+17:01 But if you see the examples, they are
+17:04 
+
+17:04 using much more. And as we progress with
+17:07 
+
+17:07 this course and this lecture, you will
+17:09 
+
+17:09 learn more things about it. So, for
+17:12 
+
+17:12 example, if you see this, this is
+17:14 
+
+17:14 calling with block with the path main.
+17:17 
+
+17:17 And if I scroll down, then here you see
+17:20 
+
+17:20 it is saying repository is this. The
+17:22 
+
+17:22 full path maybe you have something in
+17:24 
+
+17:24 the directory, and that is where you
+17:27 
+
+17:27 have to fetch. So, you can be
+17:29 
+
+17:29 descriptive based on your requirement.
+17:32 
+
+17:32 If your code is already present in the
+17:35 
+
+17:35 root and you want to fetch the entire
+17:37 
+
+17:37 code base irrespective of the branch,
+17:39 
+
+17:39 and let me also tell you this will not
+17:42 
+
+17:42 fetch the entire code base by default.
+17:45 
+
+17:45 What this will do is if I have given
+17:47 
+
+17:47 this, for example, if I have given this
+17:51 
+
+17:51 here, then it will just fetch the latest
+17:54 
+
+17:54 commit. And that's the beauty. That is
+17:56 
+
+17:56 why it is fast. Imagine you have a Git
+17:59 
+
+17:59 history that is of 100 commits. It does
+18:02 
+
+18:02 not make sense for your
+18:05 
+
+18:05 runner who is running your job to fetch
+18:08 
+
+18:08 the entire code base. In that scenario,
+18:11 
+
+18:11 you would only want to fetch the latest
+18:14 
+
+18:14 commit. And that is what the default
+18:17 
+
+18:17 will do. So, if I scroll here, you would
+18:19 
+
+18:19 see that only a single commit is fetched
+18:22 
+
+18:22 by default for reference SHA that
+18:25 
+
+18:25 triggered the workflow. Set fetch depth
+18:28 
+
+18:28 zero to fetch all history of all
+18:31 
+
+18:31 branches and tags, and you will learn
+18:33 
+
+18:33 more as we progress with this course.
+18:36 
+
+18:36 And now, let's go back and let's search
+18:40 
+
+18:40 for Docker. And if you search for
+18:42 
+
+18:42 Docker, you will get the actions that
+18:45 
+
+18:45 are named in accordance that has Docker
+18:47 
+
+18:47 in the name. So, if I go here, you can
+18:50 
+
+18:50 easily see that this has the name build
+18:52 
+
+18:52 and push Docker images. So, this is used
+18:54 
+
+18:54 for that. And here, the by is Docker.
+18:58 
+
+18:58 So, this is published by a third party,
+19:00 
+
+19:00 and that third party is Docker. So,
+19:03 
+
+19:03 anything that is not published by
+19:05 
+
+19:05 actions by GitHub, you would call that
+19:08 
+
+19:08 third party. And if it is owned by your
+19:11 
+
+19:11 organization, then you could call it
+19:13 
+
+19:13 custom. And in that case as well, by
+19:16 
+
+19:16 would be your organization name or
+19:18 
+
+19:18 whatever you want to call that. I will
+19:21 
+
+19:21 go back. And here you can also search
+19:24 
+
+19:24 for AWS, Azure, and you will find
+19:28 
+
+19:28 different actions that are available at
+19:31 
+
+19:31 your disposal. So, I will leave this
+19:34 
+
+19:34 here, and I will let you explore this
+19:36 
+
+19:36 further. But now, I want to go to the
+19:41 
+
+19:41 demo.
+19:42 
+
+19:42 So, let's see what we are going to do in
+19:44 
+
+19:44 the demo. Demo one, building and running
+19:47 
+
+19:47 a Flask application inside GitHub
+19:50 
+
+19:50 Actions. The orchestrator that we are
+19:53 
+
+19:53 using is GitHub Actions. Of course,
+19:56 
+
+19:56 that's the name of the course. And there
+19:59 
+
+19:59 will be exactly four steps in the job
+20:02 
+
+20:02 that we'll be doing.
+20:03 
+
+20:03 The first step will be to check out the
+20:07 
+
+20:07 repository, and that is where you will
+20:09 
+
+20:09 have access to the code. Not you, you as
+20:13 
+
+20:13 in the runner will have access to the
+20:15 
+
+20:15 code. I want you to clearly understand
+20:19 
+
+20:19 that it is your runner who is running
+20:22 
+
+20:22 your job. Hence, all of these steps that
+20:26 
+
+20:26 are part of a job will be performed by a
+20:30 
+
+20:30 single runner that is associated with
+20:33 
+
+20:33 the job. So, for example, that runner
+20:36 
+
+20:36 will first check out the repository. And
+20:39 
+
+20:39 here you see we will be using an action
+20:42 
+
+20:42 to do so. Next, what that runner will do
+20:45 
+
+20:45 is it will build a Docker image. And why
+20:49 
+
+20:49 can a runner build a Docker image? It
+20:53 
+
+20:53 can build a Docker image because we saw
+20:56 
+
+20:56 in the past lecture that our runners
+21:00 
+
+21:00 Ubuntu latest, especially, already has
+21:04 
+
+21:04 Docker installed, which is why it can
+21:07 
+
+21:07 run Docker specific commands. If your
+21:10 
+
+21:10 runner does not have Docker, then this
+21:13 
+
+21:13 will fail because I want this to be
+21:16 
+
+21:16 engraved in your mind that you can only
+21:19 
+
+21:19 use the tooling, only use the packages
+21:22 
+
+21:22 that are available in the runner. If
+21:24 
+
+21:24 something that you want to do is not
+21:26 
+
+21:26 available in the runner, not installed
+21:28 
+
+21:28 in your runner, then you won't be able
+21:31 
+
+21:31 to do that. So, if that scenario comes
+21:33 
+
+21:33 in, then you will first install whatever
+21:36 
+
+21:36 you need using run itself, and then use
+21:39 
+
+21:39 that tooling. I hope that is clear to
+21:42 
+
+21:42 you at this stage.
+21:44 
+
+21:44 Next is run container in runner. This is
+21:48 
+
+21:48 a critical piece to understand. The
+21:50 
+
+21:50 container that we will create will be
+21:53 
+
+21:53 running inside the runner itself. After
+21:57 
+
+21:57 that, we will perform a quick smoke
+21:60 
+
+21:60 test. Smoke test as in we'll quickly
+22:02 
+
+22:02 verify that our application is
+22:04 
+
+22:04 accessible, and we will be doing that
+22:07 
+
+22:07 using run itself. So, our job will have
+22:11 
+
+22:11 four steps.
+22:12 
+
+22:12 First step will be performed by an
+22:15 
+
+22:15 action, which will be using the keyword
+22:17 
+
+22:17 uses, and then rest will be performed by
+22:21 
+
+22:21 the keyword
+22:22 
+
+22:22 run.
+22:24 
+
+22:24 Now, another thing I want you to know.
+22:26 
+
+22:26 Once this job gets executed, the runner
+22:30 
+
+22:30 will be destroyed like we have learned
+22:33 
+
+22:33 before. I hope this makes sense. Now,
+22:35 
+
+22:35 let's start with the demo. I'll first go
+22:38 
+
+22:38 to my GitHub notes because I want to
+22:40 
+
+22:40 show you something. And GitHub Actions
+22:43 
+
+22:43 Basics to Production, if you have not
+22:44 
+
+22:44 yet started, I would request you to
+22:46 
+
+22:46 please do the same. I'll go here, and
+22:50 
+
+22:50 then I'll go to lecture three here.
+22:52 
+
+22:52 And then the step one is repository
+22:56 
+
+22:56 setup and authentication. So, you must
+22:59 
+
+22:59 already have a repository created whose
+23:02 
+
+23:02 authentication, so you should be able to
+23:04 
+
+23:04 push and pull to that repository from
+23:06 
+
+23:06 that repository just fine. If you do not
+23:09 
+
+23:09 know how to do it, we have discussed
+23:11 
+
+23:11 that at stretch in lecture one. So, go
+23:15 
+
+23:15 and check that out. So, I am assuming
+23:18 
+
+23:18 you already have authentication in place
+23:21 
+
+23:21 and you can push and pull to the
+23:23 
+
+23:23 repository that you have created. I will
+23:26 
+
+23:26 be using this repository name throughout
+23:28 
+
+23:28 this course, okay? Now, visibility could
+23:32 
+
+23:32 be private or public, but I would
+23:33 
+
+23:33 suggest keep it private because you want
+23:35 
+
+23:35 to do things like the things are done in
+23:38 
+
+23:38 production. And then I want to show you
+23:40 
+
+23:40 the directory structure. I'll go to
+23:42 
+
+23:42 Visual Studio Code. I'll expand 03
+23:45 
+
+23:45 actions. Then I will go to project
+23:47 
+
+23:47 files. So, project files is the place
+23:49 
+
+23:49 where I have kept everything that we
+23:52 
+
+23:52 will need to do this demo. We will be
+23:55 
+
+23:55 building a real application and then we
+23:58 
+
+23:58 will be containerizing that application
+24:00 
+
+24:00 as we saw in the demo introduction. So,
+24:03 
+
+24:03 I'll first go to app.py.
+24:06 
+
+24:06 This is a Python-based code and you do
+24:09 
+
+24:09 not have to understand it deeply. I'll
+24:11 
+
+24:11 tell you what this code will be doing.
+24:14 
+
+24:14 This code uses the Flask framework. Now,
+24:18 
+
+24:18 Flask is a lightweight Python web
+24:22 
+
+24:22 framework, which is commonly used for,
+24:24 
+
+24:24 you know, microservices, lightweight web
+24:28 
+
+24:28 applications, and so on. So, we are
+24:30 
+
+24:30 creating a web application and that web
+24:33 
+
+24:33 application uses the Flask framework.
+24:36 
+
+24:36 And what this will do is when you access
+24:39 
+
+24:39 this application, this will say welcome
+24:41 
+
+24:41 to Cloud with Varun Joshi. Platform is
+24:43 
+
+24:43 GitHub Actions and runtime is Docker
+24:46 
+
+24:46 plus Flask. And then we also have a
+24:49 
+
+24:49 endpoint that will tell us about the
+24:51 
+
+24:51 health of the application. So, if I
+24:53 
+
+24:53 access forward slash health, I should
+24:56 
+
+24:56 receive 200 if the application is up and
+24:59 
+
+24:59 healthy. Here we are saying our
+25:01 
+
+25:01 application listens on port 5000 and we
+25:05 
+
+25:05 have host 0.0.0 which says that in all
+25:09 
+
+25:09 the interfaces that my container or my
+25:13 
+
+25:13 host, wherever this application will be
+25:15 
+
+25:15 running, the application will be
+25:17 
+
+25:17 listening on all the network interfaces
+25:19 
+
+25:19 available to that machine.
+25:22 
+
+25:22 This is a very simple code. Now, let's
+25:25 
+
+25:25 take a look at the Dockerfile. So, here
+25:28 
+
+25:28 is the Dockerfile. I'm saying from
+25:31 
+
+25:31 Python 3.13 slim, I'm using this as the
+25:36 
+
+25:36 base image. Work DIR is forward/app, so
+25:40 
+
+25:40 this becomes the working directory. Copy
+25:43 
+
+25:43 requirements.txt
+25:45 
+
+25:45 to dot. So, dot here will imply
+25:48 
+
+25:48 requirements.txt will be copied to
+25:50 
+
+25:50 forward/app because that's the working
+25:53 
+
+25:53 directory for us now. What is
+25:55 
+
+25:55 requirements.txt?
+25:57 
+
+25:57 So, this file is commonly used in Python
+25:60 
+
+25:60 applications to define application
+26:03 
+
+26:03 dependencies. Now, why this is useful?
+26:05 
+
+26:05 This is useful because within that file
+26:08 
+
+26:08 you can define all the versions and the
+26:11 
+
+26:11 packages that are needed by your
+26:13 
+
+26:13 application. So, you have all that
+26:14 
+
+26:14 standardized at one place. You do not
+26:17 
+
+26:17 have to look at separate commands in the
+26:20 
+
+26:20 Dockerfile itself. Everything is
+26:22 
+
+26:22 centralized in requirements.txt.
+26:25 
+
+26:25 So, here we are saying run pip install
+26:28 
+
+26:28 no cache DIR {hyphen}r requirements.txt.
+26:32 
+
+26:32 So, we are saying use pip, which is the
+26:35 
+
+26:35 package manager for Python, use pip to
+26:38 
+
+26:38 install whatever is there in
+26:41 
+
+26:41 requirements.txt.
+26:43 
+
+26:43 And what is there in requirements.txt?
+26:45 
+
+26:45 We have defined that we want Flask that
+26:48 
+
+26:48 has version 3.1.1.
+26:51 
+
+26:51 Copy app.py
+26:53 
+
+26:53 to the working directory. So, {slash}
+26:55 
+
+26:55 app will have app.py and app.py
+26:59 
+
+26:59 is the actual Python program.
+27:02 
+
+27:02 Then, we are exposing port 5000. I want
+27:06 
+
+27:06 you to clearly know that expose 5000 is
+27:09 
+
+27:09 just for documentation. If your
+27:11 
+
+27:11 application is not listening on port
+27:13 
+
+27:13 5000, then putting this will make no
+27:16 
+
+27:16 sense. So, for now, we know that our
+27:18 
+
+27:18 application listens on port 5000 because
+27:21 
+
+27:21 we have asked our application to do so.
+27:24 
+
+27:24 Hence, this what you see here is just
+27:26 
+
+27:26 for documentation so that any DevOps
+27:28 
+
+27:28 engineer or a developer who looks at
+27:31 
+
+27:31 your Dockerfile
+27:33 
+
+27:33 clearly knows that the application that
+27:35 
+
+27:35 this Dockerfile is dealing with listens
+27:37 
+
+27:37 on port 5000.
+27:39 
+
+27:39 And then, CMD, I'm saying the command
+27:42 
+
+27:42 that you want to run when this container
+27:44 
+
+27:44 starts is python app.py. So, this will
+27:48 
+
+27:48 essentially start my application. Now,
+27:51 
+
+27:51 we have this understanding, let's get
+27:54 
+
+27:54 into the actual work of creating the
+27:57 
+
+27:57 GitHub workflow. So, I'll go here
+28:01 
+
+28:01 and then I'll expand this. I already
+28:03 
+
+28:03 have {dot} GitHub created and inside
+28:06 
+
+28:06 {dot} GitHub, I already have workflows
+28:08 
+
+28:08 created. So, what I will do here is I'll
+28:10 
+
+28:10 create a new file and I will call this
+28:12 
+
+28:12 file 01 actions demo.yaml.
+28:17 
+
+28:17 I will not be typing the entire YAML.
+28:20 
+
+28:20 I'll be using copy-paste, but I will be
+28:22 
+
+28:22 explaining it to you step by step, line
+28:25 
+
+28:25 by line. So, I have copied this here.
+28:28 
+
+28:28 What are we doing? We are calling our
+28:31 
+
+28:31 workflow 01 cloud with Varjo's Flask CI
+28:35 
+
+28:35 pipeline. When do we trigger this
+28:39 
+
+28:39 workflow? We trigger this workflow upon
+28:41 
+
+28:41 a push. And pipeline is the word I'm not
+28:45 
+
+28:45 happy with. So, let's replace this with
+28:48 
+
+28:48 workflow because that is the term that
+28:50 
+
+28:50 GitHub Actions use. Jobs, I only have
+28:54 
+
+28:54 one job, Flask CI job, and that job is
+28:58 
+
+28:58 supposed to run on a runner that has the
+29:02 
+
+29:02 latest version of Ubuntu. My job has
+29:06 
+
+29:06 four steps, and we all know that all
+29:11 
+
+29:11 these four steps will be run
+29:13 
+
+29:13 sequentially because the steps inside
+29:17 
+
+29:17 the job, they run sequentially. But, if
+29:19 
+
+29:19 you have defined multiple jobs, they by
+29:22 
+
+29:22 default run in parallel. We learned this
+29:26 
+
+29:26 in our lecture one.
+29:29 
+
+29:29 Now,
+29:30 
+
+29:30 someone is thinking, "Varun, why do you
+29:33 
+
+29:33 have all the steps defined in a single
+29:37 
+
+29:37 job? Can't we split that?" We can, but
+29:40 
+
+29:40 does our use case warrant that? No. If
+29:44 
+
+29:44 you look at these steps, these steps are
+29:46 
+
+29:46 dependent on one another. So, for
+29:48 
+
+29:48 example, step two
+29:51 
+
+29:51 depends on step one. Step three depends
+29:54 
+
+29:54 on step two. Step four depends on step
+29:58 
+
+29:58 three. Hence, all of these steps are
+30:01 
+
+30:01 interdependent, which is why all of
+30:04 
+
+30:04 these are part of the same job because
+30:08 
+
+30:08 we know if, let's say, the last step
+30:11 
+
+30:11 would have been part of a different job,
+30:15 
+
+30:15 that different job would be scheduled
+30:18 
+
+30:18 onto a new runner. Because when we talk
+30:22 
+
+30:22 about GitHub-hosted runners, we get a
+30:25 
+
+30:25 new runner, a fresh runner for every
+30:29 
+
+30:29 job. And if we just ran this step in the
+30:33 
+
+30:33 new runner, that new runner would not
+30:37 
+
+30:37 have any context. It would say,
+30:40 
+
+30:40 "What is this? I don't have anything
+30:42 
+
+30:42 deployed on port 5000, and this will
+30:46 
+
+30:46 fail. So, I hope you understand why all
+30:50 
+
+30:50 of these steps are part of the single
+30:54 
+
+30:54 job.
+30:55 
+
+30:55 Now, let's see these steps. First is
+30:58 
+
+30:58 checkout repository, and we are using an
+31:01 
+
+31:01 action for that. Next is build Docker
+31:04 
+
+31:04 image. So, here we are building the
+31:06 
+
+31:06 Docker image. Docker build is what
+31:09 
+
+31:09 initiates the building of the image.
+31:11 
+
+31:11 {hyphen} t, here we are specifying the
+31:14 
+
+31:14 repository name would be this. The tag
+31:17 
+
+31:17 that will be associated is this, and
+31:20 
+
+31:20 this whole combined is called the image
+31:23 
+
+31:23 name. And then we have a final dot. This
+31:26 
+
+31:26 specifies the build context. So, we are
+31:29 
+
+31:29 saying everything that is needed to
+31:32 
+
+31:32 build this container image is available
+31:36 
+
+31:36 in the current directory, in the present
+31:39 
+
+31:39 working directory. Next is run
+31:42 
+
+31:42 container. Here we are actually running
+31:44 
+
+31:44 the container. Docker run to run the
+31:46 
+
+31:46 container. {hyphen} d, I want the
+31:48 
+
+31:48 container to run in detached mode, that
+31:51 
+
+31:51 is in background. Then {hyphen} p is for
+31:54 
+
+31:54 port forwarding. What we are saying that
+31:56 
+
+31:56 anything that comes to the host on port
+31:59 
+
+31:59 5000, and what is our host? Our host is
+32:03 
+
+32:03 the runner onto which the Docker is
+32:06 
+
+32:06 installed. So, we are saying if anything
+32:08 
+
+32:08 comes on port 5000 on my runner, I want
+32:12 
+
+32:12 you to send it to port 5000 of my
+32:16 
+
+32:16 container. And which container?
+32:20 
+
+32:20 The container that will have the name
+32:22 
+
+32:22 cloud with Varun Joshi {hyphen} flask
+32:24 
+
+32:24 {hyphen} container. And what is the
+32:27 
+
+32:27 image that that container should be
+32:29 
+
+32:29 using?
+32:30 
+
+32:30 The image is this one. The image that we
+32:34 
+
+32:34 built in the previous step, which is why
+32:36 
+
+32:36 I told you
+32:39 
+
+32:39 all these steps are interrelated. You
+32:42 
+
+32:42 cannot run this step
+32:45 
+
+32:45 before this.
+32:47 
+
+32:47 And finally, we are performing smoke
+32:50 
+
+32:50 test. And this is exactly what you would
+32:52 
+
+32:52 see in production. In production, as
+32:54 
+
+32:54 soon as the application is deployed, a
+32:56 
+
+32:56 smoke test is performed so that we know
+33:00 
+
+33:00 for sure that the application is
+33:03 
+
+33:03 healthy. And this is exactly what we are
+33:06 
+
+33:06 doing here. We are pulling the
+33:09 
+
+33:09 health
+33:10 
+
+33:10 API to know that our application is
+33:14 
+
+33:14 accessible. We are using
+33:17 
+
+33:17 a pipe symbol here, which allows us to
+33:20 
+
+33:20 write multi-line commands. We are
+33:23 
+
+33:23 running two commands here. Why sleep
+33:25 
+
+33:25 five? Because I want to allow this
+33:28 
+
+33:28 container some time to start properly
+33:32 
+
+33:32 before I run this command. And I think
+33:35 
+
+33:35 that's all I wanted to talk about this.
+33:38 
+
+33:38 So, now what we want to do is we want to
+33:41 
+
+33:41 push the code to our repository. So,
+33:43 
+
+33:43 let's go to that point now. I'll go to
+33:46 
+
+33:46 my command prompt.
+33:48 
+
+33:48 I am already in project files. I will
+33:51 
+
+33:51 first run get in it.
+33:53 
+
+33:53 It is initialized, and then I will run
+33:57 
+
+33:57 get add dot.
+33:60 
+
+33:60 This will move everything to the staging
+34:02 
+
+34:02 area. And then what I want to run is get
+34:06 
+
+34:06 commit {hyphen} m. The commit message
+34:08 
+
+34:08 can be demo one, and I will write
+34:13 
+
+34:13 build and run a
+34:16 
+
+34:16 container. Let's keep that simple.
+34:19 
+
+34:19 I'll press enter now. This is committed.
+34:23 
+
+34:23 Now, what I want to do is I want to push
+34:25 
+
+34:25 this. But before pushing, I will have to
+34:29 
+
+34:29 add the remote. So, I will write get
+34:32 
+
+34:32 remote add origin. I'm calling my remote
+34:36 
+
+34:36 origin and what is the path? So, I will
+34:39 
+
+34:39 be specifying SSH here because we
+34:41 
+
+34:41 learned how to do this in lecture one
+34:44 
+
+34:44 and we know that when we are developers,
+34:47 
+
+34:47 we would likely be using SSH, but of
+34:51 
+
+34:51 course, if you're dealing with an
+34:52 
+
+34:52 enterprise environment, you would be
+34:54 
+
+34:54 using single sign-on. So, that uses
+34:57 
+
+34:57 tokens under the hood, but if you are a
+34:59 
+
+34:59 single developer, you would probably be
+35:02 
+
+35:02 using SSH, but no one is stopping you to
+35:06 
+
+35:06 use tokens. So, you can use that as
+35:08 
+
+35:08 well. I'll press enter and this is done.
+35:11 
+
+35:11 Now, what I want to do is I want to run
+35:14 
+
+35:14 get push origin and main. I'll also have
+35:20 
+
+35:20 to add {hyphen} U because I want to
+35:22 
+
+35:22 define my upstream, the local to remote
+35:24 
+
+35:24 branch mapping, and this says
+35:27 
+
+35:27 successfully pushed. Now, as soon as a
+35:31 
+
+35:31 push happens, this workflow should
+35:34 
+
+35:34 trigger because we have defined that
+35:37 
+
+35:37 this workflow should be triggered on a
+35:41 
+
+35:41 push. So, let's go back to our browser
+35:44 
+
+35:44 and here I'll go at the top and then I
+35:48 
+
+35:48 will open cloud with Varun in a new tab.
+35:52 
+
+35:52 Here, I will scroll down. I will click
+35:56 
+
+35:56 on show more and then I want to go to
+36:01 
+
+36:01 Where is show more?
+36:03 
+
+36:03 GitHub practice. Yeah.
+36:05 
+
+36:05 CWVJ GHA practice. I see all the files
+36:09 
+
+36:09 here along with the workflow and we also
+36:11 
+
+36:11 see a green tick that we love and then
+36:14 
+
+36:14 we go to actions
+36:16 
+
+36:16 and we see there is a workflow. So, all
+36:19 
+
+36:19 workflows, whatever workflows are there
+36:22 
+
+36:22 associated with your repository, will be
+36:23 
+
+36:23 listed here. The workflow that we
+36:26 
+
+36:26 created right now is named this, which
+36:29 
+
+36:29 is why we see this here. I will click
+36:31 
+
+36:31 here to only see the jobs or the runs
+36:36 
+
+36:36 associated with this workflows. Only
+36:38 
+
+36:38 one, so it does not matter right now,
+36:39 
+
+36:39 but it matters when you have multiple
+36:41 
+
+36:41 workflows here because if you click on
+36:44 
+
+36:44 all workflows, it will show you the runs
+36:46 
+
+36:46 of all the workflows. I want to see only
+36:49 
+
+36:49 for 01. I'll go here, I'll click here,
+36:52 
+
+36:52 and this is the commit message that I
+36:54 
+
+36:54 gave demo one build and run a container.
+36:57 
+
+36:57 I'll click here.
+36:58 
+
+36:58 I will click here because this is the
+37:01 
+
+37:01 job name that I gave flask CI job, and I
+37:03 
+
+37:03 have suffixed job so that I immediately
+37:07 
+
+37:07 know this is a job. So, setup job, I'll
+37:10 
+
+37:10 expand this.
+37:11 
+
+37:11 Here, we have already explored this, but
+37:14 
+
+37:14 what I want you to concentrate on is
+37:17 
+
+37:17 this part. Download action repository.
+37:20 
+
+37:20 So, your runner, whatever runner is
+37:22 
+
+37:22 assigned to you, will first download the
+37:26 
+
+37:26 action. And here, we only defined one
+37:28 
+
+37:28 action that was checkout at the rate V6,
+37:31 
+
+37:31 V6 being the version of that action. So,
+37:34 
+
+37:34 if I scroll down here, if I expand
+37:36 
+
+37:36 checkout repository, this was our step
+37:39 
+
+37:39 one. So, here the repository was checked
+37:41 
+
+37:41 out. Second step was build Docker image.
+37:45 
+
+37:45 And another thing I want to highlight
+37:48 
+
+37:48 here is I keep on calling this Docker
+37:50 
+
+37:50 image, and the reason for that is we are
+37:53 
+
+37:53 using Docker to create the image, and
+37:56 
+
+37:56 GitHub Actions is certain terminology
+37:58 
+
+37:58 that you know, makes
+38:01 
+
+38:01 calling this Docker image a little more
+38:04 
+
+38:04 sense, but I prefer calling them
+38:07 
+
+38:07 container images. See, the point is we
+38:10 
+
+38:10 are using Docker to create a container
+38:12 
+
+38:12 image, correct? And we can use any other
+38:15 
+
+38:15 OCI compliant tool to do the same. We
+38:18 
+
+38:18 can use Podman, we can use Kaniko. Will
+38:21 
+
+38:21 we call it Podman image if we use Podman
+38:25 
+
+38:25 to create our container image?
+38:28 
+
+38:28 Will I call it Kaniko image if I use
+38:31 
+
+38:31 Kaniko to create my container image?
+38:34 
+
+38:34 Hence, Docker image is not something
+38:38 
+
+38:38 that's technically precise, but you
+38:40 
+
+38:40 would see a lot of folks using this
+38:43 
+
+38:43 because Docker was the pioneer when it
+38:45 
+
+38:45 comes to, you know, creating container
+38:48 
+
+38:48 images and so on.
+38:50 
+
+38:50 Hence, the term Docker image is quite
+38:54 
+
+38:54 popular when you discuss with DevOps
+38:57 
+
+38:57 engineers, but the correct way to say
+38:59 
+
+38:59 this is
+39:00 
+
+39:00 container image. So, anyway, for this
+39:02 
+
+39:02 lecture, we'll call it Docker image, uh
+39:05 
+
+39:05 but we discuss this in deeper detail
+39:07 
+
+39:07 when we were dealing with our CK course.
+39:09 
+
+39:09 Anyway, so build Docker image. So, here
+39:11 
+
+39:11 we are building the Docker image, and
+39:12 
+
+39:12 this is something that you would see on
+39:14 
+
+39:14 your terminal if you were to do this
+39:18 
+
+39:18 in your laptop. Because what is this
+39:20 
+
+39:20 what we are seeing? These are just the
+39:22 
+
+39:22 logs. These are just the runtime
+39:25 
+
+39:25 behavior we receive from the runner
+39:28 
+
+39:28 itself that is running this job for us.
+39:31 
+
+39:31 So, finally, if I scroll down, I see
+39:33 
+
+39:33 done. We see in 0.4 seconds a container
+39:38 
+
+39:38 image was created for us. If I expand
+39:41 
+
+39:41 run container, here is the command that
+39:43 
+
+39:43 we supplied, and you see this is the
+39:46 
+
+39:46 container ID
+39:48 
+
+39:48 of the container that was created for
+39:50 
+
+39:50 us. Then, we move to smoke test, and if
+39:53 
+
+39:53 you expand this, you see status healthy.
+39:56 
+
+39:56 And why do you see it this? Because if I
+39:58 
+
+39:58 go here, go here,
+40:01 
+
+40:01 that is what we asked it to do.
+40:05 
+
+40:05 Status is healthy, and then when the job
+40:08 
+
+40:08 is completed, I want you to see cleaning
+40:10 
+
+40:10 up orphan processes. And after that,
+40:13 
+
+40:13 this machine was dismantled. That's the
+40:16 
+
+40:16 beauty of it. So, if I scroll up, I want
+40:18 
+
+40:18 to show you one more thing.
+40:21 
+
+40:21 Uh here, runner image. Operating system
+40:24 
+
+40:24 is Ubuntu.
+40:25 
+
+40:25 Runner image provisioner. Yeah, this is
+40:30 
+
+40:30 this instance is spun in West US 2 Azure
+40:33 
+
+40:33 region. And we know why this is using
+40:36 
+
+40:36 Azure because GitHub is owned by
+40:38 
+
+40:38 Microsoft. Azure is also owned by
+40:41 
+
+40:41 Microsoft. You get that picture, right?
+40:44 
+
+40:44 And then, uh let's see what I want to
+40:47 
+
+40:47 discuss here.
+40:49 
+
+40:49 Let's see what more I want to discuss.
+40:50 
+
+40:50 So, for demo one, we have already
+40:52 
+
+40:52 discussed what I wanted to. So, let's
+40:54 
+
+40:54 move on to demo two now.
+40:57 
+
+40:57 So, I will
+40:59 
+
+40:59 go to my diagrams. And here, I want to
+41:03 
+
+41:03 move to demo two. And demo two is
+41:05 
+
+41:05 building and pushing Docker image using
+41:09 
+
+41:09 GitHub Actions. So, in the previous
+41:11 
+
+41:11 demo,
+41:12 
+
+41:12 we did not push the image. But, in this
+41:15 
+
+41:15 demo, we are going to be a little more
+41:19 
+
+41:19 realistic. And as we progress with this
+41:21 
+
+41:21 course, we'll be fully realistic. So,
+41:24 
+
+41:24 then,
+41:25 
+
+41:25 this workflow that we will create, that
+41:28 
+
+41:28 will also have just one job. But, that
+41:31 
+
+41:31 job will have five steps. So, the first
+41:34 
+
+41:34 step, and what you also see is we will
+41:37 
+
+41:37 be using three different actions for
+41:39 
+
+41:39 these three different things. And then,
+41:42 
+
+41:42 finally, we will use a run to run the
+41:44 
+
+41:44 container and to perform smoke test. So,
+41:47 
+
+41:47 first, we'll be checking out the
+41:48 
+
+41:48 repository. Second, we'll be logging
+41:51 
+
+41:51 into Docker Hub. Why Docker Hub, Varun?
+41:55 
+
+41:55 Docker Hub because when you are pushing
+41:58 
+
+41:58 your image somewhere,
+42:01 
+
+42:01 you have to supply authentication. So,
+42:03 
+
+42:03 in our example, in our demo, we will be
+42:07 
+
+42:07 using Docker Hub as our container
+42:10 
+
+42:10 registry. And container registry is the
+42:12 
+
+42:12 place where you store your container
+42:15 
+
+42:15 images. And we will be using Docker Hub
+42:18 
+
+42:18 to store our Docker images. Hence, we
+42:22 
+
+42:22 must authenticate our runner must have
+42:25 
+
+42:25 means we are which it authenticates to
+42:28 
+
+42:28 our Docker Hub. And we'll be using
+42:30 
+
+42:30 personal access tokens for that. Then we
+42:33 
+
+42:33 have build and push.
+42:35 
+
+42:35 This is the action that we will be using
+42:38 
+
+42:38 to build our image and then push our
+42:41 
+
+42:41 image to the specified registry.
+42:45 
+
+42:45 Then in the second last step, we will be
+42:47 
+
+42:47 running our container using Docker run
+42:49 
+
+42:49 like we saw in the previous demo. And
+42:51 
+
+42:51 then finally, we'll be performing a
+42:53 
+
+42:53 smoke test. And this one this time, we
+42:56 
+
+42:56 will not be polling the health API.
+42:58 
+
+42:58 We'll just be accessing the application
+43:00 
+
+43:00 on localhost so that we know what our
+43:03 
+
+43:03 application displays to us. Now let's do
+43:06 
+
+43:06 one thing. Let's go to our browser and
+43:09 
+
+43:09 perform the very first step of this
+43:12 
+
+43:12 demo. And the first step would be
+43:15 
+
+43:15 creating a private Docker Hub
+43:18 
+
+43:18 repository. So I will go here. I'll go
+43:21 
+
+43:21 to hub.docker.com.
+43:24 
+
+43:24 And I'm already signed in and these are
+43:27 
+
+43:27 the repositories that I have. I will
+43:31 
+
+43:31 click on create a repository. And the
+43:34 
+
+43:34 repository I create, I will call it
+43:37 
+
+43:37 Cloud with Var Josh hyphen Flask
+43:41 
+
+43:41 hyphen app.
+43:42 
+
+43:42 So this is what I'll call it and I want
+43:45 
+
+43:45 a private repository which is only
+43:48 
+
+43:48 visible to me. I would suggest you you
+43:51 
+
+43:51 also use private because this is
+43:52 
+
+43:52 something that you would be using in
+43:55 
+
+43:55 enterprises. I'll click on create here
+43:57 
+
+43:57 Cloud with Var Josh Flask app. I will
+43:60 
+
+43:60 click on create. The repository is
+44:02 
+
+44:02 created. A private repository is
+44:04 
+
+44:04 created. I see there have been no pulls
+44:06 
+
+44:06 for this repository which is okay. Now,
+44:09 
+
+44:09 what I will do is I'll go here.
+44:12 
+
+44:12 I'll click on account settings because
+44:14 
+
+44:14 we want to generate a token, and that is
+44:16 
+
+44:16 the token that our runner will use to
+44:20 
+
+44:20 interact with this Docker Hub account.
+44:22 
+
+44:22 And why would runner want to interact
+44:25 
+
+44:25 with our Docker Hub account? Hello.
+44:28 
+
+44:28 Because runner wants to push the image
+44:31 
+
+44:31 that we created to our repository. So,
+44:35 
+
+44:35 I'll come here. I'll go to personal
+44:37 
+
+44:37 access tokens here.
+44:39 
+
+44:39 I will click on generate new token, and
+44:42 
+
+44:42 let's call this token GHA demo.
+44:45 
+
+44:45 Expiration, I would suggest you to have
+44:48 
+
+44:48 it custom and maybe
+44:50 
+
+44:50 expire it tomorrow because you don't
+44:52 
+
+44:52 want your tokens to, you know, be valid
+44:55 
+
+44:55 for more time than needed. And I would
+44:58 
+
+44:58 also highly encourage you, once you're
+44:60 
+
+44:60 done with this demo, just delete it. And
+45:02 
+
+45:02 then access permissions, I want read and
+45:04 
+
+45:04 write. I clearly want you to know that
+45:07 
+
+45:07 the token that you are creating is not
+45:09 
+
+45:09 restricted to the repository that we
+45:11 
+
+45:11 just created, the repository cloud with
+45:13 
+
+45:13 Varjo's Flask app.
+45:15 
+
+45:15 This will give access to everything. So,
+45:18 
+
+45:18 use this with caution. I will click on
+45:22 
+
+45:22 generate, and let's increase this time
+45:23 
+
+45:23 to 2:00 p.m. And then I will click on
+45:26 
+
+45:26 generate. And this token will only be
+45:29 
+
+45:29 shown to you once, so I would recommend
+45:32 
+
+45:32 you copy this. So, I'll copy this token.
+45:35 
+
+45:35 I will keep it somewhere safe
+45:37 
+
+45:37 in my machine. Rather, I will paste it
+45:41 
+
+45:41 here so that I can come back and use it.
+45:44 
+
+45:44 And
+45:45 
+
+45:45 I will delete this token after this
+45:47 
+
+45:47 lecture, so there is no point in messing
+45:49 
+
+45:49 around with this. So, what I'll do is
+45:52 
+
+45:52 I'll then personal access token is
+45:54 
+
+45:54 generated. Now, what do I want to do
+45:56 
+
+45:56 next? I want to
+45:59 
+
+45:59 go to my
+46:01 
+
+46:01 GitHub, and here I want to I am in my
+46:05 
+
+46:05 repository C W V J G H A practice. I'll
+46:09 
+
+46:09 go to settings here
+46:10 
+
+46:10 and then I will scroll down secrets and
+46:14 
+
+46:14 variables. I'll go to actions.
+46:18 
+
+46:18 And this is the place where I can define
+46:21 
+
+46:21 my environment secrets and my repository
+46:24 
+
+46:24 secrets. And this is the place where you
+46:27 
+
+46:27 can also define your variables. Now,
+46:29 
+
+46:29 understand that if you want to let's say
+46:32 
+
+46:32 redact your username as well, then you
+46:36 
+
+46:36 would use secrets, but you can also use
+46:39 
+
+46:39 variables for your username. But in our
+46:42 
+
+46:42 example, we will be using secrets to
+46:46 
+
+46:46 store both our username and password
+46:49 
+
+46:49 because I don't want my logs that logs
+46:53 
+
+46:53 that I see in my workflow screen to show
+46:57 
+
+46:57 me my username. I want that redacted,
+47:00 
+
+47:00 which is why I am using a repository
+47:03 
+
+47:03 secret. So, I'll click on new repository
+47:05 
+
+47:05 secret here and let's call this one
+47:09 
+
+47:09 Docker Hub username. And my Docker Hub
+47:11 
+
+47:11 username is Cloud
+47:13 
+
+47:13 with Varjosh. Cloud with Varjosh. I'll
+47:17 
+
+47:17 click on add secret. Ensure you have
+47:20 
+
+47:20 your
+47:21 
+
+47:21 Docker Hub account name here. I'll click
+47:24 
+
+47:24 on add secret. So, first secret for
+47:27 
+
+47:27 username is added. Then I will come here
+47:29 
+
+47:29 new repository secret and this one I
+47:31 
+
+47:31 will call Docker Hub underscore token.
+47:34 
+
+47:34 And this is where I have to paste the
+47:36 
+
+47:36 token that we just created. So, I'll
+47:39 
+
+47:39 copy this token and then I will paste
+47:42 
+
+47:42 this token here.
+47:45 
+
+47:45 And then I'll click on add secret. So,
+47:47 
+
+47:47 we have added both. Now,
+47:50 
+
+47:50 the work in this screen is done, but I
+47:53 
+
+47:53 want to highlight a few things. GitHub
+47:55 
+
+47:55 secrets, they provide a secure mechanism
+47:58 
+
+47:58 for injecting sensitive information and
+48:02 
+
+48:02 token we know are sensitive into your
+48:04 
+
+48:04 workflows. So, what GitHub will do is
+48:07 
+
+48:07 GitHub will automatically mask secrets
+48:10 
+
+48:10 inside your workflow logs. So, once we
+48:13 
+
+48:13 run this workflow, I'll show you how
+48:15 
+
+48:15 your tokens and your usernames are
+48:18 
+
+48:18 redacted when you use secrets to store
+48:22 
+
+48:22 them.
+48:23 
+
+48:23 Let's go to Visual Studio code now, and
+48:26 
+
+48:26 here I'll copy this and I will paste
+48:30 
+
+48:30 this here.
+48:31 
+
+48:31 And then I will rename this to
+48:34 
+
+48:34 02 actions demo. What I will now do is
+48:38 
+
+48:38 I'll copy my workflow YAML content and
+48:43 
+
+48:43 I'll paste this here. So, here 02 cloud
+48:46 
+
+48:46 with Rajesh flask CI pipeline, and
+48:49 
+
+48:49 pipeline is not something that GitHub
+48:50 
+
+48:50 actions like. So, I'll call this
+48:52 
+
+48:52 workflow. And then on push, we have seen
+48:54 
+
+48:54 this. We have already seen this. We are
+48:56 
+
+48:56 calling it the same flask CI job. You
+48:58 
+
+48:58 can even add a two here so that you know
+49:01 
+
+49:01 that this is associated with demo two.
+49:03 
+
+49:03 Runs on Ubuntu. Step, first step you
+49:06 
+
+49:06 already know. Second step is an
+49:08 
+
+49:08 interesting one. Login to Docker Hub.
+49:10 
+
+49:10 So, let's go to the marketplace because
+49:13 
+
+49:13 I don't want you to be afraid of these
+49:16 
+
+49:16 things because once you know how to
+49:18 
+
+49:18 maneuver the documentation, these things
+49:20 
+
+49:20 are pretty simple.
+49:22 
+
+49:22 I'll search [snorts] for Docker, and you
+49:23 
+
+49:23 see Docker login. And it is obvious. If
+49:26 
+
+49:26 it says build and push Docker images,
+49:28 
+
+49:28 this would be used for that. I'll go to
+49:31 
+
+49:31 Docker login, and this will exactly tell
+49:34 
+
+49:34 you how to use it.
+49:36 
+
+49:36 If you scroll down, you will also learn
+49:38 
+
+49:38 that this is not just limited to logging
+49:41 
+
+49:41 into Docker Hub. Of course, Docker and
+49:43 
+
+49:43 Docker Hub are products of the single
+49:46 
+
+49:46 company, but when I talk about using
+49:50 
+
+49:50 this action, you can use this action to
+49:53 
+
+49:53 log in into most of the popular
+49:56 
+
+49:56 container registries. You can see AWS
+49:58 
+
+49:58 ECR, you can see Azure container
+50:01 
+
+50:01 registry, you can see Google's container
+50:03 
+
+50:03 registry, and so on. And it also tells
+50:07 
+
+50:07 you usage. So, I told you in the
+50:09 
+
+50:09 previous section that the width block
+50:12 
+
+50:12 can be used to supply whatever you want,
+50:15 
+
+50:15 your parameters. And where do you find
+50:17 
+
+50:17 what all parameters or inputs are
+50:19 
+
+50:19 available at your disposal?
+50:20 
+
+50:20 Documentation, right? So, here I am in
+50:24 
+
+50:24 the documentation for this action
+50:26 
+
+50:26 because we are using this action. And
+50:29 
+
+50:29 the documentation clearly tells me how
+50:31 
+
+50:31 to use it. Right now, we are using
+50:34 
+
+50:34 secrets for Docker Hub token, which is
+50:36 
+
+50:36 why we have this, you see? In password,
+50:39 
+
+50:39 we have this. In this example, they are
+50:42 
+
+50:42 using variables for username. We also
+50:44 
+
+50:44 could use variables for that, but I
+50:47 
+
+50:47 prefer using secrets for my username as
+50:50 
+
+50:50 well, which is why I have used secrets.
+50:52 
+
+50:52 Now, if you were to use variables, then
+50:54 
+
+50:54 you can use that. But here, instead of
+50:58 
+
+50:58 wherever we created that right here, you
+51:01 
+
+51:01 would go to variables and create that
+51:04 
+
+51:04 for yourself. It's pretty obvious,
+51:05 
+
+51:05 right?
+51:07 
+
+51:07 So, this is how you can do it. And it
+51:10 
+
+51:10 also tells you what to do when you are
+51:11 
+
+51:11 using a different container registry and
+51:14 
+
+51:14 so on. So, I'll let you explore this
+51:16 
+
+51:16 documentation to use this action for
+51:20 
+
+51:20 your specific use case. Now, what I will
+51:23 
+
+51:23 do is I'll go back to Visual Studio Code
+51:25 
+
+51:25 and let's discuss next.
+51:26 
+
+51:26 Here, build and push Docker image, we
+51:29 
+
+51:29 are using a different action here. So,
+51:31 
+
+51:31 let's first see what we are doing. We
+51:33 
+
+51:33 are saying with context is dot. This is
+51:36 
+
+51:36 the build context. So, we are saying
+51:38 
+
+51:38 whatever you need to build this
+51:40 
+
+51:40 container image, this Docker image, is
+51:43 
+
+51:43 available in the current directory. Push
+51:45 
+
+51:45 is true. This implies that once the
+51:48 
+
+51:48 container image is created, you must
+51:51 
+
+51:51 also push that container image, which is
+51:53 
+
+51:53 why when I talk about tags, our
+51:56 
+
+51:56 naming is in that format. Cloud with Var
+51:59 
+
+51:59 Josh is my account name. Cloud with Var
+52:02 
+
+52:02 Josh {hyphen} flask {hyphen} app is the
+52:05 
+
+52:05 repository name, and then this is the
+52:08 
+
+52:08 tag I want to give my image. And this
+52:11 
+
+52:11 whole is my image name, and this is what
+52:15 
+
+52:15 the syntax of this action is. So, let's
+52:18 
+
+52:18 go to our browser. If I go back, and if
+52:22 
+
+52:22 I go to this, then you would see
+52:24 
+
+52:24 examples on how to use this action. You
+52:28 
+
+52:28 see, this is for the login. And if I
+52:30 
+
+52:30 scroll down, yeah. So, you see, this is
+52:33 
+
+52:33 for the build and push. I also want you
+52:36 
+
+52:36 to know that here we are giving name to
+52:40 
+
+52:40 all of our steps, and this is optional.
+52:42 
+
+52:42 You don't have to give this name, but I
+52:45 
+
+52:45 always prefer giving that, so that
+52:47 
+
+52:47 everyone knows what my intentions are
+52:50 
+
+52:50 with this specific step. So, you can
+52:53 
+
+52:53 maybe remove this,
+52:55 
+
+52:55 and then bring this run here like this.
+52:58 
+
+52:58 This will also work. You see, there are
+52:60 
+
+52:60 no red lines, so it is accepting. But,
+53:03 
+
+53:03 I prefer what I prefer. And then,
+53:07 
+
+53:07 this is fine. Then, we have already seen
+53:09 
+
+53:09 this. We are running the container using
+53:12 
+
+53:12 this command. And finally, we are
+53:14 
+
+53:14 performing a smoke test, and this time
+53:16 
+
+53:16 we don't have that forward slash health
+53:18 
+
+53:18 here. So, we'll see what our application
+53:21 
+
+53:21 has to say. I hope this is understood,
+53:23 
+
+53:23 so I'll come to my iTerm. And here, what
+53:27 
+
+53:27 I will do is
+53:29 
+
+53:29 I will run
+53:31 
+
+53:31 get add,
+53:33 
+
+53:33 then get commit
+53:35 
+
+53:35 demo two,
+53:37 
+
+53:37 and then build
+53:41 
+
+53:41 build,
+53:42 
+
+53:42 push,
+53:43 
+
+53:43 and run.
+53:45 
+
+53:45 And I'll press
+53:46 
+
+53:46 enter.
+53:47 
+
+53:47 And then I will run git push. Only git
+53:51 
+
+53:51 push would do this time because we have
+53:53 
+
+53:53 already defined the upstream here. And
+53:56 
+
+53:56 if I go to my browser,
+53:59 
+
+53:59 I go to my
+54:02 
+
+54:02 this, go to actions tab here.
+54:06 
+
+54:06 Demo 2 is running. And you see one
+54:09 
+
+54:09 thing,
+54:11 
+
+54:11 workflow one is also triggered. And why
+54:12 
+
+54:12 is that triggered? Can anyone tell me
+54:15 
+
+54:15 why did this workflow trigger? Workflow
+54:18 
+
+54:18 one triggered because you have defined
+54:22 
+
+54:22 in workflow one as well that whenever
+54:25 
+
+54:25 there is a push,
+54:27 
+
+54:27 you also must run. Which is why you see
+54:29 
+
+54:29 a second run here. But if I talk about
+54:32 
+
+54:32 workflow two, this should only have one
+54:33 
+
+54:33 run because it has only seen one push
+54:36 
+
+54:36 and that is successful now. So, let's go
+54:39 
+
+54:39 here. And you see, you can check your
+54:43 
+
+54:43 build artifacts here as well. Docker
+54:45 
+
+54:45 build summary. And I will let you
+54:47 
+
+54:47 explore these, but what I want to
+54:50 
+
+54:50 walk with you is this part, job two,
+54:52 
+
+54:52 because we named that job two. And if I
+54:56 
+
+54:56 expand this now, you would see that we
+54:59 
+
+54:59 were using three actions, correct? And
+55:02 
+
+55:02 all of those three actions were
+55:03 
+
+55:03 downloaded. In the previous demo, only
+55:05 
+
+55:05 checkout was downloaded. And then,
+55:09 
+
+55:09 if I go to login to Docker Hub, the
+55:11 
+
+55:11 steps performed
+55:14 
+
+55:14 will be same even if you run the, you
+55:17 
+
+55:17 know, run this login command using run.
+55:21 
+
+55:21 It will essentially be performing the
+55:22 
+
+55:22 same thing. But here, you are using
+55:25 
+
+55:25 something that is available at your
+55:27 
+
+55:27 disposal with a packaged system, so
+55:30 
+
+55:30 packaged automation, so to speak. That's
+55:32 
+
+55:32 why we preferred using actions here.
+55:35 
+
+55:35 Similarly, build and push, we could have
+55:37 
+
+55:37 used commands to do this, but we chose
+55:40 
+
+55:40 to use an action that is pre-created for
+55:43 
+
+55:43 this thing itself. So, the login was
+55:45 
+
+55:45 successful. Here, the build was done and
+55:48 
+
+55:48 the push was done. And why was the push
+55:51 
+
+55:51 successful? Because the login succeeded.
+55:53 
+
+55:53 If this login failed for XYZ reason, if
+55:57 
+
+55:57 your token expired or something of that
+55:59 
+
+55:59 sort, then this step would have failed
+56:01 
+
+56:01 and then rest of the steps, of course,
+56:03 
+
+56:03 would have also failed. And here, you
+56:06 
+
+56:06 see at the very last, you is done, then
+56:09 
+
+56:09 a run container. And here, you see this
+56:12 
+
+56:12 is the container ID. And
+56:16 
+
+56:16 our username is redacted
+56:19 
+
+56:19 because we created a secret. And then,
+56:23 
+
+56:23 smoke test.
+56:25 
+
+56:25 Now, you see the whole message.
+56:28 
+
+56:28 Welcome to Cloud with Varjo's platform
+56:30 
+
+56:30 is GitHub Actions runtime Docker plus
+56:33 
+
+56:33 Flask. And why this? Because that is
+56:36 
+
+56:36 what we defined in our application code.
+56:40 
+
+56:40 I hope this is understood. Now, I want
+56:44 
+
+56:44 to show you something else. So, this
+56:46 
+
+56:46 repository should now have a tag.
+56:50 
+
+56:50 Version 1.0.1
+56:53 
+
+56:53 pushed 3 minutes.
+56:56 
+
+56:56 I go here. This is the image that we
+57:00 
+
+57:00 just pushed.
+57:02 
+
+57:02 So, I hope you have understood all of
+57:06 
+
+57:06 these things.
+57:07 
+
+57:07 So, this concludes this lecture. In this
+57:10 
+
+57:10 lecture, we understood reusable actions,
+57:13 
+
+57:13 the difference between uses and run,
+57:17 
+
+57:17 GitHub Marketplace, and the different
+57:19 
+
+57:19 sources of GitHub Actions. Through the
+57:22 
+
+57:22 demos, we also explored workflow
+57:24 
+
+57:24 execution inside GitHub-hosted runners,
+57:28 
+
+57:28 Docker image builds, smoke testing,
+57:31 
+
+57:31 GitHub authentication, GitHub secrets,
+57:34 
+
+57:34 and reusable Docker automation
+57:37 
+
+57:37 workflows. Most importantly, we saw how
+57:40 
+
+57:40 modern GitHub Actions workflows combine
+57:43 
+
+57:43 reusable automation with custom
+57:46 
+
+57:46 scripting to build production-style
+57:49 
+
+57:49 CI/CD workflows. In the next lecture, we
+57:52 
+
+57:52 will continue building on these concepts
+57:55 
+
+57:55 while moving deeper into advanced GitHub
+57:58 
+
+57:58 Actions capabilities and reusable
+58:02 
+
+58:02 automation patterns. If you have any
+58:04 
+
+58:04 questions, feel free to ask them in the
+58:06 
+
+58:06 comment section, and I will reply.
+58:09 
+
+58:09 If this helped, do consider liking,
+58:11 
+
+58:11 sharing, and subscribing. It will mean a
+58:14 
+
+58:14 lot to me. Thank you very much.

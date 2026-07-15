@@ -1,0 +1,4519 @@
+00:00 Hi, I am Varun Joshi, and I welcome you
+00:03 
+
+00:03 to the first lecture of this GitHub
+00:05 
+
+00:05 Actions Basics to Production course.
+00:09 
+
+00:09 In this lecture, we will build the
+00:12 
+
+00:12 conceptual foundation required before
+00:16 
+
+00:16 writing production-grade GitHub Actions
+00:19 
+
+00:19 workflows. We will start with a quick
+00:22 
+
+00:22 refresher on CI/CD and understand how
+00:26 
+
+00:26 modern software delivery pipelines
+00:29 
+
+00:29 operate in production environments. From
+00:32 
+
+00:32 there, we will walk through a typical
+00:35 
+
+00:35 CI/CD pipeline for a Java containerized
+00:39 
+
+00:39 application
+00:41 
+
+00:41 and understand how applications move
+00:44 
+
+00:44 from source code to deployment. Next, we
+00:48 
+
+00:48 will understand what GitHub Actions is,
+00:51 
+
+00:51 why it became popular, and how it fits
+00:54 
+
+00:54 into the modern CI/CD ecosystem. We will
+00:58 
+
+00:58 then explore the core constructs of
+01:01 
+
+01:01 GitHub Actions, including workflows,
+01:05 
+
+01:05 jobs, steps, and runners, followed by
+01:08 
+
+01:08 GitHub-hosted and self-hosted runner
+01:12 
+
+01:12 types.
+01:13 
+
+01:13 Finally, we will create and execute our
+01:17 
+
+01:17 very first GitHub Actions workflow. So,
+01:20 
+
+01:20 let's get started.
+01:23 
+
+01:23 What I will do is I'll go to my browser
+01:26 
+
+01:26 first, and here I will zoom in a little,
+01:30 
+
+01:30 and then I will go to this repository
+01:32 
+
+01:32 that is for this course.
+01:34 
+
+01:34 I'll go here, and I will go to the very
+01:38 
+
+01:38 first lecture, that is this one, and
+01:40 
+
+01:40 then I'll scroll down, and I will go to
+01:44 
+
+01:44 prerequisites for this course, because
+01:47 
+
+01:47 there are certain prerequisites for this
+01:50 
+
+01:50 course, and this course expects you
+01:52 
+
+01:52 already understand a few things. And
+01:56 
+
+01:56 fortunately, whatever are the
+01:58 
+
+01:58 prerequisites for this course, I have
+02:01 
+
+02:01 covered all of them in this channel. The
+02:04 
+
+02:04 first prerequisite is you must
+02:07 
+
+02:07 understand Git and that is the obvious
+02:11 
+
+02:11 because whenever you version control,
+02:14 
+
+02:14 the most popular tool for same is Git.
+02:18 
+
+02:18 So, you must understand what are
+02:20 
+
+02:20 commits, how to check commit history,
+02:22 
+
+02:22 what is branching, merging, rebasing,
+02:25 
+
+02:25 cherry-picking, pull requests, code
+02:27 
+
+02:27 reviews, and so on. Because as we
+02:30 
+
+02:30 progress with this course, we would be
+02:32 
+
+02:32 using some advanced features. And of
+02:34 
+
+02:34 course, you may understand while I'm
+02:38 
+
+02:38 running the commands, but if you want
+02:40 
+
+02:40 that deeper understanding and those aha
+02:43 
+
+02:43 moments, then understanding Git is
+02:47 
+
+02:47 imperative.
+02:48 
+
+02:48 Next is YAML. As you know, most of the
+02:53 
+
+02:53 DevOps tools, including Kubernetes,
+02:55 
+
+02:55 Ansible, Helm, Argo CD,
+02:58 
+
+02:58 all of these use YAML. So, you must
+03:02 
+
+03:02 understand YAML. So, here is the video
+03:05 
+
+03:05 where I teach how to write YAML. I
+03:09 
+
+03:09 recorded this as part of my CKA
+03:12 
+
+03:12 playlist. Then, you must also understand
+03:16 
+
+03:16 modern SDLC, software development life
+03:19 
+
+03:19 cycle. Along with this, in this lecture
+03:23 
+
+03:23 that you see here, you will understand
+03:25 
+
+03:25 what are compiled languages and how they
+03:28 
+
+03:28 are different from interpreted
+03:29 
+
+03:29 languages. Because if you do not
+03:32 
+
+03:32 understand these languages from a high
+03:34 
+
+03:34 level, then there is no point in
+03:36 
+
+03:36 deploying applications that are using
+03:39 
+
+03:39 these languages. So, watch this. We will
+03:43 
+
+03:43 also learn here build workflows for
+03:46 
+
+03:46 containerized applications, build
+03:48 
+
+03:48 workflows for non-containerized
+03:50 
+
+03:50 applications. For example, if you are
+03:52 
+
+03:52 deploying directly onto virtual
+03:54 
+
+03:54 machines, then how would you approach
+03:56 
+
+03:56 that? Build automation. Why it matters.
+03:60 
+
+03:60 Why deployment standardization matters.
+04:03 
+
+04:03 So, you will be learning all of these
+04:04 
+
+04:04 things in this lecture. And this lecture
+04:07 
+
+04:07 I recorded as part of my Jenkins CI CD
+04:10 
+
+04:10 series, but it has no relevance with
+04:13 
+
+04:13 Jenkins so to speak because the concepts
+04:17 
+
+04:17 that I have taught here apply to all CI
+04:21 
+
+04:21 CD tooling. So, be it Jenkins, GitLab
+04:23 
+
+04:23 CI, or GitHub Actions. And then, you
+04:28 
+
+04:28 must also understand CI CD fundamentals.
+04:32 
+
+04:32 I do have a refresher on what is CI CD
+04:35 
+
+04:35 in this lecture, and we are going to go
+04:38 
+
+04:38 there soon, but
+04:40 
+
+04:40 if you want deeper understanding, not
+04:43 
+
+04:43 just about all these practices, but also
+04:46 
+
+04:46 about what are the branching strategies
+04:49 
+
+04:49 that are used in production. What is Git
+04:51 
+
+04:51 flow based branching strategy? What is
+04:53 
+
+04:53 trunk based branching strategy?
+04:55 
+
+04:55 Environment promotion strategies. How
+04:58 
+
+04:58 are artifacts updated from dev to stage,
+05:02 
+
+05:02 and then from stage to production? So,
+05:04 
+
+05:04 we have detailed discussions on that in
+05:08 
+
+05:08 this lecture. Then production deployment
+05:10 
+
+05:10 workflows, of course. So, you can watch
+05:12 
+
+05:12 this.
+05:13 
+
+05:13 Now comes an interesting thing. So,
+05:15 
+
+05:15 understand GitHub Actions or any CI CD
+05:19 
+
+05:19 tool acts as an orchestrator.
+05:22 
+
+05:22 Orchestrator that is orchestrating
+05:25 
+
+05:25 between different tools and services.
+05:28 
+
+05:28 So, if for example, I have integrated
+05:31 
+
+05:31 Kubernetes for my application, then I
+05:34 
+
+05:34 must understand Kubernetes. If I am
+05:37 
+
+05:37 working with Docker, if I have
+05:39 
+
+05:39 integrated Docker in my CI CD flow, then
+05:43 
+
+05:43 I must understand Docker. Same applies
+05:46 
+
+05:46 for all these tools that you see on
+05:49 
+
+05:49 screen. So, if you do not understand
+05:51 
+
+05:51 these tools, then there is no point in
+05:54 
+
+05:54 learning CI/CD. So, for example, if we
+05:57 
+
+05:57 are creating a pipeline that is
+05:59 
+
+05:59 deploying onto Kubernetes and that is
+06:01 
+
+06:01 creating container images using Docker,
+06:06 
+
+06:06 you must understand these things. Now,
+06:08 
+
+06:08 for this very first lecture,
+06:11 
+
+06:11 this this understanding is not needed.
+06:14 
+
+06:14 But, as we progress with this course, I
+06:17 
+
+06:17 will let you know that this is something
+06:19 
+
+06:19 that you want to know before proceeding
+06:23 
+
+06:23 with this lecture. So, for example, if
+06:25 
+
+06:25 we are building an application Java
+06:28 
+
+06:28 application, then I would tell you
+06:30 
+
+06:30 before watching this lecture, go and
+06:33 
+
+06:33 learn what is a Maven. Before
+06:36 
+
+06:36 integrating security practices, I would
+06:39 
+
+06:39 ask you go and watch this lecture where
+06:43 
+
+06:43 we discuss in greater detail what is
+06:45 
+
+06:45 DevSecOps and what is SonarQube. So, I
+06:50 
+
+06:50 will mark these prerequisites wherever
+06:53 
+
+06:53 needed, but understand CI/CD tooling act
+06:58 
+
+06:58 as an orchestrator. You must understand
+07:00 
+
+07:00 individual tools or services to work
+07:05 
+
+07:05 with CI/CD. Now that we understand the
+07:08 
+
+07:08 prerequisites, let's move on to the
+07:11 
+
+07:11 diagram. So, I'll go here and I'll
+07:14 
+
+07:14 scroll down and let's understand what is
+07:18 
+
+07:18 CI/CD. CI/CD refers to modern software
+07:23 
+
+07:23 delivery practices used to automate,
+07:27 
+
+07:27 standardize, and operationalize
+07:30 
+
+07:30 application delivery workflow. So, let's
+07:32 
+
+07:32 break this definition. We are calling
+07:35 
+
+07:35 this CI/CD.
+07:37 
+
+07:37 CI means continuous integration. Now,
+07:41 
+
+07:41 what is it integrating? Why does the
+07:43 
+
+07:43 name have integration? So, what it is
+07:46 
+
+07:46 integrating is application code changes,
+07:49 
+
+07:49 whatever you are committing onto your
+07:52 
+
+07:52 repositories, it is integrating those
+07:56 
+
+07:56 with certain workflows that you have
+07:59 
+
+07:59 already defined. So, for example, if I
+08:01 
+
+08:01 am a developer, I push my code onto my
+08:05 
+
+08:05 repository, then based on my push, there
+08:09 
+
+08:09 must be certain triggers that would
+08:12 
+
+08:12 build my code, will test my code, and
+08:16 
+
+08:16 ensure my code does not have any
+08:19 
+
+08:19 vulnerabilities. So, all these things
+08:22 
+
+08:22 are called continuous integration. In
+08:24 
+
+08:24 the next section, we will look into how
+08:27 
+
+08:27 a typical pipeline looks like so that
+08:30 
+
+08:30 you have better understanding of
+08:33 
+
+08:33 continuous integration. And when it
+08:36 
+
+08:36 comes to continuous integration, you
+08:38 
+
+08:38 have things like fetching source code
+08:40 
+
+08:40 from repositories, building applications
+08:42 
+
+08:42 and binaries, running automated tests,
+08:45 
+
+08:45 executing security and quality scans,
+08:48 
+
+08:48 building container images, publishing
+08:50 
+
+08:50 artifacts, and so on. Then comes the CD
+08:54 
+
+08:54 part. CD deals with deployment. Now,
+08:58 
+
+08:58 this deployment could be automatic, so
+09:02 
+
+09:02 as in there are no manual approvals
+09:05 
+
+09:05 involved, or it could also have manual
+09:08 
+
+09:08 approvals. Now, your deployment, you
+09:12 
+
+09:12 could be deploying onto dev environment,
+09:14 
+
+09:14 stage environment, or onto production
+09:16 
+
+09:16 environment. But, when you deploy onto
+09:20 
+
+09:20 production environment without any
+09:23 
+
+09:23 manual approvals, then you call it
+09:26 
+
+09:26 continuous deployment. So, understanding
+09:30 
+
+09:30 this key difference between continuous
+09:32 
+
+09:32 delivery and continuous deployment is
+09:34 
+
+09:34 important. So, continuous deployment,
+09:37 
+
+09:37 you only call it continuous deployment
+09:40 
+
+09:40 when you are deploying onto production
+09:42 
+
+09:42 environment without any manual approval.
+09:46 
+
+09:46 Rest you call continuous delivery. So
+09:49 
+
+09:49 let's read this. CI automates build,
+09:53 
+
+09:53 testing and validation workflows. CD
+09:56 
+
+09:56 keeps applications ready for production
+09:60 
+
+09:60 deployment. Production deployments may
+10:03 
+
+10:03 still require manual approvals. CDP,
+10:07 
+
+10:07 that is continuous deployment,
+10:09 
+
+10:09 automatically deploys validated changes
+10:13 
+
+10:13 to production. Auto deploying only to
+10:16 
+
+10:16 dev, test, staging or any other
+10:19 
+
+10:19 environments is not continuous
+10:21 
+
+10:21 deployment. So maybe you have a workflow
+10:24 
+
+10:24 where you are deploying onto development
+10:27 
+
+10:27 or deploying into staging without any
+10:30 
+
+10:30 manual approvals. All automatic. All
+10:34 
+
+10:34 automated. In that scenario, that is not
+10:36 
+
+10:36 called continuous deployment. So
+10:38 
+
+10:38 continuous deployment only deals with
+10:41 
+
+10:41 production where you are deploying
+10:43 
+
+10:43 without any manual approvals.
+10:46 
+
+10:46 Then what are the advantages of CI/CD?
+10:49 
+
+10:49 Standardizes build, security, testing
+10:52 
+
+10:52 and deployment workflows. This is true
+10:54 
+
+10:54 because if you have defined everything
+10:57 
+
+10:57 that has to be done, then you have
+10:59 
+
+10:59 standardized that. No matter how many
+11:02 
+
+11:02 times the pipeline is run, whatever the
+11:05 
+
+11:05 steps were performed the last time, the
+11:08 
+
+11:08 same will be performed the next time. So
+11:11 
+
+11:11 you have standardized your build
+11:13 
+
+11:13 standards, your security standards, your
+11:15 
+
+11:15 testing standards and your deployment
+11:18 
+
+11:18 workflows. Reduces repetitive
+11:21 
+
+11:21 engineering and operational activities,
+11:24 
+
+11:24 which is true. When you have defined
+11:26 
+
+11:26 everything in a file, you do not have to
+11:29 
+
+11:29 perform things in silos because
+11:31 
+
+11:31 understand CICD is orchestration. If you
+11:35 
+
+11:35 have that orchestration layer, then you
+11:38 
+
+11:38 do not have to build the software
+11:40 
+
+11:40 separately and then deploy the software
+11:43 
+
+11:43 separately. All of these things are
+11:46 
+
+11:46 coordinated and combined within your
+11:49 
+
+11:49 CICD workflows. Enables faster, safer,
+11:54 
+
+11:54 and reliable software releases, which is
+11:56 
+
+11:56 true because CICD is meant to do that.
+12:01 
+
+12:01 Improves deployment consistency,
+12:04 
+
+12:04 scalability, and auditability. Now, if
+12:07 
+
+12:07 you have means in place via which you
+12:10 
+
+12:10 are auditing whatever your CICD systems
+12:14 
+
+12:14 are deploying, you get this because
+12:16 
+
+12:16 everything is at one place and you can
+12:20 
+
+12:20 audit it in a better way. And why we are
+12:23 
+
+12:23 calling deployment consistency? Because
+12:26 
+
+12:26 even when your application is deployed
+12:29 
+
+12:29 multiple times,
+12:31 
+
+12:31 the results, the steps that will be
+12:34 
+
+12:34 performed will be consistent. Now that
+12:37 
+
+12:37 we have this understanding of what is
+12:39 
+
+12:39 CICD and what are the advantages of
+12:41 
+
+12:41 CICD, let's move on to the next section
+12:45 
+
+12:45 where we'll discuss a typical CICD
+12:48 
+
+12:48 pipeline for a Java containerized
+12:51 
+
+12:51 application. And you see the icons for
+12:54 
+
+12:54 Jenkins, GitHub Actions, GitLab CICD
+12:57 
+
+12:57 here. Why all the three icons are on?
+13:00 
+
+13:00 Because the pipeline that you see here
+13:04 
+
+13:04 can be built using any of these tools.
+13:07 
+
+13:07 Like I said, these are just
+13:09 
+
+13:09 orchestrator. The actual tools that are
+13:13 
+
+13:13 used to perform actions will still be
+13:16 
+
+13:16 there. CICD is not replacing them. CICD
+13:20 
+
+13:20 tools are just ensuring the automation
+13:24 
+
+13:24 and orchestration
+13:26 
+
+13:26 works in an expected manner. Now, what I
+13:30 
+
+13:30 have done with this diagram is I have
+13:32 
+
+13:32 segregated this diagram into different
+13:35 
+
+13:35 sections so that you understand how CI
+13:39 
+
+13:39 is different from CD. So, if you see all
+13:43 
+
+13:43 the top blocks and we should be calling
+13:46 
+
+13:46 them stages, all of these stages are
+13:50 
+
+13:50 part of continuous integration and both
+13:53 
+
+13:53 of these stages are part of continuous
+13:56 
+
+13:56 deployment or delivery. I also want you
+13:59 
+
+13:59 to know that this is not something that
+14:02 
+
+14:02 is written on stone. You can have more
+14:06 
+
+14:06 stages in continuous integration. Maybe
+14:08 
+
+14:08 you are performing additional security
+14:11 
+
+14:11 scans because you are using this CI/CD
+14:14 
+
+14:14 pipeline to deploy a banking
+14:16 
+
+14:16 application. Maybe your CI stages are
+14:21 
+
+14:21 less because you are doing testing right
+14:25 
+
+14:25 now. You are just starting to build your
+14:27 
+
+14:27 CI/CD pipeline. So, keep these things
+14:30 
+
+14:30 are mind. This is a typical CI/CD
+14:34 
+
+14:34 pipeline, not the pipeline. And then,
+14:38 
+
+14:38 you also see observability here, that is
+14:41 
+
+14:41 operation feedback. Now, let's see what
+14:45 
+
+14:45 all things are being done here. And
+14:48 
+
+14:48 before I move forward, there are terms
+14:50 
+
+14:50 in this diagram that you may not
+14:52 
+
+14:52 understand right now, which is okay
+14:55 
+
+14:55 because this is the very first lecture.
+14:58 
+
+14:58 But then, Varun, why did you keep this
+14:60 
+
+14:60 complex CI/CD pipeline here? I kept this
+15:04 
+
+15:04 here so that you understand the breadth
+15:07 
+
+15:07 and depth of CI/CD pipelines. And as we
+15:11 
+
+15:11 progress with this course, we will be
+15:13 
+
+15:13 breaking these things down or I will be
+15:16 
+
+15:16 pointing out to recordings and videos
+15:19 
+
+15:19 that I have done in the past which you
+15:21 
+
+15:21 can refer and then proceed with the
+15:25 
+
+15:25 lecture that is in question. Now, the
+15:28 
+
+15:28 first stage is fetch source code. So, if
+15:32 
+
+15:32 your CI/CD system has to do something,
+15:35 
+
+15:35 it must have visibility on your source
+15:38 
+
+15:38 code. And how does it have that
+15:40 
+
+15:40 visibility? It gets that visibility by
+15:43 
+
+15:43 fetching the source code from your
+15:45 
+
+15:45 repository. But, when should it fetch
+15:48 
+
+15:48 the source code? It should fetch the
+15:51 
+
+15:51 source code based on what you have
+15:53 
+
+15:53 defined as a trigger. I, as a DevOps
+15:58 
+
+15:58 administrator, could have asked my
+16:01 
+
+16:01 pipeline to fetch the source code when
+16:03 
+
+16:03 there is a push event. Or, I could have
+16:07 
+
+16:07 defined whenever there is a pull
+16:09 
+
+16:09 request, you fetch the source code and
+16:12 
+
+16:12 then proceed. Next, and why would you
+16:15 
+
+16:15 want to fetch the source code to begin
+16:17 
+
+16:17 with? You want to fetch the source code
+16:20 
+
+16:20 to run the pipeline. If the source code
+16:23 
+
+16:23 is not available to the pipeline, then
+16:26 
+
+16:26 how will the pipeline build your
+16:29 
+
+16:29 application and then finally deploy your
+16:32 
+
+16:32 application? Then, there is build the
+16:34 
+
+16:34 application. And this step is critical
+16:37 
+
+16:37 when we are talking about compiled
+16:39 
+
+16:39 languages. Even interpreted languages
+16:41 
+
+16:41 have build steps, but build steps in
+16:45 
+
+16:45 compiled languages are often quite heavy
+16:48 
+
+16:48 because that is the point where we are
+16:50 
+
+16:50 building the application. So, if we are
+16:52 
+
+16:52 talking about Java, this is the stage
+16:55 
+
+16:55 where we are converting the source code
+16:58 
+
+16:58 to byte code. And there are different
+17:01 
+
+17:01 tools that you could be using. You could
+17:03 
+
+17:03 be using Maven, Gradle, or Ant, Maven
+17:06 
+
+17:06 being the most popular. So, in this
+17:09 
+
+17:09 stage you compile the Java application
+17:11 
+
+17:11 artifact. An artifact is a new word.
+17:14 
+
+17:14 What is an artifact? Anything that
+17:16 
+
+17:16 results from a build is an artifact. So,
+17:20 
+
+17:20 for Java application, it could be your
+17:22 
+
+17:22 .jar file, .war file. And if you are
+17:26 
+
+17:26 building a container image, then
+17:28 
+
+17:28 container image becomes your artifact.
+17:31 
+
+17:31 So, whatever the result of a build is,
+17:33 
+
+17:33 it could be a log file as well. That's
+17:35 
+
+17:35 an artifact. Then, execute Maven build
+17:39 
+
+17:39 life cycle. So, whatever build you want
+17:41 
+
+17:41 to do, you can use Maven to do that.
+17:45 
+
+17:45 Next is execute automated testing. Now,
+17:48 
+
+17:48 if you are using a build tool like
+17:51 
+
+17:51 Maven, it is not just a build tool. It
+17:53 
+
+17:53 can do a lot more. So, you can even
+17:55 
+
+17:55 perform unit tests and integration tests
+17:59 
+
+17:59 using Maven. And what are unit tests?
+18:02 
+
+18:02 Unit tests is Understand your
+18:04 
+
+18:04 application is a big chunk, okay? But,
+18:06 
+
+18:06 your application is made up of different
+18:10 
+
+18:10 small units. So, testing each of those
+18:13 
+
+18:13 units individually is called unit
+18:16 
+
+18:16 testing. What is integration testing?
+18:18 
+
+18:18 Integration testing is how those units
+18:22 
+
+18:22 work when they are integrated with each
+18:24 
+
+18:24 other. So, that is integration testing.
+18:26 
+
+18:26 So, when I talk about Maven, you have
+18:29 
+
+18:29 various plugins. There is Surefire,
+18:32 
+
+18:32 there is Failsafe that you can use for
+18:35 
+
+18:35 testing. Stop pipeline upon failures. I
+18:39 
+
+18:39 don't want my pipeline to continue
+18:42 
+
+18:42 running if something is not in line with
+18:45 
+
+18:45 what is expected. I expect my testing to
+18:49 
+
+18:49 be 100%. So, all unit tests must
+18:51 
+
+18:51 succeed. All integration tests must
+18:54 
+
+18:54 succeed. If any of those fail, then you
+18:58 
+
+18:58 fail the pipeline. What happens, Varun,
+19:00 
+
+19:00 if the pipeline fails? I go back to my
+19:03 
+
+19:03 developer along with the logs and tell
+19:06 
+
+19:06 him or her that you need to fix these
+19:10 
+
+19:10 tests. You need to fix the code because
+19:12 
+
+19:12 I see there are unit and integration
+19:17 
+
+19:17 testing errors. Next step is run
+19:20 
+
+19:20 security scans. Now, understand here we
+19:24 
+
+19:24 have verified that your application is
+19:27 
+
+19:27 working as expected, because it is
+19:30 
+
+19:30 succeeding all the unit and integration
+19:32 
+
+19:32 test. Now, don't quote me on this,
+19:35 
+
+19:35 because there could be other stages as
+19:37 
+
+19:37 well where you could be testing whether
+19:39 
+
+19:39 your application is behaving as expected
+19:42 
+
+19:42 or not. But, from a unit and integration
+19:44 
+
+19:44 test perspective, let's say your
+19:47 
+
+19:47 application works fine. Then, in the
+19:49 
+
+19:49 next step you want to see whether your
+19:52 
+
+19:52 application is secure or not. So, here
+19:56 
+
+19:56 you will be performing your static
+19:58 
+
+19:58 security scans, dependency scanning, and
+20:01 
+
+20:01 here as well if something fails, if uh
+20:05 
+
+20:05 let's say you have defined that code
+20:07 
+
+20:07 coverage when it comes to scans must be
+20:11 
+
+20:11 80%. If that code coverage is less,
+20:14 
+
+20:14 let's say if it is 75%,
+20:16 
+
+20:16 then I would have a quality gate that
+20:19 
+
+20:19 will say, "Okay, this pipeline is failed
+20:22 
+
+20:22 because you do not meet my criteria."
+20:25 
+
+20:25 And who sets this criteria? These
+20:28 
+
+20:28 criterias are set by DevOps engineers,
+20:31 
+
+20:31 by DevSecOps engineers, and so on, along
+20:35 
+
+20:35 with discussions with your application
+20:37 
+
+20:37 architects, of course.
+20:39 
+
+20:39 And then, the next stage is build the
+20:43 
+
+20:43 container image. And again, there are
+20:45 
+
+20:45 popular tools that are used in this
+20:49 
+
+20:49 stage, and these tools could be
+20:50 
+
+20:50 SonarQube, Trivy, Sneak, and so on. All
+20:53 
+
+20:53 of these have different purposes, and we
+20:56 
+
+20:56 will see them as we progress with this
+20:58 
+
+20:58 course. Then, you have build the
+21:00 
+
+21:00 container image. What is building the
+21:02 
+
+21:02 container image? Now, understand you
+21:05 
+
+21:05 have an artifact. Understand
+21:07 
+
+21:07 what we are discussing. We are
+21:09 
+
+21:09 discussing a typical pipeline for a Java
+21:11 
+
+21:11 containerized application. Now, if your
+21:14 
+
+21:14 application is not containerized, you
+21:16 
+
+21:16 are deploying onto virtual machine, then
+21:18 
+
+21:18 of course, you will not have this step.
+21:21 
+
+21:21 But, here, since we are talking about a
+21:23 
+
+21:23 containerized application, we will be
+21:25 
+
+21:25 building the container image. Package
+21:28 
+
+21:28 application into containers. Second is
+21:31 
+
+21:31 tag images for registry uploads. Now,
+21:35 
+
+21:35 once the container image is built, you
+21:37 
+
+21:37 would also see enterprises also perform
+21:41 
+
+21:41 scans on the container images using
+21:43 
+
+21:43 tools like Trivy and Sneak. So, you have
+21:45 
+
+21:45 your container image also scanned. Once
+21:49 
+
+21:49 everything is in line, you push your
+21:51 
+
+21:51 container image to a registry. And what
+21:54 
+
+21:54 is that registry? That registry could be
+21:57 
+
+21:57 ECR, it could be Docker Hub, it could be
+21:60 
+
+21:60 GitHub container registry as well. So,
+22:02 
+
+22:02 push images into registries now. It is
+22:05 
+
+22:05 not just images that are pushed onto
+22:08 
+
+22:08 registries. You could also be pushing
+22:11 
+
+22:11 your artifacts. But, wait a minute. I
+22:13 
+
+22:13 won't be pushing my artifacts onto
+22:16 
+
+22:16 container registries, right? And yes,
+22:17 
+
+22:17 you are right. You will be pushing these
+22:20 
+
+22:20 artifacts, these S-bombs, and let's say
+22:23 
+
+22:23 build artifacts, not container images.
+22:26 
+
+22:26 What you will be doing is you will be
+22:27 
+
+22:27 pushing them into different
+22:30 
+
+22:30 repositories. And there are various
+22:32 
+
+22:32 offerings from Nexus and JFrog that can
+22:35 
+
+22:35 be used for saving your S-bombs. S-bomb
+22:39 
+
+22:39 is software bill of material.
+22:40 
+
+22:40 Understand, your application is made of
+22:44 
+
+22:44 different libraries, different modules.
+22:47 
+
+22:47 All of these, the inventory of what your
+22:50 
+
+22:50 application is composed of, is called
+22:52 
+
+22:52 S-bomb. Till here,
+22:55 
+
+22:55 it is continuous integration. Then, we
+22:57 
+
+22:57 come to continuous delivery or
+22:60 
+
+22:60 deployment. And what is continuous
+23:02 
+
+23:02 deployment? It is when you are deploying
+23:04 
+
+23:04 onto production without any manual
+23:07 
+
+23:07 approval. So for deploying the
+23:08 
+
+23:08 application, you have various things. So
+23:11 
+
+23:11 since this is containerized, let's say
+23:13 
+
+23:13 we are deploying our application onto
+23:16 
+
+23:16 Kubernetes. So the tools that you would
+23:19 
+
+23:19 be using
+23:20 
+
+23:20 are Kubernetes, Helm, Argo CD. Now,
+23:24 
+
+23:24 there are two ways. First is your
+23:27 
+
+23:27 orchestrator is given access to your
+23:30 
+
+23:30 Kubernetes cluster and then it accesses
+23:33 
+
+23:33 it and then runs commands to deploy it.
+23:36 
+
+23:36 Let's say cube CTL apply or Helm is
+23:39 
+
+23:39 used. But most of the enterprise
+23:42 
+
+23:42 applications are now following GitOps
+23:46 
+
+23:46 strategy. Now, what GitOps means is
+23:48 
+
+23:48 there is an agent running continuously
+23:52 
+
+23:52 in your cluster, which is comparing the
+23:55 
+
+23:55 current state with the desired state.
+23:58 
+
+23:58 Current state, what is the current
+23:59 
+
+23:59 state? Current state is what your
+24:01 
+
+24:01 cluster has right now. What is the
+24:03 
+
+24:03 desired state? Desired state is what you
+24:05 
+
+24:05 have defined in your repository as in
+24:09 
+
+24:09 GitHub, GitLab, code commit or any of
+24:11 
+
+24:11 these repositories. So based on what is
+24:15 
+
+24:15 there in the repository is deployed onto
+24:18 
+
+24:18 your Kubernetes cluster. So if you are
+24:20 
+
+24:20 using the first strategy, if you are
+24:22 
+
+24:22 using a non-GitOps strategy, then your
+24:25 
+
+24:25 orchestrator will be deploying workloads
+24:28 
+
+24:28 into Kubernetes environments. But if you
+24:30 
+
+24:30 are adhering to GitOps, then it is the
+24:33 
+
+24:33 responsibility of the GitOps agent like
+24:36 
+
+24:36 Argo CD to check what is there in the
+24:38 
+
+24:38 repository and then deploy it onto the
+24:42 
+
+24:42 cluster. Execute post-deployment
+24:45 
+
+24:45 validation. So execute smoke and health
+24:47 
+
+24:47 validation. What is smoke testing? Smoke
+24:49 
+
+24:49 testing is verifying the basic
+24:52 
+
+24:52 functionality of the application. Now
+24:55 
+
+24:55 here itself, if the application is not
+24:59 
+
+24:59 behaving as expected, then the rollback
+25:02 
+
+25:02 is also performed in this step itself.
+25:06 
+
+25:06 So, this is about continuous delivery or
+25:08 
+
+25:08 deployment. Then, lastly, what you have
+25:12 
+
+25:12 is operation feedback. So, this is
+25:14 
+
+25:14 observability. Monitor the application
+25:17 
+
+25:17 based on the health metrics that you
+25:18 
+
+25:18 have decided, and then trigger alerts
+25:21 
+
+25:21 for anomalies. Again, I will mention, if
+25:24 
+
+25:24 you did not understand a few terms, it
+25:26 
+
+25:26 is okay. I want you to have a high-level
+25:30 
+
+25:30 view right now, and the nitty-gritties
+25:33 
+
+25:33 we will see as we progress with this
+25:35 
+
+25:35 course. Now, let's see what I want to
+25:37 
+
+25:37 discuss next. What is GitHub Actions?
+25:41 
+
+25:41 GitHub's native event-driven automation
+25:45 
+
+25:45 and orchestration platform. So, let's
+25:47 
+
+25:47 stop here and dissect this.
+25:50 
+
+25:50 Event-driven,
+25:51 
+
+25:51 like I said, a pipeline will trigger
+25:54 
+
+25:54 based on what you have defined. It could
+25:57 
+
+25:57 be a push event, it could be a PR event,
+25:60 
+
+25:60 that is pull request, it could be a
+26:01 
+
+26:01 release event, and so on. So, it is
+26:05 
+
+26:05 event-driven automation and
+26:07 
+
+26:07 orchestration platform. What is
+26:10 
+
+26:10 automation? Automation is performing
+26:13 
+
+26:13 tasks. Now, what are those tasks? Those
+26:16 
+
+26:16 tasks could be performing testing,
+26:19 
+
+26:19 performing security scans, building
+26:22 
+
+26:22 container image. So, these are the tasks
+26:25 
+
+26:25 that are automated. Then, orchestration.
+26:29 
+
+26:29 What is orchestration? Coordinates
+26:32 
+
+26:32 workflow execution logic. That, for
+26:34 
+
+26:34 example, I will only build the container
+26:37 
+
+26:37 image once security scans are performed.
+26:41 
+
+26:41 I will only publish the container image
+26:43 
+
+26:43 or artifacts once the build of container
+26:47 
+
+26:47 image is done. So, understand, it is
+26:50 
+
+26:50 critical that these steps, these stages
+26:55 
+
+26:55 are performed in a sequence and that is
+26:58 
+
+26:58 what your CI/CD tooling is doing.
+27:01 
+
+27:01 Understand CI/CD isn't doing anything on
+27:05 
+
+27:05 its own. It is just calling the right
+27:09 
+
+27:09 tools at the right time. So, that is why
+27:12 
+
+27:12 we are saying GitHub Actions is a native
+27:17 
+
+27:17 event-driven automation and
+27:19 
+
+27:19 orchestration platform for modern
+27:22 
+
+27:22 software delivery workflows. First is
+27:26 
+
+27:26 managed service maintained and scaled by
+27:29 
+
+27:29 GitHub. I want you to know that when we
+27:33 
+
+27:33 are talking about any tool, there is a
+27:35 
+
+27:35 control plane which is the logic and
+27:39 
+
+27:39 then there is a data plane. So, data
+27:41 
+
+27:41 plane is the one that actually does the
+27:43 
+
+27:43 work and the control plane is the part
+27:46 
+
+27:46 where you define what has to be done.
+27:49 
+
+27:49 Okay? So, control plane is the brain,
+27:51 
+
+27:51 data plane is the one that is doing the
+27:54 
+
+27:54 actual leg work. So, when I talk about
+27:56 
+
+27:56 GitHub Actions, we are saying it is a
+27:59 
+
+27:59 managed service maintained and scaled by
+28:02 
+
+28:02 GitHub. So, in that sense, the control
+28:05 
+
+28:05 plane is managed by GitHub and also the
+28:09 
+
+28:09 data plane is managed by GitHub. Now,
+28:11 
+
+28:11 you have options via which the data
+28:14 
+
+28:14 plane could be managed by you and we
+28:16 
+
+28:16 will see that as we progress with this
+28:19 
+
+28:19 course, but for now, understand that
+28:22 
+
+28:22 GitHub is a managed service maintained
+28:24 
+
+28:24 and scaled by GitHub. Now, if you are
+28:27 
+
+28:27 familiar with Jenkins, Jenkins was
+28:29 
+
+28:29 different here because you were the one
+28:32 
+
+28:32 who was managing the Jenkins
+28:34 
+
+28:34 installation and the configuration part,
+28:37 
+
+28:37 the patching part, the update part. So,
+28:39 
+
+28:39 the control plane was also managed by
+28:41 
+
+28:41 you and the data plane which are the
+28:44 
+
+28:44 agents who actually run the job, they
+28:47 
+
+28:47 were also managed by you. But in GitHub,
+28:50 
+
+28:50 this is a managed service. Second is
+28:54 
+
+28:54 deeply integrated with the GitHub
+28:56 
+
+28:56 ecosystem. And this is so cool. So, I'll
+29:00 
+
+29:00 take you to the GitHub repository, okay?
+29:02 
+
+29:02 I'll go to my browser. And if I go here
+29:06 
+
+29:06 and then if I see these are the options,
+29:10 
+
+29:10 okay? This is the code and you see
+29:13 
+
+29:13 actions.
+29:15 
+
+29:15 GitHub Actions is right here. That is
+29:18 
+
+29:18 why we are saying deeply integrated with
+29:21 
+
+29:21 GitHub ecosystem. So, GitHub Actions can
+29:24 
+
+29:24 have visibility on your code, of course,
+29:27 
+
+29:27 on pull requests and so on, which is why
+29:32 
+
+29:32 this tool is so powerful.
+29:35 
+
+29:35 Then, the third point is automation
+29:39 
+
+29:39 pipelines are defined using YAML, which
+29:42 
+
+29:42 is why I said YAML knowledge is
+29:46 
+
+29:46 imperative. And another thing is, in
+29:50 
+
+29:50 parentheses, you see workflows. And I
+29:53 
+
+29:53 don't really know why did they call
+29:56 
+
+29:56 these workflows because pipelines, the
+29:59 
+
+29:59 term has been there for so long. But
+30:02 
+
+30:02 GitHub Actions calls these workflows.
+30:06 
+
+30:06 So, pipelines and workflows, think of
+30:09 
+
+30:09 these as synonyms, okay? Now, I want to
+30:12 
+
+30:12 discuss the advantages. So, I have
+30:15 
+
+30:15 categorized this into two sections.
+30:17 
+
+30:17 Advantages of platform native CI/CD.
+30:21 
+
+30:21 Platform native as in you have the
+30:23 
+
+30:23 repository also
+30:25 
+
+30:25 and then you also have the CI/CD at the
+30:27 
+
+30:27 same place. So, for example, GitLab.
+30:31 
+
+30:31 That is also an example of platform
+30:33 
+
+30:33 native CI/CD. GitHub Actions, that is
+30:36 
+
+30:36 also an example of platform native CI/CD
+30:39 
+
+30:39 because your code and your pipelines,
+30:42 
+
+30:42 the CI/CD system lives in the same
+30:45 
+
+30:45 place. Now, I am choosing my words
+30:47 
+
+30:47 carefully. I said the CI/CD system, that
+30:51 
+
+30:51 is the GitHub Actions, and your
+30:55 
+
+30:55 code lives in the same place. But,
+30:58 
+
+30:58 understand even when you are using
+30:60 
+
+30:60 something like Jenkins, your Jenkins
+31:02 
+
+31:02 file will also reside with the code. And
+31:05 
+
+31:05 with GitHub Actions as well, your
+31:08 
+
+31:08 CI/CD file, your pipeline file that is
+31:12 
+
+31:12 written in YAML, will also reside with
+31:14 
+
+31:14 the code. But, the plus point is
+31:18 
+
+31:18 the
+31:19 
+
+31:19 CI/CD orchestrator also lives right
+31:22 
+
+31:22 there, which is why we are calling these
+31:24 
+
+31:24 platform native. So, first point is no
+31:28 
+
+31:28 separate CI/CD server setup and
+31:30 
+
+31:30 management. So, if you have worked with
+31:32 
+
+31:32 Jenkins, you manage your control plane
+31:35 
+
+31:35 and data plane. Native repository
+31:38 
+
+31:38 authentication and permissions
+31:39 
+
+31:39 integration. So, when you use something
+31:42 
+
+31:42 like Jenkins, understand you have to
+31:45 
+
+31:45 provide Jenkins ways via which it can
+31:48 
+
+31:48 authenticate to your repository. Your
+31:51 
+
+31:51 repository could be hosted in GitLab,
+31:53 
+
+31:53 CodeCommit, GitHub, or any other version
+31:57 
+
+31:57 control system, but you had to provide
+31:60 
+
+31:60 Jenkins with authentication information
+32:03 
+
+32:03 so that it can check out your code,
+32:05 
+
+32:05 right? But, when I talk about platform
+32:08 
+
+32:08 native CI/CD,
+32:10 
+
+32:10 there is no need to provide that because
+32:12 
+
+32:12 if I go here, actions are part of all
+32:16 
+
+32:16 the repositories. You are using it or
+32:18 
+
+32:18 not is a different story, but it is
+32:21 
+
+32:21 there at your disposal to use it. And
+32:24 
+
+32:24 since you are repository and actions,
+32:27 
+
+32:27 they live in the same account, so to
+32:29 
+
+32:29 speak, same cloud with Varjo's account,
+32:32 
+
+32:32 I don't have to provide any separate
+32:34 
+
+32:34 authentication information to my CI/CD
+32:38 
+
+32:38 system that is GitHub actions to access
+32:41 
+
+32:41 my code. This is a very cool thing that
+32:45 
+
+32:45 you can have.
+32:47 
+
+32:47 Then is workflows triggered directly
+32:50 
+
+32:50 using repository events and that makes
+32:52 
+
+32:52 so much sense. With Jenkins, you had to
+32:55 
+
+32:55 configure web hooks and via those web
+32:58 
+
+32:58 hooks, your pipeline was triggered,
+33:00 
+
+33:00 okay? But here, you don't have to have
+33:03 
+
+33:03 any web hooks based on events that
+33:06 
+
+33:06 happen in your repository and like
+33:08 
+
+33:08 events we said, push, PR, release event,
+33:12 
+
+33:12 comment event, and all of these. Based
+33:14 
+
+33:14 on that, your workflows get triggered.
+33:18 
+
+33:18 Again, workflows
+33:19 
+
+33:19 is the term that GitHub uses for
+33:21 
+
+33:21 pipelines. Unified platform for code PRs
+33:26 
+
+33:26 and automation. Absolutely. Managed
+33:28 
+
+33:28 runners reduce CICD infrastructure
+33:32 
+
+33:32 overhead. Now, when we were dealing with
+33:34 
+
+33:34 Jenkins, we had our own agent. So, when
+33:37 
+
+33:37 you have your own agent, it is your
+33:40 
+
+33:40 responsibility to patch them, upgrade
+33:43 
+
+33:43 them, secure them, and so on. But when
+33:46 
+
+33:46 you are dealing with a managed service,
+33:48 
+
+33:48 all of these things are taken care by
+33:51 
+
+33:51 the provider. The provider is GitHub in
+33:53 
+
+33:53 this scenario. Now, all these points
+33:56 
+
+33:56 also hold true when you talk about
+33:59 
+
+33:59 GitLab.
+34:01 
+
+34:01 And another thing I want you to know is
+34:03 
+
+34:03 if you are dealing with a cloud
+34:05 
+
+34:05 provider, for example, if you are on
+34:07 
+
+34:07 AWS, you have
+34:09 
+
+34:09 AWS Code Commit that can act as a
+34:12 
+
+34:12 repository and their CICD system is AWS
+34:16 
+
+34:16 Code Pipeline. So, they also largely
+34:20 
+
+34:20 fall under this bucket. So, if you're
+34:22 
+
+34:22 talking about Azure, you have Azure
+34:24 
+
+34:24 Pipelines and Azure Repos. They also
+34:28 
+
+34:28 offer similar features, if not same.
+34:32 
+
+34:32 Now, let's talk about advantages that
+34:34 
+
+34:34 are specific to GitHub Actions, and this
+34:37 
+
+34:37 is why GitHub Actions is so popular.
+34:41 
+
+34:41 Massive GitHub developer ecosystem
+34:44 
+
+34:44 adoption. Now, most of the developers,
+34:47 
+
+34:47 they prefer GitHub, and if you get your
+34:50 
+
+34:50 CI/CD system integrated right in the
+34:53 
+
+34:53 platform that you love and use for your
+34:57 
+
+34:57 repositories, how good is that? Which is
+34:60 
+
+34:60 why it is so popular. And when I started
+35:03 
+
+35:03 my YouTube journey, I always had in mind
+35:05 
+
+35:05 that I will be creating detailed GitHub
+35:07 
+
+35:07 notes, and I did not have any question
+35:11 
+
+35:11 on which platform my notes will be
+35:13 
+
+35:13 hosted. GitHub was an automatic
+35:16 
+
+35:16 response. I created
+35:19 
+
+35:19 all my notes in GitHub because GitHub is
+35:23 
+
+35:23 so popular. So, GitHub Actions is also
+35:27 
+
+35:27 becoming more and more popular because
+35:29 
+
+35:29 GitHub as a repository solution is
+35:33 
+
+35:33 already quite popular. Second is large
+35:36 
+
+35:36 reusable GitHub Marketplace Actions
+35:39 
+
+35:39 ecosystem. Now, when I talk about GitHub
+35:42 
+
+35:42 Actions, you have different actions that
+35:45 
+
+35:45 are available at your disposal, and you
+35:47 
+
+35:47 can use them. So, they are pre-created
+35:49 
+
+35:49 for specific workflows. Now, those
+35:52 
+
+35:52 workflows could be creating a container
+35:54 
+
+35:54 image, performing security scans, and so
+35:57 
+
+35:57 on. And we'll be exploring these in
+35:59 
+
+35:59 detail as we progress with this course,
+36:02 
+
+36:02 but GitHub Marketplace is a place where
+36:05 
+
+36:05 there are many pre-built actions that
+36:07 
+
+36:07 you can use. And of course,
+36:10 
+
+36:10 you can create custom actions, which you
+36:13 
+
+36:13 can host onto your repository. So, we'll
+36:16 
+
+36:16 see all of those things.
+36:18 
+
+36:18 Last point is strong open source
+36:20 
+
+36:20 ecosystem and community support. So,
+36:23 
+
+36:23 these points are quite limited to when I
+36:26 
+
+36:26 talk about the repository solution that
+36:28 
+
+36:28 GitHub has to offer. So, if you see most
+36:31 
+
+36:31 of the open source tooling, the
+36:34 
+
+36:34 repository of choice is GitHub for them,
+36:38 
+
+36:38 which is why GitHub Actions is getting
+36:41 
+
+36:41 so much popular these days. Now, let's
+36:45 
+
+36:45 see what I want to discuss next. Next is
+36:49 
+
+36:49 core constructs of GitHub Actions. So,
+36:52 
+
+36:52 when I talk about core constructs of
+36:54 
+
+36:54 GitHub Actions, you have a workflow.
+36:57 
+
+36:57 Understand this is singular, and then
+37:00 
+
+37:00 you have jobs, which is plural, and then
+37:04 
+
+37:04 you have steps, which is also plural.
+37:07 
+
+37:07 And there is a reason why I have
+37:10 
+
+37:10 mentioned this specifically. So, if you
+37:13 
+
+37:13 talk about a workflow, a workflow can
+37:16 
+
+37:16 have multiple jobs, and each of those
+37:20 
+
+37:20 jobs can have multiple steps. So, this
+37:23 
+
+37:23 is the sky-by view, and this is the
+37:25 
+
+37:25 structure you would see. So, workflow is
+37:29 
+
+37:29 your pipeline itself. Then you define
+37:32 
+
+37:32 jobs within your workflow, and each
+37:35 
+
+37:35 workflow has different steps, and these
+37:39 
+
+37:39 steps is where you define what is
+37:41 
+
+37:41 supposed to be done. And understand, if
+37:44 
+
+37:44 you have defined something that has to
+37:46 
+
+37:46 be done, you will need compute resources
+37:50 
+
+37:50 to perform those actions. And who is the
+37:53 
+
+37:53 one that provides the compute resources
+37:56 
+
+37:56 onto which those steps are run? They are
+37:59 
+
+37:59 called runners. So, runners provide the
+38:02 
+
+38:02 execution environment that is required
+38:06 
+
+38:06 to run your pipeline. And on this
+38:09 
+
+38:09 screen, what you see is workflow. So,
+38:13 
+
+38:13 this is the pipeline, so to speak. And
+38:16 
+
+38:16 here, you have jobs, and each job can
+38:20 
+
+38:20 have multiple steps that you can see
+38:22 
+
+38:22 here. This job has two steps. This job
+38:27 
+
+38:27 only has a single step. Now that we have
+38:31 
+
+38:31 this basic high-level understanding,
+38:34 
+
+38:34 let's dissect each of these. Workflow,
+38:39 
+
+38:39 top-level automation definition inside
+38:42 
+
+38:42 GitHub Actions. Perfect. Defines
+38:45 
+
+38:45 triggers using GitHub repository events.
+38:48 
+
+38:48 Now here you see on. So this pipeline,
+38:52 
+
+38:52 this workflow, will be triggered
+38:56 
+
+38:56 whenever there is a push event. Now if I
+38:59 
+
+38:59 would have written PR here, then this
+39:02 
+
+39:02 workflow would have triggered based on a
+39:06 
+
+39:06 PR being raised, a pull request being
+39:09 
+
+39:09 raised. Third is contains one or more
+39:13 
+
+39:13 executable jobs. And here we see two
+39:16 
+
+39:16 jobs are there. Again, the high-level
+39:19 
+
+39:19 dictionary that you see jobs is a
+39:21 
+
+39:21 dictionary. There this is a plural, and
+39:25 
+
+39:25 then we have defined two jobs, job one
+39:28 
+
+39:28 and job two. I am categorically calling
+39:31 
+
+39:31 this job one and job two, but when you
+39:33 
+
+39:33 are dealing in production systems, the
+39:35 
+
+39:35 first job could be checking out the
+39:38 
+
+39:38 code. The second job could be running
+39:41 
+
+39:41 some tests. Third job could be running
+39:45 
+
+39:45 security scans, and so on. Stored under
+39:50 
+
+39:50 .github/workflows
+39:53 
+
+39:53 inside repositories. Now this is
+39:56 
+
+39:56 critical. Whatever files, YAML files,
+39:60 
+
+39:60 are there in this directory, GitHub
+40:03 
+
+40:03 Actions will be taking actions based on
+40:06 
+
+40:06 that. So if I have a single file, let's
+40:09 
+
+40:09 say I have a file created my first
+40:13 
+
+40:13 workflow.yaml,
+40:14 
+
+40:14 then GitHub Actions will look at that
+40:17 
+
+40:17 file, and based on what is defined in
+40:20 
+
+40:20 that file, it will take action. So, for
+40:22 
+
+40:22 example, it will see, "Okay, this file
+40:24 
+
+40:24 must be triggered when there is a push
+40:28 
+
+40:28 event." So, whenever there is a push
+40:29 
+
+40:29 event in your repository, GitHub Actions
+40:32 
+
+40:32 will come into play and do the things
+40:35 
+
+40:35 that you have defined in your workflow.
+40:39 
+
+40:39 Again, you can have multiple files
+40:42 
+
+40:42 inside the workflows directory. But,
+40:44 
+
+40:44 Varun, why will I have multiple files?
+40:48 
+
+40:48 So, let's take the example that we
+40:50 
+
+40:50 discussed right now. So, we had this
+40:53 
+
+40:53 pipeline with us, correct? Now,
+40:55 
+
+40:55 we could have a single workflow that is
+40:58 
+
+40:58 performing all these stages, or what I
+41:01 
+
+41:01 can do is I can have one file for CI,
+41:05 
+
+41:05 one YAML for CI, and one YAML for CI CD.
+41:09 
+
+41:09 Or, maybe I am performing all the
+41:12 
+
+41:12 security in
+41:14 
+
+41:14 one file, and then I'm performing all
+41:17 
+
+41:17 the pushes in a different file. So, it
+41:21 
+
+41:21 is your decision how you want to do it.
+41:24 
+
+41:24 You want to have multiple workflow
+41:26 
+
+41:26 files, or you want to have a single
+41:29 
+
+41:29 where all the stages are defined, all
+41:32 
+
+41:32 the jobs are defined, if I talk about
+41:35 
+
+41:35 GitHub Actions. So, this was about
+41:38 
+
+41:38 workflows. Now, let's talk about jobs.
+41:40 
+
+41:40 Logical execution stages inside a
+41:43 
+
+41:43 workflow, like we have seen. Each job
+41:45 
+
+41:45 executes on an independent runner, like
+41:48 
+
+41:48 you can see, runner one is associated
+41:51 
+
+41:51 with job one, runner two is associated
+41:55 
+
+41:55 with job two. So, when I talk about
+41:57 
+
+41:57 GitHub-managed runners, and we are see,
+41:60 
+
+41:60 we will shortly see what is
+42:01 
+
+42:01 GitHub-managed, but when you are using a
+42:04 
+
+42:04 complete managed solution, even for your
+42:06 
+
+42:06 data plane, then GitHub will spin one
+42:11 
+
+42:11 runner per job. So, that's why you see
+42:14 
+
+42:14 there are two jobs, there is runner one
+42:16 
+
+42:16 for job one, and then there is a runner
+42:19 
+
+42:19 two for job two. These are two separate
+42:22 
+
+42:22 virtual machines. Nothing is shared
+42:24 
+
+42:24 here. Each job executes on an
+42:27 
+
+42:27 independent runner.
+42:29 
+
+42:29 Now, but Varun,
+42:31 
+
+42:31 what if
+42:32 
+
+42:32 I have done something in job one, and
+42:36 
+
+42:36 whatever
+42:37 
+
+42:37 result was there from job one, I want to
+42:40 
+
+42:40 use that in job two. How do I do that?
+42:44 
+
+42:44 And we will see all of those things. So,
+42:46 
+
+42:46 park that question for now. Jobs execute
+42:50 
+
+42:50 in parallel by default. So, job one and
+42:53 
+
+42:53 job two will run in parallel. But Varun,
+42:56 
+
+42:56 I don't want to run job two until and
+42:58 
+
+42:58 unless the container image is created.
+43:00 
+
+43:00 Because in job one, I am building a
+43:03 
+
+43:03 container image, and in job two, I am
+43:05 
+
+43:05 pushing that container image into my
+43:08 
+
+43:08 container registry. Can we please have a
+43:10 
+
+43:10 solution that only when job one has
+43:14 
+
+43:14 completed, job two starts then? And yes,
+43:17 
+
+43:17 you can use something called needs. So,
+43:20 
+
+43:20 here in job two, I have defined needs.
+43:24 
+
+43:24 So, this implies only run job two once
+43:28 
+
+43:28 job one has completed. But the default
+43:31 
+
+43:31 behavior if we were not using needs,
+43:34 
+
+43:34 is to run both of these jobs
+43:37 
+
+43:37 simultaneously, parallelly. Jobs execute
+43:41 
+
+43:41 in parallel by default. Steps inside
+43:44 
+
+43:44 jobs execute sequentially. So, if your
+43:48 
+
+43:48 job has two steps, first step one will
+43:51 
+
+43:51 be performed, then step two will be
+43:53 
+
+43:53 performed. So, here, first hello from
+43:56 
+
+43:56 step one will be seen, then hello from
+43:58 
+
+43:58 step two will be seen. Supports
+44:01 
+
+44:01 dependencies using the needs keyword,
+44:04 
+
+44:04 like we have seen.
+44:05 
+
+44:05 Now, what are the steps? Smallest
+44:08 
+
+44:08 executable units inside GitHub Actions
+44:11 
+
+44:11 job. So inside jobs you have steps like
+44:14 
+
+44:14 we have seen this structure. Perform
+44:17 
+
+44:17 actual operational and automation tasks.
+44:20 
+
+44:20 So it is your steps where you are
+44:22 
+
+44:22 actually defining what has to be done.
+44:25 
+
+44:25 Now if you have worked with Jenkins,
+44:27 
+
+44:27 workflows can be thought of as
+44:29 
+
+44:29 pipelines, jobs can be thought of as
+44:32 
+
+44:32 stages, and steps Jenkins also calls
+44:35 
+
+44:35 these steps steps as individual
+44:38 
+
+44:38 operations inside stages. Execute
+44:42 
+
+44:42 sequentially within the same runner
+44:45 
+
+44:45 environment. So like we discussed,
+44:47 
+
+44:47 commonly use a run and uses keyword. Now
+44:51 
+
+44:51 when I talk about a run like you see
+44:53 
+
+44:53 here, a run is used to run any commands
+44:57 
+
+44:57 that you want to run. So for example, if
+44:58 
+
+44:58 I want to run kubectl apply or helm
+45:01 
+
+45:01 related commands or Terraform related
+45:03 
+
+45:03 commands, or I have to run mvn package,
+45:07 
+
+45:07 npm test maybe I want to run customize
+45:10 
+
+45:10 commands. All of these commands are run
+45:13 
+
+45:13 using the
+45:15 
+
+45:15 run keyword. So for example, here I am
+45:17 
+
+45:17 also running a command and that command
+45:20 
+
+45:20 is echo. So I am using a run. Then what
+45:24 
+
+45:24 is uses? So uses is used when you want
+45:28 
+
+45:28 to perform certain GitHub actions,
+45:31 
+
+45:31 certain actions. And we will see what
+45:35 
+
+45:35 these are in detail as we progress with
+45:37 
+
+45:37 this course. And then what are runners?
+45:42 
+
+45:42 Execution environments responsible for
+45:45 
+
+45:45 running workflow jobs. So whatever is
+45:48 
+
+45:48 being run would want some compute and
+45:51 
+
+45:51 that compute is provided by your
+45:54 
+
+45:54 runners. And runners are similar to
+45:56 
+
+45:56 agents like we had in Jenkins because
+45:59 
+
+45:59 agents were the one that were actually
+46:02 
+
+46:02 performing the legwork, which were
+46:04 
+
+46:04 actually running your jobs. And that is
+46:07 
+
+46:07 what
+46:08 
+
+46:08 runners are doing in GitHub Actions.
+46:10 
+
+46:10 They are the one that are executing your
+46:13 
+
+46:13 workflows.
+46:15 
+
+46:15 Receive jobs, execute steps, and return
+46:18 
+
+46:18 execution status. Now, runners will also
+46:21 
+
+46:21 provide execution status back to your
+46:23 
+
+46:23 GitHub Actions that this job has failed
+46:26 
+
+46:26 or this workflow has succeeded or this
+46:29 
+
+46:29 workflow has failed and so on. Now, when
+46:33 
+
+46:33 I talk about runners, there are two
+46:36 
+
+46:36 types of runners with in GitHub Actions.
+46:39 
+
+46:39 And these are self-explanatory.
+46:42 
+
+46:42 You have GitHub-hosted runners, which
+46:45 
+
+46:45 are managed by GitHub. There are
+46:48 
+
+46:48 self-hosted runners that are managed by
+46:50 
+
+46:50 you or your organization. One more thing
+46:52 
+
+46:52 I want you to understand is this
+46:55 
+
+46:55 .github/workflows,
+46:57 
+
+46:57 you cannot change this, okay? This is
+46:60 
+
+46:60 the naming that you must adhere to
+47:02 
+
+47:02 because based on this only GitHub
+47:04 
+
+47:04 Actions will take action on your
+47:07 
+
+47:07 workflow YAMLs. While workflows, jobs,
+47:11 
+
+47:11 and steps define the automation logic,
+47:14 
+
+47:14 the actual execution is performed by
+47:18 
+
+47:18 runners.
+47:19 
+
+47:19 So, let's talk about GitHub-hosted
+47:21 
+
+47:21 runners. And another thing to understand
+47:24 
+
+47:24 is the control plane is always managed
+47:27 
+
+47:27 by GitHub. You don't have a role there.
+47:31 
+
+47:31 But when it comes to runners, you can
+47:33 
+
+47:33 either have GitHub-hosted runners or you
+47:35 
+
+47:35 can have self-hosted runners. Fresh
+47:39 
+
+47:39 ephemeral execution environments
+47:41 
+
+47:41 provided for each job, like we said
+47:43 
+
+47:43 before. Each job will get its own
+47:47 
+
+47:47 execution environment. No patching,
+47:51 
+
+47:51 scaling, or infra maintenance required.
+47:54 
+
+47:54 GitHub will take care of everything
+47:58 
+
+47:58 that is there.
+47:59 
+
+47:59 Then you have limited infra and
+48:02 
+
+48:02 networking customization capabilities
+48:04 
+
+48:04 because since these are GitHub hosted
+48:06 
+
+48:06 runners, you can have minimum
+48:09 
+
+48:09 customization. Examples, you have three
+48:12 
+
+48:12 operating systems that you can use. You
+48:14 
+
+48:14 can use Ubuntu, you can use Windows, or
+48:16 
+
+48:16 you can use Mac OS. Ubuntu being the
+48:19 
+
+48:19 most popular one. Now, again, but Varun,
+48:24 
+
+48:24 where are these runners spun? Who owns
+48:27 
+
+48:27 GitHub? Microsoft. What is the cloud
+48:29 
+
+48:29 offering by Microsoft? Azure. So,
+48:32 
+
+48:32 whatever GitHub hosted runners are
+48:34 
+
+48:34 created, they run on Azure cloud.
+48:38 
+
+48:38 Now, let's talk about self-hosted
+48:41 
+
+48:41 runners. Managed by you or your
+48:43 
+
+48:43 organization. Jobs may execute on
+48:46 
+
+48:46 persistent runner environments. Now, if
+48:49 
+
+48:49 you have multiple jobs, job one, job
+48:51 
+
+48:51 two, job three, they can be executed in
+48:54 
+
+48:54 the same runner. So, in the same virtual
+48:57 
+
+48:57 machine, let's say. Organizations manage
+49:00 
+
+49:00 patching, scaling, and life cycle
+49:02 
+
+49:02 operations. Of course, if it is
+49:04 
+
+49:04 self-hosted runner, it is you who is
+49:07 
+
+49:07 going to take care of patching, scaling,
+49:10 
+
+49:10 and life cycle operations. Supports
+49:12 
+
+49:12 private networking and deep environment
+49:14 
+
+49:14 customization. Since you are the one who
+49:16 
+
+49:16 manages the operating system, patches,
+49:19 
+
+49:19 and so on, you are free to use it. Now,
+49:21 
+
+49:21 if, let's say, your execution requires a
+49:25 
+
+49:25 machine that has GPU, in that case, you
+49:28 
+
+49:28 can spin a runner that has GPU. And
+49:31 
+
+49:31 then,
+49:32 
+
+49:32 if you want a specific OS-related patch
+49:35 
+
+49:35 or application-related patch to be
+49:37 
+
+49:37 available in that
+49:39 
+
+49:39 runner, you can do that with self-hosted
+49:42 
+
+49:42 runners. But, when it comes to GitHub
+49:44 
+
+49:44 hosted runners, you don't have that
+49:47 
+
+49:47 customization.
+49:48 
+
+49:48 Examples, you can have your self-hosted
+49:51 
+
+49:51 runners run on EC2, you can have
+49:53 
+
+49:53 Kubernetes pods, on-prem servers, Azure
+49:57 
+
+49:57 VMs, and so on. So, any compute that has
+50:01 
+
+50:01 access to GitHub Actions, you can use
+50:05 
+
+50:05 them as runners.
+50:07 
+
+50:07 Another thing I want you to understand
+50:08 
+
+50:08 is GitHub will create virtual machines
+50:11 
+
+50:11 for you when it comes to runners, and
+50:13 
+
+50:13 we'll see that in the demo as well. What
+50:15 
+
+50:15 you can also do is you can run your jobs
+50:17 
+
+50:17 onto a virtual machine, or you can run
+50:20 
+
+50:20 your job onto a container that is
+50:22 
+
+50:22 created on top of that virtual machine.
+50:25 
+
+50:25 So, as we progress with this course,
+50:26 
+
+50:26 we'll see all these options, but I want
+50:29 
+
+50:29 to plant that concept in your head right
+50:31 
+
+50:31 now as well. Now, Varun, what should I
+50:34 
+
+50:34 use? GitHub-hosted or self-hosted? So,
+50:37 
+
+50:37 most production organizations use a
+50:40 
+
+50:40 hybrid runner strategy, where standard
+50:43 
+
+50:43 CI/CD workloads execute on GitHub-hosted
+50:46 
+
+50:46 runners, while security-sensitive,
+50:49 
+
+50:49 compliance-controlled,
+50:51 
+
+50:51 private-network, GPU-based, or
+50:53 
+
+50:53 highly-customized workloads execute on
+50:57 
+
+50:57 self-hosted runners. So, that is
+50:59 
+
+50:59 understandable. You can use a mixed
+51:01 
+
+51:01 strategy. Now, Varun, can't I just use
+51:04 
+
+51:04 self-hosted runners? Because I have
+51:07 
+
+51:07 reservations or savings plan in AWS. I
+51:10 
+
+51:10 want to use only self-hosted runners. Of
+51:13 
+
+51:13 course, you can. And there are projects
+51:15 
+
+51:15 where I have seen just self-hosted
+51:17 
+
+51:17 runners being used. There are projects
+51:20 
+
+51:20 where I have seen GitHub-hosted runners
+51:23 
+
+51:23 being used. But, there are also projects
+51:26 
+
+51:26 where I have seen a hybrid runner
+51:29 
+
+51:29 strategy. Now that we have this
+51:31 
+
+51:31 understanding, let's move on to the demo
+51:34 
+
+51:34 section of this lecture. So, what we are
+51:36 
+
+51:36 going to do is we'll be creating a
+51:38 
+
+51:38 simple workflow,
+51:41 
+
+51:41 just to understand the syntax and where
+51:44 
+
+51:44 everything is placed. We won't be
+51:46 
+
+51:46 creating a production grade pipeline
+51:49 
+
+51:49 just now.
+51:50 
+
+51:50 This demo is only meant to orient you
+51:55 
+
+51:55 with GitHub actions. So, let's go to the
+51:59 
+
+51:59 browser.
+52:00 
+
+52:00 And here, let me open this in new tab.
+52:04 
+
+52:04 So, here
+52:06 
+
+52:06 let's
+52:07 
+
+52:07 click here. I want to create a new
+52:09 
+
+52:09 repository and let's call this
+52:13 
+
+52:13 repository
+52:15 
+
+52:15 cloud with Varun
+52:17 
+
+52:17 and let's call it GHA GitHub Actions
+52:22 
+
+52:22 practice. You can give a description and
+52:24 
+
+52:24 then visibility is private because we
+52:27 
+
+52:27 understand that enterprise applications
+52:29 
+
+52:29 that you would be typically working with
+52:31 
+
+52:31 will be hosted onto private repository.
+52:34 
+
+52:34 So, we'll make this private and then
+52:36 
+
+52:36 we'll click on create repository. Now,
+52:39 
+
+52:39 we have created the repository. We want
+52:42 
+
+52:42 some means to authenticate with our
+52:45 
+
+52:45 GitHub repo so that we can push code
+52:49 
+
+52:49 from our local system to this GitHub
+52:52 
+
+52:52 repository. So, what I will do is I'll
+52:54 
+
+52:54 come to my iTerm and here I'm already on
+52:58 
+
+52:58 courses GitHub Actions first lecture 01
+53:02 
+
+53:02 GitHub Actions and project files. So,
+53:04 
+
+53:04 what I will first do is I will be
+53:07 
+
+53:07 creating a key pair because I want to
+53:11 
+
+53:11 use SSH for authentication and most
+53:14 
+
+53:14 likely when you are a uh you know,
+53:17 
+
+53:17 developer, you will likely be using SSH
+53:19 
+
+53:19 to authenticate with your platform.
+53:21 
+
+53:21 Again, in enterprises, you would see SSO
+53:24 
+
+53:24 being used, but for now, we will be
+53:26 
+
+53:26 using SSH. So, what I'm doing is I'm
+53:28 
+
+53:28 generating a key using
+53:31 
+
+53:31 ED25519
+53:32 
+
+53:32 algorithm. If you don't use this flag,
+53:34 
+
+53:34 then RSA is used by default, I think.
+53:37 
+
+53:37 Hyphen C is the comment that I want to
+53:39 
+
+53:39 add. Always add meaningful comment and
+53:42 
+
+53:42 the comment I am adding is my email
+53:44 
+
+53:44 address. And then I'm specifying the
+53:47 
+
+53:47 name of the key pair. So I'm saying name
+53:51 
+
+53:51 this cloud with Val Josh GHS so that I
+53:54 
+
+53:54 know that I created this key pair for
+53:57 
+
+53:57 GitHub actions. I would encourage you to
+53:59 
+
+53:59 have proper naming for anything that you
+54:02 
+
+54:02 do so that when you look back at it
+54:05 
+
+54:05 2 months down the line, 3 months down
+54:07 
+
+54:07 the line, you clearly know why you did
+54:10 
+
+54:10 what you did. So I'll press enter.
+54:14 
+
+54:14 And this says creating a key pair. I
+54:15 
+
+54:15 don't want a pass phrase so I'll press
+54:17 
+
+54:17 enter. I'll press enter again. And this
+54:20 
+
+54:20 says your key pair is created. Now what
+54:24 
+
+54:24 I want to do is I want to start the SSH
+54:26 
+
+54:26 agent. So I will paste this command.
+54:29 
+
+54:29 I'll tell you why I'm doing this. And
+54:31 
+
+54:31 then what I want is I want to load the
+54:34 
+
+54:34 key in the SSH agent. So get operations
+54:38 
+
+54:38 like get push, get pull, they all want
+54:40 
+
+54:40 some sort of authentication to
+54:42 
+
+54:42 authenticate with your remote
+54:44 
+
+54:44 repository. That is what we are doing.
+54:46 
+
+54:46 So we have started the SSH agent and
+54:49 
+
+54:49 then we have loaded the private key onto
+54:52 
+
+54:52 the SSH agent so that whenever we want
+54:55 
+
+54:55 to perform get operations, we can
+54:58 
+
+54:58 securely authenticate with GitHub. And
+55:01 
+
+55:01 you can also check whether the key is
+55:03 
+
+55:03 loaded or not. SSH add {hyphen} L you
+55:06 
+
+55:06 can use and this shows that the key is
+55:09 
+
+55:09 indeed loaded. Now what I want to do is
+55:12 
+
+55:12 I want to First let's run LS. I will go
+55:17 
+
+55:17 to my home directory and here in {dot}
+55:20 
+
+55:20 SSH let's run
+55:23 
+
+55:23 LS. So you see whatever we created, this
+55:25 
+
+55:25 is our private key and this is our
+55:28 
+
+55:28 public key. Now what I want to do is I
+55:31 
+
+55:31 want to provide my remote server with
+55:34 
+
+55:34 this public key so that whenever I
+55:36 
+
+55:36 authenticate, it knows that this user
+55:40 
+
+55:40 Varun is authenticating using a private
+55:42 
+
+55:42 key that is associated with that public
+55:46 
+
+55:46 key that is uploaded in GitHub. I want
+55:48 
+
+55:48 you to clearly know that your private
+55:50 
+
+55:50 key never leaves your system, okay? It
+55:52 
+
+55:52 will remain here and you should keep
+55:55 
+
+55:55 this
+55:56 
+
+55:56 secure.
+55:57 
+
+55:57 So, I will do this and then I will add
+56:00 
+
+56:00 that
+56:02 
+
+56:02 name of that public key, GHA and dot
+56:06 
+
+56:06 pub. I'll come at the very front and
+56:09 
+
+56:09 then I'll use cat. So, this will show me
+56:12 
+
+56:12 the public key. So, I will copy my
+56:14 
+
+56:14 public key from here. Then, I will go to
+56:18 
+
+56:18 my browser. In the browser, I will go to
+56:20 
+
+56:20 settings. I'll go click on this profile
+56:22 
+
+56:22 tab and I'll I'll open settings.
+56:24 
+
+56:24 Understand, I'm opening settings for
+56:27 
+
+56:27 this account, my CloudWithVarun Josh
+56:29 
+
+56:29 account, not for the repository alone.
+56:32 
+
+56:32 So, I'll go here. I will open this in
+56:34 
+
+56:34 new tab. And then here, I will go to SSH
+56:38 
+
+56:38 and GPG keys. I'll click on new SSH key.
+56:41 
+
+56:41 I will give it CloudWithVarun Josh
+56:44 
+
+56:44 GHA-Practice
+56:46 
+
+56:46 the name and then I will paste it here.
+56:49 
+
+56:49 I will ensure I don't have any leading
+56:51 
+
+56:51 or trail trailing spaces. I will add SSH
+56:54 
+
+56:54 key.
+56:55 
+
+56:55 Use passkey and it will ask me for my
+56:58 
+
+56:58 fingerprint. I'll provide that.
+56:60 
+
+56:60 And the SSH key is now added. Never use
+57:05 
+
+57:05 and read and write access. So, what I
+57:07 
+
+57:07 will now do is I will go to my
+57:10 
+
+57:10 iTerm
+57:11 
+
+57:11 and then I will clear my screen and I
+57:16 
+
+57:16 will run git init. So, git init will
+57:18 
+
+57:18 initialize this as a git repository.
+57:21 
+
+57:21 Then, what I will do is I will run that
+57:23 
+
+57:23 command, mkdir
+57:25 
+
+57:25 and then I will create dot github and in
+57:29 
+
+57:29 that directory, I want to create a
+57:32 
+
+57:32 directory named workflows.
+57:34 
+
+57:34 workflows and then
+57:37 
+
+57:37 I have to add {hyphen} p because I want
+57:40 
+
+57:40 to create this entire structure and then
+57:42 
+
+57:42 I will press enter.
+57:45 
+
+57:45 So, this directory is created and this
+57:48 
+
+57:48 is in line with what we discussed in our
+57:51 
+
+57:51 theory part. So, we said that whatever
+57:54 
+
+57:54 files you create, they should be created
+57:57 
+
+57:57 in {dot} github workflows and the files
+58:00 
+
+58:00 that are created inside it will be
+58:02 
+
+58:02 actioned by GitHub actions. So, it
+58:04 
+
+58:04 should be a YAML file and then of course
+58:07 
+
+58:07 the syntax must be valid for GitHub
+58:09 
+
+58:09 actions to take action on your file. So,
+58:12 
+
+58:12 I'll come back to my
+58:15 
+
+58:15 terminal and here I have created this.
+58:18 
+
+58:18 So, what I can also do is now I can CD
+58:20 
+
+58:20 into {dot} github workflows and create
+58:23 
+
+58:23 my file here. So, what I will do is I'll
+58:26 
+
+58:26 rather go to my Visual Studio Code and
+58:28 
+
+58:28 then I will expand this lecture one
+58:31 
+
+58:31 project files and here you see workflow.
+58:35 
+
+58:35 I'll also zoom in a little and then in
+58:38 
+
+58:38 workflows I'll create a new file and I
+58:40 
+
+58:40 will call this my workflow {dot} YAML.
+58:46 
+
+58:46 I'll press enter and what do you see?
+58:50 
+
+58:50 You see that
+58:52 
+
+58:52 I see an error here because this is
+58:54 
+
+58:54 saying that this is not a valid GitHub
+58:56 
+
+58:56 actions file. But how does it know it is
+58:59 
+
+58:59 a GitHub actions file? It knows because
+59:03 
+
+59:03 I have an extension installed which I
+59:05 
+
+59:05 would highly encourage you to do it.
+59:08 
+
+59:08 This is called GitHub actions. So, I
+59:10 
+
+59:10 have installed this. Does not have a
+59:12 
+
+59:12 very good rating, but this helps. So,
+59:15 
+
+59:15 install this extension, it will help you
+59:18 
+
+59:18 as we progress with this course.
+59:20 
+
+59:20 Now, we have already seen how this file
+59:24 
+
+59:24 looks [snorts] like. So, we are going to
+59:25 
+
+59:25 create a similar file, but we won't be
+59:28 
+
+59:28 using needs here. So, let's do that. So,
+59:30 
+
+59:30 I'll start from the very scratch.
+59:33 
+
+59:33 I will give it a name.
+59:36 
+
+59:36 Name would be let's call it my first
+59:40 
+
+59:40 workflow. You don't have to have double
+59:42 
+
+59:42 quotes. It would work.
+59:44 
+
+59:44 Now, see it has started suggesting me.
+59:46 
+
+59:46 So, you have given the name, but
+59:48 
+
+59:48 required property on is missing. So,
+59:50 
+
+59:50 when do you want to run this workflow?
+59:53 
+
+59:53 I'll add on and then I will add run it
+59:56 
+
+59:56 on push.
+59:59 
+
+59:59 And then again, I see a line. It says
+60:02 
+
+60:02 required property is missing and that
+60:04 
+
+60:04 required property is jobs. And you see
+60:07 
+
+60:07 it will it is also showing you the
+60:10 
+
+60:10 allowed values.
+60:12 
+
+60:12 So, I will run write jobs here and then
+60:16 
+
+60:16 I'll press enter and then I will write
+60:19 
+
+60:19 job
+60:21 
+
+60:21 one
+60:22 
+
+60:22 and job one runs on Ubuntu
+60:27 
+
+60:27 latest. So, I'm defining the runner
+60:29 
+
+60:29 here. Runs on Ubuntu latest. And then I
+60:33 
+
+60:33 will have steps. What are the steps that
+60:35 
+
+60:35 will be there in this job? Let's
+60:38 
+
+60:38 call it step one. Okay? And then next,
+60:43 
+
+60:43 let's
+60:44 
+
+60:44 tell what to run. So, we are using the
+60:46 
+
+60:46 run keyword and run keyword is used to
+60:50 
+
+60:50 run shell commands like kubectl apply
+60:53 
+
+60:53 and so on. So, here we are saying hello
+60:56 
+
+60:56 from step one. And then I will close the
+60:60 
+
+61:00 double quotes.
+61:02 
+
+61:02 I have just one step right now. What
+61:04 
+
+61:04 I'll do is I'll copy this and then I
+61:07 
+
+61:07 will
+61:08 
+
+61:08 paste it
+61:10 
+
+61:10 just below it.
+61:12 
+
+61:12 And I'll call this step two and I'll
+61:15 
+
+61:15 call this hello from
+61:17 
+
+61:17 step two.
+61:19 
+
+61:19 So, we have created job one. We have
+61:22 
+
+61:22 defined job one. Now, let's also define
+61:26 
+
+61:26 job two. So, I'll copy this entire
+61:29 
+
+61:29 block.
+61:31 
+
+61:31 And then I will paste this block here.
+61:34 
+
+61:34 So, I will select all of this. I will
+61:37 
+
+61:37 press command and square bracket. It
+61:40 
+
+61:40 will move here. And then I have to also
+61:44 
+
+61:44 indent this because YAML, your
+61:46 
+
+61:46 indentation must be correct in YAML.
+61:49 
+
+61:49 So, I have this.
+61:52 
+
+61:52 And this I will call job two. So, the
+61:54 
+
+61:54 red line is indicating that keys must be
+61:57 
+
+61:57 unique. So, I'll write job two here. And
+61:60 
+
+62:00 this also, let's execute this on Ubuntu
+62:02 
+
+62:02 latest.
+62:04 
+
+62:04 And then I will only have one step here.
+62:08 
+
+62:08 And then I'm going to call this, let's
+62:11 
+
+62:11 say, final step. I'll call this final
+62:14 
+
+62:14 step. And then what we are doing is I'll
+62:17 
+
+62:17 also indent this correctly.
+62:20 
+
+62:20 And here I will write hello from final
+62:23 
+
+62:23 step.
+62:25 
+
+62:25 Final step job two. Let's write this.
+62:29 
+
+62:29 So,
+62:30 
+
+62:30 we have defined
+62:32 
+
+62:32 our workflow. Our workflow has two jobs
+62:34 
+
+62:34 and job one has two steps. Job two has
+62:38 
+
+62:38 one step. I'll save this. Now, I will
+62:41 
+
+62:41 come to my
+62:43 
+
+62:43 terminal. Now, we have to push the code.
+62:46 
+
+62:46 So, we have already done the
+62:47 
+
+62:47 authentication. So, what I'll do is if I
+62:49 
+
+62:49 run get status, I see that .github is
+62:52 
+
+62:52 not tracked right now. So, first I'll
+62:54 
+
+62:54 run get add dot.
+62:57 
+
+62:57 And this will move this to the staging
+63:00 
+
+63:00 area. Then I will write get commit
+63:03 
+
+63:03 {hyphen} m. And my commit message would
+63:06 
+
+63:06 be something meaningful. CI add initial
+63:11 
+
+63:11 GitHub actions workflow. And I'll close
+63:15 
+
+63:15 this. And then I will press enter. Now
+63:18 
+
+63:18 again, if your branch is not called
+63:21 
+
+63:21 main, then you would see something when
+63:24 
+
+63:24 you ran get in it, you would see how to
+63:27 
+
+63:27 set your branch name permanently to main
+63:31 
+
+63:31 because by default it calls it master.
+63:34 
+
+63:34 So, what you can also run is get branch
+63:37 
+
+63:37 {hyphen} M main. So, what this will do
+63:39 
+
+63:39 is this will rename your branch to main
+63:42 
+
+63:42 and this is something that your this
+63:46 
+
+63:46 screen would also tell you. So, you see
+63:48 
+
+63:48 here get branch {hyphen} M main. This is
+63:51 
+
+63:51 for renaming the branch. So, you have
+63:53 
+
+63:53 renamed your current branch. My branch
+63:55 
+
+63:55 name is already main. If I press enter,
+63:57 
+
+63:57 this won't change anything. So, if you
+63:59 
+
+63:59 run get branch, it tells you that
+64:03 
+
+64:03 our branch is called main. So, if this
+64:05 
+
+64:05 is resulting in master, I would
+64:07 
+
+64:07 encourage you to
+64:09 
+
+64:09 name it to main. And then what I want to
+64:12 
+
+64:12 do is I want to add my repository now.
+64:16 
+
+64:16 I'll run get remote. I'm adding a remote
+64:20 
+
+64:20 and that remote, let's call that remote
+64:23 
+
+64:23 origin. You can give any name, but
+64:25 
+
+64:25 origin is a most popular name that you
+64:27 
+
+64:27 would see. And then I would go here. I
+64:29 
+
+64:29 will, since we are using SSH
+64:31 
+
+64:31 authentication, I'll copy this. If you
+64:33 
+
+64:33 are using PAT, then you will have to
+64:34 
+
+64:34 copy this one. So, I'll copy this name
+64:37 
+
+64:37 and then I will paste it here. I'll
+64:39 
+
+64:39 press enter. And now if I run get
+64:43 
+
+64:43 remote, then I see origin listed here.
+64:46 
+
+64:46 So, now let's push it. I'll write get
+64:49 
+
+64:49 push {hyphen} U to set the upstream, so
+64:52 
+
+64:52 local to remote branch mapping, and then
+64:55 
+
+64:55 I will write origin main. I'll press
+64:58 
+
+64:58 enter. And the push is successfully
+65:01 
+
+65:01 performed. So, if I go to my repository
+65:04 
+
+65:04 now
+65:05 
+
+65:05 and let's click here,
+65:07 
+
+65:07 you see the .github workflows is here.
+65:11 
+
+65:11 And you see this orange dot which says
+65:14 
+
+65:14 pending. If I click here,
+65:16 
+
+65:16 my workflow job one and job two
+65:21 
+
+65:21 finished in 3 seconds, finished in 2
+65:23 
+
+65:23 seconds. And if I close this, this
+65:26 
+
+65:26 orange will change into a green tick
+65:30 
+
+65:30 because our workflow ran successfully.
+65:34 
+
+65:34 So, let me just close this. Why this is
+65:36 
+
+65:36 not changing? So, I'll click on this
+65:38 
+
+65:38 again and you see this is green tick
+65:42 
+
+65:42 success. Now, let's see what has changed
+65:45 
+
+65:45 or what is happening in action. So, this
+65:49 
+
+65:49 is the tab that you will be visiting a
+65:51 
+
+65:51 lot. We see our first commit here. That
+65:55 
+
+65:55 is our initial commit. Add initial GHA
+65:58 
+
+65:58 workflow. So, let's click on this and I
+66:01 
+
+66:01 want you to observe one thing very
+66:04 
+
+66:04 clearly. This is calling it my first
+66:07 
+
+66:07 workflow.
+66:08 
+
+66:08 And this is what we called it, my first
+66:12 
+
+66:12 workflow.
+66:13 
+
+66:13 Your pipeline or your workflow is called
+66:16 
+
+66:16 my first workflow which you see here as
+66:20 
+
+66:20 well. And if I go to job one, I expand
+66:24 
+
+66:24 this. So, set up the job, then step one
+66:26 
+
+66:26 of job one, then step two of job one.
+66:29 
+
+66:29 So, if I go to my Visual Studio Code,
+66:32 
+
+66:32 job one had two steps, step one and two.
+66:35 
+
+66:35 And we are seeing both of these steps
+66:38 
+
+66:38 here. So, set up the job. Let's see what
+66:40 
+
+66:40 is happening here. And I will expand
+66:44 
+
+66:44 this as well. So, runner image provision
+66:46 
+
+66:46 hosted compute agent Azure region North
+66:52 
+
+66:52 Central US. I told you under the hood
+66:56 
+
+66:56 our runners are running on Azure.
+66:59 
+
+66:59 Operating system, you see Ubuntu here
+67:02 
+
+67:02 because that is what we defined, Ubuntu
+67:03 
+
+67:03 latest. And then runner image,
+67:07 
+
+67:07 this is the image that that virtual
+67:09 
+
+67:09 machine is using, which is executing the
+67:13 
+
+67:13 job. Understand, there was a virtual
+67:16 
+
+67:16 machine that ran job one, and there was
+67:18 
+
+67:18 a different virtual machine that ran job
+67:21 
+
+67:21 two. Like I said, when we talk about
+67:24 
+
+67:24 GitHub-hosted runners, each job will get
+67:27 
+
+67:27 its own virtual machine, its own runner.
+67:30 
+
+67:30 Step one, whatever we ran is here. Step
+67:33 
+
+67:33 two, whatever we ran is here. Complete
+67:36 
+
+67:36 job, and this is saying
+67:38 
+
+67:38 job completed, cleaning up orphan
+67:40 
+
+67:40 processes. If I go to job two,
+67:42 
+
+67:42 similarly, I see the same thing here.
+67:44 
+
+67:44 Set up job, here you you will see the
+67:47 
+
+67:47 characteristics of the virtual machine
+67:49 
+
+67:49 that ran this job, and this one ran in
+67:52 
+
+67:52 East US, which also implies this is
+67:55 
+
+67:55 definitely a different virtual machine
+67:58 
+
+67:58 in which job two was run. Operating
+68:01 
+
+68:01 system, it's similar to what we saw
+68:03 
+
+68:03 there, because we used Ubuntu latest for
+68:05 
+
+68:05 both of these. And then,
+68:07 
+
+68:07 we only had one step here, which is
+68:10 
+
+68:10 which was called final step.
+68:12 
+
+68:12 Hello from final step, job two. This is
+68:15 
+
+68:15 what we echoed, and the job is
+68:17 
+
+68:17 completed. Now, there are additional
+68:20 
+
+68:20 things that are here, and as we
+68:22 
+
+68:22 progress, we'll be looking into those
+68:25 
+
+68:25 things. But, for now, I want to do
+68:28 
+
+68:28 something else as well. Let's do one
+68:30 
+
+68:30 thing, let's go here and add another
+68:33 
+
+68:33 step here. So, what I will do is
+68:36 
+
+68:36 I will copy this,
+68:38 
+
+68:38 and I will paste this here.
+68:41 
+
+68:41 Let me fix the indentation first.
+68:44 
+
+68:44 And I will call this Let's call this
+68:48 
+
+68:48 a n o t h e r another step, right?
+68:52 
+
+68:52 And I will write here hello from
+68:56 
+
+68:56 another step. Now, understand, we have
+68:58 
+
+68:58 configured our workflow to run on push.
+69:02 
+
+69:02 So, what I will do is I'll go to my CLI,
+69:05 
+
+69:05 I'll clear my screen, I will run get
+69:08 
+
+69:08 status. It will show me that the file is
+69:10 
+
+69:10 modified. I'll run get add dot and then
+69:14 
+
+69:14 I will write get
+69:16 
+
+69:16 commit {hyphen} m
+69:20 
+
+69:20 CI
+69:22 
+
+69:22 add another step in
+69:27 
+
+69:27 workflow.
+69:28 
+
+69:28 Okay. And then I will press
+69:30 
+
+69:30 enter.
+69:32 
+
+69:32 And then I will run
+69:34 
+
+69:34 get push. Now, since we have already
+69:36 
+
+69:36 defined upstream, I can just run get
+69:38 
+
+69:38 push now. I will run this and let's go
+69:42 
+
+69:42 back to
+69:43 
+
+69:43 GitHub.
+69:45 
+
+69:45 And here, let's stay here. We will see
+69:49 
+
+69:49 the workflow will get triggered
+69:51 
+
+69:51 automatically because we have said on
+69:53 
+
+69:53 push
+69:54 
+
+69:54 trigger it. And you see add another step
+69:57 
+
+69:57 in workflow is also triggered and has
+69:60 
+
+69:60 completed successfully. So, if I go
+70:02 
+
+70:02 here, if I go to job two
+70:06 
+
+70:06 I will see final step and then there is
+70:08 
+
+70:08 another step which we just added. So, I
+70:11 
+
+70:11 hope you now understand this.
+70:15 
+
+70:15 That concludes the first lecture of this
+70:17 
+
+70:17 GitHub Actions Basics to Production
+70:20 
+
+70:20 course. In this lecture, we built a
+70:22 
+
+70:22 strong conceptual understanding of
+70:25 
+
+70:25 modern CI/CD systems and the
+70:27 
+
+70:27 foundational architecture of GitHub
+70:29 
+
+70:29 Actions. We explored CI/CD concepts,
+70:33 
+
+70:33 GitHub Actions architecture, workflows,
+70:35 
+
+70:35 jobs, steps, runners, execution
+70:38 
+
+70:38 behavior, and the difference between
+70:41 
+
+70:41 GitHub-hosted
+70:42 
+
+70:42 and self-hosted runners. At this stage,
+70:47 
+
+70:47 you should now clearly understand the
+70:49 
+
+70:49 core execution model of GitHub Actions
+70:52 
+
+70:52 and how modern workflow automation
+70:55 
+
+70:55 platform operates conceptually.
+70:58 
+
+70:58 In the upcoming lectures, we will move
+71:00 
+
+71:00 deeper into GitHub Actions. If you have
+71:03 
+
+71:03 any questions, feel free to ask them in
+71:06 
+
+71:06 the comment section, and I will reply.
+71:09 
+
+71:09 If this helped, do consider liking,
+71:11 
+
+71:11 sharing, and subscribing. It will mean a
+71:14 
+
+71:14 lot to me.
+71:16 
+
+71:16 Thank you very much.

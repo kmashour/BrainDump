@@ -8,7 +8,7 @@ domains:
 concepts_referenced:
   - "[[aws]]"
   - "[[terraform]]"
-difficulty: intermediate
+difficulty: advanced
 status: completed
 ---
 
@@ -18,93 +18,94 @@ status: completed
 
 ---
 
-## 🔒 1. State File Security & State Concurrency Locking
+## 🔒 1. State File Architecture, KMS Encryption, & DynamoDB Concurrency Locking
 
-In an enterprise environment, the Terraform state file is a highly sensitive asset and a single point of failure.
+In enterprise DevOps setups, Terraform state is treated as a highly sensitive, secure database.
 
-### A. State File Security (Encryption at Rest & Transit)
-The state file (`terraform.tfstate`) contains resource attributes in plain text, including sensitive values like database passwords, private keys, and API tokens.
-*   **Encrypted S3 Backend:** Store the state file in an Amazon S3 bucket with **Default Encryption** (using AWS KMS customer-managed keys `aws/s3`) and a bucket policy enforcing **HTTPS-only** access (`aws:SecureTransport`).
-*   **Restricted Access:** Apply least-privilege IAM policies, limiting state file read/write permissions strictly to the CI/CD deployment roles.
+### A. State Security & Envelope Encryption
+The state file (`terraform.tfstate`) stores resource details (like DB master passwords or private TLS keys) in plain text.
+*   **SSE-KMS Encryption at Rest:** Store state in a dedicated S3 bucket. Enforce S3 Server-Side Encryption using an AWS KMS Customer Managed Key (CMK) (`aws:kms`) rather than standard Amazon-managed keys (`AES256`). This allows you to audit state access audits in CloudTrail logs.
+*   **S3 Bucket Policies:** Enforce SSL connection transport via bucket policy `aws:SecureTransport`. Block public read access completely using S3 Public Access Block.
 
-### B. Concurrency Locking via DynamoDB
-*   **The Problem:** If two developers or two parallel CI/CD runners execute `terraform apply` concurrently, they will read the same state, attempt conflicting writes, and corrupt the state file.
-*   **The Solution:** Use a DynamoDB Table for distributed locking:
-    1.  Create a DynamoDB table with a primary key attribute named exactly `LockID` of type `String`.
-    2.  When a run begins, Terraform acquires a lock by writing an entry containing the run metadata to the DynamoDB table.
-    3.  If another run attempts to start, it reads the DynamoDB record, sees the active lock, outputs a `ResourceLocked` error, and terminates.
-    4.  Upon successful completion (or clean failure), the lock record is deleted.
+### B. DynamoDB Concurrency Locking Mechanics
+*   **The Problem:** Parallel runs (e.g., developers running local applies while a CI pipeline triggers) read the state file, apply mutations, and overwrite each other's changes, leading to corruption.
+*   **The Locking Algorithm:**
+    1.  The DynamoDB table must have a partition key named exactly `LockID` of type `String`.
+    2.  When running any write command (`init`, `plan`, `apply`, `destroy`), Terraform attempts to write an item to this table with the `LockID` matching the state key path.
+    3.  The write query utilizes conditional expressions to fail if a record already exists for that `LockID`.
+    4.  If the write succeeds, the lock is acquired, and metadata (run ID, operator name, timestamp) is recorded.
+    5.  Subsequent executions will fail with a `LockInfo` output.
 
-```hcl
-# backend-config.tf
-terraform {
-  backend "s3" {
-    bucket         = "pwc-production-tfstate"
-    key            = "vpc-infrastructure/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "pwc-terraform-locks" # Enforces locking
-    encrypt        = true                  # Enforces Server-Side Encryption (SSE)
-  }
-}
+---
+
+## 🏛️ 2. Multi-Environment State Isolation: Workspaces vs. Directory Structures
+
+When designing multi-environment (Staging, Production) infrastructure pipelines, compare these isolation patterns:
+
+```
+WORKSPACE ISOLATION (Single Directory, Shared Code)
+  VPC Root/
+  ├── main.tf
+  ├── variables.tf
+  └── tfstate (S3 Bucket)
+      ├── env:/staging/terraform.tfstate
+      └── env:/production/terraform.tfstate
+
+DIRECTORY-BASED ISOLATION (Separated Code and States)
+  VPC Root/
+  ├── modules/
+  │   └── vpc/
+  ├── staging/
+  │   ├── main.tf (Calls VPC module, backend pointing to staging state)
+  │   └── terraform.tfstate (Staging State)
+  └── production/
+      ├── main.tf (Calls VPC module, backend pointing to prod state)
+      └── terraform.tfstate (Production State)
 ```
 
----
+### A. Terraform Workspaces
+*   **Mechanism:** Runs in a single folder. Switched via `terraform workspace select <name>`. State files are separated automatically inside the S3 backend prefix path.
+*   **Risk:** Highly dangerous for production. A developer can accidentally run `terraform destroy` on production if they fail to check their active workspace. Code logic blocks must use workspace interpolations (`count = terraform.workspace == "prod" ? 3 : 1`), which increases syntax complexity and error rates.
 
-## 🏛️ 2. Terraform Code Modularity: Custom Modules vs. Flat Code
-
-### A. The Monolithic Trap
-Writing all resources in a single flat directory (`main.tf`, `variables.tf`) makes the code unmaintainable and highly risky. A tiny error in one resource can cause Terraform to rebuild unrelated critical resources.
-
-### B. Module Segmentation Best Practices
-*   **Decoupled State files:** Break infrastructure down into separate states with independent lifecycles:
-    *   *Network Layer:* VPC, subnets, NAT gateways, route tables (changes rarely).
-    *   *Database Layer:* Aurora, RDS clusters, Security Groups (changes occasionally).
-    *   *Application Layer:* ECS services, EKS configurations, Route 53 records (changes frequently).
-*   **Reusable Custom Modules:** Standardize infrastructure patterns. For example, a custom VPC module can be written once and referenced across staging and production environments, enforcing standard tags and subnet division:
-    ```hcl
-    module "vpc" {
-      source = "git::git@github.com:pwc/tf-modules.git//vpc?ref=v1.2.0" # Version-pinned module
-      vpc_cidr = "10.0.0.0/16"
-      environment = "production"
-    }
-    ```
+### B. Directory-Based Structure (Recommended for Production)
+*   **Mechanism:** Staging and Production have completely separate directories with independent configuration files, backend setups, and variables, calling shared modules.
+*   **Security Isolation:** The IAM role credentials used in the staging CI pipeline can be completely restricted from accessing the production directory or production S3 bucket. A mistake in staging code cannot affect production state.
 
 ---
 
-## ⚙️ 3. Advanced Lifecycle Hooks & Security as Code (SaC)
+## ⚙️ 3. Resource Lifecycle Customizations
 
-PwC projects require strict operational compliance. Use lifecycle configurations to automate safeguards:
+Manage how Terraform mutates resources using lifecycle blocks:
 
-1.  **`prevent_destroy = true`:**
-    Place this inside database instances, primary DNS hosted zones, or EFS volume resources. If a developer runs `terraform destroy` or makes a code change that triggers resource replacement, Terraform aborts the run:
+*   **`prevent_destroy`:** Prevents accidental deletion of persistent resources:
     ```hcl
-    lifecycle {
-      prevent_destroy = true
+    resource "aws_db_instance" "prod_db" {
+      # ...
+      lifecycle {
+        prevent_destroy = true
+      }
     }
     ```
-2.  **`create_before_destroy = true`:**
-    Useful when updating Launch Templates, Auto Scaling groups, or Security Groups. By default, Terraform destroys the old resource before building the new one, causing application downtime. This flag forces Terraform to instantiate the replacement resource *first*, update load balancer targets, and then delete the old instance.
-3.  **`ignore_changes`:**
-    Used when resources are altered dynamically outside Terraform (e.g. AWS Auto Scaling adjusting the `desired_capacity` of a group, or security tools applying temporary audit tags). Prevents Terraform from reverting these live changes during subsequent applies:
+*   **`create_before_destroy`:** Modifies Terraform's update sequence. By default, Terraform destroys the old resource *before* launching the replacement. Setting this true forces Terraform to create the replacement first. This is critical for zero-downtime replacements (e.g. provisioning a new EC2 Launch Template instance before terminating the old one).
+*   **`ignore_changes`:** Blocks state reconciliation loops when resources are modified externally (e.g. AWS Auto Scaling group modifying `desired_capacity`, or container security platforms modifying tags).
     ```hcl
     lifecycle {
       ignore_changes = [tags, desired_capacity]
     }
     ```
-4.  **Enforcing Resource Tagging Compliance:**
-    Standardize cost allocation and audit compliance by enforcing default tags at the provider level:
-    ```hcl
-    provider "aws" {
-      region = "us-east-1"
-      default_tags {
-        tags = {
-          Environment = var.environment
-          Owner       = "PwC-DevOps-Team"
-          ManagedBy   = "Terraform"
-          ProjectID   = "PWC-ETIC-045"
-        }
-      }
-    }
-    ```
 
-*See similar modular variables and S3 state templates in [[Reference Notes/10-1_terraform_foundations_and_state]] and [[Reference Notes/10-2_variables_types_and_expressions]].*
+---
+
+## 🔄 4. Infrastructure Drift Detection & GitOps Remediation
+
+*   **What is Drift?** Configuration drift occurs when the actual state of cloud resources deviates from the declared configuration (e.g. an operator manually opens port 22 in a security group via the AWS Console).
+*   **Automated Detection:** Run a scheduled CI job (e.g. daily cron) executing:
+    `terraform plan -detailed-exitcode`
+    *   *Exit Code 0:* Succeeded, no changes.
+    *   *Exit Code 1:* Succeeded, but changes/drift detected.
+    *   *Exit Code 2:* Command failed with an error.
+*   **Remediation Pathways:**
+    1.  **Overwriting manual changes:** Run `terraform apply` in the CI pipeline to reconcile the cloud infrastructure back to the code definition.
+    2.  **Importing valid manual changes:** If the manual change was approved, add the resource block to the configuration and run `terraform import` (or use the declarative `import` block in Terraform 1.5+) to sync the state.
+
+*See details on state and backends in [[Reference Notes/10-1_terraform_foundations_and_state]] and variables in [[Reference Notes/10-2_variables_types_and_expressions]].*
