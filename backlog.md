@@ -2,6 +2,20 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-15] - Ingestion & Structuring: PwC DevOps Senior Associate Interview Preparation
+
+### Added
+- **Projects (Interview Workspace):**
+  - [[Projects/PwC Interview Preparation/Plan - DevOps Interview Roadmap.md|Plan - DevOps Interview Roadmap.md]]: Created the roadmap, study timeline, and guidelines aligning Karim's preparation with the PwC Professional Framework.
+  - [[Projects/PwC Interview Preparation/Theory - Distilled DevOps Refreshers.md|Theory - Distilled DevOps Refreshers.md]]: Created high-density theory sheets for core concepts (Docker Namespaces/cgroups, AWS VPC/IAM SAA, Terraform State/Dynamic locking, Prometheus TSDB/PromQL/Scraping, DevSecOps SAST/Trivy).
+  - [[Projects/PwC Interview Preparation/Project - End-to-End Clustered Observability Stack.md|Project - End-to-End Clustered Observability Stack.md]]: Created the blueprints, configurations, and scripts for the E2E composite project (Flask, Docker, GitHub Actions, AWS Terraform, ECR, Prometheus, Grafana).
+
+### Ingested Inflow Sources
+Processed and integrated requirements from the following file in `inflow/`:
+- `inflow/Job Description.md`
+
+---
+
 ## [2026-07-13] - Ingestion & Restructuring: Local Storage Models, Provisioners & Scheduling Traps
 
 ### Added
