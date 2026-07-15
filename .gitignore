@@ -6,3 +6,4 @@ tradingview/
 __pycache__/
 *.pyc
 .progress.json
+Projects/github-actions/lab-1/
