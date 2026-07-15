@@ -235,6 +235,137 @@ In `actions/cache@v4`, if the exact lockfile hash key results in a cache miss, t
     ```
 *   **`exclude`:** Prevents executing dangerous or unsupported environments.
 
+### E. PoC: Reusable Workflow and Outputs Mapping
+This Proof of Concept implements a standard caller-called workflow structure. The called workflow parses input parameters, runs validation, writes step-level outputs to `$GITHUB_OUTPUT`, passes them to job-level outputs, and returns them to the caller workflow:
+```yaml
+# .github/workflows/called-validator.yml (Called Reusable Workflow)
+name: Called Validator
+on:
+  workflow_call:
+    inputs:
+      target_host:
+        required: true
+        type: string
+    outputs:
+      validation_status:
+        description: "Status of node security validation"
+        value: ${{ jobs.scan.outputs.status }}
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.run-scan.outputs.scan_status }}
+    steps:
+      - name: Execute Security Scan
+        id: run-scan
+        run: |
+          echo "Scanning target host: ${{ inputs.target_host }}"
+          echo "scan_status=passed" >> "$GITHUB_OUTPUT"
+```
+```yaml
+# .github/workflows/caller-pipeline.yml (Caller Workflow)
+name: Caller Pipeline
+on:
+  push:
+    branches: [ main ]
+jobs:
+  run-validation:
+    uses: ./.github/workflows/called-validator.yml
+    with:
+      target_host: '10.0.8.25'
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: run-validation
+    steps:
+      - name: Evaluate Outputs
+        run: |
+          echo "Validator returned: ${{ needs.run-validation.outputs.validation_status }}"
+```
+
+### F. PoC: Multi-Job Artifact Sharing and Cache Fallback Setup
+This Proof of Concept builds a Python application, caches package dependencies using `restore-keys` fallback logic, archives compile output files, and downloads them in a separate deployment job:
+```yaml
+# artifact-cache-poc.yml
+name: Artifact & Cache PoC
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Cache Pip Packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate Output Binary
+        run: |
+          mkdir dist
+          echo "Built package binary" > dist/app.bin
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-binary
+          path: dist/
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-binary
+          path: deploy-files/
+
+      - name: Deploy Binary
+        run: cat deploy-files/app.bin
+```
+
+### G. PoC: Matrix Parallelization with Includes and Excludes
+This Proof of Concept demonstrates parallel testing across multiple OS and node environments, limits concurrent executions, avoids cancelling jobs on first failure, and dynamically includes experimental flags:
+```yaml
+# matrix-poc.yml
+name: Matrix Parallelization PoC
+on: [push]
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false # Run all combinations to completion even if one fails
+      max-parallel: 3  # Restrict concurrency to 3 simultaneous runners
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [18, 20]
+        exclude:
+          - os: macos-latest
+            node-version: 18 # Skip this combination
+        include:
+          - os: ubuntu-latest
+            node-version: 20
+            experimental: true # Inject custom tag
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Echo Environment
+        run: |
+          echo "Running on OS: ${{ matrix.os }}"
+          echo "Node Version: ${{ matrix.node-version }}"
+          echo "Is Experimental: ${{ matrix.experimental || 'false' }}"
+```
+
 ---
 
 ### 📖 Sources & Ingested Transcripts
@@ -244,8 +375,3 @@ In `actions/cache@v4`, if the exact lockfile hash key results in a cache miss, t
     *   `inflow/GitHub Actions Inputs Explained  Workflow Inputs, Reusable Workflows & Production Use Cases.txt`
     *   `inflow/GitHub Actions Artifacts & Caching Explained  Share Files & Optimize Builds.txt`
     *   `inflow/GitHub Actions Matrix Strategy Explained  Multi-OS, Multi-Version Testing at Scale.txt`
-*   Standalone Lecture Summaries:
-    *   [[Reference Notes/9-7_github_actions_functions_inputs_outputs_and_reusable_workflows.md|Module 9-7: GitHub Actions Functions, Inputs, Outputs & Reusable Workflows]]
-    *   [[Reference Notes/9-8_github_actions_artifacts_and_caching.md|Module 9-8: GitHub Actions Artifacts & Caching]]
-    *   [[Reference Notes/9-9_github_actions_matrix_strategy.md|Module 9-9: GitHub Actions Matrix Strategy]]
-```

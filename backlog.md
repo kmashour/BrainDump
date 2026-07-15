@@ -2,19 +2,13 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
-## [2026-07-15] - Ingestion: GitHub Actions Deep Dive Modules (Modules 9-5 to 9-10)
+## [2026-07-15] - Ingestion & Integration: GitHub Actions Deep Dive (Course Transcripts)
 
-### Added
+### Integrated / Upgraded
 - **Reference Notes:**
-  - [[Reference Notes/9-5_github_actions_introduction_and_production_workflows.md|Module 9-5: GitHub Actions Introduction & Production Workflows]]
-  - [[Reference Notes/9-6_github_actions_triggers_runners_and_logic.md|Module 9-6: GitHub Actions Triggers, Runners & Workflow Logic]]
-  - [[Reference Notes/9-7_github_actions_functions_inputs_outputs_and_reusable_workflows.md|Module 9-7: GitHub Actions Functions, Inputs, Outputs & Reusable Workflows]]
-  - [[Reference Notes/9-8_github_actions_artifacts_and_caching.md|Module 9-8: GitHub Actions Artifacts & Caching]]
-  - [[Reference Notes/9-9_github_actions_matrix_strategy.md|Module 9-9: GitHub Actions Matrix Strategy]]
-  - [[Reference Notes/9-10_github_actions_environments_secrets_and_approvals.md|Module 9-10: GitHub Actions Environments, Secrets & Approvals]]
-
-### Updated
-- [[Reference Notes/9-Index - GitHub Actions.md|9-Index - GitHub Actions.md]]: Linked the new reference modules 9-5 through 9-10.
+  - [[Reference Notes/9-1_github_actions_architecture_and_workflows.md|Module 9-1: GitHub Actions Architecture & Workflow Design]]: Integrated basic workflow creation, Docker Hub secure authentication publishing, job/step status check conditional logic, manual parameters, tags triggers, runner VM sizes, and system contexts.
+  - [[Reference Notes/9-2_github_actions_advanced_execution.md|Module 9-2: Advanced Pipeline Control & Execution]]: Integrated step/job/workflow outputs mapping, reusable workflows (`workflow_call`) parameters and secret inheritances, dependency caching key restoral prefixes, and parallel matrix customization (`include`/`exclude`).
+  - [[Reference Notes/9-3_github_actions_administration_and_security.md|Module 9-3: Runner Administration & Pipeline Hardening]]: Integrated environment-scoped secret variables precedence hierarchy, manual required reviewer approvals, wait timers, and deployment branch restrictions.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files in `inflow/`:

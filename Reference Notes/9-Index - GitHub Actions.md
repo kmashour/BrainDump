@@ -25,18 +25,6 @@ This index contains our GitHub Actions CI/CD automation study modules, starting 
   * Self-hosted runner systemd deployments on Linux hosts, security controls (GITHUB_TOKEN permissions, OIDC cloud trust, action SHA pinning), diagnostic debugging, and comparisons to Jenkins.
 - 🐙 **[Module 9-4: GitHub Actions & CI/CD Platform Automation (Elfakharny Lecture)](9-4_github_actions_lecture_elfakharny.md)**
   * Basic CI/CD principles, event-driven platform automation triggers, YAML anatomy (the checkout gotcha), VM multiplier billing tiers, and Enterprise Cloud vs Server topologies.
-- 🚀 **[Module 9-5: GitHub Actions Introduction & Production Workflows](9-5_github_actions_introduction_and_production_workflows.md)**
-  * Foundations of CI/CD, core GHA architecture components, clean hosted/self-hosted environments, and production containerization pipelines with Docker Hub authentication and secrets.
-- ⚙️ **[Module 9-6: GitHub Actions Triggers, Runners & Workflow Logic](9-6_github_actions_triggers_runners_and_logic.md)**
-  * Advanced trigger filters (branches, paths, tags), standard vs. larger hosted runner sizing, built-in contexts, variables, and expression conditional evaluation.
-- 🐙 **[Module 9-7: GitHub Actions Functions, Inputs, Outputs & Reusable Workflows](9-7_github_actions_functions_inputs_outputs_and_reusable_workflows.md)**
-  * Generic utility functions, status check execution gates, input validation patterns, step/job output mapping, and modular reusable workflows.
-- 📦 **[Module 9-8: GitHub Actions Artifacts & Caching](9-8_github_actions_artifacts_and_caching.md)**
-  * Structured separation of outputs, persistent artifacts, and dependency caching lifecycle strategies to optimize pipeline speed.
-- 📊 **[Module 9-9: GitHub Actions Matrix Strategy](9-9_github_actions_matrix_strategy.md)**
-  * Multi-OS and multi-version testing configurations at scale, fail-fast controls, concurrency limitations, and dynamic include/exclude mapping.
-- 🔒 **[Module 9-10: GitHub Actions Environments, Secrets & Approvals](9-10_github_actions_environments_secrets_and_approvals.md)**
-  * Deployment targets, environment protection rules (manual approvals, wait timers), branch restrictions, and scoped secret overriding resolution.
 
 ---
 

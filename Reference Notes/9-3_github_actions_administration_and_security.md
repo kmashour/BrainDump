@@ -197,8 +197,6 @@ act -j test-suite
 | **Security Setup** | GITHUB_TOKEN + OIDC Trust | Manual credentials vault storage | Job-tokens + Vault integration | Service Connections OAuth |
 | **Learning Curve** | Low (simple YAML syntax) | High (requires Groovy/sysadmin) | Medium (complex YAML maps) | Medium |
 
----
-
 ## ⚙️ 6. Advanced Environments, Variable Override Scopes, and Secrets Management
 
 ### A. Secret & Variable Precedence Hierarchy
@@ -213,10 +211,49 @@ Environments enable compliance enforcement before deployment steps trigger:
 2.  **Wait Timers:** Delays job execution for a specified number of minutes (up to 30 days) after the job is triggered.
 3.  **Deployment Branches:** Restricts environment deployment strictly to specific branch matches (e.g. only allow deployment to the `production` environment if the branch is `refs/heads/main` or matches release tags `refs/tags/v*`).
 
+### C. PoC: Environments, Manual Gates, and Secrets Override Configuration
+This Proof of Concept implements multi-stage deployment environments. Staging runs automatically, while Production is locked behind a manual approval gate and deployment branch restriction, dynamically overriding the database connection string and secret credentials:
+```yaml
+# environment-poc.yml
+name: Environments & Protection Gates PoC
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*.*.*' ]
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.myapp.internal
+    steps:
+      - name: Deploy to Staging
+        run: |
+          echo "Deploying to target endpoint: ${{ vars.API_URL }}"
+          echo "Using DB Connection: ${{ secrets.DB_CONNECTION_STRING }}"
+        # In staging, these resolve to staging-scoped secrets and variables.
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: deploy-staging
+    environment:
+      name: production
+      url: https://app.pwc.com
+    # In GitHub settings, the 'production' environment is configured with:
+    # 1. Required Reviewers: '@devops-lead'
+    # 2. Deployment Branches: 'refs/tags/v*.*.*' (Restricted to release tags only)
+    steps:
+      - name: Deploy to Production
+        run: |
+          echo "Deploying to target endpoint: ${{ vars.API_URL }}"
+          echo "Using DB Connection: ${{ secrets.DB_CONNECTION_STRING }}"
+        # In production, these resolve to production-scoped variables (e.g. app.pwc.com)
+        # and production-scoped secrets (PROD database credentials).
+```
+
 ---
 
 ### 📖 Sources & Ingested Transcripts
 *   Varun Joshi GHA Course Transcripts:
     *   `inflow/GitHub Actions Environments Explained  Variables, Secrets, Approvals & Protection Rules.txt`
-*   Standalone Lecture Summaries:
-    *   [[Reference Notes/9-10_github_actions_environments_secrets_and_approvals.md|Module 9-10: GitHub Actions Environments, Secrets & Approvals]]

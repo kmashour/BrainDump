@@ -204,6 +204,63 @@ Contexts are collections of properties accessible throughout workflow execution.
 *   **`secrets` Context:** Encrypted values (e.g. token hashes, passwords).
 *   **`steps` Context:** Access outputs and status checks of previous steps.
 
+### D. PoC: Job and Step Status Check Logic (Conditional Execution)
+Use built-in functions inside `if` statements to control execution based on job status:
+*   `success()`: Returns true if none of the previous steps failed. (Default when `if` is omitted).
+*   `failure()`: Returns true if any previous step failed. Useful for sending alerts.
+*   `always()`: Enforces execution regardless of previous failures. Useful for cleanup steps.
+*   `cancelled()`: Returns true if the workflow was cancelled.
+```yaml
+# status-check-poc.yml
+name: Status Gating PoC
+on: [push]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Run Failing Script
+        run: exit 1
+      - name: Run on Failure Only
+        if: failure()
+        run: echo "Validation failed. Triggering alert..."
+      - name: Run Cleanup Always
+        if: always()
+        run: echo "Performing workspace teardown..."
+```
+
+### E. PoC: Docker Hub Authentication & Image Build Pipeline
+This Proof of Concept workflow runs on push to `main` branch, authenticates securely using repository secrets, builds the Docker image locally, and publishes it:
+```yaml
+# docker-publish-poc.yml
+name: Docker Hub Publication PoC
+on:
+  push:
+    branches: [ main ]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and Push Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/myapp:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/myapp:sha-${{ github.sha }}
+```
+
 ---
 
 ### 📖 Sources & Ingested Transcripts
