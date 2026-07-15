@@ -4,12 +4,12 @@ on:
   push:
     branches: [ main ]
     paths:
-      - 'github-actions-lab/**'
+      - 'Projects/github-actions/labs/**'
       - '.github/workflows/ci.yml'
   pull_request:
     branches: [ main ]
     paths:
-      - 'github-actions-lab/**'
+      - 'Projects/github-actions/labs/**'
 
 permissions:
   contents: read
@@ -30,11 +30,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd github-actions-lab
+          cd Projects/github-actions/labs
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run Unit Tests with Coverage
         run: |
-          cd github-actions-lab
+          cd Projects/github-actions/labs
           pytest --cov=app --cov-report=term-missing
