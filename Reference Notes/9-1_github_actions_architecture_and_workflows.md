@@ -167,13 +167,105 @@ GitHub-hosted runners resolve default shell commands as follows:
 
 ---
 
-## 5. Job Chaining and Dependencies (`needs` and `if`)
+## 5. Job Chaining, Dependencies, and DAG Architecture (`needs` and `if`)
 
-By default, jobs defined in a workflow run in parallel. To establish order, use the `needs` key. To control execution based on status, use status check functions:
-*   `success()`: True if all previous jobs/steps succeeded. This is the default if no `if` expression is declared.
-*   `failure()`: True if any previous job/step failed. Typically used to trigger rollback operations or send alerts.
-*   `always()`: Enforces execution regardless of the status of previous steps or cancellation events. Often used for cleanup.
-*   `cancelled()`: True if the parent workflow execution was explicitly cancelled.
+By default, all jobs declared in a workflow file execute in parallel (assuming runner VM slots are available). To establish order, orchestrate complex delivery stages, and handle conditional alerts, GHA uses a Directed Acyclic Graph (DAG) architecture managed by the `needs` key and `if` conditional checks.
+
+### A. Core DAG Patterns
+
+#### 1. Parallel Fan-Out (Forking)
+*   **The Pattern:** A single initialization job runs first, and once successful, triggers multiple testing or linting jobs to run in parallel.
+*   **The Syntax:** Define the target job name inside the `needs` parameter of downstream jobs.
+    ```yaml
+    jobs:
+      lint:
+        runs-on: ubuntu-latest
+      test-unit:
+        needs: lint
+        runs-on: ubuntu-latest
+      test-integration:
+        needs: lint
+        runs-on: ubuntu-latest
+    ```
+*   **Mechanics:** `test-unit` and `test-integration` are blocked until `lint` returns exit `0`. Once `lint` succeeds, the GHA orchestrator allocates two independent runner VMs, running the test suites concurrently.
+
+#### 2. Parallel Fan-In (Join Synchronisation Gate)
+*   **The Pattern:** Block a deployment or compilation task until all parallel test jobs successfully finish.
+*   **The Syntax:** Pass an array of dependencies to the `needs` key.
+    ```yaml
+    deploy-staging:
+      needs: [test-unit, test-integration]
+      runs-on: ubuntu-latest
+    ```
+*   **Mechanics:** The GHA orchestrator holds `deploy-staging` in a queued state until BOTH `test-unit` and `test-integration` complete successfully. If either job fails, `deploy-staging` is automatically **skipped**.
+
+---
+
+### B. Conditional Execution Gating & Status Checks
+
+By default, if an upstream job fails, GHA stops execution down the graph branch. To override this and build robust alert notifications or teardown cleanups, configure `if:` statements using GHA status check functions:
+
+*   `success()`: Evaluates to `true` if all parent jobs succeeded. (This is the default check inserted by GHA if you omit the `if` block entirely).
+*   `failure()`: Evaluates to `true` if **at least one** parent job failed. Perfect for trigger notification pipelines:
+    ```yaml
+    notify-failure:
+      needs: [lint, test-unit, test-integration, deploy-staging]
+      if: failure()
+      runs-on: ubuntu-latest
+    ```
+*   `always()`: Evaluates to `true` under all execution states, including when jobs fail or the workflow is cancelled by a user. Essential for cleanups:
+    ```yaml
+    teardown-cleanup:
+      needs: [lint, test-unit, test-integration, deploy-staging]
+      if: always()
+      runs-on: ubuntu-latest
+    ```
+*   `cancelled()`: Evaluates to `true` only if the workflow execution was explicitly cancelled.
+
+---
+
+### C. Advanced Scenario: Tolerating Partial Failures in Job Chains
+
+In production environments, you may encounter situations where a specific dependency is volatile (e.g., flaky integration tests) and the business permits deploying even if that job fails, while strictly blocking the deployment if unit tests fail.
+
+Here are the two primary senior-level implementations and their trade-offs:
+
+#### Implementation 1: The Job-Level `continue-on-error: true`
+*   **How it works:** Set `continue-on-error: true` inside the volatile job's definition.
+    ```yaml
+    jobs:
+      test-unit:
+        runs-on: ubuntu-latest
+      test-integration:
+        runs-on: ubuntu-latest
+        continue-on-error: true # <-- Prevents job failure from stopping the workflow
+      deploy-staging:
+        needs: [test-unit, test-integration]
+        runs-on: ubuntu-latest
+    ```
+*   **Trade-off Analysis:**
+    *   *Pros:* Extremely simple to write. The deployment job runs automatically because the failed job's status is reported as "Success" (with a warning icon) in the UI.
+    *   *Cons:* Masks the failure. Because the run registers as overall "Passed" (green checkmark on the Git commit history), developers might ignore the fact that the integration tests are failing, letting critical bugs slip through.
+
+#### Implementation 2: Fine-Grained Status Evaluation (`needs.<job_id>.result`)
+*   **How it works:** Allow the volatile job to fail normally, but override the downstream deployment's conditional checks using `always()` and explicit state checks.
+    ```yaml
+    jobs:
+      test-unit:
+        runs-on: ubuntu-latest
+      test-integration:
+        runs-on: ubuntu-latest # Fails normally (exits 1)
+      deploy-staging:
+        needs: [test-unit, test-integration]
+        runs-on: ubuntu-latest
+        if: |
+          always() &&
+          needs.test-unit.result == 'success' &&
+          (needs.test-integration.result == 'success' || needs.test-integration.result == 'failure')
+    ```
+*   **Trade-off Analysis:**
+    *   *Pros:* Complete visibility. The pipeline is marked as "Failed" (red X on the Git commit badge), forcing developers to inspect the integration failures. However, the deployment to staging is not blocked because the downstream `if` statement explicitly permits a `failure` result from the integration suite, as long as the unit test suite returns `success`.
+    *   *Cons:* Requires more complex YAML syntax and an understanding of the `needs` evaluation context.
 
 ---
 
