@@ -10,11 +10,11 @@ To build a strong intuition for GitHub Actions, think of the execution lifecycle
 
 ```mermaid
 graph TD
-    Event["1. Git Event (push, PR, schedule, dispatch)"] -->|Triggers| Workflow["2. Workflow (.github/workflows/*.yml)"]
-    Workflow -->|Defines| Jobs["3. Jobs (Logical boundary / parallel runs)"]
-    Jobs -->|Allocates| Runner["4. Runner VM (ubuntu, windows, self-hosted)"]
-    Runner -->|Executes| Steps["5. Steps (Sequential commands / Reusable Actions)"]
-    Steps -->|Produces| Results["6. Results (Logs, Exit Codes, Artifacts)"]
+    Event["1 - Git Event (push, PR, schedule, dispatch)"] -->|Triggers| Workflow["2 - Workflow (.github/workflows/*.yml)"]
+    Workflow -->|Defines| Jobs["3 - Jobs (Logical boundary / parallel runs)"]
+    Jobs -->|Allocates| Runner["4 - Runner VM (ubuntu, windows, self-hosted)"]
+    Runner -->|Executes| Steps["5 - Steps (Sequential commands / Reusable Actions)"]
+    Steps -->|Produces| Results["6 - Results (Logs, Exit Codes, Artifacts)"]
 ```
 
 1. **Step 1: Event-Driven Triggers (Section 1):** Git hooks and APIs fire events that notify GitHub's orchestrator.

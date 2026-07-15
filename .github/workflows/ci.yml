@@ -1,0 +1,40 @@
+name: GitHub Actions Lab CI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'github-actions-lab/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'github-actions-lab/**'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-code:
+    name: Lint and Test Application
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          cd github-actions-lab
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Unit Tests with Coverage
+        run: |
+          cd github-actions-lab
+          pytest --cov=app --cov-report=term-missing
