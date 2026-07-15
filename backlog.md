@@ -7,7 +7,10 @@ This backlog tracks all updates, modifications, and restructuring activities per
 ### Added
 - **Projects (Interview Workspace):**
   - [[Projects/PwC Interview Preparation/Plan - DevOps Interview Roadmap.md|Plan - DevOps Interview Roadmap.md]]: Created the roadmap, study timeline, and guidelines aligning Karim's preparation with the PwC Professional Framework.
-  - [[Projects/PwC Interview Preparation/Theory - Distilled DevOps Refreshers.md|Theory - Distilled DevOps Refreshers.md]]: Created high-density theory sheets for core concepts (Docker Namespaces/cgroups, AWS VPC/IAM SAA, Terraform State/Dynamic locking, Prometheus TSDB/PromQL/Scraping, DevSecOps SAST/Trivy).
+  - [[Projects/PwC Interview Preparation/Theory/Chapter 1 - Secure Containerization with Docker.md|Chapter 1 - Secure Containerization with Docker.md]]: Distills namespace/cgroup isolation, Overlay2 driver Copy-on-Write latency, volume primitives, and multi-stage secure Dockerfile design.
+  - [[Projects/PwC Interview Preparation/Theory/Chapter 2 - AWS Cloud Architecture & Terraform IaC.md|Chapter 2 - AWS Cloud Architecture & Terraform IaC.md]]: Distills SAA secure VPC networking (subnetting, NAT GW multi-AZ sizing, SG vs stateless NACL ephemeral ports), IAM OIDC trusts, and Terraform remote S3 backends with DynamoDB locking.
+  - [[Projects/PwC Interview Preparation/Theory/Chapter 3 - CI-CD Pipelines & DevSecOps Integration.md|Chapter 3 - CI-CD Pipelines & DevSecOps Integration.md]]: Distills GitHub Actions pipeline structures (hosted vs self-hosted runners), OIDC trusts, DevSecOps gating (Trivy scanner, SonarQube quality gates), and deployment models (Blue-Green vs Canary).
+  - [[Projects/PwC Interview Preparation/Theory/Chapter 4 - Observability with Prometheus & Grafana.md|Chapter 4 - Observability with Prometheus & Grafana.md]]: Distills Prometheus push vs pull architecture, TSDB layout (WAL, Compaction), PromQL instant vs range vectors, metric types, Grafana provisioning, and Alertmanager deduplication.
   - [[Projects/PwC Interview Preparation/Project - End-to-End Clustered Observability Stack.md|Project - End-to-End Clustered Observability Stack.md]]: Created the blueprints, configurations, and scripts for the E2E composite project (Flask, Docker, GitHub Actions, AWS Terraform, ECR, Prometheus, Grafana).
 
 ### Ingested Inflow Sources
