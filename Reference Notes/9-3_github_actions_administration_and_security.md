@@ -194,10 +194,29 @@ act -j test-suite
 
 ## 5. Comparison with Alternatives
 
-| Feature | GitHub Actions | Jenkins | GitLab CI | Azure DevOps |
-| :--- | :--- | :--- | :--- | :--- |
-| **Hosting Model** | Cloud-first (GH-hosted) + Self-hosted | Self-hosted (requires maintenance) | Hybrid (SaaS + Self-hosted) | Hybrid (SaaS + Self-hosted) |
-| **Configuration** | Flat YAML in `.github/workflows/` | Groovy DSL (Jenkinsfile) / Classic UI | Flat YAML in `.gitlab-ci.yml` | YAML or Classic Visual pipelines |
-| **Extension Store** | Marketplace (10k+ public actions) | Plugin ecosystem (1,800+ legacy plugins) | Custom Docker templates | Extension Marketplace |
 | **Security Setup** | GITHUB_TOKEN + OIDC Trust | Manual credentials vault storage | Job-tokens + Vault integration | Service Connections OAuth |
 | **Learning Curve** | Low (simple YAML syntax) | High (requires Groovy/sysadmin) | Medium (complex YAML maps) | Medium |
+
+---
+
+## ⚙️ 6. Advanced Environments, Variable Override Scopes, and Secrets Management
+
+### A. Secret & Variable Precedence Hierarchy
+When executing a job, variables and secrets are loaded dynamically based on scope:
+*   **The Precedence Rule:** Environment-level variables/secrets override Repository-level configurations, which override Organization-level configurations:
+    $$\text{Environment Scoped} > \text{Repository Scoped} > \text{Organization Scoped}$$
+*   **Use Case:** Define a global variable `API_URL` as a Repository variable set to staging, but override it inside the `production` Environment variables block to point to production, allowing you to use the exact same YAML code block across environments.
+
+### B. Environment Protection Rules
+Environments enable compliance enforcement before deployment steps trigger:
+1.  **Required Reviewers (Manual Gates):** Pause job execution until designated users or teams (up to 6 reviewers) approve. A notification is sent to reviewers, who review the commit delta and approve or reject. The job must receive approvals before its allocated runner VM spins up.
+2.  **Wait Timers:** Delays job execution for a specified number of minutes (up to 30 days) after the job is triggered.
+3.  **Deployment Branches:** Restricts environment deployment strictly to specific branch matches (e.g. only allow deployment to the `production` environment if the branch is `refs/heads/main` or matches release tags `refs/tags/v*`).
+
+---
+
+### 📖 Sources & Ingested Transcripts
+*   Varun Joshi GHA Course Transcripts:
+    *   `inflow/GitHub Actions Environments Explained  Variables, Secrets, Approvals & Protection Rules.txt`
+*   Standalone Lecture Summaries:
+    *   [[Reference Notes/9-10_github_actions_environments_secrets_and_approvals.md|Module 9-10: GitHub Actions Environments, Secrets & Approvals]]

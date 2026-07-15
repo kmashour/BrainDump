@@ -157,4 +157,95 @@ jobs:
         run: ./deploy.sh
         env:
           DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+
+---
+
+## ⚙️ 4. Reusable Workflows, Pipeline Inputs/Outputs, and Advanced Caching
+
+### A. Reusable Workflows (`workflow_call`)
+Reusable workflows allow organizations to standardise pipeline templates, avoiding duplication (DRY principle).
+*   **Caller vs. Called:** The *Called* workflow defines its triggers using `on: workflow_call`. The *Caller* workflow references it using the `uses` directive at the job level.
+*   **Passing Inputs and Secrets:**
+    ```yaml
+    # Caller Workflow (.github/workflows/deploy.yml)
+    jobs:
+      trigger-deployment:
+        uses: kmashour/BrainDump/.github/workflows/reusable-deploy.yml@main
+        with:
+          environment: 'production'
+        secrets: inherit # Implicitly passes all caller secrets to the called workflow
+    ```
+    ```yaml
+    # Called Reusable Workflow (.github/workflows/reusable-deploy.yml)
+    on:
+      workflow_call:
+        inputs:
+          environment:
+            required: true
+            type: string
+    jobs:
+      execute:
+        runs-on: ubuntu-latest
+        steps:
+          - run: echo "Deploying to ${{ inputs.environment }}"
+    ```
+
+### B. Inputs & Outputs Architecture
+Values are propagated across steps, jobs, and workflows via file writes:
+*   **Step Outputs:** Write values to the `$GITHUB_OUTPUT` file descriptor:
+    `echo "target_ip=10.0.5.12" >> "$GITHUB_OUTPUT"`
+*   **Job Outputs:** Reference the step output within the job definitions:
+    ```yaml
+    jobs:
+      job1:
+        outputs:
+          ip: ${{ steps.step1.outputs.target_ip }}
+        steps:
+          - id: step1
+            run: echo "target_ip=10.0.5.12" >> "$GITHUB_OUTPUT"
+    ```
+*   **Workflow Outputs:** For reusable workflows, map job outputs up to the `workflow_call.outputs` block.
+
+### C. Advanced Caching: Key Restorations
+In `actions/cache@v4`, if the exact lockfile hash key results in a cache miss, the `restore-keys` block provides sequential prefixes to match:
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: ~/.cache/pip
+    key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    restore-keys: |
+      ${{ runner.os }}-pip-
+```
+*   **Fallback Logic:** If `requirements.txt` changes, the exact key is missed. The runner falls back to searching for any cache matching `${{ runner.os }}-pip-` (which restores the previous build's python package cache). The runner then only downloads the *newly added* packages, reducing install time compared to a full download.
+
+### D. Matrix Strategy Customization: `include` & `exclude`
+*   **Cartesian Multiplier:** Matches every option in the matrix keys (e.g. 3 node versions $\times$ 2 OS = 6 runs).
+*   **`include`:** Appends specific parameters to existing matrix combinations, or adds an entirely separate custom job runner (e.g., adding an ARM64 runner VM to the matrix):
+    ```yaml
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [18, 20]
+        include:
+          - os: ubuntu-latest
+            node: 20
+            experimental: true # Appends tag only to this combination
+          - os: windows-latest # Adds a completely new independent job combination
+            node: 20
+    ```
+*   **`exclude`:** Prevents executing dangerous or unsupported environments.
+
+---
+
+### 📖 Sources & Ingested Transcripts
+*   Varun Joshi GHA Course Transcripts:
+    *   `inflow/GitHub Actions Functions Explained  Build a Production-Style CI Pipeline.txt`
+    *   `inflow/GitHub Actions Outputs Explained  Step, Job & Reusable Workflow Outputs.txt`
+    *   `inflow/GitHub Actions Inputs Explained  Workflow Inputs, Reusable Workflows & Production Use Cases.txt`
+    *   `inflow/GitHub Actions Artifacts & Caching Explained  Share Files & Optimize Builds.txt`
+    *   `inflow/GitHub Actions Matrix Strategy Explained  Multi-OS, Multi-Version Testing at Scale.txt`
+*   Standalone Lecture Summaries:
+    *   [[Reference Notes/9-7_github_actions_functions_inputs_outputs_and_reusable_workflows.md|Module 9-7: GitHub Actions Functions, Inputs, Outputs & Reusable Workflows]]
+    *   [[Reference Notes/9-8_github_actions_artifacts_and_caching.md|Module 9-8: GitHub Actions Artifacts & Caching]]
+    *   [[Reference Notes/9-9_github_actions_matrix_strategy.md|Module 9-9: GitHub Actions Matrix Strategy]]
 ```

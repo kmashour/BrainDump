@@ -158,6 +158,62 @@ jobs:
 
 ---
 
+## ⚙️ 5. Advanced Triggers, Runners, and Runtime Contexts
+
+### A. Advanced Event Trigger Configuration
+*   **Manual Inputs (`workflow_dispatch`):** Enforce manual triggers with runtime parameters:
+    ```yaml
+    on:
+      workflow_dispatch:
+        inputs:
+          environment:
+            description: 'Deployment target'
+            required: true
+            default: 'staging'
+            type: choice
+            options:
+              - dev
+              - staging
+              - production
+          perform_cleanup:
+            description: 'Trigger workspace post-clean'
+            required: false
+            type: boolean
+            default: false
+    ```
+*   **Release Tag Triggers:** Trigger builds on semantic versioning release tags:
+    ```yaml
+    on:
+      push:
+        tags:
+          - 'v*.*.*' # Matches v1.0.0, v2.5.1
+    ```
+
+### B. Runner Sizing and Labels
+*   **Standard Runner:** Default GitHub VM configuration (`ubuntu-latest` maps to 2-core CPU, 7GB RAM).
+*   **Self-Hosted Tag Targeting:** Direct jobs to specific local self-hosted infrastructure:
+    ```yaml
+    runs-on: [self-hosted, linux, x64, gpu-enabled]
+    ```
+
+### C. GHA Contexts and Environment Variables
+Contexts are collections of properties accessible throughout workflow execution.
+*   **`github` Context:** Metadata about the running workflow (e.g. `${{ github.sha }}` for the commit hash, `${{ github.actor }}` for the user who triggered the run).
+*   **`env` Context:** Access environment variables defined globally or at job/step levels.
+*   **`vars` Context:** Non-sensitive variables configured at the repository, organization, or environment level.
+*   **`secrets` Context:** Encrypted values (e.g. token hashes, passwords).
+*   **`steps` Context:** Access outputs and status checks of previous steps.
+
+---
+
 ### 📖 Sources & Ingested Transcripts
-- GitHub Actions Course Transcript (Arabic): `inflow/GithubAction-Elfakharny.md`
-- Standalone Lecture Summary: [[Reference Notes/9-4_github_actions_lecture_elfakharny.md|Module 9-4: GitHub Actions & CI/CD Platform Automation (Elfakharny Lecture)]]
+*   GitHub Actions Course Transcript (Arabic): `inflow/GithubAction-Elfakharny.md`
+*   Varun Joshi GHA Course Transcripts:
+    *   `inflow/What is GitHub Actions  Build Your First Workflow from Scratch.txt`
+    *   `inflow/GitHub Actions Triggers & Runners Explained  Events, Contexts & Hosted Runners.txt`
+    *   `inflow/Build Your First Production-Style Workflow with GitHub Actions.txt`
+    *   `inflow/GitHub Actions Workflow Logic Explained  Filters, Contexts, Variables & Expressions.txt`
+*   Standalone Lecture Summaries: 
+    *   [[Reference Notes/9-4_github_actions_lecture_elfakharny.md|Module 9-4: GitHub Actions & CI/CD Platform Automation (Elfakharny Lecture)]]
+    *   [[Reference Notes/9-5_github_actions_introduction_and_production_workflows.md|Module 9-5: GitHub Actions Introduction & Production Workflows]]
+    *   [[Reference Notes/9-6_github_actions_triggers_runners_and_logic.md|Module 9-6: GitHub Actions Triggers, Runners & Workflow Logic]]
