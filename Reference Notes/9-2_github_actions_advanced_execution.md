@@ -179,19 +179,69 @@ GHA makes execution metadata available through contexts. Below is a detailed bre
 Functions process data and evaluate expressions within the `${{ }}` syntax.
 
 ### A. General-Purpose Functions
-1.  **`contains(search, item)`**: Returns true if `search` contains `item`.
-    ```yaml
-    if: contains(github.ref, 'refs/heads/feature/')
-    ```
-2.  **`startsWith(string, search)`**: True if `string` starts with `search`.
-3.  **`endsWith(string, search)`**: True if `string` ends with `search`.
-4.  **`format(template, val1, val2...)`**: Formats strings.
-5.  **`join(array, separator)`**: Concatenates array items.
-6.  **`hashFiles(path)`**: Generates a SHA-256 hash of files matching a glob pattern (highly useful for caching).
-    ```yaml
-    key: npm-${{ hashFiles('package-lock.json') }}
-    ```
-7.  **`fromJSON(json)`** & **`toJSON(value)`**: Encodes/decodes JSON strings.
+These functions allow you to perform string matching, format variables, serialize payloads, and generate cache hashes. Below is the operational context and usage for each function:
+
+1. **`contains(search, item)`**
+   * **Context:** Used to search a string (e.g., checking if a branch name contains a prefix) or to check an array (e.g., checking if a user is part of an approved lists).
+   * **YAML Example:**
+     ```yaml
+     # Trigger step only on feature branches OR if actor is an administrator
+     if: contains(github.ref, 'refs/heads/feature/') || contains(fromJSON('["kmashour", "admin-user"]'), github.actor)
+     ```
+
+2. **`startsWith(string, search)`** & **`endsWith(string, search)`**
+   * **Context:** Used to check string boundaries. Useful for gating steps based on naming conventions (e.g., release tag prefixes, or commit message flags).
+   * **YAML Example:**
+     ```yaml
+     # Execute deployment only if tag starts with 'v' and commit message does not end with '[skip-ci]'
+     if: startsWith(github.ref, 'refs/tags/v') && !endsWith(github.event.head_commit.message, '[skip-ci]')
+     ```
+
+3. **`format(template, val1, val2...)`**
+   * **Context:** Synthesizes custom strings by replacing numbered placeholders (`{0}`, `{1}`, etc.) with values. Excellent for creating structured image tags or notification templates.
+   * **YAML Example:**
+     ```yaml
+     steps:
+       - name: Set dynamic image tag
+         run: echo "TAG=${{ format('app-v{0}-sha-{1}', github.run_number, github.sha) }}" >> $GITHUB_ENV
+     ```
+
+4. **`join(array, separator)`**
+   * **Context:** Flattens a structured array of strings into a single string joined by a separator. Commonly used to parse list objects (like pull request reviewers or modified paths) for Slack alerts.
+   * **YAML Example:**
+     ```yaml
+     steps:
+       - name: Log PR Reviewers
+         run: echo "PR Reviewers requested: ${{ join(github.event.pull_request.requested_reviewers.*.login, ', ') }}"
+     ```
+
+5. **`hashFiles(path)`**
+   * **Context:** Computes a SHA-256 checksum of files matching a glob pattern. This is the **standard mechanism** for generating cache keys; if `requirements.txt` or `package-lock.json` changes, the hash changes, triggering a cache miss.
+   * **YAML Example:**
+     ```yaml
+     uses: actions/cache@v4
+     with:
+       path: ~/.cache/pip
+       key: pip-cache-${{ runner.os }}-${{ hashFiles('**/requirements.txt') }}
+     ```
+
+6. **`fromJSON(json)`** & **`toJSON(value)`**
+   * **Context:**
+     * `toJSON(value)`: Serializes objects into JSON strings. Primarily used to print execution contexts for diagnostic debugging.
+     * `fromJSON(json)`: Parses JSON strings into structured objects. Essential for dynamically configuring runner matrices from output strings of parent setup jobs.
+   * **YAML Example:**
+     ```yaml
+     # Debugging: Dump GitHub metadata
+     - name: Dump Context
+       run: echo "${{ toJSON(github) }}"
+
+     # Dynamic Matrix: Parse matrix string computed in 'setup' job
+     jobs:
+       test:
+         needs: setup
+         strategy:
+           matrix: ${{ fromJSON(needs.setup.outputs.matrix_config) }}
+     ```
 
 ### B. Status Check Functions
 Status checks control step execution based on the parent job status. If no status check is defined, GHA defaults to `success()`.
