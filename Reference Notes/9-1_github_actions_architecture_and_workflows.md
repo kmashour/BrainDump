@@ -87,6 +87,7 @@ When designing workflow environments, choosing the appropriate runner topology i
 ### B. Self-Hosted Runner outbound communication model
 Unlike typical agent architectures that require inbound ports (such as SSH) to be open on the runner machine, self-hosted runners utilize an **outbound-only polling architecture**. The runner daemon calls GitHub APIs over HTTPS (port 443) using a persistent long-polling connection (WebSockets). This eliminates the need to configure inbound firewall holes, simplifying deployment within secure private networks.
 
+
 ---
 
 ## 3. Deep-Intuition (AARF) Breakdowns: Workflow Triggers & Event Filters
@@ -312,7 +313,7 @@ jobs:
 
 ### PoC 2: Advanced Trigger Configuration with Inputs and Cron Scheduler
 This workflow demonstrates path-filtered pull request triggers, scheduled nightly jobs, and manual execution inputs.
-
+`echo "Trigger Source Event: ${{ github.event_name }}"` -->   `if: github.event_name == 'schedule'`
 ```yaml
 # .github/workflows/advanced-triggers.yml
 name: Advanced Triggers & Schedulers
