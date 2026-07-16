@@ -440,3 +440,91 @@ Control Tower governs member accounts using Guardrails:
 3.  **The Rationale (Why):** AD Connector is stateless and does not store user passwords, reducing directory synchronization management. Managed AD acts as a true directory forest, supporting trust relationships and low-latency local queries for EC2 instances.
 4.  **The Failure Loop (What if not):** Using AD Connector when VPN connection is unstable results in immediate authentication failures for all cloud services, locking out WorkSpaces and SSO users.
 5.  **Alternative Case (When to use 'if not'):** If there is no on-premises Active Directory infrastructure, use **Simple AD** to host local domain controllers at a lower tier cost.
+
+---
+
+## 13. Terraform IaC Primitives for IAM & Governance
+
+To implement IAM governance programmatically, map IAM entities and AWS Organizations policies to Terraform HCL resources.
+
+### A. IAM User & Group Management Primitives
+*   **IAM User:** `aws_iam_user`
+*   **IAM Group:** `aws_iam_group`
+*   **Group Membership:** `aws_iam_group_membership`
+*   **IAM Policy:** `aws_iam_policy` (for managed policies) or `aws_iam_group_policy` / `aws_iam_user_policy` (for inline policies).
+*   **Policy Attachment:** `aws_iam_group_policy_attachment` or `aws_iam_user_policy_attachment`.
+```hcl
+resource "aws_iam_user" "operator" {
+  name = "sys-operator"
+}
+
+resource "aws_iam_group" "admins" {
+  name = "system-administrators"
+}
+
+resource "aws_iam_group_membership" "admin_team" {
+  name  = "admin-team-membership"
+  users = [aws_iam_user.operator.name]
+  group = aws_iam_group.admins.name
+}
+
+resource "aws_iam_policy" "read_billing" {
+  name        = "BillingConsoleReadOnly"
+  description = "Allows read access to billing APIs"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["aws-portal:ViewBilling", "aws-portal:ViewUsage"]
+      Resource = "*"
+    }]
+  })
+}
+
+resource "aws_iam_group_policy_attachment" "billing_attach" {
+  group      = aws_iam_group.admins.name
+  policy_arn = aws_iam_policy.read_billing.arn
+}
+```
+
+### B. AWS Organizations & Service Control Policies (SCPs)
+Use Terraform to construct the multi-account tree, define SCP constraints, and bind them to OUs or Accounts.
+*   **Organization Root:** `aws_organizations_organization`
+*   **Organizational Unit (OU):** `aws_organizations_organizational_unit`
+*   **Governance SCP Policy:** `aws_organizations_policy` (specify type as `"SERVICE_CONTROL_POLICY"`)
+*   **Policy Attachment:** `aws_organizations_policy_attachment`
+```hcl
+# Create AWS Organization
+resource "aws_organizations_organization" "org" {
+  feature_set = "ALL"
+}
+
+# Create Sandbox Organizational Unit
+resource "aws_organizations_organizational_unit" "sandbox" {
+  name      = "Sandbox-OU"
+  parent_id = aws_organizations_organization.org.roots[0].id
+}
+
+# Define SCP to prevent members from leaving the organization
+resource "aws_organizations_policy" "prevent_leave" {
+  name        = "PreventLeaveOrgSCP"
+  description = "Blocks member accounts from leaving the organization"
+  type        = "SERVICE_CONTROL_POLICY"
+
+  content = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Deny"
+      Action   = "organizations:LeaveOrganization"
+      Resource = "*"
+    }]
+  })
+}
+
+# Attach SCP to Sandbox OU
+resource "aws_organizations_policy_attachment" "sandbox_scp" {
+  policy_id = aws_organizations_policy.prevent_leave.id
+  target_id = aws_organizations_organizational_unit.sandbox.id
+}
+```
+

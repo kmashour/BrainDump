@@ -169,3 +169,57 @@ Exchanges authentication tokens (from CUP, social logins, or guest states) for *
 
 Step-by-step configurations for REST API gateways, Lambda handler structures, and throttling/concurrency verification scripts are compiled as a separate playbook:
 *   *See complete implementation in [[Projects/kubernetes/Project - Serverless REST API with Lambda and API Gateway.md]]*
+
+---
+
+## 8. Terraform Resource Primitives for Serverless Pipelines
+
+Provision Lambda event triggers and execution contexts using Terraform HCL resources.
+
+### A. S3 Event-Driven Lambda Function and Permissions
+```hcl
+# 1. Lambda IAM Execution Role
+resource "aws_iam_role" "lambda_role" {
+  name = "lambda-s3-trigger-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "lambda.amazonaws.com" }
+    }]
+  })
+}
+
+# 2. Lambda Function definition
+resource "aws_lambda_function" "processor" {
+  filename      = "function_payload.zip"
+  function_name = "s3-event-processor"
+  role          = aws_iam_role.lambda_role.arn
+  handler       = "index.handler"
+  runtime       = "python3.10"
+}
+
+# 3. Grant invocation permissions to the source S3 bucket
+resource "aws_lambda_permission" "allow_s3" {
+  statement_id  = "AllowS3Invocation"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.processor.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = "arn:aws:s3:::my-trigger-bucket-12345"
+}
+
+# 4. S3 Bucket Notification Trigger
+resource "aws_s3_bucket_notification" "s3_trigger" {
+  bucket = "my-trigger-bucket-12345"
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.processor.arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+
+  depends_on = [aws_lambda_permission.allow_s3]
+}
+```
+

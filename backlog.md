@@ -2,6 +2,58 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-16] - Ingestion & Integration: AWS & Terraform Core (Course Transcripts)
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/10-1_terraform_foundations_and_state.md|Module 10-1: Terraform Foundations & State Management]]: Integrated core Terraform engine architecture (Directed Acyclic Graph), AWS provider credential authentication precedence, remote backend migration setups with S3 and DynamoDB write locking, directory best practices, local/remote provisioners, and legacy vs modern declarative import blocks.
+  - [[Reference Notes/10-2_variables_types_and_expressions.md|Module 10-2: Variables, Types & Expression Syntax]]: Integrated input variable precedence hierarchy and custom validation blocks, homogeneous collections (lists vs sets) and heterogeneous structural objects, ternary conditionals, splat expressions, dynamic blocks iteration loops, built-in functions categories, and dynamic data sources querying.
+  - [[Reference Notes/10-3_meta_arguments_lifecycle_and_state.md|Module 10-3: Meta-Arguments, Lifecycle Control & State Ops]]: Integrated list index shifting issues under count vs. key-value map boundaries inside for_each loops, explicit depends_on dependencies, and zero-downtime swaps via create_before_destroy, prevent_destroy, and ignore_changes.
+  - [[Reference Notes/10-4_networking_website_and_security.md|Module 10-4: Networking, Static Website Hosting & Security Architecture]]: Integrated private S3 buckets with CloudFront OAC policies, VPC Peering requester/accepter connection routing, IAM programmatic user and group creation, and multi-tier scalable ASG/ALB clusters (2-Tier and 3-Tier topologies).
+  - [[Reference Notes/10-5_modules_eks_and_serverless.md|Module 10-5: Production Architecture: Modules, EKS & Serverless]]: Integrated Elastic Beanstalk Blue-Green deployment models, serverless image processing event-driven pipelines (S3 triggers Lambda), and custom EKS modular architectures with IRSA OIDC mapping.
+  - [[Reference Notes/10-6_cicd_gitops_observability_and_drift.md|Module 10-6: Enterprise CI/CD, Observability, GitOps & Drift Remediation]]: Integrated AWS CloudWatch agent setups (hypervisor vs OS metrics), HCP Terraform workspaces vs directories, GitHub Actions pipelines using OIDC trust, GitOps application sync via ArgoCD, and scheduled drift detection using detailed exit codes.
+  - [[Reference Notes/3-2_aws_iam.md|Module 3-2: AWS IAM & Identity Management]]: Appended Terraform resource primitives for programmatic IAM users, groups, attachments, and AWS Organizations SCP configurations.
+  - [[Reference Notes/3-6_aws_s3_storage.md|Module 3-6: AWS S3 Storage]]: Appended Terraform resource primitives for standard S3 buckets (versioning, encryption, block public access) and static website configurations.
+  - [[Reference Notes/3-9_aws_vpc_networking.md|Module 3-9: AWS VPC Networking]]: Appended Terraform resource primitives for VPC Peering network routing.
+  - [[Reference Notes/3-13_aws_cloudfront_cdn.md|Module 3-13: AWS CloudFront CDN & AWS Global Accelerator]]: Appended Terraform resource primitives for CloudFront distribution setups and Origin Access Control.
+  - [[Reference Notes/3-18_serverless.md|Module 3-18: AWS Serverless]]: Appended Terraform resource primitives for Lambda function executions, roles, and S3 event triggers.
+
+### Ingested Inflow Sources
+Processed and integrated the following files in `inflow/`:
+- `inflow/Day 0—Learn AWS With Terraform in 30 Days (with real-time projects).txt`
+- `inflow/130 - How Does Terraform Work  Intro to IAC.txt`
+- `inflow/230 - Terraform AWS Provider explained.txt`
+- `inflow/330 -  Create an AWS S3 Bucket Using Terraform (it's simple).txt`
+- `inflow/430 - Terraform State file management with AWS S3  Remote Backend.txt`
+- `inflow/530 - Terraform Variables in AWS - Input vs Output vs Local Variables.txt`
+- `inflow/630 - AWS Terraform Project Structure Best Practices.txt`
+- `inflow/730 - AWS Terraform Type Constraints Explained (with realtime examples).txt`
+- `inflow/830 - AWS Terraform Meta Arguments Made EASY  Count, depends_on , for_each.txt`
+- `inflow/930 - AWS Terraform Lifecycle Rules Explained.txt`
+- `inflow/1030 - AWS Terraform  Conditional Expressions , Splat Expressions and Dynamic Block.txt`
+- `inflow/1130 - AWS Terraform Functions - Part 1.txt`
+- `inflow/1230 - AWS Terraform Functions - Part 2.txt`
+- `inflow/1330 - Terraform Data Source AWS Explained (with demo).txt`
+- `inflow/1430 - Host A Static Website In AWS S3 And Cloudfront (using terraform).txt`
+- `inflow/1530 -  AWS VPC Peering Using Terraform - Mini project.txt`
+- `inflow/1630 - AWS IAM User Management with Terraform - Mini Project.txt`
+- `inflow/1730 - AWS Terraform Blue-Green Deployment Using Elastic Beanstalk.txt`
+- `inflow/1830 - Image Processing Serverless Project using AWS Lambda(with terraform).txt`
+- `inflow/1930 - Terraform Provisioners (with demo) - local vs remote vs file.txt`
+- `inflow/2030 - Terraform Custom Modules for EKS - From Zero to Production.txt`
+- `inflow/2130 - AWS Policy and Governance Setup Using Terraform.txt`
+- `inflow/Day 2230 - 2-Tier Architecture Setup on AWS Using Terraform.txt`
+- `inflow/2330 - Setup End-to-End Observability in AWS Using Terraform (Real-Time Project).txt`
+- `inflow/2430 - Highly Available and Scalable Architecture Using Terraform.txt`
+- `inflow/2530 - Terraform Import In AWS Explained With Demo.txt`
+- `inflow/2630 - HCP Terraform Explained with Demo - Terraform Projects and Workspaces.txt`
+- `inflow/2730 - Automate AWS Infra Using Terraform and GitHub Actions  Realtime Project.txt`
+- `inflow/2830 - AWS 3-tier Architecture With Terraform  End-to-End Real-Time Project.txt`
+- `inflow/2930 - End-to-end GitOps With Terraform and ArgoCD For EKS  Production-grade Kubernetes Project.txt`
+- `inflow/3030 - Drift Detection and Remediation Using Terraform and GitHub Actions  Real Time Project.txt`
+
+---
+
 ## [2026-07-15] - Ingestion & Integration: GitHub Actions Deep Dive (Course Transcripts)
 
 ### Integrated / Upgraded

@@ -360,3 +360,48 @@ AWS data transfer charges depend on boundaries (Availability Zone, Region) and I
 3.  **The Rationale (Why):** SGs are stateful; they track connection state tables and allow return packets automatically. NACLs are stateless and evaluate every packet. Failing to configure outbound ephemeral port rules on a custom NACL blocks the return packet from leaving the subnet.
 4.  **The Failure Loop (What if not):** If a custom NACL has inbound rules allowing port 80/443, but lacks an outbound rule allowing ports 1024-65535, a client attempting to load a website will experience connection timeouts. The packet enters the subnet, the server processes it, but the return packet is blocked at the subnet boundary by the stateless NACL.
 5.  **Alternative Case (When to use 'if not'):** In development environments where network segmentation auditing is not required, use default Open NACLs (Allow All) and rely exclusively on Security Groups.
+
+---
+
+## 9. Terraform Resource Primitives for VPC Peering
+
+VPC Peering requires declaring the peering tunnel connection and updating route tables on both network boundaries.
+
+### A. Peering Connection and Routes Declaration
+```hcl
+# 1. Requester VPC definition
+resource "aws_vpc" "vpc_a" {
+  cidr_block = "10.1.0.0/16"
+}
+
+# 2. Accepter VPC definition
+resource "aws_vpc" "vpc_b" {
+  cidr_block = "10.2.0.0/16"
+}
+
+# 3. Peering Connection
+resource "aws_vpc_peering_connection" "peer" {
+  peer_vpc_id = aws_vpc.vpc_b.id
+  vpc_id      = aws_vpc.vpc_a.id
+  auto_accept = true # Valid only if VPCs are in the same account and region
+
+  tags = {
+    Name = "peer-vpcs-a-b"
+  }
+}
+
+# 4. Requester Route
+resource "aws_route" "route_a_to_b" {
+  route_table_id            = aws_vpc.vpc_a.main_route_table_id
+  destination_cidr_block    = aws_vpc.vpc_b.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+}
+
+# 5. Accepter Route
+resource "aws_route" "route_b_to_a" {
+  route_table_id            = aws_vpc.vpc_b.main_route_table_id
+  destination_cidr_block    = aws_vpc.vpc_a.cidr_block
+  vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+}
+```
+

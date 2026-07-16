@@ -1,6 +1,6 @@
 # Module 10-5: Production Architecture: Modules, EKS & Serverless
 
-This module details custom Terraform module development, orchestrating managed EKS (Elastic Kubernetes Service) clusters with Federated IAM roles, and deploying serverless event-driven processing pipelines.
+This module details custom Terraform module development, orchestrating managed EKS (Elastic Kubernetes Service) clusters with Federated IAM roles, Elastic Beanstalk Blue-Green deployment topologies, and deploying serverless event-driven processing pipelines.
 
 ---
 
@@ -23,14 +23,19 @@ graph TD
     end
 
     subgraph ServerlessPipeline["3. Event-Driven Execution"]
-        S3Trigger["S3 Event Upload"] -->|Triggers Notification| Lambda["AWS Lambda Service"]
-        Lambda -->|Writes Output| Dynamo["DynamoDB Metrics Database"]
+        S3Trigger["S3 Event Upload (Input Bucket)"] -->|Triggers Notification| Lambda["AWS Lambda Service"]
+        Lambda -->|Writes Output| S3Dest["S3 Destination (Output Bucket)"]
+    end
+
+    subgraph DeploymentPatterns["4. Production Deployment Architectures"]
+        EBBlue["Elastic Beanstalk Blue Env"] -.->|CNAME Swap| EBGreen["Elastic Beanstalk Green Env"]
     end
 ```
 
 1. **Step 1: Code Encapsulation (Section 1):** Wrap raw cloud resources in clean interfaces using variables and outputs.
 2. **Step 2: Container Platform Provisioning (Section 2):** Deploy EKS clusters and establish secure IAM boundaries for pods.
 3. **Step 3: Event Pipelines (Section 3):** Wire cloud triggers to serverless code handlers using least-privilege roles.
+4. **Step 4: Blue-Green Deployments (Section 4):** Swap production environments with zero downtime using Elastic Beanstalk.
 
 ---
 
@@ -38,10 +43,10 @@ graph TD
 
 Modules are the primary tool to package and reuse infrastructure configurations. Every directory containing `.tf` files is a module.
 
-### A. Module Principles
+### A. Module Design Principles
 *   **Encapsulation:** Sub-modules should manage their own resources. Avoid referencing parent resource configurations directly inside the sub-module.
 *   **API Interface Contracts:** Input variables define the module's arguments (the input contract), and outputs define the properties exported back to the calling root configuration.
-*   **Registry Sources:** Modules can be sourced locally or from remote registries (GitHub, HCP Terraform Registry).
+*   **Version Pinning:** Always pin module versions to prevent unexpected API updates from breaking configurations when sourcing from remote registries:
     ```hcl
     module "vpc" {
       source  = "terraform-aws-modules/vpc/aws"
@@ -132,54 +137,114 @@ sequenceDiagram
 
 Serverless pipelines execute custom code in response to system event notifications without requiring running server hosts.
 
-### AARF Breakdown: S3 Notification Triggering Lambda
-1.  **The Answer (Core Pattern):** Create the Lambda function, grant the S3 service principal permissions to invoke the function, and configure the S3 bucket notification trigger:
-    ```hcl
-    # 1. IAM Execution Role for Lambda
-    resource "aws_iam_role" "lambda_exec" {
-      name = "lambda-event-exec-role"
-      assume_role_policy = jsonencode({
-        Version = "2012-10-17"
-        Statement = [{
-          Action    = "sts:AssumeRole"
-          Effect    = "Allow"
-          Principal = { Service = "lambda.amazonaws.com" }
-        }]
-      })
-    }
+### A. S3 Image Processing Flow
+An upload to the input S3 bucket triggers a Lambda function, which resizes or processes the image and writes the result to a separate output S3 bucket.
 
-    # 2. Lambda Function definition
-    resource "aws_lambda_function" "processor" {
-      filename      = "lambda_function_payload.zip"
-      function_name = "s3-image-processor"
-      role          = aws_iam_role.lambda_exec.arn
-      handler       = "index.handler"
-      runtime       = "nodejs18.x"
-    }
+```
+[User Upload] -> [S3 Input Bucket]
+                       |
+             (S3 ObjectCreated Event)
+                       v
+             [Lambda Function] 
+                       | (Write Outputs)
+                       v
+             [S3 Output Bucket]
+```
 
-    # 3. Grant permission to S3 service principal to invoke Lambda
-    resource "aws_lambda_permission" "allow_s3" {
-      statement_id  = "AllowExecutionFromS3"
-      action        = "lambda:InvokeFunction"
-      function_name = aws_lambda_function.processor.function_name
-      principal     = "s3.amazonaws.com"
-      source_arn    = aws_s3_bucket.source_bucket.arn
-    }
+### B. Lambda Notification Trigger Configurations
+```hcl
+# 1. Private S3 Input & Output Buckets
+resource "aws_s3_bucket" "input_bucket" {
+  bucket = "my-input-images-bucket-12345"
+}
 
-    # 4. S3 Bucket Event Notification
-    resource "aws_s3_bucket_notification" "bucket_notification" {
-      bucket = aws_s3_bucket.source_bucket.id
+resource "aws_s3_bucket" "output_bucket" {
+  bucket = "my-output-images-bucket-12345"
+}
 
-      lambda_function {
-        lambda_function_arn = aws_lambda_function.processor.arn
-        events              = ["s3:ObjectCreated:*"]
-        filter_suffix       = ".jpg"
+# 2. IAM Role for Lambda
+resource "aws_iam_role" "lambda_exec" {
+  name = "lambda-image-processing-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
+      Principal = { Service = "lambda.amazonaws.com" }
+    }]
+  })
+}
+
+# 3. Lambda IAM permissions policy (Read from Input, Write to Output)
+resource "aws_iam_role_policy" "lambda_s3_policy" {
+  name = "lambda-s3-permissions"
+  role = aws_iam_role.lambda_exec.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["s3:GetObject"]
+        Resource = "${aws_s3_bucket.input_bucket.arn}/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = "${aws_s3_bucket.output_bucket.arn}/*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["logs:CreateLogGroup", "logs:CreateLogStream", "logs:PutLogEvents"]
+        Resource = "arn:aws:logs:*:*:*"
       }
+    ]
+  })
+}
 
-      depends_on = [aws_lambda_permission.allow_s3]
-    }
-    ```
-2.  **The Assumptions (Context):** The zip package `lambda_function_payload.zip` containing your handler code must exist in the workspace, or be pre-loaded to an S3 bucket before applying configurations.
-3.  **The Rationale (Why):** Wiring execution permissions using `aws_lambda_permission` is required before setting up the S3 notification block. Without this permission, S3 will fail to trigger the execution API of the Lambda engine.
-4.  **The Failure Loop (What if not):** If permissions are not configured, uploading images to the bucket will fail to trigger the Lambda function. S3 will drop the event payload silently, leaving your processing queue empty.
-5.  **Alternative Case (When to use 'if not'):** If processing loads require strict processing order and queue retention, route S3 events to an **SQS queue** first, and configure the Lambda function to poll from SQS.
+# 4. Lambda Function
+resource "aws_lambda_function" "image_processor" {
+  filename      = "image_processor.zip"
+  function_name = "image-processing-handler"
+  role          = aws_iam_role.lambda_exec.arn
+  handler       = "index.handler"
+  runtime       = "nodejs18.x"
+}
+
+# 5. Grant S3 invocation permissions
+resource "aws_lambda_permission" "allow_s3" {
+  statement_id  = "AllowExecutionFromS3"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.image_processor.function_name
+  principal     = "s3.amazonaws.com"
+  source_arn    = aws_s3_bucket.input_bucket.arn
+}
+
+# 6. Bucket notification trigger
+resource "aws_s3_bucket_notification" "trigger" {
+  bucket = aws_s3_bucket.input_bucket.id
+
+  lambda_function {
+    lambda_function_arn = aws_lambda_function.image_processor.arn
+    events              = ["s3:ObjectCreated:*"]
+  }
+
+  depends_on = [aws_lambda_permission.allow_s3]
+}
+```
+
+---
+
+## 4. Elastic Beanstalk Blue-Green Deployment Architecture
+
+AWS Elastic Beanstalk allows developers to deploy applications quickly. Blue-Green deployments isolate active versions and provide seamless upgrades.
+
+### A. Core Mechanics
+To perform a Blue-Green deployment on Elastic Beanstalk:
+1.  **Provision Environments:** Spin up the active environment (Blue) and a duplicate environment running the new software release (Green) under the same application parent.
+2.  **CNAME Swap:** Once testing on the Green environment is completed and verified healthy, perform a CNAME swap. Elastic Beanstalk swaps the DNS configurations of the environment URLs.
+3.  **Clean up:** Active traffic shifts immediately to Green. Keep the Blue environment active for a buffer period to support immediate rollbacks, then terminate or scale down.
+
+### B. Trade-offs: Blue-Green vs. Rolling Updates
+*   **Rolling Updates:** Updates instances in-place (incrementally). It is cost-efficient since no duplicate servers are provisioned, but runs the risk of mixed-version states (where active users hit two different version behaviors concurrently), is slow, and rollback requires redeploying old code.
+*   **Blue-Green Deployments:** Temporarily doubles resource consumption and costs, but ensures 100% version segregation, zero-downtime swaps, and instantaneous rollbacks (just swap CNAME back) if production bugs are discovered.

@@ -255,6 +255,69 @@ WORM (Write Once, Read Many) configurations prevent object deletion or modificat
 
 ---
 
+## 9. Terraform Resource Primitives for S3 Storage
+
+Manage S3 bucket properties, access policies, and website hosting using Terraform HCL resources.
+
+### A. Standard S3 Bucket with Encryption and Versioning
+```hcl
+# 1. Create S3 Bucket
+resource "aws_s3_bucket" "bucket" {
+  bucket = "my-company-data-vault-12345"
+}
+
+# 2. Configure Bucket Versioning
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# 3. Configure Server-Side Encryption (SSE-S3 by default)
+resource "aws_s3_bucket_server_side_encryption_configuration" "encrypt" {
+  bucket = aws_s3_bucket.bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+# 4. Enforce Private Block Access
+resource "aws_s3_bucket_public_access_block" "private" {
+  bucket                  = aws_s3_bucket.bucket.id
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+```
+
+### B. Static Website Hosting S3 Configuration
+```hcl
+# Create Bucket for Website
+resource "aws_s3_bucket" "web" {
+  bucket = "my-company-static-website-12345"
+}
+
+# Configure Website configuration block
+resource "aws_s3_bucket_website_configuration" "web_config" {
+  bucket = aws_s3_bucket.web.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
+  }
+}
+```
+
+---
+
 ## 🔍 Deeper Dive Notes
 This table automatically displays all deeper notes, use cases, and pitfalls associated with S3.
 
