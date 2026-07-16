@@ -53,12 +53,12 @@ GitHub Actions separates compile-time evaluation (orchestrator level) from runti
 ### A. Context Expressions vs. Runner Shell Variables
 Understanding the difference between orchestrator evaluation and runner host evaluation is critical:
 
-| **Feature** | **GitHub Actions Contexts (`${{ env.KEY }}`)** | **Runner Shell Variables (`$KEY` / `$GITHUB_ENV`)** |
-| :--- | :--- | :--- |
-| **Evaluation Time** | Pre-processed by the GHA orchestrator **before** the job is sent to the runner. | Evaluated at runtime by the shell interpreter on the runner host. |
-| **Parsing Context** | Works anywhere in the YAML (triggers, `if` conditions, `with` blocks). | Only works within the `run` shell command blocks. |
-| **Security** | Safe from shell injection if sanitized; can be used in YAML structure. | Subject to shell interpolation and environment visibility. |
-| **Scope** | Available globally or scoped depending on context map. | Scoped to the current shell session or written to `$GITHUB_ENV` for subsequent steps. |
+| **Feature**         | **GitHub Actions Contexts (`${{ env.KEY }}`)**                                  | **Runner Shell Variables (`$KEY` / `$GITHUB_ENV`)**                                   |
+| :------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------ |
+| **Evaluation Time** | Pre-processed by the GHA orchestrator **before** the job is sent to the runner. | Evaluated at runtime by the shell interpreter on the runner host.                     |
+| **Parsing Context** | Works anywhere in the YAML (triggers, `if` conditions, `with` blocks).          | Only works within the `run` shell command blocks.                                     |
+| **Security**        | Safe from shell injection if sanitized; can be used in YAML structure.          | Subject to shell interpolation and environment visibility.                            |
+| **Scope**           | Available globally or scoped depending on context map.                          | Scoped to the current shell session or written to `$GITHUB_ENV` for subsequent steps. |
 
 #### Evaluation Example:
 ```yaml
@@ -77,15 +77,100 @@ jobs:
 ```
 
 ### B. Supported Contexts
-GHA makes execution metadata available through contexts:
-*   `github`: Details about the workflow run (e.g., `github.ref`, `github.sha`, `github.event`).
-*   `env`: Custom variables defined globally, in jobs, or steps.
-*   `steps`: Outputs of steps that have executed (e.g., `steps.<step_id>.outputs.<output_key>`).
-*   `needs`: Outputs and status of jobs listed as dependencies.
-*   `runner`: Information about the current executing runner (e.g., `runner.os`, `runner.temp`).
-*   `secrets`: Encrypted secrets defined at the repository or environment level.
-*   `inputs`: User inputs supplied via manual or reusable workflow triggers.
-*   `matrix`: Runtime values of the current matrix execution iteration.
+GHA makes execution metadata available through contexts. Below is a detailed breakdown of each context with concrete YAML examples:
+
+1. **`github`**: Contains details about the current workflow run and the event that triggered it.
+   ```yaml
+   # Example: Triggering execution conditionally based on branch name and SHA
+   steps:
+     - name: Build branch
+       if: github.ref == 'refs/heads/main'
+       run: echo "Building main branch at commit: ${{ github.sha }}"
+   ```
+
+2. **`env`**: Allows you to read environment variables set at the workflow, job, or step level.
+   ```yaml
+   # Example: Referencing global variables
+   env:
+     DEPLOY_REGION: "us-east-1"
+   steps:
+     - name: Output region
+       run: echo "Target region is: ${{ env.DEPLOY_REGION }}"
+   ```
+
+3. **`steps`**: Contains the outputs and execution statuses of steps within the current job.
+   ```yaml
+   # Example: Passing outputs sequentially between steps
+   steps:
+     - name: Generate Value
+       id: generator
+       run: echo "random_id=job-id-99" >> $GITHUB_OUTPUT
+     - name: Use Value
+       run: echo "Received random ID: ${{ steps.generator.outputs.random_id }}"
+   ```
+
+4. **`needs`**: Accesses the outputs, result status (`success`, `failure`, `skipped`, or `cancelled`) of jobs listed as dependencies.
+   ```yaml
+   # Example: Controlling downstream execution based on upstream results
+   jobs:
+     build:
+       runs-on: ubuntu-latest
+       outputs:
+         build_id: ${{ steps.save.outputs.id }}
+       # ...
+     deploy:
+       needs: build
+       if: needs.build.result == 'success'
+       runs-on: ubuntu-latest
+       steps:
+         - run: echo "Deploying build number: ${{ needs.build.outputs.build_id }}"
+   ```
+
+5. **`runner`**: Accesses metadata about the host VM executing the current job.
+   ```yaml
+   # Example: Locating dynamic workspace and OS parameters
+   steps:
+     - name: Inspect runner platform
+       run: |
+         echo "Host Operating System: ${{ runner.os }}"
+         echo "Host Temp Directory: ${{ runner.temp }}"
+   ```
+
+6. **`secrets`**: Accesses encrypted variables configured in repository or environment scopes.
+   ```yaml
+   # Example: Injecting secrets into step execution environment
+   steps:
+     - name: Query Database
+       env:
+         DB_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+       run: ./db_query.sh --password "$DB_PASSWORD"
+   ```
+
+7. **`inputs`**: Accesses variables supplied via manual triggers (`workflow_dispatch`) or reusable triggers (`workflow_call`).
+   ```yaml
+   # Example: Dynamic environment choice via manual UI dispatch
+   on:
+     workflow_dispatch:
+       inputs:
+         target_env:
+           type: string
+           default: "staging"
+   steps:
+     - run: echo "Target destination: ${{ inputs.target_env }}"
+   ```
+
+8. **`matrix`**: Accesses parameters of the current matrix execution loop.
+   ```yaml
+   # Example: Multi-version setup referencing matrix keys
+   strategy:
+     matrix:
+       python-version: ["3.11", "3.12"]
+   steps:
+     - name: Set up Python
+       uses: actions/setup-python@v5
+       with:
+         python-version: ${{ matrix.python-version }}
+   ```
 
 ---
 
