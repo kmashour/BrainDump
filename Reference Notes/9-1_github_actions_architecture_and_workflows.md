@@ -1,3 +1,14 @@
+---
+domains:
+  - "github-actions"
+class: reference-note
+tier: reference-note
+tags:
+  - github-actions/architecture
+  - github-actions/workflows
+  - github-actions/runners
+---
+
 # Module 9-1: GitHub Actions Architecture & Workflow Design
 
 This module covers the core execution architecture of GitHub Actions (GHA), event-driven triggers, runtime VM sandboxes, and the foundational syntax used to define automated workflows.
@@ -84,359 +95,250 @@ When designing workflow environments, choosing the appropriate runner topology i
 | **Security Risks** | Negligible. Untrusted pull request code cannot compromise other systems or projects. | High. Untrusted pull request code runs with host permissions, creating risks of lateral network movement. |
 | **Cost Structure** | Pay-per-minute billing (based on OS and hardware size). | Cost of server infrastructure and power; GHA orchestration is free. |
 
-### B. Self-Hosted Runner outbound communication model
+### B. Self-Hosted Runner Outbound Communication Model
 Unlike typical agent architectures that require inbound ports (such as SSH) to be open on the runner machine, self-hosted runners utilize an **outbound-only polling architecture**. The runner daemon calls GitHub APIs over HTTPS (port 443) using a persistent long-polling connection (WebSockets). This eliminates the need to configure inbound firewall holes, simplifying deployment within secure private networks.
 
+### C. Standard vs. Larger Hosted Runners
+GitHub provides different tiers of hosted runners:
+*   **Standard Runners:** Typically 2 vCPUs, 7 GB RAM, and 14 GB of SSD space. They are free for public repositories and have a monthly free tier allocation for private repositories.
+*   **Larger Runners:** Up to 64 vCPUs and 256 GB RAM. These support features like static IP ranges, autoscaling, and customized networking. They are billed at custom per-minute rates.
 
 ---
 
-## 3. Deep-Intuition (AARF) Breakdowns: Workflow Triggers & Event Filters
+## 3. Workflow Triggers & Event Filters
 
-### A. Event Filtering Rules (Branch/Path Limits)
-#### Deep-Intuition (AARF) Breakdown:
-1. **The Answer (Core Pattern):** Utilize explicit filters (`branches`, `paths`, and `tags`) to limit workflow executions to specific scopes, avoiding unnecessary runner billing cycles.
-    ```yaml
-    name: Optimized CI
-    on:
-      push:
-        branches:
-          - main
-          - 'releases/**'
-        paths:
-          - 'src/**'
-          - 'package.json'
-      pull_request:
-        branches:
-          - main
-    ```
-2. **The Assumptions (Context):** The filters use glob patterns. Branch matching is case-sensitive, and paths are evaluated relative to the repository root.
-3. **The Rationale (Why):** By default, listing `on: [push]` triggers the workflow on *every* commit to *any* branch, and for *any* file change. Restricting triggering to main branch pushes and source directory changes ensures that documentation edits, helper scripts, or experimental feature branch pushes do not consume runner minutes.
-4. **The Failure Loop (What if not):** If filters are omitted, push/PR events on scratch/temporary branches, doc updates (e.g., editing `README.md`), or local script updates will trigger the entire build-and-test suite. This wastes runner resources, slows down the CI queue, and increases organization costs.
-5. **Alternative Case (When to use 'if not'):** For manual releases or scheduled nightly regression builds, use `workflow_dispatch` or `schedule` cron configurations instead of branch-push event filters:
-    ```yaml
-    on:
-      schedule:
-        - cron: '0 2 * * 1-5' # Run at 02:00 UTC Monday-Friday
-      workflow_dispatch:
-        inputs:
-          debug_level:
-            description: 'Log Verbosity'
-            default: 'info'
-            required: true
-    ```
-6. **The Evolutionary Bridge:** In legacy on-premises setups, engineers configured central cron servers or Jenkins poll triggers that periodically scanned Git repositories via SSH loops (causing high CPU overhead and polling lag). Modern CI/CD systems like GitHub Actions use real-time webhook architectures, where GitHub fires event payloads immediately after repository state changes, enabling zero-latency build starts.
+Workflows are event-driven. GHA provides granular controls to specify which events trigger executions.
 
-### B. Trigger Syntax Elements & Wildcard Matching
-GitHub Actions uses specific glob patterns for filters:
-*   `*`: Matches zero or more characters, excluding directory separators (`/`). For example, `releases/*` matches `releases/v1` but not `releases/v1/beta`.
-*   `**`: Matches zero or more characters, including directory separators (`/`). For example, `releases/**` matches `releases/v1/beta`.
-*   `?`: Matches zero or one character. For example, `v?` matches `v1` and `v2`.
-*   `+`: Matches one or more characters.
-*   `!`: Negates the pattern (excludes paths/branches).
-
----
-
-## 4. Hands-on Basic Configuration
-
-### Repository Structure
-```
-repo-root/
-├── .github/
-│   └── workflows/
-│       └── basic-ci.yml
-├── src/
-│   └── main.js
-└── package.json
-```
-
-### Key Syntax Elements
-*   `on`: Defines the triggers that start the workflow. Can be a list of events or a structured map of event filters.
-*   `runs-on`: Specifies the runner environment for a job (e.g., `ubuntu-latest`, `windows-2022`, `macos-14`, or custom self-hosted tags).
-*   `steps`: Contains the sequential tasks executed by the job.
-*   `uses`: Invokes a reusable action (e.g., `actions/checkout@v4`).
-*   `run`: Executes shell commands on the runner.
-*   `with`: Supplies input parameters to the referenced action.
-*   `env`: Defines environment variables at the workflow, job, or step level.
-*   `defaults.run.working-directory`: Configures a default directory for all shell commands in the workflow or job.
-*   `defaults.run.shell`: Configures the default shell interpreter (e.g., `bash`, `pwsh`, `cmd`, `sh`).
-
-### Shell Defaults by OS
-GitHub-hosted runners resolve default shell commands as follows:
-*   **Linux (`ubuntu-*`):** Runs in `bash`.
-*   **macOS (`macos-*`):** Runs in `bash`.
-*   **Windows (`windows-*`):** Runs in PowerShell Core (`pwsh`). If `pwsh` is not available, it falls back to Windows PowerShell.
-
----
-
-## 5. Job Chaining, Dependencies, and DAG Architecture (`needs` and `if`)
-
-By default, all jobs declared in a workflow file execute in parallel (assuming runner VM slots are available). To establish order, orchestrate complex delivery stages, and handle conditional alerts, GHA uses a Directed Acyclic Graph (DAG) architecture managed by the `needs` key and `if` conditional checks.
-
-### A. Core DAG Patterns
-
-#### 1. Parallel Fan-Out (Forking)
-*   **The Pattern:** A single initialization job runs first, and once successful, triggers multiple testing or linting jobs to run in parallel.
-*   **The Syntax:** Define the target job name inside the `needs` parameter of downstream jobs.
-    ```yaml
-    jobs:
-      lint:
-        runs-on: ubuntu-latest
-      test-unit:
-        needs: lint
-        runs-on: ubuntu-latest
-      test-integration:
-        needs: lint
-        runs-on: ubuntu-latest
-    ```
-*   **Mechanics:** `test-unit` and `test-integration` are blocked until `lint` returns exit `0`. Once `lint` succeeds, the GHA orchestrator allocates two independent runner VMs, running the test suites concurrently.
-
-#### 2. Parallel Fan-In (Join Synchronisation Gate)
-*   **The Pattern:** Block a deployment or compilation task until all parallel test jobs successfully finish.
-*   **The Syntax:** Pass an array of dependencies to the `needs` key.
-    ```yaml
-    deploy-staging:
-      needs: [test-unit, test-integration]
-      runs-on: ubuntu-latest
-    ```
-*   **Mechanics:** The GHA orchestrator holds `deploy-staging` in a queued state until BOTH `test-unit` and `test-integration` complete successfully. If either job fails, `deploy-staging` is automatically **skipped**.
-
----
-
-### B. Conditional Execution Gating & Status Checks
-
-By default, if an upstream job fails, GHA stops execution down the graph branch. To override this and build robust alert notifications or teardown cleanups, configure `if:` statements using GHA status check functions:
-
-*   `success()`: Evaluates to `true` if all parent jobs succeeded. (This is the default check inserted by GHA if you omit the `if` block entirely).
-*   `failure()`: Evaluates to `true` if **at least one** parent job failed. Perfect for trigger notification pipelines:
-    ```yaml
-    notify-failure:
-      needs: [lint, test-unit, test-integration, deploy-staging]
-      if: failure()
-      runs-on: ubuntu-latest
-    ```
-*   `always()`: Evaluates to `true` under all execution states, including when jobs fail or the workflow is cancelled by a user. Essential for cleanups:
-    ```yaml
-    teardown-cleanup:
-      needs: [lint, test-unit, test-integration, deploy-staging]
-      if: always()
-      runs-on: ubuntu-latest
-    ```
-*   `cancelled()`: Evaluates to `true` only if the workflow execution was explicitly cancelled.
-
----
-
-### C. Advanced Scenario: Tolerating Partial Failures in Job Chains
-
-In production environments, you may encounter situations where a specific dependency is volatile (e.g., flaky integration tests) and the business permits deploying even if that job fails, while strictly blocking the deployment if unit tests fail.
-
-Here are the two primary senior-level implementations and their trade-offs:
-
-#### Implementation 1: The Job-Level `continue-on-error: true`
-*   **How it works:** Set `continue-on-error: true` inside the volatile job's definition.
-    ```yaml
-    jobs:
-      test-unit:
-        runs-on: ubuntu-latest
-      test-integration:
-        runs-on: ubuntu-latest
-        continue-on-error: true # <-- Prevents job failure from stopping the workflow
-      deploy-staging:
-        needs: [test-unit, test-integration]
-        runs-on: ubuntu-latest
-    ```
-*   **Trade-off Analysis:**
-    *   *Pros:* Extremely simple to write. The deployment job runs automatically because the failed job's status is reported as "Success" (with a warning icon) in the UI.
-    *   *Cons:* Masks the failure. Because the run registers as overall "Passed" (green checkmark on the Git commit history), developers might ignore the fact that the integration tests are failing, letting critical bugs slip through.
-
-#### Implementation 2: Fine-Grained Status Evaluation (`needs.<job_id>.result`)
-*   **How it works:** Allow the volatile job to fail normally, but override the downstream deployment's conditional checks using `always()` and explicit state checks.
-    ```yaml
-    jobs:
-      test-unit:
-        runs-on: ubuntu-latest
-      test-integration:
-        runs-on: ubuntu-latest # Fails normally (exits 1)
-      deploy-staging:
-        needs: [test-unit, test-integration]
-        runs-on: ubuntu-latest
-        if: |
-          always() &&
-          needs.test-unit.result == 'success' &&
-          (needs.test-integration.result == 'success' || needs.test-integration.result == 'failure')
-    ```
-*   **Trade-off Analysis:**
-    *   *Pros:* Complete visibility. The pipeline is marked as "Failed" (red X on the Git commit badge), forcing developers to inspect the integration failures. However, the deployment to staging is not blocked because the downstream `if` statement explicitly permits a `failure` result from the integration suite, as long as the unit test suite returns `success`.
-    *   *Cons:* Requires more complex YAML syntax and an understanding of the `needs` evaluation context.
-
----
-
-## 6. Annotated Production-Grade YAML PoC Blocks
-
-### PoC 1: Foundational CI Workflow Blueprint
-This workflow implements clean Node.js environment bootstrapping, dependency caching, compile validation, and unit testing.
+### A. Core Triggering Mechanics
+Workflows define their triggers under the `on:` key. Multiple triggers can be defined; the workflow will run if **any** of the events occur (logical OR).
 
 ```yaml
-# .github/workflows/foundational-ci.yml
-name: Foundational CI
-
 on:
   push:
-    branches: [ main ]
+    branches: [ main, release/* ]
   pull_request:
     branches: [ main ]
-
-jobs:
-  test-suite:
-    name: Run Unit Tests
-    runs-on: ubuntu-latest
-    
-    steps:
-      # Step 1: Retrieve project code
-      - name: Retrieve Code
-        uses: actions/checkout@v4
-
-      # Step 2: Initialize NodeJS runtime
-      - name: Initialize NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm' # Configures built-in npm caching
-
-      # Step 3: Clean install dependencies based on package-lock.json
-      - name: Install Project Packages
-        run: npm ci
-
-      # Step 4: Run unit tests
-      - name: Run Test Scripts
-        run: npm test
+  schedule:
+    - cron: '0 0 * * *' # Daily at midnight UTC
 ```
 
-### PoC 2: Advanced Trigger Configuration with Inputs and Cron Scheduler
-This workflow demonstrates path-filtered pull request triggers, scheduled nightly jobs, and manual execution inputs.
-`echo "Trigger Source Event: ${{ github.event_name }}"` -->   `if: github.event_name == 'schedule'`
+### B. Trigger Types
+1.  **Repository Events:** Triggered by git operations or metadata changes (e.g., `push`, `pull_request`, `issues`, `release`).
+2.  **Manual Triggers (`workflow_dispatch`):** Allows triggering the workflow manually via the GitHub UI or API. It supports input parameters.
+    ```yaml
+    on:
+      workflow_dispatch:
+        inputs:
+          environment:
+            description: 'Target deployment environment'
+            required: true
+            default: 'staging'
+            type: choice
+            options:
+              - development
+              - staging
+              - production
+    ```
+3.  **External Triggers (`repository_dispatch`):** Triggered by external systems invoking the GitHub API. It accepts a custom JSON payload.
+    ```yaml
+    on:
+      repository_dispatch:
+        types: [ webhook-trigger ]
+    ```
+4.  **Cross-Workflow Triggers (`workflow_call`):** Configures the workflow to be a reusable workflow that can be called by other pipelines.
+
+### C. Event Filters
+Filters restrict workflow execution to specific branches, paths, or tags:
+*   **Branches:** Use `branches` or `branches-ignore` (cannot be used together in the same event).
+*   **Paths:** Use `paths` or `paths-ignore` to trigger workflows only when specific files change.
+*   **Tags:** Use `tags` or `tags-ignore` to run pipelines only when specific git tags are pushed.
+
 ```yaml
-# .github/workflows/advanced-triggers.yml
-name: Advanced Triggers & Schedulers
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+```
+
+---
+
+## 4. Reusable Actions & Marketplace
+
+Workflows leverage modular automation blocks called Actions. 
+
+### A. Uses vs. Run
+*   **`run`**: Executes custom shell scripts (e.g., `bash`, `pwsh`, `python`) on the runner host.
+*   **`uses`**: Runs a pre-packaged action from the GitHub Marketplace, a local directory, or another repository.
+
+```yaml
+steps:
+  - name: Clone Code
+    uses: actions/checkout@v4 # Reusable marketplace action
+    
+  - name: Run Tests
+    run: npm run test # Custom shell execution
+```
+
+### B. Action Selection & Versioning
+When using marketplace or external actions, pinning the version is critical to prevent pipeline breakage due to upstream changes. GHA supports three pinning strategies:
+
+1.  **Tag Pinning (`uses: actions/checkout@v4`):** Flexible, but risk of tag reassignment.
+2.  **Branch Pinning (`uses: actions/checkout@main`):** Pulls the latest commits on a branch. High risk of breaking builds.
+3.  **SHA-1 Pinning (`uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29`):** **Most Secure**. Pinning to an immutable commit SHA prevents supply chain attacks and unexpected updates.
+
+---
+
+## 5. Step-by-Step Tutorial: Flask Docker Pipeline
+
+This hands-on tutorial configures a Flask application build, smoke test, and container push workflow.
+
+### A. Project Structure
+Create the following files in your repository:
+```text
+.
+├── .github
+│   └── workflows
+│       └── flask-ci.yml
+├── app.py
+├── requirements.txt
+└── Dockerfile
+```
+
+### B. Application Files
+
+**`app.py`:**
+```python
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return jsonify(message="Hello from GitHub Actions Course!")
+
+@app.route('/health')
+def health():
+    return jsonify(status="healthy"), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
+```
+
+**`requirements.txt`:**
+```text
+Flask==3.0.3
+werkzeug==3.0.3
+```
+
+**`Dockerfile`:**
+```dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+```
+
+### C. Workflow Manifest
+Add the following to `.github/workflows/flask-ci.yml`. This workflow will run on pull request changes to python files on the feature branches, as well as manually. It builds a Docker image, spins it up in a container, executes a smoke test and health-check, and pushes the verified image to DockerHub if credentials are provided in secrets (`DOCKER_USERNAME` and `DOCKER_PASSWORD`).
+
+```yaml
+name: Flask Application CI
 
 on:
   push:
     branches:
-      - 'main'
-      - 'releases/v*'
-    tags:
-      - 'v*.*.*'
+      - main
     paths:
-      - 'src/**'
-      - 'package.json'
-      - '!src/**/*.md' # Ignore updates to documentation within src/
-  
+      - '**.py'
+      - 'Dockerfile'
+      - 'requirements.txt'
   pull_request:
     branches:
       - main
     paths:
-      - 'src/**'
-
-  schedule:
-    # Run at 02:00 UTC, Monday through Friday
-    - cron: '0 2 * * 1-5'
-
+      - '**.py'
+      - 'Dockerfile'
+      - 'requirements.txt'
   workflow_dispatch:
-    inputs:
-      target_env:
-        description: 'Target Deployment Environment'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-          - dev
-          - staging
-          - sandbox
-      run_migrations:
-        description: 'Execute database migrations'
-        required: false
-        default: false
-        type: boolean
 
 jobs:
-  run-dispatch-logic:
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Parse Trigger Inputs
-        run: |
-          echo "Target Environment: ${{ inputs.target_env || 'N/A' }}"
-          echo "Execute Migrations: ${{ inputs.run_migrations || 'false' }}"
-          echo "Trigger Source Event: ${{ github.event_name }}"
-```
-
-### PoC 3: Multi-Job Directed Acyclic Graph (DAG) Pipeline
-This workflow defines sequential dependencies (`needs`) and uses status gate checks to handle failures and perform cleanups.
-
-```yaml
-# .github/workflows/multi-job-pipeline.yml
-name: Enterprise DAG Pipeline
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  lint:
-    name: Code Linter
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
-      - name: Run Linter
-        run: |
-          echo "Running code style checks..."
-          # exit 0 to proceed, exit 1 to fail
 
-  test:
-    name: Core Unit Tests
-    runs-on: ubuntu-latest
-    needs: lint # Requires linter to pass before starting
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Run Unit Tests
-        run: |
-          echo "Executing test suites..."
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-  deploy:
-    name: Deploy Package
-    runs-on: ubuntu-latest
-    needs: test # Requires tests to pass before deploying
-    steps:
-      - name: Deploy
+      - name: Install Linting Tools
         run: |
-          echo "Deploying application artifact to staging..."
+          python -m pip install --upgrade pip
+          pip install flake8
 
-  notify-on-failure:
-    name: Send Slack Notification
-    runs-on: ubuntu-latest
-    needs: [lint, test, deploy]
-    if: failure() # Runs only if one of the preceding jobs fails
-    steps:
-      - name: Failure Alert
+      - name: Lint Code
         run: |
-          echo "Pipeline job failed. Dispatching Slack alert..."
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings.
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  teardown:
-    name: Global Resource Cleanup
-    runs-on: ubuntu-latest
-    needs: [lint, test, deploy]
-    if: always() # Executes under any circumstances, even if jobs fail or get cancelled
-    steps:
-      - name: Run Cleanup
+      - name: Build Docker Image
         run: |
-          echo "Wiping temporary variables and resources..."
+          docker build -t flask-app-test:latest .
+
+      - name: Start Container for Smoke Testing
+        run: |
+          docker run -d -p 5000:5000 --name flask-container flask-app-test:latest
+          sleep 3 # Allow Flask app to start up inside container
+
+      - name: Execute Smoke Tests
+        run: |
+          # Test base endpoint
+          response=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/)
+          if [ "$response" -ne 200 ]; then
+            echo "Base endpoint failed with HTTP $response"
+            exit 1
+          fi
+
+          # Test health endpoint
+          health_status=$(curl -s http://localhost:5000/health | grep -o '"status":"healthy"')
+          if [ -z "$health_status" ]; then
+            echo "Health check failed"
+            exit 1
+          fi
+          echo "Smoke tests completed successfully!"
+
+      - name: Clean Up Test Container
+        if: always()
+        run: |
+          docker stop flask-container || true
+          docker rm flask-container || true
+
+      - name: Log in to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push Container to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          docker tag flask-app-test:latest ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/flask-app:latest
 ```
-
----
-
-## 📖 Sources & Ingested Transcripts
-*   `inflow/What is GitHub Actions  Build Your First Workflow from Scratch.txt`
-*   `inflow/GitHub Actions Triggers & Runners Explained  Events, Contexts & Hosted Runners.txt`
-*   `inflow/Build Your First Production-Style Workflow with GitHub Actions.txt`
-*   `inflow/GitHub Actions Workflow Logic Explained  Filters, Contexts, Variables & Expressions.txt`
-*   `inflow/GithubAction-Elfakharny.md`

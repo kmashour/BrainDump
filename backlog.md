@@ -2,10 +2,10 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
-## [2026-07-16] - Ingestion & Integration: AWS & Terraform Core (Course Transcripts)
+## [2026-07-16] - Ingestion & Integration: AWS & Terraform Core & GitHub Actions Basics to Production
 
 ### Refactored / Upgraded
-- **Reference Notes:**
+- **Reference Notes (AWS & Terraform Core):**
   - [[Reference Notes/10-1_terraform_foundations_and_state.md|Module 10-1: Terraform Foundations & State Management]]: Integrated core Terraform engine architecture (Directed Acyclic Graph), AWS provider credential authentication precedence, remote backend migration setups with S3 and DynamoDB write locking, directory best practices, local/remote provisioners, and legacy vs modern declarative import blocks.
   - [[Reference Notes/10-2_variables_types_and_expressions.md|Module 10-2: Variables, Types & Expression Syntax]]: Integrated input variable precedence hierarchy and custom validation blocks, homogeneous collections (lists vs sets) and heterogeneous structural objects, ternary conditionals, splat expressions, dynamic blocks iteration loops, built-in functions categories, and dynamic data sources querying.
   - [[Reference Notes/10-3_meta_arguments_lifecycle_and_state.md|Module 10-3: Meta-Arguments, Lifecycle Control & State Ops]]: Integrated list index shifting issues under count vs. key-value map boundaries inside for_each loops, explicit depends_on dependencies, and zero-downtime swaps via create_before_destroy, prevent_destroy, and ignore_changes.
@@ -17,6 +17,10 @@ This backlog tracks all updates, modifications, and restructuring activities per
   - [[Reference Notes/3-9_aws_vpc_networking.md|Module 3-9: AWS VPC Networking]]: Appended Terraform resource primitives for VPC Peering network routing.
   - [[Reference Notes/3-13_aws_cloudfront_cdn.md|Module 3-13: AWS CloudFront CDN & AWS Global Accelerator]]: Appended Terraform resource primitives for CloudFront distribution setups and Origin Access Control.
   - [[Reference Notes/3-18_serverless.md|Module 3-18: AWS Serverless]]: Appended Terraform resource primitives for Lambda function executions, roles, and S3 event triggers.
+- **Reference Notes (GitHub Actions Basics to Production):**
+  - [[Reference Notes/9-1_github_actions_architecture_and_workflows.md|Module 9-1: GitHub Actions Architecture & Workflow Design]]: Integrated core runner VM sandboxing, explicit checkout logic, outbound long-polling connectivity, custom trigger types, event filters, reusable actions, version pinning, and a Flask container build/push project.
+  - [[Reference Notes/9-2_github_actions_advanced_execution.md|Module 9-2: Advanced Pipeline Control & Execution]]: Integrated orchestrator compile-time expressions vs runner VM runtime shell variables, general-purpose and status functions, inputs/outputs propagation across jobs and reusable workflows, artifacts archiving, dependency caching lookup rules (`hashFiles`), and fail-fast matrix strategies.
+  - [[Reference Notes/9-3_github_actions_administration_and_security.md|Module 9-3: Runner Administration & Pipeline Hardening]]: Integrated environment-scoped variables and deployment protection gates (reviews, timers), GITHUB_TOKEN scope hardening, secretless OpenID Connect (OIDC) JWT token exchange with AWS IAM, self-hosted runner systemd service installation, and a comparative architectural table of GHA vs Jenkins.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files in `inflow/`:
@@ -51,6 +55,27 @@ Processed and integrated the following files in `inflow/`:
 - `inflow/2830 - AWS 3-tier Architecture With Terraform  End-to-End Real-Time Project.txt`
 - `inflow/2930 - End-to-end GitOps With Terraform and ArgoCD For EKS  Production-grade Kubernetes Project.txt`
 - `inflow/3030 - Drift Detection and Remediation Using Terraform and GitHub Actions  Real Time Project.txt`
+- `inflow/What is GitHub Actions  Build Your First Workflow from Scratch.txt`
+- `inflow/GitHub Actions Triggers & Runners Explained  Events, Contexts & Hosted Runners.txt`
+- `inflow/Build Your First Production-Style Workflow with GitHub Actions.txt`
+- `inflow/GitHub Actions Workflow Logic Explained  Filters, Contexts, Variables & Expressions.txt`
+- `inflow/GitHub Actions Functions Explained  Build a Production-Style CI Pipeline.txt`
+- `inflow/GitHub Actions Outputs Explained  Step, Job & Reusable Workflow Outputs.txt`
+- `inflow/GitHub Actions Artifacts & Caching Explained  Share Files & Optimize Builds.txt`
+- `inflow/GitHub Actions Matrix Strategy Explained  Multi-OS, Multi-Version Testing at Scale.txt`
+- `inflow/GitHub Actions Environments Explained  Variables, Secrets, Approvals & Protection Rules.txt`
+- `inflow/GitHub Actions Inputs Explained  Workflow Inputs, Reusable Workflows & Production Use Cases.txt`
+- `inflow/GithubAction-Elfakharny.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/01-GitHub-Actions/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/02-Workflow-Triggers/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/03-Actions/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/04-Filters-Variables-Expressions-Contexts/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/05-Functions/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/06-Inputs/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/07-Outputs/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/08-Artifacts-&-Caching/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/09-Matrix-Strategy/README.md`
+- `inflow/GitHub-Actions-Basics-To-Production-main/10-Environments/README.md`
 
 ---
 
