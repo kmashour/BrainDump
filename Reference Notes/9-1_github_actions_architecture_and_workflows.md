@@ -79,7 +79,48 @@ GitHub Actions is not merely a CI/CD platform; it is a general-purpose repositor
   uses: actions/checkout@v4
 ```
 
+### D. Concurrency vs. Parallelism in Workflow Execution
+In computing, **concurrency** is dealing with many tasks at once (often via context-switching on a shared resource), whereas **parallelism** is executing many tasks at the same time (using multiple compute resources). In GitHub Actions:
+*   **Default Execution Model:** Under the hood, GitHub Actions operates using **true parallelism**. Workflows and jobs do not share CPU time-slicing on a single host. By default, GitHub provisions completely separate, isolated Virtual Machines (Runners) hosted on Azure VMs for each active job.
+*   **Simultaneous Executions:** If you trigger multiple workflows simultaneously (or trigger the same workflow multiple times through rapid Git pushes), GitHub spins them up in parallel on separate runners, subject to account/org concurrency limits.
+*   **The Execution Hierarchy:**
+    *   **Workflows:** Run in parallel by default, unless limited by a `concurrency` group.
+    *   **Jobs (inside a workflow):** Run in parallel by default, unless chained sequentially via the `needs:` keyword.
+    *   **Steps (inside a job):** Always run **sequentially** on the same VM runner machine, sharing the filesystem and memory state.
+
+#### Scenario: Concurrent Git Push Events
+When multiple developers push commits concurrently (e.g., to different branches or rapid pushes to the same branch), GitHub evaluates every YAML workflow file in `.github/workflows/` independently against each push event.
+*   *Example:* If a repo has three workflows (`lint.yml`, `test.yml`, and `deploy.yml`) configured to run `on: push`, and Developer A pushes code to `Branch-A` while Developer B pushes code to `Branch-B` a second later:
+    *   GitHub queues **6 distinct workflows** (3 for Developer A, 3 for Developer B).
+    *   GitHub allocates **6 separate Runner VMs** executing in true parallel.
+    *   The runs are fully isolated from one another.
+
+#### Sequential Jobs (`needs`) vs. Single-Job Steps
+If jobs run on separate clean VMs, they require repeating `actions/checkout` and passing files via artifacts. Why not consolidate everything into sequential steps inside a single job? While simpler, splitting into separate jobs with `needs` is essential for:
+1.  **Manual Approval Gates:** Steps cannot pause for human verification. Jobs can target an "Environment" which allows pausing the pipeline until a reviewer approves the deployment.
+2.  **Partial Pipeline Re-runs:** If a single job with 50 steps fails at step 49 (e.g., due to a deployment timeout), you must re-run the entire job, repeating all tests. With separate jobs, you can re-run *only* the failed deployment job while keeping the successful test job green.
+3.  **The Fan-Out / Fan-In Pattern:** Steps run strictly in sequence, which increases execution time. Splitting allows you to **fan-out** (run unit tests, integration tests, and security scans concurrently on different VMs) and then **fan-in** (converge into a single deployment job once all upstream jobs pass).
+
+```
+          [ Job 1: Build Application ]
+                       │
+       ┌───────────────┼───────────────┐
+       │ (Fan-Out)     │ (Fan-Out)     │ (Fan-Out)
+       ▼               ▼               ▼
+  [ Job 2:   ]    [ Job 3:   ]    [ Job 4:   ]
+  [ Unit     ]    [ Integr.  ]    [ Security ]
+  [ Tests    ]    [ Tests    ]    [ Scan     ]
+       │               │               │
+       └───────────────┼───────────────┘
+                       │ (Fan-In)
+                       ▼
+          [ Job 5: Deploy to Staging ]
+```
+
+4.  **Heterogeneous OS and Hardware:** Steps are locked to one runner. Separate jobs allow utilizing different operating systems (macOS, Windows, Ubuntu) or runner environments (e.g., testing on clean standard hosted runners, deploying on private self-hosted runners sitting behind a secure VPC).
+
 ---
+
 
 ## 2. In-Depth Architecture: Runner Sandboxing & Execution Flows
 
@@ -96,12 +137,43 @@ When designing workflow environments, choosing the appropriate runner topology i
 | **Cost Structure** | Pay-per-minute billing (based on OS and hardware size). | Cost of server infrastructure and power; GHA orchestration is free. |
 
 ### B. Self-Hosted Runner Outbound Communication Model
-Unlike typical agent architectures that require inbound ports (such as SSH) to be open on the runner machine, self-hosted runners utilize an **outbound-only polling architecture**. The runner daemon calls GitHub APIs over HTTPS (port 443) using a persistent long-polling connection (WebSockets). This eliminates the need to configure inbound firewall holes, simplifying deployment within secure private networks.
+Unlike traditional agent architectures that require inbound ports (such as SSH, port 22) to be open on the runner machine, self-hosted runners utilize an **outbound-only polling architecture**.
+*   **The Polling Model:** The runner daemon initiates all communication. It contacts GitHub APIs over HTTPS (port 443) using a persistent long-polling WebSocket connection, requesting work.
+*   **The Firewall Advantage:** Because the connection is initiated from *inside* the secure network out to the public internet, the corporate firewall treats it as standard outbound web traffic (similar to a user browsing a website). No inbound ports need to be opened, and no external entity can initiate connections inward. This simplifies security audits and setup in highly restricted network zones.
+*   **Long-Polling Mechanics:** Instead of spamming GitHub with constant API requests (which wastes bandwidth and causes rate limiting), the runner connects and GitHub holds the connection open (long-polls) for a set duration (e.g., up to 50 seconds). If a job is triggered, GitHub immediately pushes the payload down the open connection. If the timeout expires with no jobs, the connection closes, and the runner immediately establishes a new long-poll.
+*   **Analogy:** Think of a delivery dispatcher (GitHub) and a delivery driver (the self-hosted runner agent). In traditional push models, the dispatcher calls the driver's phone (requiring inbound port 22/SSH to be open and accepting calls). In GHA's outbound model, the driver constantly walks into the dispatch office and asks, *"Any packages for me?"* and if none are ready, waits there for a minute before asking again.
+
+```mermaid
+graph TD
+    subgraph "Traditional Push Agent (Inbound SSH)"
+        direction TB
+        GH1["GitHub Server"] -->|"Initiates Connection"| FW1["Company Firewall"]
+        FW1 -.->|"Blocked! Requires opening inbound port 22"| R1["Runner Machine"]
+    end
+
+    subgraph "GitHub Self-Hosted Runner (Outbound Polling)"
+        direction BT
+        R2["Runner Machine"] -->|"Step 1 - Initiates outbound HTTPS request"| FW2["Company Firewall"]
+        FW2 -->|"Step 2 - Safe traffic allowed out to Port 443"| GH2["GitHub Server"]
+        GH2 -.->|"Step 3 - Sends job payload back down open tunnel"| R2
+    end
+```
 
 ### C. Standard vs. Larger Hosted Runners
 GitHub provides different tiers of hosted runners:
 *   **Standard Runners:** Typically 2 vCPUs, 7 GB RAM, and 14 GB of SSD space. They are free for public repositories and have a monthly free tier allocation for private repositories.
 *   **Larger Runners:** Up to 64 vCPUs and 256 GB RAM. These support features like static IP ranges, autoscaling, and customized networking. They are billed at custom per-minute rates.
+
+### D. Containerized Job Execution
+To run steps inside a clean environment without installing tooling directly on the runner host operating system, you can use containerized jobs via the `container:` keyword.
+*   **Execution Flow:**
+    1.  The runner host VM boots.
+    2.  The runner pulls the specified Docker image and launches a container.
+    3.  Every step in the job executes *inside* the container runtime namespace (rather than the host OS namespace).
+    4.  At the end of the job, GHA automatically stops and cleans up the container (`docker rm`).
+*   **Workspace Volume Mounting:** The repository code checked out by the runner needs to be accessed by steps running inside the container. To handle this, the GHA runner automatically creates a workspace directory on the **host** and mounts it as a Docker volume to the container (e.g., `-v /home/runner/work/repo/repo:/github/workspace`).
+*   **Benefits for Self-Hosted Runners:** Containerized jobs solve the "dirty state" problem. Any dependencies, system packages, or temporary files generated during the steps are isolated within the container and disappear when the container is destroyed, keeping the host VM completely clean.
+
 
 ---
 
@@ -147,20 +219,45 @@ on:
     ```
 4.  **Cross-Workflow Triggers (`workflow_call`):** Configures the workflow to be a reusable workflow that can be called by other pipelines.
 
-### C. Event Filters
-Filters restrict workflow execution to specific branches, paths, or tags:
-*   **Branches:** Use `branches` or `branches-ignore` (cannot be used together in the same event).
-*   **Paths:** Use `paths` or `paths-ignore` to trigger workflows only when specific files change.
-*   **Tags:** Use `tags` or `tags-ignore` to run pipelines only when specific git tags are pushed.
+### C. Event Filters & Glob Matching
+Filters restrict workflow execution to specific branches, paths, or tags using **glob patterns** to evaluate matches:
+*   **Branches:** Use `branches` or `branches-ignore` (mutually exclusive in the same event configuration).
+*   **Paths:** Use `paths` or `paths-ignore` to trigger workflows based on file change patterns relative to the repository root.
+*   **Tags:** Use `tags` or `tags-ignore` to target specific git release tags (e.g., `v*.*.*`).
+
+#### Glob Pattern Wildcards
+*   `*` matches zero or more characters, but **stops at directory boundaries** (does not match `/`).
+    *   `src/*.js` matches `src/app.js` but *fails* on `src/components/button.js`.
+*   `?` matches **exactly one** character.
+    *   `v1.?` matches `v1.0` and `v1.x` but *fails* on `v1.12` or `v1.`.
+*   `**` matches zero or more characters **including directory boundaries** (slashes).
+    *   `src/**/*.js` matches `src/app.js`, `src/components/button.js`, and `src/components/auth/login.js`.
+*   `!` is the **negation character**. It ignores matching files if declared at the start of a pattern.
+    *   `!src/**/*.md` ignores changes made to markdown files inside the source directory.
+
+#### Branch vs. Tag Lifecycle Triggers
+Although branch and tag filters can be listed under the same `push:` trigger, they act as an **OR** condition. Pushing a tag will trigger the workflow even if the commit on which the tag sits is not on a listed branch, and vice versa.
+*   **Branch Filters (e.g., `releases/v*`):** Used during the *stabilization phase* of a release lifecycle. As developers push bug fixes to a release branch, the workflow builds and runs tests to ensure stability.
+*   **Tag Filters (e.g., `v*.*.*`):** Used for the *frozen release*. When the release branch is stable, the team creates a tag (like `v1.0.0`) and pushes it, which triggers the same workflow to run tests one final time, build the production image, and deploy it.
+
+#### Security Best Practice: `github.ref` vs. `github.ref_name`
+When writing conditional checks to ensure a step or job only runs on a tag, always use the fully qualified `github.ref` context variable instead of the short-name `github.ref_name`.
+*   **`github.ref`** provides the absolute Git ref path, e.g., `refs/tags/v1.0.0` or `refs/heads/releases/v1`.
+*   **`github.ref_name`** provides the short name, e.g., `v1.0.0` or `releases/v1`.
+*   **The Naming Loophole:** If you check `if: startsWith(github.ref_name, 'v')`, a developer could accidentally or maliciously create a branch named `v-test` and push it. This would satisfy the condition and run release-specific jobs. Checking `if: startsWith(github.ref, 'refs/tags/v')` ensures the event is mathematically guaranteed to be a tag push.
 
 ```yaml
 on:
   push:
     branches:
-      - main
-    paths-ignore:
-      - '**.md'
-      - 'docs/**'
+      - 'main'
+      - 'releases/v*'
+    tags:
+      - 'v*.*.*'
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - '!src/**/*.md' # Ignore documentation edits inside src/
 ```
 
 ---
