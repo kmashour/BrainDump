@@ -281,6 +281,16 @@ To run steps inside a clean environment without installing tooling directly on t
 *   **Workspace Volume Mounting:** The repository code checked out by the runner needs to be accessed by steps running inside the container. To handle this, the GHA runner automatically creates a workspace directory on the **host** and mounts it as a Docker volume to the container (e.g., `-v /home/runner/work/repo/repo:/github/workspace`).
 *   **Benefits for Self-Hosted Runners:** Containerized jobs solve the "dirty state" problem. Any dependencies, system packages, or temporary files generated during the steps are isolated within the container and disappear when the container is destroyed, keeping the host VM completely clean.
 
+#### 🐳 Service Containers (Sidecars)
+The `services:` block in GitHub Actions allows you to spin up **temporary database or helper containers** (also called sidecars) alongside your main job. 
+
+*   **Primary Purpose:** Instead of manually scripting database setup (e.g., writing `docker run -d -p 5432:5432 postgres`), you declare dependencies in YAML. GHA manages the database lifecycle automatically.
+*   **Use Cases:** Testing code against real databases (PostgreSQL, MySQL, Redis, MongoDB), message brokers (RabbitMQ, Kafka), or search engines (Elasticsearch).
+*   **The Lifecycle Engine:**
+    1.  **Booting:** GHA pulls the images and starts the service containers *before* any of your test steps execute.
+    2.  **Health Checks:** GHA runs health checks (e.g., checking if PG is ready to accept connections) to ensure the service is fully booted before triggering test steps.
+    3.  **Teardown:** GHA stops and deletes (`docker rm`) all sidecars automatically when the job completes, ensuring zero lingering state on the runner host.
+
 ##### 📋 Containerized Job Execution YAML Examples
 
 ###### Example 1: Custom Toolchain Isolation on GitHub-Hosted Runners
