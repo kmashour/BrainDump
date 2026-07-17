@@ -89,29 +89,88 @@ jobs:
 ```
 
 ### B. Context Expressions vs. Runner Shell Variables
-Understanding the difference between orchestrator evaluation and runner host evaluation is critical:
+One of the most common points of confusion is mixing up **GitHub Actions Contexts** (like `${{ env.VERSION }}` or `${{ github.ref }}`) with **Runner Shell Variables** (like `$VERSION` or `$MY_SHELL_VAR`). 
 
-| **Feature**         | **GitHub Actions Contexts (`${{ env.KEY }}`)**                                  | **Runner Shell Variables (`$KEY` / `$GITHUB_ENV`)**                                   |
-| :------------------ | :------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------ |
-| **Evaluation Time** | Pre-processed by the GHA orchestrator **before** the job is sent to the runner. | Evaluated at runtime by the shell interpreter on the runner host.                     |
-| **Parsing Context** | Works anywhere in the YAML (triggers, `if` conditions, `with` blocks).          | Only works within the `run` shell command blocks.                                     |
-| **Security**        | Safe from shell injection if sanitized; can be used in YAML structure.          | Subject to shell interpolation and environment visibility.                            |
-| **Scope**           | Available globally or scoped depending on context map.                          | Scoped to the current shell session or written to `$GITHUB_ENV` for subsequent steps. |
+They are processed by **two completely different engines** at **two different times**:
 
-#### Evaluation Example:
+| Dimension | GitHub Actions Context Expressions (`${{ ... }}`) | Runner Shell Variables (`$VAR` / `$GITHUB_ENV`) |
+| :--- | :--- | :--- |
+| **Engine** | **GHA Cloud Orchestrator (GitHub's Servers)** | **OS Shell Interpreter (Bash/Cmd on Runner VM)** |
+| **When it runs** | **Compile-Time:** Evaluated *before* the job is sent to the runner. | **Run-Time:** Evaluated *during* the execution of the shell step. |
+| **Valid Placements** | **Anywhere in the YAML** (triggers, `if` conditions, `with` keys, etc.). | **Only inside `run` blocks** (where shell code actually executes). |
+| **Syntax** | `${{ github.sha }}` or `${{ env.MY_VAR }}` | `$MY_VAR` or `${MY_VAR}` |
+
+---
+
+##### 📋 Example 1: YAML Structural Constraints (The `if` block trap)
+You cannot use shell variables to control YAML structure because the shell engine hasn't started yet when GHA decides whether to run a job.
+
 ```yaml
-env:
-  VERSION: "1.0.0"
 jobs:
-  demo:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_TARGET: "production"
+    steps:
+      # ❌ WRONG: GHA Cloud doesn't understand shell variables in the 'if' condition
+      - name: Deploy (Vulnerable/Invalid)
+        if: $DEPLOY_TARGET == 'production' 
+        run: echo "Deploying..."
+
+      #  CORRECT: GHA evaluates the expression before provisioning the runner
+      - name: Deploy (Secure/Valid)
+        if: ${{ env.DEPLOY_TARGET == 'production' }} # Or simply: if: env.DEPLOY_TARGET == 'production'
+        run: echo "Deploying..."
+```
+
+---
+
+##### 📋 Example 2: Dynamic Runtime Modifications (`$GITHUB_ENV` vs. `${{ env }}`)
+If you write a value to `$GITHUB_ENV` at runtime, it modifies the VM shell environment for *subsequent* steps. However, GHA context expressions do not update in real-time inside the *same* step because they were evaluated at compile-time.
+
+```yaml
+jobs:
+  run-checks:
+    runs-on: ubuntu-latest
+    env:
+      APP_VERSION: "v1.0"
+    steps:
+      - name: Step 1 - Attempt to change version dynamically
+        run: |
+          # 1. Update the env variable for future steps
+          echo "APP_VERSION=v2.0" >> $GITHUB_ENV
+          
+          # 2. Print both inside the same step:
+          echo "Shell Value: $APP_VERSION"     # Prints: "v1.0" (the shell hasn't loaded the new GITHUB_ENV yet)
+          echo "Context Value: ${{ env.APP_VERSION }}" # Prints: "v1.0" (evaluated in the cloud before VM booted)
+
+      - name: Step 2 - Verify change in next step
+        run: |
+          echo "Shell Value: $APP_VERSION"     # Prints: "v2.0" (shell loaded the updated environment)
+          echo "Context Value: ${{ env.APP_VERSION }}" # Prints: "v1.0" (STILL prints v1.0 because compile-time is frozen!)
+```
+> [!IMPORTANT]
+> GHA Context Expressions `${{ env.VARIABLE }}` are **compiled and frozen** before the job begins. If your step dynamically modifies an environment variable via `$GITHUB_ENV`, you **must** use the runner shell syntax (`$VARIABLE`) in subsequent steps to read the updated value.
+
+---
+
+##### 📋 Example 3: Secrets Protection (Safe Context Injection)
+Secrets are stored in GitHub's cloud. You cannot access them using a shell variable directly because they do not exist in the runner VM's default environment. You must use GHA expressions to inject them.
+
+```yaml
+jobs:
+  auth:
     runs-on: ubuntu-latest
     steps:
-      - name: Print variables
+      # ❌ WRONG: The VM shell has no environment variable named '$SUPER_SECRET'
+      - name: Try to read secret directly
+        run: echo "My secret is $SUPER_SECRET" # Prints blank / fails
+
+      #  CORRECT: GHA Cloud fetches the secret and compiles it into the shell command
+      - name: Inject secret via context expression
         env:
-          LOCAL_VAR: "RunTimeValue"
-        run: |
-          echo "Orchestrator Compile-Time: ${{ env.VERSION }}"
-          echo "Runner Shell Runtime: $LOCAL_VAR"
+          MY_API_KEY: ${{ secrets.SUPER_SECRET }} # GHA cloud injects the secret here
+        run: echo "API Key is mapped to VM shell variable: $MY_API_KEY"
 ```
 
 ### C. Supported Contexts
