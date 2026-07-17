@@ -50,7 +50,45 @@ graph TD
 
 GitHub Actions separates compile-time evaluation (orchestrator level) from runtime execution (runner VM level).
 
-### A. Context Expressions vs. Runner Shell Variables
+### A. Environment Variables Scope & Precedence Rules
+Environment variables (`env:`) are key-value strings used to pass settings to shell commands inside your steps. 
+
+#### 1. The Three Scopes of `env`
+GHA allows you to declare environment variables at three levels of visibility (scopes):
+*   **Workflow (Global) level:** Set at the root of the YAML file. Visible to all steps in all jobs.
+*   **Job level:** Set inside a specific job. Visible *only* to the steps within that job.
+*   **Step level:** Set inside a single step. Visible *only* to that step's execution.
+
+#### 2. The Precedence Rule (Local Overrides Global)
+If you define variables with the **same name** at different levels, GHA resolves them from the **most specific (innermost) to the most general (outermost)**. 
+
+Precedence order: **Step-level > Job-level > Workflow-level**.
+
+##### 📋 Scope & Precedence YAML Example:
+```yaml
+env:
+  API_URL: "https://global.api.com" # 1. Global (Workflow) Level
+  APP_ENV: "production"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      API_URL: "https://job.api.com"   # 2. Job Level (Overrides Global)
+    steps:
+      - name: Step 1 - Uses Job Level
+        run: echo "Connecting to $API_URL" # Prints: "Connecting to https://job.api.com"
+
+      - name: Step 2 - Overrides at Step Level
+        env:
+          API_URL: "https://step.api.com" # 3. Step Level (Overrides Job and Global)
+        run: echo "Connecting to $API_URL" # Prints: "Connecting to https://step.api.com"
+
+      - name: Step 3 - Inherits Global APP_ENV
+        run: echo "Deploying to environment $APP_ENV" # Prints: "Deploying to environment production" (Global was not overridden)
+```
+
+### B. Context Expressions vs. Runner Shell Variables
 Understanding the difference between orchestrator evaluation and runner host evaluation is critical:
 
 | **Feature**         | **GitHub Actions Contexts (`${{ env.KEY }}`)**                                  | **Runner Shell Variables (`$KEY` / `$GITHUB_ENV`)**                                   |
@@ -76,7 +114,7 @@ jobs:
           echo "Runner Shell Runtime: $LOCAL_VAR"
 ```
 
-### B. Supported Contexts
+### C. Supported Contexts
 GHA makes execution metadata available through contexts. Below is a detailed breakdown of each context with concrete YAML examples:
 
 1. **`github`**: Contains details about the current workflow run and the event that triggered it.
@@ -124,6 +162,12 @@ GHA makes execution metadata available through contexts. Below is a detailed bre
      - name: Use Value
        run: echo "Received random ID: ${{ steps.generator.outputs.random_id }}"
    ```
+   ###### 🗄️ Why is `.outputs.` required in the middle? (The Filing Cabinet Analogy)
+   Unlike standard scripting (e.g. JavaScript or jQuery) where you can read properties directly from an object (like `steps.generator.random_id`), GHA compiles step metadata into namespaces. Think of `steps.generator` as a **filing cabinet** containing three distinct drawers:
+   *   `steps.generator.outputs` — Contains user-defined outputs written to `$GITHUB_OUTPUT`.
+   *   `steps.generator.outcome` — Contains GHA's built-in step execution result (`success`, `failure`, `cancelled`, `skipped`).
+   *   `steps.generator.conclusion` — Contains GHA's final status (incorporating overrides like `continue-on-error`).
+   To retrieve your custom variable `random_id`, you must explicitly navigate to the outputs drawer: `steps.generator.outputs.random_id`. If you write `steps.generator.random_id`, GHA's parser fails to resolve the context.
 
 4. **`needs`**: Accesses the outputs, result status (`success`, `failure`, `skipped`, or `cancelled`) of jobs listed as dependencies.
    ```yaml
@@ -141,6 +185,13 @@ GHA makes execution metadata available through contexts. Below is a detailed bre
        steps:
          - run: echo "Deploying build number: ${{ needs.build.outputs.build_id }}"
    ```
+   ###### 📮 Why must we use the `needs` keyword? (The Cloud Database & Postal Service Analogy)
+   In a single shared-memory browser thread (e.g. jQuery/JavaScript running on a page), scripts can read variables globally. However, in GitHub Actions:
+   *   **Physical VM Isolation:** `build` runs on **VM Runner A**. When it finishes, VM Runner A is **instantly destroyed**. `deploy` starts on a completely separate, clean **VM Runner B**.
+   *   **The Orchestrator Bridge:** Before VM A is deleted, the runner agent sends all declared `outputs:` up to GHA's cloud control plane (like sending a letter via a postal service). When VM B boots, GHA retrieves those stored values from the cloud database and injects them into VM B's context.
+   *   **Why `needs` is mandatory:**
+       1.  **Execution Scheduling:** GHA runs all jobs in parallel by default. Specifying `needs: build` forces VM B to wait until VM A completes and saves its values.
+       2.  **Context Resolution:** The namespace `needs.build.outputs.build_id` instructs GHA's cloud engine: *"Go to the database, retrieve the stored results of the completed dependency job 'build', and insert the 'build_id' output value here."*
 
 5. **`runner`**: Accesses metadata about the host VM executing the current job.
    ```yaml
