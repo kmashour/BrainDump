@@ -124,6 +124,22 @@ Developers use dynamic contexts to partition concurrency boundaries:
    * **Syntax:** `group: pr-${{ github.event.pull_request.number }}`
    * **Behavior:** Limits runs per Pull Request. Pushing new commits to the PR automatically terminates the previous validation run.
 
+##### 🔍 Deep-Intuition: How GHA Evaluates Concurrency Groups (Interview Deep-Dive)
+To answer advanced questions during the PwC interview, understand the design mechanics of these groups:
+
+*   **Is the \"Group\" a Job Container?**
+    No. The `group` is **simply a string (label/key)**. It is a locking namespace evaluated by GHA's orchestrator. Think of it as a "Lock Room Name". When a workflow run or job evaluates its concurrency block, GHA checks if there is currently an active lease on that exact string.
+*   **Why use dynamic variable names?**
+    By using contexts like `${{ github.ref_name }}`, GHA generates the lock name dynamically at runtime. For example, a push to `feature-A` gets lock `ci-TestSuite-feature-A` while a push to `feature-B` gets lock `ci-TestSuite-feature-B`. Because the lock names are different, **Branch A and Branch B runs execute in parallel without blocking each other.** However, if a developer pushes two rapid commits to `feature-A`, both runs resolve to the *exact same* string, and the older run is canceled.
+*   **Why must the deployment lock be static?**
+    In deployments, if both `feature-A` and `feature-B` attempt to deploy to the *same* staging server, they must compete for the same lock. If we used a dynamic branch-scoped lock, they would get different lock names and run in parallel, corrupting the staging environment. By using a **static string** (e.g., `group: deploy-staging`), both runs are forced to resolve to the exact same lock name. This locks them globally, forcing sequential queueing (`cancel-in-progress: false`).
+
+###### 💡 Concurrency Comparison Matrix
+| Lock Type | Group Pattern Example | Key Characteristic | Best Used For |
+| :--- | :--- | :--- | :--- |
+| **Dynamic Lock** | `group: ci-${{ github.ref_name }}` | Scoped to each branch. Runs on Branch A do not block Branch B. | **CI/Testing/Linting:** Cancels old runs when new code is pushed to the same branch (`cancel-in-progress: true`). |
+| **Static Lock** | `group: deploy-staging` | Shared globally across all branches. Locks the destination environment. | **CD/Deployments/IaC:** Forces runs to queue sequentially, preventing deployment collisions (`cancel-in-progress: false`). |
+
 ##### Complete Concurrency YAML Example
 The following workflow demonstrates both a top-level concurrency lock (for branch CI runs) and a job-level concurrency lock (for environment deployments):
 
