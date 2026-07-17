@@ -278,7 +278,10 @@ To run steps inside a clean environment without installing tooling directly on t
     2.  The runner pulls the specified Docker image and launches a container.
     3.  Every step in the job executes *inside* the container runtime namespace (rather than the host OS namespace).
     4.  At the end of the job, GHA automatically stops and cleans up the container (`docker rm`).
-*   **Workspace Volume Mounting:** The repository code checked out by the runner needs to be accessed by steps running inside the container. To handle this, the GHA runner automatically creates a workspace directory on the **host** and mounts it as a Docker volume to the container (e.g., `-v /home/runner/work/repo/repo:/github/workspace`).
+*   **Workspace Volume Mounting (Hosted vs. Self-Hosted):** The repository code checked out by the runner needs to be accessed by steps running inside the container. To handle this, the GHA runner automatically creates a workspace directory on the **host VM** and mounts it as a Docker volume to the container. This happens dynamically on both runner types:
+    *   *On GitHub-Hosted Runners:* The path on the host is standardized (e.g., `-v /home/runner/work/repo/repo:/github/workspace`).
+    *   *On Self-Hosted Runners:* The path depends on your runner installation and configured work folder (e.g., `-v /opt/actions-runner/_work/repo/repo:/github/workspace`).
+    *   *Portability:* Regardless of the host path, GHA always mounts it to `/github/workspace` inside the container runtime, meaning your YAML workflow files remain fully portable.
 *   **Benefits for Self-Hosted Runners:** Containerized jobs solve the "dirty state" problem. Any dependencies, system packages, or temporary files generated during the steps are isolated within the container and disappear when the container is destroyed, keeping the host VM completely clean.
 
 #### 🐳 Service Containers (Sidecars)
@@ -290,6 +293,8 @@ The `services:` block in GitHub Actions allows you to spin up **temporary databa
     1.  **Booting:** GHA pulls the images and starts the service containers *before* any of your test steps execute.
     2.  **Health Checks:** GHA runs health checks (e.g., checking if PG is ready to accept connections) to ensure the service is fully booted before triggering test steps.
     3.  **Teardown:** GHA stops and deletes (`docker rm`) all sidecars automatically when the job completes, ensuring zero lingering state on the runner host.
+*   **⚙️ Do I need to configure the runner to use containers by default to run services?**
+    No. You do not need to configure anything on the runner itself. As long as **Docker is installed on the runner host** (pre-installed on GitHub-hosted, or manually installed on your self-hosted machine), the GHA runner agent daemon will automatically parse the `services:` block and manage the Docker containers on the host VM. If a job does not declare `container:` or `services:`, the runner executes steps directly on the host shell as usual.
 
 ##### 📋 Containerized Job Execution YAML Examples
 
