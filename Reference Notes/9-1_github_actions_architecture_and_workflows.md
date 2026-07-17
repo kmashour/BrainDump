@@ -281,6 +281,87 @@ To run steps inside a clean environment without installing tooling directly on t
 *   **Workspace Volume Mounting:** The repository code checked out by the runner needs to be accessed by steps running inside the container. To handle this, the GHA runner automatically creates a workspace directory on the **host** and mounts it as a Docker volume to the container (e.g., `-v /home/runner/work/repo/repo:/github/workspace`).
 *   **Benefits for Self-Hosted Runners:** Containerized jobs solve the "dirty state" problem. Any dependencies, system packages, or temporary files generated during the steps are isolated within the container and disappear when the container is destroyed, keeping the host VM completely clean.
 
+##### 📋 Containerized Job Execution YAML Examples
+
+###### Example 1: Custom Toolchain Isolation on GitHub-Hosted Runners
+This workflow forces steps to run inside a specific Node.js and Alpine-based container environment on GHA-hosted VMs, ensuring OS library consistency:
+
+```yaml
+name: Hosted Containerized CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test-alpine:
+    name: Run Unit Tests inside Alpine Node Container
+    runs-on: ubuntu-latest # The host VM is standard Ubuntu
+    
+    # Force the runner to execute all steps inside this container namespace
+    container:
+      image: node:20-alpine
+      env:
+        NODE_ENV: test
+      options: --user 1001 # Set custom runtime flags for container security
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4 # Workspace is automatically mounted to /github/workspace inside container
+
+      - name: Verify Environment OS
+        run: |
+          echo "Running on OS:"
+          cat /etc/os-release # Will print Alpine, confirming container environment
+          
+      - name: Install Dependencies & Run Tests
+        run: |
+          npm ci
+          npm test
+```
+
+###### Example 2: State Isolation & Cleanup on Enterprise Self-Hosted Runners
+This workflow runs on your company's persistent self-hosted VM, isolating a database schema compilation job to prevent polluting the host server:
+
+```yaml
+name: Self-Hosted Containerized Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-compile:
+    name: Safe compilation on persistent VM
+    runs-on: self-hosted # Executes on your internal persistent company runner VM
+    
+    container:
+      image: python:3.11-slim
+      # Mount external services if required by your pipeline
+      # GHA automatically spins these up as sidecars linked to the container network
+      services:
+        postgres:
+          image: postgres:15-alpine
+          env:
+            POSTGRES_DB: app_test
+            POSTGRES_PASSWORD: secret_db_pass
+          ports:
+            - 5432:5432
+
+    steps:
+      - name: Retrieve Code
+        uses: actions/checkout@v4
+
+      - name: Execute DB Schema Migration
+        env:
+          DB_HOST: postgres # Resolves to the sidecar container IP automatically
+          DB_PASSWORD: secret_db_pass
+        run: |
+          pip install psycopg2-binary
+          python scripts/migrate.py
+          
+      # GHA automatically terminates and removes the python container AND postgres sidecar
+      # when the job completes, preventing any "dirty state" from lingering on the persistent VM.
+```
 
 ---
 
