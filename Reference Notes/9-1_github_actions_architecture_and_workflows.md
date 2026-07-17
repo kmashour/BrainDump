@@ -582,19 +582,33 @@ GHA supports three pinning strategies:
 #### 1. Branch Pinning (Highest Risk)
 *   **Syntax:** `uses: actions/checkout@main`
 *   **Mechanism:** GHA pulls the latest commit on the `main` branch of the action's repository every time the workflow runs.
-*   **The Risk:** If the author of the action pushes a breaking change to their `main` branch, your pipeline will instantly break without you making any changes to your code. 
+*   **The Risk (Immediate Breakage):** If the author of the action pushes a breaking change or a buggy commit to their own `main` branch, your pipeline will instantly fail on its next run, even though you did not change a single line of code in your own repository. You have zero control over your build stability.
 
 #### 2. Tag Pinning (Medium Risk / Most Common)
 *   **Syntax:** `uses: actions/checkout@v4`
 *   **Mechanism:** GHA pulls the code associated with the Git release tag named `v4`.
-*   **The Risk (Tag Mutability):** In Git, **tags are mutable (changeable)**. The repository owner can delete the `v4` tag and recreate it pointing to a different commit.
-*   **The Attack Vector (Supply Chain Attack):** If an attacker hacks the developer's GitHub account, they can push malicious code (e.g., to steal your corporate secrets or AWS keys), delete the `v4` tag, and point it to the malicious commit. The next time your pipeline runs, GHA will pull the hijacked code, thinking it is the safe `v4` version.
+*   **The Risk (Tag Mutability & Naming Loophole):** In Git, **tags are mutable pointers**. The repository owner can delete the tag and re-create it pointing to a different commit.
+*   **⚠️ The Attack Vector (Targeting the Third-Party Action's Codebase):** 
+    *   *Target:* The codebase being attacked is **NOT your repository**, but the **third-party Action's repository** (e.g., `thirdparty/build-tool`).
+    *   If an attacker hacks the Action maintainer's GitHub account, they commit malicious code (designed to steal credentials or inject backdoors) directly to the Action's repository.
+    *   The attacker then runs these commands on the Action's repository:
+        ```bash
+        git tag -d v4                   # Delete the original safe v4 tag
+        git tag v4 <malicious-commit>   # Re-create tag v4 pointing to the hacked commit
+        git push origin --tags --force  # Force-push the hijacked tag to GitHub
+        ```
+    *   **The Breach:** The next time your pipeline runs, GHA downloads the code from the Action's repository at tag `v4`. Because GHA downloads the hacked code, the malicious script runs directly inside your runner VM, allowing the attacker to steal your corporate secrets. This is known as a **Supply Chain Attack**.
 
 #### 3. SHA-1 Pinning (Most Secure / Zero-Trust)
 *   **Syntax:** `uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29`
 *   **Mechanism:** GHA pulls the exact commit identified by the 40-character SHA-1 hash.
-*   **Why it is secure (Immutability):** In Git, a commit SHA is a cryptographic hash of the code contents, author, date, and history. **It is mathematically impossible to change the code of a commit without changing its SHA-1 hash.** 
-*   **The Result:** Even if the action's repository is hacked and the tags are deleted or moved, the attacker cannot alter the code under that specific SHA. GHA is guaranteed to run the exact code you reviewed and approved.
+*   **Why it is secure (Immutability):** In Git, a commit SHA is a cryptographic hash of the file contents, author, date, and history. **It is mathematically impossible to change the code inside a commit without changing its SHA-1 hash.**
+*   **The Result:** Even if the third-party Action's repository is hacked and the tags are deleted or moved:
+    *   The attacker cannot alter the code under that specific SHA.
+    *   When your pipeline runs, GHA asks GitHub specifically for commit `a5ac7e5...`.
+    *   If the commit exists in the repo history, GHA downloads the safe, audited code (ignoring the attacker's tag changes).
+    *   If the attacker managed to delete the commit entirely, GHA fails with a `Commit not found` error.
+    *   In both cases, **the attacker's malicious code is never executed on your runner VM.**
 
 ##### 📋 Pinning Strategy Comparison & Recommendation
 
