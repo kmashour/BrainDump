@@ -124,6 +124,68 @@ Developers use dynamic contexts to partition concurrency boundaries:
    * **Syntax:** `group: pr-${{ github.event.pull_request.number }}`
    * **Behavior:** Limits runs per Pull Request. Pushing new commits to the PR automatically terminates the previous validation run.
 
+##### Complete Concurrency YAML Example
+The following workflow demonstrates both a top-level concurrency lock (for branch CI runs) and a job-level concurrency lock (for environment deployments):
+
+```yaml
+name: Production Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# Top-level Concurrency: Locks the entire workflow run on a per-branch/PR basis.
+# If a new push occurs on the same branch/PR, the previous active run is canceled.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Compile and Package Application
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build Binary
+        run: |
+          echo "Building application..."
+          echo "Release-Package-v1.0" > build-output.txt
+      - name: Upload Binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-package
+          path: build-output.txt
+
+  deploy-staging:
+    name: Deploy to Staging Environment
+    runs-on: ubuntu-latest
+    needs: build
+    # Job-level Concurrency: Overrides the top-level lock.
+    # Locks the staging environment globally across all active branches.
+    # We set cancel-in-progress to FALSE to prevent half-finished deployment corruptions.
+    concurrency:
+      group: environment-deploy-staging
+      cancel-in-progress: false
+    steps:
+      - name: Download Binary
+        uses: actions/download-artifact@v4
+        with:
+          name: app-package
+      - name: Execute Ansible/Terraform Deploy Script
+        run: |
+          echo "Acquiring state lock..."
+          echo "Running database schema migrations..."
+          sleep 10
+          echo "Deployment completed successfully!"
+```
+
 #### Sequential Jobs (`needs`) vs. Single-Job Steps
 If jobs run on separate clean VMs, they require repeating `actions/checkout` and passing files via artifacts. Why not consolidate everything into sequential steps inside a single job? While simpler, splitting into separate jobs with `needs` is essential for:
 1.  **Manual Approval Gates:** Steps cannot pause for human verification. Jobs can target an "Environment" which allows pausing the pipeline until a reviewer approves the deployment.
