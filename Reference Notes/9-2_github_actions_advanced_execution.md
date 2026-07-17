@@ -93,12 +93,12 @@ One of the most common points of confusion is mixing up **GitHub Actions Context
 
 They are processed by **two completely different engines** at **two different times**:
 
-| Dimension | GitHub Actions Context Expressions (`${{ ... }}`) | Runner Shell Variables (`$VAR` / `$GITHUB_ENV`) |
-| :--- | :--- | :--- |
-| **Engine** | **GHA Cloud Orchestrator (GitHub's Servers)** | **OS Shell Interpreter (Bash/Cmd on Runner VM)** |
-| **When it runs** | **Compile-Time:** Evaluated *before* the job is sent to the runner. | **Run-Time:** Evaluated *during* the execution of the shell step. |
+| Dimension            | GitHub Actions Context Expressions (`${{ ... }}`)                        | Runner Shell Variables (`$VAR` / `$GITHUB_ENV`)                    |
+| :------------------- | :----------------------------------------------------------------------- | :----------------------------------------------------------------- |
+| **Engine**           | **GHA Cloud Orchestrator (GitHub's Servers)**                            | **OS Shell Interpreter (Bash/Cmd on Runner VM)**                   |
+| **When it runs**     | **Compile-Time:** Evaluated *before* the job is sent to the runner.      | **Run-Time:** Evaluated *during* the execution of the shell step.  |
 | **Valid Placements** | **Anywhere in the YAML** (triggers, `if` conditions, `with` keys, etc.). | **Only inside `run` blocks** (where shell code actually executes). |
-| **Syntax** | `${{ github.sha }}` or `${{ env.MY_VAR }}` | `$MY_VAR` or `${MY_VAR}` |
+| **Syntax**           | `${{ github.sha }}` or `${{ env.MY_VAR }}`                               | `$MY_VAR` or `${MY_VAR}`                                           |
 
 ---
 
@@ -148,15 +148,8 @@ jobs:
         run: |
           echo "Shell Value: $APP_VERSION"     # Prints: "v2.0" (shell loaded the updated environment)
           echo "Context Value: ${{ env.APP_VERSION }}" # Prints: "v1.0" (STILL prints v1.0 because compile-time is frozen!)
-```
-> [!IMPORTANT]
-> GHA Context Expressions `${{ env.VARIABLE }}` are **compiled and frozen** before the job begins. If your step dynamically modifies an environment variable via `$GITHUB_ENV`, you **must** use the runner shell syntax (`$VARIABLE`) in subsequent steps to read the updated value.
-
----
-
-##### 📋 Example 3: Secrets Protection (Safe Context Injection)
+##### 📋 Example 2: Secrets Protection (Safe Context Injection)
 Secrets are stored in GitHub's cloud. You cannot access them using a shell variable directly because they do not exist in the runner VM's default environment. You must use GHA expressions to inject them.
-
 ```yaml
 jobs:
   auth:
@@ -173,7 +166,60 @@ jobs:
         run: echo "API Key is mapped to VM shell variable: $MY_API_KEY"
 ```
 
-### C. Supported Contexts
+---
+
+### C. GHA State Engine under the hood: `$GITHUB_ENV` vs. `$GITHUB_OUTPUT`
+Both `$GITHUB_ENV` and `$GITHUB_OUTPUT` are **paths to temporary text files** created by GHA on the runner VM's disk. You write plain text key-value pairs to these files to change state. GHA reads them at the end of the step.
+
+| Vector | `$GITHUB_ENV` | `$GITHUB_OUTPUT` |
+| :--- | :--- | :--- |
+| **Primary Purpose** | Share **Environment Variables** between steps. | Share **Outputs** across jobs (VM boundaries). |
+| **VM Scope** | **Private to the current Job VM.** Subsequent steps in this job can read it. Other jobs *cannot* see it. | **Public to the whole Workflow.** Downstream jobs running on separate VMs *can* read it. |
+| **Writing Syntax** | `echo "MY_VAR=value" >> "$GITHUB_ENV"` | `echo "my_output=value" >> "$GITHUB_OUTPUT"` |
+| **Reading Syntax (Same Job)** | Direct shell variable: `$MY_VAR` | GHA expression: `${{ steps.step_id.outputs.my_output }}` |
+| **Reading Syntax (Next Job)** | **Impossible.** (Other jobs cannot read this job's `$GITHUB_ENV`). | GHA expression: `${{ needs.job_id.outputs.job_output_name }}` |
+
+> [!IMPORTANT]
+> GHA Context Expressions `${{ env.VARIABLE }}` are **compiled and frozen** before the job begins. If your step dynamically modifies an environment variable via `$GITHUB_ENV`, you **must** use the runner shell syntax (`$VARIABLE`) in subsequent steps to read the updated value.
+
+##### 📋 Example: Modifying `$GITHUB_ENV` vs. `$GITHUB_OUTPUT`
+```yaml
+jobs:
+  job-1:
+    runs-on: ubuntu-latest
+    outputs:
+      # Map the step output to the job output so Job 2 can see it
+      version_for_next_job: ${{ steps.step1.outputs.app_version }}
+    steps:
+      - id: step1
+        run: |
+          # 1. Share with future steps inside THIS job only
+          echo "LOCAL_VERSION=v1.2.3" >> "$GITHUB_ENV"
+          
+          # 2. Share with future jobs (sent out to the cloud database)
+          echo "app_version=v1.2.3" >> "$GITHUB_OUTPUT"
+
+      - name: Next step in Job 1
+        run: |
+          # We read the GITHUB_ENV variable directly using shell syntax
+          echo "The version is: $LOCAL_VERSION" # Prints v1.2.3
+
+  job-2:
+    runs-on: ubuntu-latest
+    needs: job-1
+    steps:
+      - name: Step in Job 2
+        run: |
+          # ❌ This will fail (blank) because GITHUB_ENV is private to Job 1
+          echo "Local Version: $LOCAL_VERSION" 
+          
+          #  This succeeds because GITHUB_OUTPUT was bridged to the cloud database
+          echo "Shared Version: ${{ needs.job-1.outputs.version_for_next_job }}" # Prints v1.2.3
+```
+
+---
+
+### D. Supported Contexts
 GHA makes execution metadata available through contexts. Below is a detailed breakdown of each context with concrete YAML examples:
 
 1. **`github`**: Contains details about the current workflow run and the event that triggered it.
