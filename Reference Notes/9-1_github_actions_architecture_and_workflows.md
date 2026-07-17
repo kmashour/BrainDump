@@ -296,6 +296,61 @@ The `services:` block in GitHub Actions allows you to spin up **temporary databa
 *   **⚙️ Do I need to configure the runner to use containers by default to run services?**
     No. You do not need to configure anything on the runner itself. As long as **Docker is installed on the runner host** (pre-installed on GitHub-hosted, or manually installed on your self-hosted machine), the GHA runner agent daemon will automatically parse the `services:` block and manage the Docker containers on the host VM. If a job does not declare `container:` or `services:`, the runner executes steps directly on the host shell as usual.
 
+##### 🔗 Service Container Network Topology & Communication Modes
+The way your application connects to a service container depends entirely on where the job steps are executed:
+
+###### Scenario 1: The Job Runs Inside a Container (`container: ...`)
+If both your main build job and the database run inside containers, GHA bridges them inside a shared Docker network.
+*   **YAML Syntax:**
+    ```yaml
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        container:
+          image: python:3.11-slim
+        services:
+          postgres:
+            image: postgres:15-alpine
+    ```
+*   **Network Behavior:**
+    1. GHA creates a temporary Docker bridge network (e.g., `github_network_123`).
+    2. GHA launches both containers and attaches them to this shared network.
+    3. **How to connect:** The Python steps connect using the **service name as the hostname** (`host: postgres`). Docker's internal DNS automatically routes `postgres` to the correct container IP. No port mapping (`ports:`) is required.
+*   **Topology Diagram:**
+    ```text
+    [ Docker Network: github_network_123 ]
+       ├── [ Job Container: python ] 
+       │         │ 
+       │         ▼ (Connects to host "postgres" on port 5432)
+       └── [ Service Container: postgres ]
+    ```
+
+###### Scenario 2: The Job Runs Directly on the Host VM (`runs-on: ...`)
+If your steps run natively on the host OS shell but need to hit a service container.
+*   **YAML Syntax:**
+    ```yaml
+    jobs:
+      test:
+        runs-on: ubuntu-latest
+        services:
+          postgres:
+            image: postgres:15-alpine
+            ports:
+              - 5432:5432 # <-- PORT MAPPING IS MANDATORY HERE
+    ```
+*   **Network Behavior:**
+    1. GHA boots the Postgres container on the host's Docker engine.
+    2. GHA **maps the port** from the container to the host machine (`5432:5432`).
+    3. **How to connect:** Because the host shell cannot resolve Docker's internal DNS, steps connect via **`localhost:5432`**.
+*   **Topology Diagram:**
+    ```text
+    [ Runner Host VM OS ] ─── (Connects to "localhost:5432") ───► [ Firewall/Port 5432 ] ───► [ Docker Container: postgres ]
+    ```
+
+###### 💡 PwC Interview Summary (The "Why")
+When asked: *"How do you handle testing against real databases in GitHub Actions?"*
+> *"We use GHA **Service Containers** to run dependencies (like Postgres or Redis) as sidecars. If the job runs in a container, they share a Docker network, allowing us to connect using the service name (e.g., `host: postgres`) without exposing ports. If the job runs on the host, GHA maps the port to the host, and we connect via `localhost`."*
+
 ##### 📋 Containerized Job Execution YAML Examples
 
 ###### Example 1: Custom Toolchain Isolation on GitHub-Hosted Runners
