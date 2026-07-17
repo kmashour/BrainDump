@@ -369,7 +369,7 @@ If you need temporary scratch space that requires dynamic provisioning (e.g. SSD
 ## 8. Pod Security Admission & Secrets Hardening Checklist
 
 *Reference Guide:* [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]]
-*Hands-on Project:* [[Projects/kubernetes/Project - Secrets Management and Encryption.md|Project - Secrets Management and Encryption.md]]
+*Hands-on Project:* [[Project - Secrets Management and Encryption|Project - Secrets Management and Encryption.md]]
 
 
 ### A. Pod Security Admission Namespace Labeling
@@ -433,7 +433,7 @@ Confirm API server configuration contains: `--encryption-provider-config-automat
 ## 9. ImagePolicyWebhook Configuration Checklist
 
 *Reference Guide:* [[Reference Notes/0-16_admission_controllers.md|0-16_admission_controllers.md]]
-*Hands-on Project:* [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]]
+*Hands-on Project:* [[Project - Admission Webhooks|Project - Admission Webhooks.md]]
 
 Use this checklist to configure external container image scanning at API admission time.
 
@@ -526,7 +526,7 @@ volumes:
 ## 10. Custom Mutating Admission Webhook Configuration Checklist
 
 *Reference Guide:* [[Reference Notes/0-16_admission_controllers.md|0-16_admission_controllers.md]]
-*Hands-on Project:* [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]]
+*Hands-on Project:* [[Project - Admission Webhooks|Project - Admission Webhooks.md]]
 
 Use this checklist to deploy and verify an external Mutating Admission Webhook inside the cluster.
 

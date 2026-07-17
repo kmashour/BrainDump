@@ -22,7 +22,7 @@ tags:
 
 # Amazon SNS
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **Amazon SNS**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **Amazon SNS**
 
 ---
 

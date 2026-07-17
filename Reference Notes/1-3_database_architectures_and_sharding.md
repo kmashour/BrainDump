@@ -209,5 +209,5 @@ graph TD
 ## 🛠️ Hands-on Verification Project
 
 To verify and inspect the complete, production-grade hands-on configuration files for database query parameterization and table migrations, refer to:
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2-secure-api-web-server-python---fastapi|FastAPI database client parameterization config]]
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#3-database-migration-script-sql|PostgreSQL Schema Migration script]]
+- [[Project - Secure Load-Balanced Web API#2-secure-api-web-server-python---fastapi|FastAPI database client parameterization config]]
+- [[Project - Secure Load-Balanced Web API#3-database-migration-script-sql|PostgreSQL Schema Migration script]]

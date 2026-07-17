@@ -67,7 +67,7 @@ tags:
 
 # aws
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **aws**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **aws**
 
 ---
 

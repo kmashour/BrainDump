@@ -17,7 +17,7 @@ tags:
 
 # docker - Container Engine Architecture and Namespaces
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[docker]] > **Container Engine Architecture and Namespaces**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[docker]] > **Container Engine Architecture and Namespaces**
 
 ---
 

@@ -1255,7 +1255,7 @@ Because this mapping is entirely deterministic and does not involve any variable
 
 ### 11.3 Core Secret Types & Manifest Examples
 Kubernetes classifies secrets by their intended usage patterns to validate their structures.
-*See complete implementation manifest examples and CLI creation commands in [[Projects/kubernetes/Project - Secrets Management and Encryption.md#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > Secrets Implementation]].*
+*See complete implementation manifest examples and CLI creation commands in [[Project - Secrets Management and Encryption#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > Secrets Implementation]].*
 
 * **Opaque Secrets (`Opaque`):** The default type for general-purpose configuration secrets (such as databases or API keys). Keys and values are arbitrary base64-encoded strings.
 * **TLS Secrets (`kubernetes.io/tls`):** Designed specifically for storing TLS certificates and private keys. Must contain two keys: `tls.crt` and `tls.key`. Applications (such as Ingress Controllers) rely on these exact keys to load certificates.
@@ -1564,7 +1564,7 @@ Instead of manually restarting the `kube-apiserver` pods during key rotation, co
 ```
 When enabled, the API server polls the configuration file every minute. The rotation controller automatically updates the decryption ciphers in memory without process restarts. Monitor reloading status using the `apiserver_encryption_config_controller_automatic_reload_last_timestamp_seconds` metrics.
 
-*See complete implementation steps and the step-by-step etcdctl diagnostic run sheet in [[Projects/kubernetes/Project - Secrets Management and Encryption.md#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > ETCD Encryption Setup & Verification]].*
+*See complete implementation steps and the step-by-step etcdctl diagnostic run sheet in [[Project - Secrets Management and Encryption#step-by-step-implementation--configuration|Project - Secrets Management and Encryption.md > ETCD Encryption Setup & Verification]].*
 
 ### 11.10 ConfigMap & Secret Injection Methods (Application Runtimes)
 ConfigMaps and Secrets can be injected into container runtimes in three ways:
@@ -1681,7 +1681,7 @@ Rather than synchronizing external secrets (e.g. AWS Secrets Manager, HashiCorp 
 * **CSI Volume Mount:** The Pod spec declares a volume targeting the `secrets-store.csi.k8s.io` driver and links it to the `SecretProviderClass`.
 * **Auto-rotation:** The CSI driver can poll the external Secret store periodically (e.g. every 2 minutes) to automatically update the mounted files.
 
-*See the isolated lecture digest in [[Reference Notes/12-2_secrets_store_csi_driver_integration.md|Module 12-2: Secrets Store CSI Driver Integration (KodeKloud Talk)]] and the complete implementation guides in [[Projects/kubernetes/Project - Secrets Store CSI Driver.md|Project - Secrets Store CSI Driver.md]].*
+*See the isolated lecture digest in [[Reference Notes/12-2_secrets_store_csi_driver_integration.md|Module 12-2: Secrets Store CSI Driver Integration (KodeKloud Talk)]] and the complete implementation guides in [[Project - Secrets Store CSI Driver|Project - Secrets Store CSI Driver.md]].*
 
 ---
 

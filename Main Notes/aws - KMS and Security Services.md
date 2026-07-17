@@ -17,7 +17,7 @@ tags:
 
 # aws - KMS and Security Services
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[aws]] > **KMS and Security Services**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[aws]] > **KMS and Security Services**
 
 ---
 

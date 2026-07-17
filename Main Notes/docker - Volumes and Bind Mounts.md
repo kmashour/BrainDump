@@ -16,7 +16,7 @@ tags:
 
 # docker - Volumes and Bind Mounts
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[docker]] > **Volumes and Bind Mounts**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[docker]] > **Volumes and Bind Mounts**
 
 ---
 

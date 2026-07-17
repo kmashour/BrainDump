@@ -712,7 +712,7 @@ Modifying arrays (which represent lists in JSON, such as container specs) requir
 
 This lab covers the setup, deployment, and configuration of an `ImagePolicyWebhook` which delegates container image checks to an external vulnerability scanner.
 
-*See complete implementation and configuration steps in [[Projects/kubernetes/Project - Admission Webhooks.md#imagepolicywebhook-setup|Project - Admission Webhooks.md > ImagePolicyWebhook Setup]].*
+*See complete implementation and configuration steps in [[Project - Admission Webhooks#imagepolicywebhook-setup|Project - Admission Webhooks.md > ImagePolicyWebhook Setup]].*
 
 ---
 
@@ -720,7 +720,7 @@ This lab covers the setup, deployment, and configuration of an `ImagePolicyWebho
 
 This lab covers the end-to-end setup and validation of a custom mutating admission webhook that enforces secure security contexts on newly created pods.
 
-*See complete implementation and configuration steps in [[Projects/kubernetes/Project - Admission Webhooks.md#custom-mutating-webhook|Project - Admission Webhooks.md > Custom Mutating Webhook]].*
+*See complete implementation and configuration steps in [[Project - Admission Webhooks#custom-mutating-webhook|Project - Admission Webhooks.md > Custom Mutating Webhook]].*
 
 ---User: 1234
 

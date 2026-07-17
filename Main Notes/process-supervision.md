@@ -12,7 +12,7 @@ tags:
 
 # Linux - Process Supervision & Daemonization
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[Main Notes/linux.md|Linux]] > **Process Supervision & Daemonization**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Main Notes/linux.md|Linux]] > **Process Supervision & Daemonization**
 
 ---
 

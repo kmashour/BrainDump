@@ -17,7 +17,7 @@ tags:
 
 # Pattern: AWS EKS IAM Roles for Service Accounts (IRSA)
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **AWS EKS IAM Roles for Service Accounts (IRSA)**
+**Breadcrumbs:** [[Digital Garden/0-Index|🏠 Index]] > Patterns > **AWS EKS IAM Roles for Service Accounts (IRSA)**
 
 ---
 

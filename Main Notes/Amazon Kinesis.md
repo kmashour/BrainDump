@@ -21,7 +21,7 @@ tags:
 
 # Amazon Kinesis
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **Amazon Kinesis**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **Amazon Kinesis**
 
 ---
 

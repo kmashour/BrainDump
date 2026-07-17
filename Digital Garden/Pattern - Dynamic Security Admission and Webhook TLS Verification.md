@@ -62,5 +62,5 @@ To prevent authentication hijacking, communication between the `kube-apiserver` 
 For complete configuration playbooks, Python Flask implementations, and TLS setups, see:
 
 * **Conceptual reference:** See the reference module [[Reference Notes/0-16_admission_controllers.md|0-16_admission_controllers.md]].
-* **Hands-on project:** See the complete configuration and code playbook in [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]].
-* **Exam Prep Checklist:** See the [[Projects/CKA/Exam Checklist - Security and Storage.md|CKA Security & Storage Checklist]] for fast configuration dry-runs.
+* **Hands-on project:** See the complete configuration and code playbook in [[Project - Admission Webhooks|Project - Admission Webhooks.md]].
+* **Exam Prep Checklist:** See the [[Exam Checklist - Security and Storage|CKA Security & Storage Checklist]] for fast configuration dry-runs.

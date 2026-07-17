@@ -18,7 +18,7 @@ tags:
 
 # aws - SQS, SNS, and Decoupled Microservices
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[aws]] > **SQS, SNS, and Decoupled Microservices**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[aws]] > **SQS, SNS, and Decoupled Microservices**
 
 ---
 

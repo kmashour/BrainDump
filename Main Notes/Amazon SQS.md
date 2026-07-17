@@ -22,7 +22,7 @@ tags:
 
 # Amazon SQS
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **Amazon SQS**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **Amazon SQS**
 
 ---
 

@@ -176,5 +176,5 @@ graph LR
 ## 🛠️ Hands-on Verification Project
 
 To verify and inspect the complete, production-grade hands-on configuration files for API method requests and client invocation playbooks, refer to:
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2-secure-api-web-server-python---fastapi|FastAPI route handlers and parameters]]
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-end-to-end-api-and-load-balancer-verification|Curl CLI testing recipes for REST and GraphQL payload query endpoints]]
+- [[Project - Secure Load-Balanced Web API#2-secure-api-web-server-python---fastapi|FastAPI route handlers and parameters]]
+- [[Project - Secure Load-Balanced Web API#1-end-to-end-api-and-load-balancer-verification|Curl CLI testing recipes for REST and GraphQL payload query endpoints]]

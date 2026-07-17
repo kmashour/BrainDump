@@ -19,7 +19,7 @@ tags:
 
 # Pattern: Dynamic Volume Pooling and Online FileSystem Expansion
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > **Digital Garden** > **Dynamic Volume Pooling and Online FileSystem Expansion**
+**Breadcrumbs:** [[Digital Garden/0-Index|🏠 Index]] > **Digital Garden** > **Dynamic Volume Pooling and Online FileSystem Expansion**
 
 ---
 

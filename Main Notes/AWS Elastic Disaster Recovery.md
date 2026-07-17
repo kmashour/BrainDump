@@ -17,7 +17,7 @@ tags:
 
 # AWS Elastic Disaster Recovery
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[AWS Disaster Recovery]] > **AWS Elastic Disaster Recovery**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[AWS Disaster Recovery]] > **AWS Elastic Disaster Recovery**
 
 ---
 

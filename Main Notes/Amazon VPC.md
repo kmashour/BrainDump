@@ -21,7 +21,7 @@ tags:
 
 # Amazon VPC
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[Reference Notes/3-Index - AWS|AWS]] > **Amazon VPC**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Reference Notes/3-Index - AWS|AWS]] > **Amazon VPC**
 
 ---
 

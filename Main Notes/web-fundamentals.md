@@ -18,7 +18,7 @@ tags:
 
 # web-fundamentals
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Programming > **web-fundamentals**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Programming > **web-fundamentals**
 
 ---
 

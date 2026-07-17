@@ -79,5 +79,5 @@ flowchart TD
 For complete configuration playbooks, Python Flask implementations, and TLS setups, see:
 
 * **Conceptual reference:** See the reference module [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]].
-* **Hands-on project:** See the complete configuration and verification playbooks in [[Projects/kubernetes/Project - Secrets Management and Encryption.md|Project - Secrets Management and Encryption.md]].
+* **Hands-on project:** See the complete configuration and verification playbooks in [[Project - Secrets Management and Encryption|Project - Secrets Management and Encryption.md]].
 

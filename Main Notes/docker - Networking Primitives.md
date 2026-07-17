@@ -16,7 +16,7 @@ tags:
 
 # docker - Networking Primitives
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[docker]] > **Networking Primitives**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[docker]] > **Networking Primitives**
 
 ---
 

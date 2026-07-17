@@ -67,9 +67,7 @@ tags:
 - 🔑 **[Cluster Security & Network Policies](0-7_security_and_network_policies.md)** (Module 07)
   - 🎥 **[Lecture: TLS, mTLS & Hostname Resolution Troubleshooting in Kubelet](0-7-a_tls_and_mtls_handshake_troubleshooting_lecture.md)**
 - 🧬 **[Admission Controllers & Webhooks](0-16_admission_controllers.md)** (Module 16)
-- 🧬 **[Admission Controllers Reference](admission_controllers_reference.md)** (Reference Article)
-- 🔀 **[A Guide to Kubernetes Admission Controllers](a_guide_to_kubernetes_admission_controllers.md)** (Reference Article)
-- 🛡️ **[Pod Security Admission Reference](pod_security_admission_reference.md)** (Reference Article)
+
 
 ---
 

@@ -19,7 +19,7 @@ tags:
 
 # Linux and Operating Systems
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > **Linux & OS**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > **Linux & OS**
 
 ---
 

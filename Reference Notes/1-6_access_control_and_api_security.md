@@ -195,5 +195,5 @@ SSO allows users to authenticate once and access multiple independent applicatio
 ## 🛠️ Hands-on Verification Project
 
 To verify and inspect the complete, production-grade hands-on configuration files for security hardening (Nginx rate limits, CORS response headers, parameterized backend SQL queries, JWT parsing), refer to:
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-nginx-load-balancer-and-gateway-configuration-nginxconf|Nginx rate limiting and CORS configuration]]
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#2-secure-api-web-server-python---fastapi|SQL Parameterization and JWT verify token verification logic]]
+- [[Project - Secure Load-Balanced Web API#1-nginx-load-balancer-and-gateway-configuration-nginxconf|Nginx rate limiting and CORS configuration]]
+- [[Project - Secure Load-Balanced Web API#2-secure-api-web-server-python---fastapi|SQL Parameterization and JWT verify token verification logic]]

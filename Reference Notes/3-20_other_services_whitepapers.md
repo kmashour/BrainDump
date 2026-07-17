@@ -194,4 +194,4 @@ Provides architectural best practices categorized into **six pillars**:
 ## 8. Decoupled Verification Projects
 
 Step-by-step configurations for declaring stacks as code, launching updates, and evaluating change set replacements are compiled in the following project:
-*   *See complete implementation in [[Projects/aws-cloudops/Project - CloudFormation Stack Updates and Change Sets.md]]*
+*   *See complete implementation in [[Project - CloudFormation Stack Updates and Change Sets]]*

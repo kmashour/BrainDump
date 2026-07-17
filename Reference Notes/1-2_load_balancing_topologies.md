@@ -235,4 +235,4 @@ graph TD
 ## 🛠️ Hands-on Verification Project
 
 To verify and inspect the complete, production-grade hands-on configuration files for Nginx load balancing (upstream algorithms, reverse-proxy headers, passive health check timeouts), refer to:
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-nginx-load-balancer-and-gateway-configuration-nginxconf|Nginx Load Balancer Config Playbook]]
+- [[Project - Secure Load-Balanced Web API#1-nginx-load-balancer-and-gateway-configuration-nginxconf|Nginx Load Balancer Config Playbook]]

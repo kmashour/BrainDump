@@ -63,6 +63,6 @@ sequenceDiagram
 
 ## 🛠️ Verification & Practical Implementation
 
-*   **Remediation Playbook implementation:** Refer to the hands-on project mapping in [[Projects/aws-cloudops/Project - AWS Systems Manager Automation and Remediation.md]].
-*   **Log Metric Filter setup:** For configuring the log filters that feed the alert alarms, refer to [[Projects/aws-cloudops/Project - CloudWatch Log Streaming and Metric Filtering.md]].
+*   **Remediation Playbook implementation:** Refer to the hands-on project mapping in [[Project - AWS Systems Manager Automation and Remediation]].
+*   **Log Metric Filter setup:** For configuring the log filters that feed the alert alarms, refer to [[Project - CloudWatch Log Streaming and Metric Filtering]].
 *   **Infrastructure Configuration details:** Learn about host port-hardening and permission setups in [[Main Notes/aws-cloudops - Systems Manager and Runbooks.md]] and agent configuration structures in [[Main Notes/aws-cloudops - CloudWatch Agent and Metrics.md]].

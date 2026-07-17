@@ -225,4 +225,4 @@ If you require strict hardware isolation or physical disk partitioning (e.g., SS
 
 ## 4. Hands-on Verification Lab
 
-See complete verification steps, failure validation scripts, and dynamic scheduling tests in [[Projects/CKA/Project - Local Storage Models and Scheduling Traps.md]].
+See complete verification steps, failure validation scripts, and dynamic scheduling tests in [[Project - Local Storage Models and Scheduling Traps]].

@@ -16,7 +16,7 @@ tags:
 
 # docker - Dockerfile and Image Layers
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[docker]] > **Dockerfile and Image Layers**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[docker]] > **Dockerfile and Image Layers**
 
 ---
 

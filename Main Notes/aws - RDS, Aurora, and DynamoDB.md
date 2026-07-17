@@ -18,7 +18,7 @@ tags:
 
 # aws - RDS, Aurora, and DynamoDB
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[aws]] > **RDS, Aurora, and DynamoDB**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[aws]] > **RDS, Aurora, and DynamoDB**
 
 ---
 

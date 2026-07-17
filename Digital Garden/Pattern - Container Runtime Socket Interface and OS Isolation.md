@@ -19,7 +19,7 @@ tags:
 
 # Pattern: Container Runtime Socket Interface and OS Isolation
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Patterns > **Container Runtime Socket Interface and OS Isolation**
+**Breadcrumbs:** [[Digital Garden/0-Index|🏠 Index]] > Patterns > **Container Runtime Socket Interface and OS Isolation**
 
 ---
 

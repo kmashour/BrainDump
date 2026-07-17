@@ -17,7 +17,7 @@ tags:
 
 # docker - Multi-Stage Builds and GH Actions
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[docker]] > **Multi-Stage Builds and GH Actions**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[docker]] > **Multi-Stage Builds and GH Actions**
 
 ---
 

@@ -2,6 +2,20 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-07-17] - Maintenance: Link Integrity and Path Corrections
+
+### Refactored / Upgraded
+- **Reference Notes MOC Index Files:**
+  - [[Reference Notes/8-Index - Linux and OS.md|Linux and OS MOC]]: Corrected relative paths for Keepalived, systemd, NFS, BIND, LDAP, DHCP, iSCSI, MariaDB, and ELK Stack project files to point to `../Projects/Linux/`.
+  - [[Reference Notes/9-Index - GitHub Actions.md|GitHub Actions MOC]]: Corrected relative path for CI/CD Pipelines project file to point to `../Projects/github-actions/`.
+  - [[Reference Notes/11-Index - AWS CloudOps.md|AWS CloudOps MOC]]: Corrected relative paths for SSM, CloudWatch, and Hybrid VPC project files to point to `../Projects/aws-cloudops/`.
+  - [[Reference Notes/3-Index - AWS.md|AWS MOC]]: Corrected relative paths for Secure API, ECS/EKS, Serverless API, S3 Log Analytics, and CloudFormation project files to point to correct project folders.
+  - [[Reference Notes/2-Index - Docker.md|Docker MOC]]: Corrected relative path for Secure Load-Balanced Web API project file.
+  - [[Reference Notes/10-Index - Terraform on AWS.md|Terraform MOC]]: Corrected relative paths for 3-Tier, 2-Tier, EKS GitOps, and drift remediation project files.
+  - [[Reference Notes/0-Index - Systems Design.md|Systems Design MOC]]: Corrected relative path for Secure Load-Balanced Web API project.
+- **Projects:**
+  - [[Projects/CKA/Practice Playbook - Lightning Labs and Mock Exams.md|CKA Practice Playbook]]: Corrected relative path for manual scheduling reference note.
+
 ## [2026-07-16] - Ingestion & Integration: AWS & Terraform Core & GitHub Actions Basics to Production
 
 ### Refactored / Upgraded
@@ -110,7 +124,7 @@ Processed and integrated the following files in `inflow/`:
 - **Reference Notes:**
   - [[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md|0-8-a_local_storage_models_and_scheduling_traps.md]]: Created standalone reference note detailing the differences between CSI and StorageClass, the three local storage models (`hostPath`, static `local` volumes, dynamic `local-path`), and the `WaitForFirstConsumer` volume binding mode.
 - **Projects:**
-  - [[Projects/CKA/Project - Local Storage Models and Scheduling Traps.md|Project - Local Storage Models and Scheduling Traps.md]]: Created CKA-focused hands-on project to simulate local storage provisioning and the scheduling affinity deadlock failure loop.
+  - [[Project - Local Storage Models and Scheduling Traps|Project - Local Storage Models and Scheduling Traps.md]]: Created CKA-focused hands-on project to simulate local storage provisioning and the scheduling affinity deadlock failure loop.
 - **Main Notes:**
   - [[Main Notes/storageclass - Volume Binding Modes and Scheduling Traps.md|storageclass - Volume Binding Modes and Scheduling Traps.md]]: Created deeper-dive note documenting the immediate binding trap and `WaitForFirstConsumer` scheduling coordination.
 
@@ -124,8 +138,8 @@ Processed and integrated the following files in `inflow/`:
 - **Digital Garden:**
   - [[Digital Garden/Pattern - Stateful Database Clustering in Kubernetes.md|Pattern - Stateful Database Clustering in Kubernetes.md]]: Updated Section 5 and frontmatter to reference the new local storage models reference and project notes.
 - **Projects:**
-  - [[Projects/CKA/Practice Playbook - Topic Labs.md|Practice Playbook - Topic Labs.md]]: Added Q4 to the Storage section pointing to the scheduling deadlock simulation project.
-  - [[Projects/CKA/Exam Checklist - Security and Storage.md|Exam Checklist - Security and Storage.md]]: Added CKA exam tip and troubleshooting commands for local storage scheduling traps.
+  - [[Practice Playbook - Topic Labs|Practice Playbook - Topic Labs.md]]: Added Q4 to the Storage section pointing to the scheduling deadlock simulation project.
+  - [[Exam Checklist - Security and Storage|Exam Checklist - Security and Storage.md]]: Added CKA exam tip and troubleshooting commands for local storage scheduling traps.
 
 ### Ingested Inflow Sources
 Processed and integrated the following file from `inflow/`:
@@ -242,7 +256,7 @@ Processed and integrated the following files from `inflow/`:
 - **Main Notes:**
   - [[Main Notes/0-CKA Study Roadmap.md|0-CKA Study Roadmap.md]]: Integrated Helm reference link.
 - **Projects:**
-  - [[Projects/CKA/Practice Playbook - Lightning Labs and Mock Exams.md|Practice Playbook - Lightning Labs and Mock Exams.md]]: Expanded Section 3 with values overrides, rollbacks, and local untar operations.
+  - [[Practice Playbook - Lightning Labs and Mock Exams|Practice Playbook - Lightning Labs and Mock Exams.md]]: Expanded Section 3 with values overrides, rollbacks, and local untar operations.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from `inflow/`:
@@ -271,7 +285,7 @@ Processed and integrated the following files from `inflow/`:
 - **Main Notes:**
   - [[Main Notes/0-CKA Study Roadmap.md|0-CKA Study Roadmap.md]]: Integrated Gateway API Advanced Routing concept link.
 - **Projects:**
-  - [[Projects/CKA/Exam Checklist - Troubleshooting and Networking.md|Exam Checklist - Troubleshooting and Networking.md]]: Added controller logs verify, filters validation, and port binding diagnostics.
+  - [[Exam Checklist - Troubleshooting and Networking|Exam Checklist - Troubleshooting and Networking.md]]: Added controller logs verify, filters validation, and port binding diagnostics.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from `inflow/`:
@@ -304,7 +318,7 @@ Processed and integrated the following files from `inflow/`:
 - **Main Notes:**
   - [[Main Notes/etcd-deeper.md|etcd-deeper.md]]: Expanded Section 2 with Port 2381 and api-server connections details.
 - **Projects:**
-  - [[Projects/CKA/Exam Checklist - Cluster Maintenance and Installation.md|Exam Checklist - Cluster Maintenance and Installation.md]]: Added Section 3.1.1 on ETCD network ports and API server connection pooling.
+  - [[Exam Checklist - Cluster Maintenance and Installation|Exam Checklist - Cluster Maintenance and Installation.md]]: Added Section 3.1.1 on ETCD network ports and API server connection pooling.
 
 ### Ingested Inflow Sources
 Processed and integrated the following file from `inflow/`:
@@ -350,7 +364,7 @@ Processed and integrated the following files from `inflow/`:
 - **Study Guide:**
   - [[Main Notes/0-CKA Study Roadmap.md|0-CKA Study Roadmap.md]]: Integrated CNI and its sub-notes into the Cluster Networking path.
 - **Projects:**
-  - [[Projects/CKA/Exam Checklist - Troubleshooting and Networking.md|Exam Checklist - Troubleshooting and Networking.md]]: Expanded Section 4.1 to cover local IPAM paths, Kube-Controller-Manager CIDR flags, and CNI log audits.
+  - [[Exam Checklist - Troubleshooting and Networking|Exam Checklist - Troubleshooting and Networking.md]]: Expanded Section 4.1 to cover local IPAM paths, Kube-Controller-Manager CIDR flags, and CNI log audits.
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from `inflow/`:
@@ -367,7 +381,7 @@ Processed and integrated the following files from `inflow/`:
 ### Refactored / Upgraded
 - **Reference Notes:**
   - Expanded Section 3 "Certificates API" in [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] with granular details on usages constraints, TLS OID extensions, and group binding logic.
-  - Expanded [[Projects/CKA/Vim and Terminal Setup.md|Vim and Terminal Setup.md]] to add high-speed string editing shortcuts (`C`, `D`, `daw`, `diw/diW`), Vim split escape remaps (`tnoremap`/`nnoremap`), and a Tmux split-pane configuration guide (mouse mode, scrolling, and Shift-highlight copy/paste workarounds).
+  - Expanded [[Vim and Terminal Setup|Vim and Terminal Setup.md]] to add high-speed string editing shortcuts (`C`, `D`, `daw`, `diw/diW`), Vim split escape remaps (`tnoremap`/`nnoremap`), and a Tmux split-pane configuration guide (mouse mode, scrolling, and Shift-highlight copy/paste workarounds).
 
 ### Ingested Inflow Sources
 Processed and integrated the following file from `inflow/`:
@@ -406,7 +420,7 @@ Processed and integrated the following file from `inflow/`:
 
 ### Refactored / Upgraded
 - **Projects & Playbooks:**
-  - Expanded [[Projects/CKA/Practice Playbook - Lightning Labs and Mock Exams.md|Practice Playbook - Lightning Labs and Mock Exams.md]] to add Section 5 ("Ultimate Mock Exams & High-Density Exam Scenarios"):
+  - Expanded [[Practice Playbook - Lightning Labs and Mock Exams|Practice Playbook - Lightning Labs and Mock Exams.md]] to add Section 5 ("Ultimate Mock Exams & High-Density Exam Scenarios"):
     - Documented multi-cluster context management (`kubectl config use-context`) and boundary traversal commands.
     - Added Horizontal Pod Autoscaler (HPA) specifications detailing CPU target utilization and the scaleDown stabilization window.
     - Added Vertical Pod Autoscaler (VPA) autoscaling auto update mode configs.
@@ -524,7 +538,7 @@ Processed and integrated the following transcript file from `inflow/`:
 
 ### Added
 - **Reference Notes:** Created [[Reference Notes/3-20_other_services_whitepapers.md|3-20_other_services_whitepapers.md]].
-- **Projects:** Created [[Projects/aws-cloudops/Project - CloudFormation Stack Updates and Change Sets.md|Project - CloudFormation Stack Updates and Change Sets.md]] detailing declarative YAML layouts, parameterization, change set verification (`Replacement: True`), and stack teardown logs.
+- **Projects:** Created [[Project - CloudFormation Stack Updates and Change Sets|Project - CloudFormation Stack Updates and Change Sets.md]] detailing declarative YAML layouts, parameterization, change set verification (`Replacement: True`), and stack teardown logs.
 - **Main Notes:** Created 7 landing notes:
   - [[Main Notes/AWS CloudFormation.md|AWS CloudFormation.md]]
   - [[Main Notes/AWS Systems Manager.md|AWS Systems Manager.md]]
@@ -548,7 +562,7 @@ Processed and integrated the following transcript file from `inflow/aws_saa_spli
 
 ### Added
 - **Reference Notes:** Created [[Reference Notes/3-19_databases_analytics_ml.md|3-19_databases_analytics_ml.md]].
-- **Projects:** Created [[Projects/aws-cloudops/Project - Athena S3 Access Log Analytics.md|Project - Athena S3 Access Log Analytics.md]] detailing serverless log query setups, DDL expressions with `RegexSerDe`, and HTTP status audits.
+- **Projects:** Created [[Project - Athena S3 Access Log Analytics|Project - Athena S3 Access Log Analytics.md]] detailing serverless log query setups, DDL expressions with `RegexSerDe`, and HTTP status audits.
 - **Main Notes:** Created 8 landing notes:
   - [[Main Notes/Amazon Athena.md|Amazon Athena.md]]
   - [[Main Notes/Amazon Redshift.md|Amazon Redshift.md]]
@@ -573,7 +587,7 @@ Processed and integrated the following transcript file from `inflow/aws_saa_spli
 
 ### Added
 - **Reference Notes:** Created [[Reference Notes/3-18_serverless.md|3-18_serverless.md]].
-- **Projects:** Created [[Projects/kubernetes/Project - Serverless REST API with Lambda and API Gateway.md|Project - Serverless REST API with Lambda and API Gateway.md]] detailing hands-on playbooks for serverless setups, Python codes, and throttling/concurrency verification.
+- **Projects:** Created [[Project - Serverless REST API with Lambda and API Gateway|Project - Serverless REST API with Lambda and API Gateway.md]] detailing hands-on playbooks for serverless setups, Python codes, and throttling/concurrency verification.
 - **Main Notes:** Created 4 landing notes:
   - [[Main Notes/AWS Lambda.md|AWS Lambda.md]]
   - [[Main Notes/API Gateway.md|API Gateway.md]]
@@ -594,7 +608,7 @@ Processed and integrated the following transcript file from `inflow/aws_saa_spli
 
 ### Added
 - **Reference Notes:** Created [[Reference Notes/3-17_containers_ecs_eks.md|3-17_containers_ecs_eks.md]].
-- **Projects:** Created [[Projects/kubernetes/Project - ECS and EKS Cluster Deployments.md|Project - ECS and EKS Cluster Deployments.md]] detailing hands-on playbooks for ECS and EKS configurations and verification steps.
+- **Projects:** Created [[Project - ECS and EKS Cluster Deployments|Project - ECS and EKS Cluster Deployments.md]] detailing hands-on playbooks for ECS and EKS configurations and verification steps.
 - **Main Notes:** Created 3 landing notes:
   - [[Main Notes/Amazon ECS.md|Amazon ECS.md]]
   - [[Main Notes/Amazon EKS.md|Amazon EKS.md]]
@@ -894,10 +908,10 @@ Processed and integrated the following transcript file from `inflow/aws_saa_spli
   - **Database Administration (MariaDB):** Relational database installations, securing instances via `mysql_secure_installation`, provisioning users, and configuring access control tables.
   - **Central Logging (ELK Stack):** Centralized log observability configurations detailing Elasticsearch indices, Logstash grok parsing filter pipelines, and Kibana dashboard portal controls.
 - **Projects:** Created 4 new hands-on project playbooks under `Projects/Linux/`:
-  - [[Projects/Linux/Project - DHCP Server Installation and Dynamic IP Allocation.md|Project - DHCP Server Installation and Dynamic IP Allocation.md]]
-  - [[Projects/Linux/Project - iSCSI Target and Initiator Storage Configuration.md|Project - iSCSI Target and Initiator Storage Configuration.md]]
-  - [[Projects/Linux/Project - MariaDB Database Installation and User Security.md|Project - MariaDB Database Installation and User Security.md]]
-  - [[Projects/Linux/Project - ELK Stack Log Aggregation Clustering.md|Project - ELK Stack Log Aggregation Clustering.md]]
+  - [[Project - DHCP Server Installation and Dynamic IP Allocation|Project - DHCP Server Installation and Dynamic IP Allocation.md]]
+  - [[Project - iSCSI Target and Initiator Storage Configuration|Project - iSCSI Target and Initiator Storage Configuration.md]]
+  - [[Project - MariaDB Database Installation and User Security|Project - MariaDB Database Installation and User Security.md]]
+  - [[Project - ELK Stack Log Aggregation Clustering|Project - ELK Stack Log Aggregation Clustering.md]]
 
 ### Refactored / Upgraded
 - **Reference Notes:** Updated and expanded existing storage, security, DNS, and boot systems modules in [[Reference Notes/8-9_redhat_enterprise_linux_administration.md|8-9_redhat_enterprise_linux_administration.md]]:
@@ -908,7 +922,7 @@ Processed and integrated the following transcript file from `inflow/aws_saa_spli
   - Added BIND replication configuration specifying Master-Slave zone transfer options (`allow-transfer`, `also-notify`), SOA parameter rules, and slave write path directory guidelines under `/var/named/slaves/`.
   - Added systemd service masking/unmasking targets control.
   - Refactored POSIX ACLs section to address security limitations of UGO permissions, kernel compatibility options, explicit mount flags verification, recursive/default rules, and specific rule entries purging.
-- **Projects:** Updated the [[Projects/Linux/Project - BIND DNS Server Installation and Caching Name Server.md|Project - BIND DNS Server Installation and Caching Name Server.md]] playbook to add a complete step-by-step master/slave DNS replication and zone transfer setup guide.
+- **Projects:** Updated the [[Project - BIND DNS Server Installation and Caching Name Server|Project - BIND DNS Server Installation and Caching Name Server.md]] playbook to add a complete step-by-step master/slave DNS replication and zone transfer setup guide.
 - **Reference MOCs:** Updated [[Reference Notes/8-Index - Linux and OS.md|8-Index - Linux and OS.md]] to catalog the 4 new project playbooks.
 
 ### Ingested Inflow Sources
@@ -929,16 +943,16 @@ Processed and integrated the following transcript files from `inflow/linux_admin
   - [[Reference Notes/12-Index - CNCF References.md|12-Index - CNCF References.md]]
   - [[Reference Notes/12-1_cncf_kubernetes_disaster_recovery.md|12-1_cncf_kubernetes_disaster_recovery.md]]
 - **Projects:** Created 9 detailed hands-on project playbooks under `Projects/Linux/`, and 1 Terraform playbook under `Projects/terraform/`:
-  - [[Projects/Linux/Project - User Administration & POSIX-ACL Hardening.md|Project - User Administration & POSIX-ACL Hardening.md]]
-  - [[Projects/Linux/Project - GRUB Boot Security & Root Password Recovery.md|Project - GRUB Boot Security & Root Password Recovery.md]]
-  - [[Projects/Linux/Project - Disk Partitioning, Software RAID & LVM Volume Expansion.md|Project - Disk Partitioning, Software RAID & LVM Volume Expansion.md]]
-  - [[Projects/Linux/Project - Network Interface Profiles, Teaming & Bridging.md|Project - Network Interface Profiles, Teaming & Bridging.md]]
-  - [[Projects/Linux/Project - Log Rotation, Text Filtering & Automation Backup.md|Project - Log Rotation, Text Filtering & Automation Backup.md]]
-  - [[Projects/Linux/Project - NFS and FTP Secure Network File Shares.md|Project - NFS and FTP Secure Network File Shares.md]]
-  - [[Projects/Linux/Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security.md|Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security.md]]
-  - [[Projects/Linux/Project - BIND DNS Server Installation and Caching Name Server.md|Project - BIND DNS Server Installation and Caching Name Server.md]]
-  - [[Projects/Linux/Project - Central LDAP-FreeIPA Domain Authentication.md|Project - Central LDAP-FreeIPA Domain Authentication.md]]
-  - [[Projects/terraform/Project - 2-Tier Architecture Setup with RDS and Secret Manager.md|Project - 2-Tier Architecture Setup with RDS and Secret Manager.md]]
+  - [[Project - User Administration & POSIX-ACL Hardening|Project - User Administration & POSIX-ACL Hardening.md]]
+  - [[Project - GRUB Boot Security & Root Password Recovery|Project - GRUB Boot Security & Root Password Recovery.md]]
+  - [[Project - Disk Partitioning, Software RAID & LVM Volume Expansion|Project - Disk Partitioning, Software RAID & LVM Volume Expansion.md]]
+  - [[Project - Network Interface Profiles, Teaming & Bridging|Project - Network Interface Profiles, Teaming & Bridging.md]]
+  - [[Project - Log Rotation, Text Filtering & Automation Backup|Project - Log Rotation, Text Filtering & Automation Backup.md]]
+  - [[Project - NFS and FTP Secure Network File Shares|Project - NFS and FTP Secure Network File Shares.md]]
+  - [[Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security|Project - Apache Web Server Deployment, Virtual Hosts, and Directory Security.md]]
+  - [[Project - BIND DNS Server Installation and Caching Name Server|Project - BIND DNS Server Installation and Caching Name Server.md]]
+  - [[Project - Central LDAP-FreeIPA Domain Authentication|Project - Central LDAP-FreeIPA Domain Authentication.md]]
+  - [[Project - 2-Tier Architecture Setup with RDS and Secret Manager|Project - 2-Tier Architecture Setup with RDS and Secret Manager.md]]
 - **Main Notes:** Created 2 deeper-dive notes under `Main Notes/`:
   - [[Main Notes/linux - Logical Volume Manager.md|linux - Logical Volume Manager.md]]
   - [[Main Notes/linux - Boot Initialization and Systemd.md|linux - Boot Initialization and Systemd.md]]
@@ -1050,9 +1064,9 @@ Processed and integrated the following files from the `inflow/` directory:
   - [[Reference Notes/11-5_governance_and_compliance.md|11-5_governance_and_compliance.md]]
   - [[Reference Notes/11-6_automation_and_hybrid_networks.md|11-6_automation_and_hybrid_networks.md]]
 - **Projects:** Created 3 detailed hands-on project playbooks:
-  - [[Projects/aws-cloudops/Project - AWS Systems Manager Automation and Remediation.md|Project - AWS Systems Manager Automation and Remediation.md]]
-  - [[Projects/aws-cloudops/Project - CloudWatch Log Streaming and Metric Filtering.md|Project - CloudWatch Log Streaming and Metric Filtering.md]]
-  - [[Projects/aws-cloudops/Project - Hybrid VPC Peering and Transit Gateway Troubleshooting.md|Project - Hybrid VPC Peering and Transit Gateway Troubleshooting.md]]
+  - [[Project - AWS Systems Manager Automation and Remediation|Project - AWS Systems Manager Automation and Remediation.md]]
+  - [[Project - CloudWatch Log Streaming and Metric Filtering|Project - CloudWatch Log Streaming and Metric Filtering.md]]
+  - [[Project - Hybrid VPC Peering and Transit Gateway Troubleshooting|Project - Hybrid VPC Peering and Transit Gateway Troubleshooting.md]]
 - **Main Notes:** Created [[Main Notes/aws-cloudops.md|aws-cloudops.md]] landing note, [[Main Notes/aws-cloudops - Systems Manager and Runbooks.md|aws-cloudops - Systems Manager and Runbooks.md]] deeper-dive note, and [[Main Notes/aws-cloudops - CloudWatch Agent and Metrics.md|aws-cloudops - CloudWatch Agent and Metrics.md]] deeper-dive note.
 - **Digital Garden:** Created [[Digital Garden/Pattern - Automated Operations and Event-Driven Remediation.md|Pattern - Automated Operations and Event-Driven Remediation.md]] pattern note.
 
@@ -1074,9 +1088,9 @@ Processed and integrated the following files from the `inflow/` directory:
   - [[Reference Notes/10-5_modules_eks_and_serverless.md|10-5_modules_eks_and_serverless.md]]
   - [[Reference Notes/10-6_cicd_gitops_observability_and_drift.md|10-6_cicd_gitops_observability_and_drift.md]]
 - **Projects:** Created 3 detailed hands-on project playbooks:
-  - [[Projects/terraform/Project - HA 3-Tier Architecture on AWS.md|Project - HA 3-Tier Architecture on AWS.md]]
-  - [[Projects/terraform/Project - EKS GitOps and ArgoCD.md|Project - EKS GitOps and ArgoCD.md]]
-  - [[Projects/terraform/Project - Terraform Automation and Drift Remediation.md|Project - Terraform Automation and Drift Remediation.md]]
+  - [[Project - HA 3-Tier Architecture on AWS|Project - HA 3-Tier Architecture on AWS.md]]
+  - [[Project - EKS GitOps and ArgoCD|Project - EKS GitOps and ArgoCD.md]]
+  - [[Project - Terraform Automation and Drift Remediation|Project - Terraform Automation and Drift Remediation.md]]
 - **Main Notes:** Created [[Main Notes/terraform.md|terraform.md]] landing note, [[Main Notes/terraform - State and Backend Locking.md|terraform - State and Backend Locking.md]] deeper-dive note, and [[Main Notes/terraform - Meta-Arguments and Loops.md|terraform - Meta-Arguments and Loops.md]] deeper-dive note.
 - **Digital Garden:** Created [[Digital Garden/Pattern - Immutable Infrastructure and GitOps Reconciliation.md|Pattern - Immutable Infrastructure and GitOps Reconciliation.md]] pattern note.
 
@@ -1124,7 +1138,7 @@ Processed and integrated the following files from the `inflow/` directory:
   - [[Reference Notes/9-1_github_actions_architecture_and_workflows.md|9-1_github_actions_architecture_and_workflows.md]]
   - [[Reference Notes/9-2_github_actions_advanced_execution.md|9-2_github_actions_advanced_execution.md]]
   - [[Reference Notes/9-3_github_actions_administration_and_security.md|9-3_github_actions_administration_and_security.md]]
-- **Projects:** Created [[Projects/github-actions/Project - GitHub Actions CI-CD Pipelines.md|Project - GitHub Actions CI-CD Pipelines.md]] playbook.
+- **Projects:** Created [[Project - GitHub Actions CI-CD Pipelines|Project - GitHub Actions CI-CD Pipelines.md]] playbook.
 - **Main Notes:** Created [[Main Notes/github-actions.md|github-actions.md]] landing note, [[Main Notes/github-actions - Security and Secrets.md|github-actions - Security and Secrets.md]] deeper note, and [[Main Notes/github-actions - Runner Environments.md|github-actions - Runner Environments.md]] deeper note.
 - **Digital Garden:** Created [[Digital Garden/Pattern - Secure OIDC Cloud Authentication in CI-CD.md|Pattern - Secure OIDC Cloud Authentication in CI-CD.md]] pattern note.
 
@@ -1149,7 +1163,7 @@ Processed and integrated the following files from the `inflow/` directory:
   - [[Reference Notes/8-6_monitoring_logs_and_diagnostics.md|8-6_monitoring_logs_and_diagnostics.md]]
   - [[Reference Notes/8-7_high_availability_and_clustering.md|8-7_high_availability_and_clustering.md]]
   - [[Reference Notes/8-8_automation_backup_and_cloud.md|8-8_automation_backup_and_cloud.md]]
-- **Projects:** Created [[Projects/Linux/Project - HA Keepalived Load Balancing.md|Project - HA Keepalived Load Balancing.md]] and [[Projects/Linux/Project - Migrating Legacy Init Scripts to systemd.md|Project - Migrating Legacy Init Scripts to systemd.md]] playbooks.
+- **Projects:** Created [[Project - HA Keepalived Load Balancing|Project - HA Keepalived Load Balancing.md]] and [[Project - Migrating Legacy Init Scripts to systemd|Project - Migrating Legacy Init Scripts to systemd.md]] playbooks.
 - **Main Notes:** Created [[Main Notes/linux.md|linux.md]] and [[Main Notes/process-supervision.md|process-supervision.md]] landing notes.
 
 ### Ingested Inflow Sources
@@ -1163,7 +1177,7 @@ Processed and integrated the following files from the `inflow/` directory:
 
 ### Added
 - **Main Notes:** Created [[Main Notes/Vertical Pod Autoscaler.md|Vertical Pod Autoscaler.md]] landing note and [[Main Notes/Vertical Pod Autoscaler - In-Place Resizing.md|Vertical Pod Autoscaler - In-Place Resizing.md]] deeper-dive note detailing dynamic scaling, feature gates, and resize policies.
-- **Projects:** Created [[Projects/kubernetes/Project - Vertical Pod Autoscaler.md|Project - Vertical Pod Autoscaler.md]] containing playbooks for VPA installation, Auto mode validation, and manual in-place patching diagnostics.
+- **Projects:** Created [[Project - Vertical Pod Autoscaler|Project - Vertical Pod Autoscaler.md]] containing playbooks for VPA installation, Auto mode validation, and manual in-place patching diagnostics.
 
 ### Refactored / Upgraded
 - **Reference Notes:** Upgraded Section 12.5 "Workload Autoscaling (HPA & VPA)" in [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md|0-6_kubernetes_workloads_and_controllers.md]] to incorporate HPA vs VPA comparisons and manual in-place scaling workflows, aligned with v1.35 GA (container-level) and v1.36 Beta (pod-level) resource resize features.
@@ -1180,7 +1194,7 @@ Processed and integrated the following files from the `inflow/` directory:
 
 ### Added
 - **Main Notes:** Created [[Main Notes/Secrets Store CSI Driver.md|Secrets Store CSI Driver.md]] conceptual landing note detailing dynamic mounting, ServiceAccount annotations, and failure modes.
-- **Projects:** Created [[Projects/kubernetes/Project - Secrets Store CSI Driver.md|Project - Secrets Store CSI Driver.md]] containing complete playbooks for Helm setup, IRSA trust policies, SecretProviderClass configuration, and auto-rotation verification.
+- **Projects:** Created [[Project - Secrets Store CSI Driver|Project - Secrets Store CSI Driver.md]] containing complete playbooks for Helm setup, IRSA trust policies, SecretProviderClass configuration, and auto-rotation verification.
 
 ### Refactored / Upgraded
 - **Reference Notes:** Added Section 11.12 "Secrets Store CSI Driver Integration" in [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] (Module 7) describing the external secrets pattern, volume setup, IRSA tokens, and auto-rotation hooks.
@@ -1210,8 +1224,8 @@ Processed and integrated the following files from the `inflow/` directory:
 
 ### Refactored / Upgraded
 - **Reference Notes:** Expanded [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] (Module 7) with a comprehensive comparison table of all encryption providers, wildcard matching rules, resource exemption precedence, zero-downtime key rotation protocol steps, and automatic reloading configuration options.
-- **Projects:** Updated [[Projects/kubernetes/Project - Secrets Management and Encryption.md|Project - Secrets Management and Encryption.md]] to detail local `etcd-client` diagnostic installation, process-checking queries, and a live key rotation and automatic reload validation lab.
-- **CKA Exam Checklists:** Appended key rotation guidelines, host-level `etcdctl` query methods, and automatic reload configurations under Section 8 of [[Projects/CKA/Exam Checklist - Security and Storage.md|Exam Checklist - Security and Storage.md]].
+- **Projects:** Updated [[Project - Secrets Management and Encryption|Project - Secrets Management and Encryption.md]] to detail local `etcd-client` diagnostic installation, process-checking queries, and a live key rotation and automatic reload validation lab.
+- **CKA Exam Checklists:** Appended key rotation guidelines, host-level `etcdctl` query methods, and automatic reload configurations under Section 8 of [[Exam Checklist - Security and Storage|Exam Checklist - Security and Storage.md]].
 - **Main Notes:** Added automatic reloading configuration parameters to [[Main Notes/secret - Encryption at Rest and Ingestion.md|secret - Encryption at Rest and Ingestion.md]].
 
 ### Ingested Inflow Sources
@@ -1235,7 +1249,7 @@ Processed and integrated the following files from the `inflow/` directory:
 ## [2026-06-20] - Secrets Management Ingestion & Decoupling
 
 ### Added
-- **Projects:** Created [[Projects/kubernetes/Project - Secrets Management and Encryption.md|Project - Secrets Management and Encryption.md]] containing complete playbooks for mounting diverse secret types, projected token volume configuration, and enabling symmetric etcd encryption.
+- **Projects:** Created [[Project - Secrets Management and Encryption|Project - Secrets Management and Encryption.md]] containing complete playbooks for mounting diverse secret types, projected token volume configuration, and enabling symmetric etcd encryption.
 - **Main Notes:** Created [[Main Notes/Secret - ServiceAccount Token Projection.md|Secret - ServiceAccount Token Projection.md]] describing token lifetimes and rotation mechanics.
 - **Digital Garden:** Created [[Digital Garden/Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md|Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md]] mapping inter-container separation of concern patterns.
 
@@ -1243,7 +1257,7 @@ Processed and integrated the following files from the `inflow/` directory:
 - **Reference Notes & Architecture Realignment:**
   - Relocated advanced Secrets security architecture, cryptography (Base64 vs. encryption math), Linux `tmpfs` page-cache mechanics, ServiceAccount Token Projection & auto-rotation, and Signer Container Partitioning from [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md|0-13_scheduling_logging_and_lifecycle.md]] (Module 13) to Section 11 of [[Reference Notes/0-7_security_and_network_policies.md|0-7_security_and_network_policies.md]] (Module 7) to align with security boundaries.
   - Simplified Module 13's Secrets section to act purely as a configuration injection guide, linking directly to Module 7 for security hardening.
-  - Updated all dependent links in [[Main Notes/secret.md|secret.md]], [[Main Notes/Secret - ServiceAccount Token Projection.md|Secret - ServiceAccount Token Projection.md]], [[Main Notes/secret - Encryption at Rest and Ingestion.md|secret - Encryption at Rest and Ingestion.md]], [[Digital Garden/Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md|Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md]], and [[Projects/CKA/Exam Checklist - Security and Storage.md|Projects/CKA/Exam Checklist - Security and Storage.md]] to reference Module 7.
+  - Updated all dependent links in [[Main Notes/secret.md|secret.md]], [[Main Notes/Secret - ServiceAccount Token Projection.md|Secret - ServiceAccount Token Projection.md]], [[Main Notes/secret - Encryption at Rest and Ingestion.md|secret - Encryption at Rest and Ingestion.md]], [[Digital Garden/Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md|Pattern - Cryptographic Secret Partitioning and Volatile Memory Mounts.md]], and [[Exam Checklist - Security and Storage|Projects/CKA/Exam Checklist - Security and Storage.md]] to reference Module 7.
 
 
 ### Ingested Inflow Sources
@@ -1255,7 +1269,7 @@ Processed and integrated the following files from the `inflow/` directory:
 ## [2026-06-20] - Admission Controllers Ingestion & Decoupling
 
 ### Added
-- **Projects:** Created [[Projects/kubernetes/Project - Admission Webhooks.md|Project - Admission Webhooks.md]] containing complete playbooks for the ImagePolicyWebhook scan backend and custom mutating Flask server (including Kubernetes container resources and securityContext best practices).
+- **Projects:** Created [[Project - Admission Webhooks|Project - Admission Webhooks.md]] containing complete playbooks for the ImagePolicyWebhook scan backend and custom mutating Flask server (including Kubernetes container resources and securityContext best practices).
 - **Main Notes:** Created [[Main Notes/Admission Controllers - ValidatingAdmissionPolicy.md|Admission Controllers - ValidatingAdmissionPolicy.md]] to conceptualize the CEL-based validation engine in Kubernetes v1.36.
 - **System Profiles:** Created [[System/Agents/poc_kubernetes_developer.md|poc_kubernetes_developer.md]] to act as the specialized domain developer.
 
@@ -1265,7 +1279,7 @@ Processed and integrated the following files from the `inflow/` directory:
   - Decoupled hands-on lab code and configuration blocks into the new Project note, replacing them with wiki-links.
   - Expanded the module with deep-dive audits on JSON Patch syntax, mTLS verification, and CEL syntax.
 - **Digital Garden:** Updated [[Digital Garden/Pattern - Dynamic Security Admission and Webhook TLS Verification.md|Pattern - Dynamic Security Admission and Webhook TLS Verification.md]] with links to the new project note.
-- **CKA Exam Checklists:** Added cross-reference guides and hands-on project links to Sections 9 & 10 of [[Projects/CKA/Exam Checklist - Security and Storage.md|Exam Checklist - Security and Storage.md]].
+- **CKA Exam Checklists:** Added cross-reference guides and hands-on project links to Sections 9 & 10 of [[Exam Checklist - Security and Storage|Exam Checklist - Security and Storage.md]].
 
 ### Ingested Inflow Sources
 Processed and integrated the following files from the `inflow/` directory:

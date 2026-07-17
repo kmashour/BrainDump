@@ -18,7 +18,7 @@ tags:
 
 # bgp
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Networking > **bgp**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Networking > **bgp**
 
 ---
 

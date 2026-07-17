@@ -17,7 +17,7 @@ tags:
 
 # aws - Route 53 DNS and CloudFront CDN
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[aws]] > **Route 53 DNS and CloudFront CDN**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[aws]] > **Route 53 DNS and CloudFront CDN**
 
 ---
 

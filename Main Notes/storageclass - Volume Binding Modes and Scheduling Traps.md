@@ -16,7 +16,7 @@ tags:
 
 # storageclass - Volume Binding Modes and Scheduling Traps
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[storageclass]] > **Volume Binding Modes and Scheduling Traps**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[storageclass]] > **Volume Binding Modes and Scheduling Traps**
 
 ---
 

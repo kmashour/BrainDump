@@ -16,7 +16,7 @@ tags:
 
 # docker - Compose Multi-Container Orchestration
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[docker]] > **Compose Multi-Container Orchestration**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[docker]] > **Compose Multi-Container Orchestration**
 
 ---
 

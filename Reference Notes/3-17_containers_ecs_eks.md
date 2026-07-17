@@ -153,4 +153,4 @@ To mount persistent volumes in EKS, Kubernetes utilizes CSI drivers to interface
 ## 5. Decoupled Verification Projects
 
 Hands-on deployment scripts, task JSON configurations, and EKS scaling validations are compiled as a separate playbook:
-*   *See complete implementation in [[Projects/kubernetes/Project - ECS and EKS Cluster Deployments.md]]*
+*   *See complete implementation in [[Project - ECS and EKS Cluster Deployments]]*

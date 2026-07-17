@@ -184,4 +184,4 @@ AWS offers a split portfolio of ML services, categorized into purpose-built mana
 ## 8. Decoupled Verification Projects
 
 Step-by-step configurations for running serverless log analytics queries, mapping access log columns, and auditing HTTP status frequencies are compiled in the following project:
-*   *See complete implementation in [[Projects/aws-cloudops/Project - Athena S3 Access Log Analytics.md]]*
+*   *See complete implementation in [[Project - Athena S3 Access Log Analytics]]*

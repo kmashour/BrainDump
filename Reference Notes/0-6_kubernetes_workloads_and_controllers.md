@@ -1457,7 +1457,7 @@ By default, altering resource requests or limits in a Pod's specification (e.g. 
     *   **Memory Floor Constraints:** You cannot reduce a container's memory limit below its active physical usage. Doing so places the Pod in a `Proposed` state, and the resize status remains `InProgress` until memory usage drops or the limit is raised.
     *   **OS Support:** Windows pods are not supported; in-place scaling is restricted to Linux container environments.
 
-*See complete playbooks and deployment manifests in [[Projects/kubernetes/Project - Vertical Pod Autoscaler.md|Project - Vertical Pod Autoscaler.md]].*
+*See complete playbooks and deployment manifests in [[Project - Vertical Pod Autoscaler|Project - Vertical Pod Autoscaler.md]].*
 
 ---
 

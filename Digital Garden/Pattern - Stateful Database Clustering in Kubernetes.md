@@ -3,10 +3,10 @@ obsidianUIMode: preview
 class: pattern-note
 tier: main-note
 domains:
-  - "kubernetes"
-  - "networking"
-  - "database"
-  - "linux"
+  - kubernetes
+  - networking
+  - database
+  - linux
 components:
   - "[[statefulset]]"
   - "[[pod]]"
@@ -17,7 +17,7 @@ sources:
   - "[[Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md]]"
   - "[[Main Notes/statefulset.md]]"
   - "[[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md]]"
-  - "[[Projects/CKA/Project - Local Storage Models and Scheduling Traps.md]]"
+  - "[[Project - Local Storage Models and Scheduling Traps]]"
 tags:
   - architecture/pattern
   - kubernetes/statefulset
@@ -62,7 +62,7 @@ Orchestrating clustered databases (e.g., MySQL Group Replication, PostgreSQL Pat
    * **Linux Storage Layer (LVM/hostPath)**: Local storage can be configured on the physical nodes using Logical Volume Manager (LVM) to partition high-speed NVMe drives. In Kubernetes, this is projected using `local` Persistent Volumes or `hostPath`.
    * **Container Runtime Namespace Integration**: When the container runtime (e.g., `containerd` via `runc`) creates the container within the Pod sandbox, it calls `pivot_root` to isolate the mount (`mnt`) namespace. The local storage path on the host is bound directly into the container's isolated mount namespace (e.g., mounting host `/mnt/disks/nvme01` to container `/var/lib/mysql`).
    * **Node Affinity Enforcement**: Because local volumes are physically tied to a specific Node, the PV definition includes a hard node affinity constraint (e.g., `kubernetes.io/hostname: worker-node-01`). The scheduler reads this constraint and guarantees that any rescheduled Pod instance claiming that PV is forced onto the exact host where the physical drive resides.
-   * *See complete architectural breakdowns in [[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md]] and hands-on scheduling deadlock simulation in [[Projects/CKA/Project - Local Storage Models and Scheduling Traps.md]].*
+   * *See complete architectural breakdowns in [[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md]] and hands-on scheduling deadlock simulation in [[Project - Local Storage Models and Scheduling Traps]].*
 
 ---
 

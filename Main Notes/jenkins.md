@@ -18,7 +18,7 @@ tags:
 
 # jenkins
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > CI/CD > **jenkins**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > CI/CD > **jenkins**
 
 ---
 

@@ -58,4 +58,4 @@ sequenceDiagram
 ## 🛠️ Verification & Practical Implementation
 
 *   **AWS Trust Policy configuration:** Configure the OIDC issuer URL (`https://token.actions.githubusercontent.com`) and target audience (`sts.amazonaws.com`).
-*   **Workflow setup:** Refer to the implementation guide in [[Projects/github-actions/Project - GitHub Actions CI-CD Pipelines.md]] and security parameters in [[Main Notes/github-actions - Security and Secrets.md]].
+*   **Workflow setup:** Refer to the implementation guide in [[Project - GitHub Actions CI-CD Pipelines]] and security parameters in [[Main Notes/github-actions - Security and Secrets.md]].

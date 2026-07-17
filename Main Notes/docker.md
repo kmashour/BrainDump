@@ -20,7 +20,7 @@ tags:
 
 # docker
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **docker**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **docker**
 
 ---
 

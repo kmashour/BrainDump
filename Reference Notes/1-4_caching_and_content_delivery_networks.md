@@ -109,4 +109,4 @@ A CDN is a distributed network of edge proxy servers that cache and serve static
 ## 🛠️ Hands-on Verification Project
 
 To verify and inspect the cache control headers and CDN revalidation triggers, refer to the client verification commands:
-- [[Projects/Systems Design/Project - Secure Load-Balanced Web API.md#1-verification-of-caching-and-cdn-headers|Caching and CDN header checks]]
+- [[Project - Secure Load-Balanced Web API#1-verification-of-caching-and-cdn-headers|Caching and CDN header checks]]

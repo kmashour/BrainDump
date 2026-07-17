@@ -168,7 +168,7 @@ Exchanges authentication tokens (from CUP, social logins, or guest states) for *
 ## 7. Decoupled Verification Projects
 
 Step-by-step configurations for REST API gateways, Lambda handler structures, and throttling/concurrency verification scripts are compiled as a separate playbook:
-*   *See complete implementation in [[Projects/kubernetes/Project - Serverless REST API with Lambda and API Gateway.md]]*
+*   *See complete implementation in [[Project - Serverless REST API with Lambda and API Gateway]]*
 
 ---
 

@@ -17,7 +17,7 @@ tags:
 
 # AWS NAT Gateway
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[Reference Notes/3-Index - AWS|AWS]] > [[Amazon VPC]] > **AWS NAT Gateway**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Reference Notes/3-Index - AWS|AWS]] > [[Amazon VPC]] > **AWS NAT Gateway**
 
 ---
 

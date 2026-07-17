@@ -19,15 +19,15 @@ This project workspace focuses strictly on passing the CKA (Certified Kubernetes
 ---
 
 ## 🏆 Kubernetes GOLD Practice Suite
-* **[[kubernetes-CKA-Gold/primer|GOLD Playbook Primer]]** - A primer on navigating the 175 curriculum-weighted CKA questions.
-* **[[kubernetes-CKA-Gold/walkthrough|GOLD Walkthrough Playbook]]** - Complete reference walkthrough for all 175 CKA GOLD tasks (75 study Q&As + 100 scenarios).
+* **[[System/Projects/CKA/kubernetes-CKA-Gold/primer|GOLD Playbook Primer]]** - A primer on navigating the 175 curriculum-weighted CKA questions.
+* **[[System/Projects/CKA/kubernetes-CKA-Gold/walkthrough|GOLD Walkthrough Playbook]]** - Complete reference walkthrough for all 175 CKA GOLD tasks (75 study Q&As + 100 scenarios).
 * **Interactive CLI Practice Engine**: Run `kubernetes-CKA-Gold/gold.sh` in your terminal to access the suite!
 
 ---
 
 ## 🚀 Advanced Kubernetes Playbook (Out-of-Scope Concepts)
-* **[[../kubernetes/primer|Advanced Playbook Primer]]** - Guide to the advanced suite covering CKS, CKAD, and custom operator designs.
-* **[[../kubernetes/walkthrough|Advanced Walkthrough Playbook]]** - Complete reference walkthrough for all 50 advanced tasks (25 study Q&As + 25 scenarios).
+* **[[System/Projects/kubernetes/primer|Advanced Playbook Primer]]** - Guide to the advanced suite covering CKS, CKAD, and custom operator designs.
+* **[[System/Projects/kubernetes/walkthrough|Advanced Walkthrough Playbook]]** - Complete reference walkthrough for all 50 advanced tasks (25 study Q&As + 25 scenarios).
 * **Interactive CLI Practice Engine**: Run `kubernetes/gold.sh` in your terminal to access the advanced suite!
 
 ---

@@ -62,5 +62,5 @@ graph TD
 
 ## 🛠️ Verification & Practical Implementation
 
-*   **EKS Setup:** See the deployment playbook in [[Projects/terraform/Project - EKS GitOps and ArgoCD.md]].
-*   **Drift Remediation:** See automated drift recovery workflow in [[Projects/terraform/Project - Terraform Automation and Drift Remediation.md]].
+*   **EKS Setup:** See the deployment playbook in [[Project - EKS GitOps and ArgoCD]].
+*   **Drift Remediation:** See automated drift recovery workflow in [[Project - Terraform Automation and Drift Remediation]].

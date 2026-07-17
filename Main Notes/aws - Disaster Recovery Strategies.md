@@ -17,7 +17,7 @@ tags:
 
 # aws - Disaster Recovery Strategies
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > [[AWS Disaster Recovery]] > **Disaster Recovery Strategies**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[AWS Disaster Recovery]] > **Disaster Recovery Strategies**
 
 ---
 

@@ -18,7 +18,7 @@ tags:
 
 # python
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Programming > **python**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Programming > **python**
 
 ---
 

@@ -21,7 +21,7 @@ tags:
 
 # AWS Disaster Recovery
 
-**Breadcrumbs:** [[0-Index|🏠 Index]] > Infrastructure > **AWS Disaster Recovery**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > Infrastructure > **AWS Disaster Recovery**
 
 ---
 
