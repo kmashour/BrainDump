@@ -517,20 +517,138 @@ By default, if an upstream job fails, GHA cancels all downstream jobs in the dep
 2.  **`needs.test-unit.result == 'success'`**: Enforces that the unit tests *must* have passed. If unit tests are broken, we refuse to deploy.
 3.  **`(needs.test-integration.result == 'success' || needs.test-integration.result == 'failure')`**: Only permits deployment if the integration test job ran to completion (regardless of whether it passed or failed). If the integration job was `cancelled` (e.g. by a user) or `skipped`, this evaluates to `false` and the deployment is skipped.
 
-| `test-unit` Result | `test-integration` Result | `always()` | Combined Evaluation | Action |
-| :--- | :--- | :--- | :--- | :--- |
-| `success` | `success` | `true` | `true && true && (true \|\| false) = true` | **Deploy** |
-| `success` | `failure` | `true` | `true && true && (false \|\| true) = true` | **Deploy** |
-| `failure` | `success` | `true` | `true && false && (true \|\| false) = false` | **Skip** |
-| `success` | `cancelled` | `true` | `true && true && (false \|\| false) = false` | **Skip** |
+| `test-unit` Result | `test-integration` Result | `always()` | Combined Evaluation                          | Action     |
+| :----------------- | :------------------------ | :--------- | :------------------------------------------- | :--------- |
+| `success`          | `success`                 | `true`     | `true && true && (true \|\| false) = true`   | **Deploy** |
+| `success`          | `failure`                 | `true`     | `true && true && (false \|\| true) = true`   | **Deploy** |
+| `failure`          | `success`                 | `true`     | `true && false && (true \|\| false) = false` | **Skip**   |
+| `success`          | `cancelled`               | `true`     | `true && true && (false \|\| false) = false` | **Skip**   |
 
 ---
 
 ## 3. Modular Reusability: Inputs & Outputs Propagation
 
-To build DRY (Don't Repeat Yourself) pipelines, GHA supports **Composite Actions** and **Reusable Workflows**.
+To build DRY (Don't Repeat Yourself) pipelines, GHA supports **Templates**, **Composite Actions**, and **Reusable Workflows**.
 
-### A. Reusable Workflows vs. Composite Actions
+### A. The Three Modular Blueprint Patterns
+Here is the easiest way to separate them conceptually:
+*   **Templates:** A static copy-paste boilerplate blueprint (starting point).
+*   **Composite Actions:** A live, dynamic bundle of steps (executed on your caller job's VM).
+*   **Reusable Workflows:** A live, dynamic bundle of jobs (spins up its own VM runners).
+
+---
+
+#### 1. Workflow Templates (The Boilerplate Blueprint)
+A Template is **not a live, dynamic link**. It is simply a starter file.
+
+*   **How it Works:** Organizations store templates in a central repository inside a special directory: `.github/workflow-templates`. When a developer goes to the GitHub UI and clicks "New Workflow", they see this template. Clicking it physically copies the YAML text into the developer's repository.
+*   **The Catch:** Once copied, the connection is completely broken. If the DevOps team updates the central template next month, the developer's repo will **not** receive the update.
+*   **Best Used For:** Standardized boilerplate setups where developers are expected to heavily customize the steps afterward.
+
+---
+
+#### 2. Composite Actions (The "Step" Bundler)
+A Composite Action is a **live, dynamic link**, but it only contains a list of steps. It does not declare its own server/runner (`runs-on`) because it runs inside whichever job VM is currently calling it.
+
+##### 📋 The Composite Action Definition File (`my-org/actions/db-login/action.yml`):
+```yaml
+name: 'Company DB Login'
+description: 'Installs VPN and logs into the test database'
+
+inputs:
+  db_token:
+    description: 'Database Authentication Token'
+    required: true
+
+runs:
+  using: "composite" # <-- The magic keyword that tells GHA this is a Composite Action
+  steps:
+    - name: Install VPN Client
+      shell: bash
+      run: apt-get install -y company-vpn-client
+      
+    - name: Authenticate VPN
+      shell: bash
+      run: company-vpn connect --secret ${{ inputs.db_token }}
+```
+
+##### 📋 How you call it in your Caller Workflow:
+Notice that you use this at the step level inside an existing job, just like a standard marketplace step:
+```yaml
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest # You define the VM runner here
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Call the Composite Action as a step
+      - name: Login to Corporate Database
+        uses: my-org/actions/db-login@v1 
+        with:
+          db_token: ${{ secrets.DB_AUTH_TOKEN }}
+        
+      - name: Run my local tests
+        run: npm test
+```
+
+---
+
+#### 3. Reusable Workflows (The "Job" Bundler)
+A Reusable Workflow is a **massive, self-contained pipeline**. It defines its own jobs, requests its own VM runner machines (`runs-on`), and handles its own logic. You call it at the Job level, not the step level.
+
+##### 📋 The Reusable Workflow Definition File (`my-org/central-repo/.github/workflows/deploy.yml`):
+```yaml
+name: Standard Docker Deploy
+
+on: 
+  workflow_call: # <-- The magic trigger that makes this workflow reusable
+    inputs:
+      image_name:
+        required: true
+        type: string
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest # The reusable workflow dictates its own runner VMs!
+    steps:
+      - run: echo "Running mandatory corporate security scan on ${{ inputs.image_name }}..."
+
+  deploy-to-prod:
+    needs: security-scan
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploying image safely..."
+```
+
+##### 📋 How you call it in your Caller Workflow:
+You replace an entire job with it. You do not place it under `steps:`. The caller workflow essentially pauses, routes execution to the central reusable workflow, and waits for it to complete.
+```yaml
+jobs:
+  # Job 1: Build the code locally in your repo
+  build-code:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Building my app..."
+
+  # Job 2: Outsource the entire deploy phase to the Reusable Workflow
+  secure-and-deploy:
+    needs: build-code
+    # Call the Reusable Workflow at the JOB level, not the step level
+    uses: my-org/central-repo/.github/workflows/deploy.yml@main
+    with:
+      image_name: "my-cool-app"
+```
+
+---
+
+### 👑 The Golden Rule of Reusability
+*   If you are writing **`uses:` under `steps:`**, you are calling a **Composite Action** to save yourself from repeating shell commands.
+*   If you are writing **`uses:` under `jobs:`**, you are calling a **Reusable Workflow** to outsource an entire phase of your pipeline to a central corporate authority.
+
+---
+
+### B. Reusable Workflows vs. Composite Actions Comparison
 Choosing the correct modular pattern affects security, structure, and execution limits:
 
 | **Feature** | **Reusable Workflows (`workflow_call`)** | **Composite Actions (`composite`)** |
@@ -540,7 +658,7 @@ Choosing the correct modular pattern affects security, structure, and execution 
 | **Secrets Access** | Can be explicitly passed or inherited (`secrets: inherit`). | Accesses caller's secrets; cannot declare separate secret schemas. |
 | **Logical Logic** | Supports nested steps and complex conditional job sequences. | Only contains sequential steps using the `run` or `uses` keys. |
 
-### B. Defining Inputs & Outputs
+### C. Defining Inputs & Outputs
 *   **Step Outputs:** Written to the `$GITHUB_OUTPUT` file descriptor.
 *   **Job Outputs:** Map step outputs to the job level so dependent jobs can access them via `needs`.
 
