@@ -95,6 +95,35 @@ When multiple developers push commits concurrently (e.g., to different branches 
     *   GitHub allocates **6 separate Runner VMs** executing in true parallel.
     *   The runs are fully isolated from one another.
 
+#### ⚠️ The Deployment Race Condition & Concurrency Resolution
+When multiple runs of a deployment workflow execute concurrently, they can result in severe race conditions on the target environment (e.g., database schema lock conflicts, corrupted target server filesystem state, or Terraform state lock collisions). 
+
+To resolve this, GitHub Actions uses the `concurrency` block as a distributed locking manager. A concurrency group locks executions sharing the same group key:
+
+```yaml
+# Example: Staging deployment lock (Global or scoped)
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false # Forces sequential execution; never cancels a running deployment mid-way
+```
+
+##### Concurrency Group Identifiers & Use Cases
+Developers use dynamic contexts to partition concurrency boundaries:
+
+1. **Global Environment Lock (Database & IaC Deployments):**
+   * **Syntax:** `group: deploy-staging` or `group: deploy-${{ inputs.target_env }}`
+   * **Behavior:** Locks the target environment globally. Only one run can deploy to `staging` at any time, regardless of what branch or commit triggered it.
+   * **Setting:** `cancel-in-progress: false`. Extremely critical. If Developer A is running a DB migration, Developer B's run will wait in a pending queue. Canceling mid-way would leave the database in a corrupted state.
+
+2. **Branch-Scoped CI Lock (Testing & Linting):**
+   * **Syntax:** `group: ci-${{ github.ref_name }}` or `group: ${{ github.workflow }}-${{ github.ref }}`
+   * **Behavior:** Locks runs on a per-branch/workflow basis. If a developer pushes multiple commits in rapid succession to `feature-branch-1`, only one CI run executes.
+   * **Setting:** `cancel-in-progress: true`. Outdated runs are immediately canceled to free up runner capacity and save build minutes, since only the latest commit is relevant for code quality checks.
+
+3. **Pull Request Validation Lock:**
+   * **Syntax:** `group: pr-${{ github.event.pull_request.number }}`
+   * **Behavior:** Limits runs per Pull Request. Pushing new commits to the PR automatically terminates the previous validation run.
+
 #### Sequential Jobs (`needs`) vs. Single-Job Steps
 If jobs run on separate clean VMs, they require repeating `actions/checkout` and passing files via artifacts. Why not consolidate everything into sequential steps inside a single job? While simpler, splitting into separate jobs with `needs` is essential for:
 1.  **Manual Approval Gates:** Steps cannot pause for human verification. Jobs can target an "Environment" which allows pausing the pipeline until a reviewer approves the deployment.
