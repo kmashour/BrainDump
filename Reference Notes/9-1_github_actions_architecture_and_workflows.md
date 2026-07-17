@@ -575,11 +575,44 @@ steps:
 ```
 
 ### B. Action Selection & Versioning
-When using marketplace or external actions, pinning the version is critical to prevent pipeline breakage due to upstream changes. GHA supports three pinning strategies:
+When you use a third-party action in your workflow via the `uses:` keyword, you are instructing GHA to pull code from another public Git repository and execute it on your runner. Managing the version of these actions is critical for security and stability.
 
-1.  **Tag Pinning (`uses: actions/checkout@v4`):** Flexible, but risk of tag reassignment.
-2.  **Branch Pinning (`uses: actions/checkout@main`):** Pulls the latest commits on a branch. High risk of breaking builds.
-3.  **SHA-1 Pinning (`uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29`):** **Most Secure**. Pinning to an immutable commit SHA prevents supply chain attacks and unexpected updates.
+GHA supports three pinning strategies:
+
+#### 1. Branch Pinning (Highest Risk)
+*   **Syntax:** `uses: actions/checkout@main`
+*   **Mechanism:** GHA pulls the latest commit on the `main` branch of the action's repository every time the workflow runs.
+*   **The Risk:** If the author of the action pushes a breaking change to their `main` branch, your pipeline will instantly break without you making any changes to your code. 
+
+#### 2. Tag Pinning (Medium Risk / Most Common)
+*   **Syntax:** `uses: actions/checkout@v4`
+*   **Mechanism:** GHA pulls the code associated with the Git release tag named `v4`.
+*   **The Risk (Tag Mutability):** In Git, **tags are mutable (changeable)**. The repository owner can delete the `v4` tag and recreate it pointing to a different commit.
+*   **The Attack Vector (Supply Chain Attack):** If an attacker hacks the developer's GitHub account, they can push malicious code (e.g., to steal your corporate secrets or AWS keys), delete the `v4` tag, and point it to the malicious commit. The next time your pipeline runs, GHA will pull the hijacked code, thinking it is the safe `v4` version.
+
+#### 3. SHA-1 Pinning (Most Secure / Zero-Trust)
+*   **Syntax:** `uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29`
+*   **Mechanism:** GHA pulls the exact commit identified by the 40-character SHA-1 hash.
+*   **Why it is secure (Immutability):** In Git, a commit SHA is a cryptographic hash of the code contents, author, date, and history. **It is mathematically impossible to change the code of a commit without changing its SHA-1 hash.** 
+*   **The Result:** Even if the action's repository is hacked and the tags are deleted or moved, the attacker cannot alter the code under that specific SHA. GHA is guaranteed to run the exact code you reviewed and approved.
+
+##### 📋 Pinning Strategy Comparison & Recommendation
+
+| Pinning Strategy | YAML Example | Mutability | Security Risk | Recommendation |
+| :--- | :--- | :--- | :--- | :--- |
+| **Branch** | `uses: actions/checkout@main` | **Highly Mutable** (Changes on every commit) | **Critical:** Upstream changes break builds instantly. | **Never use** in production or CI/CD pipelines. |
+| **Tag** | `uses: actions/checkout@v4` | **Mutable** (Owner can redirect tags) | **High:** Vulnerable to tag hijacking and supply chain poisoning. | Good for development, but risky for high-security environments. |
+| **SHA-1 Hash** | `uses: actions/checkout@a5ac7e5...` | **Immutable** (Cryptographically locked) | **None:** Guarantees code integrity. | **Mandatory** for enterprise environments (PwC, banking, etc.). |
+
+##### 🛡️ How to use SHA Pinning safely in enterprise YAML:
+When you pin to a SHA, you lose the ability to see what version it represents at a glance. Best practice is to write the version tag as a comment next to the SHA:
+
+```yaml
+steps:
+  - name: Checkout Code
+    # Pinned to v4.1.1
+    uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 
+```
 
 ---
 
