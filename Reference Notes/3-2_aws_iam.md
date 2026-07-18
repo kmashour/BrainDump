@@ -579,4 +579,16 @@ To cement these Defense-in-Depth and modular architecture concepts, the followin
     *   Deploy a test pod that fetches data privately from S3, decrypts it using KMS, and logs it.
 *   **Why it complements:** Proves the intersection of networking (VPC Endpoint policies), container security (IRSA), and database security (KMS Key policies) working together.
 
+### D. Multi-Account Identity Management: Legacy vs. Federation (SSO)
+Managing user identities across a multi-account organization involves choosing between local silo administration or central federation.
+
+| Feature | Legacy Multi-Account IAM | Modern IAM Identity Center (SSO) |
+| :--- | :--- | :--- |
+| **User Creation** | Created manually in every member account database. | Created once in a central Directory (Okta, Azure AD, AWS SSO). |
+| **Authentication** | Bob has different passwords and MFAs for each account. | Bob logs in once at a single portal URL with one password/MFA. |
+| **Security Risk** | Permanent CLI Access Keys are generated in each account. | Temporary, short-lived (1-hour) credentials are issued via STS. |
+| **Offboarding** | Admin must delete Bob's IAM user in every separate account. | Admin disables Bob once in Okta/SSO; access is revoked globally. |
+| **Access Model** | Direct user console login. | Bob clicks an account in the portal, automatically assuming an IAM Role. |
+
+
 
