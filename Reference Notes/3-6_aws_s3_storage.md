@@ -149,14 +149,14 @@ In an enterprise private network, an EC2 instance in a private subnet routes its
 #### ⚖️ S3 Gateway Endpoints vs. AWS PrivateLink (Interface Endpoints)
 Another critical distinction in S3 private networking is deciding between route-based endpoints and physical interface endpoints.
 
-| Feature | S3 Gateway Endpoint | S3 Interface Endpoint (PrivateLink) |
-| :--- | :--- | :--- |
-| **Technology** | **Route Table Prefix List** | **Elastic Network Interface (ENI)** |
-| **Setup Footprint** | No physical resource in your subnet. Modifies VPC route tables to intercept S3 traffic. | Provisions a real network interface (ENI) with a private IP from your subnet's CIDR block. |
-| **On-Premises Access** | **No.** On-prem servers (via VPN/Direct Connect) cannot route to it. | **Yes.** Being an IP in the subnet, VPN/Direct Connect routes can reach it directly. |
-| **Cross-VPC Peering** | **No.** Peered VPCs cannot transit route through a Gateway Endpoint. | **Yes.** Fully accessible across VPC Peering and Transit Gateways. |
-| **Supported Services** | Only **S3** and **DynamoDB**. | Almost all AWS services (ECR, Kinesis, SSM, etc.) and SaaS partner offerings. |
-| **Cost** | **100% Free** (No hourly charge, no data processing fees). | **Paid.** Hourly rate (~$0.01/hr per AZ) + data processing fees (~$0.01 per GB). |
+| Feature                | S3 Gateway Endpoint                                                                     | S3 Interface Endpoint (PrivateLink)                                                        |
+| :--------------------- | :-------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------- |
+| **Technology**         | **Route Table Prefix List**                                                             | **Elastic Network Interface (ENI)**                                                        |
+| **Setup Footprint**    | No physical resource in your subnet. Modifies VPC route tables to intercept S3 traffic. | Provisions a real network interface (ENI) with a private IP from your subnet's CIDR block. |
+| **On-Premises Access** | **No.** On-prem servers (via VPN/Direct Connect) cannot route to it.                    | **Yes.** Being an IP in the subnet, VPN/Direct Connect routes can reach it directly.       |
+| **Cross-VPC Peering**  | **No.** Peered VPCs cannot transit route through a Gateway Endpoint.                    | **Yes.** Fully accessible across VPC Peering and Transit Gateways.                         |
+| **Supported Services** | Only **S3** and **DynamoDB**.                                                           | Almost all AWS services (ECR, Kinesis, SSM, etc.) and SaaS partner offerings.              |
+| **Cost**               | **100% Free** (No hourly charge, no data processing fees).                              | **Paid.** Hourly rate (~$0.01/hr per AZ) + data processing fees (~$0.01 per GB).           |
 
 ##### Architectural Best Practice:
 *   Use the **S3 Gateway Endpoint** for all workloads running **inside** the VPC (free and unlimited throughput).
@@ -193,8 +193,12 @@ S3 supports encryption-at-rest (Server-Side/Client-Side) and encryption-in-trans
 - Data is encrypted locally before sending to AWS; decryption occurs locally after fetch. AWS stores only pre-encrypted blobs.
 
 ### C. Encryption in Transit (SSL/TLS)
-- HTTPS can be enforced at the bucket level using a Bucket Policy with a Deny effect when `"aws:SecureTransport": "false"`.
+S3 endpoints support both HTTP (unencrypted) and HTTPS (encrypted) traffic natively. 
 
+*   **Certificate Management (AWS-Managed):** You **do not** create Certificate Authorities (CAs) or generate SSL certificates for S3. AWS automatically provisions, rotates, and binds public SSL/TLS certificates (issued by Amazon Trust Services) to all native S3 endpoints.
+*   **Enforcement Mechanism:** Enforce secure transport at the bucket level using a Bucket Policy that explicitly **denies** any request where `"aws:SecureTransport": "false"` (meaning the request was sent via unencrypted HTTP).
+
+#### S3 HTTPS-Only Bucket Policy:
 ```json
 {
   "Version": "2012-10-17",
@@ -217,6 +221,10 @@ S3 supports encryption-at-rest (Server-Side/Client-Side) and encryption-in-trans
   ]
 }
 ```
+
+#### 🌐 Custom Domains & Static Websites:
+*   **Limitation:** S3 static website hosting endpoints **do not support SSL/TLS natively for custom domains** (e.g. `http://www.mycompany.com`).
+*   **Resolution Pattern:** Deploy **Amazon CloudFront** in front of the S3 website. Request a free SSL certificate from **AWS Certificate Manager (ACM)** for the custom domain and bind it to the CloudFront distribution. CloudFront terminates HTTPS at the edge and fetches files privately from S3.
 
 ---
 
