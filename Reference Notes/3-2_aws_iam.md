@@ -391,9 +391,64 @@ When accessing resources across account boundaries (e.g., Account A accessing an
     *   *If they use a Resource-Based Policy:* Account B attaches a bucket policy to the S3 bucket allowing the Account A principal to write objects. The user accesses the S3 bucket **directly** without assuming a role. They **retain** their Account A permissions, enabling them to scan the DynamoDB table in Account A and write the results directly to the S3 bucket in Account B.
 
 ### B. EventBridge Target Invocations
-Amazon EventBridge invokes target services using one of two security models:
-*   **Resource-Based Policies:** Used when the target service supports resource-level access policies (e.g., Lambda functions, SNS topics, SQS queues, S3 buckets, API Gateways). EventBridge adds a policy to the target allowing invocation.
-*   **IAM Roles:** Used when the target service does not natively support resource-based policies (e.g., Kinesis Streams, EC2 Auto Scaling, SSM Run Command, ECS tasks). EventBridge assumes an IAM service role to execute the target action.
+When an EventBridge rule triggers, it must authenticate against the target service to deliver the event payload. EventBridge handles this authorization using one of two security models depending on the target service's capabilities:
+
+#### 1. Resource-Based Policies (The "Push" Model)
+*   **How it works:** Used when the target service natively supports resource-level access policies (e.g., Lambda functions, SNS topics, SQS queues, S3 buckets). 
+*   **Mechanic:** EventBridge directly invokes the API endpoint. You do not need to configure an IAM role for the EventBridge rule. Instead, you attach a policy *directly to the target resource* granting the EventBridge service principal permission to write or execute.
+*   **Example (Lambda Resource Policy):** Attached to a Lambda function to allow EventBridge to trigger it:
+    ```json
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowEventBridgeInvocation",
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "events.amazonaws.com"
+          },
+          "Action": "lambda:InvokeFunction",
+          "Resource": "arn:aws:lambda:us-east-1:111111111111:function:SendSlackNotification"
+        }
+      ]
+    }
+    ```
+
+#### 2. IAM Service Roles (The "Assume/Pull" Model)
+*   **How it works:** Used when the target service does *not* support resource-based policies (e.g., executing an SSM Run Command on an EC2 instance, putting records into a Kinesis Stream, triggering a Step Function, or starting an ECS task).
+*   **Mechanic:** EventBridge cannot push directly. Instead, you must create a dedicated **IAM Service Role** that possesses permissions to execute the target action (e.g. `ssm:SendCommand`). You configure the EventBridge rule to assume this role when triggered.
+*   **Example (Trust Policy of the EventBridge Role):** Allows the EventBridge service principal to assume the role:
+    ```json
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Service": "events.amazonaws.com"
+          },
+          "Action": "sts:AssumeRole"
+        }
+      ]
+    }
+    ```
+*   **Example (Identity Policy attached to the EventBridge Role):** Grants the assumed session permission to run a specific command on an EC2 instance:
+    ```json
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowSSMRunCommand",
+          "Effect": "Allow",
+          "Action": "ssm:SendCommand",
+          "Resource": [
+            "arn:aws:ssm:us-east-1:*:document/AWS-RunShellScript",
+            "arn:aws:ec2:us-east-1:111111111111:instance/i-0987654321fedcba0"
+          ]
+        }
+      ]
+    }
+    ```
 
 ### C. Permissions Boundaries
 An **IAM Permissions Boundary** is a managed policy used to set the maximum permissions that an identity-based policy can grant to an IAM User or Role.
