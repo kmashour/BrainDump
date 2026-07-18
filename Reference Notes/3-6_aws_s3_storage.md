@@ -146,6 +146,23 @@ A very common point of confusion is distinguishing S3 Access Points from VPC Gat
 ##### How They Work Together:
 In an enterprise private network, an EC2 instance in a private subnet routes its S3 API traffic through a **VPC Gateway Endpoint** (networking layer) to reach a specific **S3 Access Point** DNS name (permission layer), which verifies that the request originates from the private VPC and belongs to the authorized group before allowing access to the S3 bucket prefix.
 
+#### ⚖️ S3 Gateway Endpoints vs. AWS PrivateLink (Interface Endpoints)
+Another critical distinction in S3 private networking is deciding between route-based endpoints and physical interface endpoints.
+
+| Feature | S3 Gateway Endpoint | S3 Interface Endpoint (PrivateLink) |
+| :--- | :--- | :--- |
+| **Technology** | **Route Table Prefix List** | **Elastic Network Interface (ENI)** |
+| **Setup Footprint** | No physical resource in your subnet. Modifies VPC route tables to intercept S3 traffic. | Provisions a real network interface (ENI) with a private IP from your subnet's CIDR block. |
+| **On-Premises Access** | **No.** On-prem servers (via VPN/Direct Connect) cannot route to it. | **Yes.** Being an IP in the subnet, VPN/Direct Connect routes can reach it directly. |
+| **Cross-VPC Peering** | **No.** Peered VPCs cannot transit route through a Gateway Endpoint. | **Yes.** Fully accessible across VPC Peering and Transit Gateways. |
+| **Supported Services** | Only **S3** and **DynamoDB**. | Almost all AWS services (ECR, Kinesis, SSM, etc.) and SaaS partner offerings. |
+| **Cost** | **100% Free** (No hourly charge, no data processing fees). | **Paid.** Hourly rate (~$0.01/hr per AZ) + data processing fees (~$0.01 per GB). |
+
+##### Architectural Best Practice:
+*   Use the **S3 Gateway Endpoint** for all workloads running **inside** the VPC (free and unlimited throughput).
+*   Use the **S3 Interface Endpoint (PrivateLink)** only for workloads calling S3 from **outside** the VPC (on-premises servers or peering networks).
+
+
 ### C. S3 Object Lambda
 - Modifies S3 GET response data on the fly before returning it to the client.
 - Uses an S3 Object Lambda Access Point to invoke an AWS Lambda function. The function fetches the file from the bucket, transforms it, and returns it.
