@@ -17,17 +17,26 @@ This module covers scalable object storage using **Amazon Simple Storage Service
 ## 🗺️ Cognitive Map: S3 Architecture, Endpoints & Integration
 ```mermaid
 graph TD
-    Client["Client/Application"] -->|"1. HTTPS Upload/Download"| S3Bucket["Amazon S3 Bucket"]
-    Client -->|"2. Pre-signed URL / Select SQL"| S3Bucket
-    
-    subgraph PrivateVPC["VPC Private Subnet"]
-        EC2Instance["EC2 Instance"] -->|"3. Private Access via Gateway Endpoint"| S3Bucket
-        EC2Instance -->|"4. Access Point Endpoint"| AccessPoint["S3 Access Point"]
-        AccessPoint --> S3Bucket
-    end
-    
-    S3Bucket -->|"5. Event Notification"| EventTarget["SNS / SQS / Lambda / EventBridge"]
-    S3Bucket -->|"6. CRR / SRR (Asynchronous)"| TargetBucket["Destination S3 Bucket (Source/Dest Versioned)"]
+
+%% Define standalone nodes first
+Client["Client/Application"]
+S3Bucket["Amazon S3 Bucket"]
+EventTarget["SNS / SQS / Lambda / EventBridge"]
+TargetBucket["Destination S3 Bucket (Source/Dest Versioned)"]
+
+subgraph PrivateVPC["VPC Private Subnet"]
+    EC2Instance["EC2 Instance"]
+    AccessPoint["S3 Access Point"]
+end
+
+%% Define all relationships outside the subgraph to maintain layout integrity
+Client -->|"1: HTTPS Upload/Download"| S3Bucket
+Client -->|"2: Pre-signed URL / Select SQL"| S3Bucket
+EC2Instance -->|"3: Private Access via Gateway Endpoint"| S3Bucket
+EC2Instance -->|"4: Access Point Endpoint"| AccessPoint
+AccessPoint --> S3Bucket
+S3Bucket -->|"5: Event Notification"| EventTarget
+S3Bucket -->|"6: CRR / SRR (Asynchronous)"| TargetBucket
 ```
 
 ---
@@ -123,6 +132,19 @@ S3 access is private by default. Access permissions are evaluated using:
 - **Definition:** Unique hostnames with dedicated access control policies pointing to specific prefixes in a bucket (e.g., a finance access point restricting access to `/finance`).
 - **Scale Benefit:** Eliminates giant, complex bucket policies by delegating access to individual endpoints.
 - **VPC Interface Endpoints:** Can restrict access points so they can only accept private requests from within a VPC.
+
+#### ⚖️ S3 Access Points vs. VPC Gateway Endpoints
+A very common point of confusion is distinguishing S3 Access Points from VPC Gateway Endpoints, as both are used to secure private data access.
+
+| Feature | VPC Gateway Endpoint (Networking Layer) | S3 Access Point Endpoint (Permission Layer) |
+| :--- | :--- | :--- |
+| **Primary Goal** | **Network Routing:** Establishes private network path from VPC to S3 without internet. | **Permission Isolation:** Solves S3 bucket policy bloat for multi-tenant buckets. |
+| **How it Works** | Modifies VPC route tables to direct S3-destined traffic over internal AWS backbone. | Creates a unique DNS hostname and dedicated IAM policy for a specific team or prefix. |
+| **Access Control** | Controls *which networks* can route traffic to S3 (via Endpoint Policies). | Controls *who* can access *which path* via a dedicated endpoint-level DNS gateway. |
+| **Cost** | Completely free (replaces NAT Gateway data transit costs). | Free (standard S3 API and storage fees apply). |
+
+##### How They Work Together:
+In an enterprise private network, an EC2 instance in a private subnet routes its S3 API traffic through a **VPC Gateway Endpoint** (networking layer) to reach a specific **S3 Access Point** DNS name (permission layer), which verifies that the request originates from the private VPC and belongs to the authorized group before allowing access to the S3 bucket prefix.
 
 ### C. S3 Object Lambda
 - Modifies S3 GET response data on the fly before returning it to the client.
