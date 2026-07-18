@@ -400,9 +400,70 @@ An **IAM Permissions Boundary** is a managed policy used to set the maximum perm
 *   *Scope:* Supported only for IAM Users and Roles. They **cannot** be assigned to IAM Groups.
 *   *Effective Permissions:* The intersection of the identity-based policy and the permissions boundary. If an action is not allowed in BOTH the policy and the boundary, access is denied.
 *   *Use Case:* Safe delegation of administrator duties. Allows team leaders to create new developers and roles without allowing them to elevate their own privileges to full administrator access.
-*   *Concrete Boundary Scenario:* An administrator creates a developer user named John. The admin attaches the AWS-managed `AdministratorAccess` policy to John, but also sets a Permissions Boundary of `AmazonS3FullAccess`.
-    *   *Result:* John is restricted to accessing S3 only. Even though his identity policy allows full admin privileges, the permissions boundary acts as an upper limit. If John attempts to execute `iam:CreateUser` or start an EC2 instance, the action is denied because it lies outside his boundary (`AmazonS3FullAccess`).
-    *   *Use Case:* Allowing developers to create roles/users for services without letting them elevate their own privileges (since any created role must also be restricted by the same permissions boundary).
+*   *Concrete Boundary Scenario & Code Example:*
+    
+    Imagine a delegated manager `DevLead` who is authorized to create developers, but we want to guarantee that no developer they create can ever delete log files or touch billing, even if the manager gives them full admin access.
+
+    ##### 1. The Permissions Boundary Policy (`DevPermissionsBoundary`):
+    This policy defines the absolute maximum ceiling of permissions.
+    ```json
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowedCeilingServices",
+          "Effect": "Allow",
+          "Action": [
+            "s3:*",
+            "ec2:*",
+            "rds:*"
+          ],
+          "Resource": "*"
+        },
+        {
+          "Sid": "ExplicitBillingDeny",
+          "Effect": "Deny",
+          "Action": [
+            "aws-portal:*",
+            "billing:*"
+          ],
+          "Resource": "*"
+        }
+      ]
+    }
+    ```
+
+    ##### 2. The Delegated Creator Policy (`DelegatedAdminPolicy`):
+    Attached to the manager (`DevLead`). It allows them to create users, but **forces** them to attach the boundary policy. If they try to create a user *without* attaching the boundary, the API call is denied:
+    ```json
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowUserCreationWithBoundaryRestriction",
+          "Effect": "Allow",
+          "Action": [
+            "iam:CreateUser",
+            "iam:PutUserPolicy",
+            "iam:AttachUserPolicy"
+          ],
+          "Resource": "*",
+          "Condition": {
+            "StringEquals": {
+              "iam:PermissionsBoundary": "arn:aws:iam::111111111111:policy/DevPermissionsBoundary"
+            }
+          }
+        }
+      ]
+    }
+    ```
+
+    ##### 3. The Resulting Effective Permissions:
+    If `DevLead` creates a user `DevBob` and attaches `AdministratorAccess` (Full Admin permissions) to Bob:
+    *   Bob's Identity-Based Policy says: **Allow All**.
+    *   Bob's Permissions Boundary says: **Allow S3/EC2/RDS, Deny Billing**.
+    *   **Bob's Effective Access:** Bob can only perform S3, EC2, and RDS actions. If Bob attempts to query billing, it is blocked.
+    *   **No Privilege Escalation:** If Bob tries to create another IAM User with full admin access to bypass these limits, it is denied because `iam:CreateUser` lies outside Bob's permissions boundary ceiling!
 
 ---
 
