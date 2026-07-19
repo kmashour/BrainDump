@@ -270,7 +270,21 @@ Replication copies objects asynchronously across buckets.
   - **Version Deletions (Permanent Delete):** Specifying a version ID to delete is **never** replicated to prevent propagating malicious or accidental deletes.
 - **Existing Objects:** Newly uploaded objects are replicated automatically. Replicating existing objects requires **S3 Batch Replication** (S3 Batch Operations).
 
+### D. Replication with Server-Side Encryption (SSE)
+S3 replication behavior is heavily dependent on the object's encryption configuration:
+
+1.  **SSE-S3 (S3-Managed Keys):** Replicated by default. S3 handles all decryption and encryption cycles automatically.
+2.  **SSE-C (Customer-Provided Keys):** Cannot be replicated. S3 does not store the encryption key, so it cannot decrypt the object to copy it. S3 replication will skip SSE-C objects.
+3.  **SSE-KMS (Key Management Service Keys):** **Not replicated by default.** To enable S3 replication for KMS-encrypted objects, three settings must be configured:
+    *   **S3 Replication Configuration:** Explicitly enable the replication of KMS-encrypted objects and specify the destination KMS Key ARN.
+    *   **Source KMS Key Policy:** Grant the S3 replication IAM role permission to decrypt (`kms:Decrypt` and `kms:DescribeKey`).
+    *   **Destination KMS Key Policy:** Grant the S3 replication IAM role permission to encrypt (`kms:Encrypt`, `kms:GenerateDataKey*`, `kms:DescribeKey`).
+
+#### 🚨 The Cross-Account KMS Constraint:
+When replicating KMS-encrypted objects across different AWS accounts, you **cannot** encrypt the destination bucket using the default AWS-managed KMS key for S3 (`aws/s3`). AWS-managed key policies are fixed and cannot be modified to trust a replication role from another account. You **must** create a custom **Customer Managed Key (CMK)** in the destination account and modify its policy to allow access to the source account's S3 replication IAM role.
+
 ---
+
 
 ## 6. Performance Optimization & Data Access
 
