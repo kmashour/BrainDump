@@ -275,6 +275,14 @@ When thousands of controllers send write requests, Kubernetes must prevent them 
     3.  **The Mismatch:** The versions do not match (`"500"` != `"501"`). The API Server rejects the SRE's write and returns an **HTTP 409 Conflict** error.
 *   **The Resolution:** The SRE's CLI tool catches the 409 error, fetches the fresh copy of the Deployment (which has version `"501"` and `replicas: 12`), and prompts or retries the scale request with base version `"501"`.
 
+> [!NOTE] **Q&A: If the SRE retries and sets it to 5, isn't the 12 still overwritten?**
+> **Yes.** The database value is logically overwritten to 5. However, OCC changes **how** this happens to prevent bugs:
+> *   **Without OCC (Silent/Accidental Erasure):** The SRE's command would overwrite the HPA's scale-up *blindly and silently*. The SRE has no idea the HPA had scaled it to 12 (thinking they scaled from 10 to 5). The 12 replicas are lost by accident.
+> *   **With OCC (Intentional/Aware Override):** The SRE's command is blocked by the 409 Conflict. The SRE is forced to pull the new version, revealing that the HPA had scaled it to 12. The SRE now makes an **informed decision**:
+>     *   *Option A (Retreat):* Cancel the scale-down because they see the app is under high load (the 12 replicas are saved).
+>     *   *Option B (Manual Override):* Intentionally override the HPA and scale to 5 anyway (e.g. for emergency maintenance).
+> OCC does not stop you from overriding data; it stops you from modifying data **based on stale information**.
+
 ##### D. Declarative Merging (PATCH vs. PUT) & The Tug-of-War
 To avoid conflicts and prevent actors from fighting over fields:
 *   **PATCH (Declarative / `kubectl apply`):** Instead of sending the full object, clients send only the specific fields they wish to modify (e.g. SRE patches a label, HPA patches replica count). The API Server merges these changes seamlessly without triggering version conflicts.
