@@ -57,6 +57,8 @@ This index contains our Amazon Web Services (AWS) cloud architecture modules, de
   * Redshift data warehouse, Neptune graphs, Timestream time-series, Keyspaces Cassandra, Athena SQL, Glue catalog, Lake Formation security, MSK Kafka, and AWS ML/SageMaker models.
 - ⚙️ **[Module 3-20: AWS Deployment, Management & Optimization Services](3-20_other_services_whitepapers.md)**
   * CloudFormation IaC, Systems Manager suite, SES & Pinpoint mail/SMS campaigns, hybrid Outposts, AWS Batch jobs, Amplify platform, billing engines, and the Well-Architected Framework.
+- 📊 **[Module 11-1: AWS CloudWatch, CloudTrail & Config (Monitoring & Audit)](11-1_cloudops_monitoring_and_logging.md)**
+  * Unified CloudWatch Agent, Metric Filters, Composite Alarms, EventBridge routing, CloudTrail log integrity, and AWS Config compliance rules.
 
 ---
 
