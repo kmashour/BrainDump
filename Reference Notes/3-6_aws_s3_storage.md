@@ -276,14 +276,108 @@ S3 replication behavior is heavily dependent on the object's encryption configur
 1.  **SSE-S3 (S3-Managed Keys):** Replicated by default. S3 handles all decryption and encryption cycles automatically.
 2.  **SSE-C (Customer-Provided Keys):** Cannot be replicated. S3 does not store the encryption key, so it cannot decrypt the object to copy it. S3 replication will skip SSE-C objects.
 3.  **SSE-KMS (Key Management Service Keys):** **Not replicated by default.** To enable S3 replication for KMS-encrypted objects, three settings must be configured:
-    *   **S3 Replication Configuration:** Explicitly enable the replication of KMS-encrypted objects and specify the destination KMS Key ARN.
-    *   **Source KMS Key Policy:** Grant the S3 replication IAM role permission to decrypt (`kms:Decrypt` and `kms:DescribeKey`).
-    *   **Destination KMS Key Policy:** Grant the S3 replication IAM role permission to encrypt (`kms:Encrypt`, `kms:GenerateDataKey*`, `kms:DescribeKey`).
+
+#### 1. S3 Replication IAM Service Role Policy
+The IAM role assumed by the S3 service in the source account requires permissions to read from the source bucket, write to the destination bucket, decrypt with the source key, and encrypt/generate data keys using the destination key.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "SourceBucketPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetReplicationConfiguration",
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::source-bucket-name"
+    },
+    {
+      "Sid": "SourceBucketObjectPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObjectVersionForReplication",
+        "s3:GetObjectVersionAcl",
+        "s3:GetObjectVersionTagging"
+      ],
+      "Resource": "arn:aws:s3:::source-bucket-name/*"
+    },
+    {
+      "Sid": "DestinationBucketPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ReplicateObject",
+        "s3:ReplicateDelete",
+        "s3:ReplicateTags",
+        "s3:GetObjectVersionTagging"
+      ],
+      "Resource": "arn:aws:s3:::destination-bucket-name/*"
+    },
+    {
+      "Sid": "SourceKMSDecryptPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Decrypt"
+      ],
+      "Resource": "arn:aws:kms:us-east-1:111111111111:key/source-kms-key-uuid"
+    },
+    {
+      "Sid": "DestinationKMSEncryptPermissions",
+      "Effect": "Allow",
+      "Action": [
+        "kms:Encrypt",
+        "kms:GenerateDataKey"
+      ],
+      "Resource": "arn:aws:kms:us-west-2:222222222222:key/dest-kms-key-uuid"
+    }
+  ]
+}
+```
+
+#### 2. Source KMS Key Policy Statement
+The KMS key in the source account must trust the S3 Replication IAM role to decrypt S3 objects before copying them.
+
+```json
+{
+  "Sid": "AllowS3ReplicationRoleToDecrypt",
+  "Effect": "Allow",
+  "Principal": {
+    "AWS": "arn:aws:iam::111111111111:role/service-role/s3-replication-role"
+  },
+  "Action": [
+    "kms:Decrypt",
+    "kms:DescribeKey"
+  ],
+  "Resource": "*"
+}
+```
+
+#### 3. Destination KMS Key Policy Statement
+The KMS key in the destination account must trust the S3 Replication IAM role (from the source account) to encrypt objects when writing to the target bucket.
+
+```json
+{
+  "Sid": "AllowS3ReplicationRoleToEncrypt",
+  "Effect": "Allow",
+  "Principal": {
+    "AWS": "arn:aws:iam::111111111111:role/service-role/s3-replication-role"
+  },
+  "Action": [
+    "kms:Encrypt",
+    "kms:ReEncrypt*",
+    "kms:GenerateDataKey*",
+    "kms:DescribeKey"
+  ],
+  "Resource": "*"
+}
+```
 
 #### 🚨 The Cross-Account KMS Constraint:
-When replicating KMS-encrypted objects across different AWS accounts, you **cannot** encrypt the destination bucket using the default AWS-managed KMS key for S3 (`aws/s3`). AWS-managed key policies are fixed and cannot be modified to trust a replication role from another account. You **must** create a custom **Customer Managed Key (CMK)** in the destination account and modify its policy to allow access to the source account's S3 replication IAM role.
+When replicating KMS-encrypted objects across different AWS accounts, you **cannot** encrypt the destination S3 bucket using the default AWS-managed KMS key for S3 (`aws/s3`). AWS-managed key policies are fixed and cannot be modified to trust a replication role from another account. You **must** create a custom **Customer Managed Key (CMK)** in the destination account and modify its policy (as shown in Step 3 above) to trust the source account's S3 replication IAM role.
 
 ---
+
 
 
 ## 6. Performance Optimization & Data Access
