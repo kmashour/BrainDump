@@ -228,7 +228,7 @@ The Reconciliation Loop is a continuous, infinite control loop that monitors the
 #### 2. The Role of the Controller Manager
 The `kube-controller-manager` hosts these reconciliation loops. Inside it, a dedicated controller exists for every Kubernetes resource type:
 *   **ReplicaSet Controller:** Reconciles Pod counts. If a Pod is deleted manually, it spins up a replacement.
-*   **Node Controller:** Monitored via the `--node-monitor-period` flag. If a node stops responding, the controller marks it unreachable and coordinates workload evictions.
+*   **Node Controller:** Audits node health. Rather than scanning heavy Node objects, it watches lightweight **Lease Objects** (heartbeats) updated by each node's `kubelet` every 10 seconds in the `kube-node-lease` namespace. If a lease is not updated within the node monitor grace period (default 40s), the controller marks the node `Unreachable` and coordinates workload evictions. This Lease model reduces `etcd` write load dramatically.
 *   **Namespace Controller:** Cleans up all nested resources when a namespace is deleted.
 *   **Deployment Controller:** Orchestrates rolling updates by shifting traffic between old and new ReplicaSets.
 
