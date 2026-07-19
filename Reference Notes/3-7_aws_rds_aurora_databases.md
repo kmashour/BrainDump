@@ -69,20 +69,32 @@ Designed strictly for high availability (HA) and disaster recovery (DR). Not use
   - **Zero-Downtime Operation:** Can be enabled on-the-fly via a database modification with no downtime.
   - **Process:** RDS takes a snapshot of the primary database -> Restores the snapshot to a new standby database in a different AZ -> Establishes synchronous replication -> Standby database catches up.
 
-### D. Backups & Snapshots
-- **Automated Backups:**
-  - Daily full backup is performed during a user-specified backup window.
-  - Transaction logs are backed up every 5 minutes, allowing Point-in-Time Recovery (PITR) to any second within the retention window.
-  - Retention is configurable from 1 to 35 days (setting retention to `0` disables automated backups).
-  - In Multi-AZ deployments, backups are run against the Standby node to prevent performance degradation on the Primary node.
-  - Automated backups are deleted when the RDS instance is deleted.
-- **Manual Snapshots:**
-  - Manually triggered by the user.
-  - Retained indefinitely, even after the RDS instance is deleted.
-  - *Cost Savings Strategy:* For databases used intermittently (e.g., 2 hours/month), take a manual snapshot and delete the instance. Restore the snapshot into a new instance when needed to avoid continuous storage costs.
-- **Restoring Backups:**
-  - Always restores to a *new* database instance.
-  - **Restoring from S3:** Relational database backup dumps stored in S3 can be restored directly into new RDS MySQL instances.
+### D. Backups & Snapshots: How They Work Under the Hood
+An Amazon RDS instance runs on top of virtual compute (EC2-like) and utilizes **Amazon EBS volumes** for its database storage. 
+
+*   **The Storage Mechanism:** When S3/RDS performs a backup (automated or manual), it takes a **snapshot of the underlying EBS volume**.
+*   **Where Backups are Stored:** These EBS snapshots are automatically uploaded and stored in a secure, **AWS-managed S3 bucket**. This bucket is owned and operated by the RDS service under the hood; it does not appear in your personal S3 console or bucket list.
+*   **Incremental Backups:** The first backup captures the full database storage volume. Subsequent backups are **incremental**, saving only the modified storage blocks to S3. This cuts down on storage costs and backup windows.
+
+#### 1. Automated Backups (Continuous Observability)
+*   **Trigger & Schedule:** Run automatically during a daily user-defined **Backup Window** (e.g., 03:00 - 03:30 AM).
+*   **Transaction Logs (5-minute WAL):** In addition to the daily EBS snapshot, RDS streams and uploads your database transaction logs (Write-Ahead Logs / WAL) to S3 **every 5 minutes**.
+*   **Point-in-Time Recovery (PITR):** Because you have daily snapshots AND 5-minute transaction logs, you can restore your database to **any second** within your retention window (e.g., *"Restore database state to exactly 10:14:22 AM yesterday"*). S3 restores the nearest daily snapshot and replays the WAL logs up to that exact second.
+*   **Retention:** Configurable from 1 to 35 days (setting retention to `0` disables automated backups).
+*   **Deletion:** Automated backups are **automatically deleted** when you delete the RDS instance.
+*   **Performance Impact:** 
+    *   *Single-AZ:* Running backups can suspend database I/O for a few seconds to minutes, causing latency spikes.
+    *   *Multi-AZ:* **Zero performance impact.** The backup is taken from the passive **Standby node** in the secondary AZ, keeping your primary database running at full speed.
+
+#### 2. Manual Snapshots (User-Initiated)
+*   **Trigger:** Manually initiated by the user via the AWS Console, CLI, SDK, or Terraform.
+*   **Retention:** Retained **indefinitely**. They are never deleted automatically, even if you delete the parent RDS instance. You must manually delete them to stop storage billing.
+*   **Use Case (Cost Savings):** For development databases used occasionally (e.g., 2 hours/month), take a manual snapshot, delete the RDS instance, and restore the snapshot to a new instance only when needed to avoid ongoing idle database costs.
+
+#### 3. Restoring Backups
+*   **Always Restores to a New Instance:** Restoring a backup or a manual snapshot does not overwrite the existing database. It **always creates a new database instance** with a new DNS endpoint.
+*   **Restoring from Custom S3 Backups:** You can upload native database backup dumps (like MySQL `.sql` or `.xb` files) to your own custom S3 bucket and use RDS API tools to restore them directly into a new RDS instance.
+
 
 ---
 
