@@ -10,11 +10,23 @@ To implement robust observability, route telemetry from guest operating systems 
 
 ```mermaid
 graph TD
-    Host["1. Linux Guest OS (RAM / Disk / Inodes)"] -->|CloudWatch Agent JSON| CWLogs["2. CloudWatch Log Streams"]
-    CWLogs -->|Metric Filters (Regex Matching)| CWMetrics["3. CloudWatch Metrics & Alarms"]
-    CWMetrics -->|EventBridge / SNS| OpsNotification["4. Incident Notification (Slack/Email)"]
-    AWSAPICalls["5. AWS Console & CLI API Events"] -->|CloudTrail S3 Delivery| AuditTrail["6. CloudTrail Audits (Log Validation)"]
-    Config["7. Resource Changes (Compliance Timeline)"] -->|Config Rules / SSM Remediation| AutoHeal["8. Compliance Drift Remediation"]
+
+%% Define nodes first to prevent parsing errors
+Host["1: Linux Guest OS (RAM / Disk / Inodes)"]
+CWLogs["2: CloudWatch Log Streams"]
+CWMetrics["3: CloudWatch Metrics & Alarms"]
+OpsNotification["4: Incident Notification (Slack/Email)"]
+AWSAPICalls["5: AWS Console & CLI API Events"]
+AuditTrail["6: CloudTrail Audits (Log Validation)"]
+Config["7: Resource Changes (Compliance Timeline)"]
+AutoHeal["8: Compliance Drift Remediation"]
+
+%% Define relationships and wrap edge labels in quotes
+Host -->|"CloudWatch Agent JSON"| CWLogs
+CWLogs -->|"Metric Filters (Regex Matching)"| CWMetrics
+CWMetrics -->|"EventBridge / SNS"| OpsNotification
+AWSAPICalls -->|"CloudTrail S3 Delivery"| AuditTrail
+Config -->|"Config Rules / SSM Remediation"| AutoHeal
 ```
 
 1. **Step 1: Host-Level Instrumentation (Section 1):** Deploy the Unified CloudWatch agent to fetch metrics hidden from the hypervisor.
@@ -156,20 +168,71 @@ A real-time logging terminal interface in the CloudWatch console for debugging e
 
 ## 4. Amazon EventBridge (Operational Event Hub)
 
-Amazon EventBridge (formerly CloudWatch Events) acts as an event bus routing messages from various sources (AWS services, custom apps, SaaS partners) to targets based on matching rules.
+Amazon EventBridge (formerly CloudWatch Events) is a serverless event bus that acts as a central router for JSON events. It decouples event producers from consumers, matching incoming JSON schemas against **Rules** and directing them to one or more **Targets** (such as AWS Lambda, SQS, SNS, ECS, or API Gateways).
 
-### A. Event Buses and Routing
-*   **Default Event Bus:** Receives default events emitted by AWS services (e.g., EC2 state change, console login).
-*   **Partner Event Bus:** Integrates with third-party SaaS applications (e.g., Auth0, Datadog, Zendesk) to route non-AWS events into AWS targets.
-*   **Custom Event Bus:** Created for user applications to emit custom JSON events. Cross-account routing is configured using resource-based policies on the target event bus.
+```mermaid
+graph LR
+    Producers["Event Producers<br/>(AWS Services / SaaS / Custom Apps)"] -->|JSON Event| EventBus["Event Bus<br/>(Rules Engine)"]
+    EventBus -->|Rule Match| Target1["Target 1: Lambda<br/>(Compute)"]
+    EventBus -->|Rule Match| Target2["Target 2: SQS Queue<br/>(Buffer)"]
+    EventBus -->|Rule Match| Target3["Target 3: CloudWatch Logs<br/>(Audit)"]
+```
 
-### B. Event Archiving & Replaying
-EventBridge can archive event streams with set or indefinite retention policies. These archived events can be replayed through EventBridge buses. This is critical for troubleshooting: if a Lambda destination fails or bugs are found in processing, developers can fix the code and replay the archived logs to process the missed transactions.
+### A. The Three Types of Event Buses
+1.  **Default Event Bus:**
+    *   Automatically provisioned in every AWS account.
+    *   Exclusively receives events emitted by AWS services (e.g. `EC2 Instance State-change Notification`, `Auto Scaling Group Launch Successful`, `S3 API Calls` via CloudTrail).
+2.  **Custom Event Bus:**
+    *   Created manually by developers for custom enterprise workloads.
+    *   Used to route custom JSON events between microservices.
+    *   *Example Payload:*
+        ```json
+        {
+          "Source": "com.mycompany.orders",
+          "Detail-Type": "OrderPlaced",
+          "Detail": {
+            "orderId": "ord_998877",
+            "amount": 149.99,
+            "currency": "USD"
+          }
+        }
+        ```
+3.  **SaaS (Partner) Event Bus:**
+    *   Used to ingest external events directly from third-party SaaS providers (such as Auth0, Shopify, Datadog, Zendesk, PagerDuty) into your AWS infrastructure.
+    *   *How it works:* The partner connects to a special AWS partner resource. EventBridge generates a SaaS event bus in your account. You accept the connection, and partner events flow natively into your architecture without you having to build or manage webhook endpoints.
 
-### C. Schema Registry
-Analyzes events dynamically inside the event bus to infer code bindings and structure definitions. Developers can download code binding templates (Java, Python, TypeScript) to automatically map incoming event JSONs directly to code classes.
+### B. Event Archiving & Replaying (Disaster Recovery & Bug Mitigation)
+*   **Archiving:** You can configure an Event Bus to archive events. You define which events to store (based on filters) and the retention period (from 1 day to infinite).
+*   **Replay:** If a downstream target fails (e.g. your database crashes, or a Lambda function throws code exceptions), you can "replay" the archived events. EventBridge sends the historical events back through the bus with their original timestamps, allowing your corrected downstream system to catch up on lost transactions without losing data.
+
+### C. Schema Registry & Code Bindings
+*   EventBridge features a **Schema Registry** that automatically analyzes events on your bus, detects changes, and generates schema definitions (e.g. OpenAPI specs).
+*   Developers can download code bindings for major languages (Java, Python, TypeScript) directly from the registry. This generates typed objects in the application codebase, providing auto-complete and compiler validation for incoming JSON event payloads.
+
+### D. Enterprise Pattern: Cross-Account Event Routing
+To establish an enterprise-wide "Event Mesh", you can route events from spoke accounts to a central hub account:
+1.  In the **Hub Account**, configure a Custom Event Bus and update its **Resource Policy** to accept events from specific spoke accounts:
+    ```json
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowSpokeAccountsToPutEvents",
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": ["arn:aws:iam::111111111111:root", "arn:aws:iam::222222222222:root"]
+          },
+          "Action": "events:PutEvents",
+          "Resource": "arn:aws:events:us-east-1:333333333333:event-bus/central-hub-bus"
+        }
+      ]
+    }
+    ```
+2.  In the **Spoke Account**, create a rule on the default or custom bus matching target events (e.g., all high-severity GuardDuty alerts).
+3.  Set the target of the rule in the spoke account to the central hub event bus ARN: `arn:aws:events:us-east-1:333333333333:event-bus/central-hub-bus`. SQS/EventBridge handles the transit encryption and routing cross-account.
 
 ---
+
 
 ## 5. Administrative Auditing (AWS CloudTrail)
 
