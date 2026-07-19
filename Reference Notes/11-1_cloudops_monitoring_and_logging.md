@@ -294,6 +294,20 @@ AWS Config records configuration history and evaluates resource configurations a
 *   **Auto-Remediation:** If a resource is marked non-compliant, Config can trigger an SSM Automation Runbook (e.g. `RevokeUnusedIAMUserCredentials` or disabling insecure ports). Remediation rules support automatic retries (up to 5 times) if the resource fails compliance checks after remediation.
 *   **Config Timeline:** Config captures a resource timeline, mapping configuration history directly alongside CloudTrail API calls to trace exactly *who* modified a resource and *when* it became non-compliant.
 
+### B. ⚖️ AWS Config vs. AWS Security Hub
+A common point of confusion is distinguishing AWS Config from AWS Security Hub. While they sound similar, they perform distinct roles in security governance:
+
+| Feature | AWS Config (The Resource Tracker) | AWS Security Hub (The Compliance Dashboard) |
+| :--- | :--- | :--- |
+| **Primary Goal** | Audits **raw resource attribute configuration changes** over time (Configuration drift). | Assesses **overall security posture** and compliance against standardized industry benchmarks (CIS, PCI-DSS). |
+| **Data Aggregator** | Monitors local resource attributes and dependencies. | Aggregates security alerts (Findings) from GuardDuty, Inspector, Macie, IAM Access Analyzer, and AWS Config. |
+| **Under the Hood** | Evaluates independent rules (Config Rules) triggered on change or periodic schedules. | **Relies on AWS Config!** Security Hub uses Config rules behind the scenes to check resource states. |
+| **Remediation** | Native **SSM Automation Runbooks** can immediately execute on drift detection. | Triggers custom workflows via EventBridge (e.g., AWS Security Hub Automated Response & Remediation). |
+
+> [!IMPORTANT]
+> **The Dependency:** Because Security Hub uses AWS Config rules to run its security benchmark checks (like AWS Foundational Security Best Practices), **you must enable AWS Config in all regions where you run Security Hub**. If AWS Config is disabled, Security Hub checks will fail to report status.
+
+
 ---
 
 ## 7. Operational Visibility (CloudWatch Insights)
@@ -315,17 +329,18 @@ Analyzes application environments (Java, .NET, IIS, SQL Server) and their suppor
 
 ---
 
-## 8. Observability Comparison Matrix
+## 8. Observability & Security Comparison Matrix
 
-The table below contrasts the scopes and roles of CloudWatch, CloudTrail, and AWS Config:
+The table below contrasts the scopes and roles of CloudWatch, CloudTrail, AWS Config, and AWS Security Hub:
 
-| Feature / Service | Amazon CloudWatch | AWS CloudTrail | AWS Config |
-| :--- | :--- | :--- | :--- |
-| **Primary Focus** | Resource performance and health. | API call auditing and security trail. | Configuration drift and compliance history. |
-| **Data Types** | Metrics, logs, alarms, trace data. | JSON API activity logs. | Resource attributes, compliance states. |
-| **Evaluation Scope** | CPU, RAM, Disk, log text matching. | Console, CLI, SDK API execution. | AWS Resource compliance rules. |
-| **Remediation Trigger** | Alarms -> Auto Scaling, EC2 Recover. | EventBridge -> Auto-remediation. | SSM Automation runbooks. |
-| **Temporal View** | Real-time performance streams. | API event ledger (90-day default). | Compliance history timeline. |
+| Feature / Service | Amazon CloudWatch | AWS CloudTrail | AWS Config | AWS Security Hub |
+| :--- | :--- | :--- | :--- | :--- |
+| **Primary Focus** | Resource performance and health. | API call auditing and security trail. | Configuration drift and compliance history. | Overall security score and alert aggregation. |
+| **Data Types** | Metrics, logs, alarms, trace data. | JSON API activity logs. | Resource attributes, compliance states. | Consolidated security findings. |
+| **Evaluation Scope** | CPU, RAM, Disk, log text matching. | Console, CLI, SDK API execution. | AWS Resource compliance rules. | Security standards checks (CIS, PCI-DSS). |
+| **Remediation Trigger** | Alarms -> Auto Scaling, EC2 Recover. | EventBridge -> Auto-remediation. | SSM Automation runbooks. | EventBridge -> AWS Lambda / Step Functions. |
+| **Temporal View** | Real-time performance streams. | API event ledger (90-day default). | Compliance history timeline. | Real-time posture scoring. |
+
 
 ### Architectural Example: Observability of an Elastic Load Balancer (ELB)
 To monitor an ELB:
