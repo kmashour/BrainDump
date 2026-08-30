@@ -29,8 +29,11 @@ When ingesting raw files or executing restructuring requests:
    - **Phase 3 (Project PoC Compilation):** Package configuration playbooks and code verifications as standalone project files under `Projects/` using `System/Agents/poc_developer.md` and `System/Skills/project_poc.md`.
    - **Phase 4 (Concepts):** Create or update atomic landing and deeper-dive notes inside `Main Notes/` using templates in `System/Templates/`.
    - **Phase 5 (Connections):** Map cross-domain intersections inside `Digital Garden/` using `System/Agents/garden_architect.md` and `System/Skills/garden_linking.md`.
-   - **Phase 6 (Exam Focus):** If relevant to a certification path (e.g. CKA), extract checklists in `Projects/CKA/` using `System/Agents/exam_expert.md` and `System/Skills/exam_checklists.md`.
-3. **Enforce Cross-Domain Linking:**
+   - **Phase 6 (Exam Focus & Track Synthesis):** If relevant to a certification path (e.g., CKA, CKS, CKAD, KubeAstronaut, AWS SAA/SAP, RHCSA), synthesize course Q&As, lab playbooks, and CLI shortcuts into `Projects/<CERT>/` and dedicated exam MOCs (`0-Index - <CERT>.md`), linking directly to the enriched Core Notes.
+3. **Dual-Layer Continuous Enrichment Rule (Universal Across All Technologies):**
+   - **Layer 1 (Core Foundation Notes):** Newly ingested materials (transcripts like Mumshad's CKS course, docs, books) MUST update and append technical volume to the Core Foundation Notes (`Reference Notes/0-X-Y...`, `8-X-Y...`, `3-X-Y...`, and `Main Notes/`) **FIRST**. The Core Notes are the evolving Single Source of Truth across all technologies (Kubernetes, Linux, Cloud - AWS/Azure/GCP, IaC).
+   - **Layer 2 (Exam Tracks & Playbooks):** Exam-specific shortcuts, speed hacks, and transcript Q&As are compiled into dedicated exam modules (`Projects/<CERT>/` and `0-Index - <CERT>.md`), synthesizing course knowledge **with direct links to the enriched Core Notes**.
+4. **Enforce Cross-Domain Linking:**
    - Tag concepts by domains (e.g. `#domain/kubernetes`, `#domain/linux`, `#domain/aws`).
    - Populate `related_concepts` and `against` lists in the YAML properties.
 4. **Automated Indexing:** Rely entirely on Dataview tables in MOCs and landing notes; never hardcode sub-note links.
