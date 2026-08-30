@@ -62,4 +62,4 @@ kubectl describe pod <pod-name>
 Look for events matching:
 * `0/3 nodes are available: 1 node(s) had untolerated taint, 2 Insufficient memory.`
 
-*Read more in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#3-labels-selectors-and-affinity-evaluation]]*\n
+*Read more in [[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#3-labels-selectors-and-affinity-evaluation]]*\n

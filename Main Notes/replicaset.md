@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[replicationcontroller]]"
 reference_guides:
-  - "[[Reference Notes/0-6_kubernetes_workloads_and_controllers.md]]"
+  - "[[Reference Notes/0-6-1_pod_lifecycle_probes_and_containers.md]]"
 tags:
   - kubernetes/controller
   - status/completed

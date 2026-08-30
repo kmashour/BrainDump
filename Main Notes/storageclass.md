@@ -10,7 +10,7 @@ related_concepts:
   - "[[persistentvolumeclaim]]"
 against: []
 reference_guides:
-  - "[[Reference Notes/0-8_storage_mechanics_and_csi.md]]"
+  - "[[Reference Notes/0-8-1_storage_primitives_emptydir_hostpath.md]]"
   - "[[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md]]"
 tags:
   - kubernetes/storage

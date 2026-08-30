@@ -140,4 +140,4 @@ If a Pod is stuck in `Pending` without scheduling attempts (no events listed):
 
 ---
 
-*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#g-multiple-custom-schedulers)*
+*Read more in [0-13-1_pod_scheduling_predicates_and_scoring.md](../Reference%20Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#g-multiple-custom-schedulers)*

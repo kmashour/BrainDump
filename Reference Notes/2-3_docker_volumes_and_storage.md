@@ -3,7 +3,7 @@ domains:
   - "docker"
   - "infra"
 ---
-
+``
 # Module 2-3: Docker Volumes & Storage Mechanics
 
 This module details persistent storage configurations in Docker. It covers the difference between host-mapped Bind Mounts, Docker-managed Named Volumes, and host-isolated Anonymous Volumes, along with filesystem merging/obscuring behaviors, volume lifecycle commands, and security vulnerabilities.
@@ -14,16 +14,22 @@ This module details persistent storage configurations in Docker. It covers the d
 
 ```mermaid
 graph TD
-    subgraph HostFS["Host Filesystem"]
-        HostDir["/home/user/data (Specific Host Directory)"]
-        DockerStorage["/var/lib/docker/volumes/ (Docker Managed Area - Root Only)"]
-    end
 
-    subgraph ContainerMounts["Container Storage Mounts"]
-        HostDir -->|Mount type: bind| Bind["Bind Mount (/app/data) <br> Obscures pre-existing container directory files"]
-        DockerStorage -->|Mount type: volume| Named["Named Volume (/db/data) <br> Merges & copies pre-existing container files"]
-        DockerStorage -->|Mount type: volume (auto-hash)| Anon["Anonymous Volume (/temp/cache) <br> Tied to container unless cleared via rm -v"]
-    end
+subgraph HostFS["Host Filesystem"]
+    HostDir["/home/user/data (Specific Host Directory)"]
+    DockerStorage["/var/lib/docker/volumes/ (Docker Managed Area - Root Only)"]
+end
+
+subgraph ContainerMounts["Container Storage Mounts"]
+    Bind["Bind Mount (/app/data) <br> Obscures pre-existing container directory files"]
+    Named["Named Volume (/db/data) <br> Merges & copies pre-existing container files"]
+    Anon["Anonymous Volume (/temp/cache) <br> Tied to container unless cleared via rm -v"]
+end 
+
+%% Define relationships outside of the subgraphs to prevent layout issues
+HostDir -->|"Mount type: bind"| Bind
+DockerStorage -->|"Mount type: volume"| Named
+DockerStorage -->|"Mount type: volume (auto-hash)"| Anon
 ```
 
 ---

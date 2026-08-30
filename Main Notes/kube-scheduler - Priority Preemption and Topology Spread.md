@@ -64,4 +64,4 @@ The `NodeResourcesFit` score plugin supports bin-packing:
 *   Reports enabled features via `Node.status.declaredFeatures`.
 *   The `NodeDeclaredFeatures` scheduler plugin filters out nodes lacking features required by the Pod, preventing scheduling skew in mixed-version clusters.
 
-*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#5-advanced-scheduling--eviction-control)*
+*Read more in [0-13-1_pod_scheduling_predicates_and_scoring.md](../Reference%20Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#5-advanced-scheduling--eviction-control)*

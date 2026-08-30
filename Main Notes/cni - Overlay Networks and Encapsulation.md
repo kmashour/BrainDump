@@ -34,4 +34,4 @@ To avoid encapsulation overhead (CPU cycles and latency), Calico defaults to dir
 - Broadcasts the Pod CIDR block location to underlay physical routers/switches.
 - Transfers raw, naked packets directly through the physical switches without outer envelopes.
 
-*Read more in [[Reference Notes/0-9_networking_dns_and_ingress.md#3.3 CNI Plugin Implementations (WeaveNet vs. Calico)]]*
+*Read more in [[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md#3.3 CNI Plugin Implementations (WeaveNet vs. Calico)]]*

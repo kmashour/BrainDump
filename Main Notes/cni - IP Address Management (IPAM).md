@@ -30,4 +30,4 @@ Because the prefixes are guaranteed to be different (e.g. `10.244.1.x` on Node 1
 - **Subnet Sizing:** Sliced block size is configured via the `--node-cidr-mask-size` flag of the `kube-controller-manager`.
 - **The maxPods Golden Rule:** The size of the `PodCIDR` subnet must provide at least double the capacity of the Kubelet's `--max-pods` limit to allow for IP recycling delays.
 
-*Read more in [[Reference Notes/0-9_networking_dns_and_ingress.md#3.2 IP Address Management (IPAM)]]*
+*Read more in [[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md#3.2 IP Address Management (IPAM)]]*

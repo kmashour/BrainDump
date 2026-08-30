@@ -138,7 +138,7 @@ To assign a running `Pending` pod to a node, post a `Binding` resource directly 
 }
 ```
 
-*Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#c-kube-scheduler-the-matchmaker).*
+*Read more in [0-2-1_control_plane_and_core_daemons.md](../Reference%20Notes/0-2-1_control_plane_and_core_daemons.md#c-kube-scheduler-the-matchmaker).*
 
 ---
 

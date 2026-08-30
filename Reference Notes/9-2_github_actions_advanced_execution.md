@@ -171,13 +171,13 @@ jobs:
 ### C. GHA State Engine under the hood: `$GITHUB_ENV` vs. `$GITHUB_OUTPUT`
 Both `$GITHUB_ENV` and `$GITHUB_OUTPUT` are **paths to temporary text files** created by GHA on the runner VM's disk. You write plain text key-value pairs to these files to change state. GHA reads them at the end of the step.
 
-| Vector | `$GITHUB_ENV` | `$GITHUB_OUTPUT` |
-| :--- | :--- | :--- |
-| **Primary Purpose** | Share **Environment Variables** between steps. | Share **Outputs** across jobs (VM boundaries). |
-| **VM Scope** | **Private to the current Job VM.** Subsequent steps in this job can read it. Other jobs *cannot* see it. | **Public to the whole Workflow.** Downstream jobs running on separate VMs *can* read it. |
-| **Writing Syntax** | `echo "MY_VAR=value" >> "$GITHUB_ENV"` | `echo "my_output=value" >> "$GITHUB_OUTPUT"` |
-| **Reading Syntax (Same Job)** | Direct shell variable: `$MY_VAR` | GHA expression: `${{ steps.step_id.outputs.my_output }}` |
-| **Reading Syntax (Next Job)** | **Impossible.** (Other jobs cannot read this job's `$GITHUB_ENV`). | GHA expression: `${{ needs.job_id.outputs.job_output_name }}` |
+| Vector                        | `$GITHUB_ENV`                                                                                            | `$GITHUB_OUTPUT`                                                                         |
+| :---------------------------- | :------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| **Primary Purpose**           | Share **Environment Variables** between steps.                                                           | Share **Outputs** across jobs (VM boundaries).                                           |
+| **VM Scope**                  | **Private to the current Job VM.** Subsequent steps in this job can read it. Other jobs *cannot* see it. | **Public to the whole Workflow.** Downstream jobs running on separate VMs *can* read it. |
+| **Writing Syntax**            | `echo "MY_VAR=value" >> "$GITHUB_ENV"`                                                                   | `echo "my_output=value" >> "$GITHUB_OUTPUT"`                                             |
+| **Reading Syntax (Same Job)** | Direct shell variable: `$MY_VAR`                                                                         | GHA expression: `${{ steps.step_id.outputs.my_output }}`                                 |
+| **Reading Syntax (Next Job)** | **Impossible.** (Other jobs cannot read this job's `$GITHUB_ENV`).                                       | GHA expression: `${{ needs.job_id.outputs.job_output_name }}`                            |
 
 > [!IMPORTANT]
 > GHA Context Expressions `${{ env.VARIABLE }}` are **compiled and frozen** before the job begins. If your step dynamically modifies an environment variable via `$GITHUB_ENV`, you **must** use the runner shell syntax (`$VARIABLE`) in subsequent steps to read the updated value.

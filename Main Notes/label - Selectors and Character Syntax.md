@@ -55,4 +55,4 @@ Allows filtering based on a set of values:
 * `exists`: Matches resources containing the key, regardless of value (e.g., `partition`).
 * `!exists`: Matches resources not containing the key (e.g., `!partition`).
 
-*Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#6-core-kubernetes-object-model-and-metadata)*
+*Read more in [0-2-1_control_plane_and_core_daemons.md](../Reference%20Notes/0-2-1_control_plane_and_core_daemons.md#6-core-kubernetes-object-model-and-metadata)*

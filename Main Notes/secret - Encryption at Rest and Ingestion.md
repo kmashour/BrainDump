@@ -102,7 +102,7 @@ For enterprise deployments, storing static keys in `/etc/kubernetes/` is a secur
 *   **KEK (Key Encryption Key):** Managed by an external KMS (e.g., AWS KMS, HashiCorp Vault). Kube-apiserver calls the KMS plugin over a local gRPC UNIX socket to encrypt/decrypt the DEK.
 *   **Benefit:** The actual master key never resides on the control plane server disk.
 
-*Read more in [0-7_security_and_network_policies.md](../Reference%20Notes/0-7_security_and_network_policies.md#119-etcd-encryption-at-rest--envelope-encryption)*
+*Read more in [0-7-1_rbac_service_accounts_and_certificates.md](../Reference%20Notes/0-7-1_rbac_service_accounts_and_certificates.md#119-etcd-encryption-at-rest--envelope-encryption)*
 
 ---
 
@@ -118,7 +118,7 @@ Once a Secret is created, its propagation behavior to running container environm
 *   **Behavior:** Mounted files are **dynamic** and periodically reconciled by Kubelet (defaults to 1-2 minutes).
 *   **Propagation:** To avoid partial or dirty reads, Kubelet writes new files to a fresh timestamped directory and updates a `..data` symlink pointer atomically inside `/etc/secrets`.
 *   **The `subPath` Inode Binding Gotcha:** If a Secret key is mounted to a specific file path using `volumeMounts.subPath`, **dynamic updates are disabled**. The container engine bind-mounts directly to the file's individual inode at start time, blocking the symlink swap updates.
-*   *See the complete low-level systems rationale and inotify folder watch requirements in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#Systems Rationale: Why Kubernetes Uses This Symlink-Swap Pattern|Module 13 Reference Note > Systems Rationale]].*
+*   *See the complete low-level systems rationale and inotify folder watch requirements in [[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#Systems Rationale: Why Kubernetes Uses This Symlink-Swap Pattern|Module 13 Reference Note > Systems Rationale]].*
 
 ---
 

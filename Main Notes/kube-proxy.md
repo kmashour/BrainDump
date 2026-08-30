@@ -9,8 +9,8 @@ related_concepts:
   - "[[kube-apiserver]]"
   - "[[pod]]"
 reference_guides:
-  - "[[Reference Notes/0-2_cluster_architecture_and_components.md]]"
-  - "[[Reference Notes/0-9_networking_dns_and_ingress.md]]"
+  - "[[Reference Notes/0-2-1_control_plane_and_core_daemons.md]]"
+  - "[[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md]]"
   - "[[Reference Notes/0-11_troubleshooting_and_diagnostics.md]]"
 tags:
   - kubernetes/component

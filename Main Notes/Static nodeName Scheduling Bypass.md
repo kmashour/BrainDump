@@ -51,4 +51,4 @@ spec:
 * **Taints Ignored:** The Pod will execute on the targeted node even if the node has an active `NoSchedule` taint and the Pod has no matching tolerations.
 * **No Failover:** If the targeted node goes offline, the Pod is marked as failed and will not reschedule to any other node.
 
-*Read more in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#2-manual-node-binding-bypass-mechanisms]]*\n
+*Read more in [[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#2-manual-node-binding-bypass-mechanisms]]*\n

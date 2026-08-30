@@ -857,6 +857,6 @@ kind delete cluster --name cka-containers-poc
 
 ## 🔗 Related Modules
 - [Module 01: Kube API Server & Kubectl Mechanics](0-1_kube_api_and_kubectl.md) - Focuses on API Versioning schemes and the `/ephemeralcontainers` subresource pathing.
-- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Explains control plane scheduling and Kubelet loops.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md) - Explains control plane scheduling and Kubelet loops.
 - [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md) - Covers Linux `cgroups` structures, `cgroupfs`/`systemd` drivers, and node eviction boundaries.
 - [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md) - Detailing `restartPolicy` backoffs and local container self-healing.

@@ -14,33 +14,44 @@ This module details how Docker manages container network namespaces, virtual int
 
 ```mermaid
 graph TD
-    subgraph HostSystem["Host Physical Machine (IP: 192.168.1.100)"]
-        direction TB
-        HostNIC["Host Network Interface (eth0)"]
-        
-        subgraph DefaultBridge["Default Bridge Network (docker0 / 172.17.0.1)"]
-            ContA["Container A (IP: 172.17.0.2)"] <-->|veth pair| DefaultBridge
-            ContB["Container B (IP: 172.17.0.3)"] <-->|veth pair| DefaultBridge
-            ContA <-->|Direct IP Communication Only <br> No DNS Name Resolution| ContB
-        end
 
-        subgraph UserBridge["User-Defined Bridge Network (10.0.0.0/16)"]
-            ContC["Container C (IP: 10.0.0.2)"]
-            ContD["Container D (IP: 10.0.0.3)"]
-            ContC <-->|Automatic DNS Resolution <br> Ping by Name| ContD
-        end
+%% Define standalone nodes and subgraphs first
+subgraph HostSystem["Host Physical Machine (IP: 192.168.1.100)"]
+    HostNIC["Host Network Interface (eth0)"]
 
-        subgraph HostMode["Host Network Driver"]
-            ContE["Container E"] <-->|Direct Stack Bind <br> Uses Host Port 80| HostNIC
-        end
-
-        subgraph MacvlanMode["Macvlan Network Driver"]
-            ContF["Container F <br> IP: 192.168.1.150 <br> Custom MAC Address"] <-->|Bypasses NAT / Layer 2| HostNIC
-        end
+    subgraph DefaultBridge["Default Bridge Network (docker0 / 172.17.0.1)"]
+        Docker0["docker0 Interface"]
+        ContA["Container A (IP: 172.17.0.2)"]
+        ContB["Container B (IP: 172.17.0.3)"]
     end
-    
-    DefaultBridge <-->|Port Mapping: -p 8080:80 <br> Host iptables NAT Rules| HostNIC
-    UserBridge <-->|Internet Gateway| HostNIC
+
+    subgraph UserBridge["User-Defined Bridge Network (10.0.0.0/16)"]
+        CustomBridge["Custom Bridge Interface"]
+        ContC["Container C (IP: 10.0.0.2)"]
+        ContD["Container D (IP: 10.0.0.3)"]
+    end
+
+    subgraph HostMode["Host Network Driver"]
+        ContE["Container E"]
+    end
+
+    subgraph MacvlanMode["Macvlan Network Driver"]
+        ContF["Container F <br> IP: 192.168.1.150 <br> Custom MAC Address"]
+    end
+end
+
+%% Define all relationships outside the subgraphs
+ContA <-->|"veth pair"| Docker0
+ContB <-->|"veth pair"| Docker0
+ContA <-->|"Direct IP Communication Only <br> No DNS Name Resolution"| ContB
+
+ContC <-->|"Automatic DNS Resolution <br> Ping by Name"| ContD
+
+ContE <-->|"Direct Stack Bind <br> Uses Host Port 80"| HostNIC
+ContF <-->|"Bypasses NAT / Layer 2"| HostNIC
+
+Docker0 <-->|"Port Mapping: -p 8080:80 <br> Host iptables NAT Rules"| HostNIC
+CustomBridge <-->|"Internet Gateway"| HostNIC
 ```
 
 ---

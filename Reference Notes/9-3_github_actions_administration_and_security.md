@@ -21,23 +21,24 @@ To properly secure your deployment environments, prioritize security isolation a
 
 ```mermaid
 graph TD
-    subgraph SecurityShield["1. Permission Hardening (Least Privilege)"]
-        TokenPerms["Restrict GITHUB_TOKEN (permissions: read)"]
-        SHAPin["Pin Action Commit SHAs (@a2b4c6... instead of @v4)"]
-    end
 
-    subgraph TrustBroker["2. Cloud Federation (Secretless Auth)"]
-        OIDC["OpenID Connect (OIDC) JWT Token Exchange"]
-        CloudRole["AWS STS AssumeRole (No long-lived AWS keys)"]
-    end
+subgraph SecurityShield["1: Permission Hardening (Least Privilege)"]
+    TokenPerms["Restrict GITHUB_TOKEN (permissions: read)"]
+    SHAPin["Pin Action Commit SHAs (@a2b4c6... instead of @v4)"]
+end
 
-    subgraph RunnerZoning["3. Runner Administration (Isolation)"]
-        SelfHosted["Self-Hosted Linux VM (systemd-managed)"]
-        Sandbox["Run in Ephemeral VM Container sandboxes"]
-    end
+subgraph TrustBroker["2: Cloud Federation (Secretless Auth)"]
+    OIDC["OpenID Connect (OIDC) JWT Token Exchange"]
+    CloudRole["AWS STS AssumeRole (No long-lived AWS keys)"]
+end
 
-    SecurityShield -->|Enforces| TrustBroker
-    TrustBroker -->|Deploys to| RunnerZoning
+subgraph RunnerZoning["3: Runner Administration (Isolation)"]
+    SelfHosted["Self-Hosted Linux VM (systemd-managed)"]
+    Sandbox["Run in Ephemeral VM Container sandboxes"]
+end
+
+SecurityShield -->|Enforces| TrustBroker
+TrustBroker -->|Deploys to| RunnerZoning
 ```
 
 1. **Step 1: GITHUB_TOKEN Scope (Section 2):** Restrict default scopes to `contents: read` and explicitly request token claims for specific jobs.

@@ -60,4 +60,4 @@ curl -X POST -H "Content-Type: application/json"   --data @binding.json   http:/
 * **Pre-existing Pods:** You can only assign a pod manually if its `spec.nodeName` is blank. If it is already bound, you must delete and recreate the pod.
 * **Permissions:** Executing a binding requires RBAC permissions for the `pods/binding` sub-resource.
 
-*Read more in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#2-manual-node-binding-bypass-mechanisms]]*\n
+*Read more in [[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#2-manual-node-binding-bypass-mechanisms]]*\n

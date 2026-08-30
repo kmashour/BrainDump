@@ -55,4 +55,4 @@ Use `preStop` to ensure traffic drains cleanly from endpoint lists:
           command: ["sh", "-c", "sleep 10"] # <-- Gives kube-proxy time to update iptables
 ```
 
-*Read more in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#4-container-lifecycle-handlers-hooks]]*\n
+*Read more in [[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#4-container-lifecycle-handlers-hooks]]*\n

@@ -28,4 +28,4 @@ A common confusion in container networking is using "CNI" and "CNI Plugin" inter
 1. **Low-Level "Building Blocks":** Reference plugins (e.g. `bridge`, `macvlan`, `ptp`) maintained by the CNI maintainers that only understand host-local networking on a single node.
 2. **"Full Package" CNI Solutions:** Comprehensive network orchestrators (e.g. Calico, Cilium) that span multiple hosts, configure overlay tunnels (like VXLAN) or L3 routers (BGP), and enforce security NetworkPolicies. Under the hood, these full solutions often delegate host-local actions to the low-level building blocks.
 
-*Read more in [[Reference Notes/0-9_networking_dns_and_ingress.md#2.0 CNI Specification vs. CNI Plugins]]*
+*Read more in [[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md#2.0 CNI Specification vs. CNI Plugins]]*

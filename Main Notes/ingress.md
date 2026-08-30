@@ -12,7 +12,7 @@ related_concepts:
 against:
   - "[[service]]"
 reference_guides:
-  - "[[Reference Notes/0-9_networking_dns_and_ingress.md]]"
+  - "[[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md]]"
 tags:
   - kubernetes/network
   - status/completed
@@ -123,7 +123,7 @@ spec:
 ---
 
 ## 🔍 Deeper Dive Notes
-*   **Detailed Architecture Walkthrough:** See [[Reference Notes/0-9_networking_dns_and_ingress|Module 0-9: Networking, DNS, and Ingress]] for a complete architectural analysis of NodePort limitations, NGINX components, and TLS termination.
+*   **Detailed Architecture Walkthrough:** See [[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs|Module 0-9: Networking, DNS, and Ingress]] for a complete architectural analysis of NodePort limitations, NGINX components, and TLS termination.
 
 This table automatically displays all deeper notes, use cases, and pitfalls associated with **ingress**.
 

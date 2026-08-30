@@ -17,10 +17,10 @@ components:
   - "[[storageclass]]"
   - "[[ingress]]"
 sources:
-  - "[[Reference Notes/0-7_security_and_network_policies.md]]"
-  - "[[Reference Notes/0-8_storage_mechanics_and_csi.md]]"
-  - "[[Reference Notes/0-9_networking_dns_and_ingress.md]]"
-  - "[[Reference Notes/0-13_scheduling_logging_and_lifecycle.md]]"
+  - "[[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md]]"
+  - "[[Reference Notes/0-8-1_storage_primitives_emptydir_hostpath.md]]"
+  - "[[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md]]"
+  - "[[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md]]"
 tags:
   - architecture/pattern
   - aws/eks

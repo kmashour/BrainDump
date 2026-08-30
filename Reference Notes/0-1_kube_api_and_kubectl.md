@@ -28,7 +28,7 @@ By following this flow, you progress from **Local Cluster Setup → Abstract Ent
 
 ## 1. The Kubernetes API Server (`kube-apiserver`)
 
-The `kube-apiserver` is the front gate to the control plane. For its architectural placement and role in High Availability (HA) topologies, see [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive).
+The `kube-apiserver` is the front gate to the control plane. For its architectural placement and role in High Availability (HA) topologies, see [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md#2-control-plane-core-components-deep-dive).
 * **Central Hub:** Every component (nodes, scheduler, controllers, users) communicates with the API server. No component (except the API server) is permitted to access the backend database (`etcd`) directly.
 * **REST Interface:** The API server exposes an HTTP REST API. Its main job is to receive requests, validate them, authorize them, and manipulate the state of **API Objects** (e.g., Pods, Deployments, Services, ConfigMaps).
 * **Declarative Configuration:** When you submit a YAML file, you declare your "desired state". The API server stores this in `etcd`, and controller loops work to reconcile the "actual state" with this desired state.
@@ -369,7 +369,7 @@ We will query the API server directly via `kubectl` raw paths, generate a YAML t
 ---
 
 ## 🔗 Related Modules
-- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Deep dive into where the API server resides and how other control plane components talk to it.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md) - Deep dive into where the API server resides and how other control plane components talk to it.
 - [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md) - Details on how the `kubelet` registers nodes and communicates with the API server.
 - [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md) - Focuses on controller reconciliation and Pod lifecycles.
 - [Module 05: Containers, Runtimes, and Lifecycle Management](0-5_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.

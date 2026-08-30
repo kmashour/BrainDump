@@ -97,7 +97,7 @@ This directory houses the comprehensive study modules filled with technical dept
    * *Topics:* REST endpoints, API Groups, Versioning, OpenAPI Schemas, `kubectl explain`, Watch (`-w`), JSONPath/Custom Columns.
    * *PoC:* Raw HTTP API queries, YAML templates, watch logs.
 
-2. **[0-2_cluster_architecture_and_components.md](Reference%20Notes/0-2_cluster_architecture_and_components.md)**
+2. **[0-2-1_control_plane_and_core_daemons.md](Reference%20Notes/0-2-1_control_plane_and_core_daemons.md)**
    * *Topics:* Master vs. Worker split, Control Plane processes, High Availability (HA) split-brain, Leader Election, CCM, Mixed Version Proxy.
    * *PoC:* Multi-node kind setups, Static Pod manifests, leader lease analysis.
 
@@ -125,7 +125,7 @@ This directory houses the comprehensive study modules filled with technical dept
 
 ## 🛠️ Global Kind Cluster Setup
 
-To test these notes, you will need a multi-node cluster. The configuration file and instructions are detailed at the start of **[0-2_cluster_architecture_and_components.md](Reference%20Notes/0-2_cluster_architecture_and_components.md)**.
+To test these notes, you will need a multi-node cluster. The configuration file and instructions are detailed at the start of **[0-2-1_control_plane_and_core_daemons.md](Reference%20Notes/0-2-1_control_plane_and_core_daemons.md)**.
 
 ---
 

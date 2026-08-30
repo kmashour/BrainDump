@@ -11,7 +11,7 @@ components:
   - "[[pod]]"
 sources:
   - "Kubernetes Service Documentation"
-  - "Reference Notes/0-9_networking_dns_and_ingress.md"
+  - "Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md"
 tags:
   - architecture/pattern
   - kubernetes/networking

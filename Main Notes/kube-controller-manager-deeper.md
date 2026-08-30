@@ -59,7 +59,7 @@ To prevent split-brain conflicts, only one `kube-controller-manager` process can
   kubectl get lease -n kube-system
   ```
 
-*Read more in [0-2_cluster_architecture_and_components.md](../Reference%20Notes/0-2_cluster_architecture_and_components.md#d-kube-controller-manager-the-enforcer) and [0-4_workload_lifecycle_and_healing.md](../Reference%20Notes/0-4_workload_lifecycle_and_healing.md#2-garbage-collection-gc).*
+*Read more in [0-2-1_control_plane_and_core_daemons.md](../Reference%20Notes/0-2-1_control_plane_and_core_daemons.md#d-kube-controller-manager-the-enforcer) and [0-4_workload_lifecycle_and_healing.md](../Reference%20Notes/0-4_workload_lifecycle_and_healing.md#2-garbage-collection-gc).*
 
 ## 🔍 Sub-Concepts & Use Cases
 This table automatically displays all deeper notes, use cases, and configurations associated with **kube-controller-manager-deeper**.

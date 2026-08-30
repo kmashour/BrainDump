@@ -53,4 +53,4 @@ By default, modifying container resource requests or limits in an active Pod spe
 *   **Memory Floor Constraints:** You cannot reduce a container's memory limit below its active physical usage. Doing so places the Pod in a `Proposed` state, and the resize status remains `InProgress` until memory usage drops or the limit is raised.
 *   **OS Support:** Dynamic scaling is restricted to Linux container environments; Windows pods are not supported.
 
-*Read more in the reference guide: [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md#4-in-place-pod-vertical-scaling-manual-in-place-resizing|0-6_kubernetes_workloads_and_controllers.md > In-Place Pod Vertical Scaling]].*
+*Read more in the reference guide: [[Reference Notes/0-6-1_pod_lifecycle_probes_and_containers.md#4-in-place-pod-vertical-scaling-manual-in-place-resizing|0-6-1_pod_lifecycle_probes_and_containers.md > In-Place Pod Vertical Scaling]].*

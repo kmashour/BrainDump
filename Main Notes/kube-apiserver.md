@@ -12,7 +12,7 @@ related_concepts:
   - "[[kubelet]]"
 reference_guides:
   - "[[Reference Notes/0-1_kube_api_and_kubectl.md]]"
-  - "[[Reference Notes/0-7_security_and_network_policies.md]]"
+  - "[[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md]]"
   - "[[Reference Notes/0-11_troubleshooting_and_diagnostics.md]]"
   - "[[Reference Notes/0-14_cluster_administration_and_observability.md]]"
 tags:

@@ -52,4 +52,4 @@ To boot multiple Pods with arbitrary IPs (e.g. `10.244.x.x`) on these nodes, Kub
   ```bash
   aws ec2 modify-instance-attribute --instance-id <instance-id> --no-source-dest-check
   ```
-- *See CNI configuration details in [[Reference Notes/0-9_networking_dns_and_ingress.md#3.3 CNI Plugin Implementations (WeaveNet vs. Calico)]]*
+- *See CNI configuration details in [[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md#3.3 CNI Plugin Implementations (WeaveNet vs. Calico)]]*

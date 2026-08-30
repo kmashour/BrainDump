@@ -10,7 +10,7 @@ related_concepts:
   - "[[storageclass]]"
 against: []
 reference_guides:
-  - "[[Reference Notes/0-8_storage_mechanics_and_csi.md]]"
+  - "[[Reference Notes/0-8-1_storage_primitives_emptydir_hostpath.md]]"
 tags:
   - kubernetes/storage
   - status/completed

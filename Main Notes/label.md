@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[annotation]]"
 reference_guides:
-  - "[[Reference Notes/0-2_cluster_architecture_and_components.md]]"
+  - "[[Reference Notes/0-2-1_control_plane_and_core_daemons.md]]"
 tags:
   - kubernetes/metadata
   - status/completed

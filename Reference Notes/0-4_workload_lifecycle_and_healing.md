@@ -49,7 +49,7 @@ Kubernetes is built to react to failures at different structural levels. Failure
 * **Result:** Pod name, IP address, and node assignment stay identical. Only the `RESTARTS` count increments.
 
 ### B. Replace (Workload Recovery)
-* **Component:** Controllers (`kube-controller-manager`). (For Control Plane details, see [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
+* **Component:** Controllers (`kube-controller-manager`). (For Control Plane details, see [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md#2-control-plane-core-components-deep-dive)).
 * **Action:** Pods are completely immutable. If a Pod becomes corrupted or fails its startup sequence, the system terminates the bad Pod and builds a clean replacement from the original manifest.
 
 ### C. Replicate (Scale Enforcement)
@@ -57,7 +57,7 @@ Kubernetes is built to react to failures at different structural levels. Failure
 * **Action:** Constantly checks if the number of running Pods matches the desired replica count. If a user deletes a Pod, the controller detects the mismatch and immediately creates a new Pod.
 
 ### D. Reschedule (Infrastructure Failure Recovery)
-* **Component:** `kube-controller-manager` (Node Controller) & `kube-scheduler`. (For scheduler algorithms, see [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
+* **Component:** `kube-controller-manager` (Node Controller) & `kube-scheduler`. (For scheduler algorithms, see [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md#2-control-plane-core-components-deep-dive)).
 * **Action:** If a physical server dies, the Node Controller waits out the 5-minute eviction grace period, flags the node as dead, deletes the Pods on it, and the `kube-scheduler` places replacement Pods onto healthy nodes. (For node Lease objects and eviction timers, see [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md#3-node-heartbeats-the-lease-api)).
 
 ---
@@ -360,6 +360,6 @@ We will deploy a Pod with a failing livenessProbe to witness local healing, a Po
 ---
 
 ## 🔗 Related Modules
-- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Deep dive into controller reconciliation loops and high availability topologies.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md) - Deep dive into controller reconciliation loops and high availability topologies.
 - [Module 03: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md) - Describes node conditions (`DiskPressure`, etc.), heartbeats via the Lease API, and Kubelet resource eviction policies.
 - [Module 05: Containers, Runtimes, and Lifecycle Management](0-5_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.

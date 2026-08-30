@@ -67,4 +67,4 @@ You can configure the emptyDir to be backed by RAM (tmpfs) rather than node stor
       medium: Memory
 ```
 
-*Read more in [[Reference Notes/0-8_storage_mechanics_and_csi.md#1-volume-plugins-and-in-tree-types]]*\n
+*Read more in [[Reference Notes/0-8-1_storage_primitives_emptydir_hostpath.md#1-volume-plugins-and-in-tree-types]]*\n

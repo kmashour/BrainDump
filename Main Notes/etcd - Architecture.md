@@ -65,4 +65,4 @@ In a Kubernetes cluster, `etcd` organizes all stored data under a hierarchical t
 * **`/registry/secrets/`**: Stores cluster secrets (encrypted or base64 encoded).
 * **`/registry/configs/`**: Stores config maps.
 
-*Read more in [[Reference Notes/0-2_cluster_architecture_and_components.md#b-etcd-the-source-of-truth]]*
+*Read more in [[Reference Notes/0-2-1_control_plane_and_core_daemons.md#b-etcd-the-source-of-truth]]*

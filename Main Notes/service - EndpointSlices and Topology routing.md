@@ -61,4 +61,4 @@ $$\text{bandOffset} = \min\left(\max\left(16, \frac{\text{cidrSize}}{16}\right),
 *   **Lower Band (Static):** The first `bandOffset` addresses are reserved for user-specified static IPs.
 *   **Upper Band (Dynamic):** The rest of the range is preferred for dynamic allocation. Dynamic assignments will only spill over to the lower band if the upper band is completely exhausted.
 
-*Read more in [0-9_networking_dns_and_ingress.md](../Reference%20Notes/0-9_networking_dns_and_ingress.md#7-advanced-service-networking--modern-apis)*
+*Read more in [0-9-1_pod_and_service_networking_iptables_ipvs.md](../Reference%20Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md#7-advanced-service-networking--modern-apis)*

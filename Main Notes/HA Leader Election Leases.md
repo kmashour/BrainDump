@@ -58,4 +58,4 @@ Key fields include:
 * **Keep-alive:** The active leader renews its lease every 2 seconds.
 * **Failover:** If the active leader dies, the `Renew Time` stops updating. After the lease duration expires (e.g., 15 seconds), standby nodes compete to acquire the lease. The first to successfully update `Holder Identity` becomes the new active leader.
 
-*Read more in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#5-leader-election-leases-mechanics]]*\n
+*Read more in [[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#5-leader-election-leases-mechanics]]*\n

@@ -13,7 +13,7 @@ against:
   - "[[firewalld]]"
   - "[[iptables]]"
 reference_guides:
-  - "[[Reference Notes/0-7_security_and_network_policies.md]]"
+  - "[[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md]]"
 tags:
   - kubernetes/network
   - status/completed

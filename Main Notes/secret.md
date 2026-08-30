@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[configmap]]" # Secrets are used for sensitive configurations, ConfigMaps for non-sensitive ones
 reference_guides:
-  - "[[Reference Notes/0-7_security_and_network_policies.md]]"
+  - "[[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md]]"
 
 tags:
   - domain/kubernetes

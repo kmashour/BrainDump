@@ -13,7 +13,7 @@ related_concepts:
 against:
   - "[[kube-proxy]]"
 reference_guides:
-  - "[[Reference Notes/0-9_networking_dns_and_ingress.md]]"
+  - "[[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md]]"
 tags:
   - kubernetes/component
   - status/completed

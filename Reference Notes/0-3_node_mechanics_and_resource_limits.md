@@ -225,7 +225,7 @@ $$\text{Allocatable} = \text{Capacity} - \text{OS Reserved} - \text{Kubelet Rese
 
 ## 3. Node Heartbeats & The Lease API
 
-To keep the control plane informed of node health without overloading the database, Kubernetes uses the **Lease API** (`coordination.k8s.io`). (For the role of the Node Controller inside the `kube-controller-manager` which monitors these lease objects, see [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md#2-control-plane-core-components-deep-dive)).
+To keep the control plane informed of node health without overloading the database, Kubernetes uses the **Lease API** (`coordination.k8s.io`). (For the role of the Node Controller inside the `kube-controller-manager` which monitors these lease objects, see [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md#2-control-plane-core-components-deep-dive)).
 
 ### A. Heartbeat Mechanism
 * **Lease Objects:** Every node gets a lightweight `Lease` object in the `kube-node-lease` namespace. The `kubelet` pings (renews) this lease every **10 seconds**.
@@ -608,7 +608,7 @@ Resources Measurement units in Kubernetes  :
 ---
 
 ## 🔗 Related Modules
-- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Outlines the role of the control plane (scheduler, controller-manager, API server) in coordinating with Kubelets.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md) - Outlines the role of the control plane (scheduler, controller-manager, API server) in coordinating with Kubelets.
 - [Module 04: Workload Lifecycle & Self-Healing](0-4_workload_lifecycle_and_healing.md) - Details how eviction triggers restarts and replication controller healing.
 - [Module 05: Containers, Runtimes, and Lifecycle Management](0-5_containers_runtimes_and_lifecycle.md) - Covers container image pull mechanics, the Container Runtime Interface (CRI), lifecycle hooks, init containers, sidecars, and ephemeral containers.
 

@@ -182,6 +182,9 @@ flowchart TD
     EvalResource -- No --> FinalDeny
 ```
 
+#### Venn Diagram
+This is how an Effective Permission is decided it is the permission at the intersection of all of that 
+![[images.png]]
 #### 🛡️ Deep-Dive: AWS policy evaluation as "Defense-in-Depth"
 AWS policy evaluation enforces the security principle of **Defense-in-Depth**. This means that authorization is filtered progressively across multiple layers of security. If any layer denies the action, access is blocked immediately.
 

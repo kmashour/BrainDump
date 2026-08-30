@@ -240,4 +240,4 @@ spec:
       port: 50051
 ```
 
-*Read more in [[Reference Notes/0-9_networking_dns_and_ingress.md#7.1 The Gateway API]]*
+*Read more in [[Reference Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md#7.1 The Gateway API]]*

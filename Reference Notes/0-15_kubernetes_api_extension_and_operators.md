@@ -223,4 +223,4 @@ We will create a custom resource definition named `Backup`, deploy a custom inst
 ---
 
 ## 🔗 Related Modules
-- [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Details how the control plane API server routes requests and manages default objects.
+- [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md) - Details how the control plane API server routes requests and manages default objects.

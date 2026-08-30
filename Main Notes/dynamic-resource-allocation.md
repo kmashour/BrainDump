@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[persistentvolume]]"
 reference_guides:
-  - "[[Reference Notes/0-7_security_and_network_policies.md]]"
+  - "[[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md]]"
 tags:
   - kubernetes/resource
   - status/completed

@@ -54,4 +54,4 @@ The loop runs continuously:
       sleep(reconciliation_interval)
   ```
 
-*Read more in [[Reference Notes/0-2_cluster_architecture_and_components.md#d-kube-controller-manager-the-reconciler]]*\n
+*Read more in [[Reference Notes/0-2-1_control_plane_and_core_daemons.md#d-kube-controller-manager-the-reconciler]]*\n

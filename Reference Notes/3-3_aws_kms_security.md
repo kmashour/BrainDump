@@ -74,37 +74,38 @@ To encrypt payloads larger than 4KB without sending massive payloads to KMS (whi
 
 ```mermaid
 graph TD
-    subgraph KMS ["AWS Key Management Service (HSM Boundary)"]
-        CMK["Customer Master Key (CMK)"]
-    end
 
-    subgraph Client ["Client Application Memory"]
-        PlaintextDataKey["Plaintext Data Key (In-Memory Only)"]
-        CiphertextDataKey["Ciphertext Data Key (Encrypted)"]
-        Payload["Raw Payload"]
-        EncryptedPayload["Encrypted Payload"]
-    end
+subgraph KMS ["AWS Key Management Service (HSM Boundary)"]
+    CMK["Customer Master Key (CMK)"]
+end
 
-    subgraph Storage ["Target Storage (S3 / EBS / Local DB)"]
-        StoredData["Encrypted Data"]
-        StoredKey["Encrypted Data Key"]
-    end
+subgraph Client ["Client Application Memory"]
+    PlaintextDataKey["Plaintext Data Key (In-Memory Only)"]
+    CiphertextDataKey["Ciphertext Data Key (Encrypted)"]
+    Payload["Raw Payload"]
+    EncryptedPayload["Encrypted Payload"]
+end
 
-    %% Workflow Steps
-    Client -->|"1. Request Data Key (kms:GenerateDataKey)"| KMS
-    CMK -->|"2. Return Plaintext and Encrypted Keys"| Client
-    PlaintextDataKey -->|"3. Encrypt data locally"| EncryptedPayload
-    Payload -->|"Encrypted into"| EncryptedPayload
-    EncryptedPayload StoredData
-    CiphertextDataKey --> StoredKey
-    Client -->|"4. Discard Plaintext Key from Memory"| Client
+subgraph Storage ["Target Storage (S3 / EBS / Local DB)"]
+    StoredData["Encrypted Data"]
+    StoredKey["Encrypted Data Key"]
+end
+
+%% Workflow Steps
+Client -->|"1: Request Data Key (kms:GenerateDataKey)"| KMS
+CMK -->|"2: Return Plaintext and Encrypted Keys"| Client
+PlaintextDataKey -->|"3: Encrypt data locally"| EncryptedPayload
+Payload -->|"Encrypted into"| EncryptedPayload
+EncryptedPayload --> StoredData
+CiphertextDataKey --> StoredKey
+Client -->|"4: Discard Plaintext Key from Memory"| Client
 ```
 
 ### D. Cross-Region Operations
 KMS keys are strictly scoped to a single Region.
 - **Copying Encrypted Snapshots:** To copy an encrypted EBS snapshot to another region, the snapshot must be decrypted in the source region and re-encrypted with a destination-region KMS key during the copy process.
 - **KMS Multi-Region Keys:** A set of keys in different regions that share the exact same key ID and key material (prefixed with `mrk-`).
-  - *Interchangeable Decryption:* Allows encrypting data in one region (e.g., `us-east-1`) and decrypting it locally in another region (e.g., `ap-southeast-2`) without making cross-region API calls.
+  - *Interchangeable Decryption:* Allows encrypting data in one region (e.g., `us-east-1`) and decryption it locally in another region (e.g., `ap-southeast-2`) without making cross-region API calls.
   - *Decentralized Management:* While sharing key material, each regional multi-region key is managed independently with its own key policy, aliases, and tags.
   - *Use Cases:* Global client-side encryption, DynamoDB Global Tables (using DynamoDB Encryption Client), and Aurora Global Databases (using AWS Encryption SDK) to protect specific columns (like SSN) from database administrators (DBAs).
   - *S3 Replication Caveat:* S3 currently treats multi-region keys as independent keys. S3 replication will still decrypt at the source and re-encrypt at the target, even if the destination is configured to use the corresponding replica MRK.
@@ -303,21 +304,27 @@ To design resilient systems, leverage three core strategies:
 
 ```mermaid
 graph TD
-    User["Users / Attacker"] -->|"DNS Resolution"| Route53["1. Route 53 (DDoS Resilient DNS)"]
-    User -->|"Traffic Edge Entry"| Edge["2. Edge Infrastructure (CloudFront / Global Accelerator)"]
-    Edge -->|"WAF Inspection"| WAF["AWS WAF (Layer 7 Filtering / Rate Limit)"]
-    WAF -->|"Route Protected Traffic"| ELB["3. Elastic Load Balancer (Scalable Traffic Spreading)"]
-    ELB -->|"Private Instances"| ASG["4. Private ASG (Auto-Scales Under Load)"]
-    
-    subgraph EdgeBoundary ["AWS Edge (Shield Protection)"]
-        Edge
-        WAF
-    end
-    
-    subgraph VPC ["Customer Private VPC"]
-        ELB
-        ASG
-    end
+
+%% Define standalone nodes first
+User["Users / Attacker"]
+Route53["1: Route 53 (DDoS Resilient DNS)"]
+
+subgraph EdgeBoundary ["AWS Edge (Shield Protection)"]
+    Edge["2: Edge Infrastructure (CloudFront / Global Accelerator)"]
+    WAF["AWS WAF (Layer 7 Filtering / Rate Limit)"]
+end
+
+subgraph VPC ["Customer Private VPC"]
+    ELB["3: Elastic Load Balancer (Scalable Traffic Spreading)"]
+    ASG["4: Private ASG (Auto-Scales Under Load)"]
+end
+
+%% Define relationships outside the subgraphs
+User -->|"DNS Resolution"| Route53
+User -->|"Traffic Edge Entry"| Edge
+Edge -->|"WAF Inspection"| WAF
+WAF -->|"Route Protected Traffic"| ELB
+ELB -->|"Private Instances"| ASG
 ```
 
 1.  **Infrastructure Layer Defense (Mitigate at the Edge):**

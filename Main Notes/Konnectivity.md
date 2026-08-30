@@ -11,7 +11,7 @@ related_concepts:
 against:
   - "[[kube-proxy]]" # Konnectivity is for control plane-to-node egress, kube-proxy is for pod-to-service routing
 reference_guides:
-  - "[[Reference Notes/0-2_cluster_architecture_and_components.md]]"
+  - "[[Reference Notes/0-2-1_control_plane_and_core_daemons.md]]"
 tags:
   - kubernetes/component
   - status/completed

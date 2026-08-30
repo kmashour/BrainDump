@@ -228,5 +228,5 @@ helm upgrade csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver
 ---
 
 ## 🔗 Related Reference Notes
-* **Cluster Security & Policies:** [[0-7_security_and_network_policies|Module 0-7: Cluster Security & Network Policies]]
+* **Cluster Security & Policies:** [[0-7-1_rbac_service_accounts_and_certificates|Module 0-7: Cluster Security & Network Policies]]
 * **CNCF Disaster Recovery:** [[12-1_cncf_kubernetes_disaster_recovery|Module 12-1: CNCF Kubernetes Disaster Recovery]]

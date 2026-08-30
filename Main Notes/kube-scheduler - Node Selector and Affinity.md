@@ -103,4 +103,4 @@ For both Node Selector and Node Affinity, the suffix **`IgnoredDuringExecution`*
 *   **Future/Planned Execution Phase (`RequiredDuringExecution`):**
     Kubernetes architecture designs include plans to support the suffix **`RequiredDuringExecution`** in the future. Under this policy, if a node's labels are changed during runtime such that a running Pod's hard affinity requirements are no longer satisfied, the system will immediately evict that Pod from the node.
 
-*Read more in [0-13_scheduling_logging_and_lifecycle.md](../Reference%20Notes/0-13_scheduling_logging_and_lifecycle.md#d-node-selectors-and-node-affinity-attracting-workloads)*
+*Read more in [0-13-1_pod_scheduling_predicates_and_scoring.md](../Reference%20Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#d-node-selectors-and-node-affinity-attracting-workloads)*

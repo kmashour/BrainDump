@@ -55,4 +55,4 @@ If a deployment cannot be deleted and stays stuck, inspect finalizers on the obj
 kubectl patch deployment nginx -p '{"metadata":{"finalizers":null}}' --type=merge
 ```
 
-*Read more in [[Reference Notes/0-2_cluster_architecture_and_components.md#6-the-kubernetes-object-model]]*\n
+*Read more in [[Reference Notes/0-2-1_control_plane_and_core_daemons.md#6-the-kubernetes-object-model]]*\n

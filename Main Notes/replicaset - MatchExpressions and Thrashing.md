@@ -77,4 +77,4 @@ If two controllers (e.g. two ReplicaSets) have overlapping selectors but point t
 
 **Resolution:** Inspect mutating admission webhook configurations and check Pod label metadata.
 
-*Read more in [0-6_kubernetes_workloads_and_controllers.md](../Reference%20Notes/0-6_kubernetes_workloads_and_controllers.md#83-set-based-selectors--matchexpressions-syntax)*
+*Read more in [0-6-1_pod_lifecycle_probes_and_containers.md](../Reference%20Notes/0-6-1_pod_lifecycle_probes_and_containers.md#83-set-based-selectors--matchexpressions-syntax)*

@@ -97,4 +97,4 @@ metadata:
 }
 ```
 
-*Read more in [3-2_aws_iam.md](../Reference%20Notes/3-2_aws_iam.md) and [0-7_security_and_network_policies.md](../Reference%20Notes/0-7_security_and_network_policies.md)*
+*Read more in [3-2_aws_iam.md](../Reference%20Notes/3-2_aws_iam.md) and [0-7-1_rbac_service_accounts_and_certificates.md](../Reference%20Notes/0-7-1_rbac_service_accounts_and_certificates.md)*

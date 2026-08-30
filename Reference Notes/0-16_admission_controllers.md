@@ -811,9 +811,9 @@ spec:
 ---
 
 ## 🔗 Related Modules
-* [Module 02: Cluster Architecture & Control Plane Components](0-2_cluster_architecture_and_components.md) - Deep dive into API Server and etcd component roles.
-* [Module 08: Security and Network Policies](0-7_security_and_network_policies.md) - Covers ServiceAccounts, securityContexts, and detailed TLS configurations.
-* [Module 13: Scheduling, Logging, and Lifecycle Management](0-13_scheduling_logging_and_lifecycle.md) - Covers PriorityClasses, schedulers, and admission webhooks interaction.
+* [Module 02: Cluster Architecture & Control Plane Components](0-2-1_control_plane_and_core_daemons.md) - Deep dive into API Server and etcd component roles.
+* [Module 08: Security and Network Policies](0-7-1_rbac_service_accounts_and_certificates.md) - Covers ServiceAccounts, securityContexts, and detailed TLS configurations.
+* [Module 13: Scheduling, Logging, and Lifecycle Management](0-13-1_pod_scheduling_predicates_and_scoring.md) - Covers PriorityClasses, schedulers, and admission webhooks interaction.
 
 ### 📖 Sources & Ingested Transcripts
 - CKA Course Transcript Segment: `inflow/cka_split/06_scheduling_and_placements.txt`

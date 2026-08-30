@@ -72,4 +72,4 @@ Because endpoint removal and SIGTERM signaling run asynchronously in parallel, t
         command: ["/bin/sh", "-c", "sleep 5 && nginx -s quit"]
   ```
 
-*Read more in [0-9_networking_dns_and_ingress.md](../Reference%20Notes/0-9_networking_dns_and_ingress.md#44-source-ip-preservation-externaltrafficpolicy)*
+*Read more in [0-9-1_pod_and_service_networking_iptables_ipvs.md](../Reference%20Notes/0-9-1_pod_and_service_networking_iptables_ipvs.md#44-source-ip-preservation-externaltrafficpolicy)*

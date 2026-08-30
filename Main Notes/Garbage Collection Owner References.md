@@ -59,4 +59,4 @@ Output:
 ## 🔬 3. blockOwnerDeletion Flag
 The `blockOwnerDeletion: true` flag in the ownerReference ensures that standard garbage collection will block deletion of the owner until the dependents are deleted if foreground cascading deletion is selected.
 
-*Read more in [[Reference Notes/0-2_cluster_architecture_and_components.md#6-the-kubernetes-object-model]]*\n
+*Read more in [[Reference Notes/0-2-1_control_plane_and_core_daemons.md#6-the-kubernetes-object-model]]*\n

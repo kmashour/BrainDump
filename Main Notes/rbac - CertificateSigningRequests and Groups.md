@@ -67,4 +67,4 @@ Kubernetes does **not** store or manage users or groups inside its database (`et
 
 ---
 
-*Read more in the main security module: [0-7_security_and_network_policies.md](../Reference%20Notes/0-7_security_and_network_policies.md#L368-L428)*
+*Read more in the main security module: [0-7-1_rbac_service_accounts_and_certificates.md](../Reference%20Notes/0-7-1_rbac_service_accounts_and_certificates.md#L368-L428)*

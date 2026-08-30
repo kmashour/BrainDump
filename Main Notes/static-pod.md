@@ -71,4 +71,4 @@ To make static pods visible to cluster administrators, the Kubelet creates a rea
 * **Naming Format:** Mirror Pods automatically use the naming convention `<pod-name>-<node-name>` (e.g. `static-web-controlplane` or `etcd-controlplane`).
 * **Management:** You cannot modify or delete mirror pods via the API server (`kubectl delete pod` will temporarily delete the representation, but the Kubelet will recreate it immediately). They must be managed by editing or deleting the manifest files directly on the host node.
 
-*Read more in [[Reference Notes/0-13_scheduling_logging_and_lifecycle.md#i-static-pods]]*\n
+*Read more in [[Reference Notes/0-13-1_pod_scheduling_predicates_and_scoring.md#i-static-pods]]*\n

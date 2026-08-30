@@ -8,7 +8,7 @@ role: control-plane
 related_concepts:
   - "[[kube-apiserver]]"
 reference_guides:
-  - "[[Reference Notes/0-2_cluster_architecture_and_components.md]]"
+  - "[[Reference Notes/0-2-1_control_plane_and_core_daemons.md]]"
   - "[[Reference Notes/0-10_maintenance_upgrades_and_etcd.md]]"
 tags:
   - kubernetes/component

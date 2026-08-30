@@ -4,6 +4,7 @@ domains:
   - "devops"
 ---
 
+
 # Module 12-3: Helm Package Management & Lifecycle Operations
 
 This module details the architectural principles, CLI operations, and lifecycle management of applications using Helm. It covers templating concepts, repository commands, installation overrides, version rollback mechanics, and the evolutionary transition from Helm 2 to Helm 3.
@@ -11,7 +12,7 @@ This module details the architectural principles, CLI operations, and lifecycle 
 ---
 
 ## 🗺️ Cognitive Map: Helm Release Lifecycle & Reconciliation
-
+****
 ```mermaid
 graph TD
 subgraph ClientWorkstation["Local Admin Workstation"]
@@ -57,11 +58,13 @@ HelmCLI -. "Step 6: Performs 3-Way Strategic Merge <br/> (Compares Proposed Char
 Kubernetes treats cluster resources (Deployments, Services, ConfigMaps, Secrets) as separate, isolated objects. It has no native understanding that a group of resources belongs to a single application stack. Helm bridges this gap by acting as a **package manager** for Kubernetes:
 
 *   **Chart:** A versioned package containing all resource definitions (templates) necessary to run an application.
-*   **Release:** A specific installation of a chart in a Kubernetes cluster. You can run multiple concurrent releases of the same chart (e.g., `prod-web` and `dev-web`) within the same or different namespaces.
+*   **Release:** A specific installation of a chart in a Kubernetes cluster. You can run multiple concurrent releases of the same chart    (e.g., `prod-web` and `dev-web`) within the same or different namespaces.
 *   **Revision:** An incremental version history marker (e.g., `v1`, `v2`, `v3`) created automatically whenever a release is installed, upgraded, or rolled back.
 *   **Metadata Storage:** Helm tracks release revisions directly inside the cluster, saving history as gzip-compressed, base64-encoded Kubernetes **Secrets** within the release's namespace (named `sh.helm.release.v1.<release-name>.<revision>`).
 
+
 ---
+
 
 ## 2. Helm 2 vs. Helm 3 Architecture
 
@@ -77,7 +80,7 @@ The release of Helm 3 introduced fundamental design changes to security and stat
     1.  The proposed new state (the new chart).
     2.  The last recorded state (the previous Helm revision).
     3.  The **live state** of the running cluster resources.
-    This ensures that manual drift inside the cluster is overridden/reverted to the correct chart values during rollbacks, or preserved cleanly during upgrades.
+	This ensures that manual drift inside the cluster is overridden/reverted to the correct chart values during rollbacks, or                   preserved cleanly during upgrades.
 
 ---
 

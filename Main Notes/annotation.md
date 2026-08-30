@@ -49,4 +49,4 @@ kubectl annotate pod nginx description="testing web server" --overwrite
 kubectl annotate pod nginx description-
 ```
 
-*Read more in [[Reference Notes/0-2_cluster_architecture_and_components.md#6-the-kubernetes-object-model]]*\n
+*Read more in [[Reference Notes/0-2-1_control_plane_and_core_daemons.md#6-the-kubernetes-object-model]]*\n

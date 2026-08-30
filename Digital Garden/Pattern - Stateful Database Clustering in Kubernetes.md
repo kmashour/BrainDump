@@ -13,7 +13,7 @@ components:
   - "[[node]]"
   - "[[container-runtime]]"
 sources:
-  - "[[Reference Notes/0-6_kubernetes_workloads_and_controllers.md]]"
+  - "[[Reference Notes/0-6-1_pod_lifecycle_probes_and_containers.md]]"
   - "[[Reference Notes/0-12_kubernetes_api_management_and_pod_immutability.md]]"
   - "[[Main Notes/statefulset.md]]"
   - "[[Reference Notes/0-8-a_local_storage_models_and_scheduling_traps.md]]"
@@ -211,5 +211,5 @@ kubectl exec dns-diagnostic -- dig +short statefulset-dns-audit-0.headless-dns-a
 ```
 
 For detailed troubleshooting on Pod lifecycle states, cgroups memory limits, or native gRPC health probes, refer to the full reference guide:
-* [[Reference Notes/0-6_kubernetes_workloads_and_controllers.md]]
+* [[Reference Notes/0-6-1_pod_lifecycle_probes_and_containers.md]]
 * [[Reference Notes/scripts/verify_workloads_poc.sh]]
