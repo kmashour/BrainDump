@@ -69,3 +69,15 @@ TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Gui
 WHERE class = "landing-note" AND (contains(domains, "storage") OR role = "storage")
 SORT file.name ASC
 ```
+
+---
+
+## 🛡️ Domain 6: Cluster Security & Policy Governance
+*Runtime syscall monitoring, CIS benchmarks, vulnerability scanning, admission controllers, and kernel sandboxing.*
+
+```dataview
+TABLE related_concepts AS "Related Concepts", reference_guides AS "Reference Guides"
+WHERE class = "landing-note" AND (contains(domains, "security") OR role = "security")
+SORT file.name ASC
+```
+

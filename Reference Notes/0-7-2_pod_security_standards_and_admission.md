@@ -374,3 +374,41 @@ We will build a secure multi-tenant namespace, deploy database and web frontend 
    rm -f db-default-deny.yaml db-allow-web.yaml auditor-role.yaml auditor-binding.yaml
    ```
 ```
+
+---
+
+## 5. 🌉 Evolutionary Conceptual Bridging: PSP to PSA Migration
+
+```mermaid
+timeline
+    title Evolution of Kubernetes Pod Admission Security
+    v1.0 - v1.20 : PodSecurityPolicy (PSP) : Complex RBAC bindings : Global cluster mutation traps
+    v1.21 - v1.24 : PSP Deprecated : Admission Webhooks (Gatekeeper / Kyverno) : KEP-2579 PSA Design
+    v1.25+ GA : Pod Security Admission (PSA) : Native namespace labels : Privileged / Baseline / Restricted profiles
+```
+
+### 5.1 The Architectural Failures of Legacy PodSecurityPolicy (PSP)
+* **Coupling to RBAC:** In legacy clusters, PSPs were bound to Users or ServiceAccounts via ClusterRoleBindings. Because admission mutation occurred during pod creation, determining *which* PSP applied to an indirectly deployed pod (via a Deployment or ReplicaSet controller) was notoriously difficult to trace and predict.
+* **Lack of Dry-Run / Audit:** PSP operated strictly in fail-close mode; administrators could not easily test policies against live workloads without risking breaking existing deployments.
+* **Mutation Traps:** PSPs silently mutated pod specifications behind the scenes, creating drift between committed Git manifests and runtime state.
+
+### 5.2 The Modern Pod Security Admission (PSA) Architecture
+* **Decoupled from RBAC:** Enforced via declarative namespace labels (`pod-security.kubernetes.io/<mode>=<profile>`).
+* **Tri-Mode Operational Enforcement:**
+  * `enforce`: Blocks offending pods from being scheduled.
+  * `audit`: Allows the pod but records a violation in the audit logs.
+  * `warn`: Allows the pod but returns an interactive warning string to `kubectl`.
+* **Standard Profiles:** Fixed, vendor-neutral specifications maintained by the CNCF:
+  * `privileged`: Completely unconstrained; open for CNI daemons, storage drivers.
+  * `baseline`: Prevents known privilege escalations with minimal friction.
+  * `restricted`: Hardened enterprise standard (requires non-root, read-only rootfs, dropped capabilities, and seccomp default).
+
+---
+
+<!-- Documentation References -->
+[Kubernetes Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
+[Kubernetes Pod Security Policy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/)
+[Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
+[What is Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
+[Storage Concepts](https://kubernetes.io/docs/concepts/storage/_print)
+

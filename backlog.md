@@ -25,6 +25,29 @@ This backlog tracks all updates, modifications, and restructuring activities per
 - Updated **105 markdown files** across `Main Notes/`, `Reference Notes/`, `Projects/`, and `Digital Garden/` to redirect legacy links to the new sub-modules.
 - Verified 100% link integrity and schema compliance using `review_vault.py` (2,533 links validated).
 
+### Ingested Inflow Sources
+- **KodeKloud CKS Full Official Course (105 Modules):**
+  - Ingested `inflow/CKS_KodeKloud_Full_Course_Notes.md` (1.58 MB official KodeKloud documentation notes across 105 modules, including scraped official documentation and sub-links).
+  - **Created Modular Security Reference Notes:**
+    - [[Reference Notes/0-7-5_supply_chain_security_and_imagepolicywebhook.md|Module 0-7-5: Supply Chain Security, Image Vulnerabilities & ImagePolicyWebhook]] (4Cs model, distroless footprints, SBOM SPDX/CycloneDX, Trivy scanning, ImagePolicyWebhook admission configuration and contract).
+    - [[Reference Notes/0-7-6_runtime_security_falco_and_audit_logging.md|Module 0-7-6: Runtime Security, Syscall Threat Detection (Falco) & Kubernetes API Auditing]] (API server audit stages and policy levels, secret credential protection, Linux system call tracing, Falco rule syntax, macros, and alert sinks).
+    - [[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md|Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp]] (kube-bench audit & remediation, platform binary checksum verification, UFW firewall, SSH hardening, kernel module blacklisting, AppArmor v1.30+ and Seccomp profiles, gVisor and Kata sandboxing).
+  - **Enriched Existing Core Foundation Notes:**
+    - [[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md|Module 0-7-1: RBAC & ServiceAccounts]] (Kubelet anonymous auth disable, Webhook authorization mode, NodeRestriction admission plugin, and X.509 certificate expiration audits).
+    - [[Reference Notes/0-7-2_pod_security_standards_and_admission.md|Module 0-7-2: Pod Security Standards & Admission]] (Evolutionary bridge from legacy PSP to modern PSA, AppArmor v1.30+ native field syntax, and PSS profiles).
+    - [[Reference Notes/0-7-3_network_policies_and_traffic_segregation.md|Module 0-7-3: NetworkPolicies & Traffic Segregation]] (SSRF cloud metadata endpoint `169.254.169.254/32` egress blocking, strict multi-tenant isolation, and Cilium eBPF identity-aware network security).
+    - [[Reference Notes/0-Index - CKS.md|CKS Exam Reference MOC]] & [[Reference Notes/0-Index - Kubernetes.md|Kubernetes Reference MOC]] (Updated Domain 6 security catalog).
+  - **Created Dedicated Exam Track Playbook:**
+    - [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Exam Practice Playbook]] covering 15 exhaustive hands-on scenarios: `kube-bench` CIS audits, Kubelet hardening, cloud metadata egress restrictions, OS port/kernel module hardening, AppArmor profiles, Seccomp profiles, gVisor RuntimeClass, Trivy image scans, ImagePolicyWebhook setup, PSA restricted namespace enforcement, Secret encryption at rest with AES-CBC, API server audit policies, custom Falco rules, and certificate expiration audits.
+  - **Created Atomic Main Notes & Deeper Dives:**
+    - Landing Notes: [[Main Notes/Falco.md|Falco]], [[Main Notes/kube-bench.md|kube-bench]], [[Main Notes/Trivy.md|Trivy]], [[Main Notes/ImagePolicyWebhook.md|ImagePolicyWebhook]], [[Main Notes/Kubernetes Audit Logging.md|Kubernetes Audit Logging]], [[Main Notes/gVisor and Sandboxed Containers.md|gVisor and Sandboxed Containers]], [[Main Notes/AppArmor in Kubernetes.md|AppArmor in Kubernetes]], [[Main Notes/Seccomp in Kubernetes.md|Seccomp in Kubernetes]], [[Main Notes/CIS Benchmarks.md|CIS Benchmarks]].
+    - Deeper Dive Note: [[Main Notes/falco - Rule Syntax and Alerting.md|falco - Rule Syntax and Alerting]].
+    - Updated [[Main Notes/0-Index - Kubernetes.md|Kubernetes MOC]] with Domain 6: Cluster Security & Policy Governance.
+  - **Created Digital Garden Pattern:**
+    - [[Digital Garden/Pattern - Defense-in-Depth Container and Kubernetes Security.md|Pattern: Defense-in-Depth Container and Kubernetes Security]] (Connecting the 4Cs, supply chain gating, admission controllers, kernel sandboxing, and runtime syscall threat detection).
+  - **Vault Verification & Auditing:**
+    - Audited with `review_vault.py`: 100% Inflow Coverage (79 covered, 0 ignored), 100% Link Integrity (2,615 links validated), and 100% Frontmatter schema conformance.
+
 ## [2026-07-17] - Maintenance: Link Integrity and Path Corrections
 
 ### Refactored / Upgraded

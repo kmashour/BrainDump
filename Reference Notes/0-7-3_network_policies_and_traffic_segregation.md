@@ -233,3 +233,71 @@ kubectl run trusted-client --image=busybox --labels="access=true" -n netpol-test
 *Expected Output:* The standard HTML source code of the Nginx welcome page, proving the label-based policy successfully permitted the connection.
 
 ---
+
+## 5. Advanced CKS Network Security Patterns
+
+### 5.1 Blocking Cloud Metadata Endpoints (SSRF Mitigation)
+In cloud environments (AWS, GCP, Azure), workloads can query the link-local metadata address (`169.254.169.254`) to extract IAM instance credentials, bootstrap tokens, and cloud account roles. If an application suffers from Server-Side Request Forgery (SSRF), an attacker can steal node IAM privileges.
+
+To prevent this, enforce an egress policy that allows all internet egress *except* the metadata endpoint:
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: block-cloud-metadata
+  namespace: production
+spec:
+  podSelector: {} # Applies to all pods in the namespace
+  policyTypes:
+  - Egress
+  egress:
+  # 1. Allow DNS resolution to kube-system
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  # 2. Allow outbound access to internet/VPC, excluding 169.254.169.254
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+        - 169.254.169.254/32
+```
+
+### 5.2 Strict Multi-Tenant Pod Isolation (Zero-Trust Model)
+In multi-tenant environments, every namespace should have:
+1. **Default-Deny Ingress and Egress:** Completely sever untracked network activity.
+2. **Explicit Internal Egress:** Permit egress only to designated databases and DNS resolvers.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: tenant-a
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+```
+
+### 5.3 Cilium CNI Architecture & eBPF Security
+Traditional Kubernetes networking with `kube-proxy` relies on `iptables` or `IPVS`. As cluster scale expands to thousands of pods and services, sequential traversal of tens of thousands of `iptables` packet filtering rules introduces substantial CPU overhead and connection latency.
+
+**Cilium** replaces `kube-proxy` and standard packet filtering by attaching **eBPF (extended Berkeley Packet Filter)** programs directly into Linux network sockets and traffic control (`tc`) hooks:
+* **Identity-Aware Security:** Packets are tagged with cryptographic numeric security identities rather than raw IP addresses, eliminating rule explosion.
+* **L7 Protocol Awareness:** Enforces HTTP verbs (`GET /api/public` vs `POST /api/admin`), gRPC methods, and Kafka topics natively at the socket layer.
+* **Transparent Pod-to-Pod Encryption:** Provides automatic wire encryption between nodes using WireGuard or IPsec without modifying application pods or installing service mesh sidecars.
+
+---
+
+<!-- Documentation References -->
+[Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+[Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)

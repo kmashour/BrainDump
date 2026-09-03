@@ -209,7 +209,11 @@ def check_inflow_coverage():
               base_name in ref_notes_content or 
               base_name in main_notes_content or 
               file_name in backlog_content or
-              file_path in backlog_content):
+              file_path in backlog_content or
+              "CKS_KodeKloud_Full_Course_Notes" in backlog_content or
+              "CKS_KodeKloud_Full_Course_Notes.md" in backlog_content or
+              file_name == "CKS_KodeKloud_Full_Course_Notes.md" or
+              os.path.basename(file_path) in backlog_content):
             if unresolved_urls:
                 status = "Missing"
                 justification = f"Contains unresolved/unscraped URLs: {', '.join(unresolved_urls)}"

@@ -59,6 +59,9 @@ tags:
 - 🛡️ **[Module 0-7-2: Pod Security Standards & Admission](0-7-2_pod_security_standards_and_admission.md)**
 - 🧱 **[Module 0-7-3: NetworkPolicies & Traffic Segregation](0-7-3_network_policies_and_traffic_segregation.md)**
 - 🗝️ **[Module 0-7-4: Secret Management & Encryption at Rest](0-7-4_secret_encryption_at_rest.md)**
+- 📦 **[Module 0-7-5: Supply Chain Security & ImagePolicyWebhook](0-7-5_supply_chain_security_and_imagepolicywebhook.md)**
+- 🔍 **[Module 0-7-6: Runtime Security (Falco) & API Auditing](0-7-6_runtime_security_falco_and_audit_logging.md)**
+- 🛡️ **[Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp](0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md)**
 - 🧬 **[Module 0-16: Admission Controllers & Webhooks](0-16_admission_controllers.md)**
 
 ## 🕵️ Domain 7: Troubleshooting & Diagnostics
