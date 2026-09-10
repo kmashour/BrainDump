@@ -93,6 +93,12 @@ Select a domain to view its reference modules, learning tracks, and hands-on ver
 
 ---
 
+### ☁️ [Microsoft Azure Reference MOC](13-Index%20-%20Azure.md)
+*Enterprise cloud architecture, AZ-900 fundamentals, AZ-104 administration, AZ-305 solutions architecture, ARM control plane, Entra ID identity, VNets, and unified Storage Accounts.*
+- **Go to MOC:** [[13-Index - Azure|Microsoft Azure Reference MOC]]
+
+---
+
 ### 📦 Miscellaneous Projects (MISC)
 *Individual projects and chapters that combine multiple administrative domains (e.g. self-hosted git servers, Linux host storage configuration, and custom webserver reverse proxies) but do not belong to a standard study track.*
 - 🐙 **[Gitea GitOps Workflows on RHEL 8](gitea_installation_and_workflows.md)**: RHEL 8 security hardening, LVM logical volume zoning, Apache reverse proxy, and act_runner CI/CD automation.

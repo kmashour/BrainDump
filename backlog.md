@@ -2,6 +2,45 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-11] - Domain 13 (Microsoft Azure) Initialization & AZ-900 Full Course Ingestion
+
+### Domain 13 Initialization & Inflow Capture
+- **Target Course Source Ingested:** [KodeKloud Microsoft Azure Fundamentals (AZ-900)](https://notes.kodekloud.com/docs/AZ900-Microsoft-Azure-Fundamentals/Introduction/Course-Introduction/page)
+- **Ingestion Scope:** Extracted and fetched all 69 modules across 11 sections in pristine Markdown.
+- **Inflow Organization:**
+  - Aggregated master file created at `inflow/AZ900_KodeKloud_Full_Course_Notes.md` (448.72 KB, 6,237 lines).
+  - Modular directory structure saved under `inflow/az900/` across 11 category subdirectories (`Azure-Architectural-Components/`, `Cloud-Computing/`, `Cloud-Service-Types/`, `Compute-and-Networking/`, `Cost-Management/`, `Governance-and-Compliance/`, `Identity-Access-and-Security/`, `Introduction/`, `Monitoring-Tools/`, `Resource-Deployment-Tools/`, `Storage/`).
+
+### Master Index Updates
+- **Master Reference Index:** Added **Domain 13: Microsoft Azure Reference MOC** to [[Reference Notes/--Index--.md|--Index--.md]].
+- **Created Azure MOC:** Created [[Reference Notes/13-Index - Azure.md|13-Index - Azure.md]] detailing the 3-tier certification roadmap (AZ-900 Fundamentals, AZ-104 Administrator, AZ-305 Solutions Architect) and linking all 7 core modules.
+
+### Reference Notes (Layer 1 Core Foundation)
+- **Created 7 Master-Tier Reference Modules (Domain 13):**
+  - [[Reference Notes/13-1_azure_fundamentals_cloud_concepts_and_economics.md|Module 13-1: Cloud Concepts, Service Types & Cloud Economics]]: Public/Private/Hybrid/Multi-cloud models, CapEx vs OpEx, consumption billing, Pricing & TCO calculators, IaaS/PaaS/SaaS Shared Responsibility Model, and AWS comparative bridge.
+  - [[Reference Notes/13-2_azure_core_architecture_hierarchy_and_governance.md|Module 13-2: Azure Architecture Hierarchy, Regions, AZs & Governance]]: The 4-tier management tree (`Tenant ➔ Management Groups ➔ Subscriptions ➔ Resource Groups ➔ Resources`), physical footprint, regional pairs, availability zones, Azure Policy initiatives, resource locks, and the AWS Organizations/SCPs comparative bridge.
+  - [[Reference Notes/13-3_azure_compute_services_and_workload_paradigms.md|Module 13-3: Azure Compute Services & Workload Paradigms]]: Azure VMs, VMSS horizontal autoscaling, Azure Virtual Desktop (AVD), App Services & deployment slots, ACI, AKS, serverless Azure Functions, compute decision matrix, and AWS EC2/ASG/Lambda comparative bridge.
+  - [[Reference Notes/13-4_azure_virtual_networking_and_hybrid_connectivity.md|Module 13-4: Virtual Networks (VNets) & Hybrid Connectivity]]: VNet address spaces, subnets, the 5 reserved IP addresses rule, VNet Peering, VPN Gateway (P2S/S2S), ExpressRoute private peering, Public/Private Azure DNS, and AWS VPC/Direct Connect comparative bridge.
+  - [[Reference Notes/13-5_azure_storage_services_redundancy_and_migration.md|Module 13-5: Storage Accounts, Data Redundancy & Migration]]: Storage Account namespace, Blobs/Files/Queues/Tables, Hot/Cool/Cold/Archive tiers, LRS/ZRS/GRS/GZRS redundancy, Azure Migrate, Data Box family, AzCopy, and AWS S3/EFS/Snow comparative bridge.
+  - [[Reference Notes/13-6_azure_identity_access_and_security_architecture.md|Module 13-6: Microsoft Entra ID, Azure RBAC & Security Architecture]]: Microsoft Entra ID (Tenants, Users, Groups), Entra Domain Services, AuthN vs AuthZ, MFA & Conditional Access, B2B vs B2C, Azure RBAC scopes vs Entra roles, Zero Trust, Defense-in-Depth, Defender for Cloud, and AWS IAM/Security Hub comparative bridge.
+  - [[Reference Notes/13-7_azure_management_monitoring_and_deployment_tooling.md|Module 13-7: Management Tools, Azure Resource Manager (ARM) & Observability]]: Portal, Cloud Shell, CLI (`az`), PowerShell (`Az`), ARM control plane, Bicep/ARM templates, Azure Arc multi-cloud projection, Azure Monitor (Metrics, Logs, KQL), Service Health (3 tiers), Azure Advisor, and AWS CloudFormation/CloudWatch comparative bridge.
+
+### Main Notes (Atomic Landing Concepts)
+- **Created 5 Atomic Concept Notes:**
+  - [[Main Notes/Microsoft Azure.md|Microsoft Azure]]
+  - [[Main Notes/Azure Resource Manager.md|Azure Resource Manager]]
+  - [[Main Notes/Microsoft Entra ID.md|Microsoft Entra ID]]
+  - [[Main Notes/Azure Virtual Network.md|Azure Virtual Network]]
+  - [[Main Notes/Azure Storage Account.md|Azure Storage Account]]
+
+### Verification & Auditing
+- **Vault Audit (`review_vault.py`):**
+  - Inflow Coverage: 100% OK (156 covered, 0 ignored out of 156 files)
+  - Link Integrity: 100% OK (2,709 links validated)
+  - Frontmatter Audit: 100% OK (All notes conform to templates)
+
+---
+
 ## [2026-09-11] - Kubernetes Documentation Ingestion: Seccomp Syscall Filtering Tutorial
 
 ### Scraped Official Documentation
