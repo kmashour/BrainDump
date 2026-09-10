@@ -887,6 +887,191 @@ Inspect the control plane certificates. Identify the certificate expiration date
 
 ---
 
+## 🛡️ Scenario 16: Manifest Security Linting with KubeLinter & Immutability
+
+### Problem Statement
+A developer committed a deployment manifest `/root/staging/web-deploy.yaml` that fails organizational security baselines.
+1. Run `kubelinter` against `/root/staging/web-deploy.yaml` to identify security violations.
+2. Remediate the manifest:
+   * Enforce a read-only root filesystem (`readOnlyRootFilesystem: true`).
+   * Add an ephemeral `emptyDir` volume mounted at `/var/cache/nginx` and `/var/run` to allow Nginx to start without rootfs write access.
+   * Run the container as non-root user UID `10001` with privilege escalation disabled.
+3. Re-run `kubelinter` to confirm zero violations.
+
+### Step-by-Step Implementation
+
+1. **Lint Manifest:**
+   ```bash
+   kubelinter lint /root/staging/web-deploy.yaml
+   # Output flags: no-read-only-root-fs, run-as-non-root, privilege-escalation
+   ```
+
+2. **Remediate `/root/staging/web-deploy.yaml`:**
+   ```yaml
+   apiVersion: apps/v1
+   kind: Deployment
+   metadata:
+     name: secure-web
+     namespace: staging
+   spec:
+     replicas: 2
+     selector:
+       matchLabels:
+         app: secure-web
+     template:
+       metadata:
+         labels:
+           app: secure-web
+       spec:
+         securityContext:
+           runAsNonRoot: true
+           runAsUser: 10001
+         containers:
+           - name: nginx
+             image: nginx:alpine
+             securityContext:
+               readOnlyRootFilesystem: true
+               allowPrivilegeEscalation: false
+             volumeMounts:
+               - name: cache-vol
+                 mountPath: /var/cache/nginx
+               - name: run-vol
+                 mountPath: /var/run
+         volumes:
+           - name: cache-vol
+             emptyDir: {}
+           - name: run-vol
+             emptyDir: {}
+   ```
+
+3. **Verify Linting Passes:**
+   ```bash
+   kubelinter lint /root/staging/web-deploy.yaml
+   # Output: No lint errors found
+   kubectl apply -f /root/staging/web-deploy.yaml
+   ```
+
+---
+
+## 🧬 Scenario 17: OPA Gatekeeper Policy Enforcement
+
+### Problem Statement
+Enforce governance using OPA Gatekeeper. All newly created Namespaces must have an `owner` label.
+1. Create a `ConstraintTemplate` named `k8srequiredlabels` using Rego to check for missing labels in `input.parameters.labels`.
+2. Instantiate a `Constraint` named `ns-must-have-owner` enforcing the `owner` label on `Namespace` objects.
+3. Verify that creating an unlabelled namespace is blocked with an informative error message.
+
+### Step-by-Step Implementation
+
+1. **Deploy ConstraintTemplate:**
+   ```yaml
+   apiVersion: templates.gatekeeper.sh/v1
+   kind: ConstraintTemplate
+   metadata:
+     name: k8srequiredlabels
+   spec:
+     crd:
+       spec:
+         names:
+           kind: K8sRequiredLabels
+         validation:
+           openAPIV3Schema:
+             properties:
+               labels:
+                 type: array
+                 items:
+                   type: string
+     targets:
+       - target: admission.k8s.gatekeeper.sh
+         rego: |
+           package k8srequiredlabels
+           violation[{"msg": msg}] {
+             provided := {label | input.review.object.metadata.labels[label]}
+             required := {label | label := input.parameters.labels[_]}
+             missing := required - provided
+             count(missing) > 0
+             msg := sprintf("Resource missing mandatory labels: %v", [missing])
+           }
+   ```
+   Save and apply: `kubectl apply -f template.yaml`
+
+2. **Deploy Constraint:**
+   ```yaml
+   apiVersion: constraints.gatekeeper.sh/v1beta1
+   kind: K8sRequiredLabels
+   metadata:
+     name: ns-must-have-owner
+   spec:
+     match:
+       kinds:
+         - apiGroups: [""]
+           kinds: ["Namespace"]
+     parameters:
+       labels: ["owner"]
+   ```
+   Save and apply: `kubectl apply -f constraint.yaml`
+
+3. **Verify Enforcement:**
+   ```bash
+   # Test unlabelled namespace (must fail):
+   kubectl create namespace test-fail
+   # Expected Error: Error from server (Forbidden): admission webhook "validation.gatekeeper.sh" denied the request: Resource missing mandatory labels: {"owner"}
+
+   # Test compliant namespace (must succeed):
+   kubectl create namespace test-pass --dry-run=client -o yaml | kubectl label --local -f - owner=devops -o yaml | kubectl apply -f -
+   ```
+
+---
+
+## ⚙️ Scenario 18: Security-Conscious Cluster Upgrade with `kubeadm`
+
+### Problem Statement
+Upgrade master node `controlplane` from version `1.29.0` to `1.29.2`.
+1. Plan the upgrade and update `kubeadm`.
+2. Apply the upgrade using `kubeadm upgrade apply v1.29.2`.
+3. Safely drain `controlplane`, upgrade `kubelet` and `kubectl`, and restart services.
+4. Verify cluster status and confirm etcd/API security flags persist.
+
+### Step-by-Step Implementation
+
+1. **Upgrade kubeadm:**
+   ```bash
+   apt-mark unhold kubeadm
+   apt-get update && apt-get install -y kubeadm=1.29.2-1.1
+   apt-mark hold kubeadm
+   kubeadm version
+   ```
+
+2. **Plan & Apply Control Plane Upgrade:**
+   ```bash
+   kubeadm upgrade plan
+   kubeadm upgrade apply v1.29.2 -y
+   ```
+
+3. **Drain Control Plane Node:**
+   ```bash
+   kubectl drain controlplane --ignore-daemonsets
+   ```
+
+4. **Upgrade Kubelet and Kubectl:**
+   ```bash
+   apt-mark unhold kubelet kubectl
+   apt-get install -y kubelet=1.29.2-1.1 kubectl=1.29.2-1.1
+   apt-mark hold kubelet kubectl
+   systemctl daemon-reload
+   systemctl restart kubelet
+   kubectl uncordon controlplane
+   ```
+
+5. **Post-Upgrade Security Verification:**
+   ```bash
+   kubectl get nodes
+   kubeadm certs check-expiration
+   kube-bench run --targets master
+   ```
+
+---
+
 ## 💡 CKS Exam Checklist & Quick Reference
 
 | Exam Objective | High-Frequency File / Command | Key Flag or Resource |
@@ -901,4 +1086,8 @@ Inspect the control plane certificates. Identify the certificate expiration date
 | **NetworkPolicy** | `kind: NetworkPolicy` | `policyTypes: [Ingress, Egress]`, `except: [169.254.169.254/32]` |
 | **CIS Benchmark** | `kube-bench run --targets master,node` | File permission `chmod 600`, ownership `root:root` |
 | **Docker API / Daemon** | `/etc/docker/daemon.json` | `"tlsverify": true`, `"hosts": ["...:2376"]`, audit `docker.sock` mounts |
+| **KubeLinter / Immutability** | `kubelinter lint <file.yaml>` | `readOnlyRootFilesystem: true`, `emptyDir: {}` mount |
+| **OPA Gatekeeper** | `ConstraintTemplate` & `Constraint` | `rego: | ...`, `kinds: [Namespace]` |
+| **Cluster Upgrade** | `kubeadm upgrade apply v1.XX.Y` | `kubectl drain --ignore-daemonsets`, `apt-mark hold` |
+
 

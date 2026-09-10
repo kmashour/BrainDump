@@ -403,6 +403,90 @@ timeline
   * `baseline`: Prevents known privilege escalations with minimal friction.
   * `restricted`: Hardened enterprise standard (requires non-root, read-only rootfs, dropped capabilities, and seccomp default).
 
+### 5.3 Open Policy Agent (OPA) & Gatekeeper Architecture
+While PSA enforces fixed, standardized pod security profiles, complex business policies (e.g., enforcing image registry whitelists, mandating billing labels, or capping replica counts) require programmable admission engines like **OPA Gatekeeper**:
+
+```mermaid
+flowchart LR
+    Manifest["kubectl apply -f pod.yaml"] --> API["kube-apiserver"]
+    API --> Webhook["Gatekeeper Validating Webhook"]
+    Webhook --> Rego["OPA Engine\n(Rego Policy Evaluation)"]
+    Rego --> Decision{"Pass or Fail?"}
+    Decision -- Allow --> etcd["Persist to etcd"]
+    Decision -- Deny --> Reject["Reject API Request\n(Detailed Policy Error)"]
+```
+
+* **ConstraintTemplate:** Defines the parameterized declarative schema and the underlying **Rego** evaluation logic:
+  ```yaml
+  apiVersion: templates.gatekeeper.sh/v1
+  kind: ConstraintTemplate
+  metadata:
+    name: k8srequiredlabels
+  spec:
+    crd:
+      spec:
+        names:
+          kind: K8sRequiredLabels
+        validation:
+          openAPIV3Schema:
+            properties:
+              labels:
+                type: array
+                items:
+                  type: string
+    targets:
+      - target: admission.k8s.gatekeeper.sh
+        rego: |
+          package k8srequiredlabels
+          violation[{"msg": msg}] {
+            provided := {label | input.review.object.metadata.labels[label]}
+            required := {label | label := input.parameters.labels[_]}
+            missing := required - provided
+            count(missing) > 0
+            msg := sprintf("Resource is missing required labels: %v", [missing])
+          }
+  ```
+* **Constraint:** Instantiates the template, binding target namespaces or resource kinds:
+  ```yaml
+  apiVersion: constraints.gatekeeper.sh/v1beta1
+  kind: K8sRequiredLabels
+  metadata:
+    name: require-team-label
+  spec:
+    match:
+      kinds:
+        - apiGroups: [""]
+          kinds: ["Namespace"]
+    parameters:
+      labels: ["team", "environment"]
+  ```
+
+### 5.4 Multi-Tenancy & Isolation Models
+Kubernetes provides primitives to implement both **Soft Multi-Tenancy** (internal trusted teams) and **Hard Multi-Tenancy** (untrusted third-party workloads):
+
+* **Namespace-Level Isolation:** Combines RBAC RoleBindings, NetworkPolicies (default deny ingress/egress), ResourceQuotas (CPU/memory limits), and LimitRanges.
+* **Node-Level Isolation via Dedicated Node Pools:**
+  * Prevent general pods from scheduling on tenant nodes using **Taints**:
+    ```bash
+    kubectl taint nodes node-tenant-a dedicated=tenant-a:NoSchedule
+    ```
+  * Force tenant pods onto dedicated nodes using **Tolerations** and **NodeAffinity**:
+    ```yaml
+    tolerations:
+      - key: "dedicated"
+        operator: "Equal"
+        value: "tenant-a"
+        effect: "NoSchedule"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: dedicated
+                  operator: In
+                  values: ["tenant-a"]
+    ```
+
 ---
 
 <!-- Documentation References -->
@@ -411,4 +495,8 @@ timeline
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
 [What is Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
 [Storage Concepts](https://kubernetes.io/docs/concepts/storage/_print)
+[Open Policy Agent Gatekeeper](https://open-policy-agent.github.io/gatekeeper/website/docs/)
+[KodeKloud CKS: OPA in Kubernetes](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/OPA-in-Kubernetes/page)
+[KodeKloud CKS: Multi Tenancy in Kubernetes](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Overview-of-Multi-Tenancy-in-Kubernetes/page)
+
 

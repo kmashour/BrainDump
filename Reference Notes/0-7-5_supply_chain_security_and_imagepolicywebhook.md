@@ -341,6 +341,54 @@ timeline
    # Error from server (Forbidden): pods "test-unauthorized" is forbidden: image policy webhook backend denied one or more images: CVE threshold breached
    ```
 
+### 7.4 Static Manifest Security Auditing with KubeLinter
+While Trivy scans container images for binary and OS vulnerabilities, **KubeLinter** (an open-source static analysis tool from StackRox / Red Hat) analyzes Kubernetes YAML manifests and Helm charts to identify misconfigurations before deployment:
+
+* **Key Checks Enforced by KubeLinter:**
+  * `no-read-only-root-fs`: Warns if containers have a writable root filesystem.
+  * `run-as-non-root`: Flags pods that fail to set `runAsNonRoot: true`.
+  * `privileged-container`: Flags containers with `privileged: true`.
+  * `unset-cpu-requirements` / `unset-memory-requirements`: Detects missing resource requests and limits.
+  * `sensitive-host-mounts`: Identifies `hostPath` mounts targeting sensitive directories (`/var/run/docker.sock`, `/etc`).
+* **Running KubeLinter in CI/CD:**
+  ```bash
+  # Lint a single manifest
+  kubelinter lint pod.yaml
+
+  # Lint an entire directory of manifests with strict checks
+  kubelinter lint --include-all ./deploy/
+
+  # Output in JSON for automated security gate evaluation
+  kubelinter lint ./deploy/ --format json > kubelinter-report.json
+  ```
+
+### 7.5 Software Bill of Materials (SBOM) Deep-Dive
+A **Software Bill of Materials (SBOM)** is a machine-readable inventory of all third-party dependencies, open-source packages, compiler libraries, and hierarchical components included inside a container image.
+
+* **Standard Specifications:**
+  * **SPDX (Software Package Data Exchange):** Linux Foundation open standard for software package details and license declarations.
+  * **CycloneDX:** OWASP lightweight standard designed specifically for application security and automated vulnerability analysis.
+* **Generating SBOMs via CLI:**
+  ```bash
+  # Generate SPDX-JSON SBOM using Trivy:
+  trivy image --format spdx-json --output sbom-spdx.json python:3.11-slim
+
+  # Generate CycloneDX SBOM using Syft:
+  syft python:3.11-slim -o cyclonedx-json > sbom-cyclonedx.json
+  ```
+* **Offline Vulnerability Correlation:** Security scanners can evaluate an SBOM file against the National Vulnerability Database (NVD) without needing access to the registry or running the container image:
+  ```bash
+  trivy sbom sbom-spdx.json --severity HIGH,CRITICAL
+  ```
+
+---
+
 <!-- Documentation References -->
 [Kubernetes Admission Controllers Reference](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
+[KubeLinter Documentation](https://docs.kubelinter.io/)
+[Trivy Vulnerability Scanner](https://aquasecurity.github.io/trivy/)
+[KodeKloud CKS: Introduction to KubeLinter](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Supply-Chain-Security/Introduction-to-KubeLinter/page)
+[KodeKloud CKS: What is SBOM and Why Its Important](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Supply-Chain-Security/What-is-SBOM-and-Why-Its-Important/page)
+[KodeKloud CKS: SBOM Format](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Supply-Chain-Security/SBOM-Format/page)
+

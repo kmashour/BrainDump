@@ -62,6 +62,7 @@ tags:
 - 📦 **[Module 0-7-5: Supply Chain Security & ImagePolicyWebhook](0-7-5_supply_chain_security_and_imagepolicywebhook.md)**
 - 🔍 **[Module 0-7-6: Runtime Security (Falco) & API Auditing](0-7-6_runtime_security_falco_and_audit_logging.md)**
 - 🛡️ **[Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp](0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md)** *(Host security, Docker daemon/socket hardening, CIS kube-bench, AppArmor, Seccomp, and gVisor)*
+- 🛡️ **[Module 0-7-8: Cluster Hardening, CIS Benchmarks, Platform Security & Upgrades](0-7-8_cluster_hardening_cis_benchmarks_and_upgrades.md)** *(The 4Cs, kube-bench auditing, binary checksum verification, safe upgrades, and IMDSv2 metadata protection)*
 - 🧬 **[Module 0-16: Admission Controllers & Webhooks](0-16_admission_controllers.md)**
 
 ## 🕵️ Domain 7: Troubleshooting & Diagnostics

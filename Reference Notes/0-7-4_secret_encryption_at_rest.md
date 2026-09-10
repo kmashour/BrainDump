@@ -477,4 +477,65 @@ Rather than synchronizing external secrets (e.g. AWS Secrets Manager, HashiCorp 
 
 *See the isolated lecture digest in [[Reference Notes/12-2_secrets_store_csi_driver_integration.md|Module 12-2: Secrets Store CSI Driver Integration (KodeKloud Talk)]] and the complete implementation guides in [[Project - Secrets Store CSI Driver|Project - Secrets Store CSI Driver.md]].*
 
+### 11.13 Writing Effective Encryption Policies & Key Rotation Protocol (CKS Core)
+
+#### 1. Provider Ordering and Precedence
+The order of providers listed in `EncryptionConfiguration` dictates encryption and decryption behavior:
+* **Write Behavior:** The **first** provider in the array is used exclusively to encrypt new or modified data written to etcd.
+* **Read Behavior:** All providers in the array are attempted in sequence until one successfully decrypts the stored object.
+* **The `identity: {}` Catch-All:** An `identity` provider must always be present at the bottom of the list during initial encryption rollout. If omitted, existing unencrypted secrets cannot be read by the API server.
+
+```yaml
+apiVersion: apiserver.config.k8s.io/v1
+kind: EncryptionConfiguration
+resources:
+  - resources:
+      - secrets
+      - configmaps # Optional: Can encrypt other sensitive resources
+    providers:
+      - aescbc:
+          keys:
+            - name: key2 # Active encryption key
+              secret: <new-base64-key-32bytes>
+            - name: key1 # Retained for decrypting pre-rotation data
+              secret: <old-base64-key-32bytes>
+      - identity: {} # Fallback for plain text
+```
+
+#### 2. Zero-Downtime Secret Key Rotation Protocol
+1. **Generate New Key:**
+   ```bash
+   head -c 32 /dev/urandom | base64
+   ```
+2. **Add New Key at Top:** Edit `/etc/kubernetes/enc/encryption-config.yaml` to add the new key (`key2`) as the first entry under `keys`, keeping `key1` as the second entry.
+3. **Restart API Server:**
+   ```bash
+   crictl rmp -f $(crictl pods --name kube-apiserver -q)
+   ```
+4. **Re-Encrypt All Existing Secrets:**
+   ```bash
+   kubectl get secrets --all-namespaces -o json | kubectl replace -f -
+   ```
+5. **Remove Old Key & Finalize:** Remove `key1` from `encryption-config.yaml` and restart `kube-apiserver` once more.
+
+#### 3. Low-Level Verification via `etcdctl`
+Directly inspect the etcd datastore to confirm secrets are encrypted and identify the key prefix:
+
+```bash
+ETCDCTL_API=3 etcdctl \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \
+  --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key \
+  get /registry/secrets/default/app-secret | hexdump -C
+```
+
+* **Encrypted Secret Output:** Begins with `k8s:enc:aescbc:v1:key2` followed by binary ciphertext.
+* **Unencrypted Secret Output:** Plaintext JSON containing readable base64 strings (indicates encryption is NOT functioning).
+
 ---
+
+<!-- Documentation References -->
+[Kubernetes Encrypting Secret Data at Rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
+[KodeKloud CKS: Encrypting Secret Data at Rest](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Demo-Encrypting-Secret-Data-at-Rest/page)
+[KodeKloud CKS: Writing Effective Encryption Policies](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Writing-Effective-Encryption-Policies/page)
+

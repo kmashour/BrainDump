@@ -919,7 +919,36 @@ kubeadm certs renew all
 crictl rmp -f $(crictl pods --name kube-apiserver -q)
 ```
 
+### 8.4 API Priority and Fairness (APF)
+In high-scale or multi-tenant environments, unthrottled API requests can exhaust the API server's concurrency limits, causing starvation for critical system controllers. **API Priority and Fairness (APF)** controls API server throughput using fine-grained request classification and queuing:
+
+```mermaid
+flowchart LR
+    Request["Incoming HTTP Request\n(User / ServiceAccount)"] --> FlowSchema["FlowSchema\n(Matches Subject / Verbs / Paths)"]
+    FlowSchema --> PLC["PriorityLevelConfiguration\n(Concurrency Shares / Queue Limiting)"]
+    PLC --> Queue["Fair Queuing Engine\n(Shuffle Sharding / Queue Length)"]
+    Queue --> Dispatch["API Server Execution Engine\n(Concurrency Seats)"]
+```
+
+* **FlowSchema:** Inspects incoming request attributes (user identity, group, resource, verb, namespace) and assigns the request to a specific `PriorityLevelConfiguration`.
+* **PriorityLevelConfiguration:** Dictates how many concurrency seats (shares) are reserved for that priority class, whether requests queue or drop, and queue depth limits.
+* **Default Priority Levels:**
+  * `exempt`: Critical requests (such as `system:masters` emergency commands) that execute immediately without queuing or concurrency limits.
+  * `workload-high`: Critical cluster operations (e.g. Kubelet heartbeats, controller leader election).
+  * `workload-low`: High-volume automated batch jobs and controllers.
+  * `catch-all`: Unclassified external client traffic.
+
+### 8.5 Bound ServiceAccount Token Projection
+* **Legacy Secret Tokens (Insecure):** Pre-v1.22 Kubernetes generated static, eternal Secret objects containing base64 JWT tokens for every ServiceAccount. If leaked, these tokens never expired and worked from any IP.
+* **TokenRequest API (Bound Tokens):** Modern Kubernetes uses **ServiceAccount Token Volume Projection**. Tokens are generated on-demand by the API server:
+  * **Time-Bound:** Embedded expiration timestamps (`exp`).
+  * **Audience-Bound:** Scoped to specific target services (`aud`).
+  * **Object-Bound:** Cryptographically tied to the lifetime of the specific Pod requesting them. If the Pod is terminated, the token becomes immediately invalid.
+
 <!-- Documentation References -->
 [Kubernetes RBAC Reference](https://kubernetes.io/docs/reference/access-authn-authz/rbac/)
 [Kubernetes Certificates Administration](https://kubernetes.io/docs/concepts/cluster-administration/certificates/)
 [Kubeadm Certificate Management](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-certs/)
+[Kubernetes API Priority and Fairness](https://kubernetes.io/docs/concepts/cluster-administration/flow-control/)
+[KodeKloud CKS: API Priority Fairness](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Additional-Considerations-API-Priority-Fairness/page)
+

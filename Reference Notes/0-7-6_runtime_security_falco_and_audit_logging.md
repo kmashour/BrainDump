@@ -346,6 +346,56 @@ timeline
 | **Falco Syscall Rules** | Host & container kernel boundaries. | `/etc/falco/falco_rules.local.yaml` + `systemctl restart falco`. | Rule conditions, macros, outputs, detecting shells/file mutations. |
 | **Audit Log Filtering** | Post-incident forensics. | `jq` command-line filtering over `/var/log/kubernetes/audit/audit.log`. | Extracting user, verb, response code, and request payloads. |
 
+### 5.1 Ensuring Container Immutability at Runtime (CKS Core)
+A primary objective of runtime security is enforcing **Container Immutability**. Once a container image boots, its filesystem should remain immutable, preventing attackers who gain arbitrary code execution from writing binaries, editing scripts, or compiling payloads:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: immutable-app
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+  containers:
+    - name: web
+      image: nginx:alpine
+      securityContext:
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+      volumeMounts:
+        # Writable directories must use explicit ephemeral storage
+        - name: cache-volume
+          mountPath: /var/cache/nginx
+        - name: run-volume
+          mountPath: /var/run
+  volumes:
+    - name: cache-volume
+      emptyDir: {}
+    - name: run-volume
+      emptyDir: {}
+```
+
+* **The Security Blast Radius:** If an attacker exploits a remote code execution bug in `web`, any attempt to install software (`apk add curl`, `apt-get install nmap`) or modify configuration fails immediately with `Read-only file system`.
+
+### 5.2 AquaSec Tracee vs. Falco Runtime Monitoring
+Both Falco and AquaSec Tracee leverage Linux eBPF for zero-overhead runtime visibility:
+
+| Dimension | Falco (Sysdig / CNCF) | AquaSec Tracee |
+| :--- | :--- | :--- |
+| **Engine Basis** | Kernel Module or modern eBPF driver. | Pure eBPF (CO-RE - Compile Once, Run Everywhere). |
+| **Primary Use Case** | Real-time intrusion detection and alerting rule engine. | Deep forensic syscall tracing, event auditing, and behavior analysis. |
+| **Rule Format** | Declarative YAML rules with macros, lists, and conditions. | Go-based or Rego-based signatures (`tracee-rules`). |
+| **Event Sources** | Linux system calls, K8s audit events. | Linux syscalls, kernel functions, LSM hooks, network sockets. |
+
+---
+
 <!-- Documentation References -->
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
 [Kubernetes Admission Controllers Reference](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
+[Falco Documentation](https://falco.org/docs/)
+[AquaSec Tracee GitHub](https://github.com/aquasecurity/tracee)
+[KodeKloud CKS: Ensure Immutability of Containers at Runtime](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Monitoring-Logging-and-Runtime-Security/Ensure-Immutability-of-Containers-at-Runtime/page)
+[KodeKloud CKS: AquaSec Tracee](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/System-Hardening/AquaSec-Tracee/page)
+

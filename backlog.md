@@ -2,6 +2,57 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-10] - CKS Full Course Re-Ingestion, Modularization & Vault Gap Closure
+
+### Inflow Modularization & Split
+- **Modularized Monolithic Inflow File:**
+  - Split `inflow/CKS_KodeKloud_Full_Course_Notes.md` (1.58 MB, 24,314 lines across 105 modules) into 7 domain-aligned files inside `inflow/cks_split/`:
+    - `inflow/cks_split/01_overview_and_attack_surface.md` (Course Intro, Exam Info, 4Cs Cloud Native Security, Kubernetes Attack Surface)
+    - `inflow/cks_split/02_cluster_setup_and_hardening.md` (API Groups, AuthN/AuthZ, RBAC, ServiceAccounts, TLS in K8s, Kubelet, Docker Daemon & Socket, CIS Benchmarks, Upgrades)
+    - `inflow/cks_split/03_system_hardening.md` (Host OS, Ports, UFW, SSH, Kernel Modules, Syscalls, Linux Capabilities, AppArmor, Seccomp, AquaSec Tracee)
+    - `inflow/cks_split/04_microservice_vulnerabilities_and_isolation.md` (Multi-Tenancy, Isolation, PSA/PSS, SecurityContexts, gVisor, Kata, Secret Encryption at Rest, mTLS, Cilium eBPF, OPA Gatekeeper, APF)
+    - `inflow/cks_split/05_supply_chain_security.md` (Base Images, SBOM SPDX/CycloneDX, Trivy, KubeLinter, ImagePolicyWebhook)
+    - `inflow/cks_split/06_monitoring_logging_runtime_security.md` (Falco rules, Container Immutability, Syscall Analytics, Kubernetes API Auditing)
+    - `inflow/cks_split/07_official_documentation_scraped_reference.md` (Scraped reference documentation for Storage, RBAC, Kubeadm certs/upgrades)
+
+### Reference Notes (Layer 1 Core Foundation)
+- **Created Core Module:**
+  - [[Reference Notes/0-7-8_cluster_hardening_cis_benchmarks_and_upgrades.md|Module 0-7-8: Cluster Hardening, CIS Benchmarks, Platform Security & Upgrades]]: The 4Cs Cloud Native Security Model, the multi-stage attack surface sequence diagram, CIS benchmark sections 1-5, `kube-bench` CLI execution and automated remediation, SHA512 binary verification, safe cluster upgrade sequencing (`kubeadm` -> `kubelet` -> `kubectl`), and cloud metadata protection (IMDSv1 vs IMDSv2, hop limit 1, NetworkPolicy egress blocks).
+- **Enriched Core Security Modules:**
+  - [[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md|Module 0-7-1]]: Added Section 8.4 on **API Priority and Fairness (APF)** (FlowSchemas, PriorityLevelConfigurations, queues, concurrency shares) and Section 8.5 on **Bound ServiceAccount Token Volume Projection**.
+  - [[Reference Notes/0-7-2_pod_security_standards_and_admission.md|Module 0-7-2]]: Added Section 5.3 on **Open Policy Agent (OPA) Gatekeeper Architecture** (ConstraintTemplates, Rego violation syntax, Constraints) and Section 5.4 on **Multi-Tenancy Isolation Models** (Namespace vs Node-level isolation via Taints, Tolerations, NodeAffinity).
+  - [[Reference Notes/0-7-3_network_policies_and_traffic_segregation.md|Module 0-7-3]]: Added Section 5.4 on **Pod-to-Pod Mutual TLS (mTLS) vs. One-Way TLS** and expanded Cilium eBPF in-kernel routing and transparent WireGuard/IPsec encryption.
+  - [[Reference Notes/0-7-4_secret_encryption_at_rest.md|Module 0-7-4]]: Added Section 11.13 on **Writing Effective Encryption Policies & Zero-Downtime Key Rotation Protocol** (`EncryptionConfiguration` provider precedence, `identity: {}` fallback, and low-level `etcdctl` hex inspection).
+  - [[Reference Notes/0-7-5_supply_chain_security_and_imagepolicywebhook.md|Module 0-7-5]]: Added Section 7.4 on **Static Manifest Security Auditing with KubeLinter** and Section 7.5 on **Software Bill of Materials (SBOM) Deep-Dive** (SPDX vs CycloneDX, `syft` and `trivy sbom` offline scanning).
+  - [[Reference Notes/0-7-6_runtime_security_falco_and_audit_logging.md|Module 0-7-6]]: Added Section 5.1 on **Ensuring Container Immutability at Runtime** (`readOnlyRootFilesystem: true`, ephemeral `emptyDir` volumes) and Section 5.2 on **AquaSec Tracee vs. Falco**.
+
+### Exam Playbooks & Speed Hacks (Layer 2)
+- **Expanded CKS Exam Playbook:**
+  - [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Exam Practice Playbook]]: Expanded from 15 to **18 hands-on scenarios**:
+    - **Scenario 16:** Manifest Security Linting with KubeLinter & Container Immutability (`readOnlyRootFilesystem: true`, `emptyDir` mounts, non-root UID 10001).
+    - **Scenario 17:** OPA Gatekeeper Policy Enforcement (ConstraintTemplate with Rego, Constraint requiring mandatory `owner` label on Namespaces).
+    - **Scenario 18:** Security-Conscious Cluster Upgrade with `kubeadm` (Version planning, control plane drain, package hold/unhold, post-upgrade CIS verification).
+  - Updated the CKS Exam Checklist & Quick Reference table.
+
+### Main Notes (Atomic Concepts)
+- **Created Landing Notes:**
+  - [[Main Notes/API Priority and Fairness.md|API Priority and Fairness]]
+  - [[Main Notes/KubeLinter.md|KubeLinter]]
+  - [[Main Notes/Open Policy Agent.md|Open Policy Agent]]
+  - [[Main Notes/Cilium.md|Cilium]]
+
+### Master MOC Synchronization
+- [[Reference Notes/0-Index - CKS.md|CKS Exam Reference MOC]]: Updated across all 6 certification domains with direct links to the enriched core modules and all 18 exam scenarios.
+- [[Reference Notes/0-Index - Kubernetes.md|Kubernetes Master Reference MOC]]: Updated Domain 6 (Security) to index Module 0-7-8 and enriched sub-topics.
+
+### Verification & Auditing
+- **Vault Audit (`review_vault.py`):**
+  - **Inflow Coverage:** 100% OK (86 covered, 0 ignored out of 86 files)
+  - **Link Integrity:** 100% OK (2,650 links validated)
+  - **Frontmatter Audit:** 100% OK (All notes conform to templates)
+
+---
+
 ## [2026-09-10] - Ingestion Verification & Enhancement: Docker API & Unix Socket Security (CKS Core)
 
 ### Refactored / Upgraded

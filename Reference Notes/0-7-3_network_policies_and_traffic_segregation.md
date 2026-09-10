@@ -296,8 +296,22 @@ Traditional Kubernetes networking with `kube-proxy` relies on `iptables` or `IPV
 * **L7 Protocol Awareness:** Enforces HTTP verbs (`GET /api/public` vs `POST /api/admin`), gRPC methods, and Kafka topics natively at the socket layer.
 * **Transparent Pod-to-Pod Encryption:** Provides automatic wire encryption between nodes using WireGuard or IPsec without modifying application pods or installing service mesh sidecars.
 
+### 5.4 Pod-to-Pod Mutual TLS (mTLS) vs. One-Way TLS
+Securing east-west traffic inside the Kubernetes cluster is essential for zero-trust microservice communications:
+
+| Dimension | One-Way SSL/TLS | Mutual TLS (mTLS) |
+| :--- | :--- | :--- |
+| **Authentication Target** | Client verifies Server identity only | Server AND Client cryptographically verify each other |
+| **Threat Mitigated** | Eavesdropping, passive packet sniffing | Man-in-the-Middle (MITM), pod impersonation, unauthorized callers |
+| **Implementation Modes** | Application-level HTTPS certificate | Sidecar Proxy (Istio Envoy) or CNI Kernel-level (Cilium WireGuard) |
+| **Identity Verification** | Server domain name (SAN) | SPIFFE ID / X.509 Subject Alternative Name (e.g. `spiffe://cluster.local/ns/prod/sa/payment-service`) |
+
 ---
 
 <!-- Documentation References -->
 [Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
+[KodeKloud CKS: Pod to Pod Encryption](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Pod-to-Pod-Encryption/page)
+[KodeKloud CKS: One way SSL vs Mutual SSL](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/One-way-SSL-vs-Mutual-SSL/page)
+[KodeKloud CKS: Introduction to Cilium](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Introduction-to-Cilium/page)
+
