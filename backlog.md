@@ -2,6 +2,47 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-11] - Kubernetes Documentation Ingestion: Seccomp Syscall Filtering Tutorial
+
+### Scraped Official Documentation
+- **Target URL Scraped & Ingested:** [Kubernetes Official Tutorial: Restrict a Container's Syscalls with seccomp](https://kubernetes.io/docs/tutorials/security/seccomp/)
+- **Inflow Synchronization:** Appended full raw tutorial content, sub-links, JSON profiles, and command sequences to [[inflow/cks_split/03_system_hardening.md|inflow/cks_split/03_system_hardening.md]].
+
+### Reference Notes (Layer 1 Core Foundation)
+- **Enriched Module 0-7-7:**
+  - [[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md|Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp]]:
+    - Deep overhaul of Section 5: Seccomp (Secure Computing Mode) incorporating the full official tutorial.
+    - Added Seccomp BPF hook architecture flow diagram and system call table dispatcher mechanics.
+    - Documented JSON profile anatomy with core action codes (`SCMP_ACT_ALLOW`, `SCMP_ACT_LOG`, `SCMP_ACT_ERRNO`, `SCMP_ACT_KILL`, `SCMP_ACT_KILL_PROCESS`, `SCMP_ACT_TRACE`).
+    - Added node path resolution rules (`/var/lib/kubelet/seccomp/`) and `type: Localhost` mapping.
+    - Documented the iterative 4-stage profiling cycle: non-blocking auditing with `audit.json`, kernel audit inspection in `/var/log/syslog` (`type=1326`, architecture `c000003e`, numeric syscall conversion), denial crash testing with `violation.json` (`CrashLoopBackOff`), and final minimal whitelist enforcement with `fine-grained.json`.
+    - Documented `RuntimeDefault` container runtime defaults and Pod Security Standards (PSS) **Restricted** compliance.
+    - Highlighted critical traps: `privileged: true` forcing containers to run unconfined, and `allowPrivilegeEscalation: false` requirement for `no_new_privs`.
+    - Added Section 5.5 on Cluster-Wide Node Defaulting (`SeccompDefault` feature gate, GA since v1.27) via Kubelet flag `--seccomp-default=true` and KubeletConfiguration file `seccompDefault: true` with zero-API-mutation properties and runtime verification via `crictl inspect`.
+    - Synthesized deep AARF intuition analysis and added official tutorial citation to Documentation References.
+
+### Main Notes (Atomic Concepts)
+- **Created Landing Note:**
+  - [[Main Notes/Seccomp.md|Seccomp]]: High-level architectural landing note covering purpose, BPF interception functionality, architectural context diagram, problem solver, operational and failure impact, and dataview query.
+
+### Exam Playbooks & Speed Hacks (Layer 2)
+- **Enriched Scenario 6:**
+  - [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Exam Practice Playbook]]: Expanded Scenario 6 to cover:
+    1. Custom profile deployment to `/var/lib/kubelet/seccomp/profiles/audit-syscalls.json`.
+    2. Scheduled pod deployment enforcing `Localhost` profile with syslog validation.
+    3. Production workload hardening using `RuntimeDefault` and `allowPrivilegeEscalation: false`.
+    4. Enabling node-wide `seccompDefault: true` in `/var/lib/kubelet/config.yaml` and Kubelet restart.
+    5. OCI seccomp specification verification via `crictl inspect $CID | jq .info.runtimeSpec.linux.seccomp`.
+    6. Warning note on the `privileged: true` override trap.
+
+### Verification & Auditing
+- **Vault Audit (`review_vault.py`):**
+  - Inflow Coverage: 100% OK (86 covered, 0 ignored out of 86 files)
+  - Link Integrity: 100% OK (2,656 links validated)
+  - Frontmatter Audit: 100% OK (All notes conform to templates)
+
+---
+
 ## [2026-09-10] - CKS Full Course Re-Ingestion, Modularization & Vault Gap Closure
 
 ### Inflow Modularization & Split

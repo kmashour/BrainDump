@@ -300,21 +300,37 @@ metadata:
 
 ## 5. Linux Seccomp (Secure Computing Mode)
 
-**Seccomp** restricts the system calls that a process can issue to the Linux kernel. If an application never needs to format disks or create network sockets, those syscalls can be dropped. Any attempt to invoke a forbidden syscall causes the kernel to immediately terminate the process or return an error code.
+**Seccomp (Secure Computing Mode)** is a Linux kernel security feature (introduced in Linux 2.6.12 and expanded with seccomp-bpf in Linux 3.5) that restricts the system calls (syscalls) a process can issue from userspace into kernelspace. If an attacker compromises an application container, seccomp prevents them from invoking unauthorized kernel functionality—such as loading kernel modules, manipulating routing tables, rebooting the host, or escalating privileges.
 
-### 5.1 Seccomp Profiles in Kubernetes
-Seccomp profiles are stored on every worker node under the Kubelet directory:
-`/var/lib/kubelet/seccomp/`
+```mermaid
+flowchart LR
+    subgraph ContainerSpace ["Container Userspace"]
+        App["App Process / Exploit"]
+    end
+    subgraph KernelBoundary ["Linux Kernel Boundary"]
+        BPF["Seccomp BPF Filter Hook"]
+        SyscallTable["Linux Syscall Dispatcher (~450 Syscalls)"]
+    end
+    subgraph OutCome ["Execution Result"]
+        Allow["✅ SCMP_ACT_ALLOW (Execute)"]
+        Log["📝 SCMP_ACT_LOG (/var/log/syslog)"]
+        Errno["⛔ SCMP_ACT_ERRNO (Return EPERM)"]
+        Kill["💥 SCMP_ACT_KILL (Terminate Process)"]
+    end
 
-Create `/var/lib/kubelet/seccomp/profiles/audit-only.json`:
-
-```json
-{
-  "defaultAction": "SCMP_ACT_LOG"
-}
+    App -->|"System Call (e.g. ptrace, reboot)"| BPF
+    BPF -->|"Matches Allowed Whitelist"| Allow
+    BPF -->|"Matches Log Rule"| Log
+    BPF -->|"Matches Blocked Rule"| Errno
+    BPF -->|"Default Deny Violation"| Kill
+    Allow --> SyscallTable
 ```
 
-Create a strict production profile at `/var/lib/kubelet/seccomp/profiles/fine-grained.json`:
+---
+
+### 5.1 Seccomp Profiles Anatomy & Action Codes
+
+Seccomp profiles are defined in JSON format. A profile specifies a default action and an array of architectures and system call rules:
 
 ```json
 {
@@ -327,21 +343,10 @@ Create a strict production profile at `/var/lib/kubelet/seccomp/profiles/fine-gr
   "syscalls": [
     {
       "names": [
-        "accept4",
-        "epoll_create1",
-        "epoll_ctl",
-        "epoll_pwait",
-        "epoll_wait",
-        "exit",
-        "exit_group",
-        "futex",
-        "nanosleep",
         "read",
         "write",
         "close",
-        "brk",
-        "mmap",
-        "munmap"
+        "exit_group"
       ],
       "action": "SCMP_ACT_ALLOW"
     }
@@ -349,29 +354,307 @@ Create a strict production profile at `/var/lib/kubelet/seccomp/profiles/fine-gr
 }
 ```
 
-### 5.2 Applying Seccomp in Pod Specs
+#### Core Action Codes:
+| Seccomp Action Code | Kernel Behavior | Primary Use Case |
+| :--- | :--- | :--- |
+| **`SCMP_ACT_ALLOW`** | Allows the syscall to proceed normally into the kernel. | Whitelisting required application operations. |
+| **`SCMP_ACT_LOG`** | Allows the syscall to execute, but generates an audit record in the system log. | Development, behavioral profiling, and non-blocking discovery. |
+| **`SCMP_ACT_ERRNO`** | Blocks the syscall immediately and returns an error code (`EPERM` by default) to the calling process without crashing it. | Graceful denial of optional or non-critical syscalls. |
+| **`SCMP_ACT_KILL`** | Terminates the calling thread immediately. | Legacy hard containment. |
+| **`SCMP_ACT_KILL_PROCESS`** | Terminates the entire process immediately upon invoking a forbidden syscall. | High-security zero-tolerance enforcement. |
+| **`SCMP_ACT_TRACE`** | Notifies an attached `ptrace` tracer to inspect or emulate the call. | Debugging, sandboxes, and userspace instrumentation. |
+
+---
+
+### 5.2 Node Storage & Path Resolution (`/var/lib/kubelet/seccomp`)
+
+In Kubernetes, custom seccomp profiles reside locally on each worker node under the Kubelet root directory:
+```bash
+/var/lib/kubelet/seccomp/
+```
+
+When referencing a profile via `type: Localhost` in a Pod manifest:
+```yaml
+securityContext:
+  seccompProfile:
+    type: Localhost
+    localhostProfile: profiles/audit.json
+```
+The Kubelet resolves `localhostProfile` **relative** to `/var/lib/kubelet/seccomp/`. Thus, the actual path on the node's disk is:
+```bash
+/var/lib/kubelet/seccomp/profiles/audit.json
+```
+
+> [!CAUTION]
+> If the JSON file does not exist on the node where the pod is scheduled, the pod fails to start with `CreateContainerError` or `FailedCreatePodSandBox`. Because pods can be scheduled onto any worker node, custom profiles must be distributed across all nodes (e.g. via a DaemonSet or node automation).
+
+---
+
+### 5.3 The Four-Stage Syscall Profiling & Whitelisting Workflow
+
+Deriving the minimum set of syscalls required for a containerized application follows an iterative four-stage lifecycle:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Dev as Security Engineer / CI
+    participant Node as Worker Node Disk
+    participant Kube as Kubernetes Pod
+    participant Log as /var/log/syslog (Audit)
+
+    Dev->>Node: 1. Deploy audit.json (defaultAction: SCMP_ACT_LOG)
+    Dev->>Kube: 2. Launch Pod with localhostProfile: profiles/audit.json
+    Kube->>Log: 3. Exercise app; Kernel logs audit type=1326 syscall IDs
+    Dev->>Dev: 4. Extract syscall IDs & convert to names
+    Dev->>Node: 5. Deploy fine-grained.json (defaultAction: ERRNO + allowed names)
+    Dev->>Kube: 6. Enforce fine-grained profile in production Pod
+    Kube-->>Dev: 7. Pod runs normally with 0 audit violations
+```
+
+#### Stage 1: Deploy Non-Blocking Audit Profile (`audit.json`)
+Create `/var/lib/kubelet/seccomp/profiles/audit.json`:
+```json
+{
+  "defaultAction": "SCMP_ACT_LOG"
+}
+```
+Apply the audit profile to the Pod:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: audit-pod
+spec:
+  securityContext:
+    seccompProfile:
+      type: Localhost
+      localhostProfile: profiles/audit.json
+  containers:
+  - name: test-container
+    image: hashicorp/http-echo:1.0
+    args: ["-text=just made some syscalls!"]
+    securityContext:
+      allowPrivilegeEscalation: false
+```
+
+#### Stage 2: Capture and Inspect Kernel Audit Logs
+Exercise the container workload by sending traffic, then monitor the host syslog (`/var/log/syslog` or `/var/log/audit/audit.log`):
+```bash
+# Filter for audit logs generated by the container process
+tail -f /var/log/syslog | grep 'http-echo'
+```
+Example raw kernel audit output:
+```text
+audit: type=1326 audit(1594067860.484:14536): auid=4294967295 uid=0 gid=0 ses=4294967295 pid=29064 comm="http-echo" exe="/http-echo" sig=0 arch=c000003e syscall=51 compat=0 ip=0x46fe1f code=0x7ffc0000
+audit: type=1326 audit(1594067860.484:14537): auid=4294967295 uid=0 gid=0 ses=4294967295 pid=29064 comm="http-echo" exe="/http-echo" sig=0 arch=c000003e syscall=54 compat=0 ip=0x46fdba code=0x7ffc0000
+audit: type=1326 audit(1594067860.484:14538): auid=4294967295 uid=0 gid=0 ses=4294967295 pid=29064 comm="http-echo" exe="/http-echo" sig=0 arch=c000003e syscall=202 compat=0 ip=0x455e53 code=0x7ffc0000
+audit: type=1326 audit(1594067860.484:14540): auid=4294967295 uid=0 gid=0 ses=4294967295 pid=29064 comm="http-echo" exe="/http-echo" sig=0 arch=c000003e syscall=0 compat=0 ip=0x46fd44 code=0x7ffc0000
+```
+
+##### Decoding Audit Fields:
+- **`type=1326`**: Standard Linux kernel audit identifier `AUDIT_SECCOMP`.
+- **`syscall=51`**: The numeric system call table index on x86_64 (`51` = `getsockname`, `54` = `setsockopt`, `202` = `futex`, `0` = `read`).
+- **`arch=c000003e`**: Hexadecimal architecture identifier (`c000003e` corresponds to `AUDIT_ARCH_X86_64`).
+- **`code=0x7ffc0000`**: Action result bitmask (`SECCOMP_RET_LOG`).
+- **`comm="http-echo"`**: The executable command string executing the call.
+
+#### Stage 3: Observe Total Denial Failure (`violation.json`)
+To understand what occurs when required syscalls are denied, test `/var/lib/kubelet/seccomp/profiles/violation.json`:
+```json
+{
+  "defaultAction": "SCMP_ACT_ERRNO"
+}
+```
+When attached via `localhostProfile: profiles/violation.json`, the container immediately crashes with `CrashLoopBackOff`:
+```bash
+kubectl get pod violation-pod
+# NAME            READY   STATUS             RESTARTS   AGE
+# violation-pod   0/1     CrashLoopBackOff   1          6s
+```
+Because even basic startup calls (`execve`, `mmap`, `brk`, `rt_sigaction`) are blocked with `EPERM`, the process cannot initialize.
+
+#### Stage 4: Craft and Enforce the Production Whitelist (`fine-grained.json`)
+Compile the audited syscalls into a strict whitelist at `/var/lib/kubelet/seccomp/profiles/fine-grained.json`:
+```json
+{
+  "defaultAction": "SCMP_ACT_ERRNO",
+  "architectures": [
+    "SCMP_ARCH_X86_64",
+    "SCMP_ARCH_X86",
+    "SCMP_ARCH_X32"
+  ],
+  "syscalls": [
+    {
+      "names": [
+        "accept4",
+        "arch_prctl",
+        "bind",
+        "brk",
+        "clock_gettime",
+        "clone",
+        "close",
+        "connect",
+        "dup2",
+        "epoll_create1",
+        "epoll_ctl",
+        "epoll_pwait",
+        "epoll_wait",
+        "execve",
+        "exit",
+        "exit_group",
+        "fcntl",
+        "fstatfs",
+        "futex",
+        "getdents64",
+        "getpid",
+        "getrlimit",
+        "getsockname",
+        "gettid",
+        "getuid",
+        "ioctl",
+        "listen",
+        "madvise",
+        "mmap",
+        "mprotect",
+        "munmap",
+        "nanosleep",
+        "open",
+        "openat",
+        "pipe2",
+        "poll",
+        "pselect6",
+        "read",
+        "readlinkat",
+        "recvfrom",
+        "rt_sigaction",
+        "rt_sigprocmask",
+        "rt_sigreturn",
+        "sched_getaffinity",
+        "sched_yield",
+        "sendto",
+        "set_tid_address",
+        "setitimer",
+        "setsockopt",
+        "sigaltstack",
+        "socket",
+        "vfork",
+        "write",
+        "writev"
+      ],
+      "action": "SCMP_ACT_ALLOW"
+    }
+  ]
+}
+```
+Deploy the hardened Pod:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fine-pod
+spec:
+  securityContext:
+    seccompProfile:
+      type: Localhost
+      localhostProfile: profiles/fine-grained.json
+  containers:
+  - name: test-container
+    image: hashicorp/http-echo:1.0
+    args: ["-text=just made some syscalls!"]
+    securityContext:
+      allowPrivilegeEscalation: false
+```
+The pod transitions to `Running` without generating any error codes or `/var/log/syslog` audit entries.
+
+---
+
+### 5.4 Seccomp Profile Types in Pod Specs
+
+Kubernetes supports three profile types in `.spec.securityContext.seccompProfile` (or per-container `.spec.containers[*].securityContext.seccompProfile`):
 
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: seccomp-enforced-pod
+  name: seccomp-types-demo
 spec:
   securityContext:
     seccompProfile:
-      # Option A: Built-in container runtime default profile (Blocks ~50 dangerous syscalls)
+      # Option 1: Built-in container runtime default profile (Recommended for 95% of workloads)
       type: RuntimeDefault
 
-      # Option B: Custom local profile stored on the node
+      # Option 2: Custom local file on node (/var/lib/kubelet/seccomp/<path>)
       # type: Localhost
       # localhostProfile: profiles/fine-grained.json
-  containers:
-  - name: app
-    image: nginx:alpine
+
+      # Option 3: Explicitly unconfined (Disables seccomp filtering)
+      # type: Unconfined
 ```
 
+| Profile Type | Description & Behavior | Pod Security Standard (PSS) Tier |
+| :--- | :--- | :--- |
+| **`RuntimeDefault`** | Uses the container runtime's built-in seccomp profile (containerd / CRI-O). Blocks ~50 dangerous/obsolete syscalls (e.g. `reboot`, `sys_chroot`, `kexec_load`, `bpf`, `mount`, `swapon`, `clock_settime`) while keeping all standard application operations functional. | **Restricted** |
+| **`Localhost`** | Loads a custom JSON profile stored locally under `/var/lib/kubelet/seccomp/`. Must specify `localhostProfile`. | **Restricted** (if valid profile) |
+| **`Unconfined`** | Disables seccomp filtering entirely for the container. | **Privileged / Baseline** |
+
+> [!IMPORTANT]
+> **The `privileged: true` Override Trap:** It is **impossible** to apply a seccomp profile to any container configured with `privileged: true` in its container `securityContext`. Privileged containers **always execute as Unconfined**, bypassing both `RuntimeDefault` and custom profiles!
+
 > [!TIP]
-> Setting `seccompProfile.type: RuntimeDefault` satisfies the **Restricted** tier of Kubernetes Pod Security Standards without requiring custom JSON files distributed to worker nodes.
+> **Privilege Escalation Requirement:** Always pair seccomp with `allowPrivilegeEscalation: false`. Setting this flag enables the Linux kernel's `no_new_privs` bit, ensuring that child processes spawned via `execve` cannot bypass the seccomp filter by invoking setuid/setgid binaries.
+
+---
+
+### 5.5 Cluster-Wide Node Defaulting (`SeccompDefault`)
+
+*Feature State: **Stable (GA) since Kubernetes v1.27**.*
+
+Prior to v1.27, any Pod deployed without an explicit `.spec.securityContext.seccompProfile` fell back to **`Unconfined`** (no syscall filtering). Enabling cluster-wide seccomp defaulting ensures that any unconfigured pod automatically inherits **`RuntimeDefault`**.
+
+#### Configuration Methods on Worker Nodes:
+1. **Via Kubelet Command-Line Flag:**
+   ```bash
+   --seccomp-default=true
+   ```
+2. **Via Kubelet Configuration File (`/var/lib/kubelet/config.yaml`):**
+   ```yaml
+   apiVersion: kubelet.config.k8s.io/v1beta1
+   kind: KubeletConfiguration
+   seccompDefault: true
+   ```
+   Restart the Kubelet to apply:
+   ```bash
+   systemctl restart kubelet
+   ```
+
+#### Key Characteristics of Node Defaulting:
+- **Zero API Mutation:** Enabling `seccompDefault: true` does **not** mutate the Pod manifest in `etcd` or inject API fields into `.spec.securityContext`. The defaulting is handled purely at the node level by Kubelet and CRI, providing transparent rollback without updating application manifests.
+- **Verification via CRI (`crictl`):**
+  Because the API server does not reflect the defaulted profile in `kubectl get pod -o yaml`, verify enforcement directly against the container runtime:
+  ```bash
+  crictl inspect $(crictl ps --name=my-app -q) | jq .info.runtimeSpec.linux.seccomp
+  ```
+  Expected output confirms `SCMP_ACT_ERRNO` default action with architecture filters.
+
+#### Exception Handling for Workloads Broken by `RuntimeDefault`:
+If a specialized workload (e.g. storage CSI plugins, network tracing tools) fails under `RuntimeDefault`:
+1. Explicitly set `type: Unconfined` in that specific pod's `securityContext`.
+2. Craft a custom `Localhost` profile permitting the required system calls.
+3. Schedule the workload onto a dedicated node group where `seccompDefault` is set to `false`.
+
+---
+
+### 5.6 AARF Deep-Intuition Analysis: Seccomp Syscall Filtering
+1. **The Answer (Core Pattern):** Apply `seccompProfile.type: RuntimeDefault` to all standard workloads and enable `seccompDefault: true` on all worker node Kubelets. For high-security environments, profile applications using `audit.json` (`SCMP_ACT_LOG`) and craft strict `Localhost` whitelists (`SCMP_ACT_ERRNO` + allowed names).
+2. **The Assumptions (Context):** Applications run in standard unprivileged containers (`privileged: false`) with `allowPrivilegeEscalation: false`. Worker nodes run Linux kernels v3.5+ with `CONFIG_SECCOMP=y` and `CONFIG_SECCOMP_FILTER=y`.
+3. **The Rationale (Why):** Linux containers share the host operating system kernel. Over 450 system calls exist in Linux, but modern microservices need only 40–70. Dropping the remaining 380+ syscalls neutralizes kernel exploit chains (privilege escalation, namespace breakouts, memory corruption) before they reach the dispatcher.
+4. **The Failure Loop (What If Not):** Leaving containers `Unconfined` allows an attacker who achieves RCE inside a container to exploit kernel zero-days (e.g. `Dirty COW`, `Dirty Pipe`, `fs_context` bugs) to gain instant host `root` control.
+5. **The Alternative Case (When to Use Sandboxing Instead):** If an application requires hundreds of obscure syscalls, or if multiple untrusted tenants share the same node, crafting seccomp whitelists becomes impractical. In such scenarios, deploy sandboxed userspace kernels (**gVisor `runsc`**) or microVMs (**Kata Containers**) via `RuntimeClass`.
+6. **The Evolutionary Bridge:**
+   * **Classical UNIX:** No syscall filtering existed; any process with UID 0 could invoke any kernel syscall.
+   * **Linux 2.6.12 Seccomp (Strict Mode):** Allowed only 4 syscalls (`read`, `write`, `exit`, `sigreturn`). Any other call triggered `SIGKILL`. Impractical for real applications.
+   * **Linux 3.5 Seccomp-BPF:** Berkeley Packet Filter programs evaluate syscall numbers and arguments, allowing dynamic whitelists and return actions (`SCMP_ACT_ERRNO`, `SCMP_ACT_LOG`).
+   * **Modern Kubernetes (v1.27+):** Built-in `RuntimeDefault` adoption, native Pod Security Standards Restricted enforcement, and node-wide zero-mutation defaulting.
 
 ---
 
@@ -456,8 +739,10 @@ timeline
 
 <!-- Documentation References -->
 [Kubernetes Seccomp Profiles](https://kubernetes.io/docs/concepts/containers/seccomp-profiles/)
+[Kubernetes Tutorial: Restrict a Container's Syscalls with seccomp](https://kubernetes.io/docs/tutorials/security/seccomp/)
 [Kubernetes Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
 [KodeKloud CKS: Docker Securing the Daemon](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Cluster-Setup-and-Hardening/Docker-Securing-the-Daemon/page)
 [KodeKloud CKS: Docker Service Configuration](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Cluster-Setup-and-Hardening/Docker-Service-Configuration/page)
+
 

@@ -339,14 +339,18 @@ Load an AppArmor profile named `k8s-deny-write` on worker node `node01`. Deploy 
 
 ---
 
-## 🔒 Scenario 6: Seccomp Profile Deployment & Enforcement
+## 🔒 Scenario 6: Seccomp Profile Deployment, Enforcement & Node Defaulting
 
 ### Problem Statement
-Deploy a fine-grained Seccomp profile named `audit-syscalls.json` to the default Kubelet seccomp directory on `node01`. Create a pod named `seccomp-pod` using `RuntimeDefault` seccomp profile.
+1. On worker node `node01`, deploy a custom seccomp audit profile named `audit-syscalls.json` to the default Kubelet seccomp directory.
+2. Deploy a pod named `audit-pod` scheduled on `node01` that enforces this custom local profile and verifies syscall logging in `/var/log/syslog`.
+3. Create a production pod named `seccomp-pod` using the `RuntimeDefault` profile with `allowPrivilegeEscalation: false`.
+4. Enable node-wide seccomp defaulting (`seccompDefault: true`) in `/var/lib/kubelet/config.yaml` on `node01` so all unconfigured pods automatically inherit `RuntimeDefault`.
+5. Verify container seccomp enforcement directly at the container runtime level using `crictl`.
 
 ### Step-by-Step Implementation
 
-1. **Deploy Profile to Node:**
+1. **Deploy Custom Localhost Profile to Node:**
    ```bash
    ssh node01
    mkdir -p /var/lib/kubelet/seccomp/profiles
@@ -355,10 +359,38 @@ Deploy a fine-grained Seccomp profile named `audit-syscalls.json` to the default
      "defaultAction": "SCMP_ACT_LOG"
    }
    EOF
+   chmod 644 /var/lib/kubelet/seccomp/profiles/audit-syscalls.json
    exit
    ```
 
-2. **Create Pod with `RuntimeDefault` Seccomp Profile:**
+2. **Deploy Pod with `Localhost` Seccomp Profile:**
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: audit-pod
+     namespace: default
+   spec:
+     nodeName: node01
+     securityContext:
+       seccompProfile:
+         type: Localhost
+         localhostProfile: profiles/audit-syscalls.json
+     containers:
+     - name: test-container
+       image: hashicorp/http-echo:1.0
+       args: ["-text=exam-syscall-check"]
+       securityContext:
+         allowPrivilegeEscalation: false
+   ```
+   Apply and verify in syslog:
+   ```bash
+   kubectl apply -f audit-pod.yaml
+   # Tail syslog on node01 to observe type=1326 seccomp audit records
+   ssh node01 "tail -n 20 /var/log/syslog | grep 'http-echo'"
+   ```
+
+3. **Deploy Production Pod with `RuntimeDefault` Profile:**
    ```yaml
    apiVersion: v1
    kind: Pod
@@ -372,17 +404,46 @@ Deploy a fine-grained Seccomp profile named `audit-syscalls.json` to the default
      containers:
      - name: nginx
        image: nginx:alpine
+       securityContext:
+         allowPrivilegeEscalation: false
    ```
    Apply manifest:
    ```bash
    kubectl apply -f seccomp-pod.yaml
    ```
 
-3. **Verification:**
+4. **Enable Cluster-Wide Seccomp Defaulting on Node Kubelet:**
    ```bash
-   kubectl get pod seccomp-pod -o jsonpath='{.spec.securityContext.seccompProfile.type}'
-   # Expected Output: RuntimeDefault
+   ssh node01
+   # Edit KubeletConfiguration to enable seccomp defaulting
+   vi /var/lib/kubelet/config.yaml
    ```
+   Add or update:
+   ```yaml
+   seccompDefault: true
+   ```
+   Restart the Kubelet service:
+   ```bash
+   systemctl daemon-reload
+   systemctl restart kubelet
+   systemctl status kubelet --no-pager
+   exit
+   ```
+
+5. **Low-Level Verification with `crictl`:**
+   Verify the seccomp profile applied by the runtime inside the worker node container:
+   ```bash
+   ssh node01
+   # Obtain container ID
+   CID=$(crictl ps --name=nginx -q)
+   # Inspect Linux OCI seccomp specification
+   crictl inspect $CID | jq .info.runtimeSpec.linux.seccomp
+   # Expected Output: "defaultAction": "SCMP_ACT_ERRNO" or "SCMP_ACT_ALLOW" with restricted syscalls
+   exit
+   ```
+
+> [!CAUTION]
+> **Exam Pitfall:** If a container has `privileged: true`, Kubernetes will **ignore** any configured `seccompProfile` and the container will run as `Unconfined`. In the CKS exam, always ensure `privileged: false` (or omitted) and `allowPrivilegeEscalation: false` when hardening workloads with seccomp.
 
 ---
 
