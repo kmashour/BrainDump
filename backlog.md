@@ -2,6 +2,37 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-10] - Ingestion Verification & Enhancement: Docker API & Unix Socket Security (CKS Core)
+
+### Refactored / Upgraded
+- **Reference Notes:**
+  - [[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md|Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp]]:
+    - Added Section 3.4 detailing **Docker Daemon & Container Runtime Socket Security**:
+      - 3.4.1 Docker daemon local Unix domain socket (`/var/run/docker.sock`), IPC mechanics, and `root:docker` (mode 0660) root-equivalence risks.
+      - 3.4.2 The Unix socket container escape attack loop (bind-mounted `/var/run/docker.sock` breakout to host root, `amicontained` scanner detection, and PSA prevention).
+      - 3.4.3 Remote TCP exposure hazards (`tcp://0.0.0.0:2375` unencrypted/unauthenticated remote root execution).
+      - 3.4.4 Mutual TLS (mTLS) hardening on port `2376` (`tlsverify: true`, CA `cacert.pem`, server `server.pem`/`serverkey.pem`, and client certs).
+      - 3.4.5 Declarative `/etc/docker/daemon.json` schema and the critical systemd command-line flag conflict startup trap.
+      - 3.4.6 Secure client-side execution via `DOCKER_HOST`, `DOCKER_TLS_VERIFY`, and `~/.docker` PKI.
+      - 3.4.7 Deep-intuition AARF breakdown and evolutionary bridge to Kubernetes CRI runtimes (`containerd.sock`, `crio.sock`) and rootless containers.
+  - [[Reference Notes/0-Index - CKS.md|CKS Exam Reference MOC]]: Updated Domain 2 (System Hardening) to explicitly index Docker daemon & socket security and link Scenario 15.
+  - [[Reference Notes/0-Index - Kubernetes.md|Kubernetes Master Reference MOC]]: Updated Domain 6 (Security) to reflect Docker daemon/socket hardening.
+- **Projects & Playbooks:**
+  - [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Exam Practice Playbook]]:
+    - Added **Scenario 15: Docker Daemon Hardening & Unix Socket Isolation** covering auditing port 2375, declarative `/etc/docker/daemon.json` TLS configuration, systemd override resolution, secure client CLI verification, and Kubernetes Pod socket mount remediation.
+    - Updated CKS Exam Checklist with Docker Daemon/Socket entry.
+- **Main Notes:**
+  - [[Main Notes/docker - Daemon and Socket Security.md|docker - Daemon and Socket Security]]: Created atomic deeper-dive concept note covering threat modeling, daemon exposure risks, mTLS PKI handshake, and CRI socket evolution.
+  - [[Main Notes/docker.md|docker]]: Linked new deeper dive note under Deeper Dive Notes Dataview query.
+
+### Ingested Inflow Source Modules Covered
+- From `inflow/CKS_KodeKloud_Full_Course_Notes.md`:
+  - `Docker Securing the Daemon` (Lines 1720–1825)
+  - `Docker Service Configuration` (Lines 1829–2015)
+  - Unix Socket breakout and inspection notes (Lines 12221, 18252)
+
+---
+
 ## [2026-08-30] - Vault Restructuring: KubeAstronaut Certification Modularization & Split
 
 ### Modularized / Split

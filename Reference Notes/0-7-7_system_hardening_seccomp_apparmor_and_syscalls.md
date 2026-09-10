@@ -128,6 +128,101 @@ EOF
 modprobe -r dccp sctp 2>/dev/null || true
 ```
 
+### 3.4 Docker Daemon & Container Runtime Socket Security (CKS Core)
+
+The container engine daemon (`dockerd` or `containerd`) operates with elevated privileges on the host node. In traditional Docker environments and hybrid clusters, improper socket exposure or unauthenticated TCP daemon endpoints represent critical security vulnerabilities.
+
+#### 3.4.1 Docker Daemon IPC: Unix Domain Sockets vs. TCP Listeners
+* **Local Unix Domain Socket:** By default, Docker listens on `/var/run/docker.sock` (POSIX IPC socket). Permissions are restricted to `root:docker` (`mode 0660`).
+* **Root Equivalence of the `docker` Group:** Adding non-root users to the `docker` system group (`usermod -aG docker <user>`) grants effective passwordless root on the host machine. Any user with write access to `/var/run/docker.sock` can issue Docker API calls to run containers with `-v /:/host-root --privileged`, chrooting into the host root filesystem.
+* **The Insecure TCP Port 2375 Vulnerability:** When configured to accept remote management traffic, administrators often bind `dockerd` to `tcp://0.0.0.0:2375` or `tcp://<IP>:2375` without TLS. Port `2375` is unencrypted and unauthenticated. Any attacker on the network can immediately control the daemon, pull and run cryptominers, exfiltrate secrets, or wipe containers and volumes.
+
+#### 3.4.2 The Unix Socket Escape Attack Loop
+* **The Dangerous Bind-Mount Anti-Pattern:** In CI/CD pipelines (e.g., Docker-in-Docker or Jenkins/GitHub Actions runners), developers often mount the host socket into a container: `-v /var/run/docker.sock:/var/run/docker.sock`.
+* **Breakout Mechanism:** A compromised container process with socket access uses the Docker CLI or raw HTTP requests over the socket to create a sibling container with host namespace shares:
+  ```bash
+  # Executed from inside the compromised container:
+  docker -H unix:///var/run/docker.sock run -v /:/host-fs --privileged -it alpine chroot /host-fs
+  ```
+  This immediately yields an interactive root shell on the physical node, bypassing all container isolation boundaries.
+* **Audit Detection:** Security scanners such as `amicontained` inspect container environments and report `"Looking for Docker.sock"` to identify whether this breakout vector is exposed.
+* **Kubernetes Hardening:** Never allow Pods to mount `/var/run/docker.sock` or CRI sockets (`/run/containerd/containerd.sock`, `/run/crio/crio.sock`) via `hostPath`. Enforce this through Pod Security Admission (`restricted` profile) or admission webhooks.
+
+#### 3.4.3 Securing Docker Daemon with TLS & Mutual TLS (mTLS) on Port 2376
+When remote TCP access to the Docker API is mandatory, it must be protected using TLS encryption and client certificate authentication (Mutual TLS) on port `2376`:
+
+1. **PKI Infrastructure:**
+   * **CA Certificate:** `cacert.pem` (verifies both server and client identity).
+   * **Server Certificate & Key:** `server.pem`, `serverkey.pem` (authenticates the daemon and encrypts traffic).
+   * **Client Certificate & Key:** `client.pem`, `client-key.pem` (authenticates authorized operators or orchestrators).
+2. **Enforce `tlsverify: true`:** Enabling TLS alone encrypts traffic but does not authenticate clients. You MUST enable `tlsverify` to force the daemon to validate client certificates against the CA.
+3. **Declarative Daemon Configuration (`/etc/docker/daemon.json`):**
+   ```json
+   {
+     "hosts": [
+       "unix:///var/run/docker.sock",
+       "tcp://192.168.1.10:2376"
+     ],
+     "tls": true,
+     "tlscert": "/var/docker/server.pem",
+     "tlskey": "/var/docker/serverkey.pem",
+     "tlsverify": true,
+     "tlscacert": "/var/docker/cacert.pem"
+   }
+   ```
+
+#### 3.4.4 Systemd Service Management, Troubleshooting & Startup Conflict Traps
+* **Systemd Service Operations:**
+  ```bash
+  # Check daemon status and active listeners
+  systemctl status docker
+
+  # Restart daemon after updating daemon.json
+  systemctl restart docker
+
+  # Stop and disable if replacing with standalone containerd
+  systemctl stop docker && systemctl disable docker
+  ```
+* **Foreground Debugging:** To diagnose socket binding, gRPC containerd handshakes, or storage driver initialization errors, run `dockerd` directly in the console:
+  ```bash
+  dockerd --debug
+  ```
+* **Critical Configuration Conflict Trap:**
+  > [!WARNING]
+  > If an option (such as `-H` / `--host` or `--debug`) is specified in both the systemd service file (e.g. `/lib/systemd/system/docker.service` passing `-H fd://`) AND in `/etc/docker/daemon.json` (`"hosts": [...]`), the Docker daemon will crash on startup with:
+  > `unable to configure the Docker daemon with file /etc/docker/daemon.json: the following flags are at conflict with the daemon configuration: hosts: ...`
+  > **Fix:** Remove the `-H` flags from the systemd `ExecStart` line (using a systemd drop-in override: `systemctl edit docker`) or remove `"hosts"` from `daemon.json`.
+
+#### 3.4.5 Secure Remote Client Execution
+To securely query the hardened Docker daemon from an authorized client workstation:
+
+```bash
+# Option A: Environment variables
+export DOCKER_HOST="tcp://192.168.1.10:2376"
+export DOCKER_TLS_VERIFY=true
+docker --tlscert=/path/to/client.pem --tlskey=/path/to/client-key.pem --tlscacert=/path/to/cacert.pem ps
+
+# Option B: Automatic discovery via ~/.docker
+mkdir -p ~/.docker
+cp cacert.pem ~/.docker/ca.pem
+cp client.pem ~/.docker/cert.pem
+cp client-key.pem ~/.docker/key.pem
+export DOCKER_HOST="tcp://192.168.1.10:2376"
+export DOCKER_TLS_VERIFY=1
+docker ps
+```
+
+#### 3.4.6 AARF Deep-Intuition Analysis: Docker API & Unix Socket Security
+1. **The Answer (Core Pattern):** Bind Docker to the local Unix domain socket `/var/run/docker.sock` with restrictive `0660` permissions. If remote access is strictly required, expose on private IP port `2376` with mandatory mutual TLS (`tlsverify: true`). Never mount container runtime sockets into untrusted pods.
+2. **The Assumptions (Context):** The host OS is hardened (root SSH disabled, firewall active). In modern Kubernetes (v1.24+), `dockershim` is removed; however, worker nodes may still run Docker for legacy workloads or use `cri-dockerd`, and the identical threat model applies to `/run/containerd/containerd.sock` and `/run/crio/crio.sock`.
+3. **The Rationale (Why):** The container runtime daemon executes with root privileges (`UID 0`). The API gives unrestricted access to the Linux kernel via container creation primitives (`hostPID`, `hostNetwork`, `privileged`, `capabilities`, `volumes`). Unauthenticated API access or socket exposure directly bypasses all operating system access controls.
+4. **The Failure Loop (What If Not):** Exposing port `2375` leads to automated remote code execution and cryptomining botnet compromise. Bind-mounting `/var/run/docker.sock` inside a container allows any process in that container to spawn a privileged container that chroots into the host node's filesystem, seizing complete root control.
+5. **The Alternative Case (When to Use Remote TCP / Sockets):** Use remote TCP on port 2376 only for dedicated CI/CD build agents with signed PKI client certificates. For in-cluster container image builds, abandon Docker socket bind-mounts completely in favor of daemonless, unprivileged tools like **Kaniko**, **Buildah**, or **Podman**.
+6. **The Evolutionary Bridge:**
+   * **Legacy Systems:** Monolithic Docker daemon managing both the developer API and runtime container execution over `/var/run/docker.sock`. Exposing port 2375 was common in early dev environments.
+   * **Kubernetes CRI Transition:** Kubernetes deprecated and removed `dockershim` in v1.24, adopting standard Container Runtime Interface (CRI) runtimes like `containerd` and `CRI-O`.
+   * **Universal Threat Equivalence:** Even though `dockerd` was replaced by `containerd`, the security boundary remains the same: mounting `/run/containerd/containerd.sock` into a pod grants equal root-level control over the node via `crictl` or direct gRPC calls. Defense-in-depth requires blocking all runtime socket mounts and adopting **Rootless Containers** (running containerd/podman entirely in user namespaces without host UID 0).
+
 ---
 
 ## 4. Mandatory Access Control: AppArmor
@@ -363,3 +458,6 @@ timeline
 [Kubernetes Seccomp Profiles](https://kubernetes.io/docs/concepts/containers/seccomp-profiles/)
 [Kubernetes Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
+[KodeKloud CKS: Docker Securing the Daemon](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Cluster-Setup-and-Hardening/Docker-Securing-the-Daemon/page)
+[KodeKloud CKS: Docker Service Configuration](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Cluster-Setup-and-Hardening/Docker-Service-Configuration/page)
+

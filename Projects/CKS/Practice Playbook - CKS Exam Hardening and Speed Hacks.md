@@ -807,6 +807,86 @@ Inspect the control plane certificates. Identify the certificate expiration date
 
 ---
 
+## 🔒 Scenario 15: Docker Daemon Hardening & Unix Socket Isolation
+
+### Problem Statement
+1. Security auditing identifies that worker node `node01` has the Docker daemon exposed over an unencrypted, unauthenticated TCP port (`tcp://0.0.0.0:2375`). Reconfigure `/etc/docker/daemon.json` so the daemon listens exclusively on the local Unix socket `unix:///var/run/docker.sock` and a secure TLS endpoint on `tcp://192.168.1.11:2376`.
+2. Enforce mutual client certificate authentication (`tlsverify: true`) using CA `/var/docker/cacert.pem`, server cert `/var/docker/server.pem`, and server key `/var/docker/serverkey.pem`.
+3. Resolve any systemd service flag conflicts and restart the Docker service.
+4. Audit namespace `dev` for any pod mounting `/var/run/docker.sock` (or CRI socket) via `hostPath`. Remediate the pod manifest to prevent container breakout to the host root.
+
+### Step-by-Step Implementation
+
+1. **Access Node and Audit Listening Ports:**
+   ```bash
+   ssh node01
+   # Confirm insecure 2375 listener
+   ss -tulpn | grep 2375
+   ```
+
+2. **Configure `/etc/docker/daemon.json`:**
+   ```bash
+   cat <<EOF > /etc/docker/daemon.json
+   {
+     "hosts": [
+       "unix:///var/run/docker.sock",
+       "tcp://192.168.1.11:2376"
+     ],
+     "tls": true,
+     "tlscert": "/var/docker/server.pem",
+     "tlskey": "/var/docker/serverkey.pem",
+     "tlsverify": true,
+     "tlscacert": "/var/docker/cacert.pem"
+   }
+   EOF
+   ```
+
+3. **Check for Flag Conflicts in Systemd:**
+   ```bash
+   # If systemd passes -H flags to dockerd, remove them to avoid fatal startup conflict:
+   grep -E 'ExecStart.*-H' /lib/systemd/system/docker.service
+   # If present, create a systemd drop-in override:
+   mkdir -p /etc/systemd/system/docker.service.d/
+   cat <<EOF > /etc/systemd/system/docker.service.d/override.conf
+   [Service]
+   ExecStart=
+   ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock
+   EOF
+   ```
+
+4. **Reload Systemd and Restart Docker Daemon:**
+   ```bash
+   systemctl daemon-reload
+   systemctl restart docker
+   systemctl status docker
+   # Verify port 2376 is listening with TLS, and 2375 is closed
+   ss -tulpn | grep -E '2375|2376'
+   ```
+
+5. **Verify Secure Client Authentication:**
+   ```bash
+   export DOCKER_HOST="tcp://192.168.1.11:2376"
+   export DOCKER_TLS_VERIFY=true
+   docker --tlscert=/var/docker/client.pem --tlskey=/var/docker/client-key.pem --tlscacert=/var/docker/cacert.pem ps
+   exit
+   ```
+
+6. **Audit and Remediate HostPath Socket Breakout in Kubernetes:**
+   ```bash
+   # Find pods mounting host docker.sock or containerd.sock
+   kubectl get pods -n dev -o json | jq -r '.items[] | select(.spec.volumes[]?.hostPath.path | test(".*\\.sock$")) | .metadata.name'
+   
+   # Inspect untrusted-builder pod
+   kubectl get pod untrusted-builder -n dev -o yaml > /tmp/builder.yaml
+   
+   # Remove hostPath volume and volumeMount pointing to /var/run/docker.sock
+   # Re-apply hardened workload
+   kubectl delete pod untrusted-builder -n dev --force --grace-period=0
+   kubectl apply -f /tmp/builder.yaml
+   ```
+
+---
+
 ## 💡 CKS Exam Checklist & Quick Reference
 
 | Exam Objective | High-Frequency File / Command | Key Flag or Resource |
@@ -817,6 +897,8 @@ Inspect the control plane certificates. Identify the certificate expiration date
 | **AppArmor** | `/etc/apparmor.d/*` | `apparmor_parser -q <file>`, `securityContext.appArmorProfile` |
 | **Seccomp** | `/var/lib/kubelet/seccomp/*` | `securityContext.seccompProfile.type: RuntimeDefault` |
 | **Falco** | `/etc/falco/falco_rules.local.yaml` | `systemctl restart falco`, `journalctl -u falco -f` |
-| **Trivy** | `trivy image --severity HIGH,CRITICAL <imgic>` | `--ignore-unfixed`, `--exit-code 1` |
+| **Trivy** | `trivy image --severity HIGH,CRITICAL <image>` | `--ignore-unfixed`, `--exit-code 1` |
 | **NetworkPolicy** | `kind: NetworkPolicy` | `policyTypes: [Ingress, Egress]`, `except: [169.254.169.254/32]` |
 | **CIS Benchmark** | `kube-bench run --targets master,node` | File permission `chmod 600`, ownership `root:root` |
+| **Docker API / Daemon** | `/etc/docker/daemon.json` | `"tlsverify": true`, `"hosts": ["...:2376"]`, audit `docker.sock` mounts |
+

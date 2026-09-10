@@ -26,8 +26,8 @@ tags:
 - 🔒 **[Module 0-1: API Mechanics & kubectl CLI](0-1_kube_api_and_kubectl.md)**
 
 ## 🛡️ 2. System Hardening (15%)
-*Host OS security, IAM, minimised footprint, kernel parameters, AppArmor & Seccomp.*
-- 🛡️ **[Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp](0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md)**
+*Host OS security, Docker daemon & socket security, IAM, minimised footprint, kernel parameters, AppArmor & Seccomp.*
+- 🛡️ **[Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp](0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md)** *(includes Docker Daemon & Unix Socket Security, Port 2375/2376 TLS Hardening, and Container Breakout Mitigations)*
 - 🛡️ **[Module 0-7-2: Pod Security Standards & SecurityContexts](0-7-2_pod_security_standards_and_admission.md)**
 - ⚙️ **[Module 0-3: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md)**
 
