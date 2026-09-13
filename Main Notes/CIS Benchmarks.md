@@ -13,7 +13,7 @@ related_concepts:
 against:
   - "[[Falco]]"
 reference_guides:
-  - "[[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md]]"
+  - "[[Reference Notes/0-7-7_host_operating_system_and_node_hardening.md]]"
 tags:
   - kubernetes/security
   - kubernetes/cis-benchmarks

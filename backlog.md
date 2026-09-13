@@ -2,6 +2,47 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-13] - CKS System Hardening 2-Module Architectural Split (Host vs Workload)
+
+### Reference Notes (Layer 1 Core Foundation Split)
+- **Architectural De-Monolithization of Module 0-7-7:**
+  - Resolved monolithic 1,400+ line note into two high-focus, specialized reference modules:
+  - **[[Reference Notes/0-7-7_host_operating_system_and_node_hardening.md|Module 0-7-7: Host Operating System & Node Hardening]]** (~550 lines):
+    - Encapsulates Infrastructure / Node OS security:
+    - Section 1: Multi-Layer Host Defense model.
+    - Section 2: CIS Kubernetes Benchmarks & `kube-bench` (master/worker remediations, static pod inotify crash pitfalls).
+    - Section 3: Host Network, Sockets & Process Hardening:
+      - `3.1`: Active listening sockets (`ss` vs `lsof`), dual meaning of `Recv-Q` and `Send-Q` (`LISTEN` accept queue depth vs `ESTABLISHED` data buffer bytes), connection counting one-liners, IP grouping, global `ss -s` totals, and `sock_diag` Netlink vs `/proc/net/tcp` performance.
+      - `3.2`: UFW firewall default deny incoming rules.
+      - `3.3`: Linux kernel module blacklisting (`/etc/modprobe.d/blacklist.conf` with fake install `/bin/true`).
+      - `3.4`: Docker daemon socket security (`/var/run/docker.sock` breakout prevention, port 2375 vs 2376 mTLS, systemd vs `daemon.json` conflicts).
+      - `3.5`: Linux privilege escalation defense: SUID/SGID discovery with `find / -perm -4000`, 4th octal permission digit anatomy, `chmod u-s`, `visudo`, `env_reset`, `secure_path`, and `PR_SET_NO_NEW_PRIVS` link.
+      - `3.6`: Systemd unit architecture (11 unit types table), the socket-activation trap, `systemctl mask` vs `disable`, and timer persistence auditing.
+      - `3.7`: SSH daemon hardening (`/etc/ssh/sshd_config`, `sshd -t`).
+  - **[[Reference Notes/0-7-9_workload_kernel_isolation_seccomp_apparmor_and_capabilities.md|Module 0-7-9: Workload Kernel Isolation, Seccomp, AppArmor & Linux Capabilities]]** (~850 lines):
+    - Encapsulates Container Workload / Kernel boundary security:
+    - Section 1: Mandatory Access Control: AppArmor (LSM hook flow diagram, modes, profile syntax, tooling, K8s v1.30+ GA native `appArmorProfile` vs legacy beta annotations, denial log decoding).
+    - Section 2: Linux Capabilities & Principle of Least Privilege (POSIX capabilities decomposition into ~41 units, 5 capability sets, K8s `drop: ["ALL"]`, `add: ["NET_BIND_SERVICE"]`, CLI auditing via `getpcaps` and `capsh`).
+    - Section 3: Linux Syscall Mechanics & `strace` Diagnostic Profiling (Ring 3 $\to$ Ring 0 transitions, `syscall` traps, `sys_call_table` dispatcher, live `strace -c` and `-p` PID profiling).
+    - Section 4: Linux Seccomp (BPF filters, action codes `SCMP_ACT_*`, node path resolution `/var/lib/kubelet/seccomp/`, 4-stage profiling cycle: `audit.json` $\to$ syslog $\to$ `violation.json` $\to$ `fine-grained.json`, `RuntimeDefault`, and cluster-wide `seccompDefault`).
+    - Section 5: Sandboxed Container Runtimes: gVisor (`runsc`) & Kata Containers (virtualized userspace kernel vs MicroVMs, `RuntimeClass`).
+    - Section 6: Evolutionary Conceptual Bridging (Classical DAC $\to$ Namespaces/cgroups $\to$ Multi-tenant Kernel Isolation).
+
+### Master Indexes & Cross-Domain Link Synchronization
+- **Updated CKS Reference MOC ([[Reference Notes/0-Index - CKS.md|0-Index - CKS.md]]):** Section 2 (System Hardening) now maps to both `Module 0-7-7` (Host OS) and `Module 0-7-9` (Workload Kernel Isolation).
+- **Updated Kubernetes Reference MOC ([[Reference Notes/0-Index - Kubernetes.md|0-Index - Kubernetes.md]]):** Domain 6 indexed with both `Module 0-7-7` and `Module 0-7-9`.
+- **Updated Main Notes:** Relinked [[Main Notes/AppArmor.md|AppArmor]], [[Main Notes/AppArmor in Kubernetes.md|AppArmor in Kubernetes]], [[Main Notes/Seccomp.md|Seccomp]], [[Main Notes/Seccomp in Kubernetes.md|Seccomp in Kubernetes]], [[Main Notes/Linux Capabilities.md|Linux Capabilities]], and [[Main Notes/gVisor and Sandboxed Containers.md|gVisor]] to `Module 0-7-9`. Relinked [[Main Notes/CIS Benchmarks.md|CIS Benchmarks]], [[Main Notes/kube-bench.md|kube-bench]], and [[Main Notes/docker - Daemon and Socket Security.md|Docker Daemon Security]] to `Module 0-7-7`.
+- **Updated Digital Garden Pattern ([[Digital Garden/Pattern - Defense-in-Depth Container and Kubernetes Security.md|Pattern - Defense-in-Depth]]):** Cross-links updated.
+- **Removed Deprecated Monolithic File:** Purged `Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md`.
+
+### Verification & Auditing
+- **Vault Audit (`review_vault.py`):**
+  - Inflow Coverage: 100% OK (156 covered, 0 ignored out of 156 files)
+  - Link Integrity: 100% OK (2,734 links validated)
+  - Frontmatter Audit: 100% OK (All notes conform to templates)
+
+---
+
 ## [2026-09-13] - CKS System Hardening Deep Overhaul, Linux Capabilities, AppArmor & Syscall Profiling
 
 ### Reference Notes (Layer 1 Core Foundation)

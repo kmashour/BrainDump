@@ -102,6 +102,6 @@ timeline
 
 ## 🔍 Related References & Study Guides
 
-* **Core Reference Module:** [[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md#34-docker-daemon--container-runtime-socket-security-cks-core|Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp]]
+* **Core Reference Module:** [[Reference Notes/0-7-7_host_operating_system_and_node_hardening.md#34-docker-daemon--container-runtime-socket-security-cks-core|Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp]]
 * **CKS Hands-On Scenario:** [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md#scenario-15-docker-daemon-hardening--unix-socket-isolation|CKS Exam Practice Playbook: Scenario 15]]
 * **Parent Concept:** [[Main Notes/docker|docker]]

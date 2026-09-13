@@ -27,8 +27,9 @@ tags:
 - 🔒 **[Module 0-1: API Mechanics & kubectl CLI](0-1_kube_api_and_kubectl.md)**
 
 ## 🛡️ 2. System Hardening (15%)
-*Host OS security, Docker daemon & socket security, IAM, minimised footprint, kernel parameters, AppArmor & Seccomp.*
-- 🛡️ **[Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp](0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md)** *(Host OS SUID/sudoers/SSH hardening, service masking, Docker daemon/socket security, AppArmor MAC profiles, Linux Capabilities decomposition, Syscalls & strace profiling, and Seccomp)*
+*Host OS security, Docker daemon & socket security, IAM, minimised footprint, kernel parameters, AppArmor, Capabilities & Seccomp.*
+- 🛡️ **[Module 0-7-7: Host Operating System & Node Hardening](0-7-7_host_operating_system_and_node_hardening.md)** *(Host OS SUID/SGID auditing, sudoers & SSH hardening, systemd unit architecture & masking, socket connection queues with ss, Docker socket breakout prevention, and CIS kube-bench)*
+- 🔒 **[Module 0-7-9: Workload Kernel Isolation, Seccomp, AppArmor & Linux Capabilities](0-7-9_workload_kernel_isolation_seccomp_apparmor_and_capabilities.md)** *(AppArmor path-based MAC profiles, Linux Capabilities POSIX decomposition & stripping, Linux syscall mechanics & live strace profiling, Seccomp BPF filters, and gVisor/Kata sandboxing)*
 - 🛡️ **[Module 0-7-2: Pod Security Standards & SecurityContexts](0-7-2_pod_security_standards_and_admission.md)** *(includes OPA Gatekeeper Rego policies & Multi-Tenancy Node Isolation)*
 - ⚙️ **[Module 0-3: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md)**
 - 📦 **Core Landing Concepts:**

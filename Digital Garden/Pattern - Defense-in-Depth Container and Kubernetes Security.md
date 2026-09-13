@@ -83,5 +83,6 @@ flowchart TD
 
 * **Supply Chain & Image Policy:** [[Reference Notes/0-7-5_supply_chain_security_and_imagepolicywebhook.md|Module 0-7-5: Supply Chain Security & ImagePolicyWebhook]]
 * **Runtime Threat Detection:** [[Reference Notes/0-7-6_runtime_security_falco_and_audit_logging.md|Module 0-7-6: Runtime Security (Falco) & API Auditing]]
-* **Host Hardening & CIS Benchmarks:** [[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md|Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp]]
+* **Host Hardening & CIS Benchmarks:** [[Reference Notes/0-7-7_host_operating_system_and_node_hardening.md|Module 0-7-7: Host Operating System & Node Hardening]]
+* **Workload Kernel Isolation & Sandboxing:** [[Reference Notes/0-7-9_workload_kernel_isolation_seccomp_apparmor_and_capabilities.md|Module 0-7-9: Workload Kernel Isolation, Seccomp, AppArmor & Linux Capabilities]]
 * **Hands-on Security Playbook:** [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Exam Practice Playbook]]

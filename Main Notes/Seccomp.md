@@ -13,7 +13,7 @@ related_concepts:
 against:
   - "[[Unconfined Containers]]"
 reference_guides:
-  - "[[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md]]"
+  - "[[Reference Notes/0-7-9_workload_kernel_isolation_seccomp_apparmor_and_capabilities.md]]"
 tags:
   - kubernetes/security
   - linux/security
