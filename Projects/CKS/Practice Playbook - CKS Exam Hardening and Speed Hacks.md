@@ -1133,6 +1133,75 @@ Upgrade master node `controlplane` from version `1.29.0` to `1.29.2`.
 
 ---
 
+## 🔒 Scenario 19: Linux Capabilities Stripping & Least Privilege Verification
+
+### Problem Statement
+A microservice pod named `production-proxy` running in the `security-demo` namespace is currently executing with standard container default capabilities. An audit flagged this as a high risk because unnecessary capabilities (such as `CAP_NET_RAW`, `CAP_SYS_CHROOT`, and `CAP_SYS_TIME`) remain accessible.
+1. Reconfigure the pod manifest so that **all default capabilities are dropped**.
+2. Grant only **`NET_BIND_SERVICE`** to allow the container to bind to port 80.
+3. Enforce **`allowPrivilegeEscalation: false`** to enable the kernel's `no_new_privs` bit.
+4. Verify that privileged syscalls like changing the system clock (`date -s`) fail with `Operation not permitted`.
+5. On the host node, inspect the running container process using `crictl` and `getpcaps` to confirm the stripped capability set.
+
+### Step-by-Step Implementation
+
+1. **Craft the Hardened Pod Manifest (`hardened-proxy.yaml`):**
+   ```yaml
+   apiVersion: v1
+   kind: Pod
+   metadata:
+     name: production-proxy
+     namespace: security-demo
+   spec:
+     containers:
+     - name: proxy
+       image: nginx:alpine
+       securityContext:
+         allowPrivilegeEscalation: false
+         capabilities:
+           drop:
+           - ALL
+           add:
+           - NET_BIND_SERVICE
+   ```
+
+2. **Apply Workload:**
+   ```bash
+   kubectl create namespace security-demo --dry-run=client -o yaml | kubectl apply -f -
+   kubectl apply -f hardened-proxy.yaml
+   kubectl get pod -n security-demo production-proxy
+   ```
+
+3. **Verify Capability Stripping via Container Execution:**
+   Attempt to execute a system-time change (which requires `CAP_SYS_TIME`):
+   ```bash
+   kubectl exec -n security-demo production-proxy -- date -s "2030-01-01 12:00:00"
+   # Expected Output: date: can't set date: Operation not permitted
+   ```
+
+4. **Audit Capabilities on the Worker Node:**
+   ```bash
+   # SSH to the node hosting the pod (e.g. node01)
+   ssh node01
+
+   # Identify the container PID via crictl:
+   CONTAINER_ID=$(crictl ps --name=proxy -q | head -n1)
+   PID=$(crictl inspect $CONTAINER_ID | jq .info.pid)
+
+   # Inspect active capabilities of the container process:
+   getpcaps $PID
+   # Expected Output: <PID>: cap_net_bind_service=ep
+
+   # Alternatively, decode directly from /proc:
+   grep CapEff /proc/$PID/status
+   # Decode hexadecimal mask:
+   capsh --decode=$(grep CapEff /proc/$PID/status | awk '{print $2}')
+   # Expected Output: 0x0000000000000400=cap_net_bind_service
+   exit
+   ```
+
+---
+
 ## 💡 CKS Exam Checklist & Quick Reference
 
 | Exam Objective | High-Frequency File / Command | Key Flag or Resource |
@@ -1150,5 +1219,8 @@ Upgrade master node `controlplane` from version `1.29.0` to `1.29.2`.
 | **KubeLinter / Immutability** | `kubelinter lint <file.yaml>` | `readOnlyRootFilesystem: true`, `emptyDir: {}` mount |
 | **OPA Gatekeeper** | `ConstraintTemplate` & `Constraint` | `rego: | ...`, `kinds: [Namespace]` |
 | **Cluster Upgrade** | `kubeadm upgrade apply v1.XX.Y` | `kubectl drain --ignore-daemonsets`, `apt-mark hold` |
+| **Linux Capabilities** | `securityContext.capabilities` | `drop: [ALL]`, `add: [NET_BIND_SERVICE]`, `capsh --decode` |
+| **Syscall Tracing / strace** | `strace -c <cmd>`, `strace -p <PID>` | Discover required syscalls for Seccomp profile |
+| **Host Service Masking** | `systemctl mask <service>` | Symlinks unit to `/dev/null`, prevents start |
 
 

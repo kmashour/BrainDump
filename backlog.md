@@ -2,6 +2,41 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-13] - CKS System Hardening Deep Overhaul, Linux Capabilities, AppArmor & Syscall Profiling
+
+### Reference Notes (Layer 1 Core Foundation)
+- **Comprehensive Overhaul of Module 0-7-7:**
+  - [[Reference Notes/0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md|Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp]]:
+    - **Expanded Host OS Security (Section 3):** Added Section 3.5 (Linux Privilege Escalation Defense: SUID/SGID discovery with `find -perm -4000`, `visudo`, `secure_path`, `env_reset`), Section 3.6 (Host Service Footprint Reduction: `systemctl mask` vs `disable`, obsolete package pruning), and Section 3.7 (SSH Daemon Hardening matrix: public key enforcement, root login disabling, `sshd -t`).
+    - **AppArmor Deep Dive (Section 4):** Overhauled AppArmor with LSM hook architecture diagram, operational modes (`enforce`, `complain`, `unconfined`), profile rule anatomy (globbing, file access modes, execution qualifiers `ix`/`px`/`ux`/`cx`, capabilities & network directives), host profiling toolchain (`aa-status`, `aa-genprof`, `aa-logprof`, `apparmor_parser`), Kubernetes integration (v1.30+ GA native `.spec.securityContext.appArmorProfile` vs legacy beta annotations), and kernel denial log decoding (`type=1400 apparmor="DENIED"`).
+    - **Linux Capabilities & Least Privilege (Section 5):** Added POSIX capabilities decomposition breakdown (~41 units), 5 kernel capability sets (`P`, `E`, `I`, `B`, `A`), high-risk container capability threat matrix (`CAP_SYS_ADMIN`, `CAP_NET_ADMIN`, `CAP_SYS_TIME`, `CAP_SYS_PTRACE`), CLI auditing (`getpcaps`, `capsh --decode`, `getcap`, `setcap`), and declarative Kubernetes SecurityContext hardening (`drop: ["ALL"]`, `add: ["NET_BIND_SERVICE"]`, `allowPrivilegeEscalation: false`).
+    - **Linux Syscall Mechanics & `strace` Diagnostic Profiling (Section 6):** Documented system call transition architecture (Ring 3 userspace to Ring 0 kernelspace, CPU trap `syscall`, `sys_call_table` dispatcher), live behavioral tracing with `strace` (`strace -c` statistics, `-e trace=`, `-p -f` live PID tracing), and bridging `strace` profiling to custom Seccomp JSON whitelist generation.
+    - **Structural Renumbering:** Renumbered Seccomp to Section 7, Sandboxed Container Runtimes (gVisor & Kata) to Section 8, and Workload Isolation Evolutionary Bridge to Section 9.
+    - **Updated Citations:** Added official documentation references for AppArmor, Linux Capabilities, and `strace`.
+
+### Main Notes (Atomic Landing Concepts)
+- **Created 2 Core Landing Notes:**
+  - [[Main Notes/AppArmor.md|AppArmor]]: Path-based Mandatory Access Control (MAC), kernel LSM hooks, execution modes, profile anatomy, Kubernetes GA integration, problem solver, operational and failure impact, and dataview query.
+  - [[Main Notes/Linux Capabilities.md|Linux Capabilities]]: POSIX capability sets, monolithic root decomposition, capability stripping, least privilege, threat analysis, operational and failure impact, and dataview query.
+
+### Exam Playbooks & Speed Hacks (Layer 2)
+- **Expanded CKS Exam Practice Playbook:**
+  - [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Exam Practice Playbook]]:
+    - Added **Scenario 19: Linux Capabilities Stripping & Least Privilege Verification**: Step-by-step manifest creation with `drop: ["ALL"]` and `add: ["NET_BIND_SERVICE"]`, container runtime clock modification verification (`date -s` failure), and host-level container capability auditing via `crictl`, `getpcaps`, and `capsh --decode`.
+    - Enriched **CKS Exam Quick Reference Table** with rows for Linux Capabilities, Syscall Tracing with `strace`, and Host Service Masking.
+
+### Master Index Updates
+- **Updated CKS Reference MOC:**
+  - [[Reference Notes/0-Index - CKS.md|0-Index - CKS.md]]: Updated exam playbook link to 19 scenarios, updated Module 0-7-7 coverage description, and indexed newly created landing notes [[Main Notes/AppArmor.md|AppArmor]] and [[Main Notes/Linux Capabilities.md|Linux Capabilities]].
+
+### Verification & Auditing
+- **Vault Audit (`review_vault.py`):**
+  - Inflow Coverage: 100% OK (156 covered, 0 ignored out of 156 files)
+  - Link Integrity: 100% OK (2,727 links validated)
+  - Frontmatter Audit: 100% OK (All notes conform to templates)
+
+---
+
 ## [2026-09-11] - Domain 13 (Microsoft Azure) Initialization & AZ-900 Full Course Ingestion
 
 ### Domain 13 Initialization & Inflow Capture

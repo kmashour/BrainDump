@@ -16,7 +16,7 @@ tags:
 > **KubeAstronaut Certification Track: CKS**
 > This index maps transcript knowledge, security hardening PoCs, and core Kubernetes security concepts required for the CKS exam.
 > 
-> 🚀 **Hands-On Exam Playbook (18 Scenarios):** [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|🛡️ CKS Exam Practice Playbook (Hardening & Speed Hacks)]]
+> 🚀 **Hands-On Exam Playbook (19 Scenarios):** [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|🛡️ CKS Exam Practice Playbook (Hardening & Speed Hacks)]]
 
 ---
 
@@ -28,9 +28,14 @@ tags:
 
 ## 🛡️ 2. System Hardening (15%)
 *Host OS security, Docker daemon & socket security, IAM, minimised footprint, kernel parameters, AppArmor & Seccomp.*
-- 🛡️ **[Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp](0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md)** *(includes Docker Daemon & Unix Socket Security, Port 2375/2376 TLS Hardening, and Container Breakout Mitigations)*
+- 🛡️ **[Module 0-7-7: Host System Hardening, CIS Benchmarks, AppArmor & Seccomp](0-7-7_system_hardening_seccomp_apparmor_and_syscalls.md)** *(Host OS SUID/sudoers/SSH hardening, service masking, Docker daemon/socket security, AppArmor MAC profiles, Linux Capabilities decomposition, Syscalls & strace profiling, and Seccomp)*
 - 🛡️ **[Module 0-7-2: Pod Security Standards & SecurityContexts](0-7-2_pod_security_standards_and_admission.md)** *(includes OPA Gatekeeper Rego policies & Multi-Tenancy Node Isolation)*
 - ⚙️ **[Module 0-3: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md)**
+- 📦 **Core Landing Concepts:**
+  - [[Main Notes/AppArmor.md|AppArmor]]: Path-based Mandatory Access Control (MAC) and container profile enforcement.
+  - [[Main Notes/Linux Capabilities.md|Linux Capabilities]]: POSIX capability sets, capability stripping (`drop: [ALL]`), and least privilege.
+  - [[Main Notes/Seccomp.md|Seccomp]]: Kernel syscall whitelisting, BPF filter hooks, and node-wide defaulting (`seccompDefault`).
+
 
 ## 🔐 3. Security & Secret Encryption (20%)
 *Secret management, KMS integration, EncryptionConfiguration, mTLS.*
