@@ -337,6 +337,21 @@ Load an AppArmor profile named `k8s-deny-write` on worker node `node01`. Deploy 
    # Expected Output: touch: /tmp/testfile: Permission denied
    ```
 
+4. **Profile Lifecycle Management (Switching Modes & Kernel Unloading):**
+   ```bash
+   # Switch active profile from enforce to complain mode (testing / non-blocking)
+   aa-complain /etc/apparmor.d/k8s-deny-write
+
+   # Switch back to enforce mode (hard-blocking)
+   aa-enforce /etc/apparmor.d/k8s-deny-write
+
+   # Unload / remove profile from the running kernel's RAM
+   apparmor_parser -R /etc/apparmor.d/k8s-deny-write
+
+   # Confirm removal (k8s-deny-write will no longer be listed)
+   aa-status | grep k8s-deny-write
+   ```
+
 ---
 
 ## 🔒 Scenario 6: Seccomp Profile Deployment, Enforcement & Node Defaulting

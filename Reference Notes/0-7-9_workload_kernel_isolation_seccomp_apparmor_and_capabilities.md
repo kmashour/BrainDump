@@ -922,21 +922,45 @@ aa-genprof /root/add_data.sh
    * Prompt: Path `/proc/filesystems`? $\to$ Press `(D)eny`.
 5. Press `(S)ave` and `(F)inish`. The profile is automatically saved to `/etc/apparmor.d/root.add_data.sh` and locked into **enforce mode**!
 
-### 5.6 Profile Management Commands (`apparmor_parser`)
-```bash
-# Parse and load a profile into the kernel
-apparmor_parser -q /etc/apparmor.d/custom-profile
+### 5.6 AppArmor Profile Management: Loading, Reloading, Mode Switching & Removal
 
-# Reload an updated profile (in-place replacement)
-apparmor_parser -r /etc/apparmor.d/custom-profile
+In CKS exam scenarios and KodeKloud labs, you will be tasked with manipulating profile states on specific nodes (e.g. loading `usr.sbin.nginx` as `custom-nginx` on `controlplane`, changing its mode to `enforce`, switching to `complain`, or unloading/removing it entirely).
 
-# Unload / remove a profile from the kernel
-apparmor_parser -R /etc/apparmor.d/custom-profile
+#### 5.6.1 The Crucial Distinction: Disk File vs. Kernel Profile Name
+* **The File on Disk:** Placed under `/etc/apparmor.d/` (e.g. `/etc/apparmor.d/usr.sbin.nginx` or `k8s-deny-write`).
+* **The In-Memory Kernel Name:** Declared on the first line inside the file (e.g. `profile custom-nginx { ... }`).
+* **The Exam Trap:** The file path is passed to CLI commands (`apparmor_parser`, `aa-enforce`), but **verification tools (`aa-status | grep ...`) display the internal profile name (`custom-nginx`)**, NOT the filename!
 
-# Switch modes
-aa-complain /etc/apparmor.d/custom-profile
-aa-enforce /etc/apparmor.d/custom-profile
-```
+---
+
+#### 5.6.2 Complete Command Matrix for Node Lifecycle Management
+
+| Operation | Command | Purpose & Kernel Mechanism |
+| :--- | :--- | :--- |
+| **Initial Load** | `apparmor_parser -q /etc/apparmor.d/<file>` | Compiles text profile and injects binary rules into kernel memory via SecurityFS. `-q` runs quietly. |
+| **Force Reload / Replace** | `apparmor_parser -r /etc/apparmor.d/<file>` | **Safe Default:** Atomically replaces an existing profile in-place. Avoids `"profile already exists"` errors. |
+| **Switch to Enforce Mode** | `aa-enforce /etc/apparmor.d/<file>` | Hard-blocks violations with `Permission denied` (`-EACCES`) and logs denials. Overrides internal complain flags. |
+| **Switch to Complain Mode** | `aa-complain /etc/apparmor.d/<file>` | Permissive testing: does **not** block violations; logs audit warnings to `/var/log/syslog` for behavioral profiling. |
+| **Unload / Remove from Kernel** | `apparmor_parser -R /etc/apparmor.d/<file>` | **Instant Removal:** Removes the profile from the running Linux kernel's memory. `aa-status` will immediately stop listing it. |
+| **Permanently Disable Profile** | `aa-disable /etc/apparmor.d/<file>` | Creates a symlink in `/etc/apparmor.d/disable/` and unloads it from kernel RAM so it never loads on boot. |
+| **Re-Enable Disabled Profile** | `rm -f /etc/apparmor.d/disable/<file>`<br>`apparmor_parser -r /etc/apparmor.d/<file>` | Removes the disable symlink and re-injects the profile into kernel memory. |
+| **Verify Active Profiles** | `aa-status \| grep <profile-name>` | Audits kernel memory to confirm whether the profile is listed under `profiles are in enforce mode` or `complain mode`. |
+
+---
+
+#### 5.6.3 Running Unconfined (Container vs. Host Level)
+* **At the Kubernetes Pod Level:**  
+  If a pod needs to bypass AppArmor entirely, configure its `securityContext`:
+  ```yaml
+  securityContext:
+    appArmorProfile:
+      type: Unconfined
+  ```
+* **At the Host Node Level:**  
+  Processes running outside AppArmor confinement execute as `unconfined`. You can verify unconfined processes running with:
+  ```bash
+  aa-status | grep "processes are unconfined"
+  ```
 
 ### 5.7 Enforcing AppArmor in Kubernetes Pods
 
