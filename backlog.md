@@ -2,6 +2,22 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-16] - CKS Workload Kernel Isolation: Complete First-Principles Pedagogical Overhaul of Module 0-7-9
+
+### Reference Notes (Layer 1 Core Foundation)
+- **Comprehensive Overhaul of Module 0-7-9 ([[Reference Notes/0-7-9_workload_kernel_isolation_seccomp_apparmor_and_capabilities.md|0-7-9: Workload Kernel Isolation, Seccomp, AppArmor & Linux Capabilities]]):**
+  - **Pedagogical Re-architecture for Beginners:** Re-sequenced the module from ground zero (Hardware $\to$ Kernel $\to$ Userspace vs Kernelspace $\to$ Syscalls $\to$ Capabilities $\to$ Seccomp $\to$ AppArmor $\to$ Sandboxing) to provide an intuitive learning curve.
+  - **Integrated KodeKloud CKS Inflow Course Material:**
+    - Integrated the bank lobby vs bank vault analogy for user space (Ring 3) vs kernel space (Ring 0).
+    - Added step-by-step system call lifecycle sequence diagram and `strace` hands-on walkthroughs (`strace touch /tmp/error.log` with 23 env vars, `strace -c` statistics, `strace -p <PID>` on `etcd`).
+    - Demystified why `date -s` fails inside root containers via container runtime capability stripping (`DefaultCapabilities()` Go source code).
+    - Included the `amicontained` comparison showing Docker default (64 blocked syscalls) vs Kubernetes default (Seccomp disabled with only 21 blocked syscalls).
+    - Added step-by-step interactive AppArmor profile generation using `aa-genprof` and `aa-logprof` with the `/root/add_data.sh` script.
+    - Deepened container sandboxing architecture for **gVisor** (Go Sentry application kernel + Gofer file proxy process + independent network stack) and **Kata Containers** (dedicated MicroVM + independent guest kernel per pod + nested virtualization constraints).
+  - **Enriched Synthesis & Decision Matrix:** Added a 5-layer comparison matrix, 3 comprehensive AARF deep-intuition analyses, and an updated evolutionary bridging timeline.
+
+---
+
 ## [2026-09-16] - CKS Host Hardening: UFW Firewall Architecture & Ingress Port Restriction
 
 ### Reference Notes (Layer 1 Core Foundation)
