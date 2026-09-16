@@ -209,23 +209,82 @@ systemctl disable rpcbind inetd telnet
 systemctl mask rpcbind # Symlinks to /dev/null to permanently prevent activation
 ```
 
-### 3.2 UFW (Uncomplicated Firewall) Rules
+### 3.2 UFW (Uncomplicated Firewall) Architecture & Rule Syntax
+
+UFW operates as a high-level frontend for `iptables` / Netfilter packet filtering. In CKS exams and CIS host hardening scenarios, administrators must enforce least-privilege host firewall policies, restricting control plane ports (`6443`, `2379:2380`, `10250`) and telemetry ports (e.g. `9090`) strictly to authorized subnets or specific nodes.
+
+#### 3.2.1 Firewall Lifecycle & Safe Baseline
 ```bash
-# Enable firewall with default deny incoming
+# 1. Enforce default deny incoming, default allow outgoing
 ufw default deny incoming
 ufw default allow outgoing
 
-# Allow standard SSH management port
+# 2. CRITICAL: Always allow SSH prior to activation to prevent administrative lockout
 ufw allow 22/tcp
 
-# On Control Plane Nodes: Allow API server and Kubelet communication
-ufw allow 6443/tcp comment "Kubernetes API Server"
-ufw allow 2379:2380/tcp comment "etcd server client/peer API"
-ufw allow 10250/tcp comment "Kubelet API"
-
-# Enable firewall
+# 3. Enable firewall daemon and inspect verbose status
 ufw enable
 ufw status verbose
+```
+
+#### 3.2.2 Rule Anatomy & The Directional Syntax Model
+UFW directional rules follow a strict pattern:
+`ufw [allow|deny|reject] [proto <protocol>] from <source> [port <source-port>] to <destination> [port <destination-port>]`
+
+Alternatively:
+`ufw [allow|deny] from <source> to <destination> port <port> proto <protocol>`
+
+##### Anatomy of `to any` in Host Rules:
+Consider the standard hardening rule:
+```bash
+ufw allow from 135.22.65.0/24 to any port 9090 proto tcp
+```
+
+* **`from 135.22.65.0/24` (Source IP/Subnet):** Matches ingress packets originating strictly from within the `135.22.65.0/24` CIDR block.
+* **`to any` (Destination IP Wildcard):** 
+  * In UFW syntax, destination port (`port 9090`) is an attribute of the target host. Because the grammar expects `to <destination>`, a target destination placeholder is syntactically required before specifying the port.
+  * Specifying **`any`** sets a wildcard destination (`0.0.0.0/0`). It instructs Netfilter to accept the packet regardless of which local network interface (`eth0`, `ens3`, `cni0`, or loopback) or local IP address on this host receives the packet.
+* **`port 9090` (Destination Port):** The local listening service port (e.g., Prometheus server / Node Exporter).
+* **`proto tcp` (Protocol Enforcement):** Enforces TCP packet validation (dropping UDP and ICMP traffic targeting that port).
+
+##### Multi-Homed Nodes: `to any` vs. Strict Interface Binding
+Kubernetes nodes in production typically operate with multiple network interfaces:
+* `eth0` / `ens3`: Private cluster overlay / management network (`10.240.0.11`)
+* `eth1`: Public WAN / internet-facing interface (`198.51.100.25`)
+* `cni0` / `flannel.1`: Container networking bridge
+
+* **With `to any`:** Packets from `135.22.65.0/24` arriving on **either** the public or private interface are permitted.
+* **With Strict Host IP Binding (Stricter Hardening):** To prevent port exposure on public or untrusted interfaces, replace `any` with the exact private IP of the node:
+  ```bash
+  ufw allow from 135.22.65.0/24 to 10.240.0.11 port 9090 proto tcp
+  ```
+
+#### 3.2.3 Netfilter & `iptables` Translation Under the Hood
+UFW compiles high-level CLI commands into native `iptables` chains (`ufw-user-input`):
+```text
+-A ufw-user-input -p tcp -s 135.22.65.0/24 -d 0.0.0.0/0 --dport 9090 -j ACCEPT
+```
+Notice that **`to any`** translates directly to **`-d 0.0.0.0/0`** (destination address wildcard).
+
+#### 3.2.4 Control Plane Service Hardening & Rule Deletion
+```bash
+# Allow API server access strictly from worker node subnet
+ufw allow from 192.168.1.0/24 to any port 6443 proto tcp comment "Kubernetes API Server"
+
+# Allow etcd client/peer traffic strictly from fellow control plane nodes
+ufw allow from 192.168.1.10 to any port 2379:2380 proto tcp comment "etcd cluster traffic"
+
+# Allow Kubelet API access strictly from the API server IP
+ufw allow from 192.168.1.10 to any port 10250 proto tcp comment "Kubelet API"
+
+# Numbered rules listing (essential for targeted deletion)
+ufw status numbered
+
+# Delete rule by its exact index number
+ufw delete 3
+
+# Reload firewall state without terminating active connections
+ufw reload
 ```
 
 ### 3.3 Linux Kernel Module Blacklisting

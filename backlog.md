@@ -2,6 +2,24 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-16] - CKS Host Hardening: UFW Firewall Architecture & Ingress Port Restriction
+
+### Reference Notes (Layer 1 Core Foundation)
+- **Enriched Module 0-7-7 ([[Reference Notes/0-7-7_host_operating_system_and_node_hardening.md|0-7-7: Host Operating System & Node Hardening]]):**
+  - Upgraded **Section 3.2 (UFW Architecture & Rule Syntax)**:
+    - Added comprehensive directional syntax anatomy: `ufw [allow|deny] from <source> to <destination> port <port> proto <protocol>`.
+    - Detailed the mechanics of the `to any` destination wildcard (`0.0.0.0/0`) and wildcard local interface matching.
+    - Contrasted `to any` against strict multi-homed private interface binding (`to <node_private_ip>`).
+    - Documented low-level Netfilter/`iptables` chain compilation (`-A ufw-user-input -p tcp -s <CIDR> -d 0.0.0.0/0 --dport <port> -j ACCEPT`).
+    - Added CKS control plane service recipes (`6443`, `2379:2380`, `10250`) and numbered rule deletion workflows (`ufw status numbered`, `ufw delete <id>`).
+
+### Exam Playbooks & Speed Hacks (Layer 2)
+- **Enriched CKS Exam Practice Playbook ([[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Practice Playbook]]):**
+  - Added **Scenario 20: Host Firewall Hardening with UFW & Subnet Restriction**: Complete scenario covering default policies (`deny incoming`), SSH lockout prevention (`ufw allow 22/tcp`), restricted API server / Prometheus access from specific subnets, rule inspection, and index-based deletion.
+  - Added **Host Firewall / UFW** to the **CKS Exam Quick Reference Table**.
+
+---
+
 ## [2026-09-13] - CKS System Hardening 2-Module Architectural Split (Host vs Workload)
 
 ### Reference Notes (Layer 1 Core Foundation Split)

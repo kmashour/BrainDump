@@ -1202,6 +1202,59 @@ A microservice pod named `production-proxy` running in the `security-demo` names
 
 ---
 
+## 🛡️ Scenario 20: Host Firewall Hardening with UFW & Subnet Restriction
+
+### Problem Statement
+As part of node hardening for control plane and worker nodes, configure `ufw` to restrict incoming network traffic to Kubernetes cluster services:
+1. Enforce default policies: `deny` incoming and `allow` outgoing.
+2. Ensure SSH on port 22/tcp is explicitly allowed to avoid administrative lockout.
+3. Allow incoming traffic to the Kubernetes API server on port `6443/tcp` strictly from worker subnet `192.168.1.0/24`.
+4. Allow incoming traffic on port `9090/tcp` (Prometheus) strictly from management CIDR `135.22.65.0/24` to any local IP interface.
+5. Enable UFW, list active rules with numeric IDs, and demonstrate deleting an erroneous rule by index.
+
+### Step-by-Step Implementation
+
+1. **Configure Safe Defaults & Management Access:**
+   ```bash
+   # Set baseline policy
+   ufw default deny incoming
+   ufw default allow outgoing
+
+   # Allow SSH BEFORE enabling to prevent lockout
+   ufw allow 22/tcp
+   ```
+
+2. **Define Targeted Ingress Rules:**
+   ```bash
+   # Restrict API server to cluster subnet
+   ufw allow from 192.168.1.0/24 to any port 6443 proto tcp comment "kube-apiserver"
+
+   # Restrict Prometheus telemetry to management subnet
+   # 'to any' matches wildcard destination 0.0.0.0/0 (all local interfaces)
+   ufw allow from 135.22.65.0/24 to any port 9090 proto tcp comment "prometheus"
+   ```
+
+3. **Enable & Validate:**
+   ```bash
+   # Enable firewall
+   ufw enable
+
+   # Check active status and numbered rule index
+   ufw status verbose
+   ufw status numbered
+   ```
+
+4. **Rule Maintenance & Deletion:**
+   ```bash
+   # Delete a rule by its numbered index (e.g. rule #4)
+   ufw delete 4
+
+   # Reload rule set
+   ufw reload
+   ```
+
+---
+
 ## 💡 CKS Exam Checklist & Quick Reference
 
 | Exam Objective | High-Frequency File / Command | Key Flag or Resource |
@@ -1216,6 +1269,7 @@ A microservice pod named `production-proxy` running in the `security-demo` names
 | **NetworkPolicy** | `kind: NetworkPolicy` | `policyTypes: [Ingress, Egress]`, `except: [169.254.169.254/32]` |
 | **CIS Benchmark** | `kube-bench run --targets master,node` | File permission `chmod 600`, ownership `root:root` |
 | **Docker API / Daemon** | `/etc/docker/daemon.json` | `"tlsverify": true`, `"hosts": ["...:2376"]`, audit `docker.sock` mounts |
+| **Host Firewall / UFW** | `ufw allow from <CIDR> to any port <PORT> proto tcp` | `to any` = wildcard local interface (`-d 0.0.0.0/0`), `ufw status numbered` |
 | **KubeLinter / Immutability** | `kubelinter lint <file.yaml>` | `readOnlyRootFilesystem: true`, `emptyDir: {}` mount |
 | **OPA Gatekeeper** | `ConstraintTemplate` & `Constraint` | `rego: | ...`, `kinds: [Namespace]` |
 | **Cluster Upgrade** | `kubeadm upgrade apply v1.XX.Y` | `kubectl drain --ignore-daemonsets`, `apt-mark hold` |
