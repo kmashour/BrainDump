@@ -694,6 +694,18 @@ audit: type=1326 audit(1594067860.484:14536): auid=4294967295 uid=0 gid=0 ses=42
 * **`syscall=51`**: The numeric syscall index on x86_64 (`51` = `getsockname`, `54` = `setsockopt`, `202` = `futex`, `0` = `read`, `257` = `openat`).
 * **`code=0x7ffc0000`**: Action result bitmask corresponding to `SECCOMP_RET_LOG`.
 
+> [!TIP] **KodeKloud & CKS Exam Shortcut: Automated Pod Log Streaming (e.g. for AquaSec Tracee or Security Pods)**
+> When profiling syscalls using daemonsets or security containers with dynamic/randomized pod names (such as **AquaSec Tracee** in KodeKloud), you will often encounter this nested bash one-liner:
+> ```bash
+> kubectl logs -f -n tracee `kubectl get -n tracee pods -l app.kubernetes.io/name=tracee -o custom-columns=":metadata.name" --no-headers`
+> ```
+> * **How it works:** The inner command in backticks (`` `...` ``) runs first. It queries pods with label `app.kubernetes.io/name=tracee` in namespace `tracee`, strips table headers (`--no-headers`), and extracts strictly the raw pod name string (`-o custom-columns=":metadata.name"`). Bash substitutes that name directly into the outer `kubectl logs -f` command without needing manual copy-pasting.
+> * **⚡ Modern CKS Exam Speed Hack:** You do NOT need to type out the lengthy custom-columns command in the exam! Modern `kubectl` allows passing the label selector directly to `kubectl logs`:
+>   ```bash
+>   kubectl logs -f -n tracee -l app.kubernetes.io/name=tracee
+>   ```
+>   This streams live logs from the target pod immediately in one quick command.
+
 #### Stage 3: Observe Total Denial Failure (`violation.json`)
 If you test a profile with zero allowed syscalls (`/var/lib/kubelet/seccomp/profiles/violation.json`):
 ```json

@@ -15,6 +15,7 @@ This backlog tracks all updates, modifications, and restructuring activities per
     - Added step-by-step interactive AppArmor profile generation using `aa-genprof` and `aa-logprof` with the `/root/add_data.sh` script.
     - Deepened container sandboxing architecture for **gVisor** (Go Sentry application kernel + Gofer file proxy process + independent network stack) and **Kata Containers** (dedicated MicroVM + independent guest kernel per pod + nested virtualization constraints).
   - **Diagnostic Deep Dive (Section 3.5 - The System Time Paradox):** Added FAQ answering whether syscalls and capabilities must both be enabled (consecutive 2-gate pipeline: Seccomp bouncer vs Capabilities authorization), why Linux lacks container-specific time, the cluster-wide failure modes of modifying host time (TLS certs, etcd consensus collapse), and the KodeKloud unconfined date-s experiment.
+  - **Tooling Tip (Section 4.6 - Automated Pod Log Streaming):** Added tip deconstructing the nested backtick `kubectl logs` command with `-o custom-columns` and `--no-headers` used for tracing security pods (like AquaSec Tracee), along with the modern CKS exam speed hack (`kubectl logs -f -n <ns> -l <label>`).
   - **Enriched Synthesis & Decision Matrix:** Added a 5-layer comparison matrix, 3 comprehensive AARF deep-intuition analyses, and an updated evolutionary bridging timeline.
 
 ---
