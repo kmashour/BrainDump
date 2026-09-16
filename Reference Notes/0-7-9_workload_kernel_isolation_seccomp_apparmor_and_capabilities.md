@@ -360,7 +360,87 @@ func DefaultCapabilities() []string {
 Notice what is **missing** from this list: **`CAP_SYS_TIME`** is absent!  
 Even though the process has `UID 0`, when `date -s` issues the `settimeofday()` system call, the Linux kernel checks if the calling process possesses `CAP_SYS_TIME`. Because it does not, the kernel rejects the call with `-EPERM` (`Operation not permitted`).
 
-### 3.5 Auditing Capabilities with Linux CLI Tools
+### 3.5 ❓ Deep Diagnostic Question: The System Time Paradox (Syscalls vs. Capabilities)
+
+> [!QUESTION] **The Question That Confuses Most Engineers:**
+> *"In CKS lectures, it is taught that system calls (like `clock_settime` or `settimeofday`) change the system time, and Seccomp can block them. But we also just learned that `CAP_SYS_TIME` controls changing the time! Do BOTH have to be enabled, or does each control a different scope—e.g., is one for 'container-specific time' and the other for the 'host node time'?"*
+
+#### 1. Do Both Have to Be Enabled?
+**YES.** They are **consecutive, sequential security checkpoints in the kernel pipeline**. For a process to alter the clock, **both gates must open**:
+* **Gate 1: Seccomp Filter (The Door Bouncer):** Checks if the process is permitted to invoke the system call function index (`clock_settime` / `settimeofday`). If Seccomp blocks the syscall, execution halts immediately with `-EPERM`. The kernel never even checks who you are or what capabilities you hold.
+* **Gate 2: Capabilities Check (The Authorization Officer):** If Seccomp allows the syscall through, the kernel's execution handler for `clock_settime` checks credentials:
+  ```c
+  if (!capable(CAP_SYS_TIME))
+      return -EPERM;
+  ```
+  If the process lacks `CAP_SYS_TIME`, the kernel denies the request with `Operation not permitted` (`-EPERM`).
+
+```mermaid
+flowchart TD
+    App["Container Process executes 'date -s'"] --> Syscall["Issues Syscall: clock_settime()"]
+
+    subgraph Gate1 ["Gate 1: Seccomp Filter (The Door Bouncer)"]
+        Check1{"Is clock_settime in Seccomp profile?"}
+        Block1["⛔ Denied by Seccomp (EPERM)\n(Never reaches the kernel handler!)"]
+    end
+
+    subgraph Gate2 ["Gate 2: Capabilities Check (The Authorization Officer)"]
+        Check2{"Does process possess CAP_SYS_TIME?"}
+        Block2["⛔ Denied by Capabilities (EPERM)\n'Operation not permitted'"]
+        Success["✅ SUCCESS: Hardware & System Clock Changed!"]
+    end
+
+    Syscall --> Check1
+    Check1 -- Blocked (e.g. RuntimeDefault) --> Block1
+    Check1 -- Allowed (e.g. Unconfined or Custom) --> Check2
+    Check2 -- Missing CAP_SYS_TIME (Default) --> Block2
+    Check2 -- Holds CAP_SYS_TIME --> Success
+```
+
+#### 2. Is One for "Container Time" and the Other for "Host Node Time"?
+**NO. There is no separate 'container system time' in standard Linux containers.**
+
+Containers achieve isolation using Linux **Namespaces**:
+* PID Namespace $\rightarrow$ Process tree isolation
+* NET Namespace $\rightarrow$ IP addresses, interfaces, routing tables
+* MNT Namespace $\rightarrow$ Filesystem mount points
+* IPC Namespace $\rightarrow$ Shared memory segments
+* UTS Namespace $\rightarrow$ Hostname and domain name
+
+Notice: **Historically, there was NO Time Namespace in Linux.**  
+The system clock (`CLOCK_REALTIME` / wall-clock time) is tied directly to the **host hardware Real-Time Clock (RTC)** managed by the host kernel. All containers on a node read and share that exact same hardware clock!
+
+> [!CAUTION]
+> **The Cluster-Wide Disaster of Modifying Time:**  
+> If an attacker or misconfigured pod runs with **both** gates opened:
+> ```yaml
+> securityContext:
+>   capabilities:
+>     add: ["SYS_TIME"]
+>   seccompProfile:
+>     type: Unconfined
+> ```
+> Changing the time (`date -s "2030-01-01"`) modifies the **physical host node's hardware clock**, which immediately triggers three catastrophic failure loops:
+> 1. **TLS Certificate Expiration:** Kubernetes API certificates, Kubelet client certs, and etcd peer certificates become invalid or expired, locking out all `kubectl` operations.
+> 2. **Raft Consensus Collapse:** `etcd` heartbeat lease timers expire prematurely, triggering infinite leader election cycles and taking down the control plane.
+> 3. **Observability Blindness:** Prometheus, Datadog, and Loki drop all incoming metrics and logs because timestamps are recorded in the far future.
+
+#### 3. Resolving the KodeKloud Demonstration
+This explains the exact behavior observed in the CKS course video:
+1. **Running with Seccomp Unconfined:**
+   ```bash
+   docker run -it --rm --security-opt seccomp=unconfined docker/whalesay /bin/sh
+   # date -s '19 APR 2012 22:00:00'
+   date: cannot set date: Operation not permitted
+   ```
+   *Why it failed:* Setting `--security-opt seccomp=unconfined` opened **Gate 1**, but **Gate 2 (`CAP_SYS_TIME`) was still closed** because Docker strips `CAP_SYS_TIME` by default!
+2. **Opening Both Gates (Lab Demonstration Only):**
+   ```bash
+   docker run -it --rm --security-opt seccomp=unconfined --cap-add=SYS_TIME docker/whalesay /bin/sh
+   ```
+   Only when both Gate 1 and Gate 2 are opened does the call reach the hardware clock.
+
+### 3.6 Auditing Capabilities with Linux CLI Tools
 You can inspect capabilities on binaries and running processes using standard tools:
 
 ```bash
@@ -389,7 +469,7 @@ grep Cap /proc/$$/status
 capsh --decode=00000000a80425fb
 ```
 
-### 3.6 Hardening Kubernetes Workloads: Least Privilege Capabilities
+### 3.7 Hardening Kubernetes Workloads: Least Privilege Capabilities
 
 The Kubernetes CIS Benchmark and Pod Security Standards (PSS **Restricted** profile) mandate:
 1. **Drop ALL default capabilities.**
