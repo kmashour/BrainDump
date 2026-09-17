@@ -7,6 +7,12 @@ import urllib.request
 import urllib.parse
 from html.parser import HTMLParser
 
+# Reconfigure stdout and stderr for UTF-8 encoding across all platforms (e.g., Windows)
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 # Disable SSL verification to prevent issues on various docs pages
 try:
     ssl_context = ssl._create_unverified_context()

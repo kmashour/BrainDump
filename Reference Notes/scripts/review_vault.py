@@ -4,6 +4,12 @@ import re
 import sys
 from urllib.parse import unquote
 
+# Reconfigure stdout and stderr for UTF-8 encoding across all platforms (e.g., Windows)
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 # Define Paths
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 INFLOW_DIR = os.path.join(BASE_DIR, "inflow")

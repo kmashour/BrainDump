@@ -2,6 +2,14 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-17] - System Tooling: Cross-Platform UTF-8 Reconfiguration for Review & Scraper Scripts
+
+### Tooling & Automation
+- **Updated `Reference Notes/scripts/review_vault.py` & `Reference Notes/scripts/scrape_docs.py`:**
+  - Added stdout and stderr reconfiguration for `utf-8` encoding on systems where default console encoding is non-UTF-8 (e.g. Windows cp1252), preventing `UnicodeEncodeError` when emitting emoji status indicators and audit reports.
+
+---
+
 ## [2026-09-16] - CKS Workload Kernel Isolation: Complete First-Principles Pedagogical Overhaul of Module 0-7-9
 
 ### Reference Notes (Layer 1 Core Foundation)
