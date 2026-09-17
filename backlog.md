@@ -2,7 +2,75 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
-## [2026-09-17] - CKS Ingestion Overhaul: Module 4 Microservices, Pod Security Policies (PSP) & PSA/PSS Evolutionary Bridge
+## [2026-09-17] - CKS Reference Notes Architecture Overhaul: 6-Module Curriculum Alignment
+
+### Reference Notes (Layer 1 Core Foundation Walkthroughs)
+- **Re-Anchored CKS Knowledge Base around `inflow/cks_split` as the Structural Core:**
+  - Standardized the CKS reference notes into **6 comprehensive Masterclass Walkthrough Notes** corresponding directly to the sequential modules of the official KodeKloud CKS Course from beginner basics to senior-level engineering depth:
+    1. **[[Reference Notes/0-7-1_overview_and_attack_surface.md|Module 0-7-1: Overview & Attack Surface]]**:
+       - CKS Exam Architecture, prerequisites (CKA), and hands-on Linux testing rules.
+       - The 4Cs of Cloud Native Security (Cloud, Cluster, Container, Code) nested perimeter model.
+       - Complete end-to-end "Voting App" attack walkthrough: reconnaissance, unauthenticated Docker daemon (2375), privileged container spawn, Dirty COW kernel escape to host, iptables NAT discovery of unauthenticated K8s Dashboard on NodePort 30080, plaintext database password harvesting, and direct Postgres compromise via `psql`.
+       - Defense-in-depth remediation matrix and 3 AARF deep threat modeling diagnostics.
+    2. **[[Reference Notes/0-7-2_cluster_setup_and_hardening.md|Module 0-7-2: Cluster Setup & Hardening]]**:
+       - Kubernetes PKI hierarchy, manual certificate creation (OpenSSL/CFSSL), SAN validation, and certificate renewal (`kubeadm certs renew all`).
+       - Certificates API CSR workflows, approval commands, and KubeConfig management.
+       - API groups (Core `/api/v1` vs Named `/apis/apps/v1`), direct curl endpoints, `kubectl proxy` vs `kube-proxy`.
+       - Authentication & Bound ServiceAccount Token Projection (TokenRequest API, time/audience/object bound).
+       - RBAC least privilege, Roles vs ClusterRoles, RoleBindings vs ClusterRoleBindings, `resourceNames` restrictions, and `kubectl auth can-i`.
+       - Kubelet security on `/var/lib/kubelet/config.yaml` (port 10250 vs 10255, anonymous auth disabled, Webhook authorization, protectKernelDefaults).
+       - CIS Kubernetes Benchmarks & `kube-bench` scanning and remediation.
+       - Cloud node metadata SSRF defense (IMDSv1 vs IMDSv2 token sessions, hop limit 1, NetworkPolicy blocking `169.254.169.254`).
+       - Safe production cluster upgrade protocol (drain, kubeadm upgrade plan/apply, kubelet/kubectl upgrade, rolling strategies).
+       - NetworkPolicies & microsegmentation (AND vs OR selector logic, default-deny all, namespace isolation).
+       - Ingress controllers & TLS termination with Secret certificates.
+       - Kubernetes API Server Auditing (Audit stages, audit levels: None/Metadata/Request/RequestResponse, audit policy YAML, static pod volume mounts, and `jq` log forensics).
+    3. **[[Reference Notes/0-7-3_system_hardening.md|Module 0-7-3: System Hardening]]**:
+       - Least privilege philosophy and minimizing cloud node IAM instance profiles.
+       - UFW firewall hardening (default-deny incoming, allowing required K8s ports) and open socket auditing with `ss -tulpn`.
+       - Operating system footprint minimization: purging obsolete packages and systemd unit masking vs disabling (neutralizing socket activation traps).
+       - Linux privilege escalation defense: SUID/SGID hunting (`find -perm -4000`), stripping SUID bits, sudoers hardening with `NOEXEC`.
+       - SSH daemon hardening (`PermitRootLogin no`, `PasswordAuthentication no`, MaxAuthTries, key-only auth).
+       - Kernel module blacklisting in `/etc/modprobe.d/` (`install <module> /bin/true`, `modprobe -r`).
+       - Linux system calls & live profiling with `strace` and AquaSec Tracee (eBPF event tracing).
+       - Restricting syscalls with Seccomp (`seccompProfile: RuntimeDefault` vs custom localhost profiles in `/var/lib/kubelet/seccomp/`).
+       - Linux Capabilities deconstruction: POSIX capability sets, capability stripping (`drop: [ALL]`, `add: [NET_BIND_SERVICE]`), and resolving the system time (`date -s`) paradox.
+       - AppArmor Mandatory Access Control (MAC): enforce vs complain modes, profile syntax in `/etc/apparmor.d/`, `apparmor_parser`, and Kubernetes v1.30+ native field `appArmorProfile`.
+    4. **[[Reference Notes/0-7-4_microservice_vulnerabilities_and_isolation.md|Module 0-7-4: Microservice Vulnerabilities & Isolation]]**:
+       - Workload SecurityContexts (pod-level vs container-level, `runAsNonRoot`, `readOnlyRootFilesystem`, `fsGroup` recursive rewrite mechanics and performance traps).
+       - Legacy PodSecurityPolicy (PSP) architecture, RBAC `use` bindings, and the Controller Manager Delegation Trap.
+       - Evolutionary bridge (KEP-2579) contrasting PSP vs PSA vs dynamic policy engines.
+       - Pod Security Standards (PSS) 3-tier specification matrix (Privileged, Baseline, Restricted).
+       - Pod Security Admission (PSA) tri-mode evaluation (`enforce`, `audit`, `warn`), imperative namespace labeling with version pinning, and cluster-wide `AdmissionConfiguration` with exemptions.
+       - Dynamic policy engines: OPA Gatekeeper (ConstraintTemplates & Rego) and Kyverno.
+       - Kubernetes Secrets management: plaintext etcd vulnerability, `EncryptionConfiguration` with AES-CBC/KMS providers, zero-downtime key rotation protocol, and raw `etcdctl` verification.
+       - Secrets Store CSI Driver: mounting secrets directly from AWS Secrets Manager / Vault into memory `tmpfs`.
+       - Container Sandboxing: gVisor (`runsc`) user space kernel emulation, Kata Containers microVMs, and `RuntimeClass`.
+       - Pod-to-Pod mTLS: one-way vs mutual TLS, service mesh sidecars, and Cilium eBPF wireguard encryption.
+       - Multi-tenancy isolation: soft vs hard multi-tenancy, dedicated node pools with Taints and Tolerations, ResourceQuotas, and QoS classes.
+    5. **[[Reference Notes/0-7-5_supply_chain_security.md|Module 0-7-5: Supply Chain Security]]**:
+       - Software supply chain threat landscape (SolarWinds, Codecov, dependency confusion, mutable image tag hijacking).
+       - Minimizing container base image footprint: multi-stage Dockerfiles, Distroless images (`gcr.io/distroless/static:nonroot`), and `scratch`.
+       - Static manifest security analysis with KubeLinter (`kubelinter lint`).
+       - Vulnerability scanning with Trivy: scanning images, filtering by severity (`HIGH,CRITICAL`), ignoring unpatched CVEs (`--ignore-unfixed`), automated CI/CD exit codes (`--exit-code 1`), and scanning archived tarballs.
+       - Software Bill of Materials (SBOM): SPDX vs CycloneDX specifications, generating SBOMs with Syft/Trivy, and vulnerability audits with Grype.
+       - Cryptographic image signing and signature verification with Sigstore Cosign (`cosign sign`, `cosign attach sbom`, `cosign verify`).
+       - `ImagePolicyWebhook` admission controller: 4-step deployment pipeline (webhook server, webhook kubeconfig, AdmissionConfiguration, apiserver static pod mounts, and `image-policy.k8s.io/v1alpha1` JSON contract).
+       - Whitelisting allowed registries using OPA Gatekeeper constraints.
+    6. **[[Reference Notes/0-7-6_monitoring_logging_runtime_security.md|Module 0-7-6: Monitoring, Logging & Runtime Security]]**:
+       - Runtime behavioral threat modeling: why static scanning and admission control are insufficient.
+       - Mutable vs immutable infrastructure: enforcing container immutability at runtime (`readOnlyRootFilesystem: true`, ephemeral `emptyDir` mounts).
+       - Behavioral analytics of Linux syscalls (`execve`, `openat`, `connect`, `ptrace`, `setns`).
+       - Falco runtime security engine: eBPF probe driver vs kernel module driver, installation, and daemon status.
+       - Falco configuration hierarchy (`falco.yaml`, `falco_rules.yaml`, `falco_rules.local.yaml`, `rules.d/`) and alert routing (stdout, syslog, files, webhooks).
+       - Authoring custom Falco detection rules: syntax schema, Syslog priority levels (`EMERGENCY` to `DEBUG`), field selectors (`container.id`, `k8s.pod.name`, `proc.name`, `fd.name`), and production rules (terminal shell in container, sensitive file access `/etc/shadow`, network scanners).
+       - Validating, reloading, and testing Falco alerts (`falco --validate`, hot-reload `kill -1 $(pgrep falco)`, `journalctl -u falco -f`).
+       - Kubernetes API Server Auditing: audit stages, audit levels (None, Metadata, Request, RequestResponse), audit policy YAML, static pod volume mounts, and log forensics using `jq`.
+       - Runtime tooling matrix: Falco vs AquaSec Tracee vs Isovalent Tetragon.
+
+### Index & MOC Enhancements
+- **[[Reference Notes/0-Index - CKS.md|0-Index - CKS.md]]**: Fully synchronized with the 6-module sequential course structure, featuring direct links to the 6 Masterclass Walkthrough Notes alongside specialized deep-dive notes and the 19-scenario CKS Practice Playbook.
+
 
 ### Reference Notes (Layer 1 Core Foundation)
 - **Masterclass Pedagogical Overhaul of Module 0-7-2 ([[Reference Notes/0-7-2_pod_security_standards_and_admission.md|0-7-2: Pod Security Standards, Pod Security Policies (PSP) & Admission (PSA)]]):**
