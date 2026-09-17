@@ -363,7 +363,7 @@ While Trivy scans container images for binary and OS vulnerabilities, **KubeLint
   ```
 
 ### 7.5 Software Bill of Materials (SBOM) Deep-Dive
-A **Software Bill of Materials (SBOM)** is a machine-readable inventory of all third-party dependencies, open-source packages, compiler libraries, and hierarchical components included inside a container image.
+A **Software Bill of Materials (SBOM)** is a machine-readable invFentory of all third-party dependencies, open-source packages, compiler libraries, and hierarchical components included inside a container image.
 
 * **Standard Specifications:**
   * **SPDX (Software Package Data Exchange):** Linux Foundation open standard for software package details and license declarations.

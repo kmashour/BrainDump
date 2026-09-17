@@ -30,9 +30,12 @@ tags:
 *Host OS security, Docker daemon & socket security, IAM, minimised footprint, kernel parameters, AppArmor, Capabilities & Seccomp.*
 - 🛡️ **[Module 0-7-7: Host Operating System & Node Hardening](0-7-7_host_operating_system_and_node_hardening.md)** *(Host OS SUID/SGID auditing, sudoers & SSH hardening, systemd unit architecture & masking, socket connection queues with ss, Docker socket breakout prevention, and CIS kube-bench)*
 - 🔒 **[Module 0-7-9: Workload Kernel Isolation, Seccomp, AppArmor & Linux Capabilities](0-7-9_workload_kernel_isolation_seccomp_apparmor_and_capabilities.md)** *(AppArmor path-based MAC profiles, Linux Capabilities POSIX decomposition & stripping, Linux syscall mechanics & live strace profiling, Seccomp BPF filters, and gVisor/Kata sandboxing)*
-- 🛡️ **[Module 0-7-2: Pod Security Standards & SecurityContexts](0-7-2_pod_security_standards_and_admission.md)** *(includes OPA Gatekeeper Rego policies & Multi-Tenancy Node Isolation)*
+- 🛡️ **[Module 0-7-2: Pod Security Standards, Pod Security Policies (PSP) & Admission (PSA)](0-7-2_pod_security_standards_and_admission.md)** *(Historical PSP architecture, RBAC 'use' bindings, KEP-2579 evolutionary bridge, PSS 3-tier profiles, PSA tri-mode enforcement, AdmissionConfiguration exemptions, and OPA/Kyverno)*
+- 🎥 **[KubeCon Talk: SIG Auth Update & The Demise of PodSecurityPolicy](0-7-b_kubecon_sig_auth_psp_deprecation_and_pss_evolution.md)** *(The 5 fatal flaws of PSP, controller delegation traps, KEP-2579, and staged migration)*
 - ⚙️ **[Module 0-3: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md)**
 - 📦 **Core Landing Concepts:**
+  - [[Main Notes/pod-security-admission.md|Pod Security Admission (PSA)]]: Built-in admission controller enforcing Privileged, Baseline, and Restricted standards.
+  - [[Main Notes/pod-security-policy.md|Pod Security Policy (PSP)]]: Historical admission controller, RBAC coupling, indirect controller delegation, and evolutionary replacement.
   - [[Main Notes/AppArmor.md|AppArmor]]: Path-based Mandatory Access Control (MAC) and container profile enforcement.
   - [[Main Notes/Linux Capabilities.md|Linux Capabilities]]: POSIX capability sets, capability stripping (`drop: [ALL]`), and least privilege.
   - [[Main Notes/Seccomp.md|Seccomp]]: Kernel syscall whitelisting, BPF filter hooks, and node-wide defaulting (`seccompDefault`).

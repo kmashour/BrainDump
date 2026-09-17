@@ -612,23 +612,40 @@ Enable the `ImagePolicyWebhook` admission controller on the master node. Use the
 
 ---
 
-## 🛡️ Scenario 10: Pod Security Admission (PSA) & SecurityContext Hardening
+## 🛡️ Scenario 10: Pod Security Admission (PSA), Standards Hardening & Legacy PSP
 
 ### Problem Statement
-Enforce the `restricted` Pod Security Standard in namespace `finance-prod`. Modify deployment `finance-api` so that it satisfies all Restricted PSS requirements: non-root user, read-only root filesystem, drop ALL capabilities, and RuntimeDefault seccomp.
+1. Enforce the `restricted` Pod Security Standard in namespace `finance-prod`.
+2. Troubleshoot and modify the deployment `finance-api` so that it satisfies all Restricted PSS requirements without triggering admission rejections.
+3. Configure a cluster-wide AdmissionConfiguration to exempt `kube-system` and the `gvisor` runtimeClass.
+4. Understand legacy PodSecurityPolicy (PSP) mechanics: how RBAC `use` bindings and ServiceAccounts were configured.
 
 ### Step-by-Step Implementation
 
-1. **Label the Namespace:**
+1. **Pre-Flight Validation with Server-Side Dry-Run (Speed Hack):**
+   Before updating or creating a workload in a restricted namespace, use `--dry-run=server` to have the API server evaluate PSS admission rules and print the exact violations:
    ```bash
-   kubectl label namespace finance-prod \
-     pod-security.kubernetes.io/enforce=restricted \
-     pod-security.kubernetes.io/enforce-version=latest \
-     pod-security.kubernetes.io/warn=restricted \
-     pod-security.kubernetes.io/audit=restricted --overwrite
+   kubectl apply -f finance-api.yaml --dry-run=server
+   ```
+   *If the pod violates PSS, the API server immediately outputs the missing fields:*
+   ```text
+   Error from server (Forbidden): ... violates PodSecurity "restricted:latest":
+   allowPrivilegeEscalation != false, unrestricted capabilities, runAsNonRoot != true, seccompProfile
    ```
 
-2. **Update Deployment SecurityContext:**
+2. **Label the Namespace with Tri-Mode & Version Pinning:**
+   ```bash
+   # Imperative one-liner with version pinning:
+   kubectl label namespace finance-prod \
+     pod-security.kubernetes.io/enforce=restricted \
+     pod-security.kubernetes.io/enforce-version=v1.30 \
+     pod-security.kubernetes.io/warn=restricted \
+     pod-security.kubernetes.io/warn-version=latest \
+     pod-security.kubernetes.io/audit=restricted \
+     pod-security.kubernetes.io/audit-version=latest --overwrite
+   ```
+
+3. **Update Deployment with the Compliant Restricted Template:**
    ```yaml
    apiVersion: apps/v1
    kind: Deployment
@@ -645,6 +662,7 @@ Enforce the `restricted` Pod Security Standard in namespace `finance-prod`. Modi
          labels:
            app: finance-api
        spec:
+         # Pod-level security context
          securityContext:
            runAsNonRoot: true
            runAsUser: 10001
@@ -672,9 +690,66 @@ Enforce the `restricted` Pod Security Standard in namespace `finance-prod`. Modi
            emptyDir: {}
    ```
 
-3. **Verify Deployment Rollout:**
+4. **Cluster-Wide PSA Configuration & Exemptions:**
+   If asked to configure cluster-wide defaults or exemptions:
+   - Create `/etc/kubernetes/admission/psa-config.yaml`:
+     ```yaml
+     apiVersion: apiserver.config.k8s.io/v1
+     kind: AdmissionConfiguration
+     plugins:
+     - name: PodSecurity
+       configuration:
+         apiVersion: pod-security.admission.config.k8s.io/v1
+         kind: PodSecurityConfiguration
+         defaults:
+           enforce: "baseline"
+           enforce-version: "v1.30"
+           warn: "restricted"
+           audit: "restricted"
+         exemptions:
+           usernames: ["admin-user"]
+           namespaces: ["kube-system", "kube-public"]
+           runtimeClasses: ["gvisor", "kata"]
+     ```
+   - Add flag to `/etc/kubernetes/manifests/kube-apiserver.yaml`:
+     `--admission-control-config-file=/etc/kubernetes/admission/psa-config.yaml`
+   - Mount the file into the `kube-apiserver` container volume mounts.
+
+5. **Legacy PodSecurityPolicy (PSP) RBAC Binding Reference:**
+   *If encountering legacy exam environments or interview questions on PSP:*
+   ```yaml
+   # 1. ClusterRole granting 'use' verb on target PSP:
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRole
+   metadata:
+     name: use-restricted-psp
+   rules:
+   - apiGroups: ['policy']
+     resources: ['podsecuritypolicies']
+     resourceNames: ['restricted-psp']
+     verbs: ['use']
+   ---
+   # 2. RoleBinding binding to the workload's ServiceAccount:
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: RoleBinding
+   metadata:
+     name: bind-restricted-psp
+     namespace: finance-prod
+   subjects:
+   - kind: ServiceAccount
+     name: finance-sa
+     namespace: finance-prod
+   roleRef:
+     kind: ClusterRole
+     name: use-restricted-psp
+     apiGroup: rbac.authorization.k8s.io
+   ```
+
+6. **Verify Rollout & Pod Events:**
    ```bash
    kubectl rollout status deployment/finance-api -n finance-prod
+   # If deployment pods fail to spawn, inspect the ReplicaSet events:
+   kubectl describe rs -n finance-prod -l app=finance-api
    ```
 
 ---

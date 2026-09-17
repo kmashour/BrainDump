@@ -4,499 +4,709 @@ class: reference-note
 tier: reference-note
 tags:
   - kubernetes/security
+  - kubernetes/psp
   - kubernetes/psa
+  - kubernetes/pss
+  - kubernetes/cks
 ---
 
-# Module 0-7-2: Pod Security Standards, SecurityContexts & Admission
+# Module 0-7-2: Pod Security Standards, Pod Security Policies (PSP) & Admission (PSA)
 
-**Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > **Module 0-7-2**
+**Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > [[Main Notes/pod-security-admission|Pod Security Admission]] > **Module 0-7-2**
 
 ---
 
-## 8. Image Security
+## 1. 🛡️ Foundations of Workload Security & SecurityContexts
 
-To pull images from private registries (like Docker Hub, Quay, or Azure Container Registry), the cluster requires credentials.
+In containerized environments, a container process runs as a standard Linux process isolated by kernel namespaces (`pid`, `net`, `mnt`, `ipc`, `uts`, `user`) and constrained by `cgroups`. By default, unless configured otherwise, a container process executing as root (UID 0) inside the container matches root privileges (UID 0) on the underlying host node if it escapes container containment.
 
-### 8.1 Creating a Docker Registry Secret
-Create a secret containing your private registry credentials:
-```bash
-kubectl create secret docker-registry private-registry-cred \
-  --docker-server=myprivateregistry.com:5000 \
-  --docker-username=registry-user \
-  --docker-password=registry-password \
-  --docker-email=user@org.com
-```
+### 1.1 Parameter Scope: Pod-Level vs. Container-Level
+SecurityContexts define privilege, capability, and access control settings for Pods and Containers:
 
-### 8.2 Using ImagePullSecrets in a Pod
-Reference the secret in the Pod's `spec.imagePullSecrets` block:
+| Scope | Parameters Supported | Behavior / Override Rule |
+| :--- | :--- | :--- |
+| **Pod-Level Only** | `fsGroup`, `fsGroupChangePolicy`, `sysctls`, `supplementalGroups` | Applies across all containers, init containers, and ephemeral containers in the Pod. |
+| **Container-Level Only** | `capabilities` (`add`/`drop`), `privileged`, `allowPrivilegeEscalation`, `readOnlyRootFilesystem`, `procMount` | Specific to the individual container process. Overrides Pod-level defaults where applicable. |
+| **Shared (Pod or Container)** | `runAsUser`, `runAsGroup`, `runAsNonRoot`, `seLinuxOptions`, `seccompProfile`, `windowsOptions` | If defined at both levels, the **Container-level configuration takes precedence**. |
+
+### 1.2 Comprehensive Hardened Workload Template
 ```yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: private-app
-  namespace: default
+  name: hardened-microservice
+  namespace: secure-workloads
 spec:
-  imagePullSecrets:
-  - name: private-registry-cred
-  containers:
-  - name: app-container
-    image: myprivateregistry.com:5000/apps/secure-api:v1.2
-    imagePullPolicy: IfNotPresent
-```
-
-### 8.3 Image Pull Policies
-- `Always`: Always query the registry to check if the image has changed, and pull it if so. Default for tags like `:latest`.
-- `IfNotPresent`: Only pull the image if it does not exist on the node's local disk.
-- `Never`: Never pull the image from a registry. Use only local images.
-
----
-
-## 9. SecurityContexts
-
-SecurityContexts define privilege and access control settings for Pods and Containers. Pod-level settings apply to all containers in the Pod, while container-level settings override Pod-level settings.
-
-### 9.1 Parameter Scope
-- **Pod-level only:** `fsGroup` (volume ownership), `sysctls`.
-- **Container-level only:** `capabilities`, `privileged`, `allowPrivilegeEscalation`, `readOnlyRootFilesystem`.
-- **Shared (Pod or Container level):** `runAsUser`, `runAsGroup`, `runAsNonRoot`, `seLinuxOptions`.
-
-### 9.2 Comprehensive Workload Template
-```yaml
-apiVersion: v1
-kind: Pod
-metadata:
-  name: secure-web-pod
-spec:
-  # Pod-level security context
+  # Pod-level security context (inherited by all containers)
   securityContext:
-    runAsUser: 2000
-    runAsGroup: 3000
-    runAsNonRoot: true # Enforces that container must run with a non-root UID
-    fsGroup: 4000 # Volumes mounted will belong to GID 4000
+    runAsUser: 10001
+    runAsGroup: 10001
+    runAsNonRoot: true          # Enforces that container runtime verifies UID != 0
+    fsGroup: 20001             # Volumes mounted will be recursively owned by GID 20001
+    fsGroupChangePolicy: "OnRootMismatch" # Avoids recursive chown lag on large volumes
+    seccompProfile:
+      type: RuntimeDefault     # Enforces the container runtime's default seccomp profile
   containers:
-  - name: web-app
-    image: nginx:alpine
+  - name: api-service
+    image: cgr.dev/chainguard/nginx:latest
     ports:
     - containerPort: 8080
     # Container-level security context (overrides pod level where conflicting)
     securityContext:
-      runAsUser: 2001
-      allowPrivilegeEscalation: false # Process cannot gain more privileges than parent
-      readOnlyRootFilesystem: true # Mounts the container rootfs as read-only
+      allowPrivilegeEscalation: false # Sets PR_SET_NO_NEW_PRIVS; child cannot gain more privileges
+      readOnlyRootFilesystem: true    # Container rootfs is mounted read-only (prevents binary tampering)
+      privileged: false               # Disallows container from bypassing kernel isolation
       capabilities:
-        add: ["NET_BIND_SERVICE"] # Allows binding to privileged ports (<1024)
-        drop: ["ALL"] # Drops all default Linux capabilities
+        drop:
+        - "ALL"                       # Drops all 38+ default Linux capabilities
+        add:
+        - "NET_BIND_SERVICE"          # Allows binding to privileged network ports (< 1024) if needed
+    volumeMounts:
+    - name: cache-volume
+      mountPath: /tmp
+  volumes:
+  - name: cache-volume
+    emptyDir: {}
 ```
 
+### 1.3 `fsGroup` Volume Mechanics & Storage Types
+The `fsGroup` parameter dictates the supplemental Group ID (GID) associated with mounted storage volumes:
+1. **Ownership Rewrite:** When the volume is mounted, the Kubelet recursively alters the ownership (GID) of all directories and files inside the volume to match the specified `fsGroup`.
+2. **Supplemental Groups:** The Kubelet injects that GID as a supplemental group to the container process. This ensures that non-root containers (e.g. UID 10001) can read and write to the volume without requiring root permissions.
+3. **Volume Type Behaviors:**
+   - `emptyDir`: Handled dynamically by the Kubelet in RAM/disk; GID ownership is applied instantly.
+   - **Persistent Volumes (NFS / SAN / Cloud Block):** Recursive `chown` during Pod mount can cause significant startup delays if the volume contains millions of files. Mitigated using:
+     ```yaml
+     securityContext:
+       fsGroup: 20001
+       fsGroupChangePolicy: "OnRootMismatch" # Only chowns if permissions at volume root differ
+     ```
+   - **`hostPath` Volumes:** **`fsGroup` is ignored.** Host directories mounted into a container retain their host-level permissions. If a host directory is owned by `root:root` with `0700`, a container running as non-root will encounter `EACCES: Permission Denied`, and `fsGroup` cannot resolve this.
+
+### 1.4 Kernel Tuning via `sysctls`
+Linux kernel tuning can be applied on a per-pod basis:
+* **Safe `sysctls`:** Fully namespaced by the Linux kernel (e.g., `net.ipv4.tcp_syncookies`, `net.ipv4.ip_local_port_range`). Changing them inside a Pod network/IPC namespace does not affect the host node or peer Pods.
+* **Unsafe `sysctls`:** Global to the host node (e.g., `net.core.somaxconn`, `fs.file-max`). Modifying them impacts all workloads on the node. Kubernetes disables unsafe sysctls by default; enabling them requires passing `--allowed-unsafe-sysctls` to the worker node Kubelet.
 
 ---
 
-### 9.3 fsGroup Volume Mechanics & Storage Types
-The `fsGroup` parameter dictates the Group ID (GID) associated with mounted storage volumes. When set:
-1.  **Ownership Rewrite:** Kubernetes recursively alters the ownership (GID) of all directories and files inside the mounted volume to match the specified `fsGroup` ID.
-2.  **Supplemental Groups:** It injects that GID as a supplemental group to all container processes running in the Pod.
+## 2. 🏛️ Historical Architecture: Pod Security Policy (PSP) (v1.3 – v1.25)
 
-#### GID Selection Criteria
-*   **Arbitrary Selection:** For fresh persistent storage (`emptyDir` or dynamic PVs), you can assign any high non-root GID (e.g. `2000`). This ensures that containers running as non-root (e.g., UID `1000`) can write to the volume without requiring root privileges.
-*   **Explicit Matching:** If you mount legacy or external backend storage (such as NFS, SAN, or custom directories) where files have pre-established GIDs, your `fsGroup` must be configured to match the exact GID required by the storage controller (e.g. `5000`).
+Before Kubernetes 1.21, **Pod Security Policy (PSP)** was the primary native mechanism used to enforce cluster-wide pod security. While deprecated in v1.21 and completely removed in v1.25, mastering PSP architecture is fundamental for legacy cluster migrations, CKS architectural questions, and understanding why modern Pod Security Standards evolved.
 
-#### Volume Type Behaviors
-*   **`emptyDir`:** Works flawlessly. Because the directory is provisioned on the fly, Kubernetes has full control and applies the GID mapping instantly.
-*   **Persistent Volumes (Network Storage):** Works, but recursive `chown` on mount can cause long startup delays if the volume contains millions of small files. (Mitigated using `fsGroupChangePolicy: OnRootMismatch`).
-*   **`hostPath`:** **Ignores `fsGroup`.** Directories mounted from the host node filesystem maintain their host permissions. If a `hostPath` is owned by host root (`0700` or `0750`), a non-root container will hit a `Permission Denied` error, and `fsGroup` cannot override it.
+```mermaid
+flowchart TD
+    User["User / ServiceAccount"] -->|1. kubectl create -f pod.yaml| API["kube-apiserver"]
+    API --> AuthN["Authentication"]
+    AuthN --> AuthZ["Authorization (RBAC)"]
+    AuthZ --> Mutate["Mutating Admission (PSP Controller)\n- Injects default capabilities\n- Applies default runAsUser/fsGroup"]
+    Mutate --> Validate["Validating Admission (PSP Controller)\n- Verifies pod spec against matching PSPs\n- Checks 'use' verb on RBAC"]
+    Validate -->|Pass| etcd["Persist Pod to etcd"]
+    Validate -->|Fail / No RBAC| Reject["HTTP 403 Forbidden\n'pods is forbidden: unable to validate against any pod security policy'"]
+```
+
+### 2.1 Enabling the PSP Admission Plugin on `kube-apiserver`
+PSP was not enabled by default. It functioned as an in-tree admission controller plugin that had to be explicitly declared in the static pod manifest `/etc/kubernetes/manifests/kube-apiserver.yaml`:
+
+```yaml
+spec:
+  containers:
+  - command:
+    - kube-apiserver
+    - --authorization-mode=Node,RBAC
+    - --enable-admission-plugins=NodeRestriction,PodSecurityPolicy
+```
+
+> [!CAUTION]
+> ### 💥 The Catastrophic PSP Lockout Trap
+> If an administrator enabled `--enable-admission-plugins=PodSecurityPolicy` without **first** defining baseline PSP objects and binding them to system service accounts, **EVERY SINGLE POD CREATION REQUEST IN THE CLUSTER IMMEDIATELY FAILED**.
+> This included CoreDNS pods, CNI networking daemons (Calico/Cilium), and critical control plane controllers. Once the API server restarted with the flag enabled, no new pods could be scheduled anywhere in the cluster until valid PSPs and RBAC bindings were created!
+
+### 2.2 PodSecurityPolicy Resource Specification (`policy/v1beta1`)
+A PSP is a cluster-scoped resource that defines what a Pod must or cannot do:
+
+```yaml
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted-psp
+spec:
+  privileged: false                       # Disallow privileged containers
+  allowPrivilegeEscalation: false         # Prevent no_new_privs escalation
+  requiredDropCapabilities:
+    - ALL                                 # Mandate dropping all capabilities
+  defaultAddCapabilities:
+    - NET_BIND_SERVICE                    # Auto-inject capability if omitted (MUTATION)
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
+    - 'persistentVolumeClaim'             # Explicitly disallows hostPath
+  hostNetwork: false                      # Block host network namespace
+  hostIPC: false                          # Block host IPC namespace
+  hostPID: false                          # Block host PID namespace
+  runAsUser:
+    rule: 'MustRunAsNonRoot'              # Container must specify non-zero UID
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1000
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1000
+        max: 65535
+  readOnlyRootFilesystem: true
+```
+
+### 2.3 How PSP RBAC Authorization Worked (The `use` Verb)
+Unlike standard resources, accessing a PSP required RBAC permission on the `use` verb under the `policy` API group:
+
+1. **Define a ClusterRole or Role:**
+   ```yaml
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: ClusterRole
+   metadata:
+     name: psp-restricted-role
+   rules:
+   - apiGroups: ['policy']
+     resources: ['podsecuritypolicies']
+     resourceNames: ['restricted-psp']
+     verbs: ['use']
+   ```
+
+2. **Bind the Role to the Workload's ServiceAccount:**
+   ```yaml
+   apiVersion: rbac.authorization.k8s.io/v1
+   kind: RoleBinding
+   metadata:
+     name: psp-restricted-binding
+     namespace: default
+   subjects:
+   - kind: ServiceAccount
+     name: default
+     namespace: default
+   roleRef:
+     kind: ClusterRole
+     name: psp-restricted-role
+     apiGroup: rbac.authorization.k8s.io
+   ```
 
 ---
 
-### 9.4 Kernel Tuning via sysctls
-The `sysctls` setting allows you to configure Linux kernel parameters at runtime on a per-Pod basis (e.g. tuning TCP parameters or IPC network settings).
+## 3. 🌉 The Evolutionary Bridge: Why PSP Failed & KEP-2579
 
-#### Safe vs. Unsafe sysctls
-*   **Safe sysctls:** (e.g., `net.ipv4.tcp_syncookies`). These parameters are fully isolated by Linux namespaces. Changing them inside a Pod network/IPC namespace does not affect the host node or other Pods.
-*   **Unsafe sysctls:** (e.g., `net.core.somaxconn`). These parameters are global and lack namespace isolation. Changing them would modify the kernel behavior for the entire host node. Consequently, Kubernetes disables unsafe `sysctls` by default (enabling them requires administrator reconfiguration of the Kubelet).
+### 3.1 The 4 Fatal Flaws of Legacy PodSecurityPolicy
 
-#### Contrast: sysctls vs. Linux Capabilities
-*   **Linux Capabilities:** Concern **permissions**. They partition root privileges into distinct operational rights (e.g., `CAP_NET_BIND_SERVICE` allows binding ports < 1024; `CAP_SYS_ADMIN` allows administrative mounting).
-*   **sysctls:** Concern **kernel tuning**. They alter the actual operational thresholds, networks, or process rules of the Linux kernel itself.
+```mermaid
+flowchart TD
+    subgraph The Controller Delegation Trap
+        Dev["Developer (Alice)\n[Has PSP Admin RBAC]"] -->|kubectl create deployment| Dep["Deployment Object"]
+        Dep -->|Kube-Controller-Manager| RS["ReplicaSet Object"]
+        RS -->|System Controller| PodReq["Pod Admission Request\nUser: system:serviceaccount:default:default"]
+        PodReq -->|Evaluated Against SA RBAC| Check{"Does 'default' SA\nhave 'use' on PSP?"}
+        Check -- No --> Crash["Pod Creation Blocked!\nDeployment 0/1 Available\nAlice gets NO direct error feedback!"]
+    end
+```
+
+1. **The Controller Manager Delegation Trap (The "Indirect Creation" Problem):**
+   When a developer creates a Deployment, the developer does not directly create the Pod. Instead, the `kube-controller-manager` creates a ReplicaSet, which generates the Pod creation API request. The request arrives at the API server with the identity of the **Pod's ServiceAccount**, not the developer! If the ServiceAccount lacked RBAC `use` permission on the PSP, pod creation silently failed inside the ReplicaSet status, confusing operators.
+2. **Non-Deterministic Mutation & Ordering Traps:**
+   PSPs had both *mutating* and *validating* capabilities (e.g. injecting default capabilities or securityContexts). If a user or ServiceAccount had access to multiple matching PSPs, the API server sorted the PSPs **alphabetically by name** and applied the first one that mutated successfully. This meant renaming a policy (e.g., `01-permissive` vs `99-restricted`) would completely change cluster admission behavior!
+3. **Mutation-in-Flight & GitOps Drift:**
+   Because PSP silently injected values into Pod specs during admission, the actual manifest running in `etcd` no longer matched the declarative YAML checked into Git, breaking GitOps pipelines.
+4. **No Dry-Run or Warning Modes:**
+   PSP operated strictly as an all-or-nothing gating mechanism. Administrators could not deploy a policy in "warn" or "audit" mode to measure workload impact before enforcing it.
+
+### 3.2 Evolutionary Timeline: From PSP to PSA & Gatekeeper
+
+```mermaid
+timeline
+    title The Evolution of Kubernetes Workload Admission Security
+    2016 (v1.3) : PodSecurityPolicy (PSP) Introduced : Beta in policy/v1beta1 : Coupled to RBAC use verbs
+    2020 (v1.19) : Community Consensus on Flaws : KEP-2579 Authored : Call for declarative standards
+    2021 (v1.21 - v1.22) : PSP Formally Deprecated : Pod Security Admission (PSA) Alpha : Tri-mode architecture
+    2022 (v1.23) : PSA Reaches Beta : Built-in admission controller enabled by default
+    2022 (v1.25) : PSP Removed from Codebase : PSA Reaches General Availability (GA) : Pod Security Standards v1
+    Present (v1.30+) : Dual-Ecosystem Model : Native PSA (Namespace standards) + OPA/Kyverno (Fine-grained business logic)
+```
+
+### 3.3 Architectural Comparison Matrix
+
+| Architectural Dimension | Legacy PodSecurityPolicy (PSP) | Pod Security Standards / Admission (PSA) | OPA Gatekeeper / Kyverno |
+| :--- | :--- | :--- | :--- |
+| **Status** | Removed in v1.25 | **GA & Native Default (v1.25+)** | Cloud-Native Ecosystem Standard |
+| **Configuration Model** | Cluster-scoped custom manifests (`policy/v1beta1`) | **Native Namespace Labels** + Cluster Config File | Custom Resource Definitions (CRDs) |
+| **Identity Coupling** | Heavily coupled to RBAC (`use` verb on ServiceAccounts) | **Decoupled from RBAC** (scoped per Namespace) | Independent (evaluates raw JSON request context) |
+| **Evaluation Modes** | Block or Mutate only (Fail-close) | **`enforce`, `audit`, `warn`** | Enforce (deny) or Warn / Dry-run |
+| **Mutation Capabilities** | Yes (silent mutations causing drift) | **Strictly Non-Mutating (Validating Only)** | Yes (declarative mutation rules in Kyverno/Gatekeeper) |
+| **Custom Policy Logic** | Limited to built-in PSP schema | Fixed to 3 standard tiers (`privileged`, `baseline`, `restricted`) | **Turing-complete / Programmable** (Rego or YAML) |
+| **Operational Overhead** | Extremely High (risk of total cluster lockout) | **Zero (Built-in, pre-compiled into kube-apiserver)** | Moderate (requires running webhook controllers) |
 
 ---
 
-### 9.5 Deep Dive: Bind Mounts, Symlinks, and Inode Permissions
-Understanding how containers bridge node filesystems to namespaces requires analyzing classical Linux file link mechanisms:
+## 4. 📋 Pod Security Standards (PSS) Comprehensive Specification
 
-#### 1. Linux Bind Mounts (How hostPath Works)
-When a container runtime mounts a `hostPath` volume, it performs a **Linux bind mount**. Unlike a standard disk mount, a bind mount takes an existing directory tree on the host node and mounts it as an alias at a different path inside the container's private namespace.
-*   **Shared Inode Mechanics:** Linux files are tracked by numeric **inodes** containing file metadata (owner UID, group GID, permissions). Paths are simply human-readable links pointing to these inodes. A bind mount shares the original directory's inodes.
-*   **Instant Propagation:** Any permissions change (e.g., `chmod`, `chown`) or file creations performed at either the host path or the container mount path alter the underlying inode directly and propagate instantly to both locations.
-*   **The Security Risk:** Because permission alterations write directly to the host's inodes, allowing a root-capable container to write to a `hostPath` represents a critical security risk. To secure this, always set `readOnly: true` in the container's `volumeMounts` specification.
+The Kubernetes project established the **Pod Security Standards (PSS)** as a universal, vendor-neutral specification defining three distinct security tiers:
 
-#### 2. Bind Mounts vs. Soft Links (Symlinks)
-While both allow accessing a file through multiple directories, their underlying mechanics are different:
-*   **Soft Link (Symlink):** A physical shortcut file containing a text string pointing to another file's path. If a symlink pointing to a host path (e.g., `/secure/data/app`) is mounted into a container, **it breaks**. The container attempts to resolve the path inside its own isolated root namespace, failing to find the host file.
-*   **Bind Mount:** Managed by the Linux Virtual File System (VFS) in kernel RAM. It projects the actual inodes directly into the container namespace, bypassing path isolation entirely.
+```mermaid
+graph TD
+    Privileged["1. Privileged Profile\n(Completely unconstrained / System infrastructure)"]
+    Baseline["2. Baseline Profile\n(Blocks known privilege escalations / Default for apps)"]
+    Restricted["3. Restricted Profile\n(Heavily hardened / Zero-trust microservices)"]
 
-#### 3. Linux Soft Link Permission Mechanics
-*   **Fake Permissions:** Symlinks always display open permissions (`lrwxrwxrwx`). This metadata is ignored. The kernel evaluates access permissions strictly against the **target file's inode**.
-*   **Directory Permissions Control Deletion:** Deleting or renaming a symlink does not check target file permissions. Because a symlink is simply an entry in its parent directory's file list, you only need `write` and `execute` permissions on the **parent directory containing the symlink** to delete it.
+    Privileged -->|Adds host isolation restrictions| Baseline
+    Baseline -->|Adds non-root, capability drop, ro-rootfs, seccomp| Restricted
+```
 
-#### 4. Practical Symlink Deletion Examples
-*   **Example A: Deleting a symlink pointing to a restricted file:**
-    If a standard user (`dev-user`) has a symlink at `/home/dev-user/links/my-shortcut` pointing to a root-owned private file `/etc/secret.key` (with permissions `rw-------`), `dev-user` **can successfully delete** the symlink file itself using `rm`. This is because `dev-user` possesses write permissions on the directory `/home/dev-user/links/`. The target file `/etc/secret.key` is unaffected.
-*   **Example B: Failing to delete a symlink pointing to your own file:**
-    If a standard user (`dev-user`) owns a script at `/home/dev-user/script.sh` but a symlink pointing to it resides in `/opt/system-links/` (which is read-only for standard users), `dev-user` **cannot delete** the symlink. The kernel blocks the removal because `dev-user` lacks write permissions on `/opt/system-links/`, despite owning the target script itself.
+### 4.1 The Three Security Profiles
+
+1. **`privileged` Profile:**
+   - **Scope:** Unrestricted. Workloads have absolute host-level power.
+   - **Use Cases:** Control plane components, CNI daemons (Calico, Cilium), CSI storage node plugins, `kube-proxy`.
+2. **`baseline` Profile:**
+   - **Scope:** Minimally restrictive. Prevents known privilege escalations with minimal developer friction.
+   - **Allowed:** Running as root UID (0), standard volumes.
+   - **Forbidden:** Host networking, host PID/IPC, privileged containers, dangerous Linux capabilities (`CAP_SYS_ADMIN`), hostPath volume mounts.
+3. **`restricted` Profile:**
+   - **Scope:** Heavily hardened. Follows modern container hardening best practices.
+   - **Mandates:** Must run as non-root, must drop `ALL` capabilities (only `NET_BIND_SERVICE` allowed), must use `RuntimeDefault` seccomp, must set `allowPrivilegeEscalation: false`, strictly restricts volume types.
+
+### 4.2 Comprehensive Profile Field Control Matrix
+
+| Pod Specification Field | `privileged` | `baseline` | `restricted` |
+| :--- | :--- | :--- | :--- |
+| `spec.hostNetwork` | Allowed | **Forbidden** (`false` or omitted) | **Forbidden** (`false` or omitted) |
+| `spec.hostPID` | Allowed | **Forbidden** (`false` or omitted) | **Forbidden** (`false` or omitted) |
+| `spec.hostIPC` | Allowed | **Forbidden** (`false` or omitted) | **Forbidden** (`false` or omitted) |
+| `spec.hostPorts` | Allowed | **Forbidden** (must be 0 or omitted) | **Forbidden** (must be 0 or omitted) |
+| `securityContext.privileged` | Allowed | **Forbidden** (must be `false` or omitted) | **Forbidden** (must be `false` or omitted) |
+| `securityContext.allowPrivilegeEscalation` | Allowed | Allowed (`true` or `false`) | **Must be `false`** |
+| `securityContext.runAsNonRoot` | Allowed | Allowed (`true` or `false`) | **Must be `true`** |
+| `securityContext.runAsUser` | Any UID allowed | Any UID allowed | **Must NOT be 0** (non-root UID) |
+| `securityContext.capabilities.drop` | Not required | Not required | **Must include `ALL`** |
+| `securityContext.capabilities.add` | Any capability | Restricted to safe set (e.g. `NET_BIND_SERVICE`) | **Only `NET_BIND_SERVICE` permitted** |
+| `securityContext.seccompProfile.type` | Any | Any | **Must be `RuntimeDefault` or `Localhost`** |
+| `spec.volumes[*].hostPath` | Allowed | **Forbidden** | **Forbidden** |
+| `spec.volumes[*]` allowed types | All types | All except `hostPath` | Only: `configMap`, `csi`, `downwardAPI`, `emptyDir`, `ephemeral`, `persistentVolumeClaim`, `projected`, `secret` |
+| `securityContext.procMount` | Allowed | **Must be `Default` or omitted** | **Must be `Default` or omitted** |
 
 ---
 
+## 5. ⚙️ Pod Security Admission (PSA) Controller Architecture
 
+Pod Security Admission (PSA) is the built-in Kubernetes admission controller that enforces the Pod Security Standards at the namespace level.
 
-## 12. Pod Security Admission (PSA) and Standards
+### 5.1 Verifying PSA on the Control Plane
+PSA is compiled directly into `kube-apiserver` and enabled by default in Kubernetes 1.25+:
 
-Pod Security Admission (PSA) is the built-in admission controller that replaces the deprecated PodSecurityPolicy (PSP) to enforce the **Pod Security Standards (PSS)** at the namespace level.
+```bash
+# Check enabled admission plugins on kube-apiserver:
+kubectl exec -n kube-system kube-apiserver-controlplane -it -- kube-apiserver -h | grep enable-admission-plugins
+```
+Because PSA is an in-tree default plugin, no `--enable-admission-plugins=PodSecurity` flag is required.
 
-### 12.1 Pod Security Standards (PSS) Levels
-1. **`privileged`:** Unrestricted policy. Allows container processes to run as root, execute host-level sysctls, map host hostpaths, and bypass isolation boundaries.
-2. **`baseline`:** Default/standard profile. Prevents known privilege escalations. Restricts host network/PID access, block hostpath volume mounts, but permits standard root execution.
-3. **`restricted`:** Hardened profile. Enforces strict hardening guidelines:
-   * Requires `runAsNonRoot: true`.
-   * Requires dropping all capabilities and adding only `NET_BIND_SERVICE` if needed.
-   * Restricts volume types (blocks hostpath, permits configmaps/secrets/projected).
-   * Restricts ports (<1024 blocked without explicit capability).
+### 5.2 The Three Operational Modes
+PSA evaluates pod creation and update requests across three independent modes:
 
-### 12.2 PSA Modes of Admission Control
-* **`enforce`:** Blocks Pod creation if it violates the target PSS level.
-* **`warn`:** Permits Pod creation but returns a user-facing warning header to the client (e.g., during `kubectl apply`).
-* **`audit`:** Permits Pod creation but records an audit event in the API audit log.
+```mermaid
+flowchart TD
+    Req["Pod Creation API Request"] --> PSA["Pod Security Admission Evaluator"]
+    PSA --> EnforceCheck{"Enforce Level\nViolated?"}
+    EnforceCheck -- Yes --> Reject["HTTP 403 Forbidden\nPod rejected immediately"]
+    EnforceCheck -- No --> AuditCheck{"Audit Level\nViolated?"}
+    
+    AuditCheck -- Yes --> LogAudit["Log Audit Event\nAnnotation: pod-security.kubernetes.io/audit-violations"]
+    AuditCheck -- No --> WarnCheck{"Warn Level\nViolated?"}
+    
+    LogAudit --> WarnCheck
+    WarnCheck -- Yes --> SendWarning["Emit HTTP Warning Header\nReturned to kubectl client"]
+    WarnCheck -- No --> Allow["Admit Pod to Cluster"]
+    SendWarning --> Allow
+```
 
-### 12.3 Applying PSA Namespace Labels
-Configure PSA behavior by applying labels to a namespace:
+1. **`enforce` Mode:**
+   - **Behavior:** Rejection. Any pod creation request violating the standard is blocked immediately with an HTTP 403 Forbidden response.
+2. **`audit` Mode:**
+   - **Behavior:** Logging. The pod is admitted, but an audit event is recorded in the Kubernetes API audit logs with the annotation:
+     `pod-security.kubernetes.io/audit-violations: ...`
+3. **`warn` Mode:**
+   - **Behavior:** Client Alert. The pod is admitted, but an HTTP warning header is returned to the client issuing the request (visible directly in the terminal during `kubectl apply`).
+
+### 5.3 Namespace Labeling Syntax & Version Pinning
+PSA is configured per namespace using standard Kubernetes labels:
+
+```bash
+# General Label Formula:
+pod-security.kubernetes.io/<mode>: <profile>
+pod-security.kubernetes.io/<mode>-version: <version>
+```
+
+#### Production Namespace Manifest Example
 ```yaml
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: secure-namespace
+  name: financial-services
   labels:
-    pod-security.kubernetes.io/enforce: restricted
+    # 1. Enforce baseline profile based on v1.30 rules
+    pod-security.kubernetes.io/enforce: baseline
     pod-security.kubernetes.io/enforce-version: v1.30
-    pod-security.kubernetes.io/warn: baseline
+    
+    # 2. Return client warnings if workloads do not meet the stricter restricted profile
+    pod-security.kubernetes.io/warn: restricted
     pod-security.kubernetes.io/warn-version: latest
+    
+    # 3. Write audit log entries for any workload failing restricted profile
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/audit-version: latest
 ```
 
-> [!CAUTION]
-> **Namespace Label Escalation Risk:** Any user with permission to `patch` or `update` Namespace resources (e.g. via a namespaced RoleBinding) can modify these labels. This creates a severe privilege escalation risk, as a user could downgrade a namespace's PSA level from `restricted` to `privileged` to deploy an insecure root Pod. Restrict Namespace label permissions strictly.
+> [!TIP]
+> ### 📌 The Critical Value of Version Pinning (`enforce-version`)
+> The Pod Security Standards evolve across Kubernetes releases. For example, adding new capability restrictions or seccomp requirements in a newer version could cause previously valid Pods to fail admission.
+> By pinning `pod-security.kubernetes.io/enforce-version: v1.30` instead of `latest`, you guarantee that **upgrading the control plane to v1.31 or v1.32 will not break existing production deployments**.
 
----
+### 5.4 Imperative CLI Labeling Commands (CKS Speed Hacks)
+```bash
+# Enforce restricted profile on payroll namespace
+kubectl label --overwrite ns payroll pod-security.kubernetes.io/enforce=restricted
 
-## 13. Hardening Guide: Dynamic Resource Allocation (DRA) Security
+# Set baseline enforce with restricted warnings on dev namespace
+kubectl label --overwrite ns dev \
+  pod-security.kubernetes.io/enforce=baseline \
+  pod-security.kubernetes.io/warn=restricted
 
-Dynamic Resource Allocation (DRA) (Beta in v1.36) provides advanced scheduling and allocation mechanisms for hardware accelerators (GPUs, ASICs). Because DRA drivers write resource allocation metadata back to the API, secure authorization is required.
+# Remove PSA enforcement from a namespace
+kubectl label ns dev pod-security.kubernetes.io/enforce-
+```
 
-### 13.1 Synthetic Subresources
-DRA status updates do not modify the main claim object directly; instead, they target synthetic subresources to enforce least-privilege:
-1. **`resourceclaims/binding`:** Required to modify `status.allocation` and `status.reservedFor`. Usually granted strictly to the `kube-scheduler` and custom allocation controllers.
-2. **`resourceclaims/driver`:** Required to modify `status.devices`. Restricts drivers from tampering with claims managed by other drivers.
+### 5.5 Cluster-Wide Admission Configuration (`AdmissionConfiguration`)
+To establish global default policies or grant exemptions across the cluster, configure an admission configuration file on `kube-apiserver`:
 
-### 13.2 Node-Aware Verbs
-When configuring RBAC for DRA drivers, use node-aware verbs:
-* **`associated-node:<verb>`:** Used for node-local drivers (e.g. GPU agent running on a worker node). The API server verifies node association before validating the request.
-* **`arbitrary-node:<verb>`:** Granted only to control-plane or cluster-wide multi-node controllers.
-
----
-
-## 14. Kubernetes Security Checklist
-
-Ensure a basic security baseline for control planes, hosts, and applications:
-
-### A. Authentication & Authorization
-* [ ] Disable basic auth (`--basic-auth-file`) and static tokens (`--token-auth-file`).
-* [ ] Enforce mTLS for all control plane communication (APIServer, ETCD).
-* [ ] Restrict `system:masters` group assignment (acts as superuser, bypassing RBAC).
-* [ ] Periodically audit cluster-level RoleBindings and ClusterRoleBindings.
-
-### B. Host & Network Security
-* [ ] Apply a default-deny-all Ingress and Egress `NetworkPolicy` to namespaces.
-* [ ] Restrict direct host network access to `kube-apiserver` (port 6443) and `etcd` (ports 2379/2380).
-* [ ] Configure worker hosts to use the `systemd` cgroup driver for resource tracking.
-
-### C. Pod & Container hardening
-* [ ] Apply `readOnlyRootFilesystem: true` to prevent containers from writing to host directories.
-* [ ] Set `runAsNonRoot: true` and define non-root `runAsUser` values.
-* [ ] Drop `ALL` Linux capabilities, explicitly adding only what's required.
-* [ ] Scan container images for vulnerabilities, pin specific image digests, and pull only from verified registries.
-* [ ] Run untrusted workloads inside isolated environments using sandboxed runtimes (e.g. gVisor, Kata Containers) via `RuntimeClass`.
-
----
-
-## 🛠️ Practical Proof of Concept (PoC): Network Security & RBAC Hardening Lab
-
-### Target Scenario
-We will build a secure multi-tenant namespace, deploy database and web frontend workloads, apply a default-deny-ingress network policy, configure custom ingress rules to permit traffic only from the web tier, and verify access. Additionally, we will construct a least-privilege RBAC role for testing namespace access.
-
-### Step-by-Step Guided Steps
-
-1. **Verify or Provision Cluster**:
-   Ensure you have a running cluster (e.g., using `kind`):
-   ```bash
-   kind create cluster --name cka-security-poc
+1. **Create the Configuration File (`/etc/kubernetes/admission/pod-security-config.yaml`):**
+   ```yaml
+   apiVersion: apiserver.config.k8s.io/v1
+   kind: AdmissionConfiguration
+   plugins:
+   - name: PodSecurity
+     configuration:
+       apiVersion: pod-security.admission.config.k8s.io/v1
+       kind: PodSecurityConfiguration
+       defaults:
+         enforce: "baseline"
+         enforce-version: "v1.30"
+         audit: "restricted"
+         audit-version: "latest"
+         warn: "restricted"
+         warn-version: "latest"
+       exemptions:
+         # Exempt cluster administrators and system daemons
+         usernames:
+           - "system:serviceaccount:kube-system:daemon-set-controller"
+           - "admin-user"
+         # Exempt system namespaces
+         namespaces:
+           - "kube-system"
+           - "kube-public"
+         # Exempt sandboxed runtime classes
+         runtimeClasses:
+           - "gvisor"
+           - "kata"
    ```
 
-2. **Setup Isolated Namespaces and Workloads**:
-   - Create a dedicated namespace:
-     ```bash
-     kubectl create namespace secure-apps
-     ```
-   - Deploy Nginx representational workloads representing the Web tier and Database tier:
-     ```bash
-     # Web Tier Pod
-     kubectl run web-tier -n secure-apps --labels="role=web" --image=nginx:alpine --port=80
-     # Database Tier Pod (running an Nginx server listening on port 80 to verify connectivity)
-     kubectl run db-tier -n secure-apps --labels="role=db" --image=nginx:alpine --port=80
-     # Untrusted External Pod
-     kubectl run external-tier -n secure-apps --labels="role=external" --image=nginx:alpine --port=80
-     ```
-
-3. **Establish Default-Deny-Ingress Policy**:
-   - Apply a default-deny-ingress network policy to isolate the database:
-     ```yaml
-     cat <<EOF > db-default-deny.yaml
-     apiVersion: networking.k8s.io/v1
-     kind: NetworkPolicy
-     metadata:
-       name: db-default-deny
-       namespace: secure-apps
-     spec:
-       podSelector:
-         matchLabels:
-           role: db
-       policyTypes:
-       - Ingress
-     EOF
-     kubectl apply -f db-default-deny.yaml
-     ```
-   - Verify network isolation. Execute a connection check from both the Web pod and the External pod:
-     ```bash
-     # Check from external-tier (expected to time out / fail)
-     kubectl exec -n secure-apps external-tier -- curl --connect-timeout 3 http://db-tier
-     
-     # Check from web-tier (expected to time out / fail)
-     kubectl exec -n secure-apps web-tier -- curl --connect-timeout 3 http://db-tier
-     ```
-     Observe that both connection attempts fail, confirming the database pod is successfully isolated.
-
-4. **Allow Specific Ingress from Web Tier**:
-   - Apply an ingress allowance policy targeting the database pod:
-     ```yaml
-     cat <<EOF > db-allow-web.yaml
-     apiVersion: networking.k8s.io/v1
-     kind: NetworkPolicy
-     metadata:
-       name: db-allow-web
-       namespace: secure-apps
-     spec:
-       podSelector:
-         matchLabels:
-           role: db
-       policyTypes:
-       - Ingress
-       ingress:
-       - from:
-         - podSelector:
-             matchLabels:
-               role: web
-         ports:
-         - protocol: TCP
-           port: 80
-     EOF
-     kubectl apply -f db-allow-web.yaml
-     ```
-   - Verify network connectivity:
-     ```bash
-     # Check from web-tier (expected to SUCCEED and return Nginx index HTML)
-     kubectl exec -n secure-apps web-tier -- curl --connect-timeout 3 http://db-tier
-     
-     # Check from external-tier (expected to FAIL and time out)
-     kubectl exec -n secure-apps external-tier -- curl --connect-timeout 3 http://db-tier
-     ```
-     Confirm that the Web pod can connect to the Database pod while the External pod is still blocked.
-
-5. **Deploy and Audit Least-Privilege RBAC Controls**:
-   - Create a ServiceAccount inside the namespace:
-     ```bash
-     kubectl create serviceaccount web-auditor -n secure-apps
-     ```
-   - Create a Role allowing read-only access to Pods only:
-     ```yaml
-     cat <<EOF > auditor-role.yaml
-     apiVersion: rbac.authorization.k8s.io/v1
-     kind: Role
-     metadata:
-       name: pod-auditor
-       namespace: secure-apps
-     rules:
-     - apiGroups: [""]
-       resources: ["pods"]
-       verbs: ["get", "list"]
-     EOF
-     kubectl apply -f auditor-role.yaml
-     ```
-   - Bind the ServiceAccount to the Role:
-     ```yaml
-     cat <<EOF > auditor-binding.yaml
-     apiVersion: rbac.authorization.k8s.io/v1
-     kind: RoleBinding
-     metadata:
-       name: audit-pods
-       namespace: secure-apps
-     subjects:
-     - kind: ServiceAccount
-       name: web-auditor
-       namespace: secure-apps
-     roleRef:
-       kind: Role
-       name: pod-auditor
-       apiGroup: rbac.authorization.k8s.io
-     EOF
-     kubectl apply -f auditor-binding.yaml
-     ```
-   - Validate permissions as the ServiceAccount using `can-i`:
-     ```bash
-     # Can the auditor list pods? (Expected: yes)
-     kubectl auth can-i list pods --as=system:serviceaccount:secure-apps:web-auditor -n secure-apps
-     
-     # Can the auditor delete pods? (Expected: no)
-     kubectl auth can-i delete pods --as=system:serviceaccount:secure-apps:web-auditor -n secure-apps
-     
-     # Can the auditor read services? (Expected: no)
-     kubectl auth can-i get services --as=system:serviceaccount:secure-apps:web-auditor -n secure-apps
-     ```
-
-6. **Clean Up**:
-   ```bash
-   kubectl delete namespace secure-apps
-   rm -f db-default-deny.yaml db-allow-web.yaml auditor-role.yaml auditor-binding.yaml
+2. **Mount and Pass the File to `kube-apiserver`:**
+   In `/etc/kubernetes/manifests/kube-apiserver.yaml`:
+   ```yaml
+   spec:
+     containers:
+     - command:
+       - kube-apiserver
+       - --admission-control-config-file=/etc/kubernetes/admission/pod-security-config.yaml
+       volumeMounts:
+       - name: admission-config
+         mountPath: /etc/kubernetes/admission/pod-security-config.yaml
+         readOnly: true
+     volumes:
+     - name: admission-config
+       hostPath:
+         path: /etc/kubernetes/admission/pod-security-config.yaml
+         type: File
    ```
+
+### 5.6 🚨 The Namespace Label Escalation Vulnerability & Prevention
+Because PSA evaluates policies from Namespace labels, **any user with `patch` or `update` permissions on `namespaces` can downgrade the namespace security profile**:
+
+```bash
+# An attacker with namespace edit access executes:
+kubectl label --overwrite ns secure-apps pod-security.kubernetes.io/enforce=privileged
 ```
+Once downgraded, the attacker can deploy privileged pods, mount `/` from the host node, and take over the cluster.
+
+#### Remediation Strategies:
+1. **Strict RBAC:** Never grant standard developers `update` or `patch` permissions on `namespaces`.
+2. **Admission Webhook Protection:** Deploy an OPA Gatekeeper or Kyverno rule that forbids modifying labels prefixed with `pod-security.kubernetes.io/` unless requested by `system:masters`.
 
 ---
 
-## 5. 🌉 Evolutionary Conceptual Bridging: PSP to PSA Migration
+## 6. 🌐 Dynamic Policy Engines: OPA Gatekeeper & Kyverno
 
-```mermaid
-timeline
-    title Evolution of Kubernetes Pod Admission Security
-    v1.0 - v1.20 : PodSecurityPolicy (PSP) : Complex RBAC bindings : Global cluster mutation traps
-    v1.21 - v1.24 : PSP Deprecated : Admission Webhooks (Gatekeeper / Kyverno) : KEP-2579 PSA Design
-    v1.25+ GA : Pod Security Admission (PSA) : Native namespace labels : Privileged / Baseline / Restricted profiles
-```
-
-### 5.1 The Architectural Failures of Legacy PodSecurityPolicy (PSP)
-* **Coupling to RBAC:** In legacy clusters, PSPs were bound to Users or ServiceAccounts via ClusterRoleBindings. Because admission mutation occurred during pod creation, determining *which* PSP applied to an indirectly deployed pod (via a Deployment or ReplicaSet controller) was notoriously difficult to trace and predict.
-* **Lack of Dry-Run / Audit:** PSP operated strictly in fail-close mode; administrators could not easily test policies against live workloads without risking breaking existing deployments.
-* **Mutation Traps:** PSPs silently mutated pod specifications behind the scenes, creating drift between committed Git manifests and runtime state.
-
-### 5.2 The Modern Pod Security Admission (PSA) Architecture
-* **Decoupled from RBAC:** Enforced via declarative namespace labels (`pod-security.kubernetes.io/<mode>=<profile>`).
-* **Tri-Mode Operational Enforcement:**
-  * `enforce`: Blocks offending pods from being scheduled.
-  * `audit`: Allows the pod but records a violation in the audit logs.
-  * `warn`: Allows the pod but returns an interactive warning string to `kubectl`.
-* **Standard Profiles:** Fixed, vendor-neutral specifications maintained by the CNCF:
-  * `privileged`: Completely unconstrained; open for CNI daemons, storage drivers.
-  * `baseline`: Prevents known privilege escalations with minimal friction.
-  * `restricted`: Hardened enterprise standard (requires non-root, read-only rootfs, dropped capabilities, and seccomp default).
-
-### 5.3 Open Policy Agent (OPA) & Gatekeeper Architecture
-While PSA enforces fixed, standardized pod security profiles, complex business policies (e.g., enforcing image registry whitelists, mandating billing labels, or capping replica counts) require programmable admission engines like **OPA Gatekeeper**:
+While PSA provides standardized, zero-overhead pod security validation, it cannot perform custom organizational enforcement or mutation. Dynamic webhook policy engines fill this gap:
 
 ```mermaid
 flowchart LR
-    Manifest["kubectl apply -f pod.yaml"] --> API["kube-apiserver"]
-    API --> Webhook["Gatekeeper Validating Webhook"]
-    Webhook --> Rego["OPA Engine\n(Rego Policy Evaluation)"]
-    Rego --> Decision{"Pass or Fail?"}
-    Decision -- Allow --> etcd["Persist to etcd"]
-    Decision -- Deny --> Reject["Reject API Request\n(Detailed Policy Error)"]
+    API["kube-apiserver\n(Admission Phase)"] --> PSA["In-Tree: Pod Security Admission\n- Fixed Standards (Priv/Base/Restr)\n- Validating Only"]
+    API --> Webhook["Out-of-Tree: Webhook Admission\n- OPA Gatekeeper / Kyverno"]
+    Webhook --> Mutation["Mutating Webhooks\n- Inject sidecars\n- Auto-populate securityContext"]
+    Webhook --> CustomRules["Custom Validations\n- Enforce trusted registry: cgr.dev/*\n- Require billing labels\n- Disallow Service type LoadBalancer"]
 ```
 
-* **ConstraintTemplate:** Defines the parameterized declarative schema and the underlying **Rego** evaluation logic:
-  ```yaml
-  apiVersion: templates.gatekeeper.sh/v1
-  kind: ConstraintTemplate
-  metadata:
-    name: k8srequiredlabels
-  spec:
-    crd:
-      spec:
-        names:
-          kind: K8sRequiredLabels
-        validation:
-          openAPIV3Schema:
-            properties:
-              labels:
-                type: array
-                items:
-                  type: string
-    targets:
-      - target: admission.k8s.gatekeeper.sh
-        rego: |
-          package k8srequiredlabels
-          violation[{"msg": msg}] {
-            provided := {label | input.review.object.metadata.labels[label]}
-            required := {label | label := input.parameters.labels[_]}
-            missing := required - provided
-            count(missing) > 0
-            msg := sprintf("Resource is missing required labels: %v", [missing])
-          }
-  ```
-* **Constraint:** Instantiates the template, binding target namespaces or resource kinds:
-  ```yaml
-  apiVersion: constraints.gatekeeper.sh/v1beta1
-  kind: K8sRequiredLabels
-  metadata:
-    name: require-team-label
-  spec:
-    match:
-      kinds:
-        - apiGroups: [""]
-          kinds: ["Namespace"]
-    parameters:
-      labels: ["team", "environment"]
-  ```
+### 6.1 OPA Gatekeeper Architecture
+OPA Gatekeeper decouples policy logic from Kubernetes using the **Rego** query language:
+* **ConstraintTemplate:** Defines the parameterized schema and Rego validation rule.
+* **Constraint:** Instantiates the template, binding it to target resources or namespaces.
 
-### 5.4 Multi-Tenancy & Isolation Models
-Kubernetes provides primitives to implement both **Soft Multi-Tenancy** (internal trusted teams) and **Hard Multi-Tenancy** (untrusted third-party workloads):
-
-* **Namespace-Level Isolation:** Combines RBAC RoleBindings, NetworkPolicies (default deny ingress/egress), ResourceQuotas (CPU/memory limits), and LimitRanges.
-* **Node-Level Isolation via Dedicated Node Pools:**
-  * Prevent general pods from scheduling on tenant nodes using **Taints**:
-    ```bash
-    kubectl taint nodes node-tenant-a dedicated=tenant-a:NoSchedule
-    ```
-  * Force tenant pods onto dedicated nodes using **Tolerations** and **NodeAffinity**:
-    ```yaml
-    tolerations:
-      - key: "dedicated"
-        operator: "Equal"
-        value: "tenant-a"
-        effect: "NoSchedule"
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: dedicated
-                  operator: In
-                  values: ["tenant-a"]
-    ```
+```yaml
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8sdisallowprivileged
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sDisallowPrivileged
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sdisallowprivileged
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          container.securityContext.privileged == true
+          msg := sprintf("Privileged container '%v' is prohibited!", [container.name])
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sDisallowPrivileged
+metadata:
+  name: block-privileged-containers
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "dev"
+      - "staging"
+```
 
 ---
 
-<!-- Documentation References -->
-[Kubernetes Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
-[Kubernetes Pod Security Policy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/)
-[Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
-[What is Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
-[Storage Concepts](https://kubernetes.io/docs/concepts/storage/_print)
-[Open Policy Agent Gatekeeper](https://open-policy-agent.github.io/gatekeeper/website/docs/)
-[KodeKloud CKS: OPA in Kubernetes](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/OPA-in-Kubernetes/page)
-[KodeKloud CKS: Multi Tenancy in Kubernetes](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Overview-of-Multi-Tenancy-in-Kubernetes/page)
+## 7. 🏢 Multi-Tenancy & Isolation Models
 
+Kubernetes multi-tenancy partitions shared infrastructure across distinct teams or untrusted workloads:
 
+### 7.1 Soft vs. Hard Multi-Tenancy
+* **Soft Multi-Tenancy (Internal Teams):** Assumes benevolent tenants. Enforced via Namespaces, RBAC, NetworkPolicies, LimitRanges, ResourceQuotas, and PSA `baseline`/`restricted`.
+* **Hard Multi-Tenancy (Untrusted / Multiple Customers):** Assumes zero trust. Containers share the host Linux kernel; a kernel zero-day privilege escalation compromises peer tenants. Requires:
+  1. Dedicated Node Pools via Taints, Tolerations, and NodeAffinity.
+  2. Sandboxed Container Runtimes (gVisor / Kata Containers via `RuntimeClass`).
+  3. Virtualized Control Planes (vcluster / Capsule).
+
+### 7.2 Dedicated Node Pool Implementation
+```bash
+# 1. Taint tenant worker nodes to reject standard workloads:
+kubectl taint nodes node-tenant-alpha dedicated=tenant-alpha:NoSchedule
+kubectl label nodes node-tenant-alpha tenant=alpha
+```
+
+Workloads targeted for Tenant Alpha must declare matching tolerations and nodeAffinity:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tenant-alpha-app
+  namespace: tenant-alpha
+spec:
+  tolerations:
+  - key: "dedicated"
+    operator: "Equal"
+    value: "tenant-alpha"
+    effect: "NoSchedule"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: tenant
+            operator: In
+            values:
+            - alpha
+  containers:
+  - name: app
+    image: nginx:alpine
+```
+
+---
+
+## 8. 🔍 Deep-Intuition Diagnostic Analyses (AARF)
+
+### Scenario 1: Zero-Downtime Migration from Baseline to Restricted with PSA
+* **The Answer:** Label the target namespace with `warn: restricted` and `audit: restricted` while keeping `enforce: baseline`. Run CI/CD deployments, review CLI warnings and audit logs for violations, remediate pod securityContexts, and finally elevate `enforce: restricted`.
+* **The Assumptions:** The cluster is running Kubernetes v1.25+. Workloads are deployed via Deployments or Helm charts.
+* **The Rationale (Why):** If you immediately apply `enforce: restricted` to a live namespace, existing running pods continue to run, but any subsequent rolling update, replica scaling, or node drain triggers pod recreation. The ReplicaSet controller will fail to create new pods, causing an unexpected production outage.
+* **The Failure Loop (What if not):** Applying `enforce: restricted` immediately causes the ReplicaSet to emit: `FailedCreate: pods "web-7b9c9f45-x" is forbidden: violates PodSecurity "restricted:latest"`.
+* **The Alternative Case:** If spinning up a brand-new greenfield namespace, set `enforce: restricted` from day one.
+
+### Scenario 2: Emergency Recovery from PSP Lockout on Legacy Clusters
+* **The Answer:** Remove `PodSecurityPolicy` from `--enable-admission-plugins` in `/etc/kubernetes/manifests/kube-apiserver.yaml` and wait for Kubelet to restart the static pod.
+* **The Assumptions:** Access to the control plane master node with root/sudo privileges.
+* **The Rationale (Why):** PSP evaluates pod creation at the API server admission phase. When no matching PSP or RBAC `use` binding exists, the admission plugin rejects all pods. Disabling the plugin bypasses the admission gate, allowing cluster workloads to recover while valid PSPs are authored.
+* **The Failure Loop (What if not):** The cluster remains completely frozen; no pods can restart or scale.
+
+---
+
+## 9. 🛠️ Practical Proof of Concept (PoC): PSA Multi-Mode Enforcement Lab
+
+### 9.1 Step 1: Provision Isolated Test Namespaces
+```bash
+# Create two test namespaces:
+kubectl create namespace psa-enforce-lab
+kubectl create namespace psa-warn-lab
+
+# Configure psa-enforce-lab to ENFORCE restricted standard:
+kubectl label ns psa-enforce-lab pod-security.kubernetes.io/enforce=restricted
+
+# Configure psa-warn-lab to ENFORCE baseline but WARN on restricted:
+kubectl label ns psa-warn-lab \
+  pod-security.kubernetes.io/enforce=baseline \
+  pod-security.kubernetes.io/warn=restricted
+```
+
+### 9.2 Step 2: Test Non-Compliant Pod Rejection in `enforce` Namespace
+Attempt to deploy a non-compliant pod (runs as root, lacks dropped capabilities):
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: non-compliant-pod
+  namespace: psa-enforce-lab
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+EOF
+```
+
+**Observed API Server Output (Expected Failure):**
+```text
+Error from server (Forbidden): error when creating "STDIN": pods "non-compliant-pod" is forbidden: 
+violates PodSecurity "restricted:latest": 
+allowPrivilegeEscalation != false (container "nginx" must set securityContext.allowPrivilegeEscalation=false), 
+unrestricted capabilities (container "nginx" must set securityContext.capabilities.drop=["ALL"]), 
+runAsNonRoot != true (pod or container "nginx" must set securityContext.runAsNonRoot=true), 
+seccompProfile (pod or container "nginx" must set securityContext.seccompProfile.type to "RuntimeDefault" or "Localhost")
+```
+
+### 9.3 Step 3: Test Warning Output in `warn` Namespace
+Deploy the same non-compliant pod to `psa-warn-lab`:
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: non-compliant-pod
+  namespace: psa-warn-lab
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+EOF
+```
+
+**Observed Terminal Output (Admitted with Warnings):**
+```text
+Warning: would violate PodSecurity "restricted:latest": allowPrivilegeEscalation != false (...), unrestricted capabilities (...)
+pod/non-compliant-pod created
+```
+The pod is successfully admitted and running, while clearly notifying the operator of required hardening.
+
+### 9.4 Step 4: Deploy Fully Compliant Restricted Workload
+Deploy a pod configured to satisfy all `restricted` profile criteria:
+
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: compliant-restricted-pod
+  namespace: psa-enforce-lab
+spec:
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+  - name: secure-app
+    image: nginx:alpine
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
+    volumeMounts:
+    - name: tmp
+      mountPath: /tmp
+    - name: cache
+      mountPath: /var/cache/nginx
+    - name: pid
+      mountPath: /var/run
+  volumes:
+  - name: tmp
+    emptyDir: {}
+  - name: cache
+    emptyDir: {}
+  - name: pid
+    emptyDir: {}
+EOF
+```
+
+**Observed Output:**
+```text
+pod/compliant-restricted-pod created
+```
+The pod satisfies all restrictions and runs successfully in the enforced namespace.
+
+---
+
+## 10. ⚡ CKS Exam Speed Hacks & Rapid Troubleshooting Table
+
+| Problem / Objective | Fastest CLI Formula / Manifest Shortcut | Diagnostic Check |
+| :--- | :--- | :--- |
+| **Verify PSA violation before creating pod** | `kubectl apply -f pod.yaml --dry-run=server` | Server dry-run invokes admission plugins and reports exact PSS violations without creating the pod. |
+| **Enforce restricted profile on namespace** | `kubectl label --overwrite ns <name> pod-security.kubernetes.io/enforce=restricted` | `kubectl get ns <name> --show-labels` |
+| **Audit restricted violations across existing namespace** | `kubectl label --overwrite ns <name> pod-security.kubernetes.io/warn=restricted` then trigger dry-run apply | Inspect terminal output for returned warning headers. |
+| **Satisfy `restricted` profile minimum securityContext** | Add: `securityContext.runAsNonRoot: true`, `securityContext.seccompProfile.type: RuntimeDefault`, `containers[*].securityContext.allowPrivilegeEscalation: false`, `capabilities.drop: ["ALL"]` | Validate with `--dry-run=server`. |
+| **Inspect why Deployment fails to create Pods under PSA** | `kubectl describe rs <replicaset-name>` | The ReplicaSet controller records PSA rejection errors in its `.status.conditions` and events list. |
+
+---
+
+## 🔗 Related & Deeper References
+* Core Landing Concept: [[Main Notes/pod-security-admission|Pod Security Admission Landing Note]]
+* Deeper Concept: [[Main Notes/pod-security-admission - Standards and Modes|PSA Standards and Modes]]
+* Legacy Foundation: [[Main Notes/pod-security-policy|Pod Security Policy (Legacy PSP)]]
+* Hands-on Exam Scenario: [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks#Scenario 10: Pod Security Admission (PSA), Standards Hardening & Legacy PSP|CKS Exam Playbook - Scenario 10]]
+* Upstream Reference: [Official Kubernetes Pod Security Standards](https://kubernetes.io/docs/concepts/security/pod-security-standards/)
+* Upstream Reference: [Official Kubernetes Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/)
+* Upstream Reference: [Official Kubernetes Pod Security Policy](https://kubernetes.io/docs/concepts/policy/pod-security-policy/)
+* Upstream Reference: [What is Kubernetes](https://kubernetes.io/docs/concepts/overview/what-is-kubernetes/)
+* Upstream Reference: [Storage Concepts](https://kubernetes.io/docs/concepts/storage/_print)

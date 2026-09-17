@@ -2,6 +2,50 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-17] - CKS Ingestion Overhaul: Module 4 Microservices, Pod Security Policies (PSP) & PSA/PSS Evolutionary Bridge
+
+### Reference Notes (Layer 1 Core Foundation)
+- **Masterclass Pedagogical Overhaul of Module 0-7-2 ([[Reference Notes/0-7-2_pod_security_standards_and_admission.md|0-7-2: Pod Security Standards, Pod Security Policies (PSP) & Admission (PSA)]]):**
+  - **First-Principles Ground-Zero Architecture:** Restructured from container Linux kernel namespaces/cgroups to Workload SecurityContexts, parameter scopes (Pod-level vs Container-level), `fsGroup` recursive GID rewrite mechanics, volume type behaviors, and safe vs unsafe `sysctls`.
+  - **Exhaustive Legacy PodSecurityPolicy (PSP) Coverage:**
+    - Documented API server static pod configuration: `--enable-admission-plugins=NodeRestriction,PodSecurityPolicy`.
+    - Detailed the full `policy/v1beta1` manifest schema (`spec.privileged`, `runAsUser.rule: MustRunAsNonRoot`, `requiredDropCapabilities`, `defaultAddCapabilities`, `volumes`, `hostNetwork`, `hostPID`, `readOnlyRootFilesystem`).
+    - Unpacked PSP RBAC authorization mechanics: ClusterRole with `apiGroups: ['policy']`, `resources: ['podsecuritypolicies']`, and the `use` verb, bound to workload ServiceAccounts.
+    - Demystified the **Controller Manager Delegation Trap** (why Deployment creation by an admin fails when the ReplicaSet creates pods using the default ServiceAccount lacking PSP `use` RBAC).
+    - Documented the **Cluster-Wide Blackout Risk** and emergency recovery steps.
+  - **Evolutionary Conceptual Bridging (KEP-2579):**
+    - Detailed the 4 fatal flaws of PSP that forced deprecation in v1.21 and removal in v1.25.
+    - Added an evolutionary timeline and comparative matrix contrasting PSP vs PSS/PSA vs OPA Gatekeeper / Kyverno across 7 architectural dimensions.
+  - **Exhaustive Pod Security Standards (PSS) Specification:**
+    - Detailed the 3 profiles (`privileged`, `baseline`, `restricted`) with an exhaustive 14-field specification control matrix.
+  - **Pod Security Admission (PSA) In-Depth Architecture:**
+    - Documented the tri-mode evaluation pipeline (`enforce`, `audit`, `warn`) and output behaviors.
+    - Added namespace labeling formulas with **version pinning** (`enforce-version: v1.30`) to protect production workloads against cluster upgrade breaking changes.
+    - Documented cluster-wide admission configuration via `/etc/kubernetes/admission/pod-security-config.yaml` (`AdmissionConfiguration`) with exemptions for usernames, namespaces, and runtime classes.
+    - Detailed the **Namespace Label Escalation Vulnerability** and prevention strategies.
+  - **Dynamic Policy Engines & Multi-Tenancy:**
+    - Integrated OPA Gatekeeper (ConstraintTemplate Rego & Constraint) and Kyverno architectures.
+    - Detailed soft vs hard multi-tenancy and dedicated node pool scheduling via Taints, Tolerations, and NodeAffinity.
+  - **3 Comprehensive AARF Deep Diagnostic Analyses:**
+    - Zero-Downtime Migration from Baseline to Restricted with PSA (`warn` + `audit` staging).
+    - Emergency Recovery from PSP Lockout on Legacy Clusters.
+    - The `fsGroup` Non-Root Volume Permission Denied Loop.
+  - **Complete Hands-on Verification PoC:** Step-by-step Kind lab verifying rejection under `enforce`, warning banners under `warn`, and full compliant restricted deployment.
+
+### Main Notes (Atomic Concepts & Graph Linking)
+- **Created [[Main Notes/pod-security-policy.md|Pod Security Policy]] Landing Note:** Documented purpose, functionality, architectural context, controller delegation trap, problem solver, and failure impact.
+- **Updated [[Main Notes/pod-security-admission.md|Pod Security Admission]]:** Fixed reference guide link to Module 0-7-2, established bidirectional `against` and `related_concepts` links with `[[pod-security-policy]]`.
+- **Updated [[Main Notes/pod-security-admission - Standards and Modes.md|PSA Standards and Modes]]:** Corrected deep-dive link target to Module 0-7-2.
+
+### Exam Playbooks & Speed Hacks (Layer 2)
+- **Enriched Scenario 10 in CKS Practice Playbook ([[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|CKS Practice Playbook]]):**
+  - Added pre-flight server-side dry-run speed hack (`kubectl apply -f pod.yaml --dry-run=server`).
+  - Added imperative namespace labeling one-liners with version pinning.
+  - Added cluster-wide `AdmissionConfiguration` YAML with namespace/runtimeClass exemptions.
+  - Added legacy PSP RBAC binding and troubleshooting reference.
+
+---
+
 ## [2026-09-17] - System Tooling: Cross-Platform UTF-8 Reconfiguration for Review & Scraper Scripts
 
 ### Tooling & Automation

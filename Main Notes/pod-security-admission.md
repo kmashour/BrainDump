@@ -8,12 +8,14 @@ domains:
 related_concepts:
   - "[[pod]]"
   - "[[namespace]]"
+  - "[[pod-security-policy]]"
 against:
-  - "[[rbac]]"
+  - "[[pod-security-policy]]"
 reference_guides:
-  - "[[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md]]"
+  - "[[Reference Notes/0-7-2_pod_security_standards_and_admission.md]]"
 tags:
   - kubernetes/security
+  - kubernetes/psa
   - status/completed
 ---
 
