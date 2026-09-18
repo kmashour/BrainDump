@@ -56,6 +56,7 @@ tags:
 - 🎥 **Specialized Deep Dives & Practical References:**
   - [[Reference Notes/0-7-2_pod_security_standards_and_admission.md|Module: Pod Security Standards, PSP & PSA (Masterclass Depth)]]
   - [[Reference Notes/0-7-4_secret_encryption_at_rest.md|Module: Secret Encryption at Rest]]
+  - [[Reference Notes/0-5_containers_runtimes_and_lifecycle.md|Module 0-5: Containers, Runtimes & Sandboxing Architecture]]
   - [[Reference Notes/0-7-b_kubecon_sig_auth_psp_deprecation_and_pss_evolution.md|KubeCon Talk: SIG Auth Update & PSP Deprecation]]
   - [[Reference Notes/12-2_secrets_store_csi_driver_integration.md|Secrets Store CSI Driver Integration]]
 

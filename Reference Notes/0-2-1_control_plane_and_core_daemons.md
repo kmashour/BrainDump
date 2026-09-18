@@ -5,7 +5,6 @@ tier: reference-note
 tags:
   - kubernetes/architecture
 ---
-
 # Module 0-2-1: Control Plane Core Architecture & Daemon Mechanics
 
 **Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > **Module 0-2-1**

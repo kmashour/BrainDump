@@ -514,9 +514,9 @@ Rather than storing secrets in etcd at all, enterprise production environments u
 
 ```mermaid
 flowchart TD
-    Pod[Application Pod] -->|Mounts Volume| CSI[Secrets Store CSI Driver Node Daemon]
-    CSI -->|Queries with Node Identity| Provider[Cloud Provider Plugin (AWS/Vault)]
-    Provider -->|Fetches Secret Value| Vault[(External Cloud KMS / Vault)]
+    Pod["Application Pod"] -->|Mounts Volume| CSI["Secrets Store CSI Driver Node Daemon"]
+    CSI -->|Queries with Node Identity| Provider["Cloud Provider Plugin (AWS/Vault)"]
+    Provider -->|Fetches Secret Value| Vault[("External Cloud KMS / Vault")]
     Provider -->|Returns Decrypted Data| CSI
     CSI -->|Writes in-memory tmpfs file| Pod
 ```
@@ -544,19 +544,19 @@ Standard containers share the host Linux kernel. A kernel vulnerability (such as
 ```mermaid
 flowchart TD
     subgraph StandardRunc ["Standard Container (runc)"]
-        App1[Application] -->|Direct Syscalls| HostKernel1[Host Linux Kernel (Shared!)]
+        App1["Application"] -->|Direct Syscalls| HostKernel1["Host Linux Kernel (Shared!)"]
     end
 
     subgraph SandboxedGVisor ["gVisor Sandbox (runsc)"]
-        App2[Application] -->|Syscalls| Sentry[Sentry: User Space Kernel Emulator]
-        Sentry -->|Filtered Host Syscalls| Gofer[Gofer: File I/O Proxy]
-        Gofer --> HostKernel2[Host Linux Kernel]
+        App2["Application"] -->|Syscalls| Sentry["Sentry: User Space Kernel Emulator"]
+        Sentry -->|Filtered Host Syscalls| Gofer["Gofer: File I/O Proxy"]
+        Gofer --> HostKernel2["Host Linux Kernel"]
     end
 
     subgraph SandboxedKata ["Kata Containers (MicroVM)"]
-        App3[Application] --> GuestKernel[Dedicated Guest Linux Kernel]
-        GuestKernel --> Hypervisor[QEMU / Cloud-Hypervisor MicroVM]
-        Hypervisor --> HostKernel3[Host Linux Kernel]
+        App3["Application"] --> GuestKernel["Dedicated Guest Linux Kernel"]
+        GuestKernel --> Hypervisor["QEMU / Cloud-Hypervisor MicroVM"]
+        Hypervisor --> HostKernel3["Host Linux Kernel"]
     end
 ```
 

@@ -2,6 +2,18 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-18] - Cross-Curriculum Integration: Container Runtime (CRI) & Sandboxing in CKA and CKS
+
+### Reference Notes & Curriculum Alignment
+- **Enriched and Re-Anchored [[Reference Notes/0-5_containers_runtimes_and_lifecycle.md|Module 0-5: Containers, Runtimes, and Lifecycle Management]]:**
+  - Conformed to obsidian reference-note standards with YAML frontmatter, dual tags (`kubernetes/cka`, `kubernetes/cks`, `kubernetes/cri`, `kubernetes/containers`), and bidirectional breadcrumbs to both CKA and CKS MOCs.
+  - Documents OCI image layering, Container Runtime Interface (CRI) execution pipeline (Kubelet $\rightarrow$ containerd $\rightarrow$ runc), Dockershim removal, pause sandbox mechanics, `shareProcessNamespace`, and CLI debugging (`crictl`).
+- **Prominently Indexed in [[Reference Notes/0-Index - CKA.md|0-Index - CKA.md]]:**
+  - Mapped under **Domain 1: Cluster Architecture, Installation & Setup (25%)** for CRI mechanics, `containerd`, and `crictl`.
+  - Mapped under **Domain 2: Workloads & Scheduling (15%)** for multi-container Pod patterns (InitContainers, native sidecars v1.28+, lifecycle hooks, and ephemeral debug containers).
+- **Cross-Linked in [[Reference Notes/0-Index - CKS.md|0-Index - CKS.md]]:**
+  - Explicitly integrated as a Core Foundation reference note under **Module 0-7-4 (Microservice Vulnerabilities & Isolation)** alongside gVisor `runsc` and Kata Containers sandboxing, and under **Module 0-7-5 (Supply Chain Security)** for minimal base images and OCI specifications.
+
 ## [2026-09-18] - Architectural Synthesis: RBAC Envelope vs. Content Dilemma & OPA Policy-as-Code Integration
 
 ### Reference Notes (Layer 1 Core Foundation Walkthroughs)

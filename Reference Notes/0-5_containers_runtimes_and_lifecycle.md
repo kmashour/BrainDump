@@ -1,4 +1,22 @@
+---
+obsidianUIMode: preview
+class: reference-note
+tier: reference-note
+tags:
+  - kubernetes/containers
+  - kubernetes/runtimes
+  - kubernetes/cri
+  - kubernetes/cka
+  - kubernetes/cks
+---
+
 # Module 0-5: Containers, Runtimes, and Lifecycle Management
+
+**Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > [[0-Index - CKA|☸️ CKA Reference MOC]] > [[0-Index - CKS|🛡️ CKS Reference MOC]] > **Module 0-5**
+
+> [!ABSTRACT] 📚 Cross-Curriculum Relevance: CKA & CKS
+> **CKA Domains:** Cluster Architecture & Installation (25%) — Container Runtime Interface (CRI), `containerd`, `crictl`, Dockershim removal; Workloads & Scheduling (15%) — Multi-container Pods, InitContainers, Native Sidecars, Ephemeral Containers.
+> **CKS Domains:** System Hardening (15%) — Container runtime socket isolation, `crictl` security audits; Minimizing Microservice Vulnerabilities (20%) — Sandboxed container runtimes (gVisor `runsc`, Kata Containers microVMs), `RuntimeClass`.
 
 This module details how Kubernetes orchestrates, isolates, and manages container workloads. We cover the Open Container Initiative (OCI) image format, the Container Runtime Interface (CRI) execution path, process namespace sharing, advanced isolation via `RuntimeClass`, container hooks, `initContainers`, native `Sidecar` containers, and `ephemeralContainers` for real-time debugging.
 

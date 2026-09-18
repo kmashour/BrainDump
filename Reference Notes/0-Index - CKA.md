@@ -14,7 +14,7 @@ tags:
 
 > [!TIP]
 > **KubeAstronaut Certification Track: CKA**
-> Comprehensive reference map covering cluster architecture, installation, storage, networking, workloads, and troubleshooting.
+> Comprehensive reference map covering cluster architecture, installation, storage, networking, workloads, container runtimes, and troubleshooting.
 
 ---
 
@@ -22,11 +22,16 @@ tags:
 - 🧠 **[Module 0-2-1: Control Plane Core Architecture](0-2-1_control_plane_and_core_daemons.md)**
 - 🏢 **[Module 0-2-2: HA Control Plane Topologies](0-2-2_ha_topologies_and_konnectivity.md)**
 - 🥾 **[Module 0-10: Bootstrapping, Upgrades & etcd](0-10_maintenance_upgrades_and_etcd.md)**
+- 🧪 **[Module 0-5: Containers, Runtimes & CRI Architecture](0-5_containers_runtimes_and_lifecycle.md)** *(CRI execution path, containerd vs CRI-O, crictl, pause containers, and sandbox namespace isolation)*
+- ⚙️ **[Module 0-3: Node Mechanics & Resource Limits](0-3_node_mechanics_and_resource_limits.md)**
 
 ## 📦 2. Workloads & Scheduling (15%)
+- 📦 **[Module 0-5: Multi-Container Pod Patterns & Lifecycle](0-5_containers_runtimes_and_lifecycle.md)** *(InitContainers, native sidecar containers v1.28+, lifecycle hooks, and ephemeral debug containers)*
 - 🎯 **[Module 0-13-1: Scheduling Predicates & Scoring](0-13-1_pod_scheduling_predicates_and_scoring.md)**
 - 📌 **[Module 0-13-2: Advanced Scheduling & Evictions](0-13-2_advanced_scheduling_and_eviction_control.md)**
 - 🔄 **[Module 0-6-2: Deployments & Rollouts](0-6-2_deployments_replicasets_and_rollbacks.md)**
+- ⚙️ **[Module 0-6-3: StatefulSets, DaemonSets, Jobs & CronJobs](0-6-3_statefulsets_daemonsets_jobs_cronjobs.md)**
+- 📦 **[Module 0-6-1: Pod Lifecycle & Probes](0-6-1_pod_lifecycle_probes_and_containers.md)**
 
 ## 🌐 3. Services & Networking (20%)
 - 🕸️ **[Module 0-9-1: CNI & Service Proxying](0-9-1_pod_and_service_networking_iptables_ipvs.md)**
