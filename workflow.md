@@ -16,7 +16,7 @@ flowchart TD
     Scraper --> DualPipeline["Dual-Layer Enrichment Pipeline"]
     
     subgraph DualPipeline ["Dual-Layer Knowledge Engine"]
-        L1["Layer 1: Core Foundation Notes (Single Source of Truth)\n- Reference Notes: 0-X-Y, 8-X-Y, 3-X-Y\n- Main Notes: Landing & Deeper Dive"]
+        L1["Layer 1: Core Foundation Notes (Single Source of Truth)\n- Reference Notes: 0-X-Y, 8-X-Y, 3-X-Y\n- Deep Technical Volume, AARF & Failure Loops"]
         L2["Layer 2: Dedicated Exam Tracks & Practice Playbooks\n- Projects/<CERT>/ (CKA, CKS, CKAD, KubeAstronaut)\n- Reference Notes/0-Index - <CERT>.md"]
     end
 
@@ -24,7 +24,7 @@ flowchart TD
 ```
 
 ### 1. **Layer 1: Core Foundation Notes (The Single Source of Truth)**
-* **Location:** `Reference Notes/<Domain_Prefix>/` (e.g., `0-7-1`, `0-7-2` for Kubernetes, `8-X` for Linux, `3-X` for AWS) and `Main Notes/`.
+* **Location:** `Reference Notes/<Domain_Prefix>/` (e.g., `0-7-1`, `0-7-2` for Kubernetes, `8-X` for Linux, `3-X` for AWS).
 * **Continuous Volume & Depth Enrichment:** When new materials are ingested, the core concept notes **MUST BE UPDATED FIRST**. Newly discovered CLI flags, kernel mechanisms, YAML fields, failure loops, and AARF (Answer, Assumptions, Rationale, Failure Loop, Alternative Case, Evolutionary Bridge) insights are appended directly into these Core Foundation Notes.
 * **Result:** The Core Notes continuously gain diagnostic volume, technical depth, and longevity without duplicating theory across different notes.
 
@@ -60,13 +60,10 @@ Whenever the `@ingest inflow/<filename>.md` trigger is called:
 * **Agent:** `CKAExamAgent` / `MultiDomainPoCAgent` (`System/Agents/exam_expert.md`, `System/Agents/poc_developer.md`)
 * **Task:** Extract lab scenarios, speed shortcuts, and CLI workflows into dedicated exam tracks (`Projects/<CERT>/` or `Reference Notes/0-Index - <CERT>.md`). Synthesize course Q&As with direct links to the enriched Core Notes.
 
-### **Phase 4: Main Notes (Atomic Landing & Deeper Dives)**
-* **Task:** Create or update atomic landing notes and deeper-dive notes in `Main Notes/`, updating YAML metadata properties (`domains`, `related_concepts`, `against`).
-
-### **Phase 5: Digital Garden Pattern Mapping**
+### **Phase 4: Digital Garden Pattern Mapping**
 * **Task:** Map cross-domain intersections (e.g. Kubernetes + AWS IRSA + Linux cgroups) in `Digital Garden/`.
 
-### **Phase 6: Verification, Backlog Logging & Git Synchronization**
+### **Phase 5: Verification, Backlog Logging & Git Synchronization**
 1. Run `python3 "Reference Notes/scripts/review_vault.py"` to ensure 100% link integrity.
 2. Record the transaction in `backlog.md`.
 3. Stage, commit, and push to GitHub:

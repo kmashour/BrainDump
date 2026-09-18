@@ -19,8 +19,7 @@ This skill details how to manage the end-to-end execution of the multi-agent ing
 4. **Execute Phase 3 (PoC Playbooks):**
    - For general system design / cloud architecture: package configurations and CLI recipes as a standalone project under `Projects/` and replace inline configs with wiki-links.
    - For Kubernetes: maintain validation configurations and CLI playbooks linked to cluster setups.
-5. **Execute Phase 4 (Conceptual Main Notes) & Phase 5 (Garden Intersections):**
-   - Create/update Landing Notes and Deeper Notes in `Main Notes/`.
+5. **Execute Phase 4 (Garden Intersections):**
    - Map E2E cross-domain patterns in `Digital Garden/`.
 6. **Execute Phase 6 (Exam Focus / Certification Checklists):**
    - **Mandatory for Kubernetes/CKA:** Invoke CKAExamAgent to compile/append exam-focused checklists, aliases, VIM tricks, and diagnostic scripts to the appropriate checklist under `Projects/CKA/`.

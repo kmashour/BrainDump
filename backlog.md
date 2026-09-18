@@ -2,6 +2,23 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-18] - Architectural System Realignment: Decommissioning Main Notes & Vault Streamlining
+
+### System Architecture & Structural Realignment
+- **Decommissioned `Main Notes/` Directory per Direct User Instruction:**
+  - Removed 331 atomic and deeper-dive concept notes from active filesystem and git tracking.
+  - Pinned a permanent safety snapshot branch: `backup/before-nuking-main-notes` so all prior atomic notes remain 100% recoverable at any time in git history.
+- **System Governance & Workflow Updates:**
+  - Updated `README.md` to reflect the streamlined 3-directory architecture:
+    1. `Reference Notes/`: Authoritative Core Foundation technical modules (Single Source of Truth, deep technical volume, failure loops, AARF).
+    2. `Projects/`: Hands-on exam workspaces, speed hacks, and practice playbooks.
+    3. `Digital Garden/`: Cross-domain architectural patterns.
+  - Updated `workflow.md` to remove `Main Notes/` from Layer 1 and Phase 4, keeping the Dual-Layer Knowledge Engine focused on Reference Notes (Core Foundation) and Projects (Exam & Hands-on Playbooks).
+  - Updated `System/Skills/orchestration.md` to align with the revised phase sequence.
+  - Appended missing external documentation citations to `Reference Notes/0-7-4_secret_encryption_at_rest.md` to maintain 100% inflow coverage.
+- **Verification:**
+  - `python "Reference Notes/scripts/review_vault.py"` executed successfully with 0 broken links, 100% frontmatter compliance, and 100% inflow coverage.
+
 ## [2026-09-18] - Cross-Curriculum Integration: Container Runtime (CRI) & Sandboxing in CKA and CKS
 
 ### Reference Notes & Curriculum Alignment

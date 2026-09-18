@@ -79,14 +79,14 @@ graph TD
 
 This vault is organized into distinct functional spaces to map concepts, reference materials, production patterns, and exam projects:
 
-### 1. 🧠 [Main Notes](Main%20Notes/) (Atomic Concepts)
-Contains atomic landing notes (e.g. `kube-apiserver.md`) and sub-concept deeper notes (e.g. `kube-apiserver - Request Lifecycle.md`) linked dynamically via Dataview.
+### 1. 📚 [Reference Notes](Reference%20Notes/) (Core Foundation Notes)
+This directory houses the comprehensive, authoritative technical modules filled with deep engineering volume, failure loops, AARF analyses, kernel hooks, and hands-on Proof of Concept (PoC) workflows.
 
-### 2. 🌲 [Digital Garden](Digital%20Garden/) (Architectural Patterns)
+### 2. 🎓 [Projects](Projects/) (Active Workspaces & Exam Prep)
+Contains dedicated exam tracks and practice playbooks (e.g. **[CKS Practice Playbook](Projects/CKS/Practice%20Playbook%20-%20CKS%20Exam%20Hardening%20and%20Speed%20Hacks.md)** and **[CKA Workspace](Projects/CKA/)**) focused strictly on high-speed terminal execution, VIM customizations, and hands-on scenarios.
+
+### 3. 🌲 [Digital Garden](Digital%20Garden/) (Architectural Patterns)
 Contains cross-domain architectural pattern notes (`class: pattern-note`) connecting Linux, AWS, Kubernetes, Databases, and Networking.
-
-### 3. 🎓 [Projects](Projects/) (Active Workspaces & Exam Prep)
-Contains workspaces for active projects. The **[CKA Exam Workspace](Projects/CKA/)** focuses strictly on high-speed terminal settings, VIM customizations, and exam-focused checklists.
 
 ---
 

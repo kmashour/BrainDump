@@ -536,6 +536,9 @@ ETCDCTL_API=3 etcdctl \
 
 <!-- Documentation References -->
 [Kubernetes Encrypting Secret Data at Rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/)
+[Kubernetes Pods Print Docs](https://kubernetes.io/docs/concepts/workloads/pods/_print)
+[Kubernetes Config API Print Docs](https://kubernetes.io/docs/reference/config-api/_print)
+[Secrets Store CSI Driver Provider](https://secrets-store-csi-driver.sigs.k8s.io/concepts.html#provider-for-the-secrets-store-csi-driver)
 [KodeKloud CKS: Encrypting Secret Data at Rest](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Demo-Encrypting-Secret-Data-at-Rest/page)
 [KodeKloud CKS: Writing Effective Encryption Policies](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Writing-Effective-Encryption-Policies/page)
 
