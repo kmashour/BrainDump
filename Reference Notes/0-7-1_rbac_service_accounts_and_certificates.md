@@ -775,7 +775,26 @@ Impersonate the `dev-user` service account using `kubectl auth can-i` to verify 
    ```bash
    kubectl auth can-i delete pods --as system:serviceaccount:rbac-test:dev-user --namespace rbac-test
    ```
-   *Expected Output:* `no`
+### 6.8 The Architectural Limitation of RBAC: The "Envelope vs. Content" Dilemma
+A critical concept in Kubernetes security architecture is understanding the strict boundary between **Authorization (RBAC)** and **Admission Control (PSA / OPA)**:
+
+* **What RBAC Controls (The Envelope):** RBAC operates strictly at the HTTP request header and metadata level:
+  1. **Subject:** Who is making the request? (`User`, `Group`, `ServiceAccount`).
+  2. **Verb:** What HTTP action is requested? (`get`, `list`, `create`, `update`, `delete`, `watch`).
+  3. **Resource:** What resource URI is targeted? (`pods`, `services`, `secrets`).
+  4. **Namespace:** In which namespace? (`production`, `default`).
+* **What RBAC CANNOT Control (The Content):** **RBAC never inspects the YAML/JSON manifest body.** If user `developer` is granted permission to `create pods` in namespace `finance`, RBAC evaluates:
+  `POST /api/v1/namespaces/finance/pods` $\rightarrow$ **ALLOW**.
+
+> [!WARNING] The Dangerous Consequence
+> Under pure RBAC, the API server cannot differentiate between an innocent NGINX pod and a malicious pod that specifies `securityContext.privileged: true`, `hostNetwork: true`, `hostPID: true`, and mounts the host root disk `/` via `hostPath`. Both are fundamentally `create pods`.
+> 
+> This is why **Admission Control** is a mandatory separate phase:
+> 1. **AuthN:** Verifies *who* you are.
+> 2. **AuthZ (RBAC):** Verifies *if* you can touch this resource type.
+> 3. **Admission Control (PSA / OPA Gatekeeper):** Inspects *what* the resource manifest actually contains and enforces security constraints before persisting to `etcd`.
+> 
+> *For the complete evolutionary breakdown from RBAC blindspots to Pod Security Policies (PSP), Pod Security Standards (PSS/PSA), and dynamic Policy-as-Code (OPA Gatekeeper), see [[Reference Notes/0-7-2_pod_security_standards_and_admission.md|Module 0-7-2: Section 3]].*
 
 ---
 

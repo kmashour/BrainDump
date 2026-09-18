@@ -385,6 +385,7 @@ A **Software Bill of Materials (SBOM)** is a machine-readable invFentory of all 
 
 <!-- Documentation References -->
 [Kubernetes Admission Controllers Reference](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
+[Kubernetes ImagePolicyWebhook Reference](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#imagepolicywebhook)
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
 [KubeLinter Documentation](https://docs.kubelinter.io/)
 [Trivy Vulnerability Scanner](https://aquasecurity.github.io/trivy/)

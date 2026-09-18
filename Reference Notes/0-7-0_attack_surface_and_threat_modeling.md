@@ -11,9 +11,9 @@ tags:
   - course/kodekloud-cks
 ---
 
-# Module 0-7-1: Kubernetes Security Overview & Attack Surface Defense-in-Depth
+# Module 0-7-0: Kubernetes Security Overview, 4Cs & Attack Surface Defense-in-Depth
 
-**Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > [[0-Index - CKS|🛡️ CKS Reference MOC]] > **Module 0-7-1**
+**Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > [[0-Index - CKS|🛡️ CKS Reference MOC]] > **Module 0-7-0**
 
 > [!ABSTRACT] 📚 Course Alignment & Module Scope
 > **Course:** KodeKloud Certified Kubernetes Security Specialist (CKS)

@@ -114,6 +114,54 @@ chown root:root /etc/kubernetes/manifests/kube-apiserver.yaml
 systemctl restart kubelet
 ```
 
+### 3.3 Kubelet Security & Node Control Plane Hardening
+
+The Kubelet runs as a node agent with an HTTPS server listening on port `10250`. If misconfigured, an attacker can execute arbitrary commands inside any container on that node via the Kubelet API.
+
+#### A. Kubelet Ports & Exposure
+
+| Port | Protocol | Default Access | Hardened Configuration |
+| :--- | :--- | :--- | :--- |
+| **10250** | HTTPS | Full administrative access (exec, run, logs, attach). | Require authentication via Client CA; enforce Webhook authorization. |
+| **10255** | HTTP | Unauthenticated read-only metrics and pod stats. | **Must be disabled** (`readOnlyPort: 0`). |
+
+#### B. Hardening `/var/lib/kubelet/config.yaml`
+To pass CIS benchmark audits and protect node processes:
+
+```yaml
+# /var/lib/kubelet/config.yaml
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+
+# 1. Disable anonymous authentication:
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/pki/ca.crt
+
+# 2. Enforce Webhook Authorization (Delegates checks to kube-apiserver RBAC):
+authorization:
+  mode: Webhook
+
+# 3. Disable insecure read-only port:
+readOnlyPort: 0
+
+# 4. Protect kernel tunables:
+protectKernelDefaults: true
+```
+
+```bash
+# Restart Kubelet after editing configuration:
+systemctl daemon-reload && systemctl restart kubelet
+systemctl status kubelet
+
+# Verify unauthorized access is blocked (expected: 401 Unauthorized):
+curl -k https://localhost:10250/pods
+```
+
 ---
 
 ## 4. Platform Binary Checksum Verification
@@ -261,6 +309,7 @@ If an application running in a pod suffers from Server-Side Request Forgery (SSR
 
 ## 🌐 Documentation References & Inflow Sources
 * [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
+* [Kubernetes Securing a Cluster](https://kubernetes.io/docs/tasks/administer-cluster/securing-a-cluster/)
 * [Upgrading kubeadm clusters](https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/)
 * [CIS Kubernetes Benchmark Guidance (Aqua Security)](https://github.com/aquasecurity/kube-bench)
 * [AWS IMDSv2 Documentation](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-service.html)

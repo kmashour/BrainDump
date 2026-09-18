@@ -55,6 +55,7 @@ tags:
 - 🚪 **[Module 0-9-3: Ingress Controllers & Gateway API](0-9-3_ingress_controllers_and_gateway_api.md)**
 
 ## 🛡️ Domain 6: Cluster Security & Policy Governance
+- 🎯 **[Module 0-7-0: Attack Surface, 4Cs & Threat Modeling](0-7-0_attack_surface_and_threat_modeling.md)**
 - 🔑 **[Module 0-7-1: RBAC & ServiceAccounts](0-7-1_rbac_service_accounts_and_certificates.md)**
 - 🛡️ **[Module 0-7-2: Pod Security Standards & Admission](0-7-2_pod_security_standards_and_admission.md)**
 - 🧱 **[Module 0-7-3: NetworkPolicies & Traffic Segregation](0-7-3_network_policies_and_traffic_segregation.md)**

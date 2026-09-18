@@ -2,6 +2,24 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-18] - CKS Curriculum Realignment: Dual-Layer Integration of Course Outline, Master Notes & Playbook
+
+### Architectural Restructuring & Consolidation
+- **Established Standalone Master Threat Modeling Note:**
+  - Pinned [[Reference Notes/0-7-0_attack_surface_and_threat_modeling.md|Module 0-7-0: Attack Surface, 4Cs & Threat Modeling Masterclass]]: Houses the complete 4Cs perimeter hierarchy, the multi-stage "Voting App" penetration simulation, the defense-in-depth remediation matrix, and deep AARF threat analysis.
+- **Enriched Master Foundation Reference Notes (Layer 1):**
+  - **[[Reference Notes/0-7-1_rbac_service_accounts_and_certificates.md|Module 0-7-1: Section 6.8]]:** Integrated "The Architectural Limitation of RBAC: The Envelope vs. Content Dilemma", detailing why RBAC is blind to manifest payloads and why admission control is an architectural imperative.
+  - **[[Reference Notes/0-7-8_cluster_hardening_cis_benchmarks_and_upgrades.md|Module 0-7-8: Section 3.3]]:** Integrated dedicated Kubelet Security & Node Control Plane Hardening (ports 10250 vs 10255, `/var/lib/kubelet/config.yaml`, anonymous auth disablement, webhook authorization, `protectKernelDefaults`, and curl verification). Added `securing-a-cluster` official documentation link.
+  - **[[Reference Notes/0-7-2_pod_security_standards_and_admission.md|Module 0-7-2]]:** Synchronized breadcrumb hierarchy to CKS MOC.
+  - **[[Reference Notes/0-7-5_supply_chain_security_and_imagepolicywebhook.md|Module 0-7-5]]:** Added `imagepolicywebhook` official documentation reference link.
+- **Retired Shallow Duplicate Summary Notes:**
+  - Removed 5 redundant summary notes (`0-7-2_cluster_setup_and_hardening.md`, `0-7-3_system_hardening.md`, `0-7-4_microservice_vulnerabilities_and_isolation.md`, `0-7-5_supply_chain_security.md`, and `0-7-6_monitoring_logging_runtime_security.md`) that diluted master volume and caused numbering collisions.
+- **Re-Anchored CKS Study Roadmap (`0-Index - CKS.md`):**
+  - Structured strictly around the sequential **6-Module KodeKloud Course Curriculum Outline**.
+  - Directly synthesized each module to its authoritative **Master Foundation Notes (Layer 1: Deep Theory & Internals)** and its corresponding **Hands-on Scenarios in `Projects/CKS/Practice Playbook` (Layer 2: Real Terminal Drills)**.
+- **Verification:**
+  - `python "Reference Notes/scripts/review_vault.py"`: **100% OK** (863 links validated, 0 broken, 100% frontmatter compliance, 100% inflow coverage).
+
 ## [2026-09-18] - Architectural System Realignment: Decommissioning Main Notes & Vault Streamlining
 
 ### System Architecture & Structural Realignment

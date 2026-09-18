@@ -12,7 +12,7 @@ tags:
 
 # Module 0-7-2: Pod Security Standards, Pod Security Policies (PSP) & Admission (PSA)
 
-**Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > [[Main Notes/pod-security-admission|Pod Security Admission]] > **Module 0-7-2**
+**Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > [[0-Index - CKS|🛡️ CKS Reference MOC]] > **Module 0-7-2**
 
 ---
 
