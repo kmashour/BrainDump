@@ -364,6 +364,27 @@ kubectl auth can-i create deployments --as=developer
 kubectl auth can-i list secrets --as=system:serviceaccount:production:dev-sa -n production
 ```
 
+### 5.5 The Architectural Limitation of RBAC: The "Envelope vs. Content" Dilemma
+A vital concept in Kubernetes security engineering is understanding the strict architectural boundary between **Authorization (RBAC)** and **Admission Control (PSA / OPA)**:
+
+* **What RBAC Controls (The Envelope):** RBAC operates strictly at the HTTP request header and metadata level. It evaluates:
+  1. **Subject:** Who is making the request? (`User`, `Group`, `ServiceAccount`).
+  2. **Verb:** What HTTP action is requested? (`get`, `list`, `create`, `update`, `delete`, `watch`).
+  3. **Resource:** What resource URI is targeted? (`pods`, `services`, `secrets`).
+  4. **Namespace:** In which namespace? (`production`, `default`).
+* **What RBAC CANNOT Control (The Content):** **RBAC never inspects the YAML/JSON manifest body.** If user `developer` is granted permission to `create pods` in namespace `finance`, RBAC evaluates:
+  `POST /api/v1/namespaces/finance/pods` $\rightarrow$ **ALLOW**.
+
+> [!WARNING] The Dangerous Consequence
+> Under pure RBAC, the API server cannot differentiate between an innocent NGINX pod and a malicious pod that specifies `securityContext.privileged: true`, `hostNetwork: true`, `hostPID: true`, and mounts the host root disk `/` via `hostPath`. Both are fundamentally `create pods`.
+> 
+> This is why **Admission Control** is a mandatory separate phase:
+> 1. **AuthN:** Verifies *who* you are.
+> 2. **AuthZ (RBAC):** Verifies *if* you can touch this resource type.
+> 3. **Admission Control (PSA / OPA Gatekeeper):** Inspects *what* the resource manifest actually contains and enforces security constraints before persisting to `etcd`.
+> 
+> *For the complete evolutionary breakdown from RBAC blindspots to Pod Security Policies (PSP), Pod Security Standards (PSS/PSA), and dynamic Policy-as-Code (OPA Gatekeeper), see [[Reference Notes/0-7-4_microservice_vulnerabilities_and_isolation.md#3--the-evolutionary-bridge-from-rbac-blindspots-to-psp-psa--opa-policy-as-code|Module 0-7-4: Section 3]].*
+
 ---
 
 ## 6. ⚙️ Kubelet Security & Node Control Plane Hardening

@@ -2,6 +2,20 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-18] - Architectural Synthesis: RBAC Envelope vs. Content Dilemma & OPA Policy-as-Code Integration
+
+### Reference Notes (Layer 1 Core Foundation Walkthroughs)
+- **Documented the Fundamental Boundary between AuthZ (RBAC) and Admission Control (PSA/OPA):**
+  - **Integrated into [[Reference Notes/0-7-2_cluster_setup_and_hardening.md|Module 0-7-2: Section 5.5]]:**
+    - Detailed the "Envelope vs. Content" architectural dilemma: RBAC inspects only HTTP verbs and resource URIs (`POST /api/v1/namespaces/finance/pods`), remaining completely blind to the manifest body.
+    - Explained why pure RBAC approves both an innocent web application and a catastrophic `--privileged` host-escape pod if the user has `create pods` rights.
+    - Established the critical necessity of Admission Control as a mandatory post-authorization evaluation gateway.
+  - **Integrated into [[Reference Notes/0-7-4_microservice_vulnerabilities_and_isolation.md|Module 0-7-4: Section 3]]:**
+    - Added complete sequence diagram detailing the 5-step API request lifecycle: AuthN $\rightarrow$ AuthZ $\rightarrow$ Mutating Admission $\rightarrow$ Schema Validation $\rightarrow$ Validating Admission (PSA/OPA) $\rightarrow$ etcd.
+    - Clarified the architectural question of whether OPA "substitutes" AuthN/AuthZ: demonstrated why OPA augments rather than replaces RBAC in Kubernetes (in-memory microsecond DoS protection + separation of identity rights vs. state validity).
+    - Unpacked the origin of OPA as an authorization engine in microservice API Gateways (Envoy/Netflix PDP) vs. Kubernetes Webhook Admission Control.
+    - Added Master Comparison Matrix across 6 dimensions contrasting AuthN, AuthZ (RBAC), PSA, and OPA Gatekeeper / Kyverno.
+
 ## [2026-09-17] - CKS Reference Notes Architecture Overhaul: 6-Module Curriculum Alignment
 
 ### Reference Notes (Layer 1 Core Foundation Walkthroughs)
