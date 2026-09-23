@@ -88,6 +88,34 @@ Linux kernel tuning can be applied on a per-pod basis:
 * **Safe `sysctls`:** Fully namespaced by the Linux kernel (e.g., `net.ipv4.tcp_syncookies`, `net.ipv4.ip_local_port_range`). Changing them inside a Pod network/IPC namespace does not affect the host node or peer Pods.
 * **Unsafe `sysctls`:** Global to the host node (e.g., `net.core.somaxconn`, `fs.file-max`). Modifying them impacts all workloads on the node. Kubernetes disables unsafe sysctls by default; enabling them requires passing `--allowed-unsafe-sysctls` to the worker node Kubelet.
 
+#### Contrast: `sysctls` vs. Linux Capabilities
+* **`sysctls`:** Modify live kernel configuration variables and network stack parameters (e.g. `/proc/sys/net/ipv4/*`) at runtime.
+* **Linux Capabilities:** Partition monolithic `root` privilege into granular permission units (e.g. `CAP_NET_BIND_SERVICE`, `CAP_SYS_ADMIN`), controlling which system calls a thread or binary can execute.
+
+### 1.5 Deep Dive: Linux Bind Mounts, Symlinks, and Inode Permissions (`hostPath` Security Mechanics)
+Understanding how containers bridge node filesystems to private namespaces requires analyzing classical Linux file link mechanisms:
+
+#### 1. Linux Bind Mounts (How `hostPath` Works)
+When a container runtime mounts a `hostPath` volume, it performs a **Linux bind mount**. Unlike a standard disk mount, a bind mount takes an existing directory tree on the host node and mounts it as an alias at a different path inside the container's private mount namespace (`mnt`).
+* **Shared Inode Mechanics:** Linux files are tracked by numeric **inodes** containing file metadata (owner UID, group GID, permissions mode). Directory entries and paths are simply human-readable links pointing to these inodes. A bind mount shares the original directory's underlying inodes directly.
+* **Instant Permission Propagation:** Any permissions change (e.g., `chmod`, `chown`) or file creation performed at either the host path or the container mount path alters the underlying inode directly and propagates instantly to both environments.
+* **The Security Risk:** Because permission alterations write directly to the host's inodes, allowing a root-capable container to write to a `hostPath` represents a critical node compromise risk. To mitigate this, always enforce `readOnly: true` in the container's `volumeMounts` specification.
+
+#### 2. Bind Mounts vs. Soft Links (Symlinks)
+While both allow accessing a file through multiple directories, their underlying kernel mechanics differ fundamentally:
+* **Soft Link (Symlink):** A physical shortcut file containing a text string pointing to another file's path. If a symlink pointing to a host path (e.g., `/secure/data/app`) is mounted into a container, **it breaks**. The container attempts to resolve the path inside its own isolated root filesystem, failing to find the host file.
+* **Bind Mount:** Managed by the Linux Virtual File System (VFS) in kernel RAM. It projects the actual inodes directly into the container namespace, bypassing container root path isolation entirely.
+
+#### 3. Linux Soft Link Permission Mechanics
+* **Fake Permissions:** Symlinks always display open permissions (`lrwxrwxrwx`). This metadata is ignored by the kernel. Access permissions are evaluated strictly against the **target file's inode**.
+* **Directory Permissions Control Deletion:** Deleting or renaming a symlink does not check target file permissions. Because a symlink is simply a text entry in its parent directory's file list, you only need `write` and `execute` (`wx`) permissions on the **parent directory containing the symlink** to delete it.
+
+#### 4. Practical Symlink Deletion Scenarios
+* **Scenario A: Deleting a symlink pointing to a restricted file:**
+  If a standard user (`dev-user`) has a symlink at `/home/dev-user/links/my-shortcut` pointing to a root-owned private file `/etc/secret.key` (with permissions `rw-------`), `dev-user` **can successfully delete** the symlink file itself using `rm`. This is because `dev-user` possesses write permissions on the directory `/home/dev-user/links/`. The target file `/etc/secret.key` remains intact.
+* **Scenario B: Failing to delete a symlink pointing to your own file:**
+  If a standard user (`dev-user`) owns a script at `/home/dev-user/script.sh` but a symlink pointing to it resides in `/opt/system-links/` (which is read-only for standard users), `dev-user` **cannot delete** the symlink. The kernel blocks the removal because `dev-user` lacks write permissions on `/opt/system-links/`, despite owning the target script itself.
+
 ---
 
 ## 2. 🏛️ Historical Architecture: Pod Security Policy (PSP) (v1.3 – v1.25)

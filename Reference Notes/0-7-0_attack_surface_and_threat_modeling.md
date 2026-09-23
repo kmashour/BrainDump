@@ -436,6 +436,33 @@ kubectl exec -it <pod-name> -- touch /root/test.txt
 # Expected secure response: touch: /root/test.txt: Read-only file system
 ```
 
+### 6.1 Comprehensive Kubernetes Security Baseline Checklist
+
+Ensure an end-to-end security baseline across control planes, host nodes, network perimeters, and application workloads:
+
+#### A. Authentication & Authorization
+* [ ] Disable basic auth (`--basic-auth-file`) and static token files (`--token-auth-file`).
+* [ ] Enforce mTLS for all control plane communication (`kube-apiserver`, `etcd`, `kubelet`).
+* [ ] Restrict `system:masters` group assignment (acts as superuser, completely bypassing RBAC).
+* [ ] Periodically audit cluster-level RoleBindings and ClusterRoleBindings for privilege creep.
+* [ ] Enforce the `NodeRestriction` admission controller to prevent compromised nodes from tampering with peer workloads.
+
+#### B. Host & Network Security
+* [ ] Apply a default-deny-all Ingress and Egress `NetworkPolicy` to all application namespaces.
+* [ ] Restrict direct host network access to `kube-apiserver` (port 6443) and `etcd` (ports 2379/2380) using firewall rules / security groups.
+* [ ] Close or firewall insecure daemon ports (Kubelet legacy read-only port 10255, unauthenticated Docker socket 2375).
+* [ ] Configure worker hosts to use the `systemd` cgroup driver for reliable resource tracking and eviction enforcement.
+* [ ] Block worker node workloads from querying cloud metadata endpoints (`169.254.169.254/32`) to prevent SSRF credential theft.
+
+#### C. Pod & Container Hardening
+* [ ] Apply `readOnlyRootFilesystem: true` to prevent containers from modifying binaries or writing exploit scripts.
+* [ ] Set `runAsNonRoot: true` and define explicit non-root `runAsUser` values (e.g. UID >= 10000).
+* [ ] Drop `ALL` Linux capabilities (`drop: ["ALL"]`), explicitly adding only what's required (e.g., `NET_BIND_SERVICE`).
+* [ ] Enforce `allowPrivilegeEscalation: false` to set `PR_SET_NO_NEW_PRIVS`.
+* [ ] Scan container images for vulnerabilities with Trivy, pin specific immutable image digests, and pull only from verified private registries.
+* [ ] Run untrusted or multi-tenant workloads inside isolated environments using sandboxed runtimes (gVisor `runsc`, Kata Containers) via `RuntimeClass`.
+* [ ] Enforce Pod Security Standards (PSS) at the namespace level via Pod Security Admission (PSA) set to `enforce: restricted`.
+
 ---
 
 ## 7. 🔗 Course Walkthrough Navigation

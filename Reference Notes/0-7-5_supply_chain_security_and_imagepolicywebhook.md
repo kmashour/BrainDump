@@ -107,7 +107,59 @@ cosign verify --key cosign.pub docker.io/myorg/api:v1.0.0
 
 ---
 
-## 4. Vulnerability Scanning with Trivy
+## 4. Private Registry Authentication, ImagePullSecrets & Pull Policies
+
+To pull container images from private or authenticated registries (such as Docker Hub private repositories, Quay.io, GitHub Container Registry `ghcr.io`, AWS ECR, or Google Artifact Registry), the Kubelet requires valid OCI registry credentials.
+
+### 4.1 Creating a Docker Registry Secret
+Create an imperative secret of type `kubernetes.io/dockerconfigjson` containing your registry credentials:
+
+```bash
+kubectl create secret docker-registry private-registry-cred \
+  --docker-server=myprivateregistry.com:5000 \
+  --docker-username=registry-user \
+  --docker-password=registry-password \
+  --docker-email=user@org.com
+```
+
+### 4.2 Using `imagePullSecrets` in a Pod
+Reference the secret inside the Pod's `spec.imagePullSecrets` array:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: private-app
+  namespace: default
+spec:
+  imagePullSecrets:
+  - name: private-registry-cred
+  containers:
+  - name: app-container
+    image: myprivateregistry.com:5000/apps/secure-api:v1.2
+    imagePullPolicy: IfNotPresent
+```
+
+> [!TIP]
+> **ServiceAccount Association (Automating Image Pull Secrets):**
+> Instead of manually adding `imagePullSecrets` to every individual Pod manifest, you can attach the secret directly to a ServiceAccount:
+> ```bash
+> kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "private-registry-cred"}]}'
+> ```
+> Any Pod launched using that ServiceAccount will automatically inherit the registry credentials.
+
+### 4.3 Image Pull Policies
+The `spec.containers[*].imagePullPolicy` dictates when the Kubelet contacts the registry to download container layers:
+
+| Policy | Behavior | When to Use |
+| :--- | :--- | :--- |
+| **`Always`** | The Kubelet always contacts the remote registry to resolve the image digest and pull updated layers, even if the image exists locally. | Mandatory for production security to ensure patched CVE layers are pulled; **default if the image tag is `:latest` or omitted**. |
+| **`IfNotPresent`** | The Kubelet pulls the image only if it is not already cached on the node's local disk. | Speeds up pod startup in stable environments with immutable, version-pinned tags (e.g., `:v1.24.1`). |
+| **`Never`** | The Kubelet never contacts a registry; it assumes the image was pre-loaded onto the node disk (e.g., via `crictl pull` or image tarball imports). | Air-gapped / offline clusters and local developer setups (`kind load docker-image`). |
+
+---
+
+## 5. Vulnerability Scanning with Trivy
 
 **Trivy** is a comprehensive, open-source vulnerability and misconfiguration scanner capable of auditing container images, filesystems, Git repositories, and Kubernetes configurations.
 
@@ -140,7 +192,7 @@ trivy fs --severity HIGH,CRITICAL /var/lib/containerd/
 
 ---
 
-## 5. Admission Control: ImagePolicyWebhook
+## 6. Admission Control: ImagePolicyWebhook
 
 The **ImagePolicyWebhook** admission controller intercepts pod creation requests at the kube-apiserver admission phase and queries an external webhook service (such as an enterprise image scanner or signature verification service) to approve or reject image deployment based on security policies.
 
@@ -297,7 +349,7 @@ The kube-apiserver transmits an `ImageReview` JSON object to the external servic
 
 ---
 
-## 6. 🌉 Evolutionary Conceptual Bridging: Image Governance
+## 7. 🌉 Evolutionary Conceptual Bridging: Image Governance
 
 ```mermaid
 timeline
@@ -319,7 +371,7 @@ timeline
 
 ---
 
-## 7. Operational Troubleshooting & Verification
+## 8. Operational Troubleshooting & Verification
 
 ### Verification Checklist:
 1. **Check kube-apiserver status:**
