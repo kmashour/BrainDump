@@ -20,7 +20,44 @@ By default, Kubernetes network traffic is **non-isolated (default-allow)**: any 
 > [!IMPORTANT]
 > NetworkPolicies are enforced by the cluster's CNI network plugin (e.g., Calico, Cilium, Weave, Kube-router). If you are using a CNI plugin that does not support network policies (like Flannel), NetworkPolicy manifests will be accepted by the API server but will not be enforced.
 
-### 10.1 Selector Combinations: AND vs. OR
+### 10.1 OSI Model Operational Boundaries: Layer 3 & Layer 4 Enforcement
+
+A fundamental concept in Kubernetes networking and exam security tracks (CKA/CKS) is understanding exactly where `NetworkPolicy` operates in the **OSI 7-Layer Model**:
+
+| OSI Layer | Layer Name | Governed by Native NetPol? | Filter Parameters & Manifest Attributes | Enforcement Mechanism (Kernel Level) |
+| :--- | :--- | :---: | :--- | :--- |
+| **Layer 7** | Application | ❌ **No** *(Native)*<br>✅ **Yes** *(Cilium / Mesh)* | **Not supported natively.** Cannot inspect HTTP verbs (`GET`/`POST`), URI paths, headers, or DNS names. | Handled via Envoy sidecars (Istio `AuthorizationPolicy`) or eBPF socket parsers (`CiliumNetworkPolicy`). |
+| **Layer 4** | **Transport** | **✅ YES** | Protocols (`TCP`, `UDP`, `SCTP`) and port numbers (`ports.port: 80`, `5432`). | `iptables` matches (`-p tcp --dport 80`) or eBPF socket/tc filters. |
+| **Layer 3** | **Network** | **✅ YES** | Source/Destination IP addresses, CIDR blocks (`ipBlock.cidr`), Pod IPs, and namespace IP sets. | `iptables` / `ipset` match sets (`-m set --match-set`) or eBPF map lookups. |
+| **Layer 2** | **Data Link** | **❌ NO** | **Not evaluated.** No fields or visibility for MAC addresses, ARP frames, Ethernet framing, or VLAN tags. | Bridge frames and ARP resolution occur below the NetworkPolicy enforcement hook. |
+| **Layer 1** | Physical | ❌ **No** | Electrical signals, optical cabling, radio frequencies. | Physical host interface hardware / NICs. |
+
+#### 🔬 Deep-Intuition AARF Architectural Analysis: OSI Layer Enforcement
+
+1. **The Answer (Core Mechanics):**
+   * Standard Kubernetes `NetworkPolicy` (`networking.k8s.io/v1`) operates strictly at **OSI Layer 3 (Network)** and **OSI Layer 4 (Transport)**.
+   * `spec.ingress` and `spec.egress` evaluate IP-level packet sources/destinations and transport-level protocol ports.
+2. **The Assumptions (Prerequisites):**
+   * The cluster must run a NetworkPolicy-compliant CNI (Calico, Cilium, Weave Net, Kube-router). Without a compliant CNI, policies are stored in `etcd` but completely ignored by node kernel packet filters.
+3. **The Rationale (Why L3 & L4):**
+   * Operating at L3/L4 allows policies to be implemented directly in the Linux kernel via high-throughput packet filtering engines (`iptables`, `nftables`, or eBPF) without incurring the severe CPU and latency overhead of terminating TCP streams, parsing Layer 7 application protocols, or decrypting TLS sessions.
+4. **The Failure Loop (What if not understood):**
+   * **The Layer 7 Fallacy:** Attempting to block a specific HTTP endpoint (e.g., allow `/public` but block `/admin`) using a Kubernetes `NetworkPolicy` is impossible natively. Allowing port 80/443 opens all application routes across that port.
+   * **The Layer 2 Misconception:** Attempting to filter traffic by MAC address or assuming network policies isolate ARP/broadcast traffic fails because NetworkPolicies hook into IP routing chains, not Layer 2 Ethernet frame switching.
+5. **The Alternative Case (When to use other layers):**
+   * **Need Layer 7 Control:** Deploy **Cilium** (`CiliumNetworkPolicy` with `spec.ingress[].toPorts[].rules.http`) or a **Service Mesh** (Istio/Linkerd) for HTTP method/path filtering, JWT verification, and TLS header validation.
+   * **Need Layer 2 Isolation:** Deploy separate physical/virtual switches, MacVLAN / SR-IOV interfaces, or dedicated hardware VLANs per cluster/tenant.
+
+> [!TIP]
+> **Exam & Lab Clarification: Why "Layer 2" Appears in Practice Labs (e.g., KodeKloud)**
+> 1. **Negative Phrasing:** In many CKA/CKS multiple-choice questions, the prompt asks: *"Which OSI layer do Kubernetes NetworkPolicies **NOT** operate at?"* In such questions, **Layer 2 (Data Link)** is the correct choice because native NetPols cannot filter at Layer 2.
+> 2. **Defense-in-Depth Tiers vs. OSI Layers:** In CKS course material, instructors often teach a multi-tiered security defense:
+>    * *Defense Tier 1:* Network Policies (Firewalling at L3/L4)
+>    * *Defense Tier 2:* Mutual TLS / Encryption (WireGuard, Istio mTLS)
+>    * *Defense Tier 3:* Runtime Security (Falco, AppArmor, Seccomp)
+>    Do not confuse these **Defense Tiers** with the **OSI 7-Layer Networking Model**.
+
+### 10.2 Selector Combinations: AND vs. OR
 Understanding the syntax for combining namespace and pod selectors inside `from` and `to` blocks is critical:
 
 #### OR Logic (Separate Array Elements)
@@ -53,7 +90,7 @@ Traffic is allowed only if it matches both selectors.
 
 ---
 
-### 10.2 Production Network Policy Templates
+### 10.3 Production Network Policy Templates
 
 #### Template 1: Default Deny All Ingress & Egress (Namespace Lockdown)
 Run this policy in a namespace to block all traffic by default. Services must then be explicitly allowed.
@@ -158,7 +195,7 @@ spec:
 
 ---
 
-### 10.3 Step-by-Step Walkthrough: Locking Down a Namespace and Allowing Labeled Traffic
+### 10.4 Step-by-Step Walkthrough: Locking Down a Namespace and Allowing Labeled Traffic
 By default, all pods in a cluster can communicate freely. In this walkthrough, we will establish a **Default Deny-All** posture in a test namespace, verify that it blocks untrusted communication, and then explicitly allow traffic from a trusted, labeled client pod.
 
 #### Step 1: Create Namespace and Apply Default Deny-All

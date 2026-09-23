@@ -236,6 +236,10 @@ A web application pod named `frontend` in namespace `tenant-prod` must communica
    # Expected Output: command times out / connection dropped
    ```
 
+> [!TIP]
+> **CKS Theory & Quiz Trap — OSI Model Scope:**
+> Standard Kubernetes NetworkPolicies operate strictly at **OSI Layer 3 (Network - IP/CIDR)** and **Layer 4 (Transport - TCP/UDP/SCTP Ports)**. They do **not** inspect Layer 7 (HTTP URLs/methods) or Layer 2 (MAC/ARP frames). If a quiz question asks which OSI layer NetworkPolicies do *not* operate on, the answer is Layer 2 or Layer 7. For a deep architectural breakdown, see [[Reference Notes/0-7-3_network_policies_and_traffic_segregation.md#101-osi-model-operational-boundaries-layer-3--layer-4-enforcement|Module 0-7-3: OSI Model Operational Boundaries]].
+
 ---
 
 ## ⚙️ Scenario 4: Host OS Hardening (Kernel Modules & Port Auditing)

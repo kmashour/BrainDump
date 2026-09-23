@@ -2,6 +2,18 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-23] - Core Note Enrichment: NetworkPolicy OSI Layer Operational Boundaries & Quiz Diagnostics
+
+### Reference Notes & Exam Track Synthesis
+- **Enriched [[Reference Notes/0-7-3_network_policies_and_traffic_segregation.md|Module 0-7-3: NetworkPolicies & Traffic Segregation]]:**
+  - **Section 10.1 (OSI Model Operational Boundaries: Layer 3 & Layer 4 Enforcement):** Added a detailed comparative matrix defining the boundaries of Kubernetes NetworkPolicies across OSI Layers 1 through 7.
+  - **Deep-Intuition AARF Analysis:** Codified Answer, Assumptions, Rationale, Failure Loop, and Alternative Case for Layer 3 (IP/CIDR) and Layer 4 (Port/Protocol) filtering, explaining why L7 requires Cilium/Istio and why L2 (Ethernet/MAC) is not evaluated by NetPols.
+  - **Exam & Lab Clarification:** Documented common quiz pitfalls (such as KodeKloud negative questions asking which layer NetworkPolicies do *not* operate on, or confusing CKS defense tiers with OSI model layers).
+- **Cross-Referenced in [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|Projects/CKS/Practice Playbook]]:**
+  - Embedded an exam theory tip under Scenario 3 with direct links to Core Note Module 0-7-3.
+- **Verification:**
+  - `python "Reference Notes/scripts/review_vault.py"`: **100% OK** (864 links validated, 0 broken, 100% frontmatter compliance, 100% inflow coverage).
+
 ## [2026-09-18] - CKS Curriculum Realignment: Dual-Layer Integration of Course Outline, Master Notes & Playbook
 
 ### Architectural Restructuring & Consolidation
