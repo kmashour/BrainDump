@@ -69,10 +69,17 @@ spec:
     emptyDir: {}
 ```
 
+> [!NOTE]
+> **Precedence & Container-Level Overrides:**
+> If a Pod defines `runAsUser: 1000` at the `spec.securityContext` level, but a container specifies `runAsUser: 2000` under `spec.containers[i].securityContext`, the container process runs with UID `2000`. Container-level configurations always take precedence over Pod-level defaults for shared fields.
+
 ### 1.3 `fsGroup` Volume Mechanics & Storage Types
 The `fsGroup` parameter dictates the supplemental Group ID (GID) associated with mounted storage volumes:
 1. **Ownership Rewrite:** When the volume is mounted, the Kubelet recursively alters the ownership (GID) of all directories and files inside the volume to match the specified `fsGroup`.
 2. **Supplemental Groups:** The Kubelet injects that GID as a supplemental group to the container process. This ensures that non-root containers (e.g. UID 10001) can read and write to the volume without requiring root permissions.
+   * **GID Selection Criteria:**
+     * *Arbitrary Selection:* For fresh dynamic storage (`emptyDir` or newly provisioned CSI block PVs), you can select an arbitrary unused GID (e.g., `20001` or `10000`).
+     * *Existing Shared Storage:* For pre-existing network storage (e.g., NFS shares or multi-tenant SAN exports) with pre-allocated file permissions, the `fsGroup` GID must strictly match the pre-configured group ID on the storage server to maintain access.
 3. **Volume Type Behaviors:**
    - `emptyDir`: Handled dynamically by the Kubelet in RAM/disk; GID ownership is applied instantly.
    - **Persistent Volumes (NFS / SAN / Cloud Block):** Recursive `chown` during Pod mount can cause significant startup delays if the volume contains millions of files. Mitigated using:
