@@ -28,5 +28,6 @@ This skill defines the technical checklists, criteria, and execution steps used 
   - **Topology / Prerequisites:** Virtual sandboxes, Kind clusters, local Docker networking parameters, or AWS CLI profiles.
   - **Step-by-Step CLI Execution:** Direct commands, configuration file write-outs, and verification queries.
   - **Failure Simulation & Capture:** Steps to generate the negative test case.
-- Store multi-tier projects in the `Projects/` directory or document them under a dedicated `## Hands-on Project Labs` header in the respective module.
-- Add back-links between the lab scripts and the conceptual landing/deeper notes.
+- Embed all hands-on verification labs directly within the target Reference Note under `## 🧪 Hands-on Proof of Concept / Lab Simulation` or `## 🛠️ Verification & Practical Implementation`.
+- **Prohibition:** Do NOT automatically generate files under `Projects/`. (The `Projects/` directory is reserved for co-authored projects created *together with the user* on demand).
+- Maintain cross-links between the lab recipes and the atomic landing notes in `Main Notes/`.

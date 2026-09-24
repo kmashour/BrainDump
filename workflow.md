@@ -56,14 +56,22 @@ Whenever the `@ingest inflow/<filename>.md` trigger is called:
 * **Agent:** `DiagramAgent` (`System/Agents/diagrammer.md`)
 * **Task:** Insert valid Mermaid.js diagrams for complex architectural flows, packet routing, or lifecycle state transitions.
 
-### **Phase 3: Project & Exam Track Compilation**
-* **Agent:** `CKAExamAgent` / `MultiDomainPoCAgent` (`System/Agents/exam_expert.md`, `System/Agents/poc_developer.md`)
-* **Task:** Extract lab scenarios, speed shortcuts, and CLI workflows into dedicated exam tracks (`Projects/<CERT>/` or `Reference Notes/0-Index - <CERT>.md`). Synthesize course Q&As with direct links to the enriched Core Notes.
+### **Phase 3: Contextual Proof of Concept Integration (In-Note PoCs)**
+* **Agent:** `MultiDomainPoCAgent` (`System/Agents/poc_developer.md`)
+* **Task:** Embed practical Proof of Concept configurations, declarative manifests (YAML, HCL, Dockerfile), diagnostic CLI recipes, and negative failure-loop simulations directly within the explanation context of the target Reference Note. **No standalone project files are automatically generated in `Projects/`**; the `Projects/` directory is strictly reserved for manual user organization and collaborative project playbooks co-authored *together with the user*.
 
 ### **Phase 4: Digital Garden Pattern Mapping**
+* **Agent:** `GardenAgent` (`System/Agents/garden_architect.md`)
 * **Task:** Map cross-domain intersections (e.g. Kubernetes + AWS IRSA + Linux cgroups) in `Digital Garden/`.
 
-### **Phase 5: Verification, Backlog Logging & Git Synchronization**
+### **Phase 5: Concept Atomic Landing & Deeper Dive Notes**
+* **Task:** Create or update atomic landing and deeper-dive notes inside `Main Notes/` ensuring full cross-linking.
+
+### **Phase 6: Dedicated Exam Track & Certification Synthesis**
+* **Agent:** `ExamAgent` (`System/Agents/exam_expert.md`)
+* **Task:** If the material targets a certification path (CKA, CKS, CKAD, KubeAstronaut, AWS SAA/SAP, Red Hat RHCSA, Azure AZ-104/305), compile exam speed shortcuts, diagnostic aliases, and Q&A checklists into dedicated exam tracks (`Reference Notes/0-Index - <CERT>.md` and `Projects/<CERT>/`), linking directly to the enriched Core Notes.
+
+### **Phase 7: Verification, Backlog Logging & Git Synchronization**
 1. Run `python3 "Reference Notes/scripts/review_vault.py"` to ensure 100% link integrity.
 2. Record the transaction in `backlog.md`.
 3. Stage, commit, and push to GitHub:
@@ -77,10 +85,21 @@ Whenever the `@ingest inflow/<filename>.md` trigger is called:
 
 ## 🌐 Universal Multi-Tech Matrix
 
-| Tech Domain | Core Foundation Notes (Layer 1) | Dedicated Exam / Track MOCs (Layer 2) |
-| :--- | :--- | :--- |
-| **Kubernetes & CNCF** | `Reference Notes/0-X-Y_...` | CKA, CKAD, CKS, KCNA $\rightarrow$ **Golden KubeAstronaut** |
-| **Linux & OS Systems** | `Reference Notes/8-X_...` | RHCSA, RHCE, Linux Admin Playbooks |
-| **AWS & Cloud Architecture** | `Reference Notes/3-X_...` | AWS Solutions Architect (SAA), AWS SAP, CloudOps |
-| **Terraform & IaC** | `Reference Notes/10-X_...` | Terraform Associate, EKS GitOps Playbooks |
-| **CI/CD & Automation** | `Reference Notes/9-X_...`, `5-X_...` | GitHub Actions, Jenkins, Air-Gapped Git Architecture |
+| Domain Prefix | Tech Domain | Core Foundation Notes (Layer 1) | Dedicated Exam / Track Overlays (Layer 2) |
+| :---: | :--- | :--- | :--- |
+| `0-X` | **Kubernetes & Cloud-Native** | `Reference Notes/0-X-Y_...` | CKA, CKAD, CKS, KCNA $\rightarrow$ **Golden KubeAstronaut** |
+| `1-X` | **Systems Design & Architecture** | `Reference Notes/1-X_...` | Distributed Systems, Scalability, Sharding, Microservices |
+| `2-X` | **Docker & Container Runtimes** | `Reference Notes/2-X_...` | DCA (Docker Certified Associate), Containerd, OCI |
+| `3-X` | **AWS Cloud Architecture** | `Reference Notes/3-X_...` | AWS Solutions Architect (SAA-C03, SAP-C02), Security |
+| `4-X` | **BGP & Advanced Routing** | `Reference Notes/4-X_...` | BGP Peering, Route Reflectors, Datacenter Fabrics |
+| `5-X` | **Jenkins CI/CD Automation** | `Reference Notes/5-X_...` | Jenkins Distributed Pipelines, Automated Testing |
+| `6-X` | **Web Fundamentals & UI** | `Reference Notes/6-X_...` | HTML5 Semantics, CSS Box Model, Web Standards |
+| `7-X` | **Python Programming** | `Reference Notes/7-X_...` | Python Core, Virtualenvs, Flask API Services |
+| `8-X` | **Linux OS & Kernel Internals** | `Reference Notes/8-X_...` | RHCSA, RHCE, Linux Kernel & System Administration |
+| `9-X` | **GitHub Actions Automation** | `Reference Notes/9-X_...` | GitHub Actions Workflows, CI/CD, Passwordless OIDC |
+| `10-X` | **Terraform & Infrastructure as Code** | `Reference Notes/10-X_...` | HashiCorp Terraform Associate, EKS GitOps Playbooks |
+| `11-X` | **AWS CloudOps & Reliability** | `Reference Notes/11-X_...` | AWS SysOps Administrator, SSM Automation, CloudWatch |
+| `12-X` | **CNCF Cloud-Native Patterns** | `Reference Notes/12-X_...` | Cloud-Native Digests, Architecture Patterns, etcd/CSI |
+| `13-X` | **Microsoft Azure Architecture** | `Reference Notes/13-X_...` | Azure Fundamentals (AZ-900), Administrator (AZ-104), Architect (AZ-305) |
+| `MISC` | **Miscellaneous Multi-Domain Projects**| `Reference Notes/gitea_...`, etc. | Self-Hosted GitOps, OpenStack, Hybrid Troubleshooting |
+

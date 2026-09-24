@@ -23,5 +23,16 @@ Whenever you ingest, refine, or write notes regarding classical computing system
 ## 🎙️ Talks, Lectures & Video Ingestion Rule
 Whenever an inflow note represents a talk, lecture, KubeCon/tech presentation, or video tutorial (identified by a YouTube/Vimeo source URL, timestamp structures in the body, or frontmatter containing fields like `type: talk`, `type: presentation`, or tag `clippings` from video sources):
 1. **Isolate as Standalone:** You MUST compile the raw transcript content, Q&As, and presentation flow into a dedicated standalone reference note under `Reference Notes/` using the prefix of its respective domain (e.g., prefixing with `3-X` for AWS, `10-X` for Terraform, `12-X` for CNCF, etc.) and index it inside that domain's main Map of Content (MOC).
-2. **Integrate Where it Belongs:** You MUST extract all configurations, architectural diagrams, commands, and conceptual definitions from the talk and integrate them into the relevant atomic conceptual notes in `Main Notes/`, project playbooks in `Projects/`, and structured reference modules in `Reference Notes/0-X...`.
+2. **Integrate Where it Belongs:** You MUST extract all configurations, architectural diagrams, commands, and conceptual definitions from the talk and integrate them into the relevant atomic conceptual notes in `Main Notes/` and structured reference modules in `Reference Notes/` with embedded contextual PoCs.
 3. **Dual Backlog Registration:** Document both the standalone file creation and the target note integrations in the transaction log (`backlog.md`).
+
+## 🌍 Universal Multi-Technology Scope & Consolidated Kubernetes Rule
+1. **Multi-Domain Equality:** The Agentic system serves **all knowledge and technologies** (Linux OS & Kernel, AWS, Azure, GCP, Networking/BGP, Terraform/IaC, CI/CD, Databases, Distributed Systems, Web Fundamentals, Python).
+2. **Kubernetes as a Consolidated Topic:** Kubernetes is treated as a single consolidated engineering domain among its peer domains.
+3. **Certification Tracks as Overlays:** Segregations like CKA, CKAD, CKS, and KubeAstronaut (or AWS SAA/SAP, Red Hat RHCSA) exist *strictly* as Layer 2 certification overlays for exam-specific checklists and speed shortcuts, built on top of the consolidated Core Foundation Notes.
+
+## 🚫 No Automatic Project Generation Rule (Collaborative Projects & Contextual PoCs Only)
+1. **Stop Automatic Project File Creation:** You MUST NOT automatically generate, compile, or dump standalone project playbook files into the `Projects/` directory during ingestion, research, or pipeline runs.
+2. **Contextual Proof of Concepts (PoCs):** All Proof of Concepts, verification manifests (YAML, Terraform, Dockerfile), diagnostic CLI recipes, and failure-loop scenarios MUST be embedded directly within the explanation context of the target note under `Reference Notes/` or delivered interactively in chat.
+3. **Collaborative Project Workspace:** The `Projects/` directory is reserved for manual user management and collaborative projects built *together with the user* on demand. Standalone project files in `Projects/` are only created when the user explicitly requests to build a project together.
+
