@@ -2,6 +2,43 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-25] - CKS Real Exam 2026 Interactive Simulation Lab Deployment & Live Cluster Resuscitation
+
+### 🛠️ Live Ubuntu Kubeadm Cluster Resuscitation (VM 10.0.0.134)
+- **Resolved Control Plane Crash Loop (DHCP IP Skew):** Diagnosed etcd socket bind failure (`bind: cannot assign requested address` on `10.0.0.133:2380`) caused by DHCP IP reallocation to `10.0.0.134`. Added permanent IP alias `10.0.0.133/24` to NetworkManager connection `Wired connection 1`.
+- **API Server SANs Expansion:** Regenerated `apiserver.crt` via `kubeadm init phase certs apiserver --apiserver-cert-extra-sans 10.0.0.134,10.0.0.133` to prevent TLS handshake rejections.
+- **Kubeadm 1.29+ RBAC Fix:** Fixed `admin.conf` authorization failure (`User kubernetes-admin cannot list nodes`) by binding the `kubeadm:cluster-admins` group to the `cluster-admin` ClusterRole.
+- **Cluster Networking & Addons Restored:** Applied essential addons (`CoreDNS` v1.11.3 and `kube-proxy` v1.32.13) via `kubeadm init phase addon all` and installed the `Flannel` CNI daemonset, restoring 1/1 Running cluster status across all system pods.
+- **Security Tooling Installed on Node:** Installed Kubernetes SIGs `bom` binary (v0.8.0), `falco` runtime security engine (v0.45.0 with modern eBPF driver), Aqua Security `trivy` (v0.74.0), and IngressClass primitives (`nginx` and `cilium`).
+
+### 🎯 16-Question Interactive Exam Simulation Suite (`/home/karim/cks-exam-lab/`)
+- **Complete Real Exam Blueprint Implementation:** Synthesized all 16 scenarios from `inflow/CKS_EXAM.md`, `inflow/cks_exam_notes.md`, `inflow/CKS Notes.md`, and the DevOps Tales "CKS 2026" curriculum:
+  - `q01-kubelet-etcd`: Fix insecure Kubelet anonymous/webhook auth and etcd `--client-cert-auth`.
+  - `q02-tls-secret`: Create and mount TLS secret referenced by `secure-app` deployment.
+  - `q03-dockerfile-security`: Dockerfile `USER nobody` and pod `readOnlyRootFilesystem: true`, non-root user, privilege stripping.
+  - `q04-falco-dev-mem`: Custom Falco detection rule for `/dev/mem` access and rogue pod neutralization.
+  - `q05-container-immutability`: Multi-container immutability across `collector` and `aggregator`.
+  - `q06-audit-logging`: Multi-stage API Server audit policy, retention flags, volume mounts, and `crictl` static pod troubleshooting.
+  - `q07-network-policy`: Default-deny ingress and namespace-scoped TCP 8080 allow policy.
+  - `q08-ingress-tls`: HTTPS Ingress with TLS termination and Cilium (`force-https: enabled`) / Nginx (`ssl-redirect: true`) annotations.
+  - `q09-serviceaccount-token`: Disable token automounting on SA and pod; project audience-bound token volume.
+  - `q10-node-upgrade`: Safe node eviction and drain (`--ignore-daemonsets --delete-emptydir-data --force`) and `kubeadm upgrade node` workflow.
+  - `q11-sbom-bom-tool`: Container library inspection (`apk list libcrypto`), rogue container removal, and SPDX generation via `bom generate`.
+  - `q12-restricted-pss`: Restricted Pod Security Admission troubleshooting (`error: 109` in ReplicaSet events) and 5-point securityContext fix.
+  - `q13-secure-docker`: Remove unauthorized users from `docker` group, enforce root socket ownership, disable TCP port 2375.
+  - `q14-istio-mtls`: Namespace sidecar injection label, strict `PeerAuthentication`, and rollout restart.
+  - `q15-image-policy-webhook`: `AdmissionConfiguration` setup with fail-closed policy (`defaultAllow: false`) and API server flags/mounts.
+  - `q16-apiserver-auth`: Anonymous auth disabling, `Node,RBAC` authorization, and `NodeRestriction` admission controller.
+
+### 🤖 Dual-Layer Automated Validation & Antigravity AI Examiner
+- **Master `cks` CLI Tool:** Deployed executable `/usr/local/bin/cks` featuring `list`, `start <N>`, `check <N>`, `solve <N>`, `undo <N>`, and `reset-all`.
+- **Integrated AI Examiner (`bin/ai-reviewer.sh`):** Calls `/home/karim/.local/bin/agy -p` to evaluate candidate submissions against official CKS exam rubrics, providing an exam mark out of 100, verdict (PASS/FAIL), root cause analysis, security nuances, and exam speed shortcuts.
+- **Repeatable Practice Cycle:** Engineered automated `setup.sh` and `undo.sh` scripts for every question, allowing the user to drill and reset scenarios indefinitely until 100% exam readiness.
+
+### 📚 Knowledge Base Documentation & Indexing
+- **Interactive Lab Guide:** Created `Projects/CKS/Real Exam 2026 - 16 Question Simulation Lab Guide.md` documenting the architecture, problem statements, AARF analyses, and CLI formulas.
+- **MOC Cross-Linking:** Linked the interactive lab guide in `Reference Notes/0-Index - CKS.md`.
+
 ## [2026-09-24] - Universal Multi-Technology Agentic Architecture & Collaborative Project Model Realignment
 
 ### 🌍 Universal Multi-Domain Scope & Consolidated Kubernetes Engine

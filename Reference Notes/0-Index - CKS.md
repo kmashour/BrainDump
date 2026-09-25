@@ -15,8 +15,8 @@ tags:
 > [!IMPORTANT]
 > **KubeAstronaut Certification Track: CKS Dual-Layer Study Roadmap**
 > This index organizes the CKS preparation pathway directly following the official **6-Module Course Curriculum Architecture**, synthesizing the **Master Kubernetes Reference Notes (Layer 1: Deep Theory & Internals)** with the **Hands-on Exam Practice Scenarios (Layer 2: Real Terminal Drills)**.
-> 
 > 🚀 **Hands-On Exam Playbook (20 Practical Scenarios):** [[Projects/CKS/Practice Playbook - CKS Exam Hardening and Speed Hacks.md|🛡️ CKS Exam Practice Playbook (Hardening & Speed Hacks)]]
+> 🎯 **Real Exam 2026 Interactive Lab (16 Hands-On Scenarios & AI Grader):** [[Projects/CKS/Real Exam 2026 - 16 Question Simulation Lab Guide.md|🛡️ Real Exam 2026: 16-Question Interactive Simulation Lab Guide]]
 
 ---
 
