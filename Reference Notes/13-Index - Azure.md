@@ -54,6 +54,13 @@ flowchart LR
 
 ---
 
+## 🛠️ Dedicated Certification Tracks & Courses
+
+- 📘 **[[13-Index - AZ-104|AZ-104: Microsoft Azure Administrator Complete Track MOC]]**
+  * Comprehensive 12-module technical syllabus ingested from KodeKloud, covering Identity (Entra ID), Governance & Compliance (Policies, Locks, RBAC), Resource Management (ARM, Bicep), Virtual Networking (VNets, NSGs, DNS), Intersite Connectivity (Peering, VPN, UDRs, Private Link), Network Traffic (Load Balancer, App Gateway), Storage (Redundancy, Access Tiers, Files, SAS), Virtual Machines (Sizing, Disks, Bastion, VMSS), PaaS Compute (App Services, ACI, ACA), Data Protection (Azure Backup, ASR), and Observability (Azure Monitor, Log Analytics, KQL, Alerts).
+
+---
+
 ## 🎯 Exam & Hands-On Playbooks
 
 - 🧪 `Projects/Azure/` (Hands-on CLI scenarios, ARM/Bicep playbooks, and AZ-104 / AZ-305 exam tracks).

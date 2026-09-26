@@ -88,14 +88,16 @@ Select a domain to view its reference modules, learning tracks, and hands-on ver
 ---
 
 ### 🌐 [CNCF References MOC](12-Index%20-%20CNCF%20References.md)
-*Cloud-native architectures digests, container orchestrations pattern studies, cluster disaster recovery workflows, and etcd/volume storage designs.*
+*Cloud-native architecture digests, container orchestration pattern studies, cluster disaster recovery workflows, etcd storage, Prometheus observability, Open Policy Agent (OPA) policy-as-code engine, and Netflix-scale distributed cloud-native authorization.*
 - **Go to MOC:** [[12-Index - CNCF References|CNCF References MOC]]
+
 
 ---
 
 ### ☁️ [Microsoft Azure Reference MOC](13-Index%20-%20Azure.md)
 *Enterprise cloud architecture, AZ-900 fundamentals, AZ-104 administration, AZ-305 solutions architecture, ARM control plane, Entra ID identity, VNets, and unified Storage Accounts.*
 - **Go to MOC:** [[13-Index - Azure|Microsoft Azure Reference MOC]]
+- **Certification Track:** [[13-Index - AZ-104|AZ-104: Microsoft Azure Administrator Track MOC]]
 
 ---
 

@@ -2,6 +2,45 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-26] - Ingestion of AZ-104: Microsoft Azure Administrator Complete Course (KodeKloud)
+
+### 📥 Comprehensive Web Scraping & Inflow Archive
+- **Full Course Scraping (102 Lessons across 12 Sections):** Scraped all course lessons from KodeKloud's updated AZ-104 curriculum via direct Mintlify markdown endpoints (`https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/.../page.md`).
+- **Inflow Archive Preservation:**
+  - `inflow/AZ-104/01_Introduction.md` (Module 01: Course introduction, exam logistics, score requirements, lab guidance)
+  - `inflow/AZ-104/02_Administer_Identity.md` (Module 02: Entra ID users, bulk invite/creation, SSPR, dynamic groups, Administrative Units)
+  - `inflow/AZ-104/03_Administer_Governance_and_Compliance.md` (Module 03: Subscriptions, Resource Locks, Azure Policy initiatives, Azure RBAC roles)
+  - `inflow/AZ-104/04_Administer_Azure_Resources.md` (Module 04: CLI/PowerShell, ARM JSON templates, Bicep DSL, deployment modes)
+  - `inflow/AZ-104/05_Administer_Virtual_Networking.md` (Module 05: VNets, subnet reserved IPs, NSG/ASG security, Azure Public/Private DNS)
+  - `inflow/AZ-104/06_Administer_Intersite_Connectivity.md` (Module 06: VNet Peering, Gateway Transit, Site-to-Site VPN, UDR routing, Private Endpoints)
+  - `inflow/AZ-104/07_Administer_Network_Traffic.md` (Module 07: Azure Load Balancer, Application Gateway L7 & WAF, Network Watcher diagnostics)
+  - `inflow/AZ-104/08_Administer_Azure_Storage.md` (Module 08: Storage Accounts, LRS/ZRS/GRS redundancy, Blob access tiers, Azure Files SMB/NFS, SAS)
+  - `inflow/AZ-104/09_Administer_Azure_Virtual_Machines.md` (Module 09: VM sizing, Managed Disks, Azure Bastion, Availability Sets/Zones, VMSS autoscaling)
+  - `inflow/AZ-104/10_Administer_PaaS_Compute_Options.md` (Module 10: App Service Plans, deployment slots blue/green swaps, ACI containers, ACA microservices)
+  - `inflow/AZ-104/11_Administer_Data_Protection.md` (Module 11: Recovery Services Vault vs Backup Vault, VM backup policies, Soft Delete, MARS vs MABS, Azure Site Recovery)
+  - `inflow/AZ-104/12_Administer_Monitoring.md` (Module 12: Azure Monitor metrics vs logs, Activity Logs 90-day retention, Log Analytics, KQL queries, AMA + DCRs, Alert rules & Action Groups)
+  - `inflow/AZ-104_KodeKloud_Course_Transcript.md` (Master consolidated transcript spanning all 102 lessons, ~824 KB)
+
+### 📚 Compilation of 12 Technical Reference Modules (`Reference Notes/`)
+- **Module 13-104-01:** `Reference Notes/13-104-01_course_introduction_and_certification.md`
+- **Module 13-104-02:** `Reference Notes/13-104-02_administer_identity.md`
+- **Module 13-104-03:** `Reference Notes/13-104-03_administer_governance_and_compliance.md`
+- **Module 13-104-04:** `Reference Notes/13-104-04_administer_azure_resources.md`
+- **Module 13-104-05:** `Reference Notes/13-104-05_administer_virtual_networking.md`
+- **Module 13-104-06:** `Reference Notes/13-104-06_administer_intersite_connectivity.md`
+- **Module 13-104-07:** `Reference Notes/13-104-07_administer_network_traffic.md`
+- **Module 13-104-08:** `Reference Notes/13-104-08_administer_azure_storage.md`
+- **Module 13-104-09:** `Reference Notes/13-104-09_administer_azure_virtual_machines.md`
+- **Module 13-104-10:** `Reference Notes/13-104-10_administer_paas_compute_options.md`
+- **Module 13-104-11:** `Reference Notes/13-104-11_administer_data_protection.md`
+- **Module 13-104-12:** `Reference Notes/13-104-12_administer_monitoring.md`
+- *Design Standards:* Complete architectural diagrams (Mermaid), technical matrices, Azure CLI / PowerShell / Bicep recipes, Deep-Intuition AARF failure-loop analyses, AZ-104 exam gotchas, and authoritative citations. No standalone project files created in `Projects/` in accordance with workspace rules.
+
+### 🗺️ Master Index & Navigation Integration
+- **Created AZ-104 Track MOC:** `Reference Notes/13-Index - AZ-104.md` featuring domain weightings, module summaries, and rapid-fire exam scenarios.
+- **Updated Azure Reference MOC:** `Reference Notes/13-Index - Azure.md` with link and overview for the AZ-104 certification track.
+- **Updated Vault Master Index:** `Reference Notes/--Index--.md` with link to the AZ-104 Track MOC under Domain 13 (Azure).
+
 ## [2026-09-25] - CKS Real Exam 2026 Interactive Simulation Lab Deployment & Live Cluster Resuscitation
 
 ### 🛠️ Live Ubuntu Kubeadm Cluster Resuscitation (VM 10.0.0.134)
