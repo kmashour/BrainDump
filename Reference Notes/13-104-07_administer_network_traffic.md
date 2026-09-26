@@ -243,9 +243,38 @@ az network watcher show-next-hop \
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 23 & 24 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. Azure Load Balancer: Deep Architectural Mechanics (Lesson 23)
+- **Layer 4 Transport Routing:** Evaluates strictly at the transport layer (TCP/UDP); does not decrypt SSL or inspect HTTP headers.
+- **Distribution Hash Algorithms:**
+  - *Default (5-Tuple):* Source IP, Source Port, Destination IP, Destination Port, Protocol. Successive requests from the same client may hit different backend VMs.
+  - *Client IP (2-Tuple Session Persistence):* Source IP and Destination IP. Directs all requests from a client to the same backend server (useful for legacy stateful apps).
+  - *Client IP and Protocol (3-Tuple):* Source IP, Destination IP, and Protocol.
+- **Health Probes Deep Dive:**
+  - Standard probes test every **5 seconds** by default.
+  - A backend instance is marked unhealthy after **2 consecutive failures** (10 seconds total).
+  - Once marked unhealthy, the load balancer stops routing new connections immediately; existing active TCP connections may drain depending on connection draining settings.
+
+### 2. Azure Application Gateway & WAF: Layer 7 Engineering (Lesson 24)
+- **Layer 7 Capabilities:**
+  - *URL Path-Based Routing:* Inspects request URI paths (`/api/*` ➔ Backend Pool API, `/images/*` ➔ Backend Pool Storage).
+  - *Multi-Site Listeners:* Hosts up to 100+ separate websites (e.g., `shop.contoso.com` and `blog.contoso.com`) on a single frontend public IP address by inspecting the HTTP `Host` header.
+  - *Cookie-Based Affinity:* Injects an `ARRAffinity` cookie to bind client sessions to a specific backend server instance.
+  - *SSL/TLS Offloading:* Terminates HTTPS at the gateway, forwarding unencrypted HTTP to backend VMs on the secure internal VNet to reduce CPU load on web servers.
+- **Web Application Firewall (WAF v2) Operational Modes:**
+  - *Detection Mode:* Monitors and logs threats (OWASP CRS rules: SQLi, XSS, trojans) to Log Analytics without blocking client traffic. Use during initial 2-week staging rollout.
+  - *Prevention Mode:* Actively blocks matching malicious requests with `HTTP 403 Forbidden`.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Network Traffic Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Network-Traffic/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 23–24)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Load balance HTTP traffic with Application Gateway](https://learn.microsoft.com/en-us/training/modules/load-balance-web-traffic-with-application-gateway/)
 - [Microsoft Learn: Troubleshoot networks with Azure Network Watcher](https://learn.microsoft.com/en-us/training/modules/troubleshoot-azure-network-infrastructure/)
 - [Azure Load Balancer Technical Overview](https://learn.microsoft.com/en-us/azure/load-balancer/)

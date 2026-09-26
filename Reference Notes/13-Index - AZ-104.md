@@ -118,6 +118,10 @@ flowchart TD
 - 📈 **[[13-104-12_administer_monitoring|Module 13-104-12: Administer Monitoring]]**
   * Full-stack observability with Azure Monitor; Metrics (numerical time-series, 93-day retention) vs. Logs (semi-structured tabular, 30-day default); Azure Activity Logs (ARM control plane auditing, 90-day retention, diagnostic export); Log Analytics Workspace architecture, pricing tiers, and Kusto Query Language (KQL); host monitoring transition: Azure Monitor Agent (AMA) + Data Collection Rules (DCRs) vs. deprecated MMA; and Azure Monitor Alert Rules (Sev 0 to Sev 4) with Action Groups.
 
+### Practical Video Lecture Master Digest
+- 🎙️ **[[13-104-V_moe_intelligence_az104_deep_dive_lectures|Module 13-104-V: Video Deep-Dive Lectures & Real-World Builds (Moe Intelligence Series)]]**
+  * Synthesized 42-lesson master lecture digest from the Arabic Comprehensive AZ-104 series, capturing tenant vs. subscription boundaries, hybrid Entra Connect sync mechanics, Management Group depth limits, UDR priority resolution, Private Link DNS integration, App Service warm blue/green swaps, blob versioning, Alert Processing Rules, and runaway Log Analytics cost prevention.
+
 ---
 
 ## 🔍 Rapid-Fire Exam Scenarios & Rule Matrix
@@ -143,4 +147,5 @@ flowchart TD
 - [Microsoft Certified: Azure Administrator Associate (AZ-104) Official Exam Page](https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/)
 - [Microsoft Learn: AZ-104 Study Guide & Exam Blueprint](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-104)
 - [KodeKloud [Updated] AZ-104: Microsoft Azure Administrator Course](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Introduction/Course-Introduction/page)
+- [Moe Intelligence: Arabic Full Courses - AZ-900 + AZ 104 شرح بالعربي (YouTube Playlist)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/)

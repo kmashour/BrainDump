@@ -284,9 +284,43 @@ az network private-dns link vnet create \
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 15–18 and 25 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. VNet Planning & Subnet Architecture
+- **RFC 1918 Private Ranges:** Always plan address spaces using standard private CIDR blocks (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`).
+- **Overlapping Address Space Warning:** If two VNets have overlapping address spaces (e.g., both use `10.1.0.0/16`), they **cannot be peered**. Always establish a centralized IP address management (IPAM) sheet before provisioning production networks.
+- **The Reserved IP Footprint:**
+  - `x.x.x.0`: Network identifier.
+  - `x.x.x.1`: Default gateway for the subnet.
+  - `x.x.x.2` & `x.x.x.3`: Mapped to internal Azure DNS routing fabric (`168.63.129.16`).
+  - `x.x.x.255`: Subnet broadcast address.
+  - *Usable hosts:* Always calculate usable capacity as $2^{(32 - \text{prefix})} - 5$.
+
+### 2. Public vs. Private IP Addresses & Standard SKU Evolution
+- **Basic vs. Standard Public IP SKUs:**
+  - *Basic SKU (Deprecated):* Open by default (allowed all inbound traffic unless blocked by NSG), supported dynamic allocation.
+  - *Standard SKU (Current Mandatory Standard):* **Secure by default** (drops all inbound traffic until an explicit NSG rule allows it), static allocation only, zone-redundant, required for Standard Load Balancers.
+- **Dynamic vs. Static Private IP Allocation:** By default, VMs receive dynamic private IPs assigned via Azure DHCP lease. If the VM is stopped/deallocated, a dynamic IP may be released. For domain controllers, database servers, and NVAs, change private IP allocation to **Static** in the NIC IP Configuration blade.
+
+### 3. NSG Rule Engineering Best Practices
+- **Spacing Rule Priorities:** Never create rules with consecutive priority numbers (e.g., 100, 101, 102). Always space priority numbers by increments of 10 or 20 (e.g., 100, 120, 140) to leave room for emergency overriding rules.
+- **Service Tags:** Use built-in service tags (e.g., `VirtualNetwork`, `Internet`, `AzureLoadBalancer`) instead of hardcoding IP ranges to automatically accommodate Microsoft cloud infrastructure updates.
+
+### 4. Azure Private DNS Zones & Auto-Registration
+- **Split-Horizon Architecture:** Allows using internal corporate domain names (e.g., `corp.internal`) without registering public TLDs.
+- **Auto-Registration:** When linking a Virtual Network to a Private DNS Zone:
+  - Checking **Enable auto registration** causes Azure to automatically create and update `A` records whenever VMs are deployed or assigned new private IPs in that VNet.
+  - A Private DNS Zone can have up to 100 virtual networks linked, but only **one virtual network can be designated as the auto-registration network** per zone.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Virtual Networking Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Virtual-Networking/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 15–18, 25)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Configure virtual networks and subnets](https://learn.microsoft.com/en-us/training/modules/configure-virtual-networks/)
 - [Microsoft Learn: Secure and govern network traffic with NSGs](https://learn.microsoft.com/en-us/training/modules/secure-and-isolate-with-nsg-and-service-endpoints/)
 - [Azure Virtual Network Documentation](https://learn.microsoft.com/en-us/azure/virtual-network/)

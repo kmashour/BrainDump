@@ -283,9 +283,45 @@ az storage container generate-sas \
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 30–34 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. Storage Account Redundancy & Modern Tiers (Lesson 30)
+- **Primary Region Resilience:**
+  - *Locally Redundant Storage (LRS):* 3 synchronous copies within a single physical datacenter facility. Vulnerable to datacenter loss (fire, flooding, power outage).
+  - *Zone-Redundant Storage (ZRS):* 3 synchronous copies across 3 distinct Availability Zones within the primary region. Survives total datacenter loss.
+- **Cross-Region Disaster Recovery:**
+  - *Geo-Redundant Storage (GRS):* LRS in primary region + asynchronous copy to paired secondary region (hundreds of miles away).
+  - *Geo-Zone-Redundant Storage (GZRS):* ZRS in primary region + asynchronous LRS copy in secondary region.
+  - *Read-Access Secondary (RA-GRS / RA-GZRS):* Exposes a secondary read-only URI (`accountname-secondary.blob.core.windows.net`), enabling read availability even if the primary region suffers a total outage.
+
+### 2. Data Protection: Blob Versioning & Object Replication (Lessons 31 & 32)
+- **Blob Versioning:**
+  - When enabled, every overwrite operation creates a previous version identified by a timestamp ID.
+  - Users can list previous versions, compare contents, or promote a historical version to become the current active base blob.
+  - *Exam Gotcha:* Versioning does not automatically protect against explicit deletions unless combined with **Blob Soft Delete**.
+- **Object Replication:**
+  - Asynchronously copies block blobs between a source storage account and a destination storage account according to matching prefix rules.
+  - *Prerequisites:* Both source and destination storage accounts must have **Blob Versioning** and **Change Feed** enabled.
+
+### 3. Managing Storage Access: SAS Security vs. Entra ID (Lessons 33 & 34)
+- **The Access Hierarchy:**
+  1. *Access Keys (Master Keys):* Superuser access to control and data planes. Bypasses all data RBAC. Never embed in code.
+  2. *Account SAS:* Signed with master keys. Grants access across services (Blob, Queue, Table, File). High risk if leaked.
+  3. *Service SAS:* Signed with master keys, but scoped to a single container or blob.
+  4. *User Delegation SAS (Recommended Best Practice):* Signed using Microsoft Entra ID user credentials. Does not expose storage account keys, and permissions are bounded by the user's Entra RBAC roles.
+- **Azure Storage Explorer Client:**
+  - Cross-platform desktop management tool for Windows/macOS/Linux.
+  - Connects via: Entra ID account (SSO), SAS URI, Connection String, or Local Azurite emulator for offline development.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Azure Storage Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Azure-Storage/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 30–34)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Configure storage accounts and blob storage](https://learn.microsoft.com/en-us/training/modules/configure-storage-accounts/)
 - [Microsoft Learn: Secure your Azure Storage data](https://learn.microsoft.com/en-us/training/modules/secure-azure-storage-account/)
 - [Azure Storage Redundancy Technical Documentation](https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy)

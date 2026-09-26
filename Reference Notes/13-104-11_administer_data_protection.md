@@ -284,9 +284,29 @@ az backup protection backup-now \
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lesson 41 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. Ransomware Resilience & Out-of-Band Vault Storage (Lesson 41)
+- **Architectural Isolation:** Unlike traditional on-premises backup shares attached to the local local-area network, Azure Backup stores data in a Microsoft-managed tenant storage fabric completely isolated from the customer's production virtual network.
+- **Ransomware Protection via Soft Delete:**
+  - If a malicious actor or compromised admin account gains access to the Recovery Services Vault and clicks "Stop protection and delete backup data":
+  - The backup data is **NOT permanently deleted**.
+  - It enters a **Soft Delete** state for **14 days** (configurable up to 180 days).
+  - During this period, an "Undelete" button allows administrators to revive the backup items without any data loss.
+- **Multi-User Authorization (MUA) via Resource Guard:**
+  - For critical production vaults, enable Multi-User Authorization using **Azure Resource Guard**.
+  - The Resource Guard is created in a **separate subscription or even a separate Microsoft Entra tenant** managed by an independent security officer.
+  - Any attempt to delete backup data, disable soft delete, or modify backup policies requires explicit authorization from the secondary tenant owner, mathematically neutralizing single-credential compromise attacks.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Data Protection Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Data-Protection/Module-introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lesson 41)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Protect your virtual machines with Azure Backup](https://learn.microsoft.com/en-us/training/modules/protect-virtual-machines-with-azure-backup/)
 - [Microsoft Learn: Protect on-premises infrastructure with Azure Site Recovery](https://learn.microsoft.com/en-us/training/modules/protect-on-premises-infrastructure-with-azure-site-recovery/)
 - [Azure Backup Technical Best Practices](https://docs.microsoft.com/en-us/azure/backup/backup-best-practices)

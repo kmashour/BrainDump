@@ -350,9 +350,38 @@ $budgetParams = @{
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 08–14 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. Management Groups Architecture & Scaling Limits
+- **The 6-Level Depth Rule:** Management Groups support an organizational hierarchy up to **6 levels of depth** (excluding the Root group and subscription endpoints), allowing large enterprises to mirror complex global reporting lines (e.g., `Tenant Root Group ➔ Geography (EMEA) ➔ Country (Egypt) ➔ Environment (Prod) ➔ Department (Billing)`).
+- **The Tenant Root Group Elevation Mechanism:** Global Administrators in Entra ID do not automatically have access to subscription control planes. To resolve orphan subscriptions or perform enterprise security audits:
+  1. Navigate to *Microsoft Entra ID ➔ Properties*.
+  2. Toggle **Access management for Azure resources** to **Yes**.
+  3. Azure automatically assigns the user the `User Access Administrator` role at the Tenant Root Group (`/`), allowing them to assign RBAC roles across all subscriptions in the tenant.
+
+### 2. Subscription Transfer Hazards
+- **Tenant Migration Impact:** When an Azure Subscription is transferred to a different Microsoft Entra ID tenant:
+  - All existing Azure RBAC role assignments are **permanently removed** and must be recreated in the target tenant.
+  - User-assigned Managed Identities are broken and must be reprovisioned.
+  - Key Vault access policies and Entra ID-integrated storage authentication must be updated to target the new tenant ID.
+
+### 3. Resource Locks & Operational Traps
+- **Why `ReadOnly` Breaks VM Operations:** An administrator attempting to stop or restart a virtual machine protected by a `ReadOnly` lock will encounter an error. Changing VM state (e.g., running to deallocated) updates resource allocation properties in ARM, which is classified as a write mutation.
+- **The Absolute Authority of Locks:** Locks override all RBAC permissions. Even an administrator with the `Owner` role cannot delete a resource locked with `CanNotDelete` without first explicitly navigating to the Locks blade and deleting the lock artifact.
+
+### 4. Tagging Governance & Azure Policy Coupling
+- **The Tag Inheritance Myth:** A widespread misconception among junior administrators is that resources automatically inherit tags from their parent Resource Group. In ARM architecture, resources **never inherit tags** by default.
+- **Enforcing Tagging via Policy:** To establish automated cost allocation and FinOps compliance, deploy an Azure Policy with the `Modify` effect that checks if a resource lacks the `CostCenter` or `Environment` tag, and automatically copies the parent Resource Group's tag value during deployment.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Governance and Compliance Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Governance-and-Compliance/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 08–14)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Manage subscriptions and governance in Azure](https://learn.microsoft.com/en-us/training/modules/manage-subscriptions-and-resources/)
 - [Microsoft Learn: Control access to Azure resources with RBAC](https://learn.microsoft.com/en-us/training/modules/secure-azure-resources-with-rbac/)
 - [Microsoft Azure Documentation - Azure Policy Overview](https://learn.microsoft.com/en-us/azure/governance/policy/overview)

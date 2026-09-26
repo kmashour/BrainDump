@@ -2,6 +2,73 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-09-26] - Ingestion & Cross-Note Enrichment: AZ-104 Deep-Dive Video Lecture Series (Moe Intelligence)
+
+### 📥 YouTube Playlist Extraction & Inflow Archive
+- **Source:** [Moe Intelligence - Arabic Full courses AZ-900 + AZ 104 شرح بالعربي](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb).
+- **Extracted Lessons:** 42 dedicated AZ-104 video lectures (transcripts parsed with timestamps, translated to technical English with standard taxonomy).
+- **Master Archive File:**
+  - `inflow/AZ-104-MoeIntelligence_Master_Transcript.md` (1.5 MB consolidated transcript)
+- **Individual Inflow Files (`inflow/AZ-104-MoeIntelligence/`):**
+  - `inflow/AZ-104-MoeIntelligence/01_[1]_Az_104_-_Introduction_to_Azure_Administration_Your_Ultimate_Beginner's_Cours.md`
+  - `inflow/AZ-104-MoeIntelligence/02_[2]_AZ_104_-_Azure_Subscription_vs._Entra_ID_Understanding_the_Key_Difference_Ar.md`
+  - `inflow/AZ-104-MoeIntelligence/03_[3]_AZ_104_-_Azure_Administrator__Getting_Started_with_Microsoft_Entra_Id_Arabic.md`
+  - `inflow/AZ-104-MoeIntelligence/04_[4]_AZ_104_-_Azure_Administrator__Creating_Users_in_Microsoft_Entra_ID_Arabic__ش.md`
+  - `inflow/AZ-104-MoeIntelligence/05_[5]_AZ_104_-__Azure_Administrator__Creating_Groups_in_Microsoft_Entra_Arabic__شر.md`
+  - `inflow/AZ-104-MoeIntelligence/06_[6]_AZ_104_-_Step_by_step_how_to_sync_on-prem_users_to_MS_Entra_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/07_[7]_AZ_104_-_Microsoft_Entra_Id_Self-Service_Password_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/08_[8]_AZ_104_-_Create_Azure_Management_Groups_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/09_[9]_AZ_104_-_How_to_Manage_Azure_Subscriptions_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/10_[10]_AZ_104_-_What_is_Azure_Role_Based_Access_Control_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/11_[11]_AZ_104_-_Step-by-Step_Azure_RBAC_Configuration_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/12_[12]_AZ_104_Prevent_Costly_Mistakes_with_Azure_Resource_Locks_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/13_[13]_AZ_104_Azure_Resource_Tags_Organize_Your_Cloud_Like_a_Pro!_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/14_[14]_AZ_104_How_to_Use_Azure_Policy_for_Cloud_Compliance_&_Governance_Arabic_شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/15_[15]_AZ_104_What_is_Azure_VNET_A_Beginner's_Guide_to_Virtual_Networks_-Arabic.md`
+  - `inflow/AZ-104-MoeIntelligence/16_[16]_AZ_104_Step_by_step_How_to_create_Azure_VNET_Arabic_شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/17_[17]_AZ_104_Azure_Public_vs_Private_IP_Key_Differences_&_Setup_Guide_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/18_[18]_AZ_104_How_to_Create_and_Configure_Network_Security_Groups__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/19_[19]_AZ_104__A_Complete_Guide_to_Azure_VNET_Peering_Arabic_شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/20_[20]_AZ_104_How_to_create_Custom_Routes_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/21_[21]_Azure_Administrator_104_Azure_Service_Endpoint__أمن_شبكتك_بسهولة_مع.md`
+  - `inflow/AZ-104-MoeIntelligence/22_[22]_AZ_104_Azure_Private_Link___احمي_بياناتك_زي_المحترفين.md`
+  - `inflow/AZ-104-MoeIntelligence/23_[23]_AZ_104_Mastering_Azure_Load_Balancer_بالعربي.md`
+  - `inflow/AZ-104-MoeIntelligence/24_[24]_AZ_104_Secure_&_Scale_with_Azure_Application_Gateway_بالعربي.md`
+  - `inflow/AZ-104-MoeIntelligence/25_[25]_AZ_104__Azure_Public_&_Private_DNS_Explained_with_Demo_شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/26_[26]_AZ_104__Mastering_Azure_App_Services_Arabic_شرح_بالعربي.md`
+  - `inflow/AZ-104-MoeIntelligence/27_[27]_AZ_104_Unlock_the_Power_of_Azure_App_Services_Arabic.md`
+  - `inflow/AZ-104-MoeIntelligence/28_[28]_AZ_104_Simplifying_Azure_Understanding_VMs,_Containers,_and_ACI_شرح_بالعربي.md`
+  - `inflow/AZ-104-MoeIntelligence/29_[29]_AZ_104_Introduction_to_Azure_VMs_Arabic__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/30_[30]_AZ_104_What_are_the_Types_of_Azure_Cloud_Storage_شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/31_[31]_AZ_104_How_to_Configure_Azure_Blob_storage_Versioning_بالعربي.md`
+  - `inflow/AZ-104-MoeIntelligence/32_[32]_[Arabic]_AZ_104_How_to_configure_Azure_Blob_Replication__Arabic_شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/33_[33]_[Arabic]_ِAZ_104__How_to_Manage_Azure_Storage_Access___شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/34_[34]_[Arabic]_AZ_104_How_to_install_Azure_Storage_Explorer__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/35_[35]_[Arabic]_AZ_104_What_is_and_How_to_configure_Azure_Monitor__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/36_[1]_(Arabic)_Azure_Certifications_Roadmapدليلك_الكامل_لشهادات_مايكروسوفت.md`
+  - `inflow/AZ-104-MoeIntelligence/37_[36]_(Arabic)_AZ_104_How_to_configure_Azure_Monitor_Logs_&_Workbooks_شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/38_[37]_Arabic_-_AZ_104_How_to_configure_Azure_Monitor_Alerts__شرح.md`
+  - `inflow/AZ-104-MoeIntelligence/39_[38]_Arabic_-_AZ_104_Azure_Monitor_Setting_Up_Action_Groups_&_Processing_Rules.md`
+  - `inflow/AZ-104-MoeIntelligence/40_[39]_Arabic_-_AZ_104_Azure_Monitor_Pricing_How_Much_Does_It_REALLY_Costشرح.md`
+  - `inflow/AZ-104-MoeIntelligence/41_[40]_Arabic_-_AZ_104_Why_Azure_Backup_شرح_بالعربي.md`
+  - `inflow/AZ-104-MoeIntelligence/42_[41]ازاي_تستعد_لامتحان_Azure_Administrator؟_🚀💻.md`
+
+### 📚 Standalone Reference Compilation & Target Note Enrichments
+- **Standalone Video Lecture Digest:** Created `Reference Notes/13-104-V_moe_intelligence_az104_deep_dive_lectures.md` synthesizing all 42 lessons into a cohesive architectural reference guide.
+- **Enriched Reference Notes with Hands-on Builds & Operational Nuances:**
+  - `Reference Notes/13-104-01_course_introduction_and_certification.md` (AZ-104 study roadmaps, exam time budgeting, case study strategies).
+  - `Reference Notes/13-104-02_administer_identity.md` (Tenant vs subscription separation, custom domain TXT record verification, PHS vs PTA vs ADFS sync architectures, SSPR).
+  - `Reference Notes/13-104-03_administer_governance_and_compliance.md` (Management Group 6-level hierarchy, subscription transfers, why ReadOnly locks block VM deallocations, tag enforcement via policy).
+  - `Reference Notes/13-104-05_administer_virtual_networking.md` (VNet planning, 5 reserved IPs, Standard Public IP security, NSG priority spacing, Private DNS auto-registration).
+  - `Reference Notes/13-104-06_administer_intersite_connectivity.md` (VNet peering handshake, Allow Forwarded Traffic for NVAs, Gateway Transit, UDR priority resolution over BGP, Private Link).
+  - `Reference Notes/13-104-07_administer_network_traffic.md` (Load balancer 5-tuple vs 2-tuple persistence, health probe thresholds, Application Gateway multi-site hosting, WAF v2 Detection vs Prevention).
+  - `Reference Notes/13-104-08_administer_azure_storage.md` (Redundancy models LRS/ZRS/GRS/GZRS, Blob Versioning, Object Replication, User Delegation SAS vs Account SAS, Storage Explorer).
+  - `Reference Notes/13-104-09_administer_azure_virtual_machines.md` (VMs vs Containers vs ACI, temporary ephemeral disk D: pitfalls, host disk caching for databases).
+  - `Reference Notes/13-104-10_administer_paas_compute_options.md` (App Service Plan scale-up vs scale-out, free managed SSL certificates, deployment slots warmup requests and traffic routing).
+  - `Reference Notes/13-104-11_administer_data_protection.md` (Out-of-band vault isolation, soft delete ransomware protection, Multi-User Authorization via Resource Guard).
+  - `Reference Notes/13-104-12_administer_monitoring.md` (Interactive Azure Workbooks, Alert Processing Rules maintenance window suppression, Daily Volume Caps to prevent runaway costs).
+- **Master MOC Updated:** `Reference Notes/13-Index - AZ-104.md` indexed `13-104-V` and added the playlist citation.
+
 ## [2026-09-26] - Ingestion of AZ-104: Microsoft Azure Administrator Complete Course (KodeKloud)
 
 ### 📥 Comprehensive Web Scraping & Inflow Archive

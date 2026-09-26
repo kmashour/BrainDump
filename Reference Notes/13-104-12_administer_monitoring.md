@@ -453,9 +453,36 @@ top
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 35 & 37–40 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. Azure Workbooks: Dynamic Interactive Dashboards (Lessons 35 & 37)
+- **Beyond Static Dashboards:** While Azure Dashboards display basic pinned charts, **Azure Workbooks** provide an interactive canvas that blends text narrative, parameter dropdowns (e.g., filter by Subscription or Environment), live KQL query tables, and visual time-series graphs.
+- **Cross-Workspace Correlation:** Workbooks allow a single unified report to execute queries across multiple Log Analytics workspaces and Application Insights components using the `workspace('law-name').Table` syntax.
+
+### 2. Alert Processing Rules: Maintenance Window Suppression (Lessons 38 & 39)
+- **The Operational Challenge:** When performing scheduled server maintenance or database patching on weekends, hundreds of false-positive alerts fire, paging on-call engineers unnecessarily.
+- **Alert Processing Rules (Suppression):**
+  - Configured globally under *Monitor ➔ Alerts ➔ Alert processing rules*.
+  - Rule action: **Suppress notifications**.
+  - Schedule: Set to a recurring weekly window (e.g., Saturday 01:00 to 05:00 UTC).
+  - *Exam Gotcha:* Alert rules still fire and register in the Azure Monitor alerts history for auditing, but the notification engine (SMS, email, push, webhooks) is silenced.
+
+### 3. Log Analytics Pricing: Controlling Runaway Logging Costs (Lesson 40)
+- **The Financial Trap:** Log Analytics charges per Gigabyte ingested. If an application service enters an unhandled crash loop that writes millions of stack traces to `stdout`, a workspace can ingest hundreds of gigabytes in hours, resulting in massive unexpected charges.
+- **Cost Protection Controls:**
+  1. *Daily Ingestion Cap:* In the workspace *Usage and estimated costs* blade, enable a **Daily Volume Cap** (e.g., 5 GB/day). Once reached, the workspace stops collecting event logs for the remainder of the day (except critical security/heartbeat events).
+  2. *Data Collection Rules (DCR) Client-Side Filtering:* With the modern Azure Monitor Agent (AMA), write XPath queries in DCRs to ingest only Warning and Error events from Windows Event Viewer, completely filtering out verbose Informational events before network transmission.
+  3. *Capacity Reservations:* For enterprise workloads ingesting over 100 GB/day, reserve daily commitment tiers to reduce per-GB costs by up to 50% compared to Pay-As-You-Go.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Monitoring Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Monitoring/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 35, 37–40)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Design and implement a monitoring strategy on Azure](https://learn.microsoft.com/en-us/training/modules/design-monitoring-strategy-on-azure/)
 - [Microsoft Learn: Monitor and configure Azure resources with Azure Monitor](https://learn.microsoft.com/en-us/training/modules/monitor-azure-resources-with-azure-monitor/)
 - [Azure Monitor Architecture & Platform Documentation](https://docs.microsoft.com/en-us/azure/azure-monitor/)

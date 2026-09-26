@@ -270,9 +270,35 @@ az vmss create \
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 28 & 29 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. Workload Architecture: VMs vs. Containers vs. ACI (Lesson 28)
+- **Architectural Trade-offs:**
+  - *Virtual Machines (IaaS):* Full OS abstraction with dedicated kernel space. Best for monolithic apps, software requiring custom kernel drivers, or Windows Desktop services. Slower provisioning (minutes), higher operational maintenance (patching, antivirus).
+  - *Containers (Docker/OCI):* Share the host OS kernel and isolate workloads via user namespaces and cgroups. Millisecond startup times and ultra-dense resource packing.
+  - *Azure Container Instances (ACI):* Serverless container execution. Spin up individual containers on demand in seconds without provisioning VMs, clusters, or orchestrators. Billed per second of vCPU/RAM.
+- **When to Choose What on the AZ-104 Exam:**
+  - Need to run a batch job or event-driven script in a container for 15 minutes? ➔ **Azure Container Instances (ACI)**.
+  - Need full hypervisor-level isolation and custom kernel extensions? ➔ **Azure Virtual Machines**.
+  - Need microservice orchestration with auto-healing and ingress? ➔ **Azure Container Apps (ACA)** or **AKS**.
+
+### 2. VM Disk Storage Architecture & Host Caching (Lesson 29)
+- **The Ephemeral Temporary Disk (`D:` in Windows, `/dev/sdb` in Linux):**
+  - Physical NVMe SSD located directly on the hypervisor host blade.
+  - *Critical Warning:* Used strictly for pagefile/swap. **All data on this disk is permanently erased** if the VM is stopped, deallocated, restarted, or live-migrated during hardware servicing.
+- **Host Caching Guidelines:**
+  - *Read/Write Caching:* Default for OS disks; caches reads and writes in host RAM for fast performance.
+  - *None / Read-Only Caching:* Recommended for high-transaction database data disks (SQL Server `.mdf` and `.ldf` files) to prevent write-cache writeback loss during host crashes.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Azure Virtual Machines Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Azure-Virtual-Machines/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 28–29)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Manage virtual machines in Azure](https://learn.microsoft.com/en-us/training/modules/manage-virtual-machines-with-azure-cli/)
 - [Microsoft Learn: Create high availability virtual machine infrastructure](https://learn.microsoft.com/en-us/training/modules/build-first-azure-virtual-machine/)
 - [Azure Virtual Machines Documentation](https://learn.microsoft.com/azure/virtual-machines/)

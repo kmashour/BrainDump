@@ -145,9 +145,30 @@ Set-AzContext -SubscriptionId "<SUBSCRIPTION_ID>"
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 01, 36, and 41/42 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. The Cloud Engineering Progression Blueprint
+- **Fundamentals to Administration Bridge:** AZ-900 introduces conceptual "what" (what is cloud computing, SLA, CapEx vs. OpEx), while AZ-104 requires engineering "how" (how to plan CIDR blocks, configure hybrid identity sync, script ARM/Bicep, build resilient multi-region architectures).
+- **The Administration Core vs. Solution Architecture:** AZ-104 serves as the operational baseline required before attempting the AZ-305 (Azure Solutions Architect Expert) or AZ-400 (DevOps Engineer Expert). Without mastering AZ-104 day-to-day administration (specifically VNets, UDRs, and RBAC), high-level architectural design remains abstract.
+
+### 2. High-Yield Exam Day Tactics
+- **The Case Study Gauntlet:**
+  - Case studies present 4–8 tabs of detailed business requirements, technical requirements, planned changes, and existing network topologies.
+  - *Golden Rule:* Do not read all case study text word-for-word initially. Instead, jump straight to the specific question, identify the exact requirement constraint (e.g., "minimize administrative effort", "prevent single point of failure", "ensure least privilege"), and search the relevant tab for that specific technical constraint.
+  - *Unidirectional Trap:* Once you exit the Case Study section of the exam, the testing engine locks those questions permanently; you cannot return to review them later. Allocate 25–30 dedicated minutes exclusively for the Case Study.
+- **Repeated Scenario Questions (Yes/No):**
+  - These questions present an identical business problem across 3 successive screens with different proposed technical solutions (e.g., "Does this meet the goal? Yes/No").
+  - Once answered and submitted, you cannot go back to change your answer, even if a subsequent question clarifies the scenario. Evaluate each proposed solution independently against all stated requirements.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Course Introduction](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Introduction/Course-Introduction/page.md)
 - [KodeKloud AZ-104 Course - Certification Details](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Introduction/Certification-Details/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 01, 36, 42)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Study Guide for Exam AZ-104](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-104)
 - [Microsoft Azure Documentation](https://learn.microsoft.com/azure/)

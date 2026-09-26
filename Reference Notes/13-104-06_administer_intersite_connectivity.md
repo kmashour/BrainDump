@@ -253,9 +253,43 @@ az network vnet subnet update \
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 19–22 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. VNet Peering Mechanics & Advanced Flags
+- **Bidirectional Handshake:** Peering requires two independent peering links (VNet1 ➔ VNet2 and VNet2 ➔ VNet1). Connectivity is established only when both links display state `Connected`.
+- **The Three Critical Peering Flags:**
+  1. *Allow Virtual Network access:* Grants communication between workloads in the two VNets.
+  2. *Allow Forwarded Traffic:* Crucial for Hub-and-Spoke topologies. Allows traffic that did *not* originate from the peered VNet (e.g., packets forwarded by a central NVA or firewall) to flow through. Without this enabled, the spoke VNet drops packets forwarded by a central firewall.
+  3. *Allow Gateway Transit & Use Remote Gateway:* Enables spoke VNets to share a single central VPN Gateway or ExpressRoute circuit deployed in the hub VNet, saving thousands of dollars per month in gateway licensing.
+
+### 2. User-Defined Routes (UDRs) & Priority Resolution
+- **Route Selection Engine:** Azure evaluates routing using **Longest Prefix Match (LPM)** first.
+- **Tie-Breaking Order (When prefixes are identical):**
+  1. **User-Defined Route (UDR)** *(Highest Priority - always overrides Azure defaults)*.
+  2. **BGP Route** *(ExpressRoute or VPN BGP)*.
+  3. **System Default Route** *(Lowest Priority - e.g., Azure default 0.0.0.0/0 to Internet)*.
+- **Forced Tunneling Recipe:** To inspect all spoke traffic through a hub firewall:
+  - Destination: `0.0.0.0/0`
+  - Next Hop Type: `Virtual Appliance`
+  - Next Hop IP Address: `10.0.1.4` (Internal IP of Firewall / NVA)
+
+### 3. Service Endpoints vs. Private Link Architectural Matrix
+- **The Core Problem with Service Endpoints:** Service Endpoints keep traffic on the Microsoft backbone, but the target PaaS service (e.g., Azure Storage) **retains its public IP**. On-premises networks connected via VPN or ExpressRoute cannot utilize Service Endpoints because on-premises traffic cannot route to Azure service tags.
+- **The Private Link (Private Endpoint) Revolution:**
+  - Injects a Virtual Network Interface (NIC) directly into your private subnet with a private IP (e.g., `10.2.1.25`).
+  - Public network access on the storage account or SQL database can be set to **Disabled**.
+  - On-premises clients, peered VNets, and cloud VMs all connect to the exact same private IP over private routes.
+  - Automatically provisions a Private DNS Zone (`privatelink.blob.core.windows.net`) with a canonical `CNAME` mapping the storage FQDN to the private IP.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer Intersite Connectivity Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Intersite-Connectivity/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 19–22)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Connect services together with VNet Peering](https://learn.microsoft.com/en-us/training/modules/integrate-vnets-with-vnet-peering/)
 - [Microsoft Learn: Manage and control traffic flow with routes](https://learn.microsoft.com/en-us/training/modules/manage-and-control-traffic-with-route-tables/)
 - [Microsoft Azure Documentation - Private Link & Private Endpoints](https://learn.microsoft.com/en-us/azure/private-link/)

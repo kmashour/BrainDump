@@ -284,9 +284,36 @@ az container create \
 
 ---
 
+## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+
+> [!NOTE]
+> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 26 & 27 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+
+### 1. App Service Plan Sizing & Scaling Dynamics (Lesson 26)
+- **Scale-Up vs. Scale-Out:**
+  - *Scale Up:* Increases hardware compute capacity of the plan (e.g., upgrading from B1 with 1 core/1.75 GB to P1v3 with 2 cores/8 GB). Requires momentary restart of worker processes.
+  - *Scale Out:* Increases the number of VM worker instances running behind the load balancer (up to 30 instances on Premium v3, 100 on Isolated v2). Zero downtime.
+- **Custom Domains & Free Managed Certificates:**
+  - Adding a custom domain requires creating a `CNAME` or `A` + `TXT` record (`asuid.yourdomain.com`) at your DNS provider.
+  - Azure App Service provides **free, platform-managed SSL/TLS certificates** that renew automatically without administrative overhead.
+
+### 2. Deployment Slots & Blue/Green Zero-Downtime Swapping (Lesson 27)
+- **The Warmup Swap Sequence:**
+  1. The target slot (staging) is deployed with new application code.
+  2. The swap operation is initiated.
+  3. Azure issues HTTP warmup requests to the staging worker instances to initialize code, load caches, and trigger Just-In-Time (JIT) compilation.
+  4. Only after all worker instances report HTTP 200 OK does Azure execute the VIP swap at the frontend load balancer.
+  5. *Result:* Users experience **zero dropped connections** and zero cold-start latency.
+- **Canary Testing via Traffic Routing:**
+  - In the *Deployment slots* blade, administrators can adjust the **Traffic %** slider (e.g., route 80% to Production and 20% to Staging).
+  - Azure assigns client cookies to preserve session affinity so a user remains consistently on either the stable build or the canary build during evaluation.
+
+---
+
 ## 🌐 Authoritative References & Citations
 
 - [KodeKloud AZ-104 Course - Administer PaaS Compute Options Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-PaaS-Compute-Options/Module-Introduction/page.md)
+- [Moe Intelligence AZ-104 Video Series (Lessons 26–27)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Microsoft Learn: Configure Azure App Service Plans and Web Apps](https://learn.microsoft.com/en-us/training/modules/configure-app-service-plans/)
 - [Microsoft Learn: Run container images in Azure Container Instances](https://learn.microsoft.com/en-us/training/modules/run-container-images-azure-container-instances/)
 - [Azure App Service Deployment Slots Documentation](https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots)
