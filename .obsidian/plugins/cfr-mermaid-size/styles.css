@@ -1,0 +1,83 @@
+/* ============================================================
+   CFR Mermaid Size — aparência da alça
+   O tamanho em si é gravado na nota e aplicado por style inline;
+   aqui fica só o que é constante: o puxador e a regra que faz o
+   <svg> acompanhar a largura do container.
+   ============================================================ */
+
+/* Escopo pela classe que o PLUGIN põe, não pela classe do Obsidian: o
+   container é achado em tempo de execução (.mermaid, .block-language-mermaid
+   ou o pai do <svg>), então o CSS não pode depender de qual deles foi. */
+.cfr-mms-ativo {
+  position: relative;
+  margin-inline: auto;
+  max-width: 100%;
+}
+
+/* O !important vence o max-width INLINE que o próprio Mermaid grava no
+   <svg> com a largura natural do diagrama. Sem ele, arrastar não faz efeito. */
+.cfr-mms-ativo > svg {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+}
+
+/* Alinhamento. Centro é o padrão e não tem classe — a ausência é a regra.
+   As duas propriedades cobrem os dois casos: `margin-inline` desloca o
+   container quando ele TEM largura gravada; `text-align` resolve o diagrama
+   sem tamanho, cujo container ocupa a linha inteira e só o <svg> se move.
+   Vem depois de .cfr-mms-ativo de propósito: mesma especificidade, e quem
+   está por último vence — sem precisar de !important. */
+.cfr-mms-esq {
+  margin-inline: 0 auto;
+  text-align: left;
+}
+
+.cfr-mms-dir {
+  margin-inline: auto 0;
+  text-align: right;
+}
+
+/* O container precisa ser posicionado mesmo antes do primeiro arrasto,
+   senão a alça (absolute) escaparia para o ancestral posicionado. */
+:has(> .cfr-mms-alca) {
+  position: relative;
+}
+
+.cfr-mms-alca {
+  position: absolute;
+  right: -6px;
+  bottom: -6px;
+  /* explícito de propósito: sem isto o padding soma à largura e o alvo vira
+     56px (medido). Não herdar a normalização do tema para uma medida que a
+     regra do vault fixa em 44. */
+  box-sizing: border-box;
+  width: 44px; /* alvo de toque mínimo do vault */
+  height: 44px;
+  cursor: ew-resize;
+  touch-action: none; /* sem isto o arrasto vira rolagem no celular */
+  opacity: 0;
+  display: grid;
+  place-items: end;
+  padding: 6px;
+}
+
+:hover > .cfr-mms-alca,
+.cfr-mms-alca.cfr-mms-arrastando {
+  opacity: 1;
+}
+
+.cfr-mms-alca::after {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--cor-neutra, #7d97b5);
+  border-bottom: 2px solid var(--cor-neutra, #7d97b5);
+  border-bottom-right-radius: 3px;
+}
+
+/* No celular não há hover: a alça fica sempre visível, discreta. */
+body.is-mobile .cfr-mms-alca {
+  opacity: 0.55;
+}

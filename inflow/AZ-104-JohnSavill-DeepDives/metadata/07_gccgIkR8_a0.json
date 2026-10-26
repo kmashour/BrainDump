@@ -1,0 +1,132 @@
+{
+  "id": "gccgIkR8_a0",
+  "title": "Azure AD Privileged Identity Management (PIM) - AZ-500, SC-300 Deep Dive Topic",
+  "duration": 3401,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 27
+    },
+    {
+      "start_time": 27,
+      "title": "Azure AD users, groups and services",
+      "end_time": 137
+    },
+    {
+      "start_time": 137,
+      "title": "Azure AD roles and administrative units",
+      "end_time": 366
+    },
+    {
+      "start_time": 366,
+      "title": "Azure hierarchy and roles",
+      "end_time": 550
+    },
+    {
+      "start_time": 550,
+      "title": "Permanent role assignment problems",
+      "end_time": 657
+    },
+    {
+      "start_time": 657,
+      "title": "Just-in-time elevation and PIM",
+      "end_time": 892
+    },
+    {
+      "start_time": 892,
+      "title": "Azure AD PIM",
+      "end_time": 1088
+    },
+    {
+      "start_time": 1088,
+      "title": "PIM role settings",
+      "end_time": 1338
+    },
+    {
+      "start_time": 1338,
+      "title": "Adding Azure AD assignment",
+      "end_time": 1530
+    },
+    {
+      "start_time": 1530,
+      "title": "Administrative unit view",
+      "end_time": 1575
+    },
+    {
+      "start_time": 1575,
+      "title": "User PIM usage",
+      "end_time": 1835
+    },
+    {
+      "start_time": 1835,
+      "title": "Azure PIM",
+      "end_time": 1890
+    },
+    {
+      "start_time": 1890,
+      "title": "Discover resources",
+      "end_time": 1947
+    },
+    {
+      "start_time": 1947,
+      "title": "Picking the scope for role assignment",
+      "end_time": 2014
+    },
+    {
+      "start_time": 2014,
+      "title": "Azure role PIM settings",
+      "end_time": 2063
+    },
+    {
+      "start_time": 2063,
+      "title": "Adding Azure role assignment and user demo",
+      "end_time": 2478
+    },
+    {
+      "start_time": 2478,
+      "title": "Group-based role assignment",
+      "end_time": 2850
+    },
+    {
+      "start_time": 2850,
+      "title": "User group PIM experience",
+      "end_time": 3210
+    },
+    {
+      "start_time": 3210,
+      "title": "Renewal and extend role",
+      "end_time": 3253
+    },
+    {
+      "start_time": 3253,
+      "title": "Demo redemption :-)",
+      "end_time": 3325
+    },
+    {
+      "start_time": 3325,
+      "title": "Summary and close",
+      "end_time": 3401
+    }
+  ],
+  "description": "In this video I deep dive into Privileged Identity Management for Azure AD and Azure roles and group management. This topic is required for AZ-500 and SC-300 and also just overall knowledge for just-in-time privileged roles in Azure and Azure AD.\n\n00:00 Introduction\n00:27 Azure AD users, groups and services\n02:17 Azure AD roles and administrative units\n06:06 Azure hierarchy and roles\n09:10 Permanent role assignment problems\n10:57 Just-in-time elevation and PIM\n14:52 Azure AD PIM\n18:08 PIM role settings\n22:18 Adding Azure AD assignment\n25:30 Administrative unit view\n26:15 User PIM usage\n30:35 Azure PIM\n31:30 Discover resources\n32:27 Picking the scope for role assignment\n33:34 Azure role PIM settings\n34:23 Adding Azure role assignment and user demo\n41:18 Group-based role assignment\n47:30 User group PIM experience\n53:30 Renewal and extend role\n54:13 Demo redemption :-)\n55:25 Summary and close",
+  "webpage_url": "https://www.youtube.com/watch?v=gccgIkR8_a0",
+  "upload_date": "20210316",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "azure ad",
+    "jit",
+    "just in time",
+    "azure ad privileged identity management",
+    "privileged identity management",
+    "roles",
+    "group management",
+    "az500",
+    "az-500",
+    "sc-300",
+    "sc300",
+    "sc-900",
+    "sc900"
+  ]
+}

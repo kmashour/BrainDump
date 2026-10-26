@@ -284,33 +284,141 @@ az container create \
 
 ---
 
-## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+## 🏛️ Enterprise PaaS Web Architecture: Scaling, Domains & Zero-Downtime Releases
 
-> [!NOTE]
-> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 26 & 27 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
-
-### 1. App Service Plan Sizing & Scaling Dynamics (Lesson 26)
+### 1. App Service Plan Sizing, Pricing Tiers & Scaling Dynamics
 - **Scale-Up vs. Scale-Out:**
-  - *Scale Up:* Increases hardware compute capacity of the plan (e.g., upgrading from B1 with 1 core/1.75 GB to P1v3 with 2 cores/8 GB). Requires momentary restart of worker processes.
-  - *Scale Out:* Increases the number of VM worker instances running behind the load balancer (up to 30 instances on Premium v3, 100 on Isolated v2). Zero downtime.
+  - *Scale Up (Vertical Scaling):* Increases hardware compute capacity of the plan (e.g., upgrading from `B1` with 1 vCPU / 1.75 GB RAM to `P1v3` with 2 vCPUs / 8 GB RAM). Causes a momentary restart of the worker processes.
+  - *Scale Out (Horizontal Scaling):* Increases the number of underlying VM worker instances running behind the Azure ARR load balancer (up to 30 instances on Premium v3, up to 100 on Isolated v2). Zero downtime.
 - **Custom Domains & Free Managed Certificates:**
-  - Adding a custom domain requires creating a `CNAME` or `A` + `TXT` record (`asuid.yourdomain.com`) at your DNS provider.
-  - Azure App Service provides **free, platform-managed SSL/TLS certificates** that renew automatically without administrative overhead.
+  - Onboarding a custom domain requires configuring a `CNAME` (e.g., `www.company.com` ➔ `<app>.azurewebsites.net`) or an `A` record paired with a `TXT` domain verification ID record (`asuid.company.com`).
+  - Azure App Service provides **free, platform-managed SSL/TLS certificates** that auto-renew every 6 months with zero manual certificate rotation overhead.
 
-### 2. Deployment Slots & Blue/Green Zero-Downtime Swapping (Lesson 27)
+### 2. Deployment Slots: Zero-Downtime Blue/Green Swapping
 - **The Warmup Swap Sequence:**
-  1. The target slot (staging) is deployed with new application code.
-  2. The swap operation is initiated.
-  3. Azure issues HTTP warmup requests to the staging worker instances to initialize code, load caches, and trigger Just-In-Time (JIT) compilation.
-  4. Only after all worker instances report HTTP 200 OK does Azure execute the VIP swap at the frontend load balancer.
+  1. The target slot (`staging`) is deployed with newly compiled application binaries.
+  2. The swap operation is initiated via Portal, CLI, or CI/CD pipeline.
+  3. Azure issues HTTP warmup requests to the staging worker instances to initialize code, load runtime caches, and trigger Just-In-Time (JIT) compilation.
+  4. Only after all worker instances report HTTP 200 OK does Azure swap the VIP routing at the frontend load balancer.
   5. *Result:* Users experience **zero dropped connections** and zero cold-start latency.
 - **Canary Testing via Traffic Routing:**
-  - In the *Deployment slots* blade, administrators can adjust the **Traffic %** slider (e.g., route 80% to Production and 20% to Staging).
-  - Azure assigns client cookies to preserve session affinity so a user remains consistently on either the stable build or the canary build during evaluation.
+  - In the *Deployment slots* blade, administrators can adjust the **Traffic %** slider (e.g., route 85% to Production and 15% to Staging).
+  - Azure assigns client session affinity cookies to ensure a user remains consistently on either the stable build or the canary build during evaluation.
+- **Sticky Slot Settings:**
+  - Settings that must NOT move during a swap (e.g., database connection strings targeting stage vs prod DBs) must be flagged with `deployment_slot_setting = true`.
 
 ---
 
+## 💡 PaaS Compute Decision Framework & Articulation Guide
+
+```mermaid
+flowchart TD
+    Req{"What is the application hosting & release requirement?"}
+    
+    Req -- "Zero-downtime release with automated warmup and canary routing" --> P1["Deploy **Azure App Service (Standard or Premium tier)** with **Deployment Slots**."]
+    Req -- "Run a containerized event-driven job for 10 minutes" --> P2["Deploy to **Azure Container Instances (ACI)**."]
+    Req -- "Deploy containerized microservices with KEDA autoscaling and Envoy" --> P3["Deploy to **Azure Container Apps (ACA)**."]
+    Req -- "Isolated enterprise compute in a private dedicated VNet" --> P4["Deploy **App Service Isolated v2 (ASEv2)**."]
+```
+
+---
+
+---
+
+## 🏛️ Deep-Dive PaaS & Microservice Architectures (John Savill Master Class Insights)
+
+### 1. App Service Plan Architecture & Frontend ARR Routing
+John Savill explains the underlying infrastructure of Azure App Services:
+- An **App Service Plan** represents a dedicated pool of virtual machine instances provisioned and patched by Microsoft.
+- When an HTTP request arrives:
+  1. It hits Microsoft's **Application Request Routing (ARR)** reverse proxy frontends.
+  2. The ARR router inspects the incoming hostname and dispatches the request to the underlying worker VM hosting the web application.
+  3. If you host 10 Web Apps on a single App Service Plan, all 10 apps share the CPU and RAM capacity of those worker VMs.
+
+### 2. Container Compute Continuum: ACI vs. ACA vs. AKS
+John Savill provides the decision matrix for running containerized workloads on Azure:
+
+| Dimension | Azure Container Instances (ACI) | Azure Container Apps (ACA) | Azure Kubernetes Service (AKS) |
+| :--- | :--- | :--- | :--- |
+| **Abstractions** | Raw serverless container execution. | Managed Kubernetes abstraction with Envoy & KEDA. | Full cloud-native Kubernetes control plane. |
+| **Startup Speed** | Seconds (fastest). | Seconds. | Minutes (requires node pool provisioning). |
+| **Autoscaling** | None (manual spin-up / tear-down). | Event-driven scaling from 0 to N via KEDA (HTTP, Kafka, Queues). | Horizontal Pod Autoscaler (HPA) + Cluster Autoscaler. |
+| **Microservice Features** | None (single container or container group). | Built-in Dapr integration, blue/green traffic splitting, managed TLS. | Ingress controllers, Service Mesh (Istio), custom CRDs. |
+| **Operational Overhead** | **Lowest:** Zero cluster management. | **Low:** Serverless microservices; no node management. | **High:** Requires Kubernetes cluster administration and patching. |
+
+---
+
+## 🚀 Going the Extra Mile: Architectural Deep Dive - Container Networking, GenAI & Hyperscale Data
+
+> [!IMPORTANT]
+> **Going the Extra Mile:** In this section, we are taking an extra mile on this topic and start deep diving into the foundational networking models of Azure Kubernetes Service (AKS), Azure API Management Generative AI Gateways, and Azure SQL Hyperscale storage separation based on John Savill's Azure Deep Dives Master Class.
+
+### 1. Azure Kubernetes Service (AKS) Networking Deep Dive
+
+Choosing the correct CNI (Container Network Interface) plugins governs pod scalability, subnet sizing, and throughput:
+
+| Network Model | IP Address Allocation | Pod IP Accessibility | Scalability Limits | Performance Profile |
+| :--- | :--- | :--- | :--- | :--- |
+| **Kubenet** | Pods receive private overlay IPs from a virtual CIDR (`10.244.0.0/16`). | Pods are not directly routable from outside the node. Node performs SNAT. | Limited by UDR route table limits (maximum 400 nodes). | Slight CPU overhead from iptables NAT forwarding. |
+| **Azure CNI (Traditional)** | Every Pod receives a real, routable IP directly from the VNet subnet. | Directly accessible across VNet and on-premises without NAT. | **High VNet IP exhaustion:** Requires allocating 30–110 VNet IPs per node upfront. | Native line-rate hypervisor throughput. |
+| **Azure CNI Overlay** | Nodes receive VNet IPs; Pods receive IPs from a private secondary CIDR overlay. | Pods can route across the entire AKS cluster and VNet via Geneve encapsulation. | **Virtually infinite scale:** Resolves VNet IP exhaustion while maintaining cloud routing. | High-speed encapsulation. |
+| **Azure CNI Powered by Cilium** | Replaces Linux `iptables` and `kube-proxy` with **eBPF** (Extended Berkeley Packet Filter) in the Linux kernel. | Native IP routing with kernel-level packet inspection. | Extreme scale (thousands of pods and services). | **Ultra-high throughput:** Bypasses linear iptables rule evaluation; provides native WireGuard node-to-node encryption. |
+
+---
+
+### 2. Azure API Management (APIM): Enterprise API & Generative AI Gateway
+
+APIM serves as the front door for backend microservices, serverless functions, and enterprise AI models:
+
+```mermaid
+flowchart LR
+    Client["Client App / Web Frontend"] -->|HTTPS Inbound| APIM_Gateway["Azure API Management Gateway"]
+    
+    subgraph APIM_Policies ["Policy Processing Pipeline"]
+        P1["1. Inbound: JWT Token Validation & Rate Limiting"]
+        P2["2. GenAI Token Throttling & Semantic Cache"]
+        P3["3. Backend: Dynamic Routing & Failover Pool"]
+        P4["4. Outbound: Header Stripping & Telemetry Log"]
+    end
+
+    subgraph BackendOrigins ["Backend Origins"]
+        AOAI_East["Azure OpenAI (East US)
+Status: 429 Throttle"]
+        AOAI_West["Azure OpenAI (West US)
+Status: Healthy (200 OK)"]
+        AKS_Svc["Internal AKS Microservice"]
+    end
+
+    APIM_Gateway --> P1
+    P1 --> P2
+    P2 --> P3
+    P3 -->|Detects 429 Throttle| AOAI_East
+    P3 -->|Smart Failover Retry| AOAI_West
+    P3 --> AKS_Svc
+```
+
+#### A. APIM Generative AI Gateway Capabilities
+* **Model Load Balancing & Smart Fallback:** When distributing workloads across Azure OpenAI service instances, APIM intercepts HTTP 429 (Rate Limit Exceeded) responses and automatically retries requests against secondary regional deployments.
+* **Semantic Caching:** Integrates with Azure Managed Redis to cache embeddings and common model completions, eliminating redundant token costs and slashing inference latency.
+* **Token Quota Consumption:** Enforces fine-grained token-based rate limits (e.g., maximum 50,000 tokens per minute per consumer subscription key) rather than primitive HTTP call counting.
+
+---
+
+### 3. Azure SQL Hyperscale: Architectural Storage Decoupling
+
+Traditional relational databases tie storage capacity directly to compute node disks, limiting maximum database size and forcing long restoration windows.
+
+#### A. Separation of Compute and Storage
+* **Compute Nodes (Stateless):** Run the SQL database engine query processor. Compute nodes can scale up or scale out (adding read replicas) in minutes without moving data.
+* **Log Service (Low-Latency WAL):** A high-throughput, low-latency transaction log engine that persists Write-Ahead Logs (WAL) across redundant storage rings.
+* **Page Servers (Distributed Cache):** Multi-tiered distributed caching nodes that maintain the database pages. Each Page Server manages a slice of database data and caches hot pages on high-speed local NVMe SSDs (RBPEX cache).
+* **Azure Storage Blobs (Infinite Storage):** Cold data pages reside in durable Azure Blob storage, allowing databases to grow seamlessly up to 100+ Terabytes with near-instantaneous backups and restores regardless of database size.
+
+
 ## 🌐 Authoritative References & Citations
+
+- [John Savill: Azure Master Class v2 - Module 8 - App Services](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
+- [John Savill: DevOps Master Class - Containers & Friends](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
 
 - [KodeKloud AZ-104 Course - Administer PaaS Compute Options Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-PaaS-Compute-Options/Module-Introduction/page.md)
 - [Moe Intelligence AZ-104 Video Series (Lessons 26–27)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)

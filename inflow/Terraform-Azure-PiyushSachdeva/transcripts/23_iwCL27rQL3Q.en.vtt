@@ -1,0 +1,3296 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.199 --> 00:00:01.630 align:start position:0%
+ 
+hello<00:00:00.480><c> everyone</c><00:00:00.840><c> welcome</c><00:00:01.199><c> back</c><00:00:01.319><c> to</c><00:00:01.480><c> my</c>
+
+00:00:01.630 --> 00:00:01.640 align:start position:0%
+hello everyone welcome back to my
+ 
+
+00:00:01.640 --> 00:00:04.630 align:start position:0%
+hello everyone welcome back to my
+channel<00:00:01.959><c> my</c><00:00:02.120><c> name</c><00:00:02.280><c> is</c><00:00:02.480><c> p</c><00:00:03.080><c> and</c><00:00:03.360><c> this</c><00:00:03.480><c> is</c><00:00:03.760><c> day</c><00:00:04.000><c> 23</c>
+
+00:00:04.630 --> 00:00:04.640 align:start position:0%
+channel my name is p and this is day 23
+ 
+
+00:00:04.640 --> 00:00:07.349 align:start position:0%
+channel my name is p and this is day 23
+in<00:00:05.000><c> 28</c><00:00:05.440><c> days</c><00:00:05.600><c> of</c><00:00:05.759><c> a</c><00:00:06.080><c> terraform</c><00:00:06.960><c> in</c><00:00:07.160><c> this</c>
+
+00:00:07.349 --> 00:00:07.359 align:start position:0%
+in 28 days of a terraform in this
+ 
+
+00:00:07.359 --> 00:00:09.669 align:start position:0%
+in 28 days of a terraform in this
+particular<00:00:07.759><c> video</c><00:00:08.200><c> we'll</c><00:00:08.440><c> be</c><00:00:09.200><c> uh</c><00:00:09.320><c> doing</c>
+
+00:00:09.669 --> 00:00:09.679 align:start position:0%
+particular video we'll be uh doing
+ 
+
+00:00:09.679 --> 00:00:11.870 align:start position:0%
+particular video we'll be uh doing
+another<00:00:10.200><c> mini</c><00:00:10.599><c> project</c><00:00:11.320><c> and</c><00:00:11.519><c> this</c><00:00:11.639><c> is</c>
+
+00:00:11.870 --> 00:00:11.880 align:start position:0%
+another mini project and this is
+ 
+
+00:00:11.880 --> 00:00:13.629 align:start position:0%
+another mini project and this is
+specific<00:00:12.320><c> to</c><00:00:12.519><c> monitoring</c><00:00:13.160><c> now</c><00:00:13.280><c> we'll</c><00:00:13.480><c> be</c>
+
+00:00:13.629 --> 00:00:13.639 align:start position:0%
+specific to monitoring now we'll be
+ 
+
+00:00:13.639 --> 00:00:15.629 align:start position:0%
+specific to monitoring now we'll be
+creating<00:00:14.000><c> some</c><00:00:14.200><c> action</c><00:00:14.559><c> groups</c><00:00:15.280><c> we'll</c><00:00:15.480><c> be</c>
+
+00:00:15.629 --> 00:00:15.639 align:start position:0%
+creating some action groups we'll be
+ 
+
+00:00:15.639 --> 00:00:17.950 align:start position:0%
+creating some action groups we'll be
+creating<00:00:16.039><c> some</c><00:00:16.320><c> alerts</c><00:00:17.160><c> uh</c><00:00:17.240><c> in</c><00:00:17.359><c> a</c><00:00:17.520><c> controlled</c>
+
+00:00:17.950 --> 00:00:17.960 align:start position:0%
+creating some alerts uh in a controlled
+ 
+
+00:00:17.960 --> 00:00:20.710 align:start position:0%
+creating some alerts uh in a controlled
+manner<00:00:18.560><c> using</c><00:00:19.039><c> terraform</c><00:00:20.039><c> so</c><00:00:20.279><c> the</c><00:00:20.400><c> comments</c>
+
+00:00:20.710 --> 00:00:20.720 align:start position:0%
+manner using terraform so the comments
+ 
+
+00:00:20.720 --> 00:00:22.310 align:start position:0%
+manner using terraform so the comments
+and<00:00:20.880><c> like</c><00:00:21.080><c> Target</c><00:00:21.439><c> of</c><00:00:21.640><c> this</c><00:00:21.800><c> video</c><00:00:22.080><c> is</c><00:00:22.199><c> going</c>
+
+00:00:22.310 --> 00:00:22.320 align:start position:0%
+and like Target of this video is going
+ 
+
+00:00:22.320 --> 00:00:25.670 align:start position:0%
+and like Target of this video is going
+to<00:00:22.519><c> be</c><00:00:23.199><c> 200</c><00:00:23.519><c> likes</c><00:00:23.840><c> and</c><00:00:24.080><c> 150</c><00:00:24.599><c> comments</c><00:00:25.519><c> and</c>
+
+00:00:25.670 --> 00:00:25.680 align:start position:0%
+to be 200 likes and 150 comments and
+ 
+
+00:00:25.680 --> 00:00:28.189 align:start position:0%
+to be 200 likes and 150 comments and
+once<00:00:25.960><c> that</c><00:00:26.160><c> is</c><00:00:26.359><c> done</c><00:00:26.960><c> um</c><00:00:27.199><c> I'm</c><00:00:27.480><c> going</c><00:00:27.599><c> to</c><00:00:27.760><c> unlock</c>
+
+00:00:28.189 --> 00:00:28.199 align:start position:0%
+once that is done um I'm going to unlock
+ 
+
+00:00:28.199 --> 00:00:30.990 align:start position:0%
+once that is done um I'm going to unlock
+the<00:00:28.359><c> next</c><00:00:28.599><c> video</c><00:00:29.160><c> as</c><00:00:29.519><c> always</c><00:00:30.199><c> and</c><00:00:30.480><c> without</c><00:00:30.800><c> any</c>
+
+00:00:30.990 --> 00:00:31.000 align:start position:0%
+the next video as always and without any
+ 
+
+00:00:31.000 --> 00:00:33.069 align:start position:0%
+the next video as always and without any
+further<00:00:31.320><c> Ado</c><00:00:31.599><c> let's</c><00:00:31.800><c> get</c><00:00:32.000><c> into</c><00:00:32.200><c> the</c><00:00:32.399><c> video</c>
+
+00:00:33.069 --> 00:00:33.079 align:start position:0%
+further Ado let's get into the video
+ 
+
+00:00:33.079 --> 00:00:35.030 align:start position:0%
+further Ado let's get into the video
+okay<00:00:33.200><c> so</c><00:00:33.440><c> let's</c><00:00:33.680><c> have</c><00:00:33.800><c> a</c><00:00:33.960><c> look</c><00:00:34.320><c> what</c><00:00:34.640><c> we'll</c><00:00:34.879><c> be</c>
+
+00:00:35.030 --> 00:00:35.040 align:start position:0%
+okay so let's have a look what we'll be
+ 
+
+00:00:35.040 --> 00:00:37.830 align:start position:0%
+okay so let's have a look what we'll be
+doing<00:00:36.040><c> so</c><00:00:36.480><c> uh</c><00:00:36.600><c> we'll</c><00:00:36.800><c> be</c><00:00:37.000><c> provisioning</c><00:00:37.480><c> our</c>
+
+00:00:37.830 --> 00:00:37.840 align:start position:0%
+doing so uh we'll be provisioning our
+ 
+
+00:00:37.840 --> 00:00:40.150 align:start position:0%
+doing so uh we'll be provisioning our
+infrastructure<00:00:38.840><c> uh</c><00:00:39.040><c> let</c><00:00:39.200><c> me</c><00:00:39.480><c> just</c><00:00:39.719><c> change</c>
+
+00:00:40.150 --> 00:00:40.160 align:start position:0%
+infrastructure uh let me just change
+ 
+
+00:00:40.160 --> 00:00:42.990 align:start position:0%
+infrastructure uh let me just change
+this<00:00:40.440><c> a</c><00:00:40.680><c> little</c><00:00:41.079><c> bit</c><00:00:42.039><c> okay</c><00:00:42.440><c> so</c><00:00:42.559><c> we'll</c><00:00:42.800><c> be</c>
+
+00:00:42.990 --> 00:00:43.000 align:start position:0%
+this a little bit okay so we'll be
+ 
+
+00:00:43.000 --> 00:00:44.670 align:start position:0%
+this a little bit okay so we'll be
+provisioning<00:00:43.440><c> our</c><00:00:43.680><c> infrastructure</c><00:00:44.399><c> we'll</c>
+
+00:00:44.670 --> 00:00:44.680 align:start position:0%
+provisioning our infrastructure we'll
+ 
+
+00:00:44.680 --> 00:00:47.470 align:start position:0%
+provisioning our infrastructure we'll
+create<00:00:45.039><c> a</c><00:00:45.239><c> VM</c><00:00:45.680><c> and</c><00:00:45.840><c> its</c><00:00:46.160><c> Associated</c><00:00:46.760><c> resources</c>
+
+00:00:47.470 --> 00:00:47.480 align:start position:0%
+create a VM and its Associated resources
+ 
+
+00:00:47.480 --> 00:00:49.750 align:start position:0%
+create a VM and its Associated resources
+like<00:00:47.840><c> a</c><00:00:48.000><c> resource</c><00:00:48.480><c> Group</c><00:00:48.920><c> network</c><00:00:49.280><c> interface</c>
+
+00:00:49.750 --> 00:00:49.760 align:start position:0%
+like a resource Group network interface
+ 
+
+00:00:49.760 --> 00:00:52.389 align:start position:0%
+like a resource Group network interface
+card<00:00:50.199><c> virtual</c><00:00:50.600><c> Network</c><00:00:51.039><c> subnet</c><00:00:51.719><c> public</c><00:00:52.079><c> IP</c>
+
+00:00:52.389 --> 00:00:52.399 align:start position:0%
+card virtual Network subnet public IP
+ 
+
+00:00:52.399 --> 00:00:54.029 align:start position:0%
+card virtual Network subnet public IP
+and<00:00:52.559><c> so</c><00:00:52.719><c> on</c><00:00:52.960><c> so</c><00:00:53.120><c> that</c><00:00:53.320><c> the</c><00:00:53.440><c> application</c><00:00:53.879><c> will</c>
+
+00:00:54.029 --> 00:00:54.039 align:start position:0%
+and so on so that the application will
+ 
+
+00:00:54.039 --> 00:00:55.709 align:start position:0%
+and so on so that the application will
+be<00:00:54.239><c> accessible</c><00:00:54.719><c> and</c><00:00:54.840><c> we'll</c><00:00:55.039><c> be</c><00:00:55.199><c> deploying</c><00:00:55.600><c> a</c>
+
+00:00:55.709 --> 00:00:55.719 align:start position:0%
+be accessible and we'll be deploying a
+ 
+
+00:00:55.719 --> 00:00:58.509 align:start position:0%
+be accessible and we'll be deploying a
+sample<00:00:56.079><c> HTML</c><00:00:56.840><c> website</c><00:00:57.280><c> on</c><00:00:57.520><c> that</c><00:00:57.960><c> with</c><00:00:58.280><c> the</c>
+
+00:00:58.509 --> 00:00:58.519 align:start position:0%
+sample HTML website on that with the
+ 
+
+00:00:58.519 --> 00:01:00.349 align:start position:0%
+sample HTML website on that with the
+help<00:00:58.719><c> of</c><00:00:58.879><c> enginex</c><00:00:59.480><c> that</c><00:00:59.600><c> will</c><00:00:59.760><c> be</c><00:01:00.000><c> serving</c>
+
+00:01:00.349 --> 00:01:00.359 align:start position:0%
+help of enginex that will be serving
+ 
+
+00:01:00.359 --> 00:01:02.470 align:start position:0%
+help of enginex that will be serving
+that<00:01:00.559><c> web</c><00:01:00.800><c> page</c><00:01:01.440><c> okay</c><00:01:01.559><c> so</c><00:01:01.800><c> this</c><00:01:01.920><c> is</c><00:01:02.199><c> what</c><00:01:02.359><c> we</c>
+
+00:01:02.470 --> 00:01:02.480 align:start position:0%
+that web page okay so this is what we
+ 
+
+00:01:02.480 --> 00:01:04.549 align:start position:0%
+that web page okay so this is what we
+have<00:01:02.680><c> already</c><00:01:03.039><c> done</c><00:01:03.399><c> so</c><00:01:03.680><c> we'll</c><00:01:03.920><c> be</c><00:01:04.080><c> using</c><00:01:04.439><c> the</c>
+
+00:01:04.549 --> 00:01:04.559 align:start position:0%
+have already done so we'll be using the
+ 
+
+00:01:04.559 --> 00:01:07.630 align:start position:0%
+have already done so we'll be using the
+one<00:01:04.680><c> of</c><00:01:04.799><c> the</c><00:01:04.960><c> previous</c><00:01:05.280><c> videos</c><00:01:05.680><c> code</c><00:01:06.560><c> for</c><00:01:06.840><c> that</c>
+
+00:01:07.630 --> 00:01:07.640 align:start position:0%
+one of the previous videos code for that
+ 
+
+00:01:07.640 --> 00:01:09.630 align:start position:0%
+one of the previous videos code for that
+uh<00:01:07.759><c> once</c><00:01:08.119><c> that</c><00:01:08.280><c> is</c><00:01:08.439><c> done</c><00:01:09.040><c> uh</c><00:01:09.159><c> we'll</c><00:01:09.400><c> be</c>
+
+00:01:09.630 --> 00:01:09.640 align:start position:0%
+uh once that is done uh we'll be
+ 
+
+00:01:09.640 --> 00:01:12.070 align:start position:0%
+uh once that is done uh we'll be
+creating<00:01:10.280><c> an</c><00:01:10.520><c> action</c><00:01:10.880><c> group</c><00:01:11.360><c> an</c><00:01:11.560><c> action</c><00:01:11.840><c> group</c>
+
+00:01:12.070 --> 00:01:12.080 align:start position:0%
+creating an action group an action group
+ 
+
+00:01:12.080 --> 00:01:13.990 align:start position:0%
+creating an action group an action group
+will<00:01:12.280><c> Define</c><00:01:12.759><c> what</c><00:01:13.000><c> action</c><00:01:13.320><c> needs</c><00:01:13.640><c> to</c><00:01:13.799><c> be</c>
+
+00:01:13.990 --> 00:01:14.000 align:start position:0%
+will Define what action needs to be
+ 
+
+00:01:14.000 --> 00:01:16.550 align:start position:0%
+will Define what action needs to be
+takes<00:01:14.439><c> place</c><00:01:14.920><c> when</c><00:01:15.159><c> a</c><00:01:15.320><c> certain</c><00:01:16.040><c> condition</c><00:01:16.400><c> has</c>
+
+00:01:16.550 --> 00:01:16.560 align:start position:0%
+takes place when a certain condition has
+ 
+
+00:01:16.560 --> 00:01:19.469 align:start position:0%
+takes place when a certain condition has
+been<00:01:16.840><c> met</c><00:01:17.759><c> okay</c><00:01:18.159><c> so</c><00:01:18.320><c> we'll</c><00:01:18.560><c> be</c><00:01:18.759><c> creating</c><00:01:19.280><c> two</c>
+
+00:01:19.469 --> 00:01:19.479 align:start position:0%
+been met okay so we'll be creating two
+ 
+
+00:01:19.479 --> 00:01:22.230 align:start position:0%
+been met okay so we'll be creating two
+metrix<00:01:19.920><c> alert</c><00:01:20.479><c> one</c><00:01:20.680><c> is</c><00:01:20.840><c> for</c><00:01:21.119><c> high</c><00:01:21.360><c> CPU</c><00:01:21.920><c> and</c><00:01:22.079><c> one</c>
+
+00:01:22.230 --> 00:01:22.240 align:start position:0%
+metrix alert one is for high CPU and one
+ 
+
+00:01:22.240 --> 00:01:26.069 align:start position:0%
+metrix alert one is for high CPU and one
+is<00:01:22.400><c> for</c><00:01:22.759><c> low</c><00:01:23.119><c> disk</c><00:01:23.960><c> so</c><00:01:24.240><c> let's</c><00:01:24.479><c> say</c><00:01:25.040><c> as</c><00:01:25.200><c> soon</c><00:01:25.479><c> as</c>
+
+00:01:26.069 --> 00:01:26.079 align:start position:0%
+is for low disk so let's say as soon as
+ 
+
+00:01:26.079 --> 00:01:28.630 align:start position:0%
+is for low disk so let's say as soon as
+the<00:01:26.320><c> VM</c><00:01:26.759><c> reaches</c><00:01:27.479><c> an</c><00:01:27.720><c> average</c><00:01:28.119><c> CPU</c>
+
+00:01:28.630 --> 00:01:28.640 align:start position:0%
+the VM reaches an average CPU
+ 
+
+00:01:28.640 --> 00:01:31.230 align:start position:0%
+the VM reaches an average CPU
+utilization<00:01:29.280><c> of</c><00:01:29.400><c> 60%</c><00:01:29.920><c> %</c><00:01:30.320><c> over</c><00:01:30.560><c> the</c><00:01:30.720><c> period</c><00:01:31.040><c> of</c>
+
+00:01:31.230 --> 00:01:31.240 align:start position:0%
+utilization of 60% % over the period of
+ 
+
+00:01:31.240 --> 00:01:34.710 align:start position:0%
+utilization of 60% % over the period of
+5<00:01:31.479><c> minutes</c><00:01:32.399><c> it</c><00:01:32.520><c> should</c><00:01:32.840><c> trigger</c><00:01:33.280><c> an</c><00:01:33.720><c> alert</c>
+
+00:01:34.710 --> 00:01:34.720 align:start position:0%
+5 minutes it should trigger an alert
+ 
+
+00:01:34.720 --> 00:01:37.950 align:start position:0%
+5 minutes it should trigger an alert
+okay<00:01:35.000><c> and</c><00:01:35.600><c> same</c><00:01:35.920><c> way</c><00:01:36.320><c> if</c><00:01:36.840><c> uh</c><00:01:37.280><c> the</c><00:01:37.560><c> dis</c>
+
+00:01:37.950 --> 00:01:37.960 align:start position:0%
+okay and same way if uh the dis
+ 
+
+00:01:37.960 --> 00:01:42.469 align:start position:0%
+okay and same way if uh the dis
+utilization<00:01:38.960><c> reaches</c><00:01:39.640><c> to</c><00:01:40.640><c> uh</c><00:01:40.880><c> 20%</c><00:01:41.799><c> of</c><00:01:42.159><c> free</c>
+
+00:01:42.469 --> 00:01:42.479 align:start position:0%
+utilization reaches to uh 20% of free
+ 
+
+00:01:42.479 --> 00:01:44.870 align:start position:0%
+utilization reaches to uh 20% of free
+memory<00:01:42.880><c> threshold</c><00:01:43.439><c> that</c><00:01:43.560><c> means</c><00:01:43.880><c> 80%</c><00:01:44.479><c> memory</c>
+
+00:01:44.870 --> 00:01:44.880 align:start position:0%
+memory threshold that means 80% memory
+ 
+
+00:01:44.880 --> 00:01:48.310 align:start position:0%
+memory threshold that means 80% memory
+has<00:01:45.040><c> been</c><00:01:45.479><c> utilized</c><00:01:46.479><c> oh</c><00:01:46.719><c> sorry</c><00:01:47.600><c> it's</c><00:01:47.880><c> actually</c>
+
+00:01:48.310 --> 00:01:48.320 align:start position:0%
+has been utilized oh sorry it's actually
+ 
+
+00:01:48.320 --> 00:01:51.550 align:start position:0%
+has been utilized oh sorry it's actually
+not<00:01:48.560><c> the</c><00:01:48.719><c> memory</c><00:01:49.159><c> it's</c><00:01:49.399><c> a</c><00:01:49.560><c> free</c><00:01:49.880><c> dis</c><00:01:50.240><c> bace</c><00:01:51.159><c> so</c>
+
+00:01:51.550 --> 00:01:51.560 align:start position:0%
+not the memory it's a free dis bace so
+ 
+
+00:01:51.560 --> 00:02:05.350 align:start position:0%
+not the memory it's a free dis bace so
+let<00:01:51.719><c> me</c><00:01:52.079><c> just</c><00:01:52.799><c> change</c><00:01:53.280><c> this</c><00:01:53.520><c> a</c><00:01:53.719><c> little</c><00:01:54.079><c> bit</c>
+
+00:02:05.350 --> 00:02:05.360 align:start position:0%
+ 
+ 
+
+00:02:05.360 --> 00:02:10.790 align:start position:0%
+ 
+okay<00:02:06.360><c> so</c><00:02:06.799><c> as</c><00:02:06.960><c> soon</c><00:02:07.720><c> as</c><00:02:08.720><c> oops</c><00:02:09.640><c> okay</c><00:02:10.080><c> so</c><00:02:10.360><c> as</c><00:02:10.520><c> soon</c>
+
+00:02:10.790 --> 00:02:10.800 align:start position:0%
+okay so as soon as oops okay so as soon
+ 
+
+00:02:10.800 --> 00:02:13.949 align:start position:0%
+okay so as soon as oops okay so as soon
+as<00:02:11.200><c> we</c><00:02:11.400><c> have</c><00:02:11.760><c> reached</c><00:02:12.560><c> uh</c><00:02:12.680><c> the</c><00:02:12.840><c> threshold</c><00:02:13.480><c> of</c>
+
+00:02:13.949 --> 00:02:13.959 align:start position:0%
+as we have reached uh the threshold of
+ 
+
+00:02:13.959 --> 00:02:17.309 align:start position:0%
+as we have reached uh the threshold of
+20%<00:02:14.680><c> free</c><00:02:15.080><c> displace</c><00:02:16.080><c> it</c><00:02:16.200><c> should</c><00:02:16.640><c> also</c><00:02:16.959><c> trigger</c>
+
+00:02:17.309 --> 00:02:17.319 align:start position:0%
+20% free displace it should also trigger
+ 
+
+00:02:17.319 --> 00:02:20.509 align:start position:0%
+20% free displace it should also trigger
+an<00:02:17.519><c> alert</c><00:02:18.400><c> now</c><00:02:18.959><c> what</c><00:02:19.160><c> alerts</c><00:02:19.519><c> to</c><00:02:19.720><c> be</c><00:02:19.920><c> triggered</c>
+
+00:02:20.509 --> 00:02:20.519 align:start position:0%
+an alert now what alerts to be triggered
+ 
+
+00:02:20.519 --> 00:02:22.589 align:start position:0%
+an alert now what alerts to be triggered
+and<00:02:20.840><c> how</c><00:02:21.040><c> the</c><00:02:21.200><c> alert</c><00:02:21.560><c> should</c><00:02:21.800><c> be</c><00:02:22.040><c> like</c><00:02:22.360><c> whether</c>
+
+00:02:22.589 --> 00:02:22.599 align:start position:0%
+and how the alert should be like whether
+ 
+
+00:02:22.599 --> 00:02:24.470 align:start position:0%
+and how the alert should be like whether
+it's<00:02:22.760><c> a</c><00:02:22.920><c> webbook</c><00:02:23.519><c> receiver</c><00:02:23.800><c> whether</c><00:02:24.080><c> it's</c><00:02:24.239><c> an</c>
+
+00:02:24.470 --> 00:02:24.480 align:start position:0%
+it's a webbook receiver whether it's an
+ 
+
+00:02:24.480 --> 00:02:27.350 align:start position:0%
+it's a webbook receiver whether it's an
+email<00:02:25.000><c> SMS</c><00:02:25.440><c> or</c><00:02:25.640><c> any</c><00:02:25.920><c> other</c><00:02:26.160><c> type</c><00:02:26.400><c> of</c><00:02:26.560><c> alert</c>
+
+00:02:27.350 --> 00:02:27.360 align:start position:0%
+email SMS or any other type of alert
+ 
+
+00:02:27.360 --> 00:02:29.910 align:start position:0%
+email SMS or any other type of alert
+that<00:02:27.519><c> is</c><00:02:27.720><c> defined</c><00:02:28.120><c> in</c><00:02:28.239><c> our</c><00:02:28.519><c> Action</c><00:02:28.879><c> Group</c><00:02:29.640><c> okay</c>
+
+00:02:29.910 --> 00:02:29.920 align:start position:0%
+that is defined in our Action Group okay
+ 
+
+00:02:29.920 --> 00:02:32.430 align:start position:0%
+that is defined in our Action Group okay
+in<00:02:30.040><c> an</c><00:02:30.319><c> action</c><00:02:30.599><c> group</c><00:02:30.840><c> we</c><00:02:31.040><c> Define</c><00:02:32.000><c> alert</c>
+
+00:02:32.430 --> 00:02:32.440 align:start position:0%
+in an action group we Define alert
+ 
+
+00:02:32.440 --> 00:02:35.270 align:start position:0%
+in an action group we Define alert
+channel<00:02:33.040><c> or</c><00:02:33.200><c> the</c><00:02:33.360><c> notification</c><00:02:34.080><c> Channel</c><00:02:34.720><c> and</c>
+
+00:02:35.270 --> 00:02:35.280 align:start position:0%
+channel or the notification Channel and
+ 
+
+00:02:35.280 --> 00:02:37.589 align:start position:0%
+channel or the notification Channel and
+all<00:02:35.519><c> the</c><00:02:35.840><c> associated</c><00:02:36.440><c> details</c><00:02:37.000><c> right</c><00:02:37.400><c> so</c>
+
+00:02:37.589 --> 00:02:37.599 align:start position:0%
+all the associated details right so
+ 
+
+00:02:37.599 --> 00:02:40.309 align:start position:0%
+all the associated details right so
+we'll<00:02:37.800><c> be</c><00:02:37.959><c> using</c><00:02:38.280><c> a</c><00:02:38.920><c> email</c><00:02:39.319><c> notification</c><00:02:40.040><c> for</c>
+
+00:02:40.309 --> 00:02:40.319 align:start position:0%
+we'll be using a email notification for
+ 
+
+00:02:40.319 --> 00:02:42.910 align:start position:0%
+we'll be using a email notification for
+that<00:02:41.280><c> so</c><00:02:41.640><c> that's</c><00:02:41.879><c> what</c><00:02:42.000><c> we'll</c><00:02:42.239><c> be</c><00:02:42.400><c> doing</c><00:02:42.800><c> as</c>
+
+00:02:42.910 --> 00:02:42.920 align:start position:0%
+that so that's what we'll be doing as
+ 
+
+00:02:42.920 --> 00:02:44.869 align:start position:0%
+that so that's what we'll be doing as
+soon<00:02:43.200><c> as</c><00:02:43.640><c> the</c><00:02:43.800><c> high</c><00:02:44.000><c> CP</c>
+
+00:02:44.869 --> 00:02:44.879 align:start position:0%
+soon as the high CP
+ 
+
+00:02:44.879 --> 00:02:47.550 align:start position:0%
+soon as the high CP
+utilization<00:02:45.879><c> and</c><00:02:46.200><c> low</c><00:02:46.599><c> disk</c><00:02:46.959><c> space</c>
+
+00:02:47.550 --> 00:02:47.560 align:start position:0%
+utilization and low disk space
+ 
+
+00:02:47.560 --> 00:02:50.190 align:start position:0%
+utilization and low disk space
+utilization<00:02:48.560><c> those</c><00:02:48.959><c> alerts</c><00:02:49.720><c> condition</c><00:02:49.959><c> are</c>
+
+00:02:50.190 --> 00:02:50.200 align:start position:0%
+utilization those alerts condition are
+ 
+
+00:02:50.200 --> 00:02:53.270 align:start position:0%
+utilization those alerts condition are
+met<00:02:51.000><c> and</c><00:02:51.200><c> alert</c><00:02:51.560><c> should</c><00:02:51.760><c> be</c><00:02:52.120><c> triggered</c><00:02:53.120><c> uh</c>
+
+00:02:53.270 --> 00:02:53.280 align:start position:0%
+met and alert should be triggered uh
+ 
+
+00:02:53.280 --> 00:02:56.149 align:start position:0%
+met and alert should be triggered uh
+which<00:02:53.440><c> will</c><00:02:53.599><c> notify</c><00:02:54.280><c> the</c><00:02:54.519><c> admin</c><00:02:55.519><c> that</c><00:02:55.840><c> yes</c>
+
+00:02:56.149 --> 00:02:56.159 align:start position:0%
+which will notify the admin that yes
+ 
+
+00:02:56.159 --> 00:02:58.229 align:start position:0%
+which will notify the admin that yes
+these<00:02:56.599><c> conditions</c><00:02:56.959><c> have</c><00:02:57.120><c> been</c><00:02:57.360><c> met</c><00:02:57.720><c> and</c><00:02:58.040><c> so</c>
+
+00:02:58.229 --> 00:02:58.239 align:start position:0%
+these conditions have been met and so
+ 
+
+00:02:58.239 --> 00:03:00.229 align:start position:0%
+these conditions have been met and so
+this<00:02:58.360><c> is</c><00:02:58.599><c> like</c><00:02:58.800><c> the</c><00:02:58.959><c> proactive</c><00:02:59.440><c> monitor</c><00:03:00.080><c> that</c>
+
+00:03:00.229 --> 00:03:00.239 align:start position:0%
+this is like the proactive monitor that
+ 
+
+00:03:00.239 --> 00:03:03.789 align:start position:0%
+this is like the proactive monitor that
+you<00:03:00.440><c> do</c><00:03:01.400><c> uh</c><00:03:01.519><c> to</c><00:03:01.800><c> avoid</c><00:03:02.599><c> any</c><00:03:02.920><c> issues</c><00:03:03.360><c> with</c><00:03:03.519><c> your</c>
+
+00:03:03.789 --> 00:03:03.799 align:start position:0%
+you do uh to avoid any issues with your
+ 
+
+00:03:03.799 --> 00:03:07.990 align:start position:0%
+you do uh to avoid any issues with your
+environment<00:03:04.599><c> okay</c><00:03:05.239><c> and</c><00:03:05.840><c> um</c><00:03:06.720><c> like</c><00:03:07.000><c> because</c><00:03:07.840><c> we</c>
+
+00:03:07.990 --> 00:03:08.000 align:start position:0%
+environment okay and um like because we
+ 
+
+00:03:08.000 --> 00:03:10.070 align:start position:0%
+environment okay and um like because we
+only<00:03:08.200><c> have</c><00:03:08.360><c> a</c><00:03:08.480><c> sample</c><00:03:08.920><c> application</c><00:03:09.599><c> so</c><00:03:09.879><c> there</c>
+
+00:03:10.070 --> 00:03:10.080 align:start position:0%
+only have a sample application so there
+ 
+
+00:03:10.080 --> 00:03:13.990 align:start position:0%
+only have a sample application so there
+won't<00:03:10.480><c> be</c><00:03:10.959><c> much</c><00:03:11.200><c> of</c><00:03:11.400><c> load</c><00:03:11.920><c> on</c><00:03:12.120><c> the</c><00:03:12.319><c> server</c><00:03:13.000><c> so</c>
+
+00:03:13.990 --> 00:03:14.000 align:start position:0%
+won't be much of load on the server so
+ 
+
+00:03:14.000 --> 00:03:17.830 align:start position:0%
+won't be much of load on the server so
+um<00:03:14.840><c> like</c><00:03:15.159><c> we</c><00:03:16.080><c> won't</c><00:03:16.400><c> be</c><00:03:16.519><c> able</c><00:03:16.760><c> to</c><00:03:16.920><c> reach</c><00:03:17.400><c> these</c>
+
+00:03:17.830 --> 00:03:17.840 align:start position:0%
+um like we won't be able to reach these
+ 
+
+00:03:17.840 --> 00:03:19.670 align:start position:0%
+um like we won't be able to reach these
+condition<00:03:18.239><c> without</c><00:03:18.560><c> doing</c><00:03:18.920><c> an</c><00:03:19.200><c> additional</c>
+
+00:03:19.670 --> 00:03:19.680 align:start position:0%
+condition without doing an additional
+ 
+
+00:03:19.680 --> 00:03:21.789 align:start position:0%
+condition without doing an additional
+step<00:03:20.000><c> so</c><00:03:20.159><c> we'll</c><00:03:20.319><c> be</c><00:03:20.480><c> doing</c><00:03:20.720><c> a</c><00:03:20.920><c> small</c><00:03:21.440><c> stress</c>
+
+00:03:21.789 --> 00:03:21.799 align:start position:0%
+step so we'll be doing a small stress
+ 
+
+00:03:21.799 --> 00:03:24.350 align:start position:0%
+step so we'll be doing a small stress
+test<00:03:22.159><c> to</c><00:03:22.400><c> simulate</c><00:03:23.040><c> the</c><00:03:23.799><c> high</c><00:03:24.040><c> CPU</c>
+
+00:03:24.350 --> 00:03:24.360 align:start position:0%
+test to simulate the high CPU
+ 
+
+00:03:24.360 --> 00:03:26.030 align:start position:0%
+test to simulate the high CPU
+utilization<00:03:25.040><c> so</c><00:03:25.200><c> I'll</c><00:03:25.360><c> show</c><00:03:25.519><c> you</c><00:03:25.680><c> how</c><00:03:25.799><c> you</c><00:03:25.879><c> can</c>
+
+00:03:26.030 --> 00:03:26.040 align:start position:0%
+utilization so I'll show you how you can
+ 
+
+00:03:26.040 --> 00:03:28.309 align:start position:0%
+utilization so I'll show you how you can
+do<00:03:26.200><c> that</c><00:03:26.360><c> it's</c><00:03:26.599><c> pretty</c><00:03:26.879><c> simple</c><00:03:27.480><c> so</c><00:03:27.799><c> let's</c><00:03:28.200><c> uh</c>
+
+00:03:28.309 --> 00:03:28.319 align:start position:0%
+do that it's pretty simple so let's uh
+ 
+
+00:03:28.319 --> 00:03:30.270 align:start position:0%
+do that it's pretty simple so let's uh
+let's<00:03:28.560><c> start</c><00:03:28.799><c> with</c><00:03:28.959><c> the</c><00:03:29.120><c> demo</c><00:03:29.560><c> okay</c><00:03:29.799><c> so</c><00:03:29.959><c> I</c><00:03:30.080><c> have</c>
+
+00:03:30.270 --> 00:03:30.280 align:start position:0%
+let's start with the demo okay so I have
+ 
+
+00:03:30.280 --> 00:03:32.390 align:start position:0%
+let's start with the demo okay so I have
+copied<00:03:30.879><c> these</c><00:03:31.200><c> three</c><00:03:31.439><c> files</c><00:03:31.760><c> from</c><00:03:31.959><c> one</c><00:03:32.120><c> of</c><00:03:32.239><c> the</c>
+
+00:03:32.390 --> 00:03:32.400 align:start position:0%
+copied these three files from one of the
+ 
+
+00:03:32.400 --> 00:03:34.869 align:start position:0%
+copied these three files from one of the
+previous<00:03:32.760><c> videos</c><00:03:33.480><c> backand</c><00:03:34.120><c> provider</c><00:03:34.720><c> and</c>
+
+00:03:34.869 --> 00:03:34.879 align:start position:0%
+previous videos backand provider and
+ 
+
+00:03:34.879 --> 00:03:37.190 align:start position:0%
+previous videos backand provider and
+Main<00:03:35.720><c> we</c><00:03:35.879><c> have</c><00:03:36.080><c> gone</c><00:03:36.319><c> through</c><00:03:36.560><c> this</c><00:03:36.760><c> several</c>
+
+00:03:37.190 --> 00:03:37.200 align:start position:0%
+Main we have gone through this several
+ 
+
+00:03:37.200 --> 00:03:39.550 align:start position:0%
+Main we have gone through this several
+times<00:03:37.560><c> so</c><00:03:37.959><c> uh</c><00:03:38.080><c> I'm</c><00:03:38.200><c> not</c><00:03:38.360><c> going</c><00:03:38.439><c> to</c><00:03:38.599><c> explain</c><00:03:38.959><c> it</c>
+
+00:03:39.550 --> 00:03:39.560 align:start position:0%
+times so uh I'm not going to explain it
+ 
+
+00:03:39.560 --> 00:03:41.110 align:start position:0%
+times so uh I'm not going to explain it
+but<00:03:39.760><c> in</c><00:03:39.959><c> this</c><00:03:40.159><c> file</c><00:03:40.439><c> what</c><00:03:40.599><c> we</c><00:03:40.720><c> are</c><00:03:40.840><c> doing</c>
+
+00:03:41.110 --> 00:03:41.120 align:start position:0%
+but in this file what we are doing
+ 
+
+00:03:41.120 --> 00:03:43.350 align:start position:0%
+but in this file what we are doing
+basically<00:03:41.519><c> we</c><00:03:41.599><c> are</c><00:03:41.760><c> creating</c><00:03:42.319><c> a</c><00:03:42.760><c> resource</c>
+
+00:03:43.350 --> 00:03:43.360 align:start position:0%
+basically we are creating a resource
+ 
+
+00:03:43.360 --> 00:03:47.589 align:start position:0%
+basically we are creating a resource
+Group<00:03:44.360><c> then</c><00:03:44.599><c> a</c><00:03:44.760><c> virtual</c><00:03:45.640><c> Network</c><00:03:46.640><c> a</c>
+
+00:03:47.589 --> 00:03:47.599 align:start position:0%
+Group then a virtual Network a
+ 
+
+00:03:47.599 --> 00:03:50.830 align:start position:0%
+Group then a virtual Network a
+subnet<00:03:48.599><c> and</c><00:03:48.799><c> a</c><00:03:49.000><c> security</c><00:03:49.439><c> group</c><00:03:49.720><c> to</c><00:03:49.879><c> allow</c><00:03:50.200><c> SSH</c>
+
+00:03:50.830 --> 00:03:50.840 align:start position:0%
+subnet and a security group to allow SSH
+ 
+
+00:03:50.840 --> 00:03:54.149 align:start position:0%
+subnet and a security group to allow SSH
+access<00:03:51.439><c> and</c><00:03:52.200><c> access</c><00:03:52.560><c> on</c><00:03:52.840><c> Port</c><00:03:53.200><c> 80</c><00:03:53.640><c> to</c><00:03:53.879><c> access</c>
+
+00:03:54.149 --> 00:03:54.159 align:start position:0%
+access and access on Port 80 to access
+ 
+
+00:03:54.159 --> 00:03:55.229 align:start position:0%
+access and access on Port 80 to access
+the<00:03:54.319><c> web</c>
+
+00:03:55.229 --> 00:03:55.239 align:start position:0%
+the web
+ 
+
+00:03:55.239 --> 00:03:57.670 align:start position:0%
+the web
+application<00:03:56.239><c> then</c><00:03:56.519><c> a</c><00:03:56.720><c> public</c><00:03:57.040><c> IP</c><00:03:57.360><c> to</c>
+
+00:03:57.670 --> 00:03:57.680 align:start position:0%
+application then a public IP to
+ 
+
+00:03:57.680 --> 00:04:00.229 align:start position:0%
+application then a public IP to
+associate<00:03:58.680><c> with</c><00:03:58.879><c> the</c><00:03:59.040><c> VM</c>
+
+00:04:00.229 --> 00:04:00.239 align:start position:0%
+associate with the VM
+ 
+
+00:04:00.239 --> 00:04:02.830 align:start position:0%
+associate with the VM
+and<00:04:00.439><c> a</c><00:04:00.599><c> network</c><00:04:01.040><c> interface</c><00:04:01.519><c> card</c><00:04:01.840><c> for</c><00:04:02.079><c> the</c>
+
+00:04:02.830 --> 00:04:02.840 align:start position:0%
+and a network interface card for the
+ 
+
+00:04:02.840 --> 00:04:05.830 align:start position:0%
+and a network interface card for the
+networking<00:04:03.840><c> and</c><00:04:04.159><c> then</c><00:04:04.480><c> that's</c><00:04:04.799><c> just</c><00:04:05.040><c> the</c>
+
+00:04:05.830 --> 00:04:05.840 align:start position:0%
+networking and then that's just the
+ 
+
+00:04:05.840 --> 00:04:09.190 align:start position:0%
+networking and then that's just the
+security<00:04:06.319><c> group</c><00:04:06.640><c> association</c><00:04:07.360><c> with</c><00:04:07.560><c> the</c><00:04:08.200><c> Nic</c>
+
+00:04:09.190 --> 00:04:09.200 align:start position:0%
+security group association with the Nic
+ 
+
+00:04:09.200 --> 00:04:12.110 align:start position:0%
+security group association with the Nic
+and<00:04:09.439><c> here's</c><00:04:09.680><c> the</c><00:04:09.840><c> virtual</c><00:04:10.319><c> machine</c><00:04:11.319><c> so</c><00:04:11.760><c> it's</c><00:04:11.920><c> a</c>
+
+00:04:12.110 --> 00:04:12.120 align:start position:0%
+and here's the virtual machine so it's a
+ 
+
+00:04:12.120 --> 00:04:14.550 align:start position:0%
+and here's the virtual machine so it's a
+demo<00:04:12.480><c> VM</c><00:04:13.200><c> and</c><00:04:13.640><c> like</c><00:04:13.840><c> the</c><00:04:13.959><c> pretty</c><00:04:14.239><c> basic</c>
+
+00:04:14.550 --> 00:04:14.560 align:start position:0%
+demo VM and like the pretty basic
+ 
+
+00:04:14.560 --> 00:04:17.749 align:start position:0%
+demo VM and like the pretty basic
+details<00:04:15.040><c> like</c><00:04:15.239><c> what</c><00:04:15.400><c> we</c><00:04:15.519><c> have</c><00:04:16.040><c> covered</c><00:04:17.040><c> and</c><00:04:17.600><c> it</c>
+
+00:04:17.749 --> 00:04:17.759 align:start position:0%
+details like what we have covered and it
+ 
+
+00:04:17.759 --> 00:04:21.189 align:start position:0%
+details like what we have covered and it
+will<00:04:18.120><c> also</c><00:04:18.560><c> have</c><00:04:18.759><c> a</c><00:04:18.959><c> provisional</c><00:04:19.639><c> remote</c><00:04:20.199><c> exec</c>
+
+00:04:21.189 --> 00:04:21.199 align:start position:0%
+will also have a provisional remote exec
+ 
+
+00:04:21.199 --> 00:04:23.430 align:start position:0%
+will also have a provisional remote exec
+which<00:04:21.400><c> will</c><00:04:21.720><c> install</c><00:04:22.280><c> engine</c><00:04:22.720><c> X</c><00:04:23.080><c> and</c><00:04:23.280><c> which</c>
+
+00:04:23.430 --> 00:04:23.440 align:start position:0%
+which will install engine X and which
+ 
+
+00:04:23.440 --> 00:04:26.230 align:start position:0%
+which will install engine X and which
+will<00:04:23.759><c> just</c><00:04:24.000><c> create</c><00:04:24.280><c> a</c><00:04:24.440><c> simple</c><00:04:24.759><c> HTML</c><00:04:25.400><c> page</c><00:04:25.759><c> 28</c>
+
+00:04:26.230 --> 00:04:26.240 align:start position:0%
+will just create a simple HTML page 28
+ 
+
+00:04:26.240 --> 00:04:29.029 align:start position:0%
+will just create a simple HTML page 28
+of<00:04:26.720><c> a</c><00:04:27.040><c> terraform</c><00:04:27.560><c> is</c><00:04:27.880><c> awesome</c><00:04:28.360><c> it</c><00:04:28.440><c> will</c><00:04:28.680><c> start</c>
+
+00:04:29.029 --> 00:04:29.039 align:start position:0%
+of a terraform is awesome it will start
+ 
+
+00:04:29.039 --> 00:04:32.469 align:start position:0%
+of a terraform is awesome it will start
+the<00:04:29.160><c> engine</c><00:04:29.479><c> X</c><00:04:30.160><c> server</c><00:04:31.160><c> and</c><00:04:31.600><c> then</c><00:04:32.080><c> you</c><00:04:32.199><c> will</c><00:04:32.360><c> be</c>
+
+00:04:32.469 --> 00:04:32.479 align:start position:0%
+the engine X server and then you will be
+ 
+
+00:04:32.479 --> 00:04:35.230 align:start position:0%
+the engine X server and then you will be
+served<00:04:32.880><c> this</c><00:04:33.080><c> web</c><00:04:33.360><c> page</c><00:04:33.680><c> basically</c><00:04:34.160><c> on</c><00:04:34.600><c> Port</c><00:04:34.880><c> 0</c>
+
+00:04:35.230 --> 00:04:35.240 align:start position:0%
+served this web page basically on Port 0
+ 
+
+00:04:35.240 --> 00:04:38.390 align:start position:0%
+served this web page basically on Port 0
+of<00:04:35.360><c> the</c><00:04:35.520><c> application</c><00:04:36.520><c> right</c><00:04:37.360><c> so</c><00:04:37.720><c> this</c><00:04:37.880><c> is</c><00:04:38.240><c> what</c>
+
+00:04:38.390 --> 00:04:38.400 align:start position:0%
+of the application right so this is what
+ 
+
+00:04:38.400 --> 00:04:40.550 align:start position:0%
+of the application right so this is what
+we<00:04:38.520><c> have</c><00:04:38.720><c> already</c><00:04:38.960><c> seen</c><00:04:39.320><c> now</c><00:04:39.520><c> we</c><00:04:39.720><c> have</c><00:04:39.880><c> to</c><00:04:40.320><c> set</c>
+
+00:04:40.550 --> 00:04:40.560 align:start position:0%
+we have already seen now we have to set
+ 
+
+00:04:40.560 --> 00:04:42.150 align:start position:0%
+we have already seen now we have to set
+up<00:04:40.720><c> monitoring</c><00:04:41.240><c> on</c><00:04:41.440><c> that</c><00:04:41.639><c> so</c><00:04:41.759><c> I'm</c><00:04:41.880><c> going</c><00:04:42.000><c> to</c>
+
+00:04:42.150 --> 00:04:42.160 align:start position:0%
+up monitoring on that so I'm going to
+ 
+
+00:04:42.160 --> 00:04:43.629 align:start position:0%
+up monitoring on that so I'm going to
+create<00:04:42.400><c> a</c><00:04:42.560><c> new</c><00:04:42.800><c> file</c><00:04:43.039><c> let's</c><00:04:43.240><c> create</c><00:04:43.479><c> a</c>
+
+00:04:43.629 --> 00:04:43.639 align:start position:0%
+create a new file let's create a
+ 
+
+00:04:43.639 --> 00:04:46.670 align:start position:0%
+create a new file let's create a
+separate<00:04:44.080><c> file</c><00:04:44.280><c> for</c><00:04:44.560><c> that</c><00:04:44.800><c> let's</c><00:04:45.039><c> call</c><00:04:45.280><c> it</c>
+
+00:04:46.670 --> 00:04:46.680 align:start position:0%
+separate file for that let's call it
+ 
+
+00:04:46.680 --> 00:04:48.430 align:start position:0%
+separate file for that let's call it
+monitor.
+
+00:04:48.430 --> 00:04:48.440 align:start position:0%
+monitor.
+ 
+
+00:04:48.440 --> 00:04:52.350 align:start position:0%
+monitor.
+TF<00:04:49.440><c> okay</c><00:04:50.120><c> and</c><00:04:50.400><c> let's</c><00:04:50.680><c> go</c><00:04:50.840><c> to</c><00:04:51.000><c> the</c><00:04:51.160><c> terraform</c>
+
+00:04:52.350 --> 00:04:52.360 align:start position:0%
+TF okay and let's go to the terraform
+ 
+
+00:04:52.360 --> 00:04:55.710 align:start position:0%
+TF okay and let's go to the terraform
+documentation<00:04:53.360><c> um</c><00:04:54.000><c> it's</c><00:04:54.520><c> over</c><00:04:54.880><c> here</c><00:04:55.360><c> and</c><00:04:55.600><c> this</c>
+
+00:04:55.710 --> 00:04:55.720 align:start position:0%
+documentation um it's over here and this
+ 
+
+00:04:55.720 --> 00:04:57.710 align:start position:0%
+documentation um it's over here and this
+is<00:04:55.919><c> what</c><00:04:56.080><c> we</c><00:04:56.240><c> need</c><00:04:56.520><c> we</c><00:04:56.840><c> basically</c><00:04:57.240><c> need</c><00:04:57.520><c> an</c>
+
+00:04:57.710 --> 00:04:57.720 align:start position:0%
+is what we need we basically need an
+ 
+
+00:04:57.720 --> 00:05:02.430 align:start position:0%
+is what we need we basically need an
+action<00:04:58.080><c> group</c><00:04:59.080><c> and</c><00:04:59.840><c> alert</c><00:05:00.759><c> the</c><00:05:00.919><c> metrix</c><00:05:01.520><c> alert</c>
+
+00:05:02.430 --> 00:05:02.440 align:start position:0%
+action group and alert the metrix alert
+ 
+
+00:05:02.440 --> 00:05:04.790 align:start position:0%
+action group and alert the metrix alert
+so<00:05:02.639><c> you</c><00:05:02.759><c> can</c><00:05:02.919><c> search</c><00:05:03.199><c> for</c><00:05:03.520><c> asure</c><00:05:03.919><c> RM</c><00:05:04.360><c> monitor</c>
+
+00:05:04.790 --> 00:05:04.800 align:start position:0%
+so you can search for asure RM monitor
+ 
+
+00:05:04.800 --> 00:05:08.350 align:start position:0%
+so you can search for asure RM monitor
+metrix<00:05:05.360><c> alert</c><00:05:06.160><c> this</c><00:05:06.400><c> particular</c><00:05:07.360><c> resource</c>
+
+00:05:08.350 --> 00:05:08.360 align:start position:0%
+metrix alert this particular resource
+ 
+
+00:05:08.360 --> 00:05:10.749 align:start position:0%
+metrix alert this particular resource
+and<00:05:09.160><c> what</c><00:05:09.479><c> what</c><00:05:09.800><c> basically</c><00:05:10.199><c> they</c><00:05:10.320><c> are</c><00:05:10.479><c> doing</c>
+
+00:05:10.749 --> 00:05:10.759 align:start position:0%
+and what what basically they are doing
+ 
+
+00:05:10.759 --> 00:05:12.110 align:start position:0%
+and what what basically they are doing
+they<00:05:10.880><c> have</c><00:05:11.000><c> created</c><00:05:11.320><c> a</c><00:05:11.479><c> resource</c><00:05:11.840><c> Group</c>
+
+00:05:12.110 --> 00:05:12.120 align:start position:0%
+they have created a resource Group
+ 
+
+00:05:12.120 --> 00:05:14.870 align:start position:0%
+they have created a resource Group
+storage<00:05:12.600><c> account</c><00:05:13.080><c> and</c><00:05:13.280><c> then</c><00:05:13.680><c> they</c><00:05:13.880><c> have</c><00:05:14.440><c> used</c>
+
+00:05:14.870 --> 00:05:14.880 align:start position:0%
+storage account and then they have used
+ 
+
+00:05:14.880 --> 00:05:17.990 align:start position:0%
+storage account and then they have used
+it<00:05:15.400><c> so</c><00:05:15.560><c> I'm</c><00:05:15.759><c> going</c><00:05:15.880><c> to</c><00:05:16.240><c> use</c><00:05:16.680><c> this</c><00:05:16.880><c> one</c><00:05:17.680><c> um</c><00:05:17.840><c> we</c>
+
+00:05:17.990 --> 00:05:18.000 align:start position:0%
+it so I'm going to use this one um we
+ 
+
+00:05:18.000 --> 00:05:20.749 align:start position:0%
+it so I'm going to use this one um we
+need<00:05:18.199><c> an</c><00:05:18.400><c> action</c><00:05:18.720><c> group</c><00:05:19.520><c> and</c><00:05:19.720><c> then</c><00:05:19.960><c> we</c><00:05:20.199><c> need</c><00:05:20.560><c> a</c>
+
+00:05:20.749 --> 00:05:20.759 align:start position:0%
+need an action group and then we need a
+ 
+
+00:05:20.759 --> 00:05:22.550 align:start position:0%
+need an action group and then we need a
+metrix<00:05:21.199><c> alert</c><00:05:21.560><c> so</c><00:05:21.720><c> I'm</c><00:05:21.919><c> just</c><00:05:22.039><c> going</c><00:05:22.160><c> to</c><00:05:22.360><c> walk</c>
+
+00:05:22.550 --> 00:05:22.560 align:start position:0%
+metrix alert so I'm just going to walk
+ 
+
+00:05:22.560 --> 00:05:25.550 align:start position:0%
+metrix alert so I'm just going to walk
+you<00:05:22.759><c> through</c><00:05:23.240><c> what</c><00:05:23.440><c> that</c><00:05:23.720><c> is</c><00:05:24.720><c> so</c><00:05:24.960><c> let</c><00:05:25.080><c> me</c><00:05:25.280><c> just</c>
+
+00:05:25.550 --> 00:05:25.560 align:start position:0%
+you through what that is so let me just
+ 
+
+00:05:25.560 --> 00:05:28.830 align:start position:0%
+you through what that is so let me just
+copy<00:05:25.919><c> it</c><00:05:26.319><c> from</c><00:05:26.639><c> here</c><00:05:27.479><c> okay</c><00:05:28.120><c> so</c><00:05:28.360><c> that's</c><00:05:28.639><c> the</c>
+
+00:05:28.830 --> 00:05:28.840 align:start position:0%
+copy it from here okay so that's the
+ 
+
+00:05:28.840 --> 00:05:31.430 align:start position:0%
+copy it from here okay so that's the
+Action<00:05:29.160><c> Group</c><00:05:29.919><c> uh</c><00:05:30.120><c> we</c><00:05:30.240><c> can</c><00:05:30.520><c> just</c><00:05:30.800><c> name</c><00:05:31.080><c> it</c>
+
+00:05:31.430 --> 00:05:31.440 align:start position:0%
+Action Group uh we can just name it
+ 
+
+00:05:31.440 --> 00:05:33.830 align:start position:0%
+Action Group uh we can just name it
+whatever<00:05:31.880><c> we</c><00:05:32.039><c> want</c><00:05:32.520><c> and</c><00:05:32.759><c> then</c><00:05:33.120><c> the</c><00:05:33.400><c> resource</c>
+
+00:05:33.830 --> 00:05:33.840 align:start position:0%
+whatever we want and then the resource
+ 
+
+00:05:33.840 --> 00:05:38.550 align:start position:0%
+whatever we want and then the resource
+Group<00:05:34.120><c> so</c><00:05:34.319><c> Resource</c><00:05:34.800><c> Group</c><00:05:35.440><c> name</c><00:05:35.840><c> we</c><00:05:36.440><c> have</c><00:05:37.440><c> app</c>
+
+00:05:38.550 --> 00:05:38.560 align:start position:0%
+Group so Resource Group name we have app
+ 
+
+00:05:38.560 --> 00:05:40.990 align:start position:0%
+Group so Resource Group name we have app
+RG<00:05:39.560><c> let's</c><00:05:39.800><c> go</c><00:05:40.080><c> back</c><00:05:40.319><c> and</c><00:05:40.479><c> let's</c><00:05:40.680><c> make</c><00:05:40.880><c> the</c>
+
+00:05:40.990 --> 00:05:41.000 align:start position:0%
+RG let's go back and let's make the
+ 
+
+00:05:41.000 --> 00:05:44.350 align:start position:0%
+RG let's go back and let's make the
+changes<00:05:41.440><c> over</c><00:05:42.120><c> here</c><00:05:43.120><c> okay</c><00:05:43.360><c> and</c><00:05:43.520><c> that's</c><00:05:43.800><c> just</c><00:05:44.039><c> a</c>
+
+00:05:44.350 --> 00:05:44.360 align:start position:0%
+changes over here okay and that's just a
+ 
+
+00:05:44.360 --> 00:05:46.390 align:start position:0%
+changes over here okay and that's just a
+short<00:05:44.759><c> display</c><00:05:45.160><c> name</c><00:05:45.520><c> now</c><00:05:45.720><c> instead</c><00:05:46.000><c> of</c><00:05:46.160><c> web</c>
+
+00:05:46.390 --> 00:05:46.400 align:start position:0%
+short display name now instead of web
+ 
+
+00:05:46.400 --> 00:05:48.749 align:start position:0%
+short display name now instead of web
+hook<00:05:46.759><c> receiver</c><00:05:47.360><c> if</c><00:05:47.479><c> you</c><00:05:47.680><c> have</c><00:05:47.840><c> a</c><00:05:48.039><c> web</c><00:05:48.319><c> hook</c><00:05:48.639><c> uh</c>
+
+00:05:48.749 --> 00:05:48.759 align:start position:0%
+hook receiver if you have a web hook uh
+ 
+
+00:05:48.759 --> 00:05:51.870 align:start position:0%
+hook receiver if you have a web hook uh
+you<00:05:48.919><c> can</c><00:05:49.440><c> provide</c><00:05:49.759><c> the</c><00:05:49.880><c> details</c><00:05:50.280><c> over</c><00:05:50.680><c> here</c><00:05:51.680><c> uh</c>
+
+00:05:51.870 --> 00:05:51.880 align:start position:0%
+you can provide the details over here uh
+ 
+
+00:05:51.880 --> 00:05:54.189 align:start position:0%
+you can provide the details over here uh
+but<00:05:52.199><c> for</c><00:05:52.520><c> now</c><00:05:52.919><c> I'm</c><00:05:53.120><c> just</c><00:05:53.280><c> going</c><00:05:53.400><c> to</c><00:05:53.759><c> put</c><00:05:54.000><c> the</c>
+
+00:05:54.189 --> 00:05:54.199 align:start position:0%
+but for now I'm just going to put the
+ 
+
+00:05:54.199 --> 00:05:55.909 align:start position:0%
+but for now I'm just going to put the
+email<00:05:54.520><c> details</c><00:05:54.919><c> over</c><00:05:55.160><c> here</c><00:05:55.400><c> so</c><00:05:55.520><c> instead</c><00:05:55.800><c> of</c>
+
+00:05:55.909 --> 00:05:55.919 align:start position:0%
+email details over here so instead of
+ 
+
+00:05:55.919 --> 00:05:58.830 align:start position:0%
+email details over here so instead of
+webbook<00:05:56.440><c> receiver</c><00:05:56.960><c> email</c><00:05:57.520><c> receiver</c><00:05:58.520><c> okay</c><00:05:58.680><c> and</c>
+
+00:05:58.830 --> 00:05:58.840 align:start position:0%
+webbook receiver email receiver okay and
+ 
+
+00:05:58.840 --> 00:06:01.510 align:start position:0%
+webbook receiver email receiver okay and
+it'll<00:05:59.199><c> have</c><00:05:59.360><c> to</c><00:05:59.720><c> Fields</c><00:06:00.199><c> name</c><00:06:00.720><c> and</c><00:06:01.199><c> like</c><00:06:01.400><c> the</c>
+
+00:06:01.510 --> 00:06:01.520 align:start position:0%
+it'll have to Fields name and like the
+ 
+
+00:06:01.520 --> 00:06:04.270 align:start position:0%
+it'll have to Fields name and like the
+email<00:06:01.919><c> address</c><00:06:02.720><c> so</c><00:06:02.919><c> let's</c><00:06:03.160><c> give</c><00:06:03.319><c> it</c><00:06:03.479><c> a</c><00:06:03.680><c> name</c>
+
+00:06:04.270 --> 00:06:04.280 align:start position:0%
+email address so let's give it a name
+ 
+
+00:06:04.280 --> 00:06:07.790 align:start position:0%
+email address so let's give it a name
+name<00:06:04.840><c> let's</c><00:06:05.199><c> call</c><00:06:05.520><c> it</c><00:06:06.520><c> send</c><00:06:06.919><c> to</c>
+
+00:06:07.790 --> 00:06:07.800 align:start position:0%
+name let's call it send to
+ 
+
+00:06:07.800 --> 00:06:11.029 align:start position:0%
+name let's call it send to
+admin<00:06:08.800><c> and</c><00:06:09.039><c> then</c><00:06:09.680><c> email</c><00:06:10.160><c> address</c><00:06:10.680><c> email</c>
+
+00:06:11.029 --> 00:06:11.039 align:start position:0%
+admin and then email address email
+ 
+
+00:06:11.039 --> 00:06:12.670 align:start position:0%
+admin and then email address email
+address<00:06:11.360><c> I'm</c><00:06:11.440><c> going</c><00:06:11.560><c> to</c><00:06:11.759><c> give</c><00:06:12.080><c> my</c><00:06:12.319><c> email</c>
+
+00:06:12.670 --> 00:06:12.680 align:start position:0%
+address I'm going to give my email
+ 
+
+00:06:12.680 --> 00:06:14.790 align:start position:0%
+address I'm going to give my email
+address<00:06:13.039><c> so</c><00:06:13.280><c> you</c><00:06:13.400><c> can</c><00:06:13.599><c> use</c><00:06:13.880><c> a</c><00:06:14.080><c> variable</c><00:06:14.520><c> for</c>
+
+00:06:14.790 --> 00:06:14.800 align:start position:0%
+address so you can use a variable for
+ 
+
+00:06:14.800 --> 00:06:19.309 align:start position:0%
+address so you can use a variable for
+that<00:06:15.120><c> so</c><00:06:15.319><c> let's</c><00:06:15.680><c> just</c><00:06:16.000><c> create</c><00:06:16.280><c> a</c>
+
+00:06:19.309 --> 00:06:19.319 align:start position:0%
+ 
+ 
+
+00:06:19.319 --> 00:06:23.830 align:start position:0%
+ 
+variable<00:06:20.759><c> variables.</c><00:06:22.080><c> DF</c>
+
+00:06:23.830 --> 00:06:23.840 align:start position:0%
+variable variables. DF
+ 
+
+00:06:23.840 --> 00:06:26.950 align:start position:0%
+variable variables. DF
+and<00:06:24.840><c> variable</c><00:06:25.560><c> name</c><00:06:25.759><c> of</c><00:06:25.919><c> the</c><00:06:26.080><c> variable</c><00:06:26.560><c> is</c>
+
+00:06:26.950 --> 00:06:26.960 align:start position:0%
+and variable name of the variable is
+ 
+
+00:06:26.960 --> 00:06:30.189 align:start position:0%
+and variable name of the variable is
+email
+
+00:06:30.189 --> 00:06:30.199 align:start position:0%
+ 
+ 
+
+00:06:30.199 --> 00:06:32.309 align:start position:0%
+ 
+okay
+
+00:06:32.309 --> 00:06:32.319 align:start position:0%
+okay
+ 
+
+00:06:32.319 --> 00:06:35.670 align:start position:0%
+okay
+and<00:06:33.319><c> type</c><00:06:33.919><c> is</c>
+
+00:06:35.670 --> 00:06:35.680 align:start position:0%
+and type is
+ 
+
+00:06:35.680 --> 00:06:38.309 align:start position:0%
+and type is
+string<00:06:36.680><c> and</c><00:06:36.960><c> default</c><00:06:37.479><c> value</c><00:06:37.800><c> can</c><00:06:38.000><c> provide</c>
+
+00:06:38.309 --> 00:06:38.319 align:start position:0%
+string and default value can provide
+ 
+
+00:06:38.319 --> 00:06:40.629 align:start position:0%
+string and default value can provide
+your<00:06:38.520><c> default</c><00:06:38.919><c> value</c><00:06:39.199><c> or</c><00:06:39.400><c> create</c><00:06:40.120><c> uh</c><00:06:40.280><c> terap</c>
+
+00:06:40.629 --> 00:06:40.639 align:start position:0%
+your default value or create uh terap
+ 
+
+00:06:40.639 --> 00:06:44.390 align:start position:0%
+your default value or create uh terap
+form.<00:06:41.039><c> TFR</c><00:06:41.680><c> files</c><00:06:42.400><c> okay</c><00:06:43.400><c> so</c><00:06:44.000><c> I'm</c><00:06:44.160><c> just</c><00:06:44.280><c> going</c>
+
+00:06:44.390 --> 00:06:44.400 align:start position:0%
+form. TFR files okay so I'm just going
+ 
+
+00:06:44.400 --> 00:06:48.150 align:start position:0%
+form. TFR files okay so I'm just going
+to<00:06:44.599><c> provide</c><00:06:44.960><c> my</c><00:06:45.120><c> email</c><00:06:45.479><c> address</c><00:06:45.880><c> over</c>
+
+00:06:48.150 --> 00:06:48.160 align:start position:0%
+to provide my email address over
+ 
+
+00:06:48.160 --> 00:06:53.990 align:start position:0%
+to provide my email address over
+here<00:06:49.479><c> P</c>
+
+00:06:53.990 --> 00:06:54.000 align:start position:0%
+ 
+ 
+
+00:06:54.000 --> 00:06:56.950 align:start position:0%
+ 
+gmail.com<00:06:55.000><c> okay</c><00:06:55.440><c> and</c><00:06:55.840><c> over</c><00:06:56.160><c> here</c><00:06:56.400><c> we</c><00:06:56.520><c> can</c><00:06:56.720><c> just</c>
+
+00:06:56.950 --> 00:06:56.960 align:start position:0%
+gmail.com okay and over here we can just
+ 
+
+00:06:56.960 --> 00:07:01.110 align:start position:0%
+gmail.com okay and over here we can just
+provide<00:06:57.400><c> v.</c><00:06:58.240><c> email</c>
+
+00:07:01.110 --> 00:07:01.120 align:start position:0%
+provide v. email
+ 
+
+00:07:01.120 --> 00:07:04.309 align:start position:0%
+provide v. email
+okay<00:07:01.560><c> uh</c><00:07:01.720><c> then</c><00:07:01.919><c> we</c><00:07:02.160><c> have</c><00:07:02.560><c> Azure</c><00:07:03.479><c> RM</c><00:07:03.879><c> monitor</c>
+
+00:07:04.309 --> 00:07:04.319 align:start position:0%
+okay uh then we have Azure RM monitor
+ 
+
+00:07:04.319 --> 00:07:08.950 align:start position:0%
+okay uh then we have Azure RM monitor
+metric<00:07:04.759><c> alert</c><00:07:05.240><c> so</c><00:07:05.440><c> it</c><00:07:06.000><c> has</c><00:07:06.440><c> a</c><00:07:07.199><c> name</c><00:07:08.199><c> and</c><00:07:08.599><c> let's</c>
+
+00:07:08.950 --> 00:07:08.960 align:start position:0%
+metric alert so it has a name and let's
+ 
+
+00:07:08.960 --> 00:07:11.950 align:start position:0%
+metric alert so it has a name and let's
+provide<00:07:09.720><c> the</c><00:07:10.000><c> resource</c><00:07:10.560><c> Group</c><00:07:11.080><c> name</c><00:07:11.400><c> over</c>
+
+00:07:11.950 --> 00:07:11.960 align:start position:0%
+provide the resource Group name over
+ 
+
+00:07:11.960 --> 00:07:16.070 align:start position:0%
+provide the resource Group name over
+here<00:07:12.960><c> then</c><00:07:13.160><c> it'll</c><00:07:13.440><c> have</c><00:07:13.680><c> scope</c><00:07:14.400><c> so</c><00:07:14.919><c> scope</c><00:07:15.560><c> is</c>
+
+00:07:16.070 --> 00:07:16.080 align:start position:0%
+here then it'll have scope so scope is
+ 
+
+00:07:16.080 --> 00:07:18.710 align:start position:0%
+here then it'll have scope so scope is
+which<00:07:16.319><c> resource</c><00:07:16.720><c> to</c><00:07:16.919><c> monitor</c><00:07:17.560><c> or</c><00:07:18.000><c> where</c><00:07:18.199><c> it</c><00:07:18.360><c> is</c>
+
+00:07:18.710 --> 00:07:18.720 align:start position:0%
+which resource to monitor or where it is
+ 
+
+00:07:18.720 --> 00:07:20.469 align:start position:0%
+which resource to monitor or where it is
+applied<00:07:19.280><c> right</c><00:07:19.639><c> is</c><00:07:19.759><c> it</c><00:07:19.919><c> applied</c><00:07:20.240><c> at</c><00:07:20.360><c> the</c>
+
+00:07:20.469 --> 00:07:20.479 align:start position:0%
+applied right is it applied at the
+ 
+
+00:07:20.479 --> 00:07:22.110 align:start position:0%
+applied right is it applied at the
+subscription<00:07:21.000><c> level</c><00:07:21.319><c> or</c><00:07:21.479><c> any</c><00:07:21.720><c> particular</c>
+
+00:07:22.110 --> 00:07:22.120 align:start position:0%
+subscription level or any particular
+ 
+
+00:07:22.120 --> 00:07:24.390 align:start position:0%
+subscription level or any particular
+resource<00:07:22.520><c> level</c><00:07:22.800><c> or</c><00:07:23.000><c> anything</c><00:07:23.360><c> because</c><00:07:24.160><c> we'll</c>
+
+00:07:24.390 --> 00:07:24.400 align:start position:0%
+resource level or anything because we'll
+ 
+
+00:07:24.400 --> 00:07:26.230 align:start position:0%
+resource level or anything because we'll
+be<00:07:24.560><c> using</c><00:07:24.919><c> that</c><00:07:25.120><c> to</c><00:07:25.280><c> monitor</c><00:07:25.680><c> our</c><00:07:25.879><c> virtual</c>
+
+00:07:26.230 --> 00:07:26.240 align:start position:0%
+be using that to monitor our virtual
+ 
+
+00:07:26.240 --> 00:07:28.350 align:start position:0%
+be using that to monitor our virtual
+machine<00:07:27.000><c> so</c><00:07:27.240><c> that's</c><00:07:27.479><c> the</c><00:07:27.680><c> resource</c><00:07:28.120><c> we</c><00:07:28.240><c> have</c>
+
+00:07:28.350 --> 00:07:28.360 align:start position:0%
+machine so that's the resource we have
+ 
+
+00:07:28.360 --> 00:07:30.390 align:start position:0%
+machine so that's the resource we have
+to<00:07:28.560><c> provide</c><00:07:28.879><c> over</c><00:07:29.120><c> here</c><00:07:29.520><c> Ure</c><00:07:29.800><c> RM</c><00:07:30.080><c> virtual</c>
+
+00:07:30.390 --> 00:07:30.400 align:start position:0%
+to provide over here Ure RM virtual
+ 
+
+00:07:30.400 --> 00:07:33.150 align:start position:0%
+to provide over here Ure RM virtual
+machine<00:07:30.840><c> demov</c><00:07:31.199><c> vm.</c>
+
+00:07:33.150 --> 00:07:33.160 align:start position:0%
+machine demov vm.
+ 
+
+00:07:33.160 --> 00:07:37.550 align:start position:0%
+machine demov vm.
+ID<00:07:34.160><c> okay</c><00:07:34.800><c> so</c><00:07:35.000><c> now</c><00:07:35.240><c> it</c><00:07:35.360><c> says</c><00:07:35.680><c> a</c><00:07:36.680><c> um</c><00:07:37.000><c> action</c><00:07:37.319><c> will</c>
+
+00:07:37.550 --> 00:07:37.560 align:start position:0%
+ID okay so now it says a um action will
+ 
+
+00:07:37.560 --> 00:07:39.469 align:start position:0%
+ID okay so now it says a um action will
+be<00:07:37.720><c> triggered</c><00:07:38.319><c> that's</c><00:07:38.560><c> just</c><00:07:38.720><c> a</c><00:07:38.960><c> description</c>
+
+00:07:39.469 --> 00:07:39.479 align:start position:0%
+be triggered that's just a description
+ 
+
+00:07:39.479 --> 00:07:41.790 align:start position:0%
+be triggered that's just a description
+message<00:07:40.000><c> option</c><00:07:40.520><c> will</c><00:07:40.720><c> be</c><00:07:40.879><c> triggered</c><00:07:41.520><c> when</c>
+
+00:07:41.790 --> 00:07:41.800 align:start position:0%
+message option will be triggered when
+ 
+
+00:07:41.800 --> 00:07:43.950 align:start position:0%
+message option will be triggered when
+transaction<00:07:42.360><c> count</c><00:07:42.599><c> is</c><00:07:42.759><c> greater</c><00:07:43.039><c> than</c><00:07:43.199><c> 50</c><00:07:43.759><c> but</c>
+
+00:07:43.950 --> 00:07:43.960 align:start position:0%
+transaction count is greater than 50 but
+ 
+
+00:07:43.960 --> 00:07:51.749 align:start position:0%
+transaction count is greater than 50 but
+what<00:07:44.080><c> we</c><00:07:44.240><c> need</c><00:07:45.080><c> when</c><00:07:46.120><c> CPU</c><00:07:47.120><c> is</c><00:07:48.039><c> greater</c><00:07:48.680><c> than</c><00:07:49.800><c> 60</c>
+
+00:07:51.749 --> 00:07:51.759 align:start position:0%
+what we need when CPU is greater than 60
+ 
+
+00:07:51.759 --> 00:07:55.029 align:start position:0%
+what we need when CPU is greater than 60
+okay<00:07:52.759><c> now</c><00:07:53.039><c> the</c><00:07:53.240><c> criteria</c><00:07:53.919><c> is</c><00:07:54.599><c> you</c><00:07:54.759><c> have</c><00:07:54.879><c> to</c>
+
+00:07:55.029 --> 00:07:55.039 align:start position:0%
+okay now the criteria is you have to
+ 
+
+00:07:55.039 --> 00:07:56.990 align:start position:0%
+okay now the criteria is you have to
+provide<00:07:55.360><c> the</c><00:07:55.520><c> metrix</c><00:07:56.000><c> name</c><00:07:56.319><c> space</c><00:07:56.680><c> we</c><00:07:56.800><c> don't</c>
+
+00:07:56.990 --> 00:07:57.000 align:start position:0%
+provide the metrix name space we don't
+ 
+
+00:07:57.000 --> 00:08:00.629 align:start position:0%
+provide the metrix name space we don't
+need<00:07:57.560><c> Microsoft</c><00:07:58.440><c> uh</c><00:07:58.599><c> storage</c><00:07:59.919><c> do</c><00:08:00.199><c> storage</c>
+
+00:08:00.629 --> 00:08:00.639 align:start position:0%
+need Microsoft uh storage do storage
+ 
+
+00:08:00.639 --> 00:08:03.110 align:start position:0%
+need Microsoft uh storage do storage
+account<00:08:00.960><c> over</c><00:08:01.240><c> here</c><00:08:01.520><c> so</c><00:08:01.680><c> it</c><00:08:01.840><c> should</c><00:08:02.120><c> be</c>
+
+00:08:03.110 --> 00:08:03.120 align:start position:0%
+account over here so it should be
+ 
+
+00:08:03.120 --> 00:08:05.550 align:start position:0%
+account over here so it should be
+microsoft.<00:08:04.120><c> compute</c><00:08:04.599><c> virtual</c><00:08:05.000><c> machine</c><00:08:05.400><c> so</c>
+
+00:08:05.550 --> 00:08:05.560 align:start position:0%
+microsoft. compute virtual machine so
+ 
+
+00:08:05.560 --> 00:08:09.749 align:start position:0%
+microsoft. compute virtual machine so
+let<00:08:05.680><c> me</c><00:08:05.919><c> just</c><00:08:06.319><c> copy</c>
+
+00:08:09.749 --> 00:08:09.759 align:start position:0%
+ 
+ 
+
+00:08:09.759 --> 00:08:13.629 align:start position:0%
+ 
+it<00:08:10.759><c> it</c><00:08:10.960><c> should</c><00:08:11.280><c> be</c><00:08:11.720><c> like</c><00:08:12.000><c> this</c><00:08:12.599><c> okay</c><00:08:13.319><c> and</c><00:08:13.479><c> the</c>
+
+00:08:13.629 --> 00:08:13.639 align:start position:0%
+it it should be like this okay and the
+ 
+
+00:08:13.639 --> 00:08:17.990 align:start position:0%
+it it should be like this okay and the
+Matrix<00:08:14.199><c> name</c><00:08:14.639><c> is</c><00:08:15.360><c> percentage</c><00:08:16.360><c> CPU</c><00:08:17.199><c> so</c><00:08:17.720><c> this</c>
+
+00:08:17.990 --> 00:08:18.000 align:start position:0%
+Matrix name is percentage CPU so this
+ 
+
+00:08:18.000 --> 00:08:20.469 align:start position:0%
+Matrix name is percentage CPU so this
+Matrix<00:08:18.560><c> name</c><00:08:19.400><c> uh</c><00:08:19.560><c> this</c><00:08:19.680><c> is</c><00:08:19.879><c> the</c><00:08:20.080><c> default</c>
+
+00:08:20.469 --> 00:08:20.479 align:start position:0%
+Matrix name uh this is the default
+ 
+
+00:08:20.479 --> 00:08:23.149 align:start position:0%
+Matrix name uh this is the default
+Matrix<00:08:21.039><c> that</c><00:08:21.240><c> Azure</c><00:08:21.720><c> or</c><00:08:21.960><c> Microsoft</c><00:08:22.520><c> provides</c>
+
+00:08:23.149 --> 00:08:23.159 align:start position:0%
+Matrix that Azure or Microsoft provides
+ 
+
+00:08:23.159 --> 00:08:24.589 align:start position:0%
+Matrix that Azure or Microsoft provides
+so<00:08:23.360><c> make</c><00:08:23.599><c> sure</c><00:08:23.800><c> you</c><00:08:23.960><c> go</c><00:08:24.159><c> through</c><00:08:24.360><c> the</c>
+
+00:08:24.589 --> 00:08:24.599 align:start position:0%
+so make sure you go through the
+ 
+
+00:08:24.599 --> 00:08:26.869 align:start position:0%
+so make sure you go through the
+documentation<00:08:25.319><c> and</c><00:08:25.560><c> make</c><00:08:25.720><c> sure</c><00:08:25.960><c> you</c><00:08:26.360><c> put</c><00:08:26.599><c> the</c>
+
+00:08:26.869 --> 00:08:26.879 align:start position:0%
+documentation and make sure you put the
+ 
+
+00:08:26.879 --> 00:08:29.110 align:start position:0%
+documentation and make sure you put the
+exact<00:08:27.319><c> Matrix</c><00:08:27.800><c> name</c><00:08:28.039><c> over</c><00:08:28.240><c> here</c><00:08:28.680><c> otherwise</c><00:08:29.039><c> it</c>
+
+00:08:29.110 --> 00:08:29.120 align:start position:0%
+exact Matrix name over here otherwise it
+ 
+
+00:08:29.120 --> 00:08:33.790 align:start position:0%
+exact Matrix name over here otherwise it
+will<00:08:29.720><c> fail</c><00:08:30.720><c> okay</c><00:08:31.280><c> so</c><00:08:31.639><c> aggregation</c><00:08:32.599><c> is</c>
+
+00:08:33.790 --> 00:08:33.800 align:start position:0%
+will fail okay so aggregation is
+ 
+
+00:08:33.800 --> 00:08:38.070 align:start position:0%
+will fail okay so aggregation is
+average<00:08:34.800><c> aggregation</c><00:08:35.479><c> is</c><00:08:35.959><c> how</c><00:08:36.200><c> we</c>
+
+00:08:38.070 --> 00:08:38.080 align:start position:0%
+average aggregation is how we
+ 
+
+00:08:38.080 --> 00:08:41.310 align:start position:0%
+average aggregation is how we
+are<00:08:39.080><c> average</c><00:08:39.919><c> okay</c><00:08:40.120><c> aggregation</c><00:08:40.680><c> is</c><00:08:40.959><c> how</c><00:08:41.200><c> we</c>
+
+00:08:41.310 --> 00:08:41.320 align:start position:0%
+are average okay aggregation is how we
+ 
+
+00:08:41.320 --> 00:08:44.670 align:start position:0%
+are average okay aggregation is how we
+are<00:08:41.640><c> calculating</c><00:08:42.159><c> the</c><00:08:42.279><c> metrix</c><00:08:42.919><c> so</c><00:08:43.919><c> when</c><00:08:44.440><c> the</c>
+
+00:08:44.670 --> 00:08:44.680 align:start position:0%
+are calculating the metrix so when the
+ 
+
+00:08:44.680 --> 00:08:48.870 align:start position:0%
+are calculating the metrix so when the
+average<00:08:45.080><c> CPU</c><00:08:45.640><c> utilization</c><00:08:46.640><c> is</c><00:08:47.080><c> above</c>
+
+00:08:48.870 --> 00:08:48.880 align:start position:0%
+average CPU utilization is above
+ 
+
+00:08:48.880 --> 00:08:51.670 align:start position:0%
+average CPU utilization is above
+60%<00:08:49.880><c> and</c><00:08:50.160><c> operator</c><00:08:50.600><c> is</c><00:08:50.760><c> greater</c><00:08:51.120><c> than</c><00:08:51.519><c> right</c>
+
+00:08:51.670 --> 00:08:51.680 align:start position:0%
+60% and operator is greater than right
+ 
+
+00:08:51.680 --> 00:08:54.389 align:start position:0%
+60% and operator is greater than right
+so<00:08:51.920><c> what</c><00:08:52.200><c> basically</c><00:08:52.640><c> this</c><00:08:52.760><c> is</c><00:08:52.920><c> doing</c><00:08:53.279><c> this</c><00:08:53.480><c> is</c>
+
+00:08:54.389 --> 00:08:54.399 align:start position:0%
+so what basically this is doing this is
+ 
+
+00:08:54.399 --> 00:09:00.710 align:start position:0%
+so what basically this is doing this is
+doing<00:08:55.399><c> when</c><00:08:56.040><c> CPU</c><00:08:56.920><c> is</c><00:08:57.440><c> greater</c><00:08:57.959><c> than</c><00:08:58.680><c> 60%</c><00:08:59.720><c> %</c>
+
+00:09:00.710 --> 00:09:00.720 align:start position:0%
+doing when CPU is greater than 60% %
+ 
+
+00:09:00.720 --> 00:09:02.750 align:start position:0%
+doing when CPU is greater than 60% %
+when<00:09:01.200><c> actually</c>
+
+00:09:02.750 --> 00:09:02.760 align:start position:0%
+when actually
+ 
+
+00:09:02.760 --> 00:09:05.069 align:start position:0%
+when actually
+when<00:09:03.760><c> average</c>
+
+00:09:05.069 --> 00:09:05.079 align:start position:0%
+when average
+ 
+
+00:09:05.079 --> 00:09:09.350 align:start position:0%
+when average
+CPU<00:09:06.079><c> is</c><00:09:06.279><c> greater</c><00:09:06.600><c> than</c><00:09:07.079><c> 60%</c><00:09:08.079><c> for</c><00:09:08.560><c> 5</c><00:09:08.839><c> minutes</c><00:09:09.160><c> so</c>
+
+00:09:09.350 --> 00:09:09.360 align:start position:0%
+CPU is greater than 60% for 5 minutes so
+ 
+
+00:09:09.360 --> 00:09:11.389 align:start position:0%
+CPU is greater than 60% for 5 minutes so
+this<00:09:09.560><c> 5</c><00:09:09.800><c> minutes</c><00:09:10.320><c> we</c><00:09:10.480><c> have</c><00:09:10.680><c> not</c><00:09:10.880><c> specified</c>
+
+00:09:11.389 --> 00:09:11.399 align:start position:0%
+this 5 minutes we have not specified
+ 
+
+00:09:11.399 --> 00:09:13.190 align:start position:0%
+this 5 minutes we have not specified
+anywhere<00:09:11.800><c> this</c><00:09:11.920><c> is</c><00:09:12.040><c> the</c><00:09:12.240><c> default</c><00:09:12.680><c> time</c><00:09:12.959><c> and</c><00:09:13.079><c> we</c>
+
+00:09:13.190 --> 00:09:13.200 align:start position:0%
+anywhere this is the default time and we
+ 
+
+00:09:13.200 --> 00:09:15.310 align:start position:0%
+anywhere this is the default time and we
+can<00:09:13.360><c> change</c><00:09:13.640><c> it</c><00:09:13.880><c> as</c><00:09:14.040><c> well</c><00:09:14.680><c> but</c><00:09:14.880><c> this</c><00:09:14.959><c> is</c><00:09:15.120><c> what</c>
+
+00:09:15.310 --> 00:09:15.320 align:start position:0%
+can change it as well but this is what
+ 
+
+00:09:15.320 --> 00:09:18.230 align:start position:0%
+can change it as well but this is what
+we<00:09:15.440><c> are</c><00:09:15.600><c> doing</c><00:09:16.480><c> okay</c><00:09:17.040><c> when</c><00:09:17.480><c> average</c><00:09:17.880><c> CP</c>
+
+00:09:18.230 --> 00:09:18.240 align:start position:0%
+we are doing okay when average CP
+ 
+
+00:09:18.240 --> 00:09:20.389 align:start position:0%
+we are doing okay when average CP
+utilization<00:09:19.079><c> that</c><00:09:19.200><c> means</c><00:09:19.440><c> the</c><00:09:19.680><c> percentage</c>
+
+00:09:20.389 --> 00:09:20.399 align:start position:0%
+utilization that means the percentage
+ 
+
+00:09:20.399 --> 00:09:22.590 align:start position:0%
+utilization that means the percentage
+which<00:09:20.519><c> is</c><00:09:20.720><c> the</c><00:09:21.079><c> Matrix</c><00:09:21.519><c> name</c><00:09:21.839><c> as</c><00:09:22.000><c> well</c><00:09:22.440><c> the</c>
+
+00:09:22.590 --> 00:09:22.600 align:start position:0%
+which is the Matrix name as well the
+ 
+
+00:09:22.600 --> 00:09:25.710 align:start position:0%
+which is the Matrix name as well the
+average<00:09:23.000><c> of</c><00:09:23.200><c> that</c><00:09:23.560><c> is</c><00:09:23.760><c> greater</c><00:09:24.160><c> than</c><00:09:24.680><c> 60%</c><00:09:25.519><c> over</c>
+
+00:09:25.710 --> 00:09:25.720 align:start position:0%
+average of that is greater than 60% over
+ 
+
+00:09:25.720 --> 00:09:27.910 align:start position:0%
+average of that is greater than 60% over
+the<00:09:25.880><c> period</c><00:09:26.200><c> of</c><00:09:26.360><c> 5</c><00:09:26.519><c> minute</c><00:09:26.959><c> then</c><00:09:27.440><c> triggered</c>
+
+00:09:27.910 --> 00:09:27.920 align:start position:0%
+the period of 5 minute then triggered
+ 
+
+00:09:27.920 --> 00:09:30.150 align:start position:0%
+the period of 5 minute then triggered
+this<00:09:28.079><c> alert</c><00:09:28.480><c> that</c><00:09:28.600><c> means</c><00:09:29.120><c> this</c><00:09:29.480><c> is</c><00:09:29.640><c> when</c><00:09:29.920><c> this</c>
+
+00:09:30.150 --> 00:09:30.160 align:start position:0%
+this alert that means this is when this
+ 
+
+00:09:30.160 --> 00:09:33.350 align:start position:0%
+this alert that means this is when this
+criteria<00:09:30.680><c> will</c><00:09:30.839><c> be</c><00:09:31.480><c> satisfied</c><00:09:32.480><c> okay</c><00:09:33.079><c> now</c>
+
+00:09:33.350 --> 00:09:33.360 align:start position:0%
+criteria will be satisfied okay now
+ 
+
+00:09:33.360 --> 00:09:35.790 align:start position:0%
+criteria will be satisfied okay now
+Dimensions<00:09:34.000><c> this</c><00:09:34.120><c> is</c><00:09:34.399><c> specific</c><00:09:34.920><c> to</c><00:09:35.480><c> uh</c><00:09:35.640><c> the</c>
+
+00:09:35.790 --> 00:09:35.800 align:start position:0%
+Dimensions this is specific to uh the
+ 
+
+00:09:35.800 --> 00:09:38.389 align:start position:0%
+Dimensions this is specific to uh the
+webbook<00:09:36.200><c> so</c><00:09:36.320><c> we</c><00:09:36.440><c> don't</c><00:09:36.640><c> need</c><00:09:37.160><c> those</c><00:09:38.079><c> let's</c>
+
+00:09:38.389 --> 00:09:38.399 align:start position:0%
+webbook so we don't need those let's
+ 
+
+00:09:38.399 --> 00:09:41.870 align:start position:0%
+webbook so we don't need those let's
+just<00:09:38.600><c> delete</c><00:09:39.120><c> it</c><00:09:40.120><c> and</c><00:09:40.360><c> then</c><00:09:40.560><c> an</c><00:09:40.839><c> action</c><00:09:41.720><c> what</c>
+
+00:09:41.870 --> 00:09:41.880 align:start position:0%
+just delete it and then an action what
+ 
+
+00:09:41.880 --> 00:09:43.910 align:start position:0%
+just delete it and then an action what
+needs<00:09:42.160><c> to</c><00:09:42.320><c> be</c><00:09:42.519><c> done</c><00:09:42.880><c> when</c><00:09:43.040><c> a</c><00:09:43.279><c> criteria</c><00:09:43.760><c> is</c>
+
+00:09:43.910 --> 00:09:43.920 align:start position:0%
+needs to be done when a criteria is
+ 
+
+00:09:43.920 --> 00:09:45.829 align:start position:0%
+needs to be done when a criteria is
+fulfilled<00:09:44.480><c> so</c><00:09:44.640><c> when</c><00:09:44.839><c> criteria</c><00:09:45.240><c> is</c><00:09:45.360><c> fulfilled</c>
+
+00:09:45.829 --> 00:09:45.839 align:start position:0%
+fulfilled so when criteria is fulfilled
+ 
+
+00:09:45.839 --> 00:09:48.670 align:start position:0%
+fulfilled so when criteria is fulfilled
+we<00:09:45.920><c> need</c><00:09:46.079><c> to</c><00:09:46.240><c> trigger</c><00:09:46.720><c> the</c><00:09:46.920><c> alert</c><00:09:47.839><c> so</c><00:09:48.120><c> Azure</c>
+
+00:09:48.670 --> 00:09:48.680 align:start position:0%
+we need to trigger the alert so Azure
+ 
+
+00:09:48.680 --> 00:09:52.590 align:start position:0%
+we need to trigger the alert so Azure
+monitor<00:09:49.279><c> action</c><00:09:49.680><c> group.</c><00:09:50.200><c> main.</c><00:09:50.680><c> ID</c><00:09:51.640><c> which</c><00:09:51.839><c> is</c>
+
+00:09:52.590 --> 00:09:52.600 align:start position:0%
+monitor action group. main. ID which is
+ 
+
+00:09:52.600 --> 00:09:55.790 align:start position:0%
+monitor action group. main. ID which is
+this<00:09:52.720><c> one</c><00:09:52.920><c> over</c><00:09:53.320><c> here</c><00:09:54.320><c> Azure</c><00:09:55.040><c> monitor</c><00:09:55.519><c> Action</c>
+
+00:09:55.790 --> 00:09:55.800 align:start position:0%
+this one over here Azure monitor Action
+ 
+
+00:09:55.800 --> 00:09:58.829 align:start position:0%
+this one over here Azure monitor Action
+Group<00:09:56.120><c> do</c><00:09:56.320><c> main</c><00:09:57.120><c> okay</c><00:09:57.600><c> so</c><00:09:57.920><c> this</c><00:09:58.079><c> is</c><00:09:58.360><c> what</c><00:09:58.519><c> will</c>
+
+00:09:58.829 --> 00:09:58.839 align:start position:0%
+Group do main okay so this is what will
+ 
+
+00:09:58.839 --> 00:10:01.949 align:start position:0%
+Group do main okay so this is what will
+trigger<00:09:59.399><c> the</c><00:09:59.519><c> alert</c><00:10:00.360><c> now</c><00:10:00.760><c> we</c><00:10:00.880><c> can</c><00:10:01.160><c> create</c><00:10:01.720><c> one</c>
+
+00:10:01.949 --> 00:10:01.959 align:start position:0%
+trigger the alert now we can create one
+ 
+
+00:10:01.959 --> 00:10:06.150 align:start position:0%
+trigger the alert now we can create one
+more<00:10:02.240><c> so</c><00:10:02.399><c> I'll</c><00:10:02.600><c> just</c><00:10:02.720><c> make</c><00:10:02.880><c> a</c><00:10:03.079><c> copy</c><00:10:03.399><c> of</c>
+
+00:10:06.150 --> 00:10:06.160 align:start position:0%
+ 
+ 
+
+00:10:06.160 --> 00:10:09.030 align:start position:0%
+ 
+this<00:10:07.160><c> okay</c><00:10:07.560><c> or</c><00:10:07.760><c> you</c><00:10:07.880><c> can</c><00:10:08.079><c> create</c><00:10:08.320><c> a</c><00:10:08.480><c> module</c><00:10:08.880><c> out</c>
+
+00:10:09.030 --> 00:10:09.040 align:start position:0%
+this okay or you can create a module out
+ 
+
+00:10:09.040 --> 00:10:12.750 align:start position:0%
+this okay or you can create a module out
+of<00:10:09.240><c> it</c><00:10:09.839><c> okay</c><00:10:10.839><c> and</c><00:10:11.000><c> I'll</c><00:10:11.320><c> just</c><00:10:11.959><c> duplicate</c><00:10:12.560><c> this</c>
+
+00:10:12.750 --> 00:10:12.760 align:start position:0%
+of it okay and I'll just duplicate this
+ 
+
+00:10:12.760 --> 00:10:14.710 align:start position:0%
+of it okay and I'll just duplicate this
+and<00:10:12.920><c> make</c><00:10:13.120><c> the</c><00:10:13.240><c> changes</c><00:10:13.640><c> over</c><00:10:13.920><c> here</c><00:10:14.240><c> now</c><00:10:14.560><c> the</c>
+
+00:10:14.710 --> 00:10:14.720 align:start position:0%
+and make the changes over here now the
+ 
+
+00:10:14.720 --> 00:10:16.630 align:start position:0%
+and make the changes over here now the
+second<00:10:15.040><c> Matrix</c><00:10:15.560><c> that</c><00:10:15.720><c> we</c><00:10:15.839><c> need</c><00:10:16.120><c> is</c><00:10:16.480><c> the</c>
+
+00:10:16.630 --> 00:10:16.640 align:start position:0%
+second Matrix that we need is the
+ 
+
+00:10:16.640 --> 00:10:20.310 align:start position:0%
+second Matrix that we need is the
+displace<00:10:17.200><c> utilization</c><00:10:18.240><c> okay</c><00:10:19.240><c> so</c><00:10:20.000><c> uh</c>
+
+00:10:20.310 --> 00:10:20.320 align:start position:0%
+displace utilization okay so uh
+ 
+
+00:10:20.320 --> 00:10:22.630 align:start position:0%
+displace utilization okay so uh
+everything<00:10:20.640><c> will</c><00:10:20.800><c> be</c><00:10:21.000><c> same</c><00:10:21.440><c> it</c><00:10:21.640><c> just</c><00:10:21.920><c> the</c>
+
+00:10:22.630 --> 00:10:22.640 align:start position:0%
+everything will be same it just the
+ 
+
+00:10:22.640 --> 00:10:25.590 align:start position:0%
+everything will be same it just the
+criteria<00:10:23.160><c> will</c><00:10:23.360><c> be</c><00:10:23.480><c> changed</c><00:10:24.279><c> okay</c><00:10:24.760><c> so</c><00:10:25.040><c> let's</c>
+
+00:10:25.590 --> 00:10:25.600 align:start position:0%
+criteria will be changed okay so let's
+ 
+
+00:10:25.600 --> 00:10:29.430 align:start position:0%
+criteria will be changed okay so let's
+just<00:10:26.160><c> uh</c><00:10:26.320><c> change</c><00:10:26.800><c> this</c><00:10:27.120><c> let's</c><00:10:27.399><c> call</c><00:10:28.160><c> this</c><00:10:29.160><c> uh</c>
+
+00:10:29.430 --> 00:10:29.440 align:start position:0%
+just uh change this let's call this uh
+ 
+
+00:10:29.440 --> 00:10:30.350 align:start position:0%
+just uh change this let's call this uh
+uh
+
+00:10:30.350 --> 00:10:30.360 align:start position:0%
+uh
+ 
+
+00:10:30.360 --> 00:10:34.870 align:start position:0%
+uh
+disk<00:10:31.360><c> okay</c><00:10:31.720><c> and</c><00:10:32.160><c> example</c><00:10:32.839><c> Matrix</c><00:10:33.360><c> alert</c>
+
+00:10:34.870 --> 00:10:34.880 align:start position:0%
+disk okay and example Matrix alert
+ 
+
+00:10:34.880 --> 00:10:39.150 align:start position:0%
+disk okay and example Matrix alert
+one<00:10:36.000><c> that's</c><00:10:37.000><c> good</c><00:10:37.600><c> and</c><00:10:38.040><c> it</c><00:10:38.200><c> says</c><00:10:38.639><c> action</c><00:10:38.959><c> will</c>
+
+00:10:39.150 --> 00:10:39.160 align:start position:0%
+one that's good and it says action will
+ 
+
+00:10:39.160 --> 00:10:42.350 align:start position:0%
+one that's good and it says action will
+be<00:10:39.320><c> triggered</c>
+
+00:10:42.350 --> 00:10:42.360 align:start position:0%
+ 
+ 
+
+00:10:42.360 --> 00:10:49.030 align:start position:0%
+ 
+when<00:10:43.360><c> free</c><00:10:44.000><c> disk</c><00:10:44.519><c> space</c><00:10:45.120><c> is</c><00:10:45.920><c> less</c><00:10:46.279><c> than</c><00:10:47.480><c> 20%</c>
+
+00:10:49.030 --> 00:10:49.040 align:start position:0%
+when free disk space is less than 20%
+ 
+
+00:10:49.040 --> 00:10:52.629 align:start position:0%
+when free disk space is less than 20%
+okay<00:10:50.040><c> and</c><00:10:50.320><c> then</c><00:10:50.680><c> the</c><00:10:50.839><c> Matrix</c><00:10:51.399><c> name</c><00:10:52.160><c> Matrix</c>
+
+00:10:52.629 --> 00:10:52.639 align:start position:0%
+okay and then the Matrix name Matrix
+ 
+
+00:10:52.639 --> 00:10:55.590 align:start position:0%
+okay and then the Matrix name Matrix
+name<00:10:52.959><c> space</c><00:10:53.440><c> is</c><00:10:53.639><c> virtual</c><00:10:54.000><c> machines</c><00:10:54.600><c> so</c><00:10:54.880><c> that's</c>
+
+00:10:55.590 --> 00:10:55.600 align:start position:0%
+name space is virtual machines so that's
+ 
+
+00:10:55.600 --> 00:10:58.910 align:start position:0%
+name space is virtual machines so that's
+that's<00:10:56.160><c> correct</c><00:10:57.160><c> but</c><00:10:57.480><c> the</c><00:10:58.000><c> metrix</c><00:10:58.680><c> name</c>
+
+00:10:58.910 --> 00:10:58.920 align:start position:0%
+that's correct but the metrix name
+ 
+
+00:10:58.920 --> 00:11:00.670 align:start position:0%
+that's correct but the metrix name
+should<00:10:59.320><c> should</c><00:10:59.480><c> be</c><00:10:59.600><c> instead</c><00:10:59.880><c> of</c><00:11:00.120><c> percentage</c>
+
+00:11:00.670 --> 00:11:00.680 align:start position:0%
+should should be instead of percentage
+ 
+
+00:11:00.680 --> 00:11:05.069 align:start position:0%
+should should be instead of percentage
+CPU<00:11:01.279><c> it</c><00:11:01.440><c> should</c><00:11:01.720><c> be</c><00:11:02.600><c> available</c><00:11:03.279><c> memory</c><00:11:04.079><c> bytes</c>
+
+00:11:05.069 --> 00:11:05.079 align:start position:0%
+CPU it should be available memory bytes
+ 
+
+00:11:05.079 --> 00:11:07.829 align:start position:0%
+CPU it should be available memory bytes
+okay<00:11:05.880><c> this</c><00:11:06.000><c> is</c><00:11:06.279><c> what</c><00:11:06.440><c> we</c><00:11:06.560><c> need</c><00:11:06.959><c> and</c><00:11:07.279><c> instead</c><00:11:07.600><c> of</c>
+
+00:11:07.829 --> 00:11:07.839 align:start position:0%
+okay this is what we need and instead of
+ 
+
+00:11:07.839 --> 00:11:10.910 align:start position:0%
+okay this is what we need and instead of
+greater<00:11:08.200><c> than</c><00:11:08.519><c> it</c><00:11:08.680><c> should</c><00:11:09.000><c> be</c><00:11:09.720><c> less</c><00:11:10.040><c> than</c><00:11:10.639><c> so</c>
+
+00:11:10.910 --> 00:11:10.920 align:start position:0%
+greater than it should be less than so
+ 
+
+00:11:10.920 --> 00:11:13.870 align:start position:0%
+greater than it should be less than so
+when<00:11:11.320><c> it</c><00:11:11.440><c> is</c><00:11:11.720><c> less</c><00:11:12.000><c> than</c><00:11:12.320><c> 20%</c><00:11:13.320><c> Then</c><00:11:13.519><c> trigger</c>
+
+00:11:13.870 --> 00:11:13.880 align:start position:0%
+when it is less than 20% Then trigger
+ 
+
+00:11:13.880 --> 00:11:15.350 align:start position:0%
+when it is less than 20% Then trigger
+the<00:11:14.000><c> alert</c><00:11:14.440><c> so</c>
+
+00:11:15.350 --> 00:11:15.360 align:start position:0%
+the alert so
+ 
+
+00:11:15.360 --> 00:11:17.550 align:start position:0%
+the alert so
+when
+
+00:11:17.550 --> 00:11:17.560 align:start position:0%
+when
+ 
+
+00:11:17.560 --> 00:11:21.990 align:start position:0%
+when
+um<00:11:18.560><c> available</c><00:11:19.279><c> metrix</c><00:11:19.959><c> bite</c>
+
+00:11:21.990 --> 00:11:22.000 align:start position:0%
+um available metrix bite
+ 
+
+00:11:22.000 --> 00:11:28.750 align:start position:0%
+um available metrix bite
+is<00:11:23.000><c> less</c><00:11:23.600><c> than</c><00:11:24.600><c> 20%</c><00:11:25.519><c> for</c><00:11:25.920><c> 5</c><00:11:26.320><c> minutes</c><00:11:27.320><c> okay</c><00:11:28.320><c> now</c>
+
+00:11:28.750 --> 00:11:28.760 align:start position:0%
+is less than 20% for 5 minutes okay now
+ 
+
+00:11:28.760 --> 00:11:31.790 align:start position:0%
+is less than 20% for 5 minutes okay now
+what<00:11:29.040><c> need</c><00:11:29.440><c> to</c><00:11:29.560><c> be</c><00:11:29.680><c> done</c><00:11:30.240><c> same</c><00:11:30.800><c> uh</c><00:11:30.959><c> trigger</c><00:11:31.440><c> the</c>
+
+00:11:31.790 --> 00:11:31.800 align:start position:0%
+what need to be done same uh trigger the
+ 
+
+00:11:31.800 --> 00:11:35.230 align:start position:0%
+what need to be done same uh trigger the
+alert<00:11:32.200><c> or</c><00:11:32.360><c> trigger</c><00:11:32.839><c> the</c><00:11:33.600><c> Action</c><00:11:34.240><c> Group</c><00:11:35.000><c> to</c>
+
+00:11:35.230 --> 00:11:35.240 align:start position:0%
+alert or trigger the Action Group to
+ 
+
+00:11:35.240 --> 00:11:38.190 align:start position:0%
+alert or trigger the Action Group to
+take<00:11:35.480><c> the</c><00:11:35.639><c> action</c><00:11:35.959><c> that</c><00:11:36.079><c> is</c><00:11:36.279><c> defined</c><00:11:36.680><c> over</c>
+
+00:11:38.190 --> 00:11:38.200 align:start position:0%
+take the action that is defined over
+ 
+
+00:11:38.200 --> 00:11:41.030 align:start position:0%
+take the action that is defined over
+there<00:11:39.200><c> okay</c><00:11:39.440><c> so</c><00:11:39.639><c> these</c><00:11:39.800><c> are</c><00:11:40.040><c> the</c><00:11:40.320><c> two</c><00:11:40.560><c> alerts</c>
+
+00:11:41.030 --> 00:11:41.040 align:start position:0%
+there okay so these are the two alerts
+ 
+
+00:11:41.040 --> 00:11:44.150 align:start position:0%
+there okay so these are the two alerts
+that<00:11:41.200><c> we</c><00:11:41.320><c> have</c><00:11:41.560><c> specified</c><00:11:42.399><c> now</c><00:11:42.639><c> let's</c><00:11:43.480><c> try</c><00:11:43.800><c> to</c>
+
+00:11:44.150 --> 00:11:44.160 align:start position:0%
+that we have specified now let's try to
+ 
+
+00:11:44.160 --> 00:11:46.230 align:start position:0%
+that we have specified now let's try to
+apply<00:11:44.519><c> the</c><00:11:44.680><c> changes</c><00:11:45.320><c> so</c><00:11:45.480><c> I'm</c><00:11:45.560><c> going</c><00:11:45.680><c> to</c><00:11:45.880><c> do</c><00:11:46.040><c> a</c>
+
+00:11:46.230 --> 00:11:46.240 align:start position:0%
+apply the changes so I'm going to do a
+ 
+
+00:11:46.240 --> 00:11:51.389 align:start position:0%
+apply the changes so I'm going to do a
+TF<00:11:46.639><c> init</c><00:11:47.760><c> oops</c><00:11:49.079><c> alas</c>
+
+00:11:51.389 --> 00:11:51.399 align:start position:0%
+TF init oops alas
+ 
+
+00:11:51.399 --> 00:12:01.829 align:start position:0%
+TF init oops alas
+now<00:11:52.399><c> TF</c><00:11:52.800><c> init</c>
+
+00:12:01.829 --> 00:12:01.839 align:start position:0%
+ 
+ 
+
+00:12:01.839 --> 00:12:09.110 align:start position:0%
+ 
+and<00:12:02.040><c> then</c><00:12:02.279><c> TF</c><00:12:03.079><c> oh</c><00:12:04.079><c> and</c><00:12:04.360><c> then</c><00:12:05.040><c> uh</c><00:12:05.240><c> TF</c>
+
+00:12:09.110 --> 00:12:09.120 align:start position:0%
+ 
+ 
+
+00:12:09.120 --> 00:12:11.509 align:start position:0%
+ 
+plan<00:12:10.120><c> okay</c><00:12:10.279><c> it</c><00:12:10.440><c> says</c><00:12:10.680><c> subscription</c><00:12:11.160><c> ID</c><00:12:11.399><c> is</c>
+
+00:12:11.509 --> 00:12:11.519 align:start position:0%
+plan okay it says subscription ID is
+ 
+
+00:12:11.519 --> 00:12:14.030 align:start position:0%
+plan okay it says subscription ID is
+required<00:12:11.959><c> because</c><00:12:12.279><c> I</c><00:12:12.480><c> have</c><00:12:12.720><c> not</c><00:12:13.079><c> set</c><00:12:13.600><c> the</c>
+
+00:12:14.030 --> 00:12:14.040 align:start position:0%
+required because I have not set the
+ 
+
+00:12:14.040 --> 00:12:15.350 align:start position:0%
+required because I have not set the
+environment
+
+00:12:15.350 --> 00:12:15.360 align:start position:0%
+environment
+ 
+
+00:12:15.360 --> 00:12:19.430 align:start position:0%
+environment
+variables<00:12:16.399><c> so</c><00:12:17.399><c> let</c><00:12:17.639><c> me</c><00:12:18.040><c> just</c><00:12:18.320><c> do</c><00:12:18.680><c> that</c><00:12:19.199><c> uh</c><00:12:19.320><c> I'm</c>
+
+00:12:19.430 --> 00:12:19.440 align:start position:0%
+variables so let me just do that uh I'm
+ 
+
+00:12:19.440 --> 00:12:21.590 align:start position:0%
+variables so let me just do that uh I'm
+going<00:12:19.560><c> to</c><00:12:19.959><c> pause</c><00:12:20.199><c> the</c><00:12:20.399><c> recording</c><00:12:21.120><c> and</c><00:12:21.279><c> this</c><00:12:21.399><c> is</c>
+
+00:12:21.590 --> 00:12:21.600 align:start position:0%
+going to pause the recording and this is
+ 
+
+00:12:21.600 --> 00:12:24.030 align:start position:0%
+going to pause the recording and this is
+what<00:12:21.760><c> we</c><00:12:21.880><c> have</c><00:12:22.040><c> already</c><00:12:22.360><c> said</c><00:12:23.040><c> uh</c><00:12:23.240><c> like</c><00:12:23.600><c> in</c>
+
+00:12:24.030 --> 00:12:24.040 align:start position:0%
+what we have already said uh like in
+ 
+
+00:12:24.040 --> 00:12:25.870 align:start position:0%
+what we have already said uh like in
+initial<00:12:24.440><c> videos</c><00:12:24.839><c> I</c><00:12:25.000><c> guess</c><00:12:25.199><c> day</c><00:12:25.360><c> two</c><00:12:25.560><c> or</c><00:12:25.720><c> day</c>
+
+00:12:25.870 --> 00:12:25.880 align:start position:0%
+initial videos I guess day two or day
+ 
+
+00:12:25.880 --> 00:12:27.790 align:start position:0%
+initial videos I guess day two or day
+three<00:12:26.120><c> video</c><00:12:26.480><c> so</c><00:12:26.639><c> I'm</c><00:12:26.959><c> just</c><00:12:27.120><c> going</c><00:12:27.240><c> to</c><00:12:27.440><c> repeat</c>
+
+00:12:27.790 --> 00:12:27.800 align:start position:0%
+three video so I'm just going to repeat
+ 
+
+00:12:27.800 --> 00:12:30.150 align:start position:0%
+three video so I'm just going to repeat
+the<00:12:28.000><c> process</c><00:12:28.440><c> again</c><00:12:29.320><c> okay</c><00:12:29.480><c> so</c><00:12:29.639><c> I've</c><00:12:29.880><c> just</c>
+
+00:12:30.150 --> 00:12:30.160 align:start position:0%
+the process again okay so I've just
+ 
+
+00:12:30.160 --> 00:12:32.590 align:start position:0%
+the process again okay so I've just
+exported<00:12:30.760><c> those</c><00:12:31.000><c> variables</c><00:12:31.639><c> that</c><00:12:31.839><c> was</c><00:12:32.440><c> uh</c>
+
+00:12:32.590 --> 00:12:32.600 align:start position:0%
+exported those variables that was uh
+ 
+
+00:12:32.600 --> 00:12:35.550 align:start position:0%
+exported those variables that was uh
+done<00:12:32.839><c> in</c><00:12:33.040><c> day</c><00:12:33.240><c> three</c><00:12:33.639><c> video</c><00:12:34.639><c> so</c><00:12:35.040><c> I'm</c><00:12:35.199><c> going</c><00:12:35.320><c> to</c>
+
+00:12:35.550 --> 00:12:35.560 align:start position:0%
+done in day three video so I'm going to
+ 
+
+00:12:35.560 --> 00:12:45.269 align:start position:0%
+done in day three video so I'm going to
+do<00:12:36.000><c> controll</c><00:12:36.600><c> R</c><00:12:37.399><c> and</c><00:12:37.639><c> then</c><00:12:38.440><c> DF</c>
+
+00:12:45.269 --> 00:12:45.279 align:start position:0%
+ 
+ 
+
+00:12:45.279 --> 00:12:49.150 align:start position:0%
+ 
+plan<00:12:46.279><c> okay</c><00:12:47.279><c> should</c><00:12:47.560><c> be</c><00:12:47.800><c> good</c><00:12:48.079><c> let's</c><00:12:48.480><c> apply</c><00:12:48.839><c> the</c>
+
+00:12:49.150 --> 00:12:49.160 align:start position:0%
+plan okay should be good let's apply the
+ 
+
+00:12:49.160 --> 00:12:52.629 align:start position:0%
+plan okay should be good let's apply the
+changes<00:12:50.399><c> and</c><00:12:51.399><c> I'm</c><00:12:51.519><c> going</c><00:12:51.680><c> to</c><00:12:52.199><c> pause</c><00:12:52.480><c> the</c>
+
+00:12:52.629 --> 00:12:52.639 align:start position:0%
+changes and I'm going to pause the
+ 
+
+00:12:52.639 --> 00:12:54.069 align:start position:0%
+changes and I'm going to pause the
+recording<00:12:53.199><c> while</c><00:12:53.360><c> it</c><00:12:53.480><c> is</c><00:12:53.639><c> applying</c><00:12:53.959><c> the</c>
+
+00:12:54.069 --> 00:12:54.079 align:start position:0%
+recording while it is applying the
+ 
+
+00:12:54.079 --> 00:12:55.750 align:start position:0%
+recording while it is applying the
+changes<00:12:54.480><c> it's</c><00:12:54.639><c> going</c><00:12:54.760><c> to</c><00:12:54.959><c> take</c><00:12:55.160><c> some</c><00:12:55.440><c> time</c>
+
+00:12:55.750 --> 00:12:55.760 align:start position:0%
+changes it's going to take some time
+ 
+
+00:12:55.760 --> 00:12:57.829 align:start position:0%
+changes it's going to take some time
+because<00:12:55.959><c> it</c><00:12:56.199><c> have</c><00:12:56.519><c> a</c><00:12:56.639><c> lot</c><00:12:56.800><c> of</c><00:12:57.000><c> resources</c><00:12:57.600><c> plus</c>
+
+00:12:57.829 --> 00:12:57.839 align:start position:0%
+because it have a lot of resources plus
+ 
+
+00:12:57.839 --> 00:12:59.629 align:start position:0%
+because it have a lot of resources plus
+it<00:12:57.920><c> will</c><00:12:58.120><c> take</c><00:12:58.320><c> some</c><00:12:58.560><c> time</c><00:12:58.720><c> to</c>
+
+00:12:59.629 --> 00:12:59.639 align:start position:0%
+it will take some time to
+ 
+
+00:12:59.639 --> 00:13:01.829 align:start position:0%
+it will take some time to
+configure<00:13:00.160><c> the</c><00:13:00.320><c> action</c><00:13:00.639><c> groups</c><00:13:01.320><c> maybe</c><00:13:01.639><c> few</c>
+
+00:13:01.829 --> 00:13:01.839 align:start position:0%
+configure the action groups maybe few
+ 
+
+00:13:01.839 --> 00:13:04.949 align:start position:0%
+configure the action groups maybe few
+minutes<00:13:02.320><c> so</c><00:13:02.519><c> I'm</c><00:13:02.720><c> just</c><00:13:02.880><c> going</c><00:13:03.000><c> to</c><00:13:03.240><c> pause</c><00:13:03.959><c> it</c>
+
+00:13:04.949 --> 00:13:04.959 align:start position:0%
+minutes so I'm just going to pause it
+ 
+
+00:13:04.959 --> 00:13:07.550 align:start position:0%
+minutes so I'm just going to pause it
+okay<00:13:05.120><c> so</c><00:13:05.360><c> changes</c><00:13:05.959><c> have</c><00:13:06.160><c> been</c><00:13:06.480><c> applied</c><00:13:07.320><c> now</c>
+
+00:13:07.550 --> 00:13:07.560 align:start position:0%
+okay so changes have been applied now
+ 
+
+00:13:07.560 --> 00:13:10.030 align:start position:0%
+okay so changes have been applied now
+let's<00:13:07.800><c> go</c><00:13:07.959><c> to</c><00:13:08.079><c> our</c><00:13:08.320><c> aure</c><00:13:08.720><c> environment</c><00:13:09.639><c> and</c>
+
+00:13:10.030 --> 00:13:10.040 align:start position:0%
+let's go to our aure environment and
+ 
+
+00:13:10.040 --> 00:13:11.710 align:start position:0%
+let's go to our aure environment and
+let's
+
+00:13:11.710 --> 00:13:11.720 align:start position:0%
+let's
+ 
+
+00:13:11.720 --> 00:13:16.990 align:start position:0%
+let's
+see<00:13:12.720><c> uh</c><00:13:13.040><c> isour</c><00:13:13.639><c> group</c><00:13:14.600><c> it's</c><00:13:14.760><c> going</c><00:13:14.920><c> to</c><00:13:15.079><c> be</c><00:13:15.720><c> this</c>
+
+00:13:16.990 --> 00:13:17.000 align:start position:0%
+see uh isour group it's going to be this
+ 
+
+00:13:17.000 --> 00:13:19.269 align:start position:0%
+see uh isour group it's going to be this
+video<00:13:18.000><c> okay</c><00:13:18.199><c> so</c><00:13:18.360><c> it</c><00:13:18.519><c> has</c><00:13:18.760><c> those</c><00:13:18.959><c> many</c>
+
+00:13:19.269 --> 00:13:19.279 align:start position:0%
+video okay so it has those many
+ 
+
+00:13:19.279 --> 00:13:22.710 align:start position:0%
+video okay so it has those many
+resources<00:13:19.880><c> it</c><00:13:20.120><c> has</c><00:13:20.399><c> a</c><00:13:20.600><c> vet</c><00:13:21.440><c> uh</c><00:13:21.560><c> ni</c><00:13:22.240><c> public</c>
+
+00:13:22.710 --> 00:13:22.720 align:start position:0%
+resources it has a vet uh ni public
+ 
+
+00:13:22.720 --> 00:13:26.069 align:start position:0%
+resources it has a vet uh ni public
+address<00:13:23.720><c> Virtual</c><00:13:24.160><c> Machine</c><00:13:24.880><c> T</c><00:13:25.399><c> action</c><00:13:25.760><c> group</c>
+
+00:13:26.069 --> 00:13:26.079 align:start position:0%
+address Virtual Machine T action group
+ 
+
+00:13:26.079 --> 00:13:28.590 align:start position:0%
+address Virtual Machine T action group
+two<00:13:26.320><c> metric</c><00:13:26.760><c> rules</c><00:13:27.639><c> and</c><00:13:27.800><c> an</c><00:13:27.959><c> action</c><00:13:28.240><c> group</c><00:13:28.480><c> so</c>
+
+00:13:28.590 --> 00:13:28.600 align:start position:0%
+two metric rules and an action group so
+ 
+
+00:13:28.600 --> 00:13:30.189 align:start position:0%
+two metric rules and an action group so
+these<00:13:28.760><c> series</c><00:13:29.120><c> resources</c><00:13:29.519><c> are</c><00:13:29.800><c> what</c><00:13:29.920><c> we</c><00:13:30.040><c> are</c>
+
+00:13:30.189 --> 00:13:30.199 align:start position:0%
+these series resources are what we are
+ 
+
+00:13:30.199 --> 00:13:33.790 align:start position:0%
+these series resources are what we are
+most<00:13:30.480><c> concerned</c><00:13:30.959><c> with</c><00:13:31.880><c> so</c><00:13:32.480><c> if</c>
+
+00:13:33.790 --> 00:13:33.800 align:start position:0%
+most concerned with so if
+ 
+
+00:13:33.800 --> 00:13:36.750 align:start position:0%
+most concerned with so if
+you<00:13:34.800><c> go</c><00:13:35.000><c> to</c><00:13:35.240><c> Action</c><00:13:35.639><c> Group</c><00:13:36.079><c> you</c><00:13:36.199><c> can</c><00:13:36.399><c> verify</c>
+
+00:13:36.750 --> 00:13:36.760 align:start position:0%
+you go to Action Group you can verify
+ 
+
+00:13:36.760 --> 00:13:40.350 align:start position:0%
+you go to Action Group you can verify
+the<00:13:36.920><c> resources</c><00:13:38.040><c> like</c><00:13:39.040><c> um</c><00:13:39.279><c> the</c><00:13:39.440><c> notification</c>
+
+00:13:40.350 --> 00:13:40.360 align:start position:0%
+the resources like um the notification
+ 
+
+00:13:40.360 --> 00:13:44.470 align:start position:0%
+the resources like um the notification
+type<00:13:40.720><c> is</c><00:13:41.079><c> email</c><00:13:41.760><c> name</c><00:13:42.040><c> is</c><00:13:42.320><c> this</c><00:13:42.680><c> value</c><00:13:43.000><c> is</c><00:13:43.480><c> this</c>
+
+00:13:44.470 --> 00:13:44.480 align:start position:0%
+type is email name is this value is this
+ 
+
+00:13:44.480 --> 00:13:47.829 align:start position:0%
+type is email name is this value is this
+and<00:13:44.760><c> similarly</c><00:13:45.399><c> you</c><00:13:46.040><c> can</c><00:13:47.040><c> have</c><00:13:47.199><c> a</c><00:13:47.360><c> look</c><00:13:47.519><c> at</c><00:13:47.720><c> the</c>
+
+00:13:47.829 --> 00:13:47.839 align:start position:0%
+and similarly you can have a look at the
+ 
+
+00:13:47.839 --> 00:13:50.310 align:start position:0%
+and similarly you can have a look at the
+metrix<00:13:48.399><c> as</c><00:13:48.600><c> well</c><00:13:49.320><c> uh</c><00:13:49.440><c> so</c><00:13:49.639><c> this</c><00:13:49.760><c> is</c><00:13:49.920><c> the</c><00:13:50.079><c> first</c>
+
+00:13:50.310 --> 00:13:50.320 align:start position:0%
+metrix as well uh so this is the first
+ 
+
+00:13:50.320 --> 00:13:53.269 align:start position:0%
+metrix as well uh so this is the first
+Matrix<00:13:51.040><c> condition</c><00:13:51.279><c> is</c><00:13:51.600><c> here</c><00:13:52.360><c> percentage</c><00:13:52.800><c> CP</c>
+
+00:13:53.269 --> 00:13:53.279 align:start position:0%
+Matrix condition is here percentage CP
+ 
+
+00:13:53.279 --> 00:13:56.430 align:start position:0%
+Matrix condition is here percentage CP
+greater<00:13:53.600><c> than</c><00:13:54.199><c> 60</c><00:13:55.199><c> time</c><00:13:55.480><c> Series</c><00:13:55.839><c> monitor</c><00:13:56.320><c> that</c>
+
+00:13:56.430 --> 00:13:56.440 align:start position:0%
+greater than 60 time Series monitor that
+ 
+
+00:13:56.440 --> 00:13:58.550 align:start position:0%
+greater than 60 time Series monitor that
+means<00:13:56.880><c> over</c><00:13:57.120><c> a</c><00:13:57.240><c> period</c><00:13:57.519><c> of</c><00:13:57.680><c> 5</c><00:13:57.839><c> minutes</c><00:13:58.240><c> that's</c>
+
+00:13:58.550 --> 00:13:58.560 align:start position:0%
+means over a period of 5 minutes that's
+ 
+
+00:13:58.560 --> 00:14:00.550 align:start position:0%
+means over a period of 5 minutes that's
+first<00:13:58.839><c> time</c><00:13:59.240><c> series</c><00:13:59.560><c> the</c><00:13:59.680><c> default</c><00:14:00.120><c> value</c><00:14:00.399><c> of</c>
+
+00:14:00.550 --> 00:14:00.560 align:start position:0%
+first time series the default value of
+ 
+
+00:14:00.560 --> 00:14:04.230 align:start position:0%
+first time series the default value of
+it<00:14:01.399><c> and</c><00:14:01.600><c> then</c><00:14:01.920><c> there</c><00:14:02.440><c> there's</c><00:14:02.800><c> just</c><00:14:03.759><c> estimated</c>
+
+00:14:04.230 --> 00:14:04.240 align:start position:0%
+it and then there there's just estimated
+ 
+
+00:14:04.240 --> 00:14:07.470 align:start position:0%
+it and then there there's just estimated
+monthly<00:14:04.680><c> cost</c><00:14:05.199><c> and</c><00:14:05.440><c> here</c><00:14:05.600><c> are</c><00:14:05.800><c> the</c><00:14:06.480><c> actions</c>
+
+00:14:07.470 --> 00:14:07.480 align:start position:0%
+monthly cost and here are the actions
+ 
+
+00:14:07.480 --> 00:14:10.069 align:start position:0%
+monthly cost and here are the actions
+okay<00:14:07.680><c> and</c><00:14:07.839><c> this</c><00:14:07.959><c> is</c><00:14:08.120><c> the</c><00:14:08.759><c> description</c><00:14:09.759><c> all</c><00:14:09.920><c> the</c>
+
+00:14:10.069 --> 00:14:10.079 align:start position:0%
+okay and this is the description all the
+ 
+
+00:14:10.079 --> 00:14:11.670 align:start position:0%
+okay and this is the description all the
+details<00:14:10.440><c> there</c><00:14:10.600><c> were</c><00:14:10.800><c> some</c><00:14:11.000><c> optional</c><00:14:11.360><c> details</c>
+
+00:14:11.670 --> 00:14:11.680 align:start position:0%
+details there were some optional details
+ 
+
+00:14:11.680 --> 00:14:13.509 align:start position:0%
+details there were some optional details
+so<00:14:11.880><c> which</c><00:14:12.000><c> I</c><00:14:12.160><c> left</c><00:14:12.600><c> uh</c><00:14:12.720><c> make</c><00:14:12.880><c> sure</c><00:14:13.120><c> you</c><00:14:13.320><c> go</c>
+
+00:14:13.509 --> 00:14:13.519 align:start position:0%
+so which I left uh make sure you go
+ 
+
+00:14:13.519 --> 00:14:15.949 align:start position:0%
+so which I left uh make sure you go
+through<00:14:13.680><c> the</c><00:14:13.880><c> documentation</c><00:14:14.839><c> of</c><00:14:15.240><c> for</c><00:14:15.720><c> this</c>
+
+00:14:15.949 --> 00:14:15.959 align:start position:0%
+through the documentation of for this
+ 
+
+00:14:15.959 --> 00:14:18.550 align:start position:0%
+through the documentation of for this
+particular<00:14:16.519><c> section</c><00:14:17.079><c> and</c><00:14:17.720><c> you'll</c><00:14:18.040><c> get</c><00:14:18.360><c> all</c>
+
+00:14:18.550 --> 00:14:18.560 align:start position:0%
+particular section and you'll get all
+ 
+
+00:14:18.560 --> 00:14:22.110 align:start position:0%
+particular section and you'll get all
+the<00:14:19.040><c> other</c><00:14:19.920><c> uh</c><00:14:20.079><c> optional</c><00:14:20.519><c> Fields</c><00:14:21.000><c> as</c><00:14:21.199><c> well</c><00:14:21.399><c> so</c>
+
+00:14:22.110 --> 00:14:22.120 align:start position:0%
+the other uh optional Fields as well so
+ 
+
+00:14:22.120 --> 00:14:24.470 align:start position:0%
+the other uh optional Fields as well so
+for<00:14:22.320><c> example</c><00:14:22.680><c> you</c><00:14:22.800><c> can</c><00:14:23.079><c> set</c><00:14:23.320><c> the</c><00:14:23.440><c> city</c><00:14:24.120><c> as</c><00:14:24.279><c> well</c>
+
+00:14:24.470 --> 00:14:24.480 align:start position:0%
+for example you can set the city as well
+ 
+
+00:14:24.480 --> 00:14:27.910 align:start position:0%
+for example you can set the city as well
+so<00:14:24.720><c> default</c><00:14:25.160><c> is</c><00:14:25.680><c> three</c><00:14:26.680><c> okay</c><00:14:27.399><c> uh</c><00:14:27.600><c> which</c><00:14:27.720><c> is</c>
+
+00:14:27.910 --> 00:14:27.920 align:start position:0%
+so default is three okay uh which is
+ 
+
+00:14:27.920 --> 00:14:30.509 align:start position:0%
+so default is three okay uh which is
+what<00:14:28.120><c> it</c><00:14:28.320><c> has</c><00:14:28.519><c> taken</c><00:14:28.880><c> but</c><00:14:29.160><c> you</c><00:14:29.279><c> can</c><00:14:29.440><c> set</c><00:14:29.759><c> any</c>
+
+00:14:30.509 --> 00:14:30.519 align:start position:0%
+what it has taken but you can set any
+ 
+
+00:14:30.519 --> 00:14:34.350 align:start position:0%
+what it has taken but you can set any
+custom<00:14:30.920><c> sity</c><00:14:31.560><c> as</c><00:14:31.720><c> well</c><00:14:31.920><c> from</c><00:14:32.160><c> out</c><00:14:32.399><c> of</c><00:14:33.120><c> 0</c><00:14:33.480><c> to</c><00:14:34.040><c> 0</c>
+
+00:14:34.350 --> 00:14:34.360 align:start position:0%
+custom sity as well from out of 0 to 0
+ 
+
+00:14:34.360 --> 00:14:38.430 align:start position:0%
+custom sity as well from out of 0 to 0
+to<00:14:34.839><c> 4</c><00:14:35.839><c> and</c><00:14:36.360><c> there</c><00:14:36.480><c> are</c><00:14:36.720><c> other</c><00:14:37.079><c> details</c><00:14:37.519><c> as</c><00:14:37.720><c> well</c>
+
+00:14:38.430 --> 00:14:38.440 align:start position:0%
+to 4 and there are other details as well
+ 
+
+00:14:38.440 --> 00:14:43.189 align:start position:0%
+to 4 and there are other details as well
+okay<00:14:39.440><c> so</c><00:14:40.040><c> let's</c><00:14:40.360><c> go</c><00:14:40.600><c> to</c><00:14:40.839><c> a</c><00:14:41.160><c> virtual</c>
+
+00:14:43.189 --> 00:14:43.199 align:start position:0%
+okay so let's go to a virtual
+ 
+
+00:14:43.199 --> 00:14:48.710 align:start position:0%
+okay so let's go to a virtual
+machine<00:14:44.199><c> okay</c><00:14:44.880><c> and</c><00:14:45.880><c> from</c><00:14:46.279><c> here</c>
+
+00:14:48.710 --> 00:14:48.720 align:start position:0%
+ 
+ 
+
+00:14:48.720 --> 00:14:54.590 align:start position:0%
+ 
+only<00:14:49.720><c> demo</c>
+
+00:14:54.590 --> 00:14:54.600 align:start position:0%
+ 
+ 
+
+00:14:54.600 --> 00:14:58.150 align:start position:0%
+ 
+VM<00:14:55.600><c> okay</c><00:14:56.240><c> um</c><00:14:56.680><c> let's</c><00:14:56.920><c> see</c><00:14:57.199><c> the</c><00:14:57.360><c> monitoring</c><00:14:57.880><c> data</c>
+
+00:14:58.150 --> 00:14:58.160 align:start position:0%
+VM okay um let's see the monitoring data
+ 
+
+00:14:58.160 --> 00:15:01.230 align:start position:0%
+VM okay um let's see the monitoring data
+of<00:14:58.360><c> it</c><00:14:58.759><c> so</c><00:14:59.040><c> So</c><00:14:59.680><c> currently</c><00:15:00.320><c> it</c><00:15:00.600><c> doesn't</c><00:15:01.040><c> have</c>
+
+00:15:01.230 --> 00:15:01.240 align:start position:0%
+of it so So currently it doesn't have
+ 
+
+00:15:01.240 --> 00:15:04.749 align:start position:0%
+of it so So currently it doesn't have
+any<00:15:01.440><c> CP</c><00:15:01.800><c> utilization</c><00:15:02.519><c> it's</c><00:15:02.800><c> basically</c><00:15:03.279><c> at</c><00:15:03.759><c> 6%</c>
+
+00:15:04.749 --> 00:15:04.759 align:start position:0%
+any CP utilization it's basically at 6%
+ 
+
+00:15:04.759 --> 00:15:07.269 align:start position:0%
+any CP utilization it's basically at 6%
+so<00:15:04.920><c> we</c><00:15:05.040><c> need</c><00:15:05.240><c> to</c><00:15:06.040><c> uh</c><00:15:06.199><c> do</c><00:15:06.440><c> the</c><00:15:06.560><c> stress</c><00:15:06.880><c> testing</c>
+
+00:15:07.269 --> 00:15:07.279 align:start position:0%
+so we need to uh do the stress testing
+ 
+
+00:15:07.279 --> 00:15:10.670 align:start position:0%
+so we need to uh do the stress testing
+on<00:15:07.440><c> it</c><00:15:08.040><c> so</c><00:15:08.279><c> let's</c><00:15:08.720><c> just</c><00:15:09.079><c> do</c><00:15:09.399><c> the</c><00:15:09.560><c> SSH</c><00:15:10.040><c> into</c><00:15:10.279><c> the</c>
+
+00:15:10.670 --> 00:15:10.680 align:start position:0%
+on it so let's just do the SSH into the
+ 
+
+00:15:10.680 --> 00:15:13.710 align:start position:0%
+on it so let's just do the SSH into the
+VM<00:15:11.680><c> okay</c><00:15:11.880><c> it</c><00:15:12.040><c> has</c><00:15:12.160><c> a</c><00:15:12.360><c> public</c><00:15:12.720><c> IP</c><00:15:13.160><c> so</c><00:15:13.360><c> we</c><00:15:13.480><c> can</c>
+
+00:15:13.710 --> 00:15:13.720 align:start position:0%
+VM okay it has a public IP so we can
+ 
+
+00:15:13.720 --> 00:15:15.189 align:start position:0%
+VM okay it has a public IP so we can
+just<00:15:13.959><c> directly</c><00:15:14.320><c> do</c>
+
+00:15:15.189 --> 00:15:15.199 align:start position:0%
+just directly do
+ 
+
+00:15:15.199 --> 00:15:19.150 align:start position:0%
+just directly do
+SSH<00:15:16.199><c> from</c><00:15:16.759><c> our</c><00:15:17.480><c> machine</c><00:15:17.959><c> over</c><00:15:18.240><c> here</c><00:15:18.560><c> so</c><00:15:18.759><c> let's</c>
+
+00:15:19.150 --> 00:15:19.160 align:start position:0%
+SSH from our machine over here so let's
+ 
+
+00:15:19.160 --> 00:15:24.550 align:start position:0%
+SSH from our machine over here so let's
+do<00:15:20.160><c> SSH</c><00:15:21.000><c> as</c><00:15:21.279><c> your</c><00:15:22.040><c> user</c><00:15:23.040><c> atate</c><00:15:23.680><c> public</c>
+
+00:15:24.550 --> 00:15:24.560 align:start position:0%
+do SSH as your user atate public
+ 
+
+00:15:24.560 --> 00:15:26.749 align:start position:0%
+do SSH as your user atate public
+IP<00:15:25.560><c> okay</c>
+
+00:15:26.749 --> 00:15:26.759 align:start position:0%
+IP okay
+ 
+
+00:15:26.759 --> 00:15:30.550 align:start position:0%
+IP okay
+yes<00:15:27.759><c> okay</c><00:15:28.120><c> I'm</c><00:15:28.199><c> am</c><00:15:28.440><c> in</c><00:15:28.600><c> my</c><00:15:29.040><c> PM</c><00:15:29.880><c> now</c><00:15:30.120><c> what</c><00:15:30.240><c> I</c><00:15:30.360><c> need</c>
+
+00:15:30.550 --> 00:15:30.560 align:start position:0%
+yes okay I'm am in my PM now what I need
+ 
+
+00:15:30.560 --> 00:15:33.189 align:start position:0%
+yes okay I'm am in my PM now what I need
+to<00:15:30.720><c> do</c><00:15:30.959><c> I</c><00:15:31.079><c> just</c><00:15:31.240><c> need</c><00:15:31.480><c> to</c><00:15:31.920><c> run</c><00:15:32.240><c> a</c><00:15:32.440><c> small</c><00:15:32.759><c> script</c>
+
+00:15:33.189 --> 00:15:33.199 align:start position:0%
+to do I just need to run a small script
+ 
+
+00:15:33.199 --> 00:15:36.949 align:start position:0%
+to do I just need to run a small script
+over<00:15:33.480><c> here</c><00:15:34.360><c> and</c><00:15:34.560><c> basically</c><00:15:35.160><c> this</c><00:15:35.319><c> is</c><00:15:36.319><c> uh</c><00:15:36.720><c> a</c>
+
+00:15:36.949 --> 00:15:36.959 align:start position:0%
+over here and basically this is uh a
+ 
+
+00:15:36.959 --> 00:15:40.110 align:start position:0%
+over here and basically this is uh a
+utility<00:15:37.480><c> called</c><00:15:38.000><c> stress</c><00:15:39.000><c> using</c><00:15:39.440><c> that</c><00:15:39.800><c> what</c><00:15:40.040><c> I</c>
+
+00:15:40.110 --> 00:15:40.120 align:start position:0%
+utility called stress using that what I
+ 
+
+00:15:40.120 --> 00:15:43.910 align:start position:0%
+utility called stress using that what I
+am<00:15:40.800><c> doing</c><00:15:41.399><c> actually</c><00:15:42.040><c> uh</c><00:15:42.240><c> I</c><00:15:42.319><c> am</c><00:15:42.959><c> doing</c><00:15:43.360><c> a</c><00:15:43.519><c> stress</c>
+
+00:15:43.910 --> 00:15:43.920 align:start position:0%
+am doing actually uh I am doing a stress
+ 
+
+00:15:43.920 --> 00:15:46.710 align:start position:0%
+am doing actually uh I am doing a stress
+test<00:15:44.680><c> which</c><00:15:44.959><c> uses</c><00:15:45.279><c> 6</c><00:15:45.560><c> CPU</c><00:15:46.079><c> and</c><00:15:46.240><c> then</c><00:15:46.360><c> it</c><00:15:46.480><c> will</c>
+
+00:15:46.710 --> 00:15:46.720 align:start position:0%
+test which uses 6 CPU and then it will
+ 
+
+00:15:46.720 --> 00:15:50.230 align:start position:0%
+test which uses 6 CPU and then it will
+time<00:15:46.920><c> out</c><00:15:47.120><c> for</c><00:15:47.360><c> 300</c><00:15:47.880><c> seconds</c><00:15:48.319><c> as</c><00:15:48.519><c> well</c><00:15:49.240><c> okay</c><00:15:50.000><c> so</c>
+
+00:15:50.230 --> 00:15:50.240 align:start position:0%
+time out for 300 seconds as well okay so
+ 
+
+00:15:50.240 --> 00:15:52.230 align:start position:0%
+time out for 300 seconds as well okay so
+we<00:15:50.399><c> just</c><00:15:50.560><c> need</c><00:15:50.800><c> to</c><00:15:51.120><c> execute</c><00:15:51.680><c> this</c><00:15:51.920><c> there</c><00:15:52.040><c> are</c>
+
+00:15:52.230 --> 00:15:52.240 align:start position:0%
+we just need to execute this there are
+ 
+
+00:15:52.240 --> 00:15:54.670 align:start position:0%
+we just need to execute this there are
+many<00:15:52.519><c> ways</c><00:15:52.720><c> to</c><00:15:52.959><c> do</c><00:15:53.120><c> stress</c><00:15:53.480><c> test</c><00:15:53.839><c> one</c><00:15:54.000><c> is</c><00:15:54.240><c> this</c>
+
+00:15:54.670 --> 00:15:54.680 align:start position:0%
+many ways to do stress test one is this
+ 
+
+00:15:54.680 --> 00:15:57.230 align:start position:0%
+many ways to do stress test one is this
+one<00:15:54.839><c> is</c><00:15:54.920><c> to</c><00:15:55.120><c> create</c><00:15:55.360><c> an</c><00:15:55.560><c> infilight</c><00:15:56.279><c> Loop</c><00:15:56.839><c> that</c>
+
+00:15:57.230 --> 00:15:57.240 align:start position:0%
+one is to create an infilight Loop that
+ 
+
+00:15:57.240 --> 00:15:58.990 align:start position:0%
+one is to create an infilight Loop that
+does<00:15:57.480><c> some</c><00:15:57.759><c> calculation</c><00:15:58.480><c> there</c><00:15:58.600><c> are</c><00:15:58.720><c> many</c>
+
+00:15:58.990 --> 00:15:59.000 align:start position:0%
+does some calculation there are many
+ 
+
+00:15:59.000 --> 00:16:01.030 align:start position:0%
+does some calculation there are many
+anyways<00:15:59.279><c> you</c><00:15:59.399><c> can</c><00:15:59.560><c> take</c><00:15:59.800><c> the</c><00:16:00.079><c> help</c><00:16:00.360><c> of</c><00:16:00.600><c> AI</c><00:16:00.959><c> if</c>
+
+00:16:01.030 --> 00:16:01.040 align:start position:0%
+anyways you can take the help of AI if
+ 
+
+00:16:01.040 --> 00:16:03.230 align:start position:0%
+anyways you can take the help of AI if
+you<00:16:01.160><c> want</c><00:16:01.319><c> to</c><00:16:01.480><c> explore</c><00:16:01.880><c> more</c><00:16:02.120><c> options</c><00:16:03.079><c> okay</c>
+
+00:16:03.230 --> 00:16:03.240 align:start position:0%
+you want to explore more options okay
+ 
+
+00:16:03.240 --> 00:16:06.870 align:start position:0%
+you want to explore more options okay
+for<00:16:03.440><c> now</c><00:16:03.680><c> I'm</c><00:16:03.839><c> just</c><00:16:04.000><c> going</c><00:16:04.120><c> to</c><00:16:04.279><c> do</c><00:16:04.519><c> this</c><00:16:05.680><c> stress</c>
+
+00:16:06.870 --> 00:16:06.880 align:start position:0%
+for now I'm just going to do this stress
+ 
+
+00:16:06.880 --> 00:16:13.509 align:start position:0%
+for now I'm just going to do this stress
+Dosh<00:16:07.880><c> o</c><00:16:08.399><c> not</c><00:16:08.759><c> HS</c><00:16:09.480><c> it</c><00:16:09.800><c> should</c><00:16:10.199><c> be</c>
+
+00:16:13.509 --> 00:16:13.519 align:start position:0%
+ 
+ 
+
+00:16:13.519 --> 00:16:16.870 align:start position:0%
+ 
+sh<00:16:14.519><c> okay</c><00:16:14.959><c> uh</c><00:16:15.120><c> let's</c><00:16:15.360><c> provide</c><00:16:15.720><c> the</c><00:16:15.920><c> permission</c>
+
+00:16:16.870 --> 00:16:16.880 align:start position:0%
+sh okay uh let's provide the permission
+ 
+
+00:16:16.880 --> 00:16:20.629 align:start position:0%
+sh okay uh let's provide the permission
+S<00:16:17.319><c> Mode</c><00:16:17.959><c> 775</c><00:16:18.959><c> stress</c><00:16:19.759><c> and</c><00:16:19.920><c> I'm</c><00:16:20.040><c> going</c><00:16:20.160><c> to</c><00:16:20.399><c> just</c>
+
+00:16:20.629 --> 00:16:20.639 align:start position:0%
+S Mode 775 stress and I'm going to just
+ 
+
+00:16:20.639 --> 00:16:22.790 align:start position:0%
+S Mode 775 stress and I'm going to just
+execute
+
+00:16:22.790 --> 00:16:22.800 align:start position:0%
+execute
+ 
+
+00:16:22.800 --> 00:16:25.870 align:start position:0%
+execute
+it<00:16:23.800><c> okay</c><00:16:23.959><c> so</c><00:16:24.120><c> it</c><00:16:24.240><c> will</c><00:16:24.480><c> do</c><00:16:24.680><c> the</c><00:16:24.839><c> abcat</c><00:16:25.440><c> update</c>
+
+00:16:25.870 --> 00:16:25.880 align:start position:0%
+it okay so it will do the abcat update
+ 
+
+00:16:25.880 --> 00:16:28.430 align:start position:0%
+it okay so it will do the abcat update
+abcat<00:16:26.519><c> install</c><00:16:27.040><c> stress</c><00:16:27.560><c> and</c><00:16:27.720><c> then</c><00:16:27.880><c> it</c><00:16:28.000><c> will</c>
+
+00:16:28.430 --> 00:16:28.440 align:start position:0%
+abcat install stress and then it will
+ 
+
+00:16:28.440 --> 00:16:30.670 align:start position:0%
+abcat install stress and then it will
+execute<00:16:29.120><c> the</c><00:16:29.240><c> stress</c><00:16:29.759><c> uh</c><00:16:29.880><c> so</c><00:16:30.079><c> this</c><00:16:30.160><c> is</c><00:16:30.360><c> what</c><00:16:30.480><c> it</c>
+
+00:16:30.670 --> 00:16:30.680 align:start position:0%
+execute the stress uh so this is what it
+ 
+
+00:16:30.680 --> 00:16:35.629 align:start position:0%
+execute the stress uh so this is what it
+did<00:16:31.160><c> dispatching</c><00:16:31.839><c> Haw</c><00:16:32.360><c> 6</c><00:16:33.160><c> CPU</c><00:16:34.160><c> and</c><00:16:34.639><c> basically</c>
+
+00:16:35.629 --> 00:16:35.639 align:start position:0%
+did dispatching Haw 6 CPU and basically
+ 
+
+00:16:35.639 --> 00:16:39.430 align:start position:0%
+did dispatching Haw 6 CPU and basically
+uh<00:16:35.920><c> this</c><00:16:36.120><c> will</c><00:16:36.880><c> put</c><00:16:37.120><c> some</c><00:16:37.279><c> load</c><00:16:37.639><c> on</c><00:16:37.920><c> the</c><00:16:38.480><c> VM</c><00:16:39.240><c> but</c>
+
+00:16:39.430 --> 00:16:39.440 align:start position:0%
+uh this will put some load on the VM but
+ 
+
+00:16:39.440 --> 00:16:42.990 align:start position:0%
+uh this will put some load on the VM but
+it<00:16:39.560><c> will</c><00:16:39.880><c> take</c><00:16:40.440><c> some</c><00:16:40.759><c> time</c><00:16:41.720><c> it</c><00:16:42.240><c> should</c><00:16:42.519><c> not</c><00:16:42.759><c> be</c>
+
+00:16:42.990 --> 00:16:43.000 align:start position:0%
+it will take some time it should not be
+ 
+
+00:16:43.000 --> 00:16:45.470 align:start position:0%
+it will take some time it should not be
+instantaneous<00:16:43.959><c> but</c><00:16:44.319><c> if</c><00:16:44.480><c> you</c><00:16:44.720><c> hit</c><00:16:45.199><c> keep</c>
+
+00:16:45.470 --> 00:16:45.480 align:start position:0%
+instantaneous but if you hit keep
+ 
+
+00:16:45.480 --> 00:16:47.470 align:start position:0%
+instantaneous but if you hit keep
+hitting<00:16:45.839><c> refresh</c><00:16:46.319><c> you</c><00:16:46.440><c> will</c><00:16:46.600><c> see</c><00:16:46.839><c> some</c><00:16:47.079><c> spike</c>
+
+00:16:47.470 --> 00:16:47.480 align:start position:0%
+hitting refresh you will see some spike
+ 
+
+00:16:47.480 --> 00:16:51.749 align:start position:0%
+hitting refresh you will see some spike
+over<00:16:48.199><c> here</c><00:16:49.199><c> um</c><00:16:49.360><c> so</c><00:16:49.560><c> yeah</c><00:16:49.680><c> so</c><00:16:49.839><c> let's</c><00:16:50.440><c> wait</c><00:16:50.880><c> for</c>
+
+00:16:51.749 --> 00:16:51.759 align:start position:0%
+over here um so yeah so let's wait for
+ 
+
+00:16:51.759 --> 00:16:54.949 align:start position:0%
+over here um so yeah so let's wait for
+few<00:16:52.040><c> minutes</c><00:16:52.519><c> I</c><00:16:52.680><c> guess</c><00:16:53.199><c> 5</c><00:16:53.759><c> minutes</c><00:16:54.160><c> or</c><00:16:54.360><c> so</c><00:16:54.759><c> and</c>
+
+00:16:54.949 --> 00:16:54.959 align:start position:0%
+few minutes I guess 5 minutes or so and
+ 
+
+00:16:54.959 --> 00:16:56.550 align:start position:0%
+few minutes I guess 5 minutes or so and
+then<00:16:55.199><c> you</c><00:16:55.279><c> will</c><00:16:55.519><c> see</c><00:16:55.800><c> the</c><00:16:55.959><c> average</c><00:16:56.279><c> CP</c>
+
+00:16:56.550 --> 00:16:56.560 align:start position:0%
+then you will see the average CP
+ 
+
+00:16:56.560 --> 00:16:59.470 align:start position:0%
+then you will see the average CP
+utilization<00:16:57.040><c> currently</c><00:16:57.399><c> is</c><00:16:57.600><c> 6.5%</c>
+
+00:16:59.470 --> 00:16:59.480 align:start position:0%
+utilization currently is 6.5%
+ 
+
+00:16:59.480 --> 00:17:02.470 align:start position:0%
+utilization currently is 6.5%
+it<00:16:59.680><c> should</c><00:17:00.079><c> go</c><00:17:00.319><c> up</c><00:17:00.600><c> from</c><00:17:00.920><c> here</c><00:17:01.720><c> and</c><00:17:01.920><c> once</c><00:17:02.160><c> it</c><00:17:02.319><c> is</c>
+
+00:17:02.470 --> 00:17:02.480 align:start position:0%
+it should go up from here and once it is
+ 
+
+00:17:02.480 --> 00:17:04.909 align:start position:0%
+it should go up from here and once it is
+reaches<00:17:02.920><c> to</c><00:17:03.160><c> that</c><00:17:03.360><c> threshold</c><00:17:03.880><c> of</c><00:17:04.039><c> 60</c><00:17:04.679><c> uh</c><00:17:04.799><c> the</c>
+
+00:17:04.909 --> 00:17:04.919 align:start position:0%
+reaches to that threshold of 60 uh the
+ 
+
+00:17:04.919 --> 00:17:07.390 align:start position:0%
+reaches to that threshold of 60 uh the
+TR<00:17:05.439><c> uh</c><00:17:05.559><c> the</c><00:17:05.640><c> alert</c><00:17:05.959><c> should</c><00:17:06.120><c> be</c><00:17:06.240><c> triggered</c><00:17:07.240><c> so</c>
+
+00:17:07.390 --> 00:17:07.400 align:start position:0%
+TR uh the alert should be triggered so
+ 
+
+00:17:07.400 --> 00:17:08.710 align:start position:0%
+TR uh the alert should be triggered so
+I'm<00:17:07.520><c> going</c><00:17:07.640><c> to</c><00:17:07.799><c> pause</c><00:17:08.000><c> the</c><00:17:08.160><c> recording</c><00:17:08.520><c> for</c>
+
+00:17:08.710 --> 00:17:08.720 align:start position:0%
+I'm going to pause the recording for
+ 
+
+00:17:08.720 --> 00:17:10.350 align:start position:0%
+I'm going to pause the recording for
+another<00:17:09.039><c> 5</c><00:17:09.240><c> minutes</c><00:17:09.559><c> and</c><00:17:09.679><c> then</c><00:17:09.839><c> we'll</c><00:17:10.039><c> check</c>
+
+00:17:10.350 --> 00:17:10.360 align:start position:0%
+another 5 minutes and then we'll check
+ 
+
+00:17:10.360 --> 00:17:12.510 align:start position:0%
+another 5 minutes and then we'll check
+back<00:17:10.600><c> again</c><00:17:11.199><c> okay</c><00:17:11.360><c> so</c><00:17:11.520><c> after</c><00:17:11.760><c> a</c><00:17:11.880><c> few</c><00:17:12.079><c> minutes</c>
+
+00:17:12.510 --> 00:17:12.520 align:start position:0%
+back again okay so after a few minutes
+ 
+
+00:17:12.520 --> 00:17:13.949 align:start position:0%
+back again okay so after a few minutes
+as<00:17:12.640><c> you</c><00:17:12.760><c> can</c><00:17:12.919><c> see</c><00:17:13.160><c> over</c><00:17:13.360><c> here</c><00:17:13.559><c> the</c><00:17:13.679><c> CP</c>
+
+00:17:13.949 --> 00:17:13.959 align:start position:0%
+as you can see over here the CP
+ 
+
+00:17:13.959 --> 00:17:18.150 align:start position:0%
+as you can see over here the CP
+utilization<00:17:14.520><c> was</c><00:17:15.160><c> spiked</c><00:17:16.160><c> um</c><00:17:16.880><c> and</c><00:17:17.079><c> it</c><00:17:17.400><c> went</c>
+
+00:17:18.150 --> 00:17:18.160 align:start position:0%
+utilization was spiked um and it went
+ 
+
+00:17:18.160 --> 00:17:19.150 align:start position:0%
+utilization was spiked um and it went
+till
+
+00:17:19.150 --> 00:17:19.160 align:start position:0%
+till
+ 
+
+00:17:19.160 --> 00:17:22.150 align:start position:0%
+till
+75%<00:17:20.160><c> for</c><00:17:20.439><c> the</c><00:17:20.600><c> period</c><00:17:20.959><c> of</c><00:17:21.199><c> 5</c><00:17:21.480><c> minutes</c><00:17:21.919><c> because</c>
+
+00:17:22.150 --> 00:17:22.160 align:start position:0%
+75% for the period of 5 minutes because
+ 
+
+00:17:22.160 --> 00:17:24.710 align:start position:0%
+75% for the period of 5 minutes because
+we<00:17:22.280><c> have</c><00:17:22.439><c> added</c><00:17:22.679><c> a</c><00:17:22.880><c> sleep</c><00:17:23.160><c> timer</c><00:17:23.480><c> of</c><00:17:23.679><c> 5</c><00:17:23.880><c> minutes</c>
+
+00:17:24.710 --> 00:17:24.720 align:start position:0%
+we have added a sleep timer of 5 minutes
+ 
+
+00:17:24.720 --> 00:17:27.110 align:start position:0%
+we have added a sleep timer of 5 minutes
+okay<00:17:24.839><c> so</c><00:17:25.000><c> it</c><00:17:25.160><c> stayed</c><00:17:25.640><c> there</c><00:17:25.760><c> for</c><00:17:26.039><c> 5</c><00:17:26.280><c> minute</c><00:17:26.959><c> and</c>
+
+00:17:27.110 --> 00:17:27.120 align:start position:0%
+okay so it stayed there for 5 minute and
+ 
+
+00:17:27.120 --> 00:17:30.750 align:start position:0%
+okay so it stayed there for 5 minute and
+then<00:17:27.319><c> it</c><00:17:27.520><c> suddenly</c><00:17:28.400><c> went</c><00:17:28.960><c> down</c><00:17:29.679><c> okay</c><00:17:30.320><c> so</c>
+
+00:17:30.750 --> 00:17:30.760 align:start position:0%
+then it suddenly went down okay so
+ 
+
+00:17:30.760 --> 00:17:32.430 align:start position:0%
+then it suddenly went down okay so
+ideally<00:17:31.280><c> it</c><00:17:31.400><c> should</c><00:17:31.640><c> have</c><00:17:31.840><c> triggered</c><00:17:32.240><c> an</c>
+
+00:17:32.430 --> 00:17:32.440 align:start position:0%
+ideally it should have triggered an
+ 
+
+00:17:32.440 --> 00:17:35.470 align:start position:0%
+ideally it should have triggered an
+alert<00:17:33.240><c> that</c><00:17:33.679><c> yes</c><00:17:34.200><c> the</c><00:17:34.640><c> threshold</c><00:17:35.200><c> has</c><00:17:35.320><c> been</c>
+
+00:17:35.470 --> 00:17:35.480 align:start position:0%
+alert that yes the threshold has been
+ 
+
+00:17:35.480 --> 00:17:38.510 align:start position:0%
+alert that yes the threshold has been
+breached<00:17:36.400><c> and</c><00:17:36.720><c> another</c><00:17:37.240><c> alert</c><00:17:37.919><c> once</c><00:17:38.320><c> the</c>
+
+00:17:38.510 --> 00:17:38.520 align:start position:0%
+breached and another alert once the
+ 
+
+00:17:38.520 --> 00:17:42.230 align:start position:0%
+breached and another alert once the
+threshold<00:17:39.400><c> has</c><00:17:40.400><c> uh</c><00:17:40.720><c> like</c><00:17:41.200><c> once</c><00:17:41.480><c> it</c><00:17:41.840><c> once</c><00:17:42.039><c> it</c>
+
+00:17:42.230 --> 00:17:42.240 align:start position:0%
+threshold has uh like once it once it
+ 
+
+00:17:42.240 --> 00:17:44.909 align:start position:0%
+threshold has uh like once it once it
+has<00:17:42.400><c> gone</c><00:17:42.679><c> down</c><00:17:42.919><c> to</c><00:17:43.080><c> 0%</c><00:17:44.000><c> again</c><00:17:44.320><c> after</c><00:17:44.600><c> that</c>
+
+00:17:44.909 --> 00:17:44.919 align:start position:0%
+has gone down to 0% again after that
+ 
+
+00:17:44.919 --> 00:17:47.510 align:start position:0%
+has gone down to 0% again after that
+right<00:17:45.600><c> so</c><00:17:46.160><c> yes</c><00:17:46.559><c> uh</c><00:17:46.720><c> those</c><00:17:46.880><c> alerts</c><00:17:47.280><c> have</c><00:17:47.400><c> been</c>
+
+00:17:47.510 --> 00:17:47.520 align:start position:0%
+right so yes uh those alerts have been
+ 
+
+00:17:47.520 --> 00:17:48.990 align:start position:0%
+right so yes uh those alerts have been
+triggered<00:17:47.960><c> let</c><00:17:48.080><c> me</c><00:17:48.200><c> show</c><00:17:48.360><c> you</c><00:17:48.559><c> this</c><00:17:48.679><c> is</c><00:17:48.840><c> the</c>
+
+00:17:48.990 --> 00:17:49.000 align:start position:0%
+triggered let me show you this is the
+ 
+
+00:17:49.000 --> 00:17:51.990 align:start position:0%
+triggered let me show you this is the
+first<00:17:49.240><c> alert</c><00:17:49.640><c> that</c><00:17:49.799><c> was</c><00:17:50.160><c> triggered</c><00:17:51.160><c> so</c><00:17:51.400><c> it</c><00:17:51.559><c> was</c>
+
+00:17:51.990 --> 00:17:52.000 align:start position:0%
+first alert that was triggered so it was
+ 
+
+00:17:52.000 --> 00:17:54.029 align:start position:0%
+first alert that was triggered so it was
+as<00:17:52.120><c> you</c><00:17:52.200><c> can</c><00:17:52.360><c> see</c><00:17:52.559><c> six</c><00:17:52.880><c> minutes</c>
+
+00:17:54.029 --> 00:17:54.039 align:start position:0%
+as you can see six minutes
+ 
+
+00:17:54.039 --> 00:17:57.350 align:start position:0%
+as you can see six minutes
+ago<00:17:55.039><c> uh</c><00:17:55.240><c> it</c><00:17:55.440><c> says</c><00:17:56.440><c> action</c><00:17:56.720><c> will</c><00:17:56.880><c> be</c><00:17:57.000><c> triggered</c>
+
+00:17:57.350 --> 00:17:57.360 align:start position:0%
+ago uh it says action will be triggered
+ 
+
+00:17:57.360 --> 00:17:59.789 align:start position:0%
+ago uh it says action will be triggered
+when<00:17:57.480><c> CPU</c><00:17:57.880><c> 6</c><00:17:58.320><c> provides</c><00:17:58.840><c> all</c><00:17:58.960><c> the</c><00:17:59.120><c> details</c><00:17:59.600><c> like</c>
+
+00:17:59.789 --> 00:17:59.799 align:start position:0%
+when CPU 6 provides all the details like
+ 
+
+00:17:59.799 --> 00:18:02.909 align:start position:0%
+when CPU 6 provides all the details like
+rule<00:18:00.120><c> ID</c><00:18:00.480><c> resource</c><00:18:00.919><c> ID</c><00:18:01.400><c> metrix</c><00:18:01.919><c> name</c>
+
+00:18:02.909 --> 00:18:02.919 align:start position:0%
+rule ID resource ID metrix name
+ 
+
+00:18:02.919 --> 00:18:04.590 align:start position:0%
+rule ID resource ID metrix name
+everything<00:18:03.360><c> and</c><00:18:03.559><c> then</c><00:18:03.760><c> there's</c><00:18:03.960><c> a</c><00:18:04.120><c> link</c><00:18:04.440><c> where</c>
+
+00:18:04.590 --> 00:18:04.600 align:start position:0%
+everything and then there's a link where
+ 
+
+00:18:04.600 --> 00:18:07.549 align:start position:0%
+everything and then there's a link where
+you<00:18:04.720><c> can</c><00:18:04.960><c> investigate</c><00:18:05.559><c> the</c><00:18:05.720><c> alert</c><00:18:06.120><c> as</c><00:18:06.559><c> well</c>
+
+00:18:07.549 --> 00:18:07.559 align:start position:0%
+you can investigate the alert as well
+ 
+
+00:18:07.559 --> 00:18:11.270 align:start position:0%
+you can investigate the alert as well
+okay<00:18:07.960><c> and</c><00:18:08.960><c> the</c><00:18:09.159><c> value</c><00:18:09.440><c> was</c><00:18:09.640><c> 75%</c><00:18:10.559><c> over</c><00:18:10.760><c> the</c><00:18:10.960><c> last</c>
+
+00:18:11.270 --> 00:18:11.280 align:start position:0%
+okay and the value was 75% over the last
+ 
+
+00:18:11.280 --> 00:18:14.590 align:start position:0%
+okay and the value was 75% over the last
+5<00:18:11.520><c> minutes</c><00:18:12.320><c> okay</c><00:18:13.120><c> and</c><00:18:13.360><c> then</c><00:18:13.600><c> once</c><00:18:13.960><c> it</c><00:18:14.159><c> was</c>
+
+00:18:14.590 --> 00:18:14.600 align:start position:0%
+5 minutes okay and then once it was
+ 
+
+00:18:14.600 --> 00:18:16.870 align:start position:0%
+5 minutes okay and then once it was
+deactivated<00:18:15.559><c> this</c><00:18:15.720><c> alert</c><00:18:16.080><c> was</c><00:18:16.280><c> triggered</c><00:18:16.720><c> and</c>
+
+00:18:16.870 --> 00:18:16.880 align:start position:0%
+deactivated this alert was triggered and
+ 
+
+00:18:16.880 --> 00:18:21.390 align:start position:0%
+deactivated this alert was triggered and
+it<00:18:17.159><c> says</c><00:18:18.400><c> basically</c><00:18:19.480><c> um</c><00:18:20.480><c> yeah</c><00:18:20.640><c> it</c><00:18:20.799><c> has</c><00:18:21.039><c> went</c>
+
+00:18:21.390 --> 00:18:21.400 align:start position:0%
+it says basically um yeah it has went
+ 
+
+00:18:21.400 --> 00:18:24.669 align:start position:0%
+it says basically um yeah it has went
+down<00:18:21.600><c> to</c><00:18:21.960><c> the</c><00:18:22.120><c> threshold</c><00:18:22.720><c> which</c><00:18:22.880><c> is</c><00:18:23.520><c> 60%</c><00:18:24.520><c> it</c>
+
+00:18:24.669 --> 00:18:24.679 align:start position:0%
+down to the threshold which is 60% it
+ 
+
+00:18:24.679 --> 00:18:26.830 align:start position:0%
+down to the threshold which is 60% it
+does<00:18:24.840><c> not</c><00:18:25.039><c> show</c><00:18:25.360><c> the</c><00:18:25.600><c> exact</c><00:18:26.000><c> value</c><00:18:26.400><c> because</c><00:18:26.640><c> it</c>
+
+00:18:26.830 --> 00:18:26.840 align:start position:0%
+does not show the exact value because it
+ 
+
+00:18:26.840 --> 00:18:29.230 align:start position:0%
+does not show the exact value because it
+keeps<00:18:27.120><c> on</c><00:18:27.320><c> going</c><00:18:27.640><c> down</c><00:18:28.080><c> and</c><00:18:28.360><c> like</c><00:18:28.520><c> they</c><00:18:28.840><c> was</c>
+
+00:18:29.230 --> 00:18:29.240 align:start position:0%
+keeps on going down and like they was
+ 
+
+00:18:29.240 --> 00:18:32.190 align:start position:0%
+keeps on going down and like they was
+not<00:18:29.520><c> enough</c><00:18:29.840><c> time</c><00:18:30.039><c> for</c><00:18:30.200><c> it</c><00:18:30.360><c> to</c><00:18:30.559><c> calculate</c><00:18:31.200><c> it</c>
+
+00:18:32.190 --> 00:18:32.200 align:start position:0%
+not enough time for it to calculate it
+ 
+
+00:18:32.200 --> 00:18:34.029 align:start position:0%
+not enough time for it to calculate it
+um<00:18:32.559><c> but</c><00:18:32.799><c> yeah</c><00:18:32.960><c> it</c><00:18:33.120><c> has</c><00:18:33.280><c> provided</c><00:18:33.720><c> all</c><00:18:33.840><c> the</c>
+
+00:18:34.029 --> 00:18:34.039 align:start position:0%
+um but yeah it has provided all the
+ 
+
+00:18:34.039 --> 00:18:36.310 align:start position:0%
+um but yeah it has provided all the
+details<00:18:34.480><c> so</c><00:18:34.720><c> that's</c><00:18:34.960><c> what</c><00:18:35.120><c> I</c><00:18:35.280><c> wanted</c><00:18:35.799><c> you</c><00:18:36.080><c> to</c>
+
+00:18:36.310 --> 00:18:36.320 align:start position:0%
+details so that's what I wanted you to
+ 
+
+00:18:36.320 --> 00:18:38.789 align:start position:0%
+details so that's what I wanted you to
+see<00:18:37.000><c> okay</c><00:18:37.240><c> this</c><00:18:37.440><c> process</c><00:18:37.840><c> has</c><00:18:38.240><c> also</c><00:18:38.520><c> been</c>
+
+00:18:38.789 --> 00:18:38.799 align:start position:0%
+see okay this process has also been
+ 
+
+00:18:38.799 --> 00:18:41.230 align:start position:0%
+see okay this process has also been
+exited<00:18:39.320><c> after</c><00:18:39.760><c> 5</c><00:18:40.039><c> minutes</c><00:18:40.520><c> so</c><00:18:40.720><c> now</c><00:18:40.919><c> we</c><00:18:41.039><c> can</c>
+
+00:18:41.230 --> 00:18:41.240 align:start position:0%
+exited after 5 minutes so now we can
+ 
+
+00:18:41.240 --> 00:18:43.430 align:start position:0%
+exited after 5 minutes so now we can
+just<00:18:41.559><c> exit</c><00:18:41.960><c> from</c><00:18:42.240><c> the</c>
+
+00:18:43.430 --> 00:18:43.440 align:start position:0%
+just exit from the
+ 
+
+00:18:43.440 --> 00:18:46.669 align:start position:0%
+just exit from the
+VM<00:18:44.440><c> and</c><00:18:45.280><c> there</c><00:18:45.640><c> that's</c><00:18:45.840><c> the</c><00:18:46.000><c> one</c><00:18:46.240><c> test</c><00:18:46.520><c> the</c>
+
+00:18:46.669 --> 00:18:46.679 align:start position:0%
+VM and there that's the one test the
+ 
+
+00:18:46.679 --> 00:18:49.110 align:start position:0%
+VM and there that's the one test the
+another<00:18:47.080><c> test</c><00:18:47.440><c> was</c><00:18:47.600><c> for</c><00:18:47.919><c> dis</c><00:18:48.200><c> space</c><00:18:48.799><c> I</c><00:18:48.880><c> want</c>
+
+00:18:49.110 --> 00:18:49.120 align:start position:0%
+another test was for dis space I want
+ 
+
+00:18:49.120 --> 00:18:51.149 align:start position:0%
+another test was for dis space I want
+you<00:18:49.240><c> to</c><00:18:49.400><c> do</c><00:18:49.600><c> that</c><00:18:49.840><c> test</c><00:18:50.400><c> so</c><00:18:50.600><c> what</c><00:18:50.720><c> you</c><00:18:50.840><c> need</c><00:18:51.000><c> to</c>
+
+00:18:51.149 --> 00:18:51.159 align:start position:0%
+you to do that test so what you need to
+ 
+
+00:18:51.159 --> 00:18:53.110 align:start position:0%
+you to do that test so what you need to
+do<00:18:51.360><c> is</c><00:18:51.559><c> you</c><00:18:51.679><c> need</c><00:18:51.919><c> to</c><00:18:52.240><c> so</c><00:18:52.400><c> there</c><00:18:52.520><c> are</c><00:18:52.760><c> multiple</c>
+
+00:18:53.110 --> 00:18:53.120 align:start position:0%
+do is you need to so there are multiple
+ 
+
+00:18:53.120 --> 00:18:55.669 align:start position:0%
+do is you need to so there are multiple
+ways<00:18:53.400><c> again</c><00:18:53.679><c> to</c><00:18:54.240><c> uh</c><00:18:54.400><c> fill</c><00:18:54.640><c> up</c><00:18:54.799><c> your</c><00:18:55.039><c> dis</c><00:18:55.320><c> space</c>
+
+00:18:55.669 --> 00:18:55.679 align:start position:0%
+ways again to uh fill up your dis space
+ 
+
+00:18:55.679 --> 00:18:59.149 align:start position:0%
+ways again to uh fill up your dis space
+right<00:18:56.480><c> one</c><00:18:56.720><c> way</c><00:18:57.000><c> is</c><00:18:57.159><c> to</c><00:18:57.480><c> create</c><00:18:58.120><c> large</c><00:18:58.480><c> file</c><00:18:59.000><c> so</c>
+
+00:18:59.149 --> 00:18:59.159 align:start position:0%
+right one way is to create large file so
+ 
+
+00:18:59.159 --> 00:19:01.270 align:start position:0%
+right one way is to create large file so
+you<00:18:59.280><c> can</c><00:18:59.600><c> create</c><00:19:00.080><c> using</c><00:19:00.400><c> a</c><00:19:00.520><c> shell</c><00:19:00.840><c> script</c><00:19:01.120><c> or</c>
+
+00:19:01.270 --> 00:19:01.280 align:start position:0%
+you can create using a shell script or
+ 
+
+00:19:01.280 --> 00:19:03.270 align:start position:0%
+you can create using a shell script or
+Unix<00:19:01.640><c> command</c><00:19:02.120><c> you</c><00:19:02.280><c> can</c><00:19:02.559><c> just</c><00:19:02.760><c> create</c><00:19:03.039><c> some</c>
+
+00:19:03.270 --> 00:19:03.280 align:start position:0%
+Unix command you can just create some
+ 
+
+00:19:03.280 --> 00:19:06.029 align:start position:0%
+Unix command you can just create some
+large<00:19:03.640><c> files</c><00:19:03.919><c> some</c><00:19:04.159><c> random</c><00:19:04.520><c> large</c><00:19:04.880><c> files</c><00:19:05.760><c> that</c>
+
+00:19:06.029 --> 00:19:06.039 align:start position:0%
+large files some random large files that
+ 
+
+00:19:06.039 --> 00:19:09.390 align:start position:0%
+large files some random large files that
+could<00:19:07.039><c> uh</c><00:19:07.200><c> occupy</c><00:19:07.679><c> the</c><00:19:07.880><c> space</c><00:19:08.760><c> that's</c><00:19:08.960><c> one</c><00:19:09.159><c> way</c>
+
+00:19:09.390 --> 00:19:09.400 align:start position:0%
+could uh occupy the space that's one way
+ 
+
+00:19:09.400 --> 00:19:11.909 align:start position:0%
+could uh occupy the space that's one way
+another<00:19:09.760><c> way</c><00:19:09.960><c> is</c><00:19:10.159><c> to</c><00:19:10.400><c> create</c><00:19:10.760><c> multiple</c><00:19:11.320><c> files</c>
+
+00:19:11.909 --> 00:19:11.919 align:start position:0%
+another way is to create multiple files
+ 
+
+00:19:11.919 --> 00:19:14.270 align:start position:0%
+another way is to create multiple files
+in<00:19:12.039><c> a</c><00:19:12.240><c> loop</c><00:19:13.080><c> and</c><00:19:13.280><c> that</c><00:19:13.400><c> would</c><00:19:13.640><c> also</c><00:19:13.840><c> fill</c><00:19:14.080><c> up</c>
+
+00:19:14.270 --> 00:19:14.280 align:start position:0%
+in a loop and that would also fill up
+ 
+
+00:19:14.280 --> 00:19:17.630 align:start position:0%
+in a loop and that would also fill up
+the<00:19:14.799><c> space</c><00:19:15.799><c> okay</c><00:19:16.280><c> so</c><00:19:16.480><c> you</c><00:19:16.559><c> can</c><00:19:16.720><c> do</c><00:19:16.919><c> that</c><00:19:17.240><c> stress</c>
+
+00:19:17.630 --> 00:19:17.640 align:start position:0%
+the space okay so you can do that stress
+ 
+
+00:19:17.640 --> 00:19:20.029 align:start position:0%
+the space okay so you can do that stress
+test<00:19:18.159><c> and</c><00:19:18.360><c> you</c><00:19:18.480><c> can</c><00:19:18.720><c> see</c><00:19:19.120><c> if</c><00:19:19.320><c> the</c><00:19:19.480><c> alert</c><00:19:19.880><c> has</c>
+
+00:19:20.029 --> 00:19:20.039 align:start position:0%
+test and you can see if the alert has
+ 
+
+00:19:20.039 --> 00:19:22.190 align:start position:0%
+test and you can see if the alert has
+been<00:19:20.200><c> triggered</c><00:19:20.600><c> or</c><00:19:20.760><c> not</c><00:19:21.039><c> so</c><00:19:21.280><c> that's</c><00:19:21.960><c> an</c>
+
+00:19:22.190 --> 00:19:22.200 align:start position:0%
+been triggered or not so that's an
+ 
+
+00:19:22.200 --> 00:19:25.350 align:start position:0%
+been triggered or not so that's an
+assignment<00:19:22.640><c> for</c><00:19:22.880><c> you</c><00:19:23.400><c> okay</c><00:19:24.159><c> so</c><00:19:24.600><c> yeah</c><00:19:24.840><c> that's</c>
+
+00:19:25.350 --> 00:19:25.360 align:start position:0%
+assignment for you okay so yeah that's
+ 
+
+00:19:25.360 --> 00:19:27.029 align:start position:0%
+assignment for you okay so yeah that's
+that's<00:19:25.559><c> all</c><00:19:25.799><c> about</c><00:19:26.080><c> this</c><00:19:26.280><c> video</c><00:19:26.600><c> thank</c><00:19:26.760><c> you</c><00:19:26.880><c> so</c>
+
+00:19:27.029 --> 00:19:27.039 align:start position:0%
+that's all about this video thank you so
+ 
+
+00:19:27.039 --> 00:19:29.070 align:start position:0%
+that's all about this video thank you so
+much<00:19:27.200><c> for</c><00:19:27.440><c> watching</c><00:19:27.880><c> I</c><00:19:28.000><c> hope</c><00:19:28.159><c> you</c><00:19:28.440><c> have</c><00:19:28.760><c> now</c>
+
+00:19:29.070 --> 00:19:29.080 align:start position:0%
+much for watching I hope you have now
+ 
+
+00:19:29.080 --> 00:19:31.870 align:start position:0%
+much for watching I hope you have now
+understood<00:19:30.039><c> uh</c><00:19:30.919><c> how</c><00:19:31.120><c> do</c><00:19:31.280><c> we</c><00:19:31.480><c> set</c><00:19:31.679><c> up</c>
+
+00:19:31.870 --> 00:19:31.880 align:start position:0%
+understood uh how do we set up
+ 
+
+00:19:31.880 --> 00:19:35.590 align:start position:0%
+understood uh how do we set up
+monitoring<00:19:32.400><c> and</c><00:19:33.159><c> alerting</c><00:19:34.159><c> using</c><00:19:34.640><c> the</c><00:19:35.039><c> native</c>
+
+00:19:35.590 --> 00:19:35.600 align:start position:0%
+monitoring and alerting using the native
+ 
+
+00:19:35.600 --> 00:19:39.470 align:start position:0%
+monitoring and alerting using the native
+Azure<00:19:36.039><c> tools</c><00:19:36.799><c> uh</c><00:19:36.960><c> using</c><00:19:37.280><c> terraform</c><00:19:38.280><c> okay</c><00:19:39.159><c> um</c><00:19:39.400><c> I</c>
+
+00:19:39.470 --> 00:19:39.480 align:start position:0%
+Azure tools uh using terraform okay um I
+ 
+
+00:19:39.480 --> 00:19:41.110 align:start position:0%
+Azure tools uh using terraform okay um I
+will<00:19:39.679><c> see</c><00:19:39.840><c> you</c><00:19:39.960><c> soon</c><00:19:40.240><c> with</c><00:19:40.400><c> the</c><00:19:40.520><c> next</c><00:19:40.720><c> video</c>
+
+00:19:41.110 --> 00:19:41.120 align:start position:0%
+will see you soon with the next video
+ 
+
+00:19:41.120 --> 00:19:43.149 align:start position:0%
+will see you soon with the next video
+another<00:19:41.640><c> uh</c><00:19:41.760><c> realtime</c><00:19:42.280><c> project</c><00:19:42.600><c> so</c><00:19:42.840><c> this</c><00:19:42.960><c> was</c>
+
+00:19:43.149 --> 00:19:43.159 align:start position:0%
+another uh realtime project so this was
+ 
+
+00:19:43.159 --> 00:19:45.029 align:start position:0%
+another uh realtime project so this was
+one<00:19:43.320><c> of</c><00:19:43.440><c> the</c><00:19:43.559><c> mini</c><00:19:43.919><c> projects</c><00:19:44.440><c> I</c><00:19:44.520><c> will</c><00:19:44.720><c> see</c><00:19:44.919><c> you</c>
+
+00:19:45.029 --> 00:19:45.039 align:start position:0%
+one of the mini projects I will see you
+ 
+
+00:19:45.039 --> 00:19:47.710 align:start position:0%
+one of the mini projects I will see you
+soon<00:19:45.440><c> with</c><00:19:45.799><c> the</c><00:19:46.080><c> another</c><00:19:46.640><c> realtime</c><00:19:47.200><c> projects</c>
+
+00:19:47.710 --> 00:19:47.720 align:start position:0%
+soon with the another realtime projects
+ 
+
+00:19:47.720 --> 00:19:50.390 align:start position:0%
+soon with the another realtime projects
+in<00:19:47.960><c> day</c><00:19:48.240><c> 24</c><00:19:48.760><c> video</c><00:19:49.600><c> so</c><00:19:49.880><c> make</c><00:19:50.039><c> sure</c><00:19:50.240><c> you</c>
+
+00:19:50.390 --> 00:19:50.400 align:start position:0%
+in day 24 video so make sure you
+ 
+
+00:19:50.400 --> 00:19:51.870 align:start position:0%
+in day 24 video so make sure you
+complete<00:19:50.720><c> the</c><00:19:50.840><c> comments</c><00:19:51.120><c> and</c><00:19:51.280><c> like</c><00:19:51.520><c> Target</c>
+
+00:19:51.870 --> 00:19:51.880 align:start position:0%
+complete the comments and like Target
+ 
+
+00:19:51.880 --> 00:19:53.590 align:start position:0%
+complete the comments and like Target
+and<00:19:52.080><c> then</c><00:19:52.280><c> I</c><00:19:52.360><c> will</c><00:19:52.520><c> unlock</c><00:19:52.919><c> the</c><00:19:53.039><c> next</c><00:19:53.240><c> video</c>
+
+00:19:53.590 --> 00:19:53.600 align:start position:0%
+and then I will unlock the next video
+ 
+
+00:19:53.600 --> 00:19:55.270 align:start position:0%
+and then I will unlock the next video
+thank<00:19:53.760><c> you</c><00:19:53.880><c> so</c><00:19:54.080><c> much</c><00:19:54.400><c> I</c><00:19:54.520><c> hope</c><00:19:54.640><c> you</c><00:19:54.799><c> have</c><00:19:54.919><c> a</c><00:19:55.080><c> good</c>
+
+00:19:55.270 --> 00:19:55.280 align:start position:0%
+thank you so much I hope you have a good
+ 
+
+00:19:55.280 --> 00:20:00.010 align:start position:0%
+thank you so much I hope you have a good
+day<00:19:55.600><c> happy</c><00:19:55.840><c> learning</c><00:19:56.799><c> bye</c>
+
+00:20:00.010 --> 00:20:00.020 align:start position:0%
+ 
+ 
+
+00:20:00.020 --> 00:20:03.240 align:start position:0%
+ 
+[Music]
+

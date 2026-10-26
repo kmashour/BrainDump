@@ -1,0 +1,108 @@
+{
+  "id": "rC1TV0_sIrM",
+  "title": "Microsoft Azure Managed Identity Deep Dive",
+  "duration": 2920,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 22
+    },
+    {
+      "start_time": 22,
+      "title": "Why we need an identity for a resource",
+      "end_time": 120
+    },
+    {
+      "start_time": 120,
+      "title": "Using a traditional service principal and how they work",
+      "end_time": 619
+    },
+    {
+      "start_time": 619,
+      "title": "Managed identity introduction",
+      "end_time": 750
+    },
+    {
+      "start_time": 750,
+      "title": "Services that support managed identity",
+      "end_time": 809
+    },
+    {
+      "start_time": 809,
+      "title": "Types of managed identity",
+      "end_time": 1100
+    },
+    {
+      "start_time": 1100,
+      "title": "Using managed identities",
+      "end_time": 1230
+    },
+    {
+      "start_time": 1230,
+      "title": "Giving a managed identity a role on another resource",
+      "end_time": 1374
+    },
+    {
+      "start_time": 1374,
+      "title": "Looking at MI service principals",
+      "end_time": 1535
+    },
+    {
+      "start_time": 1535,
+      "title": "Managed identity resource provider",
+      "end_time": 1620
+    },
+    {
+      "start_time": 1620,
+      "title": "Demoing a system-assigned managed identity in a VM",
+      "end_time": 1926
+    },
+    {
+      "start_time": 1926,
+      "title": "MI with key vault pattern demo",
+      "end_time": 2163
+    },
+    {
+      "start_time": 2163,
+      "title": "How this works behind the scenes",
+      "end_time": 2300
+    },
+    {
+      "start_time": 2300,
+      "title": "Using a user-assigned managed identity",
+      "end_time": 2546
+    },
+    {
+      "start_time": 2546,
+      "title": "Detail on the access token and MI benefits",
+      "end_time": 2752
+    },
+    {
+      "start_time": 2752,
+      "title": "Some best practices",
+      "end_time": 2823
+    },
+    {
+      "start_time": 2823,
+      "title": "Azure Arc support",
+      "end_time": 2852
+    },
+    {
+      "start_time": 2852,
+      "title": "Summary",
+      "end_time": 2920
+    }
+  ],
+  "description": "A deep dive into using managed identities and understanding what makes them tick!\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Introduction\n0:22 - Why we need an identity for a resource\n2:00 - Using a traditional service principal and how they work\n10:19 - Managed identity introduction\n12:30 - Services that support managed identity\n13:29 - Types of managed identity\n18:20 - Using managed identities\n20:30 - Giving a managed identity a role on another resource\n22:54 - Looking at MI service principals\n25:35 - Managed identity resource provider\n27:00 - Demoing a system-assigned managed identity in a VM\n32:06 - MI with key vault pattern demo\n36:03 - How this works behind the scenes\n38:20 - Using a user-assigned managed identity\n42:26 - Detail on the access token and MI benefits\n45:52 - Some best practices\n47:03 - Azure Arc support\n47:32 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/ManagedIdentityDeepDive.png\n\u25ba Demo script:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/blob/master/ManagedIdentity/mngIdDD.ps1\n\u25ba Demo script markdown:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/blob/master/ManagedIdentity/mngIdDD.md\n\u25ba Resources that support MI:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/services-support-managed-identities\n\u25ba MI Overview:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/overview\n\u25ba How to use MI token:\n\ud83d\udd17https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token\n\u25ba How MI's work:\n\ud83d\udd17https://docs.microsoft.com/azure/active-directory/managed-identities-azure-resources/how-managed-identities-work-vm\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n \u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n \ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=rC1TV0_sIrM",
+  "upload_date": "20220118",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "identity"
+  ]
+}

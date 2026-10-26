@@ -1,0 +1,80 @@
+{
+  "id": "RTv7G79YYPU",
+  "title": "Using Windows Subsystem for Linux v2",
+  "duration": 3297,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 46
+    },
+    {
+      "start_time": 46,
+      "title": "WSL introduction",
+      "end_time": 77
+    },
+    {
+      "start_time": 77,
+      "title": "WSL architecture",
+      "end_time": 595
+    },
+    {
+      "start_time": 595,
+      "title": "How to install",
+      "end_time": 1063
+    },
+    {
+      "start_time": 1063,
+      "title": "Resource controls",
+      "end_time": 1482
+    },
+    {
+      "start_time": 1482,
+      "title": "Installing distributions",
+      "end_time": 2294
+    },
+    {
+      "start_time": 2294,
+      "title": "File system interactions",
+      "end_time": 2663
+    },
+    {
+      "start_time": 2663,
+      "title": "Systemd support",
+      "end_time": 2713
+    },
+    {
+      "start_time": 2713,
+      "title": "Graphical applications",
+      "end_time": 2841
+    },
+    {
+      "start_time": 2841,
+      "title": "Network redirection",
+      "end_time": 3031
+    },
+    {
+      "start_time": 3031,
+      "title": "Long running processes?",
+      "end_time": 3151
+    },
+    {
+      "start_time": 3151,
+      "title": "VS Code integration",
+      "end_time": 3228
+    },
+    {
+      "start_time": 3228,
+      "title": "Summary and close",
+      "end_time": 3297
+    }
+  ],
+  "description": "Dive into Linux on Windows with WSL!\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n00:46 - WSL introduction\n01:17 - WSL architecture\n09:55 - How to install\n17:43 - Resource controls\n24:42 - Installing distributions\n38:14 - File system interactions\n44:23 - Systemd support\n45:13 - Graphical applications\n47:21 - Network redirection\n50:31 - Long running processes?\n52:31 - VS Code integration\n53:48 - Summary and close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Demo file:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/WSL/Demo.ps1\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq.html\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=RTv7G79YYPU",
+  "upload_date": "20230424",
+  "tags": [
+    "microsoft",
+    "linux",
+    "wsl"
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "id": "4qC7H-y7oKI",
+  "title": "Active Directory Domain Service Deep Dive",
+  "duration": 3609,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 97
+    },
+    {
+      "start_time": 97,
+      "title": "Key domain features",
+      "end_time": 207
+    },
+    {
+      "start_time": 207,
+      "title": "Directory service features",
+      "end_time": 269
+    },
+    {
+      "start_time": 269,
+      "title": "X.500 and OUs",
+      "end_time": 509
+    },
+    {
+      "start_time": 509,
+      "title": "LDAP",
+      "end_time": 674
+    },
+    {
+      "start_time": 674,
+      "title": "DNS",
+      "end_time": 840
+    },
+    {
+      "start_time": 840,
+      "title": "Authentication",
+      "end_time": 980
+    },
+    {
+      "start_time": 980,
+      "title": "Schema",
+      "end_time": 1100
+    },
+    {
+      "start_time": 1100,
+      "title": "Domain instances and domain controllers",
+      "end_time": 1403
+    },
+    {
+      "start_time": 1403,
+      "title": "Why we have multiple domain controllers",
+      "end_time": 1592
+    },
+    {
+      "start_time": 1592,
+      "title": "Domain FSMO roles",
+      "end_time": 1835
+    },
+    {
+      "start_time": 1835,
+      "title": "RODCs",
+      "end_time": 2025
+    },
+    {
+      "start_time": 2025,
+      "title": "Trees and forests",
+      "end_time": 2375
+    },
+    {
+      "start_time": 2375,
+      "title": "Forest partitions and FSMO roles",
+      "end_time": 2641
+    },
+    {
+      "start_time": 2641,
+      "title": "Global catalog",
+      "end_time": 2790
+    },
+    {
+      "start_time": 2790,
+      "title": "Domain and forest modes",
+      "end_time": 2960
+    },
+    {
+      "start_time": 2960,
+      "title": "Sites and subnets",
+      "end_time": 3385
+    },
+    {
+      "start_time": 3385,
+      "title": "Useful local and Azure tools for AD",
+      "end_time": 3568
+    },
+    {
+      "start_time": 3568,
+      "title": "Summary",
+      "end_time": 3609
+    }
+  ],
+  "description": "A look at exactly what Active Directory (AD) Domain Services is and what makes it tick!\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Introduction\n1:37 - Key domain features\n3:27 - Directory service features\n4:29 - X.500 and OUs\n8:29 - LDAP\n11:14 - DNS\n14:00 - Authentication\n16:20 - Schema\n18:20 - Domain instances and domain controllers\n23:23 - Why we have multiple domain controllers\n26:32 - Domain FSMO roles\n30:35 - RODCs\n33:45 - Trees and forests\n39:35 - Forest partitions and FSMO roles\n44:01 - Global catalog\n46:30 - Domain and forest modes\n49:20 - Sites and subnets\n56:25 - Useful local and Azure tools for AD\n59:28 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17  https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/ADDeepDive.png\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n \u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n \ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=4qC7H-y7oKI",
+  "upload_date": "20220120",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "active directory"
+  ]
+}

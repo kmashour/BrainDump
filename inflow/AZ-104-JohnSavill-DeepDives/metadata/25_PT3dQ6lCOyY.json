@@ -1,0 +1,98 @@
+{
+  "id": "PT3dQ6lCOyY",
+  "title": "Defender for OTHER Clouds (AWS and GCP)",
+  "duration": 3517,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 125
+    },
+    {
+      "start_time": 125,
+      "title": "Defender for Cloud",
+      "end_time": 246
+    },
+    {
+      "start_time": 246,
+      "title": "Connecting to AWS and GCP",
+      "end_time": 412
+    },
+    {
+      "start_time": 412,
+      "title": "Adding a connector",
+      "end_time": 675
+    },
+    {
+      "start_time": 675,
+      "title": "How authentication works",
+      "end_time": 1065
+    },
+    {
+      "start_time": 1065,
+      "title": "Getting resource information",
+      "end_time": 1216
+    },
+    {
+      "start_time": 1216,
+      "title": "Data collection and refresh",
+      "end_time": 1309
+    },
+    {
+      "start_time": 1309,
+      "title": "Foundational CSPM capabilities",
+      "end_time": 1489
+    },
+    {
+      "start_time": 1489,
+      "title": "Overview and Inventory",
+      "end_time": 1733
+    },
+    {
+      "start_time": 1733,
+      "title": "Recommendations",
+      "end_time": 2246
+    },
+    {
+      "start_time": 2246,
+      "title": "Custom recommendations and standards",
+      "end_time": 2525
+    },
+    {
+      "start_time": 2525,
+      "title": "Governance",
+      "end_time": 2962
+    },
+    {
+      "start_time": 2962,
+      "title": "Attack paths",
+      "end_time": 3246
+    },
+    {
+      "start_time": 3246,
+      "title": "Cloud Security Explorer",
+      "end_time": 3375
+    },
+    {
+      "start_time": 3375,
+      "title": "Close and summary",
+      "end_time": 3517
+    }
+  ],
+  "description": "Me talking about clouds other than Azure :-) How Defender for Cloud offers great Cloud Security Posture Management and more for Amazon Web Services (AWS) and Google Cloud Platform (GCP).\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n02:05 - Defender for Cloud\n04:06 - Connecting to AWS and GCP\n06:52 - Adding a connector\n11:15 - How authentication works\n17:45 - Getting resource information\n20:16 - Data collection and refresh\n21:49 - Foundational CSPM capabilities\n24:49 - Overview and Inventory\n28:53 - Recommendations\n37:26 - Custom recommendations and standards\n42:05 - Governance\n49:22 - Attack paths\n54:06 - Cloud Security Explorer\n56:15 - Close and summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/DefenderforOtherClouds.png\n\u25ba Defender for Cloud plan information:\n\ud83d\udd17 https://learn.microsoft.com/azure/defender-for-cloud/concept-cloud-security-posture-management#defender-cspm-plan-options\n\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq.html\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=PT3dQ6lCOyY",
+  "upload_date": "20230612",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft",
+    "cloud",
+    "defender",
+    "security",
+    "aws",
+    "gcp",
+    "amazon web services",
+    "google cloud platform",
+    "defender for cloud"
+  ]
+}

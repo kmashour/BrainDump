@@ -1,0 +1,162 @@
+{
+  "id": "PXtFq5wmGt0",
+  "title": "Azure API Management Deep Dive",
+  "duration": 4215,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 5
+    },
+    {
+      "start_time": 5,
+      "title": "APIs everywhere",
+      "end_time": 91
+    },
+    {
+      "start_time": 91,
+      "title": "Challenges with API in an org",
+      "end_time": 195
+    },
+    {
+      "start_time": 195,
+      "title": "Azure API Management",
+      "end_time": 253
+    },
+    {
+      "start_time": 253,
+      "title": "SKUs",
+      "end_time": 337
+    },
+    {
+      "start_time": 337,
+      "title": "Control plane",
+      "end_time": 414
+    },
+    {
+      "start_time": 414,
+      "title": "API Gateway",
+      "end_time": 600
+    },
+    {
+      "start_time": 600,
+      "title": "URLs for gateway",
+      "end_time": 832
+    },
+    {
+      "start_time": 832,
+      "title": "Regional gateways",
+      "end_time": 1060
+    },
+    {
+      "start_time": 1060,
+      "title": "Geo distribution",
+      "end_time": 1153
+    },
+    {
+      "start_time": 1153,
+      "title": "Backend APIs used",
+      "end_time": 1342
+    },
+    {
+      "start_time": 1342,
+      "title": "Public IP APIs",
+      "end_time": 1369
+    },
+    {
+      "start_time": 1369,
+      "title": "Private IP APIs",
+      "end_time": 1542
+    },
+    {
+      "start_time": 1542,
+      "title": "Any APIs",
+      "end_time": 1615
+    },
+    {
+      "start_time": 1615,
+      "title": "Restrict backend APIs to API Mgmt",
+      "end_time": 1742
+    },
+    {
+      "start_time": 1742,
+      "title": "Backend API resiliency",
+      "end_time": 2177
+    },
+    {
+      "start_time": 2177,
+      "title": "Policy capabilities",
+      "end_time": 2459
+    },
+    {
+      "start_time": 2459,
+      "title": "Policy examples",
+      "end_time": 2663
+    },
+    {
+      "start_time": 2663,
+      "title": "Authentication",
+      "end_time": 2791
+    },
+    {
+      "start_time": 2791,
+      "title": "Self-hosted gateway",
+      "end_time": 3185
+    },
+    {
+      "start_time": 3185,
+      "title": "Front end IPs",
+      "end_time": 3403
+    },
+    {
+      "start_time": 3403,
+      "title": "Workspaces",
+      "end_time": 3676
+    },
+    {
+      "start_time": 3676,
+      "title": "Developer portal",
+      "end_time": 3782
+    },
+    {
+      "start_time": 3782,
+      "title": "Picking a SKU",
+      "end_time": 3849
+    },
+    {
+      "start_time": 3849,
+      "title": "Azure API Center",
+      "end_time": 4032
+    },
+    {
+      "start_time": 4032,
+      "title": "Logging and debugging",
+      "end_time": 4061
+    },
+    {
+      "start_time": 4061,
+      "title": "Summary",
+      "end_time": 4191
+    },
+    {
+      "start_time": 4191,
+      "title": "Close",
+      "end_time": 4215
+    }
+  ],
+  "description": "An exploration of the wonders of Azure API Management.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\ud83e\udd14  Due to the channel growth and number of people wanting help I no longer can answer or even read questions and they will just stay in the moderation queue never to be seen so please post questions to other sites like Reddit, Microsoft Community Hub etc.\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n00:05 - APIs everywhere\n01:31 - Challenges with API in an org\n03:15 - Azure API Management\n04:13 - SKUs\n05:37 - Control plane\n06:54 - API Gateway\n10:00 - URLs for gateway\n13:52 - Regional gateways\n17:40 - Geo distribution\n19:13 - Backend APIs used\n22:22 - Public IP APIs\n22:49 - Private IP APIs\n25:42 - Any APIs\n26:55 - Restrict backend APIs to API Mgmt\n29:02 - Backend API resiliency\n36:17 - Policy capabilities\n40:59 - Policy examples\n44:23 - Authentication\n46:31 - Self-hosted gateway\n53:05 - Front end IPs\n56:43 - Workspaces\n1:01:16 - Developer portal\n1:03:02 - Picking a SKU\n1:04:09 - Azure API Center\n1:07:12 - Logging and debugging\n1:07:41 - Summary\n1:09:51 - Close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AzureAPIManagement.png\n\u25ba API Management SKUs:\n\ud83d\udd17 https://learn.microsoft.com/azure/api-management/api-management-features\n\u25ba API Management Pricing:\n\ud83d\udd17 https://azure.microsoft.com/pricing/details/api-management/#pricing\n\u25ba Example regional backend policy:\n\ud83d\udd17 https://learn.microsoft.com/azure/api-management/backends?tabs=bicep#reference-backend-using-set-backend-service-policy\n\u25ba Policy expressions:\n\ud83d\udd17 https://learn.microsoft.com/azure/api-management/api-management-policy-expressions\n\u25ba List of policies:\n\ud83d\udd17 https://learn.microsoft.com/azure/api-management/api-management-policies\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#Azure #Cloud #johnsavillstechnicaltraining",
+  "webpage_url": "https://www.youtube.com/watch?v=PXtFq5wmGt0",
+  "upload_date": "20240916",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "API",
+    "developer",
+    "API management",
+    "API center",
+    "REST"
+  ]
+}

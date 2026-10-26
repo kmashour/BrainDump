@@ -39,4 +39,9 @@ Hands-on playbooks and milestone projects:
 - 🚀 **[Project: EKS GitOps and ArgoCD](../Projects/terraform/Project%20-%20EKS%20GitOps%20and%20ArgoCD.md)**
 - 🚀 **[Project: Terraform Automation and Drift Remediation](../Projects/terraform/Project%20-%20Terraform%20Automation%20and%20Drift%20Remediation.md)**
 
+---
+
+## ☁️ Multi-Cloud Cross-References
+- 🚀 **[[14-Index - Terraform on Azure|Terraform on Azure Reference MOC]]**: Enterprise IaC curriculum, AzureRM provider architecture, native Blob Lease concurrency locking, and 15 hands-on enterprise Azure Terraform projects.
+
 

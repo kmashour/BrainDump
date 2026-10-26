@@ -1,0 +1,43 @@
+{
+  "id": "iIUF2E-Ogaw",
+  "title": "Azure Blob Data Permissions Deep Dive (360 in 360)",
+  "duration": 1800,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Intro",
+      "end_time": 380
+    },
+    {
+      "start_time": 380,
+      "title": "Adhoc",
+      "end_time": 630
+    },
+    {
+      "start_time": 630,
+      "title": "Access Keys",
+      "end_time": 950
+    },
+    {
+      "start_time": 950,
+      "title": "Demonstration",
+      "end_time": 1085
+    },
+    {
+      "start_time": 1085,
+      "title": "Shared Access Signatures",
+      "end_time": 1800
+    }
+  ],
+  "description": "This this 360 in 360 I give up on trying to come in under 360 seconds and instead go into detail about the various permission options and granularity available for Azure Storage Blobs. Starting off with an overview and then demonstrating all the options!\n\nWhiteboard image available at https://savilltech.com/2020/04/27/new-azure-storage-blob-permissions-video/.",
+  "webpage_url": "https://www.youtube.com/watch?v=iIUF2E-Ogaw",
+  "upload_date": "20200426",
+  "tags": [
+    "Azure",
+    "Azure Storage",
+    "Azure Blob",
+    "Storage",
+    "Blob",
+    "RBAC"
+  ]
+}

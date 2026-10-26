@@ -69,3 +69,8 @@ tags:
 
 ## 🕵️ Domain 7: Troubleshooting & Diagnostics
 - 🕵️ **[Module 0-11: Cluster Troubleshooting & Diagnostics](0-11_troubleshooting_and_diagnostics.md)**
+
+## ☣️ Domain 8: Production Corner Cases, Post-Mortems & Doomsday Scenarios
+- 💥 **[Module 0-17-1: etcd B+ Tree (bbolt) Corruption & Control Plane Resuscitation](0-17-1_etcd_bbolt_corruption_and_control_plane_resuscitation.md)** *(Abrupt VM crash forensics, page 248 double-reference panic, zero-loss bbolt surgery revert-meta-page, admin RBAC desync, and CNI subnet reconstruction)*
+- 💥 **[Module 0-17-2: Node Clone IP Drift, Ghost Service Endpoints & ClusterIP Blackholes](0-17-2_node_clone_ip_drift_and_clusterip_blackhole_resuscitation.md)** *(Cloned VM IP drift, X509 TLS SAN mismatch, kube-proxy ghost IP desynchronization, kernel iptables ClusterIP 10.96.0.1 blackhole, and full-stack control plane resuscitation)*
+

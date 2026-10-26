@@ -101,6 +101,12 @@ Select a domain to view its reference modules, learning tracks, and hands-on ver
 
 ---
 
+### 🚀 [Terraform on Azure Reference MOC](14-Index%20-%20Terraform%20on%20Azure.md)
+*Enterprise Infrastructure as Code (IaC) on Azure, AzureRM provider mechanics, Blob Lease state concurrency locking, type constraints, dynamic blocks, modular architecture, and end-to-end GitOps automation.*
+- **Go to MOC:** [[14-Index - Terraform on Azure|Terraform on Azure Reference MOC]]
+
+---
+
 ### 📦 Miscellaneous Projects (MISC)
 *Individual projects and chapters that combine multiple administrative domains (e.g. self-hosted git servers, Linux host storage configuration, and custom webserver reverse proxies) but do not belong to a standard study track.*
 - 🐙 **[Gitea GitOps Workflows on RHEL 8](gitea_installation_and_workflows.md)**: RHEL 8 security hardening, LVM logical volume zoning, Apache reverse proxy, and act_runner CI/CD automation.

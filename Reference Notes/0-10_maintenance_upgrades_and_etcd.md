@@ -540,6 +540,12 @@ sudo systemctl restart etcd.service
 sudo systemctl status etcd.service
 ```
 
+> [!CAUTION]
+> **Production Doomsday Scenario: Low-Level B+ Tree (`bbolt`) Database Corruption & Surgical Resuscitation**
+> If an abrupt VM crash, power cut, or disk stall corrupts the active database file (`/var/lib/etcd/member/snap/db`), causing etcd to fail on boot with `panic: freepages: failed to get all reachable pages (page X: multiple references)`, standard `etcdctl` recovery commands cannot run.
+> For the complete forensic triage, B+ tree anatomy, and `bbolt surgery revert-meta-page` zero-loss recovery playbook, see:
+> 💥 **[[0-17-1_etcd_bbolt_corruption_and_control_plane_resuscitation|Module 0-17-1: etcd B+ Tree (bbolt) Corruption & Control Plane Resuscitation]]**.
+
 ---
 
 ## 5. High-Availability Control Plane & ETCD Cluster Design

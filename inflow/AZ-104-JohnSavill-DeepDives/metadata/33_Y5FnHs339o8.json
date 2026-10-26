@@ -1,0 +1,135 @@
+{
+  "id": "Y5FnHs339o8",
+  "title": "Azure Confidential Ledger Deep Dive",
+  "duration": 2724,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 119
+    },
+    {
+      "start_time": 119,
+      "title": "Confidential computing",
+      "end_time": 244
+    },
+    {
+      "start_time": 244,
+      "title": "Azure Confidential Ledger",
+      "end_time": 316
+    },
+    {
+      "start_time": 316,
+      "title": "Trees and chains",
+      "end_time": 442
+    },
+    {
+      "start_time": 442,
+      "title": "Digest 101",
+      "end_time": 602
+    },
+    {
+      "start_time": 602,
+      "title": "Tamper evidence",
+      "end_time": 899
+    },
+    {
+      "start_time": 899,
+      "title": "What can I store",
+      "end_time": 1010
+    },
+    {
+      "start_time": 1010,
+      "title": "SDK and APIs",
+      "end_time": 1032
+    },
+    {
+      "start_time": 1032,
+      "title": "Private or Public",
+      "end_time": 1160
+    },
+    {
+      "start_time": 1160,
+      "title": "The CCF cluster",
+      "end_time": 1286
+    },
+    {
+      "start_time": 1286,
+      "title": "In TEE application",
+      "end_time": 1327
+    },
+    {
+      "start_time": 1327,
+      "title": "Example flow of use",
+      "end_time": 1561
+    },
+    {
+      "start_time": 1561,
+      "title": "ACL in action",
+      "end_time": 1583
+    },
+    {
+      "start_time": 1583,
+      "title": "Adding an entry",
+      "end_time": 1769
+    },
+    {
+      "start_time": 1769,
+      "title": "Viewing receipt and evidence",
+      "end_time": 1840
+    },
+    {
+      "start_time": 1840,
+      "title": "Validating data against the ledger",
+      "end_time": 2006
+    },
+    {
+      "start_time": 2006,
+      "title": "Viewing entry by transaction ID",
+      "end_time": 2084
+    },
+    {
+      "start_time": 2084,
+      "title": "DR",
+      "end_time": 2117
+    },
+    {
+      "start_time": 2117,
+      "title": "Customer driven backup and restore",
+      "end_time": 2388
+    },
+    {
+      "start_time": 2388,
+      "title": "Where is ledger used",
+      "end_time": 2591
+    },
+    {
+      "start_time": 2591,
+      "title": "Pricing",
+      "end_time": 2634
+    },
+    {
+      "start_time": 2634,
+      "title": "Sample applications",
+      "end_time": 2662
+    },
+    {
+      "start_time": 2662,
+      "title": "Summary",
+      "end_time": 2724
+    }
+  ],
+  "description": "A dive into the tamper-proof ledger capabilities of Azure Confidential Ledger and some of its many applications.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\ud83e\udd14  Due to the channel growth and number of people wanting help I no longer can answer or even read questions and they will just stay in the moderation queue never to be seen so please post questions to other sites like Reddit, Microsoft Community Hub etc.\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n01:59 - Confidential computing\n04:04 - Azure Confidential Ledger\n05:16 - Trees and chains\n07:22 - Digest 101\n10:02 - Tamper evidence\n14:59 - What can I store\n16:50 - SDK and APIs\n17:12 - Private or Public\n19:20 - The CCF cluster\n21:26 - In TEE application\n22:07 - Example flow of use\n26:01 - ACL in action\n26:23 - Adding an entry\n29:29 - Viewing receipt and evidence\n30:40 - Validating data against the ledger\n33:26 - Viewing entry by transaction ID\n34:44 - DR\n35:17 - Customer driven backup and restore\n39:48 - Where is ledger used\n43:11 - Pricing\n43:54 - Sample applications\n44:22 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Video whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AzureConfidentialLedger.png\n\u25ba CCF Overview:\n\ud83d\udd17 https://learn.microsoft.com/azure/managed-ccf/confidential-consortium-framework-overview\n\u25ba Backup API:\n\ud83d\udd17 https://learn.microsoft.com/rest/api/resource-manager/confidentialledger/ledger/backup?view=rest-resource-manager-confidentialledger-2023-06-28-preview&tabs=HTTP\n\u25ba Pricing:\n\ud83d\udd17 https://azure.microsoft.com/pricing/details/confidential-ledger/\n\u25ba App samples:\n\ud83d\udd17 https://github.com/microsoft/azureconfidentialledger-app-samples\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42 Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #cloud #Azureblobstorage #azuresql #johnsavillstechnicaltraining #onboardtoazure",
+  "webpage_url": "https://www.youtube.com/watch?v=Y5FnHs339o8",
+  "upload_date": "20250310",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "block chain",
+    "ledger",
+    "merkle tree"
+  ]
+}

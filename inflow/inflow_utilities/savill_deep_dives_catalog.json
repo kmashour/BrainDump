@@ -1,0 +1,167 @@
+[
+  [
+    1,
+    "wJvmXM81tEI",
+    "Azure Load Balancer Deep Dive"
+  ],
+  [
+    2,
+    "6TZsd4toIbg",
+    "Azure Kubernetes Service (AKS) Networking Deep Dive"
+  ],
+  [
+    3,
+    "RjuTQvGm1zQ",
+    "Azure Cost Optimization Deep Dive"
+  ],
+  [
+    4,
+    "qFoHDTxkQII",
+    "Azure Role-Based Access Control Deep Dive"
+  ],
+  [
+    5,
+    "iIUF2E-Ogaw",
+    "Azure Blob Data Permissions Deep Dive (360 in 360)"
+  ],
+  [
+    6,
+    "oevwZZ1YFS0",
+    "ExpressRoute Deep Dive"
+  ],
+  [
+    7,
+    "gccgIkR8_a0",
+    "Azure AD Privileged Identity Management (PIM) - AZ-500, SC-300 Deep Dive Topic"
+  ],
+  [
+    8,
+    "qNn83S55WHQ",
+    "Azure Virtual Network Manager Deep Dive"
+  ],
+  [
+    9,
+    "rC1TV0_sIrM",
+    "Microsoft Azure Managed Identity Deep Dive"
+  ],
+  [
+    10,
+    "4qC7H-y7oKI",
+    "Active Directory Domain Service Deep Dive"
+  ],
+  [
+    11,
+    "Zk7A9U39JeI",
+    "Microsoft Azure AD Resiliency Deep Dive"
+  ],
+  [
+    12,
+    "57ZwdztCx2w",
+    "Microsoft Azure Private Link Deep Dive"
+  ],
+  [
+    13,
+    "B3O6bXu-NbM",
+    "Microsoft Azure Application Gateway Deep Dive"
+  ],
+  [
+    14,
+    "JiUerkqyW0g",
+    "Azure Firewall Deep Dive"
+  ],
+  [
+    15,
+    "2nPZyLmciN4",
+    "Azure Managed Disks Deep Dive"
+  ],
+  [
+    16,
+    "kP7KpfToMkg",
+    "Azure Key Vault Deep Dive (AZ-500)"
+  ],
+  [
+    17,
+    "DHiZbIks9i0",
+    "Microsoft Azure Front Door Deep Dive"
+  ],
+  [
+    18,
+    "JLx7ZFzjdSs",
+    "Microsoft Azure Gateway Load Balancer Deep Dive"
+  ],
+  [
+    19,
+    "Nx2ych3xHl0",
+    "Microsoft Azure AD Identity Protection Deep Dive"
+  ],
+  [
+    20,
+    "lWUV4KZNzIk",
+    "Looking at Entra Permissions Management to Manage Permissions Across AWS, GCP and Azure"
+  ],
+  [
+    21,
+    "Ku64fo7iZ4Y",
+    "Azure AD Cross-Tenant Access Settings Deep Dive"
+  ],
+  [
+    22,
+    "dcAY-qrzTYA",
+    "Azure AD App Proxy Deep Dive"
+  ],
+  [
+    23,
+    "RTv7G79YYPU",
+    "Using Windows Subsystem for Linux v2"
+  ],
+  [
+    24,
+    "Q15ZXyvzQfs",
+    "Understanding Azure AD Hybrid Join"
+  ],
+  [
+    25,
+    "PT3dQ6lCOyY",
+    "Defender for OTHER Clouds (AWS and GCP)"
+  ],
+  [
+    26,
+    "slCjHV8z9Wk",
+    "Brand New Application Gateway for Containers Solution"
+  ],
+  [
+    27,
+    "RQqcQW4GikA",
+    "Azure Elastic SAN Deep Dive"
+  ],
+  [
+    28,
+    "cBwxLSZMN9o",
+    "Azure VMware Solution (AVS) Deep Dive"
+  ],
+  [
+    29,
+    "PXtFq5wmGt0",
+    "Azure API Management Deep Dive"
+  ],
+  [
+    30,
+    "l_8dTUwrqNw",
+    "Azure API Management with Generative AI"
+  ],
+  [
+    31,
+    "S674gxeQr1s",
+    "Azure SQL Hyperscale Deep Dive - NOT Just for Massive Databases!"
+  ],
+  [
+    32,
+    "HnUNi1RMMTA",
+    "Azure OpenAI Deployment Types and Resiliency"
+  ],
+  [
+    33,
+    "Y5FnHs339o8",
+    "Azure Confidential Ledger Deep Dive"
+  ]
+]

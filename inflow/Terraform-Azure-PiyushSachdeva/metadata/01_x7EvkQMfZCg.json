@@ -1,0 +1,73 @@
+{
+  "id": "x7EvkQMfZCg",
+  "title": "Day 1/28 - What Is Infrastructure as Code | Terraform Tutorial For Beginners",
+  "duration": 1104,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction to series",
+      "end_time": 92
+    },
+    {
+      "start_time": 92,
+      "title": "What is infrastructure as code",
+      "end_time": 182
+    },
+    {
+      "start_time": 182,
+      "title": "Traditional infrastructure challenges",
+      "end_time": 438
+    },
+    {
+      "start_time": 438,
+      "title": "Why we need infrastructure as code",
+      "end_time": 680
+    },
+    {
+      "start_time": 680,
+      "title": "How terraform solves challenges",
+      "end_time": 781
+    },
+    {
+      "start_time": 781,
+      "title": "Terraform workflow and commands",
+      "end_time": 922
+    },
+    {
+      "start_time": 922,
+      "title": "Installing terraform on mac",
+      "end_time": 1032
+    },
+    {
+      "start_time": 1032,
+      "title": "Verification and next steps",
+      "end_time": 1104
+    }
+  ],
+  "description": "Master Infrastructure as Code: Day 1/28 Terraform Azure Tutorial for Beginners\n\nStart your Infrastructure as Code journey with this foundational first lesson in our comprehensive 28-day Azure Terraform course. This video provides the critical building blocks you need to understand why Infrastructure as Code is revolutionizing cloud management and how Terraform fits into the modern DevOps landscape.\n\nIn this beginner-friendly introduction, I break down complex concepts into clear, actionable insights covering:\n\u2705 The fundamental concept of Infrastructure as Code (IaC) and why it's transforming how we deploy cloud resources\n\u2705 Real-world problems solved by IaC, including inconsistent environments, configuration drift, and scaling challenges\n\u2705 A thorough introduction to HashiCorp Terraform and its distinct advantages over other IaC tools\n\u2705 Detailed comparison between traditional manual infrastructure management versus the IaC approach\n\u2705 The complete Terraform workflow from writing configuration to applying changes\n\u2705 Step-by-step installation guide for setting up Terraform on your system\n\nThis video establishes the theoretical foundation needed before we dive into hands-on Azure Terraform implementation in subsequent lessons. Perfect for cloud administrators, DevOps engineers, and developers looking to automate infrastructure deployment and management.\n\nNo prior Terraform experience is required\u2014just bring your curiosity and willingness to learn a skill that's increasingly essential in modern cloud environments.\n\nSubscribe to follow the complete 28-day course and transform your cloud infrastructure management approach!\n\nGitHub repo: https://github.com/piyushsachdeva/Terraform-Full-Course-Azure/\n\n\ud835\uddd6\ud835\udde2\ud835\udde0\ud835\udde3\ud835\udddf\ud835\uddd8\ud835\udde7\ud835\uddd8 \ud835\udde7\ud835\udde8\ud835\udde7\ud835\udde2\ud835\udde5\ud835\udddc\ud835\uddd4\ud835\udddf \ud835\udde6\ud835\uddd8\ud835\udde5\ud835\udddc\ud835\uddd8\ud835\udde6  \ud83d\udc4c It\u2019s   \ud83c\udd75\ud83c\udd81\ud83c\udd74\ud83c\udd74 \u26f3\n\n\u2705 Certified Kubernetes Administrator (CKA) 2024\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOkOv3i62UidrLmSB8DcGC\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\udded\ud835\uddf2\ud835\uddff\ud835\uddfc \ud835\ude01\ud835\uddfc \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddfc:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXseJO1a03CtfRDzr2hivbD\n\n\u2705 \ud835\uddd4\ud835\udded\ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd9\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOCWcjaXcH-WBVxCccZ4uO\n\n\u2705 \ud835\udde1\ud835\uddee\ud835\uddfa\ud835\uddee\ud835\ude00\ud835\ude01\ud835\uddf2 \ud835\uddda\ud835\uddfc\ud835\uddfc\ud835\uddf4\ud835\uddf9\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 | \ud835\uddda\ud835\uddd6\ud835\udde3 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddef\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00, \ud835\uddee \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude01\ud835\uddf2 \ud835\uddfd\ud835\uddf9\ud835\uddee\ud835\ude06\ud835\uddf9\ud835\uddf6\ud835\ude00\ud835\ude01 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\ude01\ud835\uddf5\ud835\uddf2 \ud835\uddd4\ud835\ude00\ud835\ude00\ud835\uddfc\ud835\uddf0\ud835\uddf6\ud835\uddee\ud835\ude01\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddd8\ud835\uddfb\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddf2\ud835\uddf2\ud835\uddff (\ud835\uddd4\ud835\uddd6\ud835\uddd8) \ud835\uddd6\ud835\uddf2\ud835\uddff\ud835\ude01\ud835\uddf6\ud835\uddf3\ud835\uddf6\ud835\uddf0\ud835\uddee\ud835\ude01\ud835\uddf6\ud835\uddfc\ud835\uddfb \ud835\uddd8\ud835\ude05\ud835\uddee\ud835\uddfa:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXvkDFARdrH2LMESVqeuH8W\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddee\ud835\ude01\ud835\uddee \ud835\uddf3\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd7\ud835\udde3 \ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddf3\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddf0\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUd4rzzHEpHMsyD5PbVWz1I\n\n\u2705 \ud835\udddd\ud835\uddf2\ud835\uddfb\ud835\uddf8\ud835\uddf6\ud835\uddfb\ud835\ude00 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddd5\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUV3pz6zRpFJe3A4wTM2Pjvv\n\n\u2705 \ud835\udfed\ud835\udfec\ud835\ude04\ud835\uddf2\ud835\uddf2\ud835\uddf8\ud835\ude00\ud835\uddfc\ud835\uddf3\ud835\uddf0\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1\ud835\uddfc\ud835\uddfd\ud835\ude00 - \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude05 \ud835\uddf5\ud835\uddee\ud835\uddfb\ud835\uddf1\ud835\ude00-\ud835\uddfc\ud835\uddfb \ud835\uddfd\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01\ud835\ude00 \ud835\uddfc\ud835\uddfb \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUc8HOEIwfB3Z2uxRv2SKOG\n\n\u2705 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\udde3\ud835\uddfc\ud835\uddf1\ud835\uddf0\ud835\uddee\ud835\ude00\ud835\ude01\ud835\ude00:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUWr7SI4Kym5dr80DovuSbL2\n\n\u2705 \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf9\ud835\uddee\ud835\uddef \ud835\uddd6\ud835\udddc \ud835\uddd6\ud835\uddd7 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 | \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde7\ud835\uddfc \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\udde3\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01 [\ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2]\nhttps://youtu.be/uYaMRn2meJQ\n\nSubscribe to our channel to get notified about the latest videos. \n\ud83d\udd25 https://www.youtube.com/TechTutorialswithPiyush\n\n-----------------------------------------------------------------------------------------------------------------------\n\ud835\uddd6\ud835\uddfc\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddf0\ud835\ude01 \ud835\uddfa\ud835\uddf2 \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddf2:\ud83d\udc47\ud83d\udc47\n\n\ud83d\udd25\ud835\uddec\ud835\uddfc\ud835\ude02\ud835\udde7\ud835\ude02\ud835\uddef\ud835\uddf2 \u25b6  https://www.youtube.com/TechTutorialswithPiyush\n\u26f3\ud835\udddf\ud835\uddf6\ud835\uddfb\ud835\uddf8\ud835\uddf2\ud835\uddf1\ud835\udddc\ud835\uddfb \u25b6  https://www.linkedin.com/in/piyush-sachdeva/\n\ud83d\ude80\ud835\udddc\ud835\uddfb\ud835\ude00\ud835\ude01\ud835\uddee\ud835\uddf4\ud835\uddff\ud835\uddee\ud835\uddfa \u25b6 https://www.instagram.com/techtutorialswithpiyush/\n\ud83c\udf0d\ud835\udde7\ud835\ude04\ud835\uddf6\ud835\ude01\ud835\ude01\ud835\uddf2\ud835\uddff \u25b6  https://twitter.com/techie_piyush\n\ud83d\udc68\u200d\ud83d\udcbb \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf5\ud835\ude02\ud835\uddef  \u25b6  https://github.com/piyushsachdeva\n\u270d \ud835\udde0\ud835\uddf2\ud835\uddf1\ud835\uddf6\ud835\ude02\ud835\uddfa.\ud835\uddf0\ud835\uddfc\ud835\uddfa \u25b6 https://medium.com/@piyush.sachdeva055\n\ud83d\udcda \ud835\uddf1\ud835\uddf2\ud835\ude03.\ud835\ude01\ud835\uddfc  \u25b6  https://dev.to/piyushsachdeva\n\u2728\ud835\uddd7\ud835\uddf6\ud835\ude00\ud835\uddf0\ud835\uddfc\ud835\uddff\ud835\uddf1 \u25b6  https://discord.gg/TNCs4BRzq8\n-----------------------------------------------------------------------------------------------------------------------\n\nReferences \ud83d\udcda:\n#azure terraform tutorial for beginners\n#terraform azure\n#terraform explained\n#terraform zero to hero\n#azure terraform full course",
+  "webpage_url": "https://www.youtube.com/watch?v=x7EvkQMfZCg",
+  "upload_date": "20241217",
+  "tags": [
+    "Terraform Tutorial For Beginners",
+    "What Is Infrastructure as Code",
+    "terraform tutorial",
+    "iac",
+    "infra as code",
+    "infra as code with terraform",
+    "terraform tutorial azure",
+    "terraform",
+    "terraform tutorial for beginners full course",
+    "terraform fundamentals",
+    "azure iac",
+    "terraform workflow",
+    "terraform installation guide",
+    "terraform azure deployment",
+    "terraform vs cloudformation",
+    "terraform state management",
+    "terraform init",
+    "terraform plan",
+    "terraform apply",
+    "terraform providers",
+    "terraform hcl"
+  ]
+}

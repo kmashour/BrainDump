@@ -1,0 +1,118 @@
+{
+  "id": "B3O6bXu-NbM",
+  "title": "Microsoft Azure Application Gateway Deep Dive",
+  "duration": 3809,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 32
+    },
+    {
+      "start_time": 32,
+      "title": "Types of load balancing solution",
+      "end_time": 120
+    },
+    {
+      "start_time": 120,
+      "title": "Layer 7 with App Gateway",
+      "end_time": 273
+    },
+    {
+      "start_time": 273,
+      "title": "App Gateway deployment to virtual network",
+      "end_time": 525
+    },
+    {
+      "start_time": 525,
+      "title": "Locking down the public IP",
+      "end_time": 605
+    },
+    {
+      "start_time": 605,
+      "title": "App Gateway and WAF versions",
+      "end_time": 854
+    },
+    {
+      "start_time": 854,
+      "title": "Key features",
+      "end_time": 1255
+    },
+    {
+      "start_time": 1255,
+      "title": "How App Gateway works",
+      "end_time": 1285
+    },
+    {
+      "start_time": 1285,
+      "title": "Backend sets",
+      "end_time": 1528
+    },
+    {
+      "start_time": 1528,
+      "title": "Frontend IPs",
+      "end_time": 1660
+    },
+    {
+      "start_time": 1660,
+      "title": "Listeners",
+      "end_time": 2196
+    },
+    {
+      "start_time": 2196,
+      "title": "SSL/TLS offload/termination",
+      "end_time": 2264
+    },
+    {
+      "start_time": 2264,
+      "title": "Rules",
+      "end_time": 2610
+    },
+    {
+      "start_time": 2610,
+      "title": "Redirection rules",
+      "end_time": 2793
+    },
+    {
+      "start_time": 2793,
+      "title": "Rewrite rules",
+      "end_time": 3003
+    },
+    {
+      "start_time": 3003,
+      "title": "HTTP settings and health probe",
+      "end_time": 3405
+    },
+    {
+      "start_time": 3405,
+      "title": "How the bits fit together",
+      "end_time": 3468
+    },
+    {
+      "start_time": 3468,
+      "title": "App Gateway as AKS ingress controller",
+      "end_time": 3759
+    },
+    {
+      "start_time": 3759,
+      "title": "Summary",
+      "end_time": 3809
+    }
+  ],
+  "description": "In this video I explore all the ins and outs to using Azure Application (App) Gateway in your environment!\n\nWhiteboard - https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/AppGatewayDeepDive.svg\n\nLinks under chapters!\n\n00:00 Introduction\n00:32 Types of load balancing solution\n02:00 Layer 7 with App Gateway\n04:33 App Gateway deployment to virtual network\n08:45 Locking down the public IP\n10:05 App Gateway and WAF versions\n14:14 Key features\n20:55 How App Gateway works\n21:25 Backend sets\n25:28 Frontend IPs\n27:40 Listeners\n36:36 SSL/TLS offload/termination\n37:44 Rules\n43:30 Redirection rules\n46:33 Rewrite rules\n50:03 HTTP settings and health probe\n56:45 How the bits fit together\n57:48 App Gateway as AKS ingress controller\n1:02:39 Summary\n\nAzure Load Balancer Video - https://youtu.be/8yCDiqMDKXE \nChoosing a Load Balancing Solution - https://youtu.be/s1H2HpSJ-cg\nLocking down App Gateway IP - https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-faq#how-do-i-use-application-gateway-v2-with-only-private-frontend-ip-address\nApp Gateway Pricing - https://docs.microsoft.com/en-us/azure/application-gateway/understanding-pricing\nApp Gateway Version Differences - https://docs.microsoft.com/en-us/azure/application-gateway/application-gateway-autoscaling-zone-redundant#feature-comparison-between-v1-sku-and-v2-sku",
+  "webpage_url": "https://www.youtube.com/watch?v=B3O6bXu-NbM",
+  "upload_date": "20210907",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "azure networking",
+    "layer 7",
+    "load balancer",
+    "app gateway",
+    "application gateway",
+    "aks ingress controller"
+  ]
+}

@@ -1,0 +1,3216 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.000 --> 00:00:01.550 align:start position:0%
+ 
+Hello<00:00:00.440><c> everyone,</c><00:00:00.840><c> welcome</c><00:00:01.160><c> back</c><00:00:01.360><c> to</c><00:00:01.440><c> my</c>
+
+00:00:01.550 --> 00:00:01.560 align:start position:0%
+Hello everyone, welcome back to my
+ 
+
+00:00:01.560 --> 00:00:03.670 align:start position:0%
+Hello everyone, welcome back to my
+channel.<00:00:01.880><c> My</c><00:00:02.000><c> name</c><00:00:02.200><c> is</c><00:00:02.360><c> Piyush</c><00:00:02.880><c> and</c><00:00:03.200><c> this</c><00:00:03.400><c> is</c>
+
+00:00:03.670 --> 00:00:03.680 align:start position:0%
+channel. My name is Piyush and this is
+ 
+
+00:00:03.680 --> 00:00:06.550 align:start position:0%
+channel. My name is Piyush and this is
+day<00:00:03.880><c> 13</c><00:00:04.480><c> in</c><00:00:04.720><c> the</c><00:00:04.920><c> series</c><00:00:05.400><c> 28</c><00:00:05.840><c> days</c><00:00:06.080><c> of</c><00:00:06.320><c> easy</c>
+
+00:00:06.550 --> 00:00:06.560 align:start position:0%
+day 13 in the series 28 days of easy
+ 
+
+00:00:06.560 --> 00:00:08.190 align:start position:0%
+day 13 in the series 28 days of easy
+Terraform.<00:00:07.200><c> In</c><00:00:07.360><c> this</c><00:00:07.600><c> video,</c><00:00:07.880><c> we'll</c><00:00:08.080><c> be</c>
+
+00:00:08.190 --> 00:00:08.200 align:start position:0%
+Terraform. In this video, we'll be
+ 
+
+00:00:08.200 --> 00:00:10.190 align:start position:0%
+Terraform. In this video, we'll be
+looking<00:00:08.520><c> into</c><00:00:08.800><c> data</c><00:00:09.080><c> sources.</c><00:00:09.880><c> What</c><00:00:10.080><c> are</c>
+
+00:00:10.190 --> 00:00:10.200 align:start position:0%
+looking into data sources. What are
+ 
+
+00:00:10.200 --> 00:00:12.750 align:start position:0%
+looking into data sources. What are
+those?<00:00:10.800><c> Why</c><00:00:11.000><c> do</c><00:00:11.160><c> we</c><00:00:11.280><c> use</c><00:00:11.600><c> it?</c><00:00:12.080><c> How</c><00:00:12.240><c> do</c><00:00:12.360><c> we</c><00:00:12.480><c> use</c>
+
+00:00:12.750 --> 00:00:12.760 align:start position:0%
+those? Why do we use it? How do we use
+ 
+
+00:00:12.760 --> 00:00:14.870 align:start position:0%
+those? Why do we use it? How do we use
+it?<00:00:13.160><c> And</c><00:00:13.480><c> of</c><00:00:13.640><c> course,</c><00:00:13.880><c> with</c><00:00:14.000><c> the</c><00:00:14.080><c> help</c><00:00:14.360><c> of</c><00:00:14.640><c> of</c>
+
+00:00:14.870 --> 00:00:14.880 align:start position:0%
+it? And of course, with the help of of
+ 
+
+00:00:14.880 --> 00:00:17.510 align:start position:0%
+it? And of course, with the help of of
+an<00:00:15.000><c> example,</c><00:00:15.920><c> how</c><00:00:16.160><c> do</c><00:00:16.280><c> we</c><00:00:16.400><c> use</c><00:00:16.680><c> it?</c>
+
+00:00:17.510 --> 00:00:17.520 align:start position:0%
+an example, how do we use it?
+ 
+
+00:00:17.520 --> 00:00:19.590 align:start position:0%
+an example, how do we use it?
+We'll<00:00:17.920><c> see</c><00:00:18.160><c> the</c><00:00:18.320><c> real-time</c><00:00:18.760><c> implementation</c>
+
+00:00:19.590 --> 00:00:19.600 align:start position:0%
+We'll see the real-time implementation
+ 
+
+00:00:19.600 --> 00:00:22.590 align:start position:0%
+We'll see the real-time implementation
+of<00:00:19.800><c> it.</c><00:00:20.640><c> And</c><00:00:21.400><c> the</c><00:00:21.520><c> comments</c><00:00:21.880><c> and</c><00:00:22.000><c> like</c><00:00:22.200><c> target</c>
+
+00:00:22.590 --> 00:00:22.600 align:start position:0%
+of it. And the comments and like target
+ 
+
+00:00:22.600 --> 00:00:25.150 align:start position:0%
+of it. And the comments and like target
+of<00:00:22.760><c> this</c><00:00:23.040><c> video</c><00:00:23.360><c> is</c><00:00:23.520><c> going</c><00:00:23.680><c> to</c><00:00:23.760><c> be</c><00:00:24.040><c> 150</c><00:00:24.560><c> like,</c>
+
+00:00:25.150 --> 00:00:25.160 align:start position:0%
+of this video is going to be 150 like,
+ 
+
+00:00:25.160 --> 00:00:28.190 align:start position:0%
+of this video is going to be 150 like,
+150<00:00:25.720><c> comments</c><00:00:26.360><c> in</c><00:00:26.440><c> the</c><00:00:26.560><c> next</c><00:00:26.760><c> 24</c><00:00:27.280><c> hours.</c>
+
+00:00:28.190 --> 00:00:28.200 align:start position:0%
+150 comments in the next 24 hours.
+ 
+
+00:00:28.200 --> 00:00:31.070 align:start position:0%
+150 comments in the next 24 hours.
+All<00:00:28.560><c> I</c><00:00:28.640><c> need</c><00:00:29.080><c> is</c><00:00:29.360><c> 100</c><00:00:29.800><c> dedicated</c><00:00:30.520><c> learners.</c>
+
+00:00:31.070 --> 00:00:31.080 align:start position:0%
+All I need is 100 dedicated learners.
+ 
+
+00:00:31.080 --> 00:00:33.350 align:start position:0%
+All I need is 100 dedicated learners.
+That's<00:00:31.480><c> all</c><00:00:31.760><c> I</c><00:00:31.840><c> need.</c><00:00:32.160><c> That's</c><00:00:32.560><c> all</c><00:00:32.880><c> I</c><00:00:33.000><c> wish</c>
+
+00:00:33.350 --> 00:00:33.360 align:start position:0%
+That's all I need. That's all I wish
+ 
+
+00:00:33.360 --> 00:00:34.310 align:start position:0%
+That's all I need. That's all I wish
+for.
+
+00:00:34.310 --> 00:00:34.320 align:start position:0%
+for.
+ 
+
+00:00:34.320 --> 00:00:36.910 align:start position:0%
+for.
+And<00:00:34.680><c> it</c><00:00:34.840><c> will</c><00:00:35.480><c> make</c><00:00:35.920><c> all</c><00:00:36.200><c> the</c><00:00:36.400><c> efforts</c>
+
+00:00:36.910 --> 00:00:36.920 align:start position:0%
+And it will make all the efforts
+ 
+
+00:00:36.920 --> 00:00:38.150 align:start position:0%
+And it will make all the efforts
+worthwhile.
+
+00:00:38.150 --> 00:00:38.160 align:start position:0%
+worthwhile.
+ 
+
+00:00:38.160 --> 00:00:39.990 align:start position:0%
+worthwhile.
+Right.<00:00:38.520><c> So,</c><00:00:38.880><c> without</c><00:00:39.240><c> any</c><00:00:39.440><c> further</c><00:00:39.800><c> ado,</c>
+
+00:00:39.990 --> 00:00:40.000 align:start position:0%
+Right. So, without any further ado,
+ 
+
+00:00:40.000 --> 00:00:42.150 align:start position:0%
+Right. So, without any further ado,
+let's<00:00:40.240><c> start</c><00:00:40.560><c> with</c><00:00:40.680><c> the</c><00:00:40.800><c> video.</c><00:00:41.640><c> All</c><00:00:41.880><c> right.</c>
+
+00:00:42.150 --> 00:00:42.160 align:start position:0%
+let's start with the video. All right.
+ 
+
+00:00:42.160 --> 00:00:45.230 align:start position:0%
+let's start with the video. All right.
+So,<00:00:42.480><c> let's</c><00:00:42.840><c> see</c><00:00:43.240><c> why</c><00:00:43.440><c> do</c><00:00:43.600><c> we</c><00:00:43.720><c> use</c><00:00:43.960><c> it</c><00:00:44.280><c> and</c><00:00:45.000><c> what</c>
+
+00:00:45.230 --> 00:00:45.240 align:start position:0%
+So, let's see why do we use it and what
+ 
+
+00:00:45.240 --> 00:00:47.150 align:start position:0%
+So, let's see why do we use it and what
+it<00:00:45.400><c> is.</c><00:00:45.680><c> So,</c><00:00:45.960><c> with</c><00:00:46.160><c> the</c><00:00:46.240><c> help</c><00:00:46.440><c> of</c><00:00:46.560><c> an</c><00:00:46.640><c> example,</c>
+
+00:00:47.150 --> 00:00:47.160 align:start position:0%
+it is. So, with the help of an example,
+ 
+
+00:00:47.160 --> 00:00:48.310 align:start position:0%
+it is. So, with the help of an example,
+of<00:00:47.280><c> course.</c>
+
+00:00:48.310 --> 00:00:48.320 align:start position:0%
+of course.
+ 
+
+00:00:48.320 --> 00:00:51.750 align:start position:0%
+of course.
+Okay.<00:00:48.880><c> Let's</c><00:00:49.200><c> say</c><00:00:49.560><c> we</c><00:00:49.840><c> have</c><00:00:50.400><c> a</c><00:00:50.840><c> shared</c><00:00:51.360><c> virtual</c>
+
+00:00:51.750 --> 00:00:51.760 align:start position:0%
+Okay. Let's say we have a shared virtual
+ 
+
+00:00:51.760 --> 00:00:53.910 align:start position:0%
+Okay. Let's say we have a shared virtual
+network<00:00:52.200><c> over</c><00:00:52.440><c> here</c><00:00:52.800><c> in</c><00:00:53.000><c> your</c><00:00:53.560><c> Azure</c>
+
+00:00:53.910 --> 00:00:53.920 align:start position:0%
+network over here in your Azure
+ 
+
+00:00:53.920 --> 00:00:56.830 align:start position:0%
+network over here in your Azure
+environment.<00:00:55.000><c> Why</c><00:00:55.240><c> I'm</c><00:00:55.440><c> calling</c><00:00:55.760><c> it</c><00:00:55.880><c> a</c><00:00:55.960><c> shared</c>
+
+00:00:56.830 --> 00:00:56.840 align:start position:0%
+environment. Why I'm calling it a shared
+ 
+
+00:00:56.840 --> 00:00:59.510 align:start position:0%
+environment. Why I'm calling it a shared
+virtual<00:00:57.200><c> network?</c><00:00:57.760><c> Because</c><00:00:58.720><c> it's</c><00:00:59.000><c> been</c>
+
+00:00:59.510 --> 00:00:59.520 align:start position:0%
+virtual network? Because it's been
+ 
+
+00:00:59.520 --> 00:01:02.550 align:start position:0%
+virtual network? Because it's been
+shared<00:01:00.280><c> with</c><00:01:00.480><c> multiple</c><00:01:01.000><c> teams.</c><00:01:01.840><c> And</c><00:01:02.440><c> a</c>
+
+00:01:02.550 --> 00:01:02.560 align:start position:0%
+shared with multiple teams. And a
+ 
+
+00:01:02.560 --> 00:01:04.790 align:start position:0%
+shared with multiple teams. And a
+different<00:01:03.080><c> set</c><00:01:03.320><c> of</c><00:01:03.560><c> team</c><00:01:03.760><c> members</c><00:01:04.199><c> manages</c>
+
+00:01:04.790 --> 00:01:04.800 align:start position:0%
+different set of team members manages
+ 
+
+00:01:04.800 --> 00:01:07.310 align:start position:0%
+different set of team members manages
+this<00:01:05.000><c> infrastructure</c><00:01:05.760><c> for</c><00:01:05.920><c> you.</c><00:01:06.400><c> Okay.</c><00:01:07.120><c> So,</c>
+
+00:01:07.310 --> 00:01:07.320 align:start position:0%
+this infrastructure for you. Okay. So,
+ 
+
+00:01:07.320 --> 00:01:12.470 align:start position:0%
+this infrastructure for you. Okay. So,
+let's<00:01:07.720><c> say</c><00:01:08.040><c> there</c><00:01:08.480><c> is</c><00:01:09.200><c> a</c><00:01:10.080><c> network</c><00:01:11.000><c> infra</c><00:01:11.520><c> team</c>
+
+00:01:12.470 --> 00:01:12.480 align:start position:0%
+let's say there is a network infra team
+ 
+
+00:01:12.480 --> 00:01:15.750 align:start position:0%
+let's say there is a network infra team
+who<00:01:12.720><c> manages</c><00:01:13.360><c> this</c><00:01:14.160><c> for</c><00:01:14.360><c> you.</c><00:01:14.720><c> Okay.</c><00:01:15.360><c> Now,</c><00:01:15.560><c> it</c>
+
+00:01:15.750 --> 00:01:15.760 align:start position:0%
+who manages this for you. Okay. Now, it
+ 
+
+00:01:15.760 --> 00:01:18.510 align:start position:0%
+who manages this for you. Okay. Now, it
+happens<00:01:16.160><c> in</c><00:01:16.280><c> many</c><00:01:16.560><c> organization</c><00:01:17.280><c> because</c><00:01:17.720><c> as</c>
+
+00:01:18.510 --> 00:01:18.520 align:start position:0%
+happens in many organization because as
+ 
+
+00:01:18.520 --> 00:01:21.670 align:start position:0%
+happens in many organization because as
+you<00:01:19.400><c> grow</c><00:01:19.680><c> in</c><00:01:19.880><c> size,</c><00:01:20.240><c> grow</c><00:01:20.480><c> in</c><00:01:20.600><c> number</c><00:01:21.400><c> in</c><00:01:21.560><c> the</c>
+
+00:01:21.670 --> 00:01:21.680 align:start position:0%
+you grow in size, grow in number in the
+ 
+
+00:01:21.680 --> 00:01:24.990 align:start position:0%
+you grow in size, grow in number in the
+organization.<00:01:23.080><c> Um</c><00:01:23.680><c> like</c><00:01:24.160><c> there</c><00:01:24.480><c> is</c><00:01:24.840><c> a</c>
+
+00:01:24.990 --> 00:01:25.000 align:start position:0%
+organization. Um like there is a
+ 
+
+00:01:25.000 --> 00:01:27.230 align:start position:0%
+organization. Um like there is a
+dedicated<00:01:25.640><c> team</c><00:01:25.920><c> to</c><00:01:26.040><c> manage</c><00:01:26.520><c> your</c><00:01:26.680><c> security</c>
+
+00:01:27.230 --> 00:01:27.240 align:start position:0%
+dedicated team to manage your security
+ 
+
+00:01:27.240 --> 00:01:29.510 align:start position:0%
+dedicated team to manage your security
+aspects<00:01:27.720><c> of</c><00:01:27.840><c> infrastructure.</c><00:01:29.080><c> There</c><00:01:29.280><c> is</c><00:01:29.440><c> a</c>
+
+00:01:29.510 --> 00:01:29.520 align:start position:0%
+aspects of infrastructure. There is a
+ 
+
+00:01:29.520 --> 00:01:31.630 align:start position:0%
+aspects of infrastructure. There is a
+dedicated<00:01:30.120><c> team</c><00:01:30.360><c> to</c><00:01:30.480><c> manage</c><00:01:30.880><c> your</c><00:01:31.080><c> networking</c>
+
+00:01:31.630 --> 00:01:31.640 align:start position:0%
+dedicated team to manage your networking
+ 
+
+00:01:31.640 --> 00:01:34.310 align:start position:0%
+dedicated team to manage your networking
+side<00:01:31.960><c> of</c><00:01:32.160><c> it</c><00:01:32.760><c> and</c><00:01:33.360><c> there</c><00:01:33.600><c> are</c><00:01:33.720><c> different</c><00:01:34.120><c> other</c>
+
+00:01:34.310 --> 00:01:34.320 align:start position:0%
+side of it and there are different other
+ 
+
+00:01:34.320 --> 00:01:36.270 align:start position:0%
+side of it and there are different other
+teams.<00:01:34.560><c> So,</c><00:01:34.640><c> let's</c><00:01:34.840><c> say</c><00:01:34.960><c> you</c><00:01:35.080><c> have</c><00:01:35.360><c> a</c><00:01:35.880><c> network</c>
+
+00:01:36.270 --> 00:01:36.280 align:start position:0%
+teams. So, let's say you have a network
+ 
+
+00:01:36.280 --> 00:01:38.230 align:start position:0%
+teams. So, let's say you have a network
+infrastructure<00:01:36.960><c> team</c><00:01:37.200><c> who</c><00:01:37.360><c> manages</c><00:01:37.920><c> this</c>
+
+00:01:38.230 --> 00:01:38.240 align:start position:0%
+infrastructure team who manages this
+ 
+
+00:01:38.240 --> 00:01:40.030 align:start position:0%
+infrastructure team who manages this
+virtual<00:01:38.600><c> network</c><00:01:39.000><c> for</c><00:01:39.120><c> you.</c>
+
+00:01:40.030 --> 00:01:40.040 align:start position:0%
+virtual network for you.
+ 
+
+00:01:40.040 --> 00:01:43.470 align:start position:0%
+virtual network for you.
+Now,<00:01:40.480><c> it'll</c><00:01:40.840><c> have</c><00:01:41.600><c> multiple</c><00:01:42.200><c> subnets</c><00:01:42.840><c> created</c>
+
+00:01:43.470 --> 00:01:43.480 align:start position:0%
+Now, it'll have multiple subnets created
+ 
+
+00:01:43.480 --> 00:01:46.510 align:start position:0%
+Now, it'll have multiple subnets created
+for<00:01:43.920><c> each</c><00:01:44.120><c> of</c><00:01:44.240><c> the</c><00:01:44.360><c> teams.</c><00:01:45.320><c> Or</c><00:01:45.840><c> each</c><00:01:46.080><c> of</c><00:01:46.320><c> the</c>
+
+00:01:46.510 --> 00:01:46.520 align:start position:0%
+for each of the teams. Or each of the
+ 
+
+00:01:46.520 --> 00:01:48.390 align:start position:0%
+for each of the teams. Or each of the
+line<00:01:46.800><c> of</c><00:01:46.920><c> businesses</c><00:01:47.480><c> or</c><00:01:47.640><c> however</c><00:01:48.160><c> they</c><00:01:48.280><c> have</c>
+
+00:01:48.390 --> 00:01:48.400 align:start position:0%
+line of businesses or however they have
+ 
+
+00:01:48.400 --> 00:01:50.710 align:start position:0%
+line of businesses or however they have
+configured<00:01:48.920><c> it.</c><00:01:49.080><c> For</c><00:01:49.240><c> now,</c><00:01:49.440><c> let's</c><00:01:50.240><c> assume</c>
+
+00:01:50.710 --> 00:01:50.720 align:start position:0%
+configured it. For now, let's assume
+ 
+
+00:01:50.720 --> 00:01:53.110 align:start position:0%
+configured it. For now, let's assume
+they<00:01:50.880><c> have</c><00:01:51.160><c> created</c><00:01:51.960><c> for</c><00:01:52.280><c> each</c><00:01:52.480><c> of</c><00:01:52.600><c> the</c><00:01:52.760><c> teams</c>
+
+00:01:53.110 --> 00:01:53.120 align:start position:0%
+they have created for each of the teams
+ 
+
+00:01:53.120 --> 00:01:55.630 align:start position:0%
+they have created for each of the teams
+and<00:01:53.560><c> each</c><00:01:53.760><c> of</c><00:01:53.880><c> the</c><00:01:54.080><c> live</c><00:01:54.360><c> environments.</c><00:01:55.080><c> Okay.</c>
+
+00:01:55.630 --> 00:01:55.640 align:start position:0%
+and each of the live environments. Okay.
+ 
+
+00:01:55.640 --> 00:01:58.550 align:start position:0%
+and each of the live environments. Okay.
+So,<00:01:55.800><c> I'm</c><00:01:56.160><c> just</c><00:01:56.480><c> going</c><00:01:56.640><c> to</c><00:01:56.760><c> create,</c><00:01:57.560><c> let's</c><00:01:57.840><c> say,</c>
+
+00:01:58.550 --> 00:01:58.560 align:start position:0%
+So, I'm just going to create, let's say,
+ 
+
+00:01:58.560 --> 00:02:01.710 align:start position:0%
+So, I'm just going to create, let's say,
+seven<00:01:59.280><c> six</c><00:01:59.720><c> subnets</c><00:02:00.320><c> over</c><00:02:00.520><c> here.</c><00:02:00.800><c> Subnet</c><00:02:01.320><c> one,</c>
+
+00:02:01.710 --> 00:02:01.720 align:start position:0%
+seven six subnets over here. Subnet one,
+ 
+
+00:02:01.720 --> 00:02:03.790 align:start position:0%
+seven six subnets over here. Subnet one,
+subnet<00:02:02.200><c> two,</c>
+
+00:02:03.790 --> 00:02:03.800 align:start position:0%
+subnet two,
+ 
+
+00:02:03.800 --> 00:02:07.469 align:start position:0%
+subnet two,
+subnet<00:02:04.320><c> three,</c><00:02:04.760><c> subnet</c><00:02:05.440><c> four,</c><00:02:06.120><c> subnet</c><00:02:06.840><c> five,</c>
+
+00:02:07.469 --> 00:02:07.479 align:start position:0%
+subnet three, subnet four, subnet five,
+ 
+
+00:02:07.479 --> 00:02:09.310 align:start position:0%
+subnet three, subnet four, subnet five,
+and<00:02:07.800><c> subnet</c><00:02:08.320><c> six.</c>
+
+00:02:09.310 --> 00:02:09.320 align:start position:0%
+and subnet six.
+ 
+
+00:02:09.320 --> 00:02:11.790 align:start position:0%
+and subnet six.
+Now,<00:02:10.240><c> this</c><00:02:10.640><c> will</c><00:02:10.880><c> be</c><00:02:11.160><c> for</c><00:02:11.400><c> your</c><00:02:11.560><c> dev</c>
+
+00:02:11.790 --> 00:02:11.800 align:start position:0%
+Now, this will be for your dev
+ 
+
+00:02:11.800 --> 00:02:13.910 align:start position:0%
+Now, this will be for your dev
+environment,<00:02:12.560><c> this</c><00:02:12.800><c> will</c><00:02:12.959><c> be</c><00:02:13.200><c> for</c><00:02:13.440><c> your</c><00:02:13.600><c> test</c>
+
+00:02:13.910 --> 00:02:13.920 align:start position:0%
+environment, this will be for your test
+ 
+
+00:02:13.920 --> 00:02:15.830 align:start position:0%
+environment, this will be for your test
+environment,<00:02:14.800><c> for</c><00:02:15.120><c> your</c><00:02:15.280><c> staging</c>
+
+00:02:15.830 --> 00:02:15.840 align:start position:0%
+environment, for your staging
+ 
+
+00:02:15.840 --> 00:02:19.710 align:start position:0%
+environment, for your staging
+environment,<00:02:17.160><c> for</c><00:02:17.400><c> your</c><00:02:17.680><c> prod</c><00:02:18.080><c> environment,</c>
+
+00:02:19.710 --> 00:02:19.720 align:start position:0%
+environment, for your prod environment,
+ 
+
+00:02:19.720 --> 00:02:22.310 align:start position:0%
+environment, for your prod environment,
+and<00:02:20.120><c> then</c><00:02:20.520><c> this</c><00:02:20.760><c> will</c><00:02:20.959><c> be</c><00:02:21.080><c> for</c><00:02:21.360><c> your</c>
+
+00:02:22.310 --> 00:02:22.320 align:start position:0%
+and then this will be for your
+ 
+
+00:02:22.320 --> 00:02:23.750 align:start position:0%
+and then this will be for your
+development<00:02:22.920><c> team,</c>
+
+00:02:23.750 --> 00:02:23.760 align:start position:0%
+development team,
+ 
+
+00:02:23.760 --> 00:02:25.830 align:start position:0%
+development team,
+and<00:02:24.040><c> this</c><00:02:24.280><c> would</c><00:02:24.520><c> be,</c><00:02:24.640><c> let's</c><00:02:25.000><c> say,</c><00:02:25.080><c> for</c><00:02:25.360><c> your</c>
+
+00:02:25.830 --> 00:02:25.840 align:start position:0%
+and this would be, let's say, for your
+ 
+
+00:02:25.840 --> 00:02:27.910 align:start position:0%
+and this would be, let's say, for your
+devops<00:02:26.320><c> teams.</c>
+
+00:02:27.910 --> 00:02:27.920 align:start position:0%
+devops teams.
+ 
+
+00:02:27.920 --> 00:02:30.470 align:start position:0%
+devops teams.
+Okay?<00:02:28.520><c> So,</c><00:02:28.640><c> we</c><00:02:28.760><c> have</c><00:02:28.959><c> created</c><00:02:29.880><c> separate</c>
+
+00:02:30.470 --> 00:02:30.480 align:start position:0%
+Okay? So, we have created separate
+ 
+
+00:02:30.480 --> 00:02:33.470 align:start position:0%
+Okay? So, we have created separate
+subnet<00:02:31.080><c> within</c><00:02:31.440><c> the</c><00:02:31.560><c> same</c><00:02:32.240><c> virtual</c><00:02:32.680><c> network,</c>
+
+00:02:33.470 --> 00:02:33.480 align:start position:0%
+subnet within the same virtual network,
+ 
+
+00:02:33.480 --> 00:02:36.270 align:start position:0%
+subnet within the same virtual network,
+and<00:02:34.320><c> dedicated</c><00:02:35.040><c> each</c><00:02:35.200><c> of</c><00:02:35.320><c> the</c><00:02:35.400><c> subnet</c><00:02:35.920><c> to</c>
+
+00:02:36.270 --> 00:02:36.280 align:start position:0%
+and dedicated each of the subnet to
+ 
+
+00:02:36.280 --> 00:02:38.190 align:start position:0%
+and dedicated each of the subnet to
+different<00:02:37.400><c> teams</c><00:02:37.720><c> and</c><00:02:37.840><c> different</c>
+
+00:02:38.190 --> 00:02:38.200 align:start position:0%
+different teams and different
+ 
+
+00:02:38.200 --> 00:02:41.150 align:start position:0%
+different teams and different
+environments.<00:02:39.360><c> Now,</c><00:02:40.200><c> you</c><00:02:40.440><c> are</c><00:02:40.640><c> part</c><00:02:40.920><c> of</c><00:02:41.080><c> a</c>
+
+00:02:41.150 --> 00:02:41.160 align:start position:0%
+environments. Now, you are part of a
+ 
+
+00:02:41.160 --> 00:02:43.470 align:start position:0%
+environments. Now, you are part of a
+devops<00:02:41.600><c> team,</c><00:02:41.959><c> okay?</c><00:02:42.720><c> So,</c><00:02:42.959><c> you</c><00:02:43.120><c> need</c><00:02:43.360><c> to</c>
+
+00:02:43.470 --> 00:02:43.480 align:start position:0%
+devops team, okay? So, you need to
+ 
+
+00:02:43.480 --> 00:02:46.390 align:start position:0%
+devops team, okay? So, you need to
+create<00:02:43.959><c> a</c><00:02:44.160><c> virtual</c><00:02:44.600><c> machine</c><00:02:45.000><c> for</c><00:02:45.240><c> your</c><00:02:45.560><c> own</c>
+
+00:02:46.390 --> 00:02:46.400 align:start position:0%
+create a virtual machine for your own
+ 
+
+00:02:46.400 --> 00:02:48.949 align:start position:0%
+create a virtual machine for your own
+POC<00:02:47.000><c> or</c><00:02:47.200><c> for</c><00:02:47.600><c> your</c><00:02:47.840><c> own</c><00:02:48.000><c> testing</c><00:02:48.440><c> purpose.</c><00:02:48.840><c> So,</c>
+
+00:02:48.949 --> 00:02:48.959 align:start position:0%
+POC or for your own testing purpose. So,
+ 
+
+00:02:48.959 --> 00:02:50.750 align:start position:0%
+POC or for your own testing purpose. So,
+let's<00:02:49.240><c> say,</c>
+
+00:02:50.750 --> 00:02:50.760 align:start position:0%
+let's say,
+ 
+
+00:02:50.760 --> 00:02:53.710 align:start position:0%
+let's say,
+you<00:02:51.080><c> have</c><00:02:51.520><c> your</c><00:02:51.840><c> resource</c><00:02:52.240><c> group</c><00:02:52.480><c> over</c><00:02:52.720><c> here,</c>
+
+00:02:53.710 --> 00:02:53.720 align:start position:0%
+you have your resource group over here,
+ 
+
+00:02:53.720 --> 00:02:56.510 align:start position:0%
+you have your resource group over here,
+okay?<00:02:54.600><c> So,</c><00:02:54.760><c> let's</c><00:02:55.120><c> call</c><00:02:55.440><c> it</c>
+
+00:02:56.510 --> 00:02:56.520 align:start position:0%
+okay? So, let's call it
+ 
+
+00:02:56.520 --> 00:02:59.110 align:start position:0%
+okay? So, let's call it
+RG<00:02:57.080><c> Piyush,</c><00:02:57.800><c> or</c><00:02:58.000><c> you</c><00:02:58.120><c> can</c><00:02:58.320><c> call</c><00:02:58.560><c> it</c><00:02:58.800><c> RG</c>
+
+00:02:59.110 --> 00:02:59.120 align:start position:0%
+RG Piyush, or you can call it RG
+ 
+
+00:02:59.120 --> 00:03:01.070 align:start position:0%
+RG Piyush, or you can call it RG
+whatever<00:02:59.560><c> your</c><00:02:59.680><c> name</c><00:03:00.000><c> is.</c>
+
+00:03:01.070 --> 00:03:01.080 align:start position:0%
+whatever your name is.
+ 
+
+00:03:01.080 --> 00:03:02.750 align:start position:0%
+whatever your name is.
+And<00:03:01.320><c> then,</c><00:03:01.640><c> you</c><00:03:01.800><c> have</c><00:03:02.040><c> to</c><00:03:02.160><c> provision</c><00:03:02.640><c> your</c>
+
+00:03:02.750 --> 00:03:02.760 align:start position:0%
+And then, you have to provision your
+ 
+
+00:03:02.760 --> 00:03:04.830 align:start position:0%
+And then, you have to provision your
+virtual<00:03:03.120><c> machine</c><00:03:03.640><c> in</c><00:03:04.040><c> this</c><00:03:04.360><c> particular</c>
+
+00:03:04.830 --> 00:03:04.840 align:start position:0%
+virtual machine in this particular
+ 
+
+00:03:04.840 --> 00:03:07.150 align:start position:0%
+virtual machine in this particular
+resource<00:03:05.280><c> group.</c><00:03:05.720><c> But,</c>
+
+00:03:07.150 --> 00:03:07.160 align:start position:0%
+resource group. But,
+ 
+
+00:03:07.160 --> 00:03:10.190 align:start position:0%
+resource group. But,
+the<00:03:08.160><c> issue</c><00:03:08.519><c> over</c><00:03:08.760><c> here</c><00:03:09.000><c> is</c><00:03:09.200><c> you</c><00:03:09.280><c> cannot</c><00:03:09.800><c> create</c>
+
+00:03:10.190 --> 00:03:10.200 align:start position:0%
+the issue over here is you cannot create
+ 
+
+00:03:10.200 --> 00:03:12.030 align:start position:0%
+the issue over here is you cannot create
+your<00:03:10.480><c> own</c><00:03:10.680><c> virtual</c><00:03:11.040><c> network,</c><00:03:11.480><c> you</c><00:03:11.600><c> cannot</c>
+
+00:03:12.030 --> 00:03:12.040 align:start position:0%
+your own virtual network, you cannot
+ 
+
+00:03:12.040 --> 00:03:14.270 align:start position:0%
+your own virtual network, you cannot
+create<00:03:12.400><c> your</c><00:03:12.800><c> own</c><00:03:13.040><c> subnet</c><00:03:13.519><c> because</c><00:03:13.840><c> it's</c>
+
+00:03:14.270 --> 00:03:14.280 align:start position:0%
+create your own subnet because it's
+ 
+
+00:03:14.280 --> 00:03:16.229 align:start position:0%
+create your own subnet because it's
+already<00:03:14.640><c> been</c><00:03:14.840><c> managed</c><00:03:15.320><c> by</c><00:03:15.480><c> some</c><00:03:15.760><c> other</c><00:03:16.040><c> team,</c>
+
+00:03:16.229 --> 00:03:16.239 align:start position:0%
+already been managed by some other team,
+ 
+
+00:03:16.239 --> 00:03:18.509 align:start position:0%
+already been managed by some other team,
+and<00:03:16.440><c> you</c><00:03:16.560><c> have</c><00:03:16.800><c> to</c><00:03:16.920><c> make</c><00:03:17.239><c> use</c><00:03:17.519><c> of</c><00:03:17.720><c> it</c><00:03:18.080><c> like</c><00:03:18.400><c> the</c>
+
+00:03:18.509 --> 00:03:18.519 align:start position:0%
+and you have to make use of it like the
+ 
+
+00:03:18.519 --> 00:03:20.830 align:start position:0%
+and you have to make use of it like the
+way<00:03:18.720><c> they</c><00:03:18.920><c> have</c><00:03:19.120><c> instructed,</c><00:03:20.000><c> okay?</c>
+
+00:03:20.830 --> 00:03:20.840 align:start position:0%
+way they have instructed, okay?
+ 
+
+00:03:20.840 --> 00:03:24.110 align:start position:0%
+way they have instructed, okay?
+So,<00:03:21.360><c> this</c><00:03:21.640><c> is</c><00:03:21.959><c> the</c><00:03:22.640><c> subnet</c><00:03:23.440><c> in</c><00:03:23.600><c> which</c><00:03:23.840><c> we'll</c><00:03:24.000><c> be</c>
+
+00:03:24.110 --> 00:03:24.120 align:start position:0%
+So, this is the subnet in which we'll be
+ 
+
+00:03:24.120 --> 00:03:26.470 align:start position:0%
+So, this is the subnet in which we'll be
+provisioning<00:03:24.680><c> our</c><00:03:24.800><c> instance.</c><00:03:25.360><c> Now,</c>
+
+00:03:26.470 --> 00:03:26.480 align:start position:0%
+provisioning our instance. Now,
+ 
+
+00:03:26.480 --> 00:03:28.670 align:start position:0%
+provisioning our instance. Now,
+how<00:03:26.760><c> do</c><00:03:26.920><c> you</c><00:03:27.040><c> do</c><00:03:27.200><c> that?</c><00:03:27.800><c> So,</c><00:03:27.959><c> you</c><00:03:28.080><c> do</c><00:03:28.280><c> that</c><00:03:28.519><c> with</c>
+
+00:03:28.670 --> 00:03:28.680 align:start position:0%
+how do you do that? So, you do that with
+ 
+
+00:03:28.680 --> 00:03:30.830 align:start position:0%
+how do you do that? So, you do that with
+the<00:03:28.800><c> help</c><00:03:29.080><c> of</c><00:03:29.320><c> something</c><00:03:29.760><c> called</c><00:03:30.080><c> as</c><00:03:30.239><c> a</c><00:03:30.400><c> data</c>
+
+00:03:30.830 --> 00:03:30.840 align:start position:0%
+the help of something called as a data
+ 
+
+00:03:30.840 --> 00:03:33.670 align:start position:0%
+the help of something called as a data
+source.<00:03:31.800><c> Okay?</c><00:03:32.519><c> Data</c><00:03:32.840><c> source</c><00:03:33.280><c> make</c><00:03:33.560><c> it</c>
+
+00:03:33.670 --> 00:03:33.680 align:start position:0%
+source. Okay? Data source make it
+ 
+
+00:03:33.680 --> 00:03:36.590 align:start position:0%
+source. Okay? Data source make it
+possible,<00:03:34.160><c> data</c><00:03:34.480><c> source</c><00:03:35.360><c> help</c><00:03:35.800><c> you</c><00:03:36.080><c> with</c>
+
+00:03:36.590 --> 00:03:36.600 align:start position:0%
+possible, data source help you with
+ 
+
+00:03:36.600 --> 00:03:39.030 align:start position:0%
+possible, data source help you with
+taking<00:03:37.000><c> the</c><00:03:37.160><c> reference</c><00:03:37.840><c> of</c><00:03:38.080><c> resources</c><00:03:38.800><c> that</c>
+
+00:03:39.030 --> 00:03:39.040 align:start position:0%
+taking the reference of resources that
+ 
+
+00:03:39.040 --> 00:03:41.470 align:start position:0%
+taking the reference of resources that
+has<00:03:39.320><c> already</c><00:03:39.800><c> been</c><00:03:40.040><c> provisioned</c><00:03:40.600><c> for</c><00:03:40.800><c> you.</c>
+
+00:03:41.470 --> 00:03:41.480 align:start position:0%
+has already been provisioned for you.
+ 
+
+00:03:41.480 --> 00:03:43.229 align:start position:0%
+has already been provisioned for you.
+Okay?<00:03:42.000><c> So,</c><00:03:42.040><c> that</c><00:03:42.280><c> you</c><00:03:42.360><c> don't</c><00:03:42.600><c> have</c><00:03:42.800><c> to</c><00:03:42.920><c> create</c>
+
+00:03:43.229 --> 00:03:43.239 align:start position:0%
+Okay? So, that you don't have to create
+ 
+
+00:03:43.239 --> 00:03:46.070 align:start position:0%
+Okay? So, that you don't have to create
+it<00:03:43.440><c> again,</c><00:03:43.840><c> so</c><00:03:44.120><c> that</c><00:03:45.000><c> let's</c><00:03:45.280><c> say,</c><00:03:45.440><c> in</c><00:03:45.760><c> in</c><00:03:45.880><c> your</c>
+
+00:03:46.070 --> 00:03:46.080 align:start position:0%
+it again, so that let's say, in in your
+ 
+
+00:03:46.080 --> 00:03:49.430 align:start position:0%
+it again, so that let's say, in in your
+team<00:03:46.320><c> there</c><00:03:46.560><c> are</c><00:03:47.320><c> 10</c><00:03:47.600><c> devops</c><00:03:48.000><c> engineers,</c><00:03:49.200><c> each</c>
+
+00:03:49.430 --> 00:03:49.440 align:start position:0%
+team there are 10 devops engineers, each
+ 
+
+00:03:49.440 --> 00:03:51.509 align:start position:0%
+team there are 10 devops engineers, each
+of<00:03:49.600><c> them</c><00:03:49.959><c> would</c><00:03:50.160><c> not</c><00:03:50.440><c> create</c><00:03:50.800><c> their</c><00:03:51.280><c> own</c>
+
+00:03:51.509 --> 00:03:51.519 align:start position:0%
+of them would not create their own
+ 
+
+00:03:51.519 --> 00:03:53.390 align:start position:0%
+of them would not create their own
+subnet<00:03:52.000><c> or</c><00:03:52.160><c> their</c><00:03:52.400><c> own</c><00:03:52.640><c> virtual</c><00:03:53.000><c> network,</c>
+
+00:03:53.390 --> 00:03:53.400 align:start position:0%
+subnet or their own virtual network,
+ 
+
+00:03:53.400 --> 00:03:54.990 align:start position:0%
+subnet or their own virtual network,
+okay?<00:03:53.600><c> And</c><00:03:53.920><c> like</c><00:03:54.120><c> for</c><00:03:54.240><c> the</c><00:03:54.360><c> security</c><00:03:54.880><c> and</c>
+
+00:03:54.990 --> 00:03:55.000 align:start position:0%
+okay? And like for the security and
+ 
+
+00:03:55.000 --> 00:03:56.590 align:start position:0%
+okay? And like for the security and
+compliance<00:03:55.520><c> purpose</c>
+
+00:03:56.590 --> 00:03:56.600 align:start position:0%
+compliance purpose
+ 
+
+00:03:56.600 --> 00:03:58.990 align:start position:0%
+compliance purpose
+for<00:03:57.440><c> uh</c><00:03:57.520><c> the</c><00:03:57.640><c> process</c><00:03:58.080><c> setup</c><00:03:58.480><c> purpose,</c><00:03:58.800><c> there</c>
+
+00:03:58.990 --> 00:03:59.000 align:start position:0%
+for uh the process setup purpose, there
+ 
+
+00:03:59.000 --> 00:04:01.590 align:start position:0%
+for uh the process setup purpose, there
+are<00:03:59.120><c> many</c><00:03:59.440><c> other</c><00:03:59.680><c> purposes</c><00:04:00.240><c> as</c><00:04:00.480><c> well.</c>
+
+00:04:01.590 --> 00:04:01.600 align:start position:0%
+are many other purposes as well.
+ 
+
+00:04:01.600 --> 00:04:04.430 align:start position:0%
+are many other purposes as well.
+Now,<00:04:02.200><c> uh</c><00:04:02.360><c> how</c><00:04:02.680><c> do</c><00:04:02.840><c> we</c><00:04:03.000><c> create</c><00:04:03.400><c> it?</c><00:04:03.600><c> So,</c><00:04:03.920><c> in</c><00:04:04.200><c> our</c>
+
+00:04:04.430 --> 00:04:04.440 align:start position:0%
+Now, uh how do we create it? So, in our
+ 
+
+00:04:04.440 --> 00:04:06.110 align:start position:0%
+Now, uh how do we create it? So, in our
+let's<00:04:04.720><c> say</c><00:04:04.960><c> over</c><00:04:05.200><c> here,</c><00:04:05.480><c> let's</c><00:04:05.680><c> say</c><00:04:05.800><c> you</c><00:04:05.920><c> have</c>
+
+00:04:06.110 --> 00:04:06.120 align:start position:0%
+let's say over here, let's say you have
+ 
+
+00:04:06.120 --> 00:04:08.350 align:start position:0%
+let's say over here, let's say you have
+your<00:04:06.240><c> Terraform</c><00:04:06.680><c> code,</c><00:04:07.400><c> okay?</c><00:04:07.720><c> In</c><00:04:07.920><c> that,</c><00:04:08.240><c> you</c>
+
+00:04:08.350 --> 00:04:08.360 align:start position:0%
+your Terraform code, okay? In that, you
+ 
+
+00:04:08.360 --> 00:04:10.350 align:start position:0%
+your Terraform code, okay? In that, you
+create<00:04:08.880><c> something</c><00:04:09.360><c> called</c><00:04:09.720><c> as</c><00:04:09.920><c> a</c><00:04:10.000><c> data</c>
+
+00:04:10.350 --> 00:04:10.360 align:start position:0%
+create something called as a data
+ 
+
+00:04:10.360 --> 00:04:11.390 align:start position:0%
+create something called as a data
+source.
+
+00:04:11.390 --> 00:04:11.400 align:start position:0%
+source.
+ 
+
+00:04:11.400 --> 00:04:13.270 align:start position:0%
+source.
+So,<00:04:11.520><c> you</c><00:04:11.680><c> create</c><00:04:12.000><c> data</c><00:04:12.280><c> source</c><00:04:12.680><c> for</c><00:04:12.959><c> your</c>
+
+00:04:13.270 --> 00:04:13.280 align:start position:0%
+So, you create data source for your
+ 
+
+00:04:13.280 --> 00:04:17.069 align:start position:0%
+So, you create data source for your
+subnet,<00:04:14.440><c> for</c><00:04:14.760><c> your</c><00:04:15.080><c> VNet.</c>
+
+00:04:17.069 --> 00:04:17.079 align:start position:0%
+subnet, for your VNet.
+ 
+
+00:04:17.079 --> 00:04:20.590 align:start position:0%
+subnet, for your VNet.
+Okay?<00:04:17.680><c> And</c><00:04:17.880><c> then</c><00:04:18.120><c> you</c><00:04:18.400><c> give</c><00:04:18.680><c> the</c><00:04:18.840><c> reference</c><00:04:19.600><c> of</c>
+
+00:04:20.590 --> 00:04:20.600 align:start position:0%
+Okay? And then you give the reference of
+ 
+
+00:04:20.600 --> 00:04:22.710 align:start position:0%
+Okay? And then you give the reference of
+this<00:04:20.880><c> particular</c><00:04:21.400><c> subnet</c><00:04:21.880><c> over</c><00:04:22.080><c> here,</c><00:04:22.520><c> and</c>
+
+00:04:22.710 --> 00:04:22.720 align:start position:0%
+this particular subnet over here, and
+ 
+
+00:04:22.720 --> 00:04:24.030 align:start position:0%
+this particular subnet over here, and
+you<00:04:22.800><c> give</c><00:04:23.040><c> the</c><00:04:23.160><c> reference</c><00:04:23.640><c> of</c><00:04:23.840><c> this</c>
+
+00:04:24.030 --> 00:04:24.040 align:start position:0%
+you give the reference of this
+ 
+
+00:04:24.040 --> 00:04:26.390 align:start position:0%
+you give the reference of this
+particular<00:04:24.600><c> VNet</c><00:04:24.960><c> over</c><00:04:25.160><c> here.</c>
+
+00:04:26.390 --> 00:04:26.400 align:start position:0%
+particular VNet over here.
+ 
+
+00:04:26.400 --> 00:04:28.310 align:start position:0%
+particular VNet over here.
+Okay?<00:04:26.560><c> Now,</c><00:04:27.040><c> when</c><00:04:27.320><c> you</c><00:04:27.480><c> instruct</c><00:04:28.080><c> your</c>
+
+00:04:28.310 --> 00:04:28.320 align:start position:0%
+Okay? Now, when you instruct your
+ 
+
+00:04:28.320 --> 00:04:30.909 align:start position:0%
+Okay? Now, when you instruct your
+Terraform<00:04:29.040><c> to</c><00:04:29.400><c> provision</c>
+
+00:04:30.909 --> 00:04:30.919 align:start position:0%
+Terraform to provision
+ 
+
+00:04:30.919 --> 00:04:33.550 align:start position:0%
+Terraform to provision
+the<00:04:31.160><c> virtual</c><00:04:31.600><c> machine</c><00:04:32.120><c> with</c><00:04:32.320><c> the</c><00:04:32.440><c> help</c><00:04:32.760><c> of</c>
+
+00:04:33.550 --> 00:04:33.560 align:start position:0%
+the virtual machine with the help of
+ 
+
+00:04:33.560 --> 00:04:36.630 align:start position:0%
+the virtual machine with the help of
+these<00:04:33.880><c> data</c><00:04:34.200><c> sources,</c><00:04:35.320><c> then</c><00:04:35.840><c> that</c><00:04:36.160><c> virtual</c>
+
+00:04:36.630 --> 00:04:36.640 align:start position:0%
+these data sources, then that virtual
+ 
+
+00:04:36.640 --> 00:04:39.950 align:start position:0%
+these data sources, then that virtual
+machine,<00:04:37.320><c> it</c><00:04:37.560><c> will</c><00:04:37.840><c> exist</c><00:04:38.560><c> in</c><00:04:39.200><c> your</c><00:04:39.520><c> resource</c>
+
+00:04:39.950 --> 00:04:39.960 align:start position:0%
+machine, it will exist in your resource
+ 
+
+00:04:39.960 --> 00:04:43.909 align:start position:0%
+machine, it will exist in your resource
+group,<00:04:40.800><c> but</c><00:04:41.320><c> it</c><00:04:41.520><c> will</c><00:04:41.680><c> be</c><00:04:41.840><c> part</c><00:04:42.160><c> of</c><00:04:42.400><c> this</c>
+
+00:04:43.909 --> 00:04:43.919 align:start position:0%
+group, but it will be part of this
+ 
+
+00:04:43.919 --> 00:04:47.230 align:start position:0%
+group, but it will be part of this
+shared<00:04:44.680><c> virtual</c><00:04:45.080><c> network</c><00:04:45.640><c> and</c><00:04:45.960><c> subnet</c><00:04:46.520><c> six,</c>
+
+00:04:47.230 --> 00:04:47.240 align:start position:0%
+shared virtual network and subnet six,
+ 
+
+00:04:47.240 --> 00:04:49.870 align:start position:0%
+shared virtual network and subnet six,
+okay?<00:04:47.560><c> So,</c><00:04:48.000><c> here</c><00:04:48.240><c> it</c><00:04:48.440><c> will</c><00:04:48.640><c> be</c><00:04:48.760><c> created.</c>
+
+00:04:49.870 --> 00:04:49.880 align:start position:0%
+okay? So, here it will be created.
+ 
+
+00:04:49.880 --> 00:04:52.110 align:start position:0%
+okay? So, here it will be created.
+Okay?<00:04:50.480><c> So,</c><00:04:50.680><c> it</c><00:04:50.840><c> will</c><00:04:51.000><c> be</c><00:04:51.120><c> more</c><00:04:51.400><c> clear</c><00:04:51.760><c> when</c><00:04:52.000><c> we</c>
+
+00:04:52.110 --> 00:04:52.120 align:start position:0%
+Okay? So, it will be more clear when we
+ 
+
+00:04:52.120 --> 00:04:53.870 align:start position:0%
+Okay? So, it will be more clear when we
+have<00:04:52.360><c> a</c><00:04:52.400><c> look</c><00:04:52.640><c> at</c><00:04:52.800><c> that</c><00:04:53.160><c> with</c><00:04:53.280><c> the</c><00:04:53.400><c> help</c><00:04:53.600><c> of</c><00:04:53.760><c> an</c>
+
+00:04:53.870 --> 00:04:53.880 align:start position:0%
+have a look at that with the help of an
+ 
+
+00:04:53.880 --> 00:04:55.870 align:start position:0%
+have a look at that with the help of an
+example,<00:04:54.440><c> when</c><00:04:54.640><c> we'll</c><00:04:54.919><c> do</c><00:04:55.080><c> the</c><00:04:55.200><c> demo,</c><00:04:55.520><c> which</c>
+
+00:04:55.870 --> 00:04:55.880 align:start position:0%
+example, when we'll do the demo, which
+ 
+
+00:04:55.880 --> 00:04:58.350 align:start position:0%
+example, when we'll do the demo, which
+what<00:04:56.160><c> we</c><00:04:56.480><c> are</c><00:04:56.560><c> going</c><00:04:56.919><c> to</c><00:04:57.040><c> do</c><00:04:57.240><c> next.</c><00:04:57.800><c> So,</c><00:04:58.040><c> let's</c>
+
+00:04:58.350 --> 00:04:58.360 align:start position:0%
+what we are going to do next. So, let's
+ 
+
+00:04:58.360 --> 00:05:00.230 align:start position:0%
+what we are going to do next. So, let's
+have<00:04:58.520><c> a</c><00:04:58.560><c> look</c><00:04:58.760><c> at</c><00:04:58.880><c> that.</c><00:04:59.120><c> I'm</c><00:04:59.280><c> going</c><00:04:59.440><c> to</c>
+
+00:05:00.230 --> 00:05:00.240 align:start position:0%
+have a look at that. I'm going to
+ 
+
+00:05:00.240 --> 00:05:03.670 align:start position:0%
+have a look at that. I'm going to
+keep<00:05:00.480><c> this</c><00:05:00.840><c> away</c><00:05:01.120><c> for</c><00:05:01.320><c> now.</c>
+
+00:05:03.670 --> 00:05:03.680 align:start position:0%
+keep this away for now.
+ 
+
+00:05:03.680 --> 00:05:05.750 align:start position:0%
+keep this away for now.
+Okay?
+
+00:05:05.750 --> 00:05:05.760 align:start position:0%
+Okay?
+ 
+
+00:05:05.760 --> 00:05:09.230 align:start position:0%
+Okay?
+And<00:05:06.400><c> let's</c><00:05:06.680><c> go</c><00:05:06.919><c> back</c><00:05:07.320><c> to</c><00:05:07.560><c> our</c><00:05:07.800><c> screen.</c>
+
+00:05:09.230 --> 00:05:09.240 align:start position:0%
+And let's go back to our screen.
+ 
+
+00:05:09.240 --> 00:05:12.590 align:start position:0%
+And let's go back to our screen.
+Okay.<00:05:09.840><c> So,</c><00:05:10.040><c> I</c><00:05:10.120><c> have</c><00:05:10.560><c> taken</c><00:05:11.360><c> uh</c><00:05:11.520><c> provider.sh</c>
+
+00:05:12.590 --> 00:05:12.600 align:start position:0%
+Okay. So, I have taken uh provider.sh
+ 
+
+00:05:12.600 --> 00:05:14.830 align:start position:0%
+Okay. So, I have taken uh provider.sh
+and<00:05:12.720><c> backend.sh</c><00:05:13.600><c> from</c><00:05:13.760><c> the</c><00:05:13.880><c> previous</c><00:05:14.240><c> videos.</c>
+
+00:05:14.830 --> 00:05:14.840 align:start position:0%
+and backend.sh from the previous videos.
+ 
+
+00:05:14.840 --> 00:05:16.870 align:start position:0%
+and backend.sh from the previous videos.
+Now,<00:05:15.160><c> what</c><00:05:15.400><c> we</c><00:05:15.480><c> need</c><00:05:15.720><c> to</c><00:05:15.840><c> do</c><00:05:16.000><c> is</c>
+
+00:05:16.870 --> 00:05:16.880 align:start position:0%
+Now, what we need to do is
+ 
+
+00:05:16.880 --> 00:05:18.350 align:start position:0%
+Now, what we need to do is
+we<00:05:16.960><c> need</c><00:05:17.200><c> to</c><00:05:17.280><c> take</c><00:05:17.480><c> the</c><00:05:17.600><c> reference</c><00:05:18.000><c> of</c><00:05:18.160><c> as</c><00:05:18.320><c> I</c>
+
+00:05:18.350 --> 00:05:18.360 align:start position:0%
+we need to take the reference of as I
+ 
+
+00:05:18.360 --> 00:05:19.790 align:start position:0%
+we need to take the reference of as I
+have<00:05:18.520><c> told</c><00:05:18.840><c> you</c><00:05:19.000><c> from</c><00:05:19.240><c> the</c><00:05:19.320><c> existing</c>
+
+00:05:19.790 --> 00:05:19.800 align:start position:0%
+have told you from the existing
+ 
+
+00:05:19.800 --> 00:05:20.909 align:start position:0%
+have told you from the existing
+resource.
+
+00:05:20.909 --> 00:05:20.919 align:start position:0%
+resource.
+ 
+
+00:05:20.919 --> 00:05:24.230 align:start position:0%
+resource.
+So,<00:05:21.480><c> I</c><00:05:21.800><c> already</c><00:05:22.280><c> have</c><00:05:22.720><c> the</c><00:05:22.880><c> resource</c><00:05:23.360><c> created.</c>
+
+00:05:24.230 --> 00:05:24.240 align:start position:0%
+So, I already have the resource created.
+ 
+
+00:05:24.240 --> 00:05:25.310 align:start position:0%
+So, I already have the resource created.
+So,
+
+00:05:25.310 --> 00:05:25.320 align:start position:0%
+So,
+ 
+
+00:05:25.320 --> 00:05:27.550 align:start position:0%
+So,
+uh<00:05:25.760><c> where</c><00:05:25.919><c> it</c><00:05:26.040><c> is?</c><00:05:26.200><c> Here.</c><00:05:26.840><c> So,</c><00:05:26.960><c> I</c><00:05:27.000><c> have</c><00:05:27.120><c> created</c>
+
+00:05:27.550 --> 00:05:27.560 align:start position:0%
+uh where it is? Here. So, I have created
+ 
+
+00:05:27.560 --> 00:05:30.630 align:start position:0%
+uh where it is? Here. So, I have created
+one<00:05:28.120><c> shared</c><00:05:28.680><c> virtual</c><00:05:29.120><c> network</c><00:05:29.560><c> and</c><00:05:29.760><c> called</c><00:05:30.120><c> it</c>
+
+00:05:30.630 --> 00:05:30.640 align:start position:0%
+one shared virtual network and called it
+ 
+
+00:05:30.640 --> 00:05:32.590 align:start position:0%
+one shared virtual network and called it
+shared<00:05:31.120><c> network</c><00:05:31.520><c> RG.</c>
+
+00:05:32.590 --> 00:05:32.600 align:start position:0%
+shared network RG.
+ 
+
+00:05:32.600 --> 00:05:34.909 align:start position:0%
+shared network RG.
+Okay?<00:05:32.720><c> Inside</c><00:05:33.200><c> that,</c><00:05:33.400><c> I</c><00:05:33.480><c> have</c><00:05:33.640><c> created</c><00:05:34.360><c> uh</c>
+
+00:05:34.909 --> 00:05:34.919 align:start position:0%
+Okay? Inside that, I have created uh
+ 
+
+00:05:34.919 --> 00:05:37.430 align:start position:0%
+Okay? Inside that, I have created uh
+subnet<00:05:35.560><c> and</c><00:05:35.760><c> called</c><00:05:36.080><c> it</c><00:05:36.360><c> No,</c><00:05:36.600><c> that's</c><00:05:37.080><c> actually</c>
+
+00:05:37.430 --> 00:05:37.440 align:start position:0%
+subnet and called it No, that's actually
+ 
+
+00:05:37.440 --> 00:05:39.230 align:start position:0%
+subnet and called it No, that's actually
+that's<00:05:37.800><c> the</c><00:05:38.080><c> resource</c><00:05:38.520><c> group</c><00:05:38.720><c> name,</c><00:05:38.960><c> shared</c>
+
+00:05:39.230 --> 00:05:39.240 align:start position:0%
+that's the resource group name, shared
+ 
+
+00:05:39.240 --> 00:05:41.630 align:start position:0%
+that's the resource group name, shared
+network<00:05:39.600><c> RG,</c><00:05:39.960><c> and</c><00:05:40.160><c> then</c><00:05:40.320><c> we</c><00:05:40.440><c> have</c><00:05:40.680><c> a</c><00:05:40.800><c> shared</c>
+
+00:05:41.630 --> 00:05:41.640 align:start position:0%
+network RG, and then we have a shared
+ 
+
+00:05:41.640 --> 00:05:44.270 align:start position:0%
+network RG, and then we have a shared
+virtual<00:05:42.040><c> network,</c><00:05:42.480><c> shared</c><00:05:42.880><c> network</c><00:05:43.280><c> VNet.</c>
+
+00:05:44.270 --> 00:05:44.280 align:start position:0%
+virtual network, shared network VNet.
+ 
+
+00:05:44.280 --> 00:05:46.750 align:start position:0%
+virtual network, shared network VNet.
+Inside<00:05:44.760><c> that,</c><00:05:45.000><c> I</c><00:05:45.040><c> have</c><00:05:45.200><c> created</c><00:05:45.760><c> a</c><00:05:45.880><c> subnet,</c>
+
+00:05:46.750 --> 00:05:46.760 align:start position:0%
+Inside that, I have created a subnet,
+ 
+
+00:05:46.760 --> 00:05:49.630 align:start position:0%
+Inside that, I have created a subnet,
+shared<00:05:47.160><c> primary</c><00:05:48.080><c> SN.</c><00:05:48.960><c> Right?</c><00:05:49.160><c> So,</c><00:05:49.280><c> we</c><00:05:49.440><c> have</c>
+
+00:05:49.630 --> 00:05:49.640 align:start position:0%
+shared primary SN. Right? So, we have
+ 
+
+00:05:49.640 --> 00:05:51.710 align:start position:0%
+shared primary SN. Right? So, we have
+these<00:05:49.920><c> three</c><00:05:50.240><c> resources</c><00:05:50.840><c> created.</c><00:05:51.440><c> Now,</c>
+
+00:05:51.710 --> 00:05:51.720 align:start position:0%
+these three resources created. Now,
+ 
+
+00:05:51.720 --> 00:05:53.990 align:start position:0%
+these three resources created. Now,
+we'll<00:05:51.960><c> be</c><00:05:52.080><c> creating</c><00:05:52.600><c> data</c><00:05:52.920><c> source</c><00:05:53.440><c> for</c><00:05:53.720><c> these</c>
+
+00:05:53.990 --> 00:05:54.000 align:start position:0%
+we'll be creating data source for these
+ 
+
+00:05:54.000 --> 00:05:56.190 align:start position:0%
+we'll be creating data source for these
+three<00:05:54.200><c> resources</c><00:05:54.800><c> so</c><00:05:54.880><c> that</c><00:05:55.120><c> we</c><00:05:55.240><c> can</c><00:05:55.480><c> use</c><00:05:55.720><c> in</c>
+
+00:05:56.190 --> 00:05:56.200 align:start position:0%
+three resources so that we can use in
+ 
+
+00:05:56.200 --> 00:05:58.550 align:start position:0%
+three resources so that we can use in
+our<00:05:56.400><c> existing</c><00:05:56.960><c> configuration.</c>
+
+00:05:58.550 --> 00:05:58.560 align:start position:0%
+our existing configuration.
+ 
+
+00:05:58.560 --> 00:05:59.830 align:start position:0%
+our existing configuration.
+And<00:05:58.880><c> what</c><00:05:59.080><c> we're</c><00:05:59.240><c> going</c><00:05:59.360><c> to</c><00:05:59.440><c> do,</c><00:05:59.600><c> we're</c><00:05:59.720><c> going</c>
+
+00:05:59.830 --> 00:05:59.840 align:start position:0%
+And what we're going to do, we're going
+ 
+
+00:05:59.840 --> 00:06:00.750 align:start position:0%
+And what we're going to do, we're going
+to
+
+00:06:00.750 --> 00:06:00.760 align:start position:0%
+to
+ 
+
+00:06:00.760 --> 00:06:01.350 align:start position:0%
+to
+um
+
+00:06:01.350 --> 00:06:01.360 align:start position:0%
+um
+ 
+
+00:06:01.360 --> 00:06:03.830 align:start position:0%
+um
+implement<00:06:02.240><c> or</c><00:06:02.360><c> we're</c><00:06:02.480><c> going</c><00:06:02.680><c> to</c><00:06:02.800><c> provision</c><00:06:03.600><c> a</c>
+
+00:06:03.830 --> 00:06:03.840 align:start position:0%
+implement or we're going to provision a
+ 
+
+00:06:03.840 --> 00:06:06.070 align:start position:0%
+implement or we're going to provision a
+virtual<00:06:04.240><c> machine</c><00:06:04.600><c> using</c><00:06:04.920><c> these,</c><00:06:05.240><c> okay?</c><00:06:05.880><c> So,</c>
+
+00:06:06.070 --> 00:06:06.080 align:start position:0%
+virtual machine using these, okay? So,
+ 
+
+00:06:06.080 --> 00:06:07.950 align:start position:0%
+virtual machine using these, okay? So,
+I'm<00:06:06.240><c> just</c><00:06:06.520><c> going</c><00:06:06.720><c> to</c><00:06:06.920><c> copy</c><00:06:07.400><c> the</c><00:06:07.600><c> virtual</c>
+
+00:06:07.950 --> 00:06:07.960 align:start position:0%
+I'm just going to copy the virtual
+ 
+
+00:06:07.960 --> 00:06:09.230 align:start position:0%
+I'm just going to copy the virtual
+machine
+
+00:06:09.230 --> 00:06:09.240 align:start position:0%
+machine
+ 
+
+00:06:09.240 --> 00:06:10.190 align:start position:0%
+machine
+um
+
+00:06:10.190 --> 00:06:10.200 align:start position:0%
+um
+ 
+
+00:06:10.200 --> 00:06:12.670 align:start position:0%
+um
+Let's<00:06:11.160><c> go</c><00:06:11.320><c> over</c><00:06:11.520><c> here</c>
+
+00:06:12.670 --> 00:06:12.680 align:start position:0%
+Let's go over here
+ 
+
+00:06:12.680 --> 00:06:14.990 align:start position:0%
+Let's go over here
+and<00:06:13.120><c> I'm</c><00:06:13.320><c> going</c><00:06:13.440><c> to</c><00:06:13.560><c> copy</c><00:06:13.880><c> Azure</c><00:06:14.280><c> RM</c><00:06:14.680><c> virtual</c>
+
+00:06:14.990 --> 00:06:15.000 align:start position:0%
+and I'm going to copy Azure RM virtual
+ 
+
+00:06:15.000 --> 00:06:17.030 align:start position:0%
+and I'm going to copy Azure RM virtual
+machine
+
+00:06:17.030 --> 00:06:17.040 align:start position:0%
+machine
+ 
+
+00:06:17.040 --> 00:06:20.030 align:start position:0%
+machine
+um<00:06:17.840><c> sample</c><00:06:18.560><c> code</c><00:06:18.880><c> from</c><00:06:19.680><c> uh</c><00:06:19.760><c> from</c><00:06:19.919><c> the</c>
+
+00:06:20.030 --> 00:06:20.040 align:start position:0%
+um sample code from uh from the
+ 
+
+00:06:20.040 --> 00:06:22.750 align:start position:0%
+um sample code from uh from the
+documentation.<00:06:20.960><c> Where</c><00:06:21.120><c> it</c><00:06:21.240><c> is?</c><00:06:21.520><c> Let's</c><00:06:21.800><c> see.</c>
+
+00:06:22.750 --> 00:06:22.760 align:start position:0%
+documentation. Where it is? Let's see.
+ 
+
+00:06:22.760 --> 00:06:25.950 align:start position:0%
+documentation. Where it is? Let's see.
+Um<00:06:23.520><c> close.</c><00:06:24.040><c> Okay,</c><00:06:24.400><c> here.</c>
+
+00:06:25.950 --> 00:06:25.960 align:start position:0%
+Um close. Okay, here.
+ 
+
+00:06:25.960 --> 00:06:28.110 align:start position:0%
+Um close. Okay, here.
+Right?<00:06:26.280><c> So,</c><00:06:26.760><c> let's</c><00:06:27.160><c> create</c><00:06:27.520><c> a</c><00:06:27.560><c> sample</c><00:06:27.960><c> and</c>
+
+00:06:28.110 --> 00:06:28.120 align:start position:0%
+Right? So, let's create a sample and
+ 
+
+00:06:28.120 --> 00:06:29.630 align:start position:0%
+Right? So, let's create a sample and
+we'll<00:06:28.280><c> make</c><00:06:28.520><c> the</c><00:06:28.640><c> changes</c><00:06:29.080><c> over</c><00:06:29.240><c> there.</c><00:06:29.480><c> So,</c><00:06:29.600><c> I</c>
+
+00:06:29.630 --> 00:06:29.640 align:start position:0%
+we'll make the changes over there. So, I
+ 
+
+00:06:29.640 --> 00:06:31.909 align:start position:0%
+we'll make the changes over there. So, I
+have<00:06:29.840><c> copied</c><00:06:30.320><c> it.</c><00:06:30.840><c> Now,</c>
+
+00:06:31.909 --> 00:06:31.919 align:start position:0%
+have copied it. Now,
+ 
+
+00:06:31.919 --> 00:06:34.470 align:start position:0%
+have copied it. Now,
+I'll<00:06:32.240><c> create</c><00:06:32.800><c> a</c><00:06:32.840><c> new</c><00:06:33.160><c> file</c><00:06:33.720><c> and</c><00:06:34.080><c> I'm</c><00:06:34.200><c> going</c><00:06:34.320><c> to</c>
+
+00:06:34.470 --> 00:06:34.480 align:start position:0%
+I'll create a new file and I'm going to
+ 
+
+00:06:34.480 --> 00:06:38.310 align:start position:0%
+I'll create a new file and I'm going to
+call<00:06:34.880><c> it</c><00:06:35.160><c> main.tf.</c>
+
+00:06:38.310 --> 00:06:38.320 align:start position:0%
+ 
+ 
+
+00:06:38.320 --> 00:06:42.670 align:start position:0%
+ 
+Let's<00:06:38.480><c> paste</c><00:06:38.760><c> it</c><00:06:38.880><c> over</c><00:06:39.040><c> here.</c>
+
+00:06:42.670 --> 00:06:42.680 align:start position:0%
+ 
+ 
+
+00:06:42.680 --> 00:06:45.070 align:start position:0%
+ 
+Okay.<00:06:43.000><c> Now,</c><00:06:43.320><c> it</c><00:06:43.640><c> has</c><00:06:43.919><c> a</c><00:06:44.000><c> variable</c><00:06:44.560><c> which</c><00:06:44.800><c> says</c>
+
+00:06:45.070 --> 00:06:45.080 align:start position:0%
+Okay. Now, it has a variable which says
+ 
+
+00:06:45.080 --> 00:06:47.190 align:start position:0%
+Okay. Now, it has a variable which says
+it's<00:06:45.200><c> prefix.</c><00:06:46.040><c> So,</c><00:06:46.240><c> let's</c><00:06:46.520><c> keep</c><00:06:46.800><c> it</c><00:06:46.960><c> the</c><00:06:47.080><c> way</c>
+
+00:06:47.190 --> 00:06:47.200 align:start position:0%
+it's prefix. So, let's keep it the way
+ 
+
+00:06:47.200 --> 00:06:49.030 align:start position:0%
+it's prefix. So, let's keep it the way
+it<00:06:47.320><c> is.</c><00:06:47.680><c> I'll</c><00:06:47.800><c> just</c><00:06:48.080><c> change</c><00:06:48.400><c> the</c><00:06:48.520><c> name</c><00:06:48.800><c> to</c>
+
+00:06:49.030 --> 00:06:49.040 align:start position:0%
+it is. I'll just change the name to
+ 
+
+00:06:49.040 --> 00:06:51.950 align:start position:0%
+it is. I'll just change the name to
+something<00:06:49.600><c> more</c><00:06:50.480><c> uh</c><00:06:50.560><c> meaningful</c><00:06:51.080><c> to</c><00:06:51.280><c> us.</c><00:06:51.840><c> So,</c>
+
+00:06:51.950 --> 00:06:51.960 align:start position:0%
+something more uh meaningful to us. So,
+ 
+
+00:06:51.960 --> 00:06:54.470 align:start position:0%
+something more uh meaningful to us. So,
+let's<00:06:52.200><c> call</c><00:06:52.440><c> it</c><00:06:52.600><c> day</c><00:06:52.760><c> 13.</c>
+
+00:06:54.470 --> 00:06:54.480 align:start position:0%
+let's call it day 13.
+ 
+
+00:06:54.480 --> 00:06:57.270 align:start position:0%
+let's call it day 13.
+So,<00:06:55.120><c> now</c><00:06:56.280><c> our</c><00:06:56.400><c> resource</c><00:06:56.800><c> group</c><00:06:57.000><c> will</c><00:06:57.160><c> be</c>
+
+00:06:57.270 --> 00:06:57.280 align:start position:0%
+So, now our resource group will be
+ 
+
+00:06:57.280 --> 00:06:59.510 align:start position:0%
+So, now our resource group will be
+created<00:06:57.760><c> with</c><00:06:57.960><c> the</c><00:06:58.080><c> name</c><00:06:58.440><c> var</c><00:06:58.760><c> prefix,</c><00:06:59.360><c> which</c>
+
+00:06:59.510 --> 00:06:59.520 align:start position:0%
+created with the name var prefix, which
+ 
+
+00:06:59.520 --> 00:07:01.030 align:start position:0%
+created with the name var prefix, which
+is<00:06:59.680><c> day</c><00:06:59.840><c> 13.</c>
+
+00:07:01.030 --> 00:07:01.040 align:start position:0%
+is day 13.
+ 
+
+00:07:01.040 --> 00:07:02.870 align:start position:0%
+is day 13.
+And<00:07:01.680><c> RG.</c>
+
+00:07:02.870 --> 00:07:02.880 align:start position:0%
+And RG.
+ 
+
+00:07:02.880 --> 00:07:05.310 align:start position:0%
+And RG.
+Let's<00:07:03.240><c> change</c><00:07:03.600><c> the</c><00:07:03.760><c> location</c><00:07:04.440><c> to</c><00:07:04.919><c> Canada</c>
+
+00:07:05.310 --> 00:07:05.320 align:start position:0%
+Let's change the location to Canada
+ 
+
+00:07:05.320 --> 00:07:08.190 align:start position:0%
+Let's change the location to Canada
+Central.<00:07:05.760><c> Feel</c><00:07:06.040><c> free</c><00:07:06.240><c> to</c><00:07:06.400><c> use</c><00:07:06.760><c> variables.</c><00:07:08.000><c> Um</c>
+
+00:07:08.190 --> 00:07:08.200 align:start position:0%
+Central. Feel free to use variables. Um
+ 
+
+00:07:08.200 --> 00:07:10.790 align:start position:0%
+Central. Feel free to use variables. Um
+so,<00:07:08.320><c> we</c><00:07:08.520><c> have</c><00:07:08.720><c> seen</c><00:07:08.960><c> that</c><00:07:09.160><c> multiple</c><00:07:09.600><c> times.</c>
+
+00:07:10.790 --> 00:07:10.800 align:start position:0%
+so, we have seen that multiple times.
+ 
+
+00:07:10.800 --> 00:07:14.150 align:start position:0%
+so, we have seen that multiple times.
+Okay?<00:07:11.360><c> And</c><00:07:11.520><c> now,</c><00:07:12.200><c> it</c><00:07:13.160><c> it's</c><00:07:13.280><c> going</c><00:07:13.440><c> to</c><00:07:13.600><c> create</c>
+
+00:07:14.150 --> 00:07:14.160 align:start position:0%
+Okay? And now, it it's going to create
+ 
+
+00:07:14.160 --> 00:07:16.790 align:start position:0%
+Okay? And now, it it's going to create
+one<00:07:14.360><c> virtual</c><00:07:14.720><c> network</c><00:07:15.240><c> and</c><00:07:15.560><c> one</c><00:07:15.720><c> subnet.</c><00:07:16.320><c> But,</c>
+
+00:07:16.790 --> 00:07:16.800 align:start position:0%
+one virtual network and one subnet. But,
+ 
+
+00:07:16.800 --> 00:07:18.150 align:start position:0%
+one virtual network and one subnet. But,
+we<00:07:16.880><c> don't</c><00:07:17.080><c> need</c><00:07:17.280><c> to</c><00:07:17.360><c> create</c><00:07:17.640><c> those.</c><00:07:18.040><c> We</c>
+
+00:07:18.150 --> 00:07:18.160 align:start position:0%
+we don't need to create those. We
+ 
+
+00:07:18.160 --> 00:07:19.950 align:start position:0%
+we don't need to create those. We
+already<00:07:18.520><c> have</c><00:07:18.800><c> those</c><00:07:19.000><c> created.</c><00:07:19.400><c> We</c><00:07:19.520><c> just</c><00:07:19.760><c> need</c>
+
+00:07:19.950 --> 00:07:19.960 align:start position:0%
+already have those created. We just need
+ 
+
+00:07:19.960 --> 00:07:21.750 align:start position:0%
+already have those created. We just need
+to<00:07:20.080><c> give</c><00:07:20.240><c> the</c><00:07:20.360><c> reference</c><00:07:20.840><c> for</c><00:07:20.960><c> those,</c><00:07:21.240><c> okay?</c>
+
+00:07:21.750 --> 00:07:21.760 align:start position:0%
+to give the reference for those, okay?
+ 
+
+00:07:21.760 --> 00:07:23.990 align:start position:0%
+to give the reference for those, okay?
+So,<00:07:21.880><c> I'm</c><00:07:22.000><c> just</c><00:07:22.160><c> going</c><00:07:22.280><c> to</c><00:07:22.400><c> delete</c><00:07:23.200><c> these</c><00:07:23.600><c> two</c>
+
+00:07:23.990 --> 00:07:24.000 align:start position:0%
+So, I'm just going to delete these two
+ 
+
+00:07:24.000 --> 00:07:26.550 align:start position:0%
+So, I'm just going to delete these two
+resources<00:07:24.560><c> from</c><00:07:24.760><c> here.</c>
+
+00:07:26.550 --> 00:07:26.560 align:start position:0%
+resources from here.
+ 
+
+00:07:26.560 --> 00:07:28.630 align:start position:0%
+resources from here.
+Okay?<00:07:26.960><c> And</c><00:07:27.440><c> now,</c><00:07:27.640><c> how</c><00:07:27.919><c> we</c><00:07:28.320><c> take</c><00:07:28.520><c> the</c>
+
+00:07:28.630 --> 00:07:28.640 align:start position:0%
+Okay? And now, how we take the
+ 
+
+00:07:28.640 --> 00:07:30.270 align:start position:0%
+Okay? And now, how we take the
+reference?<00:07:29.120><c> We'll</c><00:07:29.280><c> create</c><00:07:29.640><c> something</c><00:07:30.040><c> called</c>
+
+00:07:30.270 --> 00:07:30.280 align:start position:0%
+reference? We'll create something called
+ 
+
+00:07:30.280 --> 00:07:32.230 align:start position:0%
+reference? We'll create something called
+as<00:07:30.400><c> a</c><00:07:30.480><c> data</c><00:07:30.760><c> source.</c><00:07:31.240><c> So,</c><00:07:31.440><c> you</c><00:07:31.560><c> can</c><00:07:31.760><c> create</c><00:07:32.040><c> the</c>
+
+00:07:32.230 --> 00:07:32.240 align:start position:0%
+as a data source. So, you can create the
+ 
+
+00:07:32.240 --> 00:07:33.790 align:start position:0%
+as a data source. So, you can create the
+in<00:07:32.360><c> the</c><00:07:32.440><c> same</c><00:07:32.720><c> file</c><00:07:33.080><c> or</c><00:07:33.240><c> you</c><00:07:33.320><c> can</c><00:07:33.480><c> create</c><00:07:33.720><c> a</c>
+
+00:07:33.790 --> 00:07:33.800 align:start position:0%
+in the same file or you can create a
+ 
+
+00:07:33.800 --> 00:07:35.430 align:start position:0%
+in the same file or you can create a
+separate<00:07:34.160><c> file.</c><00:07:34.440><c> Let's</c><00:07:34.680><c> create</c><00:07:35.000><c> in</c><00:07:35.080><c> the</c><00:07:35.200><c> same</c>
+
+00:07:35.430 --> 00:07:35.440 align:start position:0%
+separate file. Let's create in the same
+ 
+
+00:07:35.440 --> 00:07:36.790 align:start position:0%
+separate file. Let's create in the same
+file<00:07:35.760><c> and</c><00:07:35.919><c> then</c><00:07:36.080><c> we'll</c><00:07:36.280><c> move</c><00:07:36.480><c> it</c><00:07:36.600><c> to</c><00:07:36.680><c> the</c>
+
+00:07:36.790 --> 00:07:36.800 align:start position:0%
+file and then we'll move it to the
+ 
+
+00:07:36.800 --> 00:07:38.070 align:start position:0%
+file and then we'll move it to the
+separate<00:07:37.200><c> file.</c>
+
+00:07:38.070 --> 00:07:38.080 align:start position:0%
+separate file.
+ 
+
+00:07:38.080 --> 00:07:40.909 align:start position:0%
+separate file.
+So,<00:07:38.240><c> it</c><00:07:38.400><c> starts</c><00:07:38.880><c> with</c><00:07:39.080><c> data,</c><00:07:40.000><c> okay?</c><00:07:40.440><c> And</c><00:07:40.680><c> then</c>
+
+00:07:40.909 --> 00:07:40.919 align:start position:0%
+So, it starts with data, okay? And then
+ 
+
+00:07:40.919 --> 00:07:42.950 align:start position:0%
+So, it starts with data, okay? And then
+the<00:07:41.440><c> name</c><00:07:41.680><c> of</c><00:07:41.840><c> the</c>
+
+00:07:42.950 --> 00:07:42.960 align:start position:0%
+the name of the
+ 
+
+00:07:42.960 --> 00:07:46.030 align:start position:0%
+the name of the
+uh<00:07:43.480><c> data</c><00:07:43.800><c> source</c><00:07:44.280><c> type</c><00:07:44.840><c> and</c><00:07:45.040><c> then</c><00:07:45.280><c> the</c><00:07:45.560><c> name</c><00:07:45.880><c> of</c>
+
+00:07:46.030 --> 00:07:46.040 align:start position:0%
+uh data source type and then the name of
+ 
+
+00:07:46.040 --> 00:07:49.030 align:start position:0%
+uh data source type and then the name of
+the<00:07:46.160><c> data</c><00:07:46.440><c> source.</c><00:07:47.280><c> Now,</c><00:07:48.200><c> if</c><00:07:48.400><c> you</c><00:07:48.520><c> want</c><00:07:48.760><c> to</c><00:07:48.880><c> see</c>
+
+00:07:49.030 --> 00:07:49.040 align:start position:0%
+the data source. Now, if you want to see
+ 
+
+00:07:49.040 --> 00:07:50.990 align:start position:0%
+the data source. Now, if you want to see
+the<00:07:49.200><c> syntax</c><00:07:49.680><c> of</c><00:07:49.840><c> it,</c><00:07:50.040><c> you</c><00:07:50.160><c> can</c><00:07:50.400><c> go</c><00:07:50.600><c> back</c><00:07:50.880><c> to</c>
+
+00:07:50.990 --> 00:07:51.000 align:start position:0%
+the syntax of it, you can go back to
+ 
+
+00:07:51.000 --> 00:07:52.870 align:start position:0%
+the syntax of it, you can go back to
+Azure<00:07:51.280><c> documentation.</c><00:07:52.120><c> Like</c><00:07:52.360><c> where</c><00:07:52.640><c> do</c><00:07:52.760><c> you</c>
+
+00:07:52.870 --> 00:07:52.880 align:start position:0%
+Azure documentation. Like where do you
+ 
+
+00:07:52.880 --> 00:07:55.790 align:start position:0%
+Azure documentation. Like where do you
+see<00:07:53.200><c> the</c><00:07:53.360><c> resource?</c><00:07:54.360><c> Just</c><00:07:55.080><c> down</c><00:07:55.400><c> there</c><00:07:55.680><c> you</c>
+
+00:07:55.790 --> 00:07:55.800 align:start position:0%
+see the resource? Just down there you
+ 
+
+00:07:55.800 --> 00:07:57.670 align:start position:0%
+see the resource? Just down there you
+will<00:07:55.960><c> have</c><00:07:56.160><c> the</c><00:07:56.320><c> data</c><00:07:56.640><c> sources</c><00:07:57.120><c> as</c><00:07:57.360><c> well,</c><00:07:57.560><c> you</c>
+
+00:07:57.670 --> 00:07:57.680 align:start position:0%
+will have the data sources as well, you
+ 
+
+00:07:57.680 --> 00:07:58.670 align:start position:0%
+will have the data sources as well, you
+know?
+
+00:07:58.670 --> 00:07:58.680 align:start position:0%
+know?
+ 
+
+00:07:58.680 --> 00:08:00.590 align:start position:0%
+know?
+So,<00:07:58.920><c> these</c><00:07:59.120><c> are</c><00:07:59.240><c> the</c><00:07:59.360><c> data</c><00:07:59.600><c> sources</c><00:08:00.080><c> specific</c>
+
+00:08:00.590 --> 00:08:00.600 align:start position:0%
+So, these are the data sources specific
+ 
+
+00:08:00.600 --> 00:08:03.070 align:start position:0%
+So, these are the data sources specific
+to<00:08:00.720><c> Azure</c><00:08:00.960><c> virtual</c><00:08:01.320><c> machine.</c><00:08:01.680><c> Similarly,</c>
+
+00:08:03.070 --> 00:08:03.080 align:start position:0%
+to Azure virtual machine. Similarly,
+ 
+
+00:08:03.080 --> 00:08:05.590 align:start position:0%
+to Azure virtual machine. Similarly,
+if<00:08:03.840><c> uh</c><00:08:03.920><c> we're</c><00:08:04.040><c> going</c><00:08:04.200><c> to</c><00:08:04.600><c> check</c><00:08:04.960><c> for,</c><00:08:05.320><c> let's</c>
+
+00:08:05.590 --> 00:08:05.600 align:start position:0%
+if uh we're going to check for, let's
+ 
+
+00:08:05.600 --> 00:08:09.990 align:start position:0%
+if uh we're going to check for, let's
+say,<00:08:06.320><c> virtual</c><00:08:06.800><c> network.</c>
+
+00:08:09.990 --> 00:08:10.000 align:start position:0%
+ 
+ 
+
+00:08:10.000 --> 00:08:12.510 align:start position:0%
+ 
+So,<00:08:10.760><c> here</c><00:08:11.040><c> is</c><00:08:11.280><c> data</c><00:08:11.520><c> source</c><00:08:11.800><c> for</c><00:08:11.960><c> AzureRM</c>
+
+00:08:12.510 --> 00:08:12.520 align:start position:0%
+So, here is data source for AzureRM
+ 
+
+00:08:12.520 --> 00:08:15.110 align:start position:0%
+So, here is data source for AzureRM
+virtual<00:08:12.880><c> network.</c><00:08:13.440><c> What</c><00:08:13.640><c> it</c><00:08:14.040><c> needs,</c><00:08:14.480><c> it</c><00:08:14.640><c> needs</c>
+
+00:08:15.110 --> 00:08:15.120 align:start position:0%
+virtual network. What it needs, it needs
+ 
+
+00:08:15.120 --> 00:08:17.870 align:start position:0%
+virtual network. What it needs, it needs
+a<00:08:15.160><c> name</c><00:08:15.640><c> and</c><00:08:15.800><c> a</c><00:08:15.840><c> resource</c><00:08:16.320><c> group</c><00:08:16.600><c> name.</c>
+
+00:08:17.870 --> 00:08:17.880 align:start position:0%
+a name and a resource group name.
+ 
+
+00:08:17.880 --> 00:08:20.390 align:start position:0%
+a name and a resource group name.
+Okay.<00:08:18.480><c> Yeah,</c><00:08:18.680><c> let's</c><00:08:18.919><c> start</c><00:08:19.240><c> with</c><00:08:19.400><c> the</c>
+
+00:08:20.390 --> 00:08:20.400 align:start position:0%
+Okay. Yeah, let's start with the
+ 
+
+00:08:20.400 --> 00:08:23.110 align:start position:0%
+Okay. Yeah, let's start with the
+um<00:08:20.840><c> AzureRM</c><00:08:21.440><c> resource</c><00:08:21.880><c> group.</c><00:08:22.560><c> Do</c><00:08:22.720><c> we</c><00:08:22.840><c> need</c>
+
+00:08:23.110 --> 00:08:23.120 align:start position:0%
+um AzureRM resource group. Do we need
+ 
+
+00:08:23.120 --> 00:08:27.350 align:start position:0%
+um AzureRM resource group. Do we need
+the<00:08:23.240><c> resource</c><00:08:23.680><c> group</c><00:08:23.919><c> name</c><00:08:24.240><c> for</c><00:08:25.080><c> that?</c>
+
+00:08:27.350 --> 00:08:27.360 align:start position:0%
+the resource group name for that?
+ 
+
+00:08:27.360 --> 00:08:30.110 align:start position:0%
+the resource group name for that?
+Okay.<00:08:27.960><c> Let's</c><00:08:28.200><c> start</c><00:08:28.600><c> the</c><00:08:29.080><c> AzureRM</c><00:08:29.720><c> resource</c>
+
+00:08:30.110 --> 00:08:30.120 align:start position:0%
+Okay. Let's start the AzureRM resource
+ 
+
+00:08:30.120 --> 00:08:31.630 align:start position:0%
+Okay. Let's start the AzureRM resource
+group<00:08:30.360><c> name.</c>
+
+00:08:31.630 --> 00:08:31.640 align:start position:0%
+group name.
+ 
+
+00:08:31.640 --> 00:08:34.909 align:start position:0%
+group name.
+AzureRM<00:08:32.719><c> resource</c><00:08:33.159><c> group</c><00:08:34.039><c> and</c><00:08:34.400><c> then</c><00:08:34.599><c> let's</c>
+
+00:08:34.909 --> 00:08:34.919 align:start position:0%
+AzureRM resource group and then let's
+ 
+
+00:08:34.919 --> 00:08:39.510 align:start position:0%
+AzureRM resource group and then let's
+call<00:08:35.240><c> it</c><00:08:36.039><c> RG</c><00:08:36.880><c> shared.</c>
+
+00:08:39.510 --> 00:08:39.520 align:start position:0%
+call it RG shared.
+ 
+
+00:08:39.520 --> 00:08:40.630 align:start position:0%
+call it RG shared.
+Okay?
+
+00:08:40.630 --> 00:08:40.640 align:start position:0%
+Okay?
+ 
+
+00:08:40.640 --> 00:08:42.029 align:start position:0%
+Okay?
+Now,<00:08:40.919><c> if</c><00:08:41.120><c> you</c><00:08:41.240><c> hover</c><00:08:41.479><c> the</c><00:08:41.599><c> mouse,</c><00:08:41.840><c> it</c><00:08:41.960><c> will</c>
+
+00:08:42.029 --> 00:08:42.039 align:start position:0%
+Now, if you hover the mouse, it will
+ 
+
+00:08:42.039 --> 00:08:43.990 align:start position:0%
+Now, if you hover the mouse, it will
+show<00:08:42.200><c> you</c><00:08:42.360><c> what</c><00:08:42.719><c> it's</c><00:08:43.039><c> missing.</c><00:08:43.760><c> Uh</c>
+
+00:08:43.990 --> 00:08:44.000 align:start position:0%
+show you what it's missing. Uh
+ 
+
+00:08:44.000 --> 00:08:46.310 align:start position:0%
+show you what it's missing. Uh
+currently,<00:08:44.880><c> it</c><00:08:45.200><c> we</c><00:08:45.520><c> have</c><00:08:45.720><c> not</c><00:08:45.880><c> provided</c>
+
+00:08:46.310 --> 00:08:46.320 align:start position:0%
+currently, it we have not provided
+ 
+
+00:08:46.320 --> 00:08:49.070 align:start position:0%
+currently, it we have not provided
+anything,<00:08:46.640><c> so</c><00:08:46.760><c> it</c><00:08:46.920><c> says</c><00:08:47.200><c> a</c><00:08:47.280><c> data</c><00:08:47.600><c> block.</c><00:08:48.240><c> So,</c>
+
+00:08:49.070 --> 00:08:49.080 align:start position:0%
+anything, so it says a data block. So,
+ 
+
+00:08:49.080 --> 00:08:51.110 align:start position:0%
+anything, so it says a data block. So,
+name.<00:08:49.720><c> Let's</c><00:08:49.960><c> start</c><00:08:50.280><c> with</c><00:08:50.440><c> the</c><00:08:50.520><c> name.</c><00:08:50.839><c> Let's</c>
+
+00:08:51.110 --> 00:08:51.120 align:start position:0%
+name. Let's start with the name. Let's
+ 
+
+00:08:51.120 --> 00:08:52.950 align:start position:0%
+name. Let's start with the name. Let's
+give<00:08:51.320><c> it</c><00:08:51.640><c> a</c><00:08:51.680><c> name.</c>
+
+00:08:52.950 --> 00:08:52.960 align:start position:0%
+give it a name.
+ 
+
+00:08:52.960 --> 00:08:57.110 align:start position:0%
+give it a name.
+Um<00:08:53.960><c> name</c><00:08:54.440><c> should</c><00:08:55.120><c> be</c><00:08:56.000><c> like</c><00:08:56.360><c> whatever</c><00:08:56.720><c> we</c><00:08:56.880><c> have</c>
+
+00:08:57.110 --> 00:08:57.120 align:start position:0%
+Um name should be like whatever we have
+ 
+
+00:08:57.120 --> 00:08:59.350 align:start position:0%
+Um name should be like whatever we have
+created,<00:08:57.600><c> okay?</c><00:08:57.800><c> Whatever</c><00:08:58.240><c> we</c><00:08:58.400><c> have</c><00:08:58.680><c> in</c><00:08:59.200><c> uh</c>
+
+00:08:59.350 --> 00:08:59.360 align:start position:0%
+created, okay? Whatever we have in uh
+ 
+
+00:08:59.360 --> 00:09:01.350 align:start position:0%
+created, okay? Whatever we have in uh
+existed.<00:08:59.960><c> So,</c><00:09:00.120><c> it</c><00:09:00.320><c> was</c>
+
+00:09:01.350 --> 00:09:01.360 align:start position:0%
+existed. So, it was
+ 
+
+00:09:01.360 --> 00:09:03.750 align:start position:0%
+existed. So, it was
+Let<00:09:01.560><c> me</c><00:09:01.839><c> just</c><00:09:02.160><c> double-check</c><00:09:02.680><c> what</c><00:09:02.920><c> was</c><00:09:03.160><c> it.</c><00:09:03.680><c> Uh</c>
+
+00:09:03.750 --> 00:09:03.760 align:start position:0%
+Let me just double-check what was it. Uh
+ 
+
+00:09:03.760 --> 00:09:06.070 align:start position:0%
+Let me just double-check what was it. Uh
+resource<00:09:04.280><c> group</c><00:09:04.560><c> name</c><00:09:04.839><c> was</c><00:09:05.080><c> shared</c><00:09:05.520><c> network</c>
+
+00:09:06.070 --> 00:09:06.080 align:start position:0%
+resource group name was shared network
+ 
+
+00:09:06.080 --> 00:09:07.950 align:start position:0%
+resource group name was shared network
+RG.<00:09:06.640><c> Okay,</c><00:09:06.960><c> so</c><00:09:07.040><c> let's</c><00:09:07.320><c> just</c><00:09:07.560><c> give</c><00:09:07.680><c> it</c><00:09:07.800><c> over</c>
+
+00:09:07.950 --> 00:09:07.960 align:start position:0%
+RG. Okay, so let's just give it over
+ 
+
+00:09:07.960 --> 00:09:09.470 align:start position:0%
+RG. Okay, so let's just give it over
+here.
+
+00:09:09.470 --> 00:09:09.480 align:start position:0%
+here.
+ 
+
+00:09:09.480 --> 00:09:11.590 align:start position:0%
+here.
+Shared<00:09:09.960><c> network</c><00:09:10.520><c> RG.</c>
+
+00:09:11.590 --> 00:09:11.600 align:start position:0%
+Shared network RG.
+ 
+
+00:09:11.600 --> 00:09:13.670 align:start position:0%
+Shared network RG.
+So,<00:09:11.760><c> that's</c><00:09:12.320><c> the</c><00:09:12.480><c> data</c><00:09:12.760><c> source</c><00:09:13.040><c> for</c><00:09:13.320><c> shared</c>
+
+00:09:13.670 --> 00:09:13.680 align:start position:0%
+So, that's the data source for shared
+ 
+
+00:09:13.680 --> 00:09:15.150 align:start position:0%
+So, that's the data source for shared
+network
+
+00:09:15.150 --> 00:09:15.160 align:start position:0%
+network
+ 
+
+00:09:15.160 --> 00:09:18.510 align:start position:0%
+network
+resource<00:09:15.600><c> group.</c><00:09:16.240><c> Now,</c><00:09:16.480><c> we</c><00:09:16.680><c> have</c><00:09:17.200><c> data</c><00:09:17.800><c> for</c>
+
+00:09:18.510 --> 00:09:18.520 align:start position:0%
+resource group. Now, we have data for
+ 
+
+00:09:18.520 --> 00:09:20.750 align:start position:0%
+resource group. Now, we have data for
+AzureRM
+
+00:09:20.750 --> 00:09:20.760 align:start position:0%
+AzureRM
+ 
+
+00:09:20.760 --> 00:09:24.030 align:start position:0%
+AzureRM
+virtual<00:09:21.280><c> network.</c>
+
+00:09:24.030 --> 00:09:24.040 align:start position:0%
+virtual network.
+ 
+
+00:09:24.040 --> 00:09:27.470 align:start position:0%
+virtual network.
+It's<00:09:24.520><c> over</c><00:09:24.720><c> here,</c><00:09:25.400><c> and</c><00:09:25.600><c> then</c><00:09:26.040><c> give</c><00:09:26.240><c> it</c><00:09:26.360><c> a</c><00:09:26.440><c> name.</c>
+
+00:09:27.470 --> 00:09:27.480 align:start position:0%
+It's over here, and then give it a name.
+ 
+
+00:09:27.480 --> 00:09:31.310 align:start position:0%
+It's over here, and then give it a name.
+Um<00:09:28.080><c> VNet</c><00:09:28.839><c> shared.</c>
+
+00:09:31.310 --> 00:09:31.320 align:start position:0%
+Um VNet shared.
+ 
+
+00:09:31.320 --> 00:09:34.990 align:start position:0%
+Um VNet shared.
+And<00:09:31.640><c> again,</c><00:09:32.000><c> let's</c><00:09:33.120><c> give</c><00:09:33.400><c> this</c><00:09:33.760><c> a</c><00:09:33.839><c> name.</c><00:09:34.360><c> Name</c>
+
+00:09:34.990 --> 00:09:35.000 align:start position:0%
+And again, let's give this a name. Name
+ 
+
+00:09:35.000 --> 00:09:39.070 align:start position:0%
+And again, let's give this a name. Name
+is<00:09:35.920><c> shared</c><00:09:36.360><c> network</c><00:09:37.320><c> RG.</c><00:09:37.920><c> So,</c><00:09:38.560><c> you</c><00:09:38.680><c> can</c><00:09:38.880><c> just</c>
+
+00:09:39.070 --> 00:09:39.080 align:start position:0%
+is shared network RG. So, you can just
+ 
+
+00:09:39.080 --> 00:09:41.110 align:start position:0%
+is shared network RG. So, you can just
+copy<00:09:39.400><c> it</c><00:09:39.520><c> from</c><00:09:39.720><c> here</c><00:09:39.880><c> or</c><00:09:40.360><c> just</c><00:09:40.560><c> type</c><00:09:40.800><c> it</c><00:09:40.920><c> from</c>
+
+00:09:41.110 --> 00:09:41.120 align:start position:0%
+copy it from here or just type it from
+ 
+
+00:09:41.120 --> 00:09:43.310 align:start position:0%
+copy it from here or just type it from
+there.<00:09:41.360><c> That's</c><00:09:41.920><c> not</c><00:09:42.040><c> a</c><00:09:42.080><c> problem.</c><00:09:42.560><c> Shared</c>
+
+00:09:43.310 --> 00:09:43.320 align:start position:0%
+there. That's not a problem. Shared
+ 
+
+00:09:43.320 --> 00:09:45.030 align:start position:0%
+there. That's not a problem. Shared
+network
+
+00:09:45.030 --> 00:09:45.040 align:start position:0%
+network
+ 
+
+00:09:45.040 --> 00:09:47.150 align:start position:0%
+network
+RG.<00:09:45.640><c> Now,</c><00:09:45.920><c> it</c><00:09:46.080><c> is</c><00:09:46.200><c> missing</c><00:09:46.560><c> something</c><00:09:46.960><c> else.</c>
+
+00:09:47.150 --> 00:09:47.160 align:start position:0%
+RG. Now, it is missing something else.
+ 
+
+00:09:47.160 --> 00:09:48.630 align:start position:0%
+RG. Now, it is missing something else.
+So,<00:09:47.280><c> let's</c><00:09:47.560><c> over</c><00:09:47.760><c> the</c><00:09:47.880><c> mouse.</c><00:09:48.160><c> It</c><00:09:48.320><c> says</c>
+
+00:09:48.630 --> 00:09:48.640 align:start position:0%
+So, let's over the mouse. It says
+ 
+
+00:09:48.640 --> 00:09:51.310 align:start position:0%
+So, let's over the mouse. It says
+resource<00:09:49.080><c> group</c><00:09:49.360><c> name</c><00:09:49.720><c> is</c><00:09:49.840><c> also</c><00:09:50.120><c> required.</c>
+
+00:09:51.310 --> 00:09:51.320 align:start position:0%
+resource group name is also required.
+ 
+
+00:09:51.320 --> 00:09:53.590 align:start position:0%
+resource group name is also required.
+Like<00:09:51.680><c> this</c><00:09:52.120><c> resource</c><00:09:52.680><c> belong</c><00:09:53.120><c> to</c><00:09:53.320><c> which</c>
+
+00:09:53.590 --> 00:09:53.600 align:start position:0%
+Like this resource belong to which
+ 
+
+00:09:53.600 --> 00:09:55.150 align:start position:0%
+Like this resource belong to which
+resource<00:09:54.000><c> group.</c>
+
+00:09:55.150 --> 00:09:55.160 align:start position:0%
+resource group.
+ 
+
+00:09:55.160 --> 00:09:57.510 align:start position:0%
+resource group.
+Okay,<00:09:55.360><c> so</c><00:09:55.520><c> let's</c><00:09:55.760><c> give</c><00:09:55.960><c> resource</c><00:09:56.360><c> group</c><00:09:56.600><c> name.</c>
+
+00:09:57.510 --> 00:09:57.520 align:start position:0%
+Okay, so let's give resource group name.
+ 
+
+00:09:57.520 --> 00:09:59.910 align:start position:0%
+Okay, so let's give resource group name.
+Resource<00:09:57.920><c> group</c><00:09:58.200><c> name</c><00:09:58.600><c> Now,</c><00:09:59.160><c> we</c><00:09:59.320><c> don't</c><00:09:59.600><c> have</c>
+
+00:09:59.910 --> 00:09:59.920 align:start position:0%
+Resource group name Now, we don't have
+ 
+
+00:09:59.920 --> 00:10:01.870 align:start position:0%
+Resource group name Now, we don't have
+to<00:10:00.120><c> enter</c><00:10:00.520><c> it</c><00:10:00.680><c> again.</c><00:10:01.000><c> We</c><00:10:01.080><c> can</c><00:10:01.280><c> take</c><00:10:01.520><c> it</c><00:10:01.680><c> from</c>
+
+00:10:01.870 --> 00:10:01.880 align:start position:0%
+to enter it again. We can take it from
+ 
+
+00:10:01.880 --> 00:10:03.550 align:start position:0%
+to enter it again. We can take it from
+this<00:10:02.080><c> data</c><00:10:02.400><c> source,</c><00:10:02.760><c> right?</c><00:10:03.000><c> So,</c><00:10:03.160><c> how</c><00:10:03.360><c> do</c><00:10:03.480><c> we</c>
+
+00:10:03.550 --> 00:10:03.560 align:start position:0%
+this data source, right? So, how do we
+ 
+
+00:10:03.560 --> 00:10:05.190 align:start position:0%
+this data source, right? So, how do we
+take<00:10:03.800><c> it?</c><00:10:04.000><c> Data</c>
+
+00:10:05.190 --> 00:10:05.200 align:start position:0%
+take it? Data
+ 
+
+00:10:05.200 --> 00:10:07.070 align:start position:0%
+take it? Data
+.resource<00:10:06.120><c> group</c>
+
+00:10:07.070 --> 00:10:07.080 align:start position:0%
+.resource group
+ 
+
+00:10:07.080 --> 00:10:10.590 align:start position:0%
+.resource group
+azurerm_resource_group.rg_shared
+
+00:10:10.590 --> 00:10:10.600 align:start position:0%
+ 
+ 
+
+00:10:10.600 --> 00:10:12.430 align:start position:0%
+ 
+and<00:10:10.800><c> then</c><00:10:11.160><c> .name.</c>
+
+00:10:12.430 --> 00:10:12.440 align:start position:0%
+and then .name.
+ 
+
+00:10:12.440 --> 00:10:14.550 align:start position:0%
+and then .name.
+Okay,<00:10:12.760><c> we</c><00:10:12.960><c> are</c><00:10:13.080><c> just</c><00:10:13.680><c> taking</c><00:10:14.000><c> the</c><00:10:14.080><c> value</c><00:10:14.360><c> from</c>
+
+00:10:14.550 --> 00:10:14.560 align:start position:0%
+Okay, we are just taking the value from
+ 
+
+00:10:14.560 --> 00:10:16.030 align:start position:0%
+Okay, we are just taking the value from
+its<00:10:14.760><c> attribute.</c>
+
+00:10:16.030 --> 00:10:16.040 align:start position:0%
+its attribute.
+ 
+
+00:10:16.040 --> 00:10:20.910 align:start position:0%
+its attribute.
+Now,<00:10:16.760><c> this</c><00:10:17.000><c> is</c><00:10:17.160><c> also</c><00:10:17.520><c> done.</c><00:10:18.320><c> The</c><00:10:18.440><c> next</c><00:10:18.960><c> is</c>
+
+00:10:20.910 --> 00:10:20.920 align:start position:0%
+Now, this is also done. The next is
+ 
+
+00:10:20.920 --> 00:10:22.990 align:start position:0%
+Now, this is also done. The next is
+data
+
+00:10:22.990 --> 00:10:23.000 align:start position:0%
+data
+ 
+
+00:10:23.000 --> 00:10:26.910 align:start position:0%
+data
+azurerm_subnet.
+
+00:10:26.910 --> 00:10:26.920 align:start position:0%
+ 
+ 
+
+00:10:26.920 --> 00:10:30.350 align:start position:0%
+ 
+Okay,<00:10:27.160><c> so</c><00:10:27.440><c> let's</c><00:10:27.880><c> call</c><00:10:28.200><c> it</c>
+
+00:10:30.350 --> 00:10:30.360 align:start position:0%
+Okay, so let's call it
+ 
+
+00:10:30.360 --> 00:10:33.030 align:start position:0%
+Okay, so let's call it
+subnet_shared.
+
+00:10:33.030 --> 00:10:33.040 align:start position:0%
+subnet_shared.
+ 
+
+00:10:33.040 --> 00:10:36.230 align:start position:0%
+subnet_shared.
+Okay,<00:10:33.280><c> again,</c><00:10:33.640><c> let's</c><00:10:33.960><c> give</c><00:10:34.200><c> this</c><00:10:35.000><c> a</c><00:10:35.080><c> name.</c>
+
+00:10:36.230 --> 00:10:36.240 align:start position:0%
+Okay, again, let's give this a name.
+ 
+
+00:10:36.240 --> 00:10:42.470 align:start position:0%
+Okay, again, let's give this a name.
+Name<00:10:36.800><c> is</c><00:10:37.240><c> over</c><00:10:37.440><c> here</c><00:10:37.720><c> shared</c><00:10:38.120><c> primary</c><00:10:38.760><c> SN.</c>
+
+00:10:42.470 --> 00:10:42.480 align:start position:0%
+ 
+ 
+
+00:10:42.480 --> 00:10:45.510 align:start position:0%
+ 
+Okay,<00:10:43.200><c> and</c><00:10:43.880><c> I</c><00:10:44.000><c> guess</c><00:10:44.280><c> it'll</c><00:10:44.520><c> also</c><00:10:44.800><c> expect</c>
+
+00:10:45.510 --> 00:10:45.520 align:start position:0%
+Okay, and I guess it'll also expect
+ 
+
+00:10:45.520 --> 00:10:47.870 align:start position:0%
+Okay, and I guess it'll also expect
+resource<00:10:45.960><c> group</c><00:10:46.240><c> name.</c><00:10:46.600><c> So,</c><00:10:47.160><c> take</c><00:10:47.400><c> it</c><00:10:47.560><c> from</c>
+
+00:10:47.870 --> 00:10:47.880 align:start position:0%
+resource group name. So, take it from
+ 
+
+00:10:47.880 --> 00:10:51.710 align:start position:0%
+resource group name. So, take it from
+data.resource_group.rg_shared
+
+00:10:51.710 --> 00:10:51.720 align:start position:0%
+ 
+ 
+
+00:10:51.720 --> 00:10:54.350 align:start position:0%
+ 
+.name.<00:10:52.800><c> And</c><00:10:53.000><c> it</c><00:10:53.160><c> is</c><00:10:53.360><c> accepting</c><00:10:53.920><c> one</c><00:10:54.120><c> more</c>
+
+00:10:54.350 --> 00:10:54.360 align:start position:0%
+.name. And it is accepting one more
+ 
+
+00:10:54.360 --> 00:10:57.110 align:start position:0%
+.name. And it is accepting one more
+field,<00:10:54.960><c> so</c><00:10:55.200><c> which</c><00:10:55.440><c> is</c><00:10:56.040><c> your</c><00:10:56.360><c> virtual</c><00:10:56.760><c> network</c>
+
+00:10:57.110 --> 00:10:57.120 align:start position:0%
+field, so which is your virtual network
+ 
+
+00:10:57.120 --> 00:10:58.910 align:start position:0%
+field, so which is your virtual network
+name<00:10:57.280><c> because</c><00:10:57.560><c> subnet</c><00:10:57.920><c> is</c><00:10:58.040><c> part</c><00:10:58.320><c> of</c><00:10:58.440><c> a</c><00:10:58.520><c> virtual</c>
+
+00:10:58.910 --> 00:10:58.920 align:start position:0%
+name because subnet is part of a virtual
+ 
+
+00:10:58.920 --> 00:11:00.910 align:start position:0%
+name because subnet is part of a virtual
+network.<00:10:59.360><c> So,</c><00:10:59.480><c> let's</c><00:10:59.760><c> give</c><00:11:00.040><c> it</c><00:11:00.560><c> virtual</c>
+
+00:11:00.910 --> 00:11:00.920 align:start position:0%
+network. So, let's give it virtual
+ 
+
+00:11:00.920 --> 00:11:02.990 align:start position:0%
+network. So, let's give it virtual
+network<00:11:01.280><c> name,</c><00:11:01.960><c> which</c><00:11:02.200><c> we</c><00:11:02.320><c> can</c><00:11:02.520><c> again</c><00:11:02.800><c> take</c>
+
+00:11:02.990 --> 00:11:03.000 align:start position:0%
+network name, which we can again take
+ 
+
+00:11:03.000 --> 00:11:04.990 align:start position:0%
+network name, which we can again take
+from<00:11:03.160><c> the</c><00:11:03.280><c> previous</c><00:11:03.640><c> data</c><00:11:03.920><c> source.</c>
+
+00:11:04.990 --> 00:11:05.000 align:start position:0%
+from the previous data source.
+ 
+
+00:11:05.000 --> 00:11:05.710 align:start position:0%
+from the previous data source.
+Uh<00:11:05.280><c> which</c><00:11:05.520><c> is</c>
+
+00:11:05.710 --> 00:11:05.720 align:start position:0%
+Uh which is
+ 
+
+00:11:05.720 --> 00:11:10.790 align:start position:0%
+Uh which is
+data.azurerm.virtual_network.vnet_shared.name.
+
+00:11:10.790 --> 00:11:10.800 align:start position:0%
+ 
+ 
+
+00:11:10.800 --> 00:11:12.870 align:start position:0%
+ 
+Okay,<00:11:11.240><c> so</c><00:11:11.400><c> now</c><00:11:11.600><c> we</c><00:11:11.760><c> have</c><00:11:11.920><c> just</c><00:11:12.280><c> initialized</c>
+
+00:11:12.870 --> 00:11:12.880 align:start position:0%
+Okay, so now we have just initialized
+ 
+
+00:11:12.880 --> 00:11:14.550 align:start position:0%
+Okay, so now we have just initialized
+the<00:11:12.960><c> data</c><00:11:13.200><c> source.</c><00:11:13.480><c> Now,</c><00:11:13.680><c> we</c><00:11:13.800><c> can</c><00:11:14.000><c> use</c><00:11:14.240><c> that</c><00:11:14.440><c> in</c>
+
+00:11:14.550 --> 00:11:14.560 align:start position:0%
+the data source. Now, we can use that in
+ 
+
+00:11:14.560 --> 00:11:16.030 align:start position:0%
+the data source. Now, we can use that in
+our<00:11:14.680><c> configuration.</c>
+
+00:11:16.030 --> 00:11:16.040 align:start position:0%
+our configuration.
+ 
+
+00:11:16.040 --> 00:11:17.670 align:start position:0%
+our configuration.
+Now,<00:11:16.240><c> go</c><00:11:16.400><c> back</c>
+
+00:11:17.670 --> 00:11:17.680 align:start position:0%
+Now, go back
+ 
+
+00:11:17.680 --> 00:11:20.510 align:start position:0%
+Now, go back
+and<00:11:18.400><c> let's</c><00:11:18.720><c> say</c><00:11:19.320><c> we</c><00:11:19.440><c> don't</c><00:11:19.680><c> want</c><00:11:19.920><c> to</c><00:11:20.040><c> hardcode</c>
+
+00:11:20.510 --> 00:11:20.520 align:start position:0%
+and let's say we don't want to hardcode
+ 
+
+00:11:20.520 --> 00:11:22.310 align:start position:0%
+and let's say we don't want to hardcode
+the<00:11:20.640><c> location</c><00:11:21.080><c> over</c><00:11:21.280><c> here.</c><00:11:21.480><c> We</c><00:11:21.600><c> want</c><00:11:21.880><c> to</c><00:11:21.960><c> use</c>
+
+00:11:22.310 --> 00:11:22.320 align:start position:0%
+the location over here. We want to use
+ 
+
+00:11:22.320 --> 00:11:23.310 align:start position:0%
+the location over here. We want to use
+the
+
+00:11:23.310 --> 00:11:23.320 align:start position:0%
+the
+ 
+
+00:11:23.320 --> 00:11:26.710 align:start position:0%
+the
+same<00:11:23.720><c> location</c><00:11:24.360><c> in</c><00:11:24.640><c> which</c><00:11:25.560><c> our</c>
+
+00:11:26.710 --> 00:11:26.720 align:start position:0%
+same location in which our
+ 
+
+00:11:26.720 --> 00:11:29.430 align:start position:0%
+same location in which our
+um<00:11:27.240><c> VNet</c><00:11:27.680><c> has</c><00:11:27.839><c> been</c><00:11:28.040><c> provisioned,</c><00:11:28.600><c> okay?</c><00:11:29.320><c> So,</c>
+
+00:11:29.430 --> 00:11:29.440 align:start position:0%
+um VNet has been provisioned, okay? So,
+ 
+
+00:11:29.440 --> 00:11:33.590 align:start position:0%
+um VNet has been provisioned, okay? So,
+for<00:11:29.640><c> this,</c><00:11:30.000><c> let's</c><00:11:30.360><c> take</c><00:11:30.600><c> it</c><00:11:30.839><c> from</c><00:11:31.280><c> data.</c><00:11:32.160><c> dot</c>
+
+00:11:33.590 --> 00:11:33.600 align:start position:0%
+for this, let's take it from data. dot
+ 
+
+00:11:33.600 --> 00:11:37.830 align:start position:0%
+for this, let's take it from data. dot
+uh<00:11:33.880><c> resource</c><00:11:34.360><c> group</c><00:11:34.680><c> RG.shared.location.</c>
+
+00:11:37.830 --> 00:11:37.840 align:start position:0%
+ 
+ 
+
+00:11:37.840 --> 00:11:38.950 align:start position:0%
+ 
+Okay,<00:11:37.960><c> now</c><00:11:38.160><c> it</c><00:11:38.280><c> will</c><00:11:38.400><c> take</c><00:11:38.600><c> the</c><00:11:38.720><c> same</c>
+
+00:11:38.950 --> 00:11:38.960 align:start position:0%
+Okay, now it will take the same
+ 
+
+00:11:38.960 --> 00:11:41.270 align:start position:0%
+Okay, now it will take the same
+location.
+
+00:11:41.270 --> 00:11:41.280 align:start position:0%
+location.
+ 
+
+00:11:41.280 --> 00:11:44.830 align:start position:0%
+location.
+And<00:11:41.640><c> then</c><00:11:41.840><c> we</c><00:11:42.000><c> have</c><00:11:43.040><c> uh</c><00:11:43.280><c> AzureRM</c><00:11:44.440><c> virtual</c>
+
+00:11:44.830 --> 00:11:44.840 align:start position:0%
+And then we have uh AzureRM virtual
+ 
+
+00:11:44.840 --> 00:11:46.470 align:start position:0%
+And then we have uh AzureRM virtual
+network.<00:11:45.320><c> So,</c><00:11:45.440><c> let's</c><00:11:45.680><c> see.</c><00:11:45.880><c> It</c><00:11:46.040><c> has</c><00:11:46.400><c> a</c>
+
+00:11:46.470 --> 00:11:46.480 align:start position:0%
+network. So, let's see. It has a
+ 
+
+00:11:46.480 --> 00:11:48.830 align:start position:0%
+network. So, let's see. It has a
+location.<00:11:47.520><c> Now,</c><00:11:47.760><c> location</c><00:11:48.240><c> it</c><00:11:48.360><c> is</c><00:11:48.480><c> taking</c>
+
+00:11:48.830 --> 00:11:48.840 align:start position:0%
+location. Now, location it is taking
+ 
+
+00:11:48.840 --> 00:11:51.350 align:start position:0%
+location. Now, location it is taking
+from<00:11:49.120><c> the</c><00:11:49.440><c> AzureRM</c><00:11:50.040><c> resource</c><00:11:50.520><c> group,</c><00:11:51.120><c> which</c>
+
+00:11:51.350 --> 00:11:51.360 align:start position:0%
+from the AzureRM resource group, which
+ 
+
+00:11:51.360 --> 00:11:53.150 align:start position:0%
+from the AzureRM resource group, which
+is<00:11:51.760><c> over</c><00:11:52.040><c> here.</c>
+
+00:11:53.150 --> 00:11:53.160 align:start position:0%
+is over here.
+ 
+
+00:11:53.160 --> 00:11:55.510 align:start position:0%
+is over here.
+But,<00:11:53.840><c> resource</c><00:11:54.320><c> group</c><00:11:54.520><c> location</c><00:11:55.000><c> is</c><00:11:55.200><c> also</c>
+
+00:11:55.510 --> 00:11:55.520 align:start position:0%
+But, resource group location is also
+ 
+
+00:11:55.520 --> 00:11:57.870 align:start position:0%
+But, resource group location is also
+dependent<00:11:56.120><c> on</c><00:11:56.240><c> the</c><00:11:56.560><c> location</c><00:11:57.120><c> of</c><00:11:57.320><c> the</c>
+
+00:11:57.870 --> 00:11:57.880 align:start position:0%
+dependent on the location of the
+ 
+
+00:11:57.880 --> 00:12:01.630 align:start position:0%
+dependent on the location of the
+resource<00:11:58.440><c> group</c><00:11:58.760><c> that</c><00:11:59.000><c> was</c><00:11:59.760><c> created</c><00:12:00.520><c> by</c><00:12:00.840><c> us</c><00:12:01.400><c> by</c>
+
+00:12:01.630 --> 00:12:01.640 align:start position:0%
+resource group that was created by us by
+ 
+
+00:12:01.640 --> 00:12:03.510 align:start position:0%
+resource group that was created by us by
+the<00:12:01.800><c> network</c><00:12:02.200><c> admin</c><00:12:02.520><c> team,</c><00:12:02.760><c> right?</c><00:12:03.040><c> So,</c><00:12:03.280><c> there</c>
+
+00:12:03.510 --> 00:12:03.520 align:start position:0%
+the network admin team, right? So, there
+ 
+
+00:12:03.520 --> 00:12:04.470 align:start position:0%
+the network admin team, right? So, there
+is
+
+00:12:04.470 --> 00:12:04.480 align:start position:0%
+is
+ 
+
+00:12:04.480 --> 00:12:06.310 align:start position:0%
+is
+uh<00:12:04.720><c> this</c><00:12:04.920><c> dependency.</c>
+
+00:12:06.310 --> 00:12:06.320 align:start position:0%
+uh this dependency.
+ 
+
+00:12:06.320 --> 00:12:08.030 align:start position:0%
+uh this dependency.
+So,<00:12:06.440><c> it</c><00:12:06.560><c> will</c><00:12:06.680><c> take</c><00:12:07.040><c> the</c><00:12:07.280><c> source</c><00:12:07.560><c> location.</c>
+
+00:12:08.030 --> 00:12:08.040 align:start position:0%
+So, it will take the source location.
+ 
+
+00:12:08.040 --> 00:12:10.070 align:start position:0%
+So, it will take the source location.
+So,<00:12:08.200><c> whatever</c><00:12:08.800><c> resource</c><00:12:09.200><c> group</c><00:12:09.400><c> location</c><00:12:09.880><c> is</c>
+
+00:12:10.070 --> 00:12:10.080 align:start position:0%
+So, whatever resource group location is
+ 
+
+00:12:10.080 --> 00:12:11.110 align:start position:0%
+So, whatever resource group location is
+there,
+
+00:12:11.110 --> 00:12:11.120 align:start position:0%
+there,
+ 
+
+00:12:11.120 --> 00:12:13.510 align:start position:0%
+there,
+let's<00:12:11.440><c> say</c><00:12:12.000><c> it's</c>
+
+00:12:13.510 --> 00:12:13.520 align:start position:0%
+let's say it's
+ 
+
+00:12:13.520 --> 00:12:16.030 align:start position:0%
+let's say it's
+resource<00:12:14.000><c> group</c><00:12:14.800><c> uh</c><00:12:14.880><c> shared</c><00:12:15.320><c> network</c><00:12:15.760><c> East</c>
+
+00:12:16.030 --> 00:12:16.040 align:start position:0%
+resource group uh shared network East
+ 
+
+00:12:16.040 --> 00:12:17.150 align:start position:0%
+resource group uh shared network East
+US.
+
+00:12:17.150 --> 00:12:17.160 align:start position:0%
+US.
+ 
+
+00:12:17.160 --> 00:12:19.670 align:start position:0%
+US.
+So,<00:12:17.920><c> all</c><00:12:18.120><c> the</c><00:12:18.240><c> resources</c><00:12:18.760><c> will</c><00:12:18.920><c> be</c><00:12:19.040><c> created</c><00:12:19.480><c> in</c>
+
+00:12:19.670 --> 00:12:19.680 align:start position:0%
+So, all the resources will be created in
+ 
+
+00:12:19.680 --> 00:12:22.790 align:start position:0%
+So, all the resources will be created in
+East<00:12:20.000><c> US</c><00:12:20.320><c> because</c><00:12:20.800><c> we</c><00:12:21.000><c> have</c><00:12:21.280><c> used</c><00:12:22.240><c> data</c><00:12:22.520><c> source</c>
+
+00:12:22.790 --> 00:12:22.800 align:start position:0%
+East US because we have used data source
+ 
+
+00:12:22.800 --> 00:12:24.390 align:start position:0%
+East US because we have used data source
+over<00:12:23.000><c> here.</c>
+
+00:12:24.390 --> 00:12:24.400 align:start position:0%
+over here.
+ 
+
+00:12:24.400 --> 00:12:26.030 align:start position:0%
+over here.
+And<00:12:24.640><c> then</c><00:12:24.800><c> we</c><00:12:24.920><c> have</c><00:12:25.120><c> used</c><00:12:25.320><c> the</c><00:12:25.440><c> same</c><00:12:25.760><c> data</c>
+
+00:12:26.030 --> 00:12:26.040 align:start position:0%
+And then we have used the same data
+ 
+
+00:12:26.040 --> 00:12:28.190 align:start position:0%
+And then we have used the same data
+source<00:12:26.360><c> over</c><00:12:26.600><c> here</c><00:12:27.120><c> in</c><00:12:27.280><c> the</c><00:12:27.400><c> location</c><00:12:27.920><c> for</c>
+
+00:12:28.190 --> 00:12:28.200 align:start position:0%
+source over here in the location for
+ 
+
+00:12:28.200 --> 00:12:30.310 align:start position:0%
+source over here in the location for
+AzureRM<00:12:28.760><c> resource</c><00:12:29.160><c> group.</c>
+
+00:12:30.310 --> 00:12:30.320 align:start position:0%
+AzureRM resource group.
+ 
+
+00:12:30.320 --> 00:12:33.230 align:start position:0%
+AzureRM resource group.
+And<00:12:30.680><c> inside</c><00:12:31.680><c> network</c><00:12:32.040><c> interface</c><00:12:32.560><c> as</c><00:12:32.800><c> well,</c><00:12:33.040><c> we</c>
+
+00:12:33.230 --> 00:12:33.240 align:start position:0%
+And inside network interface as well, we
+ 
+
+00:12:33.240 --> 00:12:35.070 align:start position:0%
+And inside network interface as well, we
+are<00:12:33.360><c> taking</c><00:12:33.680><c> reference</c><00:12:34.120><c> from</c><00:12:34.400><c> that</c><00:12:34.680><c> resource</c>
+
+00:12:35.070 --> 00:12:35.080 align:start position:0%
+are taking reference from that resource
+ 
+
+00:12:35.080 --> 00:12:37.510 align:start position:0%
+are taking reference from that resource
+group.<00:12:35.640><c> Okay?</c><00:12:36.120><c> Now,</c><00:12:36.360><c> it</c><00:12:36.520><c> has</c><00:12:36.800><c> resource</c><00:12:37.200><c> group</c>
+
+00:12:37.510 --> 00:12:37.520 align:start position:0%
+group. Okay? Now, it has resource group
+ 
+
+00:12:37.520 --> 00:12:40.950 align:start position:0%
+group. Okay? Now, it has resource group
+name,<00:12:38.080><c> that</c><00:12:38.320><c> is</c><00:12:38.520><c> fine.</c><00:12:39.240><c> Uh</c>
+
+00:12:40.950 --> 00:12:40.960 align:start position:0%
+name, that is fine. Uh
+ 
+
+00:12:40.960 --> 00:12:43.670 align:start position:0%
+name, that is fine. Uh
+IP<00:12:41.320><c> configuration</c><00:12:42.000><c> subnet</c><00:12:42.560><c> IP</c><00:12:42.920><c> subnet</c><00:12:43.440><c> ID.</c>
+
+00:12:43.670 --> 00:12:43.680 align:start position:0%
+IP configuration subnet IP subnet ID.
+ 
+
+00:12:43.680 --> 00:12:45.270 align:start position:0%
+IP configuration subnet IP subnet ID.
+This<00:12:43.960><c> is</c><00:12:44.200><c> where</c>
+
+00:12:45.270 --> 00:12:45.280 align:start position:0%
+This is where
+ 
+
+00:12:45.280 --> 00:12:47.550 align:start position:0%
+This is where
+we<00:12:45.520><c> need</c><00:12:45.880><c> to</c><00:12:46.240><c> provide</c><00:12:46.640><c> the</c><00:12:46.760><c> data</c><00:12:47.080><c> source</c><00:12:47.360><c> for</c>
+
+00:12:47.550 --> 00:12:47.560 align:start position:0%
+we need to provide the data source for
+ 
+
+00:12:47.560 --> 00:12:48.829 align:start position:0%
+we need to provide the data source for
+subnet.
+
+00:12:48.829 --> 00:12:48.839 align:start position:0%
+subnet.
+ 
+
+00:12:48.839 --> 00:12:53.550 align:start position:0%
+subnet.
+So,<00:12:49.839><c> data.</c><00:12:51.240><c> AzureRM</c><00:12:51.960><c> subnet</c><00:12:52.440><c> ID</c><00:12:52.960><c> subnet</c>
+
+00:12:53.550 --> 00:12:53.560 align:start position:0%
+So, data. AzureRM subnet ID subnet
+ 
+
+00:12:53.560 --> 00:12:57.550 align:start position:0%
+So, data. AzureRM subnet ID subnet
+shared.id.
+
+00:12:57.550 --> 00:12:57.560 align:start position:0%
+ 
+ 
+
+00:12:57.560 --> 00:13:00.070 align:start position:0%
+ 
+Okay,<00:12:58.160><c> now</c><00:12:58.600><c> virtual</c><00:12:59.000><c> machine</c><00:12:59.760><c> virtual</c>
+
+00:13:00.070 --> 00:13:00.080 align:start position:0%
+Okay, now virtual machine virtual
+ 
+
+00:13:00.080 --> 00:13:04.110 align:start position:0%
+Okay, now virtual machine virtual
+machine<00:13:00.520><c> is</c><00:13:00.720><c> name,</c><00:13:01.560><c> which</c><00:13:01.720><c> is</c><00:13:01.880><c> fine.</c><00:13:02.280><c> Location</c>
+
+00:13:04.110 --> 00:13:04.120 align:start position:0%
+machine is name, which is fine. Location
+ 
+
+00:13:04.120 --> 00:13:05.950 align:start position:0%
+machine is name, which is fine. Location
+resource<00:13:04.520><c> group</c><00:13:04.760><c> name,</c><00:13:05.040><c> network</c><00:13:05.400><c> interface,</c>
+
+00:13:05.950 --> 00:13:05.960 align:start position:0%
+resource group name, network interface,
+ 
+
+00:13:05.960 --> 00:13:08.430 align:start position:0%
+resource group name, network interface,
+that's<00:13:06.400><c> all</c><00:13:06.640><c> good.</c><00:13:06.960><c> Now,</c><00:13:07.160><c> let's</c><00:13:07.480><c> just</c>
+
+00:13:08.430 --> 00:13:08.440 align:start position:0%
+that's all good. Now, let's just
+ 
+
+00:13:08.440 --> 00:13:10.910 align:start position:0%
+that's all good. Now, let's just
+uncomment<00:13:09.040><c> this.</c><00:13:09.880><c> Otherwise,</c><00:13:10.320><c> it</c><00:13:10.520><c> will</c><00:13:10.680><c> throw</c>
+
+00:13:10.910 --> 00:13:10.920 align:start position:0%
+uncomment this. Otherwise, it will throw
+ 
+
+00:13:10.920 --> 00:13:13.310 align:start position:0%
+uncomment this. Otherwise, it will throw
+you<00:13:11.080><c> error</c><00:13:11.400><c> for</c><00:13:11.800><c> deleting</c><00:13:12.360><c> the</c><00:13:12.920><c> Terraform</c>
+
+00:13:13.310 --> 00:13:13.320 align:start position:0%
+you error for deleting the Terraform
+ 
+
+00:13:13.320 --> 00:13:15.670 align:start position:0%
+you error for deleting the Terraform
+resources.
+
+00:13:15.670 --> 00:13:15.680 align:start position:0%
+resources.
+ 
+
+00:13:15.680 --> 00:13:19.110 align:start position:0%
+resources.
+And<00:13:16.960><c> let's</c><00:13:17.240><c> keep</c><00:13:17.400><c> the</c><00:13:17.520><c> same.</c><00:13:17.839><c> So,</c><00:13:18.440><c> for</c><00:13:18.680><c> the</c>
+
+00:13:19.110 --> 00:13:19.120 align:start position:0%
+And let's keep the same. So, for the
+ 
+
+00:13:19.120 --> 00:13:21.510 align:start position:0%
+And let's keep the same. So, for the
+storage<00:13:19.560><c> image</c><00:13:19.839><c> reference</c><00:13:20.480><c> as</c><00:13:20.760><c> well,</c><00:13:20.960><c> you</c><00:13:21.120><c> can</c>
+
+00:13:21.510 --> 00:13:21.520 align:start position:0%
+storage image reference as well, you can
+ 
+
+00:13:21.520 --> 00:13:23.750 align:start position:0%
+storage image reference as well, you can
+use<00:13:21.920><c> the</c><00:13:22.120><c> data</c><00:13:22.440><c> source.</c><00:13:22.800><c> Like,</c><00:13:23.160><c> it</c><00:13:23.280><c> is</c><00:13:23.440><c> one</c><00:13:23.600><c> of</c>
+
+00:13:23.750 --> 00:13:23.760 align:start position:0%
+use the data source. Like, it is one of
+ 
+
+00:13:23.760 --> 00:13:26.030 align:start position:0%
+use the data source. Like, it is one of
+the<00:13:23.880><c> use</c><00:13:24.120><c> cases</c><00:13:24.480><c> of</c><00:13:24.600><c> data</c><00:13:24.880><c> source.</c>
+
+00:13:26.030 --> 00:13:26.040 align:start position:0%
+the use cases of data source.
+ 
+
+00:13:26.040 --> 00:13:29.390 align:start position:0%
+the use cases of data source.
+And<00:13:26.280><c> then</c><00:13:26.720><c> uh</c><00:13:26.800><c> storage</c><00:13:27.200><c> OS</c><00:13:27.520><c> disk</c><00:13:27.880><c> is</c><00:13:28.080><c> fine.</c>
+
+00:13:29.390 --> 00:13:29.400 align:start position:0%
+And then uh storage OS disk is fine.
+ 
+
+00:13:29.400 --> 00:13:31.270 align:start position:0%
+And then uh storage OS disk is fine.
+Uh<00:13:29.480><c> OS</c><00:13:29.680><c> profile</c><00:13:30.440><c> this</c><00:13:30.760><c> Oh,</c><00:13:30.800><c> yeah.</c><00:13:31.080><c> That's</c>
+
+00:13:31.270 --> 00:13:31.280 align:start position:0%
+Uh OS profile this Oh, yeah. That's
+ 
+
+00:13:31.280 --> 00:13:33.150 align:start position:0%
+Uh OS profile this Oh, yeah. That's
+everything<00:13:31.640><c> is</c><00:13:31.800><c> fine.</c>
+
+00:13:33.150 --> 00:13:33.160 align:start position:0%
+everything is fine.
+ 
+
+00:13:33.160 --> 00:13:38.910 align:start position:0%
+everything is fine.
+So,<00:13:33.560><c> now</c><00:13:34.320><c> if</c><00:13:34.600><c> we</c><00:13:34.920><c> go</c><00:13:35.640><c> and</c><00:13:36.120><c> run</c><00:13:36.520><c> TF</c><00:13:37.120><c> plan,</c>
+
+00:13:38.910 --> 00:13:38.920 align:start position:0%
+So, now if we go and run TF plan,
+ 
+
+00:13:38.920 --> 00:13:41.590 align:start position:0%
+So, now if we go and run TF plan,
+oh,<00:13:39.120><c> we</c><00:13:39.240><c> have</c><00:13:39.440><c> to</c><00:13:39.560><c> do</c><00:13:39.680><c> TF</c><00:13:40.000><c> in</c><00:13:40.160><c> it</c><00:13:40.320><c> first.</c><00:13:41.320><c> Let's</c>
+
+00:13:41.590 --> 00:13:41.600 align:start position:0%
+oh, we have to do TF in it first. Let's
+ 
+
+00:13:41.600 --> 00:13:47.190 align:start position:0%
+oh, we have to do TF in it first. Let's
+initialize<00:13:42.240><c> the</c><00:13:42.400><c> infrastructure.</c>
+
+00:13:47.190 --> 00:13:47.200 align:start position:0%
+ 
+ 
+
+00:13:47.200 --> 00:13:53.310 align:start position:0%
+ 
+And<00:13:47.480><c> then</c><00:13:47.800><c> run</c><00:13:48.080><c> TF</c><00:13:48.520><c> plan.</c><00:13:49.120><c> Let's</c><00:13:49.440><c> say</c><00:13:50.200><c> grep</c>
+
+00:13:53.310 --> 00:13:53.320 align:start position:0%
+ 
+ 
+
+00:13:53.320 --> 00:13:58.870 align:start position:0%
+ 
+grep<00:13:54.360><c> will</c><00:13:54.840><c> be</c><00:13:55.320><c> created.</c>
+
+00:13:58.870 --> 00:13:58.880 align:start position:0%
+ 
+ 
+
+00:13:58.880 --> 00:14:01.390 align:start position:0%
+ 
+Oh,<00:13:59.320><c> it</c><00:14:00.000><c> has</c><00:14:00.320><c> thrown</c><00:14:00.680><c> an</c><00:14:00.800><c> error.</c><00:14:01.040><c> Let's</c><00:14:01.280><c> see</c>
+
+00:14:01.390 --> 00:14:01.400 align:start position:0%
+Oh, it has thrown an error. Let's see
+ 
+
+00:14:01.400 --> 00:14:02.750 align:start position:0%
+Oh, it has thrown an error. Let's see
+what<00:14:01.600><c> it</c><00:14:01.720><c> is.</c>
+
+00:14:02.750 --> 00:14:02.760 align:start position:0%
+what it is.
+ 
+
+00:14:02.760 --> 00:14:07.270 align:start position:0%
+what it is.
+So,<00:14:03.320><c> it</c><00:14:03.560><c> says</c><00:14:04.600><c> shared</c><00:14:05.120><c> network</c><00:14:05.960><c> RG</c><00:14:06.480><c> was</c><00:14:06.840><c> not</c>
+
+00:14:07.270 --> 00:14:07.280 align:start position:0%
+So, it says shared network RG was not
+ 
+
+00:14:07.280 --> 00:14:08.790 align:start position:0%
+So, it says shared network RG was not
+found.
+
+00:14:08.790 --> 00:14:08.800 align:start position:0%
+found.
+ 
+
+00:14:08.800 --> 00:14:11.830 align:start position:0%
+found.
+Oh,<00:14:09.120><c> actually,</c><00:14:10.280><c> I</c><00:14:10.360><c> have</c><00:14:10.800><c> given</c><00:14:11.160><c> the</c><00:14:11.320><c> wrong</c>
+
+00:14:11.830 --> 00:14:11.840 align:start position:0%
+Oh, actually, I have given the wrong
+ 
+
+00:14:11.840 --> 00:14:14.110 align:start position:0%
+Oh, actually, I have given the wrong
+virtual<00:14:12.440><c> network</c><00:14:12.920><c> name</c><00:14:13.240><c> somewhere.</c><00:14:13.880><c> Let's</c>
+
+00:14:14.110 --> 00:14:14.120 align:start position:0%
+virtual network name somewhere. Let's
+ 
+
+00:14:14.120 --> 00:14:15.230 align:start position:0%
+virtual network name somewhere. Let's
+see.
+
+00:14:15.230 --> 00:14:15.240 align:start position:0%
+see.
+ 
+
+00:14:15.240 --> 00:14:17.830 align:start position:0%
+see.
+Shared<00:14:15.680><c> network</c><00:14:16.280><c> RG</c><00:14:16.760><c> No,</c><00:14:17.080><c> it's</c><00:14:17.360><c> not</c><00:14:17.600><c> shared</c>
+
+00:14:17.830 --> 00:14:17.840 align:start position:0%
+Shared network RG No, it's not shared
+ 
+
+00:14:17.840 --> 00:14:23.150 align:start position:0%
+Shared network RG No, it's not shared
+network<00:14:18.480><c> RG.</c><00:14:18.840><c> It's</c><00:14:19.080><c> shared</c><00:14:19.520><c> network</c><00:14:20.080><c> VNet.</c>
+
+00:14:23.150 --> 00:14:23.160 align:start position:0%
+ 
+ 
+
+00:14:23.160 --> 00:14:24.870 align:start position:0%
+ 
+Okay.
+
+00:14:24.870 --> 00:14:24.880 align:start position:0%
+Okay.
+ 
+
+00:14:24.880 --> 00:14:26.870 align:start position:0%
+Okay.
+This<00:14:25.160><c> is</c><00:14:25.560><c> what</c><00:14:25.760><c> I</c><00:14:25.880><c> told</c><00:14:26.200><c> you</c><00:14:26.280><c> like</c><00:14:26.560><c> you</c><00:14:26.680><c> can</c>
+
+00:14:26.870 --> 00:14:26.880 align:start position:0%
+This is what I told you like you can
+ 
+
+00:14:26.880 --> 00:14:30.030 align:start position:0%
+This is what I told you like you can
+type<00:14:27.200><c> it</c><00:14:27.360><c> or</c><00:14:27.480><c> you</c><00:14:27.600><c> can</c><00:14:27.760><c> copy</c><00:14:28.120><c> and</c><00:14:28.240><c> paste.</c>
+
+00:14:30.030 --> 00:14:30.040 align:start position:0%
+type it or you can copy and paste.
+ 
+
+00:14:30.040 --> 00:14:34.230 align:start position:0%
+type it or you can copy and paste.
+So,<00:14:30.360><c> yeah,</c><00:14:30.600><c> overconfidence.</c>
+
+00:14:34.230 --> 00:14:34.240 align:start position:0%
+ 
+ 
+
+00:14:34.240 --> 00:14:36.270 align:start position:0%
+ 
+Okay.<00:14:34.680><c> So,</c><00:14:34.880><c> it</c><00:14:35.040><c> says</c><00:14:35.400><c> three</c><00:14:35.640><c> resources</c><00:14:36.120><c> will</c>
+
+00:14:36.270 --> 00:14:36.280 align:start position:0%
+Okay. So, it says three resources will
+ 
+
+00:14:36.280 --> 00:14:38.230 align:start position:0%
+Okay. So, it says three resources will
+be<00:14:36.400><c> created,</c><00:14:36.800><c> network</c><00:14:37.160><c> interface,</c><00:14:37.760><c> resource</c>
+
+00:14:38.230 --> 00:14:38.240 align:start position:0%
+be created, network interface, resource
+ 
+
+00:14:38.240 --> 00:14:40.030 align:start position:0%
+be created, network interface, resource
+group,<00:14:38.560><c> and</c><00:14:38.760><c> virtual</c><00:14:39.120><c> machine.</c><00:14:39.560><c> It's</c><00:14:39.760><c> not</c>
+
+00:14:40.030 --> 00:14:40.040 align:start position:0%
+group, and virtual machine. It's not
+ 
+
+00:14:40.040 --> 00:14:42.590 align:start position:0%
+group, and virtual machine. It's not
+creating<00:14:40.520><c> subnet.</c><00:14:40.960><c> It's</c><00:14:41.200><c> not</c><00:14:41.440><c> creating</c><00:14:41.880><c> VNet.</c>
+
+00:14:42.590 --> 00:14:42.600 align:start position:0%
+creating subnet. It's not creating VNet.
+ 
+
+00:14:42.600 --> 00:14:44.790 align:start position:0%
+creating subnet. It's not creating VNet.
+Still,<00:14:43.040><c> it</c><00:14:43.200><c> is</c><00:14:43.360><c> able</c><00:14:43.680><c> to</c><00:14:43.800><c> create</c><00:14:44.280><c> these</c>
+
+00:14:44.790 --> 00:14:44.800 align:start position:0%
+Still, it is able to create these
+ 
+
+00:14:44.800 --> 00:14:47.390 align:start position:0%
+Still, it is able to create these
+resources<00:14:45.560><c> inside</c><00:14:46.160><c> the</c><00:14:46.520><c> already</c><00:14:46.920><c> existing</c>
+
+00:14:47.390 --> 00:14:47.400 align:start position:0%
+resources inside the already existing
+ 
+
+00:14:47.400 --> 00:14:49.950 align:start position:0%
+resources inside the already existing
+VNets.<00:14:48.320><c> So,</c><00:14:48.400><c> let's</c><00:14:48.760><c> apply</c><00:14:49.160><c> these</c><00:14:49.400><c> changes</c><00:14:49.839><c> and</c>
+
+00:14:49.950 --> 00:14:49.960 align:start position:0%
+VNets. So, let's apply these changes and
+ 
+
+00:14:49.960 --> 00:14:53.230 align:start position:0%
+VNets. So, let's apply these changes and
+let's<00:14:50.240><c> verify</c><00:14:50.839><c> from</c><00:14:51.200><c> the</c><00:14:51.560><c> console.</c>
+
+00:14:53.230 --> 00:14:53.240 align:start position:0%
+let's verify from the console.
+ 
+
+00:14:53.240 --> 00:15:02.510 align:start position:0%
+let's verify from the console.
+I'm<00:14:53.320><c> going</c><00:14:53.440><c> to</c><00:14:53.680><c> do</c><00:14:53.880><c> auto</c><00:14:54.280><c> auto</c><00:14:55.000><c> approve.</c>
+
+00:15:02.510 --> 00:15:02.520 align:start position:0%
+ 
+ 
+
+00:15:02.520 --> 00:15:05.430 align:start position:0%
+ 
+Okay,<00:15:02.839><c> it</c><00:15:03.040><c> says</c><00:15:03.440><c> the</c><00:15:03.560><c> resources</c><00:15:04.720><c> have</c><00:15:05.080><c> been</c>
+
+00:15:05.430 --> 00:15:05.440 align:start position:0%
+Okay, it says the resources have been
+ 
+
+00:15:05.440 --> 00:15:08.710 align:start position:0%
+Okay, it says the resources have been
+created.<00:15:06.280><c> Now,</c><00:15:06.480><c> let's</c><00:15:07.160><c> check</c><00:15:07.960><c> on</c><00:15:08.200><c> the</c><00:15:08.320><c> Azure</c>
+
+00:15:08.710 --> 00:15:08.720 align:start position:0%
+created. Now, let's check on the Azure
+ 
+
+00:15:08.720 --> 00:15:10.390 align:start position:0%
+created. Now, let's check on the Azure
+portal.
+
+00:15:10.390 --> 00:15:10.400 align:start position:0%
+portal.
+ 
+
+00:15:10.400 --> 00:15:12.310 align:start position:0%
+portal.
+So,<00:15:10.520><c> I'm</c><00:15:10.680><c> going</c><00:15:10.839><c> to</c><00:15:10.960><c> go</c><00:15:11.200><c> to</c><00:15:11.400><c> my</c><00:15:11.800><c> resource</c>
+
+00:15:12.310 --> 00:15:12.320 align:start position:0%
+So, I'm going to go to my resource
+ 
+
+00:15:12.320 --> 00:15:14.950 align:start position:0%
+So, I'm going to go to my resource
+group,<00:15:13.080><c> and</c><00:15:13.440><c> I've</c><00:15:13.600><c> created</c><00:15:14.360><c> a</c><00:15:14.400><c> new</c><00:15:14.600><c> resource</c>
+
+00:15:14.950 --> 00:15:14.960 align:start position:0%
+group, and I've created a new resource
+ 
+
+00:15:14.960 --> 00:15:17.350 align:start position:0%
+group, and I've created a new resource
+group<00:15:15.160><c> for</c><00:15:15.320><c> this</c><00:15:15.560><c> day</c><00:15:15.760><c> 13</c><00:15:16.160><c> RG.</c>
+
+00:15:17.350 --> 00:15:17.360 align:start position:0%
+group for this day 13 RG.
+ 
+
+00:15:17.360 --> 00:15:19.710 align:start position:0%
+group for this day 13 RG.
+In<00:15:17.560><c> that,</c><00:15:17.880><c> there</c><00:15:18.080><c> are</c><00:15:18.160><c> three</c><00:15:18.320><c> resources,</c><00:15:19.080><c> VM,</c>
+
+00:15:19.710 --> 00:15:19.720 align:start position:0%
+In that, there are three resources, VM,
+ 
+
+00:15:19.720 --> 00:15:23.270 align:start position:0%
+In that, there are three resources, VM,
+disk,<00:15:20.480><c> and</c><00:15:21.320><c> NIC.</c><00:15:21.960><c> So,</c><00:15:22.160><c> let's</c><00:15:22.560><c> see</c><00:15:22.800><c> where</c><00:15:23.080><c> it</c>
+
+00:15:23.270 --> 00:15:23.280 align:start position:0%
+disk, and NIC. So, let's see where it
+ 
+
+00:15:23.280 --> 00:15:24.950 align:start position:0%
+disk, and NIC. So, let's see where it
+was<00:15:23.480><c> created.</c>
+
+00:15:24.950 --> 00:15:24.960 align:start position:0%
+was created.
+ 
+
+00:15:24.960 --> 00:15:27.590 align:start position:0%
+was created.
+Okay,<00:15:25.280><c> let's</c><00:15:25.520><c> go</c><00:15:25.720><c> to</c><00:15:25.880><c> networking.</c>
+
+00:15:27.590 --> 00:15:27.600 align:start position:0%
+Okay, let's go to networking.
+ 
+
+00:15:27.600 --> 00:15:31.790 align:start position:0%
+Okay, let's go to networking.
+See<00:15:27.960><c> network</c><00:15:28.480><c> settings.</c>
+
+00:15:31.790 --> 00:15:31.800 align:start position:0%
+ 
+ 
+
+00:15:31.800 --> 00:15:33.910 align:start position:0%
+ 
+Okay,<00:15:32.080><c> so</c><00:15:32.240><c> it's</c><00:15:32.880><c> part</c><00:15:33.240><c> of</c><00:15:33.440><c> the</c><00:15:33.560><c> virtual</c>
+
+00:15:33.910 --> 00:15:33.920 align:start position:0%
+Okay, so it's part of the virtual
+ 
+
+00:15:33.920 --> 00:15:36.430 align:start position:0%
+Okay, so it's part of the virtual
+network<00:15:34.360><c> shared</c><00:15:34.720><c> network</c><00:15:35.120><c> VNet</c><00:15:35.680><c> and</c><00:15:36.000><c> part</c><00:15:36.320><c> of</c>
+
+00:15:36.430 --> 00:15:36.440 align:start position:0%
+network shared network VNet and part of
+ 
+
+00:15:36.440 --> 00:15:38.470 align:start position:0%
+network shared network VNet and part of
+the<00:15:36.600><c> subnet</c><00:15:37.080><c> shared</c><00:15:37.400><c> primary</c><00:15:37.840><c> SN</c><00:15:38.160><c> which</c><00:15:38.360><c> is</c>
+
+00:15:38.470 --> 00:15:38.480 align:start position:0%
+the subnet shared primary SN which is
+ 
+
+00:15:38.480 --> 00:15:41.150 align:start position:0%
+the subnet shared primary SN which is
+what<00:15:38.720><c> we</c><00:15:38.800><c> have</c><00:15:38.960><c> configured</c><00:15:39.600><c> for</c><00:15:39.840><c> this</c><00:15:40.080><c> VM.</c>
+
+00:15:41.150 --> 00:15:41.160 align:start position:0%
+what we have configured for this VM.
+ 
+
+00:15:41.160 --> 00:15:44.030 align:start position:0%
+what we have configured for this VM.
+And<00:15:41.520><c> this</c><00:15:41.760><c> is</c><00:15:42.040><c> how</c><00:15:42.240><c> we</c><00:15:42.440><c> have</c><00:15:42.720><c> used</c>
+
+00:15:44.030 --> 00:15:44.040 align:start position:0%
+And this is how we have used
+ 
+
+00:15:44.040 --> 00:15:46.190 align:start position:0%
+And this is how we have used
+data<00:15:44.320><c> source.</c><00:15:44.600><c> So,</c><00:15:44.720><c> I'm</c><00:15:44.880><c> just</c><00:15:45.160><c> going</c><00:15:45.320><c> to</c><00:15:45.440><c> hit</c>
+
+00:15:46.190 --> 00:15:46.200 align:start position:0%
+data source. So, I'm just going to hit
+ 
+
+00:15:46.200 --> 00:15:48.270 align:start position:0%
+data source. So, I'm just going to hit
+TF<00:15:46.680><c> destroy.</c>
+
+00:15:48.270 --> 00:15:48.280 align:start position:0%
+TF destroy.
+ 
+
+00:15:48.280 --> 00:15:51.030 align:start position:0%
+TF destroy.
+Um<00:15:48.560><c> so,</c><00:15:48.680><c> yeah,</c><00:15:48.800><c> this</c><00:15:49.040><c> is</c><00:15:49.560><c> what</c><00:15:49.800><c> I</c><00:15:49.920><c> wanted</c><00:15:50.800><c> you</c>
+
+00:15:51.030 --> 00:15:51.040 align:start position:0%
+Um so, yeah, this is what I wanted you
+ 
+
+00:15:51.040 --> 00:15:54.390 align:start position:0%
+Um so, yeah, this is what I wanted you
+to<00:15:51.400><c> see</c><00:15:51.680><c> about</c><00:15:52.920><c> um</c><00:15:53.400><c> data</c><00:15:53.680><c> sources</c><00:15:54.240><c> in</c>
+
+00:15:54.390 --> 00:15:54.400 align:start position:0%
+to see about um data sources in
+ 
+
+00:15:54.400 --> 00:15:57.070 align:start position:0%
+to see about um data sources in
+Terraform.<00:15:55.000><c> I</c><00:15:55.080><c> hope</c><00:15:55.520><c> this</c><00:15:55.840><c> was</c><00:15:56.200><c> clear</c><00:15:56.520><c> now.</c><00:15:57.000><c> I</c>
+
+00:15:57.070 --> 00:15:57.080 align:start position:0%
+Terraform. I hope this was clear now. I
+ 
+
+00:15:57.080 --> 00:15:58.990 align:start position:0%
+Terraform. I hope this was clear now. I
+hope<00:15:57.320><c> you</c><00:15:57.440><c> were</c><00:15:57.560><c> able</c><00:15:57.840><c> to</c><00:15:58.000><c> do</c><00:15:58.120><c> the</c><00:15:58.280><c> demo</c><00:15:58.680><c> along</c>
+
+00:15:58.990 --> 00:15:59.000 align:start position:0%
+hope you were able to do the demo along
+ 
+
+00:15:59.000 --> 00:16:00.790 align:start position:0%
+hope you were able to do the demo along
+with<00:15:59.160><c> me</c><00:15:59.320><c> or</c><00:15:59.440><c> you</c><00:15:59.560><c> can</c><00:15:59.720><c> do</c><00:15:59.880><c> it</c><00:16:00.000><c> now</c><00:16:00.280><c> if</c><00:16:00.520><c> you</c><00:16:00.640><c> were</c>
+
+00:16:00.790 --> 00:16:00.800 align:start position:0%
+with me or you can do it now if you were
+ 
+
+00:16:00.800 --> 00:16:02.630 align:start position:0%
+with me or you can do it now if you were
+not<00:16:01.080><c> following</c><00:16:01.520><c> along.</c>
+
+00:16:02.630 --> 00:16:02.640 align:start position:0%
+not following along.
+ 
+
+00:16:02.640 --> 00:16:04.110 align:start position:0%
+not following along.
+So,<00:16:02.920><c> thank</c><00:16:03.160><c> you</c><00:16:03.240><c> so</c><00:16:03.360><c> much</c><00:16:03.560><c> for</c><00:16:03.720><c> watching.</c><00:16:04.080><c> I</c>
+
+00:16:04.110 --> 00:16:04.120 align:start position:0%
+So, thank you so much for watching. I
+ 
+
+00:16:04.120 --> 00:16:05.830 align:start position:0%
+So, thank you so much for watching. I
+will<00:16:04.280><c> see</c><00:16:04.440><c> you</c><00:16:04.640><c> soon</c><00:16:04.960><c> with</c><00:16:05.080><c> the</c><00:16:05.200><c> next</c><00:16:05.520><c> video.</c>
+
+00:16:05.830 --> 00:16:05.840 align:start position:0%
+will see you soon with the next video.
+ 
+
+00:16:05.840 --> 00:16:07.590 align:start position:0%
+will see you soon with the next video.
+In<00:16:06.000><c> the</c><00:16:06.120><c> next</c><00:16:06.440><c> video,</c><00:16:06.720><c> we'll</c><00:16:06.880><c> be</c><00:16:07.040><c> doing</c><00:16:07.400><c> we'll</c>
+
+00:16:07.590 --> 00:16:07.600 align:start position:0%
+In the next video, we'll be doing we'll
+ 
+
+00:16:07.600 --> 00:16:10.190 align:start position:0%
+In the next video, we'll be doing we'll
+be<00:16:07.720><c> starting</c><00:16:08.200><c> with</c><00:16:08.360><c> the</c><00:16:08.480><c> mini</c><00:16:08.720><c> projects.</c><00:16:09.840><c> So,</c>
+
+00:16:10.190 --> 00:16:10.200 align:start position:0%
+be starting with the mini projects. So,
+ 
+
+00:16:10.200 --> 00:16:12.430 align:start position:0%
+be starting with the mini projects. So,
+we'll<00:16:10.400><c> be</c><00:16:10.520><c> starting</c><00:16:11.080><c> with</c><00:16:11.600><c> the</c><00:16:11.760><c> provisioning</c>
+
+00:16:12.430 --> 00:16:12.440 align:start position:0%
+we'll be starting with the provisioning
+ 
+
+00:16:12.440 --> 00:16:14.270 align:start position:0%
+we'll be starting with the provisioning
+a<00:16:12.480><c> lot</c><00:16:12.760><c> of</c><00:16:12.880><c> infrastructure</c><00:16:13.560><c> resources,</c>
+
+00:16:14.270 --> 00:16:14.280 align:start position:0%
+a lot of infrastructure resources,
+ 
+
+00:16:14.280 --> 00:16:15.950 align:start position:0%
+a lot of infrastructure resources,
+virtual<00:16:14.600><c> machine</c><00:16:14.920><c> scale</c><00:16:15.280><c> sets,</c><00:16:15.640><c> virtual</c>
+
+00:16:15.950 --> 00:16:15.960 align:start position:0%
+virtual machine scale sets, virtual
+ 
+
+00:16:15.960 --> 00:16:17.270 align:start position:0%
+virtual machine scale sets, virtual
+machines,
+
+00:16:17.270 --> 00:16:17.280 align:start position:0%
+machines,
+ 
+
+00:16:17.280 --> 00:16:20.110 align:start position:0%
+machines,
+um<00:16:17.600><c> VNet,</c><00:16:18.200><c> subnet,</c><00:16:19.280><c> and</c><00:16:19.440><c> a</c><00:16:19.480><c> lot</c><00:16:19.760><c> of</c><00:16:19.920><c> cool</c>
+
+00:16:20.110 --> 00:16:20.120 align:start position:0%
+um VNet, subnet, and a lot of cool
+ 
+
+00:16:20.120 --> 00:16:22.630 align:start position:0%
+um VNet, subnet, and a lot of cool
+stuff.<00:16:20.480><c> So,</c><00:16:21.120><c> uh</c><00:16:21.280><c> stay</c><00:16:21.480><c> tuned</c><00:16:21.760><c> for</c><00:16:21.880><c> that</c><00:16:22.360><c> and</c>
+
+00:16:22.630 --> 00:16:22.640 align:start position:0%
+stuff. So, uh stay tuned for that and
+ 
+
+00:16:22.640 --> 00:16:23.870 align:start position:0%
+stuff. So, uh stay tuned for that and
+thank<00:16:22.800><c> you</c><00:16:22.880><c> so</c><00:16:23.000><c> much</c><00:16:23.200><c> for</c><00:16:23.320><c> watching.</c><00:16:23.680><c> Make</c>
+
+00:16:23.870 --> 00:16:23.880 align:start position:0%
+thank you so much for watching. Make
+ 
+
+00:16:23.880 --> 00:16:25.310 align:start position:0%
+thank you so much for watching. Make
+sure<00:16:24.080><c> you</c><00:16:24.160><c> complete</c><00:16:24.560><c> the</c><00:16:24.680><c> comments</c><00:16:25.040><c> and</c><00:16:25.160><c> like</c>
+
+00:16:25.310 --> 00:16:25.320 align:start position:0%
+sure you complete the comments and like
+ 
+
+00:16:25.320 --> 00:16:26.590 align:start position:0%
+sure you complete the comments and like
+target.<00:16:25.720><c> I</c><00:16:25.760><c> will</c><00:16:25.920><c> see</c><00:16:26.000><c> you</c><00:16:26.120><c> soon.</c><00:16:26.360><c> Thank</c><00:16:26.520><c> you</c>
+
+00:16:26.590 --> 00:16:26.600 align:start position:0%
+target. I will see you soon. Thank you
+ 
+
+00:16:26.600 --> 00:16:29.360 align:start position:0%
+target. I will see you soon. Thank you
+so<00:16:26.760><c> much.</c><00:16:27.160><c> Bye-bye.</c>
+

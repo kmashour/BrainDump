@@ -1,0 +1,83 @@
+{
+  "id": "XRM0fMusX9Q",
+  "title": "Day 17/28 - Azure App Service With Terraform | Blue Green Deployment",
+  "duration": 2872,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 26
+    },
+    {
+      "start_time": 26,
+      "title": "Project architecture planning",
+      "end_time": 296
+    },
+    {
+      "start_time": 296,
+      "title": "Writing the configuration file",
+      "end_time": 504
+    },
+    {
+      "start_time": 504,
+      "title": "Setting up app service plan",
+      "end_time": 814
+    },
+    {
+      "start_time": 814,
+      "title": "Creating the web app",
+      "end_time": 944
+    },
+    {
+      "start_time": 944,
+      "title": "Configuring deployment slots",
+      "end_time": 1309
+    },
+    {
+      "start_time": 1309,
+      "title": "Troubleshooting resource cleanup",
+      "end_time": 1490
+    },
+    {
+      "start_time": 1490,
+      "title": "Manual application deployment",
+      "end_time": 2012
+    },
+    {
+      "start_time": 2012,
+      "title": "Fixing version incompatibility",
+      "end_time": 2135
+    },
+    {
+      "start_time": 2135,
+      "title": "Automating deployment with TF",
+      "end_time": 2571
+    },
+    {
+      "start_time": 2571,
+      "title": "Implementing slot swapping",
+      "end_time": 2872
+    }
+  ],
+  "description": "Welcome to 17/28 day of Terraform Full Course For Beginners\n\nIn this video, we will learn how to implement Blue-Green Deployment with Azure App Service using Terraform! This step-by-step tutorial shows you how to create and manage deployment slots for zero-downtime deployments.\n\n\ud83d\udcda In this video, you'll learn:\n- Setting up Azure App Service Plan and App Service with Terraform\n- Creating and configuring deployment slots\n- Deploying a sample application to slots\n- Implementing blue-green deployment using Terraform\n- Executing slot swaps for zero-downtime updates\n\n#Azure #Terraform #DevOps #Infrastructure #AppService #IaC #BlueGreenDeployment #Cloud #AzureDevOps #TerraformTutorial #devopstutorial \n\n\n\u2b50\ufe0f Want to master Azure DevOps? Check out our complete playlist: https://www.youtube.com/playlist?list=PLl4APkPHzsUUHlbhuq9V02n9AMLPySoEQ\n\nKeywords: Azure App Service, Terraform, Blue Green Deployment, Infrastructure as Code, Azure DevOps, Deployment Slots, Zero Downtime Deployment, Cloud Infrastructure, DevOps Automation, Azure Infrastructure\n\n\ud83d\udc68\u200d\ud83d\udcbb GitHub repo :\nhttps://github.com/piyushsachdeva/Terraform-Full-Course-Azure/\n\n\ud835\uddd6\ud835\udde2\ud835\udde0\ud835\udde3\ud835\udddf\ud835\uddd8\ud835\udde7\ud835\uddd8 COURSES  \ud83d\udc4c It\u2019s   \ud83c\udd75\ud83c\udd81\ud83c\udd74\ud83c\udd74 \u26f3\n\u2705 Terraform Full Course For Beginners - #28daysofAZTerraform\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUHlbhuq9V02n9AMLPySoEQ\n\n\u2705 Certified Kubernetes Administrator (CKA) 2024\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOkOv3i62UidrLmSB8DcGC\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\udded\ud835\uddf2\ud835\uddff\ud835\uddfc \ud835\ude01\ud835\uddfc \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddfc:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXseJO1a03CtfRDzr2hivbD\n\n\u2705 \ud835\uddd4\ud835\udded\ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd9\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOCWcjaXcH-WBVxCccZ4uO\n\n\u2705 \ud835\udde1\ud835\uddee\ud835\uddfa\ud835\uddee\ud835\ude00\ud835\ude01\ud835\uddf2 \ud835\uddda\ud835\uddfc\ud835\uddfc\ud835\uddf4\ud835\uddf9\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 | \ud835\uddda\ud835\uddd6\ud835\udde3 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddef\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00, \ud835\uddee \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude01\ud835\uddf2 \ud835\uddfd\ud835\uddf9\ud835\uddee\ud835\ude06\ud835\uddf9\ud835\uddf6\ud835\ude00\ud835\ude01 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\ude01\ud835\uddf5\ud835\uddf2 \ud835\uddd4\ud835\ude00\ud835\ude00\ud835\uddfc\ud835\uddf0\ud835\uddf6\ud835\uddee\ud835\ude01\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddd8\ud835\uddfb\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddf2\ud835\uddf2\ud835\uddff (\ud835\uddd4\ud835\uddd6\ud835\uddd8) \ud835\uddd6\ud835\uddf2\ud835\uddff\ud835\ude01\ud835\uddf6\ud835\uddf3\ud835\uddf6\ud835\uddf0\ud835\uddee\ud835\ude01\ud835\uddf6\ud835\uddfc\ud835\uddfb \ud835\uddd8\ud835\ude05\ud835\uddee\ud835\uddfa:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXvkDFARdrH2LMESVqeuH8W\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddee\ud835\ude01\ud835\uddee \ud835\uddf3\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd7\ud835\udde3 \ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddf3\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddf0\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUd4rzzHEpHMsyD5PbVWz1I\n\n\u2705 \ud835\udddd\ud835\uddf2\ud835\uddfb\ud835\uddf8\ud835\uddf6\ud835\uddfb\ud835\ude00 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddd5\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUV3pz6zRpFJe3A4wTM2Pjvv\n\n\u2705 \ud835\udfed\ud835\udfec\ud835\ude04\ud835\uddf2\ud835\uddf2\ud835\uddf8\ud835\ude00\ud835\uddfc\ud835\uddf3\ud835\uddf0\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1\ud835\uddfc\ud835\uddfd\ud835\ude00 - \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude05 \ud835\uddf5\ud835\uddee\ud835\uddfb\ud835\uddf1\ud835\ude00-\ud835\uddfc\ud835\uddfb \ud835\uddfd\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01\ud835\ude00 \ud835\uddfc\ud835\uddfb \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUc8HOEIwfB3Z2uxRv2SKOG\n\n\u2705 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\udde3\ud835\uddfc\ud835\uddf1\ud835\uddf0\ud835\uddee\ud835\ude00\ud835\ude01\ud835\ude00:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUWr7SI4Kym5dr80DovuSbL2\n\n\u2705 \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf9\ud835\uddee\ud835\uddef \ud835\uddd6\ud835\udddc \ud835\uddd6\ud835\uddd7 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 | \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde7\ud835\uddfc \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\udde3\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01 [\ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2]\nhttps://youtu.be/uYaMRn2meJQ\n\nSubscribe to our channel to get notified about the latest videos. \n\ud83d\udd25 https://www.youtube.com/TechTutorialswithPiyush\n\n-----------------------------------------------------------------------------------------------------------------------\n\ud835\uddd6\ud835\uddfc\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddf0\ud835\ude01 \ud835\uddfa\ud835\uddf2 \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddf2:\ud83d\udc47\ud83d\udc47\n\n\ud83d\udd25\ud835\uddec\ud835\uddfc\ud835\ude02\ud835\udde7\ud835\ude02\ud835\uddef\ud835\uddf2 \u25b6  https://www.youtube.com/TechTutorialswithPiyush\n\u26f3\ud835\udddf\ud835\uddf6\ud835\uddfb\ud835\uddf8\ud835\uddf2\ud835\uddf1\ud835\udddc\ud835\uddfb \u25b6  https://www.linkedin.com/in/piyush-sachdeva/\n\ud83d\ude80\ud835\udddc\ud835\uddfb\ud835\ude00\ud835\ude01\ud835\uddee\ud835\uddf4\ud835\uddff\ud835\uddee\ud835\uddfa \u25b6 https://www.instagram.com/techtutorialswithpiyush/\n\ud83c\udf0d\ud835\udde7\ud835\ude04\ud835\uddf6\ud835\ude01\ud835\ude01\ud835\uddf2\ud835\uddff \u25b6  https://twitter.com/techie_piyush\n\ud83d\udc68\u200d\ud83d\udcbb \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf5\ud835\ude02\ud835\uddef  \u25b6  https://github.com/piyushsachdeva\n\u270d \ud835\udde0\ud835\uddf2\ud835\uddf1\ud835\uddf6\ud835\ude02\ud835\uddfa.\ud835\uddf0\ud835\uddfc\ud835\uddfa \u25b6 https://medium.com/@piyush.sachdeva055\n\ud83d\udcda \ud835\uddf1\ud835\uddf2\ud835\ude03.\ud835\ude01\ud835\uddfc  \u25b6  https://dev.to/piyushsachdeva\n\u2728\ud835\uddd7\ud835\uddf6\ud835\ude00\ud835\uddf0\ud835\uddfc\ud835\uddff\ud835\uddf1 \u25b6  https://discord.gg/TNCs4BRzq8\n-----------------------------------------------------------------------------------------------------------------------\n\nReferences \ud83d\udcda:\n\n#devops #techtutorialswithpiyush",
+  "webpage_url": "https://www.youtube.com/watch?v=XRM0fMusX9Q",
+  "upload_date": "20250123",
+  "tags": [
+    "azure app service with terraform",
+    "azure app service terraform",
+    "create azure app service using terraform",
+    "azure app service tutorial using terraform",
+    "terraform azure app service",
+    "azure app service plan terraform",
+    "azure web app terraform",
+    "azure web app",
+    "azure app service",
+    "azure app service plan",
+    "azure app service tutorial",
+    "azure web app tutorial",
+    "terraform tutorial azure web app",
+    "terraform azure app service plan",
+    "azure app service plan terraform tutorial",
+    "terraform"
+  ]
+}

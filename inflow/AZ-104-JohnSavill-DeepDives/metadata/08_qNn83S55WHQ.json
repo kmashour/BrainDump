@@ -1,0 +1,95 @@
+{
+  "id": "qNn83S55WHQ",
+  "title": "Azure Virtual Network Manager Deep Dive",
+  "duration": 3776,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 33
+    },
+    {
+      "start_time": 33,
+      "title": "Virtual network refresher and challenges at scale",
+      "end_time": 232
+    },
+    {
+      "start_time": 232,
+      "title": "Azure Virtual Network Manager overview and deployment",
+      "end_time": 660
+    },
+    {
+      "start_time": 660,
+      "title": "Network groups",
+      "end_time": 1010
+    },
+    {
+      "start_time": 1010,
+      "title": "Configurations",
+      "end_time": 1225
+    },
+    {
+      "start_time": 1225,
+      "title": "Connectivity configurations",
+      "end_time": 1250
+    },
+    {
+      "start_time": 1250,
+      "title": "Hub and spoke",
+      "end_time": 1590
+    },
+    {
+      "start_time": 1590,
+      "title": "Direct connectivity and connected groups",
+      "end_time": 2185
+    },
+    {
+      "start_time": 2185,
+      "title": "Hub and spoke direct connectivity with multiple network groups",
+      "end_time": 2300
+    },
+    {
+      "start_time": 2300,
+      "title": "Mesh and removing deployments",
+      "end_time": 2784
+    },
+    {
+      "start_time": 2784,
+      "title": "Security admin configurations",
+      "end_time": 2969
+    },
+    {
+      "start_time": 2969,
+      "title": "Types of action including Always Allow",
+      "end_time": 3190
+    },
+    {
+      "start_time": 3190,
+      "title": "Demo and viewing rules applied",
+      "end_time": 3570
+    },
+    {
+      "start_time": 3570,
+      "title": "Pricing",
+      "end_time": 3687
+    },
+    {
+      "start_time": 3687,
+      "title": "Summary and close",
+      "end_time": 3776
+    }
+  ],
+  "description": "A deep dive look and demo for Azure Virtual Network Manager.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Introduction\n0:33 - Virtual network refresher and challenges at scale\n3:52 - Azure Virtual Network Manager overview and deployment\n11:00 - Network groups\n16:50 - Configurations\n20:25 - Connectivity configurations\n20:50 - Hub and spoke\n26:30 - Direct connectivity and connected groups\n36:25 - Hub and spoke direct connectivity with multiple network groups\n38:20 - Mesh and removing deployments\n46:24 - Security admin configurations\n49:29 - Types of action including Always Allow\n53:10 - Demo and viewing rules applied\n59:30 - Pricing\n1:01:27 - Summary and close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AVNMDeepDiveWhiteboard.png\n\u25ba AVNM documentation:\n\ud83d\udd17 https://docs.microsoft.com/azure/virtual-network-manager/\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #doyouevenazure #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=qNn83S55WHQ",
+  "upload_date": "20220802",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "virtual networks",
+    "scale",
+    "management"
+  ]
+}

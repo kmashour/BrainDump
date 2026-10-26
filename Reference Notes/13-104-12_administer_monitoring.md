@@ -453,33 +453,66 @@ top
 
 ---
 
-## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+## 🏛️ Enterprise Observability, Alert Suppression & Runaway Cost Governance
 
-> [!NOTE]
-> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 35 & 37–40 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
+### 1. Azure Workbooks: Dynamic Interactive Dashboards
+- **Beyond Static Dashboards:** While standard Azure Dashboards display basic pinned tiles, **Azure Workbooks** provide an interactive canvas combining formatted text, dynamic parameter filters (e.g., filter by Subscription, TimeRange, or Environment), live KQL query tables, and visual charts.
+- **Cross-Workspace Telemetry Correlation:** Workbooks execute unified analytical queries spanning multiple Log Analytics workspaces, Application Insights components, and Azure Resource Graph using the `workspace('law-name').Table` syntax.
 
-### 1. Azure Workbooks: Dynamic Interactive Dashboards (Lessons 35 & 37)
-- **Beyond Static Dashboards:** While Azure Dashboards display basic pinned charts, **Azure Workbooks** provide an interactive canvas that blends text narrative, parameter dropdowns (e.g., filter by Subscription or Environment), live KQL query tables, and visual time-series graphs.
-- **Cross-Workspace Correlation:** Workbooks allow a single unified report to execute queries across multiple Log Analytics workspaces and Application Insights components using the `workspace('law-name').Table` syntax.
-
-### 2. Alert Processing Rules: Maintenance Window Suppression (Lessons 38 & 39)
-- **The Operational Challenge:** When performing scheduled server maintenance or database patching on weekends, hundreds of false-positive alerts fire, paging on-call engineers unnecessarily.
+### 2. Alert Processing Rules: Maintenance Window Suppression
+- **The Operational Challenge:** During scheduled server maintenance, OS patching, or database re-indexing, hundreds of false-positive alerts fire, paging on-call engineers unnecessarily.
 - **Alert Processing Rules (Suppression):**
-  - Configured globally under *Monitor ➔ Alerts ➔ Alert processing rules*.
+  - Configured globally under *Azure Monitor ➔ Alerts ➔ Alert processing rules*.
   - Rule action: **Suppress notifications**.
-  - Schedule: Set to a recurring weekly window (e.g., Saturday 01:00 to 05:00 UTC).
-  - *Exam Gotcha:* Alert rules still fire and register in the Azure Monitor alerts history for auditing, but the notification engine (SMS, email, push, webhooks) is silenced.
+  - Recurrence schedule: Can be set to a one-time maintenance window or a recurring weekly window (e.g., Sunday 01:00 to 05:00 UTC).
+  - *Operational Guarantee:* Alert rules continue to evaluate and log in the Azure Monitor alert history for audit compliance, but notifications (SMS, email, push, PagerDuty, ServiceNow webhooks) are suppressed.
 
-### 3. Log Analytics Pricing: Controlling Runaway Logging Costs (Lesson 40)
-- **The Financial Trap:** Log Analytics charges per Gigabyte ingested. If an application service enters an unhandled crash loop that writes millions of stack traces to `stdout`, a workspace can ingest hundreds of gigabytes in hours, resulting in massive unexpected charges.
-- **Cost Protection Controls:**
-  1. *Daily Ingestion Cap:* In the workspace *Usage and estimated costs* blade, enable a **Daily Volume Cap** (e.g., 5 GB/day). Once reached, the workspace stops collecting event logs for the remainder of the day (except critical security/heartbeat events).
-  2. *Data Collection Rules (DCR) Client-Side Filtering:* With the modern Azure Monitor Agent (AMA), write XPath queries in DCRs to ingest only Warning and Error events from Windows Event Viewer, completely filtering out verbose Informational events before network transmission.
-  3. *Capacity Reservations:* For enterprise workloads ingesting over 100 GB/day, reserve daily commitment tiers to reduce per-GB costs by up to 50% compared to Pay-As-You-Go.
+### 3. Log Analytics Pricing: FinOps & Controlling Runaway Ingestion Costs
+- **The Financial Risk:** Log Analytics charges per Gigabyte ingested. If an application service enters an unhandled crash loop that writes millions of stack traces to `stdout`, a workspace can ingest hundreds of gigabytes within hours, causing substantial unexpected cost spikes.
+- **Enterprise Cost Protection Controls:**
+  1. *Daily Ingestion Volume Cap:* In the workspace *Usage and estimated costs* blade, set a **Daily Volume Cap** (e.g., 5 GB/day). Once reached, the workspace stops collecting non-security event logs for the remainder of the 24-hour UTC cycle.
+  2. *Data Collection Rules (DCR) Client-Side Filtering:* With the modern Azure Monitor Agent (AMA), configure XPath queries in DCRs to ingest only Warning and Error events from Windows Event Viewer, completely filtering out verbose Informational events before network transmission.
+  3. *Table Plan Optimization (Basic vs. Analytics Logs):* Ingest high-volume debug logs into the **Basic Log Table** plan (costing ~80% less per GB than Analytics tables), retaining them for ad-hoc debugging without long-term analytics overhead.
+  4. *Capacity Reservations:* For enterprise workloads ingesting over 100 GB/day, reserve daily commitment tiers (100 GB, 200 GB, 500 GB/day) to reduce per-GB costs by up to 50% compared to Pay-As-You-Go.
 
 ---
 
+## 💡 Observability Decision Tree & Articulation Guide
+
+```mermaid
+flowchart TD
+    Req{"What is the monitoring and alerting requirement?"}
+    
+    Req -- "Sub-minute alerting on VM CPU spikes or network saturation" --> M1["Configure **Metric Alert Rules** against host time-series metrics."]
+    Req -- "Alert on complex text patterns or multi-table security events" --> M2["Configure **Log Search Alerts** executing scheduled KQL queries."]
+    Req -- "Prevent false-positive alerts from paging engineers during weekend patching" --> M3["Deploy an **Alert Processing Rule** with scheduled **Notification Suppression**."]
+    Req -- "Audit administrative deletions and changes for 365 days with KQL queries" --> M4["Export **Azure Activity Logs** via Diagnostic Settings to a **Log Analytics Workspace**."]
+    Req -- "Cap unexpected logging costs caused by unhandled crash loops" --> M5["Set a **Daily Volume Cap** on the Log Analytics Workspace + DCR client-side filters."]
+```
+
+---
+
+---
+
+## 🏛️ Deep-Dive Observability & Cost Optimization (John Savill Master Class Insights)
+
+### 1. Ingestion Latency Mechanics: Metrics vs. Logs
+John Savill highlights why understanding data pipeline latency is essential for SLA alerting:
+- **Metrics Pipeline (Sub-Minute Latency):** Azure service resource providers emit numerical time-series metrics directly to the lightweight Azure Monitor Metrics store. Metric alert rules evaluate near-instantaneously, firing within 1–2 minutes of threshold violations.
+- **Logs Pipeline (3–7 Minute Ingestion Delay):** Telemetry emitted to Log Analytics must be collected by the Azure Monitor Agent, batched, transmitted over HTTPS, parsed, indexed into columnar table schemas, and evaluated by scheduled KQL queries. Alerts dependent on Log Analytics queries experience inherent ingestion latency.
+
+### 2. Log Analytics FinOps: Commitment Tiers & Data Archiving
+Log Analytics ingestion can become a runaway cost driver in large enterprises. John Savill details the cost optimization hierarchy:
+- **Daily Volume Cap:** Emergency circuit breaker that stops non-security log collection when a daily gigabyte threshold is exceeded.
+- **Commitment Tiers:** If an enterprise ingests over 100 GB/day, switching from Pay-As-You-Go ($2.30/GB) to the 100 GB/day Commitment Tier reduces costs by up to 15–20% (with discounts scaling up to 50% for 500 GB+/day).
+- **Basic vs. Analytics Table Schema:**
+  - *Analytics Logs:* Full KQL capabilities, alert support, 30–730 days interactive retention.
+  - *Basic Logs:* Designed for high-volume debugging logs (e.g., container console logs, verbose IIS access logs). Ingestion cost is ~80% cheaper than Analytics logs, with 8 days of retention and simple single-table search queries.
+- **Archive Tier:** Once interactive retention expires, logs can be retained in low-cost Archive storage for up to 12 years to meet regulatory compliance requirements.
+
 ## 🌐 Authoritative References & Citations
+
+- [John Savill: Azure Master Class v2 - Module 10 - Monitoring & Security](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
 
 - [KodeKloud AZ-104 Course - Administer Monitoring Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Monitoring/Module-Introduction/page.md)
 - [Moe Intelligence AZ-104 Video Series (Lessons 35, 37–40)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)

@@ -272,6 +272,8 @@ def verify_links():
                 base_name_lower = f.replace(".md", "").lower()
                 all_notes[base_name_lower] = rel_path
                 all_notes[rel_path.lower()] = rel_path
+                all_notes[rel_path.replace("\\", "/").lower()] = rel_path
+                all_notes[rel_path.replace("\\", "/").replace(".md", "").lower()] = rel_path
                 
     for root, _, files in os.walk(BASE_DIR):
         if ".git" in root or ".obsidian" in root or "inflow" in root:

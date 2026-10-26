@@ -1,0 +1,133 @@
+{
+  "id": "oevwZZ1YFS0",
+  "title": "ExpressRoute Deep Dive",
+  "duration": 4758,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Intro",
+      "end_time": 37
+    },
+    {
+      "start_time": 37,
+      "title": "Azure network and backbone",
+      "end_time": 610
+    },
+    {
+      "start_time": 610,
+      "title": "SKUs",
+      "end_time": 739
+    },
+    {
+      "start_time": 739,
+      "title": "Meet me locations",
+      "end_time": 1168
+    },
+    {
+      "start_time": 1168,
+      "title": "ExpressRoute Direct",
+      "end_time": 1415
+    },
+    {
+      "start_time": 1415,
+      "title": "Active-Active Connection",
+      "end_time": 1518
+    },
+    {
+      "start_time": 1518,
+      "title": "Peering types",
+      "end_time": 1806
+    },
+    {
+      "start_time": 1806,
+      "title": "Microsoft peering part 1",
+      "end_time": 1914
+    },
+    {
+      "start_time": 1914,
+      "title": "ASN",
+      "end_time": 2137
+    },
+    {
+      "start_time": 2137,
+      "title": "Microsoft peering part 2",
+      "end_time": 2446
+    },
+    {
+      "start_time": 2446,
+      "title": "Private peering",
+      "end_time": 2640
+    },
+    {
+      "start_time": 2640,
+      "title": "ExpressRoute Gateways",
+      "end_time": 2820
+    },
+    {
+      "start_time": 2820,
+      "title": "VNet Peering",
+      "end_time": 2929
+    },
+    {
+      "start_time": 2929,
+      "title": "Hub-spoke topology",
+      "end_time": 3027
+    },
+    {
+      "start_time": 3027,
+      "title": "ExpressRoute FastPath",
+      "end_time": 3111
+    },
+    {
+      "start_time": 3111,
+      "title": "Resiliency/Routing requirements",
+      "end_time": 3485
+    },
+    {
+      "start_time": 3485,
+      "title": "BGP Analogy Explanation",
+      "end_time": 3813
+    },
+    {
+      "start_time": 3813,
+      "title": "BGP AS PATH prepending",
+      "end_time": 4109
+    },
+    {
+      "start_time": 4109,
+      "title": "Suboptimal routing between VNets",
+      "end_time": 4240
+    },
+    {
+      "start_time": 4240,
+      "title": "Weighting",
+      "end_time": 4289
+    },
+    {
+      "start_time": 4289,
+      "title": "Local Preference",
+      "end_time": 4541
+    },
+    {
+      "start_time": 4541,
+      "title": "ExpressRoute Global Reach",
+      "end_time": 4677
+    },
+    {
+      "start_time": 4677,
+      "title": "Summary",
+      "end_time": 4758
+    }
+  ],
+  "description": "An 80 minute deep dive into all aspects of ExpressRoute so grab a tasty beverage and make yourself comfortable. In this video we walk through the connectivity basics, using the different types of peering, making your deployment highly available and optimizing the routing. See note below for important point!\n\nNOTE : 1:12:10 - You CAN use private (or public) ASN for the AS path prepending for Private Peering. Public ASN required for Microsoft peering path prepending! My bad :-)\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  T I M E S T A M P S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Intro\n0:37 - Azure network and backbone\n10:10 - SKUs\n12:19 - Meet me locations\n19:28 - ExpressRoute Direct\n23:35 - Active-Active Connection\n25:18 - Peering types\n30:06 - Microsoft peering part 1\n31:54 - ASN\n35:37 - Microsoft peering part 2\n40:46 - Private peering\n44:00 - ExpressRoute Gateways\n47:00 - VNet Peering\n48:49 - Hub-spoke topology\n50:27 - ExpressRoute FastPath\n51:51 - Resiliency/Routing requirements\n58:05 - BGP Analogy Explanation\n1:03:33 - BGP AS PATH prepending\n1:08:29 - Suboptimal routing between VNets\n1:10:40 - Weighting\n1:11:29 - Local Preference\n1:15:41 - ExpressRoute Global Reach\n1:17:57 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcc5 Weekly Azure Update           \u25ba  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class                \u25ba  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class            \u25ba  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class      \u25ba https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos    \u25ba  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n \u2754 Question about my setup?    \u25ba https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1",
+  "webpage_url": "https://www.youtube.com/watch?v=oevwZZ1YFS0",
+  "upload_date": "20200416",
+  "tags": [
+    "Azure",
+    "Azure Networking",
+    "ExpressRoute",
+    "ASN",
+    "Microsoft Peering",
+    "Private Peering"
+  ]
+}

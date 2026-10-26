@@ -1,0 +1,85 @@
+{
+  "id": "RQqcQW4GikA",
+  "title": "Azure Elastic SAN Deep Dive",
+  "duration": 2111,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 135
+    },
+    {
+      "start_time": 135,
+      "title": "Azure Elastic SAN overview",
+      "end_time": 334
+    },
+    {
+      "start_time": 334,
+      "title": "Elastic SAN resource",
+      "end_time": 419
+    },
+    {
+      "start_time": 419,
+      "title": "Adding base and capacity units",
+      "end_time": 791
+    },
+    {
+      "start_time": 791,
+      "title": "Allowing public endpoint",
+      "end_time": 922
+    },
+    {
+      "start_time": 922,
+      "title": "Volume groups",
+      "end_time": 1089
+    },
+    {
+      "start_time": 1089,
+      "title": "Volumes",
+      "end_time": 1329
+    },
+    {
+      "start_time": 1329,
+      "title": "Connecting to a volume",
+      "end_time": 1581
+    },
+    {
+      "start_time": 1581,
+      "title": "Viewing a connected client",
+      "end_time": 1657
+    },
+    {
+      "start_time": 1657,
+      "title": "Checkpoints",
+      "end_time": 1730
+    },
+    {
+      "start_time": 1730,
+      "title": "Good workloads",
+      "end_time": 1927
+    },
+    {
+      "start_time": 1927,
+      "title": "SAN migrations",
+      "end_time": 1959
+    },
+    {
+      "start_time": 1959,
+      "title": "Summary",
+      "end_time": 2111
+    }
+  ],
+  "description": "An exploration of the Azure Elastic SAN solution.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n02:15 - Azure Elastic SAN overview\n05:34 - Elastic SAN resource\n06:59 - Adding base and capacity units\n13:11 - Allowing public endpoint\n15:22 - Volume groups\n18:09 - Volumes\n22:09 - Connecting to a volume\n26:21 - Viewing a connected client\n27:37 - Checkpoints\n28:50 - Good workloads\n32:07 - SAN migrations\n32:39 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AzureElasticSAN.png\n\u25ba Pricing:\n\ud83d\udd17 https://azure.microsoft.com/pricing/details/elastic-san/\n\u25ba Limits:\n\ud83d\udd17 https://learn.microsoft.com/azure/storage/elastic-san/elastic-san-scale-targets#the-elastic-san\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining",
+  "webpage_url": "https://www.youtube.com/watch?v=RQqcQW4GikA",
+  "upload_date": "20240122",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "elastic SAN",
+    "storage",
+    "iscsi"
+  ]
+}

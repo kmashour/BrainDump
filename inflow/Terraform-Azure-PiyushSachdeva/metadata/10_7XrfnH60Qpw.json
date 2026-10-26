@@ -1,0 +1,74 @@
+{
+  "id": "7XrfnH60Qpw",
+  "title": "Day 10/28 - Terraform Expressions | Dynamic  Expression, Conditional And Splat Expression",
+  "duration": 1842,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction to day 10",
+      "end_time": 30
+    },
+    {
+      "start_time": 30,
+      "title": "Dynamic expression blocks",
+      "end_time": 174
+    },
+    {
+      "start_time": 174,
+      "title": "Understanding local variables",
+      "end_time": 398
+    },
+    {
+      "start_time": 398,
+      "title": "Implementing dynamic rules",
+      "end_time": 627
+    },
+    {
+      "start_time": 627,
+      "title": "Running terraform plan",
+      "end_time": 745
+    },
+    {
+      "start_time": 745,
+      "title": "Conditional expressions",
+      "end_time": 1037
+    },
+    {
+      "start_time": 1037,
+      "title": "Debugging terraform plan",
+      "end_time": 1373
+    },
+    {
+      "start_time": 1373,
+      "title": "Splat expressions",
+      "end_time": 1550
+    },
+    {
+      "start_time": 1550,
+      "title": "Advanced splat usage",
+      "end_time": 1842
+    }
+  ],
+  "description": "\ud83d\udd25 Just Dropped: Master Terraform Expressions on Day 10/28 of the Terraform Full Course!\n\nEver wondered how top DevOps engineers make their infrastructure code dynamic and flexible? In my latest video, I break down Terraform expressions in a way that finally clicked for me (and will for you too!)\n\nThe topics will be covered in this video:\u2b50\ufe0f \n\ud83c\udfaf Dynamic Expressions: Write smarter, self-adjusting infrastructure code\n\ud83d\udca1 Conditional Magic: Make your Terraform configs adapt on the fly\n\u2728 Splat Expressions: Handle lists and maps like a pro\nMy favorite part? The real-world examples demonstrate all of these topics from a beginner's perspective.\n\n\ud83d\ude80 BONUS: I'm sharing a task for you in the GitHub repository to practice and get your hands dirty.\n\n#terraform #devops #cloud #infrastructureascode #tech #aws #azure #learning \n\nWould love to hear - How are you finding the Terraform series so far? Drop your feedback in the comments! \ud83d\ude4c\n\n\ud83d\udc68\u200d\ud83d\udcbb GitHub repo :\nhttps://github.com/piyushsachdeva/Terraform-Full-Course-Azure/\n\n\ud835\uddd6\ud835\udde2\ud835\udde0\ud835\udde3\ud835\udddf\ud835\uddd8\ud835\udde7\ud835\uddd8 COURSES  \ud83d\udc4c It\u2019s   \ud83c\udd75\ud83c\udd81\ud83c\udd74\ud83c\udd74 \u26f3\n\u2705 Terraform Full Course For Beginners - #28daysofAZTerraform\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUHlbhuq9V02n9AMLPySoEQ\n\n\u2705 Certified Kubernetes Administrator (CKA) 2024\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOkOv3i62UidrLmSB8DcGC\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\udded\ud835\uddf2\ud835\uddff\ud835\uddfc \ud835\ude01\ud835\uddfc \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddfc:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXseJO1a03CtfRDzr2hivbD\n\n\u2705 \ud835\uddd4\ud835\udded\ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd9\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOCWcjaXcH-WBVxCccZ4uO\n\n\u2705 \ud835\udde1\ud835\uddee\ud835\uddfa\ud835\uddee\ud835\ude00\ud835\ude01\ud835\uddf2 \ud835\uddda\ud835\uddfc\ud835\uddfc\ud835\uddf4\ud835\uddf9\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 | \ud835\uddda\ud835\uddd6\ud835\udde3 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddef\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00, \ud835\uddee \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude01\ud835\uddf2 \ud835\uddfd\ud835\uddf9\ud835\uddee\ud835\ude06\ud835\uddf9\ud835\uddf6\ud835\ude00\ud835\ude01 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\ude01\ud835\uddf5\ud835\uddf2 \ud835\uddd4\ud835\ude00\ud835\ude00\ud835\uddfc\ud835\uddf0\ud835\uddf6\ud835\uddee\ud835\ude01\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddd8\ud835\uddfb\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddf2\ud835\uddf2\ud835\uddff (\ud835\uddd4\ud835\uddd6\ud835\uddd8) \ud835\uddd6\ud835\uddf2\ud835\uddff\ud835\ude01\ud835\uddf6\ud835\uddf3\ud835\uddf6\ud835\uddf0\ud835\uddee\ud835\ude01\ud835\uddf6\ud835\uddfc\ud835\uddfb \ud835\uddd8\ud835\ude05\ud835\uddee\ud835\uddfa:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXvkDFARdrH2LMESVqeuH8W\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddee\ud835\ude01\ud835\uddee \ud835\uddf3\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd7\ud835\udde3 \ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddf3\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddf0\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUd4rzzHEpHMsyD5PbVWz1I\n\n\u2705 \ud835\udddd\ud835\uddf2\ud835\uddfb\ud835\uddf8\ud835\uddf6\ud835\uddfb\ud835\ude00 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddd5\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUV3pz6zRpFJe3A4wTM2Pjvv\n\n\u2705 \ud835\udfed\ud835\udfec\ud835\ude04\ud835\uddf2\ud835\uddf2\ud835\uddf8\ud835\ude00\ud835\uddfc\ud835\uddf3\ud835\uddf0\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1\ud835\uddfc\ud835\uddfd\ud835\ude00 - \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude05 \ud835\uddf5\ud835\uddee\ud835\uddfb\ud835\uddf1\ud835\ude00-\ud835\uddfc\ud835\uddfb \ud835\uddfd\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01\ud835\ude00 \ud835\uddfc\ud835\uddfb \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUc8HOEIwfB3Z2uxRv2SKOG\n\n\u2705 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\udde3\ud835\uddfc\ud835\uddf1\ud835\uddf0\ud835\uddee\ud835\ude00\ud835\ude01\ud835\ude00:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUWr7SI4Kym5dr80DovuSbL2\n\n\u2705 \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf9\ud835\uddee\ud835\uddef \ud835\uddd6\ud835\udddc \ud835\uddd6\ud835\uddd7 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 | \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde7\ud835\uddfc \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\udde3\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01 [\ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2]\nhttps://youtu.be/uYaMRn2meJQ\n\nSubscribe to our channel to get notified about the latest videos. \n\ud83d\udd25 https://www.youtube.com/TechTutorialswithPiyush\n\n-----------------------------------------------------------------------------------------------------------------------\n\ud835\uddd6\ud835\uddfc\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddf0\ud835\ude01 \ud835\uddfa\ud835\uddf2 \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddf2:\ud83d\udc47\ud83d\udc47\n\n\ud83d\udd25\ud835\uddec\ud835\uddfc\ud835\ude02\ud835\udde7\ud835\ude02\ud835\uddef\ud835\uddf2 \u25b6  https://www.youtube.com/TechTutorialswithPiyush\n\u26f3\ud835\udddf\ud835\uddf6\ud835\uddfb\ud835\uddf8\ud835\uddf2\ud835\uddf1\ud835\udddc\ud835\uddfb \u25b6  https://www.linkedin.com/in/piyush-sachdeva/\n\ud83d\ude80\ud835\udddc\ud835\uddfb\ud835\ude00\ud835\ude01\ud835\uddee\ud835\uddf4\ud835\uddff\ud835\uddee\ud835\uddfa \u25b6 https://www.instagram.com/techtutorialswithpiyush/\n\ud83c\udf0d\ud835\udde7\ud835\ude04\ud835\uddf6\ud835\ude01\ud835\ude01\ud835\uddf2\ud835\uddff \u25b6  https://twitter.com/techie_piyush\n\ud83d\udc68\u200d\ud83d\udcbb \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf5\ud835\ude02\ud835\uddef  \u25b6  https://github.com/piyushsachdeva\n\u270d \ud835\udde0\ud835\uddf2\ud835\uddf1\ud835\uddf6\ud835\ude02\ud835\uddfa.\ud835\uddf0\ud835\uddfc\ud835\uddfa \u25b6 https://medium.com/@piyush.sachdeva055\n\ud83d\udcda \ud835\uddf1\ud835\uddf2\ud835\ude03.\ud835\ude01\ud835\uddfc  \u25b6  https://dev.to/piyushsachdeva\n\u2728\ud835\uddd7\ud835\uddf6\ud835\ude00\ud835\uddf0\ud835\uddfc\ud835\uddff\ud835\uddf1 \u25b6  https://discord.gg/TNCs4BRzq8\n-----------------------------------------------------------------------------------------------------------------------\n\nReferences \ud83d\udcda:\n\n#devops #techtutorialswithpiyush",
+  "webpage_url": "https://www.youtube.com/watch?v=7XrfnH60Qpw",
+  "upload_date": "20250109",
+  "tags": [
+    "terraform expressions",
+    "terraform conditional expressions",
+    "terraform dynamic block",
+    "terraform dynamic expression",
+    "dynamic block terraform",
+    "dynamic block in terraform azure",
+    "dynamic block terraform example",
+    "terraform splat expression",
+    "splat expression terraform",
+    "conditional expression in terraform",
+    "conditional statement in terraform",
+    "hashicorp",
+    "Terraform Full Course For Beginners",
+    "Terraform tutorial",
+    "terraform with azure",
+    "azure terraform",
+    "terraform tutorial azure"
+  ]
+}

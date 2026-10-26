@@ -1,0 +1,85 @@
+{
+  "id": "ujJlnZYRMZI",
+  "title": "Day 20/28 - Deploy AKS Cluster In Azure With Terraform Custom Modules | Real time Project #1",
+  "duration": 1764,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction to AKS project",
+      "end_time": 63
+    },
+    {
+      "start_time": 63,
+      "title": "Project architecture",
+      "end_time": 233
+    },
+    {
+      "start_time": 233,
+      "title": "Understanding Terraform modules",
+      "end_time": 366
+    },
+    {
+      "start_time": 366,
+      "title": "Root module configuration",
+      "end_time": 611
+    },
+    {
+      "start_time": 611,
+      "title": "Service principal module",
+      "end_time": 818
+    },
+    {
+      "start_time": 818,
+      "title": "Key vault and secrets",
+      "end_time": 932
+    },
+    {
+      "start_time": 932,
+      "title": "AKS cluster module",
+      "end_time": 1253
+    },
+    {
+      "start_time": 1253,
+      "title": "Generating kubeconfig",
+      "end_time": 1315
+    },
+    {
+      "start_time": 1315,
+      "title": "Applying Terraform plan",
+      "end_time": 1386
+    },
+    {
+      "start_time": 1386,
+      "title": "Verifying Azure resources",
+      "end_time": 1520
+    },
+    {
+      "start_time": 1520,
+      "title": "Application deployment",
+      "end_time": 1764
+    }
+  ],
+  "description": "Welcome to 20/28 day of Terraform Full Course For Beginners\n\nIn this video, we will learn how to deploy an Azure Kubernetes Service (AKS) cluster using Terraform custom modules. Perfect for DevOps engineers and cloud architects looking to master infrastructure as code with real-world scenarios.\nTransform your Terraform skills as we break down complex deployments into reusable, maintainable custom modules. From creating service principals to setting up Azure Key Vault and deploying AKS clusters, this tutorial covers everything you need to automate your cloud infrastructure.\n\n\u26a1\ufe0f What You'll Learn:\nMaster Terraform custom modules from scratch\nImplement output variables effectively\nCreate a secure Service Principal using custom modules\nSet up Azure Key Vault with Terraform\nDeploy and configure AKS clusters programmatically\nBest practices for production-grade deployments\n\nSkip the trial and error\u2014follow along as we build a production-ready AKS infrastructure using battle-tested Terraform practices. Whether you're preparing for your next DevOps role or upgrading your current infrastructure, this tutorial has you covered.\n\n\n\ud83d\udc68\u200d\ud83d\udcbb GitHub repo :\nhttps://github.com/piyushsachdeva/Terraform-Full-Course-Azure/\n\n\ud835\uddd6\ud835\udde2\ud835\udde0\ud835\udde3\ud835\udddf\ud835\uddd8\ud835\udde7\ud835\uddd8 COURSES  \ud83d\udc4c It\u2019s   \ud83c\udd75\ud83c\udd81\ud83c\udd74\ud83c\udd74 \u26f3\n\u2705 Terraform Full Course For Beginners - #28daysofAZTerraform\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUHlbhuq9V02n9AMLPySoEQ\n\n\u2705 Certified Kubernetes Administrator (CKA) 2024\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOkOv3i62UidrLmSB8DcGC\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\udded\ud835\uddf2\ud835\uddff\ud835\uddfc \ud835\ude01\ud835\uddfc \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddfc:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXseJO1a03CtfRDzr2hivbD\n\n\u2705 \ud835\uddd4\ud835\udded\ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd9\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOCWcjaXcH-WBVxCccZ4uO\n\n\u2705 \ud835\udde1\ud835\uddee\ud835\uddfa\ud835\uddee\ud835\ude00\ud835\ude01\ud835\uddf2 \ud835\uddda\ud835\uddfc\ud835\uddfc\ud835\uddf4\ud835\uddf9\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 | \ud835\uddda\ud835\uddd6\ud835\udde3 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddef\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00, \ud835\uddee \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude01\ud835\uddf2 \ud835\uddfd\ud835\uddf9\ud835\uddee\ud835\ude06\ud835\uddf9\ud835\uddf6\ud835\ude00\ud835\ude01 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\ude01\ud835\uddf5\ud835\uddf2 \ud835\uddd4\ud835\ude00\ud835\ude00\ud835\uddfc\ud835\uddf0\ud835\uddf6\ud835\uddee\ud835\ude01\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddd8\ud835\uddfb\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddf2\ud835\uddf2\ud835\uddff (\ud835\uddd4\ud835\uddd6\ud835\uddd8) \ud835\uddd6\ud835\uddf2\ud835\uddff\ud835\ude01\ud835\uddf6\ud835\uddf3\ud835\uddf6\ud835\uddf0\ud835\uddee\ud835\ude01\ud835\uddf6\ud835\uddfc\ud835\uddfb \ud835\uddd8\ud835\ude05\ud835\uddee\ud835\uddfa:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXvkDFARdrH2LMESVqeuH8W\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddee\ud835\ude01\ud835\uddee \ud835\uddf3\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd7\ud835\udde3 \ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddf3\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddf0\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUd4rzzHEpHMsyD5PbVWz1I\n\n\u2705 \ud835\udddd\ud835\uddf2\ud835\uddfb\ud835\uddf8\ud835\uddf6\ud835\uddfb\ud835\ude00 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddd5\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUV3pz6zRpFJe3A4wTM2Pjvv\n\n\u2705 \ud835\udfed\ud835\udfec\ud835\ude04\ud835\uddf2\ud835\uddf2\ud835\uddf8\ud835\ude00\ud835\uddfc\ud835\uddf3\ud835\uddf0\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1\ud835\uddfc\ud835\uddfd\ud835\ude00 - \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude05 \ud835\uddf5\ud835\uddee\ud835\uddfb\ud835\uddf1\ud835\ude00-\ud835\uddfc\ud835\uddfb \ud835\uddfd\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01\ud835\ude00 \ud835\uddfc\ud835\uddfb \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUc8HOEIwfB3Z2uxRv2SKOG\n\n\u2705 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\udde3\ud835\uddfc\ud835\uddf1\ud835\uddf0\ud835\uddee\ud835\ude00\ud835\ude01\ud835\ude00:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUWr7SI4Kym5dr80DovuSbL2\n\n\u2705 \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf9\ud835\uddee\ud835\uddef \ud835\uddd6\ud835\udddc \ud835\uddd6\ud835\uddd7 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 | \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde7\ud835\uddfc \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\udde3\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01 [\ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2]\nhttps://youtu.be/uYaMRn2meJQ\n\nSubscribe to our channel to get notified about the latest videos. \n\ud83d\udd25 https://www.youtube.com/TechTutorialswithPiyush\n\n-----------------------------------------------------------------------------------------------------------------------\n\ud835\uddd6\ud835\uddfc\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddf0\ud835\ude01 \ud835\uddfa\ud835\uddf2 \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddf2:\ud83d\udc47\ud83d\udc47\n\n\ud83d\udd25\ud835\uddec\ud835\uddfc\ud835\ude02\ud835\udde7\ud835\ude02\ud835\uddef\ud835\uddf2 \u25b6  https://www.youtube.com/TechTutorialswithPiyush\n\u26f3\ud835\udddf\ud835\uddf6\ud835\uddfb\ud835\uddf8\ud835\uddf2\ud835\uddf1\ud835\udddc\ud835\uddfb \u25b6  https://www.linkedin.com/in/piyush-sachdeva/\n\ud83d\ude80\ud835\udddc\ud835\uddfb\ud835\ude00\ud835\ude01\ud835\uddee\ud835\uddf4\ud835\uddff\ud835\uddee\ud835\uddfa \u25b6 https://www.instagram.com/techtutorialswithpiyush/\n\ud83c\udf0d\ud835\udde7\ud835\ude04\ud835\uddf6\ud835\ude01\ud835\ude01\ud835\uddf2\ud835\uddff \u25b6  https://twitter.com/techie_piyush\n\ud83d\udc68\u200d\ud83d\udcbb \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf5\ud835\ude02\ud835\uddef  \u25b6  https://github.com/piyushsachdeva\n\u270d \ud835\udde0\ud835\uddf2\ud835\uddf1\ud835\uddf6\ud835\ude02\ud835\uddfa.\ud835\uddf0\ud835\uddfc\ud835\uddfa \u25b6 https://medium.com/@piyush.sachdeva055\n\ud83d\udcda \ud835\uddf1\ud835\uddf2\ud835\ude03.\ud835\ude01\ud835\uddfc  \u25b6  https://dev.to/piyushsachdeva\n\u2728\ud835\uddd7\ud835\uddf6\ud835\ude00\ud835\uddf0\ud835\uddfc\ud835\uddff\ud835\uddf1 \u25b6  https://discord.gg/TNCs4BRzq8\n-----------------------------------------------------------------------------------------------------------------------\n\nReferences \ud83d\udcda:\n\n#devops #techtutorialswithpiyush",
+  "webpage_url": "https://www.youtube.com/watch?v=ujJlnZYRMZI",
+  "upload_date": "20250204",
+  "tags": [
+    "deploy aks cluster in azure with terraform",
+    "deploy aks in azure",
+    "aks cluster terraform",
+    "aks cluster using terraform",
+    "aks cluster with terraform",
+    "terraform real time project",
+    "azure terraform real time project",
+    "azure terraform",
+    "devops realtime projects",
+    "kubernetes real time project",
+    "azure terraform custom modules",
+    "azure terraform modules",
+    "custom modules azure terraform",
+    "custom modules azure",
+    "terraform custom modules",
+    "deploy aks using terraform",
+    "kubernetes",
+    "devops project"
+  ]
+}

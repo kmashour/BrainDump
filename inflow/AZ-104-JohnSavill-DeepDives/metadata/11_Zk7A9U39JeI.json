@@ -1,0 +1,139 @@
+{
+  "id": "Zk7A9U39JeI",
+  "title": "Microsoft Azure AD Resiliency Deep Dive",
+  "duration": 4652,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 43
+    },
+    {
+      "start_time": 43,
+      "title": "Azure AD basics",
+      "end_time": 227
+    },
+    {
+      "start_time": 227,
+      "title": "Azure AD resiliency SLA",
+      "end_time": 304
+    },
+    {
+      "start_time": 304,
+      "title": "Change and Safe Deployment Platform",
+      "end_time": 457
+    },
+    {
+      "start_time": 457,
+      "title": "Azure AD replication boundaries",
+      "end_time": 950
+    },
+    {
+      "start_time": 950,
+      "title": "Fault domains",
+      "end_time": 1010
+    },
+    {
+      "start_time": 1010,
+      "title": "The core store",
+      "end_time": 1167
+    },
+    {
+      "start_time": 1167,
+      "title": "Types of replica",
+      "end_time": 1604
+    },
+    {
+      "start_time": 1604,
+      "title": "B2C sharding",
+      "end_time": 1686
+    },
+    {
+      "start_time": 1686,
+      "title": "Authentication service (ESTS)",
+      "end_time": 1798
+    },
+    {
+      "start_time": 1798,
+      "title": "Scale units/cells",
+      "end_time": 1908
+    },
+    {
+      "start_time": 1908,
+      "title": "Gateway",
+      "end_time": 2087
+    },
+    {
+      "start_time": 2087,
+      "title": "User interactions cross geo",
+      "end_time": 2275
+    },
+    {
+      "start_time": 2275,
+      "title": "Backup authentication",
+      "end_time": 2617
+    },
+    {
+      "start_time": 2617,
+      "title": "What we can do",
+      "end_time": 2654
+    },
+    {
+      "start_time": 2654,
+      "title": "Sync resiliency",
+      "end_time": 2790
+    },
+    {
+      "start_time": 2790,
+      "title": "Tenant configurations",
+      "end_time": 3163
+    },
+    {
+      "start_time": 3163,
+      "title": "Continuous Access Evaluation",
+      "end_time": 3668
+    },
+    {
+      "start_time": 3668,
+      "title": "What can developers do",
+      "end_time": 3844
+    },
+    {
+      "start_time": 3844,
+      "title": "Proactive token refresh",
+      "end_time": 3980
+    },
+    {
+      "start_time": 3980,
+      "title": "Use managed identities",
+      "end_time": 4387
+    },
+    {
+      "start_time": 4387,
+      "title": "Summary",
+      "end_time": 4613
+    },
+    {
+      "start_time": 4613,
+      "title": "Close",
+      "end_time": 4652
+    }
+  ],
+  "description": "In this video I explore the different aspects of resiliency for Microsoft Azure Active Directory (AD). This includes what Microsoft does to ensure resiliency and then what we can do.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Introduction\n0:43 - Azure AD basics\n3:47 - Azure AD resiliency SLA\n5:04 - Change and Safe Deployment Platform\n7:37 - Azure AD replication boundaries\n15:50 - Fault domains\n16:50 - The core store\n19:27 - Types of replica\n26:44 - B2C sharding\n28:06 - Authentication service (ESTS)\n29:58 - Scale units/cells\n31:48 - Gateway\n34:47 - User interactions cross geo\n37:55 - Backup authentication\n43:37 - What we can do\n44:14 - Sync resiliency\n46:30 - Tenant configurations\n52:43 - Continuous Access Evaluation\n1:01:08 - What can developers do\n1:04:04 - Proactive token refresh\n1:06:20 - Use managed identities\n1:13:07 - Summary\n1:16:53 - Close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/AADResiliency.svg\n\u25ba AAD Resiliency Blog:\n\ud83d\udd17 https://techcommunity.microsoft.com/t5/azure-active-directory-identity/identity-at-ignite-strengthen-resilience-with-identity/ba-p/2747271\n\u25ba Where is my AAD data?:\n\ud83d\udd17 http://aka.ms/aaddatamap\n\u25ba AAD Resiliency Documentations:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/fundamentals/resilience-in-infrastructure\n\u25ba AAD Continuous Access Evaluation:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/conditional-access/concept-continuous-access-evaluation\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n \u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=Zk7A9U39JeI",
+  "upload_date": "20211207",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "aad",
+    "azure ad",
+    "idp",
+    "cloud authentication",
+    "oauth 2.0",
+    "oidc",
+    "resilience"
+  ]
+}

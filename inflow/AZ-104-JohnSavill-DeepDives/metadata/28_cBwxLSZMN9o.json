@@ -1,0 +1,126 @@
+{
+  "id": "cBwxLSZMN9o",
+  "title": "Azure VMware Solution (AVS) Deep Dive",
+  "duration": 3853,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 9
+    },
+    {
+      "start_time": 9,
+      "title": "Use of VMware",
+      "end_time": 203
+    },
+    {
+      "start_time": 203,
+      "title": "Azure VMware Solution Overview",
+      "end_time": 256
+    },
+    {
+      "start_time": 256,
+      "title": "Building blocks",
+      "end_time": 293
+    },
+    {
+      "start_time": 293,
+      "title": "Using AZs",
+      "end_time": 379
+    },
+    {
+      "start_time": 379,
+      "title": "Clusters and nodes",
+      "end_time": 575
+    },
+    {
+      "start_time": 575,
+      "title": "Core VMware services provided",
+      "end_time": 659
+    },
+    {
+      "start_time": 659,
+      "title": "AVS in Azure Portal",
+      "end_time": 739
+    },
+    {
+      "start_time": 739,
+      "title": "vCenter management",
+      "end_time": 868
+    },
+    {
+      "start_time": 868,
+      "title": "Identity",
+      "end_time": 1195
+    },
+    {
+      "start_time": 1195,
+      "title": "vSAN storage",
+      "end_time": 1375
+    },
+    {
+      "start_time": 1375,
+      "title": "External storage",
+      "end_time": 1502
+    },
+    {
+      "start_time": 1502,
+      "title": "Networking",
+      "end_time": 1708
+    },
+    {
+      "start_time": 1708,
+      "title": "Connectivity with ExpressRoute Global Reach",
+      "end_time": 1928
+    },
+    {
+      "start_time": 1928,
+      "title": "Connectivity path",
+      "end_time": 2007
+    },
+    {
+      "start_time": 2007,
+      "title": "Integrating with Azure virtual networks",
+      "end_time": 2229
+    },
+    {
+      "start_time": 2229,
+      "title": "Internet egress",
+      "end_time": 2445
+    },
+    {
+      "start_time": 2445,
+      "title": "Migrating workloads",
+      "end_time": 3150
+    },
+    {
+      "start_time": 3150,
+      "title": "Lets migrate a workload",
+      "end_time": 3668
+    },
+    {
+      "start_time": 3668,
+      "title": "Pricing",
+      "end_time": 3756
+    },
+    {
+      "start_time": 3756,
+      "title": "Summary",
+      "end_time": 3853
+    }
+  ],
+  "description": "A look into how Azure VMware Solution (AVS) works, its features then how to get our workloads migrated to it!\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n00:09 - Use of VMware\n03:23 - Azure VMware Solution Overview\n04:16 - Building blocks\n04:53 - Using AZs\n06:19 - Clusters and nodes\n09:35 - Core VMware services provided\n10:59 - AVS in Azure Portal\n12:19 - vCenter management\n14:28 - Identity\n19:55 - vSAN storage\n22:55 - External storage\n25:02 - Networking\n28:28 - Connectivity with ExpressRoute Global Reach\n32:08 - Connectivity path\n33:27 - Integrating with Azure virtual networks\n37:09 - Internet egress\n40:45 - Migrating workloads\n52:30 - Lets migrate a workload\n1:01:08 - Pricing\n1:02:36 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AVS.png\n\u25ba Limits:\n\ud83d\udd17 https://learn.microsoft.com/azure/azure-vmware/tutorial-scale-private-cloud\n\u25ba Pricing:\n\ud83d\udd17 https://azure.microsoft.com/pricing/details/azure-vmware/\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining",
+  "webpage_url": "https://www.youtube.com/watch?v=cBwxLSZMN9o",
+  "upload_date": "20240129",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "vmware",
+    "vsphere",
+    "azure vmware solution",
+    "avs"
+  ]
+}

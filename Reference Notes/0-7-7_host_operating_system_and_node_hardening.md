@@ -67,14 +67,85 @@ kube-bench run --outputfile cis-audit-report.json --json
 
 ### 2.3 Common CIS Remediations on Master Nodes
 
-| Test ID | CIS Requirement | Remediation Command / Configuration |
-| :--- | :--- | :--- |
-| **1.1.1** | Ensure API server pod manifest permissions are `600` or more restrictive. | `chmod 600 /etc/kubernetes/manifests/kube-apiserver.yaml` |
-| **1.1.11** | Ensure etcd data directory ownership is `etcd:etcd`. | `chown -R etcd:etcd /var/lib/etcd` |
-| **1.2.1** | Ensure `--anonymous-auth=false` on `kube-apiserver`. | Add `- --anonymous-auth=false` to `kube-apiserver.yaml`. |
-| **1.2.18** | Ensure `--insecure-bind-address` is not set. | Remove any insecure port or bind address flags from the manifest. |
-| **4.2.1** | Ensure `--anonymous-auth` is false in Kubelet config. | In `/var/lib/kubelet/config.yaml`, set `authentication.anonymous.enabled: false`. |
-| **4.2.2** | Ensure Kubelet authorization mode is Webhook. | In `/var/lib/kubelet/config.yaml`, set `authorization.mode: Webhook`. |
+| Test ID    | CIS Requirement                                                           | Remediation Command / Configuration                                               |
+| :--------- | :------------------------------------------------------------------------ | :-------------------------------------------------------------------------------- |
+| **1.1.1**  | Ensure API server pod manifest permissions are `600` or more restrictive. | `chmod 600 /etc/kubernetes/manifests/kube-apiserver.yaml`                         |
+| **1.1.11** | Ensure etcd data directory ownership is `etcd:etcd`.                      | `chown -R etcd:etcd /var/lib/etcd`                                                |
+| **1.2.1**  | Ensure `--anonymous-auth=false` on `kube-apiserver`.                      | Add `- --anonymous-auth=false` to `kube-apiserver.yaml`.                          |
+| **1.2.18** | Ensure `--insecure-bind-address` is not set.                              | Remove any insecure port or bind address flags from the manifest.                 |
+| **4.2.1**  | Ensure `--anonymous-auth` is false in Kubelet config.                     | In `/var/lib/kubelet/config.yaml`, set `authentication.anonymous.enabled: false`. |
+| **4.2.2**  | Ensure Kubelet authorization mode is Webhook.                             | In `/var/lib/kubelet/config.yaml`, set `authorization.mode: Webhook`.             |
+
+### 2.4 Architectural Deep Dive: Kubelet Authorization Modes (CIS 4.2.2)
+
+#### Why Kubelet Authorization Matters
+Every Kubernetes node runs a Kubelet daemon that exposes an independent **HTTPS REST API** on port `10250`. Whenever an operator or control plane component executes administrative operations (such as `kubectl exec`, `kubectl logs`, or `kubectl attach`), the `kube-apiserver` connects directly to Kubelet on port `10250`.
+
+```
+[ Client: kubectl exec ]
+          │
+          ▼
+   [ kube-apiserver ]
+          │ (HTTPS request to port 10250)
+          ▼
+   [ Node Kubelet ] ──▶ Evaluates Authorization Mode
+```
+
+#### The Vulnerability: `AlwaysAllow` Default
+* By default, Kubelet's authorization mode is `AlwaysAllow`.
+* In `AlwaysAllow` mode, once a request reaches Kubelet (or if anonymous authentication is enabled), Kubelet performs **zero permission checks**. It unconditionally permits the caller to execute commands as `root` inside any container running on that node.
+* If a compromised workload or internal attacker obtains network reachability to port `10250`, `AlwaysAllow` allows complete evasion of cluster-wide RBAC policies.
+
+#### The Hardening Mechanism: `authorization.mode: Webhook`
+Setting `authorization.mode: Webhook` delegates all authorization decisions from the distributed node Kubelets back to the central `kube-apiserver`:
+
+1. An incoming API request hits Kubelet on port `10250` (e.g., `POST /exec/{namespace}/{pod}/{container}`).
+2. Kubelet does not decide locally; instead, it generates a `SubjectAccessReview` API request back to `kube-apiserver`:
+   *"Does user/ServiceAccount 'X' hold RBAC permissions for verb 'create' on subresource 'pods/exec' in namespace 'Y'?"*
+3. The `kube-apiserver` evaluates the cluster's ClusterRoles and RoleBindings.
+4. The `kube-apiserver` returns an explicit `Allowed` or `Denied` decision.
+5. Kubelet permits execution or terminates the connection with `403 Forbidden`.
+
+```
+Incoming Request ──▶ [ Kubelet (10250) ]
+                             │
+                             │ 1. SubjectAccessReview
+                             ▼
+                     [ kube-apiserver ] (Evaluates Cluster RBAC)
+                             │
+                             │ 2. Allowed / Denied Response
+                             ▼
+                      [ Kubelet ] (Executes or Drops Request)
+```
+
+#### Configuration & Daemon Reload
+Edit `/var/lib/kubelet/config.yaml`:
+```yaml
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/pki/ca.crt
+
+authorization:
+  mode: Webhook
+```
+
+Apply the configuration and restart the Kubelet daemon:
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+sudo systemctl status kubelet --no-pager
+```
+
+> [!IMPORTANT]
+> **CKS Exam Real-World Relevance:**  
+> Enforcing `authorization.mode: Webhook` alongside `authentication.anonymous.enabled: false` in `/var/lib/kubelet/config.yaml` is the exact primary requirement of **Real Exam Question 01: Fix Insecure Kubelet and etcd Configuration**.
 
 ---
 
@@ -103,34 +174,122 @@ lsof -i -P -n | grep LISTEN
 
 #### 3.1.2 The Dual Meaning of `Recv-Q` and `Send-Q` (`LISTEN` vs `ESTABLISHED`)
 
-A critical nuance in Linux networking tools (`ss` and `netstat`) is that the exact same table columns—`Recv-Q` and `Send-Q`—represent **completely different metrics** depending on the socket's operational state:
+A critical nuance in Linux networking tools (`ss` and `netstat`) is that the exact same table columns—`Recv-Q` and `Send-Q`—represent **completely different metrics** depending on whether the socket is in `LISTEN` state or `ESTABLISHED` state.
 
-```mermaid
-flowchart TD
-    subgraph ListenSocket ["1. The Front Door (State: LISTEN)"]
-        Door["Listening Socket\n(e.g. 0.0.0.0:6443)"]
-        Queue["The Accept Backlog Queue\nSend-Q = Queue capacity limit (listen backlog)\nRecv-Q = Completed handshakes waiting for accept()"]
-    end
+```
+APPLICATION LAYER (User-space)              LINUX KERNEL (TCP/IP Stack)
+=============================              ===========================
 
-    subgraph EstablishedSocket ["2. The Active Channel (State: ESTABLISHED)"]
-        Table["Data Channel Socket\n(192.168.1.10:6443 ➔ 192.168.1.50:48922)"]
-        Buffer["Data Flow Buffers\nRecv-Q = Bytes in buffer waiting to be read()\nSend-Q = Bytes sent, awaiting TCP ACK"]
-    end
-
-    Door --> Queue
-    Queue -->|Application calls accept()| Table
-    Table --> Buffer
+1. socket() & bind(0.0.0.0:6443)
+2. listen(fd, backlog=128)      ─────────▶ Allocates 2 Kernel Queues:
+                                           - SYN Queue (half-open)
+                                           - Accept Queue (fully open)
+                                                    │
+                                                    │ (Incoming 3-way handshake completes)
+                                                    ▼
+3. accept()                     ◀───────── Pops connection from Accept Queue
+   (Returns new connected fd)                       │
+                                                    ▼
+                                           Creates ESTABLISHED socket:
+                                           - sk_rcvbuf (Receive Memory Buffer)
+                                           - sk_sndbuf (Send Memory Buffer)
+                                                    │
+4. read() / recv()              ◀───────── Reads payload bytes from sk_rcvbuf
+5. write() / send()             ─────────▶ Writes payload bytes to sk_sndbuf
 ```
 
-##### 1. When Socket State is `ESTABLISHED` (Active Data Exchange)
-The metrics represent **BYTES of payload data in memory buffers**:
-* **`Recv-Q` (Receive Queue):** Bytes of data received by the network interface and buffered by the kernel that the user-space process has **not yet read** (via `read()` or `recv()`).
-* **`Send-Q` (Send Queue):** Bytes of data queued for transmission that have **not yet been acknowledged (ACKed)** by the remote peer.
+Because of this two-stage lifecycle, the Linux kernel reuses the same internal fields in `struct sock` depending on the socket state:
 
-##### 2. When Socket State is `LISTEN` (Passive Connection Reception)
-A listening socket never transfers data payloads; its exclusive role is awaiting the completion of the TCP 3-way handshake. The metrics represent **CONNECTION COUNTS**:
-* **`Send-Q` (Queue Capacity Limit):** The **maximum size of the Listen Backlog Queue**. This is the maximum number of completed 3-way handshakes permitted to wait simultaneously. It is configured in the application code via the `listen(fd, backlog)` system call and bounded at the kernel level by `net.core.somaxconn` (typically defaulting to 128 or 4096).
-* **`Recv-Q` (Pending Connection Depth):** The **current number of fully completed TCP 3-way handshakes** waiting in the kernel's Accept Queue for the application process to call `accept()`.
+| Socket State | What the Socket Is Doing | What `Recv-Q` Means | What `Send-Q` Means | Unit of Measurement |
+| :--- | :--- | :--- | :--- | :--- |
+| **`LISTEN`** | Waiting for incoming connections | **Number of completed connections** waiting for `accept()` | **Max capacity limit** of the Accept Queue (`backlog`) | **Count of Connections** |
+| **`ESTABLISHED`** | Actively exchanging payload data | **Bytes of data in buffer** waiting for application to `read()` | **Bytes of data in buffer** waiting for remote `ACK` | **Bytes of Data** |
+
+---
+
+##### 1. When Socket State is `LISTEN` (Passive Connection Reception)
+
+Run: `ss -ltn`
+```text
+State      Recv-Q   Send-Q   Local Address:Port   Peer Address:Port
+LISTEN     5        128      0.0.0.0:6443         0.0.0.0:*
+```
+
+**The Core Concept: The Accept Queue is BOTH Columns**
+* **`Send-Q`** = **The maximum capacity limit** of the Accept Queue (`backlog`, bounded by `net.core.somaxconn`).
+* **`Recv-Q`** = **How many completed connections** are sitting in the queue right now waiting for the app (`kube-apiserver`) to call `accept()`.
+
+```
++-------------------------------------------------------+
+|                 ACCEPT QUEUE (WAITING ROOM)           |
+|                                                       |
+|   Send-Q = Total chairs in the room   (e.g. 128)      |
+|   Recv-Q = People sitting in chairs   (e.g. 5)        |
++-------------------------------------------------------+
+```
+
+**Why is it named so confusingly? (Kernel Historical Quirk)**
+Linux kernel developers did not want to add new columns in `ss` specifically for `LISTEN` sockets. They recycled two existing internal fields in the kernel's `struct sock`:
+* Kernel variable `sk_ack_backlog` (current connections waiting) is mapped to **`Recv-Q`**.
+* Kernel variable `sk_max_ack_backlog` (max queue limit) is mapped to **`Send-Q`**.
+
+**Practical Diagnostic Interpretation:**
+* **Normal / Healthy (`Recv-Q` is 0 or low single digits):**  
+  The application's event loop (`epoll_wait()`) invokes `accept()` within microseconds of handshake completion.
+* **Critical Danger (`Recv-Q == Send-Q`):**  
+  *Example:* `LISTEN  128  128  0.0.0.0:6443`  
+  *Root Cause:* The user-space daemon (`kube-apiserver` or web server) is **frozen, deadlocked, running a blocking operation, or pegged at 100% CPU**.  
+  *Impact:* The Accept Queue is 100% full. The Linux kernel will start **silently dropping new incoming TCP SYN/ACK packets** or sending TCP resets! Clients will experience connection timeouts or "Connection refused" even though host RAM and network bandwidth are plentiful.
+  *Verification Command:*
+  ```bash
+  netstat -s | grep -i "listen"
+  # Check counters: "SYNs to LISTEN sockets dropped" or "times the listen queue of a socket overflowed"
+  ```
+
+---
+
+##### 2. When Socket State is `ESTABLISHED` (Active Data Exchange)
+
+Run: `ss -tn`
+```text
+State          Recv-Q   Send-Q   Local Address:Port         Peer Address:Port
+ESTABLISHED    0        0        192.168.1.10:6443          192.168.1.50:48922
+```
+
+Once the application calls `accept()`, a dedicated file descriptor is created for that connection. There are no more connection queues; there are now **RAM data buffers**:
+* **`sk_rcvbuf` (Receive Buffer):** Buffered payload bytes received from the wire waiting for application `read()`.
+* **`sk_sndbuf` (Send Buffer):** Buffered payload bytes written by application `write()` waiting for wire transit and remote `ACK`.
+
+```
+[ Remote Peer ] <==== (Network Wire) ====> [ Kernel Socket Buffers ] <==== [ Local Application ]
+                                            - sk_rcvbuf (Recv-Q)             calls read()
+                                            - sk_sndbuf (Send-Q)             calls write()
+```
+
+**Practical Diagnostic Interpretation:**
+
+* **Scenario A: High `Recv-Q` on `ESTABLISHED` (e.g. `Recv-Q: 65536, Send-Q: 0`)**
+  * *Diagnosis:* **Local Application Bottleneck.**
+  * *Explanation:* The network interface is pulling bytes off the wire rapidly, but the local application process is too slow to call `read()` (e.g., blocked on disk I/O, heavy JSON parsing, or garbage collection pauses).
+  * *Security Context:* Slowloris attacks or unbuffered streams intentionally keep `Recv-Q` high to exhaust kernel socket memory buffers (`net.ipv4.tcp_rmem`).
+
+* **Scenario B: High `Send-Q` on `ESTABLISHED` (e.g. `Recv-Q: 0, Send-Q: 131072`)**
+  * *Diagnosis:* **Remote Client or Network Bottleneck.**
+  * *Explanation:* The local application wrote data into the kernel send buffer, but the bytes cannot leave or are unacknowledged:
+    1. **Network Congestion / Packet Loss:** Kernel is actively retransmitting TCP packets because ACKs are lost.
+    2. **Zero-Window State:** The remote client's receive buffer is full; it advertised a TCP Window of `0`, commanding your kernel to halt transmission.
+    3. **Silent Drop / Firewall Blackhole:** A firewall dropped packets without sending `FIN`/`RST`.
+
+---
+
+##### 3. Rapid 5-Second Triage Summary
+
+| Observed in `ss` | Socket State | Operational Meaning | Probable Root Cause |
+| :--- | :--- | :--- | :--- |
+| `Recv-Q == Send-Q` | `LISTEN` | Accept queue completely full; new handshakes dropped. | **Local daemon frozen / CPU pegged**; not calling `accept()`. |
+| `Recv-Q > 0` | `LISTEN` | Connections queued waiting to be picked up. | Local daemon running slowly or under transient traffic spike. |
+| `Recv-Q > 0` | `ESTABLISHED`| Data arrived from network; sitting in kernel unread. | **Local application slow** at consuming data from socket. |
+| `Send-Q > 0` | `ESTABLISHED`| Data queued locally; unacknowledged by remote side. | **Remote client slow**, network packet loss, or link dead. |
 
 ---
 
@@ -348,27 +507,79 @@ When remote TCP access to the Docker API is mandatory, it must be protected usin
    }
    ```
 
-#### 3.4.4 Systemd Service Management, Troubleshooting & Startup Conflict Traps
-* **Systemd Service Operations:**
-  ```bash
-  # Check daemon status and active listeners
-  systemctl status docker
+#### 3.4.4 Systemd Service Management, Socket Activation & Startup Conflict Traps
 
-  # Restart daemon after updating daemon.json
-  systemctl restart docker
+##### 1. Systemd Service Operations & Foreground Debugging
+```bash
+# Check daemon status and active listeners
+systemctl status docker
 
-  # Stop and disable if replacing with standalone containerd
-  systemctl stop docker && systemctl disable docker
+# Restart daemon after updating configuration
+systemctl daemon-reload && systemctl restart docker
+
+# Foreground Debugging: Diagnose socket binding, containerd handshakes, or storage errors
+dockerd --debug
+```
+
+##### 2. First-Principles Deep Dive: File Descriptors (FD) & systemd Socket Activation
+
+```
+[ THE TRADITIONAL SYSV INIT MODEL ]
+The Master Chef (dockerd) must stand at the front door (/var/run/docker.sock) all day.
+If the Chef crashes or is busy, the door is locked and clients get "Connection Refused".
+
+[ THE SYSTEMD SOCKET ACTIVATION MODEL ]
+1. systemd is the 24/7 Front-Desk Receptionist (docker.socket):
+   - At boot, creates /var/run/docker.sock in <1ms and holds open File Descriptor (FD #3).
+   - The Chef (docker.service) can stay unstarted in the background to save RAM.
+
+2. A client connects (e.g. running 'docker ps'):
+   - Receptionist accepts connection, buffers request in kernel queue, and wakes up the Chef.
+
+3. Systemd hands the open File Descriptor (FD #3) directly to dockerd across process exec.
+
+4. dockerd reads directly from FD #3 via "-H fd://":
+   - dockerd does NOT open /var/run/docker.sock itself; it inherits the open socket descriptor!
+```
+
+* **What is a File Descriptor (FD)?**
+  In UNIX/Linux, *"everything is a file"*—regular text files, standard input/output streams (`stdin: 0`, `stdout: 1`, `stderr: 2`), and network/IPC sockets (`/var/run/docker.sock`). When a program asks the kernel to open a file or socket, the kernel allocates an entry in its internal open-file table and hands the process a simple non-negative integer: the **File Descriptor (FD)**. Think of it as a coat-check ticket: the process refers to that integer ticket (`FD 3`, `FD 4`) whenever calling `read()`, `write()`, or `recv()`.
+
+* **The Problem with Legacy Services (SysV Init):**
+  Historically, daemons had to load their entire binary into RAM, parse plugins, and initialize drivers *before* creating their socket file. This resulted in slow sequential system boots, wasted RAM for idle daemons, and immediate connection loss if a daemon crashed.
+
+* **The systemd Socket Activation Solution:**
+  systemd decouples the socket (the door) from the service (the worker):
+  1. **`docker.socket` (The Doorman):** Starts at boot, creates `/var/run/docker.sock`, enforces permissions (`SocketGroup=root`), and holds the open File Descriptor.
+  2. **`docker.service` (The Worker):** The daemon that manages containers.
+
+* **Deconstructing `-H fd://`:**
+  In `/usr/lib/systemd/system/docker.service`:
+  ```text
+  ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
   ```
-* **Foreground Debugging:** To diagnose socket binding, gRPC containerd handshakes, or storage driver initialization errors, run `dockerd` directly in the console:
+  * `-H` specifies the host/listening endpoint.
+  * `fd://` tells Docker: *"Do NOT attempt to create `/var/run/docker.sock` yourself. Instead, inherit the open socket File Descriptor handed to you by systemd from `docker.socket`!"*
+
+##### 3. The Two Systemd Hardening Traps
+
+* **Trap A: The Socket-Activation Trap (Why `systemctl stop docker` Fails):**
+  If you run `systemctl stop docker.service`, `docker.socket` remains active and listening in the kernel! As soon as any process or user touches `/var/run/docker.sock` (e.g. running `docker ps`), systemd detects the incoming connection and **automatically wakes up and restarts `docker.service`**.  
+  *Hardening Defense:* To truly disable Docker, you must stop and disable **both** units:
   ```bash
-  dockerd --debug
+  sudo systemctl stop docker.service docker.socket
+  sudo systemctl disable docker.service docker.socket
   ```
-* **Critical Configuration Conflict Trap:**
+
+* **Trap B: The Critical Configuration Conflict Trap (`hosts` conflict):**
   > [!WARNING]
-  > If an option (such as `-H` / `--host` or `--debug`) is specified in both the systemd service file (e.g. `/lib/systemd/system/docker.service` passing `-H fd://`) AND in `/etc/docker/daemon.json` (`"hosts": [...]`), the Docker daemon will crash on startup with:
-  > `unable to configure the Docker daemon with file /etc/docker/daemon.json: the following flags are at conflict with the daemon configuration: hosts: ...`
-  > **Fix:** Remove the `-H` flags from the systemd `ExecStart` line (using a systemd drop-in override: `systemctl edit docker`) or remove `"hosts"` from `daemon.json`.
+  > Docker allows configuring settings via systemd CLI arguments (`ExecStart=... -H ...`) OR via `/etc/docker/daemon.json` (`"hosts": [...]`), but **never both**.  
+  > If an option is defined in both places, Docker crashes on startup with:
+  > `unable to configure the Docker daemon with file /etc/docker/daemon.json: the following flags are at conflict with the daemon configuration: hosts: (value: [fd://])`  
+  > *Fix:* Maintain `--host` settings exclusively in one location—either via systemd `ExecStart` or in `daemon.json`.
+
+##### 4. CKS Exam Real-World Relevance:
+In **Real Exam Question 13: Secure Docker Daemon**, you are tasked with removing `-H tcp://0.0.0.0:2375` from `docker.service`. You must preserve `-H fd://` so systemd socket activation continues to work locally over `/var/run/docker.sock` while neutralizing the unencrypted remote TCP vulnerability.
 
 #### 3.4.5 Secure Remote Client Execution
 To securely query the hardened Docker daemon from an authorized client workstation:
@@ -465,14 +676,143 @@ Once `PR_SET_NO_NEW_PRIVS` is set, the kernel permanently ignores SUID and SGID 
 ---
 
 #### 3.5.2 Sudoers Policy Hardening (`/etc/sudoers`)
-* **Strict Principle of Least Privilege:** Never grant `ALL=(ALL) NOPASSWD: ALL` to non-administrative service accounts. 
-* **Command Arguments Lockdown:** If a service account requires `sudo` for a specific utility, specify the exact binary and arguments. Never permit wildcards on binaries that support shell escapes (e.g., `vim`, `less`, `find`, `awk`, `python` allow instant root shell breakouts via `:!/bin/sh` or `-exec`).
-* **Enforce `secure_path` and `env_reset`:** Prevent attackers from hijacking execution paths via manipulated `$PATH` or `$LD_PRELOAD` environment variables:
+
+The `/etc/sudoers` file defines which unprivileged users are permitted to execute commands as `root`. If misconfigured, a low-privilege service account compromise leads to immediate, unlogged root takeover of the host node.
+
+##### 1. The Anatomy of a Sudoers Rule
+
+Every entry in `/etc/sudoers` follows this four-part syntax:
+
+```text
+WHO          WHERE = (AS_WHOM)       OPTIONS:      WHAT_COMMAND
+===================================================================================
+developer    ALL   = (root)          NOPASSWD:     /usr/bin/systemctl restart coredns
+```
+* **`developer` (Who):** Target user or group (`%admin`).
+* **`ALL` (Where):** Host network interfaces/IPs where the rule applies (`ALL` indicates this host).
+* **`(root)` (As Whom):** Target execution identity (`root`).
+* **`NOPASSWD:` (Options):** Permits execution without password prompt.
+* **`/usr/bin/...` (What Command):** Absolute path to the authorized binary.
+
+---
+
+##### 2. Core Hardening Principles
+
+* **Rule 1: Never Grant `ALL=(ALL) NOPASSWD: ALL`**
+  ```text
+  # CRITICAL VULNERABILITY:
+  app-service   ALL=(ALL) NOPASSWD: ALL
+  ```
+  Permits the account to execute arbitrary commands as root without authentication. If `app-service` is compromised, an attacker runs `sudo bash` or `sudo cat /etc/shadow` with zero barrier. Always restrict rules to explicit binary paths and arguments:
+  ```text
+  app-service   ALL=(root) NOPASSWD: /usr/bin/systemctl restart nginx
+  ```
+
+* **Rule 2: Command Arguments Lockdown & Shell Escapes (GTFOBins)**
+  Never allow `sudo` on utilities that support interactive subshells (e.g. `vim`, `less`, `find`, `awk`, `python`, `node`).
+  * *Vulnerability:* Interactive commands execute child processes inheriting the parent's elevated root privileges.
+  * *Hardening:* Use `sudoedit` for file modifications rather than granting `sudo vim`:
+    ```text
+    junior-dev   ALL=(root) sudoedit /etc/nginx/nginx.conf
+    ```
+    `sudoedit` copies the target file to `/tmp`, allows editing as an unprivileged user, and safely moves it back, preventing root shell escapes.
+
+* **Rule 3: Enforce `secure_path` and `env_reset`**
   ```text
   Defaults        env_reset
   Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   ```
-* **Always Edit with `visudo`:** Never edit `/etc/sudoers` directly with `vim` or `nano`. `visudo` performs lock verification and syntax checking before saving, preventing accidental administrative lockouts.
+  * `Defaults env_reset`: Strips caller-controlled environment variables (including `$LD_PRELOAD`), running `sudo` in a sanitized environment.
+  * `Defaults secure_path="..."`: Forces `sudo` to search only trusted system paths, preventing `$PATH` hijacking attacks from user-writable directories (e.g. `/tmp`).
+
+* **Rule 4: Always Edit with `visudo`**
+  Never edit `/etc/sudoers` directly with standard text editors (`vim`, `nano`). `visudo` enforces file locks and verifies syntax prior to disk writes, preventing administrative lockouts.
+
+---
+
+##### 3. Practical Terminal Walkthroughs & Breakout Mechanics
+
+###### Walkthrough A: The `vim` Shell Escape
+If user `bob` is granted `bob ALL=(root) NOPASSWD: /usr/bin/vim /var/log/app.log`:
+```bash
+bob@node01:~$ whoami
+bob
+bob@node01:~$ sudo vim /var/log/app.log
+```
+Inside the Vim interface, entering command mode and typing `:!/bin/sh` spawns a root subshell:
+```text
+:!/bin/sh
+```
+```bash
+# whoami
+root
+# id
+uid=0(root) gid=0(root) groups=0(root)
+```
+
+###### Walkthrough B: The `find` Command Breakout
+If `find` is permitted without argument lockdown:
+```bash
+bob@node01:~$ sudo find /etc -name "hosts" -exec /bin/sh \; -quit
+# whoami
+root
+```
+The `-exec /bin/sh \;` argument causes `find` to fork and execute `/bin/sh` as root.
+
+###### Walkthrough C: The `awk` Built-in System Breakout
+If `awk` is permitted:
+```bash
+bob@node01:~$ sudo awk 'BEGIN {system("/bin/sh")}'
+# whoami
+root
+```
+`awk` executes its internal `system()` primitive before reading input files, yielding instant root.
+
+###### Walkthrough D: The `$PATH` Hijacking Exploit (Defeated by `secure_path`)
+Suppose a rule permits `bob ALL=(root) NOPASSWD: systemctl restart coredns` (omitting the absolute binary path).
+An attacker creates a malicious binary in a writable directory and prepends it to `$PATH`:
+```bash
+# Attacker creates fake systemctl in /tmp:
+cat << 'EOF' > /tmp/systemctl
+#!/bin/bash
+useradd -m -s /bin/bash hacker
+echo "hacker:Password123!" | chpasswd
+usermod -aG sudo hacker
+EOF
+chmod +x /tmp/systemctl
+
+export PATH=/tmp:$PATH
+```
+* **Without `secure_path`:** `sudo` evaluates `$PATH`, finds `/tmp/systemctl` first, and executes the malicious script as root.
+* **With `secure_path`:** `sudo` disregards `/tmp` in `$PATH` and strictly executes `/usr/bin/systemctl`.
+
+###### Walkthrough E: The `visudo` Syntax Safety Net
+Editing `/etc/sudoers` directly with typos corrupts the sudo parsing engine:
+```bash
+bob@node01:~$ sudo ls
+>>> /etc/sudoers: syntax error near line 32 <<<
+sudo: parse error in /etc/sudoers near line 32
+sudo: no valid sudoers sources found, quitting
+```
+If root SSH login is disabled, the system is permanently locked out.
+With `visudo`, saving a file with syntax errors halts the write and prompts:
+```text
+>>> /etc/sudoers: syntax error near line 32 <<<
+What now? [e,x,q,?]
+```
+* Pressing `e` returns to the editor to rectify the syntax.
+* Pressing `x` safely discards uncommitted changes, preserving server integrity.
+
+---
+
+##### 4. Hardening Summary Matrix
+
+| Security Setting | Purpose | Failure Consequence |
+| :--- | :--- | :--- |
+| **No `ALL=(ALL)`** | Principle of Least Privilege | Single account breach yields immediate, unlogged root. |
+| **Argument Lockdown / `sudoedit`** | Blocks GTFOBins Shell Escapes | Commands like `vim`, `find`, or `awk` drop into root shells. |
+| **`env_reset` & `secure_path`** | Neutralizes `$PATH` & Library Injection | Users trick sudo into executing malicious scripts in `/tmp`. |
+| **`visudo` Enforcement** | Pre-commit Syntax Validation | Single syntax typo permanently locks admins out of the host. |
 
 ---
 

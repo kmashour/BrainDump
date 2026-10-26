@@ -1,0 +1,159 @@
+{
+  "id": "57ZwdztCx2w",
+  "title": "Microsoft Azure Private Link Deep Dive",
+  "duration": 3422,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Intro",
+      "end_time": 28
+    },
+    {
+      "start_time": 28,
+      "title": "Types of service to communicate to",
+      "end_time": 110
+    },
+    {
+      "start_time": 110,
+      "title": "Looking down PaaS services",
+      "end_time": 268
+    },
+    {
+      "start_time": 268,
+      "title": "Using private endpoints",
+      "end_time": 425
+    },
+    {
+      "start_time": 425,
+      "title": "Looking at private endpoint configurations",
+      "end_time": 490
+    },
+    {
+      "start_time": 490,
+      "title": "Adding a private endpoint",
+      "end_time": 610
+    },
+    {
+      "start_time": 610,
+      "title": "Private endpoint read-only NICs",
+      "end_time": 660
+    },
+    {
+      "start_time": 660,
+      "title": "Access via private endpoint",
+      "end_time": 732
+    },
+    {
+      "start_time": 732,
+      "title": "Where can I create private endpoints?",
+      "end_time": 804
+    },
+    {
+      "start_time": 804,
+      "title": "Using the PE from other networks",
+      "end_time": 1023
+    },
+    {
+      "start_time": 1023,
+      "title": "Supported services",
+      "end_time": 1058
+    },
+    {
+      "start_time": 1058,
+      "title": "NSG and UDR support for PE",
+      "end_time": 1123
+    },
+    {
+      "start_time": 1123,
+      "title": "DR for PE",
+      "end_time": 1247
+    },
+    {
+      "start_time": 1247,
+      "title": "DNS considerations for private endpoints",
+      "end_time": 1458
+    },
+    {
+      "start_time": 1458,
+      "title": "Privatelink private zone",
+      "end_time": 1554
+    },
+    {
+      "start_time": 1554,
+      "title": "Looking at DNS records",
+      "end_time": 1747
+    },
+    {
+      "start_time": 1747,
+      "title": "Azure private DNS zones",
+      "end_time": 2170
+    },
+    {
+      "start_time": 2170,
+      "title": "Custom DNS",
+      "end_time": 2313
+    },
+    {
+      "start_time": 2313,
+      "title": "Private link service",
+      "end_time": 2605
+    },
+    {
+      "start_time": 2605,
+      "title": "PLS configuration",
+      "end_time": 2738
+    },
+    {
+      "start_time": 2738,
+      "title": "Creating a new PLS",
+      "end_time": 2796
+    },
+    {
+      "start_time": 2796,
+      "title": "PLS access security",
+      "end_time": 2870
+    },
+    {
+      "start_time": 2870,
+      "title": "What is PLS alias?",
+      "end_time": 2960
+    },
+    {
+      "start_time": 2960,
+      "title": "PE to PLS",
+      "end_time": 2996
+    },
+    {
+      "start_time": 2996,
+      "title": "PE to PLS demo",
+      "end_time": 3155
+    },
+    {
+      "start_time": 3155,
+      "title": "DNS with PLS",
+      "end_time": 3193
+    },
+    {
+      "start_time": 3193,
+      "title": "Limits for PLS",
+      "end_time": 3289
+    },
+    {
+      "start_time": 3289,
+      "title": "Summary",
+      "end_time": 3422
+    }
+  ],
+  "description": "A deep dive in to one of the greatest network features in Microsoft Azure, Private Link. What the services are, why you use them and how! Private endpoints, private link service, DNS considerations and more.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Intro\n0:28 - Types of service to communicate to\n1:50 - Looking down PaaS services\n4:28 - Using private endpoints\n7:05 - Looking at private endpoint configurations\n8:10 - Adding a private endpoint\n10:10 - Private endpoint read-only NICs\n11:00 - Access via private endpoint\n12:12 - Where can I create private endpoints?\n13:24 - Using the PE from other networks\n17:03 - Supported services\n17:38 - NSG and UDR support for PE\n18:43 - DR for PE\n20:47 - DNS considerations for private endpoints\n24:18 - Privatelink private zone\n25:54 - Looking at DNS records\n29:07 - Azure private DNS zones\n36:10 - Custom DNS\n38:33 - Private link service\n43:25 - PLS configuration\n45:38 - Creating a new PLS\n46:36 - PLS access security\n47:50 - What is PLS alias?\n49:20 - PE to PLS\n49:56 - PE to PLS demo\n52:35 - DNS with PLS\n53:13 - Limits for PLS\n54:49 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/PrivateLinkDeepDiveWhiteboard.png\n\u25ba Services that support private link:\n\ud83d\udd17 https://docs.microsoft.com/azure/private-link/private-endpoint-overview#private-link-resource\n\u25ba Private link approval flow:\n\ud83d\udd17 https://docs.microsoft.com/azure/private-link/private-endpoint-overview#access-to-a-private-link-resource-using-approval-workflow\n\u25ba Private link RBAC:\n\ud83d\udd17 https://docs.microsoft.com/azure/private-link/rbac-permissions\n\u25ba Private link limits:\n\ud83d\udd17 https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-subscription-service-limits#networking-limits\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n \u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=57ZwdztCx2w",
+  "upload_date": "20211123",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "private link",
+    "networking"
+  ]
+}

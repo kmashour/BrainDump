@@ -58,6 +58,8 @@ flowchart LR
 
 - 📘 **[[13-Index - AZ-104|AZ-104: Microsoft Azure Administrator Complete Track MOC]]**
   * Comprehensive 12-module technical syllabus ingested from KodeKloud, covering Identity (Entra ID), Governance & Compliance (Policies, Locks, RBAC), Resource Management (ARM, Bicep), Virtual Networking (VNets, NSGs, DNS), Intersite Connectivity (Peering, VPN, UDRs, Private Link), Network Traffic (Load Balancer, App Gateway), Storage (Redundancy, Access Tiers, Files, SAS), Virtual Machines (Sizing, Disks, Bastion, VMSS), PaaS Compute (App Services, ACI, ACA), Data Protection (Azure Backup, ASR), and Observability (Azure Monitor, Log Analytics, KQL, Alerts).
+- 🚀 **[[14-Index - Terraform on Azure|Terraform on Azure Complete Reference MOC]]**
+  * Enterprise Infrastructure as Code (IaC) curriculum, AzureRM provider architecture, native Blob Lease concurrency locking, type constraints, dynamic blocks, and modular cloud architectures.
 
 ---
 

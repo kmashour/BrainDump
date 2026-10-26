@@ -2,6 +2,164 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-10-22] - Ingestion & First-Principles Synthesis: Azure VNet Subnetting Math & Longest Prefix Match (LPM)
+
+### 📥 Inflow File Processed
+- **File:** `inflow/Vnets in azure.md` (Raw notes on IPv4 host bits, VLSM subnet carving, Longest Prefix Match, and Azure flat VNet subnetting hierarchy).
+
+### 🏛️ Canonical Reference Note Synthesis
+- **Target Note:** `Reference Notes/13-104-05_administer_virtual_networking.md` (Module 05: Administer Azure Virtual Networking, NSGs & DNS).
+- **Enriched Sections:**
+  - **Subnet Bit Allocation Math & VLSM Carving:** Precise host bit formulas (Host Bits = 32 - Prefix Length), usable host counts, and a step-by-step VLSM calculation showing how `10.12.0.0/26` is sliced into four `/28` blocks (Subnet 1: `10.12.0.0/28`, Subnet 2: `10.12.0.16/28`, Subnet 3: `10.12.0.32/28`, Subnet 4: `10.12.0.48/28`).
+  - **The 4 Immutable Laws of Azure VNet Subnetting:**
+    1. Strict Flat Topology (zero subnet nesting).
+    2. VNet as the master routing & CIDR block.
+    3. Zero-overlap heterogeneous subnet slicing (`/24`, `/26`, `/28`).
+    4. Automated Longest Prefix Match (LPM) system route mesh (`Next Hop: Virtual network`).
+  - **Going the Extra Mile: Enterprise Virtual Network Engineering & AVNM:** Centralized network governance, dynamic network groups, automated full-mesh peering, and Security Admin Rules (SAR) deterministic priority over local NSGs.
+
+## [2026-10-21] - Ingestion & Deep-Dive Enrichment: John Savill Azure Deep Dives Master Class (33 Lectures)
+
+### 📥 Inflow Extraction & Preservation
+- **Source Playlist:** [John Savill's Azure Deep Dives Playlist](https://www.youtube.com/playlist?list=PLlVtbbG169nGekKEV-l3TOXDLLEAj8jU2)
+- **Catalog:** 33 architectural deep-dive lectures on core infrastructure, advanced networking, security, data platforms, and multi-cloud governance.
+- **Inflow Archive:**
+  - `inflow/AZ-104-JohnSavill-DeepDives/` (33 individual metadata & curriculum breakdown notes).
+  - `inflow/AZ-104-JohnSavill_DeepDives_Master_Transcript.md` (Consolidated master curriculum and video index).
+- **Preserved Inflow Files:**
+  - `inflow/AZ-104-JohnSavill-DeepDives/01_Azure_Load_Balancer_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/02_Azure_Kubernetes_Service_(AKS)_Networking_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/03_Azure_Cost_Optimization_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/04_Azure_Role-Based_Access_Control_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/05_Azure_Blob_Data_Permissions_Deep_Dive_(360_in_360).md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/06_ExpressRoute_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/07_Azure_AD_Privileged_Identity_Management_(PIM)_-_AZ-500,_SC-300_Deep_Dive_Topic.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/08_Azure_Virtual_Network_Manager_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/09_Microsoft_Azure_Managed_Identity_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/10_Active_Directory_Domain_Service_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/11_Microsoft_Azure_AD_Resiliency_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/12_Microsoft_Azure_Private_Link_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/13_Microsoft_Azure_Application_Gateway_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/14_Azure_Firewall_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/15_Azure_Managed_Disks_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/16_Azure_Key_Vault_Deep_Dive_(AZ-500).md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/17_Microsoft_Azure_Front_Door_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/18_Microsoft_Azure_Gateway_Load_Balancer_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/19_Microsoft_Azure_AD_Identity_Protection_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/20_Looking_at_Entra_Permissions_Management_to_Manage_Permissions_Across_AWS,_GCP_an.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/21_Azure_AD_Cross-Tenant_Access_Settings_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/22_Azure_AD_App_Proxy_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/23_Using_Windows_Subsystem_for_Linux_v2.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/24_Understanding_Azure_AD_Hybrid_Join.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/25_Defender_for_OTHER_Clouds_(AWS_and_GCP).md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/26_Brand_New_Application_Gateway_for_Containers_Solution.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/27_Azure_Elastic_SAN_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/28_Azure_VMware_Solution_(AVS)_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/29_Azure_API_Management_Deep_Dive.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/30_Azure_API_Management_with_Generative_AI.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/31_Azure_SQL_Hyperscale_Deep_Dive_-_NOT_Just_for_Massive_Databases!.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/32_Azure_OpenAI_Deployment_Types_and_Resiliency.md`
+  - `inflow/AZ-104-JohnSavill-DeepDives/33_Azure_Confidential_Ledger_Deep_Dive.md`
+
+### 🚀 Going the Extra Mile: Deep In-Place Enrichment Across Canonical Modules
+Appended dedicated 'Going the Extra Mile: Architectural Deep Dive' sections across the canonical AZ-104 reference notes:
+- **Module 13-104-01:** Azure Cost Optimization (Reservations vs Savings Plans, Spot eviction mechanics, hunting orphaned disks/IPs/NICs) & WSL2 Hyper-V kernel tooling architecture.
+- **Module 13-104-02:** Entra Privileged Identity Management (PIM), Continuous Access Evaluation (CAE) real-time token revocation, Identity Protection risk engine, Cross-Tenant Access Settings, Application Proxy hybrid reverse proxy, and Entra Permissions Management (CIEM Permission Creep Index).
+- **Module 13-104-03:** Azure RBAC internal schema (Actions vs NotActions additive evaluation), Azure Key Vault HSM vs Software boundaries and RBAC permissions, and Microsoft Defender for Multi-Cloud (AWS/GCP CSPM).
+- **Module 13-104-06:** ExpressRoute physical Meet-Me peering & FastPath hypervisor bypass, Azure Virtual Network Manager (AVNM) Security Admin Rules (SAR) overriding NSGs, Private Link TCP proxy v2 header preservation, and Azure Firewall TLS inspection & IDPS.
+- **Module 13-104-07:** Azure Load Balancer hypervisor SDN multiplexer, hash tuples, HA Ports, SNAT exhaustion & NAT Gateway, Gateway Load Balancer (GWLB) bump-in-the-wire VXLAN tunneling, Azure Front Door Anycast split-TCP acceleration & Private Link origins, and Application Gateway for Containers (ALB) split-plane ingress.
+- **Module 13-104-08:** Azure Elastic SAN native iSCSI shared storage pools, Blob data permissions hierarchy (Control Plane vs Data Plane vs POSIX ACLs vs SAS), and Azure Confidential Ledger hardware enclave immutability.
+- **Module 13-104-09:** Managed Disks storage page blob architecture, Premium v2 decoupled scaling, on-demand bursting, shared disks for clustering, and Azure VMware Solution (AVS) bare-metal ESXi fabric.
+- **Module 13-104-10:** AKS Networking models (Kubenet vs Azure CNI vs Azure CNI Overlay vs Cilium eBPF), Azure API Management Generative AI Gateway (model failover, semantic caching, token rate limits), and Azure SQL Hyperscale storage-compute separation.
+
+### 📜 Rule Governance Updated
+- Formalized the **Layer 2 Certification Overlay Protocol (Advanced & Specialty Tracks)** in `.agents/AGENTS.md`:
+  - Enforces reference-first bedrock linking back to foundational notes (e.g. AZ-104) without redundant duplicate explanations.
+  - Mandates focusing new material on specialized architectural deltas, design decisions, higher-tier deep dives, and exam-specific speed checklists.
+
+## [2026-10-21] - Enterprise Project Delivery: AZ-104 Hands-On Lab Curriculum (Modules 01 - 12)
+
+### 🏗️ Complete 12-Module Project Curriculum Implementation
+- **Target Location:** `Projects/AZ-104/` (12 dedicated module directories + Master Curriculum Index).
+- **Engineering Standard:** Fully deliverable-driven labs providing dual implementation tracks (**Azure Portal GUI** and **declarative Azure CLI / Bicep**), deep verification tests, real-world **AARF (Assumption-Architecture-Root-Cause-Failure) loops**, and automated cost-cleanup routines.
+
+### 📦 Delivered Labs & Master Index:
+1. **Master Curriculum Hub:** `Projects/AZ-104/README.md` (Curriculum roadmap, cross-module dependency matrix, dual-path methodology, exam domain alignment).
+2. **Module 01 (Governance & Tooling):** `Projects/AZ-104/01_Cloud_Governance_and_Tooling/Lab-01_Enterprise_Subscription_Baseline_and_Tooling.md`
+   - *Deliverables:* Cloud Shell storage persistence, Cost Management subscription budget ($500 with 50/75/90/100% alerts), Action Groups, Quota checks.
+3. **Module 02 (Identity & Entra ID):** `Projects/AZ-104/02_Identity_and_Entra_ID/Lab-02_Enterprise_Identity_SSPR_and_Administrative_Units.md`
+   - *Deliverables:* Dynamic Security Groups (`user.department -eq "Engineering"`), SSPR self-service, Administrative Units (AUs) regional scoping, B2B guest collaboration.
+4. **Module 03 (Governance & Compliance):** `Projects/AZ-104/03_Governance_and_Compliance/Lab-03_Custom_RBAC_Resource_Locks_and_Azure_Policy.md`
+   - *Deliverables:* Custom RBAC role definition JSON, `CanNotDelete` and `ReadOnly` Resource Locks, Azure Policy `Deny` unapproved locations and `Modify` tag inheritance.
+5. **Module 04 (Resources & Bicep):** `Projects/AZ-104/04_Azure_Resources_and_Bicep/Lab-04_Declarative_IaC_with_Bicep_and_ARM.md`
+   - *Deliverables:* Modular Bicep architecture, Sub-resource decoupling (`parent` property), `what-if` deployment impact analysis, ARM template compilation.
+6. **Module 05 (Virtual Networking):** `Projects/AZ-104/05_Virtual_Networking_and_DNS/Lab-05_VNet_Architecture_Subnetting_NSG_and_Private_DNS.md`
+   - *Deliverables:* CIDR subnet planning, NSG priority security rules, Private DNS Zone auto-registration and split-horizon resolution.
+7. **Module 06 (Intersite Connectivity):** `Projects/AZ-104/06_Intersite_Connectivity_and_Private_Link/Lab-06_Hub_and_Spoke_Peering_UDR_and_Private_Link.md`
+   - *Deliverables:* Hub-and-Spoke VNet Peering (`allowForwardedTraffic`), User Defined Routes (UDR 0.0.0.0/0 to NVA), Private Endpoints with Private Link.
+8. **Module 07 (Traffic Management):** `Projects/AZ-104/07_Network_Traffic_Management/Lab-07_Azure_Load_Balancer_Application_Gateway_and_WAF.md`
+   - *Deliverables:* Layer 4 Standard Load Balancer, Layer 7 Application Gateway v2 with path-based routing, Web Application Firewall (WAF) OWASP rules.
+9. **Module 08 (Storage & Data Protection):** `Projects/AZ-104/08_Storage_Accounts_and_Data_Protection/Lab-08_Storage_Redundancy_Lifecycle_and_User_Delegation_SAS.md`
+   - *Deliverables:* ZRS/RA-GRS redundancy, Automated JSON Lifecycle Tiering (Hot ➔ Cool ➔ Cold ➔ Archive), Blob Versioning & Soft Delete, WORM legal hold, Entra ID User Delegation SAS.
+10. **Module 09 (Virtual Machines & Scale Sets):** `Projects/AZ-104/09_Virtual_Machines_and_Scale_Sets/Lab-09_VM_Resilience_Managed_Disks_Bastion_and_VMSS.md`
+    - *Deliverables:* Zonal VM pinning (Zone 1/2), Host Caching rules (`ReadOnly` data vs `None` WAL logs), Azure Bastion native tunneling in dedicated `/26` subnet, VMSS Flexible autoscaling with `NewestVM` scale-in and health extension.
+11. **Module 10 (PaaS Compute & Containers):** `Projects/AZ-104/10_PaaS_Compute_and_Containers/Lab-10_App_Service_Blue_Green_Slots_and_Container_Apps.md`
+    - *Deliverables:* App Service Plan P1v3, Zero-downtime Blue/Green deployment slots, Sticky configuration settings (`slot-setting=true`), 10% canary traffic routing, Azure Container Apps with KEDA HTTP scaling.
+12. **Module 11 (Data Protection & Site Recovery):** `Projects/AZ-104/11_Data_Protection_and_Site_Recovery/Lab-11_Azure_Backup_Soft_Delete_Resource_Guard_and_ASR.md`
+    - *Deliverables:* Recovery Services Vault GRS+CRR, GFS Backup Policy with Instant Restore snapshots, Enhanced Soft Delete, Multi-User Authorization via Resource Guard, ASR continuous replication & non-disruptive Test Failover.
+13. **Module 12 (Monitoring & FinOps):** `Projects/AZ-104/12_Monitoring_Observability_and_FinOps/Lab-12_Full_Stack_Observability_AMA_KQL_and_Alert_Suppression.md`
+    - *Deliverables:* Log Analytics Workspace with 1.0 GB/day FinOps volume cap, AMA with DCR client-side XPath filtering, Production KQL forensic suite, Metric alerts, Alert Processing Rules maintenance window suppression.
+
+
+## [2026-10-21] - Ingestion & First-Principles Consolidation: John Savill Azure Master Class & AZ-104 Study Playlist
+
+### 📥 Playlist Extraction & Inflow Preservation
+- **Source:** [John Savill's AZ-104 Certification Study Playlist & Azure Master Class](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs).
+- **Extracted Lessons:** 30 comprehensive whiteboard masterclass videos covering fundamental to advanced Azure architecture, SDN, identity, resiliency, and governance.
+- **Inflow Archive:**
+  - `inflow/AZ-104-JohnSavill/` (28 individual lesson transcript files with timestamps).
+  - `inflow/AZ-104-JohnSavill_Master_Transcript.md` (1.84 MB consolidated master archive).
+
+### 🏛️ Deep In-Place Enrichment Across All 12 Canonical AZ-104 Modules
+- Synthesized and appended John Savill's first-principles whiteboard architectural deep-dives across all 12 modules under `Reference Notes/`:
+  - **Module 13-104-01:** Physical topology (Geographies, Regions, Regional Pairs >300mi apart, Availability Zones <2ms latency), Resource Group metadata vs. resource location boundaries, and FinOps cost modeling (Pricing Calculator vs. TCO, Reserved Instances, Azure Hybrid Benefit, Spot VM eviction mechanics).
+  - **Module 13-104-02:** Managed Identities under-the-hood (Instance Metadata Service IMDS at link-local `169.254.169.254` with `Metadata: true` anti-SSRF protection, JWT token issuance), System-Assigned vs. User-Assigned trade-offs, External Identities (B2B guest user invite and federated auth), and the fundamental protocol divide between Active Directory (Kerberos/LDAP) and Entra ID (OAuth/OIDC/Graph).
+  - **Module 13-104-03:** Azure RBAC 3-component model (Principal, Role Definition JSON, Scope), the `NotActions` exclusion vs. true Deny distinction, and Azure Policy evaluation lifecycle and effects order (`Disabled` ➔ `Modify`/`Append` ➔ `Deny` ➔ `Audit` ➔ `DeployIfNotExists`).
+  - **Module 13-104-04:** Bicep as a transparent abstraction over ARM API (zero state file, live Azure ARM state, day-0 API availability), multi-scope deployments (`targetScope = 'subscription'`), and `what-if` drift analysis.
+  - **Module 13-104-05:** Azure Software Defined Networking (SDN) hypervisor packet encapsulation (Geneve/VXLAN overlay over physical L3 IP network), wire server virtual IP (`168.63.129.16`), why broadcast `.255` is reserved, and NSG stateful connection tracking tables.
+  - **Module 13-104-06:** VNet Peering direct hypervisor-to-hypervisor encapsulation over Microsoft global optical WAN, Gateway Transit configuration, route table priority resolution (UDR > BGP > System defaults), and why Private Link eliminates data exfiltration risks compared to Service Endpoints.
+  - **Module 13-104-07:** Layer 4 (Azure Load Balancer) vs. Layer 7 (Application Gateway) architectural matrix, 5-tuple vs. 2-tuple/3-tuple session persistence, and Floating IP (Direct Server Return) for SQL AlwaysOn Availability Groups.
+  - **Module 13-104-08:** Unified Storage architecture (Blob, File, Queue, Table), synchronous LRS/ZRS vs. asynchronous GRS/GZRS replication math with RPO/RTO trade-offs, and User Delegation SAS signed via Entra ID OAuth tokens vs. Master Key SAS.
+  - **Module 13-104-09:** Hypervisor scheduling, host disk caching rules (ReadOnly vs. None for database logs), ephemeral `D:` temporary drive mechanics, Availability Sets (FD/UD) vs. Availability Zones (independent power/cooling/network), and VMSS Flexible vs. Uniform orchestration.
+  - **Module 13-104-10:** App Service Plan underlying VM architecture and ARR reverse proxy routing, deployment slots warmup sequences and VIP router swaps, and the container continuum (ACI vs. ACA vs. AKS).
+  - **Module 13-104-11:** Azure Backup instant restore snapshot tier (1–5 days) vs. vault tier (GFS retention), Soft Delete ransomware defense (14 to 180 days), Multi-User Authorization via Resource Guard, and ASR continuous block-level replication with zero-downtime test failovers.
+  - **Module 13-104-12:** Metrics vs. Logs data pipeline ingestion latency profiles, Azure Monitor Agent (AMA) + Data Collection Rules (DCR) client-side XPath filtering, Alert Processing Rules suppression for scheduled maintenance, and Log Analytics FinOps (Daily Volume Caps, Commitment Tiers, Basic vs. Analytics tables).
+- **Navigation & Indexing:** Updated `Reference Notes/13-Index - AZ-104.md` to index John Savill's course playlist.
+
+## [2026-10-20] - Refactoring & Consolidation: Resource-Agnostic Knowledge Unification (AZ-104)
+
+### 🧹 Decommissioning Redundant Standalone Digest
+- **Retired File:** Permanently deleted `Reference Notes/13-104-V_moe_intelligence_az104_deep_dive_lectures.md` to eliminate shallow, redundant summaries in accordance with the **Consolidated, Resource-Agnostic Knowledge Synthesis Protocol**.
+- **Updated Track Navigation:** Updated `Reference Notes/13-Index - AZ-104.md` to remove standalone digest links and establish the 12 canonical modules as the sole authoritative reference targets.
+
+### 🏛️ First-Principles Deepening & Solution Articulation across 12 Modules
+- **Deepened & Unified Modules:**
+  - `Reference Notes/13-104-01_course_introduction_and_certification.md`: Re-authored with first-principles control plane vs. data plane architecture, ARM ingress pipeline, 4-tier management hierarchy, exam tactical blueprint, and FinOps/SecOps solution articulation frameworks.
+  - `Reference Notes/13-104-02_administer_identity.md`: Integrated hybrid identity synchronization (PHS vs. PTA vs. ADFS), soft vs. hard matching (`mS-DS-ConsistencyGuid`), tenant vs. subscription decoupling, custom domain DNS handshake, and Administrative Units.
+  - `Reference Notes/13-104-03_administer_governance_and_compliance.md`: Integrated 6-level Management Group hierarchy, subscription transfer hazards, `ReadOnly` vs. `CanNotDelete` operational impacts, and policy-driven tag inheritance.
+  - `Reference Notes/13-104-04_administer_azure_resources.md`: Validated Bicep/ARM JSON idempotency, Complete vs. Incremental mode deletion hazards, and Cloud Shell storage mechanics.
+  - `Reference Notes/13-104-05_administer_virtual_networking.md`: Integrated VNet IPAM planning, 5 Azure-reserved IPs, Standard Public IP security-by-default, NSG stateful connection tracking, and Private DNS auto-registration vs. resolution links.
+  - `Reference Notes/13-104-06_administer_intersite_connectivity.md`: Integrated VNet Peering flags (`AllowForwardedTraffic`, `AllowGatewayTransit`), UDR priority resolution over BGP and system defaults, and Service Endpoints vs. Private Link architectural comparison.
+  - `Reference Notes/13-104-07_administer_network_traffic.md`: Integrated Layer 4 (5-tuple/2-tuple/3-tuple hash) vs. Layer 7 load balancing, health probe thresholds, Application Gateway dedicated subnet rules, and WAF v2 Detection vs. Prevention lifecycle.
+  - `Reference Notes/13-104-08_administer_azure_storage.md`: Integrated LRS/ZRS/GRS/GZRS redundancy matrices, Blob Versioning + Soft Delete defense-in-depth, Object Replication prerequisites, and User Delegation SAS signed via Entra ID.
+  - `Reference Notes/13-104-09_administer_azure_virtual_machines.md`: Integrated VM sizing categories, host disk caching rules (SQL logs vs. data files), ephemeral `D:` drive pitfalls, and Availability Sets vs. Availability Zones SLAs.
+  - `Reference Notes/13-104-10_administer_paas_compute_options.md`: Integrated App Service scale-up vs. scale-out, free managed TLS certificates, zero-downtime slot warmup sequence, canary traffic routing percentages, and sticky slot settings.
+  - `Reference Notes/13-104-11_administer_data_protection.md`: Integrated Recovery Services Vault ransomware resilience, Enhanced Soft Delete (14 to 180 days), Multi-User Authorization via Resource Guard, and ASR zero-impact Test Failover procedures.
+  - `Reference Notes/13-104-12_administer_monitoring.md`: Integrated Metric Alerts vs. Log Search Alerts latency profiles, Activity Log 90-day retention export, Alert Processing Rules maintenance window suppression, and Log Analytics Daily Volume Caps to prevent runaway costs.
+
+### 📜 Rule Governance Updated
+- Updated `.agents/AGENTS.md` with the **Consolidated, Resource-Agnostic Knowledge Synthesis Protocol**, mandating one canonical reference note per topic and forbidding shallow, fragmented `-V` summary digests.
+
 ## [2026-09-26] - Ingestion & Cross-Note Enrichment: AZ-104 Deep-Dive Video Lecture Series (Moe Intelligence)
 
 ### 📥 YouTube Playlist Extraction & Inflow Archive

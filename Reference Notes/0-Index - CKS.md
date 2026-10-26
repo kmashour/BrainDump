@@ -7,7 +7,7 @@ tags:
   - kubernetes/certification
   - obsidian/moc
 ---
-
+ 
 # 🛡️ CKS Certification Reference MOC (Certified Kubernetes Security Specialist)
 
 **Breadcrumbs:** [[0-Index - Kubernetes|🏠 Kubernetes Reference MOC]] > **CKS Reference MOC**

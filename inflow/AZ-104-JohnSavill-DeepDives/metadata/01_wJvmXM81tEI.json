@@ -1,0 +1,71 @@
+{
+  "id": "wJvmXM81tEI",
+  "title": "Azure Load Balancer Deep Dive",
+  "duration": 2967,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction to load balancing",
+      "end_time": 96
+    },
+    {
+      "start_time": 96,
+      "title": "Understanding layer 4",
+      "end_time": 204
+    },
+    {
+      "start_time": 204,
+      "title": "Backend pools and rules",
+      "end_time": 372
+    },
+    {
+      "start_time": 372,
+      "title": "Health probes explained",
+      "end_time": 490
+    },
+    {
+      "start_time": 490,
+      "title": "Backend pool constraints",
+      "end_time": 603
+    },
+    {
+      "start_time": 603,
+      "title": "Basic vs standard SKU",
+      "end_time": 763
+    },
+    {
+      "start_time": 763,
+      "title": "Load balancing algorithms",
+      "end_time": 1166
+    },
+    {
+      "start_time": 1166,
+      "title": "Implementation and DSR",
+      "end_time": 1731
+    },
+    {
+      "start_time": 1731,
+      "title": "High availability ports",
+      "end_time": 2032
+    },
+    {
+      "start_time": 2032,
+      "title": "Outbound connectivity",
+      "end_time": 2889
+    },
+    {
+      "start_time": 2889,
+      "title": "Summary and best practices",
+      "end_time": 2967
+    }
+  ],
+  "description": "Whiteboard and demo deep dive into the Azure Load Balancer! Hope you find it useful and have a drink handy :-D\n\nWhiteboard - https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/alb%20live.svg\n\nFew links used:\n\n- SKUs - https://docs.microsoft.com/en-us/azure/load-balancer/skus\n- Limits - Aka.ms/lblimits\n- SNAT Ports - https://docs.microsoft.com/en-us/azure/load-balancer/load-balancer-outbound-connections#snatporttable",
+  "webpage_url": "https://www.youtube.com/watch?v=wJvmXM81tEI",
+  "upload_date": "20200718",
+  "tags": [
+    "azure load balancer",
+    "lb",
+    "alb",
+    "snat"
+  ]
+}

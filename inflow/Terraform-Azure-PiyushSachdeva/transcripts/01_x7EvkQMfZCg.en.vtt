@@ -1,0 +1,3736 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.320 --> 00:00:01.830 align:start position:0%
+ 
+Hello<00:00:00.520><c> everyone,</c><00:00:01.040><c> welcome</c><00:00:01.360><c> back</c><00:00:01.600><c> to</c><00:00:01.680><c> my</c>
+
+00:00:01.830 --> 00:00:01.840 align:start position:0%
+Hello everyone, welcome back to my
+ 
+
+00:00:01.840 --> 00:00:04.110 align:start position:0%
+Hello everyone, welcome back to my
+channel.<00:00:02.160><c> My</c><00:00:02.360><c> name</c><00:00:02.600><c> is</c><00:00:02.760><c> Piyush</c><00:00:03.320><c> and</c><00:00:03.680><c> this</c><00:00:03.920><c> is</c>
+
+00:00:04.110 --> 00:00:04.120 align:start position:0%
+channel. My name is Piyush and this is
+ 
+
+00:00:04.120 --> 00:00:06.350 align:start position:0%
+channel. My name is Piyush and this is
+the<00:00:04.240><c> first</c><00:00:04.600><c> video</c><00:00:04.920><c> in</c><00:00:05.120><c> the</c><00:00:05.240><c> series</c><00:00:06.040><c> easy</c>
+
+00:00:06.350 --> 00:00:06.360 align:start position:0%
+the first video in the series easy
+ 
+
+00:00:06.360 --> 00:00:08.270 align:start position:0%
+the first video in the series easy
+Terraform.<00:00:07.280><c> Let's</c><00:00:07.480><c> give</c><00:00:07.640><c> it</c><00:00:07.720><c> a</c><00:00:07.800><c> name.</c><00:00:08.000><c> Let's</c>
+
+00:00:08.270 --> 00:00:08.280 align:start position:0%
+Terraform. Let's give it a name. Let's
+ 
+
+00:00:08.280 --> 00:00:10.950 align:start position:0%
+Terraform. Let's give it a name. Let's
+call<00:00:08.560><c> it</c><00:00:09.000><c> 28</c><00:00:09.520><c> days</c><00:00:09.800><c> of</c><00:00:10.160><c> easy</c><00:00:10.440><c> Terraform</c>
+
+00:00:10.950 --> 00:00:10.960 align:start position:0%
+call it 28 days of easy Terraform
+ 
+
+00:00:10.960 --> 00:00:13.190 align:start position:0%
+call it 28 days of easy Terraform
+because<00:00:11.480><c> we'll</c><00:00:11.640><c> be</c><00:00:11.760><c> having</c><00:00:12.080><c> 28</c><00:00:12.600><c> videos</c><00:00:12.960><c> in</c><00:00:13.080><c> the</c>
+
+00:00:13.190 --> 00:00:13.200 align:start position:0%
+because we'll be having 28 videos in the
+ 
+
+00:00:13.200 --> 00:00:15.590 align:start position:0%
+because we'll be having 28 videos in the
+series<00:00:13.720><c> end-to-end</c><00:00:14.320><c> starting</c><00:00:14.960><c> from</c><00:00:15.440><c> the</c>
+
+00:00:15.590 --> 00:00:15.600 align:start position:0%
+series end-to-end starting from the
+ 
+
+00:00:15.600 --> 00:00:17.710 align:start position:0%
+series end-to-end starting from the
+fundamentals<00:00:16.280><c> of</c><00:00:16.440><c> Terraform.</c>
+
+00:00:17.710 --> 00:00:17.720 align:start position:0%
+fundamentals of Terraform.
+ 
+
+00:00:17.720 --> 00:00:19.870 align:start position:0%
+fundamentals of Terraform.
+So<00:00:17.800><c> yes,</c><00:00:18.160><c> this</c><00:00:18.440><c> video</c><00:00:18.840><c> will</c><00:00:19.000><c> be</c><00:00:19.120><c> talking</c><00:00:19.520><c> about</c>
+
+00:00:19.870 --> 00:00:19.880 align:start position:0%
+So yes, this video will be talking about
+ 
+
+00:00:19.880 --> 00:00:21.910 align:start position:0%
+So yes, this video will be talking about
+fundamentals<00:00:20.520><c> of</c><00:00:20.680><c> Terraform</c><00:00:21.200><c> infrastructure</c>
+
+00:00:21.910 --> 00:00:21.920 align:start position:0%
+fundamentals of Terraform infrastructure
+ 
+
+00:00:21.920 --> 00:00:24.030 align:start position:0%
+fundamentals of Terraform infrastructure
+as<00:00:22.080><c> a</c><00:00:22.160><c> code.</c><00:00:22.520><c> Why</c><00:00:22.720><c> do</c><00:00:22.880><c> we</c><00:00:23.000><c> need</c><00:00:23.320><c> it?</c><00:00:23.760><c> What</c><00:00:23.960><c> are</c>
+
+00:00:24.030 --> 00:00:24.040 align:start position:0%
+as a code. Why do we need it? What are
+ 
+
+00:00:24.040 --> 00:00:25.870 align:start position:0%
+as a code. Why do we need it? What are
+the<00:00:24.160><c> benefits</c><00:00:24.680><c> of</c><00:00:24.800><c> using</c><00:00:25.120><c> it?</c><00:00:25.400><c> And</c><00:00:25.520><c> then</c><00:00:25.720><c> we'll</c>
+
+00:00:25.870 --> 00:00:25.880 align:start position:0%
+the benefits of using it? And then we'll
+ 
+
+00:00:25.880 --> 00:00:28.030 align:start position:0%
+the benefits of using it? And then we'll
+be<00:00:25.960><c> installing</c><00:00:26.480><c> Terraform</c><00:00:26.960><c> as</c><00:00:27.160><c> well</c><00:00:27.800><c> at</c><00:00:27.920><c> the</c>
+
+00:00:28.030 --> 00:00:28.040 align:start position:0%
+be installing Terraform as well at the
+ 
+
+00:00:28.040 --> 00:00:30.630 align:start position:0%
+be installing Terraform as well at the
+end<00:00:28.200><c> of</c><00:00:28.320><c> this</c><00:00:28.560><c> video.</c><00:00:29.280><c> So</c><00:00:29.400><c> make</c><00:00:29.600><c> sure</c><00:00:29.840><c> you</c><00:00:30.000><c> stay</c>
+
+00:00:30.630 --> 00:00:30.640 align:start position:0%
+end of this video. So make sure you stay
+ 
+
+00:00:30.640 --> 00:00:33.590 align:start position:0%
+end of this video. So make sure you stay
+till<00:00:30.800><c> the</c><00:00:30.960><c> end</c><00:00:31.720><c> and</c><00:00:32.040><c> as</c><00:00:32.279><c> always</c><00:00:32.840><c> I</c><00:00:32.960><c> would</c><00:00:33.280><c> also</c>
+
+00:00:33.590 --> 00:00:33.600 align:start position:0%
+till the end and as always I would also
+ 
+
+00:00:33.600 --> 00:00:35.630 align:start position:0%
+till the end and as always I would also
+need<00:00:33.880><c> your</c><00:00:34.040><c> support</c><00:00:34.600><c> to</c><00:00:34.720><c> help</c><00:00:35.000><c> me</c><00:00:35.200><c> promote</c>
+
+00:00:35.630 --> 00:00:35.640 align:start position:0%
+need your support to help me promote
+ 
+
+00:00:35.640 --> 00:00:37.550 align:start position:0%
+need your support to help me promote
+this<00:00:35.840><c> video,</c><00:00:36.160><c> promote</c><00:00:36.520><c> this</c><00:00:36.720><c> series</c><00:00:37.200><c> like</c><00:00:37.480><c> you</c>
+
+00:00:37.550 --> 00:00:37.560 align:start position:0%
+this video, promote this series like you
+ 
+
+00:00:37.560 --> 00:00:39.110 align:start position:0%
+this video, promote this series like you
+have<00:00:37.720><c> always</c><00:00:38.160><c> done.</c>
+
+00:00:39.110 --> 00:00:39.120 align:start position:0%
+have always done.
+ 
+
+00:00:39.120 --> 00:00:41.590 align:start position:0%
+have always done.
+So<00:00:39.920><c> the</c><00:00:40.040><c> comment</c><00:00:40.440><c> and</c><00:00:40.560><c> like</c><00:00:40.800><c> target</c><00:00:41.200><c> of</c><00:00:41.360><c> this</c>
+
+00:00:41.590 --> 00:00:41.600 align:start position:0%
+So the comment and like target of this
+ 
+
+00:00:41.600 --> 00:00:44.470 align:start position:0%
+So the comment and like target of this
+video<00:00:42.000><c> is</c><00:00:42.440><c> 200</c><00:00:43.040><c> likes</c><00:00:43.440><c> and</c><00:00:43.560><c> 100</c><00:00:43.920><c> comments</c><00:00:44.360><c> in</c>
+
+00:00:44.470 --> 00:00:44.480 align:start position:0%
+video is 200 likes and 100 comments in
+ 
+
+00:00:44.480 --> 00:00:46.670 align:start position:0%
+video is 200 likes and 100 comments in
+the<00:00:44.560><c> next</c><00:00:44.800><c> 24</c><00:00:45.280><c> hours.</c><00:00:45.640><c> I'm</c><00:00:45.920><c> sure</c><00:00:46.200><c> you</c><00:00:46.320><c> can</c><00:00:46.520><c> do</c>
+
+00:00:46.670 --> 00:00:46.680 align:start position:0%
+the next 24 hours. I'm sure you can do
+ 
+
+00:00:46.680 --> 00:00:48.870 align:start position:0%
+the next 24 hours. I'm sure you can do
+that.<00:00:47.360><c> So</c><00:00:47.520><c> without</c><00:00:47.800><c> wasting</c><00:00:48.160><c> any</c><00:00:48.320><c> time,</c><00:00:48.600><c> let's</c>
+
+00:00:48.870 --> 00:00:48.880 align:start position:0%
+that. So without wasting any time, let's
+ 
+
+00:00:48.880 --> 00:00:50.590 align:start position:0%
+that. So without wasting any time, let's
+start<00:00:49.200><c> with</c><00:00:49.320><c> the</c><00:00:49.440><c> video.</c>
+
+00:00:50.590 --> 00:00:50.600 align:start position:0%
+start with the video.
+ 
+
+00:00:50.600 --> 00:00:52.670 align:start position:0%
+start with the video.
+Okay,<00:00:50.880><c> so</c><00:00:51.200><c> here's</c><00:00:51.520><c> the</c><00:00:51.640><c> GitHub</c><00:00:51.960><c> repository</c>
+
+00:00:52.670 --> 00:00:52.680 align:start position:0%
+Okay, so here's the GitHub repository
+ 
+
+00:00:52.680 --> 00:00:54.630 align:start position:0%
+Okay, so here's the GitHub repository
+that<00:00:53.000><c> will</c><00:00:53.160><c> have</c><00:00:53.480><c> all</c><00:00:53.680><c> the</c><00:00:53.840><c> details,</c><00:00:54.320><c> source</c>
+
+00:00:54.630 --> 00:00:54.640 align:start position:0%
+that will have all the details, source
+ 
+
+00:00:54.640 --> 00:00:57.350 align:start position:0%
+that will have all the details, source
+code,<00:00:55.400><c> diagrams,</c><00:00:56.280><c> notes,</c><00:00:56.680><c> everything</c><00:00:57.120><c> that</c>
+
+00:00:57.350 --> 00:00:57.360 align:start position:0%
+code, diagrams, notes, everything that
+ 
+
+00:00:57.360 --> 00:00:59.470 align:start position:0%
+code, diagrams, notes, everything that
+we'll<00:00:57.520><c> be</c><00:00:57.640><c> discussing</c><00:00:58.160><c> in</c><00:00:58.280><c> this</c><00:00:58.480><c> series.</c>
+
+00:00:59.470 --> 00:00:59.480 align:start position:0%
+we'll be discussing in this series.
+ 
+
+00:00:59.480 --> 00:01:03.310 align:start position:0%
+we'll be discussing in this series.
+So<00:01:00.040><c> we</c><00:01:00.240><c> are</c><00:01:00.520><c> over</c><00:01:00.800><c> here</c><00:01:01.400><c> in</c><00:01:01.760><c> the</c><00:01:02.160><c> first</c><00:01:02.560><c> video</c>
+
+00:01:03.310 --> 00:01:03.320 align:start position:0%
+So we are over here in the first video
+ 
+
+00:01:03.320 --> 00:01:04.950 align:start position:0%
+So we are over here in the first video
+and<00:01:03.640><c> these</c><00:01:03.880><c> are</c><00:01:03.960><c> the</c><00:01:04.080><c> topics</c><00:01:04.480><c> that</c><00:01:04.680><c> we'll</c><00:01:04.839><c> be</c>
+
+00:01:04.950 --> 00:01:04.960 align:start position:0%
+and these are the topics that we'll be
+ 
+
+00:01:04.960 --> 00:01:06.710 align:start position:0%
+and these are the topics that we'll be
+discussing.<00:01:05.480><c> I've</c><00:01:05.720><c> already</c><00:01:06.280><c> gave</c><00:01:06.520><c> you</c><00:01:06.640><c> a</c>
+
+00:01:06.710 --> 00:01:06.720 align:start position:0%
+discussing. I've already gave you a
+ 
+
+00:01:06.720 --> 00:01:09.430 align:start position:0%
+discussing. I've already gave you a
+brief<00:01:07.000><c> overview</c><00:01:07.400><c> about</c><00:01:07.760><c> that.</c><00:01:08.560><c> And</c><00:01:08.840><c> make</c><00:01:09.120><c> sure</c>
+
+00:01:09.430 --> 00:01:09.440 align:start position:0%
+brief overview about that. And make sure
+ 
+
+00:01:09.440 --> 00:01:12.150 align:start position:0%
+brief overview about that. And make sure
+you<00:01:10.200><c> complete</c><00:01:10.760><c> these</c><00:01:11.040><c> prerequisites</c><00:01:11.800><c> before</c>
+
+00:01:12.150 --> 00:01:12.160 align:start position:0%
+you complete these prerequisites before
+ 
+
+00:01:12.160 --> 00:01:15.870 align:start position:0%
+you complete these prerequisites before
+that.<00:01:12.560><c> Make</c><00:01:12.840><c> sure</c><00:01:13.520><c> you</c><00:01:13.680><c> have</c><00:01:14.400><c> a</c><00:01:14.520><c> your</c><00:01:15.320><c> account.</c>
+
+00:01:15.870 --> 00:01:15.880 align:start position:0%
+that. Make sure you have a your account.
+ 
+
+00:01:15.880 --> 00:01:18.150 align:start position:0%
+that. Make sure you have a your account.
+Make<00:01:16.160><c> sure</c><00:01:16.760><c> you</c><00:01:17.000><c> know</c><00:01:17.200><c> the</c><00:01:17.320><c> fundamentals</c><00:01:18.000><c> of</c>
+
+00:01:18.150 --> 00:01:18.160 align:start position:0%
+Make sure you know the fundamentals of
+ 
+
+00:01:18.160 --> 00:01:21.030 align:start position:0%
+Make sure you know the fundamentals of
+Azure.<00:01:18.520><c> I</c><00:01:18.600><c> have</c><00:01:19.360><c> added</c><00:01:19.680><c> some</c><00:01:19.880><c> links</c><00:01:20.200><c> as</c><00:01:20.440><c> well.</c>
+
+00:01:21.030 --> 00:01:21.040 align:start position:0%
+Azure. I have added some links as well.
+ 
+
+00:01:21.040 --> 00:01:22.910 align:start position:0%
+Azure. I have added some links as well.
+And<00:01:21.280><c> then</c><00:01:21.600><c> Docker</c><00:01:21.920><c> and</c><00:01:22.040><c> Kubernetes</c><00:01:22.680><c> will</c><00:01:22.800><c> be</c>
+
+00:01:22.910 --> 00:01:22.920 align:start position:0%
+And then Docker and Kubernetes will be
+ 
+
+00:01:22.920 --> 00:01:24.310 align:start position:0%
+And then Docker and Kubernetes will be
+covering<00:01:23.240><c> later</c><00:01:23.480><c> in</c><00:01:23.560><c> the</c><00:01:23.680><c> series.</c><00:01:23.960><c> So</c><00:01:24.080><c> make</c>
+
+00:01:24.310 --> 00:01:24.320 align:start position:0%
+covering later in the series. So make
+ 
+
+00:01:24.320 --> 00:01:26.910 align:start position:0%
+covering later in the series. So make
+sure<00:01:24.560><c> you</c><00:01:24.680><c> complete</c><00:01:25.560><c> these</c><00:01:25.840><c> topics</c><00:01:26.280><c> as</c><00:01:26.520><c> well</c>
+
+00:01:26.910 --> 00:01:26.920 align:start position:0%
+sure you complete these topics as well
+ 
+
+00:01:26.920 --> 00:01:28.550 align:start position:0%
+sure you complete these topics as well
+before<00:01:27.360><c> that.</c>
+
+00:01:28.550 --> 00:01:28.560 align:start position:0%
+before that.
+ 
+
+00:01:28.560 --> 00:01:31.270 align:start position:0%
+before that.
+Okay,<00:01:28.960><c> so</c><00:01:29.480><c> let's</c><00:01:30.280><c> get</c><00:01:30.520><c> into</c><00:01:30.840><c> that.</c><00:01:31.080><c> Let's</c>
+
+00:01:31.270 --> 00:01:31.280 align:start position:0%
+Okay, so let's get into that. Let's
+ 
+
+00:01:31.280 --> 00:01:33.630 align:start position:0%
+Okay, so let's get into that. Let's
+start<00:01:31.640><c> with</c><00:01:31.880><c> these</c><00:01:32.120><c> topics</c><00:01:32.520><c> now.</c><00:01:33.280><c> Okay,</c><00:01:33.480><c> so</c>
+
+00:01:33.630 --> 00:01:33.640 align:start position:0%
+start with these topics now. Okay, so
+ 
+
+00:01:33.640 --> 00:01:35.910 align:start position:0%
+start with these topics now. Okay, so
+this<00:01:33.880><c> is</c><00:01:34.000><c> my</c><00:01:34.160><c> first</c><00:01:34.480><c> time</c><00:01:34.680><c> using</c><00:01:34.960><c> an</c><00:01:35.120><c> iPad.</c><00:01:35.720><c> So</c>
+
+00:01:35.910 --> 00:01:35.920 align:start position:0%
+this is my first time using an iPad. So
+ 
+
+00:01:35.920 --> 00:01:39.110 align:start position:0%
+this is my first time using an iPad. So
+forgive<00:01:36.400><c> me</c><00:01:36.720><c> if</c><00:01:37.280><c> I</c><00:01:37.400><c> make</c><00:01:37.640><c> some</c><00:01:37.800><c> mistakes.</c><00:01:39.040><c> I'm</c>
+
+00:01:39.110 --> 00:01:39.120 align:start position:0%
+forgive me if I make some mistakes. I'm
+ 
+
+00:01:39.120 --> 00:01:40.310 align:start position:0%
+forgive me if I make some mistakes. I'm
+still<00:01:39.360><c> learning.</c>
+
+00:01:40.310 --> 00:01:40.320 align:start position:0%
+still learning.
+ 
+
+00:01:40.320 --> 00:01:42.790 align:start position:0%
+still learning.
+And<00:01:40.720><c> my</c><00:01:40.920><c> handwriting,</c><00:01:41.840><c> it</c><00:01:42.040><c> sucks.</c><00:01:42.520><c> I</c><00:01:42.600><c> know</c>
+
+00:01:42.790 --> 00:01:42.800 align:start position:0%
+And my handwriting, it sucks. I know
+ 
+
+00:01:42.800 --> 00:01:45.430 align:start position:0%
+And my handwriting, it sucks. I know
+that.<00:01:43.280><c> So</c><00:01:43.560><c> please</c><00:01:43.880><c> bear</c><00:01:44.160><c> with</c><00:01:44.360><c> me.</c><00:01:45.000><c> Okay,</c><00:01:45.360><c> so</c>
+
+00:01:45.430 --> 00:01:45.440 align:start position:0%
+that. So please bear with me. Okay, so
+ 
+
+00:01:45.440 --> 00:01:48.190 align:start position:0%
+that. So please bear with me. Okay, so
+let's<00:01:45.760><c> start</c><00:01:46.120><c> with</c><00:01:46.480><c> what</c><00:01:46.680><c> exactly</c><00:01:47.520><c> is</c><00:01:47.760><c> infra</c>
+
+00:01:48.190 --> 00:01:48.200 align:start position:0%
+let's start with what exactly is infra
+ 
+
+00:01:48.200 --> 00:01:50.750 align:start position:0%
+let's start with what exactly is infra
+as<00:01:48.400><c> a</c><00:01:48.480><c> code?</c><00:01:49.400><c> Okay,</c><00:01:49.600><c> suppose</c><00:01:50.080><c> you</c><00:01:50.200><c> have</c><00:01:50.680><c> a</c>
+
+00:01:50.750 --> 00:01:50.760 align:start position:0%
+as a code? Okay, suppose you have a
+ 
+
+00:01:50.760 --> 00:01:53.750 align:start position:0%
+as a code? Okay, suppose you have a
+DevOps<00:01:51.200><c> engineer,</c><00:01:52.200><c> right?</c><00:01:52.720><c> And</c><00:01:53.200><c> that</c><00:01:53.400><c> DevOps</c>
+
+00:01:53.750 --> 00:01:53.760 align:start position:0%
+DevOps engineer, right? And that DevOps
+ 
+
+00:01:53.760 --> 00:01:56.390 align:start position:0%
+DevOps engineer, right? And that DevOps
+engineer<00:01:54.560><c> will</c><00:01:54.760><c> write</c><00:01:55.040><c> some</c><00:01:55.280><c> code.</c>
+
+00:01:56.390 --> 00:01:56.400 align:start position:0%
+engineer will write some code.
+ 
+
+00:01:56.400 --> 00:01:59.470 align:start position:0%
+engineer will write some code.
+That<00:01:56.840><c> code</c><00:01:57.360><c> will</c><00:01:57.560><c> then</c><00:01:58.120><c> help</c><00:01:58.520><c> you</c><00:01:58.880><c> provision</c>
+
+00:01:59.470 --> 00:01:59.480 align:start position:0%
+That code will then help you provision
+ 
+
+00:01:59.480 --> 00:02:00.830 align:start position:0%
+That code will then help you provision
+servers.
+
+00:02:00.830 --> 00:02:00.840 align:start position:0%
+servers.
+ 
+
+00:02:00.840 --> 00:02:02.910 align:start position:0%
+servers.
+So,<00:02:01.040><c> basically</c><00:02:01.480><c> that's</c><00:02:01.880><c> what</c><00:02:02.240><c> infrastructure</c>
+
+00:02:02.910 --> 00:02:02.920 align:start position:0%
+So, basically that's what infrastructure
+ 
+
+00:02:02.920 --> 00:02:06.110 align:start position:0%
+So, basically that's what infrastructure
+as<00:02:03.040><c> a</c><00:02:03.120><c> code</c><00:02:03.400><c> is.</c><00:02:03.800><c> You</c><00:02:04.320><c> transform</c><00:02:05.160><c> your</c><00:02:05.760><c> code</c>
+
+00:02:06.110 --> 00:02:06.120 align:start position:0%
+as a code is. You transform your code
+ 
+
+00:02:06.120 --> 00:02:08.749 align:start position:0%
+as a code is. You transform your code
+into<00:02:06.400><c> infrastructure</c><00:02:07.280><c> or</c><00:02:08.080><c> you</c><00:02:08.280><c> write</c><00:02:08.640><c> the</c>
+
+00:02:08.749 --> 00:02:08.759 align:start position:0%
+into infrastructure or you write the
+ 
+
+00:02:08.759 --> 00:02:11.270 align:start position:0%
+into infrastructure or you write the
+code<00:02:09.119><c> to</c><00:02:09.200><c> provision</c><00:02:09.759><c> the</c><00:02:09.880><c> infrastructure.</c>
+
+00:02:11.270 --> 00:02:11.280 align:start position:0%
+code to provision the infrastructure.
+ 
+
+00:02:11.280 --> 00:02:13.590 align:start position:0%
+code to provision the infrastructure.
+So,<00:02:11.360><c> that's</c><00:02:11.800><c> what</c><00:02:12.000><c> it</c><00:02:12.160><c> is.</c><00:02:12.959><c> Okay?</c><00:02:13.240><c> And</c><00:02:13.440><c> there</c>
+
+00:02:13.590 --> 00:02:13.600 align:start position:0%
+So, that's what it is. Okay? And there
+ 
+
+00:02:13.600 --> 00:02:16.430 align:start position:0%
+So, that's what it is. Okay? And there
+are<00:02:13.720><c> different</c><00:02:14.160><c> tools</c><00:02:15.040><c> using</c><00:02:15.440><c> which</c><00:02:15.760><c> you</c><00:02:15.920><c> can</c>
+
+00:02:16.430 --> 00:02:16.440 align:start position:0%
+are different tools using which you can
+ 
+
+00:02:16.440 --> 00:02:18.949 align:start position:0%
+are different tools using which you can
+achieve<00:02:16.880><c> this.</c><00:02:17.480><c> So,</c><00:02:17.640><c> there</c><00:02:17.920><c> is</c><00:02:18.160><c> Terraform,</c>
+
+00:02:18.949 --> 00:02:18.959 align:start position:0%
+achieve this. So, there is Terraform,
+ 
+
+00:02:18.959 --> 00:02:21.630 align:start position:0%
+achieve this. So, there is Terraform,
+which<00:02:19.320><c> we'll</c><00:02:19.520><c> be</c><00:02:20.160><c> doing</c><00:02:20.720><c> in</c><00:02:20.920><c> detail.</c><00:02:21.400><c> Then</c>
+
+00:02:21.630 --> 00:02:21.640 align:start position:0%
+which we'll be doing in detail. Then
+ 
+
+00:02:21.640 --> 00:02:24.110 align:start position:0%
+which we'll be doing in detail. Then
+there<00:02:21.880><c> is</c><00:02:22.160><c> Pulumi.</c><00:02:23.320><c> Then</c><00:02:23.560><c> each</c><00:02:23.840><c> cloud</c>
+
+00:02:24.110 --> 00:02:24.120 align:start position:0%
+there is Pulumi. Then each cloud
+ 
+
+00:02:24.120 --> 00:02:26.870 align:start position:0%
+there is Pulumi. Then each cloud
+provider<00:02:24.640><c> has</c><00:02:25.040><c> their</c><00:02:25.600><c> own</c><00:02:25.920><c> set</c><00:02:26.240><c> of</c>
+
+00:02:26.870 --> 00:02:26.880 align:start position:0%
+provider has their own set of
+ 
+
+00:02:26.880 --> 00:02:28.390 align:start position:0%
+provider has their own set of
+infrastructure<00:02:27.480><c> as</c><00:02:27.600><c> a</c><00:02:27.680><c> code</c><00:02:28.000><c> tool.</c><00:02:28.240><c> For</c>
+
+00:02:28.390 --> 00:02:28.400 align:start position:0%
+infrastructure as a code tool. For
+ 
+
+00:02:28.400 --> 00:02:31.430 align:start position:0%
+infrastructure as a code tool. For
+example,<00:02:29.080><c> Azure</c><00:02:29.560><c> has</c><00:02:30.000><c> Azure</c><00:02:30.520><c> ARM</c><00:02:30.840><c> templates</c>
+
+00:02:31.430 --> 00:02:31.440 align:start position:0%
+example, Azure has Azure ARM templates
+ 
+
+00:02:31.440 --> 00:02:35.870 align:start position:0%
+example, Azure has Azure ARM templates
+and<00:02:31.640><c> Bicep.</c><00:02:32.720><c> AWS</c><00:02:33.400><c> has</c><00:02:34.000><c> AWS</c><00:02:34.520><c> CloudFormation.</c>
+
+00:02:35.870 --> 00:02:35.880 align:start position:0%
+and Bicep. AWS has AWS CloudFormation.
+ 
+
+00:02:35.880 --> 00:02:37.910 align:start position:0%
+and Bicep. AWS has AWS CloudFormation.
+GCP<00:02:36.320><c> has</c><00:02:36.800><c> deployment</c><00:02:37.280><c> manager</c><00:02:37.760><c> or</c>
+
+00:02:37.910 --> 00:02:37.920 align:start position:0%
+GCP has deployment manager or
+ 
+
+00:02:37.920 --> 00:02:39.990 align:start position:0%
+GCP has deployment manager or
+infrastructure<00:02:38.680><c> manager</c><00:02:39.160><c> or</c><00:02:39.520><c> there</c><00:02:39.800><c> are</c>
+
+00:02:39.990 --> 00:02:40.000 align:start position:0%
+infrastructure manager or there are
+ 
+
+00:02:40.000 --> 00:02:41.910 align:start position:0%
+infrastructure manager or there are
+other<00:02:40.240><c> tools</c><00:02:40.520><c> as</c><00:02:40.760><c> well,</c><00:02:41.080><c> right?</c>
+
+00:02:41.910 --> 00:02:41.920 align:start position:0%
+other tools as well, right?
+ 
+
+00:02:41.920 --> 00:02:44.710 align:start position:0%
+other tools as well, right?
+So,<00:02:42.200><c> this</c><00:02:42.480><c> is</c><00:02:43.120><c> what</c><00:02:43.800><c> we'll</c><00:02:44.000><c> be</c><00:02:44.120><c> looking</c><00:02:44.440><c> into.</c>
+
+00:02:44.710 --> 00:02:44.720 align:start position:0%
+So, this is what we'll be looking into.
+ 
+
+00:02:44.720 --> 00:02:47.550 align:start position:0%
+So, this is what we'll be looking into.
+We'll<00:02:44.880><c> be</c><00:02:45.000><c> looking</c><00:02:45.360><c> into</c><00:02:45.720><c> Terraform.</c><00:02:46.600><c> Okay?</c>
+
+00:02:47.550 --> 00:02:47.560 align:start position:0%
+We'll be looking into Terraform. Okay?
+ 
+
+00:02:47.560 --> 00:02:50.230 align:start position:0%
+We'll be looking into Terraform. Okay?
+So,<00:02:47.680><c> let's</c><00:02:47.959><c> go</c><00:02:48.160><c> ahead</c><00:02:48.640><c> and</c><00:02:49.000><c> let's</c><00:02:49.320><c> understand</c>
+
+00:02:50.230 --> 00:02:50.240 align:start position:0%
+So, let's go ahead and let's understand
+ 
+
+00:02:50.240 --> 00:02:52.390 align:start position:0%
+So, let's go ahead and let's understand
+why<00:02:50.560><c> do</c><00:02:50.720><c> we</c><00:02:51.000><c> actually</c><00:02:51.440><c> need</c><00:02:51.720><c> infrastructure</c>
+
+00:02:52.390 --> 00:02:52.400 align:start position:0%
+why do we actually need infrastructure
+ 
+
+00:02:52.400 --> 00:02:55.350 align:start position:0%
+why do we actually need infrastructure
+as<00:02:52.520><c> a</c><00:02:52.600><c> code.</c><00:02:53.280><c> As</c><00:02:53.480><c> an</c><00:02:53.800><c> admin</c><00:02:54.400><c> or</c><00:02:54.560><c> as</c><00:02:54.720><c> a</c><00:02:55.000><c> DevOps</c>
+
+00:02:55.350 --> 00:02:55.360 align:start position:0%
+as a code. As an admin or as a DevOps
+ 
+
+00:02:55.360 --> 00:02:58.310 align:start position:0%
+as a code. As an admin or as a DevOps
+engineer<00:02:55.920><c> or</c><00:02:56.640><c> whoever</c><00:02:57.560><c> takes</c><00:02:57.840><c> care</c><00:02:58.080><c> of</c><00:02:58.200><c> the</c>
+
+00:02:58.310 --> 00:02:58.320 align:start position:0%
+engineer or whoever takes care of the
+ 
+
+00:02:58.320 --> 00:03:00.590 align:start position:0%
+engineer or whoever takes care of the
+infrastructure<00:02:59.160><c> in</c><00:02:59.360><c> your</c><00:02:59.600><c> organization,</c>
+
+00:03:00.590 --> 00:03:00.600 align:start position:0%
+infrastructure in your organization,
+ 
+
+00:03:00.600 --> 00:03:02.350 align:start position:0%
+infrastructure in your organization,
+infrastructure<00:03:01.200><c> engineers,</c><00:03:01.680><c> sysadmin,</c>
+
+00:03:02.350 --> 00:03:02.360 align:start position:0%
+infrastructure engineers, sysadmin,
+ 
+
+00:03:02.360 --> 00:03:04.509 align:start position:0%
+infrastructure engineers, sysadmin,
+there<00:03:02.600><c> could</c><00:03:02.840><c> be</c><00:03:03.080><c> anyone</c><00:03:03.519><c> else.</c>
+
+00:03:04.509 --> 00:03:04.519 align:start position:0%
+there could be anyone else.
+ 
+
+00:03:04.519 --> 00:03:06.670 align:start position:0%
+there could be anyone else.
+So,<00:03:04.680><c> that</c><00:03:05.040><c> person</c><00:03:05.519><c> or</c><00:03:05.640><c> that</c><00:03:05.920><c> team</c><00:03:06.120><c> of</c><00:03:06.280><c> person</c>
+
+00:03:06.670 --> 00:03:06.680 align:start position:0%
+So, that person or that team of person
+ 
+
+00:03:06.680 --> 00:03:09.190 align:start position:0%
+So, that person or that team of person
+could<00:03:06.880><c> directly</c><00:03:07.360><c> log</c><00:03:07.680><c> into</c><00:03:07.959><c> AWS</c><00:03:08.480><c> console</c><00:03:09.040><c> and</c>
+
+00:03:09.190 --> 00:03:09.200 align:start position:0%
+could directly log into AWS console and
+ 
+
+00:03:09.200 --> 00:03:11.110 align:start position:0%
+could directly log into AWS console and
+provision<00:03:09.640><c> EC2</c><00:03:10.080><c> servers</c><00:03:10.560><c> or</c><00:03:10.720><c> any</c><00:03:10.920><c> other</c>
+
+00:03:11.110 --> 00:03:11.120 align:start position:0%
+provision EC2 servers or any other
+ 
+
+00:03:11.120 --> 00:03:12.910 align:start position:0%
+provision EC2 servers or any other
+infrastructure.
+
+00:03:12.910 --> 00:03:12.920 align:start position:0%
+infrastructure.
+ 
+
+00:03:12.920 --> 00:03:15.430 align:start position:0%
+infrastructure.
+Or<00:03:13.280><c> if</c><00:03:13.480><c> you</c><00:03:13.560><c> are</c><00:03:13.680><c> using</c><00:03:14.040><c> Azure,</c><00:03:14.480><c> you</c><00:03:14.600><c> can</c><00:03:14.840><c> use</c>
+
+00:03:15.430 --> 00:03:15.440 align:start position:0%
+Or if you are using Azure, you can use
+ 
+
+00:03:15.440 --> 00:03:16.870 align:start position:0%
+Or if you are using Azure, you can use
+Azure<00:03:15.760><c> portal,</c>
+
+00:03:16.870 --> 00:03:16.880 align:start position:0%
+Azure portal,
+ 
+
+00:03:16.880 --> 00:03:18.670 align:start position:0%
+Azure portal,
+GCP<00:03:17.440><c> console,</c>
+
+00:03:18.670 --> 00:03:18.680 align:start position:0%
+GCP console,
+ 
+
+00:03:18.680 --> 00:03:21.030 align:start position:0%
+GCP console,
+and<00:03:18.840><c> then</c><00:03:19.080><c> there</c><00:03:19.400><c> is</c><00:03:19.959><c> cloud</c><00:03:20.360><c> shell</c><00:03:20.680><c> that</c><00:03:20.920><c> you</c>
+
+00:03:21.030 --> 00:03:21.040 align:start position:0%
+and then there is cloud shell that you
+ 
+
+00:03:21.040 --> 00:03:24.190 align:start position:0%
+and then there is cloud shell that you
+can<00:03:21.280><c> use.</c><00:03:21.800><c> Then</c><00:03:22.400><c> there</c><00:03:22.720><c> is</c><00:03:23.480><c> cloud</c><00:03:23.760><c> shell</c><00:03:23.959><c> built</c>
+
+00:03:24.190 --> 00:03:24.200 align:start position:0%
+can use. Then there is cloud shell built
+ 
+
+00:03:24.200 --> 00:03:26.790 align:start position:0%
+can use. Then there is cloud shell built
+in<00:03:24.320><c> within</c><00:03:24.640><c> Azure</c><00:03:25.239><c> or</c><00:03:25.320><c> within</c><00:03:26.080><c> and</c><00:03:26.320><c> so</c><00:03:26.480><c> on.</c><00:03:26.680><c> So,</c>
+
+00:03:26.790 --> 00:03:26.800 align:start position:0%
+in within Azure or within and so on. So,
+ 
+
+00:03:26.800 --> 00:03:29.509 align:start position:0%
+in within Azure or within and so on. So,
+you<00:03:26.920><c> can</c><00:03:27.120><c> use</c><00:03:27.400><c> those</c><00:03:27.680><c> things</c><00:03:27.959><c> as</c><00:03:28.200><c> well.</c><00:03:28.959><c> Like</c>
+
+00:03:29.509 --> 00:03:29.519 align:start position:0%
+you can use those things as well. Like
+ 
+
+00:03:29.519 --> 00:03:31.590 align:start position:0%
+you can use those things as well. Like
+and<00:03:29.920><c> you</c><00:03:30.120><c> can</c><00:03:30.600><c> like</c><00:03:30.840><c> easily</c><00:03:31.160><c> provision</c>
+
+00:03:31.590 --> 00:03:31.600 align:start position:0%
+and you can like easily provision
+ 
+
+00:03:31.600 --> 00:03:33.270 align:start position:0%
+and you can like easily provision
+infrastructure,<00:03:32.200><c> right?</c><00:03:32.440><c> Using</c><00:03:32.880><c> entering</c>
+
+00:03:33.270 --> 00:03:33.280 align:start position:0%
+infrastructure, right? Using entering
+ 
+
+00:03:33.280 --> 00:03:36.509 align:start position:0%
+infrastructure, right? Using entering
+some<00:03:33.519><c> check</c><00:03:33.760><c> boxes,</c><00:03:34.519><c> some</c><00:03:34.800><c> drop</c><00:03:35.120><c> down</c><00:03:35.360><c> boxes,</c>
+
+00:03:36.509 --> 00:03:36.519 align:start position:0%
+some check boxes, some drop down boxes,
+ 
+
+00:03:36.519 --> 00:03:39.430 align:start position:0%
+some check boxes, some drop down boxes,
+and<00:03:36.800><c> entering</c><00:03:37.200><c> some</c><00:03:37.480><c> text</c><00:03:37.840><c> over</c><00:03:38.040><c> here.</c><00:03:38.760><c> It's</c>
+
+00:03:39.430 --> 00:03:39.440 align:start position:0%
+and entering some text over here. It's
+ 
+
+00:03:39.440 --> 00:03:40.790 align:start position:0%
+and entering some text over here. It's
+piece<00:03:39.640><c> of</c><00:03:39.760><c> cake.</c>
+
+00:03:40.790 --> 00:03:40.800 align:start position:0%
+piece of cake.
+ 
+
+00:03:40.800 --> 00:03:45.310 align:start position:0%
+piece of cake.
+But<00:03:41.560><c> if</c><00:03:42.040><c> that</c><00:03:42.360><c> is</c><00:03:42.519><c> possible</c><00:03:43.239><c> through</c><00:03:43.920><c> these</c>
+
+00:03:45.310 --> 00:03:45.320 align:start position:0%
+But if that is possible through these
+ 
+
+00:03:45.320 --> 00:03:49.390 align:start position:0%
+But if that is possible through these
+simple<00:03:46.480><c> processes,</c><00:03:47.239><c> simple</c><00:03:47.800><c> services,</c>
+
+00:03:49.390 --> 00:03:49.400 align:start position:0%
+simple processes, simple services,
+ 
+
+00:03:49.400 --> 00:03:52.229 align:start position:0%
+simple processes, simple services,
+why<00:03:49.680><c> do</c><00:03:49.880><c> actually</c><00:03:50.440><c> we</c><00:03:50.600><c> have</c><00:03:50.920><c> to</c><00:03:51.120><c> take</c><00:03:51.400><c> the</c><00:03:51.560><c> pain</c>
+
+00:03:52.229 --> 00:03:52.239 align:start position:0%
+why do actually we have to take the pain
+ 
+
+00:03:52.239 --> 00:03:54.310 align:start position:0%
+why do actually we have to take the pain
+and<00:03:52.520><c> write</c><00:03:52.760><c> the</c><00:03:52.880><c> code</c><00:03:53.200><c> for</c><00:03:53.440><c> it.</c>
+
+00:03:54.310 --> 00:03:54.320 align:start position:0%
+and write the code for it.
+ 
+
+00:03:54.320 --> 00:03:55.830 align:start position:0%
+and write the code for it.
+There<00:03:54.520><c> are</c><00:03:54.640><c> many</c><00:03:54.880><c> reasons</c><00:03:55.280><c> for</c><00:03:55.440><c> that.</c><00:03:55.720><c> So,</c>
+
+00:03:55.830 --> 00:03:55.840 align:start position:0%
+There are many reasons for that. So,
+ 
+
+00:03:55.840 --> 00:03:56.950 align:start position:0%
+There are many reasons for that. So,
+let's
+
+00:03:56.950 --> 00:03:56.960 align:start position:0%
+let's
+ 
+
+00:03:56.960 --> 00:03:58.910 align:start position:0%
+let's
+look<00:03:57.120><c> into</c><00:03:57.480><c> a</c><00:03:57.560><c> simple</c><00:03:58.360><c> three-tier</c>
+
+00:03:58.910 --> 00:03:58.920 align:start position:0%
+look into a simple three-tier
+ 
+
+00:03:58.920 --> 00:04:01.790 align:start position:0%
+look into a simple three-tier
+architecture.<00:03:59.640><c> So,</c><00:03:59.840><c> there</c><00:04:00.120><c> is</c><00:04:00.800><c> a</c><00:04:00.880><c> web</c><00:04:01.240><c> tier,</c>
+
+00:04:01.790 --> 00:04:01.800 align:start position:0%
+architecture. So, there is a web tier,
+ 
+
+00:04:01.800 --> 00:04:04.110 align:start position:0%
+architecture. So, there is a web tier,
+there<00:04:02.080><c> is</c><00:04:02.320><c> an</c><00:04:02.520><c> app</c><00:04:02.800><c> tier,</c><00:04:03.160><c> and</c><00:04:03.360><c> then</c><00:04:03.560><c> there</c><00:04:03.800><c> is</c>
+
+00:04:04.110 --> 00:04:04.120 align:start position:0%
+there is an app tier, and then there is
+ 
+
+00:04:04.120 --> 00:04:05.910 align:start position:0%
+there is an app tier, and then there is
+a<00:04:04.320><c> database</c><00:04:04.840><c> tier.</c>
+
+00:04:05.910 --> 00:04:05.920 align:start position:0%
+a database tier.
+ 
+
+00:04:05.920 --> 00:04:07.350 align:start position:0%
+a database tier.
+Right?<00:04:06.440><c> So,</c>
+
+00:04:07.350 --> 00:04:07.360 align:start position:0%
+Right? So,
+ 
+
+00:04:07.360 --> 00:04:09.870 align:start position:0%
+Right? So,
+pretty<00:04:07.560><c> basic,</c><00:04:08.400><c> few</c><00:04:08.640><c> services,</c><00:04:09.560><c> nothing</c>
+
+00:04:09.870 --> 00:04:09.880 align:start position:0%
+pretty basic, few services, nothing
+ 
+
+00:04:09.880 --> 00:04:11.630 align:start position:0%
+pretty basic, few services, nothing
+complex.<00:04:10.520><c> I'll</c><00:04:10.760><c> I'll</c><00:04:10.959><c> walk</c><00:04:11.160><c> you</c><00:04:11.280><c> through</c><00:04:11.480><c> it.</c>
+
+00:04:11.630 --> 00:04:11.640 align:start position:0%
+complex. I'll I'll walk you through it.
+ 
+
+00:04:11.640 --> 00:04:13.390 align:start position:0%
+complex. I'll I'll walk you through it.
+So,<00:04:11.760><c> there</c><00:04:12.000><c> are</c><00:04:12.240><c> like</c>
+
+00:04:13.390 --> 00:04:13.400 align:start position:0%
+So, there are like
+ 
+
+00:04:13.400 --> 00:04:17.390 align:start position:0%
+So, there are like
+two<00:04:14.080><c> servers</c><00:04:14.760><c> that</c><00:04:15.040><c> is</c><00:04:15.200><c> part</c><00:04:15.560><c> of</c><00:04:16.079><c> a</c><00:04:16.239><c> web</c><00:04:16.560><c> tier.</c>
+
+00:04:17.390 --> 00:04:17.400 align:start position:0%
+two servers that is part of a web tier.
+ 
+
+00:04:17.400 --> 00:04:19.270 align:start position:0%
+two servers that is part of a web tier.
+So,<00:04:17.519><c> these</c><00:04:17.799><c> two</c><00:04:17.920><c> servers</c><00:04:18.519><c> are</c><00:04:18.680><c> part</c><00:04:18.959><c> of</c><00:04:19.120><c> an</c>
+
+00:04:19.270 --> 00:04:19.280 align:start position:0%
+So, these two servers are part of an
+ 
+
+00:04:19.280 --> 00:04:21.110 align:start position:0%
+So, these two servers are part of an
+auto<00:04:19.519><c> scaling</c><00:04:20.040><c> group.</c><00:04:20.480><c> If</c><00:04:20.640><c> you</c><00:04:20.720><c> are</c><00:04:20.799><c> using</c>
+
+00:04:21.110 --> 00:04:21.120 align:start position:0%
+auto scaling group. If you are using
+ 
+
+00:04:21.120 --> 00:04:23.190 align:start position:0%
+auto scaling group. If you are using
+AWS,<00:04:21.600><c> if</c><00:04:21.799><c> you</c><00:04:21.880><c> are</c><00:04:21.959><c> using</c><00:04:22.320><c> Azure,</c><00:04:22.680><c> that</c><00:04:22.960><c> could</c>
+
+00:04:23.190 --> 00:04:23.200 align:start position:0%
+AWS, if you are using Azure, that could
+ 
+
+00:04:23.200 --> 00:04:25.990 align:start position:0%
+AWS, if you are using Azure, that could
+be<00:04:23.560><c> a</c><00:04:23.680><c> virtual</c><00:04:24.160><c> machine</c><00:04:24.560><c> scale</c><00:04:24.919><c> set.</c>
+
+00:04:25.990 --> 00:04:26.000 align:start position:0%
+be a virtual machine scale set.
+ 
+
+00:04:26.000 --> 00:04:28.070 align:start position:0%
+be a virtual machine scale set.
+If<00:04:26.200><c> you</c><00:04:26.320><c> are</c><00:04:26.440><c> using</c><00:04:26.800><c> GCP,</c><00:04:27.280><c> that</c><00:04:27.600><c> could</c><00:04:27.800><c> be</c><00:04:28.000><c> a</c>
+
+00:04:28.070 --> 00:04:28.080 align:start position:0%
+If you are using GCP, that could be a
+ 
+
+00:04:28.080 --> 00:04:30.950 align:start position:0%
+If you are using GCP, that could be a
+managed<00:04:28.560><c> instance</c><00:04:29.080><c> group,</c><00:04:29.520><c> MIG,</c><00:04:30.120><c> right?</c>
+
+00:04:30.950 --> 00:04:30.960 align:start position:0%
+managed instance group, MIG, right?
+ 
+
+00:04:30.960 --> 00:04:33.190 align:start position:0%
+managed instance group, MIG, right?
+So,<00:04:31.120><c> consider</c><00:04:31.560><c> this</c><00:04:31.840><c> as</c><00:04:32.000><c> part</c><00:04:32.360><c> of</c><00:04:32.560><c> a</c><00:04:32.840><c> virtual</c>
+
+00:04:33.190 --> 00:04:33.200 align:start position:0%
+So, consider this as part of a virtual
+ 
+
+00:04:33.200 --> 00:04:36.070 align:start position:0%
+So, consider this as part of a virtual
+machine<00:04:33.560><c> scale</c><00:04:33.880><c> set.</c><00:04:34.720><c> So,</c><00:04:35.080><c> it's</c><00:04:35.360><c> created</c><00:04:35.840><c> by</c><00:04:36.000><c> a</c>
+
+00:04:36.070 --> 00:04:36.080 align:start position:0%
+machine scale set. So, it's created by a
+ 
+
+00:04:36.080 --> 00:04:38.190 align:start position:0%
+machine scale set. So, it's created by a
+template.<00:04:36.640><c> Whenever</c><00:04:37.280><c> an</c><00:04:37.440><c> instance</c><00:04:37.880><c> goes</c>
+
+00:04:38.190 --> 00:04:38.200 align:start position:0%
+template. Whenever an instance goes
+ 
+
+00:04:38.200 --> 00:04:40.430 align:start position:0%
+template. Whenever an instance goes
+down,<00:04:38.880><c> another</c><00:04:39.240><c> instance</c><00:04:39.680><c> will</c><00:04:39.840><c> be</c><00:04:39.960><c> created</c>
+
+00:04:40.430 --> 00:04:40.440 align:start position:0%
+down, another instance will be created
+ 
+
+00:04:40.440 --> 00:04:43.590 align:start position:0%
+down, another instance will be created
+from<00:04:40.640><c> the</c><00:04:40.760><c> template.</c><00:04:41.600><c> That's</c><00:04:41.960><c> That's</c><00:04:42.200><c> it.</c>
+
+00:04:43.590 --> 00:04:43.600 align:start position:0%
+from the template. That's That's it.
+ 
+
+00:04:43.600 --> 00:04:45.909 align:start position:0%
+from the template. That's That's it.
+Now,<00:04:43.840><c> they</c><00:04:44.040><c> are</c><00:04:44.160><c> backed</c><00:04:44.480><c> by</c><00:04:44.760><c> a</c><00:04:45.200><c> an</c><00:04:45.360><c> external</c>
+
+00:04:45.909 --> 00:04:45.919 align:start position:0%
+Now, they are backed by a an external
+ 
+
+00:04:45.919 --> 00:04:49.150 align:start position:0%
+Now, they are backed by a an external
+load<00:04:46.120><c> balancer</c><00:04:46.720><c> or</c><00:04:46.880><c> a</c><00:04:46.919><c> traffic</c><00:04:47.320><c> manager.</c>
+
+00:04:49.150 --> 00:04:49.160 align:start position:0%
+load balancer or a traffic manager.
+ 
+
+00:04:49.160 --> 00:04:52.430 align:start position:0%
+load balancer or a traffic manager.
+And<00:04:49.919><c> whenever</c><00:04:50.560><c> a</c><00:04:50.680><c> user,</c><00:04:51.400><c> so</c><00:04:51.640><c> let's</c><00:04:52.040><c> say</c><00:04:52.200><c> this</c>
+
+00:04:52.430 --> 00:04:52.440 align:start position:0%
+And whenever a user, so let's say this
+ 
+
+00:04:52.440 --> 00:04:55.150 align:start position:0%
+And whenever a user, so let's say this
+is<00:04:52.640><c> a</c><00:04:52.720><c> user.</c><00:04:53.160><c> So,</c><00:04:53.320><c> whenever</c><00:04:53.760><c> a</c><00:04:53.800><c> user</c><00:04:54.200><c> hits</c><00:04:54.680><c> the</c>
+
+00:04:55.150 --> 00:04:55.160 align:start position:0%
+is a user. So, whenever a user hits the
+ 
+
+00:04:55.160 --> 00:04:57.510 align:start position:0%
+is a user. So, whenever a user hits the
+DNS<00:04:55.680><c> or</c><00:04:55.800><c> the</c><00:04:55.960><c> load</c><00:04:56.240><c> balancer</c><00:04:56.760><c> endpoints,</c><00:04:57.400><c> the</c>
+
+00:04:57.510 --> 00:04:57.520 align:start position:0%
+DNS or the load balancer endpoints, the
+ 
+
+00:04:57.520 --> 00:04:59.909 align:start position:0%
+DNS or the load balancer endpoints, the
+request<00:04:58.080><c> will</c><00:04:58.200><c> go</c><00:04:58.400><c> to</c><00:04:58.680><c> either</c><00:04:59.080><c> of</c><00:04:59.600><c> these</c>
+
+00:04:59.909 --> 00:04:59.919 align:start position:0%
+request will go to either of these
+ 
+
+00:04:59.919 --> 00:05:01.110 align:start position:0%
+request will go to either of these
+servers.
+
+00:05:01.110 --> 00:05:01.120 align:start position:0%
+servers.
+ 
+
+00:05:01.120 --> 00:05:03.190 align:start position:0%
+servers.
+Okay?<00:05:01.600><c> Similarly,</c><00:05:02.160><c> there</c><00:05:02.400><c> is</c><00:05:02.600><c> an</c><00:05:02.720><c> internal</c>
+
+00:05:03.190 --> 00:05:03.200 align:start position:0%
+Okay? Similarly, there is an internal
+ 
+
+00:05:03.200 --> 00:05:05.270 align:start position:0%
+Okay? Similarly, there is an internal
+load<00:05:03.400><c> balancer</c><00:05:03.919><c> that</c><00:05:04.200><c> balances</c><00:05:04.720><c> the</c><00:05:04.880><c> traffic</c>
+
+00:05:05.270 --> 00:05:05.280 align:start position:0%
+load balancer that balances the traffic
+ 
+
+00:05:05.280 --> 00:05:06.510 align:start position:0%
+load balancer that balances the traffic
+between<00:05:05.680><c> the</c>
+
+00:05:06.510 --> 00:05:06.520 align:start position:0%
+between the
+ 
+
+00:05:06.520 --> 00:05:08.909 align:start position:0%
+between the
+servers<00:05:07.040><c> hosted</c><00:05:07.480><c> on</c><00:05:07.680><c> app</c><00:05:07.919><c> tier.</c><00:05:08.400><c> Again,</c><00:05:08.720><c> this</c>
+
+00:05:08.909 --> 00:05:08.919 align:start position:0%
+servers hosted on app tier. Again, this
+ 
+
+00:05:08.919 --> 00:05:11.630 align:start position:0%
+servers hosted on app tier. Again, this
+is<00:05:09.120><c> part</c><00:05:09.400><c> of</c><00:05:09.520><c> a</c><00:05:09.600><c> virtual</c><00:05:09.960><c> machine</c><00:05:10.320><c> scale</c><00:05:10.640><c> set</c>
+
+00:05:11.630 --> 00:05:11.640 align:start position:0%
+is part of a virtual machine scale set
+ 
+
+00:05:11.640 --> 00:05:14.390 align:start position:0%
+is part of a virtual machine scale set
+or<00:05:11.800><c> an</c><00:05:12.040><c> auto</c><00:05:12.280><c> scaling</c><00:05:12.640><c> group</c><00:05:12.919><c> or</c><00:05:13.040><c> an</c><00:05:13.280><c> MIG</c><00:05:13.760><c> MIG.</c>
+
+00:05:14.390 --> 00:05:14.400 align:start position:0%
+or an auto scaling group or an MIG MIG.
+ 
+
+00:05:14.400 --> 00:05:16.550 align:start position:0%
+or an auto scaling group or an MIG MIG.
+Okay,<00:05:14.600><c> let's</c><00:05:15.200><c> take</c><00:05:15.400><c> the</c><00:05:15.520><c> example</c><00:05:16.040><c> of</c><00:05:16.160><c> Azure</c>
+
+00:05:16.550 --> 00:05:16.560 align:start position:0%
+Okay, let's take the example of Azure
+ 
+
+00:05:16.560 --> 00:05:18.670 align:start position:0%
+Okay, let's take the example of Azure
+only.<00:05:16.840><c> So,</c><00:05:17.040><c> this</c><00:05:17.240><c> will</c><00:05:17.360><c> be</c><00:05:17.480><c> part</c><00:05:17.800><c> of</c><00:05:18.160><c> a</c><00:05:18.280><c> virtual</c>
+
+00:05:18.670 --> 00:05:18.680 align:start position:0%
+only. So, this will be part of a virtual
+ 
+
+00:05:18.680 --> 00:05:21.030 align:start position:0%
+only. So, this will be part of a virtual
+machine<00:05:19.000><c> scale</c><00:05:19.280><c> set.</c><00:05:19.760><c> And</c><00:05:20.120><c> then</c><00:05:20.320><c> the</c><00:05:20.440><c> traffic</c>
+
+00:05:21.030 --> 00:05:21.040 align:start position:0%
+machine scale set. And then the traffic
+ 
+
+00:05:21.040 --> 00:05:23.310 align:start position:0%
+machine scale set. And then the traffic
+will<00:05:21.320><c> be</c><00:05:21.840><c> redirected</c><00:05:22.600><c> to</c><00:05:22.720><c> to</c><00:05:22.840><c> fetch</c><00:05:23.160><c> some</c>
+
+00:05:23.310 --> 00:05:23.320 align:start position:0%
+will be redirected to to fetch some
+ 
+
+00:05:23.320 --> 00:05:25.310 align:start position:0%
+will be redirected to to fetch some
+details<00:05:23.680><c> from</c><00:05:23.800><c> the</c><00:05:23.960><c> database.</c><00:05:24.760><c> So,</c><00:05:25.000><c> it</c><00:05:25.160><c> will</c>
+
+00:05:25.310 --> 00:05:25.320 align:start position:0%
+details from the database. So, it will
+ 
+
+00:05:25.320 --> 00:05:27.270 align:start position:0%
+details from the database. So, it will
+be<00:05:25.760><c> going</c><00:05:26.120><c> to</c><00:05:26.280><c> the</c>
+
+00:05:27.270 --> 00:05:27.280 align:start position:0%
+be going to the
+ 
+
+00:05:27.280 --> 00:05:29.550 align:start position:0%
+be going to the
+master<00:05:27.720><c> database.</c><00:05:28.200><c> So,</c><00:05:28.560><c> here</c><00:05:28.800><c> is</c><00:05:28.919><c> the</c><00:05:29.040><c> master,</c>
+
+00:05:29.550 --> 00:05:29.560 align:start position:0%
+master database. So, here is the master,
+ 
+
+00:05:29.560 --> 00:05:31.190 align:start position:0%
+master database. So, here is the master,
+here<00:05:29.760><c> is</c><00:05:29.880><c> the</c><00:05:30.000><c> slave.</c><00:05:30.440><c> Okay,</c><00:05:30.560><c> this</c><00:05:30.840><c> is</c><00:05:31.160><c> a</c>
+
+00:05:31.190 --> 00:05:31.200 align:start position:0%
+here is the slave. Okay, this is a
+ 
+
+00:05:31.200 --> 00:05:33.270 align:start position:0%
+here is the slave. Okay, this is a
+highly<00:05:31.960><c> available</c>
+
+00:05:33.270 --> 00:05:33.280 align:start position:0%
+highly available
+ 
+
+00:05:33.280 --> 00:05:35.909 align:start position:0%
+highly available
+managed<00:05:33.640><c> database</c><00:05:34.120><c> service,</c><00:05:34.480><c> let's</c><00:05:34.720><c> say.</c><00:05:35.360><c> So,</c>
+
+00:05:35.909 --> 00:05:35.919 align:start position:0%
+managed database service, let's say. So,
+ 
+
+00:05:35.919 --> 00:05:38.830 align:start position:0%
+managed database service, let's say. So,
+we<00:05:36.120><c> have</c><00:05:37.160><c> created</c><00:05:37.560><c> multiple</c><00:05:38.040><c> servers.</c><00:05:38.720><c> We</c>
+
+00:05:38.830 --> 00:05:38.840 align:start position:0%
+we have created multiple servers. We
+ 
+
+00:05:38.840 --> 00:05:41.390 align:start position:0%
+we have created multiple servers. We
+have<00:05:39.040><c> to</c><00:05:39.160><c> create</c><00:05:39.400><c> multiple</c><00:05:39.840><c> servers.</c><00:05:40.280><c> So,</c><00:05:40.520><c> 1</c><00:05:41.040><c> 2</c>
+
+00:05:41.390 --> 00:05:41.400 align:start position:0%
+have to create multiple servers. So, 1 2
+ 
+
+00:05:41.400 --> 00:05:43.150 align:start position:0%
+have to create multiple servers. So, 1 2
+3<00:05:41.840><c> 4</c>
+
+00:05:43.150 --> 00:05:43.160 align:start position:0%
+3 4
+ 
+
+00:05:43.160 --> 00:05:45.830 align:start position:0%
+3 4
+Okay?<00:05:43.600><c> So,</c><00:05:43.960><c> four</c><00:05:44.320><c> servers</c><00:05:44.880><c> over</c><00:05:45.040><c> here,</c><00:05:45.600><c> and</c>
+
+00:05:45.830 --> 00:05:45.840 align:start position:0%
+Okay? So, four servers over here, and
+ 
+
+00:05:45.840 --> 00:05:47.910 align:start position:0%
+Okay? So, four servers over here, and
+then<00:05:46.040><c> we</c><00:05:46.120><c> have</c><00:05:46.360><c> to</c><00:05:46.480><c> create</c><00:05:47.040><c> one</c><00:05:47.240><c> external</c><00:05:47.720><c> load</c>
+
+00:05:47.910 --> 00:05:47.920 align:start position:0%
+then we have to create one external load
+ 
+
+00:05:47.920 --> 00:05:50.590 align:start position:0%
+then we have to create one external load
+balancer,<00:05:48.440><c> one</c><00:05:48.600><c> internal</c><00:05:49.080><c> load</c><00:05:49.280><c> balancer,</c>
+
+00:05:50.590 --> 00:05:50.600 align:start position:0%
+balancer, one internal load balancer,
+ 
+
+00:05:50.600 --> 00:05:52.670 align:start position:0%
+balancer, one internal load balancer,
+and<00:05:50.840><c> add</c><00:05:51.120><c> the</c><00:05:51.200><c> back</c><00:05:51.520><c> end</c><00:05:51.680><c> to</c><00:05:51.840><c> it,</c><00:05:52.280><c> create</c>
+
+00:05:52.670 --> 00:05:52.680 align:start position:0%
+and add the back end to it, create
+ 
+
+00:05:52.680 --> 00:05:54.870 align:start position:0%
+and add the back end to it, create
+health<00:05:53.000><c> props,</c><00:05:53.600><c> create</c><00:05:53.960><c> auto</c><00:05:54.240><c> scaling</c><00:05:54.720><c> or</c>
+
+00:05:54.870 --> 00:05:54.880 align:start position:0%
+health props, create auto scaling or
+ 
+
+00:05:54.880 --> 00:05:57.150 align:start position:0%
+health props, create auto scaling or
+virtual<00:05:55.240><c> machine</c><00:05:55.600><c> scale</c><00:05:55.960><c> set.</c>
+
+00:05:57.150 --> 00:05:57.160 align:start position:0%
+virtual machine scale set.
+ 
+
+00:05:57.160 --> 00:06:00.870 align:start position:0%
+virtual machine scale set.
+Then<00:05:57.360><c> we</c><00:05:57.520><c> have</c><00:05:58.080><c> multiple</c><00:05:58.760><c> DB</c><00:05:59.080><c> servers,</c>
+
+00:06:00.870 --> 00:06:00.880 align:start position:0%
+Then we have multiple DB servers,
+ 
+
+00:06:00.880 --> 00:06:03.870 align:start position:0%
+Then we have multiple DB servers,
+and<00:06:01.000><c> we</c><00:06:01.120><c> have</c><00:06:01.560><c> to</c><00:06:02.360><c> join</c><00:06:02.680><c> them</c><00:06:02.880><c> together.</c><00:06:03.720><c> So,</c>
+
+00:06:03.870 --> 00:06:03.880 align:start position:0%
+and we have to join them together. So,
+ 
+
+00:06:03.880 --> 00:06:06.670 align:start position:0%
+and we have to join them together. So,
+this<00:06:04.120><c> is</c><00:06:04.600><c> pretty</c><00:06:05.120><c> basic.</c>
+
+00:06:06.670 --> 00:06:06.680 align:start position:0%
+this is pretty basic.
+ 
+
+00:06:06.680 --> 00:06:10.150 align:start position:0%
+this is pretty basic.
+So,<00:06:07.000><c> consider</c><00:06:07.760><c> you</c><00:06:07.960><c> do</c><00:06:08.280><c> all</c><00:06:08.600><c> these</c><00:06:09.520><c> manually</c>
+
+00:06:10.150 --> 00:06:10.160 align:start position:0%
+So, consider you do all these manually
+ 
+
+00:06:10.160 --> 00:06:12.630 align:start position:0%
+So, consider you do all these manually
+through<00:06:10.480><c> a</c><00:06:10.560><c> cloud</c><00:06:10.920><c> shell</c><00:06:11.400><c> or</c><00:06:11.680><c> through</c><00:06:12.520><c> the</c>
+
+00:06:12.630 --> 00:06:12.640 align:start position:0%
+through a cloud shell or through the
+ 
+
+00:06:12.640 --> 00:06:14.990 align:start position:0%
+through a cloud shell or through the
+portal,<00:06:13.080><c> Azure</c><00:06:13.440><c> portal,</c><00:06:14.160><c> and</c><00:06:14.400><c> it</c><00:06:14.520><c> will</c><00:06:14.720><c> take</c>
+
+00:06:14.990 --> 00:06:15.000 align:start position:0%
+portal, Azure portal, and it will take
+ 
+
+00:06:15.000 --> 00:06:17.510 align:start position:0%
+portal, Azure portal, and it will take
+you<00:06:15.160><c> approximate</c><00:06:15.840><c> 2</c><00:06:16.040><c> hours,</c><00:06:16.360><c> let's</c><00:06:16.600><c> say.</c><00:06:17.040><c> Now,</c>
+
+00:06:17.510 --> 00:06:17.520 align:start position:0%
+you approximate 2 hours, let's say. Now,
+ 
+
+00:06:17.520 --> 00:06:20.750 align:start position:0%
+you approximate 2 hours, let's say. Now,
+this<00:06:17.760><c> is</c><00:06:17.880><c> fine</c><00:06:18.640><c> if</c><00:06:18.880><c> you</c><00:06:19.000><c> have</c><00:06:19.720><c> just</c><00:06:20.360><c> this</c>
+
+00:06:20.750 --> 00:06:20.760 align:start position:0%
+this is fine if you have just this
+ 
+
+00:06:20.760 --> 00:06:22.750 align:start position:0%
+this is fine if you have just this
+simple<00:06:21.200><c> architecture,</c><00:06:21.800><c> but</c><00:06:22.040><c> this</c><00:06:22.240><c> is</c><00:06:22.400><c> not</c><00:06:22.640><c> the</c>
+
+00:06:22.750 --> 00:06:22.760 align:start position:0%
+simple architecture, but this is not the
+ 
+
+00:06:22.760 --> 00:06:25.430 align:start position:0%
+simple architecture, but this is not the
+case.<00:06:23.120><c> This</c><00:06:23.360><c> is</c><00:06:23.520><c> not</c><00:06:23.880><c> the</c><00:06:24.600><c> scenario</c><00:06:25.120><c> that</c><00:06:25.320><c> you</c>
+
+00:06:25.430 --> 00:06:25.440 align:start position:0%
+case. This is not the scenario that you
+ 
+
+00:06:25.440 --> 00:06:28.190 align:start position:0%
+case. This is not the scenario that you
+face<00:06:25.840><c> in</c><00:06:26.040><c> an</c><00:06:26.320><c> organization.</c><00:06:27.520><c> So,</c><00:06:27.640><c> let's</c><00:06:27.919><c> talk</c>
+
+00:06:28.190 --> 00:06:28.200 align:start position:0%
+face in an organization. So, let's talk
+ 
+
+00:06:28.200 --> 00:06:30.710 align:start position:0%
+face in an organization. So, let's talk
+about<00:06:28.680><c> enterprise.</c><00:06:29.440><c> Let's</c><00:06:29.720><c> talk</c><00:06:30.160><c> how</c><00:06:30.440><c> do</c><00:06:30.600><c> we</c>
+
+00:06:30.710 --> 00:06:30.720 align:start position:0%
+about enterprise. Let's talk how do we
+ 
+
+00:06:30.720 --> 00:06:32.830 align:start position:0%
+about enterprise. Let's talk how do we
+do<00:06:30.880><c> that</c><00:06:31.080><c> in</c><00:06:31.240><c> enterprise.</c><00:06:31.840><c> Now,</c><00:06:32.080><c> instead</c><00:06:32.560><c> of</c>
+
+00:06:32.830 --> 00:06:32.840 align:start position:0%
+do that in enterprise. Now, instead of
+ 
+
+00:06:32.840 --> 00:06:36.510 align:start position:0%
+do that in enterprise. Now, instead of
+that<00:06:33.600><c> one</c><00:06:33.919><c> single</c><00:06:34.360><c> environment,</c><00:06:35.640><c> we</c><00:06:35.840><c> have</c><00:06:36.240><c> six</c>
+
+00:06:36.510 --> 00:06:36.520 align:start position:0%
+that one single environment, we have six
+ 
+
+00:06:36.520 --> 00:06:39.030 align:start position:0%
+that one single environment, we have six
+different<00:06:37.000><c> environment.</c><00:06:38.120><c> Okay,</c><00:06:38.480><c> still</c><00:06:38.880><c> we</c>
+
+00:06:39.030 --> 00:06:39.040 align:start position:0%
+different environment. Okay, still we
+ 
+
+00:06:39.040 --> 00:06:42.470 align:start position:0%
+different environment. Okay, still we
+are<00:06:39.160><c> taking</c><00:06:39.440><c> example</c><00:06:40.240><c> of</c><00:06:40.560><c> a</c><00:06:41.320><c> small</c><00:06:41.919><c> three-tier</c>
+
+00:06:42.470 --> 00:06:42.480 align:start position:0%
+are taking example of a small three-tier
+ 
+
+00:06:42.480 --> 00:06:45.710 align:start position:0%
+are taking example of a small three-tier
+architecture<00:06:43.120><c> with</c><00:06:43.400><c> minimum</c><00:06:44.080><c> configuration.</c>
+
+00:06:45.710 --> 00:06:45.720 align:start position:0%
+architecture with minimum configuration.
+ 
+
+00:06:45.720 --> 00:06:47.310 align:start position:0%
+architecture with minimum configuration.
+Okay.<00:06:46.200><c> So,</c><00:06:46.320><c> let's</c><00:06:46.560><c> say</c><00:06:46.680><c> you</c><00:06:46.800><c> have</c><00:06:47.040><c> a</c><00:06:47.080><c> dev</c>
+
+00:06:47.310 --> 00:06:47.320 align:start position:0%
+Okay. So, let's say you have a dev
+ 
+
+00:06:47.320 --> 00:06:49.990 align:start position:0%
+Okay. So, let's say you have a dev
+environment,<00:06:47.919><c> you</c><00:06:48.040><c> have</c><00:06:48.240><c> a</c><00:06:48.320><c> UAT,</c><00:06:49.520><c> a</c><00:06:49.600><c> system</c>
+
+00:06:49.990 --> 00:06:50.000 align:start position:0%
+environment, you have a UAT, a system
+ 
+
+00:06:50.000 --> 00:06:52.310 align:start position:0%
+environment, you have a UAT, a system
+integration<00:06:50.640><c> test,</c><00:06:51.120><c> pre-production,</c>
+
+00:06:52.310 --> 00:06:52.320 align:start position:0%
+integration test, pre-production,
+ 
+
+00:06:52.320 --> 00:06:54.390 align:start position:0%
+integration test, pre-production,
+disaster<00:06:52.840><c> recovery,</c><00:06:53.520><c> and</c><00:06:53.720><c> prod</c><00:06:53.960><c> environment.</c>
+
+00:06:54.390 --> 00:06:54.400 align:start position:0%
+disaster recovery, and prod environment.
+ 
+
+00:06:54.400 --> 00:06:55.909 align:start position:0%
+disaster recovery, and prod environment.
+You<00:06:54.480><c> have</c><00:06:54.680><c> six</c><00:06:55.000><c> different</c><00:06:55.440><c> environment,</c>
+
+00:06:55.909 --> 00:06:55.919 align:start position:0%
+You have six different environment,
+ 
+
+00:06:55.919 --> 00:06:58.150 align:start position:0%
+You have six different environment,
+which<00:06:56.160><c> is</c><00:06:56.280><c> similar</c><00:06:56.680><c> to</c><00:06:56.800><c> what</c><00:06:57.000><c> we</c><00:06:57.160><c> have</c>
+
+00:06:58.150 --> 00:06:58.160 align:start position:0%
+which is similar to what we have
+ 
+
+00:06:58.160 --> 00:07:00.990 align:start position:0%
+which is similar to what we have
+seen<00:06:58.520><c> so</c><00:06:58.720><c> far,</c><00:06:59.480><c> right?</c><00:07:00.120><c> Now,</c><00:07:00.280><c> how</c><00:07:00.520><c> much</c><00:07:00.760><c> time</c>
+
+00:07:00.990 --> 00:07:01.000 align:start position:0%
+seen so far, right? Now, how much time
+ 
+
+00:07:01.000 --> 00:07:03.590 align:start position:0%
+seen so far, right? Now, how much time
+it<00:07:01.120><c> will</c><00:07:01.280><c> take?</c><00:07:01.919><c> So,</c><00:07:02.160><c> let's</c><00:07:02.480><c> say</c>
+
+00:07:03.590 --> 00:07:03.600 align:start position:0%
+it will take? So, let's say
+ 
+
+00:07:03.600 --> 00:07:06.030 align:start position:0%
+it will take? So, let's say
+2<00:07:03.840><c> hours</c><00:07:04.240><c> into</c><00:07:04.600><c> six,</c>
+
+00:07:06.030 --> 00:07:06.040 align:start position:0%
+2 hours into six,
+ 
+
+00:07:06.040 --> 00:07:07.870 align:start position:0%
+2 hours into six,
+12<00:07:06.320><c> hours.</c><00:07:07.040><c> That's</c><00:07:07.320><c> what</c><00:07:07.480><c> it's</c><00:07:07.600><c> going</c><00:07:07.760><c> to</c>
+
+00:07:07.870 --> 00:07:07.880 align:start position:0%
+12 hours. That's what it's going to
+ 
+
+00:07:07.880 --> 00:07:09.710 align:start position:0%
+12 hours. That's what it's going to
+take,<00:07:08.400><c> but</c>
+
+00:07:09.710 --> 00:07:09.720 align:start position:0%
+take, but
+ 
+
+00:07:09.720 --> 00:07:12.150 align:start position:0%
+take, but
+let's<00:07:10.160><c> talk</c><00:07:10.560><c> a</c><00:07:10.640><c> more</c><00:07:10.880><c> about</c><00:07:11.240><c> it.</c><00:07:11.760><c> Because</c><00:07:12.040><c> we</c>
+
+00:07:12.150 --> 00:07:12.160 align:start position:0%
+let's talk a more about it. Because we
+ 
+
+00:07:12.160 --> 00:07:13.710 align:start position:0%
+let's talk a more about it. Because we
+need<00:07:12.320><c> to</c><00:07:12.400><c> understand,</c><00:07:13.000><c> right?</c><00:07:13.200><c> Why</c><00:07:13.520><c> we</c>
+
+00:07:13.710 --> 00:07:13.720 align:start position:0%
+need to understand, right? Why we
+ 
+
+00:07:13.720 --> 00:07:15.390 align:start position:0%
+need to understand, right? Why we
+actually<00:07:14.160><c> using</c><00:07:14.520><c> Terraform</c><00:07:15.200><c> or</c>
+
+00:07:15.390 --> 00:07:15.400 align:start position:0%
+actually using Terraform or
+ 
+
+00:07:15.400 --> 00:07:17.510 align:start position:0%
+actually using Terraform or
+infrastructure<00:07:16.080><c> as</c><00:07:16.200><c> a</c><00:07:16.280><c> code.</c><00:07:16.560><c> So,</c><00:07:16.680><c> let's</c><00:07:17.240><c> dig</c>
+
+00:07:17.510 --> 00:07:17.520 align:start position:0%
+infrastructure as a code. So, let's dig
+ 
+
+00:07:17.520 --> 00:07:19.590 align:start position:0%
+infrastructure as a code. So, let's dig
+a<00:07:17.640><c> little</c><00:07:18.040><c> deeper</c><00:07:18.400><c> into</c><00:07:18.640><c> that.</c>
+
+00:07:19.590 --> 00:07:19.600 align:start position:0%
+a little deeper into that.
+ 
+
+00:07:19.600 --> 00:07:21.150 align:start position:0%
+a little deeper into that.
+So,<00:07:19.720><c> there</c><00:07:19.960><c> are</c><00:07:20.160><c> more</c><00:07:20.400><c> challenges</c><00:07:20.919><c> to</c><00:07:21.040><c> it.</c>
+
+00:07:21.150 --> 00:07:21.160 align:start position:0%
+So, there are more challenges to it.
+ 
+
+00:07:21.160 --> 00:07:22.870 align:start position:0%
+So, there are more challenges to it.
+It's<00:07:21.400><c> not</c><00:07:21.640><c> just</c><00:07:21.880><c> that.</c>
+
+00:07:22.870 --> 00:07:22.880 align:start position:0%
+It's not just that.
+ 
+
+00:07:22.880 --> 00:07:26.630 align:start position:0%
+It's not just that.
+So,<00:07:23.160><c> let's</c><00:07:23.520><c> say</c><00:07:23.880><c> you</c><00:07:24.160><c> have</c><00:07:25.200><c> you</c><00:07:25.400><c> have</c>
+
+00:07:26.630 --> 00:07:26.640 align:start position:0%
+So, let's say you have you have
+ 
+
+00:07:26.640 --> 00:07:28.670 align:start position:0%
+So, let's say you have you have
+not<00:07:26.919><c> a</c><00:07:27.000><c> single</c><00:07:27.360><c> person</c><00:07:27.800><c> who</c><00:07:27.919><c> is</c><00:07:28.040><c> doing</c><00:07:28.320><c> it,</c><00:07:28.520><c> but</c>
+
+00:07:28.670 --> 00:07:28.680 align:start position:0%
+not a single person who is doing it, but
+ 
+
+00:07:28.680 --> 00:07:30.150 align:start position:0%
+not a single person who is doing it, but
+let's<00:07:28.919><c> say</c><00:07:29.000><c> you</c><00:07:29.120><c> have</c><00:07:29.320><c> a</c><00:07:29.400><c> team,</c><00:07:29.800><c> couple</c><00:07:30.040><c> of</c>
+
+00:07:30.150 --> 00:07:30.160 align:start position:0%
+let's say you have a team, couple of
+ 
+
+00:07:30.160 --> 00:07:32.870 align:start position:0%
+let's say you have a team, couple of
+folks<00:07:30.400><c> doing</c><00:07:30.680><c> it.</c><00:07:31.360><c> So,</c><00:07:31.680><c> it</c><00:07:31.880><c> takes</c><00:07:32.200><c> you</c><00:07:32.320><c> 9</c><00:07:32.640><c> hours</c>
+
+00:07:32.870 --> 00:07:32.880 align:start position:0%
+folks doing it. So, it takes you 9 hours
+ 
+
+00:07:32.880 --> 00:07:35.030 align:start position:0%
+folks doing it. So, it takes you 9 hours
+per<00:07:33.080><c> day</c><00:07:33.320><c> just</c><00:07:33.840><c> to</c><00:07:34.360><c> provision</c><00:07:34.919><c> the</c>
+
+00:07:35.030 --> 00:07:35.040 align:start position:0%
+per day just to provision the
+ 
+
+00:07:35.040 --> 00:07:36.790 align:start position:0%
+per day just to provision the
+infrastructure.
+
+00:07:36.790 --> 00:07:36.800 align:start position:0%
+infrastructure.
+ 
+
+00:07:36.800 --> 00:07:39.870 align:start position:0%
+infrastructure.
+Now,<00:07:37.040><c> the</c><00:07:37.160><c> challenges</c><00:07:37.840><c> are</c><00:07:38.120><c> first</c><00:07:38.640><c> is</c><00:07:39.040><c> time.</c>
+
+00:07:39.870 --> 00:07:39.880 align:start position:0%
+Now, the challenges are first is time.
+ 
+
+00:07:39.880 --> 00:07:41.510 align:start position:0%
+Now, the challenges are first is time.
+Takes<00:07:40.160><c> a</c><00:07:40.240><c> lot</c><00:07:40.440><c> of</c><00:07:40.560><c> time</c><00:07:40.800><c> to</c><00:07:40.919><c> just</c><00:07:41.080><c> provision</c>
+
+00:07:41.510 --> 00:07:41.520 align:start position:0%
+Takes a lot of time to just provision
+ 
+
+00:07:41.520 --> 00:07:43.590 align:start position:0%
+Takes a lot of time to just provision
+the<00:07:41.720><c> infrastructure.</c><00:07:42.400><c> When</c><00:07:42.720><c> will</c><00:07:43.080><c> actually</c>
+
+00:07:43.590 --> 00:07:43.600 align:start position:0%
+the infrastructure. When will actually
+ 
+
+00:07:43.600 --> 00:07:45.390 align:start position:0%
+the infrastructure. When will actually
+be<00:07:43.800><c> start</c><00:07:44.200><c> working</c><00:07:44.560><c> on</c><00:07:44.720><c> it?</c><00:07:44.880><c> When</c><00:07:45.080><c> will</c><00:07:45.280><c> be</c>
+
+00:07:45.390 --> 00:07:45.400 align:start position:0%
+be start working on it? When will be
+ 
+
+00:07:45.400 --> 00:07:48.950 align:start position:0%
+be start working on it? When will be
+doing<00:07:45.680><c> testing,</c><00:07:46.200><c> development,</c><00:07:47.640><c> um</c><00:07:48.160><c> and</c><00:07:48.880><c> uh</c>
+
+00:07:48.950 --> 00:07:48.960 align:start position:0%
+doing testing, development, um and uh
+ 
+
+00:07:48.960 --> 00:07:51.710 align:start position:0%
+doing testing, development, um and uh
+load<00:07:49.240><c> testing,</c><00:07:49.640><c> performance</c><00:07:50.280><c> testing?</c><00:07:51.160><c> When</c>
+
+00:07:51.710 --> 00:07:51.720 align:start position:0%
+load testing, performance testing? When
+ 
+
+00:07:51.720 --> 00:07:54.470 align:start position:0%
+load testing, performance testing? When
+When<00:07:51.920><c> will</c><00:07:52.080><c> we</c><00:07:52.160><c> do</c><00:07:52.320><c> that?</c><00:07:52.880><c> Uh</c><00:07:53.240><c> lot</c><00:07:53.840><c> many</c><00:07:54.120><c> people</c>
+
+00:07:54.470 --> 00:07:54.480 align:start position:0%
+When will we do that? Uh lot many people
+ 
+
+00:07:54.480 --> 00:07:57.550 align:start position:0%
+When will we do that? Uh lot many people
+required<00:07:55.040><c> to</c><00:07:55.240><c> do</c><00:07:55.400><c> this</c><00:07:55.600><c> job.</c><00:07:56.520><c> Uh</c><00:07:56.600><c> usually,</c><00:07:57.360><c> it</c>
+
+00:07:57.550 --> 00:07:57.560 align:start position:0%
+required to do this job. Uh usually, it
+ 
+
+00:07:57.560 --> 00:08:00.550 align:start position:0%
+required to do this job. Uh usually, it
+will<00:07:58.080><c> like</c><00:07:58.840><c> pre-infrastructure</c><00:08:00.080><c> as</c><00:08:00.200><c> a</c><00:08:00.280><c> code</c>
+
+00:08:00.550 --> 00:08:00.560 align:start position:0%
+will like pre-infrastructure as a code
+ 
+
+00:08:00.560 --> 00:08:03.430 align:start position:0%
+will like pre-infrastructure as a code
+era,<00:08:01.240><c> there</c><00:08:01.440><c> used</c><00:08:01.720><c> to</c><00:08:01.800><c> be</c><00:08:01.920><c> a</c><00:08:02.000><c> team</c><00:08:02.720><c> to</c><00:08:02.960><c> just</c>
+
+00:08:03.430 --> 00:08:03.440 align:start position:0%
+era, there used to be a team to just
+ 
+
+00:08:03.440 --> 00:08:06.830 align:start position:0%
+era, there used to be a team to just
+provision<00:08:04.000><c> and</c><00:08:04.200><c> manage</c><00:08:04.560><c> the</c><00:08:04.680><c> infrastructure.</c>
+
+00:08:06.830 --> 00:08:06.840 align:start position:0%
+provision and manage the infrastructure.
+ 
+
+00:08:06.840 --> 00:08:09.230 align:start position:0%
+provision and manage the infrastructure.
+Then,<00:08:07.280><c> a</c><00:08:07.360><c> huge</c><00:08:07.720><c> cost</c><00:08:08.160><c> is</c><00:08:08.560><c> applied</c><00:08:09.000><c> to</c><00:08:09.120><c> it</c>
+
+00:08:09.230 --> 00:08:09.240 align:start position:0%
+Then, a huge cost is applied to it
+ 
+
+00:08:09.240 --> 00:08:10.550 align:start position:0%
+Then, a huge cost is applied to it
+because
+
+00:08:10.550 --> 00:08:10.560 align:start position:0%
+because
+ 
+
+00:08:10.560 --> 00:08:12.710 align:start position:0%
+because
+if<00:08:10.840><c> you</c><00:08:11.040><c> are</c><00:08:11.320><c> spending</c><00:08:11.800><c> 9</c><00:08:12.160><c> hours</c><00:08:12.400><c> a</c><00:08:12.480><c> day</c><00:08:12.600><c> in</c>
+
+00:08:12.710 --> 00:08:12.720 align:start position:0%
+if you are spending 9 hours a day in
+ 
+
+00:08:12.720 --> 00:08:14.510 align:start position:0%
+if you are spending 9 hours a day in
+provisioning<00:08:13.200><c> the</c><00:08:13.320><c> infrastructure,</c><00:08:14.320><c> and</c>
+
+00:08:14.510 --> 00:08:14.520 align:start position:0%
+provisioning the infrastructure, and
+ 
+
+00:08:14.520 --> 00:08:16.550 align:start position:0%
+provisioning the infrastructure, and
+after<00:08:14.840><c> that</c><00:08:15.160><c> your</c><00:08:15.760><c> uh</c><00:08:15.840><c> team</c><00:08:16.080><c> will</c><00:08:16.240><c> start</c>
+
+00:08:16.550 --> 00:08:16.560 align:start position:0%
+after that your uh team will start
+ 
+
+00:08:16.560 --> 00:08:18.310 align:start position:0%
+after that your uh team will start
+working<00:08:16.960><c> on</c><00:08:17.160><c> it,</c><00:08:17.760><c> you</c><00:08:17.960><c> won't</c><00:08:18.200><c> be</c>
+
+00:08:18.310 --> 00:08:18.320 align:start position:0%
+working on it, you won't be
+ 
+
+00:08:18.320 --> 00:08:20.030 align:start position:0%
+working on it, you won't be
+decommissioning<00:08:19.000><c> the</c><00:08:19.120><c> server</c><00:08:19.480><c> at</c><00:08:19.640><c> the</c><00:08:19.760><c> end</c><00:08:19.960><c> of</c>
+
+00:08:20.030 --> 00:08:20.040 align:start position:0%
+decommissioning the server at the end of
+ 
+
+00:08:20.040 --> 00:08:21.350 align:start position:0%
+decommissioning the server at the end of
+the<00:08:20.200><c> day.</c><00:08:20.360><c> So,</c><00:08:20.560><c> it</c><00:08:20.760><c> will</c><00:08:20.919><c> be</c><00:08:21.040><c> running</c>
+
+00:08:21.350 --> 00:08:21.360 align:start position:0%
+the day. So, it will be running
+ 
+
+00:08:21.360 --> 00:08:22.909 align:start position:0%
+the day. So, it will be running
+throughout<00:08:21.800><c> the</c><00:08:21.919><c> night</c><00:08:22.200><c> even</c><00:08:22.440><c> though</c><00:08:22.560><c> someone</c>
+
+00:08:22.909 --> 00:08:22.919 align:start position:0%
+throughout the night even though someone
+ 
+
+00:08:22.919 --> 00:08:25.030 align:start position:0%
+throughout the night even though someone
+is<00:08:23.080><c> not</c><00:08:23.320><c> working</c><00:08:23.680><c> on</c><00:08:23.840><c> it.</c><00:08:24.200><c> It</c><00:08:24.360><c> will</c><00:08:24.480><c> accumulate</c>
+
+00:08:25.030 --> 00:08:25.040 align:start position:0%
+is not working on it. It will accumulate
+ 
+
+00:08:25.040 --> 00:08:26.110 align:start position:0%
+is not working on it. It will accumulate
+cost.
+
+00:08:26.110 --> 00:08:26.120 align:start position:0%
+cost.
+ 
+
+00:08:26.120 --> 00:08:28.310 align:start position:0%
+cost.
+And<00:08:26.360><c> if</c><00:08:26.560><c> you</c><00:08:26.720><c> again</c><00:08:27.200><c> want</c><00:08:27.480><c> to</c><00:08:27.560><c> make</c><00:08:27.800><c> sure</c><00:08:27.960><c> that</c>
+
+00:08:28.310 --> 00:08:28.320 align:start position:0%
+And if you again want to make sure that
+ 
+
+00:08:28.320 --> 00:08:30.590 align:start position:0%
+And if you again want to make sure that
+you<00:08:28.919><c> provision</c><00:08:29.440><c> the</c><00:08:29.520><c> infrastructure,</c><00:08:30.520><c> you</c>
+
+00:08:30.590 --> 00:08:30.600 align:start position:0%
+you provision the infrastructure, you
+ 
+
+00:08:30.600 --> 00:08:32.670 align:start position:0%
+you provision the infrastructure, you
+know,<00:08:30.760><c> at</c><00:08:30.919><c> the</c><00:08:31.000><c> start</c><00:08:31.360><c> of</c><00:08:31.480><c> the</c><00:08:31.600><c> day</c><00:08:32.440><c> and</c>
+
+00:08:32.670 --> 00:08:32.680 align:start position:0%
+know, at the start of the day and
+ 
+
+00:08:32.680 --> 00:08:34.709 align:start position:0%
+know, at the start of the day and
+decommission<00:08:33.320><c> it</c><00:08:33.520><c> at</c><00:08:33.680><c> the</c><00:08:33.800><c> end</c><00:08:34.000><c> of</c><00:08:34.120><c> the</c><00:08:34.280><c> day,</c>
+
+00:08:34.709 --> 00:08:34.719 align:start position:0%
+decommission it at the end of the day,
+ 
+
+00:08:34.719 --> 00:08:40.149 align:start position:0%
+decommission it at the end of the day,
+so<00:08:35.960><c> the</c><00:08:36.240><c> time</c><00:08:36.800><c> will</c><00:08:37.159><c> go</c><00:08:38.080><c> twice,</c><00:08:39.080><c> right?</c>
+
+00:08:40.149 --> 00:08:40.159 align:start position:0%
+so the time will go twice, right?
+ 
+
+00:08:40.159 --> 00:08:42.310 align:start position:0%
+so the time will go twice, right?
+9<00:08:40.520><c> hours</c><00:08:40.840><c> to</c><00:08:41.120><c> provision</c><00:08:41.640><c> the</c><00:08:41.719><c> infrastruct-</c>
+
+00:08:42.310 --> 00:08:42.320 align:start position:0%
+9 hours to provision the infrastruct-
+ 
+
+00:08:42.320 --> 00:08:44.750 align:start position:0%
+9 hours to provision the infrastruct-
+infrastructure,<00:08:43.080><c> and</c><00:08:43.200><c> let's</c><00:08:43.440><c> say</c><00:08:43.919><c> 2</c><00:08:44.080><c> 3</c><00:08:44.360><c> hours</c>
+
+00:08:44.750 --> 00:08:44.760 align:start position:0%
+infrastructure, and let's say 2 3 hours
+ 
+
+00:08:44.760 --> 00:08:47.750 align:start position:0%
+infrastructure, and let's say 2 3 hours
+or<00:08:44.920><c> 4</c><00:08:45.240><c> hours</c><00:08:45.520><c> to</c><00:08:45.720><c> decommission</c><00:08:46.600><c> every</c><00:08:47.200><c> single</c>
+
+00:08:47.750 --> 00:08:47.760 align:start position:0%
+or 4 hours to decommission every single
+ 
+
+00:08:47.760 --> 00:08:50.470 align:start position:0%
+or 4 hours to decommission every single
+resource<00:08:48.240><c> of</c><00:08:48.440><c> it.</c><00:08:48.839><c> Now,</c><00:08:49.200><c> this</c><00:08:49.560><c> will</c><00:08:49.800><c> also</c><00:08:50.200><c> be</c><00:08:50.400><c> a</c>
+
+00:08:50.470 --> 00:08:50.480 align:start position:0%
+resource of it. Now, this will also be a
+ 
+
+00:08:50.480 --> 00:08:52.870 align:start position:0%
+resource of it. Now, this will also be a
+repetitive<00:08:51.120><c> step.</c><00:08:51.760><c> Your</c><00:08:52.120><c> infrastructure</c>
+
+00:08:52.870 --> 00:08:52.880 align:start position:0%
+repetitive step. Your infrastructure
+ 
+
+00:08:52.880 --> 00:08:55.190 align:start position:0%
+repetitive step. Your infrastructure
+team,<00:08:53.160><c> or</c><00:08:53.320><c> whoever</c><00:08:53.760><c> is</c><00:08:53.880><c> managing</c><00:08:54.400><c> it,</c><00:08:54.960><c> they'll</c>
+
+00:08:55.190 --> 00:08:55.200 align:start position:0%
+team, or whoever is managing it, they'll
+ 
+
+00:08:55.200 --> 00:08:58.430 align:start position:0%
+team, or whoever is managing it, they'll
+be<00:08:55.320><c> doing</c><00:08:55.640><c> it</c><00:08:56.360><c> same</c><00:08:56.800><c> task</c><00:08:57.280><c> every</c><00:08:57.640><c> single</c><00:08:58.120><c> day.</c>
+
+00:08:58.430 --> 00:08:58.440 align:start position:0%
+be doing it same task every single day.
+ 
+
+00:08:58.440 --> 00:09:00.829 align:start position:0%
+be doing it same task every single day.
+And<00:08:58.800><c> it</c><00:08:58.960><c> is</c><00:08:59.080><c> prone</c><00:08:59.440><c> to</c><00:08:59.560><c> human</c><00:08:59.880><c> error</c><00:09:00.440><c> because</c>
+
+00:09:00.829 --> 00:09:00.839 align:start position:0%
+And it is prone to human error because
+ 
+
+00:09:00.839 --> 00:09:02.510 align:start position:0%
+And it is prone to human error because
+you<00:09:00.960><c> are</c><00:09:01.120><c> manually</c><00:09:01.600><c> doing</c><00:09:01.920><c> it,</c><00:09:02.080><c> manually</c>
+
+00:09:02.510 --> 00:09:02.520 align:start position:0%
+you are manually doing it, manually
+ 
+
+00:09:02.520 --> 00:09:04.829 align:start position:0%
+you are manually doing it, manually
+doing<00:09:02.920><c> provisioning</c><00:09:03.520><c> infrastructure,</c><00:09:04.520><c> drag</c>
+
+00:09:04.829 --> 00:09:04.839 align:start position:0%
+doing provisioning infrastructure, drag
+ 
+
+00:09:04.839 --> 00:09:08.070 align:start position:0%
+doing provisioning infrastructure, drag
+and<00:09:04.960><c> drop,</c><00:09:05.640><c> clicks,</c><00:09:06.200><c> check</c><00:09:06.480><c> boxes,</c><00:09:07.360><c> text</c><00:09:07.800><c> text</c>
+
+00:09:08.070 --> 00:09:08.080 align:start position:0%
+and drop, clicks, check boxes, text text
+ 
+
+00:09:08.080 --> 00:09:09.990 align:start position:0%
+and drop, clicks, check boxes, text text
+boxes,<00:09:08.560><c> and</c><00:09:08.720><c> so</c><00:09:08.880><c> on.</c><00:09:09.080><c> So,</c><00:09:09.200><c> there</c><00:09:09.440><c> are</c><00:09:09.560><c> chances</c>
+
+00:09:09.990 --> 00:09:10.000 align:start position:0%
+boxes, and so on. So, there are chances
+ 
+
+00:09:10.000 --> 00:09:12.030 align:start position:0%
+boxes, and so on. So, there are chances
+of<00:09:10.120><c> manual</c><00:09:10.480><c> error.</c><00:09:11.000><c> You</c><00:09:11.120><c> might</c><00:09:11.560><c> miss</c><00:09:11.839><c> some</c>
+
+00:09:12.030 --> 00:09:12.040 align:start position:0%
+of manual error. You might miss some
+ 
+
+00:09:12.040 --> 00:09:15.230 align:start position:0%
+of manual error. You might miss some
+configuration,<00:09:12.920><c> or</c><00:09:13.120><c> you</c><00:09:13.280><c> might</c><00:09:14.080><c> accidentally</c>
+
+00:09:15.230 --> 00:09:15.240 align:start position:0%
+configuration, or you might accidentally
+ 
+
+00:09:15.240 --> 00:09:16.710 align:start position:0%
+configuration, or you might accidentally
+use<00:09:15.600><c> some</c><00:09:15.760><c> values</c><00:09:16.160><c> that</c><00:09:16.320><c> you</c><00:09:16.400><c> are</c><00:09:16.480><c> not</c>
+
+00:09:16.710 --> 00:09:16.720 align:start position:0%
+use some values that you are not
+ 
+
+00:09:16.720 --> 00:09:18.430 align:start position:0%
+use some values that you are not
+supposed<00:09:17.080><c> to</c><00:09:17.200><c> do.</c>
+
+00:09:18.430 --> 00:09:18.440 align:start position:0%
+supposed to do.
+ 
+
+00:09:18.440 --> 00:09:20.750 align:start position:0%
+supposed to do.
+Then,<00:09:18.760><c> it</c><00:09:18.920><c> is</c><00:09:19.120><c> insecure.</c><00:09:19.800><c> There</c><00:09:20.040><c> isn't</c><00:09:20.400><c> a</c><00:09:20.480><c> lot</c>
+
+00:09:20.750 --> 00:09:20.760 align:start position:0%
+Then, it is insecure. There isn't a lot
+ 
+
+00:09:20.760 --> 00:09:23.550 align:start position:0%
+Then, it is insecure. There isn't a lot
+of<00:09:20.960><c> inbuilt</c><00:09:21.360><c> security.</c><00:09:22.400><c> The</c><00:09:22.839><c> role-based</c>
+
+00:09:23.550 --> 00:09:23.560 align:start position:0%
+of inbuilt security. The role-based
+ 
+
+00:09:23.560 --> 00:09:27.310 align:start position:0%
+of inbuilt security. The role-based
+access<00:09:24.080><c> or</c><00:09:24.280><c> the</c><00:09:24.680><c> permissions,</c><00:09:25.920><c> it's</c><00:09:26.760><c> kind</c><00:09:27.120><c> of</c>
+
+00:09:27.310 --> 00:09:27.320 align:start position:0%
+access or the permissions, it's kind of
+ 
+
+00:09:27.320 --> 00:09:29.829 align:start position:0%
+access or the permissions, it's kind of
+messy<00:09:27.640><c> over</c><00:09:27.880><c> here.</c><00:09:28.280><c> And</c><00:09:28.800><c> last</c><00:09:29.200><c> but</c><00:09:29.400><c> not</c><00:09:29.680><c> the</c>
+
+00:09:29.829 --> 00:09:29.839 align:start position:0%
+messy over here. And last but not the
+ 
+
+00:09:29.839 --> 00:09:34.670 align:start position:0%
+messy over here. And last but not the
+least,<00:09:30.640><c> you</c><00:09:30.839><c> will</c><00:09:31.200><c> always</c><00:09:32.640><c> face</c><00:09:33.000><c> this</c><00:09:33.240><c> issue.</c>
+
+00:09:34.670 --> 00:09:34.680 align:start position:0%
+least, you will always face this issue.
+ 
+
+00:09:34.680 --> 00:09:36.750 align:start position:0%
+least, you will always face this issue.
+It<00:09:35.000><c> works</c><00:09:35.400><c> on</c><00:09:35.560><c> my</c><00:09:35.760><c> machine.</c><00:09:36.160><c> You</c><00:09:36.240><c> might</c><00:09:36.560><c> have</c>
+
+00:09:36.750 --> 00:09:36.760 align:start position:0%
+It works on my machine. You might have
+ 
+
+00:09:36.760 --> 00:09:38.430 align:start position:0%
+It works on my machine. You might have
+heard<00:09:37.080><c> it.</c><00:09:37.280><c> If</c><00:09:37.480><c> you</c><00:09:37.680><c> are</c><00:09:38.040><c> a</c><00:09:38.120><c> working</c>
+
+00:09:38.430 --> 00:09:38.440 align:start position:0%
+heard it. If you are a working
+ 
+
+00:09:38.440 --> 00:09:40.710 align:start position:0%
+heard it. If you are a working
+professional,<00:09:39.520><c> you</c><00:09:39.640><c> might</c><00:09:39.920><c> have</c><00:09:40.120><c> heard</c><00:09:40.440><c> this</c>
+
+00:09:40.710 --> 00:09:40.720 align:start position:0%
+professional, you might have heard this
+ 
+
+00:09:40.720 --> 00:09:43.150 align:start position:0%
+professional, you might have heard this
+statement<00:09:41.400><c> a</c><00:09:41.480><c> lot</c><00:09:41.760><c> of</c><00:09:41.920><c> time</c><00:09:42.360><c> that</c><00:09:42.760><c> it</c><00:09:42.960><c> is</c>
+
+00:09:43.150 --> 00:09:43.160 align:start position:0%
+statement a lot of time that it is
+ 
+
+00:09:43.160 --> 00:09:44.990 align:start position:0%
+statement a lot of time that it is
+working<00:09:43.520><c> on</c><00:09:43.680><c> my</c><00:09:43.880><c> machine.</c>
+
+00:09:44.990 --> 00:09:45.000 align:start position:0%
+working on my machine.
+ 
+
+00:09:45.000 --> 00:09:46.910 align:start position:0%
+working on my machine.
+So,<00:09:45.120><c> what</c><00:09:45.360><c> what</c><00:09:45.560><c> happens</c><00:09:46.160><c> is,</c><00:09:46.600><c> you</c><00:09:46.720><c> know,</c>
+
+00:09:46.910 --> 00:09:46.920 align:start position:0%
+So, what what happens is, you know,
+ 
+
+00:09:46.920 --> 00:09:49.390 align:start position:0%
+So, what what happens is, you know,
+whenever<00:09:47.560><c> developers</c><00:09:48.200><c> write</c><00:09:48.480><c> a</c><00:09:48.560><c> code,</c><00:09:49.240><c> no</c>
+
+00:09:49.390 --> 00:09:49.400 align:start position:0%
+whenever developers write a code, no
+ 
+
+00:09:49.400 --> 00:09:51.390 align:start position:0%
+whenever developers write a code, no
+hate<00:09:49.600><c> to</c><00:09:49.720><c> developers,</c><00:09:50.520><c> just</c><00:09:50.960><c> sharing</c><00:09:51.280><c> an</c>
+
+00:09:51.390 --> 00:09:51.400 align:start position:0%
+hate to developers, just sharing an
+ 
+
+00:09:51.400 --> 00:09:53.750 align:start position:0%
+hate to developers, just sharing an
+example.<00:09:52.560><c> So,</c><00:09:52.640><c> whenever</c><00:09:53.000><c> developer</c><00:09:53.440><c> write</c><00:09:53.680><c> a</c>
+
+00:09:53.750 --> 00:09:53.760 align:start position:0%
+example. So, whenever developer write a
+ 
+
+00:09:53.760 --> 00:09:56.510 align:start position:0%
+example. So, whenever developer write a
+code<00:09:54.440><c> and</c><00:09:54.640><c> then</c><00:09:54.920><c> code</c><00:09:55.320><c> gets</c><00:09:55.600><c> promoted</c><00:09:56.280><c> from</c>
+
+00:09:56.510 --> 00:09:56.520 align:start position:0%
+code and then code gets promoted from
+ 
+
+00:09:56.520 --> 00:09:58.750 align:start position:0%
+code and then code gets promoted from
+one<00:09:56.680><c> environment</c><00:09:57.280><c> to</c><00:09:57.360><c> another</c><00:09:57.720><c> environment,</c>
+
+00:09:58.750 --> 00:09:58.760 align:start position:0%
+one environment to another environment,
+ 
+
+00:09:58.760 --> 00:10:02.350 align:start position:0%
+one environment to another environment,
+let's<00:09:59.080><c> say</c><00:09:59.480><c> the</c><00:09:59.680><c> code</c><00:10:00.560><c> breaks</c><00:10:00.920><c> in</c><00:10:01.040><c> production.</c>
+
+00:10:02.350 --> 00:10:02.360 align:start position:0%
+let's say the code breaks in production.
+ 
+
+00:10:02.360 --> 00:10:05.230 align:start position:0%
+let's say the code breaks in production.
+Now,<00:10:02.520><c> you</c><00:10:02.680><c> go</c><00:10:02.920><c> back</c><00:10:03.240><c> to</c><00:10:03.360><c> developer</c><00:10:04.080><c> and</c><00:10:04.360><c> ask,</c>
+
+00:10:05.230 --> 00:10:05.240 align:start position:0%
+Now, you go back to developer and ask,
+ 
+
+00:10:05.240 --> 00:10:07.030 align:start position:0%
+Now, you go back to developer and ask,
+um<00:10:05.720><c> you</c><00:10:05.840><c> know,</c><00:10:06.000><c> this</c><00:10:06.200><c> is</c><00:10:06.320><c> the</c><00:10:06.440><c> bug</c><00:10:06.640><c> that</c><00:10:06.880><c> I'm</c>
+
+00:10:07.030 --> 00:10:07.040 align:start position:0%
+um you know, this is the bug that I'm
+ 
+
+00:10:07.040 --> 00:10:09.070 align:start position:0%
+um you know, this is the bug that I'm
+facing<00:10:07.560><c> or</c><00:10:07.800><c> the</c><00:10:07.960><c> code</c><00:10:08.200><c> is</c><00:10:08.320><c> not</c><00:10:08.520><c> working</c><00:10:08.880><c> as</c>
+
+00:10:09.070 --> 00:10:09.080 align:start position:0%
+facing or the code is not working as
+ 
+
+00:10:09.080 --> 00:10:12.510 align:start position:0%
+facing or the code is not working as
+expected.<00:10:10.360><c> The</c><00:10:10.440><c> developer</c><00:10:11.240><c> will</c><00:10:11.560><c> come</c><00:10:11.840><c> back</c>
+
+00:10:12.510 --> 00:10:12.520 align:start position:0%
+expected. The developer will come back
+ 
+
+00:10:12.520 --> 00:10:14.470 align:start position:0%
+expected. The developer will come back
+with<00:10:12.760><c> this</c><00:10:12.960><c> statement.</c>
+
+00:10:14.470 --> 00:10:14.480 align:start position:0%
+with this statement.
+ 
+
+00:10:14.480 --> 00:10:16.510 align:start position:0%
+with this statement.
+Could<00:10:14.680><c> come</c><00:10:14.920><c> back</c><00:10:15.160><c> with</c><00:10:15.400><c> this</c><00:10:15.760><c> this</c><00:10:15.960><c> statement</c>
+
+00:10:16.510 --> 00:10:16.520 align:start position:0%
+Could come back with this this statement
+ 
+
+00:10:16.520 --> 00:10:18.630 align:start position:0%
+Could come back with this this statement
+that<00:10:16.800><c> it</c><00:10:17.000><c> works</c><00:10:17.280><c> on</c><00:10:17.400><c> my</c><00:10:17.560><c> machine,</c><00:10:18.000><c> so</c><00:10:18.200><c> there</c>
+
+00:10:18.630 --> 00:10:18.640 align:start position:0%
+that it works on my machine, so there
+ 
+
+00:10:18.640 --> 00:10:20.910 align:start position:0%
+that it works on my machine, so there
+could<00:10:18.840><c> be</c><00:10:18.960><c> some</c><00:10:19.160><c> issues</c><00:10:20.160><c> with</c><00:10:20.320><c> the</c><00:10:20.440><c> production</c>
+
+00:10:20.910 --> 00:10:20.920 align:start position:0%
+could be some issues with the production
+ 
+
+00:10:20.920 --> 00:10:23.750 align:start position:0%
+could be some issues with the production
+environment.<00:10:22.200><c> So,</c>
+
+00:10:23.750 --> 00:10:23.760 align:start position:0%
+environment. So,
+ 
+
+00:10:23.760 --> 00:10:26.110 align:start position:0%
+environment. So,
+that<00:10:24.000><c> person</c><00:10:24.400><c> is</c><00:10:24.560><c> not</c><00:10:24.760><c> entirely</c><00:10:25.280><c> wrong.</c><00:10:25.800><c> Yes,</c>
+
+00:10:26.110 --> 00:10:26.120 align:start position:0%
+that person is not entirely wrong. Yes,
+ 
+
+00:10:26.120 --> 00:10:27.350 align:start position:0%
+that person is not entirely wrong. Yes,
+there<00:10:26.360><c> could</c><00:10:26.520><c> be</c><00:10:26.640><c> some</c><00:10:26.840><c> issues</c><00:10:27.120><c> with</c><00:10:27.240><c> the</c>
+
+00:10:27.350 --> 00:10:27.360 align:start position:0%
+there could be some issues with the
+ 
+
+00:10:27.360 --> 00:10:29.670 align:start position:0%
+there could be some issues with the
+production<00:10:27.800><c> environment.</c><00:10:28.320><c> And</c><00:10:28.480><c> why?</c><00:10:29.200><c> Because</c>
+
+00:10:29.670 --> 00:10:29.680 align:start position:0%
+production environment. And why? Because
+ 
+
+00:10:29.680 --> 00:10:32.030 align:start position:0%
+production environment. And why? Because
+all<00:10:29.960><c> these</c><00:10:30.280><c> environments</c><00:10:31.160><c> were</c><00:10:31.400><c> provisioned</c>
+
+00:10:32.030 --> 00:10:32.040 align:start position:0%
+all these environments were provisioned
+ 
+
+00:10:32.040 --> 00:10:36.430 align:start position:0%
+all these environments were provisioned
+manually.<00:10:33.120><c> There</c><00:10:33.560><c> is</c><00:10:34.480><c> no</c><00:10:34.800><c> check</c><00:10:35.680><c> that</c><00:10:36.120><c> have</c>
+
+00:10:36.430 --> 00:10:36.440 align:start position:0%
+manually. There is no check that have
+ 
+
+00:10:36.440 --> 00:10:39.630 align:start position:0%
+manually. There is no check that have
+been<00:10:36.640><c> put</c><00:10:36.840><c> in</c><00:10:36.960><c> place</c><00:10:37.960><c> that</c><00:10:38.360><c> could</c><00:10:38.760><c> make</c><00:10:39.080><c> sure</c>
+
+00:10:39.630 --> 00:10:39.640 align:start position:0%
+been put in place that could make sure
+ 
+
+00:10:39.640 --> 00:10:42.150 align:start position:0%
+been put in place that could make sure
+that<00:10:40.520><c> these</c><00:10:40.760><c> environment</c><00:10:41.320><c> are</c><00:10:41.440><c> consistent,</c>
+
+00:10:42.150 --> 00:10:42.160 align:start position:0%
+that these environment are consistent,
+ 
+
+00:10:42.160 --> 00:10:44.270 align:start position:0%
+that these environment are consistent,
+that<00:10:42.480><c> these</c><00:10:42.760><c> are</c><00:10:42.960><c> the</c><00:10:43.120><c> identical</c><00:10:43.720><c> copy</c><00:10:44.120><c> of</c>
+
+00:10:44.270 --> 00:10:44.280 align:start position:0%
+that these are the identical copy of
+ 
+
+00:10:44.280 --> 00:10:46.550 align:start position:0%
+that these are the identical copy of
+each<00:10:44.520><c> other.</c><00:10:45.080><c> So,</c><00:10:45.240><c> you</c><00:10:45.360><c> might</c><00:10:45.680><c> be</c><00:10:45.839><c> using</c><00:10:46.200><c> some</c>
+
+00:10:46.550 --> 00:10:46.560 align:start position:0%
+each other. So, you might be using some
+ 
+
+00:10:46.560 --> 00:10:48.150 align:start position:0%
+each other. So, you might be using some
+other,<00:10:46.880><c> let's</c><00:10:47.160><c> say,</c>
+
+00:10:48.150 --> 00:10:48.160 align:start position:0%
+other, let's say,
+ 
+
+00:10:48.160 --> 00:10:50.150 align:start position:0%
+other, let's say,
+Java<00:10:48.520><c> version</c><00:10:48.880><c> over</c><00:10:49.320><c> here</c><00:10:49.720><c> in</c><00:10:49.839><c> the</c><00:10:49.960><c> dev</c>
+
+00:10:50.150 --> 00:10:50.160 align:start position:0%
+Java version over here in the dev
+ 
+
+00:10:50.160 --> 00:10:51.950 align:start position:0%
+Java version over here in the dev
+environment<00:10:50.800><c> and</c><00:10:51.000><c> a</c><00:10:51.040><c> different</c><00:10:51.480><c> version</c><00:10:51.839><c> in</c>
+
+00:10:51.950 --> 00:10:51.960 align:start position:0%
+environment and a different version in
+ 
+
+00:10:51.960 --> 00:10:53.710 align:start position:0%
+environment and a different version in
+the<00:10:52.040><c> prod</c><00:10:52.320><c> environment</c><00:10:53.080><c> or</c><00:10:53.520><c> some</c>
+
+00:10:53.710 --> 00:10:53.720 align:start position:0%
+the prod environment or some
+ 
+
+00:10:53.720 --> 00:10:55.550 align:start position:0%
+the prod environment or some
+configuration<00:10:54.440><c> file</c><00:10:54.720><c> will</c><00:10:54.880><c> be</c><00:10:55.000><c> missing</c><00:10:55.360><c> or</c>
+
+00:10:55.550 --> 00:10:55.560 align:start position:0%
+configuration file will be missing or
+ 
+
+00:10:55.560 --> 00:10:57.350 align:start position:0%
+configuration file will be missing or
+there<00:10:55.760><c> were</c><00:10:55.920><c> some</c><00:10:56.600><c> patch</c><00:10:56.880><c> applied</c><00:10:57.280><c> in</c>
+
+00:10:57.350 --> 00:10:57.360 align:start position:0%
+there were some patch applied in
+ 
+
+00:10:57.360 --> 00:10:59.030 align:start position:0%
+there were some patch applied in
+production<00:10:57.839><c> environment</c><00:10:58.360><c> that</c><00:10:58.600><c> was</c><00:10:58.760><c> not</c>
+
+00:10:59.030 --> 00:10:59.040 align:start position:0%
+production environment that was not
+ 
+
+00:10:59.040 --> 00:11:00.630 align:start position:0%
+production environment that was not
+propagated<00:10:59.720><c> to</c><00:10:59.839><c> the</c>
+
+00:11:00.630 --> 00:11:00.640 align:start position:0%
+propagated to the
+ 
+
+00:11:00.640 --> 00:11:02.190 align:start position:0%
+propagated to the
+uh<00:11:00.880><c> lower</c><00:11:01.160><c> environments.</c><00:11:01.760><c> There</c><00:11:01.920><c> could</c><00:11:02.120><c> be</c>
+
+00:11:02.190 --> 00:11:02.200 align:start position:0%
+uh lower environments. There could be
+ 
+
+00:11:02.200 --> 00:11:04.470 align:start position:0%
+uh lower environments. There could be
+many<00:11:02.480><c> more</c><00:11:02.680><c> issues.</c><00:11:03.320><c> Right?</c><00:11:03.480><c> Because</c>
+
+00:11:04.470 --> 00:11:04.480 align:start position:0%
+many more issues. Right? Because
+ 
+
+00:11:04.480 --> 00:11:07.070 align:start position:0%
+many more issues. Right? Because
+we<00:11:04.880><c> are</c><00:11:05.080><c> not</c><00:11:05.440><c> using</c><00:11:05.760><c> a</c><00:11:05.800><c> standard</c><00:11:06.360><c> process</c><00:11:06.920><c> to</c>
+
+00:11:07.070 --> 00:11:07.080 align:start position:0%
+we are not using a standard process to
+ 
+
+00:11:07.080 --> 00:11:08.950 align:start position:0%
+we are not using a standard process to
+provision<00:11:07.600><c> the</c><00:11:07.720><c> infrastructure</c><00:11:08.600><c> from</c><00:11:08.920><c> a</c>
+
+00:11:08.950 --> 00:11:08.960 align:start position:0%
+provision the infrastructure from a
+ 
+
+00:11:08.960 --> 00:11:11.910 align:start position:0%
+provision the infrastructure from a
+template.<00:11:09.720><c> That's</c><00:11:10.640><c> That's</c><00:11:11.040><c> the</c><00:11:11.160><c> main</c><00:11:11.640><c> root</c>
+
+00:11:11.910 --> 00:11:11.920 align:start position:0%
+template. That's That's the main root
+ 
+
+00:11:11.920 --> 00:11:14.550 align:start position:0%
+template. That's That's the main root
+cause<00:11:12.160><c> of</c><00:11:12.320><c> it,</c><00:11:12.440><c> right?</c><00:11:13.120><c> But</c><00:11:14.040><c> there</c><00:11:14.240><c> could</c><00:11:14.440><c> be</c>
+
+00:11:14.550 --> 00:11:14.560 align:start position:0%
+cause of it, right? But there could be
+ 
+
+00:11:14.560 --> 00:11:16.790 align:start position:0%
+cause of it, right? But there could be
+these<00:11:14.800><c> many</c><00:11:15.040><c> challenges</c><00:11:15.839><c> that</c><00:11:16.080><c> could</c><00:11:16.320><c> happen</c>
+
+00:11:16.790 --> 00:11:16.800 align:start position:0%
+these many challenges that could happen
+ 
+
+00:11:16.800 --> 00:11:18.110 align:start position:0%
+these many challenges that could happen
+if<00:11:17.040><c> we</c>
+
+00:11:18.110 --> 00:11:18.120 align:start position:0%
+if we
+ 
+
+00:11:18.120 --> 00:11:19.990 align:start position:0%
+if we
+do<00:11:18.400><c> it</c><00:11:18.560><c> manually.</c>
+
+00:11:19.990 --> 00:11:20.000 align:start position:0%
+do it manually.
+ 
+
+00:11:20.000 --> 00:11:23.430 align:start position:0%
+do it manually.
+Okay?<00:11:20.640><c> And</c><00:11:21.120><c> that's</c><00:11:21.839><c> where</c><00:11:22.440><c> infrastructure</c><00:11:23.280><c> as</c>
+
+00:11:23.430 --> 00:11:23.440 align:start position:0%
+Okay? And that's where infrastructure as
+ 
+
+00:11:23.440 --> 00:11:25.350 align:start position:0%
+Okay? And that's where infrastructure as
+a<00:11:23.520><c> code</c><00:11:23.839><c> comes</c><00:11:24.120><c> into</c><00:11:24.360><c> the</c><00:11:24.480><c> picture.</c><00:11:24.880><c> That's</c>
+
+00:11:25.350 --> 00:11:25.360 align:start position:0%
+a code comes into the picture. That's
+ 
+
+00:11:25.360 --> 00:11:28.230 align:start position:0%
+a code comes into the picture. That's
+where<00:11:26.120><c> Terraform</c><00:11:26.680><c> comes</c><00:11:26.960><c> into</c><00:11:27.160><c> the</c><00:11:27.280><c> picture.</c>
+
+00:11:28.230 --> 00:11:28.240 align:start position:0%
+where Terraform comes into the picture.
+ 
+
+00:11:28.240 --> 00:11:30.550 align:start position:0%
+where Terraform comes into the picture.
+So,<00:11:28.600><c> let's</c><00:11:29.240><c> have</c><00:11:29.440><c> a</c><00:11:29.480><c> look</c><00:11:29.760><c> how</c><00:11:29.960><c> Terraform</c>
+
+00:11:30.550 --> 00:11:30.560 align:start position:0%
+So, let's have a look how Terraform
+ 
+
+00:11:30.560 --> 00:11:32.590 align:start position:0%
+So, let's have a look how Terraform
+overcome<00:11:31.000><c> these</c><00:11:31.200><c> challenges.</c><00:11:32.120><c> Okay?</c><00:11:32.440><c> So,</c>
+
+00:11:32.590 --> 00:11:32.600 align:start position:0%
+overcome these challenges. Okay? So,
+ 
+
+00:11:32.600 --> 00:11:34.870 align:start position:0%
+overcome these challenges. Okay? So,
+first<00:11:32.960><c> it</c><00:11:33.440><c> it</c><00:11:33.680><c> helps</c><00:11:34.080><c> you</c><00:11:34.320><c> automate</c><00:11:34.800><c> the</c>
+
+00:11:34.870 --> 00:11:34.880 align:start position:0%
+first it it helps you automate the
+ 
+
+00:11:34.880 --> 00:11:36.230 align:start position:0%
+first it it helps you automate the
+infrastructure<00:11:35.560><c> and</c><00:11:35.720><c> not</c><00:11:35.920><c> just</c><00:11:36.120><c> the</c>
+
+00:11:36.230 --> 00:11:36.240 align:start position:0%
+infrastructure and not just the
+ 
+
+00:11:36.240 --> 00:11:38.350 align:start position:0%
+infrastructure and not just the
+provisioning<00:11:36.840><c> of</c><00:11:37.040><c> it.</c><00:11:37.760><c> Yes,</c><00:11:38.000><c> you</c><00:11:38.120><c> can</c>
+
+00:11:38.350 --> 00:11:38.360 align:start position:0%
+provisioning of it. Yes, you can
+ 
+
+00:11:38.360 --> 00:11:40.350 align:start position:0%
+provisioning of it. Yes, you can
+provision<00:11:38.880><c> the</c><00:11:39.000><c> infrastructure,</c><00:11:39.840><c> but</c><00:11:40.240><c> you</c>
+
+00:11:40.350 --> 00:11:40.360 align:start position:0%
+provision the infrastructure, but you
+ 
+
+00:11:40.360 --> 00:11:42.550 align:start position:0%
+provision the infrastructure, but you
+can<00:11:40.600><c> also</c><00:11:40.960><c> automate</c><00:11:41.520><c> the</c><00:11:41.800><c> destruction</c><00:11:42.400><c> of</c>
+
+00:11:42.550 --> 00:11:42.560 align:start position:0%
+can also automate the destruction of
+ 
+
+00:11:42.560 --> 00:11:44.510 align:start position:0%
+can also automate the destruction of
+infrastructure<00:11:43.240><c> when</c><00:11:43.440><c> it</c><00:11:43.600><c> is</c><00:11:43.720><c> not</c><00:11:44.000><c> needed</c><00:11:44.400><c> to</c>
+
+00:11:44.510 --> 00:11:44.520 align:start position:0%
+infrastructure when it is not needed to
+ 
+
+00:11:44.520 --> 00:11:45.910 align:start position:0%
+infrastructure when it is not needed to
+save<00:11:44.760><c> the</c><00:11:44.880><c> cost.</c>
+
+00:11:45.910 --> 00:11:45.920 align:start position:0%
+save the cost.
+ 
+
+00:11:45.920 --> 00:11:48.390 align:start position:0%
+save the cost.
+It<00:11:46.080><c> is</c><00:11:46.400><c> also</c><00:11:46.760><c> helpful</c><00:11:47.160><c> in</c><00:11:47.520><c> the</c><00:11:47.680><c> maintenance.</c>
+
+00:11:48.390 --> 00:11:48.400 align:start position:0%
+It is also helpful in the maintenance.
+ 
+
+00:11:48.400 --> 00:11:50.750 align:start position:0%
+It is also helpful in the maintenance.
+So,<00:11:48.680><c> whenever</c><00:11:49.080><c> you</c><00:11:49.200><c> need</c><00:11:49.440><c> to</c><00:11:49.520><c> make</c><00:11:49.960><c> an</c><00:11:50.200><c> update</c>
+
+00:11:50.750 --> 00:11:50.760 align:start position:0%
+So, whenever you need to make an update
+ 
+
+00:11:50.760 --> 00:11:52.550 align:start position:0%
+So, whenever you need to make an update
+to<00:11:50.880><c> the</c><00:11:51.080><c> existing</c><00:11:51.560><c> infrastructure,</c><00:11:52.200><c> you</c><00:11:52.320><c> can</c>
+
+00:11:52.550 --> 00:11:52.560 align:start position:0%
+to the existing infrastructure, you can
+ 
+
+00:11:52.560 --> 00:11:55.670 align:start position:0%
+to the existing infrastructure, you can
+do<00:11:52.760><c> that</c><00:11:53.240><c> seamlessly</c><00:11:53.960><c> with</c><00:11:54.160><c> Terraform.</c><00:11:54.960><c> Okay.</c>
+
+00:11:55.670 --> 00:11:55.680 align:start position:0%
+do that seamlessly with Terraform. Okay.
+ 
+
+00:11:55.680 --> 00:11:57.910 align:start position:0%
+do that seamlessly with Terraform. Okay.
+So,<00:11:55.800><c> it</c><00:11:56.000><c> helps</c><00:11:56.360><c> you</c><00:11:56.520><c> then</c><00:11:56.880><c> save</c><00:11:57.240><c> resources,</c>
+
+00:11:57.910 --> 00:11:57.920 align:start position:0%
+So, it helps you then save resources,
+ 
+
+00:11:57.920 --> 00:12:01.510 align:start position:0%
+So, it helps you then save resources,
+save<00:11:58.280><c> cost,</c><00:11:58.760><c> improve</c><00:11:59.160><c> security,</c><00:12:00.320><c> and</c><00:12:00.520><c> so</c><00:12:00.720><c> on.</c>
+
+00:12:01.510 --> 00:12:01.520 align:start position:0%
+save cost, improve security, and so on.
+ 
+
+00:12:01.520 --> 00:12:03.790 align:start position:0%
+save cost, improve security, and so on.
+Now,<00:12:01.800><c> it</c><00:12:02.080><c> also</c><00:12:02.440><c> helps</c><00:12:02.720><c> you</c><00:12:02.840><c> save</c><00:12:03.160><c> time</c><00:12:03.440><c> because</c>
+
+00:12:03.790 --> 00:12:03.800 align:start position:0%
+Now, it also helps you save time because
+ 
+
+00:12:03.800 --> 00:12:05.670 align:start position:0%
+Now, it also helps you save time because
+now<00:12:04.000><c> you</c><00:12:04.120><c> can</c><00:12:04.400><c> automate</c><00:12:04.880><c> everything</c><00:12:05.320><c> instead</c>
+
+00:12:05.670 --> 00:12:05.680 align:start position:0%
+now you can automate everything instead
+ 
+
+00:12:05.680 --> 00:12:07.350 align:start position:0%
+now you can automate everything instead
+of<00:12:05.800><c> someone</c><00:12:06.160><c> going</c><00:12:06.440><c> manually</c><00:12:06.920><c> and</c><00:12:07.080><c> running</c>
+
+00:12:07.350 --> 00:12:07.360 align:start position:0%
+of someone going manually and running
+ 
+
+00:12:07.360 --> 00:12:08.750 align:start position:0%
+of someone going manually and running
+all<00:12:07.480><c> those</c><00:12:07.720><c> things.</c>
+
+00:12:08.750 --> 00:12:08.760 align:start position:0%
+all those things.
+ 
+
+00:12:08.760 --> 00:12:11.830 align:start position:0%
+all those things.
+Now,<00:12:09.240><c> it</c><00:12:09.440><c> works</c><00:12:09.680><c> on</c><00:12:09.800><c> my</c><00:12:09.960><c> machine</c><00:12:10.640><c> doesn't</c>
+
+00:12:11.830 --> 00:12:11.840 align:start position:0%
+Now, it works on my machine doesn't
+ 
+
+00:12:11.840 --> 00:12:14.870 align:start position:0%
+Now, it works on my machine doesn't
+really<00:12:12.800><c> a</c><00:12:12.880><c> big</c><00:12:13.240><c> concern</c><00:12:13.640><c> over</c><00:12:13.840><c> here</c><00:12:14.080><c> now.</c>
+
+00:12:14.870 --> 00:12:14.880 align:start position:0%
+really a big concern over here now.
+ 
+
+00:12:14.880 --> 00:12:17.270 align:start position:0%
+really a big concern over here now.
+Because<00:12:15.240><c> you</c><00:12:15.440><c> have</c><00:12:15.760><c> now</c><00:12:16.400><c> the</c><00:12:16.520><c> consistency</c>
+
+00:12:17.270 --> 00:12:17.280 align:start position:0%
+Because you have now the consistency
+ 
+
+00:12:17.280 --> 00:12:19.030 align:start position:0%
+Because you have now the consistency
+between<00:12:17.600><c> different</c><00:12:17.960><c> environments,</c><00:12:18.560><c> they</c><00:12:18.800><c> are</c>
+
+00:12:19.030 --> 00:12:19.040 align:start position:0%
+between different environments, they are
+ 
+
+00:12:19.040 --> 00:12:21.430 align:start position:0%
+between different environments, they are
+identical.<00:12:19.960><c> And</c><00:12:20.200><c> you</c><00:12:20.320><c> have</c><00:12:20.680><c> to</c><00:12:20.840><c> write</c><00:12:21.160><c> it</c>
+
+00:12:21.430 --> 00:12:21.440 align:start position:0%
+identical. And you have to write it
+ 
+
+00:12:21.440 --> 00:12:23.550 align:start position:0%
+identical. And you have to write it
+once,<00:12:21.960><c> deploy</c><00:12:22.400><c> many</c><00:12:22.680><c> times.</c><00:12:23.000><c> You</c><00:12:23.120><c> can</c><00:12:23.280><c> use</c><00:12:23.440><c> the</c>
+
+00:12:23.550 --> 00:12:23.560 align:start position:0%
+once, deploy many times. You can use the
+ 
+
+00:12:23.560 --> 00:12:25.630 align:start position:0%
+once, deploy many times. You can use the
+same<00:12:23.840><c> template</c><00:12:24.320><c> to</c><00:12:24.400><c> deploy</c><00:12:24.840><c> as</c><00:12:25.120><c> many</c><00:12:25.440><c> as</c>
+
+00:12:25.630 --> 00:12:25.640 align:start position:0%
+same template to deploy as many as
+ 
+
+00:12:25.640 --> 00:12:27.190 align:start position:0%
+same template to deploy as many as
+infrastructure<00:12:26.320><c> as</c><00:12:26.520><c> you</c><00:12:26.600><c> want.</c><00:12:26.840><c> You</c><00:12:26.960><c> just</c>
+
+00:12:27.190 --> 00:12:27.200 align:start position:0%
+infrastructure as you want. You just
+ 
+
+00:12:27.200 --> 00:12:29.110 align:start position:0%
+infrastructure as you want. You just
+need<00:12:27.400><c> to</c><00:12:27.480><c> make</c><00:12:28.240><c> some</c><00:12:28.440><c> changes</c><00:12:28.880><c> to</c><00:12:28.960><c> the</c>
+
+00:12:29.110 --> 00:12:29.120 align:start position:0%
+need to make some changes to the
+ 
+
+00:12:29.120 --> 00:12:32.070 align:start position:0%
+need to make some changes to the
+variables<00:12:29.800><c> and</c><00:12:30.040><c> that</c><00:12:30.240><c> should</c><00:12:30.480><c> be</c><00:12:30.640><c> it.</c>
+
+00:12:32.070 --> 00:12:32.080 align:start position:0%
+variables and that should be it.
+ 
+
+00:12:32.080 --> 00:12:33.990 align:start position:0%
+variables and that should be it.
+Okay,<00:12:32.520><c> and</c><00:12:32.800><c> you</c><00:12:32.920><c> can</c><00:12:33.160><c> also</c><00:12:33.480><c> track</c><00:12:33.840><c> your</c>
+
+00:12:33.990 --> 00:12:34.000 align:start position:0%
+Okay, and you can also track your
+ 
+
+00:12:34.000 --> 00:12:36.470 align:start position:0%
+Okay, and you can also track your
+changes<00:12:34.400><c> because</c><00:12:35.000><c> your</c><00:12:35.200><c> Terraform</c><00:12:35.680><c> code</c><00:12:36.280><c> will</c>
+
+00:12:36.470 --> 00:12:36.480 align:start position:0%
+changes because your Terraform code will
+ 
+
+00:12:36.480 --> 00:12:39.829 align:start position:0%
+changes because your Terraform code will
+be<00:12:36.640><c> stored</c><00:12:37.200><c> on</c><00:12:37.480><c> a</c><00:12:38.200><c> Git</c><00:12:38.480><c> repository</c><00:12:39.400><c> or</c><00:12:39.800><c> a</c>
+
+00:12:39.829 --> 00:12:39.839 align:start position:0%
+be stored on a Git repository or a
+ 
+
+00:12:39.839 --> 00:12:41.870 align:start position:0%
+be stored on a Git repository or a
+source<00:12:40.160><c> code</c><00:12:40.360><c> management</c><00:12:40.960><c> system.</c><00:12:41.560><c> Right,</c><00:12:41.720><c> so</c>
+
+00:12:41.870 --> 00:12:41.880 align:start position:0%
+source code management system. Right, so
+ 
+
+00:12:41.880 --> 00:12:44.829 align:start position:0%
+source code management system. Right, so
+you<00:12:42.000><c> can</c><00:12:42.600><c> track</c><00:12:42.880><c> the</c><00:12:43.000><c> changes,</c><00:12:43.520><c> you</c><00:12:43.640><c> can</c><00:12:44.640><c> uh</c>
+
+00:12:44.829 --> 00:12:44.839 align:start position:0%
+you can track the changes, you can uh
+ 
+
+00:12:44.839 --> 00:12:46.750 align:start position:0%
+you can track the changes, you can uh
+control<00:12:45.280><c> the</c><00:12:45.440><c> changes</c>
+
+00:12:46.750 --> 00:12:46.760 align:start position:0%
+control the changes
+ 
+
+00:12:46.760 --> 00:12:49.070 align:start position:0%
+control the changes
+based<00:12:47.120><c> on</c><00:12:47.240><c> the</c><00:12:47.360><c> pull</c><00:12:47.560><c> request,</c><00:12:48.240><c> you</c><00:12:48.360><c> can</c>
+
+00:12:49.070 --> 00:12:49.080 align:start position:0%
+based on the pull request, you can
+ 
+
+00:12:49.080 --> 00:12:51.670 align:start position:0%
+based on the pull request, you can
+establish<00:12:49.640><c> a</c><00:12:49.720><c> review</c><00:12:50.080><c> process,</c><00:12:50.839><c> and</c><00:12:51.160><c> it's</c>
+
+00:12:51.670 --> 00:12:51.680 align:start position:0%
+establish a review process, and it's
+ 
+
+00:12:51.680 --> 00:12:54.470 align:start position:0%
+establish a review process, and it's
+it's<00:12:51.880><c> much</c><00:12:52.200><c> more</c><00:12:52.920><c> uh</c><00:12:53.000><c> improved</c><00:12:53.480><c> process</c><00:12:53.960><c> now.</c>
+
+00:12:54.470 --> 00:12:54.480 align:start position:0%
+it's much more uh improved process now.
+ 
+
+00:12:54.480 --> 00:12:56.990 align:start position:0%
+it's much more uh improved process now.
+And<00:12:54.760><c> it</c><00:12:54.920><c> makes</c><00:12:55.200><c> your</c><00:12:55.320><c> life</c><00:12:55.560><c> easy,</c><00:12:56.240><c> you</c><00:12:56.320><c> know.</c>
+
+00:12:56.990 --> 00:12:57.000 align:start position:0%
+And it makes your life easy, you know.
+ 
+
+00:12:57.000 --> 00:12:58.670 align:start position:0%
+And it makes your life easy, you know.
+Uh<00:12:57.200><c> you</c><00:12:57.320><c> don't</c><00:12:57.560><c> have</c><00:12:57.720><c> to</c><00:12:57.839><c> worry</c><00:12:58.080><c> about</c><00:12:58.440><c> all</c><00:12:58.560><c> the</c>
+
+00:12:58.670 --> 00:12:58.680 align:start position:0%
+Uh you don't have to worry about all the
+ 
+
+00:12:58.680 --> 00:13:01.110 align:start position:0%
+Uh you don't have to worry about all the
+infrastructure<00:12:59.360><c> related</c><00:12:59.760><c> issues.</c>
+
+00:13:01.110 --> 00:13:01.120 align:start position:0%
+infrastructure related issues.
+ 
+
+00:13:01.120 --> 00:13:03.390 align:start position:0%
+infrastructure related issues.
+Okay.<00:13:01.920><c> So,</c><00:13:02.080><c> let's</c><00:13:02.400><c> have</c><00:13:02.560><c> a</c><00:13:02.640><c> look</c><00:13:02.880><c> at</c><00:13:03.200><c> how</c>
+
+00:13:03.390 --> 00:13:03.400 align:start position:0%
+Okay. So, let's have a look at how
+ 
+
+00:13:03.400 --> 00:13:05.790 align:start position:0%
+Okay. So, let's have a look at how
+Terraform<00:13:03.880><c> works.</c><00:13:04.560><c> Okay,</c><00:13:05.080><c> as</c><00:13:05.240><c> I've</c><00:13:05.360><c> told</c><00:13:05.680><c> you</c>
+
+00:13:05.790 --> 00:13:05.800 align:start position:0%
+Terraform works. Okay, as I've told you
+ 
+
+00:13:05.800 --> 00:13:07.590 align:start position:0%
+Terraform works. Okay, as I've told you
+like<00:13:06.200><c> all</c><00:13:06.360><c> the</c><00:13:06.480><c> Terraform</c><00:13:06.920><c> files</c><00:13:07.320><c> will</c><00:13:07.480><c> be</c>
+
+00:13:07.590 --> 00:13:07.600 align:start position:0%
+like all the Terraform files will be
+ 
+
+00:13:07.600 --> 00:13:09.510 align:start position:0%
+like all the Terraform files will be
+stored<00:13:07.880><c> in</c><00:13:08.000><c> a</c><00:13:08.080><c> Git</c><00:13:08.320><c> repository.</c><00:13:09.000><c> So,</c><00:13:09.160><c> here</c><00:13:09.360><c> is</c>
+
+00:13:09.510 --> 00:13:09.520 align:start position:0%
+stored in a Git repository. So, here is
+ 
+
+00:13:09.520 --> 00:13:11.190 align:start position:0%
+stored in a Git repository. So, here is
+the<00:13:09.600><c> Git</c><00:13:09.800><c> repository.</c>
+
+00:13:11.190 --> 00:13:11.200 align:start position:0%
+the Git repository.
+ 
+
+00:13:11.200 --> 00:13:14.150 align:start position:0%
+the Git repository.
+The<00:13:11.400><c> files</c><00:13:12.320><c> uh</c><00:13:12.480><c> that</c><00:13:12.680><c> Terraform</c><00:13:13.080><c> supports</c><00:13:13.560><c> is</c>
+
+00:13:14.150 --> 00:13:14.160 align:start position:0%
+The files uh that Terraform supports is
+ 
+
+00:13:14.160 --> 00:13:16.829 align:start position:0%
+The files uh that Terraform supports is
+uh<00:13:14.440><c> with</c><00:13:14.760><c> the</c><00:13:15.080><c> .tf</c><00:13:15.680><c> extension</c><00:13:16.280><c> and</c><00:13:16.440><c> then</c><00:13:16.680><c> there</c>
+
+00:13:16.829 --> 00:13:16.839 align:start position:0%
+uh with the .tf extension and then there
+ 
+
+00:13:16.839 --> 00:13:19.070 align:start position:0%
+uh with the .tf extension and then there
+is<00:13:17.000><c> .json</c><00:13:17.720><c> extension</c><00:13:18.280><c> as</c><00:13:18.520><c> well.</c><00:13:18.720><c> We'll</c><00:13:18.880><c> look</c>
+
+00:13:19.070 --> 00:13:19.080 align:start position:0%
+is .json extension as well. We'll look
+ 
+
+00:13:19.080 --> 00:13:22.510 align:start position:0%
+is .json extension as well. We'll look
+that<00:13:19.880><c> later</c><00:13:20.200><c> on.</c><00:13:20.880><c> But</c><00:13:21.080><c> for</c><00:13:21.200><c> now</c><00:13:21.360><c> just</c><00:13:21.960><c> remember</c>
+
+00:13:22.510 --> 00:13:22.520 align:start position:0%
+that later on. But for now just remember
+ 
+
+00:13:22.520 --> 00:13:26.190 align:start position:0%
+that later on. But for now just remember
+that<00:13:23.440><c> all</c><00:13:23.640><c> the</c><00:13:23.760><c> files</c><00:13:24.120><c> with</c><00:13:24.280><c> .tf</c><00:13:24.760><c> extension</c><00:13:25.640><c> uh</c>
+
+00:13:26.190 --> 00:13:26.200 align:start position:0%
+that all the files with .tf extension uh
+ 
+
+00:13:26.200 --> 00:13:28.630 align:start position:0%
+that all the files with .tf extension uh
+Terraform<00:13:27.000><c> automatically</c><00:13:27.760><c> supports</c><00:13:28.240><c> that.</c>
+
+00:13:28.630 --> 00:13:28.640 align:start position:0%
+Terraform automatically supports that.
+ 
+
+00:13:28.640 --> 00:13:31.510 align:start position:0%
+Terraform automatically supports that.
+Now,<00:13:29.400><c> um</c><00:13:29.600><c> um</c><00:13:29.760><c> you</c><00:13:30.000><c> have</c><00:13:30.800><c> either</c><00:13:31.080><c> a</c><00:13:31.160><c> manual</c>
+
+00:13:31.510 --> 00:13:31.520 align:start position:0%
+Now, um um you have either a manual
+ 
+
+00:13:31.520 --> 00:13:33.790 align:start position:0%
+Now, um um you have either a manual
+process<00:13:31.960><c> of</c><00:13:32.120><c> provisioning</c><00:13:32.800><c> or</c><00:13:33.040><c> destruction</c>
+
+00:13:33.790 --> 00:13:33.800 align:start position:0%
+process of provisioning or destruction
+ 
+
+00:13:33.800 --> 00:13:35.670 align:start position:0%
+process of provisioning or destruction
+of<00:13:34.000><c> infrastructure</c><00:13:34.680><c> through</c><00:13:34.920><c> Terraform,</c><00:13:35.520><c> or</c>
+
+00:13:35.670 --> 00:13:35.680 align:start position:0%
+of infrastructure through Terraform, or
+ 
+
+00:13:35.680 --> 00:13:37.990 align:start position:0%
+of infrastructure through Terraform, or
+you<00:13:35.840><c> can</c><00:13:36.080><c> have</c><00:13:36.360><c> a</c><00:13:36.440><c> CI/CD</c><00:13:37.160><c> tool</c><00:13:37.400><c> in</c><00:13:37.520><c> place</c><00:13:37.800><c> that</c>
+
+00:13:37.990 --> 00:13:38.000 align:start position:0%
+you can have a CI/CD tool in place that
+ 
+
+00:13:38.000 --> 00:13:40.110 align:start position:0%
+you can have a CI/CD tool in place that
+takes<00:13:38.280><c> care</c><00:13:38.520><c> of</c><00:13:38.680><c> you.</c><00:13:39.080><c> So,</c><00:13:39.280><c> let's</c><00:13:39.560><c> say</c><00:13:39.800><c> like</c>
+
+00:13:40.110 --> 00:13:40.120 align:start position:0%
+takes care of you. So, let's say like
+ 
+
+00:13:40.120 --> 00:13:41.630 align:start position:0%
+takes care of you. So, let's say like
+either<00:13:40.360><c> of</c><00:13:40.440><c> the</c><00:13:40.560><c> process</c><00:13:40.960><c> you</c><00:13:41.080><c> are</c><00:13:41.200><c> using,</c><00:13:41.560><c> a</c>
+
+00:13:41.630 --> 00:13:41.640 align:start position:0%
+either of the process you are using, a
+ 
+
+00:13:41.640 --> 00:13:43.910 align:start position:0%
+either of the process you are using, a
+DevOps<00:13:42.040><c> engineer</c><00:13:42.600><c> or</c><00:13:42.800><c> a</c><00:13:42.880><c> tool,</c>
+
+00:13:43.910 --> 00:13:43.920 align:start position:0%
+DevOps engineer or a tool,
+ 
+
+00:13:43.920 --> 00:13:44.630 align:start position:0%
+DevOps engineer or a tool,
+um
+
+00:13:44.630 --> 00:13:44.640 align:start position:0%
+um
+ 
+
+00:13:44.640 --> 00:13:46.830 align:start position:0%
+um
+you<00:13:44.720><c> know,</c><00:13:44.880><c> initiate</c><00:13:45.600><c> the</c>
+
+00:13:46.830 --> 00:13:46.840 align:start position:0%
+you know, initiate the
+ 
+
+00:13:46.840 --> 00:13:48.390 align:start position:0%
+you know, initiate the
+request<00:13:47.480><c> to</c>
+
+00:13:48.390 --> 00:13:48.400 align:start position:0%
+request to
+ 
+
+00:13:48.400 --> 00:13:50.390 align:start position:0%
+request to
+run<00:13:48.560><c> the</c><00:13:48.680><c> Terraform</c><00:13:49.120><c> commands.</c>
+
+00:13:50.390 --> 00:13:50.400 align:start position:0%
+run the Terraform commands.
+ 
+
+00:13:50.400 --> 00:13:52.190 align:start position:0%
+run the Terraform commands.
+Okay?<00:13:50.560><c> And</c><00:13:50.800><c> then</c><00:13:51.240><c> these</c><00:13:51.520><c> are</c><00:13:51.600><c> the</c><00:13:51.720><c> commands</c>
+
+00:13:52.190 --> 00:13:52.200 align:start position:0%
+Okay? And then these are the commands
+ 
+
+00:13:52.200 --> 00:13:53.950 align:start position:0%
+Okay? And then these are the commands
+that<00:13:52.440><c> goes</c><00:13:52.720><c> into</c><00:13:52.960><c> the</c><00:13:53.080><c> picture.</c><00:13:53.440><c> Terraform</c>
+
+00:13:53.950 --> 00:13:53.960 align:start position:0%
+that goes into the picture. Terraform
+ 
+
+00:13:53.960 --> 00:13:56.830 align:start position:0%
+that goes into the picture. Terraform
+init<00:13:54.360><c> to</c><00:13:54.560><c> initialize</c><00:13:55.480><c> the</c><00:13:55.600><c> provider</c><00:13:56.160><c> plugins.</c>
+
+00:13:56.830 --> 00:13:56.840 align:start position:0%
+init to initialize the provider plugins.
+ 
+
+00:13:56.840 --> 00:13:59.150 align:start position:0%
+init to initialize the provider plugins.
+I'll<00:13:57.200><c> I'll</c><00:13:58.000><c> share</c><00:13:58.200><c> more</c><00:13:58.400><c> details</c><00:13:58.800><c> about</c><00:13:59.040><c> the</c>
+
+00:13:59.150 --> 00:13:59.160 align:start position:0%
+I'll I'll share more details about the
+ 
+
+00:13:59.160 --> 00:14:01.470 align:start position:0%
+I'll I'll share more details about the
+provider,<00:13:59.640><c> but</c><00:13:59.840><c> just</c><00:14:00.480><c> remember</c><00:14:01.000><c> this</c><00:14:01.200><c> is</c><00:14:01.360><c> to</c>
+
+00:14:01.470 --> 00:14:01.480 align:start position:0%
+provider, but just remember this is to
+ 
+
+00:14:01.480 --> 00:14:03.230 align:start position:0%
+provider, but just remember this is to
+initialize<00:14:02.040><c> Terraform.</c>
+
+00:14:03.230 --> 00:14:03.240 align:start position:0%
+initialize Terraform.
+ 
+
+00:14:03.240 --> 00:14:06.390 align:start position:0%
+initialize Terraform.
+Then<00:14:03.480><c> validate</c><00:14:04.400><c> some</c><00:14:04.680><c> basic</c><00:14:05.120><c> syntax</c><00:14:05.680><c> check</c><00:14:06.040><c> it</c>
+
+00:14:06.390 --> 00:14:06.400 align:start position:0%
+Then validate some basic syntax check it
+ 
+
+00:14:06.400 --> 00:14:08.230 align:start position:0%
+Then validate some basic syntax check it
+it<00:14:06.520><c> will</c><00:14:06.640><c> do</c><00:14:06.840><c> in</c><00:14:07.000><c> the</c><00:14:07.120><c> Terraform</c><00:14:07.600><c> files</c><00:14:07.920><c> if</c><00:14:08.080><c> it</c>
+
+00:14:08.230 --> 00:14:08.240 align:start position:0%
+it will do in the Terraform files if it
+ 
+
+00:14:08.240 --> 00:14:10.030 align:start position:0%
+it will do in the Terraform files if it
+is<00:14:08.520><c> valid</c><00:14:08.920><c> or</c><00:14:09.040><c> not.</c>
+
+00:14:10.030 --> 00:14:10.040 align:start position:0%
+is valid or not.
+ 
+
+00:14:10.040 --> 00:14:12.110 align:start position:0%
+is valid or not.
+Then<00:14:10.640><c> you</c><00:14:10.800><c> actually</c><00:14:11.200><c> run</c><00:14:11.440><c> the</c><00:14:11.560><c> Terraform</c>
+
+00:14:12.110 --> 00:14:12.120 align:start position:0%
+Then you actually run the Terraform
+ 
+
+00:14:12.120 --> 00:14:15.270 align:start position:0%
+Then you actually run the Terraform
+plan,<00:14:12.760><c> which</c><00:14:13.080><c> will</c><00:14:13.240><c> show</c><00:14:13.520><c> you</c><00:14:14.240><c> the</c><00:14:14.440><c> desired</c>
+
+00:14:15.270 --> 00:14:15.280 align:start position:0%
+plan, which will show you the desired
+ 
+
+00:14:15.280 --> 00:14:17.830 align:start position:0%
+plan, which will show you the desired
+state<00:14:15.640><c> of</c><00:14:15.800><c> your</c><00:14:15.960><c> infrastructure,</c><00:14:16.720><c> like</c><00:14:17.560><c> it</c>
+
+00:14:17.830 --> 00:14:17.840 align:start position:0%
+state of your infrastructure, like it
+ 
+
+00:14:17.840 --> 00:14:19.750 align:start position:0%
+state of your infrastructure, like it
+it's<00:14:18.000><c> sort</c><00:14:18.280><c> of</c><00:14:18.400><c> a</c><00:14:18.480><c> dry</c><00:14:18.800><c> run</c><00:14:19.040><c> that</c><00:14:19.280><c> you</c><00:14:19.400><c> will</c><00:14:19.560><c> do</c>
+
+00:14:19.750 --> 00:14:19.760 align:start position:0%
+it's sort of a dry run that you will do
+ 
+
+00:14:19.760 --> 00:14:21.190 align:start position:0%
+it's sort of a dry run that you will do
+with<00:14:19.960><c> the</c><00:14:20.080><c> Terraform.</c>
+
+00:14:21.190 --> 00:14:21.200 align:start position:0%
+with the Terraform.
+ 
+
+00:14:21.200 --> 00:14:23.630 align:start position:0%
+with the Terraform.
+Once<00:14:21.440><c> you</c><00:14:21.560><c> do</c><00:14:21.720><c> that,</c><00:14:22.040><c> you</c><00:14:22.160><c> will</c><00:14:22.520><c> be</c>
+
+00:14:23.630 --> 00:14:23.640 align:start position:0%
+Once you do that, you will be
+ 
+
+00:14:23.640 --> 00:14:25.750 align:start position:0%
+Once you do that, you will be
+shown<00:14:24.080><c> like</c><00:14:24.600><c> what</c><00:14:24.800><c> all</c><00:14:24.960><c> the</c><00:14:25.080><c> resources</c><00:14:25.640><c> will</c>
+
+00:14:25.750 --> 00:14:25.760 align:start position:0%
+shown like what all the resources will
+ 
+
+00:14:25.760 --> 00:14:29.030 align:start position:0%
+shown like what all the resources will
+be<00:14:25.920><c> created</c><00:14:26.520><c> or</c><00:14:26.680><c> destroyed</c><00:14:27.280><c> or</c><00:14:27.640><c> or</c><00:14:28.200><c> updated</c>
+
+00:14:29.030 --> 00:14:29.040 align:start position:0%
+be created or destroyed or or updated
+ 
+
+00:14:29.040 --> 00:14:31.510 align:start position:0%
+be created or destroyed or or updated
+after<00:14:29.480><c> you</c><00:14:29.600><c> run</c><00:14:29.800><c> the</c><00:14:29.920><c> Terraform</c><00:14:30.400><c> apply.</c><00:14:31.360><c> And</c>
+
+00:14:31.510 --> 00:14:31.520 align:start position:0%
+after you run the Terraform apply. And
+ 
+
+00:14:31.520 --> 00:14:34.150 align:start position:0%
+after you run the Terraform apply. And
+Terraform<00:14:31.920><c> apply</c><00:14:32.240><c> will</c><00:14:32.440><c> finally</c><00:14:33.560><c> make</c><00:14:33.880><c> that</c>
+
+00:14:34.150 --> 00:14:34.160 align:start position:0%
+Terraform apply will finally make that
+ 
+
+00:14:34.160 --> 00:14:36.430 align:start position:0%
+Terraform apply will finally make that
+changes<00:14:34.600><c> to</c><00:14:34.720><c> the</c><00:14:34.839><c> infrastructure.</c>
+
+00:14:36.430 --> 00:14:36.440 align:start position:0%
+changes to the infrastructure.
+ 
+
+00:14:36.440 --> 00:14:38.310 align:start position:0%
+changes to the infrastructure.
+And<00:14:36.600><c> then</c><00:14:36.839><c> your</c><00:14:37.080><c> infrastructure</c><00:14:37.920><c> will</c><00:14:38.120><c> be</c>
+
+00:14:38.310 --> 00:14:38.320 align:start position:0%
+And then your infrastructure will be
+ 
+
+00:14:38.320 --> 00:14:41.790 align:start position:0%
+And then your infrastructure will be
+provisioned,<00:14:39.320><c> right?</c><00:14:39.839><c> So,</c><00:14:40.440><c> this</c><00:14:40.920><c> all</c><00:14:41.320><c> step</c>
+
+00:14:41.790 --> 00:14:41.800 align:start position:0%
+provisioned, right? So, this all step
+ 
+
+00:14:41.800 --> 00:14:44.550 align:start position:0%
+provisioned, right? So, this all step
+could<00:14:42.040><c> be</c><00:14:42.320><c> automated</c><00:14:42.920><c> using</c><00:14:43.280><c> CI/CD</c><00:14:43.920><c> tool</c><00:14:44.280><c> or</c>
+
+00:14:44.550 --> 00:14:44.560 align:start position:0%
+could be automated using CI/CD tool or
+ 
+
+00:14:44.560 --> 00:14:47.150 align:start position:0%
+could be automated using CI/CD tool or
+just,<00:14:45.040><c> you</c><00:14:45.120><c> know,</c><00:14:45.280><c> a</c><00:14:45.360><c> DevOps</c><00:14:45.760><c> engineer</c><00:14:46.960><c> who</c>
+
+00:14:47.150 --> 00:14:47.160 align:start position:0%
+just, you know, a DevOps engineer who
+ 
+
+00:14:47.160 --> 00:14:49.510 align:start position:0%
+just, you know, a DevOps engineer who
+has<00:14:47.400><c> to</c><00:14:47.560><c> run</c><00:14:47.800><c> only</c><00:14:48.080><c> these</c><00:14:48.360><c> commands.</c><00:14:49.080><c> Or</c><00:14:49.320><c> it</c>
+
+00:14:49.510 --> 00:14:49.520 align:start position:0%
+has to run only these commands. Or it
+ 
+
+00:14:49.520 --> 00:14:52.030 align:start position:0%
+has to run only these commands. Or it
+could<00:14:49.760><c> be</c><00:14:49.880><c> part</c><00:14:50.160><c> of</c><00:14:50.360><c> a</c><00:14:50.680><c> script.</c>
+
+00:14:52.030 --> 00:14:52.040 align:start position:0%
+could be part of a script.
+ 
+
+00:14:52.040 --> 00:14:54.990 align:start position:0%
+could be part of a script.
+Anything,<00:14:52.520><c> but</c><00:14:52.880><c> still</c><00:14:53.200><c> far</c><00:14:53.720><c> more</c><00:14:54.080><c> better</c><00:14:54.520><c> than</c>
+
+00:14:54.990 --> 00:14:55.000 align:start position:0%
+Anything, but still far more better than
+ 
+
+00:14:55.000 --> 00:14:57.390 align:start position:0%
+Anything, but still far more better than
+running<00:14:55.280><c> it</c><00:14:55.520><c> manually.</c><00:14:56.360><c> All</c><00:14:56.440><c> the</c><00:14:56.480><c> time.</c>
+
+00:14:57.390 --> 00:14:57.400 align:start position:0%
+running it manually. All the time.
+ 
+
+00:14:57.400 --> 00:14:59.030 align:start position:0%
+running it manually. All the time.
+The<00:14:57.440><c> same</c><00:14:57.800><c> way,</c><00:14:57.920><c> let's</c><00:14:58.200><c> say</c><00:14:58.400><c> at</c><00:14:58.600><c> the</c><00:14:58.720><c> end</c><00:14:58.960><c> of</c>
+
+00:14:59.030 --> 00:14:59.040 align:start position:0%
+The same way, let's say at the end of
+ 
+
+00:14:59.040 --> 00:15:01.710 align:start position:0%
+The same way, let's say at the end of
+the<00:14:59.160><c> day</c><00:14:59.440><c> or</c><00:14:59.680><c> when</c><00:15:00.120><c> you</c><00:15:00.280><c> are</c><00:15:00.520><c> done</c><00:15:01.120><c> doing</c><00:15:01.480><c> your</c>
+
+00:15:01.710 --> 00:15:01.720 align:start position:0%
+the day or when you are done doing your
+ 
+
+00:15:01.720 --> 00:15:03.430 align:start position:0%
+the day or when you are done doing your
+development,<00:15:02.400><c> testing,</c><00:15:02.760><c> whatever</c><00:15:03.160><c> on</c><00:15:03.320><c> the</c>
+
+00:15:03.430 --> 00:15:03.440 align:start position:0%
+development, testing, whatever on the
+ 
+
+00:15:03.440 --> 00:15:05.030 align:start position:0%
+development, testing, whatever on the
+infrastructure,<00:15:04.200><c> to</c><00:15:04.360><c> save</c><00:15:04.600><c> the</c><00:15:04.720><c> cost</c><00:15:04.960><c> you</c>
+
+00:15:05.030 --> 00:15:05.040 align:start position:0%
+infrastructure, to save the cost you
+ 
+
+00:15:05.040 --> 00:15:07.110 align:start position:0%
+infrastructure, to save the cost you
+have<00:15:05.200><c> to</c><00:15:05.320><c> destroy</c><00:15:05.760><c> the</c><00:15:05.880><c> infrastructure.</c>
+
+00:15:07.110 --> 00:15:07.120 align:start position:0%
+have to destroy the infrastructure.
+ 
+
+00:15:07.120 --> 00:15:08.910 align:start position:0%
+have to destroy the infrastructure.
+Again,<00:15:07.360><c> the</c><00:15:07.480><c> same</c><00:15:07.760><c> thing.</c><00:15:08.160><c> You</c><00:15:08.320><c> can</c><00:15:08.520><c> manually</c>
+
+00:15:08.910 --> 00:15:08.920 align:start position:0%
+Again, the same thing. You can manually
+ 
+
+00:15:08.920 --> 00:15:11.590 align:start position:0%
+Again, the same thing. You can manually
+run<00:15:09.160><c> Terraform</c><00:15:09.640><c> destroy</c><00:15:10.040><c> command,</c><00:15:10.640><c> or</c><00:15:11.480><c> you</c>
+
+00:15:11.590 --> 00:15:11.600 align:start position:0%
+run Terraform destroy command, or you
+ 
+
+00:15:11.600 --> 00:15:14.790 align:start position:0%
+run Terraform destroy command, or you
+can<00:15:11.960><c> have</c><00:15:12.280><c> a</c><00:15:12.360><c> CI/CD</c><00:15:13.040><c> tool</c><00:15:13.400><c> pipeline</c><00:15:13.960><c> in</c><00:15:14.120><c> place</c>
+
+00:15:14.790 --> 00:15:14.800 align:start position:0%
+can have a CI/CD tool pipeline in place
+ 
+
+00:15:14.800 --> 00:15:17.350 align:start position:0%
+can have a CI/CD tool pipeline in place
+that<00:15:15.080><c> could</c><00:15:15.280><c> do</c><00:15:15.400><c> the</c><00:15:15.560><c> destruction</c><00:15:16.160><c> for</c><00:15:16.360><c> you.</c>
+
+00:15:17.350 --> 00:15:17.360 align:start position:0%
+that could do the destruction for you.
+ 
+
+00:15:17.360 --> 00:15:18.590 align:start position:0%
+that could do the destruction for you.
+And<00:15:17.440><c> that's</c><00:15:17.680><c> it.</c>
+
+00:15:18.590 --> 00:15:18.600 align:start position:0%
+And that's it.
+ 
+
+00:15:18.600 --> 00:15:21.190 align:start position:0%
+And that's it.
+So,<00:15:18.720><c> that's</c><00:15:19.320><c> how</c><00:15:19.839><c> Terraform</c><00:15:20.360><c> makes</c><00:15:20.760><c> our</c><00:15:20.880><c> life</c>
+
+00:15:21.190 --> 00:15:21.200 align:start position:0%
+So, that's how Terraform makes our life
+ 
+
+00:15:21.200 --> 00:15:24.510 align:start position:0%
+So, that's how Terraform makes our life
+easy.<00:15:21.800><c> Okay?</c><00:15:22.160><c> now</c><00:15:22.560><c> let's</c><00:15:23.000><c> go</c><00:15:23.240><c> to</c><00:15:23.720><c> our</c><00:15:24.040><c> terminal</c>
+
+00:15:24.510 --> 00:15:24.520 align:start position:0%
+easy. Okay? now let's go to our terminal
+ 
+
+00:15:24.520 --> 00:15:26.830 align:start position:0%
+easy. Okay? now let's go to our terminal
+window<00:15:25.000><c> and</c><00:15:25.800><c> let's</c><00:15:26.080><c> try</c><00:15:26.320><c> to</c><00:15:26.440><c> install</c>
+
+00:15:26.830 --> 00:15:26.840 align:start position:0%
+window and let's try to install
+ 
+
+00:15:26.840 --> 00:15:28.350 align:start position:0%
+window and let's try to install
+Terraform.
+
+00:15:28.350 --> 00:15:28.360 align:start position:0%
+Terraform.
+ 
+
+00:15:28.360 --> 00:15:30.070 align:start position:0%
+Terraform.
+Okay,<00:15:28.600><c> so</c><00:15:28.840><c> Terraform</c><00:15:29.400><c> installation</c><00:15:29.960><c> is</c>
+
+00:15:30.070 --> 00:15:30.080 align:start position:0%
+Okay, so Terraform installation is
+ 
+
+00:15:30.080 --> 00:15:31.950 align:start position:0%
+Okay, so Terraform installation is
+pretty<00:15:30.360><c> basic.</c><00:15:30.840><c> Just</c><00:15:31.040><c> a</c><00:15:31.080><c> couple</c><00:15:31.360><c> of</c><00:15:31.480><c> commands</c>
+
+00:15:31.950 --> 00:15:31.960 align:start position:0%
+pretty basic. Just a couple of commands
+ 
+
+00:15:31.960 --> 00:15:34.230 align:start position:0%
+pretty basic. Just a couple of commands
+and<00:15:32.120><c> just</c><00:15:32.360><c> be</c><00:15:32.440><c> done</c><00:15:32.680><c> with</c><00:15:32.880><c> it.</c><00:15:33.440><c> Okay,</c><00:15:33.600><c> so</c><00:15:33.920><c> here</c>
+
+00:15:34.230 --> 00:15:34.240 align:start position:0%
+and just be done with it. Okay, so here
+ 
+
+00:15:34.240 --> 00:15:36.030 align:start position:0%
+and just be done with it. Okay, so here
+are<00:15:34.640><c> like</c><00:15:34.880><c> there</c><00:15:35.120><c> is</c><00:15:35.280><c> the</c><00:15:35.400><c> installation</c>
+
+00:15:36.030 --> 00:15:36.040 align:start position:0%
+are like there is the installation
+ 
+
+00:15:36.040 --> 00:15:37.390 align:start position:0%
+are like there is the installation
+guide.<00:15:36.320><c> I</c><00:15:36.400><c> will</c><00:15:36.600><c> share</c><00:15:36.840><c> the</c><00:15:36.960><c> link</c><00:15:37.160><c> in</c><00:15:37.280><c> the</c>
+
+00:15:37.390 --> 00:15:37.400 align:start position:0%
+guide. I will share the link in the
+ 
+
+00:15:37.400 --> 00:15:39.030 align:start position:0%
+guide. I will share the link in the
+GitHub<00:15:37.720><c> repository.</c><00:15:38.400><c> Everything</c><00:15:38.800><c> will</c><00:15:38.920><c> be</c>
+
+00:15:39.030 --> 00:15:39.040 align:start position:0%
+GitHub repository. Everything will be
+ 
+
+00:15:39.040 --> 00:15:40.030 align:start position:0%
+GitHub repository. Everything will be
+there.
+
+00:15:40.030 --> 00:15:40.040 align:start position:0%
+there.
+ 
+
+00:15:40.040 --> 00:15:41.910 align:start position:0%
+there.
+So<00:15:40.280><c> over</c><00:15:40.520><c> here</c><00:15:40.720><c> we</c><00:15:40.840><c> have</c><00:15:41.040><c> different</c><00:15:41.440><c> options,</c>
+
+00:15:41.910 --> 00:15:41.920 align:start position:0%
+So over here we have different options,
+ 
+
+00:15:41.920 --> 00:15:43.870 align:start position:0%
+So over here we have different options,
+different<00:15:42.280><c> operating</c><00:15:42.600><c> systems,</c><00:15:43.360><c> Mac</c><00:15:43.640><c> OS,</c>
+
+00:15:43.870 --> 00:15:43.880 align:start position:0%
+different operating systems, Mac OS,
+ 
+
+00:15:43.880 --> 00:15:46.350 align:start position:0%
+different operating systems, Mac OS,
+Windows,<00:15:44.280><c> Linux,</c><00:15:44.800><c> free</c><00:15:45.000><c> B</c><00:15:45.440><c> free</c><00:15:45.600><c> BSD,</c><00:15:46.080><c> open</c>
+
+00:15:46.350 --> 00:15:46.360 align:start position:0%
+Windows, Linux, free B free BSD, open
+ 
+
+00:15:46.360 --> 00:15:48.470 align:start position:0%
+Windows, Linux, free B free BSD, open
+BSD,<00:15:46.720><c> Solaris</c><00:15:47.320><c> and</c><00:15:47.520><c> so</c><00:15:47.720><c> on,</c><00:15:47.920><c> right?</c><00:15:48.200><c> You</c><00:15:48.280><c> can</c>
+
+00:15:48.470 --> 00:15:48.480 align:start position:0%
+BSD, Solaris and so on, right? You can
+ 
+
+00:15:48.480 --> 00:15:50.230 align:start position:0%
+BSD, Solaris and so on, right? You can
+choose<00:15:48.840><c> whichever</c><00:15:49.360><c> operating</c><00:15:49.720><c> system</c><00:15:50.040><c> you</c>
+
+00:15:50.230 --> 00:15:50.240 align:start position:0%
+choose whichever operating system you
+ 
+
+00:15:50.240 --> 00:15:53.070 align:start position:0%
+choose whichever operating system you
+are<00:15:50.320><c> using.</c><00:15:50.680><c> I'm</c><00:15:50.840><c> using</c><00:15:51.120><c> Mac.</c><00:15:52.040><c> So</c><00:15:52.280><c> I</c><00:15:52.400><c> can</c><00:15:52.640><c> use</c>
+
+00:15:53.070 --> 00:15:53.080 align:start position:0%
+are using. I'm using Mac. So I can use
+ 
+
+00:15:53.080 --> 00:15:55.590 align:start position:0%
+are using. I'm using Mac. So I can use
+the<00:15:53.800><c> brew</c><00:15:54.040><c> packet</c><00:15:54.400><c> manager</c><00:15:54.840><c> to</c><00:15:54.960><c> install</c><00:15:55.400><c> it.</c>
+
+00:15:55.590 --> 00:15:55.600 align:start position:0%
+the brew packet manager to install it.
+ 
+
+00:15:55.600 --> 00:15:58.030 align:start position:0%
+the brew packet manager to install it.
+So<00:15:55.760><c> brew</c><00:15:56.080><c> tap</c><00:15:56.400><c> HashiCorp</c><00:15:57.440><c> and</c><00:15:57.600><c> then</c><00:15:57.800><c> brew</c>
+
+00:15:58.030 --> 00:15:58.040 align:start position:0%
+So brew tap HashiCorp and then brew
+ 
+
+00:15:58.040 --> 00:16:00.790 align:start position:0%
+So brew tap HashiCorp and then brew
+install<00:15:58.440><c> HashiCorp</c><00:15:59.400><c> Terraform,</c><00:15:59.840><c> okay?</c><00:16:00.640><c> Or</c>
+
+00:16:00.790 --> 00:16:00.800 align:start position:0%
+install HashiCorp Terraform, okay? Or
+ 
+
+00:16:00.800 --> 00:16:02.750 align:start position:0%
+install HashiCorp Terraform, okay? Or
+you<00:16:00.920><c> can</c><00:16:01.120><c> download</c><00:16:01.560><c> the</c><00:16:01.680><c> binaries</c><00:16:02.240><c> as</c><00:16:02.480><c> well</c>
+
+00:16:02.750 --> 00:16:02.760 align:start position:0%
+you can download the binaries as well
+ 
+
+00:16:02.760 --> 00:16:05.390 align:start position:0%
+you can download the binaries as well
+based<00:16:03.160><c> on</c><00:16:03.360><c> the</c><00:16:03.440><c> operating</c><00:16:03.840><c> system</c><00:16:04.520><c> that</c><00:16:05.200><c> you</c>
+
+00:16:05.390 --> 00:16:05.400 align:start position:0%
+based on the operating system that you
+ 
+
+00:16:05.400 --> 00:16:07.350 align:start position:0%
+based on the operating system that you
+have<00:16:05.720><c> based</c><00:16:06.000><c> on</c><00:16:06.200><c> the</c><00:16:06.320><c> architecture</c><00:16:06.960><c> that</c><00:16:07.240><c> you</c>
+
+00:16:07.350 --> 00:16:07.360 align:start position:0%
+have based on the architecture that you
+ 
+
+00:16:07.360 --> 00:16:09.630 align:start position:0%
+have based on the architecture that you
+have<00:16:07.800><c> and</c><00:16:08.160><c> you</c><00:16:08.280><c> can</c><00:16:08.720><c> install</c><00:16:09.040><c> it.</c><00:16:09.240><c> If</c><00:16:09.360><c> you</c><00:16:09.440><c> want</c>
+
+00:16:09.630 --> 00:16:09.640 align:start position:0%
+have and you can install it. If you want
+ 
+
+00:16:09.640 --> 00:16:11.470 align:start position:0%
+have and you can install it. If you want
+to<00:16:09.680><c> check</c><00:16:09.920><c> which</c><00:16:10.120><c> version</c><00:16:10.600><c> you</c><00:16:10.720><c> are</c><00:16:10.840><c> using,</c><00:16:11.240><c> so</c>
+
+00:16:11.470 --> 00:16:11.480 align:start position:0%
+to check which version you are using, so
+ 
+
+00:16:11.480 --> 00:16:13.510 align:start position:0%
+to check which version you are using, so
+if<00:16:11.720><c> you</c><00:16:11.840><c> can</c><00:16:12.120><c> go</c><00:16:12.360><c> back</c>
+
+00:16:13.510 --> 00:16:13.520 align:start position:0%
+if you can go back
+ 
+
+00:16:13.520 --> 00:16:15.150 align:start position:0%
+if you can go back
+and<00:16:14.240><c> uh</c>
+
+00:16:15.150 --> 00:16:15.160 align:start position:0%
+and uh
+ 
+
+00:16:15.160 --> 00:16:19.550 align:start position:0%
+and uh
+run<00:16:15.720><c> uname</c><00:16:16.320><c> -a,</c><00:16:17.440><c> I</c><00:16:17.600><c> think.</c><00:16:18.440><c> Yeah,</c><00:16:18.800><c> so</c><00:16:19.000><c> here's</c>
+
+00:16:19.550 --> 00:16:19.560 align:start position:0%
+run uname -a, I think. Yeah, so here's
+ 
+
+00:16:19.560 --> 00:16:22.110 align:start position:0%
+run uname -a, I think. Yeah, so here's
+how<00:16:19.760><c> you</c><00:16:19.880><c> can</c><00:16:20.120><c> check.</c><00:16:21.000><c> So</c><00:16:21.200><c> I'm</c><00:16:21.360><c> using</c><00:16:21.680><c> MacBook,</c>
+
+00:16:22.110 --> 00:16:22.120 align:start position:0%
+how you can check. So I'm using MacBook,
+ 
+
+00:16:22.120 --> 00:16:25.270 align:start position:0%
+how you can check. So I'm using MacBook,
+so<00:16:22.320><c> it's</c><00:16:22.920><c> Darwin,</c><00:16:23.520><c> kernel</c><00:16:23.920><c> version</c><00:16:24.400><c> is</c><00:16:24.640><c> this</c>
+
+00:16:25.270 --> 00:16:25.280 align:start position:0%
+so it's Darwin, kernel version is this
+ 
+
+00:16:25.280 --> 00:16:28.150 align:start position:0%
+so it's Darwin, kernel version is this
+and<00:16:25.520><c> it's</c><00:16:25.880><c> arm</c><00:16:26.120><c> 64</c><00:16:26.720><c> system.</c><00:16:27.360><c> So</c><00:16:27.520><c> based</c><00:16:27.839><c> on</c><00:16:27.920><c> that</c>
+
+00:16:28.150 --> 00:16:28.160 align:start position:0%
+and it's arm 64 system. So based on that
+ 
+
+00:16:28.160 --> 00:16:29.750 align:start position:0%
+and it's arm 64 system. So based on that
+you<00:16:28.280><c> can</c><00:16:28.480><c> check</c><00:16:28.720><c> and</c><00:16:28.839><c> install</c><00:16:29.160><c> the</c><00:16:29.280><c> binaries</c>
+
+00:16:29.750 --> 00:16:29.760 align:start position:0%
+you can check and install the binaries
+ 
+
+00:16:29.760 --> 00:16:31.470 align:start position:0%
+you can check and install the binaries
+as<00:16:29.960><c> well</c><00:16:30.120><c> if</c><00:16:30.280><c> you</c><00:16:30.400><c> want.</c>
+
+00:16:31.470 --> 00:16:31.480 align:start position:0%
+as well if you want.
+ 
+
+00:16:31.480 --> 00:16:33.590 align:start position:0%
+as well if you want.
+Okay,<00:16:32.080><c> so</c><00:16:32.440><c> I'm</c><00:16:32.600><c> just</c><00:16:32.800><c> going</c><00:16:32.960><c> to</c><00:16:33.040><c> copy</c><00:16:33.360><c> these</c>
+
+00:16:33.590 --> 00:16:33.600 align:start position:0%
+Okay, so I'm just going to copy these
+ 
+
+00:16:33.600 --> 00:16:38.030 align:start position:0%
+Okay, so I'm just going to copy these
+commands<00:16:34.680><c> and</c><00:16:35.600><c> let's</c><00:16:36.640><c> paste</c><00:16:36.960><c> it</c><00:16:37.080><c> over</c><00:16:37.280><c> here.</c>
+
+00:16:38.030 --> 00:16:38.040 align:start position:0%
+commands and let's paste it over here.
+ 
+
+00:16:38.040 --> 00:16:40.150 align:start position:0%
+commands and let's paste it over here.
+So<00:16:38.200><c> it's</c><00:16:38.440><c> brew</c><00:16:38.720><c> tap</c><00:16:39.000><c> HashiCorp</c><00:16:39.640><c> tap</c><00:16:39.960><c> brew</c>
+
+00:16:40.150 --> 00:16:40.160 align:start position:0%
+So it's brew tap HashiCorp tap brew
+ 
+
+00:16:40.160 --> 00:16:42.910 align:start position:0%
+So it's brew tap HashiCorp tap brew
+install<00:16:40.560><c> HashiCorp</c><00:16:41.280><c> tap</c><00:16:41.720><c> HashiCorp</c><00:16:42.320><c> tap,</c>
+
+00:16:42.910 --> 00:16:42.920 align:start position:0%
+install HashiCorp tap HashiCorp tap,
+ 
+
+00:16:42.920 --> 00:16:44.070 align:start position:0%
+install HashiCorp tap HashiCorp tap,
+whatever,<00:16:43.320><c> yeah.</c>
+
+00:16:44.070 --> 00:16:44.080 align:start position:0%
+whatever, yeah.
+ 
+
+00:16:44.080 --> 00:16:45.190 align:start position:0%
+whatever, yeah.
+So
+
+00:16:45.190 --> 00:16:45.200 align:start position:0%
+So
+ 
+
+00:16:45.200 --> 00:16:49.430 align:start position:0%
+So
+I'll<00:16:45.600><c> hit</c><00:16:45.839><c> enter</c><00:16:46.440><c> and</c>
+
+00:16:49.430 --> 00:16:49.440 align:start position:0%
+ 
+ 
+
+00:16:49.440 --> 00:16:51.990 align:start position:0%
+ 
+say<00:16:50.120><c> da</c><00:16:50.240><c> da</c><00:16:50.360><c> da</c><00:16:50.520><c> da</c><00:16:50.680><c> da</c><00:16:50.839><c> installing</c><00:16:51.320><c> Terraform</c>
+
+00:16:51.990 --> 00:16:52.000 align:start position:0%
+say da da da da da installing Terraform
+ 
+
+00:16:52.000 --> 00:16:54.990 align:start position:0%
+say da da da da da installing Terraform
+and<00:16:52.880><c> that's</c><00:16:53.080><c> it.</c><00:16:53.520><c> It's</c><00:16:53.680><c> done.</c>
+
+00:16:54.990 --> 00:16:55.000 align:start position:0%
+and that's it. It's done.
+ 
+
+00:16:55.000 --> 00:16:56.870 align:start position:0%
+and that's it. It's done.
+Now<00:16:55.400><c> if</c><00:16:55.640><c> you</c><00:16:55.760><c> face</c><00:16:56.080><c> any</c><00:16:56.320><c> issue</c><00:16:56.640><c> while</c>
+
+00:16:56.870 --> 00:16:56.880 align:start position:0%
+Now if you face any issue while
+ 
+
+00:16:56.880 --> 00:16:59.430 align:start position:0%
+Now if you face any issue while
+installing<00:16:58.040><c> Terraform</c><00:16:58.560><c> because</c><00:16:58.880><c> I</c><00:16:59.000><c> faced</c><00:16:59.320><c> it</c>
+
+00:16:59.430 --> 00:16:59.440 align:start position:0%
+installing Terraform because I faced it
+ 
+
+00:16:59.440 --> 00:17:02.190 align:start position:0%
+installing Terraform because I faced it
+during<00:16:59.720><c> the</c><00:16:59.800><c> first</c><00:17:00.120><c> time</c><00:17:01.000><c> on</c><00:17:01.320><c> Mac</c><00:17:01.600><c> as</c><00:17:01.800><c> well.</c><00:17:02.000><c> So</c>
+
+00:17:02.190 --> 00:17:02.200 align:start position:0%
+during the first time on Mac as well. So
+ 
+
+00:17:02.200 --> 00:17:04.189 align:start position:0%
+during the first time on Mac as well. So
+I<00:17:02.280><c> have</c><00:17:02.480><c> shared</c><00:17:03.000><c> some</c><00:17:03.240><c> details</c><00:17:03.640><c> in</c><00:17:03.760><c> the</c><00:17:03.880><c> GitHub</c>
+
+00:17:04.189 --> 00:17:04.199 align:start position:0%
+I have shared some details in the GitHub
+ 
+
+00:17:04.199 --> 00:17:06.030 align:start position:0%
+I have shared some details in the GitHub
+repository.<00:17:04.800><c> Check</c><00:17:05.040><c> it</c><00:17:05.160><c> out.</c><00:17:05.480><c> I'm</c><00:17:05.720><c> sure</c><00:17:05.920><c> it</c>
+
+00:17:06.030 --> 00:17:06.040 align:start position:0%
+repository. Check it out. I'm sure it
+ 
+
+00:17:06.040 --> 00:17:07.550 align:start position:0%
+repository. Check it out. I'm sure it
+will<00:17:06.160><c> be</c><00:17:06.280><c> helpful.</c>
+
+00:17:07.550 --> 00:17:07.560 align:start position:0%
+will be helpful.
+ 
+
+00:17:07.560 --> 00:17:10.270 align:start position:0%
+will be helpful.
+So<00:17:07.920><c> let</c><00:17:08.319><c> me</c><00:17:08.480><c> just</c><00:17:08.760><c> check</c><00:17:09.000><c> if</c><00:17:09.160><c> my</c><00:17:09.680><c> Terraform</c><00:17:10.079><c> has</c>
+
+00:17:10.270 --> 00:17:10.280 align:start position:0%
+So let me just check if my Terraform has
+ 
+
+00:17:10.280 --> 00:17:12.069 align:start position:0%
+So let me just check if my Terraform has
+been<00:17:10.439><c> installed</c><00:17:10.800><c> properly</c><00:17:11.240><c> or</c><00:17:11.360><c> not.</c><00:17:11.600><c> So</c><00:17:11.720><c> if</c><00:17:11.959><c> I</c>
+
+00:17:12.069 --> 00:17:12.079 align:start position:0%
+been installed properly or not. So if I
+ 
+
+00:17:12.079 --> 00:17:15.949 align:start position:0%
+been installed properly or not. So if I
+do<00:17:12.640><c> Terraform</c><00:17:13.160><c> -version</c>
+
+00:17:15.949 --> 00:17:15.959 align:start position:0%
+do Terraform -version
+ 
+
+00:17:15.959 --> 00:17:18.230 align:start position:0%
+do Terraform -version
+So<00:17:16.319><c> I'm</c><00:17:16.640><c> using</c><00:17:16.920><c> Terraform</c>
+
+00:17:18.230 --> 00:17:18.240 align:start position:0%
+So I'm using Terraform
+ 
+
+00:17:18.240 --> 00:17:22.829 align:start position:0%
+So I'm using Terraform
+1.9.8<00:17:19.520><c> on</c><00:17:20.079><c> Darwin</c><00:17:20.600><c> arm64</c><00:17:21.800><c> and</c><00:17:22.079><c> here's</c><00:17:22.400><c> the</c>
+
+00:17:22.829 --> 00:17:22.839 align:start position:0%
+1.9.8 on Darwin arm64 and here's the
+ 
+
+00:17:22.839 --> 00:17:24.829 align:start position:0%
+1.9.8 on Darwin arm64 and here's the
+provider<00:17:23.319><c> version.</c><00:17:23.959><c> Because</c><00:17:24.280><c> I've</c><00:17:24.480><c> used</c><00:17:24.720><c> it</c>
+
+00:17:24.829 --> 00:17:24.839 align:start position:0%
+provider version. Because I've used it
+ 
+
+00:17:24.839 --> 00:17:27.189 align:start position:0%
+provider version. Because I've used it
+earlier,<00:17:25.079><c> that's</c><00:17:25.400><c> why</c><00:17:26.079><c> for</c><00:17:26.319><c> you</c><00:17:26.640><c> it</c><00:17:26.839><c> won't</c><00:17:27.079><c> be</c>
+
+00:17:27.189 --> 00:17:27.199 align:start position:0%
+earlier, that's why for you it won't be
+ 
+
+00:17:27.199 --> 00:17:29.590 align:start position:0%
+earlier, that's why for you it won't be
+showing<00:17:28.079><c> the</c><00:17:28.280><c> provider</c><00:17:28.720><c> version.</c><00:17:29.320><c> So,</c><00:17:29.440><c> I'll</c>
+
+00:17:29.590 --> 00:17:29.600 align:start position:0%
+showing the provider version. So, I'll
+ 
+
+00:17:29.600 --> 00:17:31.950 align:start position:0%
+showing the provider version. So, I'll
+discuss<00:17:29.960><c> more</c><00:17:30.240><c> about</c><00:17:30.520><c> provider</c><00:17:31.000><c> soon</c>
+
+00:17:31.950 --> 00:17:31.960 align:start position:0%
+discuss more about provider soon
+ 
+
+00:17:31.960 --> 00:17:34.030 align:start position:0%
+discuss more about provider soon
+because<00:17:32.600><c> in</c><00:17:32.800><c> this</c><00:17:33.000><c> video</c><00:17:33.240><c> we</c><00:17:33.360><c> just</c><00:17:33.600><c> wanted</c><00:17:33.960><c> to</c>
+
+00:17:34.030 --> 00:17:34.040 align:start position:0%
+because in this video we just wanted to
+ 
+
+00:17:34.040 --> 00:17:36.230 align:start position:0%
+because in this video we just wanted to
+cover<00:17:34.320><c> the</c><00:17:34.440><c> fundamentals.</c><00:17:35.640><c> So,</c><00:17:35.800><c> that's</c><00:17:36.080><c> it</c>
+
+00:17:36.230 --> 00:17:36.240 align:start position:0%
+cover the fundamentals. So, that's it
+ 
+
+00:17:36.240 --> 00:17:38.230 align:start position:0%
+cover the fundamentals. So, that's it
+for<00:17:36.360><c> this</c><00:17:36.560><c> video.</c><00:17:37.440><c> By</c><00:17:37.600><c> the</c><00:17:37.720><c> end</c><00:17:37.920><c> of</c><00:17:38.040><c> this</c>
+
+00:17:38.230 --> 00:17:38.240 align:start position:0%
+for this video. By the end of this
+ 
+
+00:17:38.240 --> 00:17:40.230 align:start position:0%
+for this video. By the end of this
+video,<00:17:38.680><c> I'm</c><00:17:38.920><c> sure</c><00:17:39.520><c> now</c><00:17:39.800><c> you</c><00:17:39.920><c> know</c><00:17:40.120><c> the</c>
+
+00:17:40.230 --> 00:17:40.240 align:start position:0%
+video, I'm sure now you know the
+ 
+
+00:17:40.240 --> 00:17:42.190 align:start position:0%
+video, I'm sure now you know the
+fundamentals<00:17:40.920><c> of</c><00:17:41.040><c> Terraform</c><00:17:41.560><c> infrastructure</c>
+
+00:17:42.190 --> 00:17:42.200 align:start position:0%
+fundamentals of Terraform infrastructure
+ 
+
+00:17:42.200 --> 00:17:44.070 align:start position:0%
+fundamentals of Terraform infrastructure
+as<00:17:42.320><c> a</c><00:17:42.360><c> code,</c><00:17:42.680><c> why</c><00:17:42.840><c> do</c><00:17:43.000><c> we</c><00:17:43.120><c> need</c><00:17:43.400><c> it,</c><00:17:43.680><c> and</c><00:17:43.960><c> you</c>
+
+00:17:44.070 --> 00:17:44.080 align:start position:0%
+as a code, why do we need it, and you
+ 
+
+00:17:44.080 --> 00:17:46.230 align:start position:0%
+as a code, why do we need it, and you
+should<00:17:44.280><c> be</c><00:17:44.400><c> able</c><00:17:44.680><c> to</c><00:17:44.880><c> install</c><00:17:45.480><c> Terraform</c><00:17:46.040><c> on</c>
+
+00:17:46.230 --> 00:17:46.240 align:start position:0%
+should be able to install Terraform on
+ 
+
+00:17:46.240 --> 00:17:48.350 align:start position:0%
+should be able to install Terraform on
+your<00:17:46.400><c> machine.</c><00:17:47.240><c> If</c><00:17:47.320><c> you</c><00:17:47.400><c> face</c><00:17:47.680><c> any</c><00:17:47.880><c> issue,</c><00:17:48.160><c> let</c>
+
+00:17:48.350 --> 00:17:48.360 align:start position:0%
+your machine. If you face any issue, let
+ 
+
+00:17:48.360 --> 00:17:51.350 align:start position:0%
+your machine. If you face any issue, let
+me<00:17:48.480><c> know</c><00:17:48.800><c> in</c><00:17:49.040><c> the</c><00:17:49.440><c> comment</c><00:17:49.720><c> section</c><00:17:50.080><c> below</c><00:17:50.600><c> or</c>
+
+00:17:51.350 --> 00:17:51.360 align:start position:0%
+me know in the comment section below or
+ 
+
+00:17:51.360 --> 00:17:53.710 align:start position:0%
+me know in the comment section below or
+join<00:17:51.760><c> our</c><00:17:51.920><c> Discord</c><00:17:52.480><c> community</c><00:17:53.120><c> and</c><00:17:53.360><c> provide</c>
+
+00:17:53.710 --> 00:17:53.720 align:start position:0%
+join our Discord community and provide
+ 
+
+00:17:53.720 --> 00:17:55.470 align:start position:0%
+join our Discord community and provide
+the<00:17:53.840><c> details</c><00:17:54.240><c> over</c><00:17:54.440><c> there.</c>
+
+00:17:55.470 --> 00:17:55.480 align:start position:0%
+the details over there.
+ 
+
+00:17:55.480 --> 00:17:57.070 align:start position:0%
+the details over there.
+Someone<00:17:55.840><c> will</c><00:17:56.000><c> definitely</c><00:17:56.600><c> going</c><00:17:56.720><c> to</c><00:17:56.800><c> help</c>
+
+00:17:57.070 --> 00:17:57.080 align:start position:0%
+Someone will definitely going to help
+ 
+
+00:17:57.080 --> 00:17:58.630 align:start position:0%
+Someone will definitely going to help
+you<00:17:57.360><c> and</c><00:17:57.560><c> make</c><00:17:57.760><c> sure</c><00:17:57.960><c> you</c><00:17:58.080><c> complete</c><00:17:58.560><c> the</c>
+
+00:17:58.630 --> 00:17:58.640 align:start position:0%
+you and make sure you complete the
+ 
+
+00:17:58.640 --> 00:18:00.470 align:start position:0%
+you and make sure you complete the
+comments<00:17:59.000><c> and</c><00:17:59.120><c> like</c><00:17:59.320><c> target.</c><00:17:59.880><c> I</c><00:18:00.000><c> will</c><00:18:00.160><c> see</c><00:18:00.360><c> you</c>
+
+00:18:00.470 --> 00:18:00.480 align:start position:0%
+comments and like target. I will see you
+ 
+
+00:18:00.480 --> 00:18:01.950 align:start position:0%
+comments and like target. I will see you
+soon<00:18:00.680><c> with</c><00:18:00.800><c> the</c><00:18:00.880><c> next</c><00:18:01.160><c> video.</c><00:18:01.440><c> In</c><00:18:01.560><c> the</c><00:18:01.640><c> next</c>
+
+00:18:01.950 --> 00:18:01.960 align:start position:0%
+soon with the next video. In the next
+ 
+
+00:18:01.960 --> 00:18:03.670 align:start position:0%
+soon with the next video. In the next
+video,<00:18:02.280><c> we'll</c><00:18:02.480><c> be</c><00:18:02.600><c> looking</c><00:18:02.920><c> into</c><00:18:03.200><c> Terraform</c>
+
+00:18:03.670 --> 00:18:03.680 align:start position:0%
+video, we'll be looking into Terraform
+ 
+
+00:18:03.680 --> 00:18:04.990 align:start position:0%
+video, we'll be looking into Terraform
+providers
+
+00:18:04.990 --> 00:18:05.000 align:start position:0%
+providers
+ 
+
+00:18:05.000 --> 00:18:07.310 align:start position:0%
+providers
+and<00:18:06.040><c> have</c><00:18:06.160><c> a</c><00:18:06.240><c> good</c><00:18:06.480><c> day.</c><00:18:06.640><c> Happy</c><00:18:06.920><c> learning.</c>
+
+00:18:07.310 --> 00:18:07.320 align:start position:0%
+and have a good day. Happy learning.
+ 
+
+00:18:07.320 --> 00:18:10.560 align:start position:0%
+and have a good day. Happy learning.
+Thank<00:18:07.480><c> you</c><00:18:07.560><c> so</c><00:18:07.720><c> much</c><00:18:07.960><c> for</c><00:18:08.080><c> watching.</c>
+

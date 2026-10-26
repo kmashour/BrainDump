@@ -1,0 +1,118 @@
+{
+  "id": "kP7KpfToMkg",
+  "title": "Azure Key Vault Deep Dive (AZ-500)",
+  "duration": 4062,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 60
+    },
+    {
+      "start_time": 60,
+      "title": "Secrets, keys and certificates",
+      "end_time": 309
+    },
+    {
+      "start_time": 309,
+      "title": "Azure Key Vault overview",
+      "end_time": 615
+    },
+    {
+      "start_time": 615,
+      "title": "Versions of objects",
+      "end_time": 657
+    },
+    {
+      "start_time": 657,
+      "title": "Tiers of Azure Key Vault",
+      "end_time": 952
+    },
+    {
+      "start_time": 952,
+      "title": "Managed HSM option",
+      "end_time": 1132
+    },
+    {
+      "start_time": 1132,
+      "title": "Version demo",
+      "end_time": 1245
+    },
+    {
+      "start_time": 1245,
+      "title": "Soft delete and purge protection",
+      "end_time": 1375
+    },
+    {
+      "start_time": 1375,
+      "title": "Key Vault permissions",
+      "end_time": 1668
+    },
+    {
+      "start_time": 1668,
+      "title": "Resource (Azure and on-premises) auth to Key Vault",
+      "end_time": 2255
+    },
+    {
+      "start_time": 2255,
+      "title": "Network connectivity controls",
+      "end_time": 2475
+    },
+    {
+      "start_time": 2475,
+      "title": "Azure Key Vault replication",
+      "end_time": 2593
+    },
+    {
+      "start_time": 2593,
+      "title": "Vault backup and restore",
+      "end_time": 2840
+    },
+    {
+      "start_time": 2840,
+      "title": "Azure Policy with Key Vault",
+      "end_time": 2995
+    },
+    {
+      "start_time": 2995,
+      "title": "Best practices",
+      "end_time": 3309
+    },
+    {
+      "start_time": 3309,
+      "title": "Key rotation",
+      "end_time": 3715
+    },
+    {
+      "start_time": 3715,
+      "title": "Summary",
+      "end_time": 3825
+    },
+    {
+      "start_time": 3825,
+      "title": "Closing encryption demo with Key Vault",
+      "end_time": 4035
+    },
+    {
+      "start_time": 4035,
+      "title": "Close",
+      "end_time": 4062
+    }
+  ],
+  "description": "A deep dive into Azure Key Vault covering everything you ever wanted to know including permissions, network access and actually using! \n\nWhiteboard at https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/AzureKeyVaultDeepDive.svg\nExample file at https://github.com/johnthebrit/RandomStuff/tree/master/KeyVault\n\n0:00:00 Introduction\n0:01:00 Secrets, keys and certificates\n0:05:09 Azure Key Vault overview\n0:10:15 Versions of objects\n0:10:57 Tiers of Azure Key Vault\n0:15:52 Managed HSM option\n0:18:52 Version demo\n0:20:45 Soft delete and purge protection\n0:22:55 Key Vault permissions\n0:27:48 Resource (Azure and on-premises) auth to Key Vault\n0:37:35 Network connectivity controls\n0:41:15 Azure Key Vault replication\n0:43:13 Vault backup and restore\n0:47:20 Azure Policy with Key Vault\n0:49:55 Best practices\n0:55:09 Key rotation\n1:01:55 Summary\n1:03:45 Closing encryption demo with Key Vault\n1:07:15 Close",
+  "webpage_url": "https://www.youtube.com/watch?v=kP7KpfToMkg",
+  "upload_date": "20210406",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "azure key vault",
+    "vault",
+    "secrets",
+    "keys",
+    "certificates",
+    "encryption",
+    "access policy",
+    "managed identity",
+    "service principal"
+  ]
+}

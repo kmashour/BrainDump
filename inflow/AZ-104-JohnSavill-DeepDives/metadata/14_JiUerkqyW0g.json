@@ -1,0 +1,165 @@
+{
+  "id": "JiUerkqyW0g",
+  "title": "Azure Firewall Deep Dive",
+  "duration": 5075,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 125
+    },
+    {
+      "start_time": 125,
+      "title": "SKUs",
+      "end_time": 165
+    },
+    {
+      "start_time": 165,
+      "title": "Stop/Start Az FW and Pricing",
+      "end_time": 290
+    },
+    {
+      "start_time": 290,
+      "title": "My lab environment",
+      "end_time": 458
+    },
+    {
+      "start_time": 458,
+      "title": "Peer setting",
+      "end_time": 565
+    },
+    {
+      "start_time": 565,
+      "title": "Az FW deployment",
+      "end_time": 872
+    },
+    {
+      "start_time": 872,
+      "title": "Diagnostic settings",
+      "end_time": 928
+    },
+    {
+      "start_time": 928,
+      "title": "Route tables and UDR",
+      "end_time": 1292
+    },
+    {
+      "start_time": 1292,
+      "title": "Basic routing between spokes and networks",
+      "end_time": 1455
+    },
+    {
+      "start_time": 1455,
+      "title": "IP groups",
+      "end_time": 1553
+    },
+    {
+      "start_time": 1553,
+      "title": "Firewall policy",
+      "end_time": 2068
+    },
+    {
+      "start_time": 2068,
+      "title": "Rules and types",
+      "end_time": 2180
+    },
+    {
+      "start_time": 2180,
+      "title": "Threat intelligence",
+      "end_time": 2265
+    },
+    {
+      "start_time": 2265,
+      "title": "DNAT rule",
+      "end_time": 2448
+    },
+    {
+      "start_time": 2448,
+      "title": "SNAT",
+      "end_time": 2615
+    },
+    {
+      "start_time": 2615,
+      "title": "Network rules",
+      "end_time": 2870
+    },
+    {
+      "start_time": 2870,
+      "title": "Application rules",
+      "end_time": 3325
+    },
+    {
+      "start_time": 3325,
+      "title": "DNS features",
+      "end_time": 3430
+    },
+    {
+      "start_time": 3430,
+      "title": "Firewall Manager",
+      "end_time": 3546
+    },
+    {
+      "start_time": 3546,
+      "title": "Firewall Premium key features",
+      "end_time": 3610
+    },
+    {
+      "start_time": 3610,
+      "title": "TLS inspection",
+      "end_time": 3838
+    },
+    {
+      "start_time": 3838,
+      "title": "PKI requirements",
+      "end_time": 3985
+    },
+    {
+      "start_time": 3985,
+      "title": "TLS inspection in action",
+      "end_time": 4360
+    },
+    {
+      "start_time": 4360,
+      "title": "IDPS",
+      "end_time": 4482
+    },
+    {
+      "start_time": 4482,
+      "title": "URL filtering",
+      "end_time": 4738
+    },
+    {
+      "start_time": 4738,
+      "title": "Web categories",
+      "end_time": 4860
+    },
+    {
+      "start_time": 4860,
+      "title": "Working with logs and metrics",
+      "end_time": 4960
+    },
+    {
+      "start_time": 4960,
+      "title": "Summary",
+      "end_time": 5075
+    }
+  ],
+  "description": "An in-depth look at both the Standard and Premium features of Azure Firewall.\n\nWhiteboard at - https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/AzFWDeepDive.svg\n\nStop/Start - https://docs.microsoft.com/en-us/azure/firewall/firewall-faq#how-can-i-stop-and-start-azure-firewall\nPricing - https://azure.microsoft.com/en-us/pricing/details/azure-firewall/\nFeatures - https://docs.microsoft.com/en-us/azure/firewall/features\n\n00:00 Introduction\n02:05 SKUs\n02:45 Stop/Start Az FW and Pricing\n04:50 My lab environment\n07:38 Peer setting\n09:25 Az FW deployment\n14:32 Diagnostic settings\n15:28 Route tables and UDR\n21:32 Basic routing between spokes and networks\n24:15 IP groups\n25:53 Firewall policy\n34:28 Rules and types\n36:20 Threat intelligence\n37:45 DNAT rule\n40:48 SNAT\n43:35 Network rules\n47:50 Application rules\n55:25 DNS features\n57:10 Firewall Manager\n59:06 Firewall Premium key features\n1:00:10 TLS inspection\n1:03:58 PKI requirements\n1:06:25 TLS inspection in action\n1:12:40 IDPS\n1:14:42 URL filtering\n1:18:58 Web categories\n1:21:00 Working with logs and metrics\n1:22:40 Summary",
+  "webpage_url": "https://www.youtube.com/watch?v=JiUerkqyW0g",
+  "upload_date": "20210727",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "Azure firewall",
+    "firewall",
+    "idps",
+    "tls inspection",
+    "filtering",
+    "network",
+    "virtual network",
+    "security"
+  ]
+}

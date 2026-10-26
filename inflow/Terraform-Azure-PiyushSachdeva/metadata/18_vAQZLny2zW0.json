@@ -1,0 +1,102 @@
+{
+  "id": "vAQZLny2zW0",
+  "title": "Day 18/28 - Deploy Azure Functions With Terraform - QR Code Generator Mini Project using Terraform",
+  "duration": 2503,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction to project",
+      "end_time": 31
+    },
+    {
+      "start_time": 31,
+      "title": "Project setup and provider",
+      "end_time": 111
+    },
+    {
+      "start_time": 111,
+      "title": "Defining azure resources",
+      "end_time": 189
+    },
+    {
+      "start_time": 189,
+      "title": "Configuring terraform main",
+      "end_time": 290
+    },
+    {
+      "start_time": 290,
+      "title": "Infrastructure deployment",
+      "end_time": 576
+    },
+    {
+      "start_time": 576,
+      "title": "Application code collaboration",
+      "end_time": 831
+    },
+    {
+      "start_time": 831,
+      "title": "Testing initial deployment",
+      "end_time": 946
+    },
+    {
+      "start_time": 946,
+      "title": "Local configuration",
+      "end_time": 1063
+    },
+    {
+      "start_time": 1063,
+      "title": "Publishing app settings",
+      "end_time": 1220
+    },
+    {
+      "start_time": 1220,
+      "title": "Configuring function app",
+      "end_time": 1422
+    },
+    {
+      "start_time": 1422,
+      "title": "Testing the function",
+      "end_time": 1688
+    },
+    {
+      "start_time": 1688,
+      "title": "Debugging application logs",
+      "end_time": 1800
+    },
+    {
+      "start_time": 1800,
+      "title": "Troubleshooting module issues",
+      "end_time": 2125
+    },
+    {
+      "start_time": 2125,
+      "title": "Fixing storage keys",
+      "end_time": 2287
+    },
+    {
+      "start_time": 2287,
+      "title": "Successful test and conclusion",
+      "end_time": 2503
+    }
+  ],
+  "description": "Welcome to 18/28 day of Terraform Full Course For Beginners\nIn this video, we will \ud83d\udce6 learn how to deploy Azure functions with Terraform through a practical QR Code Generator project! In this hands-on tutorial, we'll walk through setting up serverless infrastructure on Azure using Infrastructure as Code (IaC).\n\n\ud83d\udd0d What you'll learn:\nSetting up Azure Functions using Terraform\nInfrastructure as Code best practices\nDeploying a QR Code Generator application\nManaging serverless resources efficiently\nTesting and validation\n\n\ud83d\udc68\u200d\ud83d\udcbb GitHub repo :\nhttps://github.com/piyushsachdeva/Terraform-Full-Course-Azure/\n\n\ud835\uddd6\ud835\udde2\ud835\udde0\ud835\udde3\ud835\udddf\ud835\uddd8\ud835\udde7\ud835\uddd8 COURSES  \ud83d\udc4c It\u2019s   \ud83c\udd75\ud83c\udd81\ud83c\udd74\ud83c\udd74 \u26f3\n\u2705 Terraform Full Course For Beginners - #28daysofAZTerraform\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUHlbhuq9V02n9AMLPySoEQ\n\n\u2705 Certified Kubernetes Administrator (CKA) 2024\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOkOv3i62UidrLmSB8DcGC\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\udded\ud835\uddf2\ud835\uddff\ud835\uddfc \ud835\ude01\ud835\uddfc \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddfc:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXseJO1a03CtfRDzr2hivbD\n\n\u2705 \ud835\uddd4\ud835\udded\ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd9\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUOCWcjaXcH-WBVxCccZ4uO\n\n\u2705 \ud835\udde1\ud835\uddee\ud835\uddfa\ud835\uddee\ud835\ude00\ud835\ude01\ud835\uddf2 \ud835\uddda\ud835\uddfc\ud835\uddfc\ud835\uddf4\ud835\uddf9\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 | \ud835\uddda\ud835\uddd6\ud835\udde3 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddef\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00, \ud835\uddee \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude01\ud835\uddf2 \ud835\uddfd\ud835\uddf9\ud835\uddee\ud835\ude06\ud835\uddf9\ud835\uddf6\ud835\ude00\ud835\ude01 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\ude01\ud835\uddf5\ud835\uddf2 \ud835\uddd4\ud835\ude00\ud835\ude00\ud835\uddfc\ud835\uddf0\ud835\uddf6\ud835\uddee\ud835\ude01\ud835\uddf2 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddd8\ud835\uddfb\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddf2\ud835\uddf2\ud835\uddff (\ud835\uddd4\ud835\uddd6\ud835\uddd8) \ud835\uddd6\ud835\uddf2\ud835\uddff\ud835\ude01\ud835\uddf6\ud835\uddf3\ud835\uddf6\ud835\uddf0\ud835\uddee\ud835\ude01\ud835\uddf6\ud835\uddfc\ud835\uddfb \ud835\uddd8\ud835\ude05\ud835\uddee\ud835\uddfa:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUXvkDFARdrH2LMESVqeuH8W\n\n\u2705 \ud835\uddd4\ud835\ude07\ud835\ude02\ud835\uddff\ud835\uddf2 \ud835\uddd7\ud835\uddee\ud835\ude01\ud835\uddee \ud835\uddf3\ud835\ude02\ud835\uddfb\ud835\uddf1\ud835\uddee\ud835\uddfa\ud835\uddf2\ud835\uddfb\ud835\ude01\ud835\uddee\ud835\uddf9\ud835\ude00 \ud835\uddd7\ud835\udde3 \ud835\udff5\ud835\udfec\ud835\udfec \ud835\uddf3\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddf0\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUd4rzzHEpHMsyD5PbVWz1I\n\n\u2705 \ud835\udddd\ud835\uddf2\ud835\uddfb\ud835\uddf8\ud835\uddf6\ud835\uddfb\ud835\ude00 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 \ud835\uddf3\ud835\uddfc\ud835\uddff \ud835\uddd5\ud835\uddf2\ud835\uddf4\ud835\uddf6\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddff\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUV3pz6zRpFJe3A4wTM2Pjvv\n\n\u2705 \ud835\udfed\ud835\udfec\ud835\ude04\ud835\uddf2\ud835\uddf2\ud835\uddf8\ud835\ude00\ud835\uddfc\ud835\uddf3\ud835\uddf0\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1\ud835\uddfc\ud835\uddfd\ud835\ude00 - \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\uddf0\ud835\uddfc\ud835\uddfa\ud835\uddfd\ud835\uddf9\ud835\uddf2\ud835\ude05 \ud835\uddf5\ud835\uddee\ud835\uddfb\ud835\uddf1\ud835\ude00-\ud835\uddfc\ud835\uddfb \ud835\uddfd\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01\ud835\ude00 \ud835\uddfc\ud835\uddfb \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUUc8HOEIwfB3Z2uxRv2SKOG\n\n\u2705 \ud835\uddd7\ud835\uddf2\ud835\ude03\ud835\udde2\ud835\uddfd\ud835\ude00 \ud835\uddee\ud835\uddfb\ud835\uddf1 \ud835\uddd6\ud835\uddf9\ud835\uddfc\ud835\ude02\ud835\uddf1 \ud835\udde3\ud835\uddfc\ud835\uddf1\ud835\uddf0\ud835\uddee\ud835\ude00\ud835\ude01\ud835\ude00:\nhttps://www.youtube.com/playlist?list=PLl4APkPHzsUWr7SI4Kym5dr80DovuSbL2\n\n\u2705 \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf9\ud835\uddee\ud835\uddef \ud835\uddd6\ud835\udddc \ud835\uddd6\ud835\uddd7 \ud835\udde7\ud835\ude02\ud835\ude01\ud835\uddfc\ud835\uddff\ud835\uddf6\ud835\uddee\ud835\uddf9 | \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde7\ud835\uddfc \ud835\uddd8\ud835\uddfb\ud835\uddf1 \ud835\udde5\ud835\uddf2\ud835\uddee\ud835\uddf9-\ud835\ude01\ud835\uddf6\ud835\uddfa\ud835\uddf2 \ud835\udde3\ud835\uddff\ud835\uddfc\ud835\uddf7\ud835\uddf2\ud835\uddf0\ud835\ude01 [\ud835\uddd9\ud835\ude02\ud835\uddf9\ud835\uddf9 \ud835\uddd6\ud835\uddfc\ud835\ude02\ud835\uddff\ud835\ude00\ud835\uddf2]\nhttps://youtu.be/uYaMRn2meJQ\n\nSubscribe to our channel to get notified about the latest videos. \n\ud83d\udd25 https://www.youtube.com/TechTutorialswithPiyush\n\n-----------------------------------------------------------------------------------------------------------------------\n\ud835\uddd6\ud835\uddfc\ud835\uddfb\ud835\uddfb\ud835\uddf2\ud835\uddf0\ud835\ude01 \ud835\uddfa\ud835\uddf2 \ud835\udddb\ud835\uddf2\ud835\uddff\ud835\uddf2:\ud83d\udc47\ud83d\udc47\n\n\ud83d\udd25\ud835\uddec\ud835\uddfc\ud835\ude02\ud835\udde7\ud835\ude02\ud835\uddef\ud835\uddf2 \u25b6  https://www.youtube.com/TechTutorialswithPiyush\n\u26f3\ud835\udddf\ud835\uddf6\ud835\uddfb\ud835\uddf8\ud835\uddf2\ud835\uddf1\ud835\udddc\ud835\uddfb \u25b6  https://www.linkedin.com/in/piyush-sachdeva/\n\ud83d\ude80\ud835\udddc\ud835\uddfb\ud835\ude00\ud835\ude01\ud835\uddee\ud835\uddf4\ud835\uddff\ud835\uddee\ud835\uddfa \u25b6 https://www.instagram.com/techtutorialswithpiyush/\n\ud83c\udf0d\ud835\udde7\ud835\ude04\ud835\uddf6\ud835\ude01\ud835\ude01\ud835\uddf2\ud835\uddff \u25b6  https://twitter.com/techie_piyush\n\ud83d\udc68\u200d\ud83d\udcbb \ud835\uddda\ud835\uddf6\ud835\ude01\ud835\uddf5\ud835\ude02\ud835\uddef  \u25b6  https://github.com/piyushsachdeva\n\u270d \ud835\udde0\ud835\uddf2\ud835\uddf1\ud835\uddf6\ud835\ude02\ud835\uddfa.\ud835\uddf0\ud835\uddfc\ud835\uddfa \u25b6 https://medium.com/@piyush.sachdeva055\n\ud83d\udcda \ud835\uddf1\ud835\uddf2\ud835\ude03.\ud835\ude01\ud835\uddfc  \u25b6  https://dev.to/piyushsachdeva\n\u2728\ud835\uddd7\ud835\uddf6\ud835\ude00\ud835\uddf0\ud835\uddfc\ud835\uddff\ud835\uddf1 \u25b6  https://discord.gg/TNCs4BRzq8\n-----------------------------------------------------------------------------------------------------------------------\n\nReferences \ud83d\udcda:\n\n#devops #techtutorialswithpiyush",
+  "webpage_url": "https://www.youtube.com/watch?v=vAQZLny2zW0",
+  "upload_date": "20250128",
+  "tags": [
+    "deploy azure functions with terraform",
+    "azure function app",
+    "azure functions http trigger",
+    "azure functions",
+    "azure function using terraform",
+    "deploy azure functions using terraform",
+    "deploy azure function with terraform",
+    "create azure functions using terraform",
+    "azure functions example",
+    "azure function app example",
+    "azure functions terraform",
+    "azure function app terraform",
+    "azure function app using terraform",
+    "azure function app with terraform",
+    "terraform azure function"
+  ]
+}

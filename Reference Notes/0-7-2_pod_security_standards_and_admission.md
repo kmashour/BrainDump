@@ -23,11 +23,11 @@ In containerized environments, a container process runs as a standard Linux proc
 ### 1.1 Parameter Scope: Pod-Level vs. Container-Level
 SecurityContexts define privilege, capability, and access control settings for Pods and Containers:
 
-| Scope | Parameters Supported | Behavior / Override Rule |
-| :--- | :--- | :--- |
-| **Pod-Level Only** | `fsGroup`, `fsGroupChangePolicy`, `sysctls`, `supplementalGroups` | Applies across all containers, init containers, and ephemeral containers in the Pod. |
-| **Container-Level Only** | `capabilities` (`add`/`drop`), `privileged`, `allowPrivilegeEscalation`, `readOnlyRootFilesystem`, `procMount` | Specific to the individual container process. Overrides Pod-level defaults where applicable. |
-| **Shared (Pod or Container)** | `runAsUser`, `runAsGroup`, `runAsNonRoot`, `seLinuxOptions`, `seccompProfile`, `windowsOptions` | If defined at both levels, the **Container-level configuration takes precedence**. |
+| Scope                         | Parameters Supported                                                                                           | Behavior / Override Rule                                                                     |
+| :---------------------------- | :------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| **Pod-Level Only**            | `fsGroup`, `fsGroupChangePolicy`, `sysctls`, `supplementalGroups`                                              | Applies across all containers, init containers, and ephemeral containers in the Pod.         |
+| **Container-Level Only**      | `capabilities` (`add`/`drop`), `privileged`, `allowPrivilegeEscalation`, `readOnlyRootFilesystem`, `procMount` | Specific to the individual container process. Overrides Pod-level defaults where applicable. |
+| **Shared (Pod or Container)** | `runAsUser`, `runAsGroup`, `runAsNonRoot`, `seLinuxOptions`, `seccompProfile`, `windowsOptions`                | If defined at both levels, the **Container-level configuration takes precedence**.           |
 
 ### 1.2 Comprehensive Hardened Workload Template
 ```yaml
@@ -127,9 +127,10 @@ While both allow accessing a file through multiple directories, their underlying
 
 ## 2. 🏛️ Historical Architecture: Pod Security Policy (PSP) (v1.3 – v1.25)
 
-Before Kubernetes 1.21, **Pod Security Policy (PSP)** was the primary native mechanism used to enforce cluster-wide pod security. While deprecated in v1.21 and completely removed in v1.25, mastering PSP architecture is fundamental for legacy cluster migrations, CKS architectural questions, and understanding why modern Pod Security Standards evolved.
+Before Kubernetes 1.21, **Pod Security Policy (PSP)** was the primary native mechanism used to **enforce cluster-wide pod security.** While deprecated in v1.21 and completely removed in v1.25, mastering PSP architecture is fundamental for legacy cluster migrations, CKS architectural questions, and understanding why modern Pod Security Standards evolved.
 
 ```mermaid
+%% cfr-size: 77 %%
 flowchart TD
     User["User / ServiceAccount"] -->|1. kubectl create -f pod.yaml| API["kube-apiserver"]
     API --> AuthN["Authentication"]
@@ -239,6 +240,7 @@ Unlike standard resources, accessing a PSP required RBAC permission on the `use`
 ### 3.1 The 4 Fatal Flaws of Legacy PodSecurityPolicy
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart TD
     subgraph The Controller Delegation Trap
         Dev["Developer (Alice)\n[Has PSP Admin RBAC]"] -->|kubectl create deployment| Dep["Deployment Object"]

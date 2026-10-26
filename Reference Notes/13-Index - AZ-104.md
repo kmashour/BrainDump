@@ -19,7 +19,7 @@ tags:
 
 ## 🎯 Executive Overview & Exam Blueprint
 
-This Map of Content (MOC) indexes the complete 12-section technical curriculum for the **Microsoft Certified: Azure Administrator Associate (AZ-104)** exam track, ingested from KodeKloud's updated course material.
+This Map of Content (MOC) indexes the complete 12-module technical curriculum for the **Microsoft Certified: Azure Administrator Associate (AZ-104)** track. It consolidates all authoritative learning inputs—combining KodeKloud's updated curriculum, Moe Intelligence's deep-dive video lectures, Microsoft Learn documentation, and the Azure Architecture Center—into exhaustive, unified engineering reference notes.
 
 The AZ-104 certification validates foundational to intermediate subject matter expertise in implementing, managing, and monitoring an organization’s Microsoft Azure environment—spanning identity, governance, storage, compute, and virtual networking.
 
@@ -53,6 +53,25 @@ flowchart TD
     Networking --> StorageCompute
     StorageCompute --> OperationsMonitoring
 ```
+
+---
+
+## 🛠️ Hands-On Enterprise Projects & Lab Curriculum
+
+Access the complete, production-grade hands-on laboratory curriculum under `Projects/AZ-104/`:
+- 🚀 **[[Projects/AZ-104/README.md|Master Hands-On Project Curriculum Hub]]**: Complete index, architecture roadmap, prerequisite chains, and dual GUI/CLI execution paths.
+  * **Module 01 (Governance & Tooling):** [[Lab-01_Enterprise_Subscription_Baseline_and_Tooling|Lab 01: Subscription Baseline & Tooling]]
+  * **Module 02 (Identity & Entra ID):** [[Lab-02_Enterprise_Identity_SSPR_and_Administrative_Units|Lab 02: Entra ID, SSPR & Administrative Units]]
+  * **Module 03 (Governance & Compliance):** [[Lab-03_Custom_RBAC_Resource_Locks_and_Azure_Policy|Lab 03: Custom RBAC, Resource Locks & Policy]]
+  * **Module 04 (Resources & Bicep):** [[Lab-04_Declarative_IaC_with_Bicep_and_ARM|Lab 04: Declarative IaC with Bicep & ARM]]
+  * **Module 05 (Virtual Networking):** [[Lab-05_VNet_Architecture_Subnetting_NSG_and_Private_DNS|Lab 05: VNet, Subnets, NSGs & Private DNS]]
+  * **Module 06 (Intersite Connectivity):** [[Lab-06_Hub_and_Spoke_Peering_UDR_and_Private_Link|Lab 06: Hub-Spoke, UDR & Private Link]]
+  * **Module 07 (Traffic Management):** [[Lab-07_Azure_Load_Balancer_Application_Gateway_and_WAF|Lab 07: Load Balancers, App Gateway & WAF]]
+  * **Module 08 (Storage & Protection):** [[Lab-08_Storage_Redundancy_Lifecycle_and_User_Delegation_SAS|Lab 08: Storage Redundancy, Lifecycle & WORM SAS]]
+  * **Module 09 (VMs & Scale Sets):** [[Lab-09_VM_Resilience_Managed_Disks_Bastion_and_VMSS|Lab 09: VMs, Managed Disks, Bastion & VMSS]]
+  * **Module 10 (PaaS & Containers):** [[Lab-10_App_Service_Blue_Green_Slots_and_Container_Apps|Lab 10: App Service Blue/Green Slots & ACA]]
+  * **Module 11 (Data Protection & DR):** [[Lab-11_Azure_Backup_Soft_Delete_Resource_Guard_and_ASR|Lab 11: Azure Backup GFS, MUA & ASR Failover]]
+  * **Module 12 (Monitoring & FinOps):** [[Lab-12_Full_Stack_Observability_AMA_KQL_and_Alert_Suppression|Lab 12: Observability, AMA, KQL & Alert Suppression]]
 
 ---
 
@@ -118,10 +137,6 @@ flowchart TD
 - 📈 **[[13-104-12_administer_monitoring|Module 13-104-12: Administer Monitoring]]**
   * Full-stack observability with Azure Monitor; Metrics (numerical time-series, 93-day retention) vs. Logs (semi-structured tabular, 30-day default); Azure Activity Logs (ARM control plane auditing, 90-day retention, diagnostic export); Log Analytics Workspace architecture, pricing tiers, and Kusto Query Language (KQL); host monitoring transition: Azure Monitor Agent (AMA) + Data Collection Rules (DCRs) vs. deprecated MMA; and Azure Monitor Alert Rules (Sev 0 to Sev 4) with Action Groups.
 
-### Practical Video Lecture Master Digest
-- 🎙️ **[[13-104-V_moe_intelligence_az104_deep_dive_lectures|Module 13-104-V: Video Deep-Dive Lectures & Real-World Builds (Moe Intelligence Series)]]**
-  * Synthesized 42-lesson master lecture digest from the Arabic Comprehensive AZ-104 series, capturing tenant vs. subscription boundaries, hybrid Entra Connect sync mechanics, Management Group depth limits, UDR priority resolution, Private Link DNS integration, App Service warm blue/green swaps, blob versioning, Alert Processing Rules, and runaway Log Analytics cost prevention.
-
 ---
 
 ## 🔍 Rapid-Fire Exam Scenarios & Rule Matrix
@@ -147,5 +162,7 @@ flowchart TD
 - [Microsoft Certified: Azure Administrator Associate (AZ-104) Official Exam Page](https://learn.microsoft.com/en-us/credentials/certifications/azure-administrator/)
 - [Microsoft Learn: AZ-104 Study Guide & Exam Blueprint](https://learn.microsoft.com/en-us/credentials/certifications/resources/study-guides/az-104)
 - [KodeKloud [Updated] AZ-104: Microsoft Azure Administrator Course](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Introduction/Course-Introduction/page)
+- [John Savill: AZ-104 Azure Administrator Certification Study Playlist & Master Class](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
+- [John Savill: Azure Deep Dives Master Class Playlist](https://www.youtube.com/playlist?list=PLlVtbbG169nGekKEV-l3TOXDLLEAj8jU2)
 - [Moe Intelligence: Arabic Full Courses - AZ-900 + AZ 104 شرح بالعربي (YouTube Playlist)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/)

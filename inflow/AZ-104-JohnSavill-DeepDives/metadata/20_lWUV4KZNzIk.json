@@ -1,0 +1,89 @@
+{
+  "id": "lWUV4KZNzIk",
+  "title": "Looking at Entra Permissions Management to Manage Permissions Across AWS, GCP and Azure",
+  "duration": 3350,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 40
+    },
+    {
+      "start_time": 40,
+      "title": "Challenge today",
+      "end_time": 356
+    },
+    {
+      "start_time": 356,
+      "title": "Entra Permissions Management Overview",
+      "end_time": 570
+    },
+    {
+      "start_time": 570,
+      "title": "Onboarding",
+      "end_time": 970
+    },
+    {
+      "start_time": 970,
+      "title": "Permission Creep Index and excessive permissions",
+      "end_time": 1325
+    },
+    {
+      "start_time": 1325,
+      "title": "Analytics",
+      "end_time": 1503
+    },
+    {
+      "start_time": 1503,
+      "title": "Remediation",
+      "end_time": 1957
+    },
+    {
+      "start_time": 1957,
+      "title": "Permissions on demand",
+      "end_time": 2692
+    },
+    {
+      "start_time": 2692,
+      "title": "AAD PIM & P.O.D.",
+      "end_time": 2885
+    },
+    {
+      "start_time": 2885,
+      "title": "Autopilot and automation",
+      "end_time": 2965
+    },
+    {
+      "start_time": 2965,
+      "title": "Audit and reporting",
+      "end_time": 3117
+    },
+    {
+      "start_time": 3117,
+      "title": "Notifications",
+      "end_time": 3218
+    },
+    {
+      "start_time": 3218,
+      "title": "Licensing",
+      "end_time": 3290
+    },
+    {
+      "start_time": 3290,
+      "title": "Summary and close",
+      "end_time": 3350
+    }
+  ],
+  "description": "A dive into Entra Permissions Management. What it is, how we use it and a little bit of how it works.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Introduction\n0:40 - Challenge today\n5:56 - Entra Permissions Management Overview\n9:30 - Onboarding\n16:10 - Permission Creep Index and excessive permissions\n22:05 - Analytics\n25:03 - Remediation\n32:37 - Permissions on demand\n44:52 - AAD PIM & P.O.D.\n48:05 - Autopilot and automation\n49:25 - Audit and reporting\n51:57 - Notifications\n53:38 - Licensing\n54:50 - Summary and close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/EntraPermissionsManagement.png\n\u25ba Documentation:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/cloud-infrastructure-entitlement-management/overview\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #doyouevenazure #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=lWUV4KZNzIk",
+  "upload_date": "20220816",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "azure ad",
+    "zero trust"
+  ]
+}

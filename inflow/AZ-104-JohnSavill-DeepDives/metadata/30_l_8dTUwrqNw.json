@@ -1,0 +1,119 @@
+{
+  "id": "l_8dTUwrqNw",
+  "title": "Azure API Management with Generative AI",
+  "duration": 2360,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 27
+    },
+    {
+      "start_time": 27,
+      "title": "Adding APIM into the mix",
+      "end_time": 196
+    },
+    {
+      "start_time": 196,
+      "title": "LLM supported",
+      "end_time": 324
+    },
+    {
+      "start_time": 324,
+      "title": "Authentication to the LLM",
+      "end_time": 381
+    },
+    {
+      "start_time": 381,
+      "title": "Adding LLM to APIM",
+      "end_time": 407
+    },
+    {
+      "start_time": 407,
+      "title": "Azure Portal onboarding experience",
+      "end_time": 510
+    },
+    {
+      "start_time": 510,
+      "title": "Some key GenAI capabilities in APIM",
+      "end_time": 526
+    },
+    {
+      "start_time": 526,
+      "title": "Token limits",
+      "end_time": 757
+    },
+    {
+      "start_time": 757,
+      "title": "Emit token metrics",
+      "end_time": 860
+    },
+    {
+      "start_time": 860,
+      "title": "Load balancing and switching between instances",
+      "end_time": 1285
+    },
+    {
+      "start_time": 1285,
+      "title": "Logging prompts",
+      "end_time": 1397
+    },
+    {
+      "start_time": 1397,
+      "title": "Semantic caching",
+      "end_time": 1531
+    },
+    {
+      "start_time": 1531,
+      "title": "Requirements",
+      "end_time": 1660
+    },
+    {
+      "start_time": 1660,
+      "title": "How it works",
+      "end_time": 1798
+    },
+    {
+      "start_time": 1798,
+      "title": "Demo",
+      "end_time": 2101
+    },
+    {
+      "start_time": 2101,
+      "title": "Chaining?",
+      "end_time": 2138
+    },
+    {
+      "start_time": 2138,
+      "title": "Great example scenario repo",
+      "end_time": 2208
+    },
+    {
+      "start_time": 2208,
+      "title": "Summary",
+      "end_time": 2337
+    },
+    {
+      "start_time": 2337,
+      "title": "Close",
+      "end_time": 2360
+    }
+  ],
+  "description": "Diving into using APIM with generative AI models.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\ud83e\udd14  Due to the channel growth and number of people wanting help I no longer can answer or even read questions and they will just stay in the moderation queue never to be seen so please post questions to other sites like Reddit, Microsoft Community Hub etc.\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n00:27 - Adding APIM into the mix\n03:16 - LLM supported\n05:24 - Authentication to the LLM\n06:21 - Adding LLM to APIM\n06:47 - Azure Portal onboarding experience\n08:30 - Some key GenAI capabilities in APIM\n08:46 - Token limits\n12:37 - Emit token metrics\n14:20 - Load balancing and switching between instances\n21:25 - Logging prompts\n23:17 - Semantic caching\n25:31 - Requirements\n27:40 - How it works\n29:58 - Demo\n35:01 - Chaining?\n35:38 - Great example scenario repo\n36:48 - Summary\n38:57 - Close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/APIMandGenAI.png\n\u25ba Git Repo of APIM and GenAI scenarios:\n\ud83d\udd17 https://github.com/Azure-Samples/AI-Gateway/tree/main\n\u25ba Token limit policy:\n\ud83d\udd17 https://learn.microsoft.com/azure/api-management/azure-openai-token-limit-policy\n\u25ba Emit metrics policy:\n\ud83d\udd17 https://learn.microsoft.com/azure/api-management/azure-openai-emit-token-metric-policy\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#Azure #Cloud #johnsavillstechnicaltraining",
+  "webpage_url": "https://www.youtube.com/watch?v=l_8dTUwrqNw",
+  "upload_date": "20240930",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "API",
+    "API management",
+    "API center",
+    "LLM",
+    "OpenAI",
+    "GenAI",
+    "generative AI"
+  ]
+}

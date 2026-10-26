@@ -11,6 +11,7 @@ This vault serves as a consolidated single source of truth across all technical 
 The architecture map below illustrates how core engineering layers interlock across the entire knowledge base:
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart TD
     %% OS & Kernel Foundation
     subgraph KERNEL ["1. Linux OS & Kernel Foundation"]
@@ -132,6 +133,7 @@ flowchart TD
 Every engineering topic in this vault is maintained according to the **Dual-Layer Knowledge Engine**:
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart LR
     Source["Inflow Transcripts, Technical Books, Whitepapers, Documentation"] --> Scraper["Automatic Scraper & Sub-Link Crawler"]
     Scraper --> DualEngine["Dual-Layer Knowledge Engine"]
@@ -175,7 +177,7 @@ The vault spans **14 core engineering domains** plus multi-disciplinary projects
 | `9-X` | [GitHub Actions Automation](Reference%20Notes/9-Index%20-%20GitHub%20Actions.md) | Event-driven workflow execution, parallel matrix strategies, artifact management, package caching, dynamic GITHUB_TOKEN permissions, and passwordless OIDC trust. | GitHub Actions CI/CD |
 | `10-X` | [Terraform on AWS & IaC](Reference%20Notes/10-Index%20-%20Terraform%20on%20AWS.md) | Infrastructure as Code, S3/DynamoDB state locking, variables and type constraints, custom reusable modules, managed EKS provisioning, and drift remediation. | HashiCorp Terraform Associate |
 | `11-X` | [AWS CloudOps & Reliability](Reference%20Notes/11-Index%20-%20AWS%20CloudOps.md) | Unified CloudWatch metrics, Systems Manager (SSM) automation, compute/storage optimization, Route 53 DNS failover, AWS Organizations governance, and hybrid networking. | AWS SysOps Administrator |
-| `12-X` | [CNCF Cloud-Native References](Reference%20Notes/12-Index%20-%20CNCF%20References.md) | Cloud-native architectural digests, container orchestration pattern studies, cluster disaster recovery workflows, and etcd/volume storage designs. | Cloud-Native Computing Foundation (CNCF) |
+| `12-X` | [CNCF Cloud-Native References](Reference%20Notes/12-Index%20-%20CNCF%20References.md) | Cloud-native architectural digests, cluster disaster recovery workflows, Open Policy Agent (OPA) policy-as-code, and Netflix-scale distributed authorization. | Cloud-Native Computing Foundation (CNCF) |
 | `13-X` | [Microsoft Azure Architecture](Reference%20Notes/13-Index%20-%20Azure.md) | Enterprise Azure architecture, ARM control plane, Microsoft Entra ID, Virtual Networks (VNets), Network Security Groups (NSGs), and unified Storage Accounts. | Azure AZ-900, AZ-104, AZ-305 |
 | `MISC` | [Miscellaneous Projects](Reference%20Notes/--Index--.md#miscellaneous-projects-misc) | Multi-disciplinary projects combining multiple administrative fields: self-hosted Gitea GitOps on RHEL 8, Git internals, Linux sysadmin troubleshooting, and OpenStack private cloud. | Practical Systems Administration |
 

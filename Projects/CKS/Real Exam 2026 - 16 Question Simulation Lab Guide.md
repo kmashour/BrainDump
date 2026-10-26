@@ -23,7 +23,7 @@ tags:
 
 > [!IMPORTANT]
 > **Live VM Simulation Environment:**
-> All 16 exam scenarios in this guide are pre-deployed, automated, and ready for hands-on drill on the dedicated Ubuntu node at `karim@10.0.0.134`.
+> All 16 exam scenarios in this guide are pre-deployed, automated, and ready for hands-on drill on the dedicated Ubuntu node at `karim@10.0.0.133`.
 > 
 > The lab is driven by the master CLI tool **`cks`** installed directly on the VM:
 > - `cks list`: Displays all 16 scenarios and current status (`READY`, `ACTIVE`, `SOLVED`).
@@ -76,7 +76,7 @@ flowchart TD
 
 ---
 
-### 🔹 Question 01: Fix Insecure Kubelet and etcd Configuration
+###  🔹 Question 01: Fix Insecure Kubelet and etcd Configuration
 * **Directory:** `/home/karim/cks-exam-lab/q01-kubelet-etcd/`
 * **Domain:** Cluster Hardening & CIS Benchmarks
 * **Source References:** `CKS_EXAM.md` (Item 1), `cks_exam_notes.md` (Item 3), `CKS Notes.md`
@@ -142,7 +142,7 @@ A secure deployment named `secure-app` in namespace `staging-sec` is failing to 
 #### Problem Statement
 A containerized service and its Kubernetes Deployment have failed security review. The Dockerfile builds an image running as root, and the Deployment allows privilege escalation and root filesystem modification.
 1. Update `/opt/course/docker/Dockerfile` to set `USER nobody` (or UID `65534`).
-2. Update `/opt/course/docker/deployment.yaml` to enforce `runAsUser: 65535`, `readOnlyRootFilesystem: true`, `privileged: false`, and `allowPrivilegeEscalation: false`.
+2. Update `/opt/course/docker/deployment.yaml` to enforce `runAsUser: cks`, `readOnlyRootFilesystem: true`, `privileged: false`, and `allowPrivilegeEscalation: false`.
 3. Apply to namespace `production-workloads`.
 
 #### Deep Intuition & AARF Analysis
@@ -176,7 +176,7 @@ A containerized service and its Kubernetes Deployment have failed security revie
 * **Domain:** Runtime Security & Threat Forensics
 * **Source References:** `CKS_EXAM.md` (Item 4), `cks_exam_notes.md` (Item 7), DevOps Tales Video 5
 * **Related Core Reference:** [[Reference Notes/0-7-6_runtime_security_falco_and_audit_logging.md|Module 0-7-6: Runtime Security, Falco eBPF & Auditing]]
-
+:
 #### Problem Statement
 A compromised workload in namespace `threat-zone` is attempting kernel memory inspection by accessing `/dev/mem`.
 1. Append a custom Falco rule to `/etc/falco/falco_rules.local.yaml`:
@@ -207,7 +207,6 @@ A compromised workload in namespace `threat-zone` is attempting kernel memory in
 * **Related Core Reference:** [[Reference Notes/0-7-9_workload_kernel_isolation_seccomp_apparmor_and_capabilities.md|Module 0-7-9: Workload Kernel Isolation]]
 
 #### Problem Statement
-Harden the multi-container deployment `analytics-collector` in namespace `data-platform`. Both containers (`collector` and `aggregator`) must run with `runAsUser: 30000`, `readOnlyRootFilesystem: true`, and `allowPrivilegeEscalation: false`.
 
 #### Deep Intuition & AARF Analysis
 * **The Answer:**
@@ -360,7 +359,40 @@ In namespace `automation`, disable automatic token mounting on ServiceAccount `b
 * **Related Core Reference:** [[Reference Notes/0-7-8_cluster_hardening_cis_benchmarks_and_upgrades.md|Module 0-7-8: CIS Benchmarks & Cluster Upgrades]]
 
 #### Problem Statement
-Safely drain node `karim-codemonarch` (`--ignore-daemonsets --delete-emptydir-data --force`), simulate package upgrades (`kubeadm upgrade node`, kubelet, kubectl), restart kubelet, and uncordon the node.
+A worker node `node01` was left behind after the cluster control plane was upgraded. 
+1. Determine the target version from the control plane node (`kubectl get nodes`).
+2. Safely drain `node01` evicting workloads without disruption (`--ignore-daemonsets --delete-emptydir-data --force`).
+3. SSH into `node01` and upgrade `kubeadm` to the target version using `apt`.
+4. Upgrade the worker node configuration using `kubeadm upgrade node` (do NOT run `apply`).
+5. Upgrade `kubelet` and `kubectl` to the matching target version, re-hold packages, reload systemd, and restart `kubelet`.
+6. Return to the main terminal and `uncordon` the node.
+
+#### Deep Intuition & Real Exam Formula
+* **Target Version Formula:** When the prompt does not specify a version, check `kubectl get nodes`. Worker nodes must match the control-plane version.
+* **Why Upgrade `kubectl` on Worker:** While `kubelet` does not need `kubectl` to run pods, it is required for local on-node diagnostics (`--kubeconfig /etc/kubernetes/kubelet.conf`), satisfies the $\pm 1$ version skew policy, and is validated by the exam autograder (`dpkg -l`).
+* **Speed Flow:**
+  ```bash
+  # 1. Main Terminal: Find version & drain:
+  TARGET_VER=$(kubectl get nodes -l node-role.kubernetes.io/control-plane -o jsonpath='{.items[0].status.nodeInfo.kubeletVersion}' | sed 's/v//')
+  kubectl drain node01 --ignore-daemonsets --delete-emptydir-data --force
+
+  # 2. Worker Node:
+  ssh node01 "sudo bash -c '
+    apt-get update
+    PKG_VER=\$(apt-cache madison kubeadm | grep \"$TARGET_VER\" | head -1 | awk \"{print \\\$3}\")
+    apt-mark unhold kubeadm kubelet kubectl
+    apt-get install -y kubeadm=\$PKG_VER
+    apt-mark hold kubeadm
+    kubeadm upgrade node
+    apt-get install -y kubelet=\$PKG_VER kubectl=\$PKG_VER
+    apt-mark hold kubelet kubectl
+    systemctl daemon-reload && systemctl restart kubelet
+  '"
+
+  # 3. Main Terminal: Uncordon & verify:
+  kubectl uncordon node01
+  kubectl get nodes
+  ```
 
 ---
 
@@ -373,11 +405,32 @@ Safely drain node `karim-codemonarch` (`--ignore-daemonsets --delete-emptydir-da
 #### Problem Statement
 A multi-container microservice `supply-chain-app` in namespace `supply-chain` runs three containers (`frontend`, `cache-proxy`, `worker`).
 1. Inspect running containers via `kubectl exec` running `apk list libcrypto` to find which container runs vulnerable `libcrypto3 3-15-0`.
-2. Remove the vulnerable container (`cache-proxy`) from the Deployment.
-3. Generate an SPDX Software Bill of Materials (SBOM) for the approved image using `bom`:
+2. Identify the container image used by the vulnerable container (`cache-proxy`).
+3. Remove the vulnerable container (`cache-proxy`) from the Deployment.
+4. Generate an SPDX Software Bill of Materials (SBOM) for the **compromised/bad image** using `bom` and save it to the exam-specified output file:
    ```bash
-   bom generate --image alpine:latest -o /opt/course/sbom/app.spdx
+   bom generate --image <bad-image-tag> -o /opt/course/sbom/vulnerable-app.spdx
    ```
+
+#### Deep Intuition & Real Exam Forensic Rationale
+* **Why the Bad Image?** In security compliance and incident response, when an active vulnerability is evicted from a production cluster, security engineers must immediately freeze and archive the full dependency manifest (SBOM) of the **compromised/vulnerable artifact** for forensic CVE tracking and vulnerability reporting before the image is purged.
+* **Speed Flow:**
+  ```bash
+  # 1. Identify vulnerable container:
+  for c in frontend cache-proxy worker; do
+    echo "=== $c ==="; kubectl exec -n supply-chain deploy/supply-chain-app -c $c -- apk list libcrypto
+  done
+
+  # 2. Extract bad image tag from deployment before deleting container:
+  BAD_IMG=$(kubectl get deploy supply-chain-app -n supply-chain -o jsonpath='{.spec.template.spec.containers[?(@.name=="cache-proxy")].image}')
+
+  # 3. Remove cache-proxy from deployment:
+  kubectl edit deploy supply-chain-app -n supply-chain   # delete the container block
+
+  # 4. Generate SBOM for the bad image:
+  mkdir -p /opt/course/sbom
+  bom generate --image "$BAD_IMG" -o /opt/course/sbom/vulnerable-app.spdx
+  ```
 
 ---
 

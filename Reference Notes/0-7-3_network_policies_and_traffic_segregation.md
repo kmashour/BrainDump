@@ -347,6 +347,7 @@ Securing east-west traffic inside the Kubernetes cluster is essential for zero-t
 
 <!-- Documentation References -->
 [Kubernetes Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/)
+[Kubernetes Network Policy Concept](https://kubernetes.io/docs/concepts/services-networking/network-policy/)
 [Kubernetes Security Overview](https://kubernetes.io/docs/concepts/security/overview/)
 [KodeKloud CKS: Pod to Pod Encryption](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/Pod-to-Pod-Encryption/page)
 [KodeKloud CKS: One way SSL vs Mutual SSL](https://notes.kodekloud.com/docs/Certified-Kubernetes-Security-Specialist-CKS/Minimize-Microservice-Vulnerabilities/One-way-SSL-vs-Mutual-SSL/page)

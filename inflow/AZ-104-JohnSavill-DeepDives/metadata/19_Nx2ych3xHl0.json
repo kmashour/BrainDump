@@ -1,0 +1,105 @@
+{
+  "id": "Nx2ych3xHl0",
+  "title": "Microsoft Azure AD Identity Protection Deep Dive",
+  "duration": 3385,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 77
+    },
+    {
+      "start_time": 77,
+      "title": "The pillars of risk",
+      "end_time": 202
+    },
+    {
+      "start_time": 202,
+      "title": "Where is risk?",
+      "end_time": 439
+    },
+    {
+      "start_time": 439,
+      "title": "Risk pyramid",
+      "end_time": 615
+    },
+    {
+      "start_time": 615,
+      "title": "Risk signal types",
+      "end_time": 869
+    },
+    {
+      "start_time": 869,
+      "title": "Processing risk",
+      "end_time": 1101
+    },
+    {
+      "start_time": 1101,
+      "title": "Enforcement on risk with Conditional Access",
+      "end_time": 1545
+    },
+    {
+      "start_time": 1545,
+      "title": "Locking down security registration",
+      "end_time": 1728
+    },
+    {
+      "start_time": 1728,
+      "title": "Risky sign-in experience",
+      "end_time": 1840
+    },
+    {
+      "start_time": 1840,
+      "title": "Remediation",
+      "end_time": 1890
+    },
+    {
+      "start_time": 1890,
+      "title": "Manual remediation and reports",
+      "end_time": 2255
+    },
+    {
+      "start_time": 2255,
+      "title": "AAD Identity Protection policy and MFA registration",
+      "end_time": 2567
+    },
+    {
+      "start_time": 2567,
+      "title": "Reporting and detail based on licensing",
+      "end_time": 2770
+    },
+    {
+      "start_time": 2770,
+      "title": "Notifications",
+      "end_time": 2865
+    },
+    {
+      "start_time": 2865,
+      "title": "Identity score",
+      "end_time": 2934
+    },
+    {
+      "start_time": 2934,
+      "title": "Protection for external accounts",
+      "end_time": 3230
+    },
+    {
+      "start_time": 3230,
+      "title": "Summary",
+      "end_time": 3385
+    }
+  ],
+  "description": "A deep dive look at the Azure AD Premium P2 Identity Protection feature. What it is and how best to use it.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Introduction\n1:17 - The pillars of risk\n3:22 - Where is risk?\n7:19 - Risk pyramid\n10:15 - Risk signal types\n14:29 - Processing risk\n18:21 - Enforcement on risk with Conditional Access\n25:45 - Locking down security registration\n28:48 - Risky sign-in experience\n30:40 - Remediation\n31:30 - Manual remediation and reports\n37:35 - AAD Identity Protection policy and MFA registration\n42:47 - Reporting and detail based on licensing\n46:10 - Notifications\n47:45 - Identity score\n48:54 - Protection for external accounts\n53:50 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AADIPWhiteboard.png\n\u25ba Azure AD Portal:\n\ud83d\udd17 https://aad.portal.azure.com/\n\u25ba Risk types:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/identity-protection/concept-identity-protection-risks\n\u25ba Combined Security registration:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/authentication/howto-registration-mfa-sspr-combined\n\u25ba License requirements:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/identity-protection/overview-identity-protection#license-requirements\n\u25ba Risk Analysis Workbook:\n\ud83d\udd17 https://docs.microsoft.com/azure/active-directory/reports-monitoring/howto-use-azure-monitor-workbooks#identity-protection-risk-analysis\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #doyouevenazure #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=Nx2ych3xHl0",
+  "upload_date": "20220215",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "azure ad",
+    "identity",
+    "risk"
+  ]
+}

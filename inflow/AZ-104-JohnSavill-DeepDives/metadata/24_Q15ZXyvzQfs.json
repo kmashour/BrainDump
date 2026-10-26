@@ -1,0 +1,49 @@
+{
+  "id": "Q15ZXyvzQfs",
+  "title": "Understanding Azure AD Hybrid Join",
+  "duration": 995,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 15
+    },
+    {
+      "start_time": 15,
+      "title": "AD Join",
+      "end_time": 93
+    },
+    {
+      "start_time": 93,
+      "title": "Azure AD Join",
+      "end_time": 251
+    },
+    {
+      "start_time": 251,
+      "title": "AAD Join access to AD-joined resources",
+      "end_time": 438
+    },
+    {
+      "start_time": 438,
+      "title": "Hybrid Azure AD Join",
+      "end_time": 866
+    },
+    {
+      "start_time": 866,
+      "title": "Summary and close",
+      "end_time": 995
+    }
+  ],
+  "description": "Diving into what Azure AD Hybrid Join is and if you actually need it!\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n00:15 - AD Join\n01:33 - Azure AD Join\n04:11 - AAD Join access to AD-joined resources \n07:18 - Hybrid Azure AD Join\n14:26 - Summary and close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AzureADHybridJoin.png\n\u25ba Azure AD Join SSO to AD resources:\n\ud83d\udd17 https://learn.microsoft.com/azure/active-directory/devices/azuread-join-sso\n\u25ba Hybrid AAD Join Docs:\n\ud83d\udd17 https://learn.microsoft.com/azure/active-directory/devices/hybrid-azuread-join-plan\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq.html\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=Q15ZXyvzQfs",
+  "upload_date": "20230503",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "azure ad",
+    "identity"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "6TZsd4toIbg",
+  "title": "Azure Kubernetes Service (AKS) Networking Deep Dive",
+  "duration": 3827,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction to aks networking",
+      "end_time": 389
+    },
+    {
+      "start_time": 389,
+      "title": "Understanding kubenet",
+      "end_time": 997
+    },
+    {
+      "start_time": 997,
+      "title": "Azure cni explained",
+      "end_time": 1344
+    },
+    {
+      "start_time": 1344,
+      "title": "Choosing network plugins",
+      "end_time": 1554
+    },
+    {
+      "start_time": 1554,
+      "title": "Service ip and connectivity",
+      "end_time": 2042
+    },
+    {
+      "start_time": 2042,
+      "title": "Exposing services externally",
+      "end_time": 2871
+    },
+    {
+      "start_time": 2871,
+      "title": "Nginx ingress controllers",
+      "end_time": 3240
+    },
+    {
+      "start_time": 3240,
+      "title": "App gateway integration",
+      "end_time": 3827
+    }
+  ],
+  "description": "See https://youtu.be/54y986U1uYM for latest updates.\n\nIn this one-hour deep dive I explore how networking works with AKS (and Kubernetes), the options and how to offer services outside the AKS cluster including using Azure load balancer, NGINX and Azure App Gateway! Demos included along the way to help understand the key principals.",
+  "webpage_url": "https://www.youtube.com/watch?v=6TZsd4toIbg",
+  "upload_date": "20200704",
+  "tags": [
+    "aks",
+    "kubernetes",
+    "networking",
+    "azure",
+    "kubenet",
+    "azure cni",
+    "pod",
+    "virtual network"
+  ]
+}

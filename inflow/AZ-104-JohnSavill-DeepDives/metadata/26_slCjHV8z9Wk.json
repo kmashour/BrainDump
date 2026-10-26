@@ -1,0 +1,96 @@
+{
+  "id": "slCjHV8z9Wk",
+  "title": "Brand New Application Gateway for Containers Solution",
+  "duration": 2645,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 57
+    },
+    {
+      "start_time": 57,
+      "title": "Existing App Gateway solution",
+      "end_time": 151
+    },
+    {
+      "start_time": 151,
+      "title": "Challenges with existing solution",
+      "end_time": 252
+    },
+    {
+      "start_time": 252,
+      "title": "App Gateway for Containers",
+      "end_time": 360
+    },
+    {
+      "start_time": 360,
+      "title": "Azure resources",
+      "end_time": 700
+    },
+    {
+      "start_time": 700,
+      "title": "Kubernetes resources",
+      "end_time": 943
+    },
+    {
+      "start_time": 943,
+      "title": "Data flow",
+      "end_time": 1142
+    },
+    {
+      "start_time": 1142,
+      "title": "BYO vs managed lifecycle and initial resources",
+      "end_time": 1343
+    },
+    {
+      "start_time": 1343,
+      "title": "BYO path",
+      "end_time": 1607
+    },
+    {
+      "start_time": 1607,
+      "title": "Managed path",
+      "end_time": 1844
+    },
+    {
+      "start_time": 1844,
+      "title": "Creating a Kubernetes gateway",
+      "end_time": 2100
+    },
+    {
+      "start_time": 2100,
+      "title": "Features",
+      "end_time": 2363
+    },
+    {
+      "start_time": 2363,
+      "title": "Resiliency and scale",
+      "end_time": 2445
+    },
+    {
+      "start_time": 2445,
+      "title": "Why use this over 3rd party",
+      "end_time": 2527
+    },
+    {
+      "start_time": 2527,
+      "title": "Summary",
+      "end_time": 2645
+    }
+  ],
+  "description": "Looking at the new Application Gateway for Containers that is built from the ground up specifically as a layer-7 load balancing solution for container workloads in Azure.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n00:57 - Existing App Gateway solution\n02:31 - Challenges with existing solution\n04:12 - App Gateway for Containers\n06:00 - Azure resources\n11:40 - Kubernetes resources\n15:43 - Data flow\n19:02 - BYO vs managed lifecycle and initial resources\n22:23 - BYO path\n26:47 - Managed path\n30:44 - Creating a Kubernetes gateway\n35:00 - Features\n39:23 - Resiliency and scale\n40:45 - Why use this over 3rd party\n42:07 - Summary\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AppGatewayforContainers.png\n\u25ba Microsoft documentation:\n\ud83d\udd17 https://learn.microsoft.com/azure/application-gateway/for-containers/overview\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq.html\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=slCjHV8z9Wk",
+  "upload_date": "20230731",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "kubernetes",
+    "k8s",
+    "containers",
+    "aks"
+  ]
+}

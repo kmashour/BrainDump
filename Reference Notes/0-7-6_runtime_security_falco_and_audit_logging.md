@@ -54,8 +54,12 @@ Each incoming API request traverses four distinct stages:
 
 > [!CAUTION]
 > **Strict Secret Security Rule:** Never audit `Secrets` or `ConfigMaps` at the `Request` or `RequestResponse` levels. Doing so will dump raw, sensitive credentials (tokens, private keys) directly into plaintext log files on the host disk! Always audit Secrets at the `Metadata` level.
+> 
+> **Why etcd Encryption at Rest Does NOT Protect Audit Logs:**
+> Even if `etcd` disk encryption (`aescbc` or KMS) is active, the API Server Audit Logging engine runs at the **REST API layer**—long before the storage encryption provider is invoked. Writing `RequestResponse` for secrets dumps the plaintext Base64 API payload directly into `/var/log/kubernetes/audit/audit.log`, completely bypassing `etcd` encryption and creating a critical exfiltration vector.
 
 ---
+
 
 ### 1.3 Step-by-Step API Audit Policy Configuration
 

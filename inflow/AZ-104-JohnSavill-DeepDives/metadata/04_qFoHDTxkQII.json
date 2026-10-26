@@ -1,0 +1,61 @@
+{
+  "id": "qFoHDTxkQII",
+  "title": "Azure Role-Based Access Control Deep Dive",
+  "duration": 2081,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Intro",
+      "end_time": 110
+    },
+    {
+      "start_time": 110,
+      "title": "Resources in Azure Resource Manager",
+      "end_time": 569
+    },
+    {
+      "start_time": 569,
+      "title": "Resource Organization",
+      "end_time": 716
+    },
+    {
+      "start_time": 716,
+      "title": "Security Principals",
+      "end_time": 904
+    },
+    {
+      "start_time": 904,
+      "title": "Assign Role to a Principal at a Scope",
+      "end_time": 1081
+    },
+    {
+      "start_time": 1081,
+      "title": "Custom Roles",
+      "end_time": 1358
+    },
+    {
+      "start_time": 1358,
+      "title": "Privileged Identity Management",
+      "end_time": 1874
+    },
+    {
+      "start_time": 1874,
+      "title": "Resource Locking",
+      "end_time": 2081
+    }
+  ],
+  "description": "In this video we walk through Azure Role-Based Access Control including custom roles, PIM, locks and more.",
+  "webpage_url": "https://www.youtube.com/watch?v=qFoHDTxkQII",
+  "upload_date": "20200514",
+  "tags": [
+    "azure",
+    "azurecloud",
+    "rbac",
+    "roles",
+    "permissions",
+    "security",
+    "pim",
+    "privileged identity management",
+    "locks"
+  ]
+}

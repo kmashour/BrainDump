@@ -1,0 +1,103 @@
+{
+  "id": "JLx7ZFzjdSs",
+  "title": "Microsoft Azure Gateway Load Balancer Deep Dive",
+  "duration": 1936,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Intro",
+      "end_time": 28
+    },
+    {
+      "start_time": 28,
+      "title": "Offering public services",
+      "end_time": 102
+    },
+    {
+      "start_time": 102,
+      "title": "Adding NVA in the flow",
+      "end_time": 240
+    },
+    {
+      "start_time": 240,
+      "title": "Gateway load balancer",
+      "end_time": 383
+    },
+    {
+      "start_time": 383,
+      "title": "Creating a gateway load balancer",
+      "end_time": 434
+    },
+    {
+      "start_time": 434,
+      "title": "Chaining to a gateway load balancer",
+      "end_time": 640
+    },
+    {
+      "start_time": 640,
+      "title": "Providers and consumers",
+      "end_time": 678
+    },
+    {
+      "start_time": 678,
+      "title": "GW LB separation",
+      "end_time": 770
+    },
+    {
+      "start_time": 770,
+      "title": "The flow of traffic",
+      "end_time": 920
+    },
+    {
+      "start_time": 920,
+      "title": "Bump in the wire",
+      "end_time": 995
+    },
+    {
+      "start_time": 995,
+      "title": "Enter VxLan",
+      "end_time": 1178
+    },
+    {
+      "start_time": 1178,
+      "title": "Two tunnels",
+      "end_time": 1454
+    },
+    {
+      "start_time": 1454,
+      "title": "My setup of the dummy NVA for testing",
+      "end_time": 1620
+    },
+    {
+      "start_time": 1620,
+      "title": "Health probes and NSGs",
+      "end_time": 1698
+    },
+    {
+      "start_time": 1698,
+      "title": "Looking at traffic through NVA",
+      "end_time": 1780
+    },
+    {
+      "start_time": 1780,
+      "title": "Summary and next steps",
+      "end_time": 1855
+    },
+    {
+      "start_time": 1855,
+      "title": "Me whining about a lack of autoexec.bat in Linux",
+      "end_time": 1936
+    }
+  ],
+  "description": "In this video we explore the Microsoft Azure Gateway Load Balancer to provider a seamless integration with Network Virtual Appliances and remove many of the previous NVA-associated pain points!\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Intro\n0:28 - Offering public services\n1:42 - Adding NVA in the flow\n4:00 - Gateway load balancer\n6:23 - Creating a gateway load balancer\n7:14 - Chaining to a gateway load balancer\n10:40 - Providers and consumers\n11:18 - GW LB separation\n12:50 - The flow of traffic\n15:20 - Bump in the wire\n16:35 - Enter VxLan\n19:38 - Two tunnels\n24:14 - My setup of the dummy NVA for testing\n27:00 - Health probes and NSGs\n28:18 - Looking at traffic through NVA\n29:40 - Summary and next steps\n30:55 - Me whining about a lack of autoexec.bat in Linux\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/GWLBWhiteboard.png\n\u25ba My setup file in GitHub:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/blob/master/AzureNetworking/GWLB.sh\n\u25ba Microsoft doc on creating a GW LB:\n\ud83d\udd17 https://docs.microsoft.com/en-us/azure/load-balancer/tutorial-gateway-portal#create-gateway-load-balancer\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n \u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=JLx7ZFzjdSs",
+  "upload_date": "20211116",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "networking"
+  ]
+}

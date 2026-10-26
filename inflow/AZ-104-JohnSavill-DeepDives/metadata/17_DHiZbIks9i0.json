@@ -1,0 +1,104 @@
+{
+  "id": "DHiZbIks9i0",
+  "title": "Microsoft Azure Front Door Deep Dive",
+  "duration": 2421,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Intro",
+      "end_time": 18
+    },
+    {
+      "start_time": 18,
+      "title": "Why we want a geo balancing solution",
+      "end_time": 105
+    },
+    {
+      "start_time": 105,
+      "title": "End user experience",
+      "end_time": 200
+    },
+    {
+      "start_time": 200,
+      "title": "Layer 7 solution",
+      "end_time": 227
+    },
+    {
+      "start_time": 227,
+      "title": "Supported origins",
+      "end_time": 311
+    },
+    {
+      "start_time": 311,
+      "title": "How does Azure Front Door work?",
+      "end_time": 488
+    },
+    {
+      "start_time": 488,
+      "title": "Anycast and split TCP",
+      "end_time": 698
+    },
+    {
+      "start_time": 698,
+      "title": "Additional features",
+      "end_time": 815
+    },
+    {
+      "start_time": 815,
+      "title": "Azure Front Door instance/profile",
+      "end_time": 885
+    },
+    {
+      "start_time": 885,
+      "title": "Scale limits",
+      "end_time": 945
+    },
+    {
+      "start_time": 945,
+      "title": "SKUs",
+      "end_time": 1088
+    },
+    {
+      "start_time": 1088,
+      "title": "Origin groups",
+      "end_time": 1393
+    },
+    {
+      "start_time": 1393,
+      "title": "Frontend end point/domain",
+      "end_time": 1565
+    },
+    {
+      "start_time": 1565,
+      "title": "Custom domains and validation",
+      "end_time": 1829
+    },
+    {
+      "start_time": 1829,
+      "title": "Routes and rules",
+      "end_time": 2205
+    },
+    {
+      "start_time": 2205,
+      "title": "Web Application Firewall",
+      "end_time": 2310
+    },
+    {
+      "start_time": 2310,
+      "title": "Summary and close",
+      "end_time": 2421
+    }
+  ],
+  "description": "In this video we explore the Microsoft Azure Front Door geo-balancing layer 7 solution. Why we want it, what it is and how to use it!\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n0:00 - Intro\n0:18 - Why we want a geo balancing solution\n1:45 - End user experience\n3:20 - Layer 7 solution\n3:47 - Supported origins\n5:11 - How does Azure Front Door work?\n8:08 - Anycast and split TCP\n11:38-  Additional features\n13:35 - Azure Front Door instance/profile\n14:45 - Scale limits\n15:45 - SKUs\n18:08 - Origin groups\n23:13 - Frontend end point/domain\n26:05 - Custom domains and validation\n30:29 - Routes and rules\n36:45 - Web Application Firewall\n38:30 - Summary and close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Azure Front Door FAQ:\n\ud83d\udd17 https://docs.microsoft.com/azure/frontdoor/front-door-faq\n\u25ba Azure Front Door Edge Locations:\n\ud83d\udd17 https://docs.microsoft.com/azure/frontdoor/edge-locations-by-region\n\u25ba Service Limits:\n\ud83d\udd17 https://docs.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits#azure-front-door-standardpremium-preview-service-limits\n\u25ba Front Door SKU comparison:\n\ud83d\udd17 https://docs.microsoft.com/azure/frontdoor/standard-premium/tier-comparison#feature-comparison\n\u25ba Front Door Pricing:\n\ud83d\udd17 https://azure.microsoft.com/pricing/details/frontdoor/\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n \u2754 Question about my setup?\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nHuSSHudxXDdn9Vz3T4-0mS\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #cloud #johnsavillstechnicaltraining #onboardtoazure #azurefrontdoor",
+  "webpage_url": "https://www.youtube.com/watch?v=DHiZbIks9i0",
+  "upload_date": "20211026",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "networking",
+    "azure front door"
+  ]
+}

@@ -270,32 +270,154 @@ az vmss create \
 
 ---
 
-## 🎙️ Video Deep Dive & Real-World Builds (Moe Intelligence Series)
+## 🏛️ Enterprise Compute Architecture: Sizing, Caching & High Availability
 
-> [!NOTE]
-> **Source Attribution:** Transcripts and architectural walkthroughs synthesized from *Moe Intelligence (Arabic Comprehensive AZ-104 Series)*, Lessons 28 & 29 ([Playlist Reference](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)). Translated to English while preserving technical taxonomy.
-
-### 1. Workload Architecture: VMs vs. Containers vs. ACI (Lesson 28)
+### 1. Compute Paradigm Selection: VMs vs. Containers vs. ACI
 - **Architectural Trade-offs:**
-  - *Virtual Machines (IaaS):* Full OS abstraction with dedicated kernel space. Best for monolithic apps, software requiring custom kernel drivers, or Windows Desktop services. Slower provisioning (minutes), higher operational maintenance (patching, antivirus).
-  - *Containers (Docker/OCI):* Share the host OS kernel and isolate workloads via user namespaces and cgroups. Millisecond startup times and ultra-dense resource packing.
-  - *Azure Container Instances (ACI):* Serverless container execution. Spin up individual containers on demand in seconds without provisioning VMs, clusters, or orchestrators. Billed per second of vCPU/RAM.
-- **When to Choose What on the AZ-104 Exam:**
-  - Need to run a batch job or event-driven script in a container for 15 minutes? ➔ **Azure Container Instances (ACI)**.
-  - Need full hypervisor-level isolation and custom kernel extensions? ➔ **Azure Virtual Machines**.
-  - Need microservice orchestration with auto-healing and ingress? ➔ **Azure Container Apps (ACA)** or **AKS**.
+  - *Virtual Machines (IaaS):* Full OS abstraction with dedicated kernel space. Ideal for legacy monolithic applications, workloads requiring custom kernel drivers, or Windows Desktop services. Slower provisioning (1–5 minutes) and higher maintenance overhead (OS patching, antivirus, backups).
+  - *Azure Container Instances (ACI):* Serverless container execution. Spins up individual OCI/Docker containers on demand in seconds without managing VMs or Kubernetes clusters. Billed per second of vCPU/RAM allocation.
+  - *Azure Container Apps (ACA) / AKS:* Microservice orchestration with automated KEDA scaling, Envoy ingress, and revision management.
+- **Decision Matrix:**
+  - Short-lived batch jobs or event-driven tasks $\rightarrow$ **Azure Container Instances (ACI)**.
+  - Monolithic services with custom OS configurations $\rightarrow$ **Azure Virtual Machines**.
+  - Scalable containerized microservice architectures $\rightarrow$ **Azure Container Apps (ACA)**.
 
-### 2. VM Disk Storage Architecture & Host Caching (Lesson 29)
+### 2. VM Disk Storage Architecture & Host Caching Rules
 - **The Ephemeral Temporary Disk (`D:` in Windows, `/dev/sdb` in Linux):**
-  - Physical NVMe SSD located directly on the hypervisor host blade.
-  - *Critical Warning:* Used strictly for pagefile/swap. **All data on this disk is permanently erased** if the VM is stopped, deallocated, restarted, or live-migrated during hardware servicing.
-- **Host Caching Guidelines:**
-  - *Read/Write Caching:* Default for OS disks; caches reads and writes in host RAM for fast performance.
-  - *None / Read-Only Caching:* Recommended for high-transaction database data disks (SQL Server `.mdf` and `.ldf` files) to prevent write-cache writeback loss during host crashes.
+  - High-speed physical NVMe SSD located directly on the hypervisor host blade.
+  - *Critical Architectural Trap:* Designed strictly for pagefile/swap space. **All data on this disk is permanently destroyed** whenever the VM is deallocated, restarted, or live-migrated to another host blade during Azure hardware servicing.
+- **Host Disk Caching Guidelines:**
+  - *Read/Write Caching:* Default for OS disks; caches reads and writes in host blade RAM for high throughput.
+  - *ReadOnly Caching:* Recommended for high-read data disks (e.g., database read-replicas, reporting stores).
+  - *None (No Caching):* Mandatory best practice for transactional write workloads (e.g., SQL Server transaction logs `.ldf` and data files `.mdf`) to eliminate write-cache writeback loss during unexpected host crashes.
+
+### 3. High Availability Architecture: Availability Sets vs. Availability Zones
+
+| Dimension | Availability Sets | Availability Zones |
+| :--- | :--- | :--- |
+| **Physical Isolation** | Distinct racks, power supplies, and network switches within **one datacenter** | Distinct physical datacenters with independent cooling and power within **one region** |
+| **Fault Tolerance** | Fault Domains (FD: up to 3) & Update Domains (UD: up to 20) | Zonal isolation (Zones 1, 2, 3) |
+| **Availability SLA** | **99.95%** (for 2+ VMs in the set) | **99.99%** (for 2+ VMs across zones) |
+| **Configuration Timing** | Must be chosen **at VM creation** (cannot add VM later) | Must be chosen **at VM creation** |
+| **Disk Constraint** | Requires Managed Disks aligned to the set | Managed Disks automatically pinned to target zone |
 
 ---
 
+## 💡 Compute Architecture Decision Tree & Articulation Guide
+
+```mermaid
+flowchart TD
+    Req{"What is the compute workload requirement?"}
+    
+    Req -- "Run a simple task in a container for 15 minutes with zero VM management" --> C1["Deploy to **Azure Container Instances (ACI)**."]
+    Req -- "Maximum SLA (99.99%) resilience against datacenter disasters" --> C2["Deploy VMs across **Availability Zones (Zones 1, 2, 3)** behind a Standard Load Balancer."]
+    Req -- "Elastic auto-scaling of stateless web VMs based on CPU metrics" --> C3["Deploy a **Virtual Machine Scale Set (VMSS)** with autoscale rules."]
+    Req -- "Secure administrative access without public IPs or VPNs" --> C4["Deploy **Azure Bastion** into `AzureBastionSubnet`."]
+```
+
+---
+
+---
+
+## 🏛️ Deep-Dive Compute Resiliency & Hypervisor Mechanics (John Savill Master Class Insights)
+
+### 1. Azure Hypervisor Virtualization & Disk Caching
+John Savill explores the virtualization layer running on Azure host blades:
+- **Host Caching Architecture:**
+  - *Read/Write Cache:* Uses host RAM and fast local SSDs. Provides high burst read/write speeds, but writeback to remote managed disk storage is deferred. If the host blade loses power, unwritten cache pages can be lost. **Never use Read/Write caching on database log files.**
+  - *ReadOnly Cache:* Reads are cached in host memory; writes pass through directly to remote storage. Safe for SQL Server data files (`.mdf`) and static web assets.
+  - *None:* All read/write operations commit directly to remote storage. Mandatory for SQL Server transaction log files (`.ldf`) to guarantee ACID compliance.
+
+### 2. Availability Sets vs. Availability Zones: Physical Fault Boundaries
+```mermaid
+flowchart TD
+    subgraph AvSet ["Availability Set (Single Datacenter Facility)"]
+        FD0["Fault Domain 0 (Rack 1, PDU 1)"]
+        FD1["Fault Domain 1 (Rack 2, PDU 2)"]
+        FD2["Fault Domain 2 (Rack 3, PDU 3)"]
+        AvSetDesc["Survives rack, top-of-rack switch, or power failure.<br/>Does NOT survive datacenter flooding, fire, or facility power loss."]
+    end
+
+    subgraph AvZone ["Availability Zones (Independent Datacenters)"]
+        AZ1["AZ 1 Datacenter<br/>(Independent utility feed, generators, cooling)"]
+        AZ2["AZ 2 Datacenter<br/>(Independent utility feed, generators, cooling)"]
+        AZ3["AZ 3 Datacenter<br/>(Independent utility feed, generators, cooling)"]
+        AvZoneDesc["Survives complete physical datacenter facility destruction.<br/>Latency between zones strictly < 2 milliseconds."]
+    end
+```
+
+### 3. Virtual Machine Scale Sets (VMSS): Flexible vs. Uniform Orchestration
+- **Uniform Orchestration (Legacy):** Pre-configured identical VMs deployed from a single template. Slower to update individual instances, but supports auto-scaling up to 1,000 instances.
+- **Flexible Orchestration (Modern Standard):** Mix and match various VM sizes, operating systems, and pricing tiers (Spot + On-Demand) within the same availability set boundary. Allows manual management of individual VMs while retaining automated scale-out capabilities.
+
+---
+
+## 🚀 Going the Extra Mile: Architectural Deep Dive - Enterprise Compute & Hybrid VMware
+
+> [!IMPORTANT]
+> **Going the Extra Mile:** In this section, we are taking an extra mile on this topic and start deep diving into the physical storage abstractions of Azure Managed Disks (bursting, Premium v2, shared disks) and the bare-metal virtualization fabric of Azure VMware Solution (AVS) based on John Savill's Azure Deep Dives Master Class.
+
+### 1. Azure Managed Disks Under the Hood: Tiers, Bursting & Shared Disks
+
+#### A. Storage Fabric Architecture
+* Managed Disks are not physical hard drives sitting inside the server chassis running your VM. They are virtualized block abstractions backed by **Azure Blob Storage page blobs** Triple-replicated within the datacenter (LRS) or across availability zones (ZRS).
+* The physical hypervisor communicates with the storage cluster over high-speed redundant 40/100 Gbps network fabrics.
+
+#### B. Premium SSD v1 vs. Premium SSD v2 vs. Ultra Disk
+* **Premium SSD v1:** Disk performance (IOPS and throughput) is strictly coupled to disk capacity (e.g., a P30 1TB disk gives 5,000 IOPS and 200 MB/s). If an application requires 15,000 IOPS, you must provision an expensive 4TB P50 disk even if you only need 200 GB of data.
+* **Premium SSD v2:** Decouples capacity from performance! You can provision a 100 GB disk with 20,000 IOPS and 600 MB/s throughput, paying independently for size, IOPS, and MB/s.
+* **Ultra Disk:** The lowest-latency tier (sub-millisecond), dynamically tunable on-the-fly without detaching the disk or rebooting the VM.
+
+#### C. Credit-Based vs. On-Demand Bursting
+* **Credit-Based Bursting:** Small disks (P1 to P20) accumulate burst credits when running below their baseline IOPS limit. During workload spikes (booting OS or loading batch jobs), disks can burst up to 3,500 IOPS and 170 MB/s for up to 30 minutes.
+* **On-Demand Bursting:** For unpredictable production workloads, enables continuous bursting up to 30,000 IOPS, billed on a per-burst-transaction model to guarantee zero I/O throttling.
+
+#### D. Azure Shared Disks for Enterprise Clustering
+* Attaches a single Managed Disk (Premium SSD or Ultra Disk) to multiple virtual machines concurrently.
+* Utilizes **SCSI-3 Persistent Reservations (SCSI PR)**, allowing multi-node clusters (SQL Server Failover Cluster Instances, SAP ASCS) to arbitrate node fencing without software replication overhead.
+
+---
+
+### 2. Azure VMware Solution (AVS): Bare-Metal Hybrid Cloud
+
+Enterprise workloads deeply entrenched in VMware ecosystems (vSphere, vCenter, vSAN, NSX-T) cannot always be rapidly containerized or converted to Azure VMs.
+
+```mermaid
+flowchart LR
+    subgraph OnPrem ["On-Premises Datacenter"]
+        vSphereOnPrem["vSphere Workloads"]
+        HCX["VMware HCX (Hybrid Cloud Extension)"]
+    end
+
+    subgraph AVS_Cloud ["Azure Datacenter: Azure VMware Solution (AVS) Private Cloud"]
+        subgraph BareMetal ["Dedicated Bare-Metal Hosts (Zero Hyper-V)"]
+            ESXi1["ESXi Node 1"]
+            ESXi2["ESXi Node 2"]
+            ESXi3["ESXi Node 3 (Minimum 3 Nodes)"]
+        end
+        vSAN["All-Flash NVMe vSAN Storage"]
+        NSX["NSX-T Software Defined Networking"]
+    end
+
+    subgraph NativeAzure ["Native Azure Ecosystem"]
+        VNet["Azure Native Virtual Network"]
+        Services["Native Azure Services (Blob, SQL, Entra ID)"]
+    end
+
+    HCX ==>|ExpressRoute Dedicated Circuits| NSX
+    NSX ==>|Ultra-Low Latency ExpressRoute FastPath| VNet
+    VNet --- Services
+```
+
+* **Zero Hypervisor Emulation:** Microsoft deploys dedicated, bare-metal physical servers inside Azure datacenters running VMware ESXi directly (zero Hyper-V nested virtualization).
+* **VMware HCX Seamless Migration:** Enables live **vMotion** of running workloads from on-premises datacenters into Azure over dedicated ExpressRoute interconnects with zero application downtime.
+* **Unified Management:** Systems engineers manage clusters using native vCenter Server, while Azure operations manage lifecycle, hardware replacement, and vSphere version upgrades.
+
+
 ## 🌐 Authoritative References & Citations
+
+- [John Savill: Azure Master Class v3 - Part 7 - VMs and VMSS](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
+- [John Savill: Understanding Microsoft Azure Availability Zones](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
 
 - [KodeKloud AZ-104 Course - Administer Azure Virtual Machines Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Azure-Virtual-Machines/Module-Introduction/page.md)
 - [Moe Intelligence AZ-104 Video Series (Lessons 28–29)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)

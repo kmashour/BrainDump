@@ -1,0 +1,111 @@
+{
+  "id": "RjuTQvGm1zQ",
+  "title": "Azure Cost Optimization Deep Dive",
+  "duration": 4935,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 52
+    },
+    {
+      "start_time": 52,
+      "title": "Cloud Cost Basics",
+      "end_time": 182
+    },
+    {
+      "start_time": 182,
+      "title": "Optimization is an Ongoing Effort",
+      "end_time": 333
+    },
+    {
+      "start_time": 333,
+      "title": "Scaling Up",
+      "end_time": 415
+    },
+    {
+      "start_time": 415,
+      "title": "Increasing Scale",
+      "end_time": 560
+    },
+    {
+      "start_time": 560,
+      "title": "Requirements",
+      "end_time": 818
+    },
+    {
+      "start_time": 818,
+      "title": "Cost Analysis",
+      "end_time": 1102
+    },
+    {
+      "start_time": 1102,
+      "title": "Free Stuff",
+      "end_time": 1257
+    },
+    {
+      "start_time": 1257,
+      "title": "Reserved Stuff",
+      "end_time": 1489
+    },
+    {
+      "start_time": 1489,
+      "title": "Example",
+      "end_time": 1621
+    },
+    {
+      "start_time": 1621,
+      "title": "Hybrid Benefit",
+      "end_time": 1752
+    },
+    {
+      "start_time": 1752,
+      "title": "Migrating",
+      "end_time": 1937
+    },
+    {
+      "start_time": 1937,
+      "title": "Accountability Governance",
+      "end_time": 2494
+    },
+    {
+      "start_time": 2494,
+      "title": "Optimization is not a onetime activity",
+      "end_time": 2598
+    },
+    {
+      "start_time": 2598,
+      "title": "Virtual machines",
+      "end_time": 2895
+    },
+    {
+      "start_time": 2895,
+      "title": "Delete everything",
+      "end_time": 2982
+    },
+    {
+      "start_time": 2982,
+      "title": "Help",
+      "end_time": 3037
+    },
+    {
+      "start_time": 3037,
+      "title": "VM Scale Sets",
+      "end_time": 3344
+    },
+    {
+      "start_time": 3344,
+      "title": "Pets",
+      "end_time": 3425
+    },
+    {
+      "start_time": 3425,
+      "title": "Containers",
+      "end_time": 4935
+    }
+  ],
+  "description": "This is the video version of a blog I recently posted over at https://savilltech.com/2020/05/04/optimizing-your-azure-spend/ (which also has all the links in it I refer to in this video). It covers key considerations around optimizing your costs in Azure including gaining insights into costs and optimizing costs for resources used. Grab a drink before this one ;-)\n\nWould love to hear your thoughts and ideas in the comments!",
+  "webpage_url": "https://www.youtube.com/watch?v=RjuTQvGm1zQ",
+  "upload_date": "20200524",
+  "tags": []
+}

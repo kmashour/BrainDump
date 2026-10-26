@@ -1,0 +1,147 @@
+[
+  {
+    "id": "j0mfH_7sR7k",
+    "title": "Day 0/28 - Azure Terraform Full Course | Terraform Zero To Hero ( in 28 days)",
+    "url": "https://www.youtube.com/watch?v=j0mfH_7sR7k"
+  },
+  {
+    "id": "x7EvkQMfZCg",
+    "title": "Day 1/28 - What Is Infrastructure as Code | Terraform Tutorial For Beginners",
+    "url": "https://www.youtube.com/watch?v=x7EvkQMfZCg"
+  },
+  {
+    "id": "mvtEgID9AaM",
+    "title": "Day 2/28 - Terraform Provider Explained - Azure Terraform Full Course",
+    "url": "https://www.youtube.com/watch?v=mvtEgID9AaM"
+  },
+  {
+    "id": "RdqiDN4V5Cg",
+    "title": "Day 3/28 - Create an Azure Storage Account Using Terraform (it's easy)",
+    "url": "https://www.youtube.com/watch?v=RdqiDN4V5Cg"
+  },
+  {
+    "id": "Xy6fnuvz9NI",
+    "title": "Day 4/28 - Terraform StateFile Management With Azure Storage",
+    "url": "https://www.youtube.com/watch?v=Xy6fnuvz9NI"
+  },
+  {
+    "id": "weLkaZgyaOI",
+    "title": "Day 5/28 - Terraform Variables - Input vs Output vs Local Variables",
+    "url": "https://www.youtube.com/watch?v=weLkaZgyaOI"
+  },
+  {
+    "id": "grjHCnCN5Z0",
+    "title": "Day 6/28 - Terraform File And Directory Structure Best Practices",
+    "url": "https://www.youtube.com/watch?v=grjHCnCN5Z0"
+  },
+  {
+    "id": "NjL9lwUfw-4",
+    "title": "Day 7/28 - Terraform Type Constraints (simply explained)",
+    "url": "https://www.youtube.com/watch?v=NjL9lwUfw-4"
+  },
+  {
+    "id": "QWFGOXQCqi0",
+    "title": "Day 8/28 - Terraform Resource Meta Arguments | Count VS For Each",
+    "url": "https://www.youtube.com/watch?v=QWFGOXQCqi0"
+  },
+  {
+    "id": "t-SD-r29CMs",
+    "title": "Day 9/28 - Terraform Life Cycle Rules | Create before destroy , Prevent destroy , Ignore changes",
+    "url": "https://www.youtube.com/watch?v=t-SD-r29CMs"
+  },
+  {
+    "id": "7XrfnH60Qpw",
+    "title": "Day 10/28 - Terraform Expressions | Dynamic  Expression, Conditional And Splat Expression",
+    "url": "https://www.youtube.com/watch?v=7XrfnH60Qpw"
+  },
+  {
+    "id": "V7IWs_56lg0",
+    "title": "Day 11/28 - Terraform Functions Tutorial For Beginners (simply explained)",
+    "url": "https://www.youtube.com/watch?v=V7IWs_56lg0"
+  },
+  {
+    "id": "wzdmKnzSoNI",
+    "title": "Day 12/28 - Terraform Functions(part-2) Tutorial For Beginners",
+    "url": "https://www.youtube.com/watch?v=wzdmKnzSoNI"
+  },
+  {
+    "id": "IEqxhA4rnsg",
+    "title": "Day 13/28 - Terraform Data Sources Tutorial (with azure provider)",
+    "url": "https://www.youtube.com/watch?v=IEqxhA4rnsg"
+  },
+  {
+    "id": "beqmavifzrQ",
+    "title": "Day 14/28 - How to Build Production-Grade Azure Infrastructure with Terraform (with Auto-scaling)",
+    "url": "https://www.youtube.com/watch?v=beqmavifzrQ"
+  },
+  {
+    "id": "NFi4XIFSJqc",
+    "title": "Day 15/28 Azure VNET Peering - The Real time Project To Build A Secure Cloud Network Using Terraform",
+    "url": "https://www.youtube.com/watch?v=NFi4XIFSJqc"
+  },
+  {
+    "id": "8zKntXUr1mU",
+    "title": "Day 16/28 - Terraform + Azure Entra ID for Beginners | Identity Management Made Easy",
+    "url": "https://www.youtube.com/watch?v=8zKntXUr1mU"
+  },
+  {
+    "id": "XRM0fMusX9Q",
+    "title": "Day 17/28 - Azure App Service With Terraform | Blue Green Deployment",
+    "url": "https://www.youtube.com/watch?v=XRM0fMusX9Q"
+  },
+  {
+    "id": "vAQZLny2zW0",
+    "title": "Day 18/28 - Deploy Azure Functions With Terraform - QR Code Generator Mini Project using Terraform",
+    "url": "https://www.youtube.com/watch?v=vAQZLny2zW0"
+  },
+  {
+    "id": "zlyizcM1ySU",
+    "title": "Day 19/28 - Provisioners In Terraform Azure - File vs Local vs Remote Provisioner",
+    "url": "https://www.youtube.com/watch?v=zlyizcM1ySU"
+  },
+  {
+    "id": "ujJlnZYRMZI",
+    "title": "Day 20/28 - Deploy AKS Cluster In Azure With Terraform Custom Modules | Real time Project #1",
+    "url": "https://www.youtube.com/watch?v=ujJlnZYRMZI"
+  },
+  {
+    "id": "dtYEpFezVX8",
+    "title": "Day 21/28 - Azure Policy And Governance Terraform Mini Project",
+    "url": "https://www.youtube.com/watch?v=dtYEpFezVX8"
+  },
+  {
+    "id": "EIQku0R8aXk",
+    "title": "Day 22/28 - Azure Sql Database Server Terraform Mini Project",
+    "url": "https://www.youtube.com/watch?v=EIQku0R8aXk"
+  },
+  {
+    "id": "iwCL27rQL3Q",
+    "title": "Day 23/28 - Setup Azure Monitoring And Alerting With Terraform",
+    "url": "https://www.youtube.com/watch?v=iwCL27rQL3Q"
+  },
+  {
+    "id": "7AiXd7IwVQ4",
+    "title": "Day 24/28 - How To Import Existing Terraform Resources Azure (simply explained)",
+    "url": "https://www.youtube.com/watch?v=7AiXd7IwVQ4"
+  },
+  {
+    "id": "LmWq51m9DJQ",
+    "title": "Day 25/28 - HCP Terraform Explained - Terraform Cloud Tutorial",
+    "url": "https://www.youtube.com/watch?v=LmWq51m9DJQ"
+  },
+  {
+    "id": "hj5gbhSmftE",
+    "title": "Day 26/28 - Azure DevOps End-to-End Project with Terraform |  Enterprise-Grade DevOps Project",
+    "url": "https://www.youtube.com/watch?v=hj5gbhSmftE"
+  },
+  {
+    "id": "OcBBvWn2JQo",
+    "title": "Day 27/28 - Deploy a 3 Tier Architecture In Azure Using Terraform | Real-time Project",
+    "url": "https://www.youtube.com/watch?v=OcBBvWn2JQo"
+  },
+  {
+    "id": "FjsBZywrRX8",
+    "title": "Day 28/28 - Terraform end-to-end Project with AKS and GitOps",
+    "url": "https://www.youtube.com/watch?v=FjsBZywrRX8"
+  }
+]

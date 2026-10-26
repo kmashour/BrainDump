@@ -1,0 +1,109 @@
+{
+  "id": "2nPZyLmciN4",
+  "title": "Azure Managed Disks Deep Dive",
+  "duration": 3459,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 98
+    },
+    {
+      "start_time": 98,
+      "title": "Managed disk introduction",
+      "end_time": 278
+    },
+    {
+      "start_time": 278,
+      "title": "Seeing a disk storage account",
+      "end_time": 392
+    },
+    {
+      "start_time": 392,
+      "title": "Disk attributes",
+      "end_time": 653
+    },
+    {
+      "start_time": 653,
+      "title": "Understand the workload storage performance",
+      "end_time": 818
+    },
+    {
+      "start_time": 818,
+      "title": "Disk capacity vs performance",
+      "end_time": 950
+    },
+    {
+      "start_time": 950,
+      "title": "Standard HDD",
+      "end_time": 1095
+    },
+    {
+      "start_time": 1095,
+      "title": "Standard SSD",
+      "end_time": 1266
+    },
+    {
+      "start_time": 1266,
+      "title": "Premium SSD",
+      "end_time": 1765
+    },
+    {
+      "start_time": 1765,
+      "title": "Ultra Disk",
+      "end_time": 2000
+    },
+    {
+      "start_time": 2000,
+      "title": "Other features",
+      "end_time": 2129
+    },
+    {
+      "start_time": 2129,
+      "title": "Managed disk sizing and resizing",
+      "end_time": 2288
+    },
+    {
+      "start_time": 2288,
+      "title": "VM storage performance considerations",
+      "end_time": 2650
+    },
+    {
+      "start_time": 2650,
+      "title": "Busting overview",
+      "end_time": 2935
+    },
+    {
+      "start_time": 2935,
+      "title": "Busting demo",
+      "end_time": 3108
+    },
+    {
+      "start_time": 3108,
+      "title": "Disk metrics use",
+      "end_time": 3358
+    },
+    {
+      "start_time": 3358,
+      "title": "Summary",
+      "end_time": 3459
+    }
+  ],
+  "description": "In this video I cover all the core features of managed disks, the types, the performance, bursting and monitoring.\n\nWhiteboard - https://github.com/johnthebrit/RandomStuff/blob/master/Whiteboards/ManagedDiskDeepDive.svg\nMy code - https://github.com/johnthebrit/RandomStuff/blob/master/AzureDisks/ChoosingManagedDisk.ps1\nDisk bursting - https://docs.microsoft.com/en-us/azure/virtual-machines/disk-bursting\nDIsk types - https://docs.microsoft.com/en-us/azure/virtual-machines/disks-types#standard-ssd\nEnable on-demand bursting - https://docs.microsoft.com/en-us/azure/virtual-machines/disks-enable-bursting?tabs=azure-powershell\n\n00:00 Introduction\n01:38 Managed disk introduction\n04:38 Seeing a disk storage account\n06:32 Disk attributes\n10:53 Understand the workload storage performance\n13:38 Disk capacity vs performance\n15:50 Standard HDD\n18:15 Standard SSD\n21:06 Premium SSD\n29:25 Ultra Disk\n33:20 Other features\n35:29 Managed disk sizing and resizing\n38:08 VM storage performance considerations\n44:10 Busting overview\n48:55 Busting demo\n51:48 Disk metrics use\n55:58 Summary",
+  "webpage_url": "https://www.youtube.com/watch?v=2nPZyLmciN4",
+  "upload_date": "20210610",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "storage",
+    "managed disk",
+    "disks",
+    "bursting",
+    "metrics",
+    "monitoring",
+    "performance"
+  ]
+}

@@ -136,8 +136,10 @@ An application **cannot** write directly to a hard drive, cannot read physical R
 ### 2.2 The Anatomy of a Syscall (The 6-Step Execution Flow)
 
 ```mermaid
+%% cfr-size: 100 %%
 sequenceDiagram
     autonumber
+
     participant App as Userspace App (Ring 3)
     participant Libc as Standard Library (glibc/musl)
     participant CPU as CPU Registers (RAX, RDI, RSI...)
@@ -149,8 +151,8 @@ sequenceDiagram
     Note over Libc: Libc translates function to syscall name & number
     Libc->>CPU: Put syscall ID (257 = sys_openat) in RAX register
     Libc->>CPU: Put arguments (filename, flags, mode) in RDI, RSI, RDX
-    Libc->>CPU: Execute CPU Trap instruction (`syscall`)
-    Note over CPU: CPU halts Ring 3; switches hardware to Ring 0
+    Libc->>CPU: Execute CPU Trap instruction (syscall)
+    Note over CPU: CPU halts Ring 3<br/>switches hardware to Ring 0
     CPU->>Kernel: Jump to Kernel Syscall Handler
     Kernel->>Dispatcher: Look up entry #257 in sys_call_table
     Dispatcher->>HW: Invoke sys_openat() filesystem driver
@@ -283,6 +285,7 @@ Now, instead of asking *"Is this process running as UID 0?"*, the Linux kernel i
 👉 **"Does this process hold the specific capability required for this operation?"**
 
 ```mermaid
+%% cfr-size: 33 %%
 flowchart TD
     MonolithicRoot["Monolithic Root (UID 0)\n(Absolute System Control)"]
     
@@ -376,6 +379,7 @@ Even though the process has `UID 0`, when `date -s` issues the `settimeofday()` 
   If the process lacks `CAP_SYS_TIME`, the kernel denies the request with `Operation not permitted` (`-EPERM`).
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart TD
     App["Container Process executes 'date -s'"] --> Syscall["Issues Syscall: clock_settime()"]
 
@@ -639,19 +643,20 @@ spec:
 How do security engineers build custom Seccomp whitelists for proprietary applications? They follow an iterative 4-stage lifecycle:
 
 ```mermaid
-sequenceDiagram
+%% cfr-size: 100 %%
+ sequenceDiagram
     autonumber
     participant Eng as Security Engineer
     participant Node as Worker Node Disk (/var/lib/kubelet/seccomp/)
     participant Pod as Kubernetes Pod
     participant Syslog as Host Kernel Syslog (/var/log/syslog)
 
-    Eng->>Node: 1. Deploy audit.json (defaultAction: SCMP_ACT_LOG)
-    Eng->>Pod: 2. Launch Pod with localhostProfile: profiles/audit.json
-    Pod->>Syslog: 3. Exercise app; Kernel logs audit type=1326 for all syscalls
-    Eng->>Syslog: 4. Extract syscall numbers & convert to names
-    Eng->>Node: 5. Deploy fine-grained.json (defaultAction: ERRNO + allowed names)
-    Eng->>Pod: 6. Deploy production Pod with fine-grained profile
+    Eng->>Node: Deploy audit.json (defaultAction: SCMP_ACT_LOG)
+    Eng->>Pod: Launch Pod with localhostProfile: profiles/audit.json
+    Pod->>Syslog: Exercise app - Kernel logs audit type=1326 for all syscalls
+    Eng->>Syslog: Extract syscall numbers & convert to names
+    Eng->>Node: Deploy fine-grained.json (defaultAction: ERRNO + allowed names)
+    Eng->>Pod: Deploy production Pod with fine-grained profile
     Note over Pod: Pod runs with minimum necessary syscalls!
 ```
 
@@ -805,6 +810,7 @@ Consider this scenario:
 ### 5.2 Discretionary Access Control (DAC) vs. Mandatory Access Control (MAC)
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart TD
     subgraph DAC_Flow ["Standard Linux DAC (Discretionary)"]
         UserRoot["Process Running as root (UID 0)"]
@@ -1027,6 +1033,7 @@ Even with Capabilities dropped, Seccomp filtering active, and AppArmor profiles 
 If an application requires hundreds of syscalls, or if multiple untrusted tenants share the same node, a zero-day kernel exploit can compromise the physical host. **Sandboxed container runtimes** solve this by inserting a virtualization or userspace isolation layer.
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart TD
     subgraph StandardRuntime ["1. Standard Container (runc) - Shared Kernel"]
         App1["Container Process"] -->|"Direct Syscalls"| HostK1["Host Linux Kernel"]

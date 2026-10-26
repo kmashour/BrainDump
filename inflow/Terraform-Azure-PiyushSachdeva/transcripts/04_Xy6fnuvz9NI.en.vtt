@@ -1,0 +1,2760 @@
+WEBVTT
+Kind: captions
+Language: en
+
+00:00:00.520 --> 00:00:02.030 align:start position:0%
+ 
+hello<00:00:00.799><c> everyone</c><00:00:01.240><c> welcome</c><00:00:01.599><c> back</c><00:00:01.760><c> to</c><00:00:01.880><c> my</c>
+
+00:00:02.030 --> 00:00:02.040 align:start position:0%
+hello everyone welcome back to my
+ 
+
+00:00:02.040 --> 00:00:04.749 align:start position:0%
+hello everyone welcome back to my
+channel<00:00:02.399><c> my</c><00:00:02.520><c> name</c><00:00:02.720><c> is</c><00:00:02.919><c> PE</c><00:00:03.520><c> and</c><00:00:03.879><c> this</c><00:00:04.000><c> is</c><00:00:04.520><c> day</c>
+
+00:00:04.749 --> 00:00:04.759 align:start position:0%
+channel my name is PE and this is day
+ 
+
+00:00:04.759 --> 00:00:07.030 align:start position:0%
+channel my name is PE and this is day
+four<00:00:05.160><c> video</c><00:00:05.560><c> in</c><00:00:05.680><c> the</c><00:00:05.839><c> series</c><00:00:06.279><c> terraform</c><00:00:06.839><c> with</c>
+
+00:00:07.030 --> 00:00:07.040 align:start position:0%
+four video in the series terraform with
+ 
+
+00:00:07.040 --> 00:00:10.190 align:start position:0%
+four video in the series terraform with
+Azure<00:00:08.000><c> or</c><00:00:08.160><c> 20</c><00:00:08.480><c> days</c><00:00:08.679><c> of</c><00:00:09.080><c> DF</c><00:00:09.519><c> Azure</c><00:00:09.920><c> whatever</c>
+
+00:00:10.190 --> 00:00:10.200 align:start position:0%
+Azure or 20 days of DF Azure whatever
+ 
+
+00:00:10.200 --> 00:00:12.470 align:start position:0%
+Azure or 20 days of DF Azure whatever
+you<00:00:10.320><c> want</c><00:00:10.519><c> to</c><00:00:10.719><c> call</c><00:00:10.920><c> it</c><00:00:11.639><c> in</c><00:00:11.840><c> this</c><00:00:12.040><c> video</c><00:00:12.280><c> we'll</c>
+
+00:00:12.470 --> 00:00:12.480 align:start position:0%
+you want to call it in this video we'll
+ 
+
+00:00:12.480 --> 00:00:14.470 align:start position:0%
+you want to call it in this video we'll
+be<00:00:12.599><c> looking</c><00:00:12.880><c> into</c><00:00:13.200><c> State</c><00:00:13.559><c> file</c><00:00:14.120><c> and</c>
+
+00:00:14.470 --> 00:00:14.480 align:start position:0%
+be looking into State file and
+ 
+
+00:00:14.480 --> 00:00:16.590 align:start position:0%
+be looking into State file and
+everything<00:00:14.960><c> about</c><00:00:15.240><c> it</c><00:00:15.719><c> again</c><00:00:16.039><c> it</c><00:00:16.119><c> will</c><00:00:16.279><c> be</c><00:00:16.440><c> a</c>
+
+00:00:16.590 --> 00:00:16.600 align:start position:0%
+everything about it again it will be a
+ 
+
+00:00:16.600 --> 00:00:18.910 align:start position:0%
+everything about it again it will be a
+complete<00:00:16.960><c> Hands-On</c><00:00:17.560><c> video</c><00:00:18.279><c> so</c><00:00:18.480><c> the</c><00:00:18.640><c> comments</c>
+
+00:00:18.910 --> 00:00:18.920 align:start position:0%
+complete Hands-On video so the comments
+ 
+
+00:00:18.920 --> 00:00:21.349 align:start position:0%
+complete Hands-On video so the comments
+and<00:00:19.119><c> like</c><00:00:19.320><c> Target</c><00:00:19.680><c> of</c><00:00:19.880><c> this</c><00:00:20.080><c> video</c><00:00:20.400><c> is</c><00:00:20.680><c> 150</c>
+
+00:00:21.349 --> 00:00:21.359 align:start position:0%
+and like Target of this video is 150
+ 
+
+00:00:21.359 --> 00:00:23.790 align:start position:0%
+and like Target of this video is 150
+likes<00:00:21.840><c> and</c><00:00:22.199><c> 100</c><00:00:22.519><c> comments</c><00:00:22.880><c> in</c><00:00:23.000><c> the</c><00:00:23.160><c> next</c><00:00:23.400><c> 24</c>
+
+00:00:23.790 --> 00:00:23.800 align:start position:0%
+likes and 100 comments in the next 24
+ 
+
+00:00:23.800 --> 00:00:26.150 align:start position:0%
+likes and 100 comments in the next 24
+hours<00:00:24.240><c> so</c><00:00:24.400><c> please</c><00:00:24.640><c> try</c><00:00:24.840><c> to</c><00:00:25.039><c> do</c><00:00:25.279><c> that</c><00:00:25.840><c> and</c>
+
+00:00:26.150 --> 00:00:26.160 align:start position:0%
+hours so please try to do that and
+ 
+
+00:00:26.160 --> 00:00:27.910 align:start position:0%
+hours so please try to do that and
+without<00:00:26.439><c> wasting</c><00:00:26.800><c> any</c><00:00:27.000><c> time</c><00:00:27.240><c> let's</c><00:00:27.519><c> get</c><00:00:27.679><c> into</c>
+
+00:00:27.910 --> 00:00:27.920 align:start position:0%
+without wasting any time let's get into
+ 
+
+00:00:27.920 --> 00:00:30.150 align:start position:0%
+without wasting any time let's get into
+the<00:00:28.080><c> video</c><00:00:28.560><c> okay</c><00:00:28.760><c> so</c><00:00:28.920><c> this</c><00:00:29.039><c> is</c><00:00:29.240><c> what</c><00:00:29.400><c> we</c><00:00:29.560><c> did</c><00:00:30.000><c> in</c>
+
+00:00:30.150 --> 00:00:30.160 align:start position:0%
+the video okay so this is what we did in
+ 
+
+00:00:30.160 --> 00:00:33.150 align:start position:0%
+the video okay so this is what we did in
+the<00:00:30.279><c> last</c><00:00:30.519><c> video</c><00:00:31.199><c> uh</c><00:00:31.359><c> we</c><00:00:31.560><c> created</c><00:00:32.160><c> a</c><00:00:32.399><c> simplest</c>
+
+00:00:33.150 --> 00:00:33.160 align:start position:0%
+the last video uh we created a simplest
+ 
+
+00:00:33.160 --> 00:00:35.150 align:start position:0%
+the last video uh we created a simplest
+aure<00:00:33.600><c> resource</c><00:00:34.000><c> such</c><00:00:34.160><c> as</c><00:00:34.320><c> a</c><00:00:34.520><c> your</c><00:00:34.719><c> storage</c>
+
+00:00:35.150 --> 00:00:35.160 align:start position:0%
+aure resource such as a your storage
+ 
+
+00:00:35.160 --> 00:00:38.190 align:start position:0%
+aure resource such as a your storage
+account<00:00:35.520><c> and</c><00:00:35.840><c> Resource</c><00:00:36.280><c> Group</c><00:00:36.840><c> now</c><00:00:37.280><c> I</c><00:00:37.399><c> want</c><00:00:37.640><c> to</c>
+
+00:00:38.190 --> 00:00:38.200 align:start position:0%
+account and Resource Group now I want to
+ 
+
+00:00:38.200 --> 00:00:40.670 align:start position:0%
+account and Resource Group now I want to
+take<00:00:38.559><c> one</c><00:00:38.800><c> step</c><00:00:39.079><c> further</c><00:00:39.680><c> and</c><00:00:40.079><c> show</c><00:00:40.360><c> you</c><00:00:40.520><c> the</c>
+
+00:00:40.670 --> 00:00:40.680 align:start position:0%
+take one step further and show you the
+ 
+
+00:00:40.680 --> 00:00:44.229 align:start position:0%
+take one step further and show you the
+terraform<00:00:41.200><c> State</c><00:00:41.960><c> file</c><00:00:42.960><c> okay</c><00:00:43.480><c> so</c><00:00:43.840><c> there</c><00:00:44.000><c> is</c>
+
+00:00:44.229 --> 00:00:44.239 align:start position:0%
+terraform State file okay so there is
+ 
+
+00:00:44.239 --> 00:00:46.470 align:start position:0%
+terraform State file okay so there is
+this<00:00:44.480><c> terraform</c><00:00:45.120><c> State</c><00:00:45.440><c> file</c><00:00:45.719><c> over</c><00:00:46.000><c> here</c><00:00:46.239><c> so</c>
+
+00:00:46.470 --> 00:00:46.480 align:start position:0%
+this terraform State file over here so
+ 
+
+00:00:46.480 --> 00:00:49.430 align:start position:0%
+this terraform State file over here so
+what<00:00:46.640><c> it</c><00:00:46.840><c> is</c><00:00:47.280><c> and</c><00:00:47.640><c> how</c><00:00:47.800><c> it</c><00:00:47.960><c> was</c><00:00:48.320><c> generated</c><00:00:49.320><c> what</c>
+
+00:00:49.430 --> 00:00:49.440 align:start position:0%
+what it is and how it was generated what
+ 
+
+00:00:49.440 --> 00:00:51.830 align:start position:0%
+what it is and how it was generated what
+is<00:00:49.559><c> the</c><00:00:49.719><c> significance</c><00:00:50.360><c> of</c><00:00:50.520><c> it</c><00:00:50.840><c> right</c><00:00:51.440><c> so</c><00:00:51.680><c> let</c>
+
+00:00:51.830 --> 00:00:51.840 align:start position:0%
+is the significance of it right so let
+ 
+
+00:00:51.840 --> 00:00:54.869 align:start position:0%
+is the significance of it right so let
+me<00:00:52.280><c> show</c><00:00:52.520><c> you</c><00:00:52.760><c> a</c><00:00:52.960><c> diagram</c><00:00:53.559><c> so</c><00:00:53.800><c> as</c><00:00:54.079><c> I've</c><00:00:54.600><c> told</c>
+
+00:00:54.869 --> 00:00:54.879 align:start position:0%
+me show you a diagram so as I've told
+ 
+
+00:00:54.879 --> 00:00:57.349 align:start position:0%
+me show you a diagram so as I've told
+you<00:00:55.120><c> before</c><00:00:55.920><c> that</c><00:00:56.199><c> terraform</c><00:00:56.879><c> makes</c><00:00:57.160><c> the</c>
+
+00:00:57.349 --> 00:00:57.359 align:start position:0%
+you before that terraform makes the
+ 
+
+00:00:57.359 --> 00:00:59.709 align:start position:0%
+you before that terraform makes the
+changes<00:00:57.719><c> to</c><00:00:57.879><c> the</c><00:00:58.199><c> infrastructure</c><00:00:59.199><c> based</c><00:00:59.519><c> on</c>
+
+00:00:59.709 --> 00:00:59.719 align:start position:0%
+changes to the infrastructure based on
+ 
+
+00:00:59.719 --> 00:01:00.670 align:start position:0%
+changes to the infrastructure based on
+the
+
+00:01:00.670 --> 00:01:00.680 align:start position:0%
+the
+ 
+
+00:01:00.680 --> 00:01:03.150 align:start position:0%
+the
+desired<00:01:01.199><c> State</c><00:01:01.480><c> and</c><00:01:01.760><c> actual</c><00:01:02.120><c> state</c><00:01:02.879><c> right</c>
+
+00:01:03.150 --> 00:01:03.160 align:start position:0%
+desired State and actual state right
+ 
+
+00:01:03.160 --> 00:01:05.670 align:start position:0%
+desired State and actual state right
+desired<00:01:03.719><c> state</c><00:01:04.280><c> is</c><00:01:04.680><c> what</c><00:01:04.839><c> is</c><00:01:05.080><c> there</c><00:01:05.280><c> in</c><00:01:05.479><c> your</c>
+
+00:01:05.670 --> 00:01:05.680 align:start position:0%
+desired state is what is there in your
+ 
+
+00:01:05.680 --> 00:01:09.910 align:start position:0%
+desired state is what is there in your
+TF<00:01:06.119><c> files</c><00:01:07.040><c> so</c><00:01:07.320><c> I</c><00:01:07.479><c> have</c><00:01:08.280><c> suggested</c><00:01:09.040><c> that</c><00:01:09.720><c> there</c>
+
+00:01:09.910 --> 00:01:09.920 align:start position:0%
+TF files so I have suggested that there
+ 
+
+00:01:09.920 --> 00:01:12.630 align:start position:0%
+TF files so I have suggested that there
+is<00:01:10.400><c> an</c><00:01:10.640><c> Azure</c><00:01:11.000><c> RM</c><00:01:11.400><c> Resource</c><00:01:11.799><c> Group</c><00:01:12.240><c> and</c><00:01:12.439><c> then</c>
+
+00:01:12.630 --> 00:01:12.640 align:start position:0%
+is an Azure RM Resource Group and then
+ 
+
+00:01:12.640 --> 00:01:14.429 align:start position:0%
+is an Azure RM Resource Group and then
+there<00:01:12.759><c> is</c><00:01:12.880><c> an</c><00:01:13.080><c> Azure</c><00:01:13.439><c> storage</c><00:01:13.840><c> account</c><00:01:14.119><c> in</c><00:01:14.280><c> my</c>
+
+00:01:14.429 --> 00:01:14.439 align:start position:0%
+there is an Azure storage account in my
+ 
+
+00:01:14.439 --> 00:01:17.429 align:start position:0%
+there is an Azure storage account in my
+TF<00:01:14.840><c> file</c><00:01:15.560><c> so</c><00:01:15.799><c> that's</c><00:01:16.119><c> my</c><00:01:16.280><c> desired</c><00:01:16.720><c> State</c>
+
+00:01:17.429 --> 00:01:17.439 align:start position:0%
+TF file so that's my desired State
+ 
+
+00:01:17.439 --> 00:01:20.230 align:start position:0%
+TF file so that's my desired State
+that's<00:01:17.680><c> what</c><00:01:17.880><c> I</c><00:01:18.040><c> want</c><00:01:18.280><c> to</c><00:01:18.439><c> be</c><00:01:19.040><c> created</c><00:01:19.880><c> now</c>
+
+00:01:20.230 --> 00:01:20.240 align:start position:0%
+that's what I want to be created now
+ 
+
+00:01:20.240 --> 00:01:21.710 align:start position:0%
+that's what I want to be created now
+what<00:01:20.400><c> is</c><00:01:20.520><c> the</c><00:01:20.720><c> actual</c><00:01:21.000><c> state</c><00:01:21.280><c> of</c>
+
+00:01:21.710 --> 00:01:21.720 align:start position:0%
+what is the actual state of
+ 
+
+00:01:21.720 --> 00:01:24.310 align:start position:0%
+what is the actual state of
+infrastructure<00:01:22.720><c> how</c><00:01:22.880><c> would</c><00:01:23.079><c> terraform</c><00:01:23.680><c> know</c>
+
+00:01:24.310 --> 00:01:24.320 align:start position:0%
+infrastructure how would terraform know
+ 
+
+00:01:24.320 --> 00:01:26.789 align:start position:0%
+infrastructure how would terraform know
+that<00:01:25.119><c> these</c><00:01:25.560><c> resources</c><00:01:26.159><c> have</c><00:01:26.360><c> not</c><00:01:26.560><c> been</c>
+
+00:01:26.789 --> 00:01:26.799 align:start position:0%
+that these resources have not been
+ 
+
+00:01:26.799 --> 00:01:30.149 align:start position:0%
+that these resources have not been
+already<00:01:27.600><c> created</c><00:01:28.600><c> or</c><00:01:28.920><c> what</c><00:01:29.079><c> are</c><00:01:29.280><c> the</c><00:01:29.479><c> changes</c>
+
+00:01:30.149 --> 00:01:30.159 align:start position:0%
+already created or what are the changes
+ 
+
+00:01:30.159 --> 00:01:31.950 align:start position:0%
+already created or what are the changes
+that<00:01:30.280><c> we</c><00:01:30.400><c> need</c><00:01:30.560><c> to</c><00:01:30.720><c> make</c><00:01:30.960><c> so</c><00:01:31.159><c> when</c><00:01:31.439><c> I</c><00:01:31.680><c> when</c><00:01:31.799><c> we</c>
+
+00:01:31.950 --> 00:01:31.960 align:start position:0%
+that we need to make so when I when we
+ 
+
+00:01:31.960 --> 00:01:34.109 align:start position:0%
+that we need to make so when I when we
+made<00:01:32.200><c> the</c><00:01:32.360><c> changes</c><00:01:33.200><c> how</c><00:01:33.360><c> would</c><00:01:33.520><c> it</c><00:01:33.720><c> know</c><00:01:33.960><c> what</c>
+
+00:01:34.109 --> 00:01:34.119 align:start position:0%
+made the changes how would it know what
+ 
+
+00:01:34.119 --> 00:01:36.789 align:start position:0%
+made the changes how would it know what
+changes<00:01:34.960><c> do</c><00:01:35.119><c> I</c><00:01:35.280><c> need</c><00:01:35.479><c> to</c><00:01:35.720><c> make</c><00:01:36.360><c> like</c><00:01:36.560><c> what</c><00:01:36.680><c> is</c>
+
+00:01:36.789 --> 00:01:36.799 align:start position:0%
+changes do I need to make like what is
+ 
+
+00:01:36.799 --> 00:01:39.510 align:start position:0%
+changes do I need to make like what is
+the<00:01:37.000><c> actual</c><00:01:37.280><c> state</c><00:01:37.680><c> right</c><00:01:37.920><c> now</c><00:01:38.640><c> we</c><00:01:38.840><c> updated</c>
+
+00:01:39.510 --> 00:01:39.520 align:start position:0%
+the actual state right now we updated
+ 
+
+00:01:39.520 --> 00:01:41.590 align:start position:0%
+the actual state right now we updated
+from<00:01:40.119><c> GRS</c><00:01:40.799><c> to</c>
+
+00:01:41.590 --> 00:01:41.600 align:start position:0%
+from GRS to
+ 
+
+00:01:41.600 --> 00:01:45.469 align:start position:0%
+from GRS to
+lrs<00:01:42.600><c> right</c><00:01:43.079><c> how</c><00:01:43.240><c> would</c><00:01:43.439><c> terraform</c><00:01:44.000><c> know</c><00:01:44.320><c> that</c>
+
+00:01:45.469 --> 00:01:45.479 align:start position:0%
+lrs right how would terraform know that
+ 
+
+00:01:45.479 --> 00:01:49.950 align:start position:0%
+lrs right how would terraform know that
+current<00:01:46.479><c> value</c><00:01:46.920><c> is</c><00:01:47.560><c> GRS</c><00:01:48.560><c> like</c><00:01:48.799><c> does</c><00:01:49.000><c> it</c><00:01:49.600><c> go</c>
+
+00:01:49.950 --> 00:01:49.960 align:start position:0%
+current value is GRS like does it go
+ 
+
+00:01:49.960 --> 00:01:51.709 align:start position:0%
+current value is GRS like does it go
+every<00:01:50.280><c> time</c><00:01:50.520><c> to</c><00:01:50.719><c> the</c><00:01:50.880><c> infrastructure</c><00:01:51.520><c> and</c>
+
+00:01:51.709 --> 00:01:51.719 align:start position:0%
+every time to the infrastructure and
+ 
+
+00:01:51.719 --> 00:01:54.350 align:start position:0%
+every time to the infrastructure and
+check<00:01:51.960><c> all</c><00:01:52.200><c> those</c><00:01:52.439><c> things</c><00:01:53.200><c> or</c><00:01:53.439><c> how</c><00:01:53.600><c> would</c><00:01:53.799><c> it</c>
+
+00:01:54.350 --> 00:01:54.360 align:start position:0%
+check all those things or how would it
+ 
+
+00:01:54.360 --> 00:01:56.990 align:start position:0%
+check all those things or how would it
+do<00:01:54.640><c> that</c><00:01:55.360><c> so</c><00:01:55.560><c> it</c><00:01:55.719><c> does</c><00:01:56.039><c> that</c><00:01:56.280><c> with</c><00:01:56.439><c> the</c><00:01:56.600><c> help</c><00:01:56.840><c> of</c>
+
+00:01:56.990 --> 00:01:57.000 align:start position:0%
+do that so it does that with the help of
+ 
+
+00:01:57.000 --> 00:02:00.190 align:start position:0%
+do that so it does that with the help of
+a<00:01:57.360><c> state</c><00:01:57.799><c> file</c><00:01:58.680><c> so</c><00:01:58.920><c> in</c><00:01:59.119><c> this</c><00:01:59.320><c> state</c><00:01:59.600><c> file</c><00:02:00.119><c> the</c>
+
+00:02:00.190 --> 00:02:00.200 align:start position:0%
+a state file so in this state file the
+ 
+
+00:02:00.200 --> 00:02:03.149 align:start position:0%
+a state file so in this state file the
+one<00:02:00.439><c> that</c><00:02:00.600><c> we</c><00:02:00.759><c> just</c><00:02:00.960><c> saw</c><00:02:01.560><c> in</c><00:02:01.799><c> this</c><00:02:02.000><c> state</c><00:02:02.399><c> file</c>
+
+00:02:03.149 --> 00:02:03.159 align:start position:0%
+one that we just saw in this state file
+ 
+
+00:02:03.159 --> 00:02:05.310 align:start position:0%
+one that we just saw in this state file
+uh<00:02:03.280><c> it's</c><00:02:03.640><c> usually</c><00:02:04.439><c> created</c><00:02:04.840><c> with</c><00:02:04.960><c> the</c><00:02:05.119><c> name</c>
+
+00:02:05.310 --> 00:02:05.320 align:start position:0%
+uh it's usually created with the name
+ 
+
+00:02:05.320 --> 00:02:08.949 align:start position:0%
+uh it's usually created with the name
+terraform<00:02:05.920><c> dotf</c><00:02:06.600><c> State</c><00:02:07.600><c> and</c><00:02:08.039><c> it</c><00:02:08.319><c> has</c><00:02:08.599><c> the</c>
+
+00:02:08.949 --> 00:02:08.959 align:start position:0%
+terraform dotf State and it has the
+ 
+
+00:02:08.959 --> 00:02:10.550 align:start position:0%
+terraform dotf State and it has the
+actual<00:02:09.360><c> state</c><00:02:09.640><c> of</c>
+
+00:02:10.550 --> 00:02:10.560 align:start position:0%
+actual state of
+ 
+
+00:02:10.560 --> 00:02:13.790 align:start position:0%
+actual state of
+infrastructure<00:02:11.560><c> so</c><00:02:11.840><c> when</c><00:02:12.080><c> we</c><00:02:12.400><c> created</c><00:02:12.959><c> the</c>
+
+00:02:13.790 --> 00:02:13.800 align:start position:0%
+infrastructure so when we created the
+ 
+
+00:02:13.800 --> 00:02:17.270 align:start position:0%
+infrastructure so when we created the
+resources<00:02:14.800><c> okay</c><00:02:15.239><c> to</c><00:02:15.599><c> keep</c><00:02:16.040><c> a</c><00:02:16.280><c> copy</c><00:02:16.640><c> of</c><00:02:16.920><c> all</c><00:02:17.120><c> the</c>
+
+00:02:17.270 --> 00:02:17.280 align:start position:0%
+resources okay to keep a copy of all the
+ 
+
+00:02:17.280 --> 00:02:20.589 align:start position:0%
+resources okay to keep a copy of all the
+metadata<00:02:17.959><c> so</c><00:02:18.160><c> a</c><00:02:18.360><c> resource</c><00:02:18.879><c> Group</c><00:02:19.879><c> a</c><00:02:20.120><c> storage</c>
+
+00:02:20.589 --> 00:02:20.599 align:start position:0%
+metadata so a resource Group a storage
+ 
+
+00:02:20.599 --> 00:02:22.509 align:start position:0%
+metadata so a resource Group a storage
+account<00:02:21.040><c> all</c><00:02:21.200><c> the</c><00:02:21.400><c> details</c><00:02:21.840><c> within</c><00:02:22.120><c> it</c>
+
+00:02:22.509 --> 00:02:22.519 align:start position:0%
+account all the details within it
+ 
+
+00:02:22.519 --> 00:02:24.750 align:start position:0%
+account all the details within it
+including<00:02:23.120><c> some</c><00:02:23.280><c> of</c><00:02:23.480><c> the</c><00:02:23.879><c> confidential</c><00:02:24.519><c> some</c>
+
+00:02:24.750 --> 00:02:24.760 align:start position:0%
+including some of the confidential some
+ 
+
+00:02:24.760 --> 00:02:27.750 align:start position:0%
+including some of the confidential some
+of<00:02:24.920><c> the</c><00:02:25.080><c> secret</c><00:02:25.560><c> data</c><00:02:26.120><c> it</c><00:02:26.760><c> stores</c><00:02:27.319><c> that</c><00:02:27.519><c> into</c>
+
+00:02:27.750 --> 00:02:27.760 align:start position:0%
+of the secret data it stores that into
+ 
+
+00:02:27.760 --> 00:02:30.830 align:start position:0%
+of the secret data it stores that into
+the<00:02:27.920><c> state</c><00:02:28.400><c> file</c><00:02:29.400><c> so</c><00:02:29.640><c> this</c><00:02:29.920><c> this</c><00:02:30.000><c> is</c><00:02:30.360><c> the</c>
+
+00:02:30.830 --> 00:02:30.840 align:start position:0%
+the state file so this this is the
+ 
+
+00:02:30.840 --> 00:02:33.550 align:start position:0%
+the state file so this this is the
+single<00:02:31.560><c> most</c><00:02:31.959><c> important</c><00:02:32.519><c> file</c><00:02:32.920><c> that</c><00:02:33.080><c> is</c><00:02:33.319><c> there</c>
+
+00:02:33.550 --> 00:02:33.560 align:start position:0%
+single most important file that is there
+ 
+
+00:02:33.560 --> 00:02:35.710 align:start position:0%
+single most important file that is there
+for<00:02:33.840><c> terraform</c><00:02:34.440><c> configuration</c><00:02:35.120><c> and</c><00:02:35.280><c> we</c><00:02:35.519><c> have</c>
+
+00:02:35.710 --> 00:02:35.720 align:start position:0%
+for terraform configuration and we have
+ 
+
+00:02:35.720 --> 00:02:38.790 align:start position:0%
+for terraform configuration and we have
+to<00:02:36.080><c> save</c><00:02:36.360><c> it</c><00:02:36.599><c> securely</c><00:02:37.200><c> we</c><00:02:37.360><c> have</c><00:02:37.480><c> to</c><00:02:37.879><c> access</c><00:02:38.239><c> it</c>
+
+00:02:38.790 --> 00:02:38.800 align:start position:0%
+to save it securely we have to access it
+ 
+
+00:02:38.800 --> 00:02:41.190 align:start position:0%
+to save it securely we have to access it
+securely<00:02:39.800><c> we</c><00:02:39.959><c> have</c><00:02:40.080><c> to</c><00:02:40.280><c> make</c><00:02:40.440><c> sure</c><00:02:40.720><c> that</c><00:02:40.920><c> it</c><00:02:41.040><c> is</c>
+
+00:02:41.190 --> 00:02:41.200 align:start position:0%
+securely we have to make sure that it is
+ 
+
+00:02:41.200 --> 00:02:44.270 align:start position:0%
+securely we have to make sure that it is
+backed<00:02:41.560><c> up</c><00:02:41.760><c> properly</c><00:02:42.480><c> and</c><00:02:43.159><c> avoid</c><00:02:43.680><c> making</c><00:02:44.040><c> any</c>
+
+00:02:44.270 --> 00:02:44.280 align:start position:0%
+backed up properly and avoid making any
+ 
+
+00:02:44.280 --> 00:02:46.270 align:start position:0%
+backed up properly and avoid making any
+changes<00:02:44.720><c> in</c><00:02:44.920><c> this</c><00:02:45.120><c> file</c><00:02:45.440><c> directly</c><00:02:46.040><c> like</c><00:02:46.200><c> there</c>
+
+00:02:46.270 --> 00:02:46.280 align:start position:0%
+changes in this file directly like there
+ 
+
+00:02:46.280 --> 00:02:49.990 align:start position:0%
+changes in this file directly like there
+are<00:02:46.400><c> a</c><00:02:46.480><c> lot</c><00:02:46.640><c> of</c><00:02:46.800><c> things</c><00:02:47.080><c> about</c><00:02:47.319><c> it</c><00:02:47.879><c> right</c><00:02:49.000><c> so</c>
+
+00:02:49.990 --> 00:02:50.000 align:start position:0%
+are a lot of things about it right so
+ 
+
+00:02:50.000 --> 00:02:52.070 align:start position:0%
+are a lot of things about it right so
+this<00:02:50.159><c> is</c><00:02:50.599><c> what</c><00:02:50.760><c> we're</c><00:02:50.920><c> going</c><00:02:51.040><c> to</c><00:02:51.239><c> look</c><00:02:51.720><c> more</c>
+
+00:02:52.070 --> 00:02:52.080 align:start position:0%
+this is what we're going to look more
+ 
+
+00:02:52.080 --> 00:02:55.309 align:start position:0%
+this is what we're going to look more
+about<00:02:52.800><c> like</c><00:02:53.640><c> how</c><00:02:53.959><c> do</c><00:02:54.120><c> we</c><00:02:54.360><c> store</c><00:02:54.720><c> it</c><00:02:54.879><c> or</c><00:02:55.040><c> how</c><00:02:55.200><c> do</c>
+
+00:02:55.309 --> 00:02:55.319 align:start position:0%
+about like how do we store it or how do
+ 
+
+00:02:55.319 --> 00:02:57.710 align:start position:0%
+about like how do we store it or how do
+we<00:02:55.560><c> access</c><00:02:55.920><c> it</c><00:02:56.920><c> there</c><00:02:57.040><c> are</c><00:02:57.239><c> some</c><00:02:57.480><c> best</c>
+
+00:02:57.710 --> 00:02:57.720 align:start position:0%
+we access it there are some best
+ 
+
+00:02:57.720 --> 00:03:00.670 align:start position:0%
+we access it there are some best
+practices<00:02:58.720><c> right</c><00:02:59.440><c> some</c><00:02:59.599><c> of</c><00:02:59.920><c> them</c><00:03:00.080><c> I</c><00:03:00.200><c> have</c><00:03:00.440><c> just</c>
+
+00:03:00.670 --> 00:03:00.680 align:start position:0%
+practices right some of them I have just
+ 
+
+00:03:00.680 --> 00:03:02.910 align:start position:0%
+practices right some of them I have just
+briefly<00:03:01.120><c> discussed</c><00:03:01.519><c> so</c><00:03:01.720><c> let</c><00:03:02.040><c> look</c><00:03:02.400><c> let's</c><00:03:02.680><c> look</c>
+
+00:03:02.910 --> 00:03:02.920 align:start position:0%
+briefly discussed so let look let's look
+ 
+
+00:03:02.920 --> 00:03:06.470 align:start position:0%
+briefly discussed so let look let's look
+into<00:03:03.319><c> that</c><00:03:03.799><c> a</c><00:03:03.959><c> little</c><00:03:04.280><c> more</c><00:03:05.280><c> so</c><00:03:05.599><c> as</c><00:03:05.720><c> I</c><00:03:05.959><c> said</c>
+
+00:03:06.470 --> 00:03:06.480 align:start position:0%
+into that a little more so as I said
+ 
+
+00:03:06.480 --> 00:03:09.149 align:start position:0%
+into that a little more so as I said
+when<00:03:07.280><c> we</c><00:03:07.519><c> ran</c><00:03:07.840><c> the</c><00:03:07.959><c> terraform</c><00:03:08.440><c> commands</c><00:03:09.000><c> it</c>
+
+00:03:09.149 --> 00:03:09.159 align:start position:0%
+when we ran the terraform commands it
+ 
+
+00:03:09.159 --> 00:03:11.190 align:start position:0%
+when we ran the terraform commands it
+created<00:03:09.599><c> the</c><00:03:09.760><c> file</c><00:03:10.120><c> and</c><00:03:10.280><c> it</c><00:03:10.440><c> stored</c><00:03:10.879><c> it</c>
+
+00:03:11.190 --> 00:03:11.200 align:start position:0%
+created the file and it stored it
+ 
+
+00:03:11.200 --> 00:03:14.509 align:start position:0%
+created the file and it stored it
+locally<00:03:11.720><c> within</c><00:03:12.040><c> my</c><00:03:12.440><c> system</c><00:03:13.440><c> right</c><00:03:13.680><c> so</c><00:03:13.959><c> that's</c>
+
+00:03:14.509 --> 00:03:14.519 align:start position:0%
+locally within my system right so that's
+ 
+
+00:03:14.519 --> 00:03:17.270 align:start position:0%
+locally within my system right so that's
+not<00:03:14.720><c> a</c><00:03:14.920><c> best</c><00:03:15.200><c> practice</c><00:03:16.159><c> the</c><00:03:16.360><c> best</c><00:03:16.680><c> practice</c><00:03:17.080><c> is</c>
+
+00:03:17.270 --> 00:03:17.280 align:start position:0%
+not a best practice the best practice is
+ 
+
+00:03:17.280 --> 00:03:20.149 align:start position:0%
+not a best practice the best practice is
+to<00:03:17.560><c> REM</c><00:03:17.959><c> use</c><00:03:18.200><c> a</c><00:03:18.400><c> remote</c><00:03:18.799><c> backend</c><00:03:19.560><c> remote</c><00:03:19.959><c> back</c>
+
+00:03:20.149 --> 00:03:20.159 align:start position:0%
+to REM use a remote backend remote back
+ 
+
+00:03:20.159 --> 00:03:24.309 align:start position:0%
+to REM use a remote backend remote back
+end<00:03:20.840><c> means</c><00:03:21.760><c> at</c><00:03:21.959><c> a</c><00:03:22.400><c> storage</c><00:03:23.040><c> location</c><00:03:23.720><c> which</c><00:03:23.959><c> is</c>
+
+00:03:24.309 --> 00:03:24.319 align:start position:0%
+end means at a storage location which is
+ 
+
+00:03:24.319 --> 00:03:26.750 align:start position:0%
+end means at a storage location which is
+remotely<00:03:25.040><c> accessed</c><00:03:25.560><c> from</c><00:03:25.760><c> the</c><00:03:25.959><c> terraform</c><00:03:26.680><c> as</c>
+
+00:03:26.750 --> 00:03:26.760 align:start position:0%
+remotely accessed from the terraform as
+ 
+
+00:03:26.760 --> 00:03:29.949 align:start position:0%
+remotely accessed from the terraform as
+a<00:03:26.959><c> local</c><00:03:27.400><c> file</c><00:03:28.280><c> and</c><00:03:28.560><c> what</c><00:03:28.720><c> are</c><00:03:28.959><c> these</c><00:03:29.360><c> uh</c><00:03:29.480><c> remot</c>
+
+00:03:29.949 --> 00:03:29.959 align:start position:0%
+a local file and what are these uh remot
+ 
+
+00:03:29.959 --> 00:03:32.229 align:start position:0%
+a local file and what are these uh remot
+back<00:03:30.080><c> ends</c><00:03:30.400><c> so</c><00:03:30.640><c> it</c><00:03:30.799><c> could</c><00:03:31.000><c> be</c><00:03:31.319><c> either</c><00:03:31.760><c> S3</c>
+
+00:03:32.229 --> 00:03:32.239 align:start position:0%
+back ends so it could be either S3
+ 
+
+00:03:32.239 --> 00:03:36.149 align:start position:0%
+back ends so it could be either S3
+bucket<00:03:33.000><c> if</c><00:03:33.159><c> you</c><00:03:33.280><c> are</c><00:03:33.760><c> using</c><00:03:34.799><c> AWS</c><00:03:35.799><c> if</c><00:03:35.920><c> you</c><00:03:36.040><c> are</c>
+
+00:03:36.149 --> 00:03:36.159 align:start position:0%
+bucket if you are using AWS if you are
+ 
+
+00:03:36.159 --> 00:03:38.149 align:start position:0%
+bucket if you are using AWS if you are
+using<00:03:36.480><c> Azure</c><00:03:37.000><c> it</c><00:03:37.120><c> could</c><00:03:37.280><c> be</c><00:03:37.439><c> Azure</c><00:03:37.840><c> blob</c>
+
+00:03:38.149 --> 00:03:38.159 align:start position:0%
+using Azure it could be Azure blob
+ 
+
+00:03:38.159 --> 00:03:40.390 align:start position:0%
+using Azure it could be Azure blob
+storage<00:03:38.760><c> if</c><00:03:38.879><c> you're</c><00:03:39.120><c> using</c><00:03:39.480><c> gcp</c><00:03:40.000><c> it</c><00:03:40.080><c> could</c><00:03:40.239><c> be</c>
+
+00:03:40.390 --> 00:03:40.400 align:start position:0%
+storage if you're using gcp it could be
+ 
+
+00:03:40.400 --> 00:03:43.149 align:start position:0%
+storage if you're using gcp it could be
+gcp<00:03:40.840><c> storage</c><00:03:41.280><c> account</c><00:03:41.640><c> and</c><00:03:41.879><c> so</c><00:03:42.080><c> on</c><00:03:42.799><c> so</c><00:03:42.959><c> you</c>
+
+00:03:43.149 --> 00:03:43.159 align:start position:0%
+gcp storage account and so on so you
+ 
+
+00:03:43.159 --> 00:03:45.190 align:start position:0%
+gcp storage account and so on so you
+store<00:03:43.519><c> your</c><00:03:43.720><c> state</c><00:03:44.200><c> file</c><00:03:44.480><c> to</c><00:03:44.680><c> a</c><00:03:44.840><c> remote</c>
+
+00:03:45.190 --> 00:03:45.200 align:start position:0%
+store your state file to a remote
+ 
+
+00:03:45.200 --> 00:03:49.030 align:start position:0%
+store your state file to a remote
+backend<00:03:45.840><c> and</c><00:03:46.159><c> access</c><00:03:46.560><c> it</c><00:03:46.840><c> locally</c><00:03:47.640><c> so</c><00:03:48.280><c> that's</c>
+
+00:03:49.030 --> 00:03:49.040 align:start position:0%
+backend and access it locally so that's
+ 
+
+00:03:49.040 --> 00:03:51.550 align:start position:0%
+backend and access it locally so that's
+why<00:03:49.239><c> it's</c><00:03:49.400><c> called</c><00:03:49.640><c> remote</c><00:03:50.159><c> backend</c><00:03:51.159><c> so</c><00:03:51.400><c> what</c>
+
+00:03:51.550 --> 00:03:51.560 align:start position:0%
+why it's called remote backend so what
+ 
+
+00:03:51.560 --> 00:03:53.149 align:start position:0%
+why it's called remote backend so what
+you'll<00:03:51.799><c> do</c><00:03:52.000><c> you'll</c><00:03:52.280><c> run</c><00:03:52.480><c> the</c><00:03:52.599><c> terraform</c>
+
+00:03:53.149 --> 00:03:53.159 align:start position:0%
+you'll do you'll run the terraform
+ 
+
+00:03:53.159 --> 00:03:55.630 align:start position:0%
+you'll do you'll run the terraform
+commands<00:03:54.159><c> it</c><00:03:54.280><c> will</c><00:03:54.640><c> access</c><00:03:54.959><c> the</c><00:03:55.120><c> file</c><00:03:55.400><c> from</c>
+
+00:03:55.630 --> 00:03:55.640 align:start position:0%
+commands it will access the file from
+ 
+
+00:03:55.640 --> 00:03:58.030 align:start position:0%
+commands it will access the file from
+remote<00:03:56.120><c> run</c><00:03:56.360><c> it</c><00:03:56.680><c> as</c><00:03:57.040><c> local</c><00:03:57.480><c> and</c><00:03:57.640><c> then</c><00:03:57.799><c> it</c><00:03:57.879><c> will</c>
+
+00:03:58.030 --> 00:03:58.040 align:start position:0%
+remote run it as local and then it will
+ 
+
+00:03:58.040 --> 00:04:01.069 align:start position:0%
+remote run it as local and then it will
+make<00:03:58.239><c> changes</c><00:03:58.599><c> to</c><00:03:58.799><c> your</c><00:03:59.000><c> infrastructure</c>
+
+00:04:01.069 --> 00:04:01.079 align:start position:0%
+make changes to your infrastructure
+ 
+
+00:04:01.079 --> 00:04:04.869 align:start position:0%
+make changes to your infrastructure
+now<00:04:01.680><c> that's</c><00:04:02.640><c> one</c><00:04:02.840><c> of</c><00:04:03.079><c> the</c><00:04:03.959><c> uh</c><00:04:04.120><c> best</c><00:04:04.400><c> practice</c>
+
+00:04:04.869 --> 00:04:04.879 align:start position:0%
+now that's one of the uh best practice
+ 
+
+00:04:04.879 --> 00:04:07.270 align:start position:0%
+now that's one of the uh best practice
+the<00:04:05.040><c> another</c><00:04:05.439><c> is</c><00:04:05.760><c> do</c><00:04:06.000><c> not</c><00:04:06.319><c> update</c><00:04:06.720><c> or</c><00:04:06.879><c> delete</c>
+
+00:04:07.270 --> 00:04:07.280 align:start position:0%
+the another is do not update or delete
+ 
+
+00:04:07.280 --> 00:04:10.229 align:start position:0%
+the another is do not update or delete
+this<00:04:07.840><c> file</c><00:04:08.840><c> you</c><00:04:09.000><c> should</c><00:04:09.280><c> not</c><00:04:09.480><c> be</c><00:04:09.680><c> making</c><00:04:10.000><c> any</c>
+
+00:04:10.229 --> 00:04:10.239 align:start position:0%
+this file you should not be making any
+ 
+
+00:04:10.239 --> 00:04:12.429 align:start position:0%
+this file you should not be making any
+changes<00:04:10.760><c> manually</c><00:04:11.239><c> to</c><00:04:11.480><c> this</c><00:04:11.680><c> file</c><00:04:12.040><c> else</c><00:04:12.319><c> it</c>
+
+00:04:12.429 --> 00:04:12.439 align:start position:0%
+changes manually to this file else it
+ 
+
+00:04:12.439 --> 00:04:15.309 align:start position:0%
+changes manually to this file else it
+will<00:04:12.720><c> corrupt</c><00:04:13.200><c> it</c><00:04:14.200><c> and</c><00:04:14.439><c> it</c><00:04:14.560><c> will</c><00:04:14.799><c> make</c><00:04:15.000><c> a</c><00:04:15.159><c> lot</c>
+
+00:04:15.309 --> 00:04:15.319 align:start position:0%
+will corrupt it and it will make a lot
+ 
+
+00:04:15.319 --> 00:04:18.909 align:start position:0%
+will corrupt it and it will make a lot
+of<00:04:15.480><c> mess</c><00:04:16.000><c> so</c><00:04:16.600><c> avoid</c><00:04:17.120><c> that</c><00:04:18.120><c> straight</c><00:04:18.519><c> locking</c>
+
+00:04:18.909 --> 00:04:18.919 align:start position:0%
+of mess so avoid that straight locking
+ 
+
+00:04:18.919 --> 00:04:21.629 align:start position:0%
+of mess so avoid that straight locking
+is<00:04:19.160><c> another</c><00:04:19.519><c> feature</c><00:04:20.199><c> so</c><00:04:20.639><c> to</c><00:04:20.840><c> make</c><00:04:21.040><c> sure</c><00:04:21.359><c> that</c>
+
+00:04:21.629 --> 00:04:21.639 align:start position:0%
+is another feature so to make sure that
+ 
+
+00:04:21.639 --> 00:04:23.590 align:start position:0%
+is another feature so to make sure that
+because<00:04:22.120><c> there</c><00:04:22.280><c> is</c><00:04:22.560><c> one</c><00:04:22.840><c> Central</c><00:04:23.320><c> File</c>
+
+00:04:23.590 --> 00:04:23.600 align:start position:0%
+because there is one Central File
+ 
+
+00:04:23.600 --> 00:04:26.030 align:start position:0%
+because there is one Central File
+located<00:04:24.120><c> at</c><00:04:24.280><c> the</c><00:04:24.440><c> remote</c><00:04:24.840><c> repository</c><00:04:25.800><c> so</c>
+
+00:04:26.030 --> 00:04:26.040 align:start position:0%
+located at the remote repository so
+ 
+
+00:04:26.040 --> 00:04:28.790 align:start position:0%
+located at the remote repository so
+multiple<00:04:26.520><c> users</c><00:04:26.960><c> can</c><00:04:27.160><c> try</c><00:04:27.440><c> to</c><00:04:28.160><c> provision</c><00:04:28.600><c> or</c>
+
+00:04:28.790 --> 00:04:28.800 align:start position:0%
+multiple users can try to provision or
+ 
+
+00:04:28.800 --> 00:04:30.670 align:start position:0%
+multiple users can try to provision or
+make<00:04:29.039><c> changes</c><00:04:29.400><c> to</c><00:04:29.600><c> the</c><00:04:29.800><c> the</c><00:04:30.000><c> infrastructure</c>
+
+00:04:30.670 --> 00:04:30.680 align:start position:0%
+make changes to the the infrastructure
+ 
+
+00:04:30.680 --> 00:04:32.670 align:start position:0%
+make changes to the the infrastructure
+at<00:04:30.800><c> the</c><00:04:31.000><c> same</c><00:04:31.280><c> time</c><00:04:31.680><c> and</c><00:04:31.919><c> it</c><00:04:32.039><c> will</c><00:04:32.240><c> leave</c><00:04:32.520><c> the</c>
+
+00:04:32.670 --> 00:04:32.680 align:start position:0%
+at the same time and it will leave the
+ 
+
+00:04:32.680 --> 00:04:35.830 align:start position:0%
+at the same time and it will leave the
+infrastructure<00:04:33.479><c> in</c><00:04:33.639><c> the</c><00:04:33.960><c> inconsistent</c><00:04:34.919><c> State</c>
+
+00:04:35.830 --> 00:04:35.840 align:start position:0%
+infrastructure in the inconsistent State
+ 
+
+00:04:35.840 --> 00:04:38.590 align:start position:0%
+infrastructure in the inconsistent State
+avoid<00:04:36.280><c> that</c><00:04:36.440><c> from</c><00:04:36.720><c> happening</c><00:04:37.360><c> you</c><00:04:37.520><c> have</c><00:04:37.840><c> to</c>
+
+00:04:38.590 --> 00:04:38.600 align:start position:0%
+avoid that from happening you have to
+ 
+
+00:04:38.600 --> 00:04:40.950 align:start position:0%
+avoid that from happening you have to
+enable<00:04:39.000><c> the</c><00:04:39.160><c> state</c><00:04:39.479><c> locking</c><00:04:40.240><c> we'll</c><00:04:40.479><c> see</c><00:04:40.759><c> how</c>
+
+00:04:40.950 --> 00:04:40.960 align:start position:0%
+enable the state locking we'll see how
+ 
+
+00:04:40.960 --> 00:04:44.790 align:start position:0%
+enable the state locking we'll see how
+it<00:04:41.400><c> works</c><00:04:42.400><c> in</c><00:04:43.120><c> uh</c><00:04:43.280><c> AWS</c><00:04:44.000><c> there</c><00:04:44.120><c> is</c><00:04:44.240><c> a</c><00:04:44.440><c> separate</c>
+
+00:04:44.790 --> 00:04:44.800 align:start position:0%
+it works in uh AWS there is a separate
+ 
+
+00:04:44.800 --> 00:04:49.070 align:start position:0%
+it works in uh AWS there is a separate
+mechanism<00:04:45.360><c> you</c><00:04:45.520><c> use</c><00:04:46.520><c> Dynamo</c><00:04:47.000><c> DB</c><00:04:47.880><c> table</c><00:04:48.880><c> and</c>
+
+00:04:49.070 --> 00:04:49.080 align:start position:0%
+mechanism you use Dynamo DB table and
+ 
+
+00:04:49.080 --> 00:04:51.150 align:start position:0%
+mechanism you use Dynamo DB table and
+inside<00:04:49.520><c> that</c><00:04:49.680><c> you</c><00:04:49.840><c> create</c><00:04:50.120><c> a</c><00:04:50.280><c> lock</c><00:04:50.600><c> ID</c><00:04:50.880><c> for</c>
+
+00:04:51.150 --> 00:04:51.160 align:start position:0%
+inside that you create a lock ID for
+ 
+
+00:04:51.160 --> 00:04:54.990 align:start position:0%
+inside that you create a lock ID for
+that<00:04:52.080><c> but</c><00:04:52.400><c> in</c><00:04:52.680><c> Azure</c><00:04:53.120><c> and</c><00:04:53.560><c> gcp</c><00:04:54.560><c> like</c><00:04:54.800><c> this</c>
+
+00:04:54.990 --> 00:04:55.000 align:start position:0%
+that but in Azure and gcp like this
+ 
+
+00:04:55.000 --> 00:04:57.710 align:start position:0%
+that but in Azure and gcp like this
+storage<00:04:55.440><c> account</c><00:04:56.160><c> comes</c><00:04:56.560><c> with</c><00:04:57.160><c> the</c><00:04:57.360><c> lock</c>
+
+00:04:57.710 --> 00:04:57.720 align:start position:0%
+storage account comes with the lock
+ 
+
+00:04:57.720 --> 00:05:00.390 align:start position:0%
+storage account comes with the lock
+itself<00:04:58.320><c> so</c><00:04:58.840><c> uh</c><00:04:58.919><c> it</c><00:04:59.039><c> will</c><00:04:59.160><c> be</c><00:04:59.280><c> enabled</c><00:04:59.880><c> by</c>
+
+00:05:00.390 --> 00:05:00.400 align:start position:0%
+itself so uh it will be enabled by
+ 
+
+00:05:00.400 --> 00:05:02.870 align:start position:0%
+itself so uh it will be enabled by
+default<00:05:01.400><c> so</c><00:05:01.840><c> that's</c><00:05:02.080><c> another</c><00:05:02.400><c> important</c>
+
+00:05:02.870 --> 00:05:02.880 align:start position:0%
+default so that's another important
+ 
+
+00:05:02.880 --> 00:05:05.310 align:start position:0%
+default so that's another important
+thing<00:05:03.280><c> and</c><00:05:03.440><c> then</c><00:05:03.720><c> isolation</c><00:05:04.280><c> of</c><00:05:04.440><c> State</c><00:05:04.800><c> file</c>
+
+00:05:05.310 --> 00:05:05.320 align:start position:0%
+thing and then isolation of State file
+ 
+
+00:05:05.320 --> 00:05:06.950 align:start position:0%
+thing and then isolation of State file
+is<00:05:05.479><c> one</c><00:05:05.600><c> of</c><00:05:05.720><c> the</c><00:05:05.880><c> best</c><00:05:06.080><c> practice</c><00:05:06.520><c> like</c><00:05:06.680><c> for</c>
+
+00:05:06.950 --> 00:05:06.960 align:start position:0%
+is one of the best practice like for
+ 
+
+00:05:06.960 --> 00:05:08.629 align:start position:0%
+is one of the best practice like for
+different<00:05:07.320><c> environment</c><00:05:07.919><c> you</c><00:05:08.000><c> can</c><00:05:08.199><c> create</c>
+
+00:05:08.629 --> 00:05:08.639 align:start position:0%
+different environment you can create
+ 
+
+00:05:08.639 --> 00:05:11.029 align:start position:0%
+different environment you can create
+separate<00:05:09.080><c> State</c><00:05:09.520><c> files</c><00:05:10.000><c> to</c><00:05:10.440><c> keep</c><00:05:10.759><c> them</c>
+
+00:05:11.029 --> 00:05:11.039 align:start position:0%
+separate State files to keep them
+ 
+
+00:05:11.039 --> 00:05:15.230 align:start position:0%
+separate State files to keep them
+separate<00:05:11.440><c> from</c><00:05:11.680><c> each</c><00:05:12.320><c> other</c><00:05:13.320><c> now</c><00:05:13.560><c> you</c><00:05:13.759><c> have</c><00:05:14.240><c> to</c>
+
+00:05:15.230 --> 00:05:15.240 align:start position:0%
+separate from each other now you have to
+ 
+
+00:05:15.240 --> 00:05:17.629 align:start position:0%
+separate from each other now you have to
+also<00:05:15.840><c> make</c><00:05:16.000><c> sure</c><00:05:16.280><c> that</c><00:05:16.440><c> you</c><00:05:16.600><c> regularly</c><00:05:17.160><c> backup</c>
+
+00:05:17.629 --> 00:05:17.639 align:start position:0%
+also make sure that you regularly backup
+ 
+
+00:05:17.639 --> 00:05:19.510 align:start position:0%
+also make sure that you regularly backup
+this<00:05:17.800><c> file</c><00:05:18.240><c> because</c><00:05:18.560><c> if</c><00:05:19.000><c> there</c><00:05:19.120><c> is</c><00:05:19.280><c> an</c>
+
+00:05:19.510 --> 00:05:19.520 align:start position:0%
+this file because if there is an
+ 
+
+00:05:19.520 --> 00:05:21.790 align:start position:0%
+this file because if there is an
+accidental<00:05:20.080><c> deletion</c><00:05:20.880><c> accidental</c>
+
+00:05:21.790 --> 00:05:21.800 align:start position:0%
+accidental deletion accidental
+ 
+
+00:05:21.800 --> 00:05:24.430 align:start position:0%
+accidental deletion accidental
+corruption<00:05:22.800><c> your</c><00:05:23.240><c> infrastructure</c><00:05:24.039><c> state</c>
+
+00:05:24.430 --> 00:05:24.440 align:start position:0%
+corruption your infrastructure state
+ 
+
+00:05:24.440 --> 00:05:27.830 align:start position:0%
+corruption your infrastructure state
+will<00:05:24.600><c> be</c><00:05:25.240><c> lost</c><00:05:26.240><c> what</c><00:05:26.479><c> what</c><00:05:26.680><c> that</c><00:05:26.800><c> means</c><00:05:27.199><c> is</c>
+
+00:05:27.830 --> 00:05:27.840 align:start position:0%
+will be lost what what that means is
+ 
+
+00:05:27.840 --> 00:05:30.270 align:start position:0%
+will be lost what what that means is
+like<00:05:28.039><c> let's</c><00:05:28.319><c> say</c><00:05:29.240><c> this</c><00:05:29.400><c> is</c><00:05:29.880><c> what</c><00:05:30.000><c> you</c><00:05:30.120><c> have</c>
+
+00:05:30.270 --> 00:05:30.280 align:start position:0%
+like let's say this is what you have
+ 
+
+00:05:30.280 --> 00:05:34.350 align:start position:0%
+like let's say this is what you have
+used<00:05:30.639><c> your</c><00:05:30.880><c> actual</c><00:05:31.639><c> state</c><00:05:32.000><c> is</c><00:05:32.800><c> in</c><00:05:33.080><c> this</c><00:05:33.360><c> infra</c>
+
+00:05:34.350 --> 00:05:34.360 align:start position:0%
+used your actual state is in this infra
+ 
+
+00:05:34.360 --> 00:05:36.550 align:start position:0%
+used your actual state is in this infra
+okay<00:05:34.520><c> you</c><00:05:34.720><c> use</c><00:05:35.479><c> terraform</c><00:05:36.000><c> config</c><00:05:36.400><c> to</c>
+
+00:05:36.550 --> 00:05:36.560 align:start position:0%
+okay you use terraform config to
+ 
+
+00:05:36.560 --> 00:05:39.110 align:start position:0%
+okay you use terraform config to
+provision<00:05:37.000><c> some</c><00:05:37.199><c> infra</c><00:05:37.759><c> resources</c><00:05:38.759><c> and</c><00:05:38.919><c> you</c>
+
+00:05:39.110 --> 00:05:39.120 align:start position:0%
+provision some infra resources and you
+ 
+
+00:05:39.120 --> 00:05:41.510 align:start position:0%
+provision some infra resources and you
+have<00:05:39.560><c> let's</c><00:05:39.759><c> say</c><00:05:39.960><c> deleted</c><00:05:40.479><c> this</c><00:05:40.720><c> file</c><00:05:41.199><c> this</c>
+
+00:05:41.510 --> 00:05:41.520 align:start position:0%
+have let's say deleted this file this
+ 
+
+00:05:41.520 --> 00:05:44.790 align:start position:0%
+have let's say deleted this file this
+file<00:05:41.840><c> do</c><00:05:42.080><c> not</c><00:05:42.400><c> exist</c><00:05:42.840><c> now</c><00:05:43.720><c> now</c><00:05:44.199><c> terraform</c>
+
+00:05:44.790 --> 00:05:44.800 align:start position:0%
+file do not exist now now terraform
+ 
+
+00:05:44.800 --> 00:05:46.909 align:start position:0%
+file do not exist now now terraform
+would<00:05:45.000><c> not</c><00:05:45.240><c> know</c><00:05:45.520><c> the</c><00:05:45.759><c> actual</c><00:05:46.080><c> state</c><00:05:46.360><c> of</c><00:05:46.479><c> your</c>
+
+00:05:46.909 --> 00:05:46.919 align:start position:0%
+would not know the actual state of your
+ 
+
+00:05:46.919 --> 00:05:49.029 align:start position:0%
+would not know the actual state of your
+infrastructure<00:05:47.919><c> so</c><00:05:48.080><c> whenever</c><00:05:48.440><c> you</c><00:05:48.600><c> make</c><00:05:48.840><c> any</c>
+
+00:05:49.029 --> 00:05:49.039 align:start position:0%
+infrastructure so whenever you make any
+ 
+
+00:05:49.039 --> 00:05:52.189 align:start position:0%
+infrastructure so whenever you make any
+changes<00:05:50.000><c> it</c><00:05:50.160><c> will</c><00:05:50.479><c> not</c><00:05:50.919><c> make</c><00:05:51.560><c> these</c><00:05:51.800><c> changes</c>
+
+00:05:52.189 --> 00:05:52.199 align:start position:0%
+changes it will not make these changes
+ 
+
+00:05:52.199 --> 00:05:54.670 align:start position:0%
+changes it will not make these changes
+to<00:05:52.440><c> the</c><00:05:52.960><c> existing</c><00:05:53.360><c> resources</c><00:05:54.080><c> because</c><00:05:54.440><c> for</c>
+
+00:05:54.670 --> 00:05:54.680 align:start position:0%
+to the existing resources because for
+ 
+
+00:05:54.680 --> 00:05:56.749 align:start position:0%
+to the existing resources because for
+terraform<00:05:55.360><c> these</c><00:05:55.520><c> are</c><00:05:55.720><c> not</c><00:05:55.960><c> created</c><00:05:56.400><c> by</c>
+
+00:05:56.749 --> 00:05:56.759 align:start position:0%
+terraform these are not created by
+ 
+
+00:05:56.759 --> 00:05:58.909 align:start position:0%
+terraform these are not created by
+terraform<00:05:57.759><c> you</c><00:05:57.919><c> have</c><00:05:58.039><c> to</c><00:05:58.319><c> import</c><00:05:58.720><c> the</c>
+
+00:05:58.909 --> 00:05:58.919 align:start position:0%
+terraform you have to import the
+ 
+
+00:05:58.919 --> 00:06:01.909 align:start position:0%
+terraform you have to import the
+resources<00:05:59.400><c> again</c><00:05:59.800><c> so</c><00:05:59.960><c> there</c><00:06:00.080><c> is</c><00:06:00.199><c> a</c><00:06:00.560><c> lot</c><00:06:01.560><c> more</c>
+
+00:06:01.909 --> 00:06:01.919 align:start position:0%
+resources again so there is a lot more
+ 
+
+00:06:01.919 --> 00:06:04.990 align:start position:0%
+resources again so there is a lot more
+complex<00:06:02.400><c> process</c><00:06:02.720><c> to</c><00:06:02.919><c> do</c><00:06:03.160><c> that</c><00:06:03.720><c> so</c><00:06:04.319><c> avoid</c><00:06:04.800><c> that</c>
+
+00:06:04.990 --> 00:06:05.000 align:start position:0%
+complex process to do that so avoid that
+ 
+
+00:06:05.000 --> 00:06:07.710 align:start position:0%
+complex process to do that so avoid that
+from<00:06:05.240><c> happening</c><00:06:05.600><c> at</c><00:06:05.800><c> any</c><00:06:06.080><c> cost</c><00:06:07.080><c> so</c><00:06:07.319><c> that's</c><00:06:07.599><c> the</c>
+
+00:06:07.710 --> 00:06:07.720 align:start position:0%
+from happening at any cost so that's the
+ 
+
+00:06:07.720 --> 00:06:10.749 align:start position:0%
+from happening at any cost so that's the
+terraform<00:06:08.319><c> State</c><00:06:08.639><c> file</c><00:06:08.960><c> best</c><00:06:09.440><c> practices</c><00:06:10.440><c> now</c>
+
+00:06:10.749 --> 00:06:10.759 align:start position:0%
+terraform State file best practices now
+ 
+
+00:06:10.759 --> 00:06:14.469 align:start position:0%
+terraform State file best practices now
+let's<00:06:11.039><c> go</c><00:06:11.319><c> back</c><00:06:11.560><c> to</c><00:06:11.800><c> our</c><00:06:12.520><c> um</c>
+
+00:06:14.469 --> 00:06:14.479 align:start position:0%
+let's go back to our um
+ 
+
+00:06:14.479 --> 00:06:17.990 align:start position:0%
+let's go back to our um
+terminal<00:06:15.479><c> okay</c><00:06:15.960><c> and</c><00:06:16.280><c> let's</c><00:06:16.800><c> work</c><00:06:17.120><c> more</c><00:06:17.360><c> on</c><00:06:17.560><c> it</c>
+
+00:06:17.990 --> 00:06:18.000 align:start position:0%
+terminal okay and let's work more on it
+ 
+
+00:06:18.000 --> 00:06:20.469 align:start position:0%
+terminal okay and let's work more on it
+like<00:06:18.240><c> how</c><00:06:18.360><c> to</c><00:06:18.599><c> create</c><00:06:18.919><c> it</c><00:06:19.240><c> and</c><00:06:19.639><c> how</c><00:06:19.800><c> to</c><00:06:20.360><c> uh</c>
+
+00:06:20.469 --> 00:06:20.479 align:start position:0%
+like how to create it and how to uh
+ 
+
+00:06:20.479 --> 00:06:23.469 align:start position:0%
+like how to create it and how to uh
+create<00:06:20.759><c> the</c><00:06:20.880><c> remote</c><00:06:21.199><c> back</c><00:06:21.360><c> end</c><00:06:21.599><c> and</c><00:06:21.759><c> so</c><00:06:22.160><c> on</c><00:06:23.160><c> so</c>
+
+00:06:23.469 --> 00:06:23.479 align:start position:0%
+create the remote back end and so on so
+ 
+
+00:06:23.479 --> 00:06:25.589 align:start position:0%
+create the remote back end and so on so
+I'm<00:06:23.639><c> going</c><00:06:23.759><c> to</c><00:06:23.960><c> create</c><00:06:24.400><c> a</c><00:06:24.560><c> new</c><00:06:24.800><c> folder</c><00:06:25.280><c> over</c>
+
+00:06:25.589 --> 00:06:25.599 align:start position:0%
+I'm going to create a new folder over
+ 
+
+00:06:25.599 --> 00:06:30.870 align:start position:0%
+I'm going to create a new folder over
+here<00:06:26.440><c> and</c><00:06:26.759><c> let's</c><00:06:27.120><c> just</c><00:06:27.440><c> call</c><00:06:27.840><c> it</c><00:06:28.840><c> day</c><00:06:29.080><c> 04</c>
+
+00:06:30.870 --> 00:06:30.880 align:start position:0%
+here and let's just call it day 04
+ 
+
+00:06:30.880 --> 00:06:33.189 align:start position:0%
+here and let's just call it day 04
+4<00:06:31.880><c> okay</c><00:06:32.080><c> currently</c><00:06:32.440><c> I</c><00:06:32.560><c> don't</c><00:06:32.759><c> have</c><00:06:32.919><c> any</c>
+
+00:06:33.189 --> 00:06:33.199 align:start position:0%
+4 okay currently I don't have any
+ 
+
+00:06:33.199 --> 00:06:34.390 align:start position:0%
+4 okay currently I don't have any
+resources
+
+00:06:34.390 --> 00:06:34.400 align:start position:0%
+resources
+ 
+
+00:06:34.400 --> 00:06:37.510 align:start position:0%
+resources
+created<00:06:35.400><c> and</c><00:06:36.199><c> uh</c>
+
+00:06:37.510 --> 00:06:37.520 align:start position:0%
+created and uh
+ 
+
+00:06:37.520 --> 00:06:43.510 align:start position:0%
+created and uh
+let's<00:06:38.520><c> use</c><00:06:38.880><c> the</c><00:06:39.039><c> main.tf</c><00:06:40.000><c> from</c>
+
+00:06:43.510 --> 00:06:43.520 align:start position:0%
+ 
+ 
+
+00:06:43.520 --> 00:06:54.029 align:start position:0%
+ 
+here
+
+00:06:54.029 --> 00:06:54.039 align:start position:0%
+ 
+ 
+
+00:06:54.039 --> 00:06:58.589 align:start position:0%
+ 
+okay<00:06:55.039><c> so</c><00:06:55.319><c> here's</c><00:06:55.639><c> my</c><00:06:56.160><c> main.tf</c><00:06:57.160><c> and</c><00:06:57.840><c> now</c><00:06:58.440><c> I</c>
+
+00:06:58.589 --> 00:06:58.599 align:start position:0%
+okay so here's my main.tf and now I
+ 
+
+00:06:58.599 --> 00:07:00.830 align:start position:0%
+okay so here's my main.tf and now I
+don't<00:06:58.960><c> want</c><00:06:59.280><c> my</c><00:06:59.680><c> my</c><00:07:00.000><c> state</c><00:07:00.360><c> file</c><00:07:00.560><c> to</c><00:07:00.680><c> be</c>
+
+00:07:00.830 --> 00:07:00.840 align:start position:0%
+don't want my my state file to be
+ 
+
+00:07:00.840 --> 00:07:02.909 align:start position:0%
+don't want my my state file to be
+created<00:07:01.199><c> locally</c><00:07:01.680><c> I</c><00:07:01.800><c> want</c><00:07:02.039><c> to</c><00:07:02.199><c> be</c><00:07:02.360><c> created</c><00:07:02.800><c> in</c>
+
+00:07:02.909 --> 00:07:02.919 align:start position:0%
+created locally I want to be created in
+ 
+
+00:07:02.919 --> 00:07:05.790 align:start position:0%
+created locally I want to be created in
+a<00:07:03.280><c> remote</c><00:07:03.759><c> backend</c><00:07:04.759><c> so</c><00:07:04.960><c> for</c><00:07:05.240><c> that</c><00:07:05.560><c> what</c><00:07:05.680><c> you</c>
+
+00:07:05.790 --> 00:07:05.800 align:start position:0%
+a remote backend so for that what you
+ 
+
+00:07:05.800 --> 00:07:08.070 align:start position:0%
+a remote backend so for that what you
+will<00:07:06.039><c> have</c><00:07:06.199><c> to</c><00:07:06.319><c> do</c><00:07:06.520><c> you</c><00:07:06.720><c> have</c><00:07:06.879><c> to</c><00:07:07.120><c> create</c><00:07:07.800><c> a</c>
+
+00:07:08.070 --> 00:07:08.080 align:start position:0%
+will have to do you have to create a
+ 
+
+00:07:08.080 --> 00:07:10.029 align:start position:0%
+will have to do you have to create a
+separate<00:07:08.520><c> storage</c><00:07:09.080><c> account</c><00:07:09.520><c> that</c><00:07:09.639><c> is</c><00:07:09.800><c> not</c>
+
+00:07:10.029 --> 00:07:10.039 align:start position:0%
+separate storage account that is not
+ 
+
+00:07:10.039 --> 00:07:12.469 align:start position:0%
+separate storage account that is not
+managed<00:07:10.560><c> by</c><00:07:10.800><c> terraform</c><00:07:11.560><c> but</c><00:07:11.720><c> it</c><00:07:11.840><c> is</c>
+
+00:07:12.469 --> 00:07:12.479 align:start position:0%
+managed by terraform but it is
+ 
+
+00:07:12.479 --> 00:07:15.830 align:start position:0%
+managed by terraform but it is
+separately<00:07:13.319><c> managed</c><00:07:14.319><c> and</c><00:07:14.879><c> you</c><00:07:15.039><c> will</c><00:07:15.240><c> store</c>
+
+00:07:15.830 --> 00:07:15.840 align:start position:0%
+separately managed and you will store
+ 
+
+00:07:15.840 --> 00:07:19.950 align:start position:0%
+separately managed and you will store
+your<00:07:16.840><c> state</c><00:07:17.319><c> file</c><00:07:17.720><c> in</c><00:07:17.960><c> that</c><00:07:18.479><c> as</c><00:07:18.639><c> an</c><00:07:18.879><c> object</c>
+
+00:07:19.950 --> 00:07:19.960 align:start position:0%
+your state file in that as an object
+ 
+
+00:07:19.960 --> 00:07:24.270 align:start position:0%
+your state file in that as an object
+okay<00:07:20.960><c> so</c><00:07:21.919><c> I</c><00:07:22.160><c> have</c><00:07:22.680><c> an</c><00:07:22.919><c> Azure</c><00:07:23.360><c> CLI</c><00:07:23.840><c> script</c><00:07:24.199><c> you</c>
+
+00:07:24.270 --> 00:07:24.280 align:start position:0%
+okay so I have an Azure CLI script you
+ 
+
+00:07:24.280 --> 00:07:26.869 align:start position:0%
+okay so I have an Azure CLI script you
+can<00:07:24.479><c> create</c><00:07:24.840><c> that</c><00:07:25.199><c> from</c><00:07:25.879><c> uh</c><00:07:26.080><c> the</c><00:07:26.240><c> portal</c><00:07:26.720><c> as</c>
+
+00:07:26.869 --> 00:07:26.879 align:start position:0%
+can create that from uh the portal as
+ 
+
+00:07:26.879 --> 00:07:30.430 align:start position:0%
+can create that from uh the portal as
+well<00:07:27.199><c> but</c><00:07:28.199><c> like</c><00:07:28.400><c> I</c><00:07:28.560><c> try</c><00:07:28.840><c> to</c><00:07:29.199><c> make</c><00:07:29.680><c> use</c><00:07:30.080><c> Azure</c>
+
+00:07:30.430 --> 00:07:30.440 align:start position:0%
+well but like I try to make use Azure
+ 
+
+00:07:30.440 --> 00:07:33.110 align:start position:0%
+well but like I try to make use Azure
+CLI<00:07:30.960><c> more</c><00:07:31.440><c> because</c><00:07:31.680><c> of</c><00:07:31.840><c> the</c><00:07:32.039><c> Simplicity</c><00:07:32.759><c> and</c>
+
+00:07:33.110 --> 00:07:33.120 align:start position:0%
+CLI more because of the Simplicity and
+ 
+
+00:07:33.120 --> 00:07:37.029 align:start position:0%
+CLI more because of the Simplicity and
+because<00:07:34.120><c> it</c><00:07:34.280><c> doesn't</c><00:07:34.680><c> change</c><00:07:35.560><c> much</c><00:07:35.840><c> often</c><00:07:36.759><c> and</c>
+
+00:07:37.029 --> 00:07:37.039 align:start position:0%
+because it doesn't change much often and
+ 
+
+00:07:37.039 --> 00:07:39.309 align:start position:0%
+because it doesn't change much often and
+it<00:07:37.160><c> is</c><00:07:37.479><c> easy</c><00:07:37.720><c> to</c><00:07:37.919><c> automate</c><00:07:38.599><c> things</c><00:07:38.919><c> with</c><00:07:39.120><c> the</c>
+
+00:07:39.309 --> 00:07:39.319 align:start position:0%
+it is easy to automate things with the
+ 
+
+00:07:39.319 --> 00:07:42.029 align:start position:0%
+it is easy to automate things with the
+CLI<00:07:40.280><c> so</c><00:07:40.560><c> that's</c><00:07:40.879><c> what</c><00:07:41.160><c> I'm</c><00:07:41.319><c> going</c><00:07:41.440><c> to</c><00:07:41.599><c> do</c><00:07:41.879><c> so</c>
+
+00:07:42.029 --> 00:07:42.039 align:start position:0%
+CLI so that's what I'm going to do so
+ 
+
+00:07:42.039 --> 00:07:44.869 align:start position:0%
+CLI so that's what I'm going to do so
+I'll<00:07:42.280><c> create</c><00:07:42.560><c> a</c><00:07:42.720><c> backend.</c><00:07:43.360><c> sh</c><00:07:44.360><c> okay</c><00:07:44.639><c> here's</c>
+
+00:07:44.869 --> 00:07:44.879 align:start position:0%
+I'll create a backend. sh okay here's
+ 
+
+00:07:44.879 --> 00:07:47.270 align:start position:0%
+I'll create a backend. sh okay here's
+the<00:07:45.039><c> content</c><00:07:45.479><c> so</c><00:07:45.639><c> let</c><00:07:45.759><c> me</c><00:07:45.879><c> show</c><00:07:46.039><c> you</c><00:07:46.240><c> what</c><00:07:46.360><c> it</c>
+
+00:07:47.270 --> 00:07:47.280 align:start position:0%
+the content so let me show you what it
+ 
+
+00:07:47.280 --> 00:07:50.710 align:start position:0%
+the content so let me show you what it
+does<00:07:48.280><c> simple</c><00:07:48.840><c> simple</c><00:07:49.240><c> commands</c><00:07:50.080><c> right</c><00:07:50.360><c> we</c><00:07:50.479><c> are</c>
+
+00:07:50.710 --> 00:07:50.720 align:start position:0%
+does simple simple commands right we are
+ 
+
+00:07:50.720 --> 00:07:52.790 align:start position:0%
+does simple simple commands right we are
+assigning<00:07:51.120><c> some</c><00:07:51.360><c> variables</c><00:07:52.120><c> so</c><00:07:52.360><c> Resource</c>
+
+00:07:52.790 --> 00:07:52.800 align:start position:0%
+assigning some variables so Resource
+ 
+
+00:07:52.800 --> 00:07:55.990 align:start position:0%
+assigning some variables so Resource
+Group<00:07:53.080><c> name</c><00:07:53.960><c> let's</c><00:07:54.199><c> call</c><00:07:54.400><c> it</c><00:07:54.639><c> TF</c><00:07:55.080><c> State</c><00:07:55.720><c> day</c>
+
+00:07:55.990 --> 00:07:56.000 align:start position:0%
+Group name let's call it TF State day
+ 
+
+00:07:56.000 --> 00:07:59.510 align:start position:0%
+Group name let's call it TF State day
+four<00:07:56.759><c> storage</c><00:07:57.240><c> account</c><00:07:57.560><c> name</c><00:07:58.479><c> day</c><00:07:58.680><c> four</c><00:07:59.000><c> and</c><00:07:59.159><c> A</c>
+
+00:07:59.510 --> 00:07:59.520 align:start position:0%
+four storage account name day four and A
+ 
+
+00:07:59.520 --> 00:08:01.270 align:start position:0%
+four storage account name day four and A
+random<00:07:59.800><c> number</c><00:08:00.199><c> because</c><00:08:00.479><c> storage</c><00:08:00.919><c> account</c>
+
+00:08:01.270 --> 00:08:01.280 align:start position:0%
+random number because storage account
+ 
+
+00:08:01.280 --> 00:08:03.629 align:start position:0%
+random number because storage account
+has<00:08:01.400><c> to</c><00:08:01.560><c> be</c><00:08:01.720><c> unique</c><00:08:02.400><c> container</c><00:08:02.879><c> name</c><00:08:03.080><c> is</c><00:08:03.240><c> TF</c>
+
+00:08:03.629 --> 00:08:03.639 align:start position:0%
+has to be unique container name is TF
+ 
+
+00:08:03.639 --> 00:08:06.149 align:start position:0%
+has to be unique container name is TF
+State<00:08:04.479><c> container</c><00:08:05.120><c> is</c><00:08:05.319><c> the</c><00:08:05.479><c> folder</c><00:08:05.919><c> name</c>
+
+00:08:06.149 --> 00:08:06.159 align:start position:0%
+State container is the folder name
+ 
+
+00:08:06.159 --> 00:08:08.029 align:start position:0%
+State container is the folder name
+inside<00:08:06.560><c> the</c><00:08:06.680><c> storage</c><00:08:07.159><c> account</c><00:08:07.720><c> which</c><00:08:07.840><c> will</c>
+
+00:08:08.029 --> 00:08:08.039 align:start position:0%
+inside the storage account which will
+ 
+
+00:08:08.039 --> 00:08:11.270 align:start position:0%
+inside the storage account which will
+have<00:08:08.199><c> the</c><00:08:08.360><c> storage</c><00:08:09.159><c> uh</c><00:08:09.360><c> TF</c><00:08:09.720><c> State</c><00:08:10.039><c> file</c><00:08:11.000><c> then</c><00:08:11.199><c> I</c>
+
+00:08:11.270 --> 00:08:11.280 align:start position:0%
+have the storage uh TF State file then I
+ 
+
+00:08:11.280 --> 00:08:13.309 align:start position:0%
+have the storage uh TF State file then I
+will<00:08:11.479><c> create</c><00:08:11.759><c> a</c><00:08:11.919><c> resource</c><00:08:12.360><c> Group</c><00:08:12.720><c> a</c><00:08:12.879><c> storage</c>
+
+00:08:13.309 --> 00:08:13.319 align:start position:0%
+will create a resource Group a storage
+ 
+
+00:08:13.319 --> 00:08:15.749 align:start position:0%
+will create a resource Group a storage
+account<00:08:13.759><c> and</c><00:08:13.919><c> a</c><00:08:14.039><c> blob</c><00:08:14.360><c> container</c><00:08:15.120><c> okay</c><00:08:15.479><c> so</c>
+
+00:08:15.749 --> 00:08:15.759 align:start position:0%
+account and a blob container okay so
+ 
+
+00:08:15.759 --> 00:08:17.790 align:start position:0%
+account and a blob container okay so
+again<00:08:16.159><c> this</c><00:08:16.360><c> Resource</c><00:08:16.759><c> Group</c><00:08:17.039><c> this</c><00:08:17.360><c> storage</c>
+
+00:08:17.790 --> 00:08:17.800 align:start position:0%
+again this Resource Group this storage
+ 
+
+00:08:17.800 --> 00:08:19.869 align:start position:0%
+again this Resource Group this storage
+account<00:08:18.120><c> is</c><00:08:18.319><c> separate</c><00:08:18.800><c> from</c><00:08:18.960><c> the</c><00:08:19.120><c> terraform</c>
+
+00:08:19.869 --> 00:08:19.879 align:start position:0%
+account is separate from the terraform
+ 
+
+00:08:19.879 --> 00:08:22.830 align:start position:0%
+account is separate from the terraform
+resources<00:08:20.879><c> this</c><00:08:21.080><c> is</c><00:08:21.680><c> considered</c><00:08:22.360><c> let's</c><00:08:22.599><c> say</c>
+
+00:08:22.830 --> 00:08:22.840 align:start position:0%
+resources this is considered let's say
+ 
+
+00:08:22.840 --> 00:08:25.550 align:start position:0%
+resources this is considered let's say
+as<00:08:22.919><c> a</c><00:08:23.360><c> prerequisite</c><00:08:24.360><c> to</c><00:08:24.560><c> using</c><00:08:24.919><c> terraform</c>
+
+00:08:25.550 --> 00:08:25.560 align:start position:0%
+as a prerequisite to using terraform
+ 
+
+00:08:25.560 --> 00:08:28.029 align:start position:0%
+as a prerequisite to using terraform
+because<00:08:25.800><c> we'll</c><00:08:26.000><c> be</c><00:08:26.120><c> storing</c><00:08:26.479><c> our</c><00:08:27.360><c> uh</c><00:08:27.560><c> storage</c>
+
+00:08:28.029 --> 00:08:28.039 align:start position:0%
+because we'll be storing our uh storage
+ 
+
+00:08:28.039 --> 00:08:29.990 align:start position:0%
+because we'll be storing our uh storage
+account<00:08:28.520><c> backend</c><00:08:28.919><c> details</c><00:08:29.240><c> over</c>
+
+00:08:29.990 --> 00:08:30.000 align:start position:0%
+account backend details over
+ 
+
+00:08:30.000 --> 00:08:33.389 align:start position:0%
+account backend details over
+here<00:08:31.000><c> now</c><00:08:31.759><c> you</c><00:08:31.879><c> don't</c><00:08:32.159><c> have</c><00:08:32.320><c> to</c><00:08:32.560><c> always</c><00:08:32.880><c> delete</c>
+
+00:08:33.389 --> 00:08:33.399 align:start position:0%
+here now you don't have to always delete
+ 
+
+00:08:33.399 --> 00:08:35.670 align:start position:0%
+here now you don't have to always delete
+this<00:08:33.719><c> because</c><00:08:34.240><c> you</c><00:08:34.360><c> can</c><00:08:34.560><c> use</c><00:08:34.839><c> this</c><00:08:35.080><c> later</c><00:08:35.360><c> on</c>
+
+00:08:35.670 --> 00:08:35.680 align:start position:0%
+this because you can use this later on
+ 
+
+00:08:35.680 --> 00:08:38.949 align:start position:0%
+this because you can use this later on
+as<00:08:35.839><c> well</c><00:08:36.839><c> so</c><00:08:37.120><c> I'll</c><00:08:37.320><c> just</c><00:08:38.000><c> okay</c><00:08:38.320><c> don't</c><00:08:38.640><c> have</c><00:08:38.760><c> to</c>
+
+00:08:38.949 --> 00:08:38.959 align:start position:0%
+as well so I'll just okay don't have to
+ 
+
+00:08:38.959 --> 00:08:44.310 align:start position:0%
+as well so I'll just okay don't have to
+copy<00:08:39.519><c> it</c><00:08:40.519><c> I</c><00:08:40.880><c> already</c><00:08:41.479><c> done</c><00:08:42.080><c> uh</c><00:08:42.479><c> TF</c><00:08:42.959><c> login</c><00:08:43.560><c> so</c><00:08:44.159><c> oh</c>
+
+00:08:44.310 --> 00:08:44.320 align:start position:0%
+copy it I already done uh TF login so oh
+ 
+
+00:08:44.320 --> 00:08:47.070 align:start position:0%
+copy it I already done uh TF login so oh
+sorry<00:08:44.720><c> AZ</c><00:08:45.040><c> login</c><00:08:45.399><c> so</c><00:08:45.600><c> that's</c><00:08:45.760><c> all</c><00:08:46.000><c> right</c><00:08:46.800><c> now</c>
+
+00:08:47.070 --> 00:08:47.080 align:start position:0%
+sorry AZ login so that's all right now
+ 
+
+00:08:47.080 --> 00:08:49.949 align:start position:0%
+sorry AZ login so that's all right now
+let's<00:08:47.320><c> go</c><00:08:47.560><c> back</c><00:08:47.760><c> to</c><00:08:48.120><c> day</c><00:08:48.440><c> four</c>
+
+00:08:49.949 --> 00:08:49.959 align:start position:0%
+let's go back to day four
+ 
+
+00:08:49.959 --> 00:08:54.670 align:start position:0%
+let's go back to day four
+folder<00:08:50.959><c> and</c><00:08:51.240><c> let's</c><00:08:51.600><c> run</c><00:08:51.959><c> this</c><00:08:52.200><c> CH</c><00:08:52.800><c> mode</c><00:08:53.680><c> 775</c>
+
+00:08:54.670 --> 00:08:54.680 align:start position:0%
+folder and let's run this CH mode 775
+ 
+
+00:08:54.680 --> 00:08:56.910 align:start position:0%
+folder and let's run this CH mode 775
+backend<00:08:55.200><c> Dosh</c><00:08:56.080><c> so</c><00:08:56.240><c> I'm</c><00:08:56.440><c> just</c><00:08:56.560><c> going</c><00:08:56.720><c> to</c>
+
+00:08:56.910 --> 00:08:56.920 align:start position:0%
+backend Dosh so I'm just going to
+ 
+
+00:08:56.920 --> 00:08:59.550 align:start position:0%
+backend Dosh so I'm just going to
+execute<00:08:57.440><c> this</c><00:08:57.640><c> file</c>
+
+00:08:59.550 --> 00:08:59.560 align:start position:0%
+execute this file
+ 
+
+00:08:59.560 --> 00:09:02.590 align:start position:0%
+execute this file
+hopefully<00:09:00.079><c> it</c><00:09:00.200><c> should</c><00:09:00.480><c> create</c><00:09:00.839><c> the</c>
+
+00:09:02.590 --> 00:09:02.600 align:start position:0%
+hopefully it should create the
+ 
+
+00:09:02.600 --> 00:09:05.110 align:start position:0%
+hopefully it should create the
+resources<00:09:03.600><c> if</c><00:09:03.880><c> it</c><00:09:04.040><c> doesn't</c><00:09:04.360><c> have</c><00:09:04.519><c> any</c><00:09:04.720><c> error</c><00:09:05.040><c> I</c>
+
+00:09:05.110 --> 00:09:05.120 align:start position:0%
+resources if it doesn't have any error I
+ 
+
+00:09:05.120 --> 00:09:07.230 align:start position:0%
+resources if it doesn't have any error I
+haven't<00:09:05.399><c> tested</c><00:09:05.760><c> it</c><00:09:06.040><c> yet</c><00:09:06.320><c> but</c><00:09:06.519><c> let's</c>
+
+00:09:07.230 --> 00:09:07.240 align:start position:0%
+haven't tested it yet but let's
+ 
+
+00:09:07.240 --> 00:09:08.949 align:start position:0%
+haven't tested it yet but let's
+see
+
+00:09:08.949 --> 00:09:08.959 align:start position:0%
+see
+ 
+
+00:09:08.959 --> 00:09:11.990 align:start position:0%
+see
+okay<00:09:09.959><c> uh</c><00:09:10.120><c> it</c><00:09:10.240><c> says</c><00:09:10.600><c> provisioning</c><00:09:11.160><c> succeed</c><00:09:11.880><c> I</c>
+
+00:09:11.990 --> 00:09:12.000 align:start position:0%
+okay uh it says provisioning succeed I
+ 
+
+00:09:12.000 --> 00:09:13.670 align:start position:0%
+okay uh it says provisioning succeed I
+guess<00:09:12.200><c> yeah</c><00:09:12.320><c> it</c><00:09:12.440><c> was</c><00:09:12.680><c> Resource</c><00:09:13.120><c> Group</c><00:09:13.480><c> that's</c>
+
+00:09:13.670 --> 00:09:13.680 align:start position:0%
+guess yeah it was Resource Group that's
+ 
+
+00:09:13.680 --> 00:09:16.790 align:start position:0%
+guess yeah it was Resource Group that's
+been<00:09:13.920><c> created</c><00:09:14.600><c> with</c><00:09:14.720><c> the</c><00:09:14.880><c> name</c><00:09:15.120><c> TF</c><00:09:15.480><c> State</c><00:09:15.800><c> day</c>
+
+00:09:16.790 --> 00:09:16.800 align:start position:0%
+been created with the name TF State day
+ 
+
+00:09:16.800 --> 00:09:19.630 align:start position:0%
+been created with the name TF State day
+four<00:09:17.800><c> um</c><00:09:18.079><c> let's</c><00:09:18.399><c> go</c>
+
+00:09:19.630 --> 00:09:19.640 align:start position:0%
+four um let's go
+ 
+
+00:09:19.640 --> 00:09:23.470 align:start position:0%
+four um let's go
+back<00:09:20.640><c> and</c><00:09:20.839><c> hit</c><00:09:21.120><c> refresh</c><00:09:21.920><c> yes</c><00:09:22.240><c> TF</c><00:09:22.600><c> State</c><00:09:22.880><c> day</c>
+
+00:09:23.470 --> 00:09:23.480 align:start position:0%
+back and hit refresh yes TF State day
+ 
+
+00:09:23.480 --> 00:09:26.710 align:start position:0%
+back and hit refresh yes TF State day
+four<00:09:24.480><c> and</c><00:09:25.000><c> resources</c><00:09:25.560><c> have</c><00:09:25.760><c> not</c><00:09:25.920><c> been</c><00:09:26.160><c> created</c>
+
+00:09:26.710 --> 00:09:26.720 align:start position:0%
+four and resources have not been created
+ 
+
+00:09:26.720 --> 00:09:30.269 align:start position:0%
+four and resources have not been created
+yet<00:09:27.000><c> so</c><00:09:27.240><c> let's</c><00:09:27.920><c> pause</c><00:09:28.279><c> the</c><00:09:28.480><c> video</c><00:09:28.839><c> for</c><00:09:29.079><c> some</c>
+
+00:09:30.269 --> 00:09:30.279 align:start position:0%
+yet so let's pause the video for some
+ 
+
+00:09:30.279 --> 00:09:32.829 align:start position:0%
+yet so let's pause the video for some
+time<00:09:31.279><c> okay</c><00:09:31.440><c> so</c><00:09:31.680><c> after</c><00:09:31.920><c> a</c><00:09:32.040><c> few</c><00:09:32.240><c> minutes</c><00:09:32.640><c> my</c>
+
+00:09:32.829 --> 00:09:32.839 align:start position:0%
+time okay so after a few minutes my
+ 
+
+00:09:32.839 --> 00:09:35.509 align:start position:0%
+time okay so after a few minutes my
+storage<00:09:33.279><c> account</c><00:09:33.600><c> has</c><00:09:33.720><c> been</c><00:09:34.000><c> created</c><00:09:34.920><c> and</c><00:09:35.399><c> as</c>
+
+00:09:35.509 --> 00:09:35.519 align:start position:0%
+storage account has been created and as
+ 
+
+00:09:35.519 --> 00:09:37.550 align:start position:0%
+storage account has been created and as
+you<00:09:35.640><c> see</c><00:09:35.880><c> the</c><00:09:36.040><c> name</c><00:09:36.240><c> is</c><00:09:36.519><c> day</c><00:09:36.720><c> four</c><00:09:37.040><c> and</c><00:09:37.200><c> then</c><00:09:37.399><c> a</c>
+
+00:09:37.550 --> 00:09:37.560 align:start position:0%
+you see the name is day four and then a
+ 
+
+00:09:37.560 --> 00:09:39.190 align:start position:0%
+you see the name is day four and then a
+random<00:09:37.959><c> number</c><00:09:38.320><c> after</c>
+
+00:09:39.190 --> 00:09:39.200 align:start position:0%
+random number after
+ 
+
+00:09:39.200 --> 00:09:42.190 align:start position:0%
+random number after
+it<00:09:40.200><c> and</c><00:09:41.000><c> it</c><00:09:41.120><c> should</c><00:09:41.440><c> have</c><00:09:41.600><c> the</c><00:09:41.760><c> storage</c>
+
+00:09:42.190 --> 00:09:42.200 align:start position:0%
+it and it should have the storage
+ 
+
+00:09:42.200 --> 00:09:45.430 align:start position:0%
+it and it should have the storage
+container<00:09:42.720><c> as</c><00:09:42.880><c> well</c><00:09:43.040><c> so</c><00:09:43.240><c> if</c><00:09:43.360><c> I</c><00:09:43.519><c> go</c><00:09:43.680><c> to</c><00:09:43.959><c> storage</c>
+
+00:09:45.430 --> 00:09:45.440 align:start position:0%
+container as well so if I go to storage
+ 
+
+00:09:45.440 --> 00:09:48.829 align:start position:0%
+container as well so if I go to storage
+browser<00:09:46.440><c> and</c><00:09:46.680><c> blob</c><00:09:47.079><c> containers</c><00:09:48.000><c> so</c><00:09:48.200><c> TF</c><00:09:48.560><c> state</c>
+
+00:09:48.829 --> 00:09:48.839 align:start position:0%
+browser and blob containers so TF state
+ 
+
+00:09:48.839 --> 00:09:52.030 align:start position:0%
+browser and blob containers so TF state
+is<00:09:48.959><c> the</c><00:09:49.079><c> folder</c><00:09:49.920><c> name</c><00:09:50.920><c> and</c><00:09:51.079><c> a</c><00:09:51.279><c> TF</c><00:09:51.560><c> State</c><00:09:51.839><c> file</c>
+
+00:09:52.030 --> 00:09:52.040 align:start position:0%
+is the folder name and a TF State file
+ 
+
+00:09:52.040 --> 00:09:56.590 align:start position:0%
+is the folder name and a TF State file
+will<00:09:52.200><c> be</c><00:09:52.399><c> created</c><00:09:52.800><c> over</c><00:09:53.040><c> here</c><00:09:53.480><c> so</c><00:09:53.680><c> let's</c><00:09:53.959><c> go</c>
+
+00:09:56.590 --> 00:09:56.600 align:start position:0%
+ 
+ 
+
+00:09:56.600 --> 00:09:59.550 align:start position:0%
+ 
+back<00:09:57.600><c> okay</c><00:09:57.760><c> it</c><00:09:57.880><c> says</c><00:09:58.160><c> created</c><00:09:58.560><c> equal</c><00:09:58.839><c> to</c><00:09:59.000><c> true</c>
+
+00:09:59.550 --> 00:09:59.560 align:start position:0%
+back okay it says created equal to true
+ 
+
+00:09:59.560 --> 00:10:02.030 align:start position:0%
+back okay it says created equal to true
+uh<00:09:59.839><c> resources</c><00:10:00.480><c> have</c><00:10:00.680><c> been</c><00:10:00.920><c> created</c><00:10:01.680><c> now</c><00:10:01.920><c> that</c>
+
+00:10:02.030 --> 00:10:02.040 align:start position:0%
+uh resources have been created now that
+ 
+
+00:10:02.040 --> 00:10:05.310 align:start position:0%
+uh resources have been created now that
+we<00:10:02.200><c> have</c><00:10:02.360><c> created</c><00:10:02.760><c> the</c><00:10:02.959><c> resources</c><00:10:03.839><c> we</c><00:10:04.160><c> have</c><00:10:04.560><c> to</c>
+
+00:10:05.310 --> 00:10:05.320 align:start position:0%
+we have created the resources we have to
+ 
+
+00:10:05.320 --> 00:10:07.230 align:start position:0%
+we have created the resources we have to
+provide<00:10:05.839><c> this</c><00:10:06.160><c> backend</c><00:10:06.600><c> details</c><00:10:06.959><c> in</c><00:10:07.079><c> a</c>
+
+00:10:07.230 --> 00:10:07.240 align:start position:0%
+provide this backend details in a
+ 
+
+00:10:07.240 --> 00:10:09.389 align:start position:0%
+provide this backend details in a
+terraform<00:10:07.839><c> so</c><00:10:08.079><c> I</c><00:10:08.200><c> have</c><00:10:08.320><c> to</c><00:10:08.519><c> tell</c><00:10:08.800><c> terraform</c>
+
+00:10:09.389 --> 00:10:09.399 align:start position:0%
+terraform so I have to tell terraform
+ 
+
+00:10:09.399 --> 00:10:11.509 align:start position:0%
+terraform so I have to tell terraform
+that<00:10:09.600><c> yes</c><00:10:09.800><c> we</c><00:10:09.959><c> have</c><00:10:10.079><c> a</c><00:10:10.200><c> remote</c><00:10:10.560><c> back</c><00:10:10.800><c> end</c><00:10:11.160><c> that</c>
+
+00:10:11.509 --> 00:10:11.519 align:start position:0%
+that yes we have a remote back end that
+ 
+
+00:10:11.519 --> 00:10:14.590 align:start position:0%
+that yes we have a remote back end that
+you<00:10:11.680><c> should</c><00:10:11.959><c> be</c><00:10:12.120><c> using</c><00:10:12.519><c> going</c><00:10:12.800><c> forward</c><00:10:13.760><c> right</c>
+
+00:10:14.590 --> 00:10:14.600 align:start position:0%
+you should be using going forward right
+ 
+
+00:10:14.600 --> 00:10:18.590 align:start position:0%
+you should be using going forward right
+so<00:10:14.800><c> for</c><00:10:15.079><c> that</c><00:10:15.800><c> um</c><00:10:16.320><c> let's</c><00:10:17.320><c> add</c><00:10:17.680><c> the</c><00:10:18.079><c> backend</c>
+
+00:10:18.590 --> 00:10:18.600 align:start position:0%
+so for that um let's add the backend
+ 
+
+00:10:18.600 --> 00:10:21.430 align:start position:0%
+so for that um let's add the backend
+code<00:10:19.079><c> in</c><00:10:19.240><c> our</c><00:10:19.560><c> terraform</c><00:10:20.120><c> file</c><00:10:20.560><c> so</c><00:10:21.079><c> first</c>
+
+00:10:21.430 --> 00:10:21.440 align:start position:0%
+code in our terraform file so first
+ 
+
+00:10:21.440 --> 00:10:26.190 align:start position:0%
+code in our terraform file so first
+let's<00:10:22.279><c> go</c><00:10:22.760><c> over</c><00:10:23.120><c> here</c><00:10:23.560><c> and</c><00:10:23.880><c> you</c><00:10:24.000><c> know</c><00:10:24.200><c> search</c>
+
+00:10:26.190 --> 00:10:26.200 align:start position:0%
+let's go over here and you know search
+ 
+
+00:10:26.200 --> 00:10:31.710 align:start position:0%
+let's go over here and you know search
+for<00:10:27.200><c> Azure</c><00:10:28.160><c> backend</c>
+
+00:10:31.710 --> 00:10:31.720 align:start position:0%
+ 
+ 
+
+00:10:31.720 --> 00:10:34.910 align:start position:0%
+ 
+terraform<00:10:32.720><c> okay</c><00:10:33.079><c> and</c><00:10:33.320><c> if</c><00:10:33.480><c> you</c><00:10:33.720><c> go</c><00:10:33.959><c> to</c><00:10:34.560><c> like</c><00:10:34.800><c> you</c>
+
+00:10:34.910 --> 00:10:34.920 align:start position:0%
+terraform okay and if you go to like you
+ 
+
+00:10:34.920 --> 00:10:38.190 align:start position:0%
+terraform okay and if you go to like you
+can<00:10:35.120><c> go</c><00:10:35.279><c> to</c><00:10:35.519><c> either</c><00:10:35.839><c> of</c><00:10:36.079><c> those</c><00:10:36.720><c> Hashi</c><00:10:37.720><c> uh</c>
+
+00:10:38.190 --> 00:10:38.200 align:start position:0%
+can go to either of those Hashi uh
+ 
+
+00:10:38.200 --> 00:10:40.389 align:start position:0%
+can go to either of those Hashi uh
+website<00:10:38.639><c> or</c><00:10:38.839><c> the</c><00:10:39.000><c> Microsoft</c><00:10:39.600><c> website</c><00:10:40.160><c> both</c>
+
+00:10:40.389 --> 00:10:40.399 align:start position:0%
+website or the Microsoft website both
+ 
+
+00:10:40.399 --> 00:10:45.190 align:start position:0%
+website or the Microsoft website both
+will<00:10:40.959><c> work</c>
+
+00:10:45.190 --> 00:10:45.200 align:start position:0%
+ 
+ 
+
+00:10:45.200 --> 00:10:47.949 align:start position:0%
+ 
+so<00:10:46.200><c> okay</c><00:10:46.399><c> here's</c><00:10:46.680><c> the</c><00:10:46.839><c> sample</c><00:10:47.279><c> backend</c><00:10:47.680><c> code</c>
+
+00:10:47.949 --> 00:10:47.959 align:start position:0%
+so okay here's the sample backend code
+ 
+
+00:10:47.959 --> 00:10:49.990 align:start position:0%
+so okay here's the sample backend code
+for<00:10:48.240><c> that</c><00:10:48.959><c> okay</c><00:10:49.160><c> so</c><00:10:49.360><c> there</c><00:10:49.440><c> are</c><00:10:49.639><c> different</c>
+
+00:10:49.990 --> 00:10:50.000 align:start position:0%
+for that okay so there are different
+ 
+
+00:10:50.000 --> 00:10:51.710 align:start position:0%
+for that okay so there are different
+authentication<00:10:50.800><c> that</c><00:10:50.920><c> we'll</c><00:10:51.160><c> be</c><00:10:51.320><c> using</c>
+
+00:10:51.710 --> 00:10:51.720 align:start position:0%
+authentication that we'll be using
+ 
+
+00:10:51.720 --> 00:10:53.509 align:start position:0%
+authentication that we'll be using
+because<00:10:52.040><c> we'll</c><00:10:52.279><c> be</c><00:10:52.480><c> accessing</c><00:10:52.880><c> a</c><00:10:53.040><c> storage</c>
+
+00:10:53.509 --> 00:10:53.519 align:start position:0%
+because we'll be accessing a storage
+ 
+
+00:10:53.519 --> 00:10:55.910 align:start position:0%
+because we'll be accessing a storage
+account<00:10:53.800><c> now</c><00:10:54.079><c> storage</c><00:10:54.519><c> account</c><00:10:55.160><c> has</c><00:10:55.360><c> to</c><00:10:55.560><c> be</c>
+
+00:10:55.910 --> 00:10:55.920 align:start position:0%
+account now storage account has to be
+ 
+
+00:10:55.920 --> 00:10:59.470 align:start position:0%
+account now storage account has to be
+secure<00:10:56.920><c> it</c><00:10:57.079><c> should</c><00:10:57.320><c> be</c><00:10:57.519><c> only</c><00:10:58.519><c> allowed</c><00:10:59.000><c> access</c>
+
+00:10:59.470 --> 00:10:59.480 align:start position:0%
+secure it should be only allowed access
+ 
+
+00:10:59.480 --> 00:11:02.750 align:start position:0%
+secure it should be only allowed access
+is<00:10:59.839><c> based</c><00:11:00.160><c> on</c><00:11:00.600><c> the</c><00:11:01.600><c> rule</c><00:11:02.000><c> that</c><00:11:02.160><c> you</c><00:11:02.360><c> have</c><00:11:02.519><c> been</c>
+
+00:11:02.750 --> 00:11:02.760 align:start position:0%
+is based on the rule that you have been
+ 
+
+00:11:02.760 --> 00:11:06.389 align:start position:0%
+is based on the rule that you have been
+assigned<00:11:03.160><c> to</c><00:11:03.880><c> so</c><00:11:04.040><c> we'll</c><00:11:04.240><c> be</c><00:11:04.399><c> using</c><00:11:05.240><c> uh</c><00:11:05.480><c> this</c>
+
+00:11:06.389 --> 00:11:06.399 align:start position:0%
+assigned to so we'll be using uh this
+ 
+
+00:11:06.399 --> 00:11:08.790 align:start position:0%
+assigned to so we'll be using uh this
+mechanism<00:11:07.399><c> which</c><00:11:07.560><c> is</c><00:11:07.880><c> storage</c><00:11:08.279><c> account</c><00:11:08.600><c> with</c>
+
+00:11:08.790 --> 00:11:08.800 align:start position:0%
+mechanism which is storage account with
+ 
+
+00:11:08.800 --> 00:11:12.190 align:start position:0%
+mechanism which is storage account with
+access<00:11:09.200><c> keys</c><00:11:09.959><c> I'll</c><00:11:10.120><c> show</c><00:11:10.320><c> you</c><00:11:10.519><c> how</c><00:11:10.639><c> to</c><00:11:10.839><c> do</c><00:11:11.200><c> that</c>
+
+00:11:12.190 --> 00:11:12.200 align:start position:0%
+access keys I'll show you how to do that
+ 
+
+00:11:12.200 --> 00:11:13.990 align:start position:0%
+access keys I'll show you how to do that
+and<00:11:12.680><c> you</c><00:11:12.839><c> can</c><00:11:13.000><c> use</c><00:11:13.240><c> active</c><00:11:13.560><c> directory</c>
+
+00:11:13.990 --> 00:11:14.000 align:start position:0%
+and you can use active directory
+ 
+
+00:11:14.000 --> 00:11:16.310 align:start position:0%
+and you can use active directory
+authentication<00:11:14.760><c> as</c><00:11:14.920><c> well</c><00:11:15.440><c> maybe</c><00:11:15.680><c> later</c><00:11:16.000><c> we'll</c>
+
+00:11:16.310 --> 00:11:16.320 align:start position:0%
+authentication as well maybe later we'll
+ 
+
+00:11:16.320 --> 00:11:19.710 align:start position:0%
+authentication as well maybe later we'll
+try<00:11:16.680><c> this</c><00:11:16.800><c> one</c><00:11:17.079><c> as</c><00:11:17.480><c> well</c><00:11:18.480><c> or</c><00:11:18.720><c> you</c><00:11:18.839><c> can</c><00:11:19.079><c> use</c><00:11:19.399><c> the</c>
+
+00:11:19.710 --> 00:11:19.720 align:start position:0%
+try this one as well or you can use the
+ 
+
+00:11:19.720 --> 00:11:23.110 align:start position:0%
+try this one as well or you can use the
+manage<00:11:20.480><c> identity</c><00:11:21.040><c> Federation</c><00:11:21.720><c> such</c><00:11:21.880><c> as</c>
+
+00:11:23.110 --> 00:11:23.120 align:start position:0%
+manage identity Federation such as
+ 
+
+00:11:23.120 --> 00:11:28.069 align:start position:0%
+manage identity Federation such as
+oidc<00:11:24.120><c> so</c><00:11:24.839><c> let's</c><00:11:25.680><c> use</c><00:11:26.160><c> the</c><00:11:27.000><c> simplest</c><00:11:27.560><c> one</c><00:11:27.800><c> for</c>
+
+00:11:28.069 --> 00:11:28.079 align:start position:0%
+oidc so let's use the simplest one for
+ 
+
+00:11:28.079 --> 00:11:30.670 align:start position:0%
+oidc so let's use the simplest one for
+now<00:11:28.440><c> which</c><00:11:28.639><c> is</c><00:11:29.440><c> with</c><00:11:29.720><c> access</c>
+
+00:11:30.670 --> 00:11:30.680 align:start position:0%
+now which is with access
+ 
+
+00:11:30.680 --> 00:11:34.829 align:start position:0%
+now which is with access
+Keys<00:11:32.040><c> okay</c><00:11:33.040><c> so</c><00:11:33.240><c> I'm</c><00:11:33.360><c> going</c><00:11:33.480><c> to</c><00:11:33.720><c> copy</c><00:11:34.480><c> the</c>
+
+00:11:34.829 --> 00:11:34.839 align:start position:0%
+Keys okay so I'm going to copy the
+ 
+
+00:11:34.839 --> 00:11:39.030 align:start position:0%
+Keys okay so I'm going to copy the
+backend<00:11:35.279><c> details</c><00:11:35.839><c> from</c>
+
+00:11:39.030 --> 00:11:39.040 align:start position:0%
+ 
+ 
+
+00:11:39.040 --> 00:11:46.269 align:start position:0%
+ 
+here<00:11:40.040><c> okay</c><00:11:40.399><c> and</c><00:11:40.680><c> let's</c><00:11:40.959><c> go</c>
+
+00:11:46.269 --> 00:11:46.279 align:start position:0%
+ 
+ 
+
+00:11:46.279 --> 00:11:49.710 align:start position:0%
+ 
+back<00:11:47.519><c> main.tf</c><00:11:48.519><c> now</c><00:11:48.800><c> if</c><00:11:48.920><c> you</c><00:11:49.040><c> are</c><00:11:49.240><c> worried</c>
+
+00:11:49.710 --> 00:11:49.720 align:start position:0%
+back main.tf now if you are worried
+ 
+
+00:11:49.720 --> 00:11:52.710 align:start position:0%
+back main.tf now if you are worried
+where<00:11:49.920><c> to</c><00:11:50.320><c> add</c><00:11:50.600><c> it</c><00:11:51.600><c> you</c><00:11:51.760><c> can</c><00:11:52.079><c> check</c><00:11:52.360><c> the</c>
+
+00:11:52.710 --> 00:11:52.720 align:start position:0%
+where to add it you can check the
+ 
+
+00:11:52.720 --> 00:11:56.150 align:start position:0%
+where to add it you can check the
+Microsoft<00:11:53.720><c> tutorial</c><00:11:54.639><c> or</c><00:11:55.519><c> like</c><00:11:55.720><c> I</c><00:11:55.800><c> know</c><00:11:56.000><c> where</c>
+
+00:11:56.150 --> 00:11:56.160 align:start position:0%
+Microsoft tutorial or like I know where
+ 
+
+00:11:56.160 --> 00:11:59.470 align:start position:0%
+Microsoft tutorial or like I know where
+to<00:11:56.320><c> add</c><00:11:56.480><c> it</c><00:11:56.639><c> it</c><00:11:56.880><c> just</c><00:11:57.079><c> to</c><00:11:57.519><c> show</c><00:11:57.800><c> you</c>
+
+00:11:59.470 --> 00:11:59.480 align:start position:0%
+to add it it just to show you
+ 
+
+00:11:59.480 --> 00:12:01.470 align:start position:0%
+to add it it just to show you
+uh<00:11:59.639><c> you</c><00:11:59.760><c> can</c><00:11:59.959><c> go</c><00:12:00.160><c> to</c>
+
+00:12:01.470 --> 00:12:01.480 align:start position:0%
+uh you can go to
+ 
+
+00:12:01.480 --> 00:12:03.509 align:start position:0%
+uh you can go to
+this
+
+00:12:03.509 --> 00:12:03.519 align:start position:0%
+this
+ 
+
+00:12:03.519 --> 00:12:06.590 align:start position:0%
+this
+and<00:12:04.519><c> you</c><00:12:04.680><c> know</c><00:12:04.920><c> inside</c><00:12:05.320><c> the</c><00:12:05.519><c> terraform</c><00:12:06.120><c> block</c>
+
+00:12:06.590 --> 00:12:06.600 align:start position:0%
+and you know inside the terraform block
+ 
+
+00:12:06.600 --> 00:12:08.790 align:start position:0%
+and you know inside the terraform block
+itself<00:12:07.040><c> you</c><00:12:07.200><c> can</c><00:12:07.519><c> add</c><00:12:07.800><c> the</c><00:12:08.040><c> back</c><00:12:08.200><c> end</c><00:12:08.519><c> or</c><00:12:08.680><c> you</c>
+
+00:12:08.790 --> 00:12:08.800 align:start position:0%
+itself you can add the back end or you
+ 
+
+00:12:08.800 --> 00:12:10.790 align:start position:0%
+itself you can add the back end or you
+can<00:12:09.000><c> create</c><00:12:09.240><c> a</c><00:12:09.399><c> separate</c><00:12:09.760><c> file</c><00:12:10.040><c> we</c><00:12:10.200><c> have</c><00:12:10.360><c> not</c>
+
+00:12:10.790 --> 00:12:10.800 align:start position:0%
+can create a separate file we have not
+ 
+
+00:12:10.800 --> 00:12:12.590 align:start position:0%
+can create a separate file we have not
+really<00:12:11.079><c> covered</c><00:12:11.440><c> the</c><00:12:11.560><c> file</c><00:12:11.800><c> structure</c><00:12:12.279><c> yet</c><00:12:12.440><c> so</c>
+
+00:12:12.590 --> 00:12:12.600 align:start position:0%
+really covered the file structure yet so
+ 
+
+00:12:12.600 --> 00:12:14.829 align:start position:0%
+really covered the file structure yet so
+I'm<00:12:13.160><c> dumping</c><00:12:13.720><c> everything</c><00:12:14.079><c> in</c><00:12:14.240><c> the</c><00:12:14.440><c> single</c>
+
+00:12:14.829 --> 00:12:14.839 align:start position:0%
+I'm dumping everything in the single
+ 
+
+00:12:14.839 --> 00:12:18.189 align:start position:0%
+I'm dumping everything in the single
+file<00:12:15.800><c> so</c><00:12:16.079><c> we'll</c><00:12:16.800><c> divide</c><00:12:17.279><c> that</c><00:12:17.480><c> later</c><00:12:17.760><c> on</c><00:12:18.040><c> but</c>
+
+00:12:18.189 --> 00:12:18.199 align:start position:0%
+file so we'll divide that later on but
+ 
+
+00:12:18.199 --> 00:12:20.470 align:start position:0%
+file so we'll divide that later on but
+for<00:12:18.399><c> now</c><00:12:18.760><c> let's</c><00:12:19.079><c> just</c><00:12:19.399><c> add</c><00:12:19.639><c> it</c><00:12:19.839><c> in</c><00:12:20.040><c> the</c>
+
+00:12:20.470 --> 00:12:20.480 align:start position:0%
+for now let's just add it in the
+ 
+
+00:12:20.480 --> 00:12:22.629 align:start position:0%
+for now let's just add it in the
+terraform
+
+00:12:22.629 --> 00:12:22.639 align:start position:0%
+terraform
+ 
+
+00:12:22.639 --> 00:12:27.310 align:start position:0%
+terraform
+configuration<00:12:23.639><c> so</c><00:12:24.160><c> inside</c><00:12:24.839><c> terraform</c><00:12:26.320><c> um</c>
+
+00:12:27.310 --> 00:12:27.320 align:start position:0%
+configuration so inside terraform um
+ 
+
+00:12:27.320 --> 00:12:29.829 align:start position:0%
+configuration so inside terraform um
+over<00:12:27.600><c> here</c>
+
+00:12:29.829 --> 00:12:29.839 align:start position:0%
+over here
+ 
+
+00:12:29.839 --> 00:12:33.069 align:start position:0%
+over here
+let's<00:12:30.120><c> add</c><00:12:30.360><c> the</c><00:12:30.519><c> backend</c><00:12:30.920><c> details</c><00:12:31.880><c> now</c><00:12:32.240><c> if</c><00:12:32.399><c> you</c>
+
+00:12:33.069 --> 00:12:33.079 align:start position:0%
+let's add the backend details now if you
+ 
+
+00:12:33.079 --> 00:12:37.230 align:start position:0%
+let's add the backend details now if you
+see<00:12:34.079><c> we</c><00:12:34.360><c> have</c><00:12:34.600><c> few</c><00:12:34.920><c> details</c><00:12:35.519><c> storage</c><00:12:36.519><c> account</c>
+
+00:12:37.230 --> 00:12:37.240 align:start position:0%
+see we have few details storage account
+ 
+
+00:12:37.240 --> 00:12:38.949 align:start position:0%
+see we have few details storage account
+uh<00:12:37.360><c> Resource</c><00:12:37.760><c> Group</c><00:12:38.040><c> name</c><00:12:38.320><c> so</c><00:12:38.560><c> this</c><00:12:38.639><c> is</c><00:12:38.800><c> the</c>
+
+00:12:38.949 --> 00:12:38.959 align:start position:0%
+uh Resource Group name so this is the
+ 
+
+00:12:38.959 --> 00:12:43.069 align:start position:0%
+uh Resource Group name so this is the
+resource<00:12:39.360><c> Group</c><00:12:39.680><c> that</c><00:12:40.120><c> we</c><00:12:40.279><c> have</c><00:12:40.480><c> just</c><00:12:41.000><c> created</c>
+
+00:12:43.069 --> 00:12:43.079 align:start position:0%
+resource Group that we have just created
+ 
+
+00:12:43.079 --> 00:12:49.870 align:start position:0%
+resource Group that we have just created
+so<00:12:44.079><c> uh</c><00:12:44.839><c> this</c><00:12:44.959><c> is</c><00:12:45.279><c> the</c><00:12:45.480><c> storage</c><00:12:45.920><c> account</c>
+
+00:12:49.870 --> 00:12:49.880 align:start position:0%
+ 
+ 
+
+00:12:49.880 --> 00:12:53.310 align:start position:0%
+ 
+name<00:12:50.880><c> okay</c><00:12:51.079><c> let's</c><00:12:51.279><c> go</c><00:12:51.440><c> to</c><00:12:51.680><c> overview</c><00:12:52.480><c> this</c><00:12:52.639><c> is</c>
+
+00:12:53.310 --> 00:12:53.320 align:start position:0%
+name okay let's go to overview this is
+ 
+
+00:12:53.320 --> 00:12:54.590 align:start position:0%
+name okay let's go to overview this is
+storage
+
+00:12:54.590 --> 00:12:54.600 align:start position:0%
+storage
+ 
+
+00:12:54.600 --> 00:12:58.189 align:start position:0%
+storage
+account<00:12:55.600><c> storage</c><00:12:56.160><c> account</c><00:12:56.720><c> name</c><00:12:57.720><c> container</c>
+
+00:12:58.189 --> 00:12:58.199 align:start position:0%
+account storage account name container
+ 
+
+00:12:58.199 --> 00:13:01.990 align:start position:0%
+account storage account name container
+name<00:12:58.360><c> is</c><00:12:58.519><c> TF</c><00:12:58.839><c> state</c><00:12:59.440><c> and</c><00:12:59.920><c> key</c><00:13:00.440><c> is</c><00:13:00.720><c> the</c><00:13:01.480><c> name</c><00:13:01.760><c> of</c>
+
+00:13:01.990 --> 00:13:02.000 align:start position:0%
+name is TF state and key is the name of
+ 
+
+00:13:02.000 --> 00:13:05.110 align:start position:0%
+name is TF state and key is the name of
+the<00:13:02.560><c> terraform</c><00:13:03.120><c> TF</c><00:13:03.480><c> State</c><00:13:03.839><c> file</c><00:13:04.519><c> so</c><00:13:04.760><c> let's</c>
+
+00:13:05.110 --> 00:13:05.120 align:start position:0%
+the terraform TF State file so let's
+ 
+
+00:13:05.120 --> 00:13:08.470 align:start position:0%
+the terraform TF State file so let's
+call<00:13:05.399><c> it</c><00:13:06.320><c> demo.</c><00:13:06.959><c> terraform</c><00:13:07.480><c> dotf</c><00:13:07.959><c> state</c><00:13:08.240><c> for</c>
+
+00:13:08.470 --> 00:13:08.480 align:start position:0%
+call it demo. terraform dotf state for
+ 
+
+00:13:08.480 --> 00:13:11.829 align:start position:0%
+call it demo. terraform dotf state for
+now<00:13:09.199><c> or</c><00:13:09.440><c> Dev</c><00:13:09.839><c> dot</c><00:13:10.199><c> because</c><00:13:10.560><c> this</c><00:13:10.800><c> is</c><00:13:11.560><c> like</c><00:13:11.720><c> we</c>
+
+00:13:11.829 --> 00:13:11.839 align:start position:0%
+now or Dev dot because this is like we
+ 
+
+00:13:11.839 --> 00:13:14.230 align:start position:0%
+now or Dev dot because this is like we
+are<00:13:12.000><c> still</c><00:13:12.240><c> in</c><00:13:12.639><c> early</c><00:13:13.000><c> phases</c><00:13:13.560><c> let's</c><00:13:13.800><c> not</c><00:13:14.040><c> call</c>
+
+00:13:14.230 --> 00:13:14.240 align:start position:0%
+are still in early phases let's not call
+ 
+
+00:13:14.240 --> 00:13:17.870 align:start position:0%
+are still in early phases let's not call
+it<00:13:14.839><c> prod</c><00:13:15.839><c> and</c><00:13:16.079><c> then</c><00:13:16.560><c> uh</c><00:13:16.720><c> we</c><00:13:17.040><c> have</c><00:13:17.320><c> to</c><00:13:17.560><c> provide</c>
+
+00:13:17.870 --> 00:13:17.880 align:start position:0%
+it prod and then uh we have to provide
+ 
+
+00:13:17.880 --> 00:13:19.629 align:start position:0%
+it prod and then uh we have to provide
+the<00:13:18.040><c> resource</c><00:13:18.440><c> Group</c><00:13:18.720><c> that</c><00:13:18.880><c> it</c><00:13:19.000><c> belongs</c><00:13:19.399><c> to</c>
+
+00:13:19.629 --> 00:13:19.639 align:start position:0%
+the resource Group that it belongs to
+ 
+
+00:13:19.639 --> 00:13:24.670 align:start position:0%
+the resource Group that it belongs to
+which<00:13:19.760><c> is</c><00:13:19.959><c> TF</c><00:13:20.360><c> State</c>
+
+00:13:24.670 --> 00:13:24.680 align:start position:0%
+ 
+ 
+
+00:13:24.680 --> 00:13:27.670 align:start position:0%
+ 
+day4<00:13:25.680><c> all</c><00:13:25.959><c> right</c><00:13:26.480><c> so</c><00:13:26.680><c> I've</c><00:13:26.920><c> added</c><00:13:27.320><c> those</c>
+
+00:13:27.670 --> 00:13:27.680 align:start position:0%
+day4 all right so I've added those
+ 
+
+00:13:27.680 --> 00:13:33.430 align:start position:0%
+day4 all right so I've added those
+details<00:13:28.680><c> now</c><00:13:29.360><c> let's</c><00:13:29.920><c> run</c><00:13:30.920><c> TF</c><00:13:31.440><c> plan</c><00:13:32.240><c> again</c><00:13:33.240><c> now</c>
+
+00:13:33.430 --> 00:13:33.440 align:start position:0%
+details now let's run TF plan again now
+ 
+
+00:13:33.440 --> 00:13:36.269 align:start position:0%
+details now let's run TF plan again now
+it<00:13:33.600><c> says</c><00:13:34.279><c> it</c><00:13:34.440><c> does</c><00:13:34.680><c> not</c><00:13:34.959><c> recognize</c><00:13:35.600><c> it</c><00:13:35.839><c> because</c>
+
+00:13:36.269 --> 00:13:36.279 align:start position:0%
+it says it does not recognize it because
+ 
+
+00:13:36.279 --> 00:13:37.949 align:start position:0%
+it says it does not recognize it because
+this<00:13:36.440><c> is</c><00:13:36.720><c> the</c><00:13:37.079><c> directory</c><00:13:37.519><c> that</c><00:13:37.639><c> we</c><00:13:37.800><c> have</c>
+
+00:13:37.949 --> 00:13:37.959 align:start position:0%
+this is the directory that we have
+ 
+
+00:13:37.959 --> 00:13:40.629 align:start position:0%
+this is the directory that we have
+created<00:13:38.360><c> newly</c><00:13:38.800><c> there</c><00:13:38.920><c> is</c><00:13:39.079><c> no</c><00:13:39.279><c> TF</c><00:13:39.680><c> state</c><00:13:40.000><c> in</c><00:13:40.160><c> it</c>
+
+00:13:40.629 --> 00:13:40.639 align:start position:0%
+created newly there is no TF state in it
+ 
+
+00:13:40.639 --> 00:13:42.790 align:start position:0%
+created newly there is no TF state in it
+so<00:13:40.920><c> for</c><00:13:41.160><c> it</c><00:13:41.399><c> it's</c><00:13:41.560><c> a</c><00:13:41.760><c> new</c><00:13:42.000><c> configuration</c><00:13:42.639><c> so</c>
+
+00:13:42.790 --> 00:13:42.800 align:start position:0%
+so for it it's a new configuration so
+ 
+
+00:13:42.800 --> 00:13:46.030 align:start position:0%
+so for it it's a new configuration so
+for<00:13:43.000><c> that</c><00:13:43.160><c> we</c><00:13:43.279><c> have</c><00:13:43.399><c> to</c><00:13:43.560><c> run</c><00:13:43.839><c> terraform</c><00:13:44.440><c> in</c><00:13:45.040><c> it</c>
+
+00:13:46.030 --> 00:13:46.040 align:start position:0%
+for that we have to run terraform in it
+ 
+
+00:13:46.040 --> 00:13:48.350 align:start position:0%
+for that we have to run terraform in it
+to<00:13:46.320><c> initialize</c><00:13:46.880><c> the</c><00:13:47.000><c> back</c>
+
+00:13:48.350 --> 00:13:48.360 align:start position:0%
+to initialize the back
+ 
+
+00:13:48.360 --> 00:13:51.069 align:start position:0%
+to initialize the back
+end<00:13:49.360><c> now</c><00:13:49.639><c> it</c><00:13:49.760><c> will</c><00:13:50.000><c> download</c><00:13:50.440><c> the</c><00:13:50.600><c> plug-in</c>
+
+00:13:51.069 --> 00:13:51.079 align:start position:0%
+end now it will download the plug-in
+ 
+
+00:13:51.079 --> 00:13:54.990 align:start position:0%
+end now it will download the plug-in
+over<00:13:51.360><c> here</c><00:13:52.079><c> again</c><00:13:53.079><c> with</c><00:13:53.720><c> terraform</c><00:13:54.320><c> directory</c>
+
+00:13:54.990 --> 00:13:55.000 align:start position:0%
+over here again with terraform directory
+ 
+
+00:13:55.000 --> 00:13:58.230 align:start position:0%
+over here again with terraform directory
+it<00:13:55.320><c> has</c><00:13:55.480><c> a</c><00:13:55.639><c> terraform</c><00:13:56.199><c> dotf</c><00:13:56.720><c> State</c><00:13:57.079><c> file</c><00:13:57.600><c> but</c>
+
+00:13:58.230 --> 00:13:58.240 align:start position:0%
+it has a terraform dotf State file but
+ 
+
+00:13:58.240 --> 00:14:00.990 align:start position:0%
+it has a terraform dotf State file but
+this<00:13:58.440><c> time</c><00:13:58.639><c> if</c><00:13:58.759><c> you</c><00:13:59.120><c> open</c><00:13:59.399><c> it</c><00:14:00.240><c> it</c><00:14:00.360><c> will</c><00:14:00.600><c> not</c>
+
+00:14:00.990 --> 00:14:01.000 align:start position:0%
+this time if you open it it will not
+ 
+
+00:14:01.000 --> 00:14:04.550 align:start position:0%
+this time if you open it it will not
+have<00:14:01.440><c> much</c><00:14:01.639><c> details</c><00:14:02.079><c> or</c><00:14:02.360><c> it</c><00:14:02.560><c> does</c><00:14:02.920><c> have</c><00:14:03.800><c> but</c>
+
+00:14:04.550 --> 00:14:04.560 align:start position:0%
+have much details or it does have but
+ 
+
+00:14:04.560 --> 00:14:06.790 align:start position:0%
+have much details or it does have but
+rest<00:14:04.800><c> of</c><00:14:04.920><c> the</c><00:14:05.040><c> fields</c><00:14:05.440><c> it</c><00:14:05.680><c> has</c><00:14:06.000><c> hidden</c><00:14:06.399><c> already</c>
+
+00:14:06.790 --> 00:14:06.800 align:start position:0%
+rest of the fields it has hidden already
+ 
+
+00:14:06.800 --> 00:14:11.590 align:start position:0%
+rest of the fields it has hidden already
+so<00:14:07.079><c> it</c><00:14:07.360><c> only</c><00:14:07.759><c> have</c><00:14:08.560><c> uh</c><00:14:08.800><c> the</c><00:14:09.440><c> nonsensitive</c><00:14:10.600><c> data</c>
+
+00:14:11.590 --> 00:14:11.600 align:start position:0%
+so it only have uh the nonsensitive data
+ 
+
+00:14:11.600 --> 00:14:13.990 align:start position:0%
+so it only have uh the nonsensitive data
+right<00:14:11.920><c> like</c><00:14:12.480><c> storage</c><00:14:12.959><c> account</c><00:14:13.279><c> name</c><00:14:13.600><c> Resource</c>
+
+00:14:13.990 --> 00:14:14.000 align:start position:0%
+right like storage account name Resource
+ 
+
+00:14:14.000 --> 00:14:16.670 align:start position:0%
+right like storage account name Resource
+Group<00:14:14.320><c> name</c><00:14:14.800><c> key</c><00:14:15.399><c> container</c><00:14:15.920><c> name</c><00:14:16.160><c> and</c><00:14:16.320><c> so</c><00:14:16.440><c> on</c>
+
+00:14:16.670 --> 00:14:16.680 align:start position:0%
+Group name key container name and so on
+ 
+
+00:14:16.680 --> 00:14:19.629 align:start position:0%
+Group name key container name and so on
+rest<00:14:17.120><c> it</c><00:14:17.360><c> provides</c><00:14:17.800><c> at</c>
+
+00:14:19.629 --> 00:14:19.639 align:start position:0%
+rest it provides at
+ 
+
+00:14:19.639 --> 00:14:21.430 align:start position:0%
+rest it provides at
+null
+
+00:14:21.430 --> 00:14:21.440 align:start position:0%
+null
+ 
+
+00:14:21.440 --> 00:14:31.870 align:start position:0%
+null
+okay<00:14:22.440><c> now</c><00:14:22.720><c> if</c><00:14:22.880><c> I</c><00:14:23.160><c> run</c><00:14:23.639><c> terraform</c><00:14:24.519><c> plan</c><00:14:24.959><c> again</c>
+
+00:14:31.870 --> 00:14:31.880 align:start position:0%
+ 
+ 
+
+00:14:31.880 --> 00:14:35.470 align:start position:0%
+ 
+okay<00:14:32.079><c> it</c><00:14:32.240><c> says</c><00:14:33.040><c> two</c><00:14:33.360><c> to</c><00:14:33.639><c> add</c><00:14:34.160><c> 0</c><00:14:34.480><c> to</c><00:14:34.639><c> change</c><00:14:35.040><c> Z</c><00:14:35.279><c> to</c>
+
+00:14:35.470 --> 00:14:35.480 align:start position:0%
+okay it says two to add 0 to change Z to
+ 
+
+00:14:35.480 --> 00:14:39.430 align:start position:0%
+okay it says two to add 0 to change Z to
+destroy<00:14:35.880><c> but</c><00:14:36.040><c> if</c><00:14:36.199><c> we</c><00:14:36.600><c> go</c>
+
+00:14:39.430 --> 00:14:39.440 align:start position:0%
+ 
+ 
+
+00:14:39.440 --> 00:14:43.069 align:start position:0%
+ 
+back<00:14:40.440><c> okay</c><00:14:40.800><c> inside</c><00:14:41.399><c> this</c><00:14:41.759><c> storage</c>
+
+00:14:43.069 --> 00:14:43.079 align:start position:0%
+back okay inside this storage
+ 
+
+00:14:43.079 --> 00:14:46.509 align:start position:0%
+back okay inside this storage
+browser<00:14:44.079><c> and</c><00:14:44.360><c> then</c><00:14:44.759><c> blob</c><00:14:45.199><c> container</c><00:14:46.120><c> we</c><00:14:46.279><c> have</c>
+
+00:14:46.509 --> 00:14:46.519 align:start position:0%
+browser and then blob container we have
+ 
+
+00:14:46.519 --> 00:14:48.910 align:start position:0%
+browser and then blob container we have
+this<00:14:47.120><c> container</c><00:14:48.120><c> we</c><00:14:48.279><c> have</c><00:14:48.440><c> our</c><00:14:48.680><c> file</c>
+
+00:14:48.910 --> 00:14:48.920 align:start position:0%
+this container we have our file
+ 
+
+00:14:48.920 --> 00:14:50.990 align:start position:0%
+this container we have our file
+generated<00:14:49.480><c> over</c><00:14:49.720><c> here</c><00:14:50.000><c> which</c><00:14:50.120><c> is</c><00:14:50.360><c> the</c><00:14:50.600><c> TF</c>
+
+00:14:50.990 --> 00:14:51.000 align:start position:0%
+generated over here which is the TF
+ 
+
+00:14:51.000 --> 00:14:55.069 align:start position:0%
+generated over here which is the TF
+State<00:14:51.360><c> file</c><00:14:51.839><c> dev.</c><00:14:52.360><c> terraform</c><00:14:52.880><c> dotf</c><00:14:53.680><c> State</c><00:14:54.680><c> now</c>
+
+00:14:55.069 --> 00:14:55.079 align:start position:0%
+State file dev. terraform dotf State now
+ 
+
+00:14:55.079 --> 00:14:58.230 align:start position:0%
+State file dev. terraform dotf State now
+this<00:14:55.399><c> file</c><00:14:55.800><c> is</c><00:14:55.959><c> the</c><00:14:56.199><c> remote</c><00:14:56.839><c> backend</c><00:14:57.839><c> whenever</c>
+
+00:14:58.230 --> 00:14:58.240 align:start position:0%
+this file is the remote backend whenever
+ 
+
+00:14:58.240 --> 00:15:00.269 align:start position:0%
+this file is the remote backend whenever
+we<00:14:58.399><c> run</c><00:14:58.600><c> any</c><00:14:58.759><c> command</c><00:14:59.040><c> command</c><00:14:59.440><c> over</c><00:14:59.720><c> here</c>
+
+00:15:00.269 --> 00:15:00.279 align:start position:0%
+we run any command command over here
+ 
+
+00:15:00.279 --> 00:15:03.550 align:start position:0%
+we run any command command over here
+let's<00:15:00.440><c> say</c><00:15:00.639><c> terraform</c><00:15:01.160><c> apply</c><00:15:01.519><c> we</c><00:15:01.680><c> run</c><00:15:01.880><c> it</c><00:15:02.839><c> then</c>
+
+00:15:03.550 --> 00:15:03.560 align:start position:0%
+let's say terraform apply we run it then
+ 
+
+00:15:03.560 --> 00:15:06.189 align:start position:0%
+let's say terraform apply we run it then
+that<00:15:03.880><c> file</c><00:15:04.199><c> will</c><00:15:04.399><c> be</c><00:15:04.759><c> accessed</c><00:15:05.440><c> as</c><00:15:05.560><c> a</c><00:15:05.800><c> local</c>
+
+00:15:06.189 --> 00:15:06.199 align:start position:0%
+that file will be accessed as a local
+ 
+
+00:15:06.199 --> 00:15:08.230 align:start position:0%
+that file will be accessed as a local
+file<00:15:06.480><c> you</c><00:15:06.600><c> won't</c><00:15:06.880><c> even</c><00:15:07.199><c> know</c><00:15:07.560><c> that</c><00:15:07.880><c> you</c><00:15:08.040><c> are</c>
+
+00:15:08.230 --> 00:15:08.240 align:start position:0%
+file you won't even know that you are
+ 
+
+00:15:08.240 --> 00:15:10.749 align:start position:0%
+file you won't even know that you are
+referring<00:15:08.720><c> the</c><00:15:08.920><c> remote</c><00:15:09.320><c> file</c><00:15:09.720><c> it</c><00:15:09.839><c> will</c><00:15:10.040><c> be</c>
+
+00:15:10.749 --> 00:15:10.759 align:start position:0%
+referring the remote file it will be
+ 
+
+00:15:10.759 --> 00:15:13.350 align:start position:0%
+referring the remote file it will be
+like<00:15:10.959><c> a</c><00:15:11.160><c> local</c><00:15:11.519><c> file</c><00:15:11.759><c> for</c><00:15:12.000><c> terraform</c><00:15:12.639><c> so</c><00:15:13.000><c> let's</c>
+
+00:15:13.350 --> 00:15:13.360 align:start position:0%
+like a local file for terraform so let's
+ 
+
+00:15:13.360 --> 00:15:21.509 align:start position:0%
+like a local file for terraform so let's
+run<00:15:14.199><c> terraform</c><00:15:14.800><c> apply</c><00:15:15.320><c> hyphen</c><00:15:15.759><c> hyen</c><00:15:16.399><c> Auto</c>
+
+00:15:21.509 --> 00:15:21.519 align:start position:0%
+ 
+ 
+
+00:15:21.519 --> 00:15:24.350 align:start position:0%
+ 
+approve<00:15:22.519><c> because</c><00:15:22.880><c> the</c><00:15:23.079><c> user</c><00:15:23.399><c> that</c><00:15:23.560><c> I'm</c><00:15:23.720><c> using</c>
+
+00:15:24.350 --> 00:15:24.360 align:start position:0%
+approve because the user that I'm using
+ 
+
+00:15:24.360 --> 00:15:26.269 align:start position:0%
+approve because the user that I'm using
+uh<00:15:24.560><c> currently</c><00:15:24.959><c> it</c><00:15:25.120><c> has</c><00:15:25.279><c> the</c><00:15:25.440><c> contributor</c><00:15:26.040><c> role</c>
+
+00:15:26.269 --> 00:15:26.279 align:start position:0%
+uh currently it has the contributor role
+ 
+
+00:15:26.279 --> 00:15:27.590 align:start position:0%
+uh currently it has the contributor role
+the<00:15:26.399><c> service</c><00:15:26.759><c> principal</c><00:15:27.279><c> has</c><00:15:27.399><c> the</c>
+
+00:15:27.590 --> 00:15:27.600 align:start position:0%
+the service principal has the
+ 
+
+00:15:27.600 --> 00:15:29.550 align:start position:0%
+the service principal has the
+contributor<00:15:28.160><c> role</c><00:15:28.360><c> so</c><00:15:28.519><c> it</c><00:15:28.639><c> did</c><00:15:28.800><c> not</c><00:15:29.040><c> not</c><00:15:29.319><c> ask</c>
+
+00:15:29.550 --> 00:15:29.560 align:start position:0%
+contributor role so it did not not ask
+ 
+
+00:15:29.560 --> 00:15:32.910 align:start position:0%
+contributor role so it did not not ask
+me<00:15:29.759><c> the</c><00:15:29.959><c> access</c><00:15:30.680><c> keys</c><00:15:31.680><c> but</c><00:15:32.000><c> in</c><00:15:32.199><c> case</c><00:15:32.480><c> it</c><00:15:32.639><c> does</c>
+
+00:15:32.910 --> 00:15:32.920 align:start position:0%
+me the access keys but in case it does
+ 
+
+00:15:32.920 --> 00:15:35.269 align:start position:0%
+me the access keys but in case it does
+you<00:15:33.160><c> have</c><00:15:33.399><c> to</c><00:15:33.880><c> get</c><00:15:34.079><c> the</c><00:15:34.240><c> access</c><00:15:34.600><c> keys</c><00:15:34.920><c> from</c><00:15:35.120><c> the</c>
+
+00:15:35.269 --> 00:15:35.279 align:start position:0%
+you have to get the access keys from the
+ 
+
+00:15:35.279 --> 00:15:37.470 align:start position:0%
+you have to get the access keys from the
+storage<00:15:35.720><c> account</c><00:15:36.120><c> assign</c><00:15:36.399><c> it</c><00:15:36.560><c> to</c><00:15:36.720><c> a</c>
+
+00:15:37.470 --> 00:15:37.480 align:start position:0%
+storage account assign it to a
+ 
+
+00:15:37.480 --> 00:15:40.150 align:start position:0%
+storage account assign it to a
+variable<00:15:38.480><c> and</c><00:15:38.920><c> then</c><00:15:39.199><c> access</c><00:15:39.560><c> it</c><00:15:39.800><c> so</c><00:15:39.959><c> if</c><00:15:40.040><c> you</c>
+
+00:15:40.150 --> 00:15:40.160 align:start position:0%
+variable and then access it so if you
+ 
+
+00:15:40.160 --> 00:15:41.749 align:start position:0%
+variable and then access it so if you
+want<00:15:40.360><c> you</c><00:15:40.480><c> can</c><00:15:40.639><c> try</c><00:15:40.839><c> it</c><00:15:40.959><c> out</c><00:15:41.160><c> and</c><00:15:41.319><c> let</c><00:15:41.440><c> me</c><00:15:41.600><c> know</c>
+
+00:15:41.749 --> 00:15:41.759 align:start position:0%
+want you can try it out and let me know
+ 
+
+00:15:41.759 --> 00:15:44.990 align:start position:0%
+want you can try it out and let me know
+if<00:15:41.880><c> you</c><00:15:42.000><c> face</c><00:15:42.279><c> any</c><00:15:42.680><c> issues</c><00:15:43.680><c> but</c><00:15:44.040><c> with</c><00:15:44.279><c> this</c><00:15:44.839><c> uh</c>
+
+00:15:44.990 --> 00:15:45.000 align:start position:0%
+if you face any issues but with this uh
+ 
+
+00:15:45.000 --> 00:15:46.949 align:start position:0%
+if you face any issues but with this uh
+your<00:15:45.199><c> infrastructure</c><00:15:45.880><c> will</c><00:15:46.040><c> be</c><00:15:46.240><c> created</c><00:15:46.759><c> your</c>
+
+00:15:46.949 --> 00:15:46.959 align:start position:0%
+your infrastructure will be created your
+ 
+
+00:15:46.959 --> 00:15:48.910 align:start position:0%
+your infrastructure will be created your
+infrastructure<00:15:47.680><c> will</c><00:15:47.839><c> be</c><00:15:48.040><c> provisioned</c><00:15:48.720><c> you</c>
+
+00:15:48.910 --> 00:15:48.920 align:start position:0%
+infrastructure will be provisioned you
+ 
+
+00:15:48.920 --> 00:15:50.949 align:start position:0%
+infrastructure will be provisioned you
+just<00:15:49.160><c> have</c><00:15:49.319><c> to</c><00:15:49.519><c> make</c><00:15:49.720><c> sure</c><00:15:49.959><c> you</c><00:15:50.160><c> have</c><00:15:50.480><c> separate</c>
+
+00:15:50.949 --> 00:15:50.959 align:start position:0%
+just have to make sure you have separate
+ 
+
+00:15:50.959 --> 00:15:52.870 align:start position:0%
+just have to make sure you have separate
+storage<00:15:51.480><c> account</c><00:15:51.920><c> because</c><00:15:52.199><c> one</c><00:15:52.440><c> storage</c>
+
+00:15:52.870 --> 00:15:52.880 align:start position:0%
+storage account because one storage
+ 
+
+00:15:52.880 --> 00:15:55.309 align:start position:0%
+storage account because one storage
+account<00:15:53.360><c> is</c><00:15:53.600><c> the</c><00:15:54.040><c> resource</c><00:15:54.600><c> that</c><00:15:54.759><c> we</c><00:15:54.880><c> are</c>
+
+00:15:55.309 --> 00:15:55.319 align:start position:0%
+account is the resource that we are
+ 
+
+00:15:55.319 --> 00:15:57.550 align:start position:0%
+account is the resource that we are
+provisioning<00:15:56.319><c> the</c><00:15:56.519><c> other</c><00:15:56.839><c> storage</c><00:15:57.279><c> account</c>
+
+00:15:57.550 --> 00:15:57.560 align:start position:0%
+provisioning the other storage account
+ 
+
+00:15:57.560 --> 00:15:59.910 align:start position:0%
+provisioning the other storage account
+is<00:15:57.720><c> the</c><00:15:57.920><c> remote</c><00:15:58.360><c> back</c><00:15:58.560><c> end</c><00:15:59.000><c> so</c><00:15:59.240><c> that</c><00:15:59.519><c> remote</c>
+
+00:15:59.910 --> 00:15:59.920 align:start position:0%
+is the remote back end so that remote
+ 
+
+00:15:59.920 --> 00:16:02.230 align:start position:0%
+is the remote back end so that remote
+back<00:16:00.120><c> end</c><00:16:00.360><c> should</c><00:16:00.600><c> be</c><00:16:00.800><c> kept</c><00:16:01.240><c> separately</c><00:16:01.839><c> from</c>
+
+00:16:02.230 --> 00:16:02.240 align:start position:0%
+back end should be kept separately from
+ 
+
+00:16:02.240 --> 00:16:05.470 align:start position:0%
+back end should be kept separately from
+terraform<00:16:03.240><c> okay</c><00:16:03.920><c> so</c><00:16:04.079><c> you</c><00:16:04.199><c> have</c><00:16:04.319><c> to</c><00:16:04.440><c> manage</c><00:16:04.800><c> it</c>
+
+00:16:05.470 --> 00:16:05.480 align:start position:0%
+terraform okay so you have to manage it
+ 
+
+00:16:05.480 --> 00:16:08.829 align:start position:0%
+terraform okay so you have to manage it
+separately<00:16:06.480><c> now</c><00:16:07.240><c> I</c><00:16:07.440><c> think</c><00:16:07.800><c> that's</c><00:16:08.079><c> it</c><00:16:08.480><c> about</c>
+
+00:16:08.829 --> 00:16:08.839 align:start position:0%
+separately now I think that's it about
+ 
+
+00:16:08.839 --> 00:16:11.790 align:start position:0%
+separately now I think that's it about
+this<00:16:09.079><c> video</c><00:16:09.639><c> in</c><00:16:09.759><c> the</c><00:16:10.000><c> next</c><00:16:10.319><c> video</c><00:16:11.279><c> uh</c><00:16:11.399><c> we'll</c><00:16:11.639><c> be</c>
+
+00:16:11.790 --> 00:16:11.800 align:start position:0%
+this video in the next video uh we'll be
+ 
+
+00:16:11.800 --> 00:16:13.749 align:start position:0%
+this video in the next video uh we'll be
+looking<00:16:12.079><c> into</c><00:16:12.440><c> terraform</c><00:16:13.040><c> variables</c>
+
+00:16:13.749 --> 00:16:13.759 align:start position:0%
+looking into terraform variables
+ 
+
+00:16:13.759 --> 00:16:16.470 align:start position:0%
+looking into terraform variables
+precedence<00:16:14.279><c> of</c><00:16:14.480><c> variables</c><00:16:15.440><c> and</c><00:16:15.759><c> I</c><00:16:15.920><c> guess</c><00:16:16.160><c> type</c>
+
+00:16:16.470 --> 00:16:16.480 align:start position:0%
+precedence of variables and I guess type
+ 
+
+00:16:16.480 --> 00:16:19.309 align:start position:0%
+precedence of variables and I guess type
+constraint<00:16:17.360><c> so</c><00:16:17.639><c> that's</c><00:16:18.000><c> part</c><00:16:18.199><c> of</c><00:16:18.399><c> the</c><00:16:18.600><c> next</c>
+
+00:16:19.309 --> 00:16:19.319 align:start position:0%
+constraint so that's part of the next
+ 
+
+00:16:19.319 --> 00:16:23.069 align:start position:0%
+constraint so that's part of the next
+video<00:16:20.319><c> um</c><00:16:20.600><c> I</c><00:16:20.720><c> will</c><00:16:20.880><c> see</c><00:16:21.079><c> you</c><00:16:21.199><c> soon</c><00:16:21.839><c> and</c><00:16:22.720><c> if</c><00:16:22.959><c> you</c>
+
+00:16:23.069 --> 00:16:23.079 align:start position:0%
+video um I will see you soon and if you
+ 
+
+00:16:23.079 --> 00:16:25.749 align:start position:0%
+video um I will see you soon and if you
+like<00:16:23.319><c> the</c><00:16:23.440><c> video</c><00:16:23.720><c> make</c><00:16:23.880><c> sure</c><00:16:24.120><c> you</c><00:16:24.560><c> comment</c><00:16:25.560><c> on</c>
+
+00:16:25.749 --> 00:16:25.759 align:start position:0%
+like the video make sure you comment on
+ 
+
+00:16:25.759 --> 00:16:27.910 align:start position:0%
+like the video make sure you comment on
+it<00:16:26.240><c> you</c><00:16:26.759><c> complete</c><00:16:27.120><c> the</c><00:16:27.240><c> comments</c><00:16:27.519><c> and</c><00:16:27.720><c> like</c>
+
+00:16:27.910 --> 00:16:27.920 align:start position:0%
+it you complete the comments and like
+ 
+
+00:16:27.920 --> 00:16:30.670 align:start position:0%
+it you complete the comments and like
+Target<00:16:28.720><c> and</c><00:16:29.000><c> and</c><00:16:29.360><c> I</c><00:16:29.440><c> will</c><00:16:29.680><c> see</c><00:16:29.880><c> you</c><00:16:30.120><c> then</c><00:16:30.519><c> thank</c>
+
+00:16:30.670 --> 00:16:30.680 align:start position:0%
+Target and and I will see you then thank
+ 
+
+00:16:30.680 --> 00:16:37.180 align:start position:0%
+Target and and I will see you then thank
+you<00:16:30.800><c> so</c><00:16:30.959><c> much</c><00:16:31.120><c> for</c><00:16:31.360><c> watching</c><00:16:31.800><c> have</c><00:16:31.920><c> a</c><00:16:32.079><c> good</c><00:16:32.279><c> day</c>
+
+00:16:37.180 --> 00:16:37.190 align:start position:0%
+ 
+ 
+
+00:16:37.190 --> 00:16:48.279 align:start position:0%
+ 
+[Music]
+

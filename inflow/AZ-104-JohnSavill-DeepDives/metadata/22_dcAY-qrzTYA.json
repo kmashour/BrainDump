@@ -1,0 +1,89 @@
+{
+  "id": "dcAY-qrzTYA",
+  "title": "Azure AD App Proxy Deep Dive",
+  "duration": 3117,
+  "chapters": [
+    {
+      "start_time": 0,
+      "title": "Introduction",
+      "end_time": 21
+    },
+    {
+      "start_time": 21,
+      "title": "The challenge today",
+      "end_time": 106
+    },
+    {
+      "start_time": 106,
+      "title": "How can services be exposed externally",
+      "end_time": 201
+    },
+    {
+      "start_time": 201,
+      "title": "The cloud shift and AAD App Proxy",
+      "end_time": 359
+    },
+    {
+      "start_time": 359,
+      "title": "How AAD App Proxy works",
+      "end_time": 776
+    },
+    {
+      "start_time": 776,
+      "title": "Licensing",
+      "end_time": 808
+    },
+    {
+      "start_time": 808,
+      "title": "Adding connectors",
+      "end_time": 1240
+    },
+    {
+      "start_time": 1240,
+      "title": "Adding applications",
+      "end_time": 1596
+    },
+    {
+      "start_time": 1596,
+      "title": "Pre-authentication",
+      "end_time": 2363
+    },
+    {
+      "start_time": 2363,
+      "title": "Complex scenarios",
+      "end_time": 2445
+    },
+    {
+      "start_time": 2445,
+      "title": "URL redirection",
+      "end_time": 2610
+    },
+    {
+      "start_time": 2610,
+      "title": "Body URL rewrite",
+      "end_time": 2935
+    },
+    {
+      "start_time": 2935,
+      "title": "Performance enhancements with Front Door",
+      "end_time": 3014
+    },
+    {
+      "start_time": 3014,
+      "title": "Summary and close",
+      "end_time": 3117
+    }
+  ],
+  "description": "A look at making applications available externally while leveraging all the key identity features of Azure AD.\n\n\ud83d\udd0e Looking for content on a particular topic? Search the channel. If I have something it will be there!\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  C H A P T E R S \u23f0  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n00:00 - Introduction\n00:21 - The challenge today\n01:46 - How can services be exposed externally\n03:21 - The cloud shift and AAD App Proxy\n05:59 - How AAD App Proxy works\n12:56 - Licensing\n13:28 - Adding connectors\n20:40 - Adding applications\n26:36 - Pre-authentication\n39:23 - Complex scenarios\n40:45 - URL redirection\n43:30 - Body URL rewrite\n48:55 - Performance enhancements with Front Door\n50:14 - Summary and close\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  K E Y   L I N K S \ud83d\udd17 \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac\n\u25ba Whiteboard:\n\ud83d\udd17 https://github.com/johnthebrit/RandomStuff/raw/master/Whiteboards/AzureADAppProxy.png\n\u25ba App Proxy Documentation:\n\ud83d\udd17 https://learn.microsoft.com/azure/active-directory/app-proxy/application-proxy\n\n\u25ac\u25ac\u25ac\u25ac\u25ac\u25ac  Want to learn more? \ud83d\ude80  \u25ac\u25ac\u25ac\u25ac\u25ac\u25ac \n\ud83d\udcd6 Recommended Learning Path for Azure\n\ud83d\udd17 https://learn.onboardtoazure.com\n\ud83e\udd47 Certification Content Repository\n\ud83d\udd17 https://github.com/johnthebrit/CertificationMaterials\n\ud83d\udcc5 Weekly Azure Update\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nEv7jSfOVmQGRp9wAoAM0Ks\n\u2601 Azure Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nGccbp8VSpAozu3w9xSQJoY\n\u2699 DevOps Master Class\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nFr8RzQ4GIxUEznpNR53ERq\n\ud83d\udcbb PowerShell Master Class\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nFq_hR7FcMYg32xsSAObuq8\n\ud83c\udf93 Certification Cram Videos\n\ud83d\udd17  https://youtube.com/playlist?list=PLlVtbbG169nHz2qfLvPsAz9CnnXofhmcA\n\ud83e\udde0 Mentoring Content\n\ud83d\udd17 https://youtube.com/playlist?list=PLlVtbbG169nGHxNkSWB0PjzZHwZ0BkXZZ\n\u2754 Questions? Maybe I answered it in my FAQ\n\ud83d\udd17 https://savilltech.com/faq.html\n\ud83d\udc55 Cure Childhood Cancer Charity T-Shirt Channel Store\n\ud83d\udd17 https://johns-t-shirts-store.creator-spring.com/\n\n\ud83d\udc42  Enable the subtitles and from there you can translate to your native language via the auto-translate feature in settings! https://youtu.be/v5b53-PgEmI for a demo of using this feature.\n\nSUBSCRIBE  \u2705  https://www.youtube.com/channel/UCpIn7ox7j7bH_OFj7tYouOQ?sub_confirmation=1\n\n#microsoft #azure #johnsavillstechnicaltraining #onboardtoazure #cloud",
+  "webpage_url": "https://www.youtube.com/watch?v=dcAY-qrzTYA",
+  "upload_date": "20230417",
+  "tags": [
+    "azure",
+    "azure cloud",
+    "microsoft azure",
+    "microsoft",
+    "cloud",
+    "azure ad",
+    "identity"
+  ]
+}

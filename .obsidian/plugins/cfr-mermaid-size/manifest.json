@@ -1,0 +1,10 @@
+{
+  "id": "cfr-mermaid-size",
+  "name": "CFR Mermaid Size",
+  "version": "0.4.0",
+  "minAppVersion": "1.5.7",
+  "description": "Drag any Mermaid diagram to resize it and right-click to align it. Desktop and mobile keep independent sizes, and everything is stored inside the block itself, so it survives re-renders and travels between your devices.",
+  "author": "cferrugem",
+  "authorUrl": "https://github.com/cferrugem",
+  "isDesktopOnly": false
+}
