@@ -413,6 +413,24 @@ flowchart LR
 * **VMware HCX Seamless Migration:** Enables live **vMotion** of running workloads from on-premises datacenters into Azure over dedicated ExpressRoute interconnects with zero application downtime.
 * **Unified Management:** Systems engineers manage clusters using native vCenter Server, while Azure operations manage lifecycle, hardware replacement, and vSphere version upgrades.
 
+## 🖥️ VM Resizing Gotchas, Disk Caching Rules & Azure Bastion (Scott Duffy Insights)
+
+### 1. Resizing Azure VMs & The Temporary Disk Hazard
+*   **Hardware Cluster Limitations:** If you resize a VM to a SKU family that is not available on the physical hardware rack hosting the VM, Azure returns an `AllocationFailed` error.
+*   **The Fix:** You must first **Deallocate** the VM (`az vm deallocate`), allowing Azure to relocate the compute allocation to a hardware cluster supporting the target SKU, then resize and start.
+*   **Temporary Disk Wiped:** Azure VMs include a temporary local disk (`D:` on Windows, `/dev/sdb1` on Linux) backed by physical host SSDs. **Any data stored on the temporary disk is permanently lost when a VM is resized, stopped/deallocated, or rebooted for service healing.**
+
+### 2. Virtual Machine Disk Host Caching Matrix
+*   **ReadWrite (Default OS Disk):** Caches reads and writes in host RAM. Suitable for general OS operations.
+*   **ReadOnly:** Caches reads only. **Recommended for SQL Server data files (`.mdf`)** and read-heavy reporting systems.
+*   **None (No Caching):** Mandatory for **SQL Server transaction log files (`.ldf`)** and high-transaction write workloads to eliminate the risk of data loss or write-ordering corruption during physical host power failure.
+*   *Note:* Data disks larger than 4 TiB (4096 GiB) do not support host caching.
+
+### 3. Azure Bastion Deployment Baseline
+*   Must reside in a dedicated subnet named strictly: `AzureBastionSubnet`.
+*   Subnet prefix must be `/26` or larger (`/26`, `/25`, `/24`) to accommodate scale-out instances.
+*   Does not support UDRs (User-Defined Routes) directing traffic to virtual appliances.
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -426,3 +444,4 @@ flowchart LR
 - [Azure Virtual Machines Documentation](https://learn.microsoft.com/azure/virtual-machines/)
 - [Kubernetes Documentation Ecosystem Reference](https://kubernetes.io/docs/)
 - [Terraform Registry Provider for Azure (azurerm)](https://registry.terraform.io/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 05](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/05_Administer_Azure_Virtual_Machines_and_VMSS.md))

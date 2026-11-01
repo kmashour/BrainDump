@@ -510,6 +510,38 @@ Log Analytics ingestion can become a runaway cost driver in large enterprises. J
   - *Basic Logs:* Designed for high-volume debugging logs (e.g., container console logs, verbose IIS access logs). Ingestion cost is ~80% cheaper than Analytics logs, with 8 days of retention and simple single-table search queries.
 - **Archive Tier:** Once interactive retention expires, logs can be retained in low-cost Archive storage for up to 12 years to meet regulatory compliance requirements.
 
+## 📊 Azure Monitor Agent, DCR Ingestion Governance & KQL (Scott Duffy Insights)
+
+### 1. Modern Azure Monitor Agent (AMA) vs. Legacy MMA Agent
+*   **Legacy Log Analytics Agent (MMA/OMS):** Monolithic agent that ingested all Windows event logs or Syslog streams without filtering, leading to bloated data volume and unexpected billing. (Retired August 2024).
+*   **Modern Azure Monitor Agent (AMA):** Uses centralized **Data Collection Rules (DCR)** to filter logs at the client operating system before transmission over the network.
+*   **DCR Filtering Power:** An administrator can specify an XPath query to ingest *only* `Error` and `Critical` events from the `System` and `Application` logs, reducing ingested log volume by up to 85%!
+
+### 2. Essential Kusto Query Language (KQL) Production Recipes
+```kql
+// 1. Audit all resource deletions across the entire subscription in the last 7 days
+AzureActivity
+| where TimeGenerated >= ago(7d)
+| where OperationNameValue has "delete" and ActivityStatusValue == "Success"
+| project TimeGenerated, Caller, ResourceGroup, OperationNameValue, ActivitySubstatusValue
+
+// 2. Query top 5 virtual machines by Average CPU utilization over the past 24 hours
+Perf
+| where TimeGenerated >= ago(24h)
+| where ObjectName == "Processor" and CounterName == "% Processor Time" and InstanceName == "_Total"
+| summarize AvgCPU = avg(CounterValue) by Computer, bin(TimeGenerated, 1h)
+| top 5 by AvgCPU desc
+
+// 3. Detect failed SSH and RDP brute force attempts on virtual machines
+SecurityEvent
+| where TimeGenerated >= ago(24h)
+| where EventID in (4625) // Failed Windows logon
+| summarize FailedCount = count() by TargetUserName, IpAddress
+| where FailedCount > 10
+| order by FailedCount desc
+```
+
+
 ## 🌐 Authoritative References & Citations
 
 - [John Savill: Azure Master Class v2 - Module 10 - Monitoring & Security](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
@@ -521,3 +553,4 @@ Log Analytics ingestion can become a runaway cost driver in large enterprises. J
 - [Azure Monitor Architecture & Platform Documentation](https://docs.microsoft.com/en-us/azure/azure-monitor/)
 - [Azure Monitor Agent (AMA) Overview & Migration](https://learn.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview)
 - [Log Analytics Workspace Pricing and Commitment Tiers](https://azure.microsoft.com/en-us/pricing/details/monitor/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 10](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/10_Administer_Monitoring_and_Log_Analytics.md))

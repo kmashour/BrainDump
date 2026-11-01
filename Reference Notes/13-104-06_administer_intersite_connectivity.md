@@ -432,6 +432,27 @@ Private Link enables private access to Azure PaaS services, customer-owned servi
 * **Intrusion Detection and Prevention System (IDPS):** Signature-based deep packet inspection monitoring exploit attempts across thousands of CVE vulnerabilities in real time.
 * **DNS Proxy & FQDN Filtering:** Listens as a local DNS resolver on the VNet, forwarding queries to Azure DNS or custom resolvers while intercepting malicious domain name lookups before network egress occurs.
 
+## 🔄 Global VNet Peering vs. VNet-to-VNet Gateways (Scott Duffy Insights)
+
+### 1. Intersite Architectural Trade-offs
+```text
++-----------------------+---------------------------------------+---------------------------------------+
+| Feature               | Virtual Network Peering (Recommended) | VNet-to-VNet VPN Gateway              |
++-----------------------+---------------------------------------+---------------------------------------+
+| Performance           | Line-rate Microsoft Optical WAN speed | Limited by Gateway SKU (650M - 1.25G) |
+| Latency               | Lowest possible (Zero gateway hops)   | Higher (Packets processed by gateway) |
+| Encryption            | Azure physical optical layer MACsec   | IPsec / IKE tunnel encryption         |
+| Gateway Transit       | Supports sharing Hub VPN / ER Gateway | Requires complex mesh configuration   |
+| IP Overlap Support    | STRICT NO (CIDRs must not overlap)    | Supported via NAT on Gateway          |
+| Billing Model         | Ingress & Egress per-GB data transfer | Gateway hourly uptime + egress data   |
++-----------------------+---------------------------------------+---------------------------------------+
+```
+
+### 2. Azure Private DNS Zone Resolution vs. Auto-Registration
+*   **Virtual Network Link:** Binds a Private DNS Zone (`privatelink.blob.core.windows.net` or `corp.internal`) to a VNet.
+*   **Registration Enabled (`true`):** Azure automatically creates and manages DNS `A` records for VMs deployed in that VNet. (Limit: Only 1 auto-registration VNet per private DNS zone).
+*   **Resolution Only (`false`):** VMs in this VNet can resolve DNS names in the zone, but their own hostnames are not registered. (Supports up to 1,000 VNets linked to a single private zone).
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -442,3 +463,4 @@ Private Link enables private access to Azure PaaS services, customer-owned servi
 - [Microsoft Learn: Connect services together with VNet Peering](https://learn.microsoft.com/en-us/training/modules/integrate-vnets-with-vnet-peering/)
 - [Microsoft Learn: Manage and control traffic flow with routes](https://learn.microsoft.com/en-us/training/modules/manage-and-control-traffic-with-route-tables/)
 - [Microsoft Azure Documentation - Private Link & Private Endpoints](https://learn.microsoft.com/en-us/azure/private-link/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 08](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/08_Administer_Virtual_Networking_and_InterSite_Connectivity.md))

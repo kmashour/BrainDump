@@ -414,6 +414,23 @@ Traditional relational databases tie storage capacity directly to compute node d
 * **Page Servers (Distributed Cache):** Multi-tiered distributed caching nodes that maintain the database pages. Each Page Server manages a slice of database data and caches hot pages on high-speed local NVMe SSDs (RBPEX cache).
 * **Azure Storage Blobs (Infinite Storage):** Cold data pages reside in durable Azure Blob storage, allowing databases to grow seamlessly up to 100+ Terabytes with near-instantaneous backups and restores regardless of database size.
 
+## 🐳 App Service Scaling, Slot Swaps & Container Workloads (Scott Duffy Insights)
+
+### 1. App Service Plan Scaling Paradigms
+*   **Scale Up (Vertical):** Changing the tier/SKU (e.g., migrating from Basic `B1` to Standard `S1` or Premium `P1v3`) to increase CPU cores, RAM, dedicated storage, or unlock features (slots, backups, VNet integration).
+*   **Scale Out (Horizontal):** Adding identical VM instances to the App Service Plan (up to 3 in Basic, up to 10 in Standard, up to 30 in Premium v3).
+*   **Autoscale Rules:** Can scale out automatically based on average CPU > 70% over 10 minutes, with a configured cooldown window (e.g., 5 minutes) to prevent scaling oscillation.
+
+### 2. App Service Deployment Slot Swap Mechanics
+*   **Pre-Swap Warm-up:** Azure sends an HTTP request to the root path of the staging slot before swapping traffic. If the application takes 30 seconds to compile or warm up caches, this ensures end users never experience cold-start latency.
+*   **Sticky vs. Swapped Settings:**
+    *   *Swapped Settings:* Application code, framework versions, default connection strings.
+    *   *Sticky Settings (Pinned to Slot):* Database connection strings for staging, custom domain names, SSL certificates, publishing credentials. Configured using `Deployment slot setting = true`.
+
+### 3. Azure Container Instances (ACI) vs. Azure Container Apps (ACA)
+*   **ACI (Azure Container Instances):** Simplest, fastest way to run isolated Docker containers without managing VM infrastructure. Billed per-second. Supports **Container Groups** (multiple co-scheduled containers sharing localhost networking and storage volumes).
+*   **ACA (Azure Container Apps):** Serverless platform built on Kubernetes and KEDA. Designed for microservices, background job processing, built-in ingress, and scale-to-zero capabilities based on HTTP traffic or Azure Service Bus queue depth.
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -425,3 +442,4 @@ Traditional relational databases tie storage capacity directly to compute node d
 - [Microsoft Learn: Configure Azure App Service Plans and Web Apps](https://learn.microsoft.com/en-us/training/modules/configure-app-service-plans/)
 - [Microsoft Learn: Run container images in Azure Container Instances](https://learn.microsoft.com/en-us/training/modules/run-container-images-azure-container-instances/)
 - [Azure App Service Deployment Slots Documentation](https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 07](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/07_Administer_PaaS_Compute_App_Services_and_Containers.md))

@@ -2,6 +2,39 @@
 
 This backlog tracks all updates, modifications, and restructuring activities performed in this CKA study knowledge base.
 
+## [2026-11-01] - Ingestion & Synthesis: Scott Duffy AZ-104 Complete Course (12 Modules)
+
+### 📥 Inflow Extraction & Progressive Chunking
+- **Source Course:** Udemy - AZ-104 Microsoft Azure Administrator by Scott Duffy (Master Transcript: `inflow/udemy_transcript_802576.txt`, 24,731 lines).
+- **Progressive Chunking:** Segmented into 12 structured, cleaned markdown files under `inflow/AZ-104-ScottDuffy/`:
+  - `inflow/AZ-104-ScottDuffy/01_Course_Introduction_Budgeting_and_Tooling.md`
+  - `inflow/AZ-104-ScottDuffy/02_Administer_Identity_Entra_ID.md`
+  - `inflow/AZ-104-ScottDuffy/03_Administer_Governance_and_Compliance.md`
+  - `inflow/AZ-104-ScottDuffy/04_Administer_Azure_Storage.md`
+  - `inflow/AZ-104-ScottDuffy/05_Administer_Azure_Virtual_Machines_and_VMSS.md`
+  - `inflow/AZ-104-ScottDuffy/06_Administer_Automation_ARM_Templates_and_Bicep.md`
+  - `inflow/AZ-104-ScottDuffy/07_Administer_PaaS_Compute_App_Services_and_Containers.md`
+  - `inflow/AZ-104-ScottDuffy/08_Administer_Virtual_Networking_and_InterSite_Connectivity.md`
+  - `inflow/AZ-104-ScottDuffy/09_Administer_Network_Traffic_Security_and_Load_Balancing.md`
+  - `inflow/AZ-104-ScottDuffy/10_Administer_Monitoring_and_Log_Analytics.md`
+  - `inflow/AZ-104-ScottDuffy/11_Administer_Data_Protection_Backup_and_Recovery.md`
+  - `inflow/AZ-104-ScottDuffy/12_AZ104_Last_Minute_Study_Review_and_Exam_Strategies.md`
+
+### 🏛️ Canonical Reference Notes In-Place Synthesis
+Enriched all canonical AZ-104 reference notes with Scott Duffy's practical operational recipes, CLI/PowerShell workflows, and real-world gotchas:
+- **Module 13-104-01:** Azure Free Account credit limits ($0 spending cap), Cost Management multi-threshold budgets, PowerShell Core `Az` module setup, Cloud Shell persistence storage architecture.
+- **Module 13-104-02:** Entra ID Free vs P1 vs P2 licensing comparison, Custom Domain TXT/MX verification & deletion immutability laws, Administrative Units (AUs) non-transitive rules, Device management states (Registered vs Joined vs Hybrid Joined).
+- **Module 13-104-03:** Custom RBAC role JSON specification (`AssignableScopes`, `NotActions` subtraction rule), Resource Locks operational consequences (`ReadOnly` blocking Storage `listKeys`), Resource move dependency bundling and tenant constraints.
+- **Module 13-104-04:** ARM Template Specs versioning and RBAC sharing, Custom Script Extensions (CSE) 90-minute timeout and exit code 0 contract, Azure Bicep VS Code workflow and decompilation (`az bicep decompile`).
+- **Module 13-104-05:** Basic vs Standard Public IP SKUs, NSG default security rules immutability, Network Watcher IP Flow Verify and Next Hop diagnostics.
+- **Module 13-104-06:** Global VNet Peering vs VNet-to-VNet VPN Gateways architectural trade-offs, Azure Private DNS Zones auto-registration vs resolution-only virtual network links.
+- **Module 13-104-07:** Application Security Groups (ASGs) micro-segmentation, Standard Load Balancer health probe thresholds, Application Gateway v2 multi-site and path-based routing rules.
+- **Module 13-104-08:** Blob access tiers retention and rehydration mechanics (Standard vs High Priority), Stored Access Policies (SAP) as the prerequisite for SAS revocation, Object Replication change feed and versioning requirements.
+- **Module 13-104-09:** VM resizing cluster allocation limits and temporary disk wiping hazard, host disk caching rules (`ReadOnly` for SQL data vs `None` for transaction logs), Azure Bastion `/26` subnet baseline.
+- **Module 13-104-10:** App Service Plan vertical vs horizontal scaling, deployment slot warm-up request cycles and sticky slot settings, ACI Container Groups vs Azure Container Apps (ACA) microservices.
+- **Module 13-104-11:** Recovery Services Vault Instant Restore snapshot retention (1-5 days), File-Level Recovery (FLR) iSCSI executable mount scripts, Azure Site Recovery (ASR) non-disruptive test failovers in isolated VNets.
+- **Module 13-104-12:** Azure Monitor Agent (AMA) and Data Collection Rules (DCR) log filtering, essential KQL production query recipes for auditing, performance, and security events.
+
 ## [2026-10-22] - Ingestion & First-Principles Synthesis: Azure VNet Subnetting Math & Longest Prefix Match (LPM)
 
 ### 📥 Inflow File Processed

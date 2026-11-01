@@ -397,6 +397,25 @@ John Savill highlights Microsoft's newly architected **Application Gateway for C
   * In Application Gateway for Containers, an in-cluster ALB Operator streams real-time updates directly to the distributed data-plane proxies via gRPC, achieving **sub-second route convergence**.
 * **Traffic Management:** Supports Gateway API standards, weighted canary routing, header manipulation, and TLS termination with line-of-sight private pod IP routing without kube-proxy SNAT overhead.
 
+## ⚖️ Load Balancer Health Probes, ASGs & App Gateway v2 Routing (Scott Duffy Insights)
+
+### 1. Application Security Groups (ASGs) Micro-Segmentation
+*   **The Operational Advantage:** Instead of hardcoding VM private IP addresses into NSG rules, you associate the VM's Network Interface (NIC) with an Application Security Group (e.g., `asg-web` or `asg-sql`).
+*   **Clean Declarative Rule:**
+    *   Source: `asg-web`
+    *   Destination: `asg-sql`
+    *   Port: `1433` | Action: `Allow`
+    *   *Result:* When scaling out web servers from 2 to 20 instances, newly deployed NICs added to `asg-web` automatically inherit database access without touching the NSG!
+
+### 2. Standard Load Balancer Health Probes Mechanics
+*   **HTTP/HTTPS Probes:** Expect an `HTTP 200 OK` response. Any redirect (`HTTP 301/302`) or server error (`HTTP 500`) causes the probe to fail.
+*   **TCP Probes:** Simply performs a 3-way TCP handshake (`SYN`, `SYN-ACK`, `ACK`). If the port is open and listening, the backend instance is marked healthy.
+*   **Unhealthy Threshold:** By default, 2 consecutive probe failures mark the VM down, instantly removing it from backend pool distribution with zero dropped packets for existing sessions.
+
+### 3. Application Gateway v2 Multi-Site & Path-Based Routing
+*   **Multi-Site Listeners:** Evaluates the `Host:` HTTP header to route traffic for multiple distinct domain names (e.g., `billing.contoso.com` and `support.contoso.com`) through a single public IP.
+*   **Path-Based Routing Rules:** Evaluates URL request paths (e.g., `/images/*` directed to a Storage Account backend pool, and `/api/*` directed to an App Service VMSS backend pool).
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -407,3 +426,4 @@ John Savill highlights Microsoft's newly architected **Application Gateway for C
 - [Microsoft Learn: Load balance HTTP traffic with Application Gateway](https://learn.microsoft.com/en-us/training/modules/load-balance-web-traffic-with-application-gateway/)
 - [Microsoft Learn: Troubleshoot networks with Azure Network Watcher](https://learn.microsoft.com/en-us/training/modules/troubleshoot-azure-network-infrastructure/)
 - [Azure Load Balancer Technical Overview](https://learn.microsoft.com/en-us/azure/load-balancer/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 09](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/09_Administer_Network_Traffic_Security_and_Load_Balancing.md))

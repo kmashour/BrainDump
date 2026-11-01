@@ -500,6 +500,47 @@ Enterprise governance frequently extends beyond Azure subscriptions:
 * **Multi-Cloud Connectors:** Connects to AWS accounts and Google Cloud projects using native IAM federation (OIDC) without long-lived secret access keys.
 * **Cloud Security Posture Management (CSPM):** Audits AWS IAM policies, S3 bucket public access, and GCP service account keys against unified regulatory standards (CIS Benchmark, NIST SP 800-53, ISO 27001).
 
+## 📜 Operational Policy Automation, Resource Locks & Cross-RG Migration (Scott Duffy Insights)
+
+### 1. Custom RBAC Role JSON Specification & The `NotActions` Trap
+When defining an enterprise Custom RBAC role, the JSON definition adheres to strict schema constraints:
+```json
+{
+  "Name": "Virtual Machine Operator Contributor",
+  "IsCustom": true,
+  "Description": "Allows managing VM power states without modifying compute configurations.",
+  "Actions": [
+    "Microsoft.Compute/*/read",
+    "Microsoft.Compute/virtualMachines/start/action",
+    "Microsoft.Compute/virtualMachines/restart/action",
+    "Microsoft.Compute/virtualMachines/powerOff/action"
+  ],
+  "NotActions": [
+    "Microsoft.Compute/virtualMachines/delete"
+  ],
+  "DataActions": [],
+  "NotDataActions": [],
+  "AssignableScopes": [
+    "/subscriptions/00000000-0000-0000-0000-000000000000",
+    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-workloads-prod"
+  ]
+}
+```
+*   **The `NotActions` Rule:** `NotActions` is **NOT a Deny rule**. It is purely a subtraction from the `Actions` array. If another role (such as `Contributor`) grants `Microsoft.Compute/virtualMachines/delete`, the user CAN still delete the VM!
+*   **`AssignableScopes` Limitation:** You can assign multiple subscriptions or resource groups, but you **CANNOT** declare a Management Group scope in a custom role if the role is created via PowerShell in older API versions.
+
+### 2. Resource Locks Operational Consequences
+*   **`ReadOnly` Lock Side Effects:**
+    *   *Storage Accounts:* Blocks listing access keys! In ARM, `listKeys` is an `HTTP POST` operation requiring write authorization (`Microsoft.Storage/storageAccounts/listkeys/action`), so ARM rejects it under a ReadOnly lock.
+    *   *Virtual Machines:* Blocks starting or stopping the VM through the portal/CLI because updating the power state modifies compute runtime metadata.
+*   **`CanNotDelete` Lock:** Allows modifying properties, scaling, adding data disks, and restarting compute instances, but blocks deleting the resource or its parent resource group.
+
+### 3. Resource Migration (Move) Prerequisites & Constraints
+When migrating resources across Resource Groups or Subscriptions:
+1.  **Dependency Bundling:** Child resources must move together with their parent. For a Virtual Machine, you must select the VM, OS disk, data disks, network interface (NIC), and attached public IP in the same move operation.
+2.  **Lock Clearance:** Both the source resource group and target resource group must have all Resource Locks temporarily removed.
+3.  **Tenant Boundary Law:** Resources cannot move directly across different Microsoft Entra ID tenants. The subscription containing the resources must first have its directory changed via Azure Portal.
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -511,3 +552,4 @@ Enterprise governance frequently extends beyond Azure subscriptions:
 - [Microsoft Learn: Manage subscriptions and governance in Azure](https://learn.microsoft.com/en-us/training/modules/manage-subscriptions-and-resources/)
 - [Microsoft Learn: Control access to Azure resources with RBAC](https://learn.microsoft.com/en-us/training/modules/secure-azure-resources-with-rbac/)
 - [Microsoft Azure Documentation - Azure Policy Overview](https://learn.microsoft.com/en-us/azure/governance/policy/overview)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 03](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/03_Administer_Governance_and_Compliance.md))

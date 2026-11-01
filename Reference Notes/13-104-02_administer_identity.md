@@ -588,6 +588,54 @@ flowchart TD
 * **Permission Creep Index (PCI):** Quantifies risk on a scale of 0 to 100 based on the gap between permissions granted and permissions actually exercised over 90 days.
 * **Automated Least Privilege:** Identifies unused administrative privileges and generates right-sized role definitions to shrink the multi-cloud attack surface.
 
+## 🏢 Enterprise Identity Administration, Licensing & Device Governance (Scott Duffy Insights)
+
+### 1. Microsoft Entra ID Licensing Tiers & Feature Matrix
+| Capability | Entra ID Free | Entra ID P1 | Entra ID P2 |
+| :--- | :--- | :--- | :--- |
+| **User & Group Administration** | Core User/Group Management, Cloud sync | All Free features | All P1 features |
+| **SSO Application Limit** | Up to 10 apps per user | **Unlimited SSO apps** | Unlimited SSO apps |
+| **Self-Service Password Reset (SSPR)** | Cloud users only (no on-prem writeback) | **SSPR with On-Premises Password Writeback** | SSPR with Password Writeback |
+| **Group Membership Engine** | Static membership only | **Dynamic Group Membership Rules** | Dynamic Group Membership Rules |
+| **Conditional Access** | Security Defaults (binary on/off) | **Granular Conditional Access Policies** | Conditional Access Policies |
+| **Identity Protection & Risk Engine** | None | None | **Real-Time Risk-Based Conditional Access** |
+| **Privileged Access Governance** | None | None | **Privileged Identity Management (PIM)** |
+| **Compliance & Auditing** | Basic sign-in & audit logs (7 days) | Advanced reporting & auditing (30 days) | **Entra Access Reviews & Entitlement Management** |
+
+### 2. Custom Domain Verification Flow & Immutability Rules
+*   **Default Suffix:** Every new Entra ID tenant starts with `<tenant-name>.onmicrosoft.com`.
+*   **Verification Protocol:**
+    1.  Add custom domain (e.g., `contoso.com`) in Entra ID.
+    2.  Create a **DNS TXT record** (e.g., `MS=msXXXXXXXX`) at the domain registrar. Alternatively, an **MX record** can be used if TXT is unsupported.
+    3.  Click **Verify** in the Azure Portal. Once verified, the domain status changes from `Unverified` to `Verified`.
+    4.  Set as **Primary Domain** to automatically assign `@contoso.com` to new users.
+*   **Deletion Immutability Law:** An administrator **CANNOT delete a custom domain** if any user, group, Microsoft 365 license, or app registration currently references that domain suffix. All user UPNs must be migrated back to `.onmicrosoft.com` before deletion is permitted.
+
+### 3. Administrative Units (AUs) Regional Delegation
+*   **Architectural Purpose:** Allows delegating administrative control over a subset of users and groups (e.g., European Staff) to regional administrators without granting global tenant-wide administrative roles.
+*   **Key Operational Rules:**
+    *   Administrators assigned roles at the AU scope (e.g., User Administrator on `AU-Europe`) can only modify passwords, profile attributes, and group memberships for users explicitly contained in that AU.
+    *   *AU Membership is Not Transitive:* Nested groups do not inherit AU membership. If Group B is inside Group A, and Group A is in an AU, members of Group B are NOT managed by the AU admin!
+
+### 4. Device Management Topology
+```text
++-------------------+-----------------------------------+-----------------------------------+
+| Device State      | Target Operating Systems          | Management & Ownership Model      |
++-------------------+-----------------------------------+-----------------------------------+
+| Entra Registered  | Windows 10/11, iOS, Android, macOS| BYOD (Bring Your Own Device).     |
+|                   |                                   | User signs in with local account; |
+|                   |                                   | workplace account added for SSO.  |
++-------------------+-----------------------------------+-----------------------------------+
+| Entra Joined      | Windows 10/11, Windows Server 2019| Corporate-owned, cloud-only.      |
+|                   |                                   | User logs in using Entra UPN.     |
+|                   |                                   | Managed natively via Intune MDM.  |
++-------------------+-----------------------------------+-----------------------------------+
+| Entra Hybrid      | Windows 10/11, Windows Server     | Joined to on-premises AD DS domain|
+| Joined            | Active Directory Domain Services  | and synchronized to Entra ID via  |
+|                   |                                   | Microsoft Entra Connect sync.     |
++-------------------+-----------------------------------+-----------------------------------+
+```
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -596,3 +644,4 @@ flowchart TD
 - [Microsoft Entra ID Documentation - Fundamentals](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-whatis)
 - [Microsoft Learn: Manage user and group accounts in Microsoft Entra ID](https://learn.microsoft.com/en-us/training/modules/manage-users-and-groups-in-azure-active-directory/)
 - [Microsoft Learn: Configure self-service password reset](https://learn.microsoft.com/en-us/training/modules/configure-self-service-password-reset/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 02](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/02_Administer_Identity_Entra_ID.md))

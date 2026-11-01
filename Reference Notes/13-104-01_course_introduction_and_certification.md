@@ -295,6 +295,42 @@ John Savill emphasizes that modern Azure administration requires a unified multi
 * **Systemd Integration:** Enables running standard Linux background daemons (Docker engine, Podman, SSH agents) natively within the Windows desktop without third-party desktop wrappers.
 * **Cross-OS File System Performance:** Best practice requires placing code repositories and Bicep projects inside the Linux file system (`/home/user/`) rather than the mounted Windows drive (`/mnt/c/`) to avoid cross-OS serialization overhead.
 
+## 🛠️ Operational Tooling, Spending Caps & Cloud Shell Architecture (Scott Duffy Insights)
+
+### 1. Azure Free Account Spending Guardrails & Tier Mechanics
+*   **The Initial 30-Day Window:** Microsoft provides **$200 USD in cloud credits** valid for exactly 30 days.
+*   **The Strict Spending Limit ($0 Guardrail):** By default, the free subscription includes a hard spending limit set to $0. If experimental workloads consume all $200 credits within 30 days, Azure automatically suspends all compute instances (VMs deallocate, websites stop responding) to prevent unauthorized credit card billing.
+*   **12 Months Free Services & Always Free Tier:**
+    *   *12 Months Free:* Standard B1s Linux/Windows VMs (up to 750 hours/month), 5 GB LRS Blob storage, 5 GB Azure Files.
+    *   *Always Free Tier (55+ Services):* Azure App Services (up to 10 apps on F1 tier), Azure Functions (1,000,000 executions/month), Azure Cosmos DB (1,000 RU/s throughput + 25 GB storage), Azure Event Grid (100,000 operations/month).
+
+### 2. Azure Cost Management Budgeting & Multi-Threshold Action Alerts
+*   **Budget Scope:** Can be configured at the Management Group, Subscription, or Resource Group level.
+*   **Evaluation Frequency:** Azure Cost Management evaluates accumulated billing data against the configured budget every 4 hours.
+*   **Threshold Multi-Staging:** Best practice configures 4 progressive notification gates:
+    *   `50% Forecasted/Actual`: Early warning notification sent to platform engineers.
+    *   `75% Actual`: FinOps review alert dispatched to department lead.
+    *   `90% Actual`: Automated scaling throttle or deployment pause notification.
+    *   `100% Actual`: Automated Action Group trigger (e.g., executing an Azure Automation Runbook or Azure Logic App to deallocate non-production dev/test VMs).
+
+### 3. PowerShell Core with `Az` Module Enterprise Setup
+*   **PowerShell Core (`pwsh`):** Modern cross-platform automation engine (Linux, macOS, Windows).
+*   **Installation Command:**
+    ```powershell
+    # Install Az module strictly for current user to avoid admin permission requirements
+    Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force -AllowClobber
+    
+    # Authenticate interactively to Microsoft Entra ID
+    Connect-AzAccount
+    
+    # View all accessible subscriptions
+    Get-AzSubscription | Select-Object Name, Id, State
+    
+    # Switch active subscription context
+    Set-AzContext -SubscriptionId "00000000-0000-0000-0000-000000000000"
+    ```
+*   **Cloud Shell Storage Requirement:** When launching Azure Cloud Shell for the first time, ARM requires provisioning a standard LRS storage account and a dedicated `5 GB` Azure File Share. This share is mounted automatically to `/home/<username>` to persist scripts, SSH keys, and custom modules across ephemeral Cloud Shell sessions.
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -305,3 +341,4 @@ John Savill emphasizes that modern Azure administration requires a unified multi
 - [KodeKloud AZ-104: Microsoft Azure Administrator Complete Course](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Introduction/Course-Introduction/page)
 - [Moe Intelligence: Comprehensive AZ-104 & Cloud Engineering Lecture Series](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
 - [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 01](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/01_Course_Introduction_Budgeting_and_Tooling.md))

@@ -43,6 +43,7 @@ In this project, you will engineer a production-grade **Multi-Stage Azure Pipeli
 ## 🏛️ Target Architecture & Component Topology
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart TD
     subgraph VersionControl ["Git Branching & PR Strategy"]
         FeatureBranch["Feature Branch (feature/*)"]

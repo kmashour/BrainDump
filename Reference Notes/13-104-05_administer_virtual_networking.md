@@ -415,6 +415,28 @@ AVNM introduces Security Admin Rules that evaluate *before* local subnet NSGs:
   2. `Allow`: Unconditionally permits the packet, bypassing all lower NSG rules.
   3. `Pass`: Defers evaluation down to the local Subnet and NIC NSG rules.
 
+## 🌐 Public IP SKUs, Subnet Security & Network Watcher Diagnostics (Scott Duffy Insights)
+
+### 1. Basic vs. Standard Public IP SKUs: Architectural Differences
+| Architectural Property | Basic SKU Public IP | Standard SKU Public IP (Mandatory for Modern Workloads) |
+| :--- | :--- | :--- |
+| **Allocation Method** | Dynamic or Static | **Static Only** |
+| **Default Security Posture**| Open to Internet by default (NSG recommended) | **Closed by default (Secure)**; traffic rejected until NSG allows |
+| **Zone Resiliency** | No Availability Zone support | **Zone-Redundant, Zonal, or No Zone** |
+| **Load Balancer Pairing** | Basic Load Balancer only | **Standard Load Balancer only** (SKUs cannot be mixed!) |
+| **Routing Preference** | Microsoft Global Network only | Microsoft Global Network or Transit ISP Internet |
+
+### 2. NSG Default Security Rules Architecture
+Every Network Security Group comes with 3 immutable inbound and 3 immutable outbound default rules:
+*   `65000: AllowVNetInBound` (Allows traffic originating anywhere inside the VNet address space).
+*   `65001: AllowAzureLoadBalancerInBound` (Allows health probes from Azure infrastructure IP `168.63.129.16`).
+*   `65500: DenyAllInBound` (Blocks all other inbound traffic from any source).
+*   *Key Rule:* Default rules **CANNOT be deleted**. They can only be overridden by creating custom rules with priority numbers between `100` and `4096`.
+
+### 3. Network Watcher Diagnostic Recipes
+*   **IP Flow Verify:** Simulates a 5-tuple packet (Protocol, Source IP, Source Port, Destination IP, Destination Port) to determine whether access is `Allowed` or `Denied`, identifying the exact NSG rule responsible.
+*   **Next Hop:** Diagnoses asymmetric or broken routing by querying what next hop type Azure SDN will use (`VirtualNetwork`, `Internet`, `VirtualAppliance`, `None`).
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -426,3 +448,4 @@ AVNM introduces Security Admin Rules that evaluate *before* local subnet NSGs:
 - [Microsoft Learn: Configure virtual networks and subnets](https://learn.microsoft.com/en-us/training/modules/configure-virtual-networks/)
 - [Microsoft Learn: Secure and govern network traffic with NSGs](https://learn.microsoft.com/en-us/training/modules/secure-and-isolate-with-nsg-and-service-endpoints/)
 - [Azure Virtual Network Documentation](https://learn.microsoft.com/en-us/azure/virtual-network/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 08](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/08_Administer_Virtual_Networking_and_InterSite_Connectivity.md))

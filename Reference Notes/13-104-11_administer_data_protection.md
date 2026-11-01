@@ -343,6 +343,25 @@ Unlike backup which captures periodic snapshots, **Azure Site Recovery (ASR)** p
 - **Asynchronous Transfer:** The cache storage pushes data to target replica managed disks in the disaster recovery secondary region.
 - **Recovery Point Objective (RPO):** Data latency is measured in seconds, ensuring near-zero data loss during catastrophic regional failures.
 
+## 🛡️ Recovery Services Vault, Instant Restore & Azure Site Recovery (Scott Duffy Insights)
+
+### 1. Azure Backup: Instant Restore Snapshot Retention
+*   **Instant Restore Tier:** When Azure Backup backs up an Azure VM, it takes an application-consistent snapshot of the managed disks. This snapshot is retained in the **local storage tier for 1 to 5 days** (default 2 days).
+*   **Operational Benefit:** If an admin needs to restore a VM that crashed 2 hours ago, Azure restores directly from the local snapshot in **under 2 minutes**, avoiding long download delays from the vault tier!
+*   **Vault Tier:** Snapshots are transferred in the background to the Recovery Services Vault, compressed and deduplicated for long-term retention (weeks, months, or years).
+
+### 2. File-Level Recovery (FLR) via iSCSI Mount Script
+*   Instead of restoring an entire 500 GB virtual machine to recover a single corrupted configuration file:
+    1.  Click **File Recovery** in the Azure Portal for the selected recovery point.
+    2.  Azure generates an executable script (`.exe` for Windows, `.sh` for Linux) containing a unique password.
+    3.  Run the script on any machine (or the target VM): It establishes an **iSCSI connection** directly to the backup snapshot recovery point.
+    4.  The backup disks are mounted as local drive letters, allowing the engineer to copy and paste the needed files directly before unmounting!
+
+### 3. Azure Site Recovery (ASR) Disaster Recovery Drills
+*   **Continuous Replication:** ASR uses the Mobility Service extension to capture block-level disk changes in real-time and stream them to a cache storage account in the secondary region.
+*   **Test Failover (Zero Production Impact):** Allows executing a scheduled disaster recovery drill. Azure spins up replica VMs in an **isolated test virtual network** without stopping ongoing replication or impacting the primary production site!
+
+
 ## 🌐 Authoritative References & Citations
 
 - [John Savill: Azure Master Class v3 - Part 4 - Resiliency](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
@@ -354,3 +373,4 @@ Unlike backup which captures periodic snapshots, **Azure Site Recovery (ASR)** p
 - [Microsoft Learn: Protect on-premises infrastructure with Azure Site Recovery](https://learn.microsoft.com/en-us/training/modules/protect-on-premises-infrastructure-with-azure-site-recovery/)
 - [Azure Backup Technical Best Practices](https://docs.microsoft.com/en-us/azure/backup/backup-best-practices)
 - [Azure Site Recovery Documentation](https://azure.microsoft.com/en-us/services/site-recovery/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 11](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/11_Administer_Data_Protection_Backup_and_Recovery.md))

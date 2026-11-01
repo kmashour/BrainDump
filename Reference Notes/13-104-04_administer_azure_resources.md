@@ -372,6 +372,34 @@ Before executing any deployment in production, administrators run the **What-If*
   - `~ Ignore`: Resources with no changes.
   - `- Delete`: Resources that will be permanently removed (critical when using `Complete` deployment mode).
 
+## 🚀 ARM Template Specs, Custom Script Extensions & Bicep Tooling (Scott Duffy Insights)
+
+### 1. ARM Template Specs (Enterprise Template Sharing)
+*   **What are Template Specs?** Instead of storing ARM templates in public GitHub repos or SAS-protected storage blobs, **Template Specs** (`Microsoft.Resources/templateSpecs`) store templates natively as first-class securable Azure resources.
+*   **Benefits:**
+    *   Protected by standard Azure RBAC (Reader/Contributor permissions).
+    *   Supports native semantic versioning (e.g., `1.0.0`, `1.1.0`, `2.0.0`).
+    *   Direct deployment via Portal, CLI, or PowerShell:
+        ```bash
+        az deployment group create \
+          --resource-group rg-production \
+          --template-spec "/subscriptions/xxx/resourceGroups/rg-templates/providers/Microsoft.Resources/templateSpecs/baselineVNet/versions/1.0"
+        ```
+
+### 2. Custom Script Extensions (CSE) Runtime Rules
+*   **Execution Timeout:** Maximum runtime execution limit is **90 minutes**. If scripts exceed 90 minutes, ARM marks the deployment as `Failed`.
+*   **Exit Code 0 Contract:** The extension expects the script to exit with code `0`. Any non-zero exit code indicates failure and stops dependent resources.
+*   **Reboot Handling:** If a script requires a VM reboot, it must be structured to handle the reboot gracefully or execute in two separate script extensions.
+
+### 3. Azure Bicep Authoring, Compilation & Decompilation
+*   **Bicep vs. ARM JSON:** Bicep is a domain-specific language (DSL) that compiles transparently into ARM JSON (`az bicep build --file main.bicep`).
+*   **Decompiling Legacy ARM Templates:** You can reverse-engineer any existing ARM template into clean Bicep code using the Azure CLI:
+    ```bash
+    az bicep decompile --file template.json
+    ```
+    This outputs `template.bicep` with cleaned parameter types, variables, and resource dependencies!
+
+
 ## 🌐 Authoritative References & Citations
 
 - [John Savill: Azure Master Class v2 - Module 11 - IaC & DevOps](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
@@ -380,3 +408,4 @@ Before executing any deployment in production, administrators run the **What-If*
 - [Microsoft Learn: Manage resources in Azure](https://learn.microsoft.com/en-us/training/modules/manage-resources-with-arm-templates/)
 - [Microsoft Learn: Introduction to Bicep](https://learn.microsoft.com/en-us/training/modules/introduction-to-bicep/)
 - [Azure Resource Manager Documentation](https://learn.microsoft.com/en-us/azure/azure-resource-manager/)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 06](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/06_Administer_Automation_ARM_Templates_and_Bicep.md))

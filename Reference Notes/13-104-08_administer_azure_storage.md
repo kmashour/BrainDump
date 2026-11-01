@@ -438,6 +438,33 @@ For mission-critical audit trails, financial transactions, and regulatory compli
 * Every transaction produces a cryptographic receipt containing a **Merkle tree root hash proof**.
 * Any third-party auditor can cryptographically prove that the ledger history has not been altered, deleted, or rolled back since inception.
 
+## 📦 Access Tiers, Stored Access Policies & Object Replication (Scott Duffy Insights)
+
+### 1. Storage Access Tiers Cost & Latency Comparison
+```text
++-----------------------+-------------------+-------------------+-------------------+-------------------+
+| Tier                  | Hot Tier          | Cool Tier         | Cold Tier         | Archive Tier      |
++-----------------------+-------------------+-------------------+-------------------+-------------------+
+| Storage Cost          | Highest           | Moderate          | Low               | Lowest            |
+| Data Access Cost      | Lowest            | Moderate          | High              | Highest           |
+| Minimum Retention     | None              | 30 Days           | 90 Days           | 180 Days          |
+| Retrieval Latency     | Milliseconds      | Milliseconds      | Milliseconds      | Hours (Offline)   |
+| Early Deletion Fee    | No                | Prorated (30 days)| Prorated (90 days)| Prorated (180 days|
++-----------------------+-------------------+-------------------+-------------------+-------------------+
+```
+*   **Archive Rehydration:** Blobs in Archive cannot be read directly. They must be rehydrated back to Hot or Cool:
+    *   *Standard Priority:* Rehydration takes up to 15 hours.
+    *   *High Priority:* Expedited rehydration for blobs < 10 GB completes in under 1 hour (higher cost).
+
+### 2. Stored Access Policies: The Only Way to Revoke a Service SAS
+*   **The SAS Revocation Problem:** Once an ad-hoc Shared Access Signature (SAS) is issued with an expiration date, it **CANNOT be revoked** without regenerating the storage account's master access keys (which breaks all other applications using those keys!).
+*   **The Enterprise Fix:** Associate the SAS with a **Stored Access Policy (SAP)** defined on the container. If a SAS token is compromised, an administrator simply deletes or edits the Stored Access Policy, instantly invalidating the SAS token without affecting master keys!
+
+### 3. Cross-Region Object Replication Prerequisites
+*   Source and destination storage accounts must both have **Blob Versioning** and **Change Feed** enabled.
+*   Destination account must be in a different region.
+*   Blobs in the Archive tier cannot be replicated.
+
 
 ## 🌐 Authoritative References & Citations
 
@@ -448,3 +475,4 @@ For mission-critical audit trails, financial transactions, and regulatory compli
 - [Microsoft Learn: Configure storage accounts and blob storage](https://learn.microsoft.com/en-us/training/modules/configure-storage-accounts/)
 - [Microsoft Learn: Secure your Azure Storage data](https://learn.microsoft.com/en-us/training/modules/secure-azure-storage-account/)
 - [Azure Storage Redundancy Technical Documentation](https://learn.microsoft.com/en-us/azure/storage/common/storage-redundancy)
+- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 04](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/04_Administer_Azure_Storage.md))
