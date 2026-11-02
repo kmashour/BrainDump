@@ -18,428 +18,421 @@ tags:
 
 ---
 
-## 🎯 Executive Overview & PaaS Compute Spectrum
+## 🎯 Stage 1: Executive Overview & The Conceptual Lecture
 
-Azure Platform-as-a-Service (PaaS) compute abstracts the underlying operating system, server patching, runtime installation, and hypervisor management. This enables engineering teams to deploy web applications, microservices, and containerized workloads with built-in autoscaling, high availability, and automated CI/CD deployment pipelines:
+### 1. The Zero-Knowledge Starting Point: The Evolution Beyond Virtual Machines
+In Module 09, we mastered Infrastructure as a Service (IaaS) Virtual Machines. While VMs give you complete administrative control down to the operating system kernel, they come with a heavy operational burden:
+* Every Tuesday, someone must patch Windows or Linux.
+* If the web server process crashes, an engineer must log in via SSH/RDP to restart it.
+* If web traffic surges by 500%, you must manually provision new VMs, attach disks, join them to load balancers, and deploy code.
+* To perform a code update without downtime, you have to build elaborate blue/green infrastructure setups from scratch.
 
-```mermaid
-flowchart TD
-    subgraph ComputeParadigms ["Azure Compute Abstraction Spectrum"]
-        IaaS["1. Azure Virtual Machines (IaaS)\n- Full OS & Kernel Access\n- Manual patching, scaling, and disk management\n- Highest administrative overhead"]
-        
-        PaaS_App["2. Azure App Service (PaaS)\n- Managed Web Apps, APIs, Mobile Backends\n- Built-in Autoscaling, Deployment Slots, Custom Domains\n- Zero OS maintenance"]
-        
-        Serverless_ACI["3. Azure Container Instances (ACI)\n- Serverless Container Execution (Per-second billing)\n- Fast startup, no VM management, Container Groups"]
-        
-        Microservices_ACA["4. Azure Container Apps (ACA)\n- Serverless Microservices Platform (Built on K8s + KEDA + Envoy)\n- Scale-to-zero, HTTP Traffic Splitting, Dapr support"]
-        
-        K8s_AKS["5. Azure Kubernetes Service (AKS)\n- Enterprise Cloud-Native Orchestration (Out of AZ-104 core scope)"]
-    end
+Modern cloud engineering aims to eliminate this operational friction using **Platform as a Service (PaaS)** and **Serverless Containers**:
+* In PaaS, you do not manage operating systems, hypervisors, disk partitions, or security patches.
+* You bring your application code (in .NET, Python, Node.js, Java, or a Docker container) and hand it to Azure.
+* Azure handles runtime execution, security patching, auto-scaling, SSL certificates, custom domains, and zero-downtime blue/green deployment slots automatically!
 
-    IaaS -->|Increasing Abstraction & Velocity| PaaS_App
-    PaaS_App --> Serverless_ACI
-    Serverless_ACI --> Microservices_ACA
-    Microservices_ACA --> K8s_AKS
-```
+### 2. The Restaurant Kitchen Analogy
+* **IaaS (Virtual Machines):** Building your own restaurant from scratch. You rent the building, buy commercial ovens, hire plumbers, wire electrical outlets, and sweep the floors every night. You have complete freedom to install any stove you want, but if the refrigeration compressor fails, dinner service stops.
+* **PaaS (Azure App Service):** Renting a fully staffed, turnkey commercial kitchen. The ovens, stoves, electricity, and dishwashers are already installed, inspected, and maintained by the facility owner. You simply bring your ingredients and master recipes (application code) and start cooking immediately!
+* **Serverless Containers (ACI / ACA):** Hiring an on-demand food truck for a 2-hour festival. The truck arrives, serves food, and departs immediately when the event finishes. You pay strictly for the minutes the truck operated, with zero ongoing building lease!
+
+### 3. Terminology Matrix: Zero-Knowledge to Enterprise Architect
+
+| Terminology | What It Means to a Beginner | Real-World Analog | Enterprise Architecture Reality |
+| :--- | :--- | :--- | :--- |
+| **App Service Plan (ASP)** | The server engine that runs your web apps. | The physical engine in a boat that powers multiple propellers. | A managed compute tier defining the dedicated vCPUs, RAM, and scale limits shared across one or more web apps. |
+| **Azure Web App** | The actual website or API running your code. | The commercial storefront facing the public. | A PaaS hosting container running on an ASP worker pool, reachable via HTTPS and managed by Microsoft's ARR routing fabric. |
+| **Deployment Slot** | A staging clone of your website for testing. | An identical dress-rehearsal stage behind the velvet curtain. | An isolated live web app sharing the same ASP compute, used for pre-swap warming and instant zero-downtime blue/green cutover. |
+| **Slot-Sticky Setting** | A configuration setting that stays behind during a swap. | A room key that stays with the physical room, not the guest. | An App Setting with `slotSetting: true` that anchors environment-specific configs (like DB connections) to a specific slot during swaps. |
+| **Azure Container Instances (ACI)** | Running a single Docker container on-demand. | Calling an Uber for a single 15-minute ride. | Serverless container execution billed per-second of vCPU/RAM allocation, supporting Container Groups sharing localhost networking. |
+| **Azure Container Apps (ACA)** | Running microservices that scale to zero. | A taxi dispatch system that sends 10 cars during a rush and parks them all when quiet. | Serverless microservices platform built on Kubernetes, KEDA, and Envoy, supporting event-driven autoscaling and HTTP traffic splitting. |
+| **Custom Domain & SNI** | Using `company.com` instead of `.azurewebsites.net`. | Putting your company sign over the storefront door. | DNS CNAME/TXT verification mapping your registrar domain to Azure, secured by Server Name Indication (SNI) TLS certificates. |
 
 ---
 
-## 🏗️ Azure App Service Plans: Tiers & Scaling Models
+## 🏛️ Stage 2: Core Mental Model & Component Architecture
 
-An **App Service Plan (ASP)** defines the physical/virtual compute resources (CPU, RAM, disk space, and region) that host one or more web applications. You are billed for the App Service Plan whether your web apps receive traffic or remain idle.
+### 1. Azure App Service Plans: Tiers & Capabilities
+An **App Service Plan (ASP)** is the fundamental billing and compute boundary. All web applications assigned to the same App Service Plan share the same CPU and RAM resources:
 
-```mermaid
-flowchart LR
-    ASP["App Service Plan: ASP-Prod-Linux (Standard S1: 1 Core, 1.75 GB RAM)"]
-    
-    ASP --> WebApp1["Web App 1: api.contoso.com (.NET 8)"]
-    ASP --> WebApp2["Web App 2: admin.contoso.com (Node.js 20)"]
-    ASP --> WebApp3["Web App 3: portal.contoso.com (Python 3.11)"]
+```text
+[ App Service Plan: asp-enterprise-prod (Standard S1: 1 Core, 1.75 GB RAM) ]
+       │
+       ├──► Web App 1: https://shop.contoso.com (.NET 8 Core)
+       ├──► Web App 2: https://api.contoso.com (Node.js 20 REST API)
+       └──► Web App 3: https://portal.contoso.com (Python 3.11 Backend)
+       (All 3 apps run simultaneously on the same underlying worker instances!)
 ```
 
-### App Service Plan Tier Comparison
+#### Detailed Pricing Tier Comparison:
 
-| Pricing Tier | Compute Model | Auto-Scale | Deployment Slots | Max Scale-Out Instances | Storage Quota | Ideal Production Workload |
+| Pricing Tier | Worker Model | Autoscaling | Deployment Slots | Max Scale-Out Instances | Storage | Key Production Features |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Free (F1)** | Shared VM | ❌ No | 0 | 1 instance | 1 GB | Learning, experimentation (60 CPU min/day limit). |
-| **Shared (D1)**| Shared VM | ❌ No | 0 | 1 instance | 1 GB | Testing with custom domain support. |
-| **Basic (B1-B3)**| **Dedicated VM** | ❌ Manual only | 0 | 3 instances | 10 GB | Small production apps without autoscaling needs. |
-| **Standard (S1-S3)**| **Dedicated VM** | ✅ **Yes** | **5 slots** | **10 instances** | **50 GB** | **Enterprise production apps, automated CI/CD.** |
-| **Premium (P1v3-P3v3)**| **Dedicated VM (Fast SSD)**| ✅ **Yes** | **20 slots**| **30 instances** | **250 GB** | High-traffic applications, memory-intensive workloads. |
-| **Isolated (I1v2-I3v2)**| **Isolated VNet (ASEv3)**| ✅ **Yes** | **20 slots**| **100 instances**| **1 TB** | Strict compliance, healthcare, private VNet injection. |
+| **Free (F1)** | Shared VM | ❌ No | 0 | 1 instance | 1 GB | Experimentation only (60 CPU minutes/day limit). |
+| **Shared (D1)** | Shared VM | ❌ No | 0 | 1 instance | 1 GB | Dev/Test with custom domain support. |
+| **Basic (B1–B3)** | **Dedicated VM** | ❌ Manual only | 0 | 3 instances | 10 GB | Entry production apps without autoscaling needs. |
+| **Standard (S1–S3)** | **Dedicated VM** | ✅ **Yes** | **5 slots** | **10 instances** | **50 GB** | **Enterprise production baseline, slots, autoscale.** |
+| **Premium (P1v3–P3v3)**| **Dedicated VM (NVMe)**| ✅ **Yes** | **20 slots** | **30 instances** | **250 GB** | High-traffic apps, memory caching, vNet integration. |
+| **Isolated (I1v2–I3v2)**| **Dedicated VNet (ASE)**| ✅ **Yes** | **20 slots** | **100 instances** | **1 TB** | Strict compliance, banking, direct private VNet hosting. |
 
 > [!IMPORTANT]
-> **Key Feature Tier Thresholds for the Exam:**
-> - To enable **Autoscaling**, **Deployment Slots**, or **Automated Backups**, the minimum required tier is **Standard (S1)**.
-> - To enable **Custom Domains**, the minimum tier is **Shared (D1)**.
-> - To enable **Virtual Network Injection (App Service Environment - ASE)**, the required tier is **Isolated**.
+> **Key Exam Tier Thresholds:**
+> - To unlock **Autoscaling**, **Deployment Slots**, or **Automated Backups**, the minimum tier required is **Standard (S1)**.
+> - To unlock **Custom Domain Bindings**, the minimum tier is **Shared (D1)**.
+> - To unlock **Private VNet Injection (App Service Environment - ASE)**, the tier must be **Isolated**.
 
 ---
 
-## 🔒 Securing Azure App Services
+### 2. Blue/Green Deployment Slots & The Zero-Downtime Swap
+Deploying code updates directly to a live production server is dangerous. If the code has a bug or takes 30 seconds to compile, users experience `HTTP 500 Internal Server Error` or slow cold-start latency.
 
-### 1. App Service Authentication (EasyAuth)
-Provides turn-key user authentication without writing code. Intercepts incoming HTTP requests and forces user sign-in against identity providers:
-- Microsoft Entra ID (native enterprise single sign-on).
-- Social identity providers (Google, GitHub, Facebook, Twitter/X).
-- OpenID Connect (OIDC) custom providers.
-
-### 2. Managed Identity & Key Vault Integration
-Eliminates credentials and secrets stored in code or configuration files:
-- **System-Assigned Managed Identity:** Tied directly to the lifecycle of the web app.
-- **User-Assigned Managed Identity:** Independent identity object shared across multiple applications.
-- **Key Vault References:** Syntax in Application Settings:
-  `@Microsoft.KeyVault(SecretUri=https://myvault.vault.azure.net/secrets/DbPassword/xxx)`
-
-### 3. Inbound Access Restrictions & Private Endpoints
-- **Access Restrictions:** Evaluates an ordered list of IP addresses, CIDR blocks, or VNet service endpoints (5-tuple allow/deny) before requests reach the app.
-- **Private Endpoints (Inbound):** Deploys a private NIC into a subnet, disabling all public internet exposure.
-- **VNet Integration (Outbound):** Allows the web app to initiate outbound connections to private databases and VMs residing inside an Azure Virtual Network.
-
----
-
-## 🌐 Custom Domains & TLS/SSL Bindings
-
-By default, every Azure Web App receives a public hostname: `https://<app-name>.azurewebsites.net`.
-
-```mermaid
-flowchart TD
-    UserQuery["Browser Request: www.contoso.com"] --> PublicDNS["Public DNS Resolver"]
-    
-    subgraph DNSRecords ["Public DNS Zone: contoso.com"]
-        CNAME["CNAME Record: 'www' -> 'myapp.azurewebsites.net'"]
-        TXT["TXT Record: 'asuid.www' -> 'Custom Verification ID'"]
-    end
-
-    PublicDNS --> CNAME
-    PublicDNS --> TXT
-    CNAME --> AppService["Azure App Service\n(Validates TXT token & binds SSL Certificate)"]
-```
-
-### Configuration Steps
-1. **Verification Token:** Retrieve the *Custom Domain Verification ID* from the App Service blade.
-2. **DNS Configuration at Registrar:**
-   - Create a **TXT record**: `asuid.www` with the verification ID string.
-   - Create a **CNAME record**: `www` pointing to `<app-name>.azurewebsites.net` (for subdomains).
-   - For root/apex domains (`@`), create an **A record** pointing to the App Service inbound IP address + a TXT record for verification.
-3. **SSL/TLS Bindings:**
-   - **SNI SSL (Server Name Indication):** Multiple SSL certificates hosted on a single IP address (modern web standard; no extra charge).
-   - **IP-based SSL:** Maps a dedicated public IP address to the certificate (required for legacy browser compatibility).
-   - **App Service Managed Certificate:** Free, auto-renewing TLS certificate issued by Microsoft for validated custom domains.
-
----
-
-## 🔄 Deployment Slots & Zero-Downtime Swaps
-
-Deployment slots are independent live web apps running on the same App Service Plan, each assigned its own distinct URL:
+**Deployment Slots** provide zero-downtime releases:
 
 ```mermaid
 flowchart LR
     subgraph StagingSlot ["Staging Slot (myapp-staging.azurewebsites.net)"]
-        NewCode["New Application Build (v2.0)"]
-        StageDB["Staging DB Connection (Slot-Sticky Setting)"]
+        NewCode["New App Build v2.0"]
+        StagingDB["Staging DB String (Slot-Sticky)"]
     end
 
     subgraph ProductionSlot ["Production Slot (myapp.azurewebsites.net)"]
-        LiveCode["Active Production Code (v1.0)"]
-        ProdDB["Production DB Connection (Slot-Sticky Setting)"]
+        LiveCode["Current App Build v1.0"]
+        ProdDB["Production DB String (Slot-Sticky)"]
     end
 
-    Internet["100% Live Production User Traffic"] --> ProductionSlot
-    DevQA["Dev / QA Testing Traffic"] --> StagingSlot
+    Users["Live Customers (100% Traffic)"] --> ProductionSlot
+    DevQA["Internal QA Testers"] --> StagingSlot
 
-    ProductionSlot <-->|Instant VIP Swap (Zero Downtime)| StagingSlot
+    ProductionSlot <== "Atomic VIP Redirection (Zero Dropped Packets)" ==> StagingSlot
 ```
 
-### Slot Swap Mechanics
-1. **Warm-up Phase:** When a swap is initiated, Azure sends HTTP requests to the target slot to warm up worker processes, load in-memory caches, and compile code before redirecting traffic.
-2. **VIP Redirection:** The underlying Azure front-end load balancer swaps the virtual IP routing tables. **Zero requests are dropped**.
-3. **Swap with Preview:** Allows applying production configurations to the staging slot first, validating the app live, and then completing the swap.
-
-### Slot-Sticky Settings vs. Swapped Settings
-
-| Setting Type | Examples | Swapped During Slot Swap? |
-| :--- | :--- | :---: |
-| **Swapped Settings** | Code binaries, Docker container images, general app settings. | ✅ **Yes** (Swapped into production) |
-| **Slot-Sticky Settings** | Database connection strings, custom domain bindings, SSL certs, publishing credentials. | ❌ **No** (Remains pinned to slot) |
+#### The Slot Swap Sequence:
+1. **Target Slot Deployment:** You push new application code (v2.0) into the `staging` slot.
+2. **Warm-Up Phase:** Azure sends HTTP warmup requests to the staging instances. Code compiles, caches populate, and runtime processes start.
+3. **VIP Redirection:** Once staging responds `HTTP 200 OK`, Azure front-end Application Request Routing (ARR) routers instantly swap the virtual IP bindings. Live production traffic now hits v2.0 with **zero dropped requests**!
+4. **Instant Rollback:** If a bug is detected after the swap, you click **Swap** again to instantly revert back to v1.0 in seconds!
 
 ---
 
-## 🐳 Azure Container Instances (ACI) & Container Groups
+### 3. Slot-Sticky Settings vs. Swapped Settings
+When a slot swap executes, Azure swaps the application binaries. But what happens to environment configuration settings?
 
-Azure Container Instances provides serverless container execution without provisioning virtual machines or managing container orchestrators.
-
-```mermaid
-flowchart TD
-    subgraph ContainerGroup ["ACI Container Group (Single Pod Lifecycle)"]
-        SharedNet["Shared Network Namespace (localhost:80 & localhost:6379)\nPublic IP / DNS Name: myapp.eastus.azurecontainer.io"]
-        SharedVolume["Shared Azure File Share Volume (/mnt/data)"]
-        
-        subgraph C1 ["Container 1: Web Application"]
-            App["Node.js Web Front\n(Listens on Port 80)"]
-        end
-        subgraph C2 ["Container 2: Sidecar Helper"]
-            Redis["Local Redis Cache / Log Scraper\n(Listens on Port 6379)"]
-        end
-
-        SharedNet --- C1
-        SharedNet --- C2
-        SharedVolume --- C1
-        SharedVolume --- C2
-    end
+```text
++-------------------------------------------------------------------------------------------------+
+|                       SWAPPED SETTINGS vs. SLOT-STICKY SETTINGS                                 |
++-------------------------------------------------------------------------------------------------+
+|  Swapped Settings (Move with the Code)        |  Slot-Sticky Settings (Stay Pinned to the Slot) |
++-----------------------------------------------+-------------------------------------------------+
+| - General application settings                | - Database connection strings                   |
+| - Framework versions (.NET 8, Node 20)        | - Environment identifiers (APP_ENV=Staging)     |
+| - Container image tags                        | - Custom Domain and SSL certificate bindings    |
+| - Handler mappings and web sockets            | - Publishing credentials & Webhook endpoints    |
+| - Feature flags (e.g., FEATURE_NEW_UI=true)   | - IP Access Restriction rules                   |
++-----------------------------------------------+-------------------------------------------------+
 ```
 
-### 1. Container Restart Policies
-- **Always (Default):** Restarts container continuously if it stops (used for long-running web servers).
-- **OnFailure:** Restarts container only when it exits with a non-zero exit code (used for batch processing).
-- **Never:** Container runs once and terminates (used for initialization or scheduled one-shot tasks).
-
-### 2. Container Groups
-A Container Group is a collection of containers scheduled on the same host machine that share:
-- Lifecycle (started, stopped, deleted together).
-- Network namespace (all containers communicate over `localhost`).
-- Port space (containers in the same group cannot listen on the same port).
-- Storage volumes (mounted Azure File shares).
+> [!CAUTION]
+> **The Staging Database Leak Hazard:**
+> If you do not check the box **"Deployment slot setting"** on your database connection string, swapping staging to production will move the *staging database connection string* into the production slot! Production users will begin writing live credit card transactions into your test database! Always mark environment-specific variables as **Slot-Sticky**.
 
 ---
 
-## 🛠️ Contextual Proof of Concept: CLI Automation
+### 4. Containerized PaaS Compute: ACI vs. ACA
+When you need to run containers without managing virtual machines, Azure provides two complementary serverless options:
+
+```text
+Azure Container Instances (ACI)                    Azure Container Apps (ACA)
++---------------------------------------+         +-------------------------------------------------+
+| - Serverless container execution      |         | - Serverless microservices platform             |
+| - Spins up in seconds (per-second cost|         | - Built on Kubernetes + KEDA + Envoy            |
+| - Container Groups (shared localhost) |         | - Scale-to-Zero capability (Zero idle cost!)    |
+| - No orchestrator or ingress routing  |         | - Native HTTP traffic splitting & blue/green    |
+| - Best for: Quick batch jobs, ETL,    |         | - Best for: Microservice fleets, background queue|
+|   one-off processing scripts          |         |   workers, web apps with variable traffic       |
++---------------------------------------+         +-------------------------------------------------+
+```
+
+#### ACI Container Groups & Restart Policies:
+A **Container Group** is a collection of containers scheduled on the same host physical blade that share:
+* **Lifecycle:** Started, stopped, and deleted together.
+* **Network Namespace:** Containers communicate with each other over `localhost` on different ports.
+* **Storage Volumes:** Can mount shared Azure File shares across all containers in the group.
+* **Restart Policies:**
+  - `Always` (Default): Restarts container continuously if it stops (for web servers).
+  - `OnFailure`: Restarts only if the container exits with a non-zero exit code (for batch jobs).
+  - `Never`: Runs once and halts (for migration scripts).
+
+---
+
+## 🏢 Stage 3: Deep-Intuition Platform Mechanics & Topology
+
+### 1. App Service Under the Hood: The ARR Routing Fabric
+How does Azure deliver requests to your web app without a dedicated virtual machine?
+1. **The External Traffic Gate:** Incoming requests hit Microsoft's globally distributed **Application Request Routing (ARR)** reverse proxy frontend nodes.
+2. **Hostname Inspection:** ARR inspects the HTTP `Host:` header (e.g., `shop.contoso.com`).
+3. **Internal Routing Matrix:** ARR matches the host header to your specific App Service Plan and dispatches the request over private datacenter backplanes to your dedicated worker VM instances.
+4. **ARR Affinity Cookie:** By default, App Service injects an `ARRAffinity` session cookie into the client's browser. As long as the user's browser sends this cookie, all subsequent requests are pinned to the exact same backend worker instance.
+
+---
+
+### 2. Custom Domains & Free Managed Certificates
+By default, every Azure Web App receives a generic public domain name: `<app-name>.azurewebsites.net`. To bind a corporate domain (e.g., `www.contoso.com`):
+* **DNS Verification Handshake:**
+  1. Create a `CNAME` record pointing `www` to `myapp.azurewebsites.net`.
+  2. Create a `TXT` record named `asuid.www` containing your unique App Service Custom Domain Verification ID string.
+  3. Azure validates ownership and enables the custom hostname.
+* **App Service Managed Certificate:** Azure provides **free, platform-managed SSL/TLS certificates** for validated custom domains that automatically renew every 6 months with zero administrator intervention!
+
+---
+
+## ⚙️ Stage 4: Declarative & Automation Engine (CLI & PowerShell Core)
+
+### 1. Azure CLI: App Service, Staging Slots & Sticky Settings Automation
 
 ```bash
-# 1. Create a Linux App Service Plan in the Standard S1 tier
+# ==============================================================================
+# 1. CREATE PRODUCTION APP SERVICE PLAN & WEB APP
+# ==============================================================================
 az appservice plan create \
-  --resource-group "rg-enterprise-core" \
-  --name "asp-enterprise-linux" \
+  --resource-group "rg-paas-lab" \
+  --name "asp-enterprise-prod" \
   --is-linux \
-  --sku "S1" \
+  --sku "P1v3" \
   --location "eastus"
 
-# 2. Deploy a Python Web App
 az webapp create \
-  --resource-group "rg-enterprise-core" \
-  --plan "asp-enterprise-linux" \
-  --name "app-corp-portal-2026" \
+  --resource-group "rg-paas-lab" \
+  --plan "asp-enterprise-prod" \
+  --name "app-ecommerce-core-2026" \
   --runtime "PYTHON:3.11"
 
-# 3. Create a Staging Deployment Slot
+# ==============================================================================
+# 2. CREATE DEPLOYMENT SLOT & CONFIGURE SLOT-STICKY SETTINGS
+# ==============================================================================
+
+# Create Staging Slot
 az webapp deployment slot create \
-  --resource-group "rg-enterprise-core" \
-  --name "app-corp-portal-2026" \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
   --slot "staging"
 
-# 4. Mark a Database Connection String as 'Slot-Sticky' (Does not swap)
+# Configure Slot-Sticky Database Connection (Does NOT swap into production!)
 az webapp config appsettings set \
-  --resource-group "rg-enterprise-core" \
-  --name "app-corp-portal-2026" \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
   --slot "staging" \
-  --slot-settings DB_CONN="Server=stagedb.internal;Database=TestDB"
+  --slot-settings DB_HOST="staging-sql.internal" DB_NAME="StagingDB"
 
-# 5. Execute a zero-downtime Slot Swap from Staging into Production
+# Configure Production Slot Database Connection (Stays in production!)
+az webapp config appsettings set \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
+  --slot-settings DB_HOST="prod-sql.internal" DB_NAME="ProductionDB"
+
+# ==============================================================================
+# 3. CANARY TRAFFIC ROUTING & ATOMIC ZERO-DOWNTIME SWAP
+# ==============================================================================
+
+# Route 15% of live traffic to Staging slot for canary validation
+az webapp traffic-routing set \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
+  --distribution staging=15
+
+# Execute full zero-downtime atomic slot swap
 az webapp deployment slot swap \
-  --resource-group "rg-enterprise-core" \
-  --name "app-corp-portal-2026" \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
   --slot "staging" \
   --target-slot "production"
+```
 
-# 6. Deploy an Azure Container Instance with restart policy OnFailure
+### 2. Azure CLI: Azure Container Instances (ACI) Automation
+
+```bash
+# ==============================================================================
+# 4. DEPLOY SERVERLESS CONTAINER INSTANCE (ACI) WITH RESTART POLICY
+# ==============================================================================
 az container create \
-  --resource-group "rg-enterprise-core" \
-  --name "aci-data-processor" \
+  --resource-group "rg-paas-lab" \
+  --name "aci-data-worker" \
   --image "mcr.microsoft.com/azure-cli:latest" \
   --restart-policy "OnFailure" \
   --cpu 1 \
   --memory 1.5 \
+  --environment-variables JOB_ENV="Production" \
   --command-line "az --version"
 ```
 
 ---
 
-## 🔍 Deep-Intuition AARF Framework
+## 🖥️ Stage 5: Step-by-Step Azure Portal GUI Walkthrough
 
-### Scenario: Staging Database Connection Leaking Into Production After Slot Swap
+Follow these exact navigation steps in the **Azure Portal** (`https://portal.azure.com`) to master PaaS compute:
 
-- **The Answer (Core Configuration):** Explicitly designate environment-specific variables (e.g., database connection strings, API keys) as **Deployment Slot Settings** (sticky settings) using the `--slot-settings` parameter in CLI or by checking the "Deployment slot setting" checkbox in the Azure Portal.
-- **The Assumptions (Prerequisites):** 
-  - Web App is running on an App Service Plan of tier **Standard** or higher with a `staging` slot.
-  - Staging slot points to a staging database; production slot points to a production database.
-- **The Rationale (Why):** By default, an App Service slot swap swaps all application settings along with the code binaries. If a database connection string is not marked as sticky, swapping staging to production will move the *staging database connection string* into the production slot, causing production users to write live transactions into the staging test database.
-- **The Failure Loop (What if misconfigured):**
-  - *Symptom:* Immediately following a code release via slot swap, live customers report missing orders, and test records appear in customer dashboards.
-  - *Root Cause:* Unchecked slot setting caused `DATABASE_URL=stagedb.postgres.database.azure.com` to swap into production.
-- **The Alternative Case (When to use 'if not'):** Non-environment-specific application configuration keys (such as `FEATURE_FLAG_NEW_UI=true` or `MAX_PAGE_SIZE=50`) should remain non-sticky so that feature toggles tested in staging swap cleanly into production alongside the code.
+### Task 1: Creating an App Service Plan and Web App
+1. In the top search bar, type **App Services** and select it.
+2. Click **+ Create** $\rightarrow$ **Web App**:
+   - **Resource group:** `rg-paas-lab`.
+   - **Name:** Enter a globally unique name (e.g., `app-enterprise-prod-2026`).
+   - **Publish:** Select **Code**.
+   - **Runtime stack:** Select *Python 3.11* (or .NET 8).
+   - **Operating System:** *Linux*.
+   - **Region:** `East US`.
+3. Under **Pricing plan**:
+   - Click *Explore pricing plans* $\rightarrow$ select **Premium v3 (P1v3)** or **Standard (S1)** (required for slots!).
+4. Click **Review + create** $\rightarrow$ **Create**.
+
+### Task 2: Creating a Staging Deployment Slot & Setting Sticky Settings
+1. Open your newly created Web App.
+2. In the left navigation menu under **Deployment**, click **Deployment slots**.
+3. Click **+ Add Slot**:
+   - **Name:** `staging`.
+   - **Clone settings from:** Select your production web app.
+   - Click **Add**.
+4. In the left navigation menu under **Settings**, click **Environment variables** (or Configuration):
+   - Under *App settings*, click **+ Add**:
+     - *Name:* `DATABASE_SERVER`.
+     - *Value:* `sql-prod-cluster.internal`.
+     - **Check the box:** **Deployment slot setting**! (This makes it sticky!).
+   - Click **Apply** on the bottom, then click **Confirm**.
+5. Switch to your `staging` slot in the portal:
+   - Go to Environment variables $\rightarrow$ add `DATABASE_SERVER` with value `sql-stage-cluster.internal` $\rightarrow$ check **Deployment slot setting** $\rightarrow$ click **Apply**.
+
+### Task 3: Testing Canary Traffic Splitting and Performing a Swap
+1. Navigate back to the **Deployment slots** blade of your primary Web App.
+2. In the slot list, locate the **Traffic %** column:
+   - For `staging`, change the traffic value from `0` to **`15`** (Production automatically becomes `85%`).
+   - Click **Save** on the top toolbar. Live production requests will now be randomly routed 15% to Staging!
+3. On the top command bar, click **Swap**:
+   - **Swap type:** *Swap*.
+   - **Source:** `staging`.
+   - **Target:** `production`.
+4. Click **Swap**. Watch the progress bar execute the warmup calls and switch the VIP routing with zero dropped packets!
 
 ---
 
-## 💡 AZ-104 Exam Tips & Gotchas
+## 🔬 Stage 6: Hands-On Enterprise Lab Bridge
+
+To apply these PaaS compute principles, configure blue/green deployment slots, test canary traffic routing, and deploy serverless containers, proceed directly to the comprehensive practical lab:
 
 > [!TIP]
-> **Autoscale Metric Rules Gotcha:** Autoscale scale-out and scale-in rules must be complementary:
-> - Scale-out condition: `CPU > 80% for 10 minutes -> Increase count by 1`.
-> - Scale-in condition: `CPU < 25% for 10 minutes -> Decrease count by 1`.
-> - Always maintain a generous buffer between scale-out (80%) and scale-in (25%) thresholds to prevent **"flapping"** (rapid, continuous scaling out and scaling in).
+> **Practical Implementation Companion:**
+> Access the comprehensive engineering lab at:
+> **[[Lab-10_App_Service_Blue_Green_Slots_and_Container_Apps|Lab 10: App Service Blue/Green Deployment Slots, Sticky Settings & Azure Container Apps]]**
+> 
+> *Target Lab File:* `Projects/AZ-104/10_PaaS_Compute_and_Containers/Lab-10_App_Service_Blue_Green_Slots_and_Container_Apps.md`
 
-> [!WARNING]
-> **Stopped Web App Billing:**
-> Stopping an individual Web App (`az webapp stop`) **does NOT stop billing**. The underlying App Service Plan is still running dedicated VMs and reserving CPU/RAM. To eliminate costs, you must delete the web app and delete or downscale the App Service Plan itself.
+### Lab Objectives Matrix:
 
----
-
-## 🏛️ Enterprise PaaS Web Architecture: Scaling, Domains & Zero-Downtime Releases
-
-### 1. App Service Plan Sizing, Pricing Tiers & Scaling Dynamics
-- **Scale-Up vs. Scale-Out:**
-  - *Scale Up (Vertical Scaling):* Increases hardware compute capacity of the plan (e.g., upgrading from `B1` with 1 vCPU / 1.75 GB RAM to `P1v3` with 2 vCPUs / 8 GB RAM). Causes a momentary restart of the worker processes.
-  - *Scale Out (Horizontal Scaling):* Increases the number of underlying VM worker instances running behind the Azure ARR load balancer (up to 30 instances on Premium v3, up to 100 on Isolated v2). Zero downtime.
-- **Custom Domains & Free Managed Certificates:**
-  - Onboarding a custom domain requires configuring a `CNAME` (e.g., `www.company.com` ➔ `<app>.azurewebsites.net`) or an `A` record paired with a `TXT` domain verification ID record (`asuid.company.com`).
-  - Azure App Service provides **free, platform-managed SSL/TLS certificates** that auto-renew every 6 months with zero manual certificate rotation overhead.
-
-### 2. Deployment Slots: Zero-Downtime Blue/Green Swapping
-- **The Warmup Swap Sequence:**
-  1. The target slot (`staging`) is deployed with newly compiled application binaries.
-  2. The swap operation is initiated via Portal, CLI, or CI/CD pipeline.
-  3. Azure issues HTTP warmup requests to the staging worker instances to initialize code, load runtime caches, and trigger Just-In-Time (JIT) compilation.
-  4. Only after all worker instances report HTTP 200 OK does Azure swap the VIP routing at the frontend load balancer.
-  5. *Result:* Users experience **zero dropped connections** and zero cold-start latency.
-- **Canary Testing via Traffic Routing:**
-  - In the *Deployment slots* blade, administrators can adjust the **Traffic %** slider (e.g., route 85% to Production and 15% to Staging).
-  - Azure assigns client session affinity cookies to ensure a user remains consistently on either the stable build or the canary build during evaluation.
-- **Sticky Slot Settings:**
-  - Settings that must NOT move during a swap (e.g., database connection strings targeting stage vs prod DBs) must be flagged with `deployment_slot_setting = true`.
+```text
++-----------------------------------------------------------------------------------------+
+| Lab 10 Enterprise Milestone Goals                                                       |
++-----------------------------------------------------------------------------------------+
+| 1. Provision a dedicated App Service Plan (P1v3 / S1) capable of deployment slots      |
+| 2. Deploy an isolated Staging slot alongside Production for blue/green releases        |
+| 3. Configure Slot-Sticky application settings to anchor database strings across swaps   |
+| 4. Configure Canary Traffic Splitting (90% Prod / 10% Staging) to evaluate telemetry   |
+| 5. Deploy an Azure Container App (ACA) with KEDA autoscaling to scale from 0 to N      |
++-----------------------------------------------------------------------------------------+
+```
 
 ---
 
-## 💡 PaaS Compute Decision Framework & Articulation Guide
+## ⚠️ Stage 7: "See It in Action" Real-World Failure & Recovery Loop (AARF)
+
+### Scenario: The "Staging Database Connection Leak" Disaster
+
+#### 1. The Architectural Setup & Assumptions
+A fintech startup hosts their payment gateway web app on Azure App Service Standard S1. To execute zero-downtime updates, the DevOps team utilizes a `staging` slot.
+* The production slot environment variable points to: `DB_URL=sql-prod-db.database.windows.net`.
+* The staging slot environment variable points to: `DB_URL=sql-stage-db.database.windows.net`.
+
+#### 2. The Production Failure Manifestation
+The team deploys version 2.1 to staging, validates that QA tests pass, and clicks **Swap**. The swap completes cleanly in 45 seconds with status `Succeeded`.
+Three hours later, the finance director notices a massive anomaly: **The production database shows zero customer orders for the afternoon**, while customer credit cards were charged!
+Upon investigating the staging test database, the team makes a horrifying discovery: **All live customer production orders and financial records were written into the staging test database!**
+
+#### 3. Root Cause Analysis (RCA) & Deep Investigation
+Why did live production traffic write to the staging database?
+1. **The Default Swapping Law:** By default, Azure App Service slot swaps treat application settings as **part of the application code**, swapping them into production along with the binaries.
+2. **The Missing Sticky Flag:** When the engineer configured `DB_URL=sql-stage-db...` on the staging slot, they **forgot to check the "Deployment slot setting" checkbox**.
+3. **The Configuration Migration:** During the swap, Azure faithfully took the staging setting (`sql-stage-db`) and moved it into the production slot!
+4. **The Silent Contamination:** When live production traffic hit the production slot after the swap, the app read the newly swapped `DB_URL` and began connecting to the test database!
+
+#### 4. Remediation & Diagnostic Verification Loop
 
 ```mermaid
 flowchart TD
-    Req{"What is the application hosting & release requirement?"}
+    Disaster["Disaster: Production Orders Written to Staging DB!"] --> Step1["Immediately Freeze Staging Database Writes"]
+    Step1 --> Step2["Audit App Settings on Production Slot: Found DB_URL=sql-stage-db"]
     
-    Req -- "Zero-downtime release with automated warmup and canary routing" --> P1["Deploy **Azure App Service (Standard or Premium tier)** with **Deployment Slots**."]
-    Req -- "Run a containerized event-driven job for 10 minutes" --> P2["Deploy to **Azure Container Instances (ACI)**."]
-    Req -- "Deploy containerized microservices with KEDA autoscaling and Envoy" --> P3["Deploy to **Azure Container Apps (ACA)**."]
-    Req -- "Isolated enterprise compute in a private dedicated VNet" --> P4["Deploy **App Service Isolated v2 (ASEv2)**."]
+    Step2 --> Step3["Remediation Step 1: Update Production DB_URL -> sql-prod-db"]
+    Step3 --> Step4["Remediation Step 2: Check 'Deployment slot setting' on BOTH slots!"]
+    
+    Step4 --> Step5["Data Reconciliation: Run migration script to move afternoon orders into Prod DB"]
+    Step5 --> Verified["Validation: Perform test swap -> Variables stay anchored -> Fixed!"]
+```
+
+```bash
+# Diagnostic & Remediation Script (Azure CLI)
+
+# 1. Immediately fix the production slot to point back to the production database
+az webapp config appsettings set \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
+  --slot-settings DB_URL="sql-prod-db.database.windows.net"
+
+# 2. Fix the staging slot and enforce the slot-sticky flag
+az webapp config appsettings set \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
+  --slot "staging" \
+  --slot-settings DB_URL="sql-stage-db.database.windows.net"
+
+# 3. Verify that DB_URL is listed under slot-sticky settings
+az webapp config appsettings list \
+  --resource-group "rg-paas-lab" \
+  --name "app-ecommerce-core-2026" \
+  --query "[?name=='DB_URL']"
 ```
 
 ---
 
----
+## 💡 Stage 8: High-Yield AZ-104 Exam Scenarios & Trick Question Traps
 
-## 🏛️ Deep-Dive PaaS & Microservice Architectures (John Savill Master Class Insights)
+### Trick Question Trap 1: Stopping a Web App Does Not Stop Compute Billing
+* **The Scenario:** A company hosts a dev web app on a `Standard_S1` App Service Plan. Over the weekend, an administrator stops the web app (`az webapp stop`).
+* **The Trap:** Does stopping the web app stop Azure compute billing for the weekend?
+* **The Ground Truth:** **NO! You are STILL BILLED 100% of the App Service Plan cost!** The underlying worker VMs in the App Service Plan are still running and reserving dedicated CPU and RAM. To stop billing, you must delete or downscale the **App Service Plan** itself.
 
-### 1. App Service Plan Architecture & Frontend ARR Routing
-John Savill explains the underlying infrastructure of Azure App Services:
-- An **App Service Plan** represents a dedicated pool of virtual machine instances provisioned and patched by Microsoft.
-- When an HTTP request arrives:
-  1. It hits Microsoft's **Application Request Routing (ARR)** reverse proxy frontends.
-  2. The ARR router inspects the incoming hostname and dispatches the request to the underlying worker VM hosting the web application.
-  3. If you host 10 Web Apps on a single App Service Plan, all 10 apps share the CPU and RAM capacity of those worker VMs.
+### Trick Question Trap 2: Minimum Tier for Deployment Slots and Autoscaling
+* **The Scenario:** A startup provisions a Web App on the **Basic (B1)** tier. The team attempts to create a `staging` slot and configure CPU autoscaling rules.
+* **The Trap:** Why are deployment slots and autoscale options grayed out or unavailable?
+* **The Ground Truth:** The **Basic (B1)** tier supports dedicated compute, but **DOES NOT support deployment slots or autoscaling**! To unlock deployment slots and metric-based autoscaling, you **MUST scale up to at least the Standard (S1) tier** (or Premium).
 
-### 2. Container Compute Continuum: ACI vs. ACA vs. AKS
-John Savill provides the decision matrix for running containerized workloads on Azure:
+### Trick Question Trap 3: ACI Container Group Localhost Communication
+* **The Scenario:** You deploy an Azure Container Instance with two containers in a single Container Group (Container 1: Web Frontend, Container 2: Redis Cache).
+* **The Question:** How does Container 1 communicate with Container 2?
+* **The Ground Truth:** Containers within the same Container Group share a local network namespace and communicate directly over **`localhost`** (`localhost:6379`)! They cannot listen on the same port.
 
-| Dimension | Azure Container Instances (ACI) | Azure Container Apps (ACA) | Azure Kubernetes Service (AKS) |
-| :--- | :--- | :--- | :--- |
-| **Abstractions** | Raw serverless container execution. | Managed Kubernetes abstraction with Envoy & KEDA. | Full cloud-native Kubernetes control plane. |
-| **Startup Speed** | Seconds (fastest). | Seconds. | Minutes (requires node pool provisioning). |
-| **Autoscaling** | None (manual spin-up / tear-down). | Event-driven scaling from 0 to N via KEDA (HTTP, Kafka, Queues). | Horizontal Pod Autoscaler (HPA) + Cluster Autoscaler. |
-| **Microservice Features** | None (single container or container group). | Built-in Dapr integration, blue/green traffic splitting, managed TLS. | Ingress controllers, Service Mesh (Istio), custom CRDs. |
-| **Operational Overhead** | **Lowest:** Zero cluster management. | **Low:** Serverless microservices; no node management. | **High:** Requires Kubernetes cluster administration and patching. |
-
----
-
-## 🚀 Going the Extra Mile: Architectural Deep Dive - Container Networking, GenAI & Hyperscale Data
-
-> [!IMPORTANT]
-> **Going the Extra Mile:** In this section, we are taking an extra mile on this topic and start deep diving into the foundational networking models of Azure Kubernetes Service (AKS), Azure API Management Generative AI Gateways, and Azure SQL Hyperscale storage separation based on John Savill's Azure Deep Dives Master Class.
-
-### 1. Azure Kubernetes Service (AKS) Networking Deep Dive
-
-Choosing the correct CNI (Container Network Interface) plugins governs pod scalability, subnet sizing, and throughput:
-
-| Network Model | IP Address Allocation | Pod IP Accessibility | Scalability Limits | Performance Profile |
-| :--- | :--- | :--- | :--- | :--- |
-| **Kubenet** | Pods receive private overlay IPs from a virtual CIDR (`10.244.0.0/16`). | Pods are not directly routable from outside the node. Node performs SNAT. | Limited by UDR route table limits (maximum 400 nodes). | Slight CPU overhead from iptables NAT forwarding. |
-| **Azure CNI (Traditional)** | Every Pod receives a real, routable IP directly from the VNet subnet. | Directly accessible across VNet and on-premises without NAT. | **High VNet IP exhaustion:** Requires allocating 30–110 VNet IPs per node upfront. | Native line-rate hypervisor throughput. |
-| **Azure CNI Overlay** | Nodes receive VNet IPs; Pods receive IPs from a private secondary CIDR overlay. | Pods can route across the entire AKS cluster and VNet via Geneve encapsulation. | **Virtually infinite scale:** Resolves VNet IP exhaustion while maintaining cloud routing. | High-speed encapsulation. |
-| **Azure CNI Powered by Cilium** | Replaces Linux `iptables` and `kube-proxy` with **eBPF** (Extended Berkeley Packet Filter) in the Linux kernel. | Native IP routing with kernel-level packet inspection. | Extreme scale (thousands of pods and services). | **Ultra-high throughput:** Bypasses linear iptables rule evaluation; provides native WireGuard node-to-node encryption. |
+### Trick Question Trap 4: Deployment Slot Custom Domains Immutability
+* **The Scenario:** You have a custom domain `www.company.com` bound to your production slot. You execute a slot swap with the staging slot.
+* **The Trap:** Does `www.company.com` move to the staging slot?
+* **The Ground Truth:** **NO! Custom domain bindings and SSL certificates are strictly SLOT-STICKY by design.** When a swap occurs, `www.company.com` remains permanently bound to the production slot endpoint, and traffic immediately routes to the new code that swapped into production!
 
 ---
 
-### 2. Azure API Management (APIM): Enterprise API & Generative AI Gateway
+## 🌐 Authoritative References & Inflow Citations
 
-APIM serves as the front door for backend microservices, serverless functions, and enterprise AI models:
-
-```mermaid
-flowchart LR
-    Client["Client App / Web Frontend"] -->|HTTPS Inbound| APIM_Gateway["Azure API Management Gateway"]
-    
-    subgraph APIM_Policies ["Policy Processing Pipeline"]
-        P1["1. Inbound: JWT Token Validation & Rate Limiting"]
-        P2["2. GenAI Token Throttling & Semantic Cache"]
-        P3["3. Backend: Dynamic Routing & Failover Pool"]
-        P4["4. Outbound: Header Stripping & Telemetry Log"]
-    end
-
-    subgraph BackendOrigins ["Backend Origins"]
-        AOAI_East["Azure OpenAI (East US)
-Status: 429 Throttle"]
-        AOAI_West["Azure OpenAI (West US)
-Status: Healthy (200 OK)"]
-        AKS_Svc["Internal AKS Microservice"]
-    end
-
-    APIM_Gateway --> P1
-    P1 --> P2
-    P2 --> P3
-    P3 -->|Detects 429 Throttle| AOAI_East
-    P3 -->|Smart Failover Retry| AOAI_West
-    P3 --> AKS_Svc
-```
-
-#### A. APIM Generative AI Gateway Capabilities
-* **Model Load Balancing & Smart Fallback:** When distributing workloads across Azure OpenAI service instances, APIM intercepts HTTP 429 (Rate Limit Exceeded) responses and automatically retries requests against secondary regional deployments.
-* **Semantic Caching:** Integrates with Azure Managed Redis to cache embeddings and common model completions, eliminating redundant token costs and slashing inference latency.
-* **Token Quota Consumption:** Enforces fine-grained token-based rate limits (e.g., maximum 50,000 tokens per minute per consumer subscription key) rather than primitive HTTP call counting.
-
----
-
-### 3. Azure SQL Hyperscale: Architectural Storage Decoupling
-
-Traditional relational databases tie storage capacity directly to compute node disks, limiting maximum database size and forcing long restoration windows.
-
-#### A. Separation of Compute and Storage
-* **Compute Nodes (Stateless):** Run the SQL database engine query processor. Compute nodes can scale up or scale out (adding read replicas) in minutes without moving data.
-* **Log Service (Low-Latency WAL):** A high-throughput, low-latency transaction log engine that persists Write-Ahead Logs (WAL) across redundant storage rings.
-* **Page Servers (Distributed Cache):** Multi-tiered distributed caching nodes that maintain the database pages. Each Page Server manages a slice of database data and caches hot pages on high-speed local NVMe SSDs (RBPEX cache).
-* **Azure Storage Blobs (Infinite Storage):** Cold data pages reside in durable Azure Blob storage, allowing databases to grow seamlessly up to 100+ Terabytes with near-instantaneous backups and restores regardless of database size.
-
-## 🐳 App Service Scaling, Slot Swaps & Container Workloads (Scott Duffy Insights)
-
-### 1. App Service Plan Scaling Paradigms
-*   **Scale Up (Vertical):** Changing the tier/SKU (e.g., migrating from Basic `B1` to Standard `S1` or Premium `P1v3`) to increase CPU cores, RAM, dedicated storage, or unlock features (slots, backups, VNet integration).
-*   **Scale Out (Horizontal):** Adding identical VM instances to the App Service Plan (up to 3 in Basic, up to 10 in Standard, up to 30 in Premium v3).
-*   **Autoscale Rules:** Can scale out automatically based on average CPU > 70% over 10 minutes, with a configured cooldown window (e.g., 5 minutes) to prevent scaling oscillation.
-
-### 2. App Service Deployment Slot Swap Mechanics
-*   **Pre-Swap Warm-up:** Azure sends an HTTP request to the root path of the staging slot before swapping traffic. If the application takes 30 seconds to compile or warm up caches, this ensures end users never experience cold-start latency.
-*   **Sticky vs. Swapped Settings:**
-    *   *Swapped Settings:* Application code, framework versions, default connection strings.
-    *   *Sticky Settings (Pinned to Slot):* Database connection strings for staging, custom domain names, SSL certificates, publishing credentials. Configured using `Deployment slot setting = true`.
-
-### 3. Azure Container Instances (ACI) vs. Azure Container Apps (ACA)
-*   **ACI (Azure Container Instances):** Simplest, fastest way to run isolated Docker containers without managing VM infrastructure. Billed per-second. Supports **Container Groups** (multiple co-scheduled containers sharing localhost networking and storage volumes).
-*   **ACA (Azure Container Apps):** Serverless platform built on Kubernetes and KEDA. Designed for microservices, background job processing, built-in ingress, and scale-to-zero capabilities based on HTTP traffic or Azure Service Bus queue depth.
-
-
-## 🌐 Authoritative References & Citations
-
-- [John Savill: Azure Master Class v2 - Module 8 - App Services](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
-- [John Savill: DevOps Master Class - Containers & Friends](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
-
-- [KodeKloud AZ-104 Course - Administer PaaS Compute Options Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-PaaS-Compute-Options/Module-Introduction/page.md)
-- [Moe Intelligence AZ-104 Video Series (Lessons 26–27)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
-- [Microsoft Learn: Configure Azure App Service Plans and Web Apps](https://learn.microsoft.com/en-us/training/modules/configure-app-service-plans/)
-- [Microsoft Learn: Run container images in Azure Container Instances](https://learn.microsoft.com/en-us/training/modules/run-container-images-azure-container-instances/)
-- [Azure App Service Deployment Slots Documentation](https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots)
-- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 07](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/07_Administer_PaaS_Compute_App_Services_and_Containers.md))
+* **Udemy AZ-104 Master Class by Scott Duffy:** [Inflow: Module 07 - PaaS Compute, App Services and Containers](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/07_Administer_PaaS_Compute_App_Services_and_Containers.md)
+* **John Savill’s Azure Master Class & Deep Dives:** App Service Internal Architecture, ARR Frontend Routing, Blue/Green Deployment Slots, and Container Compute Continuum (ACI vs. ACA vs. AKS).
+* **Moe Intelligence AZ-104 Video Curriculum:** Lessons 26 through 27 (App Service Plans, Scaling, Web Apps, Slots).
+* **KodeKloud AZ-104 Course:** [Administer PaaS Compute Options Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-PaaS-Compute-Options/Module-Introduction/page.md)
+* **Official Microsoft Learn Documentation:**
+  - [Azure App Service overview](https://learn.microsoft.com/en-us/azure/app-service/overview)
+  - [Azure App Service plan overview](https://learn.microsoft.com/en-us/azure/app-service/overview-hosting-plans)
+  - [Set up staging environments in Azure App Service](https://learn.microsoft.com/en-us/azure/app-service/deploy-staging-slots)
+  - [What is Azure Container Instances?](https://learn.microsoft.com/en-us/azure/container-instances/container-instances-overview)
+  - [Azure Container Apps overview](https://learn.microsoft.com/en-us/azure/container-apps/overview)

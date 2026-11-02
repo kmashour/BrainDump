@@ -24,6 +24,7 @@ This Map of Content (MOC) indexes the complete 12-module technical curriculum fo
 The AZ-104 certification validates foundational to intermediate subject matter expertise in implementing, managing, and monitoring an organization’s Microsoft Azure environment—spanning identity, governance, storage, compute, and virtual networking.
 
 ```mermaid
+%% cfr-size: 100 %%
 flowchart TD
     subgraph IdentityGovernance ["Domain 1: Identity & Governance (20-25%)"]
         M02["[[13-104-02_administer_identity|02 - Administer Identity]]\n(Entra ID, SSPR, Dynamic Groups, AUs)"]
