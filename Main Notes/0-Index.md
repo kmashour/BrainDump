@@ -27,6 +27,12 @@ This directory houses the foundational **Landing Notes** and **Deeper Dive Notes
 * [[Main Notes/Kubernetes Runtime Security and Threat Forensics|🦅 Kubernetes Runtime Security and Threat Forensics]]
 * [[Main Notes/Linux Operating System Architecture and Kernel Mechanics|🐧 Linux Operating System Architecture and Kernel Mechanics]]
 
+---
+
+## ☁️ Azure Cloud Architecture & Governance Landing Notes
+
+* [[Main Notes/Azure/Azure Cloud Architecture, Governance and Access Control Mechanics|☁️ Azure Cloud Architecture, Governance and Access Control Mechanics]]
+
 ```dataview
 TABLE role AS "Role", domains AS "Domains", reference_guides AS "Reference Notes"
 FROM "Main Notes"

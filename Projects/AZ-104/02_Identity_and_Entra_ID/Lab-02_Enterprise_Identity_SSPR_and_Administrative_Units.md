@@ -36,9 +36,7 @@ In this hands-on project, you will act as the Enterprise Identity Engineer confi
 
 ```mermaid
 flowchart TD
-
 subgraph EntraTenant ["Microsoft Entra ID Tenant"]
-
     subgraph UsersPool ["Directory Users Pool"]
         U1["Sarah Jenkins<br/>(Dept: Engineering | Country: US)"]
         U2["Mustafa Ashour<br/>(Dept: Engineering | Country: US)"]
@@ -53,7 +51,7 @@ subgraph EntraTenant ["Microsoft Entra ID Tenant"]
     end
 
     subgraph SSPR_Engine ["Self-Service Password Reset (SSPR)"]
-        SSPR_Policy["SSPR Scope: Target 'grp-us-engineering'<br/>- Methods: Mobile App + SMS (2 Required)<br/>- Notifications: Alert User & Admins"]
+        SSPR_Policy["SSPR Scope: Target 'grp-us-engineering'<br/>- Methods: Mobile App + SMS (2 Required)<br/>- Notifications: Alert User and Admins"]
     end
 
     subgraph AdminUnit ["Administrative Unit: AU-US-Engineering"]
@@ -62,15 +60,13 @@ subgraph EntraTenant ["Microsoft Entra ID Tenant"]
     end
 end
 
-U1 -.->|Matches Rule| Query
-U2 -.->|Matches Rule| Query
-U3 -.->|Excluded (Mismatch)| Query
-
+U1 -. "Matches Rule" .-> Query
+U2 -. "Matches Rule" .-> Query
+U3 -. "Excluded (Mismatch)" .-> Query
 Members --> SSPR_Policy
 Members --> AU_Scope
-
-LocalAdmin -->|Can Reset Password (Permitted)| AU_Scope
-LocalAdmin -.->|Cannot Reset (HTTP 403 Denied)| U3
+LocalAdmin -->|"Can Reset Password (Permitted)"| AU_Scope
+LocalAdmin -. "Cannot Reset (HTTP 403 Denied)" .-> U3
 ```
 
 ---
@@ -93,38 +89,40 @@ az ad user create \
   --display-name "Sarah Jenkins" \
   --user-principal-name "sarah.jenkins@${TENANT_DOMAIN}" \
   --password "SecurePass123456!" \
-  --department "Engineering" \
-  --country "United States" \
-  --usage-location "US" \
-  --job-title "Senior DevOps Engineer"
+  --mail-nickname "sarah.jenkins"
+az ad user update \
+  --id "sarah.jenkins@${TENANT_DOMAIN}" \
+  --set department="Engineering" country="United States" usageLocation="US" jobTitle="Senior DevOps Engineer"
 
 echo "Creating User 2: Mustafa Ashour (Engineering - US)..."
 az ad user create \
   --display-name "Mustafa Ashour" \
   --user-principal-name "mustafa.ashour@${TENANT_DOMAIN}" \
   --password "SecurePass123456!" \
-  --department "Engineering" \
-  --country "United States" \
-  --usage-location "US" \
-  --job-title "Cloud Solutions Architect"
+  --mail-nickname "mustafa.ashour"
+az ad user update \
+  --id "mustafa.ashour@${TENANT_DOMAIN}" \
+  --set department="Engineering" country="United States" usageLocation="US" jobTitle="Cloud Solutions Architect"
 
 echo "Creating User 3: David Vance (Sales - UK)..."
 az ad user create \
   --display-name "David Vance" \
   --user-principal-name "david.vance@${TENANT_DOMAIN}" \
   --password "SecurePass123456!" \
-  --department "Sales" \
-  --country "United Kingdom" \
-  --usage-location "GB" \
-  --job-title "Account Executive"
+  --mail-nickname "david.vance"
+az ad user update \
+  --id "david.vance@${TENANT_DOMAIN}" \
+  --set department="Sales" country="United Kingdom" usageLocation="GB" jobTitle="Account Executive"
 
 echo "Creating User 4: Scoped Helpdesk Admin..."
 az ad user create \
   --display-name "Local Helpdesk Lead" \
   --user-principal-name "helpdesk.lead@${TENANT_DOMAIN}" \
   --password "SecurePass123456!" \
-  --department "IT-Support" \
-  --usage-location "US"
+  --mail-nickname "helpdesk.lead"
+az ad user update \
+  --id "helpdesk.lead@${TENANT_DOMAIN}" \
+  --set department="IT-Support" usageLocation="US"
 
 echo "Bootstrap complete! 4 test users generated. Proceed to the Portal GUI tasks below."
 ```
