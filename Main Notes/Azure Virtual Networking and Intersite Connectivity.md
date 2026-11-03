@@ -128,8 +128,13 @@ SORT file.name ASC
 ### Core Architecture & Mechanics
 - [[Main Notes/Azure Virtual Networking - Subnet Topography, 5 Reserved IPs, and Dedicated System Subnets.md|Azure Virtual Networking: Subnet Topography, 5 Reserved IPs, and Dedicated System Subnets]]
 - [[Main Notes/Azure Virtual Networking - Wire Server Mechanics, Subnet DNS Proxies, and Stateful NSG Inspection.md|Azure Virtual Networking: Wire Server Mechanics, Subnet DNS Proxies, and Stateful NSG Inspection]]
+- [[Main Notes/Azure Intersite Connectivity - Routing Engine Mechanics, Longest Prefix Match, and User-Defined Routes.md|Azure Intersite Connectivity: Routing Engine Mechanics, Longest Prefix Match, and User-Defined Routes]]
 - [[Main Notes/Azure Virtual Networking - Non-Transitive Peering Invariants, Forwarded Traffic Mechanics, and Virtual WAN.md|Azure Virtual Networking: Non-Transitive Peering Invariants, Forwarded Traffic Mechanics, and Virtual WAN]]
 - [[Main Notes/Azure Virtual Networking - Private Link vs Private Endpoints, and VNet-to-VNet VPN Tradeoffs.md|Azure Virtual Networking: Private Link vs Private Endpoints, and VNet-to-VNet VPN Tradeoffs]]
+- [[Main Notes/Azure Intersite Connectivity - Private Endpoint Split-Horizon DNS, TLS Certificate Invariants, and CNAME Routing.md|Azure Intersite Connectivity: Private Endpoint Split-Horizon DNS, TLS Certificate Invariants, and CNAME Routing]]
+
+### High-Yield Production Pitfalls & Incidents
+- [[Main Notes/Azure Intersite Connectivity - Asymmetric Routing Traps, Stateful NVA Packet Drops, and Return Path Black Holes.md|Incident Forensics: Asymmetric Routing Traps, Stateful NVA Packet Drops, and Return Path Black Holes]]
 
 *Related Reference Modules:* 
 - [[Reference Notes/13-104-05_administer_virtual_networking.md|Module 13-104-05: Administer Azure Virtual Networking, NSGs & DNS]]
