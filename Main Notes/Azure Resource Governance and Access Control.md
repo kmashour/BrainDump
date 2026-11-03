@@ -117,6 +117,7 @@ SORT file.name ASC
 ```
 
 ### Core Architecture & Mechanics
+- [[Main Notes/Azure Resource Governance - Resource Hierarchy Topography, Management Group Nesting, and Scope Boundaries.md|Azure Resource Governance: Resource Hierarchy Topography, Management Group Nesting, and Scope Boundaries]]
 - [[Main Notes/Azure Resource Governance - Control Plane Locks, RBAC NotActions Additive Logic, and Privilege Plane Isolation.md|Azure Resource Governance: Control Plane Locks, RBAC NotActions Additive Logic, and Privilege Plane Isolation]]
 - [[Main Notes/Azure Resource Governance - Custom RBAC Engineering, Provider Action Grammar, and Least-Privilege Design.md|Azure Resource Governance: Custom RBAC Engineering, Provider Action Grammar, and Least-Privilege Design]]
 - [[Main Notes/Azure Resource Governance - Azure Policy Pre-Flight Evaluation, Deny Guardrails, and Management Hierarchy Inheritance.md|Azure Resource Governance: Azure Policy Pre-Flight Evaluation, Deny Guardrails, and Management Hierarchy Inheritance]]
