@@ -118,8 +118,12 @@ SORT file.name ASC
 
 ### Core Architecture & Mechanics
 - [[Main Notes/Azure Resource Governance - Resource Hierarchy Topography, Management Group Nesting, and Scope Boundaries.md|Azure Resource Governance: Resource Hierarchy Topography, Management Group Nesting, and Scope Boundaries]]
+- [[Main Notes/Azure Resource Governance - Entra Directory Roles vs Azure Role Assignments and Role-Assignable Group Invariants.md|Azure Resource Governance: Entra Directory Roles vs Azure Role Assignments and Role-Assignable Group Invariants]]
 - [[Main Notes/Azure Resource Governance - Control Plane Locks, RBAC NotActions Additive Logic, and Privilege Plane Isolation.md|Azure Resource Governance: Control Plane Locks, RBAC NotActions Additive Logic, and Privilege Plane Isolation]]
 - [[Main Notes/Azure Resource Governance - Custom RBAC Engineering, Provider Action Grammar, and Least-Privilege Design.md|Azure Resource Governance: Custom RBAC Engineering, Provider Action Grammar, and Least-Privilege Design]]
 - [[Main Notes/Azure Resource Governance - Azure Policy Pre-Flight Evaluation, Deny Guardrails, and Management Hierarchy Inheritance.md|Azure Resource Governance: Azure Policy Pre-Flight Evaluation, Deny Guardrails, and Management Hierarchy Inheritance]]
+
+### High-Yield Production Pitfalls & Incidents
+- [[Main Notes/Azure Resource Governance - The NotActions Fallacy, Overlapping RBAC Roles, and Accidental Deletion Outages.md|Incident Forensics: The NotActions Fallacy, Overlapping RBAC Roles, and Accidental Deletion Outages]]
 
 *Related Reference Module:* [[Reference Notes/13-104-03_administer_governance_and_compliance.md|Module 13-104-03: Administer Governance and Compliance]]
