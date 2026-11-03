@@ -36,33 +36,34 @@ In this hands-on project, you will act as the Lead Network Systems Engineer. You
 
 ```mermaid
 flowchart TD
-    subgraph VNetScope ["Azure Virtual Network: vnet-enterprise-eastus (10.50.0.0/16)"]
-        subgraph SubnetWeb ["Frontend Subnet: snet-web (10.50.1.0/24)"]
-            ASG_Web["ASG: asg-web-tier"]
-            VM_Web["Web VM (10.50.1.4)"]
-            VM_Web --- ASG_Web
-        end
 
-        subgraph SubnetDB ["Backend Subnet: snet-db (10.50.2.0/24)"]
-            ASG_DB["ASG: asg-db-tier"]
-            VM_DB["Database VM (10.50.2.4)"]
-            VM_DB --- ASG_DB
-        end
-
-        subgraph SubnetBastion ["Dedicated Bastion Subnet (10.50.10.0/26)"]
-            BastionSubnetNode["AzureBastionSubnet\n(Dedicated /26)"]
-        end
-
-        NSG_Web["Subnet NSG: nsg-web-subnet\n- Rule 100: Allow HTTP/HTTPS from Internet\n- Rule 65000: AllowVNetInBound"]
-        NSG_DB["Subnet NSG: nsg-db-subnet\n- Rule 100: Allow Port 5432 from asg-web-tier ONLY\n- Rule 200: Deny All Other Inbound"]
+subgraph VNetScope ["Azure Virtual Network: vnet-enterprise-eastus (10.50.0.0/16)"]
+    subgraph SubnetWeb ["Frontend Subnet: snet-web (10.50.1.0/24)"]
+        ASG_Web["ASG: asg-web-tier"]
+        VM_Web["Web VM (10.50.1.4)"]
+        VM_Web --- ASG_Web
+    end
+    
+    subgraph SubnetDB ["Backend Subnet: snet-db (10.50.2.0/24)"]
+        ASG_DB["ASG: asg-db-tier"]
+        VM_DB["Database VM (10.50.2.4)"]
+        VM_DB --- ASG_DB
     end
 
-    Internet["Public Internet"] -->|Port 80 / 443| NSG_Web
-    NSG_Web --> VM_Web
-    VM_Web -->|Port 5432 PostgreSQL| NSG_DB
-    NSG_DB --> VM_DB
+    subgraph SubnetBastion ["Dedicated Bastion Subnet (10.50.10.0/26)"]
+        BastionSubnetNode["AzureBastionSubnet<br/>(Dedicated /26)"]
+    end
 
-    VNetScope -.->|Virtual Network Link (Auto-Registration)| PrivateDNS["Azure Private DNS Zone:\ncorp.internal\n(Auto-Registers web-vm, db-vm)"]
+    NSG_Web["Subnet NSG: nsg-web-subnet<br/>- Rule 100: Allow HTTP/HTTPS from Internet<br/>- Rule 65000: AllowVNetInBound"]
+    NSG_DB["Subnet NSG: nsg-db-subnet<br/>- Rule 100: Allow Port 5432 from asg-web-tier ONLY<br/>- Rule 200: Deny All Other Inbound"]
+end
+
+Internet["Public Internet"] -->|"Port 80 / 443"| NSG_Web
+NSG_Web --> VM_Web
+VM_Web -->|"Port 5432 PostgreSQL"| NSG_DB
+NSG_DB --> VM_DB
+
+VNetScope -. "Virtual Network Link (Auto-Registration)" .-> PrivateDNS["Azure Private DNS Zone:<br/>corp.internal<br/>(Auto-Registers web-vm, db-vm)"]
 ```
 
 ---
