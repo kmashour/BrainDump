@@ -31,7 +31,7 @@ This directory houses the foundational **Landing Notes** and **Deeper Dive Notes
 
 ## ☁️ Azure Cloud Architecture & Governance Landing Notes
 
-* [[Main Notes/Azure/Azure Cloud Architecture, Governance and Access Control Mechanics|☁️ Azure Cloud Architecture, Governance and Access Control Mechanics]]
+* [[Main Notes/Azure Resource Governance and Access Control|☁️ Azure Resource Governance and Access Control]]
 
 ```dataview
 TABLE role AS "Role", domains AS "Domains", reference_guides AS "Reference Notes"

@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[Azure Cloud Architecture, Governance and Access Control Mechanics]]"
-sub_type: mechanics
+parent_concept: "[[Azure Resource Governance and Access Control]]"
+sub_type: core-concept
 source_type: gemini-chat
-author: "Antigravity Assistant"
-course_title: "Azure Architecture & Administration (AZ-104)"
+source_url: ""
+author: "Antigravity"
+course_title: "AZ-104 Masterclass"
 tags:
   - azure/governance
   - azure/policy
@@ -15,9 +16,9 @@ tags:
   - status/completed
 ---
 
-# Azure Policy - Pre-Flight Evaluation, Deny Guardrails, and Management Hierarchy Inheritance
+# Azure Resource Governance - Azure Policy Pre-Flight Evaluation, Deny Guardrails, and Management Hierarchy Inheritance
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Main Notes/Azure/Azure Cloud Architecture, Governance and Access Control Mechanics|Azure Cloud Architecture, Governance and Access Control Mechanics]] > **Azure Policy - Pre-Flight Evaluation, Deny Guardrails, and Management Hierarchy Inheritance**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Azure Resource Governance and Access Control]] > **Azure Policy Pre-Flight Evaluation & Inheritance**
 
 ---
 
@@ -114,3 +115,7 @@ Azure Policy operates on a strict **Top-Down Cascading Inheritance** model acros
 1. **Inheritance Cannot Be Blocked:** A policy assigned at a parent scope (Management Group or Subscription) **cannot be disabled or overridden** at a child scope. It applies unconditionally to everything beneath it.
 2. **Explicit Exclusions (`notScopes`):** If a specific resource group requires an exception (e.g., a development sandbox that needs to test multi-region latency), the administrator must configure an explicit **Exclusion** on the policy assignment at the parent level.
 3. **Platform Cost:** Like Resource Locks and Management Groups, **Azure Policy is a built-in platform capability with $0.00 additional cost**.
+
+---
+
+*Read more in [[Reference Notes/13-104-03_administer_governance_and_compliance.md#4-azure-policy-declarative-guardrails--automated-remediation]]*

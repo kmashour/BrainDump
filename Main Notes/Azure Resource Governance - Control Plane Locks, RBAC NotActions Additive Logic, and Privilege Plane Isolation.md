@@ -2,29 +2,29 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[Azure Cloud Architecture, Governance and Access Control Mechanics]]"
-sub_type: mechanics
+parent_concept: "[[Azure Resource Governance and Access Control]]"
+sub_type: architecture
 source_type: gemini-chat
-author: "Antigravity Assistant"
-course_title: "Azure Architecture & Administration (AZ-104)"
+source_url: ""
+author: "Antigravity"
+course_title: "AZ-104 Masterclass"
 tags:
   - azure/governance
-  - azure/resource-locks
+  - azure/locks
   - azure/rbac
-  - azure/entra-id
   - azure/deep-dive
   - status/completed
 ---
 
-# Azure Resource Locks - Control Plane Enforcement, RBAC NotActions Additive Logic, and Privilege Plane Isolation
+# Azure Resource Governance - Control Plane Locks, RBAC NotActions Additive Logic, and Privilege Plane Isolation
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Main Notes/Azure/Azure Cloud Architecture, Governance and Access Control Mechanics|Azure Cloud Architecture, Governance and Access Control Mechanics]] > **Azure Resource Locks - Control Plane Enforcement, RBAC NotActions Additive Logic, and Privilege Plane Isolation**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Azure Resource Governance and Access Control]] > **Control Plane Locks & Privilege Isolation**
 
 ---
 
 ## 🎯 1. First Principles: The Need for Absolute Safety Latches
 
-In enterprise cloud environments, operations teams frequently run cleanup scripts, automated CI/CD pipelines, and bulk resource teardowns. When engineers possess broad permissions (such as `Contributor` or `Owner`), a single typing error (e.g., executing `az group delete` against a production resource group instead of a test sandbox) can instantly destroy mission-critical databases, virtual networks, and storage accounts.
+In enterprise cloud operations, operations teams frequently run cleanup scripts, automated CI/CD pipelines, and bulk resource teardowns. When engineers possess broad permissions (such as `Contributor` or `Owner`), a single typing error (e.g., executing `az group delete` against a production resource group instead of a test sandbox) can instantly destroy mission-critical databases, virtual networks, and storage accounts.
 
 To safeguard infrastructure, Microsoft Azure implements three distinct layers of access and lifecycle governance:
 1. **Identity Boundaries:** Microsoft Entra ID vs. Azure Resource Manager (ARM).
@@ -137,3 +137,7 @@ Why can an `Owner` delete a lock?
 If an enterprise needs to stop even a rogue, disgruntled, or compromised Owner from deleting mission-critical backups or locked data vaults, Azure provides **Multi-User Authorization (MUA)** via **Azure Resource Guard**:
 * Critical operations (such as deleting a lock or purging a recovery vault) require authorization from a **secondary administrator** residing in an independent Entra ID directory.
 * No single user, regardless of their Owner privileges, can unilaterally bypass the protection.
+
+---
+
+*Read more in [[Reference Notes/13-104-03_administer_governance_and_compliance.md#3-resource-locks-preventing-accidental-deletion--tampering]]*

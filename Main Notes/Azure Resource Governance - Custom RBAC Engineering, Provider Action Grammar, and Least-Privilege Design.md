@@ -2,11 +2,12 @@
 obsidianUIMode: preview
 class: deeper-dive
 tier: main-note
-parent_concept: "[[Azure Cloud Architecture, Governance and Access Control Mechanics]]"
+parent_concept: "[[Azure Resource Governance and Access Control]]"
 sub_type: mechanics
 source_type: gemini-chat
-author: "Antigravity Assistant"
-course_title: "Azure Architecture & Administration (AZ-104)"
+source_url: ""
+author: "Antigravity"
+course_title: "AZ-104 Masterclass"
 tags:
   - azure/governance
   - azure/rbac
@@ -15,9 +16,9 @@ tags:
   - status/completed
 ---
 
-# Azure Custom RBAC Roles - Action Grammar, Additive NotActions Logic, and Least-Privilege Engineering
+# Azure Resource Governance - Custom RBAC Engineering, Provider Action Grammar, and Least-Privilege Design
 
-**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Main Notes/Azure/Azure Cloud Architecture, Governance and Access Control Mechanics|Azure Cloud Architecture, Governance and Access Control Mechanics]] > **Azure Custom RBAC Roles - Action Grammar, Additive NotActions Logic, and Least-Privilege Engineering**
+**Breadcrumbs:** [[Main Notes/0-Index|🏠 Index]] > [[Azure Resource Governance and Access Control]] > **Custom RBAC Engineering & Action Grammar**
 
 ---
 
@@ -50,47 +51,22 @@ Notice the suffix `/action`: Operations that execute an active control-plane com
 
 ---
 
-## ⚠️ 3. The Additive Evaluation Engine & The "NotActions" Trap
+## ⚖️ 3. Actions vs. DataActions (Management Plane vs. Data Plane)
 
-The most critical architectural concept for Azure RBAC—and one of the most heavily tested traps on the AZ-104 exam—is how ARM computes effective rights:
+Azure RBAC strictly decouples managing the container from managing the payload inside:
 
 ```text
 +---------------------------------------------------------------------------------------------------+
-|                              AZURE RBAC IS PURELY ADDITIVE                                        |
-+---------------------------------------------------------------------------------------------------+
-|  Grants = Actions - NotActions                                                                    |
-+---------------------------------------------------------------------------------------------------+
-|  1. "NotActions" is NOT an explicit Deny!                                                         |
-|  2. "NotActions" only subtracts permissions from the "Actions" array of THAT SPECIFIC ROLE.       |
-|  3. If another role grants the permission, the user CAN perform the action!                       |
+| MANAGEMENT PLANE (Actions)                  | DATA PLANE (DataActions)                            |
++---------------------------------------------+-----------------------------------------------------+
+| Controls the ARM Azure Resource             | Interacts with data residing INSIDE the resource    |
+| - Microsoft.Storage/storageAccounts/read    | - Microsoft.Storage/storageAccounts/blobServices/   |
+| - Microsoft.Compute/virtualMachines/start   |   containers/blobs/read (Read actual blob contents) |
+| - Microsoft.KeyVault/vaults/write           | - Microsoft.KeyVault/vaults/secrets/getSecret/action|
 +---------------------------------------------------------------------------------------------------+
 ```
 
-### The Multi-Role Overlap Scenario (Why Deletions Still Happen)
-
-Consider an enterprise engineer assigned two roles on the same Resource Group:
-
-```text
-[ User: Junior DevOps Engineer ]
-       │
-       ├── Assigned Role A (Custom "VM Operator - No Delete"):
-       │   - Actions:    ["Microsoft.Compute/virtualMachines/*"]
-       │   - NotActions: ["Microsoft.Compute/virtualMachines/delete"]
-       │   (Intent: Prevent the engineer from deleting VMs)
-       │
-       └── Assigned Role B (Built-in "Contributor"):
-           - Actions:    ["*"]
-           - NotActions: []
-           (Grants full administrative control)
-```
-
-**ARM Evaluation:**
-1. Does Role A grant delete? No ($Actions - NotActions = \text{No delete}$).
-2. Does Role B grant delete? **Yes** ($Actions = \text{All}$).
-3. **Outcome:** ARM evaluates all assigned roles additively. The user **CAN delete the virtual machine**!
-
-> [!IMPORTANT]
-> To establish an un-bypassable barrier against resource deletion across all identities and roles, you must enforce a **Resource Lock (`CanNotDelete`)**, not rely on `NotActions`.
+When building compute-focused roles (like VM operators), permissions operate exclusively at the management plane (`Actions`), leaving `DataActions` empty.
 
 ---
 
@@ -122,5 +98,9 @@ When authoring a custom role in the Azure Portal GUI or via Azure CLI/Bicep, the
 
 ### Decoding the Core Properties:
 1. **`Actions`:** The control-plane operations granted by this role. Notice that read permissions for network interfaces and virtual networks are included so operators can view the VM's private IP and topology in the Azure Portal.
-2. **`DataActions`:** Grants access to the **data plane** inside the resource (e.g., reading a blob inside a storage account, querying rows inside a SQL database). Virtual machine start/stop commands operate at the control plane, so `DataActions` remains empty.
+2. **`NotActions`:** Explicitly empty. Rather than relying on the unreliable `NotActions` subtraction trap, least-privilege engineering builds the role by explicitly whitelisting only the necessary actions.
 3. **`AssignableScopes`:** Specifies where this custom role can be assigned. It can be scoped to a **Management Group**, a **Subscription**, or a specific **Resource Group**.
+
+---
+
+*Read more in [[Reference Notes/13-104-03_administer_governance_and_compliance.md#2-role-based-access-control-rbac-internals--custom-roles]]*
