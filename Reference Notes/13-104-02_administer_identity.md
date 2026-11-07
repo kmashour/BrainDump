@@ -372,6 +372,62 @@ sequenceDiagram
 
 ---
 
+### 7. Entra ID Privileged Identity Management (PIM) & Access Reviews
+
+Granting permanent, standing administrative privileges (e.g., permanent *Global Administrator* or *Contributor* roles) violates the core tenant of Zero-Trust architecture: **Assume Breach**. If an administrator's credentials are leaked, attackers gain instant, uninhibited enterprise control.
+
+**Microsoft Entra Privileged Identity Management (PIM)** enforces the principle of **Just-In-Time (JIT) Access**:
+
+```text
++-------------------------------------------------------------------------------------------------+
+|                   PRIVILEGED IDENTITY MANAGEMENT (PIM) JUST-IN-TIME LIFECYCLE                   |
++-------------------------------------------------------------------------------------------------+
+[ Standing Posture: Standard User ] (Zero Administrative Privileges)
+                │
+                ▼ Admin requires elevated access to perform scheduled maintenance
+[ 1. User Requests Role Activation ] (e.g., User Administrator for 4 hours)
+   ├── Provide Business Justification & Incident Ticket #
+   ├── Mandatory Multi-Factor Authentication (MFA Step-Up)
+   └── (Optional) Routing to Designated Approver for Authorization
+                │
+                ▼ Approved!
+[ 2. Temporary Elevation (Active Role) ]
+   ├── Time-Bound Token Issued (Maximum lifetime: e.g., 8 hours)
+   ├── Full Audit Trail Logged in Entra ID Audit Logs
+   └── Automatic Expiration!
+                │
+                ▼ Time expires
+[ 3. Demoted back to Standard User ] (Zero Standing Access Restored!)
+```
+
+#### Eligible vs. Active Assignments:
+* **Eligible Assignment:** The user has the *right* to activate the role when needed, but holds **zero active permissions** during day-to-day operations.
+* **Active Assignment:** The user currently holds the role permissions. Active assignments should only occur via time-bound JIT activations or temporary emergency grants.
+
+#### Entra ID Access Reviews:
+* Over time, organizations suffer from **privilege creep**—employees change departments or finish consulting projects but retain high-privilege access.
+* **Access Reviews** automate recurring attestation campaigns (weekly, monthly, or quarterly):
+  - Reviewers can be the resource owner, manager, or self-review.
+  - If a reviewer does not respond within the review period, administrators can configure **Automated Remediation**: automatically revoke the user's role or remove them from the security group!
+
+---
+
+### 8. Emergency Access ("Break-Glass") Accounts Architecture
+
+Every production Microsoft Entra ID tenant must maintain dedicated **Emergency Access Accounts** (commonly called **Break-Glass Accounts**) to recover from catastrophic authentication lockouts:
+* **The Lockout Scenarios:**
+  - An administrator creates a misconfigured Conditional Access policy that inadvertently blocks all users from signing in (`Block Access` applied to *All Users* without exclusions).
+  - Federated identity outage (on-premises ADFS/PingFederate fails, blocking hybrid sign-ins).
+* **Break-Glass Architectural Mandates:**
+  1. **Quantity:** Exactly **two** emergency access accounts per tenant.
+  2. **Domain Suffix:** Must be **cloud-only** accounts using the initial tenant domain (`*.onmicrosoft.com`). Never federate emergency accounts!
+  3. **Role Assignment:** Assigned permanent **Global Administrator** role.
+  4. **Conditional Access Exclusion:** Must be **explicitly excluded from EVERY Conditional Access policy**!
+  5. **Credential Management:** Passwords must be 30+ random characters. Credentials (and hardware FIDO2 keys) are split and stored in physical tamper-evident safes across separate secure facilities.
+  6. **Monitoring & Alerting:** Monitored 24/7 with dedicated Azure Monitor / Log Analytics alert rules that trigger a P1 incident if any sign-in event is detected for a break-glass account.
+
+---
+
 ## ⚙️ Stage 4: Declarative & Automation Engine (CLI & PowerShell Core)
 
 ### 1. Azure CLI: Enterprise Identity Recipes
@@ -667,6 +723,16 @@ dsacls $ouDn /G "$($serviceAccount):RPWP;lockoutTime;user"
 * **The Scenario:** An administrator wants to remove an old domain suffix (`contoso.org`) from the Entra ID tenant. They click *Delete* in the portal, but Azure blocks the deletion with an error stating the domain is in use.
 * **The Ground Truth:** You **cannot delete a custom domain** if even a single user, group, application registration, or license references that domain. You must bulk-update all user UPNs and primary SMTP addresses back to the default `*.onmicrosoft.com` suffix before Azure ARM will permit deleting the domain.
 
+### Trick Question Trap 6: PIM Eligible vs. Active Role Permissions
+* **The Scenario:** User Kevin is assigned an **Eligible** role assignment for `Security Administrator` via Entra ID Privileged Identity Management (PIM). Kevin attempts to access Microsoft Defender for Cloud to modify security recommendations without activating his role.
+* **The Trap:** Why does Kevin receive an Access Denied error?
+* **The Ground Truth:** An **Eligible** assignment provides **zero operational permissions** during day-to-day work! An eligible user must open the Entra ID portal, navigate to *Privileged Identity Management* $\rightarrow$ *My roles*, and explicitly execute the **Activate** workflow (supplying justification and completing MFA) before the security permissions take effect.
+
+### Trick Question Trap 7: Break-Glass Account Conditional Access Exclusion Mandate
+* **The Scenario:** A security officer configures a Conditional Access policy requiring all users to sign in from compliant corporate-managed Windows laptops with FIDO2 MFA. During a malware outbreak, the MDM device management system goes offline, blocking all IT staff from authenticating.
+* **The Trap:** How does the enterprise recover administrative access to the tenant?
+* **The Ground Truth:** The enterprise authenticates using their designated **Emergency Access (Break-Glass) Account**. Break-glass accounts must be **explicitly listed in the Exclude section of EVERY Conditional Access policy**. If an administrator accidentally checks *All Users* without excluding the emergency accounts, a complete tenant lockout can occur requiring Microsoft engineering intervention.
+
 ---
 
 ## 🌐 Authoritative References & Inflow Citations
@@ -681,3 +747,5 @@ dsacls $ouDn /G "$($serviceAccount):RPWP;lockoutTime;user"
   - [Configure Self-Service Password Reset (SSPR)](https://learn.microsoft.com/en-us/training/modules/configure-self-service-password-reset/)
   - [Administrative Units in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units)
   - [Managed Identities for Azure Resources](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/overview)
+  - [What is Microsoft Entra Privileged Identity Management?](https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure)
+  - [Manage emergency access accounts in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-planning-cold-disaster-recovery)

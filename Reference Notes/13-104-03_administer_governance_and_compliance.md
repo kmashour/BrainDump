@@ -253,6 +253,16 @@ A policy consists of an `if` condition and a `then` effect:
 #### Policy Initiatives (Policy Sets):
 An **Initiative** is an aggregation of multiple individual policy definitions bundled together to satisfy an overarching compliance mandate (e.g., *NIST SP 800-53 Compliance*, *ISO 27001*, or *Enterprise Cost Guardrails*). Assigning an initiative applies all included policies simultaneously across the target scope.
 
+#### Policy Enforcement Modes:
+When assigning an Azure Policy or Initiative, administrators select an **Enforcement Mode**:
+* **`Default` (Enabled):** The policy rule is actively enforced during ARM request evaluation. Any deployment violating a `Deny` policy is actively blocked (`HTTP 403`).
+* **`DoNotEnforce` (Disabled / Audit-First Rollout):** The policy rule effect is not enforced during deployment (i.e., ARM will NOT block requests). However, the Azure Policy evaluation engine still assesses resource compliance and reports non-compliant resources in the Compliance Dashboard. This allows enterprise platform teams to safely test and observe policy impacts before turning on active blocking!
+
+#### Azure Policy Remediation Mechanics:
+* **The Retroactive Limitation:** When an Azure Policy with `DeployIfNotExists` or `Modify` is assigned, it automatically affects **newly created or updated resources**. However, existing pre-existing resources that are non-compliant are **NOT automatically altered**!
+* **Remediation Tasks:** To bring existing legacy resources into compliance, an administrator must explicitly trigger a **Remediation Task** (`az policy remediation create` or `Start-AzPolicyRemediation`).
+* **Managed Identity Prerequisite:** For policies utilizing `DeployIfNotExists` or `Modify`, Azure Policy requires a **Managed Identity** (System-Assigned or User-Assigned) granted appropriate Azure RBAC roles on the target scope to perform template deployments or modify resource tags on behalf of the platform.
+
 ---
 
 ### 4. Resource Locks: CanNotDelete vs. ReadOnly
@@ -354,6 +364,15 @@ az policy assignment create \
   --policy "${POLICY_DEF_ID}" \
   --params '{"listOfAllowedLocations": {"value": ["eastus", "westus"]}}' \
   --scope "/subscriptions/${SUB_ID}/resourceGroups/rg-enterprise-workloads"
+
+# ==============================================================================
+# 4. AZURE POLICY REMEDIATION TASK AUTOMATION
+# ==============================================================================
+# Trigger an explicit remediation task for existing non-compliant resources (DINE/Modify)
+az policy remediation create \
+  --name "remediate-non-compliant-resources" \
+  --policy-assignment "enforce-allowed-regions" \
+  --resource-group "rg-enterprise-workloads"
 ```
 
 ### 2. Azure PowerShell: Management Group & Cost Budget Engine
@@ -563,6 +582,16 @@ az lock create \
 * **The Trap:** Why does the move fail?
 * **The Ground Truth:** Moving a resource involves unlinking it from the source container and registering it in the target container. An active Resource Lock on the source or destination Resource Group will **block the move operation**. You must **temporarily delete the lock**, execute the transfer, and then re-apply the lock on the destination resource group.
 
+### Trick Question Trap 5: Policy Retroactive Evaluation vs. Remediation Tasks
+* **The Scenario:** An administrator assigns a new Azure Policy with the `Modify` effect that adds a mandatory tag (`Environment: Prod`) to all virtual machines. The administrator checks existing VMs created last week and notices that none of them have received the tag.
+* **The Trap:** Did the policy fail to apply?
+* **The Ground Truth:** **NO! Azure Policy `Modify` and `DeployIfNotExists` do NOT retroactively alter existing resources automatically!** They only evaluate and modify resources created or updated *after* the assignment. To remediate existing legacy resources, the administrator must explicitly launch a **Remediation Task** (`az policy remediation create` or via the Azure Portal Remediation tab).
+
+### Trick Question Trap 6: Policy EnforcementMode: Default vs. DoNotEnforce in CI/CD Pre-flight
+* **The Scenario:** A DevOps team complains that their CI/CD deployment pipeline failed because an administrator assigned a strict `Deny` policy without giving the developers time to update their Terraform templates. The platform team wants to test future policies and identify non-compliant workloads in dashboards without breaking developer deployments.
+* **The Trap:** Which configuration should the platform team use when assigning the policy?
+* **The Ground Truth:** Set **`enforcementMode` to `DoNotEnforce`** (Disabled in the GUI). This mode instructs ARM to evaluate compliance and flag non-compliant resources in Azure Policy reports, but it **will not block** resource deployments or API requests!
+
 ---
 
 ## 🌐 Authoritative References & Inflow Citations
@@ -576,4 +605,6 @@ az lock create \
   - [Manage subscriptions and governance in Azure](https://learn.microsoft.com/en-us/training/modules/manage-subscriptions-and-resources/)
   - [Control access to Azure resources with RBAC](https://learn.microsoft.com/en-us/training/modules/secure-azure-resources-with-rbac/)
   - [Azure Policy Overview & Effects](https://learn.microsoft.com/en-us/azure/governance/policy/overview)
+  - [Remediate non-compliant resources with Azure Policy](https://learn.microsoft.com/en-us/azure/governance/policy/how-to/remediate-resources)
   - [Lock your resources to prevent unexpected changes](https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/lock-resources)
+  - [Plan and manage Azure costs](https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/quick-acm-cost-analysis)

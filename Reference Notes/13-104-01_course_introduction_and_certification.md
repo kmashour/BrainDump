@@ -172,6 +172,39 @@ Geographies (e.g., United States, Europe, Asia Pacific)
 
 ---
 
+### 1. Sovereign & Specialized Clouds
+In addition to the public Azure cloud, Microsoft operates physically and logically isolated sovereign clouds to meet stringent national security and legal regulatory requirements:
+1. **Azure Government (US Gov):** A physically isolated cloud instance reserved exclusively for US federal, state, local, and tribal governments and their screened contractors. Meets rigorous compliance standards including FedRAMP High, DoD Impact Level 2, 4, 5, and 6, and CJIS.
+2. **Azure China 21Vianet:** A physically separated, legally independent cloud environment operated by 21Vianet (in accordance with Chinese telecommunications regulations). Customer data is strictly isolated within mainland China.
+
+---
+
+### 2. Service Level Agreements (SLAs) & Composite SLA Calculation
+Microsoft publishes guaranteed monthly uptime commitments (Service Level Agreements) for each individual service:
+* **Single VM SLA:** 99.9% uptime (with Premium SSD / Ultra Disk OS and data disks).
+* **Availability Set SLA:** 99.95% uptime (for 2+ VMs distributed across Fault Domains).
+* **Availability Zone SLA:** 99.99% uptime (for 2+ VMs distributed across Availability Zones).
+
+#### Composite SLA Mathematics (Crucial Exam Core):
+When an application architecture depends on multiple sequential services, the overall availability of the system is the **product of the individual SLAs**:
+
+$$\text{Composite SLA} = \text{SLA}_1 \times \text{SLA}_2 \times \dots \times \text{SLA}_n$$
+
+```text
+Example 1: Serial Dependencies (E-Commerce Web App)
+[ App Service: 99.95% ] ──► [ Azure SQL Database: 99.99% ]
+Calculation:
+Composite SLA = 0.9995 * 0.9999 = 0.9994 = 99.94% (Notice that composite SLA is LOWER than any single component!)
+
+Example 2: Resiliency with Fallback Redundancy (Active / Standby or Queue Buffer)
+If an application uses a fallback path when the primary service is unavailable:
+SLA_Composite = (1 - (Unavailability of Primary * Unavailability of Fallback))
+If Queue has 99.9% availability, Unavailability = 1 - 0.999 = 0.001
+Redundant Component SLA = 1 - (0.0001 * 0.001) = 99.9999%
+```
+
+---
+
 ## 💰 Stage 4: Cloud Economics & FinOps Governance
 
 Cost optimization is an active operational engineering discipline in Microsoft Azure:

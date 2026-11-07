@@ -270,6 +270,34 @@ When deploying virtual machines via IaC, administrators frequently need to run p
 
 ---
 
+### 5. Azure Resource Graph (ARG): Enterprise-Scale Querying via KQL
+In large enterprise environments with dozens of subscriptions and thousands of resources, traditional ARM enumeration commands (`az resource list` or `Get-AzResource`) fail:
+* They query each resource provider sequentially.
+* Under heavy querying, scripts hit ARM API rate limits (**HTTP 429 Too Many Requests**).
+* They cannot perform complex filtering across multiple subscriptions in a single request.
+
+**Azure Resource Graph (ARG)** solves this by maintaining an indexed database of the entire resource hierarchy:
+* Powered by the **Kusto Query Language (KQL)**.
+* Allows querying resources across **hundreds of subscriptions and management groups** in milliseconds.
+* Essential for FinOps cost audits, compliance verification, and security posture management.
+
+#### High-Yield Production ARG Queries:
+```kusto
+// Query 1: Find all unattached Managed Disks (FinOps Cost Leak Audit)
+Resources
+| where type =~ 'microsoft.compute/disks'
+| where properties.diskState =~ 'Unattached'
+| project name, resourceGroup, subscriptionId, properties.diskSizeGB
+
+// Query 2: Find all running Virtual Machines without an 'Environment' tag
+Resources
+| where type =~ 'microsoft.compute/virtualmachines'
+| where isnull(tags['Environment']) or isempty(tags['Environment'])
+| project name, resourceGroup, subscriptionId, location
+```
+
+---
+
 ## ⚙️ Stage 4: Declarative & Automation Engine (CLI & PowerShell Core)
 
 ### 1. Azure CLI: Enterprise IaC & Bicep Recipes

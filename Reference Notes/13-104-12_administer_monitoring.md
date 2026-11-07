@@ -10,33 +10,34 @@ tags:
   - azure/log-analytics
   - azure/alerts
   - azure/kql
+  - azure/network-watcher
   - status/completed
 ---
 
-# Module 13-104-12: Administer Monitoring, Azure Monitor, Log Analytics & Alerts
+# Module 13-104-12: Administer Monitoring, Azure Monitor, Log Analytics, Alerts & Network Watcher
 
 **Breadcrumbs:** [[13-Index - Azure|☁️ Azure Reference MOC]] > [[13-Index - AZ-104|📘 AZ-104 Exam Track]] > **12 - Administer Monitoring**
 
 ---
 
-## 🎯 Executive Overview & The Observability Lecture
+## 🎯 Stage 1: Executive Overview & The Observability Lecture
 
-In on-premises computing, when a physical server crashes, an administrator walks into the server room, looks at the flashing amber LED on the chassis, connects a crash cart monitor, and reads the kernel panic or bluescreen. In modern cloud environments, you do not have physical access to Microsoft's datacenters. Your systems run across hundreds of hypervisors, microservices, load balancers, and managed PaaS backends. **If you cannot observe your infrastructure through telemetry, your cloud is completely invisible.**
+### 1. The Zero-Knowledge Starting Point: Why Cloud Observability Matters
+In traditional on-premises IT, when a physical server crashes, an administrator walks into the server room, looks at the flashing amber LED on the chassis, connects a crash cart monitor, and reads the kernel panic or bluescreen. In modern cloud environments, you do not have physical access to Microsoft's datacenters. Your systems run across hundreds of hypervisors, microservices, load balancers, and managed PaaS backends. **If you cannot observe your infrastructure through telemetry, your cloud is completely invisible.**
 
-Observability in Microsoft Azure is not a single product or toggle; it is an **integrated ecosystem called Azure Monitor**. This lecture builds the entire observability architecture progressively: starting from the physical and virtual data sources, separating numerical metrics from unstructured logs, routing through intelligent collection agents, analyzing via Kusto Query Language (KQL), configuring automated incident alerts, and guarding against runaway cloud billing.
+Observability in Microsoft Azure is not a single product or toggle; it is an **integrated ecosystem called Azure Monitor**. This lecture builds the entire observability architecture progressively: starting from the physical and virtual data sources, separating numerical metrics from unstructured logs, routing through intelligent collection agents (AMA), analyzing via Kusto Query Language (KQL), configuring automated incident alerts and alert processing rules, and diagnosing SDN connectivity using Network Watcher.
 
 ```mermaid
-%% cfr-size: 100 %%
 flowchart TD
     subgraph DataSources ["1. The Telemetry Generators"]
-        Apps["Applications (App Insights / Code Logs)"]
-        VMs["Virtual Machines (OS Perf, Event Logs, Syslog)"]
+        Apps["Applications (App Insights / Code Traces)"]
+        VMs["Virtual Machines (OS Perf Counters, Syslog, Event Logs)"]
         PaaS["PaaS Services (Key Vault, SQL, Storage, App Service)"]
         ARMPlane["Azure Resource Manager (Subscription Activity Log)"]
     end
 
     subgraph CollectionPipeline ["2. Collection & Ingestion Pipeline"]
-        AMA["Azure Monitor Agent (AMA)\n+ Data Collection Rules (DCR)\n[Client-Side Filtering & Managed Identity]"]
+        AMA["Azure Monitor Agent (AMA)\n+ Data Collection Rules (DCR)\n[Client-Side XPath Filtering & Managed Identity]"]
         Diag["Diagnostic Settings\n[Agentless PaaS & Subscription Streaming]"]
     end
 
@@ -45,11 +46,13 @@ flowchart TD
         LogStore[("Log Analytics Workspace\n- Structured Tabular Schemas (KQL)\n- Batch Ingestion (1-5 min lag)\n- 30-Day Free Retention (up to 730d)")]
     end
 
-    subgraph InsightsAlerts ["4. Visualization, Analytics & Incident Response"]
+    subgraph InsightsAlerts ["4. Analytics, Incident Response & Diagnostics"]
         Exp["Metrics Explorer (Live Charts)"]
         KQL["Log Analytics (KQL Analytics)"]
         AlertEngine{"Azure Alert Engine\n(Metric, Log Search, Activity)"}
+        ProcRules["Alert Processing Rules\n(Dynamic Action Routing & Suppression)"]
         ActionGroups["Action Groups\n(Email, SMS, ARM Role, Automation)"]
+        NetWatch["Network Watcher Diagnostics\n(IP Flow Verify, Next Hop, Packet Capture)"]
     end
 
     VMs --> AMA
@@ -67,14 +70,32 @@ flowchart TD
     LogStore --> KQL
     LogStore --> AlertEngine
 
-    AlertEngine --> ActionGroups
+    AlertEngine --> ProcRules
+    ProcRules --> ActionGroups
 ```
 
 ---
 
-## 🏛️ Stage 1: The Core Mental Model — Metrics vs. Logs
+### 2. Terminology Matrix: Zero-Knowledge to Enterprise Architect
 
-Before touching any service names, you must understand the two fundamental data types in Azure telemetry:
+| Terminology | What It Means to a Beginner | Real-World Analog | Enterprise Architecture Reality |
+| :--- | :--- | :--- | :--- |
+| **Azure Monitor** | The central dashboard watching everything in Azure. | The central mission control room for the entire space station. | The umbrella observability platform ingesting, storing, and analyzing metrics, logs, and traces across Azure and hybrid clouds. |
+| **Metrics** | Real-time numbers tracking system performance. | A car's speedometer and fuel gauge updating every second. | Lightweight, numerical, time-series data points with sub-minute ingestion latency, retained for 93 days free of charge. |
+| **Logs (Log Analytics)** | Detailed timestamped text records of what happened. | A ship's captain's log recording every event, order, and maintenance action. | High-fidelity tabular event records stored in a Log Analytics workspace, queryable via Kusto Query Language (KQL). |
+| **Activity Log** | A diary of who did what to your cloud resources. | A building entrance security sign-in sheet recording who visited and what they carried. | Control plane audit trail recording all ARM operations (create, update, delete) across a subscription, retained for 90 days. |
+| **Azure Monitor Agent (AMA)** | A software spy running inside your virtual machine. | A telemetry sensor mounted inside a race car engine transmitting diagnostic codes. | Unified VM extension replacing legacy MMA, authenticating via Managed Identity and configured using Data Collection Rules. |
+| **Data Collection Rule (DCR)** | A recipe telling the agent what data to collect and where to send it. | A packing list telling a warehouse worker which boxes to ship and which to discard. | An ARM resource defining data sources (perf counters, syslog, event logs), client-side XPath filters, and destinations. |
+| **Action Group** | A phone tree of people to notify when something breaks. | An automated fire alarm dispatching the fire department, police, and building owner. | Reusable notification and remediation container (Email, SMS, Push, Voice, ARM Role receiver, Webhook, Logic App, Runbook). |
+| **Alert Processing Rule** | Rules that intercept alerts and redirect or silence them. | A "Do Not Disturb" sign hung on a hotel door during scheduled sleeping hours. | Post-alert routing engine that dynamically applies action groups or suppresses notifications during maintenance windows. |
+| **Network Watcher** | A network diagnostic toolkit for Azure SDN. | A mechanic's OBD scanner plugged into an engine to detect why fuel isn't flowing. | Regional SDN diagnostic suite providing IP Flow Verify, Next Hop, Connection Troubleshoot, Packet Capture, and NSG Flow Logs. |
+
+---
+
+## 🏛️ Stage 2: Core Mental Model & Component Architecture
+
+### 1. Azure Metrics vs. Azure Logs (The Telemetry Divide)
+Understanding when to use Metrics versus Logs is fundamental for system performance and FinOps cost control:
 
 ```text
 +---------------------------------------------------------------------------------------------------+
@@ -102,100 +123,115 @@ Before touching any service names, you must understand the two fundamental data 
 +-----------------------+----------------------------------------+----------------------------------+
 ```
 
-### The Architectural Intuition:
-*   Use **Metrics** when you need instant, real-time alerting on numerical hardware or platform health (e.g., autoscaling a VMSS when CPU > 75%, detecting network saturation, triggering failovers).
-*   Use **Logs** when you need root-cause forensics, compliance audits, text pattern matching, or correlating multiple events across resources (e.g., finding which IP address executed 50 failed SSH logins followed by a successful admin password reset).
+---
+
+### 2. Control Plane Auditing: The Azure Activity Log
+Every administrative action executed against Azure Resource Manager (ARM API: `https://management.azure.com`) is permanently logged:
+* **What it records:** Operations that create, update, or delete resources (HTTP `PUT`, `POST`, `DELETE`). Examples: stopping a VM, creating an NSG rule, modifying an RBAC role assignment.
+* **What it NEVER records:** Read operations (HTTP `GET`). Simply listing resources or viewing a configuration generates zero Activity Log entries.
+* **Built-in Retention:** Kept for **90 days free of charge**.
+* **The 365-Day Compliance Rule:** If an auditor requires Activity Logs to be queryable via KQL for 1 year (365 days), you **MUST create a Subscription-Level Diagnostic Setting** and stream Activity Logs to a **Log Analytics Workspace**!
 
 ---
 
-## 📜 Stage 2: Control Plane Auditing — The Azure Activity Log
-
-Every time anyone—a human engineer in the Azure Portal, a DevOps pipeline using Terraform, or an automated script—interacts with Azure, they submit an HTTP request to the **Azure Resource Manager (ARM)** API gateway (`https://management.azure.com`).
-
-The **Azure Activity Log** is the built-in control plane audit trail for your entire subscription:
-*   **What it records:** Every create, update, delete, and action operation (HTTP `PUT`, `POST`, `DELETE`). Examples include: stopping a VM, modifying an NSG security rule, assigning an RBAC role, or deleting a storage container.
-*   **What it NEVER records:** Read operations (HTTP `GET`). Merely viewing a list of virtual machines or downloading a blob does **not** generate an Activity Log entry.
-*   **Built-in Retention:** Kept for **90 days free of charge**. You cannot change this slider in the Activity Log blade.
-*   **The 365-Day Compliance Trap (AZ-104 Exam Classic):**
-    If an auditor requires Activity Logs to be queryable for 1 year (365 days):
-    *   *Wrong Answer:* Change retention in the Activity Log settings (impossible, fixed at 90 days).
-    *   *Wrong Answer:* Archive solely to a Storage Account (satisfies retention, but cannot run ad-hoc KQL queries from the portal).
-    *   *Correct Answer:* Create a **Subscription-Level Diagnostic Setting** and export Activity Logs to a **Log Analytics Workspace**.
-
----
-
-## 🤖 Stage 3: Host Observability — Modern AMA vs. Legacy MMA
-
-Virtual machines have an operating system boundary. The Azure hypervisor can measure external metrics (CPU percentage, disk read bytes, network out), but it cannot see inside the OS kernel (free RAM, running Windows services, Linux Syslog, or application crashes). To capture internal OS telemetry, you must deploy an in-guest agent.
-
-### The Agent Revolution (August 2024 Transition)
-Microsoft formally **retired the legacy Microsoft Monitoring Agent (MMA / OMS / Log Analytics Agent) in August 2024**. The modern enterprise standard is the **Azure Monitor Agent (AMA)**:
-
-| Architectural Vector | Legacy Agent (MMA / OMS) [RETIRED] | Modern Agent (Azure Monitor Agent - AMA) |
-| :--- | :--- | :--- |
-| **Agent Executable** | `MicrosoftMonitoringAgent` / `OmsAgentForLinux` | `AzureMonitorWindowsAgent` / `AzureMonitorLinuxAgent` |
-| **Configuration Model** | Workspace-centric (Pushed universally to all VMs) | **Rule-centric via Data Collection Rules (DCRs)** |
-| **Source Filtering** | ❌ Minimal; streams all logs, inflating bills | ✅ **Client-side XPath & facility filtering** drops unwanted logs *before* transmission |
-| **Authentication** | Shared Workspace ID & Primary Secret Key | **Managed Identity** (System or User-Assigned) |
-| **Multi-Homing** | Windows only (Linux was single-workspace) | ✅ Native multi-homing to multiple workspaces on both Linux and Windows |
-
-### Data Collection Rules (DCR): The FinOps Game-Changer
-A Data Collection Rule (`Microsoft.Insights/dataCollectionRules`) separates **what to collect** from **where to send it**:
-1.  **Data Sources:** Performance counters (CPU, RAM, Disk), Windows Event Logs (Application, System, Security), Linux Syslog facilities (`auth`, `daemon`, `kern`).
-2.  **Client-Side Filtering via XPath:** Instead of streaming millions of harmless Informational events into your workspace, an XPath query like:
-    ```xpath
-    Application!*[System[(Level=1 or Level=2)]]
-    System!*[System[(Level=1 or Level=2)]]
-    ```
-    instructs the agent to **discard everything except Critical (1) and Error (2) events** directly in OS memory before transmission. This single configuration frequently cuts enterprise Log Analytics ingestion bills by **up to 80%**!
-3.  **Destinations:** Route to Log Analytics Workspaces, Azure Monitor Metrics, or Event Hubs.
-4.  **Associations (DCRA):** The DCR is bound to specific virtual machines or Scale Sets. When a VM is associated with a DCR, Azure **automatically installs the AMA extension** via Managed Identity—no manual installation scripts required!
-
----
-
-## ⚡ Stage 4: PaaS Monitoring — Diagnostic Settings
-
-Platform-as-a-Service (PaaS) offerings (such as Azure App Services, Azure SQL, Key Vaults, and Application Gateways) are fully managed by Microsoft; there is no accessible OS to install an agent.
-
-PaaS telemetry is collected exclusively through **Diagnostic Settings**:
-*   **Source:** The PaaS resource.
-*   **Log Categories:** Service-specific tables. For an App Service: `AppServiceHTTPLogs` (inbound requests and HTTP status codes), `AppServiceConsoleLogs` (`stdout` and `stderr`), `AppServiceAppLogs` (application framework traces).
-*   **Metric Categories:** `AllMetrics`.
-*   **Destinations:**
-    1.  **Log Analytics Workspace:** For interactive KQL troubleshooting and alerts.
-    2.  **Azure Storage Account:** Low-cost cold archival for multi-year regulatory retention.
-    3.  **Event Hub:** High-throughput streaming to external SIEM/SOAR platforms (Splunk, Datadog).
-
----
-
-## 🏢 Stage 5: The Analytics Engine — Log Analytics Workspace & FinOps
-
-A **Log Analytics Workspace** (`Microsoft.OperationalInsights/workspaces`) is the centralized repository and data engine where logs from VMs, PaaS services, and subscriptions are aggregated, indexed, and queried.
-
-### FinOps & Controlling Runaway Ingestion Costs
-In cloud monitoring, an unhandled application bug that logs stack traces in an infinite loop can ingest 500 GB in a few hours, resulting in massive unexpected charges. Azure provides strict financial guardrails:
-1.  **Daily Volume Cap:** Inside the workspace (*Usage and estimated costs ➔ Daily cap*), set a ceiling (e.g. `1.0 GB/day` or `5.0 GB/day`). Once reached, the workspace automatically halts non-security log collection for the remainder of the UTC day.
-2.  **Interactive Data Retention:** The first **30 days** of retention are included completely free. Retention can be extended up to **730 days (2 years)** on an interactive basis, and archived for up to **12 years**.
-3.  **Basic vs. Analytics Table Plans:** High-volume, low-value debugging logs can be routed to **Basic Log Tables** (costing ~80% less per GB than Analytics tables) with 8 days of retention for ad-hoc debugging.
-4.  **Capacity Reservations:** For enterprise environments ingesting **> 100 GB/day**, organizations reserve daily tiers (100 GB, 200 GB, 500 GB/day) for discounts up to 30–50% over Pay-As-You-Go.
-
----
-
-## 🔍 Stage 6: Analyzing Telemetry — Kusto Query Language (KQL)
-
-Log Analytics uses **Kusto Query Language (KQL)**. KQL is read-only, fast, and structured like a data pipeline using the pipe character (`|`), where the output of one command flows into the input of the next.
+### 3. Modern Host Observability: Azure Monitor Agent (AMA) vs. Legacy MMA
+Microsoft formally retired the legacy Microsoft Monitoring Agent (MMA / OMS / Log Analytics Agent) in August 2024. The modern enterprise standard is the **Azure Monitor Agent (AMA)**:
 
 ```text
-TableName
-| filter step    (where)
-| group/calc     (summarize)
-| shape/project  (project)
-| sort/visualize (sort / render)
++-------------------------------------------------------------------------------------------------+
+|                               AMA vs. LEGACY MMA ARCHITECTURAL COMPARISON                       |
++-------------------------------------------------------------------------------------------------+
+| Vector                 | Legacy Agent (MMA / OMS) [RETIRED]    | Modern Azure Monitor Agent (AMA) |
++------------------------+---------------------------------------+----------------------------------+
+| Configuration Model    | Workspace-centric (Monolithic push)   | Rule-centric via DCRs            |
+| Client-Side Filtering  | ❌ None (Streams all noise to cloud)  | ✅ Custom XPath filters drop logs|
+| Authentication         | Workspace ID + Static Primary Key     | **Managed Identity** (Zero Keys!)|
+| Multi-Homing           | Windows only                          | Native Windows and Linux         |
+| Hybrid Cloud Support   | Basic                                 | Built-in via **Azure Arc**       |
++-------------------------------------------------------------------------------------------------+
 ```
 
-### Essential KQL Production Recipes for AZ-104
+#### Data Collection Rules (DCR) Client-Side Filtering (FinOps Optimization):
+Instead of streaming millions of harmless Informational events into your workspace, a DCR XPath filter:
+```xpath
+Application!*[System[(Level=1 or Level=2)]]
+System!*[System[(Level=1 or Level=2)]]
+```
+instructs the agent to **discard everything except Critical (Level 1) and Error (Level 2) events** directly inside host memory before transmission, slashing cloud ingestion bills by **up to 80%**!
 
-#### 1. Checking VM Agent Connectivity (Heartbeat)
+---
+
+### 4. Log Analytics Workspace Table Plans & FinOps Guardrails
+A Log Analytics Workspace (`Microsoft.OperationalInsights/workspaces`) provides strict financial controls to prevent runaway telemetry bills:
+1. **Analytics Tables:** Standard interactive tables supporting the full KQL query spectrum, joins, and alerting. Includes 30 days free retention; retention expandable up to 730 days (2 years).
+2. **Basic Tables:** Designed for high-volume, low-value debugging logs (e.g., container console logs, firewall packet logs). Costs ~80% less per GB than Analytics tables; offers 8 days of retention for ad-hoc troubleshooting.
+3. **Archive Tier:** Retains logs for up to **12 years** at deep cold storage pricing for regulatory compliance (HIPAA, PCI-DSS, SEC).
+4. **Daily Volume Cap:** Configures a strict daily ceiling (e.g., `5.0 GB/day`). Once reached, non-security log ingestion automatically halts for the rest of the UTC day, protecting your budget from rogue application logging loops!
+
+---
+
+## 🏢 Stage 3: Deep-Intuition Platform Mechanics & Topology
+
+### 1. Alert Rules & The Three-Tier Alert Architecture
+
+```text
+[ 1. Telemetry Stream ]  Metrics Store, Log Analytics Workspace, or Activity Log
+          │
+          ▼
+[ 2. Alert Rule Condition ]
+  ├── A. Metric Alert: Threshold comparison (e.g., CPU > 80% for 5 mins). Sub-minute evaluation.
+  ├── B. Log Search Alert: KQL scheduled query (e.g., > 10 failed logins in 15 mins).
+  └── C. Activity Log Alert: ARM event trigger (e.g., VM Deallocate initiated).
+          │ (When Condition is True)
+          ▼
+[ 3. Alert Processing Rules ] (Optional Intermediary Routing / Suppression Engine)
+  ├── Action A: Suppress notifications (Scheduled weekend maintenance window)
+  └── Action B: Dynamically route to specific Action Group based on severity or resource tag
+          │
+          ▼
+[ 4. Action Group Dispatch ]
+  ├── Direct Notification: Email, SMS, Voice, Azure Mobile App Push
+  ├── Role-Based Notification: ARM Role Receiver (Owner, Contributor, Monitoring Reader)
+  └── Automated Remediation: Automation Runbook, Logic App, Azure Function, Secure Webhook
+```
+
+#### The ARM Role Receiver (High-Yield Exam Core):
+Instead of hardcoding personal engineer email addresses into Action Groups (which breaks whenever employees leave the company), configure an **ARM Role Receiver**:
+* Target the **Owner**, **Contributor**, or **Monitoring Reader** role at the subscription or resource group scope.
+* Whenever a new engineer is granted that RBAC role, they **automatically begin receiving alert notifications** with zero maintenance required on the Action Group!
+
+---
+
+### 2. Network Watcher Diagnostic Toolkit (SDN Diagnostics)
+Azure Network Watcher provides granular diagnostic tools to isolate packet drops across Azure Software Defined Networking:
+
+```text
++-------------------------------------------------------------------------------------------------+
+|                                 AZURE NETWORK WATCHER TOOLKIT                                   |
++-------------------------------------------------------------------------------------------------+
+|  1. IP Flow Verify          |  2. Next Hop                 |  3. Connection Troubleshoot        |
++-----------------------------+------------------------------+------------------------------------+
+| - Checks: Is a 5-tuple      | - Checks: Where is Azure's   | - Checks: End-to-end TCP latency   |
+|   packet allowed by NSGs?   |   SDN routing this packet?   |   and hop-by-hop packet drops.     |
+| - Output: "Access Allowed"  | - Output: "Next Hop Type:    | - Output: Visual topological path  |
+|   or "Access Denied by      |   VirtualAppliance (10.0.1.4)|   with latency in milliseconds and |
+|   Rule: Custom-Deny-100"    |   or 'None' (Blackhole!)"    |   firewall drop indicators.        |
++-----------------------------+------------------------------+------------------------------------+
+|  4. Packet Capture          |  5. NSG Flow Logs & Traffic  |  6. Effective Security Rules       |
++-----------------------------+------------------------------+------------------------------------+
+| - Remotely captures .pcap   | - Streams flow metadata to   | - Displays the merged evaluation   |
+|   traces on live VM disks   |   Storage & Log Analytics    |   of Subnet NSG + NIC NSG rules    |
+|   without logging in!       |   with Layer 7 geo-mapping.  |   with winning priority rankings.  |
++-------------------------------------------------------------------------------------------------+
+```
+
+---
+
+## 🔍 Stage 4: Kusto Query Language (KQL) Production Recipes
+
+KQL is read-only, fast, and structured like a data pipeline using the pipe character (`|`):
+
+### 1. VM Availability & Heartbeat Health Check
 ```kusto
 Heartbeat
 | where TimeGenerated >= ago(1h)
@@ -203,20 +239,9 @@ Heartbeat
 | where LastHeartbeat < ago(15m)
 | sort by LastHeartbeat desc
 ```
-*Purpose:* Identifies servers that have stopped reporting to Azure Monitor in the last 15 minutes.
+*Purpose:* Identifies virtual machines that have stopped reporting telemetry in the last 15 minutes.
 
-#### 2. Calculating Average CPU across VMs in 15-Minute Buckets
-```kusto
-Perf
-| where TimeGenerated >= ago(4h)
-| where ObjectName == "Processor" and CounterName == "% Processor Time" and InstanceName == "_Total"
-| summarize AvgCPU = avg(CounterValue), MaxCPU = max(CounterValue) by Computer, bin(TimeGenerated, 15m)
-| where AvgCPU > 80
-| render timechart
-```
-*Purpose:* Visualizes CPU saturation trends and generates an interactive line chart right in the portal.
-
-#### 3. Identifying Volumes with Low Disk Space (< 15%)
+### 2. Identifying Low Disk Space Across Fleet (< 15% Free)
 ```kusto
 Perf
 | where TimeGenerated >= ago(1h)
@@ -226,9 +251,9 @@ Perf
 | where CounterValue < 15
 | project Computer, Drive, FreePercent = CounterValue
 ```
-*Purpose:* Pinpoints specific drive letters running out of storage space.
+*Purpose:* Pinpoints volumes running out of disk space before application crashes occur.
 
-#### 4. Auditing Failed Resource Operations in Activity Logs
+### 3. Auditing Failed ARM Administrative Operations
 ```kusto
 AzureActivity
 | where TimeGenerated >= ago(7d)
@@ -236,132 +261,182 @@ AzureActivity
 | project TimeGenerated, Caller, OperationNameValue, ResourceGroup, ActivitySubstatusValue
 | sort by TimeGenerated desc
 ```
-*Purpose:* Reveals who triggered an operation that failed ARM validation.
+*Purpose:* Reveals who triggered an administrative action that failed ARM validation.
 
 ---
 
-## 🚨 Stage 7: Automated Incident Response — Alert Rules & Action Groups
+## ⚙️ Stage 5: Declarative & Automation Engine (CLI & PowerShell Core)
 
-Observability is incomplete without automated response. The **Azure Alert Engine** monitors telemetry and initiates actions when thresholds are breached.
+### 1. Azure CLI: Provision Log Analytics, Daily Cap & Diagnostic Settings
 
-```text
-[ 1. Scope ]       Target VM, Resource Group, Subscription, or Log Analytics Workspace
-     │
-     ▼
-[ 2. Condition ]   Metric Alert (Numerical) vs. Log Search Alert (KQL) vs. Activity Log Event
-     │
-     ▼
-[ 3. Actions ]     Action Group (Email, SMS, ARM Role Receiver, Webhook, Logic App, Runbook)
-     │
-     ▼
-[ 4. Details ]     Severity (Sev 0 Critical -> Sev 4 Verbose) + Evaluation Frequency
-```
+```bash
+# ==============================================================================
+# 1. CREATE LOG ANALYTICS WORKSPACE WITH FINOPS DAILY CAP
+# ==============================================================================
+RG_NAME="rg-monitoring-prod"
+LOCATION="eastus"
+WORKSPACE_NAME="law-enterprise-prod"
 
-### The Severity Scale
-*   **Sev 0 (Critical):** Catastrophic business outage (Production database offline, core network unreachable).
-*   **Sev 1 (Error):** Major service degradation (CPU > 90% for 15 mins, HTTP 500 error spike > 10%).
-*   **Sev 2 (Warning):** Early warning indicator (Disk free space < 15%, memory pressure).
-*   **Sev 3 (Informational):** Normal operational state change (Autoscale engine scaled out VMSS instances).
-*   **Sev 4 (Verbose):** Low-level debug and diagnostic traces.
+az monitor log-analytics workspace create \
+  --resource-group "${RG_NAME}" \
+  --workspace-name "${WORKSPACE_NAME}" \
+  --location "${LOCATION}" \
+  --retention-time 30 \
+  --sku "PerGB2018"
 
-### Action Groups & The ARM Role Receiver
-An **Action Group** (`Microsoft.Insights/actionGroups`) is a reusable collection of notification channels:
-*   **Direct Notifications:** Email, SMS, Azure Mobile App Push, Voice call.
-*   **The ARM Role Receiver (Exam Gold):**
-    Configures alerts to notify anyone holding a specific RBAC role (e.g. `Owner`, `Contributor`, `Monitoring Reader`) on the subscription. When new team members are onboarded, they automatically receive incident emails with zero maintenance on the Action Group!
-*   **Automated Remediation:**
-    *   *Azure Automation Runbook:* Executes PowerShell/Python scripts to restart a stopped service or clear temp files.
-    *   *Azure Logic App / Function:* Triggers serverless orchestration workflows or opens tickets in ServiceNow/Jira.
-    *   *Secure Webhook:* Pushes incident JSON payloads to Slack, Microsoft Teams, or PagerDuty.
+# Set FinOps Daily Volume Cap to 2.0 GB/day to prevent runaway billing
+az monitor log-analytics workspace update \
+  --resource-group "${RG_NAME}" \
+  --workspace-name "${WORKSPACE_NAME}" \
+  --quota 2.0
 
-### Alert Processing Rules (Maintenance Windows)
-During scheduled weekend maintenance or database patching, hundreds of false-positive alerts fire. An **Alert Processing Rule** is configured to **Suppress notifications** during specific maintenance windows. The alerts are still logged for auditing, but engineers are not paged!
+# ==============================================================================
+# 2. CREATE REUSABLE ACTION GROUP WITH ARM ROLE RECEIVER
+# ==============================================================================
+az monitor action-group create \
+  --resource-group "${RG_NAME}" \
+  --name "ag-sre-incident-team" \
+  --short-name "sre-alerts" \
+  --arm-role-receivers name="SubscriptionOwners" role-id="8e3af657-a8ff-443c-a75c-2fe8c4bcb635" use-common-alert-schema=true
 
----
+# ==============================================================================
+# 3. CREATE HIGH-SEVERITY METRIC ALERT RULE (CPU > 85%)
+# ==============================================================================
+SUB_ID=$(az account show --query id -o tsv)
+ACTION_GROUP_ID="/subscriptions/${SUB_ID}/resourceGroups/${RG_NAME}/providers/Microsoft.Insights/actionGroups/ag-sre-incident-team"
 
-## 🖥️ Stage 8: Step-by-Step Azure Portal GUI Walkthrough
-
-To connect theory to your actual screen, follow this navigation path in the Azure Portal:
-
-```
-Azure Portal Navigation Path
- 1. Search Bar ➔ "Monitor"
-    ├── Activity log ➔ Click "Export Activity Logs" ➔ "+ Add diagnostic setting" (Subscription audit)
-    ├── Log Analytics workspaces ➔ "+ Create" (Basics ➔ Region East US ➔ Create)
-    │     ├── Settings ➔ "Usage and estimated costs" ➔ "Daily cap" (Set 1.0 GB)
-    │     └── Settings ➔ "Data retention" (30 days free slider)
-    ├── Data Collection Rules ➔ "+ Create"
-    │     ├── Resources tab ➔ Select VMs (Installs AMA automatically)
-    │     └── Collect and deliver tab ➔ Performance counters + Custom XPath (Level=1 or 2)
-    ├── Logs ➔ Write KQL query ➔ Click "▶ Run" ➔ Click "[Chart]" tab
-    ├── Metrics ➔ Select Scope (VM) ➔ Metric (Percentage CPU) ➔ Aggregation (Avg)
-    └── Alerts ➔ "Create" ➔ "Alert rule" ➔ Condition (CPU > 80%) ➔ Action Group (ARM Role: Owner)
+az monitor metrics alert create \
+  --resource-group "${RG_NAME}" \
+  --name "alert-high-cpu-prod" \
+  --scopes "/subscriptions/${SUB_ID}/resourceGroups/${RG_NAME}/providers/Microsoft.Compute/virtualMachines/vm-app-primary" \
+  --condition "avg Percentage CPU > 85" \
+  --window-size 5m \
+  --evaluation-frequency 1m \
+  --severity 1 \
+  --action "${ACTION_GROUP_ID}"
 ```
 
 ---
 
-## 🔬 Hands-On Enterprise Lab Bridge
+## 🖥️ Stage 6: Step-by-Step Azure Portal GUI Walkthrough
 
-To build and verify this entire architecture hands-on, execute the complete production lab in your workspace:
+### Task 1: Setting Up a Log Analytics Workspace with Daily Cap
+1. In the top search bar, type **Log Analytics workspaces** and select it.
+2. Click **+ Create**:
+   - **Resource group:** `rg-monitoring-prod`.
+   - **Name:** `law-enterprise-prod`.
+   - **Region:** `East US`.
+3. Click **Review + create** $\rightarrow$ **Create**.
+4. Open `law-enterprise-prod`:
+   - Under **Settings**, click **Usage and estimated costs**.
+   - Click **Daily cap** on the top command bar $\rightarrow$ toggle **On** $\rightarrow$ enter `2.0` GB/day $\rightarrow$ click **OK**.
 
-👉 **Corresponding Hands-On Lab:** [[Projects/AZ-104/12_Monitoring_Observability_and_FinOps/Lab-12_Full_Stack_Observability_AMA_KQL_and_Alert_Suppression|Lab 12: Full Stack Observability, AMA, KQL & Alert Suppression]]
+### Task 2: Creating an Action Group with ARM Role Receiver
+1. In the top search bar, type **Monitor** $\rightarrow$ select **Alerts** in the left menu.
+2. Click **Action groups** on the top toolbar $\rightarrow$ click **+ Create**:
+   - **Resource group:** `rg-monitoring-prod`.
+   - **Action group name:** `ag-operations-core`.
+   - **Display name:** `ops-core`.
+3. In the **Notifications** tab:
+   - *Notification type:* Select **Email Azure Resource Manager Role**.
+   - *Name:* `Notify-Owners`.
+   - *Role:* Select **Owner**.
+   - *Enable the common alert schema:* Select **Yes**.
+4. Click **Review + create** $\rightarrow$ **Create**.
 
-### Lab Deliverables in `Lab-12`:
-1.  **Task 1:** Provision a centralized Log Analytics Workspace with a FinOps 1.0 GB Daily Cap.
-2.  **Task 2:** Deploy the Azure Monitor Agent (AMA) and configure Data Collection Rules with XPath filtering.
-3.  **Task 3:** Configure PaaS Diagnostic Settings streaming to Log Analytics.
-4.  **Task 4:** Deploy multi-channel Action Groups with ARM Role receivers and email dispatch.
-5.  **Task 5:** Execute synthetic Linux CPU stress drills (`stress-ng`) and observe real-time state transition from `Healthy` to `Fired`.
-6.  **Task 6:** Configure Alert Processing Rules for scheduled maintenance window notification suppression.
+### Task 3: Configuring an Alert Processing Rule to Suppress Maintenance Alerts
+1. In Azure Monitor $\rightarrow$ click **Alerts** $\rightarrow$ click **Alert processing rules**.
+2. Click **+ Create**:
+   - **Scope:** Select your resource group `rg-monitoring-prod`.
+   - In the **Rule settings** tab:
+     - Select **Suppress notifications**.
+   - In the **Scheduling** tab:
+     - Select **Recurring**.
+     - Set to recur every Sunday from `02:00` to `04:00` UTC.
+3. Click **Review + create** $\rightarrow$ **Create**.
 
 ---
 
-## ⚠️ "See It in Action" Real-World Failure & Recovery Loop (AARF)
+## 🔬 Stage 7: Hands-On Enterprise Lab Bridge
 
-### Scenario: The 10-Minute Alert Delay Outage
-*   **The Assumption:** An SRE team writes an alert rule on CPU utilization using a KQL Scheduled Query against the `Perf` table evaluated every 5 minutes. They assume this will notify them immediately when a CPU spike occurs.
-*   **The Architecture:**
-    `VM Host` ➔ `Azure Monitor Agent (AMA)` ➔ `Batch HTTPS Transmission` ➔ `Log Analytics Ingestion Pipeline` ➔ `Perf Table Indexing` ➔ `Scheduled Query Rule (KQL)` ➔ `Action Group`.
-*   **The Root Cause Failure:**
-    *   CPU spikes to 100% at `12:00:00`.
-    *   The AMA agent batches telemetry locally for 2 minutes before uploading.
-    *   The Log Analytics ingestion pipeline takes 3 minutes to index the batch into columnar storage.
-    *   The Scheduled Query fires at `12:05:00`, querying data with a 5-minute lookback window; the newly arriving records have not finished committing.
-    *   The alert finally triggers at `12:10:00`—**10 full minutes after the outage began**, violating their 3-minute SLA and causing customer transactions to fail!
-*   **The Live Remediation:**
-    *   For low-latency infrastructure metrics (CPU, RAM, Network), **always configure Metric Alert Rules**, which query the streaming time-series pipeline with sub-minute latency.
-    *   Reserve **Log Search Alerts** for text pattern searches, error logs, and multi-table security correlations where 5–15 minute evaluation is acceptable.
-
----
-
-## 💡 High-Yield AZ-104 Exam Scenarios & Trick Traps
+To apply these monitoring principles, deploy the Azure Monitor Agent, configure DCR client-side filtering, and execute synthetic stress drills, proceed directly to the comprehensive practical lab:
 
 > [!TIP]
-> **Activity Log 90-Day Retention Trap:**
-> - Azure Activity Logs are kept for **90 days** free of charge.
-> - If an exam scenario states: *"An auditor requires all administrative change events for the past 365 days to be queryable with SQL or KQL"*, the correct answer is: **Export Activity Logs using a Diagnostic Setting to a Log Analytics Workspace**.
-> - Archiving solely to a Storage Account satisfies retention compliance, but does **not** allow immediate ad-hoc KQL querying from the portal.
+> **Practical Implementation Companion:**
+> Access the comprehensive engineering lab at:
+> **[[Lab-12_Full_Stack_Observability_AMA_KQL_and_Alert_Suppression|Lab 12: Full Stack Observability, AMA, KQL & Alert Suppression]]**
+> 
+> *Target Lab File:* `Projects/AZ-104/12_Monitoring_Observability_and_FinOps/Lab-12_Full_Stack_Observability_AMA_KQL_and_Alert_Suppression.md`
 
-> [!WARNING]
-> **MMA Deprecation & Exam Terminology:**
-> - While Microsoft retired the Microsoft Monitoring Agent (MMA/OMS) in August 2024, older AZ-104 exam pools may still refer to the Log Analytics Agent or MMA.
-> - For modern questions, always select **Azure Monitor Agent (AMA)** with **Data Collection Rules (DCRs)** and **Azure Arc**.
+### Lab Objectives Matrix:
 
-> [!IMPORTANT]
-> **Dynamic Thresholds for Cyclic / Seasonal Workloads:**
-> - When an exam question describes workloads with high daytime traffic and low nighttime traffic, static metric thresholds (e.g., fixed 80% CPU) produce false positives at night or fail to detect anomalies during peak daytime hours.
-> - The correct answer is to use **Dynamic Thresholds**, which leverage machine learning to establish dynamic baseline boundaries.
+```text
++-----------------------------------------------------------------------------------------+
+| Lab 12 Enterprise Milestone Goals                                                       |
++-----------------------------------------------------------------------------------------+
+| 1. Deploy a Log Analytics Workspace and configure a FinOps 1.0 GB Daily Volume Cap      |
+| 2. Provision Data Collection Rules (DCR) with XPath filtering to suppress noisy events  |
+| 3. Deploy multi-channel Action Groups with ARM Role receivers and email dispatch        |
+| 4. Execute Linux CPU stress testing (`stress-ng`) and audit live alert state changes   |
+| 5. Configure Alert Processing Rules for scheduled maintenance notification suppression  |
++-----------------------------------------------------------------------------------------+
+```
 
 ---
 
-## 🌐 Authoritative References & Citations
+## ⚠️ Stage 8: "See It in Action" Real-World Failure & Recovery Loop (AARF)
 
-- [Microsoft Learn: Design and implement a monitoring strategy on Azure](https://learn.microsoft.com/en-us/training/modules/design-monitoring-strategy-on-azure/)
-- [Microsoft Learn: Monitor and configure Azure resources with Azure Monitor](https://learn.microsoft.com/en-us/training/modules/monitor-azure-resources-with-azure-monitor/)
-- [Azure Monitor Architecture & Platform Documentation](https://docs.microsoft.com/en-us/azure/azure-monitor/)
-- [Azure Monitor Agent (AMA) Overview & Migration](https://learn.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview)
-- [Log Analytics Workspace Pricing and Commitment Tiers](https://azure.microsoft.com/en-us/pricing/details/monitor/)
-- [John Savill: Azure Master Class v2 - Module 10 - Monitoring & Security](https://www.youtube.com/playlist?list=PLlVtbbG169nGlGPWs9xaLKT1KfwqREHbs)
-- [KodeKloud AZ-104 Course - Administer Monitoring Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Monitoring/Module-Introduction/page.md)
-- [Moe Intelligence AZ-104 Video Series (Lessons 35, 37–40)](https://www.youtube.com/playlist?list=PLczK3J2J4clmeh328CC13dJrcALcSFZFb)
-- Udemy AZ-104 Microsoft Azure Administrator Course by Scott Duffy ([Inflow: Module 10](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/10_Administer_Monitoring_and_Log_Analytics.md))
+### Scenario: The "10-Minute Alert Delay" Outage
+
+#### 1. The Architectural Setup & Assumptions
+An SRE team monitors CPU utilization on critical payment-processing VMs. The engineer creates a **Log Search Alert Rule** running a scheduled KQL query against the `Perf` table evaluated every 5 minutes. The team assumes they will be paged immediately if CPU saturates.
+
+#### 2. The Production Failure Manifestation
+At `12:00:00`, a rogue query triggers a 100% CPU lockup on the VM. External customer checkouts fail immediately. However, the SRE team receives **zero alert notifications until 12:10:00**—ten full minutes after the outage began!
+
+#### 3. Root Cause Analysis (RCA)
+Why did the alert take 10 minutes to trigger?
+1. **Agent Batching:** The in-guest agent batches telemetry in host memory for 2 minutes before uploading over HTTPS.
+2. **Ingestion & Indexing Pipeline:** Log Analytics takes 2–3 minutes to parse, index, and commit records into columnar storage.
+3. **Query Evaluation Schedule:** The scheduled log query ran at `12:05:00`, but because the newly arriving telemetry was still committing to disk, the records fell outside the query window. The alert did not catch the event until the next evaluation cycle at `12:10:00`!
+4. **The Resolution Law:** For low-latency infrastructure alerting (CPU, RAM, network saturation), **always configure Metric Alerts** (near real-time sub-minute evaluation)! Reserve Log Search Alerts for complex pattern matching, text logs, and multi-table security audits.
+
+---
+
+## 💡 Stage 9: High-Yield AZ-104 Exam Scenarios & Trick Question Traps
+
+### Trick Question Trap 1: Activity Log 90-Day Retention Trap
+* **The Scenario:** An auditor requires all subscription administrative change events for the past 365 days to be queryable via KQL from the Azure Portal.
+* **The Trap:** Should the administrator change the retention slider in the Activity Log blade or export to a storage account?
+* **The Ground Truth:** You **CANNOT change retention in the Activity Log blade** (it is fixed at 90 days!). Exporting solely to a storage account satisfies retention compliance, but does NOT allow immediate ad-hoc KQL querying from the portal. The correct answer is to **create a Subscription-Level Diagnostic Setting and export Activity Logs to a Log Analytics Workspace**!
+
+### Trick Question Trap 2: Dynamic Thresholds for Cyclic / Seasonal Workloads
+* **The Scenario:** An e-commerce web application experiences high customer traffic during business hours (averaging 70% CPU) and minimal traffic at night (averaging 15% CPU). A static alert threshold of 80% misses nighttime anomalies, while a lower threshold triggers false alarms during the day.
+* **The Question:** Which alert condition should you configure?
+* **The Ground Truth:** Configure **Dynamic Thresholds**! Dynamic Thresholds leverage built-in machine learning algorithms to establish a dynamic baseline boundary that automatically adapts to historical cyclic patterns.
+
+### Trick Question Trap 3: Suppressing Alerts During Maintenance Windows
+* **The Scenario:** An operations team patches database servers every Saturday night. Management wants to prevent incident alerts from paging on-call staff during this window, while preserving the alert history for auditing.
+* **The Trap:** Should the administrator disable the alert rules during maintenance?
+* **The Ground Truth:** **NO!** Disabling alert rules creates manual overhead and risks forgetting to re-enable them. The correct solution is to create an **Alert Processing Rule** with the action set to **"Suppress notifications"** scheduled for the recurring maintenance window.
+
+### Trick Question Trap 4: Network Watcher "IP Flow Verify" vs. "Effective Security Rules"
+* **The Scenario:** A VM cannot reach an external database port. An administrator needs to quickly test if an inbound packet is allowed and determine which exact NSG rule is responsible.
+* **The Trap:** Does Effective Security Rules execute active packet simulation?
+* **The Ground Truth:** **No!** *Effective Security Rules* only displays a static table of merged subnet and NIC NSG rules. To perform an active packet test that simulates a 5-tuple flow and outputs an instant `Access Allowed` or `Access Denied` verdict with the winning rule name, use **Network Watcher IP Flow Verify**!
+
+---
+
+## 🌐 Authoritative References & Inflow Citations
+
+* **Udemy AZ-104 Master Class by Scott Duffy:** [Inflow: Module 10 - Administer Monitoring and Log Analytics](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-ScottDuffy/10_Administer_Monitoring_and_Log_Analytics.md)
+* **John Savill’s Azure Master Class & Deep Dives:**
+  - [Inflow: Module 10 - Monitoring & Security](file:///F:/Dump%20one/BrainDump/inflow/AZ-104-JohnSavill/25_Azure_Master_Class_v2_-_Module_10_-_Monitoring_&_Security.md) *(Azure Monitor Agent, DCR XPath filtering, Alert Processing Rules, Prometheus workspaces)*
+* **Moe Intelligence AZ-104 Curriculum:** Lessons 35 through 40 *(Azure Monitor, Logs, Workbooks, Alerts, Action Groups, Pricing)*
+* **KodeKloud AZ-104 Course:** [Administer Monitoring Module](https://notes.kodekloud.com/docs/Updated-AZ-104-Microsoft-Azure-Administrator/Administer-Monitoring/Module-Introduction/page.md)
+* **Official Microsoft Learn Documentation:**
+  - [Azure Monitor overview](https://learn.microsoft.com/en-us/azure/azure-monitor/overview)
+  - [Azure Monitor Agent overview](https://learn.microsoft.com/en-us/azure/azure-monitor/agents/azure-monitor-agent-overview)
+  - [Data Collection Rules in Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/essentials/data-collection-rule-overview)
+  - [Alert processing rules for Azure Monitor alerts](https://learn.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-processing-rules)
+  - [What is Azure Network Watcher?](https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview)
