@@ -24,6 +24,14 @@ This index contains our canonical Terraform Infrastructure as Code (IaC) on Micr
   * Input, output, and local variables, variable precedence hierarchy, primitive and structural type constraints (`object`, `tuple`, `map`, `list`), conditional expressions, splat expressions, and repeating nested Azure resource configurations via `dynamic` blocks.
 - 🔄 **[[14-3_terraform_azure_meta_arguments_lifecycle_and_functions|Module 14-3: Meta-Arguments, Lifecycle Control, Functions & Data Sources]]**
   * Resource looping (`count` vs `for_each`), explicit dependency graphing (`depends_on`), lifecycle meta-arguments (`create_before_destroy`, `prevent_destroy`, `ignore_changes`), preconditions/postconditions, built-in function suite (string, collection, encoding, filesystem), and querying existing Azure infrastructure using `data` sources.
+- 📦 **[[14-4_terraform_azure_modules_and_code_organization|Module 14-4: Modular Architecture, Code Organization & Reusable Modules]]**
+  * Child module engineering, standard triad (`main.tf`, `variables.tf`, `outputs.tf`), multi-environment directory layout, module inputs/outputs passthrough chaining, `for_each` module iteration, semantic git version pinning, and the monolith-to-module `moved {}` refactoring pattern.
+- 🏛️ **[[14-5_terraform_azure_enterprise_infrastructure_patterns|Module 14-5: Enterprise Azure Infrastructure Patterns as Code]]**
+  * Enterprise networking (subnets, delegation, bidirectional VNet peering, NAT Gateway egress), compute scale sets (VMSS with Proximity Placement Groups), cloud-native PaaS (App Service blue/green deployment slots, Azure Functions), zero-trust machine identity (SPN and scoped RBAC), hardened Azure SQL with Private Endpoints, and full-stack observability (Log Analytics & diagnostic settings).
+- 💾 **[[14-6_terraform_azure_state_operations_import_and_migration|Module 14-6: State Operations, Migration, import Blocks & aztfy]]**
+  * Advanced state manipulation (`state list`, `state show`, `state mv`, `state rm`), breaking deadlocked CI/CD concurrency locks (`force-unlock`), modern declarative `import {}` blocks (Terraform v1.5+), reverse-engineering Azure clouds via Microsoft `aztfy`, and backend state migration.
+- 🐙 **[[14-7_terraform_azure_github_actions_cicd_automation|Module 14-7: Enterprise CI/CD with GitHub Actions & Azure Terraform]]**
+  * Secretless cloud authentication using OpenID Connect (OIDC) & Workload Identity Federation, 2-stage GitOps delivery pipeline (Pull Request speculative plan comments via `actions/github-script`, protected production apply on merge), reusable workflows, and automated nightly drift detection with auto-remediation alerting.
 
 ---
 

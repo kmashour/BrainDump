@@ -25,6 +25,8 @@ This index contains our GitHub Actions CI/CD automation study modules, starting 
   * Self-hosted runner systemd deployments on Linux hosts, security controls (GITHUB_TOKEN permissions, OIDC cloud trust, action SHA pinning), diagnostic debugging, and comparisons to Jenkins.
 - 🐙 **[Module 9-4: GitHub Actions & CI/CD Platform Automation (Elfakharny Lecture)](9-4_github_actions_lecture_elfakharny.md)**
   * Basic CI/CD principles, event-driven platform automation triggers, YAML anatomy (the checkout gotcha), VM multiplier billing tiers, and Enterprise Cloud vs Server topologies.
+- 🪐 **[[14-7_terraform_azure_github_actions_cicd_automation|Module 14-7: Enterprise CI/CD with GitHub Actions & Azure Terraform]]**
+  * Secretless cloud authentication using OpenID Connect (OIDC) & Workload Identity Federation, 2-stage GitOps delivery pipeline (Pull Request speculative plan comments via `actions/github-script`, protected production apply on merge), reusable workflows, and automated nightly drift detection.
 
 ---
 
