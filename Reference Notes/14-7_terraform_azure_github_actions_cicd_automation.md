@@ -6,79 +6,129 @@ domains:
   - terraform
   - azure
   - github-actions
+  - gitops
+  - kubernetes
 tags:
   - terraform/azure
   - github-actions/ci-cd
+  - azure/devops
   - azure/oidc
+  - gitops/argo-cd
   - status/completed
 ---
 
-# Module 14-7: Enterprise CI/CD with GitHub Actions & Azure Terraform
+# Module 14-7: Enterprise CI/CD, GitOps Automation, Azure DevOps & Argo CD
 
-**Breadcrumbs:** [[--Index--|🏠 Index]] > [[14-Index - Terraform on Azure|☁️ Terraform on Azure MOC]] > [[9-Index - GitHub Actions|🐙 GitHub Actions MOC]] > **Module 14-7: CI/CD Automation**
+**Breadcrumbs:** [[--Index--|🏠 Index]] > [[14-Index - Terraform on Azure|☁️ Terraform on Azure MOC]] > [[9-Index - GitHub Actions|🐙 GitHub Actions MOC]] > **Module 14-7: CI/CD & GitOps Automation**
 
 ---
 
 ## 🎯 Architectural Overview & Cognitive Map
 
-In modern platform engineering, executing `terraform apply` manually from a developer's workstation is strictly prohibited in enterprise production. Manual execution leads to "works on my machine" discrepancies, untracked out-of-band changes, state lock race conditions, and massive security exposure through long-lived administrative cloud credentials on laptops.
+In modern cloud platform engineering, executing `terraform apply` manually from an engineer's laptop is strictly prohibited in enterprise production. Manual execution creates "works on my machine" inconsistencies, untracked out-of-band drift, state lock deadlocks, and severe security vulnerabilities caused by storing high-privilege credentials on local workstations.
 
-The industry-standard solution is **GitOps Infrastructure Automation via GitHub Actions**:
-1. All infrastructure changes are proposed via **GitHub Pull Requests**.
-2. Automated pipelines lint, validate, security-scan, and generate a **Speculative Terraform Plan**, posting the exact diff back into the PR.
-3. Upon peer review and merge to `main`, an automated pipeline acquires **Secretless OpenID Connect (OIDC)** tokens from Azure, executes `terraform apply`, and releases state locks.
+The enterprise standard is **Automated GitOps & CI/CD Pipelines**:
+1. **Single Source of Truth:** Every infrastructure component is declared in Git.
+2. **Branching & Pull Request Governance:** Code changes are validated via automated linters, security scans, and **Speculative Plans** before human approval.
+3. **Secretless Cloud Authentication:** Pipelines authenticate to Azure using **OpenID Connect (OIDC)** and Workload Identity Federation—eliminating permanent passwords entirely.
+4. **Multi-Environment Promotion:** Infrastructure progresses sequentially through isolated environments (`dev` ➔ `staging` ➔ `production`), each backed by dedicated state files and storage accounts.
+5. **Continuous Reconciliation & Drift Detection:** Scheduled audit pipelines and GitOps controllers (Argo CD) continuously detect and heal configuration drift between live cloud reality and the Git desired state.
 
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as Cloud Engineer
-    participant PR as GitHub Pull Request
-    participant GHA as GitHub Actions Runner
-    participant OIDC as GitHub OIDC Token Service
-    participant Entra as Microsoft Entra ID (Federated)
-    participant State as Azure Blob Remote State
-    participant ARM as Azure Resource Manager (ARM)
-
-    Dev->>PR: 1. Push branch & Open Pull Request
-    PR->>GHA: 2. Trigger terraform-pr.yml
-    GHA->>GHA: 3. Lint (fmt), Validate, & TFLint
-    GHA->>OIDC: 4. Request short-lived OIDC JSON Web Token (JWT)
-    OIDC->>GHA: 5. Issue GitHub OIDC JWT Token
-    GHA->>Entra: 6. Exchange GitHub JWT for Azure ARM Access Token
-    Entra->>Entra: 7. Validate Subject (sub: repo:org/repo:pull_request)
-    Entra->>GHA: 8. Return ephemeral Azure Access Token
-    GHA->>State: 9. Acquire Blob Lease Lock & Read Current State
-    GHA->>ARM: 10. Generate Speculative Plan (terraform plan)
-    GHA->>PR: 11. Post formatted Plan Summary as PR Comment!
-    
-    rect rgb(230, 250, 230)
-    note over Dev,ARM: 2. Review, Approval & Production Apply Phase
-    Dev->>PR: 12. Tech Lead Approves & Merges PR to 'main'
-    PR->>GHA: 13. Trigger terraform-apply.yml (environment: production)
-    GHA->>Entra: 14. OIDC Exchange (sub: repo:org/repo:ref:refs/heads/main)
-    GHA->>State: 15. Acquire Exclusive Blob Lease Lock
-    GHA->>ARM: 16. terraform apply (Provisions Cloud Resources!)
-    GHA->>State: 17. Commit updated state & Release Blob Lease Lock
+flowchart TD
+    subgraph GitOpsPlane ["GitOps Version Control & CI/CD Control Plane"]
+        Engineer["Cloud Platform Engineer"]
+        FeatureBranch["feature/add-aks-cluster"]
+        PR["GitHub / Azure DevOps Pull Request\n(Speculative Plan & Review)"]
+        MainBranch["main (Protected Branch)"]
+        GHA["GitHub Actions / Azure DevOps Runner\n(Ephemeral Container)"]
     end
+
+    subgraph AuthPlane ["Zero-Trust Identity Federation"]
+        OIDCIssuer["Token Issuer\n(token.actions.githubusercontent.com)"]
+        EntraID["Microsoft Entra ID (Federated Credentials)\n(Evaluates Subject Claim 'sub')"]
+    end
+
+    subgraph StoragePlane ["State Storage Plane (Isolated per Environment)"]
+        DevState["dev.terraform.tfstate\n(Lease Lock: Active)"]
+        ProdState["prod.terraform.tfstate\n(Lease Lock: Idle)"]
+    end
+
+    subgraph CloudPlane ["Microsoft Azure Infrastructure Plane"]
+        DevInfra["Dev Environment\n(AKS Cluster, Key Vault, VNet)"]
+        ProdInfra["Prod Environment\n(AKS Cluster, Key Vault, VNet)"]
+        ArgoCD["Argo CD Controller (on AKS)\n(Continuous GitOps Reconciler)"]
+    end
+
+    Engineer -->|1. git push| FeatureBranch
+    FeatureBranch -->|2. Open PR| PR
+    PR -->|3. Triggers Speculative Plan| GHA
+    GHA -->|4. Request OIDC JWT| OIDCIssuer
+    OIDCIssuer -->|5. Issue Signed Token| GHA
+    GHA -->|6. Token Exchange| EntraID
+    EntraID -->|7. Short-Lived Azure Access Token| GHA
+    GHA -->|8. Read Remote State| DevState
+    GHA -->|9. Post Speculative Plan Diff Comment| PR
+    PR -->|10. Merge to main| MainBranch
+    MainBranch -->|11. Trigger Multi-Stage Apply Pipeline| GHA
+    GHA -->|12. terraform apply| DevInfra
+    GHA -->|13. Promotion Gate| ProdInfra
+    ArgoCD <-->|14. Drift Detection & Self-Heal| ProdInfra
 ```
 
 ---
 
-## 1. Secretless Cloud Authentication via OpenID Connect (OIDC)
+## 1. Branching Strategies for Enterprise Infrastructure
 
-### A. The Flaw of Static Service Principal Passwords
-In legacy CI/CD pipelines, engineers created an Entra ID Service Principal with a client secret (password), copied it into `AZURE_CLIENT_SECRET` in GitHub Secrets, and forgot about it:
-* **Security Risk:** If the GitHub repository or runner is compromised, attackers gain permanent cloud access.
-* **Operational Outage:** Client secrets expire after 1 to 2 years. When they expire at 2:00 AM, all production deployment pipelines instantly collapse.
+Infrastructure as Code repositories require disciplined branching models to prevent merge conflicts and state file corruption:
+
+### A. The Feature Branching Workflow
+1. **The Protected `main` Branch:** Represents the currently deployed reality of the target environment. Direct pushes to `main` are strictly blocked via GitHub Branch Protection Rules or Azure DevOps Branch Policies.
+2. **Short-Lived Feature Branches (`feature/*`):** Created by engineers to introduce specific architectural changes (e.g., `feature/vnet-peering`, `feature/redis-cache`).
+3. **The Validation Gate (Pull Request):** Opening a PR against `main` triggers automated formatting checks (`terraform fmt`), static analysis (`tflint`), security scanning (`checkov` / `tfsec`), and a speculative plan.
+4. **Merge and Delete:** Once reviewed by two peer engineers, the PR is squashed and merged into `main`, and the feature branch is deleted.
+
+```text
+main branch:  ──●────────────────────────●───────────────● (Production Apply)
+                 \                      /
+feature branch:   └──● (Speculative) ──● (PR Review)
+```
+
+> [!IMPORTANT]
+> **Why Long-Lived Branches Fail in Terraform:**
+> In application software, teams often maintain long-lived branches (`dev`, `stage`, `prod`). **In Terraform, this is an anti-pattern!** If code diverges across branches, applying changes to production introduces untested, out-of-band drifts. Instead, maintain a single `main` branch with directory-per-environment separation (`environments/dev/`, `environments/prod/`) or pass environment-specific `.tfvars`.
+
+---
+
+## 2. Secretless Cloud Authentication via OpenID Connect (OIDC)
+
+### A. The Fatal Flaws of Static Service Principal Passwords
+Historically, CI/CD runners authenticated to Azure using static Service Principal passwords (Client Secrets) stored in CI secrets:
+* **Permanent Blast Radius:** If a build log accidentally dumps secrets or a runner VM is compromised, attackers gain persistent access to your cloud subscription.
+* **The 2:00 AM Expiration Outage:** Client secrets expire after 1 to 2 years. When they expire unannounced, all automated pipelines immediately crash.
+* **Rotation Friction:** Rotating static secrets across hundreds of repositories requires complex automation and downtime windows.
 
 ### B. The Zero-Trust OIDC Architecture (Workload Identity Federation)
-With **OpenID Connect (OIDC)**, **zero static passwords or secrets are stored in GitHub**!
-1. The GitHub Actions runner receives a cryptographically signed identity token from GitHub (`https://token.actions.githubusercontent.com`).
-2. The runner presents this token to Microsoft Entra ID.
-3. Entra ID verifies that the token's **Subject Claim (`sub`)** matches an authorized **Federated Credential** configured on the App Registration.
-4. Entra ID issues a short-lived (60-minute) Azure OAuth token for that specific pipeline execution.
+With **OpenID Connect (OIDC)**, **zero static passwords or secrets are stored in GitHub Actions or Azure DevOps**:
+1. The CI runner requests an ephemeral, cryptographically signed JSON Web Token (JWT) from GitHub (`token.actions.githubusercontent.com`).
+2. The runner presents this JWT to Microsoft Entra ID.
+3. Entra ID verifies the token's signature against GitHub's public JSON Web Key Set (JWKS).
+4. Entra ID evaluates the token's **Subject Claim (`sub`)** against a **Federated Identity Credential** registered on the Azure App Registration.
+5. If the claim matches (e.g., matching the specific repository and branch), Entra ID issues an ephemeral Azure OAuth token valid for exactly 60 minutes.
 
-### C. Azure Setup CLI Recipe (Configuring Federated Trust)
+```text
+[GitHub Runner] ──1. Request JWT──► [GitHub OIDC Provider]
+      │                                       │
+      │◄───────2. Signed Ephemeral JWT────────┘
+      │
+      ├──3. Exchange JWT with Subject Claim──► [Microsoft Entra ID]
+      │                                                │
+      │◄──────4. 60-Minute Azure Access Token──────────┘
+      │
+      └──5. Provision Infrastructure──────────► [Azure Resource Manager]
+```
+
+### C. Azure CLI Setup: Configuring Federated Identity Trust
 
 ```bash
 #!/usr/bin/env bash
@@ -87,21 +137,27 @@ set -euo pipefail
 # 1. Variables
 APP_NAME="spn-github-actions-terraform"
 GITHUB_ORG="my-enterprise-org"
-GITHUB_REPO="terraform-azure-infra"
+GITHUB_REPO="azure-infrastructure"
 SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 
 # 2. Create Entra ID Application & Service Principal
 APP_ID=$(az ad app create --display-name "${APP_NAME}" --query appId -o tsv)
 SP_ID=$(az ad sp create --id "${APP_ID}" --query id -o tsv)
 
-# 3. Grant Azure RBAC Contributor to the Service Principal
+# 3. Grant Azure RBAC Roles (Contributor + Network Contributor)
 az role assignment create \
   --role "Contributor" \
   --assignee-object-id "${SP_ID}" \
   --assignee-principal-type "ServicePrincipal" \
   --scope "/subscriptions/${SUBSCRIPTION_ID}"
 
-# 4. Add Federated Identity Credential for Main Branch
+az role assignment create \
+  --role "Network Contributor" \
+  --assignee-object-id "${SP_ID}" \
+  --assignee-principal-type "ServicePrincipal" \
+  --scope "/subscriptions/${SUBSCRIPTION_ID}"
+
+# 4. Federated Identity Credential for Production Merges (Main Branch)
 cat <<EOF > credential-main.json
 {
   "name": "gh-actions-main-branch",
@@ -116,7 +172,7 @@ az ad app federated-credential create \
   --id "${APP_ID}" \
   --parameters credential-main.json
 
-# 5. Add Federated Identity Credential for Pull Requests
+# 5. Federated Identity Credential for Pull Request Speculative Plans
 cat <<EOF > credential-pr.json
 {
   "name": "gh-actions-pull-requests",
@@ -131,17 +187,14 @@ az ad app federated-credential create \
   --id "${APP_ID}" \
   --parameters credential-pr.json
 
-echo "Federated OIDC configuration complete!"
-echo "Client ID: ${APP_ID}"
-echo "Tenant ID: $(az account show --query tenantId -o tsv)"
-echo "Subscription ID: ${SUBSCRIPTION_ID}"
+echo "OIDC Setup Complete! Client ID: ${APP_ID}"
 ```
 
 ---
 
-## 2. Configuring the Terraform AzureRM Provider for OIDC
+## 3. Configuring Terraform for OIDC
 
-To instruct the `azurerm` provider and backend to authenticate using GitHub's OIDC tokens rather than looking for a client secret:
+To instruct the `azurerm` provider and backend to authenticate using OIDC tokens:
 
 ```hcl
 # versions.tf / providers.tf
@@ -173,10 +226,10 @@ provider "azurerm" {
 
 ---
 
-## 3. Production GitHub Actions Workflow Implementations
+## 4. Production GitHub Actions Pipeline Implementations
 
-### Workflow 1: Pull Request Speculative Plan (`.github/workflows/terraform-pr.yml`)
-Runs on every PR targeting `main`. Performs code quality checks and publishes the plan summary directly into the PR conversation:
+### Pipeline 1: Pull Request Speculative Plan (`.github/workflows/terraform-pr.yml`)
+Triggers on every PR targeting `main`. Generates a plan and posts an interactive Markdown table back into the PR:
 
 ```yaml
 name: "Terraform Pull Request Pipeline"
@@ -185,7 +238,7 @@ on:
   pull_request:
     branches: [ "main" ]
     paths:
-      - "environments/prod/**"
+      - "environments/**"
       - "modules/**"
 
 permissions:
@@ -203,7 +256,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: environments/prod
+        working-directory: environments/dev
 
     steps:
       - name: "Checkout Repository"
@@ -245,12 +298,11 @@ jobs:
             const fs = require('fs');
             let planText = "";
             try {
-              planText = fs.readFileSync('environments/prod/plan_output.txt', 'utf8');
+              planText = fs.readFileSync('environments/dev/plan_output.txt', 'utf8');
             } catch (err) {
               planText = "Error reading plan output.";
             }
 
-            // Truncate output if it exceeds GitHub comment character limit
             if (planText.length > 60000) {
               planText = planText.substring(0, 60000) + "\n... [Plan Output Truncated]";
             }
@@ -258,7 +310,7 @@ jobs:
             const output = `#### 🪐 Terraform Pull Request Speculative Plan
             * **Pushed By:** @${{ github.actor }}
             * **Status:** \`${{ steps.plan.outcome }}\`
-            * **Working Directory:** \`environments/prod\`
+            * **Working Directory:** \`environments/dev\`
 
             <details><summary>Click to view full plan output</summary>
 
@@ -278,17 +330,17 @@ jobs:
 
 ---
 
-### Workflow 2: Production Apply on Merge (`.github/workflows/terraform-apply.yml`)
-Triggers strictly upon a successful merge to `main`. Enforces **GitHub Environment Protection Rules** requiring designated senior team members to approve before execution:
+### Pipeline 2: Multi-Environment Production Apply (`.github/workflows/terraform-apply.yml`)
+Triggers strictly upon a successful merge to `main`. Enforces sequential promotion from `dev` to `prod` with **GitHub Protected Environment Approval Gates**:
 
 ```yaml
-name: "Terraform Production Apply"
+name: "Terraform Multi-Environment Apply"
 
 on:
   push:
     branches: [ "main" ]
     paths:
-      - "environments/prod/**"
+      - "environments/**"
       - "modules/**"
 
 permissions:
@@ -296,14 +348,52 @@ permissions:
   contents: read
 
 concurrency:
-  group: terraform-production-apply
+  group: terraform-apply-main
   cancel-in-progress: false # NEVER cancel an active apply midway!
 
 jobs:
-  apply:
-    name: "Apply Infrastructure as Code"
+  # ----------------------------------------------------
+  # STAGE 1: DEV ENVIRONMENT APPLY
+  # ----------------------------------------------------
+  apply-dev:
+    name: "Apply Development Infrastructure"
     runs-on: ubuntu-latest
-    environment: production # Bound to GitHub Protected Environment!
+    environment: development
+    defaults:
+      run:
+        working-directory: environments/dev
+
+    steps:
+      - name: "Checkout Code"
+        uses: actions/checkout@v4
+
+      - name: "Azure Login via OIDC"
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+          terraform_wrapper: false
+
+      - name: "Terraform Init"
+        run: terraform init
+
+      - name: "Terraform Apply (Dev)"
+        run: terraform apply -auto-approve
+
+  # ----------------------------------------------------
+  # STAGE 2: PRODUCTION ENVIRONMENT APPLY (GATED)
+  # ----------------------------------------------------
+  apply-prod:
+    name: "Apply Production Infrastructure"
+    needs: apply-dev
+    runs-on: ubuntu-latest
+    environment: production # Requires manual approval in GitHub UI!
     defaults:
       run:
         working-directory: environments/prod
@@ -334,25 +424,305 @@ jobs:
 
 ---
 
-## 4. Automated Drift Detection & Remediation Cron Pipeline
+## 5. Enterprise Azure DevOps Multi-Stage Pipeline Architecture
 
-In enterprise organizations, engineers occasionally make emergency changes directly in the Azure Portal (e.g., resizing a VM during an outage, temporarily widening an NSG rule). These manual modifications cause **Configuration Drift**, causing the state file and live reality to diverge.
+For enterprise organizations standardizing on Azure DevOps, infrastructure automation utilizes declarative YAML multi-stage pipelines with native **Service Connections**:
 
-**Automated Drift Detection** executes on a nightly schedule using `terraform plan -detailed-exitcode`:
+### A. The End-to-End Pipeline YAML (`azure-pipelines.yml`)
+
+```yaml
+trigger:
+  branches:
+    include:
+      - main
+      - feature/*
+  paths:
+    include:
+      - lessons/Day26/**
+      - azure-pipelines.yml
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  # ====================================================
+  # STAGE 1: CODE VALIDATION & LINTING
+  # ====================================================
+  - stage: Validate
+    displayName: "Terraform Validate & Lint"
+    jobs:
+      - job: TFValidate
+        displayName: "Run Init & Validate"
+        steps:
+          - task: TerraformInstaller@0
+            displayName: "Install Terraform v1.7.5"
+            inputs:
+              terraformVersion: '1.7.5'
+
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Init"
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/dev'
+              backendServiceArm: 'sc-azure-subscription'
+              backendAzureRmResourceGroupName: 'terraformStateRG'
+              backendAzureRmStorageAccountName: 'tfdevbackend01'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'dev.terraform.tfstate'
+
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Validate"
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/dev'
+
+  # ====================================================
+  # STAGE 2: DEVELOPMENT ENVIRONMENT DEPLOYMENT
+  # ====================================================
+  - stage: DevDeploy
+    displayName: "Deploy to Development"
+    dependsOn: Validate
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: TFApplyDev
+        displayName: "Terraform Apply (Dev)"
+        steps:
+          - task: TerraformInstaller@0
+            inputs:
+              terraformVersion: '1.7.5'
+
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Init (Dev)"
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/dev'
+              backendServiceArm: 'sc-azure-subscription'
+              backendAzureRmResourceGroupName: 'terraformStateRG'
+              backendAzureRmStorageAccountName: 'tfdevbackend01'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'dev.terraform.tfstate'
+
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Apply (Dev)"
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/dev'
+              environmentServiceNameAzureRM: 'sc-azure-subscription'
+              commandOptions: '-auto-approve'
+
+  # ====================================================
+  # STAGE 3: STAGING ENVIRONMENT DEPLOYMENT
+  # ====================================================
+  - stage: StagingDeploy
+    displayName: "Deploy to Staging"
+    dependsOn: DevDeploy
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: TFApplyStaging
+        displayName: "Terraform Apply (Staging)"
+        steps:
+          - task: TerraformInstaller@0
+            inputs:
+              terraformVersion: '1.7.5'
+
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Init (Staging)"
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/staging'
+              backendServiceArm: 'sc-azure-subscription'
+              backendAzureRmResourceGroupName: 'terraformStateRG'
+              backendAzureRmStorageAccountName: 'tfstagebackend01'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'staging.terraform.tfstate'
+
+          - task: TerraformTaskV4@4
+            displayName: "Terraform Apply (Staging)"
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/staging'
+              environmentServiceNameAzureRM: 'sc-azure-subscription'
+              commandOptions: '-auto-approve'
+```
+
+---
+
+### B. Dedicated On-Demand Environment Destruction Pipeline
+To save cloud costs in non-production environments, maintain a dedicated parameterized destruction pipeline (`destroy-pipeline.yml`):
+
+```yaml
+parameters:
+  - name: environment
+    displayName: "Target Environment to Destroy"
+    type: string
+    default: dev
+    values:
+      - dev
+      - staging
+
+trigger: none # Purely manual on-demand execution!
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+  - job: TFDestroy
+    displayName: "Destroy ${{ parameters.environment }} Infrastructure"
+    steps:
+      - task: TerraformInstaller@0
+        inputs:
+          terraformVersion: '1.7.5'
+
+      - task: TerraformTaskV4@4
+        displayName: "Terraform Init"
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/${{ parameters.environment }}'
+          backendServiceArm: 'sc-azure-subscription'
+          backendAzureRmResourceGroupName: 'terraformStateRG'
+          backendAzureRmStorageAccountName: 'tf${{ parameters.environment }}backend01'
+          backendAzureRmContainerName: 'tfstate'
+          backendAzureRmKey: '${{ parameters.environment }}.terraform.tfstate'
+
+      - task: TerraformTaskV4@4
+        displayName: "Terraform Destroy"
+        inputs:
+          provider: 'azurerm'
+          command: 'destroy'
+          workingDirectory: '$(System.DefaultWorkingDirectory)/lessons/Day26/${{ parameters.environment }}'
+          environmentServiceNameAzureRM: 'sc-azure-subscription'
+          commandOptions: '-auto-approve'
+```
+
+---
+
+## 6. Cloud-Native GitOps on Azure Kubernetes Service (AKS) with Argo CD
+
+While Terraform excels at provisioning underlying Azure infrastructure (VNets, AKS clusters, Managed Identities, Key Vaults), managing dynamic application workloads and Kubernetes deployments is best accomplished via **GitOps with Argo CD**.
+
+### A. The End-to-End GitOps Architecture
+1. **Infrastructure Provisioning (Terraform):** Deploys the AKS cluster, installs the Helm release for Argo CD, and sets up Azure Key Vault with Managed Identity Operator bindings.
+2. **Secret Management (External Secrets Operator - ESO):** Kubernetes pods cannot store plain secrets in Git. ESO securely synchronizes secrets from Azure Key Vault into native Kubernetes secrets in-cluster.
+3. **Continuous Reconciliation (Argo CD):** Argo CD monitors a designated Git repository (`gitops-configs`). When application manifests change, Argo CD automatically syncs changes to AKS.
+
+```mermaid
+flowchart LR
+    subgraph Git ["GitOps Repository (gitops-configs)"]
+        Kust["kustomization.yaml\n(Version: v2)"]
+        Deploy["deployment.yaml"]
+    end
+
+    subgraph AKSCluster ["Azure Kubernetes Service (AKS)"]
+        Argo["Argo CD Controller\n(Continuous Loop)"]
+        ESO["External Secrets Operator"]
+        AppPods["Application Pods (v2)"]
+    end
+
+    subgraph AzureVault ["Azure Key Vault"]
+        DBCreds["Postgres Admin Secrets"]
+    end
+
+    Kust -->|Tracked by| Argo
+    Argo -->|Continuous Reconciliation| AppPods
+    DBCreds -->|Synced via Managed Identity| ESO
+    ESO -->|Mounts secret into| AppPods
+```
+
+### B. Installing Argo CD via Terraform Helm Provider
+
+```hcl
+# kubernetes_argocd.tf
+
+resource "kubernetes_namespace" "argocd" {
+  metadata {
+    name = "argocd"
+  }
+}
+
+resource "helm_release" "argocd" {
+  name       = "argo-cd"
+  repository = "https://argoproj.github.io/argo-helm"
+  chart      = "argo-cd"
+  version    = "5.51.6"
+  namespace  = kubernetes_namespace.argocd.metadata[0].name
+
+  set {
+    name  = "server.service.type"
+    value = "LoadBalancer" # Exposes Argo CD UI via Azure Public Load Balancer
+  }
+
+  set {
+    name  = "configs.params.server\\.insecure"
+    value = "true"
+  }
+}
+```
+
+### C. The Argo CD Application Manifest (`kind: Application`)
+This manifest establishes the GitOps contract between the repository and the cluster:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: three-tier-web-app
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/my-org/gitops-configs.git'
+    targetRevision: HEAD
+    path: three-tier-configs
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true     # Deletes resources in K8s if removed from Git!
+      selfHeal: true  # Reverts manual changes made directly in K8s back to Git state!
+    syncOptions:
+      - CreateNamespace=true
+```
+
+### D. Testing GitOps Drift Detection & Application Upgrades
+1. **Testing Out-of-Band Drift:** If a rogue developer runs `kubectl scale deployment frontend --replicas=5`, Argo CD immediately flags the state as `OutOfSync` and automatically scales the deployment back to `2 replicas` within seconds (`selfHeal: true`).
+2. **Testing Application Version Rollout:**
+   - In `gitops-configs/three-tier-configs/kustomization.yaml`, update the container image tag:
+     ```yaml
+     images:
+       - name: my-registry.azurecr.io/frontend
+         newTag: v2 # Upgraded from v1!
+     ```
+   - Commit and push to Git.
+   - Argo CD detects the commit, initiates a zero-downtime rolling update, and provisions the new v2 pods automatically.
+
+---
+
+## 7. Automated Drift Detection & Remediation Cron Pipeline
+
+To catch out-of-band changes made via the Azure Portal (e.g. an engineer manually widening an NSG rule during an incident), run a scheduled nightly pipeline using `terraform plan -detailed-exitcode`:
 
 ```yaml
 name: "Terraform Scheduled Drift Detection"
 
 on:
   schedule:
-    # Executes nightly at 02:00 UTC
-    - cron: "0 2 * * *"
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+    - cron: "0 2 * * *" # Runs nightly at 02:00 UTC
+  workflow_dispatch:
 
 permissions:
   id-token: write
   contents: read
-  issues: write # Allows automatically opening an issue when drift occurs!
+  issues: write # Allows opening GitHub Issues on drift detection!
 
 jobs:
   detect-drift:
@@ -386,7 +756,7 @@ jobs:
         id: drift
         # Exit code 0 = No changes (Clean)
         # Exit code 1 = Command error
-        # Exit code 2 = Drift detected (Infrastructure differs from HCL!)
+        # Exit code 2 = Drift detected!
         continue-on-error: true
         run: |
           set +e
@@ -413,16 +783,17 @@ jobs:
 
 ---
 
-## 5. Deep-Intuition (AARF) Failure-Loop Breakdowns
+## 8. Deep-Intuition (AARF) Failure-Loop Breakdowns
 
-### Scenario: The OIDC Subject Mismatch Authentication Failure (`AADSTS70021`)
+### Scenario 1: The OIDC Subject Mismatch Authentication Failure (`AADSTS70021`)
 
-#### 1. The Architectural Setup & Assumptions
-A DevOps engineer configures a GitHub Actions workflow to run on pull requests. They register an Azure App Registration federated credential with the subject:
+#### 1. Architectural Setup & Assumptions
+A DevOps engineer configures an Azure App Registration federated credential with subject:
 `repo:acme-corp/cloud-infra:ref:refs/heads/main`
+They then set up a GitHub Actions workflow to run on pull requests.
 
-#### 2. The Production Failure Manifestation
-A developer opens a pull request from branch `feature/add-redis`. The GitHub Actions workflow fails on the `Azure Login via OIDC` step with error:
+#### 2. Production Failure Manifestation
+A developer opens a pull request. The workflow crashes on `Azure Login via OIDC` with:
 ```text
 Error: OpenIDConnect: AADSTS70021: No matching federated identity record found for presented assertion.
 Assertion subject: 'repo:acme-corp/cloud-infra:pull_request'
@@ -430,38 +801,82 @@ Issuer: 'https://token.actions.githubusercontent.com'
 ```
 
 #### 3. Root Cause Analysis (RCA)
-* When GitHub Actions executes on a **push to main**, the OIDC token's `sub` claim is:
-  `repo:<org>/<repo>:ref:refs/heads/main`
-* When GitHub Actions executes on a **pull_request event**, GitHub intentionally issues a different subject claim:
-  `repo:<org>/<repo>:pull_request`
-* Because Entra ID strictly validates the subject claim string, it rejected the token!
+When GitHub Actions runs on a **pull_request event**, GitHub dynamically sets the OIDC `sub` claim to `repo:<org>/<repo>:pull_request`. It does **not** use `ref:refs/heads/main`. Because Entra ID performs an exact string comparison against registered federated credentials, the token exchange is rejected with HTTP 400.
 
 #### 4. Remediation & Diagnostic Verification Loop
-Every repository utilizing OIDC for both PR validation and merges must register **two distinct Federated Credentials** in Entra ID:
-1. One credential for `ref:refs/heads/main` (Used for production applies).
-2. One credential for `pull_request` (Used for speculative plans).
+Every repository using OIDC must register **two separate Federated Credentials** in Entra ID:
+1. `repo:<org>/<repo>:ref:refs/heads/main` (for applies on merge)
+2. `repo:<org>/<repo>:pull_request` (for speculative plans on PRs)
 
 ---
 
-## 6. High-Yield Real-World Engineering Traps
+### Scenario 2: The In-Azure Self-Hosted Runner Network Egress Blackhole
+
+#### 1. Architectural Setup & Assumptions
+To eliminate internet data transfer costs, a team hosts their GitHub Actions runners inside an Azure Virtual Network subnet.
+
+#### 2. Production Failure Manifestation
+When the pipeline executes `terraform init`, it hangs for 15 minutes before crashing:
+```text
+Error: Failed to query available provider packages
+Could not retrieve the list of available versions for provider hashicorp/azurerm:
+could not connect to registry.terraform.io: dial tcp: i/o timeout
+```
+
+#### 3. Root Cause Analysis (RCA)
+The runner subnet was configured with a strict Network Security Group (NSG) and default route table (`0.0.0.0/0`) lacking an Azure NAT Gateway. The runners had no outbound public internet egress to contact `registry.terraform.io` or `github.com`.
+
+#### 4. Remediation & Diagnostic Verification Loop
+1. Associate an Azure NAT Gateway with the runner subnet to grant high-reliability outbound SNAT egress.
+2. In the subnet NSG, add outbound allow rules for service tags `AzureActiveDirectory`, `AzureResourceManager`, and internet HTTPS (port 443).
+
+---
+
+### Scenario 3: The Parallel Pull Request State Lock Race Condition
+
+#### 1. Architectural Setup & Assumptions
+Two engineers open pull requests simultaneously modifying different parts of the development environment.
+
+#### 2. Production Failure Manifestation
+Engineer A's PR plan executes smoothly. Engineer B's PR plan fails immediately:
+```text
+Error: Error acquiring the state lock: state blob is already leased
+```
+
+#### 3. Root Cause Analysis (RCA)
+Even speculative plans (`terraform plan`) acquire a read lock by default unless configured otherwise. Because both pipelines targeted the exact same remote state file (`dev.terraform.tfstate`), the second pipeline encountered an active blob lease.
+
+#### 4. Remediation & Diagnostic Verification Loop
+Add `-lock=false` strictly to **speculative pull request planning commands**:
+```bash
+terraform plan -lock=false -no-color
+```
+> [!WARNING]
+> Never use `-lock=false` during `terraform apply`. Only use it for read-only pull request plan checks!
+
+---
+
+## 9. High-Yield Real-World Engineering Traps
 
 ### Trap 1: Missing `permissions: id-token: write`
 * **The Scenario:** A workflow fails on `azure/login@v2` with `Error: Unable to get ACTIONS_ID_TOKEN_REQUEST_URL or ACTIONS_ID_TOKEN_REQUEST_TOKEN`.
-* **The Ground Truth:** By default, GitHub Actions workflows have read-only permissions. You **MUST explicitly declare** `permissions: id-token: write` in the workflow YAML at the workflow or job level to allow GitHub to issue OIDC tokens.
+* **The Ground Truth:** By default, GitHub Actions workflows have read-only token permissions. You **MUST explicitly declare** `permissions: id-token: write` in the workflow YAML to allow GitHub to issue OIDC identity tokens.
 
 ### Trap 2: Plaintext Secrets Exposure in Plan Artifacts
-* **The Scenario:** An engineer saves `terraform plan -out=tfplan` as a GitHub Actions workflow artifact so the apply job can download it.
-* **The Trap:** If the Terraform configuration creates resources with passwords or certificates (e.g., Azure SQL admin passwords or SSH private keys), the binary plan file contains these secrets in unencrypted plaintext! Anyone with read access to the GitHub repository can download the artifact and extract the credentials.
-* **Remediation:** In multi-job workflows, never upload plan files as public artifacts without encrypting them, or use GitHub Environments with restricted branch access.
+* **The Scenario:** An engineer saves `terraform plan -out=tfplan` as a public workflow artifact for a subsequent apply job.
+* **The Trap:** If the HCL creates resources with passwords or certificates (e.g., Azure SQL admin passwords), the binary plan file contains these secrets in unencrypted plaintext!
+* **Remediation:** In multi-job workflows, never upload plan files as unencrypted public artifacts. Use GitHub Protected Environments with restricted branch access.
 
 ---
 
 ## 🌐 Authoritative References & Inflow Citations
 
-* **Inflow Reference:** [Piyush Sachdeva Azure Terraform Course - Day 26 (Enterprise CI/CD)](file:///F:/Dump%20one/BrainDump/inflow/Terraform-Azure-PiyushSachdeva/26_Day_2628_-_Azure_DevOps_End-to-End_Project_with_Terraform___Enterprise.md)
+* **Inflow Reference:** [Piyush Sachdeva Azure Terraform Course - Day 26 (Azure DevOps End-to-End Enterprise Project)](file:///F:/Dump%20one/BrainDump/inflow/Terraform-Azure-PiyushSachdeva/26_Day_2628_-_Azure_DevOps_End-to-End_Project_with_Terraform___Enterprise.md)
+* **Inflow Reference:** [Piyush Sachdeva Azure Terraform Course - Day 28 (Terraform End-to-End Project with AKS and GitOps)](file:///F:/Dump%20one/BrainDump/inflow/Terraform-Azure-PiyushSachdeva/28_Day_2828_-_Terraform_end-to-end_Project_with_AKS_and_GitOps.md)
 * **Inflow Reference:** [Automate AWS/Azure Infra Using Terraform and GitHub Actions](file:///F:/Dump%20one/BrainDump/inflow/2730%20-%20Automate%20AWS%20Infra%20Using%20Terraform%20and%20GitHub%20Actions%20%20Realtime%20Project.txt)
 * **Inflow Reference:** [Drift Detection and Remediation Using Terraform and GitHub Actions](file:///F:/Dump%20one/BrainDump/inflow/3030%20-%20Drift%20Detection%20and%20Remediation%20Using%20Terraform%20and%20GitHub%20Actions%20%20Real%20Time%20Project.txt)
 * **Inflow Reference:** [GitHub Actions Study Guide & Inflows](file:///F:/Dump%20one/BrainDump/inflow/github-actions-study-guide.md)
-* **Official Microsoft & GitHub Documentation:**
+* **Official Microsoft & HashiCorp Documentation:**
   - [Configuring OpenID Connect in Azure](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux)
   - [Automating Terraform with GitHub Actions](https://developer.hashicorp.com/terraform/tutorials/automation/github-actions)
+  - [Argo CD Official Architecture Documentation](https://argo-cd.readthedocs.io/en/stable/)
