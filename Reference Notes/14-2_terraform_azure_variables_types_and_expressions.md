@@ -20,161 +20,364 @@ tags:
 
 ## 🎯 Architectural Overview & Cognitive Map
 
-In modular, production-grade Terraform architectures on Microsoft Azure, hardcoding values (such as IP CIDRs, SKU tiers, location strings, and environment tags) creates brittle code that cannot be promoted across environments (Dev ➔ Staging ➔ Prod).
+In production-grade Terraform on Microsoft Azure, hardcoding parameters (such as resource names, IP CIDR ranges, SKU tiers, and admin credentials) creates rigid, brittle templates that cannot be reused across environments (`dev`, `staging`, `prod`).
 
-This module details how to decouple configuration from implementation using **Input Variables, Validation Blocks, Local Values, Structural Types, Advanced Expressions, and Dynamic Blocks**.
+This module establishes the comprehensive mechanics of **Variables (Input, Output, Locals)**, **String Interpolation & Templates**, **Progressive Type Constraints** (Primitive ➔ Collection ➔ Structural), **Expressions**, and **Dynamic Blocks** for repeating nested Azure architectures.
 
 ```mermaid
 flowchart TD
-    subgraph InputSources ["Variable Input Streams & Precedence"]
-        EnvVar["1. Environment Variables: TF_VAR_name (Lowest Explicit Precedence)"]
-        TfVars["2. terraform.tfvars"]
-        AutoTfVars["3. *.auto.tfvars (Alphabetical Load)"]
-        CliVar["4. CLI Flags: -var or -var-file (Highest Precedence)"]
+    subgraph InputStreams ["1. Variable Inputs & Precedence Hierarchy"]
+        EnvVar["TF_VAR_name (Environment Variable)"]
+        TfVars["terraform.tfvars"]
+        AutoTfVars["*.auto.tfvars (Alphabetical Order)"]
+        CliVar["-var & -var-file (Command Line Flags)"]
     end
 
-    subgraph EvaluationEngine ["Terraform Evaluation & Type Checking Engine"]
-        Validate["Custom Validation Blocks: validation { condition = ... }"]
-        TypeCast["Type Enforcement: object(), list(), map(), tuple()"]
-        Locals["Local Values Block: locals { ... } (Internal Computations)"]
-        Expressions["Expressions Engine: Conditional ?: , Splat [*] , For Loops"]
+    subgraph EvaluationEngine ["2. Evaluation & Transformation Engine"]
+        TypeEngine["Type Constraint Engine\n(primitives, list, map, object, optional)"]
+        Validation["Input Validation Blocks\n(regex, contains, can)"]
+        Interpolation["String Template Engine\n(Bare References vs. ${...} Interpolation)"]
+        LocalsEngine["Locals Engine (Internal Computed Values)"]
+        ExpressionsEngine["Expressions: Ternary (? :), For Loops, Splat [*]"]
     end
 
-    subgraph OutputResources ["Azure Resource Output Layer"]
-        DynBlocks["Dynamic Blocks: dynamic 'security_rule' { for_each = ... }"]
-        TargetAzure["Azure RM Resources: VNets, NSGs, App Services"]
-        Outputs["Outputs with Sensitive Masking: output 'conn_str' { sensitive = true }"]
+    subgraph OutputResources ["3. Target Infrastructure & Outputs"]
+        DynamicBlocks["Dynamic Block Stamper\n(Generates repeating nested blocks)"]
+        AzureResources["Azure RM Resources: VNets, NSGs, App Services, SQL"]
+        Outputs["Sensitive Masked Outputs: output 'db_conn' { sensitive = true }"]
     end
 
-    InputSources --> EvaluationEngine
-    EvaluationEngine --> OutputResources
+    InputStreams --> TypeEngine
+    TypeEngine --> Validation
+    Validation --> Interpolation
+    Interpolation --> LocalsEngine
+    LocalsEngine --> ExpressionsEngine
+    ExpressionsEngine --> DynamicBlocks
+    DynamicBlocks --> AzureResources
+    AzureResources --> Outputs
 ```
 
 ---
 
 ## 1. The Variable Trinity: Inputs, Outputs, and Locals
 
-### A. Input Variables & Custom Validation Rules
-Input variables serve as parameters for Terraform modules. Modern Terraform (1.3+) supports custom runtime validation rules that intercept invalid architectural inputs before API execution:
+Terraform organizes data handling into three distinct constructs, each serving a specific lifecycle purpose:
+
+```text
++---------------------------------------------------------------------------------------------------+
+|                                      THE VARIABLE TRINITY                                         |
+|                                                                                                   |
+|   1. INPUT VARIABLES (variable "...")     ──► External Parameters passed INTO the module.        |
+|                                                (e.g., environment = "dev", location = "eastus")   |
+|                                                                                                   |
+|   2. LOCAL VALUES (locals { ... })        ──► Internal Computations & Standardized Constants.     |
+|                                                (e.g., prefix = "${var.project}-${var.env}")       |
+|                                                                                                   |
+|   3. OUTPUT VARIABLES (output "...")      ──► Return Values exposed OUT of the module.            |
+|                                                (e.g., primary_blob_endpoint, database_fqdn)       |
++---------------------------------------------------------------------------------------------------+
+```
+
+---
+
+### A. Input Variables: Syntax & Anatomy
+An input variable parameterizes your Terraform code. It accepts the following arguments:
 
 ```hcl
 variable "environment" {
-  type        = string
-  description = "Target deployment environment tier."
-  default     = "dev"
+  type        = string                          # 1. Type constraint (Mandatory best practice)
+  description = "Target deployment environment" # 2. Documentation for consumers
+  default     = "dev"                           # 3. Fallback value if omitted by caller
+  sensitive   = false                           # 4. If true, masks value in CLI plan/apply logs
+  nullable    = false                           # 5. If false, disallows caller passing explicit null
 
+  # 6. Custom Runtime Validation Rule (Terraform 1.3+)
   validation {
     condition     = contains(["dev", "staging", "prod"], lower(var.environment))
-    error_message = "The environment variable must be one of: dev, staging, prod."
-  }
-}
-
-variable "location" {
-  type        = string
-  description = "Target Azure paired region."
-  default     = "eastus"
-
-  validation {
-    condition     = can(regex("^(eastus|westus2|westeurope|northeurope)$", var.location))
-    error_message = "The region specified is not in the organization's approved Azure regions list."
+    error_message = "The environment variable must be one of: dev, staging, or prod."
   }
 }
 ```
 
-### B. Output Variables & The `sensitive` Directive
-Output variables expose computed attributes (such as private IPs, Resource IDs, and FQDNs) to parent modules or external CI/CD systems. When outputs contain credentials or connection strings, the **`sensitive = true`** argument prevents values from being printed to console stdout logs:
+#### Custom Validation with `regex()` and `can()`
+You can validate complex naming conventions and Azure regions before Terraform calls the cloud API:
 
 ```hcl
-output "database_connection_string" {
-  value       = "Server=tcp:${azurerm_mssql_server.sql.fully_qualified_domain_name},1433;Database=${azurerm_mssql_database.db.name};"
-  description = "The ADO.NET connection string for application runtime."
-  sensitive   = true # Intercepts console logging and masks with (sensitive value)
-}
+variable "storage_account_name" {
+  type        = string
+  description = "Name of the Azure Storage Account (3-24 lowercase alphanumeric chars)."
 
-output "web_app_url" {
-  value       = "https://${azurerm_linux_web_app.app.default_hostname}"
-  description = "Public HTTPS endpoint of the deployed application."
-  sensitive   = false
+  validation {
+    condition     = can(regex("^[a-z0-9]{3,24}$", var.storage_account_name))
+    error_message = "Azure Storage Account names must be between 3 and 24 characters and contain lowercase letters and numbers only."
+  }
 }
 ```
 
+---
+
+### B. Output Variables & The `sensitive` Flag
+Outputs serve two purposes:
+1. Printing key resource attributes to the terminal console after `terraform apply`.
+2. Exposing data from a **child module** to a **parent root module**.
+
+```hcl
+# Standard Public Output
+output "storage_account_id" {
+  description = "The Resource Manager ID of the storage account."
+  value       = azurerm_storage_account.st.id
+}
+
+# Sensitive Output (Prevents secret leakage in CI/CD stdout logs)
+output "database_connection_string" {
+  description = "The ADO.NET connection string for application runtime."
+  value       = "Server=tcp:${azurerm_mssql_server.sql.fully_qualified_domain_name},1433;Database=${azurerm_mssql_database.db.name};"
+  sensitive   = true # Terraform prints: database_connection_string = (sensitive value)
+}
+```
+
+> [!CAUTION]
+> **State File Security:** Marking an output as `sensitive = true` only masks it from console stdout display. The sensitive string is **still stored in plaintext inside `terraform.tfstate`**! Never treat Terraform console masking as a substitute for securing your state file.
+
+---
+
 ### C. Local Values (`locals`)
-Locals are private, non-configurable internal variables used to eliminate duplicate code, compute standard naming conventions, and construct complex merged structures:
+Unlike input variables (which are passed in from the outside), **locals are computed internally** within the module. They cannot be overridden from the CLI or tfvars files.
+
+* **Use Case 1:** Enforcing corporate naming conventions.
+* **Use Case 2:** Eliminating duplicate expressions.
+* **Use Case 3:** Merging common tags.
 
 ```hcl
 locals {
-  # Enforce standardized corporate naming convention: <type>-<project>-<env>-<region>
+  # 1. Standardized naming convention: <resource_type>-<project>-<env>-<region>
   resource_prefix = "${var.project_name}-${var.environment}-${var.location}"
-  
-  common_tags = {
+
+  # 2. Reusable Tags dictionary
+  common_tags = merge(var.custom_tags, {
     Project     = var.project_name
     Environment = var.environment
     ManagedBy   = "Terraform"
-    CreatedDate = formatdate("YYYY-MM-DD", timestamp())
-  }
+    CreatedOn   = formatdate("YYYY-MM-DD", timestamp())
+  })
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-${local.resource_prefix}"
+  name     = "rg-${local.resource_prefix}" # Reference via local.<name>
   location = var.location
-  tags     = local.common_tags
+  tags     = local.common_tags             # Reference via local.<name>
 }
 ```
 
 ---
 
-## 2. Variable Precedence Hierarchy
+## 2. String Templates & Interpolation Syntax (`${...}`)
 
-When the same variable is defined across multiple sources, Terraform resolves values using a strict, deterministic hierarchy (from lowest to highest precedence):
+Understanding when to use bare references versus string interpolation is fundamental in HCL2.
 
+### A. The Golden Rule: Bare References vs. Interpolation
+
+```text
+Is the value ENTIRELY a variable or attribute reference?
+  ├── YES ──► Use BARE Syntax (No quotes, no ${}):
+  │           location = var.location
+  │           server_id = azurerm_mssql_server.sql.id
+  │
+  └── NO (Embedded inside literal text or combined with other variables) ──► Use INTERPOLATION (${}):
+              name = "rg-${var.project}-${var.environment}"
+              url  = "https://${azurerm_linux_web_app.app.default_hostname}:443"
 ```
-Lowest Precedence
-   │   1. Default value inside the variable {} block
-   │   2. Environment variables: TF_VAR_name
-   │   3. terraform.tfvars file
-   │   4. terraform.tfvars.json file
-   │   5. Any *.auto.tfvars or *.auto.tfvars.json files (evaluated alphabetically)
-   ▼   6. CLI command line flags: -var "name=value" or -var-file="secret.tfvars"
-Highest Precedence (Overrides all prior values)
+
+### B. The HCL1 vs. HCL2 Historical Context
+* In **Terraform 0.11 (HCL1)**, the parser required `${}` for every reference: `name = "${var.environment}"`.
+* In **Terraform >= 0.12 (HCL2)**, expressions became first-class citizens. Writing `name = "${var.environment}"` is considered an anti-pattern. You write `name = var.environment`.
+* However, when building connection strings or compound hostnames, `${}` is mandatory:
+  ```hcl
+  connection_string = "Server=tcp:${azurerm_mssql_server.sql.fully_qualified_domain_name},1433;Database=${azurerm_mssql_database.db.name};"
+  ```
+
+### C. Escaping Interpolation (`$${}`)
+If you need the literal characters `${}` inside a string without Terraform attempting to evaluate it (e.g., inside an Azure VM Custom Script Extension or an App Service setting read by bash):
+```hcl
+app_settings = {
+  # Produces literal text "${PORT}" in the output:
+  "DOCKER_PORT_PLACEHOLDER" = "$${PORT}"
+}
 ```
 
 ---
 
-## 3. Advanced Type Constraints
+## 3. Variable Precedence Hierarchy (How Terraform Resolves Clashes)
 
-Terraform separates data types into **Primitive Types** (`string`, `number`, `bool`) and **Complex Types**:
+When the same variable is assigned values in multiple places, Terraform resolves the conflict using a strict, deterministic order of precedence (from lowest to highest):
 
-### A. Collection vs. Structural Types
-*   **List (`list(type)`):** Ordered sequence of elements of the *same* type. Indexed by 0-based integer.
-*   **Set (`set(type)`):** Unordered collection of unique values of the *same* type. Does not allow duplicates.
-*   **Map (`map(type)`):** Key-value lookup table where all values share the *same* type.
-*   **Tuple (`tuple([string, number, bool])`):** Fixed-length ordered sequence where each element can have a *different* type.
-*   **Object (`object({ ... })`):** Key-value record where each attribute has an explicitly defined type.
+```text
+[ Lowest Precedence ]
+   │
+   ├── 1. Default value in variable "..." block
+   │
+   ├── 2. Environment variables: TF_VAR_<variable_name>
+   │
+   ├── 3. terraform.tfvars file
+   │
+   ├── 4. terraform.tfvars.json file
+   │
+   ├── 5. *.auto.tfvars or *.auto.tfvars.json (Evaluated in alphabetical order)
+   │
+   └── 6. CLI Command Line Flags: -var or -var-file (Highest Precedence)
+   │
+[ Highest Precedence: Overwrites all prior definitions ]
+```
 
-### B. Enterprise Object Constraint with `optional()` Attributes
-In production Azure module design, the `optional()` modifier allows consumers to omit non-mandatory attributes while automatically applying sensible defaults:
+### Practical Demonstration of Precedence:
+Suppose `environment` is configured in three places:
+1. `variable "environment" { default = "dev" }`
+2. `terraform.tfvars`: `environment = "staging"`
+3. Terminal command: `terraform apply -var="environment=prod"`
+
+**Result:** Terraform uses `"prod"`, because the CLI flag `-var` overrides all files and defaults.
+
+---
+
+## 4. Progressive Type Constraints: From Primitives to Structural Records
+
+Terraform enforces type safety to prevent bad data from reaching cloud APIs. Type constraints are organized into three tiers of complexity:
+
+```text
+[Tier 1: Primitives]     string, number, bool (Single scalar values)
+        │
+        ▼
+[Tier 2: Collections]    list(T), set(T), map(T) (Multiple values of the SAME type T)
+        │
+        ▼
+[Tier 3: Structural]     tuple([...]), object({...}) (Multiple values of DIFFERENT types)
+```
+
+---
+
+### Tier 1: Primitive Types
+Primitives store a single atomic value:
+* **`string`**: Text sequence (`"eastus"`, `"Standard_B2s"`).
+* **`number`**: Integer or floating-point (`3`, `100.5`, `1433`).
+* **`bool`**: Boolean flag (`true`, `false`).
 
 ```hcl
-variable "subnet_configurations" {
+variable "vm_count" {
+  type    = number
+  default = 3
+}
+
+variable "enable_https_only" {
+  type    = bool
+  default = true
+}
+```
+
+---
+
+### Tier 2: Collection Types (Homogeneous Elements)
+
+Collections hold multiple values where **every element must share the exact same type**:
+
+#### 1. List (`list(type)`)
+An ordered sequence indexed by integers starting at `0`.
+```hcl
+variable "dns_servers" {
+  type    = list(string)
+  default = ["10.0.0.4", "10.0.0.5", "168.63.129.16"]
+}
+
+# Accessing elements:
+# var.dns_servers[0] -> "10.0.0.4"
+# var.dns_servers[2] -> "168.63.129.16"
+```
+
+#### 2. Set (`set(type)`)
+An **unordered** collection of unique elements. Duplicates are discarded automatically.
+```hcl
+variable "firewall_allowed_ports" {
+  type    = set(number)
+  default = [80, 443, 8080, 443] # Duplicate 443 is automatically deduplicated!
+}
+```
+> [!NOTE]
+> **List vs. Set:** You cannot access set elements via index (`var.firewall_allowed_ports[0]` will fail) because sets have no defined order. Sets are used primarily for iterating with `for_each`.
+
+#### 3. Map (`map(type)`)
+A key-value lookup table where keys are always strings and all values share the same type:
+```hcl
+variable "environment_skus" {
+  type = map(string)
+  default = {
+    "dev"     = "Standard_B1s"
+    "staging" = "Standard_B2s"
+    "prod"    = "Standard_D4s_v5"
+  }
+}
+
+# Accessing map values:
+# var.environment_skus["prod"] -> "Standard_D4s_v5"
+```
+
+---
+
+### Tier 3: Structural Types (Heterogeneous Records)
+
+Structural types allow grouping **different data types together** inside a single variable.
+
+#### 1. Tuple (`tuple([type, type, ...])`)
+A fixed-length list where each position can have a different type:
+```hcl
+variable "network_rule_spec" {
+  type    = tuple([string, number, bool])
+  default = ["10.0.0.0/16", 443, true]
+}
+```
+
+#### 2. Object (`object({...})`)
+A named record where every attribute has its own specific type. This is the **standard pattern for production Azure modules**:
+
+```hcl
+variable "database_config" {
+  type = object({
+    db_name     = string
+    max_size_gb = number
+    collation   = string
+    auto_pause  = bool
+  })
+  default = {
+    db_name     = "oh-auth-db"
+    max_size_gb = 50
+    collation   = "SQL_Latin1_General_CP1_CI_AS"
+    auto_pause  = true
+  }
+}
+```
+
+---
+
+### Tier 4: The `optional()` Modifier with Defaults (Terraform 1.3+)
+
+In complex modules, requiring callers to specify every single attribute of an object creates painful boilerplate. The `optional(type, default)` function solves this:
+
+```hcl
+variable "subnets" {
   type = map(object({
-    cidr_block           = string
-    service_endpoints    = optional(list(string), [])
-    enforce_private_link = optional(bool, false)
-    delegation           = optional(string, null)
+    cidr_block           = string                      # Mandatory
+    service_endpoints    = optional(list(string), [])  # Defaults to empty list (NOT null)
+    enforce_private_link = optional(bool, false)       # Defaults to false
+    delegation           = optional(string, null)      # Defaults to null
   }))
-  description = "Map of subnet specifications to provision within the target VNet."
-  
+
   default = {
     "snet-web" = {
-      cidr_block        = "10.0.1.0/24"
-      service_endpoints = ["Microsoft.Storage", "Microsoft.KeyVault"]
+      cidr_block        = "10.100.1.0/24"
+      service_endpoints = ["Microsoft.Storage"]
+      # enforce_private_link omitted -> becomes false
+      # delegation omitted           -> becomes null
     }
-    "snet-data" = {
-      cidr_block           = "10.0.2.0/24"
-      enforce_private_link = true
-    }
-    "snet-appsvc" = {
-      cidr_block = "10.0.3.0/24"
+    "snet-app" = {
+      cidr_block = "10.100.2.0/24"
       delegation = "Microsoft.Web/serverFarms"
     }
   }
@@ -183,145 +386,198 @@ variable "subnet_configurations" {
 
 ---
 
-## 4. Expressions & Dynamic Blocks in Action
+## 5. Expressions in Action: Conditionals, Loops & Splats
 
-### A. Conditional Expressions
-Terraform uses ternary syntax `condition ? true_val : false_val`:
+HCL provides an expression engine to compute dynamic values at runtime.
+
+### A. Conditional Expressions (Inline Ternary)
+Evaluates a condition and returns one of two values:
+
+```text
+condition ? value_if_true : value_if_false
+```
 
 ```hcl
-# Automatically deploy Zone-Redundant Storage in Prod, and LRS in Dev/Staging
+# Select high-availability replication for prod, cost-optimized for dev:
 resource "azurerm_storage_account" "st" {
-  name                     = "st${replace(local.resource_prefix, "-", "")}"
+  name                     = "stohtfstate001"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"
-  account_replication_type = var.environment == "prod" ? "ZRS" : "LRS"
+  account_replication_type = var.environment == "prod" ? "GRS" : "LRS"
 }
 ```
 
-### B. `for` Expressions & Filtering
-Generate new lists or maps dynamically from input collections:
+---
 
+### B. `for` Expressions (List & Map Comprehensions)
+`for` expressions transform one collection into another, with optional filtering (`if`):
+
+#### 1. List Transformation:
 ```hcl
-# Filter out only subnets that require service endpoints
+# Capitalize all environment names:
+locals {
+  raw_envs   = ["dev", "staging", "prod"]
+  upper_envs = [for e in local.raw_envs : upper(e)]
+  # Result: ["DEV", "STAGING", "PROD"]
+}
+```
+
+#### 2. Filtering a Map:
+```hcl
+# Filter only subnets that have service endpoints enabled:
 locals {
   subnets_with_endpoints = {
-    for k, v in var.subnet_configurations : k => v
+    for k, v in var.subnets : k => v
     if length(v.service_endpoints) > 0
   }
 }
 ```
 
-### C. Splat Expressions (`[*]`)
-Capture a single attribute across all instances of a resource:
-
+#### 3. Transforming a List of Objects into a Map for `for_each`:
 ```hcl
-# Retrieve list of all subnet IDs generated by for_each
-output "all_subnet_ids" {
-  value = [for s in azurerm_subnet.subnets : s.id]
+variable "subnet_list" {
+  type = list(object({
+    name = string
+    cidr = string
+  }))
 }
 
-# When using count, use the splat operator directly:
-# value = azurerm_subnet.subnets[*].id
+# for_each requires a MAP or a SET of strings, NOT a list of objects!
+locals {
+  subnet_map = { for s in var.subnet_list : s.name => s }
+}
 ```
 
-### D. Dynamic Blocks for Repeating Azure Nested Structures
-In Azure resource declarations, certain elements exist as repeated nested blocks inside a parent resource (e.g., `security_rule` in NSGs, `frontend_ip_configuration` in Load Balancers, or `ip_restriction` in App Services).
+---
 
-Instead of copy-pasting nested blocks, use the **`dynamic`** block:
+### C. Splat Expressions (`[*]`) vs. `for` Expressions
+
+When you create multiple resources using `count` or `for_each`, you often need an output containing all their IDs:
+
+```text
+Did you use COUNT or FOR_EACH to create the resources?
+  ├── COUNT    ──► Use SPLAT ([*]):       azurerm_subnet.snet[*].id
+  └── FOR_EACH ──► Use FOR Expression:   [for s in azurerm_subnet.snet : s.id]
+```
+
+* **Why?** `count` creates a **List** (ordered by index `0, 1, 2`). The splat operator `[*]` works directly on lists.
+* `for_each` creates a **Map** (keyed by string names). Splat `[*]` throws a syntax error on maps, so you use `[for s in ... : s.id]`.
+
+---
+
+## 6. Dynamic Blocks: The Nested Block Stamper
+
+In Azure resource schemas, many resources contain **nested configuration blocks** inside the parent resource:
+* `security_rule { ... }` inside `azurerm_network_security_group`
+* `ip_restriction { ... }` inside `azurerm_linux_web_app`
+* `network_rules { ... }` inside `azurerm_storage_account`
+
+### The Problem
+You **cannot** put a standard `for_each` on a nested block:
+```hcl
+# SYNTAX ERROR! Illegal HCL syntax:
+resource "azurerm_network_security_group" "nsg" {
+  security_rule {
+    for_each = var.rules # <-- FAILS!
+  }
+}
+```
+
+### The Solution: The `dynamic` Block
+The `dynamic` block acts as a **code stamper**. It loops over a collection and stamps out repeated nested blocks:
 
 ```hcl
 variable "nsg_rules" {
   type = list(object({
-    name                   = string
-    priority               = number
-    direction              = string
-    access                 = string
-    protocol               = string
-    source_port_range      = string
-    destination_port_range = string
-    source_address_prefix  = string
+    name      = string
+    priority  = number
+    direction = string
+    access    = string
+    protocol  = string
+    port      = string
+    source    = string
   }))
   default = [
     {
-      name                   = "AllowHTTP"
-      priority               = 100
-      direction              = "Inbound"
-      access                 = "Allow"
-      protocol               = "Tcp"
-      source_port_range      = "*"
-      destination_port_range = "80"
-      source_address_prefix  = "*"
+      name      = "AllowHTTP"
+      priority  = 100
+      direction = "Inbound"
+      access    = "Allow"
+      protocol  = "Tcp"
+      port      = "80"
+      source    = "*"
     },
     {
-      name                   = "AllowHTTPS"
-      priority               = 110
-      direction              = "Inbound"
-      access                 = "Allow"
-      protocol               = "Tcp"
-      source_port_range      = "*"
-      destination_port_range = "443"
-      source_address_prefix  = "*"
-    },
-    {
-      name                   = "AllowSSHFromBastion"
-      priority               = 120
-      direction              = "Inbound"
-      access                 = "Allow"
-      protocol               = "Tcp"
-      source_port_range      = "*"
-      destination_port_range = "22"
-      source_address_prefix  = "10.0.10.0/26" # AzureBastionSubnet CIDR
+      name      = "AllowHTTPS"
+      priority  = 110
+      direction = "Inbound"
+      access    = "Allow"
+      protocol  = "Tcp"
+      port      = "443"
+      source    = "*"
     }
   ]
 }
 
 resource "azurerm_network_security_group" "nsg" {
-  name                = "nsg-${local.resource_prefix}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  name                = "nsg-app-dev"
+  location            = "eastus"
+  resource_group_name = "rg-app-dev"
 
-  # The dynamic block loops through var.nsg_rules and injects clean security_rule blocks
-  dynamic "security_rule" {
-    for_each = var.nsg_rules
-    content {
+  # Dynamic Block Definition:
+  dynamic "security_rule" {       # 1. The name of the nested block to stamp out
+    for_each = var.nsg_rules      # 2. The collection to iterate over
+    content {                     # 3. The template for each stamped block
       name                       = security_rule.value.name
       priority                   = security_rule.value.priority
       direction                  = security_rule.value.direction
       access                     = security_rule.value.access
       protocol                   = security_rule.value.protocol
-      source_port_range          = security_rule.value.source_port_range
-      destination_port_range     = security_rule.value.destination_port_range
-      source_address_prefix      = security_rule.value.source_address_prefix
+      source_port_range          = "*"
+      destination_port_range     = security_rule.value.port
+      source_address_prefix      = security_rule.value.source
       destination_address_prefix = "*"
     }
   }
 }
 ```
 
+### The Automatic Iterator Rule:
+Inside the `content { ... }` block, Terraform creates an iterator variable **identically named after the block label**:
+* `dynamic "security_rule"` ➔ Accessed via `security_rule.value.<attribute>`.
+* `dynamic "ip_restriction"` ➔ Accessed via `ip_restriction.value.<attribute>`.
+
+*(You can customize this using `iterator = rule`, in which case you write `rule.value.<attribute>`)*.
+
 ---
 
-## 5. Deep-Intuition (AARF) Failure-Loop Breakdowns
+## 7. Deep-Intuition (AARF) Failure-Loop Breakdowns
 
-### Scenario: The Variable Precedence Overwrite Disaster
-*   **The Architecture:** An enterprise deploys an Azure Kubernetes Service (AKS) cluster across multiple environments. The `variables.tf` file defines a default node pool size of 3 nodes: `default = 3`.
-*   **The Assumption:** The engineer maintains a production configuration file `production.tfvars` that specifies `node_count = 10`.
-*   **The Failure Loop:**
-    *   During emergency weekend maintenance, an engineer runs:
-        `terraform apply -var="location=eastus"`
-    *   The engineer notices in the execution plan that Terraform is actively destroying 7 active production worker nodes, scaling AKS from 10 down to 3!
-    *   Customer applications experience heavy outages due to CPU exhaustion on the remaining 3 nodes.
-*   **The Root Cause:**
-    *   When passing the `-var` command-line flag, Terraform only evaluates the variables passed via CLI. Because the engineer did not explicitly append `-var-file="production.tfvars"`, Terraform bypassed the `production.tfvars` file and fell back to the `default = 3` defined in `variables.tf`!
-*   **The Architectural Remediation:**
-    1.  Never rely on manual CLI flags (`-var`) in production environments.
-    2.  Adopt the standardized naming convention **`production.auto.tfvars`**. Files matching `*.auto.tfvars` are **automatically loaded** by Terraform Core without requiring manual `-var-file` arguments!
-    3.  Enforce validation checks or preconditions on minimum node counts for production tiers:
-        ```hcl
-        lifecycle {
-          precondition {
-            condition     = var.environment != "prod" || var.node_count >= 5
-            error_message = "Production AKS clusters must maintain at least 5 nodes to ensure quorum and failover resilience."
-          }
-        }
-        ```
+### Failure Loop: The Silent `-var` Default Fallback Disaster
+* **The Architecture:** An engineering team provisions Azure App Services. `variables.tf` specifies:
+  ```hcl
+  variable "sku_name" {
+    type    = string
+    default = "B1" # Dev cost-optimized SKU
+  }
+  ```
+  The production parameter file `prod.tfvars` specifies `sku_name = "P1v3"` (High Performance, Auto-scaling).
+* **The Failure Loop:**
+  * During maintenance, an engineer runs:
+    `terraform apply -var="location=eastus"`
+  * The engineer assumed Terraform would automatically read `prod.tfvars` from the folder.
+  * **What actually happened:** Specifying `-var` on the CLI told Terraform to use only that flag and the defaults. Terraform completely ignored `prod.tfvars`!
+  * Terraform dowgraded the production App Service Plan from `P1v3` to `B1`. Production CPU spiked to 100%, crashing the website under load.
+* **The Remediation:**
+  1. Never rely on manual `-var` CLI flags for production deployments.
+  2. Adopt the standardized auto-loaded naming convention: **`prod.auto.tfvars`**. Files matching `*.auto.tfvars` are **always loaded automatically** by Terraform Core without requiring manual flags.
+  3. Enforce structural validation preconditions:
+     ```hcl
+     lifecycle {
+       precondition {
+         condition     = var.environment != "prod" || var.sku_name != "B1"
+         error_message = "Production environments are prohibited from using Basic (B1) App Service SKUs."
+       }
+     }
+     ```
