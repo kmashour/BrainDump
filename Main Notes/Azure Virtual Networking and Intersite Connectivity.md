@@ -132,6 +132,7 @@ SORT file.name ASC
 - [[Main Notes/Azure Virtual Networking - Non-Transitive Peering Invariants, Forwarded Traffic Mechanics, and Virtual WAN.md|Azure Virtual Networking: Non-Transitive Peering Invariants, Forwarded Traffic Mechanics, and Virtual WAN]]
 - [[Main Notes/Azure Virtual Networking - Private Link vs Private Endpoints, and VNet-to-VNet VPN Tradeoffs.md|Azure Virtual Networking: Private Link vs Private Endpoints, and VNet-to-VNet VPN Tradeoffs]]
 - [[Main Notes/Azure Intersite Connectivity - Private Endpoint Split-Horizon DNS, TLS Certificate Invariants, and CNAME Routing.md|Azure Intersite Connectivity: Private Endpoint Split-Horizon DNS, TLS Certificate Invariants, and CNAME Routing]]
+- [[Main Notes/Azure Private Link - Local Development Connectivity Patterns and Microservice Code Portability.md|Azure Private Link: Local Development Connectivity Patterns and Microservice Code Portability]]
 
 ### High-Yield Production Pitfalls & Incidents
 - [[Main Notes/Azure Intersite Connectivity - Asymmetric Routing Traps, Stateful NVA Packet Drops, and Return Path Black Holes.md|Incident Forensics: Asymmetric Routing Traps, Stateful NVA Packet Drops, and Return Path Black Holes]]
