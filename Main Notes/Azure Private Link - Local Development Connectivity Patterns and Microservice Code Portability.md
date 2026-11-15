@@ -64,7 +64,7 @@ In enterprise cloud platform engineering, organizations implement one of four ar
 ---
 
 ### Pattern 1: Point-to-Site (P2S) VPN / GlobalProtect (The Enterprise Standard)
-In large-scale enterprise environments (such as PwC, financial services, and healthcare), developers never connect their workstations directly to public cloud endpoints. They authenticate to a corporate **Point-to-Site (P2S) VPN Gateway** or Secure Access Service Edge (SASE) perimeter (e.g., GlobalProtect, Zscaler, or Azure Virtual Network Gateway):
+In large-scale enterprise environments (such as enterprise financial services, and healthcare), developers never connect their workstations directly to public cloud endpoints. They authenticate to a corporate **Point-to-Site (P2S) VPN Gateway** or Secure Access Service Edge (SASE) perimeter (e.g., GlobalProtect, Zscaler, or Azure Virtual Network Gateway):
 
 ```text
 +---------------------------------------------------------------------------------------------------+
@@ -82,7 +82,7 @@ In large-scale enterprise environments (such as PwC, financial services, and hea
              ▼
   [ Azure Platform VNet (vnet-platform-dev) ]
              │
-             │ 3. Laptop queries: "oh-sql-dev.database.windows.net"
+             │ 3. Laptop queries: "app-sql-dev.database.windows.net"
              │    WireServer answers: 10.100.1.5 (via linked Private DNS Zone)
              │
              │ 4. Laptop sends SQL traffic to 10.100.1.5 across the VPN tunnel!
@@ -90,7 +90,7 @@ In large-scale enterprise environments (such as PwC, financial services, and hea
   [ Private Endpoint NIC: 10.100.1.5 ] ──► [ Azure SQL Server ]
 ```
 
-* **The Developer Experience:** The developer runs their microservice locally on their laptop. The code uses the standard production FQDN: `Server=tcp:oh-sql-dev.database.windows.net,1433`. The VPN adapter routes the packets seamlessly across the tunnel. **Zero code changes, zero configuration divergence.**
+* **The Developer Experience:** The developer runs their microservice locally on their laptop. The code uses the standard production FQDN: `Server=tcp:app-sql-dev.database.windows.net,1433`. The VPN adapter routes the packets seamlessly across the tunnel. **Zero code changes, zero configuration divergence.**
 
 ---
 
@@ -100,8 +100,8 @@ In early-stage startups, development sandboxes, or training environments where p
 2. The developer whitelists their current home or office public IP address:
    ```bash
    az sql server firewall-rule create \
-     --resource-group "rg-outcomeshub-auth-dev" \
-     --server "oh-sql-dev-01" \
+     --resource-group "rg-enterpriseapp-auth-dev" \
+     --server "app-sql-dev-01" \
      --name "AllowDeveloperHomeIP" \
      --start-ip-address "198.51.100.25" \
      --end-ip-address "198.51.100.25"
@@ -125,7 +125,7 @@ In early-stage startups, development sandboxes, or training environments where p
   Connection Succeeds over Private Link!
 ```
 
-* **The Portability Invariant:** Both the local laptop and the deployed cloud container use the exact same string: `Server=tcp:oh-sql-dev.database.windows.net,1433`. The underlying DNS layer routes the laptop to the public gateway and the container to the private endpoint.
+* **The Portability Invariant:** Both the local laptop and the deployed cloud container use the exact same string: `Server=tcp:app-sql-dev.database.windows.net,1433`. The underlying DNS layer routes the laptop to the public gateway and the container to the private endpoint.
 
 ---
 
@@ -138,12 +138,12 @@ When developers must work completely offline (e.g., traveling without internet) 
 2. **12-Factor App Override Pattern:** In Git, `appsettings.json` retains the canonical production cloud FQDN:
    ```json
    "ConnectionStrings": {
-     "Database": "Server=tcp:oh-sql-dev.database.windows.net,1433;Database=oh-auth-db;..."
+     "Database": "Server=tcp:app-sql-dev.database.windows.net,1433;Database=app-auth-db;..."
    }
    ```
 3. On the local workstation only, the developer defines an environment variable (or an untracked `appsettings.Development.json`):
    ```bash
-   export ConnectionStrings__Database="Server=localhost,1433;Database=oh-auth-db;User Id=sa;Password=LocalPassword123!;TrustServerCertificate=True;"
+   export ConnectionStrings__Database="Server=localhost,1433;Database=app-auth-db;User Id=sa;Password=LocalPassword123!;TrustServerCertificate=True;"
    ```
 4. The application runtime (.NET, Spring Boot, Node.js) automatically overrides the configuration in memory. The Git repository remains clean and environment-agnostic.
 
@@ -176,7 +176,7 @@ az network bastion tunnel \
 +---------------------------------------------------------------------------------------------------+
 
   Your Application Code / Dockerfile / Connection String (INVARIABLE):
-  "Server=tcp:oh-sql-dev.database.windows.net,1433;Database=oh-auth-db;..."
+  "Server=tcp:app-sql-dev.database.windows.net,1433;Database=app-auth-db;..."
                                  │
                                  │ (Exact same string everywhere!)
                                  ▼
@@ -204,7 +204,7 @@ az network bastion tunnel \
 #### 1. "Build Once, Promote Anywhere" (12-Factor App Compliance)
 In modern DevOps container workflows, a Docker image should be compiled **once** in the CI pipeline and promoted unmodified across `dev`, `staging`, and `production`:
 * If an application hardcodes private IP addresses (`10.100.1.5`), engineers are forced to rebuild different container images for each environment or maintain complex per-environment scripts.
-* With Private Link, the container image is compiled with the canonical domain name `oh-sql-dev.database.windows.net`. The exact same container binary runs in local Docker, in Dev App Service, and in Production AKS. The network layer resolves the name; the container never changes.
+* With Private Link, the container image is compiled with the canonical domain name `app-sql-dev.database.windows.net`. The exact same container binary runs in local Docker, in Dev App Service, and in Production AKS. The network layer resolves the name; the container never changes.
 
 #### 2. ORM & Entity Framework Core TLS Certificate Validation
 Object-Relational Mappers (Entity Framework Core, Hibernate, Prisma) create connection pools and perform strict TLS/SSL certificate validation:
@@ -214,11 +214,11 @@ Object-Relational Mappers (Entity Framework Core, Hibernate, Prisma) create conn
 #### 3. Transparent Network Topology Refactoring
 If network engineers re-subnet a VNet or move Private Endpoints to a new subnet (changing the private IP from `10.100.1.5` to `10.100.2.88`):
 * The `private_dns_zone_group` automatically updates the A-record.
-* **Zero application code changes or redeployments are required.** Microservices continue querying `oh-sql-dev.database.windows.net` and automatically resolve the new IP on the next DNS TTL cycle.
+* **Zero application code changes or redeployments are required.** Microservices continue querying `app-sql-dev.database.windows.net` and automatically resolve the new IP on the next DNS TTL cycle.
 
 #### 4. Seamless Multi-Region Failover (Auto-Failover Groups)
 In Azure SQL Auto-Failover Groups, the primary and secondary databases are unified behind a single read-write listener:
-`oh-sql-fog.database.windows.net`
+`app-sql-fog.database.windows.net`
 * If a physical disaster strikes the primary region (e.g., East US), Azure initiates automatic failover to the secondary region (e.g., West US).
 * Azure switches the DNS CNAME to the secondary region's Private Endpoint.
 * Microservices do not require any failover configuration; they continue communicating with the same FQDN.
@@ -229,11 +229,11 @@ In Azure SQL Auto-Failover Groups, the primary and secondary databases are unifi
 
 | Local Development Approach | When to Choose | Network Transport | Connection String in Code |
 | :--- | :--- | :--- | :--- |
-| **Point-to-Site (P2S) VPN** | Enterprise organizations with existing hub network infrastructure. | Encrypted VPN tunnel to Private Endpoint (`10.100.1.5`). | `Server=tcp:oh-sql-dev.database.windows.net` |
-| **Dev Firewall Whitelisting** | Lean startups, sandbox environments, or rapid proof-of-concept testing. | Public internet via Azure SQL Gateway (client IP whitelisted). | `Server=tcp:oh-sql-dev.database.windows.net` |
+| **Point-to-Site (P2S) VPN** | Enterprise organizations with existing hub network infrastructure. | Encrypted VPN tunnel to Private Endpoint (`10.100.1.5`). | `Server=tcp:app-sql-dev.database.windows.net` |
+| **Dev Firewall Whitelisting** | Lean startups, sandbox environments, or rapid proof-of-concept testing. | Public internet via Azure SQL Gateway (client IP whitelisted). | `Server=tcp:app-sql-dev.database.windows.net` |
 | **Bastion Port Forwarding** | High-security environments where public access is 100% disabled and VPN is unavailable. | Local port forward (`localhost:1433`) tunneled through Azure Bastion. | `Server=tcp:127.0.0.1,1433` (via local env var) |
 | **Local Docker Emulation** | Offline development, local unit tests, or zero cloud cost testing. | Local container loopback interface. | `Server=tcp:localhost,1433` (via local env var) |
-| **Deployed Cloud App** | Production, staging, and automated cloud CI/CD pipelines. | Internal VNet Regional Integration to Private Endpoint NIC. | `Server=tcp:oh-sql-dev.database.windows.net` |
+| **Deployed Cloud App** | Production, staging, and automated cloud CI/CD pipelines. | Internal VNet Regional Integration to Private Endpoint NIC. | `Server=tcp:app-sql-dev.database.windows.net` |
 
 ---
 

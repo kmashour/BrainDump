@@ -229,7 +229,7 @@ resource "azurerm_role_assignment" "kv_secrets_officer" {
 
 # 2. Deploy Container Configuration that reads secrets on startup
 resource "azurerm_linux_web_app" "app" {
-  name                = "oh-auth-app"
+  name                = "app-auth-app"
   resource_group_name = azurerm_resource_group.rg.name
   location            = "eastus"
   service_plan_id     = azurerm_service_plan.asp.id
@@ -260,7 +260,7 @@ provider "azurerm" {
 provider "azurerm" {
   alias           = "central_dns"
   features {}
-  subscription_id = "c72daa19-9a38-4155-b2c6-9121045a0fdc" # Platform Hub Subscription
+  subscription_id = "11111111-2222-3333-4444-555555555555" # Platform Hub Subscription
 }
 
 # Workload Resource Group (Uses Default Provider)
@@ -273,7 +273,7 @@ resource "azurerm_resource_group" "workload_rg" {
 resource "azurerm_private_dns_zone" "sql_dns" {
   provider            = azurerm.central_dns # <-- Explicit Provider Routing
   name                = "privatelink.database.windows.net"
-  resource_group_name = "PZI-GXUS-P-RGP-ED01-P003"
+  resource_group_name = "rg-enterprise-network-shared"
 }
 ```
 
@@ -322,7 +322,7 @@ In modern cloud architectures, outside processes (Azure Policies, auto-scalers, 
 
 ```hcl
 resource "azurerm_linux_web_app" "app" {
-  name            = "oh-auth-dev"
+  name            = "app-auth-dev"
   service_plan_id = azurerm_service_plan.asp.id
   # ...
 
@@ -331,7 +331,7 @@ resource "azurerm_linux_web_app" "app" {
       # 1. Ignore Image Tag: CI/CD pushes new Docker tags without Terraform reverting them to placeholder
       site_config[0].application_stack[0].docker_image_name,
 
-      # 2. Ignore Azure Policy IP Injection: PwC Azure Policy periodically injects scanner IPs
+      # 2. Ignore Azure Policy IP Injection: Enterprise Azure Policy periodically injects scanner IPs
       # into Key Vault/Network ACLs. SP lacks rights to remove them (Resolves Runbook Issue 5 & 6)
       site_config[0].ip_restriction,
 
@@ -516,7 +516,7 @@ output "active_subscription_id" {
 ---
 
 ### B. Consuming Shared Platform Networking
-In the OutcomesHub project ([`network.tf`](file:///C:/Users/karim/Desktop/WebApp-infra/oh-infra/terraform/dev/network.tf)), the application team does not own the Virtual Network or Subnets. They consume the platform team's networking via `data` sources:
+In the EnterpriseApp project ([`network.tf`](file:///C:/Users/karim/Desktop/WebApp-infra/app-infra/terraform/dev/network.tf)), the application team does not own the Virtual Network or Subnets. They consume the platform team's networking via `data` sources:
 
 ```hcl
 # 1. Query the centrally-managed VNet
@@ -549,7 +549,7 @@ data "azurerm_subnet" "app_subnet" {
 ## 6. Deep-Intuition (AARF) Failure-Loop Breakdowns
 
 ### Failure Loop: The Cross-Subscription DNS Zone Group 403 (Runbook Issue 7)
-* **The Architecture:** In enterprise Azure (like PwC / OutcomesHub), Private DNS Zones reside in a central connectivity subscription (`PZI-GXUS-P-RGP-ED01-P003`, sub `c72daa19-...`). The workload pipeline runs under a Service Principal scoped *strictly* to the workload subscription.
+* **The Architecture:** In enterprise Azure (like Contoso / EnterpriseApp), Private DNS Zones reside in a central connectivity subscription (`rg-enterprise-network-shared`, sub `11111111-...`). The workload pipeline runs under a Service Principal scoped *strictly* to the workload subscription.
 * **The Symptom:**
   When Terraform needs to recreate or modify a Private Endpoint, `terraform apply` crashes with:
   ```text
@@ -557,7 +557,7 @@ data "azurerm_subnet" "app_subnet" {
   autorest/azure: service returned an error. Status=403 Code="AuthorizationFailed"
   The client does not have authorization to perform action
   'Microsoft.Network/privateEndpoints/privateDnsZoneGroups/delete'
-  over scope '/subscriptions/c72daa19-.../privateDnsZoneGroups/default'
+  over scope '/subscriptions/11111111-.../privateDnsZoneGroups/default'
   ```
 * **The Root Cause:**
   When replacing a Private Endpoint, Terraform's provider tries to delete the old `private_dns_zone_group` first. Because the DNS zone lives in the central subscription, the workload Service Principal has no write/delete permissions on that subscription!

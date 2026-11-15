@@ -125,7 +125,7 @@ Developers use dynamic contexts to partition concurrency boundaries:
    * **Behavior:** Limits runs per Pull Request. Pushing new commits to the PR automatically terminates the previous validation run.
 
 ##### 🔍 Deep-Intuition: How GHA Evaluates Concurrency Groups (Interview Deep-Dive)
-To answer advanced questions during the PwC interview, understand the design mechanics of these groups:
+To answer advanced questions during enterprise technical interviews, understand the design mechanics of these groups:
 
 *   **Is the \"Group\" a Job Container?**
     No. The `group` is **simply a string (label/key)**. It is a locking namespace evaluated by GHA's orchestrator. Think of it as a "Lock Room Name". When a workflow run or job evaluates its concurrency block, GHA checks if there is currently an active lease on that exact string.
@@ -347,7 +347,7 @@ If your steps run natively on the host OS shell but need to hit a service contai
     [ Runner Host VM OS ] ─── (Connects to "localhost:5432") ───► [ Firewall/Port 5432 ] ───► [ Docker Container: postgres ]
     ```
 
-###### 💡 PwC Interview Summary (The "Why")
+###### 💡 Enterprise Technical Interview Summary (The "Why")
 When asked: *"How do you handle testing against real databases in GitHub Actions?"*
 > *"We use GHA **Service Containers** to run dependencies (like Postgres or Redis) as sidecars. If the job runs in a container, they share a Docker network, allowing us to connect using the service name (e.g., `host: postgres`) without exposing ports. If the job runs on the host, GHA maps the port to the host, and we connect via `localhost`."*
 
@@ -616,7 +616,7 @@ GHA supports three pinning strategies:
 | :--- | :--- | :--- | :--- | :--- |
 | **Branch** | `uses: actions/checkout@main` | **Highly Mutable** (Changes on every commit) | **Critical:** Upstream changes break builds instantly. | **Never use** in production or CI/CD pipelines. |
 | **Tag** | `uses: actions/checkout@v4` | **Mutable** (Owner can redirect tags) | **High:** Vulnerable to tag hijacking and supply chain poisoning. | Good for development, but risky for high-security environments. |
-| **SHA-1 Hash** | `uses: actions/checkout@a5ac7e5...` | **Immutable** (Cryptographically locked) | **None:** Guarantees code integrity. | **Mandatory** for enterprise environments (PwC, banking, etc.). |
+| **SHA-1 Hash** | `uses: actions/checkout@a5ac7e5...` | **Immutable** (Cryptographically locked) | **None:** Guarantees code integrity. | **Mandatory** for enterprise environments (banking, finance, regulated sectors). |
 
 ##### 🛡️ How to use SHA Pinning safely in enterprise YAML:
 When you pin to a SHA, you lose the ability to see what version it represents at a glance. Best practice is to write the version tag as a comment next to the SHA:

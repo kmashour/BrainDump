@@ -320,7 +320,7 @@ resource "azurerm_policy_assignment" "assign_https_policy" {
 
 ## 4. Hardened Datastores & Private Link Architecture
 
-Exposing cloud databases to the public internet using IP firewall rules is an enterprise anti-pattern. Production architectures enforce **Zero Public Network Access** and route all database traffic through **Azure Private Endpoints**.
+Exposing cloud datastores or databases to the public internet using IP firewall rules is an enterprise anti-pattern. Production architectures enforce **Zero Public Network Access** and route all application traffic through **Azure Private Endpoints**.
 
 ```text
 [ Linux App Service ] ──► (VNet Integration: 10.100.2.15)
@@ -329,8 +329,12 @@ Exposing cloud databases to the public internet using IP firewall rules is an en
 [ Private Endpoint ] ─────► (Private IP: 10.100.1.5 in snet-pe)
                                     │
                                     ▼ (Private Link Backbone)
-[ Azure SQL Server ] ─────► (Public Network Access: DISABLED)
+[ Azure SQL / Key Vault ] ► (Public Network Access: DISABLED)
 ```
+
+---
+
+### A. Enterprise Database Private Link Pattern (Azure SQL Server)
 
 ```hcl
 # 1. Hardened Azure SQL Server (Public Access Disabled!)
@@ -352,7 +356,7 @@ resource "azurerm_mssql_server" "sql" {
 
 # 2. Microservice Database
 resource "azurerm_mssql_database" "db" {
-  name      = "oh-orders-prod-db"
+  name      = "app-orders-prod-db"
   server_id = azurerm_mssql_server.sql.id
   sku_name  = "Basic"
 }
@@ -395,6 +399,95 @@ resource "azurerm_private_endpoint" "sql_pe" {
   }
 }
 ```
+
+---
+
+### B. Enterprise Secrets Datastore (Hardened Azure Key Vault)
+
+Securing cryptographic secrets, API keys, and connection strings requires a Zero-Trust Key Vault hardened against accidental deletion, ransomware, and unauthorized public access:
+
+```hcl
+data "azurerm_client_config" "current" {}
+
+resource "azurerm_key_vault" "kv" {
+  name                          = "kv-enterprise-prod-01"
+  resource_group_name           = var.resource_group_name
+  location                      = var.location
+  tenant_id                     = data.azurerm_client_config.current.tenant_id
+  sku_name                      = "standard"
+  soft_delete_retention_days    = 90
+  purge_protection_enabled      = true
+  enable_rbac_authorization     = true
+  public_network_access_enabled = false # Disables public internet access!
+
+  network_acls {
+    default_action = "Deny"
+    bypass         = "AzureServices"
+  }
+
+  # Immunizes Key Vault against out-of-band enterprise Azure Policy IP injections:
+  lifecycle {
+    ignore_changes = [
+      network_acls[0].ip_rules
+    ]
+  }
+}
+
+# Dedicated Private Endpoint for Key Vault
+resource "azurerm_private_endpoint" "kv_pe" {
+  name                = "pe-keyvault"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  subnet_id           = azurerm_subnet.pe_subnet.id
+
+  private_service_connection {
+    name                           = "psc-keyvault"
+    private_connection_resource_id = azurerm_key_vault.kv.id
+    subresource_names              = ["vault"] # Key Vault subresource
+    is_manual_connection           = false
+  }
+
+  private_dns_zone_group {
+    name                 = "pdzg-keyvault"
+    private_dns_zone_ids = [azurerm_private_dns_zone.kv_dns.id]
+  }
+
+  lifecycle {
+    ignore_changes = [private_dns_zone_group, subnet_id]
+  }
+}
+```
+
+---
+
+### C. Anatomical Deconstruction of `azurerm_private_endpoint`
+
+Understanding the underlying mechanics of an Azure Private Endpoint is crucial for troubleshooting enterprise connectivity:
+
+1. **Physical NIC Allocation vs. Service Endpoints:**
+   * **Service Endpoints:** Do NOT allocate any network interface in your subnet. Instead, traffic destined for public service tags routes across Microsoft's backbone to public VIPs, remaining vulnerable to cross-tenant data exfiltration.
+   * **Private Endpoints:** Allocate an actual **synthetic Network Interface Card (NIC)** inside the target subnet (`snet-pe`). This NIC consumes a private RFC 1918 IP address (e.g., `10.100.1.5`). Traffic is cryptographically pinned to that specific resource instance.
+
+2. **`private_service_connection` & Subresource Mapping:**
+   A single PaaS resource type can expose multiple distinct sub-services or APIs. The `subresource_names` argument tells the Azure SDN fabric exactly which internal API daemon to bind to that private NIC:
+
+| PaaS Resource Type | Resource Provider (`private_connection_resource_id`) | Target Subresource (`subresource_names`) | Dedicated Private DNS Zone FQDN |
+| :--- | :--- | :--- | :--- |
+| **Azure Key Vault** | `Microsoft.KeyVault/vaults` | `["vault"]` | `privatelink.vaultcore.azure.net` |
+| **Azure Blob Storage** | `Microsoft.Storage/storageAccounts` | `["blob"]` | `privatelink.blob.core.windows.net` |
+| **Azure Table Storage** | `Microsoft.Storage/storageAccounts` | `["table"]` | `privatelink.table.core.windows.net` |
+| **Azure Queue Storage** | `Microsoft.Storage/storageAccounts` | `["queue"]` | `privatelink.queue.core.windows.net` |
+| **Azure File Storage** | `Microsoft.Storage/storageAccounts` | `["file"]` | `privatelink.file.core.windows.net` |
+| **Azure SQL Database** | `Microsoft.Sql/servers` | `["sqlServer"]` | `privatelink.database.windows.net` |
+| **Azure Cache for Redis**| `Microsoft.Cache/redis` | `["redisCache"]` | `privatelink.redis.cache.windows.net` |
+| **Azure App Service** | `Microsoft.Web/sites` | `["sites"]` | `privatelink.azurewebsites.net` |
+| **Azure Container Registry**| `Microsoft.ContainerRegistry/registries` | `["registry"]` | `privatelink.azurecr.io` |
+
+3. **`private_dns_zone_group` & The WireServer Interception Mechanism:**
+   * When the Private Endpoint is created, Azure ARM creates a child resource `Microsoft.Network/privateEndpoints/privateDnsZoneGroups`.
+   * ARM dynamically determines the allocated private IP and writes an **A-Record** into the target Private DNS Zone (e.g., `sql-enterprise-prod-01.privatelink.database.windows.net -> 10.100.1.5`).
+   * When an application VM resolves `sql-enterprise-prod-01.database.windows.net`, public DNS returns a CNAME pointing to `sql-enterprise-prod-01.privatelink.database.windows.net`.
+   * The Azure Recursive Resolver WireServer (`168.63.129.16`) intercepts the query against the linked Private DNS Zone and resolves directly to the internal private IP `10.100.1.5`!
 
 ---
 
@@ -487,3 +580,76 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
   * Packets are dropped silently with `Request timed out`.
 * **The Root Cause:** VNet peering is **strictly non-transitive and unidirectional**. Each virtual network must have its own peering resource pointing to the remote peer.
 * **The Remediation:** Always declare two peering resources (`azurerm_virtual_network_peering.hub_to_spoke` and `azurerm_virtual_network_peering.spoke_to_hub`) and chain them using `depends_on`.
+
+---
+
+### Failure Loop 3: The Corporate Azure Policy IP Injection Drift War (Runbook Issue 5)
+* **The Architecture:** In enterprise environments, corporate governance mandates automated security audits. An enterprise Azure Policy (or security compliance orchestrator) automatically inspects newly provisioned PaaS resources (such as Key Vaults or Storage Accounts) and injects vulnerability scanner IPs (Qualys, Tenable Nessus, Defender for Cloud) and corporate VPN / ExpressRoute egress gateways into `network_acls.ip_rules`.
+* **The Failure Loop:**
+  * Terraform deploys the PaaS resource matching the local HCL configuration.
+  * Azure Policy fires out-of-band and injects the corporate scanner IP addresses into ARM.
+  * On the next CI/CD run, `terraform plan` compares state against live ARM and detects drift:
+    ```text
+    ~ network_acls {
+        ~ ip_rules = [
+            - "52.176.44.12",
+            - "20.42.5.10/29",
+          ]
+      }
+    ```
+  * `terraform apply` strips the scanner IPs to conform to HCL.
+  * Corporate security audits fail, triggering high-severity SIEM alerts; Azure Policy detects non-compliance and re-injects the IPs.
+  * The cycle repeats indefinitely ("Ping-Pong Drift War").
+* **The Root Cause:** Out-of-band enterprise policy management clashing with Terraform's declarative expectation of exclusive attribute ownership.
+* **The Architectural Remediation:**
+  Explicitly delegate ownership of the firewall rules to corporate policy via Terraform's `lifecycle` block:
+  ```hcl
+  lifecycle {
+    ignore_changes = [
+      network_acls[0].ip_rules
+    ]
+  }
+  ```
+  Terraform will ignore differences between local state and the live policy-injected IP rules, achieving permanent drift immunity.
+
+---
+
+### Failure Loop 4: The Soft-Deleted "Zombie Vault" Collision (`VaultAlreadyExists`) & Purge Protection Lock
+* **The Architecture:** Azure Key Vault enforces mandatory Soft Delete with a configurable retention window (7 to 90 days). When `purge_protection_enabled = true` is activated, no user—including Subscription Owners and Microsoft Support—can permanently purge the vault until the retention period elapses.
+* **The Failure Loop:**
+  * An engineer executes `terraform destroy` or renames an existing Key Vault in HCL.
+  * Terraform issues an HTTP `DELETE` to Azure ARM. The vault is removed from active service, but enters the soft-deleted quarantine state.
+  * On the next `terraform apply`, Terraform attempts to create a vault with the same name.
+  * ARM rejects the request with HTTP 409 Conflict:
+    ```text
+    Error: creating Key Vault "kv-enterprise-prod":
+      Status=409 Code="VaultAlreadyExists"
+      Message="The vault name 'kv-enterprise-prod' is already in use or is reserved by a soft-deleted vault."
+    ```
+  * Terraform cannot create the vault because the DNS name is reserved by the soft-deleted instance; Terraform cannot manage the existing vault because it is quarantined.
+* **The Root Cause:** Soft-deleted vaults retain global DNS name reservations across Azure. If Purge Protection is enabled, premature recreation with the same name is strictly impossible until the retention duration expires.
+* **The Architectural Remediation:**
+  1. **Audit Soft-Deleted Vaults:**
+     ```powershell
+     az keyvault list-deleted --output table
+     ```
+  2. **If Recovery is Desired:** Restore the vault and reconcile Terraform state:
+     ```powershell
+     az keyvault recover --name "kv-enterprise-prod" --location "eastus" --resource-group "rg-enterprise-prod"
+     terraform import azurerm_key_vault.kv /subscriptions/<sub_id>/resourceGroups/rg-enterprise-prod/providers/Microsoft.KeyVault/vaults/kv-enterprise-prod
+     ```
+  3. **If Purge is Desired (Only possible if Purge Protection was FALSE):**
+     ```powershell
+     az keyvault purge --name "kv-enterprise-prod" --location "eastus"
+     ```
+  4. **Ephemeral/Dev Provider Configuration:** For CI/CD sandbox environments with frequent teardowns, configure the provider to auto-recover soft-deleted vaults:
+     ```hcl
+     provider "azurerm" {
+       features {
+         key_vault {
+           recover_soft_deleted_key_vaults = true
+           purge_soft_delete_on_destroy    = false
+         }
+       }
+     }
+     ```

@@ -346,7 +346,7 @@ variable "database_config" {
     auto_pause  = bool
   })
   default = {
-    db_name     = "oh-auth-db"
+    db_name     = "app-auth-db"
     max_size_gb = 50
     collation   = "SQL_Latin1_General_CP1_CI_AS"
     auto_pause  = true
@@ -400,7 +400,7 @@ condition ? value_if_true : value_if_false
 ```hcl
 # Select high-availability replication for prod, cost-optimized for dev:
 resource "azurerm_storage_account" "st" {
-  name                     = "stohtfstate001"
+  name                     = "stapptfstate001"
   resource_group_name      = azurerm_resource_group.rg.name
   location                 = azurerm_resource_group.rg.location
   account_tier             = "Standard"

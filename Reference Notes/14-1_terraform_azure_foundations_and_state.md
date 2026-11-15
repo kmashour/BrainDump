@@ -151,7 +151,7 @@ A critical distinction that causes frequent beginner errors:
 * **Exported Attributes (Outputs / Computed Values):** Values that **Azure generates** after the resource is created. You cannot configure them directly, but you can *read* them elsewhere in your code:
   * `id`: The full Azure Resource Manager resource ID (`/subscriptions/.../resourceGroups/...`).
   * `primary_blob_endpoint`: `https://stappdev001.blob.core.windows.net/`.
-  * `fully_qualified_domain_name`: `oh-sql-dev.database.windows.net`.
+  * `fully_qualified_domain_name`: `app-sql-dev.database.windows.net`.
 
 ### C. Resource Addressing & The Dot (`.`) Operator
 To reference an attribute from another resource, use the standard resource address syntax:
@@ -164,12 +164,12 @@ azurerm_storage_account.st.primary_blob_endpoint
 
 ```hcl
 resource "azurerm_resource_group" "rg" {
-  name     = "rg-outcomeshub-dev"
+  name     = "rg-enterpriseapp-dev"
   location = "eastus"
 }
 
 resource "azurerm_storage_account" "st" {
-  name                = "stohtfstate001"
+  name                = "stapptfstate001"
   # Referencing arguments & attributes from the resource group above:
   resource_group_name = azurerm_resource_group.rg.name     # <-- Implicit Dependency Created!
   location            = azurerm_resource_group.rg.location # <-- Implicit Dependency Created!
@@ -310,7 +310,7 @@ provider "azurerm" {
 provider "azurerm" {
   alias           = "hub_dns"
   features {}
-  subscription_id = "c72daa19-9a38-4155-b2c6-9121045a0fdc" # Central DNS Subscription
+  subscription_id = "11111111-2222-3333-4444-555555555555" # Central DNS Subscription
 }
 
 # Workload Resource Group (uses default provider)
@@ -340,6 +340,10 @@ Terraform supports five primary authentication mechanisms to connect to Azure:
 | **4. Managed Identity (MSI)** | Terraform running inside Azure VMs, Container Instances, or VMSS. | **Passwordless & Zero-Trust.** Azure hypervisor automatically manages token acquisition via IMDS (`169.254.169.254`). | Set `use_msi = true` in provider block. |
 | **5. Workload Identity Federation (OIDC)** | Modern GitHub Actions / Azure DevOps CI/CD. | **Passwordless & Secret-free.** Cloud provider exchanges short-lived OIDC tokens directly with Microsoft Entra ID. | Set `use_oidc = true`. Requires federated credential link in Entra ID. |
 
+> [!NOTE]
+> **Managed Identity (IMDS) vs. OIDC Federation Boundary:**
+> Managed Identities require execution on Azure-hosted compute because they query the link-local Instance Metadata Service (IMDS) at `169.254.169.254`, which is physically non-routable over the internet. For external CI/CD pipelines (e.g. GitHub Actions), **Workload Identity Federation (OIDC)** is mandatory to achieve secretless authentication without static passwords. For deep dives into IMDS isolation, Principal ID vs. Client ID in RBAC, and multi-stage OIDC pipelines, see [[14-7_terraform_azure_github_actions_cicd_automation|Module 14-7: Enterprise CI/CD & OIDC Automation]] and [[13-104-02_administer_identity|Module 13-104-02: Administer Identity with Microsoft Entra ID]].
+
 ---
 
 ## 5. Remote State Management & Azure Blob Concurrency Locking
@@ -365,9 +369,9 @@ Inside `.tfstate`, Terraform records metadata crucial for graph calculation:
         {
           "schema_version": 0,
           "attributes": {
-            "id": "/subscriptions/f28a6419-.../resourceGroups/outcomeshub-dev",
+            "id": "/subscriptions/00000000-.../resourceGroups/enterpriseapp-dev",
             "location": "eastus",
-            "name": "outcomeshub-dev",
+            "name": "enterpriseapp-dev",
             "tags": { "Environment": "dev" }
           }
         }
@@ -382,15 +386,15 @@ Inside `.tfstate`, Terraform records metadata crucial for graph calculation:
 
 ---
 
-### B. Remote Backend Architecture: Azure Storage Account
+### B. Remote Backend Architecture: Azure Storage Account & The "Two Gates"
 In production, state must **never** be stored locally on developer laptops. It must reside centrally in an **Azure Storage Account Blob Container**:
 
 ```hcl
 # backend.tf or backend.hcl
 terraform {
   backend "azurerm" {
-    resource_group_name  = "outcomeshub-tfstate-dev-rg"
-    storage_account_name = "ohtfstatedev"
+    resource_group_name  = "app-tfstate-dev-rg"
+    storage_account_name = "apptfstatedev"
     container_name       = "tfstate"
     key                  = "dev.terraform.tfstate"
     
@@ -400,6 +404,57 @@ terraform {
   }
 }
 ```
+
+#### The "Two Gates" Security Perimeter Model
+Accessing an enterprise-hardened Azure remote state storage account requires satisfying **two independent, sequential security gates**:
+
+```text
++-------------------------------------------------------------------------------------------------+
+|                               THE "TWO GATES" OF AZURE BLOB STORAGE                             |
++-------------------------------------------------------------------------------------------------+
+
+                    Incoming HTTPS Request (terraform init / plan / apply)
+                                             │
+                                             ▼
+             ┌─────────────────────────────────────────────────────────────┐
+             │  GATE 1: Network Perimeter Firewall (NetworkRuleSet)        │
+             │  Is defaultAction = "Deny"?                                 │
+             │  - Is caller IP in ipRules whitelist?                       │
+             │  - Is caller Subnet Resource ID in virtualNetworkRules?     │
+             └──────────────────────────────┬──────────────────────────────┘
+                                            │
+                        ┌───────────────────┴───────────────────┐
+                        │ PASS                                  │ FAIL (Dropped at Perimeter)
+                        ▼                                       ▼
+             ┌────────────────────────────────────┐   ┌────────────────────────────────────┐
+             │ GATE 2: Identity & Access (RBAC)   │   │ ❌ HTTP 403 Forbidden              │
+             │ Does caller have:                  │   │ Code: "AuthorizationFailure"       │
+             │ Storage Blob Data Contributor/Owner│   │ (Connection dropped by Firewall!)  │
+             └──────────────────┬─────────────────┘   └────────────────────────────────────┘
+                                │
+                ┌───────────────┴───────────────┐
+                │ PASS                          │ FAIL (Identity Lacks RBAC Role)
+                ▼                               ▼
+             ┌────────────────────┐   ┌────────────────────────────────────┐
+             │ ✅ HTTP 200 OK     │   │ ❌ HTTP 403 Forbidden              │
+             │ State Blob Leased! │   │ Code: "AuthorizationFailure"       │
+             │ Terraform Ready!   │   │ (Blocked by Identity Plane!)       │
+             └────────────────────┘   └────────────────────────────────────┘
+                                        ▲                                    ▲
+                                        └─────────────────┬──────────────────┘
+                                                          │
+                                             THE DANGEROUS DIAGNOSTIC TRAP:
+                                    Azure returns the EXACT SAME 403 REST code
+                                    ("AuthorizationFailure") for Gate 1 and Gate 2!
+```
+
+1. **Gate 1: Network Perimeter (NetworkRuleSet):**
+   * Azure Storage evaluates the caller's network origin *before* inspecting identity bearer tokens or credentials.
+   * If `default_action = "Deny"` is set, any client whose public IP is not in `ip_rules` or whose subnet is not in `virtual_network_subnet_ids` is dropped right at the network perimeter.
+   * **The REST API Masking Trap:** When Gate 1 drops a request, Azure Storage returns **HTTP 403 `AuthorizationFailure`**—the exact same status and error code returned when Entra ID RBAC fails at Gate 2!
+2. **Gate 2: Identity & Access Management (Entra ID RBAC):**
+   * Evaluated only after Gate 1 permits the packet through.
+   * Validates that the authenticated security principal holds data-plane RBAC permissions (`Storage Blob Data Contributor` or `Storage Blob Data Owner`).
 
 ---
 
@@ -442,8 +497,8 @@ A major architectural difference between cloud providers is how state concurrenc
 
 ## 6. Deep-Intuition (AARF) Failure-Loop Breakdowns
 
-### Failure Loop 1: The In-Azure Runner Egress Trap
-* **The Architecture:** GitHub Actions self-hosted runners run inside an Azure VNet (`pzi-t58kh-dev-vnt`). The Terraform state storage account is configured with `default_action = "Deny"` and has the runner's public IP explicitly allowed in `ip_rules`.
+### Failure Loop 1: The In-Azure Runner Egress Trap & The Two-Sided Handshake
+* **The Architecture:** GitHub Actions self-hosted runners run inside an Azure VNet (`vnet-enterprise-dev-hub`). The Terraform state storage account is configured with `default_action = "Deny"` and has the runner's public IP explicitly allowed in `ip_rules`.
 * **The Symptom:** When the pipeline runs `terraform init`, it fails immediately with:
   ```text
   Error: Failed to get existing workspaces: containers.Client#ListBlobs:
@@ -451,13 +506,16 @@ A major architectural difference between cloud providers is how state concurrenc
   service returned an error. Status=412 Code="AuthorizationFailure"
   This request is not authorized to perform this operation.
   ```
-* **The Root Cause:** **Azure Storage Public IP Firewall Bypass Law**. Requests originating from within Azure (even from another subscription) traverse the Microsoft backbone. Azure Storage evaluates the caller's source and determines it is inside Azure. Azure Storage **completely ignores public IP firewall rules for intra-Azure traffic**! Allow-listing the runner's public IP does nothing.
+* **The Root Cause:** **Azure Storage Public IP Firewall Bypass Law**. Requests originating from within Azure traverse the Microsoft datacenter SDN backbone. Azure Storage evaluates the caller's physical network source and determines it originated inside Azure. Azure Storage **completely ignores public IP firewall rules for intra-Azure traffic**! Allow-listing the runner's public IP does nothing.
+* **The Two-Sided Service Endpoint Handshake Mechanics:**
+  1. **Client-Side (Subnet):** Enabling `serviceEndpoints = ["Microsoft.Storage"]` alters the subnet's SDN routing table (diverting storage traffic to the internal backbone next-hop) and stamps outgoing packet headers with the Subnet Resource ID.
+  2. **Server-Side (Storage Account):** The storage account retains its public IP/FQDN. It does not create a private NIC. Instead, it activates an Ingress Firewall ACL (`virtualNetworkRules`) that inspects the incoming packet header for the authorized Subnet Resource ID.
 * **The Remediation:**
   The Storage Account firewall must be configured with a **Virtual Network Service Endpoint rule** targeting the runner subnet:
   ```bash
   az storage account network-rule add \
-    --account-name "ohtfstatedev" \
-    --resource-group "outcomeshub-tfstate-dev-rg" \
+    --account-name "apptfstatedev" \
+    --resource-group "app-tfstate-dev-rg" \
     --subnet "/subscriptions/.../subnets/snt-runners-001"
   ```
 
@@ -472,12 +530,96 @@ A major architectural difference between cloud providers is how state concurrenc
   1. Disable Shared Key access on the Storage Account:
      ```bash
      az storage account update \
-       --name "ohtfstatedev" \
-       --resource-group "outcomeshub-tfstate-dev-rg" \
+       --name "apptfstatedev" \
+       --resource-group "app-tfstate-dev-rg" \
        --allow-shared-key-access false
      ```
   2. Set `use_azuread_auth = true` in the backend configuration.
   3. Assign the deploying Managed Identity the **`Storage Blob Data Owner`** role via Entra ID RBAC.
+
+---
+
+### Failure Loop 3: `NetworkAclsValidationFailure` (SubnetsHaveNoServiceEndpointsConfigured)
+* **The Architecture:** An engineer or bootstrap script configures the storage account firewall ACL targeting a subnet (such as `snet-pe` reserved for Private Endpoints, or an unconfigured runner subnet) via `az storage account network-rule add --subnet ...`.
+* **The Symptom:** Azure Resource Manager terminates the operation with a validation failure:
+  ```text
+  (NetworkAclsValidationFailure) Validation for network acl failure:
+  Subnets [/subscriptions/.../subnets/snet-pe] do not have ServiceEndpoints for Microsoft.Storage.
+  Code: NetworkAclsValidationFailure
+  Message: Validation for network acl failure: Subnets [...] do not have ServiceEndpoints for Microsoft.Storage.
+  ```
+* **The Root Cause:** **ARM Pre-Flight Network ACL Validation Gate**. Azure ARM validates that a subnet is technically configured to tag packets *before* accepting it into the storage account's `virtualNetworkRules`. ARM queries the Network Resource Provider for the subnet definition. If `Microsoft.Storage` is not registered in `serviceEndpoints`, the transaction is aborted. This prevents creating non-functional firewall rules that would permanently black-hole traffic.
+* **The Remediation:**
+  1. Verify the subnet's purpose: Dedicated Private Link subnets (`snet-pe`) should **not** have Service Endpoints enabled.
+  2. Ensure the network rule targets the correct compute/runner subnet (`snet-runners`).
+  3. Enable `Microsoft.Storage` on the runner subnet before adding the storage network rule:
+     ```bash
+     az network vnet subnet update \
+       --resource-group "rg-platform-networking-dev" \
+       --vnet-name "vnet-platform-dev" \
+       --name "snet-runners" \
+       --service-endpoints "Microsoft.Storage"
+     ```
+
+---
+
+### Failure Loop 4: The Local Laptop 403 `AuthorizationFailure` & The `use_oidc` Flag Conflict
+* **The Architecture:** A platform engineer tests Terraform remote state initialization locally (`terraform init -backend-config=backend.hcl`) from their workstation using Azure CLI (`az login`). The backend storage account has `defaultAction = Deny`, and the engineer holds the **`Storage Blob Data Owner`** role.
+* **The Symptom:** Initialization crashes with HTTP 403:
+  ```text
+  Error: Error inspecting states in the "azurerm" backend:
+    AuthorizationFailure: This request is not authorized to perform this operation.
+    Status: 403 (Forbidden)
+  ```
+* **The Root Cause:**
+  1. **Gate 1 Firewall Drop:** The developer connects from their home/office public IP over the internet. Because the storage account has `defaultAction = Deny` and only whitelists the runner subnet, the request is severed at Gate 1 (Firewall). Because Azure returns the identical HTTP 403 `AuthorizationFailure` code for firewall drops as for RBAC identity drops, the engineer assumes an Entra ID permission issue.
+  2. **OIDC Token Provider Absence:** `backend.hcl` has `use_oidc = true`. While appropriate for CI/CD runners (GitHub Actions / Azure DevOps), local workstations running `az login` have no OIDC federated token provider.
+* **The Remediation:**
+  1. Whitelist the developer's public IPv4 address on the storage account firewall:
+     ```powershell
+     $myPublicIp = (Invoke-RestMethod -Uri "https://api.ipify.org")
+     az storage account network-rule add \
+       --resource-group "app-tfstate-dev-rg" \
+       --account-name "apptfstatedev" \
+       --ip-address $myPublicIp
+     ```
+  2. Temporarily comment out `# use_oidc = true` in local `backend.hcl` during workstation testing, relying strictly on `use_azuread_auth = true` with active Azure CLI credentials.
+
+---
+
+### Failure Loop 5: `KeyBasedAuthenticationNotPermitted` (The "Disabled Keys" Provider Collision Trap)
+* **The Architecture:** In accordance with Zero-Trust compliance policies (such as Azure Policy `az-258`—*"Storage accounts should prevent shared key access"*), an `azurerm_storage_account` is declared with `shared_access_key_enabled = false` to enforce 100% Microsoft Entra ID RBAC authentication across the storage data plane.
+* **The Failure Loop:**
+  * The storage account provisions successfully on initial apply.
+  * During the next `terraform plan` or state refresh, Terraform halts abruptly with HTTP 403 Forbidden:
+    ```text
+    Error: retrieving Queue Properties for Storage Account "stprivatedrilldev01" (Resource Group "rg-enterpriseapp-privatelink-dev"):
+    unexpected status 403 (403 Key based authentication is not permitted on this storage account.)
+    with KeyBasedAuthenticationNotPermitted
+    ```
+* **The Root Cause:**
+  1. **Legacy Provider Default Behavior:** The `azurerm` provider refreshes an `azurerm_storage_account` not only via the ARM Control Plane (`management.azure.com`), but also by querying data-plane service properties (Queue/Blob logging, metrics, CORS). By default, the provider calls the ARM `listKeys` API and attempts to sign data-plane requests using the storage account primary access key. Because `shared_access_key_enabled = false` is active on the storage account, the Azure Storage data-plane rejects key-based requests with `KeyBasedAuthenticationNotPermitted`.
+  2. **The "Deleted Identity" Red Herring:** When prior infrastructure (such as a User-Assigned Managed Identity from an earlier deployment) has been cleaned up, engineers often assume the failure is due to a missing identity. This is a distraction: local plans run under developer Azure CLI credentials (`az login`). Furthermore, developer roles like `Owner` or `Contributor` are purely **Control Plane** roles and grant **zero data-plane access** to storage resources. For deep identity and role segregation details, see [[13-104-02_administer_identity|Module 13-104-02: Administer Identity with Microsoft Entra ID]].
+* **The Remediation:**
+  * **Option 1 (Emergency State Unblock):** Temporarily re-enable shared key access via Azure CLI to allow Terraform state refresh to succeed:
+    ```powershell
+    az storage account update `
+      --name "stprivatedrilldev01" `
+      --resource-group "rg-enterpriseapp-privatelink-dev" `
+      --allow-shared-key-access true
+    ```
+  * **Option 2 (The Architectural Provider Fix):** Enforce Entra ID authentication for all storage data-plane operations in the provider configuration:
+    ```hcl
+    provider "azurerm" {
+      features {}
+      storage_use_azuread = true # Enforces Entra ID auth for storage data plane
+    }
+    ```
+    Or export the environment variable in your terminal / CI/CD pipeline:
+    ```powershell
+    $env:ARM_STORAGE_USE_AZUREAD = "true"
+    ```
+    *(Note: The executing principal must hold the `Storage Blob Data Contributor` or `Storage Blob Data Owner` role if Terraform manages data-plane containers or blobs. See [[14-5_terraform_azure_enterprise_infrastructure_patterns|Module 14-5: Enterprise Infrastructure Patterns]] for hardened storage patterns).*
 
 ---
 

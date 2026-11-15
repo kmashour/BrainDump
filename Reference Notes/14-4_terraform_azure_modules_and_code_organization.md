@@ -89,11 +89,11 @@ modules/storage-account/
 
 ---
 
-### Pattern B: Multi-Environment Directory-per-Environment (PwC / Enterprise Standard)
+### Pattern B: Multi-Environment Directory-per-Environment (Enterprise Standard)
 Rather than relying solely on Terraform workspaces (which share the same backend configuration and risk cross-environment state destruction), enterprise landing zones enforce **Directory-per-Environment isolation**:
 
 ```text
-oh-infra/
+app-infra/
 ├── modules/                               # Reusable Child Modules (1 per resource type)
 │   ├── resource-group/
 │   │   ├── main.tf, variables.tf, outputs.tf, versions.tf
@@ -130,6 +130,23 @@ oh-infra/
 | **RBAC Isolation** | Difficult: A single service principal often requires access across all workspaces. | **Native RBAC Boundary**: `dev` pipeline runs with Dev SP/MI; `prod` pipeline runs with Prod SP/MI. |
 | **Architectural Drift** | Hard: Workspaces assume all environments share identical code structure. | **First-Class**: Prod can conditionally include Multi-AZ, Azure Front Door, or Geo-disaster recovery modules. |
 | **Human Error** | High: Easy to forget which workspace is active (`terraform workspace select`). | **Low**: The folder path (`cd environments/dev`) makes the deployment target undeniable. |
+
+---
+
+### Dynamic CI/CD Directory Routing in GitOps Pipelines
+A common misconception among platform engineers is that adopting the Directory-per-Environment pattern requires duplicating CI/CD pipeline definitions for every folder. In production GitOps engines (such as GitHub Actions), runners dynamically navigate into the targeted environment folder using a single unified workflow file:
+
+```yaml
+# Dynamically routes runner working directory to the target environment:
+defaults:
+  run:
+    working-directory: terraform/${{ inputs.environment }}
+    shell: bash
+```
+
+* **DRY Automation with Zero Blast Radius:** When an engineer triggers `terraform plan` for `dev`, the runner enters `terraform/dev/` and reads `dev.terraform.tfstate`. When targeting `prod`, it enters `terraform/prod/`.
+* **State Isolation Guaranteed:** If an error occurs during execution, the runner only acquires the blob lease lock on that specific environment's state file. Sibling environments remain completely unaffected and unblocked.
+* For complete end-to-end pipeline implementations and OIDC authentication details, see [[14-7_terraform_azure_github_actions_cicd_automation|Module 14-7: CI/CD & GitOps Automation]].
 
 ---
 
@@ -266,7 +283,7 @@ module "services" {
 
   source = "../../modules/linux-web-app"
 
-  name            = "oh-${each.key}-${var.environment}"
+  name            = "app-${each.key}-${var.environment}"
   service_plan_id = module.service_plan.id
   container_port  = each.value.port
 

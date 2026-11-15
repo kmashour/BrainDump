@@ -129,6 +129,10 @@ A role assigned at a parent scope automatically inherits downwards to all child 
 > - **Entra ID Roles (Global Administrator, User Administrator):** Manage Entra tenant objects (users, groups, domains, licenses).
 > - **Azure RBAC Roles (Owner, Contributor, Reader):** Manage Azure cloud resources (VMs, VNets, Storage Accounts). Being a Global Admin in Entra does **not** grant Owner rights over Azure subscriptions unless explicitly elevated!
 
+> [!IMPORTANT]
+> **The RBAC Principal ID Mandate (Social Security Number vs. Name Badge):**
+> Azure RBAC role assignments strictly bind to the **Principal ID (Object ID)** of the security principal—never the Application ID (Client ID). The Application ID represents the software blueprint or class definition ("Company Name Badge"), whereas the Principal ID represents the tenant-specific instantiated security actor ("Social Security Number"). For full architectural trade-offs, IMDS host-isolation constraints, and OIDC federation mechanics, see [[13-104-02_administer_identity|Module 13-104-02: Administer Identity with Microsoft Entra ID]] and [[14-7_terraform_azure_github_actions_cicd_automation|Module 14-7: Enterprise CI/CD & OIDC Automation]].
+
 ---
 
 ## 4. Architectural Security Frameworks: Zero Trust & Defense-in-Depth
