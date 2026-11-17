@@ -60,7 +60,7 @@ flowchart TD
 ## 🛠️ Hands-On Enterprise Projects & Lab Curriculum
 
 Access the complete, production-grade hands-on laboratory curriculum under `Projects/AZ-104/`:
-- 🚀 **[[Projects/AZ-104/README.md|Master Hands-On Project Curriculum Hub]]**: Complete index, architecture roadmap, prerequisite chains, and dual GUI/CLI execution paths.
+- 🏮 **[[Projects/AZ-104/README.md|AZ-104 Lighthouse & Master Project Curriculum Hub]]**: The unified progressive enterprise landing zone ("Project Contoso"), master SKU capabilities matrix, regional locality boundaries, and 7-day study plan.
   * **Module 01 (Governance & Tooling):** [[Lab-01_Enterprise_Subscription_Baseline_and_Tooling|Lab 01: Subscription Baseline & Tooling]]
   * **Module 02 (Identity & Entra ID):** [[Lab-02_Enterprise_Identity_SSPR_and_Administrative_Units|Lab 02: Entra ID, SSPR & Administrative Units]]
   * **Module 03 (Governance & Compliance):** [[Lab-03_Custom_RBAC_Resource_Locks_and_Azure_Policy|Lab 03: Custom RBAC, Resource Locks & Policy]]

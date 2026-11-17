@@ -190,7 +190,7 @@ Most established enterprises do not operate solely in the cloud. They have thous
 |  - Kerberos & NTLM Authentication    |                |                                    |
 +--------------------------------------+                +------------------------------------+
                    ▲                                                       ▲
-                   │ (Read attributes / Write passwords)                  │ (Outbound HTTPS 443)
+                   │ (Read attributes / Write passwords)                   │ (Outbound HTTPS 443)
 +--------------------------------------------------------------------------+
 |                     Microsoft Entra Connect Sync Server                  |
 |  - Sync Engine: Extracts user objects, filters OUs, strips attributes    |
@@ -416,13 +416,13 @@ classDiagram
 
 #### 6.3 What IDs Human Users Have vs. Software Applications
 
-| Identity Attribute | Human User Object | Software Application (App Registration) | Managed Identity (SAMI / UAMI) |
-| :--- | :--- | :--- | :--- |
-| **Object ID (Principal ID)** | ✅ **YES** (The primary immutable security GUID in the tenant) | ✅ **YES** (The GUID of the instantiated Service Principal) | ✅ **YES** (The GUID used for all Azure RBAC role assignments) |
-| **Application ID (Client ID)** | ❌ **NO** (Humans are not application blueprints) | ✅ **YES** (The GUID identifying the application definition) | ✅ **YES** (Assigned by Entra ID; used in code to select UAMI) |
-| **User Principal Name (UPN)** | ✅ **YES** (`alice@contoso.com`) | ❌ **NO** | ❌ **NO** |
-| **Tenant Multi-Instantiation** | ❌ **NO** (B2B guests create a foreign `#EXT#` user object) | ✅ **YES** (1 App Object can instantiate N Service Principals) | ❌ **NO** (Single-tenant managed resource) |
-| **Credentials Held** | Passwords, FIDO2 WebAuthn keys, Authenticator TOTP | Client secrets, X.509 certs, or Federated OIDC claims | 🔒 **ZERO** (Managed entirely by Azure Fabric / IMDS) |
+| Identity Attribute             | Human User Object                                             | Software Application (App Registration)                       | Managed Identity (SAMI / UAMI)                                |
+| :----------------------------- | :------------------------------------------------------------ | :------------------------------------------------------------ | :------------------------------------------------------------ |
+| **Object ID (Principal ID)**   | ✅ **YES** (The primary immutable security GUID in the tenant) | ✅ **YES** (The GUID of the instantiated Service Principal)    | ✅ **YES** (The GUID used for all Azure RBAC role assignments) |
+| **Application ID (Client ID)** | ❌ **NO** (Humans are not application blueprints)              | ✅ **YES** (The GUID identifying the application definition)   | ✅ **YES** (Assigned by Entra ID; used in code to select UAMI) |
+| **User Principal Name (UPN)**  | ✅ **YES** (`alice@contoso.com`)                               | ❌ **NO**                                                      | ❌ **NO**                                                      |
+| **Tenant Multi-Instantiation** | ❌ **NO** (B2B guests create a foreign `#EXT#` user object)    | ✅ **YES** (1 App Object can instantiate N Service Principals) | ❌ **NO** (Single-tenant managed resource)                     |
+| **Credentials Held**           | Passwords, FIDO2 WebAuthn keys, Authenticator TOTP            | Client secrets, X.509 certs, or Federated OIDC claims         | 🔒 **ZERO** (Managed entirely by Azure Fabric / IMDS)         |
 
 ---
 
@@ -443,14 +443,14 @@ flowchart TD
     end
 ```
 
-| Architectural Dimension | System-Assigned Managed Identity (SAMI) | User-Assigned Managed Identity (UAMI) |
-| :--- | :--- | :--- |
-| **Creation & ARM Resource** | Enabled via a checkbox/flag directly on the Azure resource. No standalone ARM resource ID. | Created as an independent standalone ARM resource (`Microsoft.ManagedIdentity/userAssignedIdentities`). |
-| **Lifecycle & Deletion** | **Tied 1:1:** Deleting the Azure resource instantly deletes the Entra ID Service Principal. | **Decoupled:** Deleting compute instances does **not** delete the identity or its RBAC permissions. |
-| **Cardinality** | Exactly **one** per Azure resource. Cannot be shared across resources. | **One-to-Many (1:N):** Can be bound to hundreds of VMs, Container Apps, or App Services. |
+| Architectural Dimension                 | System-Assigned Managed Identity (SAMI)                                                                                                                                                                                                                                   | User-Assigned Managed Identity (UAMI)                                                                                                                                                             |
+| :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Creation & ARM Resource**             | Enabled via a checkbox/flag directly on the Azure resource. No standalone ARM resource ID.                                                                                                                                                                                | Created as an independent standalone ARM resource (`Microsoft.ManagedIdentity/userAssignedIdentities`).                                                                                           |
+| **Lifecycle & Deletion**                | **Tied 1:1:** Deleting the Azure resource instantly deletes the Entra ID Service Principal.                                                                                                                                                                               | **Decoupled:** Deleting compute instances does **not** delete the identity or its RBAC permissions.                                                                                               |
+| **Cardinality**                         | Exactly **one** per Azure resource. Cannot be shared across resources.                                                                                                                                                                                                    | **One-to-Many (1:N):** Can be bound to hundreds of VMs, Container Apps, or App Services.                                                                                                          |
 | **The IaC / Terraform Dependency Trap** | ⚠️ **Severe Chicken-and-Egg Loop:** The Principal ID is unknown until the VM is created. You cannot pre-grant RBAC before VM provisioning; boot scripts that run on initial launch will crash with 403 authorization errors before Terraform creates the role assignment. | ✅ **Clean DAG Dependency Ordering:** In Terraform, provision the UAMI first, grant all RBAC role assignments second, and deploy the compute resource third with pre-authorized identity attached. |
-| **Azure RBAC Quota Impact** | ⚠️ **High Risk of Quota Exhaustion:** Each VM requires independent role assignments. In a fleet of 500 VMs requiring 3 roles, you consume **1,500 role assignments** (approaching the subscription limit of 4,000). | ✅ **Quota Efficient:** The entire fleet of 500 VMs shares **1 identity and 3 role assignments**, saving 1,497 quota slots. |
-| **Blast Radius & Governance** | Minimal blast radius: compromising one VM only compromises that VM's identity. Automatic cleanup prevents orphaned identities. | Broader blast radius: compromising one node in the fleet compromises the shared identity. Requires governance audits to prevent orphaned identity rot. |
+| **Azure RBAC Quota Impact**             | ⚠️ **High Risk of Quota Exhaustion:** Each VM requires independent role assignments. In a fleet of 500 VMs requiring 3 roles, you consume **1,500 role assignments** (approaching the subscription limit of 4,000).                                                       | ✅ **Quota Efficient:** The entire fleet of 500 VMs shares **1 identity and 3 role assignments**, saving 1,497 quota slots.                                                                        |
+| **Blast Radius & Governance**           | Minimal blast radius: compromising one VM only compromises that VM's identity. Automatic cleanup prevents orphaned identities.                                                                                                                                            | Broader blast radius: compromising one node in the fleet compromises the shared identity. Requires governance audits to prevent orphaned identity rot.                                            |
 
 ---
 
@@ -490,7 +490,7 @@ flowchart TD
         AppContainer -->|4. Passwordless T-SQL| AzureSQL
         AppContainer -->|5. Entra Bearer Token| RedisCache
         AppContainer -->|6. Get API Secrets| Vault
-        AppContainer -->|7. OAuth Bearer Token (Audience)| DownstreamAPI
+        AppContainer -->|7. OAuth Bearer Token - Audience| DownstreamAPI
     end
 
     PhaseA -.->|"Provisions Runtime Container & UAMI"| PhaseB

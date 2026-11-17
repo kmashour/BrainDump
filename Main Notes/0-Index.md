@@ -33,6 +33,7 @@ This directory houses the foundational **Landing Notes** and **Deeper Dive Notes
 
 * [[Main Notes/Azure Resource Governance and Access Control|☁️ Azure Resource Governance and Access Control]]
 * [[Main Notes/Azure Virtual Networking and Intersite Connectivity|🌐 Azure Virtual Networking and Intersite Connectivity]]
+* [[Main Notes/Microsoft Entra ID and Cloud Workload Identity|🔐 Microsoft Entra ID and Cloud Workload Identity]]
 
 ```dataview
 TABLE role AS "Role", domains AS "Domains", reference_guides AS "Reference Notes"
