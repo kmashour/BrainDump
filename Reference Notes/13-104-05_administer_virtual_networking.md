@@ -315,23 +315,268 @@ Rule 100: Allow Source 'asg-web-tier' to Dest 'asg-db-tier' on Port 1433
 ---
 
 ### 4. Azure Private DNS Zones: Split-Horizon Name Resolution
-Azure Private DNS Zones provide private domain name resolution (e.g., `corp.internal`, `privatelink.database.windows.net`) without running expensive custom DNS servers or Domain Controllers.
+
+Azure Private DNS Zones provide enterprise-grade, resilient, and fully managed DNS name resolution for virtual networks (e.g., `corp.internal`, `privatelink.database.windows.net`) without requiring custom IaaS DNS virtual machines, BIND servers, or Active Directory Domain Controllers.
+
+> [!NOTE]
+> For a deeper exploration of Private Link DNS mechanics, see [[Main Notes/Azure Intersite Connectivity - Private Endpoint Split-Horizon DNS, TLS Certificate Invariants, and CNAME Routing|Azure Intersite Connectivity - Private Endpoint Split-Horizon DNS, TLS Certificate Invariants, and CNAME Routing]].
+
+---
+
+#### 1. The Concept of Split-Horizon DNS
+
+**Split-Horizon DNS** (also known as *split-brain* or *split-view* DNS) is an architectural pattern where a single domain name or Fully Qualified Domain Name (FQDN) resolves to different IP addresses depending on the network vantage point of the querying client:
 
 ```text
-[ Private DNS Zone: corp.internal ]
-  ├── Auto-Registered Records:
-  │     ├── vm-web-01.corp.internal  --> 10.0.1.4 (Managed by Azure)
-  │     └── vm-db-01.corp.internal   --> 10.0.2.4 (Managed by Azure)
-  └── Manual Custom Records:
-        └── api.corp.internal        --> 10.0.1.100 (CNAME / Static A)
-                    ▲                                      ▲
-                    │                                      │
-    Virtual Network Link: REGISTRATION      Virtual Network Link: RESOLUTION ONLY
-                    │                                      │
-    [ vnet-production (10.0.0.0/16) ]      [ vnet-analytics (172.16.0.0/16) ]
-    - VMs register their own hostnames      - VMs can resolve 'vm-web-01.corp.internal'
-    - Only ONE registration VNet allowed    - Up to 1,000 resolution VNets allowed!
+                                  [ Single FQDN ]
+                         stenterprise.blob.core.windows.net
+                                         │
+                 ┌───────────────────────┴───────────────────────┐
+                 ▼                                               ▼
+      [ Inside Azure VNet ]                            [ Public Internet ]
+Query targets Azure DNS (168.63.129.16)           Query targets Public Root DNS
+Resolves to Private RFC 1918 IP:                 Resolves to Public Microsoft VIP:
+             10.50.2.15                                      20.150.12.33
+                 │                                               │
+                 ▼                                               ▼
+     Enters Private Endpoint NIC                     Reaches Storage Public Firewall
+(100% Isolated over Azure Backbone)               (Blocked if Public Access Disabled)
 ```
+
+* **Why Split-Horizon DNS is Crucial:**
+  1. **Single Consistent Endpoint:** Applications, configuration files, and developers use one unified hostname (`stenterprise.blob.core.windows.net` or `app.contoso.com`) across dev, staging, and production environments without maintaining separate "internal" and "external" configuration profiles.
+  2. **Security & Zero Internet Exposure:** Workloads inside the corporate perimeter resolve the target service directly to private network interfaces, preventing data from ever leaving the private software-defined network.
+  3. **Seamless Failover & Hybrid Integration:** Internal workloads and on-premises offices access resources via private tunnels while public consumers access public gateways.
+
+---
+
+#### 2. The Private Endpoint CNAME Resolution Architecture
+
+When an Azure PaaS service (such as Azure Storage, Azure SQL Database, or Azure Key Vault) is secured with an **Azure Private Endpoint**, Azure injects a private virtual network interface (NIC) with a private IP (e.g., `10.50.2.15`) into your subnet. 
+
+To route traffic seamlessly without changing application configurations, Azure implements a **3-step CNAME redirection chain**:
+
+```text
+[ Client Application initiates HTTPS Request ]
+  URL: "https://stenterprise.blob.core.windows.net/data"
+                        │
+                        ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ STEP 1: Azure Public Authoritative DNS Lookup                          │
+│ Client queries default DNS for "stenterprise.blob.core.windows.net".   │
+│ Microsoft's public authoritative DNS server returns a canonical name   │
+│ (CNAME) record:                                                        │
+│   stenterprise.blob.core.windows.net                                  │
+│   ──► CNAME: stenterprise.privatelink.blob.core.windows.net            │
+└────────────────────────────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ STEP 2: Azure SDN Private DNS Interception                             │
+│ The hypervisor intercepts the query for the "privatelink" zone.        │
+│ Because the VNet is linked to Azure Private DNS Zone                   │
+│ ("privatelink.blob.core.windows.net"), the zone returns an 'A' record: │
+│   stenterprise.privatelink.blob.core.windows.net                       │
+│   ──► 'A' Record: 10.50.2.15 (Private Endpoint IP)                     │
+└────────────────────────────────────────────────────────────────────────┘
+                        │
+                        ▼
+┌────────────────────────────────────────────────────────────────────────┐
+│ STEP 3: Cryptographically Clean Private Connection                     │
+│ Client initiates TCP/TLS handshake directly to 10.50.2.15:443.         │
+│ - TLS SNI Hostname: "stenterprise.blob.core.windows.net"               │
+│ - HTTP Host Header: "stenterprise.blob.core.windows.net"               │
+│ Result: 100% private transit over VNet NIC with ZERO certificate errors│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+If an external internet client resolves that exact same FQDN:
+* Step 1 returns the same CNAME (`stenterprise.privatelink.blob.core.windows.net`).
+* In Step 2, because the internet client is **not** inside a linked Azure VNet, public recursive DNS resolves `stenterprise.privatelink.blob.core.windows.net` to Microsoft's regional **Public VIP** (`20.150.12.33`).
+
+---
+
+#### 3. The TLS SNI & HTTP Host Header Invariant
+
+A common architectural error is attempting to configure application connection strings directly to the `privatelink` domain or raw private IP:
+* ❌ *Wrong:* `https://10.50.2.15/data/`
+* ❌ *Wrong:* `https://stenterprise.privatelink.blob.core.windows.net/data/`
+* ✅ *Correct:* `https://stenterprise.blob.core.windows.net/data/`
+
+Modifying the connection string to use the `privatelink` FQDN or IP triggers two critical failure modes:
+
+1. **TLS / SSL Server Name Indication (SNI) & SAN Mismatch:**
+   * Azure PaaS service clusters serve SSL/TLS certificates issued to standard public wildcards (e.g., `*.blob.core.windows.net` or `*.database.windows.net`).
+   * The certificate does **NOT** contain `*.privatelink.blob.core.windows.net`, nor does it contain private IP addresses.
+   * If the client presents a `privatelink...` SNI or connects to an IP, the client TLS validation engine terminates the session with a fatal error:
+     ```text
+     SSL: Certificate Subject Alternative Name (SAN) mismatch!
+     Target host 'stenterprise.privatelink.blob.core.windows.net' does not match '*.blob.core.windows.net'.
+     ```
+2. **Multi-Tenant Gateway Routing (HTTP Host Header):**
+   * Azure PaaS services run on massive multi-tenant shared frontend clusters.
+   * When an HTTPS packet arrives at the frontend, the platform reverse proxy uses the HTTP `Host:` header (e.g., `Host: stenterprise.blob.core.windows.net`) to route the request to the customer's specific tenant container or storage account.
+   * Connecting via raw IP address (`Host: 10.50.2.15`) prevents the gateway from determining the tenant destination, resulting in immediate HTTP `400 Bad Request` or `503 Service Unavailable` errors.
+
+> [!IMPORTANT]
+> **The Immutable Invariant:** Applications must **always** connect to the canonical public hostname (`stenterprise.blob.core.windows.net`). Split-horizon DNS at the networking layer handles rerouting the connection to the private IP transparently.
+
+---
+
+#### 4. Virtual Network Link Rules & Hard Quotas
+
+Azure Private DNS Zones operate independently of any virtual network until explicitly linked via **Virtual Network Links**. Azure enforces strict link types and quota boundaries:
+
+```text
+[ Private DNS Zone: privatelink.blob.core.windows.net / corp.internal ]
+                                │
+        ┌───────────────────────┴───────────────────────┐
+        ▼                                               ▼
+[ REGISTRATION LINK ]                           [ RESOLUTION LINKS ]
+- Mode: Read + Write (Lifecycle Sync)           - Mode: Read-Only Querying
+- Limit: Exactly 1 Registration VNet            - Limit: Up to 1,000 Resolution VNets
+- Auto-creates/deletes VM 'A' records           - Resolves all records in the zone
+- Target: Custom internal domains only          - Target: Private Endpoints & Shared Zones
+```
+
+| Dimension | Registration Virtual Network Link | Resolution Virtual Network Link |
+| :--- | :--- | :--- |
+| **Primary Purpose** | Automated lifecycle registration of VM hostnames. | Resolution of DNS records without modifying zone contents. |
+| **DNS Record Behavior** | Azure SDN automatically registers VM dynamic private IP as an `A` record. When the VM is deleted, Azure purges the `A` record. | VMs in the VNet can query and resolve all manual or auto-registered records in the zone. |
+| **Zone Limit** | **Maximum 1 Registration VNet** per Private DNS Zone. | **Maximum 1,000 Resolution VNets** per Private DNS Zone. |
+| **VNet Limit** | A single VNet can only be the registration VNet for **1 Private DNS Zone**. | A single VNet can link to **multiple** Private DNS Zones (up to 1,000). |
+| **Private Endpoint Fit** | ❌ **Do NOT enable registration** on PaaS zones (`privatelink...`). Private Endpoints use static `A` records created at deployment. | ✅ **Best Practice:** Link all Hub and Spoke VNets as **Resolution-Only** links. |
+
+---
+
+#### 5. The DNS Engine Under the Hood: WireServer `168.63.129.16:53`
+
+Every Azure Virtual Network is configured by default to use Azure-provided DNS. Under the hood, this service is powered by the **Azure WireServer** IP address: `168.63.129.16`.
+
+```text
+[ Virtual Machine in VNet ]
+  │ Sends DNS query: "api.corp.internal"
+  ▼
+[ Virtual NIC ]
+  │ Egress packet directed to 168.63.129.16:53
+  ▼
+[ Azure Virtual Filtering Platform (VFP) Hypervisor Layer ]
+  │
+  ├─► 1. Intercepts UDP/TCP port 53 to 168.63.129.16 directly on the host
+  │
+  ├─► 2. Checks local VNet configuration for Private DNS Zone Links:
+  │      ├── Match found? ──► Returns Private 'A' record immediately (Zero transit outside host)
+  │      └── No match?    ──► Forwards query to Azure Public Recursive Resolvers
+  │
+  └─► 3. Returns DNS response to VM
+```
+
+* **Key Mechanics of WireServer DNS:**
+  * **Link-Local Virtual IP:** `168.63.129.16` is a virtual IP implemented directly by the host hypervisor (Virtual Filtering Platform). It does not represent a physical appliance or server rack.
+  * **Hypervisor Interception:** DNS queries sent to `168.63.129.16:53` never travel across physical routers or switches; they are intercepted at the VM's virtual NIC boundary by SDN rules.
+  * **Evaluation Precedence:**
+    1. If the query matches an authoritative zone linked to the VNet via a **Virtual Network Link**, Azure DNS returns the private record.
+    2. If the query does not match any linked private zone, it falls back to **Azure Public Recursive DNS** to resolve public internet domains.
+    3. If Azure DNS cannot resolve the public domain, it returns NXDOMAIN.
+
+---
+
+#### 6. The Hybrid Dilemma & Azure DNS Private Resolver
+
+Enterprise environments frequently require hybrid name resolution:
+1. **Inbound Resolution:** On-premises servers must resolve Azure Private Endpoints (`stenterprise.privatelink.blob.core.windows.net`).
+2. **Outbound Resolution:** Azure VMs must resolve on-premises corporate domains (`corp.contoso.local`).
+
+##### The Fundamental Architectural Dilemma:
+* **WireServer `168.63.129.16` is Non-Routable Across Hybrid Connections!**
+* Because `168.63.129.16` is an internal link-local IP bound strictly to the local physical hypervisor, **packets addressed to `168.63.129.16` cannot traverse Site-to-Site VPN or ExpressRoute circuits**. Any on-premises DNS server attempting to forward queries to `168.63.129.16` will experience immediate packet drops.
+
+##### Legacy Workaround vs. Modern Solution:
+* **The Legacy Workaround:** Deploying pairs of IaaS virtual machines running Windows Server DNS or BIND in a hub VNet to act as forwarders. This introduced patching overhead, single points of failure, and licensing costs.
+* **The Modern Solution:** **Azure DNS Private Resolver** — a fully managed, highly available, zone-redundant PaaS service that bridges on-premises and Azure DNS natively.
+
+```text
+========================================================================================
+                          AZURE DNS PRIVATE RESOLVER ARCHITECTURE
+========================================================================================
+
+   [ ON-PREMISES DATACENTER ]                          [ AZURE VIRTUAL NETWORK ]
+                                                   
+   [ On-Prem Client ]                                  [ Azure VM ]
+          │                                                 │
+          ▼                                                 ▼
+   [ On-Prem DNS Server ]                              [ VNet Subnet ]
+   (Active Directory / BIND)                                │
+          │                                                 │ Queries 168.63.129.16
+          │ Conditional Forwarder:                          │ (Forwarding Ruleset)
+          │ "*.privatelink... ──► 10.50.10.4"               │
+          ▼                                                 ▼
+   ═════════════════════════════════════════════════════════════════════════════════
+         VPN / ExpressRoute Tunnel                       VPN / ExpressRoute Tunnel
+   ═════════════════════════════════════════════════════════════════════════════════
+          │                                                 ▲
+          ▼                                                 │
+┌───────────────────────────────┐                 ┌─────────────────────────────────┐
+│     INBOUND ENDPOINT          │                 │       OUTBOUND ENDPOINT         │
+│ Subnet: snet-dns-in (10.50.10.0/28)             │ Subnet: snet-dns-out (10.50.11.0/28)
+│ Private IP: 10.50.10.4        │                 │ Attached to DNS Forwarding Ruleset
+│                               │                 │                                 │
+│ Receives on-prem queries and  │                 │ Forwards queries matching:      │
+│ queries WireServer            │                 │ "*.corp.contoso.local"          │
+│ 168.63.129.16 on their behalf!│                 │ ──► On-Prem DNS (192.168.1.10)   │
+└───────────────┬───────────────┘                 └─────────────────────────────────┘
+                │
+                ▼
+   [ WireServer 168.63.129.16 ]
+                │
+                ▼
+   [ Azure Private DNS Zone ]
+   "privatelink.blob.core.windows.net"
+   Result: 10.50.2.15 returned to On-Premises!
+```
+
+* **Components of Azure DNS Private Resolver:**
+  1. **Inbound Endpoint:**
+     * Allocates a real private IP address from a dedicated subnet in your VNet.
+     * Acts as the DNS target for on-premises DNS conditional forwarders.
+     * When an on-prem server queries this IP, the resolver receives the request and executes the lookup against WireServer `168.63.129.16`.
+  2. **Outbound Endpoint:**
+     * Allocates an interface inside a separate dedicated subnet.
+     * Handles egress queries from Azure VNets to external DNS servers (on-premises or third-party clouds).
+  3. **DNS Forwarding Rulesets:**
+     * Rulesets linked to VNets that specify conditional routing rules (e.g., if domain equals `corp.contoso.local`, forward to on-prem DNS IP `192.168.1.10:53`).
+  4. **Subnet Delegation Requirement:**
+     * Inbound and outbound endpoints **must** reside in dedicated subnets delegated to `Microsoft.Network/dnsResolvers` with a minimum CIDR block of `/28`. No other workloads (such as VMs) can share these subnets.
+
+---
+
+#### 7. AZ-104 High-Frequency Traps & Exam Gotchas
+
+> [!WARNING]
+> **Trap 1: The Custom DNS Server Breakage Trap**
+> * If a network administrator configures a **Custom DNS Server** (e.g., Active Directory VM at `10.0.1.10` or Infoblox) at the VNet level:
+>   * Azure VMs in that VNet will send **all** DNS queries directly to `10.0.1.10`.
+>   * VMs will **completely bypass** Azure WireServer `168.63.129.16`.
+>   * **Result:** Azure Private DNS Zones and Private Endpoints will **instantly stop resolving** from those VMs!
+>   * **The Fix:** You must configure an upstream conditional forwarder on that custom DNS server (or a forwarder for `privatelink...` zones) pointing to `168.63.129.16`.
+
+> [!IMPORTANT]
+> **Trap 2: The Peering Fallacy (Cross-VNet Resolution Without Peering)**
+> * *Exam Scenario:* "VNet-A and VNet-B reside in different regions and are **NOT** connected via VNet Peering. Can a VM in VNet-B resolve records from a Private DNS Zone created in VNet-A?"
+> * **Answer: YES!** 
+> * DNS resolution requires **only a Virtual Network Link** between VNet-B and the Private DNS Zone. VNet Peering is completely unnecessary for DNS resolution!
+> * *Caveat:* While DNS resolution succeeds (the VM receives the private IP `10.0.1.4`), actual IP packet communication to that destination IP will still fail unless network routing (such as VNet Peering or VPN) is established.
+
+> [!TIP]
+> **Trap 3: Registration Link Multiplicity**
+> * A Private DNS Zone can have **at most ONE** Virtual Network Link with registration enabled (`--registration-enabled true`). Attempting to enable registration on a second VNet link throws a platform validation error.
+> * A single VNet can only be designated as the auto-registration network for **ONE** Private DNS Zone.
+> * Up to **1,000 Virtual Networks** can be linked as resolution-only links to the same zone.
+
+> [!CAUTION]
+> **Trap 4: Subnet Delegation Rules for DNS Private Resolver**
+> * Subnets hosting Inbound or Outbound endpoints must be empty of all other resources and delegated strictly to `Microsoft.Network/dnsResolvers`.
+> * You cannot combine Inbound and Outbound endpoints into the same subnet; each requires its own isolated `/28` (or larger) subnet.
 
 ---
 
