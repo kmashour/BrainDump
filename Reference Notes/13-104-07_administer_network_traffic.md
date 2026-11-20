@@ -141,16 +141,16 @@ An Azure Load Balancer consists of 5 decoupled building blocks:
 
 #### Basic SKU vs. Standard SKU (High-Yield Exam Core):
 
-| Feature | Basic Load Balancer (Legacy/Deprecated) | Standard Load Balancer (Enterprise Standard) |
-| :--- | :--- | :--- |
-| **Backend Pool Size** | Up to 300 instances (Single Availability Set only) | Up to **1,000 instances** (Any VM/VMSS in VNet) |
-| **Zone Redundancy** | ❌ No (Non-zonal only) | ✅ **Zone-redundant, Zonal, or Non-zonal** |
-| **Security Default** | **Open by Default** (Traffic passes without NSG!) | **Secure by Default** (Closed; requires explicit NSG allow rule) |
-| **Health Probes** | TCP and HTTP only | TCP, HTTP, and **HTTPS (validates TLS)** |
-| **High Availability (HA) Ports** | ❌ No | ✅ **Yes** (Internal ALB only: balances all 65,535 ports) |
-| **Floating IP (DSR)** | Supported | Supported (Enhanced for SQL AlwaysOn) |
-| **Outbound Rules** | ❌ No (Uses implicit allocation) | ✅ **Yes** (Declarative SNAT allocation & tuning) |
-| **SLA** | None ($0 cost) | **99.99% SLA** |
+| Feature                          | Basic Load Balancer (Legacy/Deprecated)            | Standard Load Balancer (Enterprise Standard)                     |
+| :------------------------------- | :------------------------------------------------- | :--------------------------------------------------------------- |
+| **Backend Pool Size**            | Up to 300 instances (Single Availability Set only) | Up to **1,000 instances** (Any VM/VMSS in VNet)                  |
+| **Zone Redundancy**              | ❌ No (Non-zonal only)                              | ✅ **Zone-redundant, Zonal, or Non-zonal**                        |
+| **Security Default**             | **Open by Default** (Traffic passes without NSG!)  | **Secure by Default** (Closed; requires explicit NSG allow rule) |
+| **Health Probes**                | TCP and HTTP only                                  | TCP, HTTP, and **HTTPS (validates TLS)**                         |
+| **High Availability (HA) Ports** | ❌ No                                               | ✅ **Yes** (Internal ALB only: balances all 65,535 ports)         |
+| **Floating IP (DSR)**            | Supported                                          | Supported (Enhanced for SQL AlwaysOn)                            |
+| **Outbound Rules**               | ❌ No (Uses implicit allocation)                    | ✅ **Yes** (Declarative SNAT allocation & tuning)                 |
+| **SLA**                          | None ($0 cost)                                     | **99.99% SLA**                                                   |
 
 ---
 

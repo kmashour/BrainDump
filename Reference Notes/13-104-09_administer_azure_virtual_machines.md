@@ -231,27 +231,27 @@ Azure offers multiple distinct layers of encryption to protect data at rest, dat
 +-------------------------------------------------------------------------------------------------+
 |                                AZURE DISK & COMPUTE ENCRYPTION SPECTRUM                         |
 +-------------------------------------------------------------------------------------------------+
-| Layer 1: Server-Side Encryption (SSE)                                                          |
-| ├── Default: Enabled on ALL Managed Disks, Snapshots, and Images using 256-bit AES.            |
+| Layer 1: Server-Side Encryption (SSE)                                                           |
+| ├── Default: Enabled on ALL Managed Disks, Snapshots, and Images using 256-bit AES.             |
 | ├── Key Option A: Platform-Managed Keys (PMK) - Transparent, zero cost, rotated by Microsoft.   |
-| ├── Key Option B: Customer-Managed Keys (CMK) - Keys in Azure Key Vault via Disk Encryption Set. |
-| └── Key Option C: Double Encryption at Rest - Combines two independent layers (PMK + CMK).     |
+| ├── Key Option B: Customer-Managed Keys (CMK) - Keys in Azure Key Vault via Disk Encryption Set.|
+| └── Key Option C: Double Encryption at Rest - Combines two independent layers (PMK + CMK).      |
 +-------------------------------------------------------------------------------------------------+
 | Layer 2: Encryption at Host (End-to-End Host Blade Encryption)                                  |
 | ├── Where it Encrypts: On the physical hypervisor server blade before transmission.             |
 | ├── What it Covers: Temporary Disks (D:), Host RAM caches, OS/Data disk network flows to storage|
 | ├── Performance: Zero guest OS CPU overhead (handled by hypervisor hardware).                   |
-| └── Compatibility Law: MUTUALLY EXCLUSIVE WITH AZURE DISK ENCRYPTION (ADE)! Cannot use both!   |
+| └── Compatibility Law: MUTUALLY EXCLUSIVE WITH AZURE DISK ENCRYPTION (ADE)! Cannot use both!    |
 +-------------------------------------------------------------------------------------------------+
 | Layer 3: Azure Disk Encryption (ADE)                                                            |
-| ├── Where it Encrypts: Inside the Guest Operating System.                                      |
+| ├── Where it Encrypts: Inside the Guest Operating System.                                       |
 | ├── Technology: BitLocker (Windows) and DM-Crypt (Linux).                                       |
-| ├── Key Hierarchy: BitLocker Encryption Key (BEK) wrapped by Key Encryption Key (KEK) in AKV.  |
-| ├── Performance: Incurs CPU overhead inside the VM OS for cryptographic operations.            |
+| ├── Key Hierarchy: BitLocker Encryption Key (BEK) wrapped by Key Encryption Key (KEK) in AKV.   |
+| ├── Performance: Incurs CPU overhead inside the VM OS for cryptographic operations.             |
 | └── Requirement: Key Vault must have '--enabled-for-disk-encryption true' flag set!             |
 +-------------------------------------------------------------------------------------------------+
 | Layer 4: Confidential Computing (Encryption in Use)                                             |
-| ├── AMD SEV-SNP (DCA/ECA series): Encrypts entire VM RAM memory; hypervisor cannot peek.       |
+| ├── AMD SEV-SNP (DCA/ECA series): Encrypts entire VM RAM memory; hypervisor cannot peek.        |
 | └── Intel SGX (DC series): Hardware enclaves inside CPU; requires application refactoring.      |
 +-------------------------------------------------------------------------------------------------+
 ```

@@ -1,7 +1,7 @@
 # John Savill - Azure Technical Training Deep Dives Master Index & Syllabus
 Source Playlist: https://www.youtube.com/playlist?list=PLlVtbbG169nGekKEV-l3TOXDLLEAj8jU2
 
-This master archive catalogues all 33 architectural deep-dive lectures from John Savill's Deep Dives series, providing full chapter breakdowns, whiteboard links, and architectural notes.
+This master archive catalogues all 33 architectural deep-dive lectures from John Savill's Deep Dives series, providing full chapter breakdowns, whiteboard links, and complete spoken transcripts.
 
 ---
 
@@ -23,6 +23,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`33:52`** — Outbound connectivity
 - **`48:09`** — Summary and best practices
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 02. Azure Kubernetes Service (AKS) Networking Deep Dive
@@ -39,6 +41,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`34:02`** — Exposing services externally
 - **`47:51`** — Nginx ingress controllers
 - **`54:00`** — App gateway integration
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -69,6 +73,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`55:44`** — Pets
 - **`57:05`** — Containers
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 04. Azure Role-Based Access Control Deep Dive
@@ -86,6 +92,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`22:38`** — Privileged Identity Management
 - **`31:14`** — Resource Locking
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 05. Azure Blob Data Permissions Deep Dive (360 in 360)
@@ -99,6 +107,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`10:30`** — Access Keys
 - **`15:50`** — Demonstration
 - **`18:05`** — Shared Access Signatures
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -132,6 +142,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`75:41`** — ExpressRoute Global Reach
 - **`77:57`** — Summary
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 07. Azure AD Privileged Identity Management (PIM) - AZ-500, SC-300 Deep Dive Topic
@@ -162,6 +174,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`54:13`** — Demo redemption :-)
 - **`55:25`** — Summary and close
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 08. Azure Virtual Network Manager Deep Dive
@@ -185,6 +199,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`53:10`** — Demo and viewing rules applied
 - **`59:30`** — Pricing
 - **`61:27`** — Summary and close
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -213,6 +229,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`47:03`** — Azure Arc support
 - **`47:32`** — Summary
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 10. Active Directory Domain Service Deep Dive
@@ -240,6 +258,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`49:20`** — Sites and subnets
 - **`56:25`** — Useful local and Azure tools for AD
 - **`59:28`** — Summary
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -272,6 +292,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`66:20`** — Use managed identities
 - **`73:07`** — Summary
 - **`76:53`** — Close
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -310,6 +332,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`53:13`** — Limits for PLS
 - **`54:49`** — Summary
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 13. Microsoft Azure Application Gateway Deep Dive
@@ -337,6 +361,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`56:45`** — How the bits fit together
 - **`57:48`** — App Gateway as AKS ingress controller
 - **`62:39`** — Summary
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -375,6 +401,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`81:00`** — Working with logs and metrics
 - **`82:40`** — Summary
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 15. Azure Managed Disks Deep Dive
@@ -400,6 +428,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`48:55`** — Busting demo
 - **`51:48`** — Disk metrics use
 - **`55:58`** — Summary
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -429,6 +459,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`63:45`** — Closing encryption demo with Key Vault
 - **`67:15`** — Close
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 17. Microsoft Azure Front Door Deep Dive
@@ -454,6 +486,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`30:29`** — Routes and rules
 - **`36:45`** — Web Application Firewall
 - **`38:30`** — Summary and close
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -481,6 +515,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`29:40`** — Summary and next steps
 - **`30:55`** — Me whining about a lack of autoexec.bat in Linux
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 19. Microsoft Azure AD Identity Protection Deep Dive
@@ -507,6 +543,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`48:54`** — Protection for external accounts
 - **`53:50`** — Summary
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 20. Looking at Entra Permissions Management to Manage Permissions Across AWS, GCP and Azure
@@ -530,6 +568,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`53:38`** — Licensing
 - **`54:50`** — Summary and close
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 21. Azure AD Cross-Tenant Access Settings Deep Dive
@@ -550,6 +590,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`25:53`** — Looking at the token for MFA property
 - **`31:07`** — How to get started
 - **`32:05`** — Summary
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -574,6 +616,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`48:55`** — Performance enhancements with Front Door
 - **`50:14`** — Summary and close
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 23. Using Windows Subsystem for Linux v2
@@ -596,6 +640,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`52:31`** — VS Code integration
 - **`53:48`** — Summary and close
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 24. Understanding Azure AD Hybrid Join
@@ -610,6 +656,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`04:11`** — AAD Join access to AD-joined resources
 - **`07:18`** — Hybrid Azure AD Join
 - **`14:26`** — Summary and close
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -635,6 +683,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`54:06`** — Cloud Security Explorer
 - **`56:15`** — Close and summary
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 26. Brand New Application Gateway for Containers Solution
@@ -659,6 +709,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`40:45`** — Why use this over 3rd party
 - **`42:07`** — Summary
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 27. Azure Elastic SAN Deep Dive
@@ -680,6 +732,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`28:50`** — Good workloads
 - **`32:07`** — SAN migrations
 - **`32:39`** — Summary
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -710,6 +764,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`52:30`** — Lets migrate a workload
 - **`61:08`** — Pricing
 - **`62:36`** — Summary
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -748,6 +804,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`67:41`** — Summary
 - **`69:51`** — Close
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 30. Azure API Management with Generative AI
@@ -775,6 +833,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`35:38`** — Great example scenario repo
 - **`36:48`** — Summary
 - **`38:57`** — Close
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -808,6 +868,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`43:53`** — Huge scale flexibility
 - **`44:25`** — Other names
 - **`45:38`** — Close
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
@@ -843,6 +905,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`47:26`** — Summary
 - **`49:54`** — Close
 
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
+
 ---
 
 ## 33. Azure Confidential Ledger Deep Dive
@@ -874,6 +938,8 @@ This master archive catalogues all 33 architectural deep-dive lectures from John
 - **`43:11`** — Pricing
 - **`43:54`** — Sample applications
 - **`44:22`** — Summary
+
+*Spoken transcript unavailable at time of ingestion due to YouTube upstream rate-limiting.*
 
 ---
 
